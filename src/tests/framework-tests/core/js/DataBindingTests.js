@@ -280,7 +280,50 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: {a: 1, b: 2},
         changes: 0,
         changeMap: {}
-    }];
+    }, {
+        message: "Add primitive at empty root",
+        model: undefined,
+        request: {type: "ADD", path: "", value: false},
+        expected: false,
+        changes: 1,
+        changeMap: "ADD"
+    }, {
+        message: "Add non-primitive at empty root",
+        model: undefined,
+        request: {type: "ADD", path: "", value: {a: 3, b: 2}},
+        expected: {a: 3, b: 2},
+        changes: 1,
+        changeMap: "ADD"
+    }, {
+        message: "Add array at empty root",
+        model: undefined,
+        request: {type: "ADD", path: "", value: [1, false]},
+        expected: [1, false],
+        changes: 1,
+        changeMap: "ADD"
+    }, {
+        message: "Add primitive near trunk",
+        model: {a: 1, b: 2},
+        request: {type: "ADD", path: "c", value: 3},
+        expected: {a: 1, b: 2, c: 3},
+        changes: 1,
+        changeMap: {c: "ADD"}
+    }, {
+        message: "Add recursive to empty",
+        model: undefined,
+        request: {type: "ADD", path: "", value: {a: {b: {c: 3}}}},
+        expected: {a: {b: {c: 3}}},
+        changes: 1,
+        changeMap: "ADD"
+    }, {
+        message: "Add object on top of primitive",
+        model: {v: false},
+        request: {type: "ADD", path: "v", value: {a: 1}},
+        expected: {v: {a: 1}},
+        changes: 1,
+        changeMap: {v: "ADD"}
+    }
+    ];
     
     jqUnit.test("ApplyHolderChangeRequest - cautious application + invalidation", function () {
         for (var i = 0; i < fluid.tests.changeTests.length; ++ i) {
@@ -290,10 +333,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             test.request.segs = fluid.model.parseEL(test.request.path);
             fluid.model.applyHolderChangeRequest(holder, test.request, options);
             var message = "index " + i + ": " + test.message;
-            jqUnit.assertDeepEq(message, test.expected, holder.model);
+            jqUnit.assertDeepEq(message + ": model contents", test.expected, holder.model);
             if (test.changes !== undefined) {
-               jqUnit.assertEquals(message + " changes", test.changes, options.changes);
-               jqUnit.assertDeepEq(message + " changeMap", test.changeMap, options.changeMap);
+               jqUnit.assertEquals(message + ": changes", test.changes, options.changes);
+               jqUnit.assertDeepEq(message + ": changeMap", test.changeMap, options.changeMap);
             }
         }
     });
@@ -324,20 +367,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Add at trunk", {a: 1, b: 2, c: {c: 3}}, testModel5);
     });
 
-    jqUnit.test("Transactional ChangeApplier - external transactions", function () {
-        var model = {a: 1, b: 2};
-        var applier = fluid.makeChangeApplier(model);
-        var initModel = fluid.copy(model);
-        
-        var transApp = applier.initiate();
-        transApp.requestChange("c", 3);
-        jqUnit.assertDeepEq("Observable model unchanged", initModel, model);
-        transApp.requestChange("d", 4);
-        jqUnit.assertDeepEq("Observable model unchanged", initModel, model);
-        transApp.commit();
-        jqUnit.assertDeepEq("All changes applied", {a: 1, b: 2, c: 3, d: 4}, model);
-    });
-
+    fluid.tests.testExternalTrans = function (applierMaker, name) {
+        jqUnit.test("Transactional ChangeApplier - external transactions: " + name, function () {
+            var model = {a: 1, b: 2};
+            var holder = {model: model};
+            var applier = applierMaker(holder);
+            var initModel = fluid.copy(model);
+            
+            var transApp = applier.initiate();
+            transApp.requestChange("c", 3);
+            jqUnit.assertDeepEq("Observable model unchanged", initModel, holder.model);
+            transApp.requestChange("d", 4);
+            jqUnit.assertDeepEq("Observable model unchanged", initModel, holder.model);
+            transApp.commit();
+            jqUnit.assertDeepEq("All changes applied", {a: 1, b: 2, c: 3, d: 4}, holder.model);
+        });
+    };
+    
+    fluid.tests.testExternalTrans(fluid.makeHolderChangeApplier, "old applier");
+    fluid.tests.testExternalTrans(fluid.makeNewChangeApplier, "new applier");
+    
     function makeTransTest(trans, thin) {
         jqUnit.test("Transactional ChangeApplier - Transactional: " + 
             trans + " Thin: " + thin, function () {
@@ -386,10 +435,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         );
     }
-    makeTransTest(true, false);
-    makeTransTest(false, false);
+    
+    makeTransTest(true, false); // Old ChangeApplier no longer supports nontransactionality
     makeTransTest(true, true);
-    makeTransTest(false, true);
     
     jqUnit.test("Culling Applier", function () {
         var model = {

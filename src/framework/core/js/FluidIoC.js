@@ -419,6 +419,7 @@ var fluid_1_5 = fluid_1_5 || {};
             // This cheap strategy patches FLUID-5091 for now - some more sophisticated activity will take place
             // at this site when we have a full fix for FLUID-5028
             shadow.mergeOptions.destroyValue("components");
+            shadow.mergeOptions.destroyValue("mergePolicy");
 
             var defaultsBlock = fluid.findMergeBlocks(shadow.mergeOptions.mergeBlocks, "defaults")[0];
             defaultsBlock.source = newDefaults;
@@ -649,6 +650,7 @@ var fluid_1_5 = fluid_1_5 || {};
             nickName: "instantiator",
             pathToComponent: {},
             idToShadow: {},
+            modelTransaction: {}, // a map of id to records of components enlisted in a current model initialisation transaction
             composePath: fluid.composePath // For speed, we declare that no component's name may contain a period
         };
         // We frequently get requests for components not in this instantiator - e.g. from the dynamicEnvironment or manually created ones

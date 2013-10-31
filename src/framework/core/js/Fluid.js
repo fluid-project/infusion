@@ -803,7 +803,7 @@ var fluid = fluid || fluid_1_5;
         return root[segment];
     };
 
-    // unsupported, NON-API function   
+    // unsupported, NON-API function
     fluid.model.pathToSegments = function (EL, config) {
         var parser = config && config.parser ? config.parser.parse : fluid.model.parseEL;
         var segs = typeof(EL) === "number" || typeof(EL) === "string" ? parser(EL) : EL;
@@ -970,6 +970,8 @@ var fluid = fluid || fluid_1_5;
     };
     
     var fluid_prefix = fluid.generateUniquePrefix();
+    
+    fluid.fluidInstance = fluid_prefix;
     
     var fluid_guid = 1;
     
@@ -1564,25 +1566,27 @@ var fluid = fluid || fluid_1_5;
             return togo;
         }
         fluid.each(mergePolicy, function (value, key) {
-            var parsed = {}, builtin = false;
+            var parsed = {}, builtin = true;
             if (typeof(value) === "function") {
                 parsed.func = value;
-                builtin = true;
+            }
+            else if (typeof(value) === "object") {
+                parsed = value;  
             }
             else if (!fluid.isDefaultValueMergePolicy(value)) {
                 var split = value.split(/\s*,\s*/);
                 for (var i = 0; i < split.length; ++ i) {
                     parsed[split[i]] = true;
                 }
-                builtin = true;
             }
             else {
                 // Convert to ginger self-reference - NB, this can only be parsed by IoC
                 fluid.set(defaultValues, key, "{that}.options." + value);
                 togo.hasDefaults = true;
+                builtin = false;
             }
             if (builtin) {
-                fluid.set(builtins, fluid.composePath(key, "*"), parsed);
+                fluid.set(builtins, [key, "*"], parsed);
             }
         });
         return togo;
@@ -1933,13 +1937,17 @@ var fluid = fluid || fluid_1_5;
             fluid.destroyValue(baseMergeOptions.target, path);
         };
         
-        // Decode the now available mergePolicy
-        var mergePolicy = fluid.driveStrategy(options, "mergePolicy", mergeOptions.strategy);
-        mergePolicy = $.extend({}, fluid.rootMergePolicy, mergePolicy);
-        var compiledPolicy = fluid.compileMergePolicy(mergePolicy);
-        // TODO: expandComponentOptions has already put some builtins here - performance implications of the now huge
-        // default mergePolicy material need to be investigated as well as this deep merge
-        $.extend(true, sharedMergePolicy, compiledPolicy.builtins); // ensure it gets broadcast to all sharers
+        var compiledPolicy;
+        function computeMergePolicy() {
+            // Decode the now available mergePolicy
+            var mergePolicy = fluid.driveStrategy(options, "mergePolicy", mergeOptions.strategy);
+            mergePolicy = $.extend({}, fluid.rootMergePolicy, mergePolicy);
+            compiledPolicy = fluid.compileMergePolicy(mergePolicy);
+            // TODO: expandComponentOptions has already put some builtins here - performance implications of the now huge
+            // default mergePolicy material need to be investigated as well as this deep merge
+            $.extend(true, sharedMergePolicy, compiledPolicy.builtins); // ensure it gets broadcast to all sharers
+        }
+        computeMergePolicy();
         
         if (compiledPolicy.hasDefaults) {
             if (fluid.generateExpandBlock) {
@@ -1968,6 +1976,9 @@ var fluid = fluid || fluid_1_5;
         }
                 
         fluid.computeComponentAccessor(that);
+        if (!baseMergeOptions.target.mergePolicy) {
+            computeMergePolicy();
+        }
 
         return mergeOptions;
     };

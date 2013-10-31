@@ -349,6 +349,64 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     };
     
+    
+    fluid.BINDING_ROOT_KEY = "fluid-binding-root";
+
+    /** Recursively find any data stored under a given name from a node upwards
+     * in its DOM hierarchy **/
+
+    fluid.findData = function (elem, name) {
+        while (elem) {
+            var data = $.data(elem, name);
+            if (data) {
+                return data;
+            }
+            elem = elem.parentNode;
+        }
+    };
+
+    fluid.bindFossils = function (node, data, fossils) {
+        $.data(node, fluid.BINDING_ROOT_KEY, {data: data, fossils: fossils});
+    };
+
+    fluid.boundPathForNode = function (node, fossils) {
+        node = fluid.unwrap(node);
+        var key = node.name || node.id;
+        var record = fossils[key];
+        return record ? record.EL : null;
+    };
+
+   /** "Automatically" apply to whatever part of the data model is
+     * relevant, the changed value received at the given DOM node*/
+    fluid.applyBoundChange = function (node, newValue, applier) {
+        node = fluid.unwrap(node);
+        if (newValue === undefined) {
+            newValue = fluid.value(node);
+        }
+        if (node.nodeType === undefined && node.length > 0) {
+            node = node[0];
+        } // assume here that they share name and parent
+        var root = fluid.findData(node, fluid.BINDING_ROOT_KEY);
+        if (!root) {
+            fluid.fail("Bound data could not be discovered in any node above " + fluid.dumpEl(node));
+        }
+        var name = node.name;
+        var fossil = root.fossils[name];
+        if (!fossil) {
+            fluid.fail("No fossil discovered for name " + name + " in fossil record above " + fluid.dumpEl(node));
+        }
+        if (typeof(fossil.oldvalue) === "boolean") { // deal with the case of an "isolated checkbox"
+            newValue = newValue[0] ? true : false;
+        }
+        var EL = root.fossils[name].EL;
+        if (applier) {
+            applier.fireChangeRequest({path: EL, value: newValue, source: "DOM:" + node.id});
+        } else {
+            fluid.set(root.data, EL, newValue);
+        }
+    };
+    
+    
     /**
      * Returns a jQuery object given the id of a DOM node. In the case the element
      * is not found, will return an empty list.
