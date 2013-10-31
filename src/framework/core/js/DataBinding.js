@@ -341,11 +341,11 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param exact (boolean) Whether the path must exactly match the length of the specification in
      * terms of path segments in order to count as match. If exact is falsy, short specifications will
      * match all longer paths as if they were padded out with "*" segments
-     * @return (string) The path which matched the specification, or <code>null</code> if there was no match
+     * @return (array of string) The path segments which matched the specification, or <code>null</code> if there was no match
      */
 
     fluid.pathUtil.matchPath = function (spec, path, exact) {
-        var togo = "";
+        var togo = [];
         while (true) {
             if (((path === "") ^ (spec === "")) && exact) {
                 return null;
@@ -362,7 +362,7 @@ var fluid_1_5 = fluid_1_5 || {};
             if (spechead !== "*" && spechead !== pathhead) {
                 return null;
             }
-            togo = fluid.pathUtil.composePath(togo, pathhead);
+            togo.push(pathhead);
             spec = fluid.pathUtil.getFromHeadPath(spec);
             path = fluid.pathUtil.getFromHeadPath(path);
         }
@@ -439,14 +439,75 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param [eventName] - optional - the event name to be listened to - defaults to "modelChanged"
      * @param [namespace] - optional - the event namespace
      */
-    fluid.addSourceGuardedListener = function(applier, path, source, func, eventName, namespace) {
+    fluid.addSourceGuardedListener = function(applier, path, source, func, eventName, namespace, softNamespace) {
         eventName = eventName || "modelChanged";
-        applier[eventName].addListener(path,
-            function() {
-                if (!applier.hasChangeSource(source)) {
-                    func.apply(null, arguments);
-                }
-            }, namespace);
+        var wrapped = function () {
+            if (!applier.hasChangeSource(source)) {
+                return func.apply(null, arguments);
+            }
+        };
+        fluid.event.impersonateListener(func, wrapped);
+        applier[eventName].addListener(path, wrapped, namespace, softNamespace);
+    };
+ 
+    // unsupported, NON-API function   
+    fluid.resolveModelListener = function (that, record) {
+        var togo = function (newModel, oldModel, changes, path) {
+            var change = {
+                value: fluid.get(newModel, path),
+                oldValue: fluid.get(oldModel, path),
+                path: path
+            };
+            var args = [change];
+            var localRecord = {change: change, arguments: args};
+            if (record.args) {
+                args = fluid.expandOptions(record.args, that, {}, localRecord); 
+            }
+            fluid.event.invokeListener(record.listener, fluid.makeArray(args));
+        };
+        fluid.event.impersonateListener(record.listener, togo);
+        return togo;
+    };
+    
+    var modelPrefix = "model.";
+    
+    fluid.resolveModelReference = function (that, path) {
+        if (path.charAt(0) === "{") {
+            var parsed = fluid.parseContextReference(path);
+            var context = fluid.resolveContext(parsed.context, that);
+            if (!context || !context.applier) {
+                fluid.fail("Cannot look up model reference " + path + " to a model component with applier");
+            }
+            if (parsed.path.indexOf(modelPrefix) !== 0) {
+                fluid.fail("Path in model reference " + path + " must begin with \"model.\"");
+            }
+            return {
+                that: context,
+                path: parsed.path.substring(modelPrefix.length)
+            };
+        } else return {
+            that: that,
+            path: path
+        };
+    };
+
+    // unsupported, NON-API function    
+    fluid.mergeModelListeners = function (that, listeners) {
+        fluid.each(listeners, function (value, path) {
+            if (typeof(value) === "string") {
+                value = {
+                    funcName: value
+                };
+            }
+            var records = fluid.event.resolveListenerRecord(value, that, "modelListeners", null, false);
+            var parsed = fluid.resolveModelReference(that, path);
+            // Bypass fluid.event.dispatchListener by means of "standard = false" and enter our custom workflow including expanding "change":
+            fluid.each(records.records, function (record) {
+                var func = fluid.resolveModelListener(that, record);
+                fluid.addSourceGuardedListener(parsed.that.applier, parsed.path, record.guardSource, func, "modelChanged", record.namespace, record.softNamespace);
+                fluid.recordListener(parsed.that.applier.modelChanged, func, fluid.shadowForComponent(that));
+            });  
+        });
     };
 
     /** Convenience method to fire a change event to a specified applier, including
@@ -515,7 +576,7 @@ var fluid_1_5 = fluid_1_5 || {};
         var that = {
         // For now, we don't use "id" to avoid confusing component detection which uses
         // a simple algorithm looking for that field
-            changeid: fluid.allocateGuid(),
+            applierid: fluid.allocateGuid(),
             model: model
         };
 
@@ -564,7 +625,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     var match = fluid.pathUtil.matchPath(pathSpec, changePath);
                     if (match !== null) {
                         var record = {
-                            changePath: changePath,
+                            match: match,
                             pathSpec: pathSpec,
                             listener: listener,
                             priority: priority,
@@ -622,8 +683,8 @@ var fluid_1_5 = fluid_1_5 || {};
 
         function adaptListener(that, name) {
             that[name] = {
-                addListener: function (spec, listener, namespace) {
-                    baseEvents[name].addListener(wrapListener(listener, spec), namespace);
+                addListener: function (spec, listener, namespace, softNamespace) {
+                    baseEvents[name].addListener(wrapListener(listener, spec), namespace, null, null, softNamespace);
                 },
                 removeListener: function (listener) {
                     baseEvents[name].removeListener(listener);
@@ -682,22 +743,25 @@ var fluid_1_5 = fluid_1_5 || {};
                     fluid.model.copyModel(oldModel, model);
                 }
                 fluid.model.applyChangeRequest(model, changeRequest, options.resolverSetConfig);
-                fireEvent("modelChanged", changeRequest.path, [model, oldModel, [changeRequest]]);
+                fireAgglomerated("modelChanged", "all", [changeRequest], [model, oldModel, null, null], 2, 3);
             }
         };
 
         that.fireChangeRequest = sourceWrapModelChanged(that.fireChangeRequest, threadLocal);
         fluid.bindRequestChange(that);
 
-        function fireAgglomerated(eventName, formName, changes, args, accpos) {
+        function fireAgglomerated(eventName, formName, changes, args, accpos, matchpos) {
             var fireSpec = makeFireSpec();
             for (var i = 0; i < changes.length; ++i) {
                 prepareFireEvent(eventName, changes[i].path, fireSpec, changes[i]);
             }
             for (var j = 0; j < fireSpec[formName].length; ++j) {
                 var spec = fireSpec[formName][j];
-                if (accpos) {
+                if (accpos !== undefined) {
                     args[accpos] = spec.accumulate;
+                }
+                if (matchpos !== undefined) {
+                    args[matchpos] = spec.match;
                 }
                 var ret = spec.listener.apply(null, args);
                 if (ret === false) {
@@ -735,7 +799,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         fluid.clear(model);
                         fluid.model.copyModel(model, newModel);
                     }
-                    fireAgglomerated("modelChanged", "all", changes, [model, oldModel, null], 2);
+                    fireAgglomerated("modelChanged", "all", changes, [model, oldModel, null, null], 2, 3);
                 },
                 fireChangeRequest: function (changeRequest) {
                     preFireChangeRequest(changeRequest);
