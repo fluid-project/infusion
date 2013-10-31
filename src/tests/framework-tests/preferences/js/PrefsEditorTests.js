@@ -420,7 +420,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                         type: "fluid.prefs.enactor.textSize",
                                         container: "{uiEnhancer}.container",
                                         options: {
-                                            gradeNames: "fluid.prefs.uiEnhancerConnections",
                                             fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
                                             rules: {
                                                 "textSize": "value"
