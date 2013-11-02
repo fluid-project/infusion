@@ -843,23 +843,37 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         };
         jqUnit.assertDeepEq("Model successfully resolved on init", expected, that.model);
-        var expected2 = [{
+        var expected2 = {
+            nested1: {
+                nested2: "thing"
+            }
+        };
+        jqUnit.assertDeepEq("Inner model successfully initialised", expected2, that.child.model);
+        
+        var expected3 = [{
             path: ["innerModel"], oldValue: undefined, value: {nested2: "thing"}
         }];
-        jqUnit.assertDeepEq("Registered initial change", expected2, that.fireRecord);
+        jqUnit.assertDeepEq("Registered initial change", expected3, that.fireRecord);
+        that.applier.requestChange("innerModel", "exterior thing");
+        var expected4 = {
+            nested1: "exterior thing"
+        };
+        jqUnit.assertDeepEq("Propagated change inwards", expected4, that.child.model); 
     });
 
 
     jqUnit.test("FLUID-5151: One single listener function hooked up for multiple model paths only have the last call registered succesfully", function () {
-        var model = {
-            path1: null,
-            path2: null
+        var holder = {
+            model:  {
+                path1: null,
+                path2: null
+            }
         };
-        var applier = fluid.makeChangeApplier(model);
+        var applier = fluid.makeNewChangeApplier(holder);
 
         var currentPath = null;
-        var listenerToFire = function (newModel, oldModel, changeRequest) {
-            currentPath = changeRequest[0].path;
+        var listenerToFire = function (newModel, oldModel, path) {
+            currentPath = path;
         };
 
         applier.modelChanged.addListener("path1", listenerToFire);

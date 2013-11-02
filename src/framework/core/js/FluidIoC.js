@@ -650,7 +650,7 @@ var fluid_1_5 = fluid_1_5 || {};
             nickName: "instantiator",
             pathToComponent: {},
             idToShadow: {},
-            modelTransaction: {}, // a map of id to records of components enlisted in a current model initialisation transaction
+            modelTransactions: {init: {}}, // a map of transaction id to map of component id to records of components enlisted in a current model initialisation transaction
             composePath: fluid.composePath // For speed, we declare that no component's name may contain a period
         };
         // We frequently get requests for components not in this instantiator - e.g. from the dynamicEnvironment or manually created ones
@@ -1669,7 +1669,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         // occurred - this was implemented wrongly in 1.4.
         var firer;
         if (isComposite) {
-            firer = fluid.event.getEventFirer(null, null, " [composite] " + fluid.event.nameEvent(that, eventName));
+            firer = fluid.makeEventFirer(null, null, " [composite] " + fluid.event.nameEvent(that, eventName));
             var dispatcher = fluid.event.dispatchListener(that, firer.fire, eventName, eventSpec, isMultiple);
             if (isMultiple) {
                 fluid.event.listenerEngine(origin, dispatcher, adder);

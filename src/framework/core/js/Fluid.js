@@ -1172,7 +1172,7 @@ var fluid = fluid || fluid_1_5;
         return that;
     };
     
-    // This name will be deprecated in Fluid 2.0 for fluid.makeEventFirer (or fluid.eventFirer)
+    // This name will be deprecated in Fluid 1.5 for fluid.makeEventFirer (or fluid.eventFirer)
     fluid.event.getEventFirer = fluid.makeEventFirer;
     
     /** Fire the specified event with supplied arguments. This call is an optimisation utility
