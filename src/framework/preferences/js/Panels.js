@@ -372,11 +372,7 @@ var fluid_1_5 = fluid_1_5 || {};
      ****************************************/
 
     fluid.defaults("fluid.prefs.textfieldSlider", {
-        gradeNames: ["fluid.textfieldSlider", "fluid.prefs.modelRelay", "autoInit"],
-        model: "{fluid.prefs.panel}.model",
-        sourceApplier: "{fluid.prefs.panel}.applier",
-        range: "{fluid.prefs.panel}.options.range",
-        sliderOptions: "{fluid.prefs.panel}.options.sliderOptions"
+        gradeNames: ["fluid.textfieldSlider", "fluid.prefs.modelRelay", "autoInit"]
     });
 
     /********************************
@@ -421,7 +417,11 @@ var fluid_1_5 = fluid_1_5 || {};
                     options: {
                         rules: {
                             "value": "value"
-                        }
+                        },
+                        model: "{fluid.prefs.panel.textSize}.model",
+                        sourceApplier: "{fluid.prefs.panel.textSize}.applier",
+                        range: "{fluid.prefs.panel.textSize}.options.range",
+                        sliderOptions: "{fluid.prefs.panel.textSize}.options.sliderOptions"
                     }
                 }
             }
@@ -518,7 +518,11 @@ var fluid_1_5 = fluid_1_5 || {};
                     options: {
                         rules: {
                             "value": "value"
-                        }
+                        },
+                        model: "{fluid.prefs.panel.lineSpace}.model",
+                        sourceApplier: "{fluid.prefs.panel.lineSpace}.applier",
+                        range: "{fluid.prefs.panel.lineSpace}.options.range",
+                        sliderOptions: "{fluid.prefs.panel.lineSpace}.options.sliderOptions"
                     }
                 }
             }
