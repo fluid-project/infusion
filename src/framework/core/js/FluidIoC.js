@@ -518,6 +518,9 @@ var fluid_1_5 = fluid_1_5 || {};
             if (index > 1) {
                 return atval;
             }
+            if (atval === undefined && component.hasOwnProperty(thisSeg)) { // avoid recomputing properties that have been explicitly evaluated to undefined
+                return fluid.NO_VALUE;
+            }
             if (atval === undefined) { // pick up components in instantiation here - we can cut this branch by attaching early
                 var parentPath = instantiator.idToShadow[component.id].path;
                 var childPath = fluid.composePath(parentPath, thisSeg);
@@ -1380,9 +1383,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.changeToApplicable = function (record, that) {
         return {
             apply: function (noThis, args) {
-                var parsed = fluid.resolveModelReference(that, record.changePath);
+                var parsed = fluid.parseValidModelReference(that, "changePath listener record", record.changePath);
                 var value = fluid.expandOptions(record.value, that, {}, {arguments: args});
-                fluid.fireSourcedChange(parsed.that.applier, parsed.path, value, record.source); 
+                fluid.fireSourcedChange(parsed.applier, parsed.path, value, record.source); 
             }
         };
     };

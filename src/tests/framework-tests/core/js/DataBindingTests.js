@@ -288,6 +288,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         changes: 1,
         changeMap: "ADD"
     }, {
+        message: "Add primitive into nothing at empty root",
+        model: undefined,
+        request: {type: "ADD", path: "c", value: false},
+        expected: {c: false},
+        changes: 1,
+        changeMap: "ADD"
+    }, {
         message: "Add non-primitive at empty root",
         model: undefined,
         request: {type: "ADD", path: "", value: {a: 3, b: 2}},
@@ -858,7 +865,83 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var expected4 = {
             nested1: "exterior thing"
         };
-        jqUnit.assertDeepEq("Propagated change inwards", expected4, that.child.model); 
+        jqUnit.assertDeepEq("Propagated change inwards", expected4, that.child.model);
+        that.child.applier.requestChange("nested1", "interior thing");
+        var expected5 = {
+            innerModel: "interior thing"
+        };
+        jqUnit.assertDeepEq("Propagated change outwards", expected5, that.model);
+    });
+    
+    fluid.defaults("fluid.tests.fluid3674eventHead", {
+        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        model: {
+            outerModel: "outerValue"  
+        },
+        events: {
+            createEvent: null
+        },
+        components: {
+            child: {
+                type: "fluid.standardRelayComponent",
+                createOnEvent: "createEvent",
+                options: {
+                    gradeNames: "autoInit",
+                    model: "{fluid3674eventHead}.model.outerModel"
+                }
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-3674 event coordination test", function () {
+        var that = fluid.tests.fluid3674eventHead();
+        that.events.createEvent.fire();
+        var child = that.child;
+        jqUnit.assertEquals("Outer model propagated inwards on creation", "outerValue", child.model);
+        that.applier.requestChange("outerModel", "exterior thing");
+        jqUnit.assertEquals("Propagated change inwards through relay", "exterior thing", child.model);
+        child.applier.requestChange("", "interior thing");
+        jqUnit.assertDeepEq("Propagated change outwards through relay", {outerModel: "interior thing"}, that.model);
+        child.destroy();
+        that.applier.requestChange("outerModel", "exterior thing 2");        
+        jqUnit.assertEquals("No change propagated inwards to destroyed component", "interior thing", child.model);
+        child.applier.requestChange("", "interior thing 2");
+        jqUnit.assertDeepEq("No change propagated outwards from destroyed component", {outerModel: "exterior thing 2"}, that.model);        
+    });
+
+    fluid.defaults("fluid.tests.fluid5024head", {
+        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        components: {
+            child1: {
+                type: "fluid.standardRelayComponent",
+                options: {
+                     gradeNames: "autoInit",
+                     model: {
+                         celsius: 22
+                     },
+                     modelRelay: {
+                         source: "{that}.model.celsius",
+                         target: "{child2}.model.fahrenheit",
+                         singleTransform: {
+                             type: "fluid.transforms.linearScale",
+                             scale: 9/5,
+                             offset: 32
+                         }
+                     }
+                }
+            },
+            child2: {
+                type: "fluid.standardRelayComponent",
+                options: { // no options: model will be initialised via relay
+                    gradeNames: "autoInit"
+                }
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-5024: Model relay with model transformation", function () {
+        var that = fluid.tests.fluid5024head();
+        jqUnit.assertEqual("Transformed celsius into fahrenheit on init", 22 * 9 / 5 + 32, that.child2.model.fahrenheit);
     });
 
 

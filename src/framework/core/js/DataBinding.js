@@ -263,7 +263,7 @@ var fluid_1_5 = fluid_1_5 || {};
     // is indexed by component, not by applier, and has special record type (complete + initModel), not transaction
     fluid.enlistModelComponent = function (that) {
         var instantiator = fluid.getInstantiator(that);
-        var applier = fluid.getForComponent(that, "applier");
+        var applier = that.applier || fluid.getForComponent(that, "applier");
         var enlist = instantiator.modelTransactions.init[that.id];
         if (!enlist) {
             enlist = {
@@ -276,36 +276,44 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     // Operate all coordinated transactions by bringing models to their respective initial values, and then commit them all
-    fluid.operateInitialTransaction = function (mrec) {
+    fluid.operateInitialTransaction = function (instantiator, mrec) {
         var transId = fluid.allocateGuid();
+        var transRec = fluid.getModelTransactionRec(instantiator, transId);
         var transacs = fluid.transform(mrec, function (recel) {
-            if (!fluid.isModelComplete(recel.that)) { // note we don't use the "complete" flag since status may have changed
-                recel.that.model = undefined; // Abuse of the ginger system - in fact it is "currently in evaluation"
-            }
-            return recel.that.applier.initiate(transId);
+            var transac = recel.that.applier.initiate(transId);
+            transRec[recel.that.applier.applierId] = transac;
+            return transac;
         });
         fluid.each(mrec, function (recel) {
-            fluid.each(recel.initModels, function (initModel) {
-                transacs[recel.that.id].fireChangeRequest({type: "ADD", segs: [], value: initModel});
-            });
+            var transac = transacs[recel.that.id];
+            if (recel.completeOnInit) {
+                transac.initModelEvent();
+            } else {
+                fluid.each(recel.initModels, function (initModel) {
+                    transac.fireChangeRequest({type: "ADD", segs: [], value: initModel});
+                });
+            }
         });
-        fluid.each(transacs, function (transac) {
+        fluid.each(transacs, function (transac, key) {
             transac.commitOnly();
+            var shadow = fluid.shadowForComponent(mrec[key].that);
+            shadow.modelComplete = true;
         });
     };
     
-    // This modelComponent has now concluded initialisation - commit its initialisation transaction
+    // This modelComponent has now concluded initialisation - commit its initialisation transaction if it is the last such in the wave
     fluid.deenlistModelComponent = function (that) {
         var instantiator = fluid.getInstantiator(that);
-        var mrec = instantiator.modelTransactions.init; 
-        mrec[that.id].complete = true;
+        var mrec = instantiator.modelTransactions.init;
+        that.model = undefined; // Abuse of the ginger system - in fact it is "currently in evaluation" - we need to return a proper initial model value even if no init occurred yet
+        mrec[that.id].complete = true; // flag means - "complete as in ready to participate in this transaction"
         var incomplete = fluid.find_if(mrec, function (recel) {
             return recel.complete !== true;
         });
         if (!incomplete) {
-            fluid.operateInitialTransaction(mrec);
+            fluid.operateInitialTransaction(instantiator, mrec);
+            instantiator.modelTransactions.init = {};
         }
-        instantiator.modelTransactions.init = {};
     };
     
     fluid.model.commitRelays = function (instantiator, transactionId) {
@@ -327,8 +335,13 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         return transRec;
     };
+
+    fluid.recordChangeListener = function (component, applier, sourceListener) {
+        var shadow = fluid.shadowForComponent(component);
+        fluid.recordListener(applier.modelChanged, sourceListener, shadow);
+    };
     
-    fluid.registerDirectChangeRelay = function (target, targetSegs, source, sourceSegs, linkId) {
+    fluid.registerDirectChangeRelay = function (target, targetSegs, source, sourceSegs, linkId, transducer) {
         var instantiator = fluid.getInstantiator(target), applierId = target.applier.applierId;
         targetSegs = fluid.makeArray(targetSegs);
         sourceSegs = fluid.makeArray(sourceSegs); // take copies since originals will be trashed
@@ -338,38 +351,58 @@ var fluid_1_5 = fluid_1_5 || {};
             var existing = transRec[applierId];
             var initRecord = instantiator.modelTransactions.init[target.id];
             var noRelay = initRecord && initRecord[linkId] === "noRelay";
-            if ((!existing || !transRec[linkId]) && !noRelay) {
-                var newTrans = target.applier.initiate(transId);
-                transRec[applierId] = newTrans;
-                transRec[linkId] = true; 
-                newTrans.fireChangeRequest({type: "ADD", segs: targetSegs, value: newValue});
+            var relay = !transRec[linkId] && !noRelay;
+            if (relay) {
+                if (!existing) {
+                    var newTrans = target.applier.initiate(transId);
+                    transRec[applierId] = newTrans;
+                    transRec[linkId] = true;
+                    existing = newTrans;
+                }
+                if (transducer) {
+                    transducer(existing, newValue, sourceSegs, targetSegs);
+                } else {
+                    existing.fireChangeRequest({type: "ADD", segs: targetSegs, value: newValue});
+                }
             }
         };
         source.applier.modelChanged.addListener({
-            segs: sourceSegs,
-            groupId: applierId
+            segs: sourceSegs
         }, sourceListener);
+        fluid.recordChangeListener(source, source.applier, sourceListener);
+        fluid.recordChangeListener(target, source.applier, sourceListener);
+    };
+    
+    fluid.parseModelReference = function (that, ref) {
+        var parsed = fluid.parseContextReference(ref);
+        parsed.segs = that.applier.parseEL(parsed.path);
+        return parsed;
+    };
+    
+    fluid.connectModelRelay = function (source, sourceSegs, target, targetSegs, transformPackage) {
+        transformPackage = transformPackage || {};
+        var linkId = fluid.allocateGuid();
+        var enlist = fluid.enlistModelComponent(target);
+
+        if (enlist.complete) {
+            var shadow = fluid.shadowForComponent(target);
+            if (shadow.modelComplete) {
+                enlist.completeOnInit = true;
+            }
+            enlist[linkId] = "noRelay"; // avoid trying to broadcast this BACK to target again as part of relay
+        }
+        fluid.registerDirectChangeRelay(source, sourceSegs, target, targetSegs, linkId, transformPackage.forward);
+        fluid.registerDirectChangeRelay(target, targetSegs, source, sourceSegs, linkId, transformPackage.backward);      
     };
     
     fluid.parseImplicitRelay = function (that, modelRec, segs) {
         var value;
         if (typeof(modelRec) === "string" && modelRec.charAt(0) === "{") {
-            var parsed = fluid.parseContextReference(modelRec);
-            parsed.segs = fluid.model.parseEL(parsed.path);
+            var parsed = fluid.parseModelReference(that, modelRec);
             var target = fluid.resolveContext(parsed.context, that);
             if (parsed.segs[0] === "model") {
-                var linkId = fluid.allocateGuid();
-                var enlist = fluid.enlistModelComponent(target);
                 var modelSegs = parsed.segs.slice(1);
-                if (enlist.complete) {
-                   // TODO: This really SHOULD use relay since it may involve a transform etc. - this implies we should get to 
-                   // RE-OBSERVE the init model change in the case we missed it (a "promised model"!)
-                    value = fluid.get(target.model, modelSegs);
-                    enlist[linkId] = "noRelay"; // avoid trying to broadcast this BACK to target again as part of relay
-                }
-                // it is THESE listeners which will get to observe the "fake re-init" morally generated by replacement for fluid.get above
-                fluid.registerDirectChangeRelay(that, segs, target, modelSegs, linkId);
-                fluid.registerDirectChangeRelay(target, modelSegs, that, segs, linkId);
+                fluid.connectModelRelay(that, segs, target, modelSegs);
             } else {
                 value = fluid.getForComponent(target, parsed.segs);
             }
@@ -389,15 +422,84 @@ var fluid_1_5 = fluid_1_5 || {};
         return value;
     };
     
+    fluid.parseValidModelReference = function (that, name, ref) {
+        function reject(message) {
+            fluid.fail("Error in " + name + ": " + ref + message);
+        }
+        var parsed, target;
+        if (ref.charAt(0) === "{") {
+            parsed = fluid.parseModelReference(that, ref);
+            if (parsed.segs[0] !== "model") {
+                reject(" must be a reference into a component model beginning with \"model\"");
+            } else {
+                parsed.modelSegs = parsed.segs.slice(1);
+            }
+            target = fluid.resolveContext(parsed.context, that);
+            if (!target) {
+                reject(" must be a reference to an existing component"); 
+            }
+
+        } else {
+            target = that;
+            parsed = {
+                path: ref
+            }
+        }
+        if (!target.applier) {
+            fluid.getForComponent(target, ["applier"]);
+        }
+        if (!target.applier) {
+            reject(" must be a reference to a component with a ChangeApplier (descended from fluid.modelComponent)");
+        }
+        parsed.that = target;
+        parsed.applier = target.applier;
+        return parsed;   
+    };
+    
+    fluid.transformToAdapter = function (transform) {
+        return function (trans, newValue, sourceSegs, targetSegs) {
+            // TODO: More efficient model that can only run invalidated portion of transform (need to access changeMap of source transaction)
+            fluid.model.transformWithRules(newValue, transform, {finalApplier: trans});
+        };  
+    };
+    
+    fluid.makeTransformPackage = function (transform) {
+        var inverse = fluid.model.transform.invertConfiguration(transform);
+        return {
+            forward: fluid.transformToAdapter(transform),
+            backward: fluid.transformToAdapter(inverse)       
+        };
+    };
+    
+    fluid.singleTransformToFull = function (singleTransform) {
+        var withPath = $.extend(true, {valuePath: ""}, singleTransform);
+        return {
+            "": {
+                 transform: withPath
+            }
+        };
+    };
+    
+    fluid.parseModelRelay = function (that, mrrec) {
+        var parsedSource = fluid.parseValidModelReference(that, "modelRelay record member \"source\"", mrrec.source);
+        var parsedTarget = fluid.parseValidModelReference(that, "modelRelay record member \"target\"", mrrec.target);
+       
+        var transform = mrrec.singleTransform ? fluid.singleTransformToFull(mrrec.singleTransform) : mrrec.transform;
+        var transformPackage = fluid.makeTransformPackage(transform);
+        fluid.connectModelRelay(parsedSource.that, parsedSource.modelSegs, parsedTarget.that, parsedTarget.modelSegs, transformPackage);
+    };
+    
     fluid.establishModelRelay = function (that, optionsModel, optionsML, optionsMR, applier) {
         fluid.mergeModelListeners(that, optionsML);
         
-        // parse optionsMR and register too
+        var enlist = fluid.enlistModelComponent(that);
+        fluid.each(optionsMR, function (mrrec) {
+            fluid.parseModelRelay(that, mrrec);
+        });
         
         var initModels = fluid.transform(optionsModel, function (modelRec) {
             return fluid.parseImplicitRelay(that, modelRec, []);  
         });
-        var enlist = fluid.enlistModelComponent(that);
         enlist.initModels = initModels;
         fluid.deenlistModelComponent(that);
         var instantiator = fluid.getInstantiator(that);
@@ -448,7 +550,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 noexpand: true,
                 func: fluid.arrayConcatPolicy
             },
-            modelRelay: fluid.arrayConcatPolicy
+            modelRelay: {
+                noexpand: true,
+                func: fluid.arrayConcatPolicy
+            }
         }
     });
 
@@ -488,33 +593,6 @@ var fluid_1_5 = fluid_1_5 || {};
         fluid.event.impersonateListener(record.listener, togo);
         return togo;
     };
-    
-    var modelPrefix = "model.";
-
-    fluid.resolveModelReference = function (that, path) {
-        var togo;
-        if (path.charAt(0) === "{") {
-            var parsed = fluid.parseContextReference(path);
-            var context = fluid.resolveContext(parsed.context, that);
-            if (!context || !context.applier) {
-                fluid.fail("Cannot look up model reference " + path + " to a model component with applier");
-            }
-            if (parsed.path.indexOf(modelPrefix) !== 0) {
-                fluid.fail("Path in model reference " + path + " must begin with \"model.\"");
-            }
-            togo = {
-                that: context,
-                path: parsed.path.substring(modelPrefix.length)
-            };
-        } else {
-            togo = {
-                that: that,
-                path: path
-            };
-        }
-        togo.applier = fluid.getForComponent(togo.that, "applier");
-        return togo;
-    };
 
     fluid.mergeModelListeners = function (that, listeners) {
         fluid.each(listeners, function (value, path) {
@@ -524,16 +602,15 @@ var fluid_1_5 = fluid_1_5 || {};
                 };
             }
             var records = fluid.event.resolveListenerRecord(value, that, "modelListeners", null, false);
-            var parsed = fluid.resolveModelReference(that, path);
+            var parsed = fluid.parseValidModelReference(that, "modelListeners entry", path);
             // Bypass fluid.event.dispatchListener by means of "standard = false" and enter our custom workflow including expanding "change":
             fluid.each(records.records, function (record) {
                 var func = fluid.resolveModelListener(that, record);
                 fluid.addSourceGuardedListener(parsed.applier, {
-                    groupId: that.id,
                     path: parsed.path,
                     transactional: true
                 }, record.guardSource, func, "modelChanged", record.namespace, record.softNamespace);
-                fluid.recordListener(parsed.applier.modelChanged, func, fluid.shadowForComponent(that));
+                fluid.recordChangeListener(that, parsed.applier, func);
             });  
         });
     };
@@ -693,6 +770,10 @@ var fluid_1_5 = fluid_1_5 || {};
         if (atRoot) {
             pen = {root: holder, last: "model"};
         } else {
+            if (!holder.model) {
+                holder.model = {};
+                fluid.model.setChangedPath(options, [], "ADD");
+            }
             pen = fluid.model.stepTargetAccess(holder.model, request.type, request.segs, 0, length - 1, options);
         }
         if (request.type === "ADD") {
@@ -759,14 +840,10 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     };
     
+    fluid.emptyHolder = { model: undefined };
+    
     fluid.makeNewChangeApplier = function (holder, options) {
         options = fluid.model.defaultAccessorConfig(options);
-        function preFireChangeRequest(changeRequest) {
-            if (!changeRequest.type) {
-                changeRequest.type = "ADD";
-            }
-            changeRequest.segs = changeRequest.segs || fluid.model.pathToSegments(changeRequest.path, options.resolverSetConfig);
-        }
         var applierId = fluid.allocateGuid(); 
         var that = {
             applierId: applierId,
@@ -777,6 +854,15 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             modelChanged: {},
             preCommit: fluid.makeEventFirer(null, null, "preCommit event for ChangeApplier " + applierId)
+        };
+        function preFireChangeRequest(changeRequest) {
+            if (!changeRequest.type) {
+                changeRequest.type = "ADD";
+            }
+            changeRequest.segs = changeRequest.segs || that.parseEL(changeRequest.path);
+        }
+        that.parseEL = function (EL) {
+            return fluid.model.pathToSegments(EL, options.resolverSetConfig);
         };
         that.modelChanged.addListener = function (spec, listener, namespace, softNamespace) {
             if (typeof(spec) === "string") {
@@ -792,21 +878,14 @@ var fluid_1_5 = fluid_1_5 || {};
             }
             spec.listener = listener;
             transactional = spec.transactional;
-            spec.segs = spec.segs || fluid.model.pathToSegments(spec.path, options.parser);
+            spec.segs = spec.segs || that.parseEL(spec.path);
             var collection = transactional ? "transListeners" : "listeners";
             that.changeListeners[collection].push(spec);
         };
         that.modelChanged.removeListener = function (listener) {
-            var id, key;
-            if (fluid.isPrimitive(listener)) {
-                id = fluid.event.identifyChangeListener(listener);
-                key = "id";
-            } else {
-                id = listener.groupId;
-                key = "groupId";
-            }
+            var id = fluid.event.identifyListener(listener);
             var removePred = function (record) {
-                return record[key] === id; 
+                return record.id === id; 
             };
             fluid.remove_if(that.changeListeners.listeners, removePred);
             fluid.remove_if(that.changeListeners.transListeners, removePred);
@@ -835,6 +914,9 @@ var fluid_1_5 = fluid_1_5 || {};
                 commit: function () {
                     that.preCommit.fire(trans, that);
                     trans.commitOnly();
+                },
+                initModelEvent: function () {
+                    fluid.notifyModelChanges(that.changeListeners.listeners, "ADD", newHolder, fluid.emptyHolder, {transactionId: trans.id});
                 },
                 fireChangeRequest: function (changeRequest) {
                     preFireChangeRequest(changeRequest);
@@ -1042,6 +1124,9 @@ var fluid_1_5 = fluid_1_5 || {};
         // a simple algorithm looking for that field
             applierid: fluid.allocateGuid(),
             holder: holder
+        };
+        that.parseEL = function (EL) {
+            return fluid.model.pathToSegments(EL, options.resolverSetConfig);
         };
 
         function makeGuardWrapper(cullUnchanged) {
