@@ -185,6 +185,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             afterRender: {
                 listener: "{that}.writeRecord",
                 args: ["compositePanel"]
+            },
+            onRefreshView: {
+                listener: "{that}.writeRecord",
+                args: ["onRefreshView"]
             }
         },
         protoTree: {
@@ -238,6 +242,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         var expectedFireRecord = {
             compositePanel: 3,
+            onRefreshView: 3,
             subPanel1: 3,
             subPanel2: 3
         };

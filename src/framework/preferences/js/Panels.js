@@ -148,6 +148,7 @@ var fluid_1_5 = fluid_1_5 || {};
         selectorsToIgnore: [], // should match the selectors that are used to identify the containers for the subpanels
         repeatingSelectors: [],
         events: {
+            onRefreshView: null,
             initSubPanels: null,
             subPanelAfterRender: null,
         },
@@ -190,6 +191,10 @@ var fluid_1_5 = fluid_1_5 || {};
             produceTree: {
                 funcName: "fluid.prefs.compositePanel.produceTree",
                 args: ["{that}"]
+            },
+            refreshView: {
+                funcName: "fluid.prefs.compositePanel.refreshView",
+                args: ["{that}"]
             }
         },
         subPanelOverrides: {
@@ -212,6 +217,11 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.prefs.compositePanel.isPanel = function (compName, compOpts) {
         var opts = $.extend(true, {}, fluid.defaults(compName), compOpts);
         return fluid.hasGrade(opts, "fluid.prefs.panel");
+    };
+
+    fluid.prefs.compositePanel.refreshView = function (that) {
+        that.events.onRefreshView.fire(that);
+        fluid.rendererComponent.refreshView(that);
     };
 
     /*
