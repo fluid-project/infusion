@@ -450,11 +450,11 @@ var fluid_1_5 = fluid_1_5 || {};
                             "textSize": "value"
                         },
                         model: {
-                            value: "{fluid.prefs.panel.textSize}.model.textSize"
+                            value: "{that}.model.textSize"
                         },
-                        sourceApplier: "{fluid.prefs.panel.textSize}.applier",
-                        range: "{fluid.prefs.panel.textSize}.options.range",
-                        sliderOptions: "{fluid.prefs.panel.textSize}.options.sliderOptions"
+                        sourceApplier: "{that}.applier",
+                        range: "{that}.options.range",
+                        sliderOptions: "{that}.options.sliderOptions"
                     }
                 }
             }
@@ -553,11 +553,11 @@ var fluid_1_5 = fluid_1_5 || {};
                             "lineSpace": "value"
                         },
                         model: {
-                            value: "{fluid.prefs.panel.lineSpace}.model.lineSpace"
+                            value: "{that}.model.lineSpace"
                         },
-                        sourceApplier: "{fluid.prefs.panel.lineSpace}.applier",
-                        range: "{fluid.prefs.panel.lineSpace}.options.range",
-                        sliderOptions: "{fluid.prefs.panel.lineSpace}.options.sliderOptions"
+                        sourceApplier: "{that}.applier",
+                        range: "{that}.options.range",
+                        sliderOptions: "{that}.options.sliderOptions"
                     }
                 }
             }
