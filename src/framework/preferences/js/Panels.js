@@ -218,10 +218,6 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         components: {},
         resources: {}, // template is reserved for the compositePanel's template, the subpanel template should have same key as the selector for its container.
-        distributeOptions: {
-            source: "{that}.options.selectorsToIgnore",
-            target: "{that}.options.originalSelectorsToIgnore"
-        }
     });
 
     fluid.prefs.compositePanel.isPanel = function (compName, compOpts) {
