@@ -301,6 +301,58 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The model for the subPanel2 should be the same as the corresponding value in the compositePanel", that.model.fluid_prefs_sub2, that.subPanel2.model.value);
     });
 
+    jqUnit.test("renderOnModelPath", function () {
+        var that = fluid.prefs.compositePanel(".renderOnModelPath", {
+            events: {
+                someEvent: null
+            },
+            selectors: {
+                subPanel: ".subPanel"
+            },
+            selectorsToIgnore: ["subPanel"],
+            components: {
+                subPanel: {
+                    type: "fluid.prefs.panel",
+                    container: "{that}.dom.subPanel",
+                    createOnEvent: "someEvent",
+                    options: {
+                        preferenceMap: {
+                            "somePref": {
+                                "model.value": "default"
+                            }
+                        },
+                        strings: {
+                            text: "subPanel",
+                        },
+                        selectors: {
+                            text: ".text"
+                        },
+                        protoTree: {
+                            text: {
+                                messagekey: "text"
+                            }
+                        }
+                    }
+                }
+            },
+            resources: {
+                template: {
+                    resourceText: '<div class="subPanel"></div>'
+                },
+                subPanel: {
+                    resourceText: '<span class="text"></span>'
+                }
+            }
+        });
+        jqUnit.expect(3);
+        jqUnit.assertTrue("The container for the subPanel should not be visible", that.locate("subPanel").is(":hidden"));
+        that.refreshView();
+        jqUnit.assertTrue("The container for the subPanel should not be visible", that.locate("subPanel").is(":hidden"));
+        that.events.someEvent.fire();
+        that.refreshView();
+        jqUnit.assertTrue("The container for the subPanel should be visible", that.locate("subPanel").is(":visible"));
+    });
+
     /* FLUID-5201: renderer fluid decorator */
 
     fluid.defaults("fluid.tests.panel.sliderTest1", {
