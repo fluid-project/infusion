@@ -315,7 +315,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             textSize: {
                 decorators: {
                     type: "fluid",
-                    func: "fluid.prefs.textfieldSlider"
+                    func: "fluid.textfieldSlider"
                 }
             }
         }
@@ -636,10 +636,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             textSize: {
                 decorators: {
                     type: "fluid",
-                    func: "fluid.prefs.textfieldSlider",
+                    func: "fluid.textfieldSlider",
                     options: {
                         rules: {
-                            "value": "value"
+                            "slider1": "value"
                         },
                         model: "{fluid.tests.panel.slider1}.model",
                         sourceApplier: "{fluid.tests.panel.slider1}.applier",
@@ -672,10 +672,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             textSize: {
                 decorators: {
                     type: "fluid",
-                    func: "fluid.prefs.textfieldSlider",
+                    func: "fluid.textfieldSlider",
                     options: {
                         rules: {
-                            "value": "value"
+                            "slider2": "value"
                         },
                         model: "{fluid.tests.panel.slider2}.model",
                         sourceApplier: "{fluid.tests.panel.slider2}.applier",
@@ -893,7 +893,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /*******************************************************************************
      * Test functions shared by text field slider unit tests
      *******************************************************************************/
-    fluid.tests.testDefault = function (that, expectedNumOfOptions, expectedContrast) {
+    fluid.tests.testDefault = function (that) {
         return function () {
             var inputValue = that.container.find("input").val();
             jqUnit.assertEquals("The default input value has been set to the min value", that.options.range.min, inputValue);
@@ -916,7 +916,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     gradeNames: "fluid.prefs.defaultTestPanel",
                     model: {
-                        value: 1
+                        textSize: 1
                     }
                 }
             },
@@ -940,15 +940,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "{textSize}.refreshView"
                 }, {
                     listenerMaker: "fluid.tests.testDefault",
-                    makerArgs: ["{textSize}", "{that}.options.testOptions.expectedNumOfOptions", "{that}.options.testOptions.defaultValue"],
+                    makerArgs: ["{textSize}"],
                     event: "{textSize}.events.afterRender"
                 }, {
                     func: "fluid.tests.changeInput",
                     args: ["{textSize}.dom.textSize", "{that}.options.testOptions.newValue"]
                 }, {
                     listenerMaker: "fluid.tests.checkModel",
-                    makerArgs: ["value", "{that}.options.testOptions.newValue"],
-                    spec: {path: "value", priority: "last"},
+                    makerArgs: ["textSize", "{that}.options.testOptions.newValue"],
+                    spec: {path: "textSize", priority: "last"},
                     changeEvent: "{textSize}.applier.modelChanged"
                 }]
             }]
@@ -967,7 +967,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     gradeNames: "fluid.prefs.defaultTestPanel",
                     model: {
-                        value: 1
+                        lineSpace: 1
                     }
                 }
             },
@@ -991,15 +991,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "{lineSpace}.refreshView"
                 }, {
                     listenerMaker: "fluid.tests.testDefault",
-                    makerArgs: ["{lineSpace}", "{that}.options.testOptions.expectedNumOfOptions", "{that}.options.testOptions.defaultValue"],
+                    makerArgs: ["{lineSpace}"],
                     event: "{lineSpace}.events.afterRender"
                 }, {
                     func: "fluid.tests.changeInput",
                     args: ["{lineSpace}.dom.textSize", "{that}.options.testOptions.newValue"]
                 }, {
                     listenerMaker: "fluid.tests.checkModel",
-                    makerArgs: ["value", "{that}.options.testOptions.newValue"],
-                    spec: {path: "value", priority: "last"},
+                    makerArgs: ["lineSpace", "{that}.options.testOptions.newValue"],
+                    spec: {path: "lineSpace", priority: "last"},
                     changeEvent: "{lineSpace}.applier.modelChanged"
                 }]
             }]

@@ -406,14 +406,6 @@ var fluid_1_5 = fluid_1_5 || {};
         parentBundle: "{fluid.prefs.prefsEditorLoader}.msgBundle"
     });
 
-    /****************************************
-     * Preferences Editor Text Field Slider *
-     ****************************************/
-
-    fluid.defaults("fluid.prefs.textfieldSlider", {
-        gradeNames: ["fluid.textfieldSlider", "fluid.prefs.modelRelay", "autoInit"]
-    });
-
     /********************************
      * Preferences Editor Text Size *
      ********************************/
@@ -425,7 +417,7 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.prefs.panel", "autoInit"],
         preferenceMap: {
             "fluid.prefs.textSize": {
-                "model.value": "default",
+                "model.textSize": "default",
                 "range.min": "minimum",
                 "range.max": "maximum"
             }
@@ -452,12 +444,14 @@ var fluid_1_5 = fluid_1_5 || {};
             textSize: {
                 decorators: {
                     type: "fluid",
-                    func: "fluid.prefs.textfieldSlider",
+                    func: "fluid.textfieldSlider",
                     options: {
                         rules: {
-                            "value": "value"
+                            "textSize": "value"
                         },
-                        model: "{fluid.prefs.panel.textSize}.model",
+                        model: {
+                            value: "{fluid.prefs.panel.textSize}.model.textSize"
+                        },
                         sourceApplier: "{fluid.prefs.panel.textSize}.applier",
                         range: "{fluid.prefs.panel.textSize}.options.range",
                         sliderOptions: "{fluid.prefs.panel.textSize}.options.sliderOptions"
@@ -526,7 +520,7 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.prefs.panel", "autoInit"],
         preferenceMap: {
             "fluid.prefs.lineSpace": {
-                "model.value": "default",
+                "model.lineSpace": "default",
                 "range.min": "minimum",
                 "range.max": "maximum"
             }
@@ -553,12 +547,14 @@ var fluid_1_5 = fluid_1_5 || {};
             lineSpace: {
                 decorators: {
                     type: "fluid",
-                    func: "fluid.prefs.textfieldSlider",
+                    func: "fluid.textfieldSlider",
                     options: {
                         rules: {
-                            "value": "value"
+                            "lineSpace": "value"
                         },
-                        model: "{fluid.prefs.panel.lineSpace}.model",
+                        model: {
+                            value: "{fluid.prefs.panel.lineSpace}.model.lineSpace"
+                        },
                         sourceApplier: "{fluid.prefs.panel.lineSpace}.applier",
                         range: "{fluid.prefs.panel.lineSpace}.options.range",
                         sliderOptions: "{fluid.prefs.panel.lineSpace}.options.sliderOptions"

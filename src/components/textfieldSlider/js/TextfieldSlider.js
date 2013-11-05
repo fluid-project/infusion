@@ -25,7 +25,7 @@ var fluid_1_5 = fluid_1_5 || {};
      ********************/
 
     fluid.defaults("fluid.textfieldSlider", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.prefs.modelRelay", "autoInit"],
         components: {
             textfield: {
                 type: "fluid.textfieldSlider.textfield",

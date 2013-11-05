@@ -665,10 +665,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     options: {
                         gradeNames: "fluid.prefs.prefsEditorConnections",
                         model: {
-                            value: 1
+                            textSize: 1
                         },
                         rules: {
-                            fluid_prefs_textSize: "value"
+                            fluid_prefs_textSize: "textSize"
                         },
                         range: {
                             min: 1,
@@ -802,10 +802,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             options: {
                                 gradeNames: "fluid.prefs.prefsEditorConnections",
                                 model: {
-                                    value: 1
+                                    textSize: 1
                                 },
                                 rules: {
-                                    fluid_prefs_textSize: "value"
+                                    fluid_prefs_textSize: "textSize"
                                 },
                                 range: {
                                     min: 1,
@@ -955,10 +955,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             options: {
                                 gradeNames: "fluid.prefs.prefsEditorConnections",
                                 model: {
-                                    value: 1
+                                    textSize: 1
                                 },
                                 rules: {
-                                    fluid_prefs_textSize: "value"
+                                    fluid_prefs_textSize: "textSize"
                                 },
                                 range: {
                                     min: 1,
