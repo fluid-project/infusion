@@ -140,7 +140,7 @@ var fluid_1_5 = fluid_1_5 || {};
      **********************************/
 
     fluid.defaults("fluid.prefs.compositePanel", {
-        gradeNames: ["fluid.prefs.panel", "autoInit", "{that}.getDistributeOptionsGrade"],
+        gradeNames: ["fluid.prefs.panel", "autoInit", "{that}.getDistributeOptionsGrade", "{that}.getSubPanelCreationTiming"],
         mergePolicy: {
             subPanelOverrides: "noexpand"
         },
@@ -174,6 +174,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 funcName: "fluid.prefs.compositePanel.assembleDistributeOptions",
                 args: ["{that}.options.components"]
             },
+            getSubPanelCreationTiming: {
+                funcName: "fluid.prefs.compositePanel.subPanelCreationTiming",
+                args: ["{that}.options.components"]
+            },
             combineResources: {
                 funcName: "fluid.prefs.compositePanel.combineTemplates",
                 args: ["{that}.options.resources", "{that}.options.selectors"]
@@ -197,6 +201,13 @@ var fluid_1_5 = fluid_1_5 || {};
             hideInactive: {
                 funcName: "fluid.prefs.compositePanel.hideInactive",
                 args: ["{that}"]
+            },
+            handleRenderOnPreference: {
+                funcName: "fluid.prefs.compositePanel.handleRenderOnPreference",
+                args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+            },
+            conditionalCreateEvent: {
+                funcName: "fluid.prefs.compositePanel.conditionalCreateEvent",
             },
             refreshView: {
                 funcName: "fluid.prefs.compositePanel.refreshView",
@@ -254,6 +265,71 @@ var fluid_1_5 = fluid_1_5 || {};
             distributeOptions: distributeRules
         });
 
+        return gradeName;
+    };
+
+    fluid.prefs.compositePanel.conditionalCreateEvent = function (value, createEvent) {
+        if (value) {
+            createEvent();
+        }
+    };
+
+
+    fluid.prefs.compositePanel.handleRenderOnPreference = function (that, value, createEvent, componentName) {
+        var comp = that[componentName];
+        that.conditionalCreateEvent(value, createEvent);
+        if (!value && comp) {
+            comp.destroy();
+        }
+        that.refreshView();
+    };
+
+    fluid.prefs.compositePanel.subPanelCreationTiming = function (components) {
+        var gradeName = "fluid.prefs.compositePanel.subPanelCreationTimingDistibution";
+        var distributeOptions = [];
+        var subPanelCreationOpts = {
+            "default": "initSubPanels"
+        };
+        var modelListeners = {};
+        var listeners = {};
+        var events = {};
+        $.each(components, function (componentName, componentOptions) {
+            if (fluid.prefs.compositePanel.isPanel(componentOptions.type, componentOptions.options)) {
+                var creationEventOpt = "default";
+                if (componentOptions.renderOnPreference) {
+                    var pref = fluid.prefs.subPanel.safePrefKey(componentOptions.renderOnPreference);
+                    var afterRenderListener = "afterRender." + pref;
+                    var onCreateListener = "onCreate." + pref;
+                    creationEventOpt = "initOn_" + pref;
+                    var listenerOpts = {
+                        listener: "{that}.conditionalCreateEvent",
+                        args: ["{that}.model." + pref, creationEventOpt]
+                    };
+                    subPanelCreationOpts[creationEventOpt] = creationEventOpt;
+                    events[creationEventOpt] = null;
+                    modelListeners[pref] = modelListeners[pref] || [];
+                    modelListeners.push({
+                        func: "{that}.handleRenderOnPreference",
+                        args: ["{change}.value", creationEventOpt, componentName]
+                    });
+                    listerners[afterRenderListener] = listenerOpts;
+                    listerners[onCreateListener] = listenerOpts;
+                }
+                distributeOptions.push({
+                    source: "{that}.options.subPanelCreationOpts." + creationEventOpt,
+                    target: "{that}.options.components." + componentName + ".createOnEvent"
+                });
+            }
+        });
+
+        fluid.defaults(gradeName, {
+            gradeNames: ["fluid.eventedComponent", "autoInit"],
+            events: events,
+            listeners: listeners,
+            modelListeners: modelListeners,
+            subPanelCreationOpts: subPanelCreationOpts,
+            distributeOptions: distributeOptions
+        });
         return gradeName;
     };
 

@@ -211,12 +211,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             subPanel1: {
                 type: "fluid.tests.subPanel1",
                 container: "{compositePanel}.dom.subPanel1",
-                createOnEvent: "initSubPanels"
             },
             subPanel2: {
                 type: "fluid.tests.subPanel2",
                 container: "{compositePanel}.dom.subPanel2",
-                createOnEvent: "initSubPanels"
             }
         }
     });
@@ -260,6 +258,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "value": "heading"
                 }
             }, {
+                "ID": "subPanel2_header",
+                "componentType": "UIBound",
+                "value": "subPanel2",
+                "valuebinding": "fluid_prefs_sub2"
+            }, {
                 "ID": "subPanel1_header:",
                 "componentType": "UIBound",
                 "value": "subPanel1",
@@ -269,11 +272,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "componentType": "UIBound",
                 "value": "subPanel1a",
                 "valuebinding": "fluid_prefs_sub1.1"
-            }, {
-                "ID": "subPanel2_header",
-                "componentType": "UIBound",
-                "value": "subPanel2",
-                "valuebinding": "fluid_prefs_sub2"
             }]
         };
 
@@ -301,8 +299,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The model for the subPanel2 should be the same as the corresponding value in the compositePanel", that.model.fluid_prefs_sub2, that.subPanel2.model.value);
     });
 
-    jqUnit.test("renderOnModelPath", function () {
-        var that = fluid.prefs.compositePanel(".renderOnModelPath", {
+    jqUnit.test("renderOnPreference", function () {
+        var that = fluid.prefs.compositePanel(".renderOnPreference", {
             events: {
                 someEvent: null
             },
@@ -388,7 +386,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             components: {
                 sliderTest1: {
                     type: "fluid.tests.panel.sliderTest1",
-                    createOnEvent: "initSubPanels",
                     container: "{that}.dom.sliderTest1"
                 }
             },
@@ -461,7 +458,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             components: {
                 dropdownTest1: {
                     type: "fluid.tests.panel.dropdownTest1",
-                    createOnEvent: "initSubPanels",
                     container: "{that}.dom.dropdownTest1"
                 }
             },
@@ -567,7 +563,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             components: {
                 radioTest1: {
                     type: "fluid.tests.panel.radioTest1",
-                    createOnEvent: "initSubPanels",
                     container: "{that}.dom.radioTest1"
                 }
             },
