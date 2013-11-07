@@ -140,7 +140,7 @@ var fluid_1_5 = fluid_1_5 || {};
      **********************************/
 
     fluid.defaults("fluid.prefs.compositePanel", {
-        gradeNames: ["fluid.prefs.panel", "autoInit", "{that}.getDistributeOptionsGrade", "{that}.getSubPanelCreationTiming"],
+        gradeNames: ["fluid.prefs.panel", "autoInit", "{that}.getDistributeOptionsGrade", "{that}.getSubPanelLifeCycleBindings"],
         mergePolicy: {
             subPanelOverrides: "noexpand"
         },
@@ -174,8 +174,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 funcName: "fluid.prefs.compositePanel.assembleDistributeOptions",
                 args: ["{that}.options.components"]
             },
-            getSubPanelCreationTiming: {
-                funcName: "fluid.prefs.compositePanel.subPanelCreationTiming",
+            getSubPanelLifeCycleBindings: {
+                funcName: "fluid.prefs.compositePanel.subPanelLifeCycleBindings",
                 args: ["{that}.options.components"]
             },
             combineResources: {
@@ -284,7 +284,7 @@ var fluid_1_5 = fluid_1_5 || {};
         that.refreshView();
     };
 
-    fluid.prefs.compositePanel.subPanelCreationTiming = function (components) {
+    fluid.prefs.compositePanel.subPanelLifeCycleBindings = function (components) {
         var gradeName = "fluid.prefs.compositePanel.subPanelCreationTimingDistibution";
         var distributeOptions = [];
         var subPanelCreationOpts = {
