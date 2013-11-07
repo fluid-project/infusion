@@ -209,9 +209,14 @@ var fluid_1_5 = fluid_1_5 || {};
         resources: {} // template is reserved for the compositePanel's template, the subpanel template should have same key as the selector for its container.
     });
 
-    // should only be used when fluid.prefs.compositePanel.isActivatePanel cannot.
-    fluid.prefs.compositePanel.isPanel = function (compName, compOpts) {
-        var opts = $.extend(true, {}, fluid.defaults(compName), compOpts);
+    /*
+     * Should only be used when fluid.prefs.compositePanel.isActivatePanel cannot.
+     * While this implementation doesn't require an instantiated component, it may in
+     * the process miss some configuration provided by distribute options and demands.
+     */
+    fluid.prefs.compositePanel.isPanel = function (type, options) {
+        var baseOptions = fluid.getGradedDefaults(type, fluid.get(options, "gradeNames"));
+        var opts = fluid.merge(baseOptions.mergePolicy, baseOptions, options);
         return fluid.hasGrade(opts, "fluid.prefs.panel");
     };
 
