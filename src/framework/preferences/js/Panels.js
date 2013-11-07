@@ -284,6 +284,14 @@ var fluid_1_5 = fluid_1_5 || {};
         that.refreshView();
     };
 
+    /*
+     * Creates a grade containing all of the lifecycle binding configuration needed for the subpanels.
+     * This includes the following:
+     * - adding events used to trigger the initialization of the subpanels
+     * - adding the createOnEvent configuration for the subpanels
+     * - binding handlers to model changed events
+     * - binding handlers to afterRender and onCreate
+     */
     fluid.prefs.compositePanel.subPanelLifeCycleBindings = function (components) {
         var gradeName = "fluid.prefs.compositePanel.subPanelCreationTimingDistibution";
         var distributeOptions = [];
@@ -333,6 +341,14 @@ var fluid_1_5 = fluid_1_5 || {};
         return gradeName;
     };
 
+    /*
+     * Used to hide the containters of inactive sub panels.
+     * This is necessary as the composite panel's template is the one that has their containers and
+     * it would be undesireable to have them visible when their associated panel has not been created.
+     * Also, hiding them allows for the subpanel to initialize, as it requires they container to be present.
+     * The subpanels need to be initialized before rendering, for the produce function to source the rendering
+     * information from it.
+     */
     fluid.prefs.compositePanel.hideInactive = function (that) {
         fluid.each(that.options.components, function (componentOpts, componentName) {
             var comp = that[componentName];
