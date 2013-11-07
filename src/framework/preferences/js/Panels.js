@@ -153,13 +153,13 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         listeners: {
             "onCreate.combineResources": "{that}.combineResources",
-            "onCreate.surfaceSubpanelRendererSelectors": "{that}.surfaceSubpanelRendererSelectors",
             "onCreate.appendTemplate": {
                 "this": "{that}.container",
                 "method": "append",
                 "args": ["{that}.options.resources.template.resourceText"]
             },
             "onCreate.initSubPanels": "{that}.events.initSubPanels",
+            "onCreate.surfaceSubpanelRendererSelectors": "{that}.surfaceSubpanelRendererSelectors",
             "afterRender.initSubPanels": "{that}.events.initSubPanels",
             "afterRender.subPanelRelay": {
                 listener: "{that}.events.subPanelAfterRender",
@@ -177,7 +177,7 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             surfaceSubpanelRendererSelectors: {
                 funcName: "fluid.prefs.compositePanel.surfaceSubpanelRendererSelectors",
-                args: ["{that}.options.components", "{that}.options.selectors"]
+                args: ["{that}", "{that}.options.components", "{that}.options.selectors"]
             },
             produceSubPanelTrees: {
                 funcName: "fluid.prefs.compositePanel.produceSubPanelTrees",
@@ -209,9 +209,14 @@ var fluid_1_5 = fluid_1_5 || {};
         resources: {} // template is reserved for the compositePanel's template, the subpanel template should have same key as the selector for its container.
     });
 
+    // should only be used when fluid.prefs.compositePanel.isActivatePanel cannot.
     fluid.prefs.compositePanel.isPanel = function (compName, compOpts) {
         var opts = $.extend(true, {}, fluid.defaults(compName), compOpts);
         return fluid.hasGrade(opts, "fluid.prefs.panel");
+    };
+
+    fluid.prefs.compositePanel.isActivePanel = function (comp) {
+        return comp && fluid.hasGrade(comp.options, "fluid.prefs.panel");
     };
 
     /*
@@ -280,12 +285,12 @@ var fluid_1_5 = fluid_1_5 || {};
      * Surfaces the rendering selectors from the subpanels to the compositePanel,
      * and scopes them to the subpanel's container.
      */
-    fluid.prefs.compositePanel.surfaceSubpanelRendererSelectors = function (components, selectors) {
+    fluid.prefs.compositePanel.surfaceSubpanelRendererSelectors = function (that, components, selectors) {
         fluid.each(components, function (compOpts, compName) {
-            if (fluid.prefs.compositePanel.isPanel(compOpts.type, compOpts.options)) {
-                var comp = fluid.defaults(compOpts.type);
-                fluid.each(comp.selectors, function (selector, selName) {
-                    if (!comp.selectorsToIgnore || $.inArray(selName, comp.selectorsToIgnore) < 0) {
+            var comp = that[compName];
+            if (fluid.prefs.compositePanel.isActivePanel(comp)) {
+                fluid.each(comp.options.selectors, function (selector, selName) {
+                    if (!comp.options.selectorsToIgnore || $.inArray(selName, comp.options.selectorsToIgnore) < 0) {
                         fluid.set(selectors,  fluid.prefs.compositePanel.rebaseSelectorName(compName, selName), selectors[compName] + " " + selector);
                     }
                 });
@@ -377,8 +382,8 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.prefs.compositePanel.produceSubPanelTrees = function (that) {
         var tree = {children: []};
         fluid.each(that.options.components, function (options, componentName) {
-            if (fluid.prefs.compositePanel.isPanel(options.type, options.options)) {
-                var subPanel = that[componentName];
+            var subPanel = that[componentName];
+            if (fluid.prefs.compositePanel.isActivePanel(subPanel)) {
                 var expanderOptions = fluid.renderer.modeliseOptions(subPanel.options.expanderOptions, {ELstyle: "${}"}, subPanel);
                 var expander = fluid.renderer.makeProtoExpander(expanderOptions, subPanel);
                 var subTree = subPanel.produceTree();
