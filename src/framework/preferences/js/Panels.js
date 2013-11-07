@@ -210,13 +210,20 @@ var fluid_1_5 = fluid_1_5 || {};
     });
 
     /*
+     * Attempts to prefetch a components options before it is instantiated.
+     * Only use in cases where the instatiated component cannot be used.
+     */
+    fluid.prefs.compositePanel.prefetchComponentOptions = function (type, options) {
+        var baseOptions = fluid.getGradedDefaults(type, fluid.get(options, "gradeNames"));
+        return fluid.merge(baseOptions.mergePolicy, baseOptions, options);
+    };
+    /*
      * Should only be used when fluid.prefs.compositePanel.isActivatePanel cannot.
      * While this implementation doesn't require an instantiated component, it may in
      * the process miss some configuration provided by distribute options and demands.
      */
     fluid.prefs.compositePanel.isPanel = function (type, options) {
-        var baseOptions = fluid.getGradedDefaults(type, fluid.get(options, "gradeNames"));
-        var opts = fluid.merge(baseOptions.mergePolicy, baseOptions, options);
+        var opts = fluid.prefs.compositePanel.prefetchComponentOptions(type, options);
         return fluid.hasGrade(opts, "fluid.prefs.panel");
     };
 
@@ -307,8 +314,8 @@ var fluid_1_5 = fluid_1_5 || {};
         var repeatingSelectors = [];
         fluid.each(components, function (compOpts, compName) {
             if (fluid.prefs.compositePanel.isPanel(compOpts.type, compOpts.options)) {
-                var comp = fluid.defaults(compOpts.type);
-                var rebasedRepeatingSelectors = fluid.transform(comp.repeatingSelectors, function (selector) {
+                var opts = fluid.prefs.compositePanel.prefetchComponentOptions(compOpts.type, compOpts.options);
+                var rebasedRepeatingSelectors = fluid.transform(opts.repeatingSelectors, function (selector) {
                     return fluid.prefs.compositePanel.rebaseSelectorName(compName, selector);
                 });
                 repeatingSelectors = repeatingSelectors.concat(rebasedRepeatingSelectors);
