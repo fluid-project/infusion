@@ -237,7 +237,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "%subPrefKey": "templateLoader.resources.%subPrefKey"
         },
         subPanel: {
-            "createOnEvent": "initSubPanels",
             "container": "%compositePanel.dom.%prefKey"
         },
         enactor: {
@@ -1280,7 +1279,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             "fluid_prefs_subPanel1": {
                                 "type": "fluid.prefs.panel.subPanel1",
                                 "container": "combinedBoth.dom.fluid_prefs_subPanel1",
-                                createOnEvent: "initSubPanels",
                                 "options": {
                                     range: {
                                         min: 1,
@@ -1290,8 +1288,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             },
                             "fluid_prefs_subPanel2": {
                                 "type": "fluid.prefs.panel.subPanel2",
-                                "container": "combinedBoth.dom.fluid_prefs_subPanel2",
-                                createOnEvent: "initSubPanels"
+                                "container": "combinedBoth.dom.fluid_prefs_subPanel2"
                             }
                         }
                     }
@@ -1525,7 +1522,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             "fluid_prefs_subPanel3": {
                                 "type": "fluid.prefs.panel.subPanel3",
                                 "container": "combinedBoth2.dom.fluid_prefs_subPanel3",
-                                createOnEvent: "initSubPanels",
                                 "options": {
                                     range: {
                                         min: 20,
@@ -1535,8 +1531,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             },
                             "fluid_prefs_subPanel4": {
                                 "type": "fluid.prefs.panel.subPanel4",
-                                "container": "combinedBoth2.dom.fluid_prefs_subPanel4",
-                                createOnEvent: "initSubPanels"
+                                "container": "combinedBoth2.dom.fluid_prefs_subPanel4"
                             }
                         }
                     }
@@ -1577,6 +1572,318 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 fluid.get(fluid.tests.elementCommonOptions, "compositePanelBasedOnSub"), fluid.tests.auxSchema.multiCompositePanelMappedDefaults);
 
         jqUnit.assertDeepEq("The auxiliary schema for multiple composite panels has been parsed correctly", fluid.tests.auxSchema.expandedMultiComposite, expandedCompositePanel);
+    });
+
+    /******************************************************
+    * Support subpanels with renderOnPreference requests
+    ******************************************************/
+
+    fluid.defaults("fluid.prefs.schemas.subPanel5", {
+        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        schema: {
+            "fluid.prefs.subPanel5": {
+                "default": "sub5"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.schemas.subPanel6", {
+        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        schema: {
+            "fluid.prefs.subPanel6": {
+                "default": "sub6"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.schemas.subPanel7", {
+        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        schema: {
+            "fluid.prefs.subPanel5": {
+                "default": "sub7"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.schemas.subPanel8", {
+        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        schema: {
+            "fluid.prefs.subPanel8": {
+                "default": "sub8"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.panel.combinedBoth3", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"]
+    });
+
+    fluid.defaults("fluid.prefs.panel.subPanel5", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        preferenceMap: {
+            "fluid.prefs.subPanel5": {
+                "model.value": "default"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.panel.subPanel6", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        preferenceMap: {
+            "fluid.prefs.subPanel6": {
+                "model.value": "default"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.panel.subPanel7", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        preferenceMap: {
+            "fluid.prefs.subPanel7": {
+                "model.value": "default"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.panel.subPanel8", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        preferenceMap: {
+            "fluid.prefs.subPanel8": {
+                "model.value": "default"
+            }
+        }
+    });
+
+    fluid.tests.auxSchema.renderOnPrefMappedDefaults = $.extend(true, {}, fluid.tests.auxSchema.multiCompositePanelMappedDefaults, {
+        "fluid.prefs.subPanel5": {
+            "type": "boolean",
+            "default": false
+        },
+        "fluid.prefs.subPanel6": {
+            "type": "boolean",
+            "default": false
+        },
+        "fluid.prefs.subPanel7": {
+            "type": "boolean",
+            "default": false
+        },
+        "fluid.prefs.subPanel8": {
+            "type": "boolean",
+            "default": false
+        }
+    });
+
+    fluid.tests.auxSchema.renderOnPreflIndex = $.extend(true, {}, fluid.tests.auxSchema.multiPanelIndex, {
+        "fluid.prefs.subPanel5": ["fluid.prefs.panel.subPanel5"],
+        "fluid.prefs.subPanel6": ["fluid.prefs.panel.subPanel6"],
+        "fluid.prefs.subPanel7": ["fluid.prefs.panel.subPanel7"],
+        "fluid.prefs.subPanel8": ["fluid.prefs.panel.subPanel8"]
+    });
+
+    fluid.tests.auxSchema.renderOnPrefSchema = {
+        "groups": {
+            "combinedBoth3": {
+                "container": "#flc-combinedBoth3",
+                "template": "%prefix/combinedBoth3.html",
+                "message": "%prefix/combinedBoth3.json",
+                "type": "fluid.prefs.panel.combinedBoth3",
+                "panels": {
+                    "always": ["subPanel5"],
+                    "fluid.prefs.subPanel5": ["subPanel6"],
+                    "fluid.prefs.subPanel6": ["subPanel7", "subPanel8"]
+                },
+                "renderOnPrefOption": 1
+            }
+        },
+        "subPanel5": {
+            "type": "fluid.prefs.subPanel5",
+            "panel": {
+                "type": "fluid.prefs.panel.subPanel5",
+                "container": "#flc-prefs-subPanel5",  // the css selector in the template where the panel is rendered
+                "template": "%prefix/subPanel5.html",
+                "message": "%prefix/subPanel5.json"
+            }
+        },
+        "subPanel6": {
+            "type": "fluid.prefs.subPanel6",
+            "panel": {
+                "type": "fluid.prefs.panel.subPanel6",
+                "container": "#flc-prefs-subPanel6",  // the css selector in the template where the panel is rendered
+                "template": "%prefix/subPanel6.html",
+                "message": "%prefix/subPanel6.json"
+            }
+        },
+        "subPanel7": {
+            "type": "fluid.prefs.subPanel7",
+            "panel": {
+                "type": "fluid.prefs.panel.subPanel7",
+                "container": "#flc-prefs-subPanel7",  // the css selector in the template where the panel is rendered
+                "template": "%prefix/subPanel7.html",
+                "message": "%prefix/subPanel7.json"
+            }
+        },
+        "subPanel8": {
+            "type": "fluid.prefs.subPanel8",
+            "panel": {
+                "type": "fluid.prefs.panel.subPanel8",
+                "container": "#flc-prefs-subPanel8",  // the css selector in the template where the panel is rendered
+                "template": "%prefix/subPanel8.html",
+                "message": "%prefix/subPanel8.json"
+            }
+        }
+    };
+
+    fluid.tests.auxSchema.renderOnPrefExpandedComposite = {
+        "groups": {
+            "combinedBoth3": {
+                "container": "#flc-combinedBoth3",
+                "template": "%prefix/combinedBoth3.html",
+                "message": "%prefix/combinedBoth3.json",
+                "type": "fluid.prefs.panel.combinedBoth3",
+                "panels": {
+                    "always": ["subPanel5"],
+                    "fluid.prefs.subPanel5": ["subPanel6"],
+                    "fluid.prefs.subPanel6": ["subPanel7", "subPanel8"]
+                },
+                "renderOnPrefOption": 1
+            }
+        },
+        "subPanel5": {
+            "type": "fluid.prefs.subPanel5",
+            "panel": {
+                "type": "fluid.prefs.panel.subPanel5",
+                "container": "#flc-prefs-subPanel5",  // the css selector in the template where the panel is rendered
+                "template": "%prefix/subPanel5.html",
+                "message": "%prefix/subPanel5.json"
+            }
+        },
+        "subPanel6": {
+            "type": "fluid.prefs.subPanel6",
+            "panel": {
+                "type": "fluid.prefs.panel.subPanel6",
+                "container": "#flc-prefs-subPanel6",  // the css selector in the template where the panel is rendered
+                "template": "%prefix/subPanel6.html",
+                "message": "%prefix/subPanel6.json"
+            }
+        },
+        "subPanel7": {
+            "type": "fluid.prefs.subPanel7",
+            "panel": {
+                "type": "fluid.prefs.panel.subPanel7",
+                "container": "#flc-prefs-subPanel7",  // the css selector in the template where the panel is rendered
+                "template": "%prefix/subPanel7.html",
+                "message": "%prefix/subPanel7.json"
+            }
+        },
+        "subPanel8": {
+            "type": "fluid.prefs.subPanel8",
+            "panel": {
+                "type": "fluid.prefs.panel.subPanel8",
+                "container": "#flc-prefs-subPanel8",  // the css selector in the template where the panel is rendered
+                "template": "%prefix/subPanel8.html",
+                "message": "%prefix/subPanel8.json"
+            }
+        },
+        panels: {
+            "selectors": {
+                "combinedBoth3": "#flc-combinedBoth3"
+            },
+            "components": {
+                "combinedBoth3": {
+                    "type": "fluid.prefs.panel.combinedBoth3",
+                    "container": "prefsEditor.dom.combinedBoth3",
+                    "createOnEvent": "onPrefsEditorMarkupReady",
+                    options: {
+                        gradeNames: ["fluid.prefs.prefsEditorConnections", "fluid.prefs.compositePanel"],
+                        renderOnPrefOption: 1,
+                        resources: {
+                            template: "templateLoader.resources.combinedBoth3",
+                            "fluid_prefs_subPanel5": "templateLoader.resources.fluid_prefs_subPanel5",
+                            "fluid_prefs_subPanel6": "templateLoader.resources.fluid_prefs_subPanel6",
+                            "fluid_prefs_subPanel7": "templateLoader.resources.fluid_prefs_subPanel7",
+                            "fluid_prefs_subPanel8": "templateLoader.resources.fluid_prefs_subPanel8"
+                        },
+                        selectors: {
+                            "fluid_prefs_subPanel5": "#flc-prefs-subPanel5",
+                            "fluid_prefs_subPanel6": "#flc-prefs-subPanel6",
+                            "fluid_prefs_subPanel7": "#flc-prefs-subPanel7",
+                            "fluid_prefs_subPanel8": "#flc-prefs-subPanel8"
+                        },
+                        "selectorsToIgnore": ["fluid_prefs_subPanel5", "fluid_prefs_subPanel6", "fluid_prefs_subPanel7", "fluid_prefs_subPanel8"],
+                        model: {
+                            "fluid_prefs_subPanel5": false,
+                            "fluid_prefs_subPanel6": false,
+                            "fluid_prefs_subPanel7": false,
+                            "fluid_prefs_subPanel8": false
+                        },
+                        rules: {
+                            "fluid_prefs_subPanel5": "fluid_prefs_subPanel5",
+                            "fluid_prefs_subPanel6": "fluid_prefs_subPanel6",
+                            "fluid_prefs_subPanel7": "fluid_prefs_subPanel7",
+                            "fluid_prefs_subPanel8": "fluid_prefs_subPanel8"
+                        },
+                        components: {
+                            "fluid_prefs_subPanel5": {
+                                "type": "fluid.prefs.panel.subPanel5",
+                                "container": "combinedBoth3.dom.fluid_prefs_subPanel5"
+                            },
+                            "fluid_prefs_subPanel6": {
+                                "type": "fluid.prefs.panel.subPanel6",
+                                "container": "combinedBoth3.dom.fluid_prefs_subPanel6",
+                                "renderOnPreference": "fluid.prefs.subPanel5"
+                            },
+                            "fluid_prefs_subPanel7": {
+                                "type": "fluid.prefs.panel.subPanel7",
+                                "container": "combinedBoth3.dom.fluid_prefs_subPanel7",
+                                "renderOnPreference": "fluid.prefs.subPanel6"
+                            },
+                            "fluid_prefs_subPanel8": {
+                                "type": "fluid.prefs.panel.subPanel8",
+                                "container": "combinedBoth3.dom.fluid_prefs_subPanel8",
+                                "renderOnPreference": "fluid.prefs.subPanel6"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        templateLoader: {
+            templates: {
+                "combinedBoth3": "%prefix/combinedBoth3.html",
+                "fluid_prefs_subPanel5": "%prefix/subPanel5.html",
+                "fluid_prefs_subPanel6": "%prefix/subPanel6.html",
+                "fluid_prefs_subPanel7": "%prefix/subPanel7.html",
+                "fluid_prefs_subPanel8": "%prefix/subPanel8.html"
+            }
+        },
+        messageLoader: {
+            templates: {
+                "combinedBoth3": "%prefix/combinedBoth3.json",
+                "fluid_prefs_subPanel5": "%prefix/subPanel5.json",
+                "fluid_prefs_subPanel6": "%prefix/subPanel6.json",
+                "fluid_prefs_subPanel7": "%prefix/subPanel7.json",
+                "fluid_prefs_subPanel8": "%prefix/subPanel8.json"
+            }
+        },
+        rootModel: {
+            members: {
+                rootModel: {
+                    fluid_prefs_subPanel5: false,
+                    fluid_prefs_subPanel6: false,
+                    fluid_prefs_subPanel7: false,
+                    fluid_prefs_subPanel8: false
+                }
+            }
+        },
+        panelsToIgnore: ["subPanel5", "subPanel6", "subPanel7", "subPanel8"]
+    };
+
+    jqUnit.test("Test expanding composite panel group having subpanels rendered on particular pref key with fluid.prefs.expandCompositePanels()", function () {
+        var expandedCompositePanel = fluid.prefs.expandCompositePanels(fluid.tests.auxSchema.renderOnPrefSchema, fluid.tests.auxSchema.renderOnPrefSchema.groups, 
+                fluid.tests.auxSchema.renderOnPrefIndex, fluid.get(fluid.tests.elementCommonOptions, "compositePanel"), fluid.get(fluid.tests.elementCommonOptions, "subPanel"),
+                fluid.get(fluid.tests.elementCommonOptions, "compositePanelBasedOnSub"), fluid.tests.auxSchema.renderOnPrefMappedDefaults);
+
+        jqUnit.assertDeepEq("The auxiliary schema for multiple composite panels has been parsed correctly", fluid.tests.auxSchema.renderOnPrefExpandedComposite, expandedCompositePanel);
     });
 
     fluid.tests.auxSchema.expandedRestForAll = {
