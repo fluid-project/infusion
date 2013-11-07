@@ -400,7 +400,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 var expander = fluid.renderer.makeProtoExpander(expanderOptions, subPanel);
                 var subTree = subPanel.produceTree();
                 subTree = fluid.get(subPanel.options, "rendererFnOptions.noexpand") ? subTree : expander(subTree);
-                var rebasedTree = fluid.prefs.compositePanel.rebaseTree(subTree, componentName, that[componentName].options.rules);
+                var rebasedTree = fluid.prefs.compositePanel.rebaseTree(subTree, componentName, subPanel.options.rules);
                 tree.children = tree.children.concat(rebasedTree.children);
             }
         });
