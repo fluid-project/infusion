@@ -308,7 +308,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     subPanelCreationOpts[creationEventOpt] = creationEventOpt;
                     events[creationEventOpt] = null;
                     modelListeners[pref] = modelListeners[pref] || [];
-                    modelListeners.push({
+                    modelListeners[pref].push({
                         func: "{that}.handleRenderOnPreference",
                         args: ["{change}.value", creationEventOpt, componentName]
                     });
