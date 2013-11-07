@@ -320,7 +320,8 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.prefs.compositePanel.rebaseParentRelativeID = function (val, memberName) {
-        return val.slice(0, 4) + fluid.prefs.compositePanel.rebaseID(val.slice(4), memberName);
+        var slicePos = "..::".length; // ..:: refers to the parentRelativeID prefix used in the renderer
+        return val.slice(0, slicePos) + fluid.prefs.compositePanel.rebaseID(val.slice(slicePos), memberName);
     };
 
     fluid.prefs.compositePanel.rebaseValueBinding = function (value, modelRelayRules) {
