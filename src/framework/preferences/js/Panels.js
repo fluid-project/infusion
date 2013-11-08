@@ -150,7 +150,7 @@ var fluid_1_5 = fluid_1_5 || {};
         events: {
             onRefreshView: null,
             initSubPanels: null,
-            subPanelAfterRender: null,
+            subPanelAfterRender: null
         },
         listeners: {
             "onCreate.combineResources": "{that}.combineResources",
@@ -494,7 +494,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.prefs.compositePanel.produceTree = function (that) {
         var produceTreeOption = that.options.produceTree;
         var ownTree = produceTreeOption ?
-            (typeof(produceTreeOption) === "string" ? fluid.getGlobalValue(produceTreeOption) : produceTreeOption) (that) :
+            (typeof (produceTreeOption) === "string" ? fluid.getGlobalValue(produceTreeOption) : produceTreeOption)(that) :
             that.expandProtoTree();
         var subPanelTree = that.produceSubPanelTrees();
         var tree = {
@@ -542,24 +542,6 @@ var fluid_1_5 = fluid_1_5 || {};
         parentBundle: "{fluid.prefs.prefsEditorLoader}.msgBundle"
     });
 
-    /****************************************
-     * Preferences Editor Text Field Slider *
-     ****************************************/
-
-    fluid.defaults("fluid.prefs.textfieldSlider", {
-        gradeNames: ["fluid.textfieldSlider", "autoInit"],
-        model: "{fluid.prefs.panel}.model",
-        range: "{fluid.prefs.panel}.options.range",
-        listeners: {
-            modelChanged: {
-                listener: "{fluid.prefs.panel}.applier.requestChange",
-                args: ["{that}.options.path", "{arguments}.0"]
-            }
-        },
-        path: "value",
-        sliderOptions: "{fluid.prefs.panel}.options.sliderOptions"
-    });
-
     /********************************
      * Preferences Editor Text Size *
      ********************************/
@@ -571,7 +553,7 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.prefs.panel", "autoInit"],
         preferenceMap: {
             "fluid.prefs.textSize": {
-                "model.value": "default",
+                "model.textSize": "default",
                 "range.min": "minimum",
                 "range.max": "maximum"
             }
@@ -598,7 +580,18 @@ var fluid_1_5 = fluid_1_5 || {};
             textSize: {
                 decorators: {
                     type: "fluid",
-                    func: "fluid.prefs.textfieldSlider"
+                    func: "fluid.textfieldSlider",
+                    options: {
+                        rules: {
+                            "textSize": "value"
+                        },
+                        model: {
+                            value: "{that}.model.textSize"
+                        },
+                        sourceApplier: "{that}.applier",
+                        range: "{that}.options.range",
+                        sliderOptions: "{that}.options.sliderOptions"
+                    }
                 }
             }
         },
@@ -663,7 +656,7 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.prefs.panel", "autoInit"],
         preferenceMap: {
             "fluid.prefs.lineSpace": {
-                "model.value": "default",
+                "model.lineSpace": "default",
                 "range.min": "minimum",
                 "range.max": "maximum"
             }
@@ -690,7 +683,18 @@ var fluid_1_5 = fluid_1_5 || {};
             lineSpace: {
                 decorators: {
                     type: "fluid",
-                    func: "fluid.prefs.textfieldSlider"
+                    func: "fluid.textfieldSlider",
+                    options: {
+                        rules: {
+                            "lineSpace": "value"
+                        },
+                        model: {
+                            value: "{that}.model.lineSpace"
+                        },
+                        sourceApplier: "{that}.applier",
+                        range: "{that}.options.range",
+                        sliderOptions: "{that}.options.sliderOptions"
+                    }
                 }
             }
         },
