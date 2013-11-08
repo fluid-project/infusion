@@ -349,7 +349,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // putting the component defined by the renderer decorator into the components block
         that.refreshView();
 
-        // the second call to refresh view uses the new components block and shoudl ignore
+        // the second call to refresh view uses the new components block and should ignore
         // the renderer decorator component which isn't a panel
         that.refreshView();
         jqUnit.assert("The composite panel containing a panel with renderer fluid decorator should have instantiated", that);
@@ -724,7 +724,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // putting the component defined by the renderer decorator into the components block
         that.refreshView();
 
-        // the second call to refresh view uses the new components block and shoudl ignore
+        // the second call to refresh view uses the new components block and should ignore
         // the renderer decorator component which isn't a panel
         that.refreshView();
 
