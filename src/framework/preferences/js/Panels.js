@@ -318,24 +318,27 @@ var fluid_1_5 = fluid_1_5 || {};
         $.each(components, function (componentName, componentOptions) {
             if (fluid.prefs.compositePanel.isPanel(componentOptions.type, componentOptions.options)) {
                 var creationEventOpt = "default";
-                if (componentOptions.renderOnPreference) {
-                    var pref = fluid.prefs.subPanel.safePrefKey(componentOptions.renderOnPreference);
+                // would have had renderOnPreference directly sourced from the componentOptions
+                // however, the set of configuration specified there is restricted.
+                var renderOnPreference = fluid.get(componentOptions, "options.renderOnPreference");
+                if (renderOnPreference) {
+                    var pref = fluid.prefs.subPanel.safePrefKey(renderOnPreference);
                     var afterRenderListener = "afterRender." + pref;
                     var onCreateListener = "onCreate." + pref;
                     creationEventOpt = "initOn_" + pref;
                     var listenerOpts = {
                         listener: "{that}.conditionalCreateEvent",
-                        args: ["{that}.model." + pref, creationEventOpt]
+                        args: ["{that}.model." + pref, "{that}.events." + creationEventOpt + ".fire"]
                     };
                     subPanelCreationOpts[creationEventOpt] = creationEventOpt;
                     events[creationEventOpt] = null;
                     modelListeners[pref] = modelListeners[pref] || [];
                     modelListeners[pref].push({
                         func: "{that}.handleRenderOnPreference",
-                        args: ["{change}.value", creationEventOpt, componentName]
+                        args: ["{change}.value", "{that}.events." + creationEventOpt + ".fire", componentName]
                     });
-                    listerners[afterRenderListener] = listenerOpts;
-                    listerners[onCreateListener] = listenerOpts;
+                    listeners[afterRenderListener] = listenerOpts;
+                    listeners[onCreateListener] = listenerOpts;
                 }
                 distributeOptions.push({
                     source: "{that}.options.subPanelCreationOpts." + creationEventOpt,

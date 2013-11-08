@@ -300,27 +300,117 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("renderOnPreference", function () {
+        var assertInited = function (that, panelName) {
+            jqUnit.assertTrue("The " + panelName + " sub panel should be initialized", that[panelName]);
+            jqUnit.assertTrue("The container for " + panelName + " should be visible", that.locate(panelName).is(":visible"));
+        };
+
+        var assertNotInited = function (that, panelName) {
+            jqUnit.assertFalse("The " + panelName + " sub panel should not be initialized", that[panelName]);
+            jqUnit.assertFalse("The container for " + panelName + " should not be visible", that.locate(panelName).is(":visible"));
+        };
+
+        var assertSubPanelLifeCycleBindings = function (that, componentName, preference) {
+            var pref = fluid.prefs.subPanel.safePrefKey(preference);
+            var initEvent = "initOn_" + pref;
+            jqUnit.assertEquals("The createOnEvent for " + componentName + " should be set", initEvent, fluid.get(that, "options.components." + componentName + ".createOnEvent"));
+            jqUnit.assertEquals("The " + initEvent + " event should have been added", null, that.options.events[initEvent]);
+            jqUnit.assertTrue("The modelListener for " + pref + " should be added", that.options.modelListeners[pref]);
+            jqUnit.assertTrue("The afterRender listener to trigger " + initEvent + " should be added", that.options.listeners["afterRender." + pref]);
+            jqUnit.assertTrue("The onCreate listener to trigger " + initEvent + " should be added", that.options.listeners["onCreate." + pref]);
+        };
+
         var that = fluid.prefs.compositePanel(".renderOnPreference", {
             events: {
                 someEvent: null
             },
             selectors: {
-                subPanel: ".subPanel"
+                alwaysPanel1: ".alwaysPanel1",
+                alwaysPanel2: ".alwaysPanel2",
+                conditionalPanel1: ".conditionalPanel1",
+                conditionalPanel2: ".conditionalPanel2",
             },
-            selectorsToIgnore: ["subPanel"],
+            selectorsToIgnore: ["alwaysPanel1", "alwaysPanel2", "conditionalPanel1", "conditionalPanel2"],
             components: {
-                subPanel: {
+                alwaysPanel1: {
                     type: "fluid.prefs.panel",
-                    container: "{that}.dom.subPanel",
-                    createOnEvent: "someEvent",
+                    container: "{that}.dom.alwaysPanel1",
                     options: {
                         preferenceMap: {
-                            "somePref": {
+                            "some.pref.1": {
                                 "model.value": "default"
                             }
                         },
                         strings: {
-                            text: "subPanel",
+                            text: "alwaysPanel1",
+                        },
+                        selectors: {
+                            text: ".text"
+                        },
+                        protoTree: {
+                            text: {
+                                messagekey: "text"
+                            }
+                        }
+                    }
+                },
+                alwaysPanel2: {
+                    type: "fluid.prefs.panel",
+                    container: "{that}.dom.alwaysPanel2",
+                    options: {
+                        preferenceMap: {
+                            "some.pref.2": {
+                                "model.value": "default"
+                            }
+                        },
+                        strings: {
+                            text: "alwaysPanel2",
+                        },
+                        selectors: {
+                            text: ".text"
+                        },
+                        protoTree: {
+                            text: {
+                                messagekey: "text"
+                            }
+                        }
+                    }
+                },
+                conditionalPanel1: {
+                    type: "fluid.prefs.panel",
+                    container: "{that}.dom.conditionalPanel1",
+                    options: {
+                        renderOnPreference: "some.pref.1",
+                        preferenceMap: {
+                            "some.pref.3": {
+                                "model.value": "default"
+                            }
+                        },
+                        strings: {
+                            text: "conditionalPanel1",
+                        },
+                        selectors: {
+                            text: ".text"
+                        },
+                        protoTree: {
+                            text: {
+                                messagekey: "text"
+                            }
+                        }
+                    }
+                },
+                conditionalPanel2: {
+                    type: "fluid.prefs.panel",
+                    container: "{that}.dom.conditionalPanel2",
+                    options: {
+                        renderOnPreference: "some.pref.2",
+                        preferenceMap: {
+                            "some.pref.4": {
+                                "model.value": "default"
+                            }
+                        },
+                        strings: {
+                            text: "conditionalPanel2",
                         },
                         selectors: {
                             text: ".text"
@@ -335,20 +425,68 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             resources: {
                 template: {
-                    resourceText: '<div class="subPanel"></div>'
+                    resourceText: '<div class="alwaysPanel1"></div><div class="conditionalPanel1"></div><div class="alwaysPanel2"></div><div class="conditionalPanel2"></div>'
                 },
-                subPanel: {
+                alwaysPanel1: {
+                    resourceText: '<span class="text"></span>'
+                },
+                alwaysPanel2: {
+                    resourceText: '<span class="text"></span>'
+                },
+                conditionalPanel1: {
+                    resourceText: '<span class="text"></span>'
+                },
+                conditionalPanel2: {
                     resourceText: '<span class="text"></span>'
                 }
             }
         });
-        jqUnit.expect(3);
-        jqUnit.assertTrue("The container for the subPanel should not be visible", that.locate("subPanel").is(":hidden"));
+
+        // component creation
+        assertInited(that, "alwaysPanel1");
+        jqUnit.assertEquals("The createOnEvent for alwaysPanel1 should be set", "initSubPanels", fluid.get(that, "options.components.alwaysPanel1.createOnEvent"));
+        assertInited(that, "alwaysPanel2");
+        jqUnit.assertEquals("The createOnEvent for alwaysPanel2 should be set", "initSubPanels", fluid.get(that, "options.components.alwaysPanel2.createOnEvent"));
+        assertNotInited(that, "conditionalPanel1");
+        assertSubPanelLifeCycleBindings(that, "conditionalPanel1", "some.pref.1");
+        assertNotInited(that, "conditionalPanel2");
+        assertSubPanelLifeCycleBindings(that, "conditionalPanel2", "some.pref.2");
+
+        // first rendering
         that.refreshView();
-        jqUnit.assertTrue("The container for the subPanel should not be visible", that.locate("subPanel").is(":hidden"));
-        that.events.someEvent.fire();
-        that.refreshView();
-        jqUnit.assertTrue("The container for the subPanel should be visible", that.locate("subPanel").is(":visible"));
+        assertInited(that, "alwaysPanel1");
+        assertInited(that, "alwaysPanel2");
+        assertNotInited(that, "conditionalPanel1");
+        assertNotInited(that, "conditionalPanel2");
+
+        // set some.prefs.1 to true
+        that.applier.requestChange("some_pref_1", true);
+        assertInited(that, "alwaysPanel1");
+        assertInited(that, "alwaysPanel2");
+        assertInited(that, "conditionalPanel1");
+        assertNotInited(that, "conditionalPanel2");
+
+        // set some.prefs.1 to false
+        that.applier.requestChange("some_pref_1", false);
+        assertInited(that, "alwaysPanel1");
+        assertInited(that, "alwaysPanel2");
+        assertNotInited(that, "conditionalPanel1");
+        assertNotInited(that, "conditionalPanel2");
+
+        // set some.prefs.2 to true
+        that.applier.requestChange("some_pref_2", true);
+        assertInited(that, "alwaysPanel1");
+        assertInited(that, "alwaysPanel2");
+        assertNotInited(that, "conditionalPanel1");
+        assertInited(that, "conditionalPanel2");
+
+        // set some.prefs.2 to false
+        that.applier.requestChange("some_pref_2", false);
+        assertInited(that, "alwaysPanel1");
+        assertInited(that, "alwaysPanel2");
+        assertNotInited(that, "conditionalPanel1");
+        assertNotInited(that, "conditionalPanel2");
+
     });
 
     /* FLUID-5201: renderer fluid decorator */
