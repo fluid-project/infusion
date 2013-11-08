@@ -315,7 +315,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             textSize: {
                 decorators: {
                     type: "fluid",
-                    func: "fluid.prefs.textfieldSlider"
+                    func: "fluid.textfieldSlider"
                 }
             }
         }
@@ -349,7 +349,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // putting the component defined by the renderer decorator into the components block
         that.refreshView();
 
-        // the second call to refresh view uses the new components block and shoudl ignore
+        // the second call to refresh view uses the new components block and should ignore
         // the renderer decorator component which isn't a panel
         that.refreshView();
         jqUnit.assert("The composite panel containing a panel with renderer fluid decorator should have instantiated", that);
@@ -613,6 +613,133 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     /* end FLUID-5200 */
 
+    /* FLUID-5203: support multiple text field sliders in one composite panel */
+
+    fluid.defaults("fluid.tests.panel.slider1", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        selectors: {
+            textSize: ".flc-prefsEditor-min-val",
+            label: ".flc-prefsEditor-min-val-label",
+            smallIcon: ".flc-prefsEditor-min-val-smallIcon",
+            largeIcon: ".flc-prefsEditor-min-val-largeIcon",
+            multiplier: ".flc-prefsEditor-multiplier"
+        },
+        range: {
+            min: 1,
+            max: 10
+        },
+        protoTree: {
+            label: {messagekey: "textSizeLabel"},
+            smallIcon: {messagekey: "textSizeSmallIcon"},
+            largeIcon: {messagekey: "textSizeLargeIcon"},
+            multiplier: {messagekey: "multiplier"},
+            textSize: {
+                decorators: {
+                    type: "fluid",
+                    func: "fluid.textfieldSlider",
+                    options: {
+                        rules: {
+                            "slider1": "value"
+                        },
+                        model: "{fluid.tests.panel.slider1}.model",
+                        sourceApplier: "{fluid.tests.panel.slider1}.applier",
+                        range: "{fluid.tests.panel.slider1}.options.range",
+                        sliderOptions: "{fluid.tests.panel.slider1}.options.sliderOptions"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.panel.slider2", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        selectors: {
+            textSize: ".flc-prefsEditor-min-val",
+            label: ".flc-prefsEditor-min-val-label",
+            smallIcon: ".flc-prefsEditor-min-val-smallIcon",
+            largeIcon: ".flc-prefsEditor-min-val-largeIcon",
+            multiplier: ".flc-prefsEditor-multiplier"
+        },
+        range: {
+            min: 0,
+            max: 20
+        },
+        protoTree: {
+            label: {messagekey: "textSizeLabel"},
+            smallIcon: {messagekey: "textSizeSmallIcon"},
+            largeIcon: {messagekey: "textSizeLargeIcon"},
+            multiplier: {messagekey: "multiplier"},
+            textSize: {
+                decorators: {
+                    type: "fluid",
+                    func: "fluid.textfieldSlider",
+                    options: {
+                        rules: {
+                            "slider2": "value"
+                        },
+                        model: "{fluid.tests.panel.slider2}.model",
+                        sourceApplier: "{fluid.tests.panel.slider2}.applier",
+                        range: "{fluid.tests.panel.slider2}.options.range",
+                        sliderOptions: "{fluid.tests.panel.slider2}.options.sliderOptions"
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5203: support multiple text field sliders in one composite panel", function () {
+        jqUnit.expect(4);
+        var that = fluid.prefs.compositePanel(".fluid-5203", {
+            selectors: {
+                slider1: ".flc-tests-panel-slider1",
+                slider2: ".flc-tests-panel-slider2"
+            },
+            selectorsToIgnore: ["slider1", "slider2"],
+            components: {
+                slider1: {
+                    type: "fluid.tests.panel.slider1",
+                    createOnEvent: "initSubPanels",
+                    container: "{that}.dom.slider1"
+                },
+                slider2: {
+                    type: "fluid.tests.panel.slider2",
+                    createOnEvent: "initSubPanels",
+                    container: "{that}.dom.slider2"
+                }
+            },
+            resources: {
+                template: {
+                    resourceText: '<ul><li class="flc-tests-panel-slider1"></li><li class="flc-tests-panel-slider2"></li></ul>'
+                },
+                slider1: {
+                    resourceText: '<div class="flc-prefsEditor-min-val"><div class="flc-textfieldSlider-slider"></div><input id="min-val" class="flc-textfieldSlider-field" type="text" /><span class="flc-prefsEditor-multiplier"></span></div>'
+                },
+                slider2: {
+                    resourceText: '<div class="flc-prefsEditor-min-val"><div class="flc-textfieldSlider-slider"></div><input id="min-val" class="flc-textfieldSlider-field" type="text" /><span class="flc-prefsEditor-multiplier"></span></div>'
+                }
+            }
+        });
+
+        // the first call to refreshView does the initial rendeirng which includes
+        // putting the component defined by the renderer decorator into the components block
+        that.refreshView();
+
+        // the second call to refresh view uses the new components block and should ignore
+        // the renderer decorator component which isn't a panel
+        that.refreshView();
+
+        jqUnit.assert("The initial state with the min value for slider1 has been set properly", 0, $(".flc-tests-panel-slider1 .flc-textfieldSlider-slider").slider("value"));
+        jqUnit.assert("The initial state with the min value for slider2 has been set properly", 1, $(".flc-tests-panel-slider2 .flc-textfieldSlider-slider").slider("value"));
+
+        that.slider1.applier.requestChange("value", 100);
+        that.slider2.applier.requestChange("value", 100);
+        that.refreshView();
+        jqUnit.assert("The max value for slider1 has been set properly", 10, $(".flc-tests-panel-slider1 .flc-textfieldSlider-slider").slider("value"));
+        jqUnit.assert("The max value for slider2 has been set properly", 100, $(".flc-tests-panel-slider2 .flc-textfieldSlider-slider").slider("value"));
+    });
+
+    /* end FLUID-5203 */
+
     /*******************************************************************************
      * textFontPanel
      *******************************************************************************/
@@ -766,7 +893,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /*******************************************************************************
      * Test functions shared by text field slider unit tests
      *******************************************************************************/
-    fluid.tests.testDefault = function (that, expectedNumOfOptions, expectedContrast) {
+    fluid.tests.testDefault = function (that) {
         return function () {
             var inputValue = that.container.find("input").val();
             jqUnit.assertEquals("The default input value has been set to the min value", that.options.range.min, inputValue);
@@ -789,7 +916,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     gradeNames: "fluid.prefs.defaultTestPanel",
                     model: {
-                        value: 1
+                        textSize: 1
                     }
                 }
             },
@@ -813,15 +940,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "{textSize}.refreshView"
                 }, {
                     listenerMaker: "fluid.tests.testDefault",
-                    makerArgs: ["{textSize}", "{that}.options.testOptions.expectedNumOfOptions", "{that}.options.testOptions.defaultValue"],
+                    makerArgs: ["{textSize}"],
                     event: "{textSize}.events.afterRender"
                 }, {
                     func: "fluid.tests.changeInput",
                     args: ["{textSize}.dom.textSize", "{that}.options.testOptions.newValue"]
                 }, {
                     listenerMaker: "fluid.tests.checkModel",
-                    makerArgs: ["value", "{that}.options.testOptions.newValue"],
-                    spec: {path: "value", priority: "last"},
+                    makerArgs: ["textSize", "{that}.options.testOptions.newValue"],
+                    spec: {path: "textSize", priority: "last"},
                     changeEvent: "{textSize}.applier.modelChanged"
                 }]
             }]
@@ -840,7 +967,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     gradeNames: "fluid.prefs.defaultTestPanel",
                     model: {
-                        value: 1
+                        lineSpace: 1
                     }
                 }
             },
@@ -864,15 +991,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "{lineSpace}.refreshView"
                 }, {
                     listenerMaker: "fluid.tests.testDefault",
-                    makerArgs: ["{lineSpace}", "{that}.options.testOptions.expectedNumOfOptions", "{that}.options.testOptions.defaultValue"],
+                    makerArgs: ["{lineSpace}"],
                     event: "{lineSpace}.events.afterRender"
                 }, {
                     func: "fluid.tests.changeInput",
                     args: ["{lineSpace}.dom.textSize", "{that}.options.testOptions.newValue"]
                 }, {
                     listenerMaker: "fluid.tests.checkModel",
-                    makerArgs: ["value", "{that}.options.testOptions.newValue"],
-                    spec: {path: "value", priority: "last"},
+                    makerArgs: ["lineSpace", "{that}.options.testOptions.newValue"],
+                    spec: {path: "lineSpace", priority: "last"},
                     changeEvent: "{lineSpace}.applier.modelChanged"
                 }]
             }]

@@ -229,7 +229,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     gradeNames: "fluid.prefs.prefsEditorConnections",
                     rules: {
-                        "textSize": "value"
+                        "textSize": "textSize"
                     },
                     model: {
                         value: "{fluid.prefs.rootModel}.rootModel.textSize"
@@ -246,7 +246,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     gradeNames: "fluid.prefs.prefsEditorConnections",
                     rules: {
-                        "lineSpace": "value"
+                        "lineSpace": "lineSpace"
                     },
                     model: {
                         value: "{fluid.prefs.rootModel}.rootModel.lineSpace"
