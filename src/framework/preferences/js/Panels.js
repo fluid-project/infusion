@@ -263,7 +263,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * Creates a grade containing the distributeOptions rules needed for the subcomponents
      */
     fluid.prefs.compositePanel.assembleDistributeOptions = function (components) {
-        var gradeName = "fluid.prefs.compositePanel.distributeOptions";
+        var gradeName = "fluid.prefs.compositePanel.distributeOptions_" + fluid.allocateGuid();
         var distributeRules = [];
         $.each(components, function (componentName, componentOptions) {
             if (fluid.prefs.compositePanel.isPanel(componentOptions.type, componentOptions.options)) {
@@ -307,7 +307,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * - binding handlers to afterRender and onCreate
      */
     fluid.prefs.compositePanel.subPanelLifecycleBindings = function (components) {
-        var gradeName = "fluid.prefs.compositePanel.subPanelCreationTimingDistibution";
+        var gradeName = "fluid.prefs.compositePanel.subPanelCreationTimingDistibution_" + fluid.allocateGuid();
         var distributeOptions = [];
         var subPanelCreationOpts = {
             "default": "initSubPanels"
@@ -359,10 +359,10 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     /*
-     * Used to hide the containters of inactive sub panels.
+     * Used to hide the containers of inactive sub panels.
      * This is necessary as the composite panel's template is the one that has their containers and
-     * it would be undesireable to have them visible when their associated panel has not been created.
-     * Also, hiding them allows for the subpanel to initialize, as it requires they container to be present.
+     * it would be undesirable to have them visible when their associated panel has not been created.
+     * Also, hiding them allows for the subpanel to initialize, as it requires their container to be present.
      * The subpanels need to be initialized before rendering, for the produce function to source the rendering
      * information from it.
      */
