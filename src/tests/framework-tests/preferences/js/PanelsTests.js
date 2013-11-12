@@ -300,12 +300,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("renderOnPreference", function () {
-        var assertInited = function (that, panelName) {
+        var assertInitialized = function (that, panelName) {
             jqUnit.assertTrue("The " + panelName + " sub panel should be initialized", that[panelName]);
             jqUnit.assertTrue("The container for " + panelName + " should be visible", that.locate(panelName).is(":visible"));
         };
 
-        var assertNotInited = function (that, panelName) {
+        var assertNotInitialized = function (that, panelName) {
             jqUnit.assertFalse("The " + panelName + " sub panel should not be initialized", that[panelName]);
             jqUnit.assertFalse("The container for " + panelName + " should not be visible", that.locate(panelName).is(":visible"));
         };
@@ -443,49 +443,49 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         // component creation
-        assertInited(that, "alwaysPanel1");
+        assertInitialized(that, "alwaysPanel1");
         jqUnit.assertEquals("The createOnEvent for alwaysPanel1 should be set", "initSubPanels", fluid.get(that, "options.components.alwaysPanel1.createOnEvent"));
-        assertInited(that, "alwaysPanel2");
+        assertInitialized(that, "alwaysPanel2");
         jqUnit.assertEquals("The createOnEvent for alwaysPanel2 should be set", "initSubPanels", fluid.get(that, "options.components.alwaysPanel2.createOnEvent"));
-        assertNotInited(that, "conditionalPanel1");
+        assertNotInitialized(that, "conditionalPanel1");
         assertSubPanelLifecycleBindings(that, "conditionalPanel1", "some.pref.1");
-        assertNotInited(that, "conditionalPanel2");
+        assertNotInitialized(that, "conditionalPanel2");
         assertSubPanelLifecycleBindings(that, "conditionalPanel2", "some.pref.2");
 
         // first rendering
         that.refreshView();
-        assertInited(that, "alwaysPanel1");
-        assertInited(that, "alwaysPanel2");
-        assertNotInited(that, "conditionalPanel1");
-        assertNotInited(that, "conditionalPanel2");
+        assertInitialized(that, "alwaysPanel1");
+        assertInitialized(that, "alwaysPanel2");
+        assertNotInitialized(that, "conditionalPanel1");
+        assertNotInitialized(that, "conditionalPanel2");
 
         // set some.prefs.1 to true
         that.applier.requestChange("some_pref_1", true);
-        assertInited(that, "alwaysPanel1");
-        assertInited(that, "alwaysPanel2");
-        assertInited(that, "conditionalPanel1");
-        assertNotInited(that, "conditionalPanel2");
+        assertInitialized(that, "alwaysPanel1");
+        assertInitialized(that, "alwaysPanel2");
+        assertInitialized(that, "conditionalPanel1");
+        assertNotInitialized(that, "conditionalPanel2");
 
         // set some.prefs.1 to false
         that.applier.requestChange("some_pref_1", false);
-        assertInited(that, "alwaysPanel1");
-        assertInited(that, "alwaysPanel2");
-        assertNotInited(that, "conditionalPanel1");
-        assertNotInited(that, "conditionalPanel2");
+        assertInitialized(that, "alwaysPanel1");
+        assertInitialized(that, "alwaysPanel2");
+        assertNotInitialized(that, "conditionalPanel1");
+        assertNotInitialized(that, "conditionalPanel2");
 
         // set some.prefs.2 to true
         that.applier.requestChange("some_pref_2", true);
-        assertInited(that, "alwaysPanel1");
-        assertInited(that, "alwaysPanel2");
-        assertNotInited(that, "conditionalPanel1");
-        assertInited(that, "conditionalPanel2");
+        assertInitialized(that, "alwaysPanel1");
+        assertInitialized(that, "alwaysPanel2");
+        assertNotInitialized(that, "conditionalPanel1");
+        assertInitialized(that, "conditionalPanel2");
 
         // set some.prefs.2 to false
         that.applier.requestChange("some_pref_2", false);
-        assertInited(that, "alwaysPanel1");
-        assertInited(that, "alwaysPanel2");
-        assertNotInited(that, "conditionalPanel1");
-        assertNotInited(that, "conditionalPanel2");
+        assertInitialized(that, "alwaysPanel1");
+        assertInitialized(that, "alwaysPanel2");
+        assertNotInitialized(that, "conditionalPanel1");
+        assertNotInitialized(that, "conditionalPanel2");
 
     });
 
