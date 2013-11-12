@@ -104,7 +104,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 fluid.set(opts, key, value);
             }
         });
-    
+
         if (typeObject) {
             $.extend(true, root[path], $.extend(true, typeObject, opts));
         }
@@ -216,7 +216,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return expandedSchema;
     };
 
-    fluid.prefs.expandCompositePanels = function (auxSchema, compositePanelList, panelIndex, compositePanelCommonOptions, subPanelCommonOptions, 
+    fluid.prefs.expandCompositePanels = function (auxSchema, compositePanelList, panelIndex, compositePanelCommonOptions, subPanelCommonOptions,
         compositePanelBasedOnSubCommonOptions, mappedDefaults) {
         var type = "panel";
         var alwaysFlag = "always";
@@ -243,7 +243,9 @@ var fluid_1_5 = fluid_1_5 || {};
             var subPanels = {};
             var subPanelRenderOn = {};
 
-            if (typeof(thisCompositeOptions.panels) === "object") {
+            // panels can contain an array of always on panels, or an object
+            // describing which panels are always and which are initialized by a preference value
+            if (!fluid.isPrimitive(thisCompositeOptions.panels)) {
                 fluid.each(thisCompositeOptions.panels, function (subpanelArray, pref) {
                     subPanelList = subPanelList.concat(subpanelArray);
                     if (pref !== alwaysFlag) {
@@ -263,7 +265,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 selectorsToIgnore.push(safeSubPanelPrefsKey);
 
                 var actualSubPanel = fluid.get(auxSchema, [subPanelID, "panel", "type"]);
-                
+
                 fluid.set(subPanels, [safeSubPanelPrefsKey, "type"], actualSubPanel);
                 var renderOn = fluid.get(subPanelRenderOn, subPanelID);
                 if (renderOn) {
@@ -336,8 +338,8 @@ var fluid_1_5 = fluid_1_5 || {};
 
         var compositePanelList = fluid.get(auxSchema, "groups");
         if (compositePanelList) {
-            fluid.prefs.expandCompositePanels(auxSchema, compositePanelList, fluid.get(indexes, "panel"), 
-                fluid.get(elementCommonOptions, "compositePanel"), fluid.get(elementCommonOptions, "subPanel"), 
+            fluid.prefs.expandCompositePanels(auxSchema, compositePanelList, fluid.get(indexes, "panel"),
+                fluid.get(elementCommonOptions, "compositePanel"), fluid.get(elementCommonOptions, "subPanel"),
                 fluid.get(elementCommonOptions, "compositePanelBasedOnSub"), mappedDefaults);
         }
 
