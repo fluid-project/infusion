@@ -140,7 +140,7 @@ var fluid_1_5 = fluid_1_5 || {};
      **********************************/
 
     fluid.defaults("fluid.prefs.compositePanel", {
-        gradeNames: ["fluid.prefs.panel", "autoInit", "{that}.getDistributeOptionsGrade", "{that}.getSubPanelLifeCycleBindings"],
+        gradeNames: ["fluid.prefs.panel", "autoInit", "{that}.getDistributeOptionsGrade", "{that}.getSubPanelLifecycleBindings"],
         mergePolicy: {
             subPanelOverrides: "noexpand"
         },
@@ -175,8 +175,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 funcName: "fluid.prefs.compositePanel.assembleDistributeOptions",
                 args: ["{that}.options.components"]
             },
-            getSubPanelLifeCycleBindings: {
-                funcName: "fluid.prefs.compositePanel.subPanelLifeCycleBindings",
+            getSubPanelLifecycleBindings: {
+                funcName: "fluid.prefs.compositePanel.subPanelLifecycleBindings",
                 args: ["{that}.options.components"]
             },
             combineResources: {
@@ -306,7 +306,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * - binding handlers to model changed events
      * - binding handlers to afterRender and onCreate
      */
-    fluid.prefs.compositePanel.subPanelLifeCycleBindings = function (components) {
+    fluid.prefs.compositePanel.subPanelLifecycleBindings = function (components) {
         var gradeName = "fluid.prefs.compositePanel.subPanelCreationTimingDistibution";
         var distributeOptions = [];
         var subPanelCreationOpts = {

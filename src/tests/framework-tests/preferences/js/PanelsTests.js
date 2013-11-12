@@ -310,7 +310,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertFalse("The container for " + panelName + " should not be visible", that.locate(panelName).is(":visible"));
         };
 
-        var assertSubPanelLifeCycleBindings = function (that, componentName, preference) {
+        var assertSubPanelLifecycleBindings = function (that, componentName, preference) {
             var pref = fluid.prefs.subPanel.safePrefKey(preference);
             var initEvent = "initOn_" + pref;
             jqUnit.assertEquals("The createOnEvent for " + componentName + " should be set", initEvent, fluid.get(that, "options.components." + componentName + ".createOnEvent"));
@@ -448,9 +448,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         assertInited(that, "alwaysPanel2");
         jqUnit.assertEquals("The createOnEvent for alwaysPanel2 should be set", "initSubPanels", fluid.get(that, "options.components.alwaysPanel2.createOnEvent"));
         assertNotInited(that, "conditionalPanel1");
-        assertSubPanelLifeCycleBindings(that, "conditionalPanel1", "some.pref.1");
+        assertSubPanelLifecycleBindings(that, "conditionalPanel1", "some.pref.1");
         assertNotInited(that, "conditionalPanel2");
-        assertSubPanelLifeCycleBindings(that, "conditionalPanel2", "some.pref.2");
+        assertSubPanelLifecycleBindings(that, "conditionalPanel2", "some.pref.2");
 
         // first rendering
         that.refreshView();
