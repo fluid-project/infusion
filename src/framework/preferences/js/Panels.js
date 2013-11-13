@@ -139,10 +139,24 @@ var fluid_1_5 = fluid_1_5 || {};
      * Base grade for composite panel *
      **********************************/
 
+    fluid.registerNamespace("fluid.prefs.compositePanel");
+
+    fluid.prefs.compositePanel.arrayMergePolicy = function (target, source) {
+        target = fluid.makeArray(target);
+        source = fluid.makeArray(source);
+        fluid.each(source, function (selector) {
+            if ($.inArray(selector, target) < 0) {
+                target.push(selector);
+            }
+        });
+        return target;
+    };
+
     fluid.defaults("fluid.prefs.compositePanel", {
         gradeNames: ["fluid.prefs.panel", "autoInit", "{that}.getDistributeOptionsGrade", "{that}.getSubPanelLifecycleBindings"],
         mergePolicy: {
-            subPanelOverrides: "noexpand"
+            subPanelOverrides: "noexpand",
+            selectorsToIgnore: fluid.prefs.compositePanel.arrayMergePolicy
         },
         selectors: {}, // requires selectors into the template which will act as the containers for the subpanels
         selectorsToIgnore: [], // should match the selectors that are used to identify the containers for the subpanels

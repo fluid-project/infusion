@@ -930,6 +930,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     /* end FLUID-5203 */
 
+    /* start FLUID-5210 */
+
+    fluid.defaults("fluid.tests.fluid_5210.compositePanel", {
+        gradeNames: ["fluid.prefs.compositePanel", "autoInit"],
+        selectors: {
+            originalSelector: ""
+        },
+        selectorsToIgnore: ["originalSelector"],
+        resources: {
+            template: {
+                resourceText: "<div></div>"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5210: merge selectorsToIgnore", function () {
+        var that = fluid.tests.fluid_5210.compositePanel(".fluid-5210", {
+            selectors: {
+                newSelector: ""
+            },
+            selectorsToIgnore: ["newSelector"]
+        });
+
+        var expected = ["originalSelector", "newSelector"];
+
+        jqUnit.assertDeepEq("The selectorsToIgnore should be merged", expected, that.options.selectorsToIgnore);
+    });
+
+    /* end FLUID-5210 */
+
     /*******************************************************************************
      * textFontPanel
      *******************************************************************************/
