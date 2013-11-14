@@ -303,13 +303,30 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
 
-    fluid.prefs.compositePanel.handleRenderOnPreference = function (that, value, createEvent, componentName) {
-        var comp = that[componentName];
-        that.conditionalCreateEvent(value, createEvent);
-        if (!value && comp) {
-            comp.destroy();
-        }
+    fluid.prefs.compositePanel.handleRenderOnPreference = function (that, value, createEvent, componentNames) {
+        componentNames = fluid.makeArray(componentNames);
+        fluid.each(componentNames, function (componentName) {
+            var comp = that[componentName];
+            that.conditionalCreateEvent(value, createEvent);
+            if (!value && comp) {
+                comp.destroy();
+            }
+        });
         that.refreshView();
+    };
+
+    fluid.prefs.compositePanel.creationEventName = function (pref) {
+        return "initOn_" + pref;
+    };
+
+    fluid.prefs.compositePanel.generateModelListeners = function (conditionals) {
+        return fluid.transform(conditionals, function (componentNames, pref) {
+            var eventName = fluid.prefs.compositePanel.creationEventName(pref);
+            return {
+                func: "{that}.handleRenderOnPreference",
+                args: ["{change}.value", "{that}.events." + eventName + ".fire", componentNames]
+            };
+        });
     };
 
     /*
@@ -326,7 +343,7 @@ var fluid_1_5 = fluid_1_5 || {};
         var subPanelCreationOpts = {
             "default": "initSubPanels"
         };
-        var modelListeners = {};
+        var conditionals = {};
         var listeners = {};
         var events = {};
         $.each(components, function (componentName, componentOptions) {
@@ -339,18 +356,15 @@ var fluid_1_5 = fluid_1_5 || {};
                     var pref = fluid.prefs.subPanel.safePrefKey(renderOnPreference);
                     var afterRenderListener = "afterRender." + pref;
                     var onCreateListener = "onCreate." + pref;
-                    creationEventOpt = "initOn_" + pref;
+                    creationEventOpt = fluid.prefs.compositePanel.creationEventName(pref);
                     var listenerOpts = {
                         listener: "{that}.conditionalCreateEvent",
                         args: ["{that}.model." + pref, "{that}.events." + creationEventOpt + ".fire"]
                     };
                     subPanelCreationOpts[creationEventOpt] = creationEventOpt;
                     events[creationEventOpt] = null;
-                    modelListeners[pref] = modelListeners[pref] || [];
-                    modelListeners[pref].push({
-                        func: "{that}.handleRenderOnPreference",
-                        args: ["{change}.value", "{that}.events." + creationEventOpt + ".fire", componentName]
-                    });
+                    conditionals[pref] = conditionals[pref] || [];
+                    conditionals[pref].push(componentName);
                     listeners[afterRenderListener] = listenerOpts;
                     listeners[onCreateListener] = listenerOpts;
                 }
@@ -365,7 +379,7 @@ var fluid_1_5 = fluid_1_5 || {};
             gradeNames: ["fluid.eventedComponent", "autoInit"],
             events: events,
             listeners: listeners,
-            modelListeners: modelListeners,
+            modelListeners: fluid.prefs.compositePanel.generateModelListeners(conditionals),
             subPanelCreationOpts: subPanelCreationOpts,
             distributeOptions: distributeOptions
         });

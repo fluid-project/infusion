@@ -696,6 +696,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "fluid.tests.composite.pref.magnification": {
             "type": "boolean",
             "default": false
+        },
+        "fluid.tests.composite.pref.lineSpace": {
+            "type": "boolean",
+            "default": false
         }
     };
 
@@ -710,7 +714,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "type": "fluid.tests.composite.increase",
                     "panels": {
                         "always": ["incSize"],
-                        "fluid.tests.composite.pref.increaseSize": ["magnify"]
+                        "fluid.tests.composite.pref.increaseSize": ["magnify", "lineSpace"]
                     }
                 }
             },
@@ -735,6 +739,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 panel: {
                     type: "fluid.tests.cmpPanel.magFactor",
                     container: ".fluid-tests-composite-increasing-magFactor",
+                    template: "%prefix/checkboxTemplate.html"
+                }
+            },
+            lineSpace: {
+                type: "fluid.tests.composite.pref.lineSpace",
+                panel: {
+                    type: "fluid.tests.cmpPanel.lineSpace",
+                    container: ".fluid-tests-composite-increasing-lineSpace",
                     template: "%prefix/checkboxTemplate.html"
                 }
             }
@@ -769,33 +781,40 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.defaults("fluid.tests.cmpPanel.incSize", {
+    fluid.defaults("fluid.tests.cmpPanel.base", {
         gradeNames: ["fluid.prefs.panel", "autoInit"],
-        preferenceMap: {
-            "fluid.tests.composite.pref.increaseSize": {
-                "model.incSize": "default"
-            }
-        },
         selectors: {
             bool: ".fluid-tests-composite-input",
         },
         protoTree: {
-            bool: "${incSize}"
+            bool: "${value}"
+        }
+    });
+
+    fluid.defaults("fluid.tests.cmpPanel.incSize", {
+        gradeNames: ["fluid.tests.cmpPanel.base", "autoInit"],
+        preferenceMap: {
+            "fluid.tests.composite.pref.increaseSize": {
+                "model.value": "default"
+            }
         }
     });
 
     fluid.defaults("fluid.tests.cmpPanel.magFactor", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.tests.cmpPanel.base", "autoInit"],
         preferenceMap: {
             "fluid.tests.composite.pref.magnification": {
-                "model.mag": "default"
+                "model.value": "default"
             }
-        },
-        selectors: {
-            bool: ".fluid-tests-composite-input",
-        },
-        protoTree: {
-            bool: "${mag}"
+        }
+    });
+
+    fluid.defaults("fluid.tests.cmpPanel.lineSpace", {
+        gradeNames: ["fluid.tests.cmpPanel.base", "autoInit"],
+        preferenceMap: {
+            "fluid.tests.composite.pref.lineSpace": {
+                "model.value": "default"
+            }
         }
     });
 
@@ -863,11 +882,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.composite.tester.conditionalCreation = function (compositePanel) {
         jqUnit.assertTrue("The conditional panel was created", compositePanel.fluid_tests_composite_pref_magnification);
         jqUnit.isVisible("The container for the conditional panel is visible", compositePanel.locate("fluid_tests_composite_pref_magnification"));
+        jqUnit.assertTrue("The conditional panel was created", compositePanel.fluid_tests_composite_pref_lineSpace);
+        jqUnit.isVisible("The container for the conditional panel is visible", compositePanel.locate("fluid_tests_composite_pref_lineSpace"));
     };
 
     fluid.tests.composite.tester.conditionalDestruction = function (compositePanel) {
         jqUnit.assertFalse("The conditional panel is not created", compositePanel.fluid_tests_composite_pref_magnification);
         jqUnit.notVisible("The container for the conditional panel is not visible", compositePanel.locate("fluid_tests_composite_pref_magnification"));
+        jqUnit.assertFalse("The conditional panel is not created", compositePanel.fluid_tests_composite_pref_lineSpace);
+        jqUnit.notVisible("The container for the conditional panel is not visible", compositePanel.locate("fluid_tests_composite_pref_lineSpace"));
     };
 
     /***********************
