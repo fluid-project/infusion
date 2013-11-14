@@ -269,7 +269,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 fluid.set(subPanels, [safeSubPanelPrefsKey, "type"], actualSubPanel);
                 var renderOn = fluid.get(subPanelRenderOn, subPanelID);
                 if (renderOn) {
-                    fluid.set(subPanels, [safeSubPanelPrefsKey, "renderOnPreference"], renderOn);
+                    fluid.set(subPanels, [safeSubPanelPrefsKey, "options", "renderOnPreference"], renderOn);
                 }
 
                 // Deal with preferenceMap related options

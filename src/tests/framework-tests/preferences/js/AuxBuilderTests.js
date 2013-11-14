@@ -1567,7 +1567,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.auxSchema.expandedMultiComposite = $.extend(true, {}, fluid.tests.auxSchema.expandedComposite, fluid.tests.auxSchema.anotherExpandedComposite);
 
     jqUnit.test("Test expanding multiple composite panel groups with fluid.prefs.expandCompositePanels()", function () {
-        var expandedCompositePanel = fluid.prefs.expandCompositePanels(fluid.tests.auxSchema.multiCompositePanelSchema, fluid.tests.auxSchema.multiCompositePanelSchema.groups, 
+        var expandedCompositePanel = fluid.prefs.expandCompositePanels(fluid.tests.auxSchema.multiCompositePanelSchema, fluid.tests.auxSchema.multiCompositePanelSchema.groups,
                 fluid.tests.auxSchema.multiPanelIndex, fluid.get(fluid.tests.elementCommonOptions, "compositePanel"), fluid.get(fluid.tests.elementCommonOptions, "subPanel"),
                 fluid.get(fluid.tests.elementCommonOptions, "compositePanelBasedOnSub"), fluid.tests.auxSchema.multiCompositePanelMappedDefaults);
 
@@ -1830,17 +1830,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             "fluid_prefs_subPanel6": {
                                 "type": "fluid.prefs.panel.subPanel6",
                                 "container": "combinedBoth3.dom.fluid_prefs_subPanel6",
-                                "renderOnPreference": "fluid.prefs.subPanel5"
+                                options: {
+                                    "renderOnPreference": "fluid.prefs.subPanel5"
+                                }
                             },
                             "fluid_prefs_subPanel7": {
                                 "type": "fluid.prefs.panel.subPanel7",
                                 "container": "combinedBoth3.dom.fluid_prefs_subPanel7",
-                                "renderOnPreference": "fluid.prefs.subPanel6"
+                                options: {
+                                    "renderOnPreference": "fluid.prefs.subPanel6"
+                                }
                             },
                             "fluid_prefs_subPanel8": {
                                 "type": "fluid.prefs.panel.subPanel8",
                                 "container": "combinedBoth3.dom.fluid_prefs_subPanel8",
-                                "renderOnPreference": "fluid.prefs.subPanel6"
+                                options: {
+                                    "renderOnPreference": "fluid.prefs.subPanel6"
+                                }
                             }
                         }
                     }
@@ -1879,7 +1885,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     jqUnit.test("Test expanding composite panel group having subpanels rendered on particular pref key with fluid.prefs.expandCompositePanels()", function () {
-        var expandedCompositePanel = fluid.prefs.expandCompositePanels(fluid.tests.auxSchema.renderOnPrefSchema, fluid.tests.auxSchema.renderOnPrefSchema.groups, 
+        var expandedCompositePanel = fluid.prefs.expandCompositePanels(fluid.tests.auxSchema.renderOnPrefSchema, fluid.tests.auxSchema.renderOnPrefSchema.groups,
                 fluid.tests.auxSchema.renderOnPrefIndex, fluid.get(fluid.tests.elementCommonOptions, "compositePanel"), fluid.get(fluid.tests.elementCommonOptions, "subPanel"),
                 fluid.get(fluid.tests.elementCommonOptions, "compositePanelBasedOnSub"), fluid.tests.auxSchema.renderOnPrefMappedDefaults);
 
