@@ -516,7 +516,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 return fluid.prefs.compositePanel.rebaseValueBinding(val, modelRelayRules);
             } else if (key === "value" && tree["valuebinding"]) {
                 var valuebinding = tree["valuebinding"];
-                return fluid.get(model, valuebinding);
+                var modelValue = fluid.get(model, fluid.prefs.compositePanel.rebaseValueBinding(valuebinding, modelRelayRules));
+                return modelValue !== undefined ? modelValue : val;
             } else {
                 return val;
             }

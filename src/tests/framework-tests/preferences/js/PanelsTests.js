@@ -347,6 +347,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 some_pref_3: false,
                 some_pref_4: false
             },
+            strings: {
+                text1: "conditionalPanel1",
+                text2: "conditionalPanel2",
+            },
             components: {
                 alwaysPanel1: {
                     type: "fluid.prefs.panel",
@@ -399,14 +403,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             }
                         },
                         strings: {
-                            text: "conditionalPanel1",
+                            text1: "conditionalPanel1",
                         },
                         selectors: {
                             text: ".text"
                         },
                         protoTree: {
                             text: {
-                                messagekey: "text"
+                                messagekey: "text1"
                             }
                         }
                     }
@@ -425,11 +429,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             text: "conditionalPanel2",
                         },
                         selectors: {
-                            text: ".text"
+                            text2: ".text"
                         },
                         protoTree: {
                             text: {
-                                messagekey: "text"
+                                messagekey: "text2"
                             }
                         }
                     }
