@@ -1186,7 +1186,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "type": "fluid.prefs.panel.subPanel1",
                 "container": "#flc-prefs-subPanel1",  // the css selector in the template where the panel is rendered
                 "template": "%prefix/subPanel1.html",
-                "message": "%prefix/subPanel1.json"
+                "message": "%prefix/subPanel1.json",
+                "subPanelOption": 1
             }
         },
         "subPanel2": {
@@ -1230,7 +1231,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "type": "fluid.prefs.panel.subPanel1",
                 "container": "#flc-prefs-subPanel1",  // the css selector in the template where the panel is rendered
                 "template": "%prefix/subPanel1.html",
-                "message": "%prefix/subPanel1.json"
+                "message": "%prefix/subPanel1.json",
+                "subPanelOption": 1
             }
         },
         "subPanel2": {
@@ -1285,13 +1287,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     range: {
                                         min: 1,
                                         max: 10
-                                    }
+                                    },
+                                    "subPanelOption": 1
                                 }
                             },
                             "fluid_prefs_subPanel2": {
                                 "type": "fluid.prefs.panel.subPanel2",
                                 "container": "combinedBoth.dom.fluid_prefs_subPanel2",
-                                createOnEvent: "initSubPanels"
+                                createOnEvent: "initSubPanels",
+                                options: {}
                             }
                         }
                     }
@@ -1536,7 +1540,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             "fluid_prefs_subPanel4": {
                                 "type": "fluid.prefs.panel.subPanel4",
                                 "container": "combinedBoth2.dom.fluid_prefs_subPanel4",
-                                createOnEvent: "initSubPanels"
+                                createOnEvent: "initSubPanels",
+                                options: {}
                             }
                         }
                     }
@@ -1572,7 +1577,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.auxSchema.expandedMultiComposite = $.extend(true, {}, fluid.tests.auxSchema.expandedComposite, fluid.tests.auxSchema.anotherExpandedComposite);
 
     jqUnit.test("Test expanding multiple composite panel groups with fluid.prefs.expandCompositePanels()", function () {
-        var expandedCompositePanel = fluid.prefs.expandCompositePanels(fluid.tests.auxSchema.multiCompositePanelSchema, fluid.tests.auxSchema.multiCompositePanelSchema.groups, 
+        var expandedCompositePanel = fluid.prefs.expandCompositePanels(fluid.tests.auxSchema.multiCompositePanelSchema, fluid.tests.auxSchema.multiCompositePanelSchema.groups,
                 fluid.tests.auxSchema.multiPanelIndex, fluid.get(fluid.tests.elementCommonOptions, "compositePanel"), fluid.get(fluid.tests.elementCommonOptions, "subPanel"),
                 fluid.get(fluid.tests.elementCommonOptions, "compositePanelBasedOnSub"), fluid.tests.auxSchema.multiCompositePanelMappedDefaults);
 
