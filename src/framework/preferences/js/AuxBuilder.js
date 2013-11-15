@@ -264,16 +264,17 @@ var fluid_1_5 = fluid_1_5 || {};
                 var safeSubPanelPrefsKey = fluid.prefs.subPanel.safePrefKey(subPanelPrefsKey);
                 selectorsToIgnore.push(safeSubPanelPrefsKey);
 
-                var actualSubPanel = fluid.get(auxSchema, [subPanelID, "panel", "type"]);
+                var subPanelOptions = fluid.copy(fluid.get(auxSchema, [subPanelID, "panel"]));
+                var subPanelType = fluid.get(subPanelOptions, "type");
 
-                fluid.set(subPanels, [safeSubPanelPrefsKey, "type"], actualSubPanel);
+                fluid.set(subPanels, [safeSubPanelPrefsKey, "type"], subPanelType);
                 var renderOn = fluid.get(subPanelRenderOn, subPanelID);
                 if (renderOn) {
                     fluid.set(subPanels, [safeSubPanelPrefsKey, "options", "renderOnPreference"], renderOn);
                 }
 
                 // Deal with preferenceMap related options
-                var map = fluid.defaults(actualSubPanel).preferenceMap[subPanelPrefsKey];
+                var map = fluid.defaults(subPanelType).preferenceMap[subPanelPrefsKey];
                 var prefSchema = mappedDefaults[subPanelPrefsKey];
 
                 fluid.each(map, function (primaryPath, internalPath) {
@@ -293,15 +294,22 @@ var fluid_1_5 = fluid_1_5 || {};
                     }
                 });
 
-                fluid.set(templates, safeSubPanelPrefsKey, fluid.get(auxSchema, [subPanelID, "panel", "template"]));
-                fluid.set(messages, safeSubPanelPrefsKey, fluid.get(auxSchema, [subPanelID, "panel", "message"]));
+                fluid.set(templates, safeSubPanelPrefsKey, fluid.get(subPanelOptions, "template"));
+                fluid.set(messages, safeSubPanelPrefsKey, fluid.get(subPanelOptions, "message"));
 
-                fluid.set(compositePanelOptions, ["options", "selectors", safeSubPanelPrefsKey], fluid.get(auxSchema, [subPanelID, "panel", "container"]));
+                fluid.set(compositePanelOptions, ["options", "selectors", safeSubPanelPrefsKey], fluid.get(subPanelOptions, "container"));
                 fluid.set(compositePanelOptions, ["options", "resources"], fluid.get(compositePanelOptions, ["options", "resources"]) || {});
 
                 fluid.prefs.addCommonOptions(compositePanelOptions.options, "resources", compositePanelBasedOnSubCommonOptions, {
                     subPrefKey: safeSubPanelPrefsKey
                 });
+
+                // add additional options from the aux schema for subpanels
+                delete subPanelOptions.type;
+                delete subPanelOptions.template;
+                delete subPanelOptions.message;
+                delete subPanelOptions.container;
+                fluid.set(subPanels, [safeSubPanelPrefsKey, "options"], $.extend(true, {}, fluid.get(subPanels, [safeSubPanelPrefsKey, "options"]), subPanelOptions));
 
                 fluid.prefs.addCommonOptions(subPanels, safeSubPanelPrefsKey, subPanelCommonOptions, {
                     compositePanel: compositeKey,
@@ -310,6 +318,7 @@ var fluid_1_5 = fluid_1_5 || {};
             });
             delete thisCompositeOptions.panels;
 
+            // add additional options from the aux schema for the composite panel
             fluid.set(compositePanelOptions, ["options"], $.extend(true, {}, compositePanelOptions.options, thisCompositeOptions));
             fluid.set(compositePanelOptions, ["options", "selectorsToIgnore"], selectorsToIgnore);
             fluid.set(compositePanelOptions, ["options", "components"], subPanels);

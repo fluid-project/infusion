@@ -1185,7 +1185,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "type": "fluid.prefs.panel.subPanel1",
                 "container": "#flc-prefs-subPanel1",  // the css selector in the template where the panel is rendered
                 "template": "%prefix/subPanel1.html",
-                "message": "%prefix/subPanel1.json"
+                "message": "%prefix/subPanel1.json",
+                "subPanelOption": 1
             }
         },
         "subPanel2": {
@@ -1229,7 +1230,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "type": "fluid.prefs.panel.subPanel1",
                 "container": "#flc-prefs-subPanel1",  // the css selector in the template where the panel is rendered
                 "template": "%prefix/subPanel1.html",
-                "message": "%prefix/subPanel1.json"
+                "message": "%prefix/subPanel1.json",
+                "subPanelOption": 1
             }
         },
         "subPanel2": {
@@ -1283,12 +1285,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     range: {
                                         min: 1,
                                         max: 10
-                                    }
+                                    },
+                                    "subPanelOption": 1
                                 }
                             },
                             "fluid_prefs_subPanel2": {
                                 "type": "fluid.prefs.panel.subPanel2",
-                                "container": "combinedBoth.dom.fluid_prefs_subPanel2"
+                                "container": "combinedBoth.dom.fluid_prefs_subPanel2",
+                                options: {}
                             }
                         }
                     }
@@ -1531,7 +1535,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             },
                             "fluid_prefs_subPanel4": {
                                 "type": "fluid.prefs.panel.subPanel4",
-                                "container": "combinedBoth2.dom.fluid_prefs_subPanel4"
+                                "container": "combinedBoth2.dom.fluid_prefs_subPanel4",
+                                options: {}
                             }
                         }
                     }
@@ -1825,7 +1830,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         components: {
                             "fluid_prefs_subPanel5": {
                                 "type": "fluid.prefs.panel.subPanel5",
-                                "container": "combinedBoth3.dom.fluid_prefs_subPanel5"
+                                "container": "combinedBoth3.dom.fluid_prefs_subPanel5",
+                                options: {}
                             },
                             "fluid_prefs_subPanel6": {
                                 "type": "fluid.prefs.panel.subPanel6",
