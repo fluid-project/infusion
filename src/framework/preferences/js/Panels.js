@@ -500,20 +500,23 @@ var fluid_1_5 = fluid_1_5 || {};
         }) || value;
     };
 
-    fluid.prefs.compositePanel.rebaseTree = function (tree, memberName, modelRelayRules) {
+    fluid.prefs.compositePanel.rebaseTree = function (model, tree, memberName, modelRelayRules) {
         var rebased = fluid.transform(tree, function (val, key) {
             if (key === "children") {
                 return fluid.transform(val, function (v) {
-                    return fluid.prefs.compositePanel.rebaseTree(v, memberName, modelRelayRules);
+                    return fluid.prefs.compositePanel.rebaseTree(model, v, memberName, modelRelayRules);
                 });
             } else if (key === "selection") {
-                return fluid.prefs.compositePanel.rebaseTree(val, memberName, modelRelayRules);
+                return fluid.prefs.compositePanel.rebaseTree(model, val, memberName, modelRelayRules);
             } else if (key === "ID") {
                 return fluid.prefs.compositePanel.rebaseID(val, memberName);
             } else if (key === "parentRelativeID") {
                 return fluid.prefs.compositePanel.rebaseParentRelativeID(val, memberName);
             } else if (key === "valuebinding") {
                 return fluid.prefs.compositePanel.rebaseValueBinding(val, modelRelayRules);
+            } else if (key === "value" && tree["valuebinding"]) {
+                var valuebinding = tree["valuebinding"];
+                return fluid.get(model, valuebinding);
             } else {
                 return val;
             }
@@ -549,7 +552,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 var expander = fluid.renderer.makeProtoExpander(expanderOptions, subPanel);
                 var subTree = subPanel.produceTree();
                 subTree = fluid.get(subPanel.options, "rendererFnOptions.noexpand") ? subTree : expander(subTree);
-                var rebasedTree = fluid.prefs.compositePanel.rebaseTree(subTree, componentName, subPanel.options.rules);
+                var rebasedTree = fluid.prefs.compositePanel.rebaseTree(that.model, subTree, componentName, subPanel.options.rules);
                 tree.children = tree.children.concat(rebasedTree.children);
             }
         });
