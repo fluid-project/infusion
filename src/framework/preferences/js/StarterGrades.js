@@ -102,6 +102,12 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.uiEnhancer.starterEnactors", {
         gradeNames: ["fluid.uiEnhancer", "fluid.uiEnhancer.cssClassEnhancerBase", "fluid.uiEnhancer.browserTextEnhancerBase", "autoInit"],
+        connectionsGrade: "fluid.prefs.uiEnhancerConnections",
+        distributeOptions: {
+            source: "{that}.options.connectionsGrade",
+            removeSource: true,
+            target: "{that > fluid.prefs.enactor}.options.gradeNames"
+        },
         components: {
             textSize: {
                 type: "fluid.prefs.enactor.textSize",

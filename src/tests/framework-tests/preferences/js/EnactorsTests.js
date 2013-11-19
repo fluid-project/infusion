@@ -32,23 +32,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("False value - Css class has been removed", "", elements.attr("class"));
     };
 
-    // A temporary component to work around FLUID-5193 that introduces the dependency on uiEnhancer by enactors
-    fluid.defaults("fluid.tests.uiEnhancer", {
-        type: "fluid.littleComponent",
-        components: {
-            uiEnhancer: {
-                type: "fluid.uiEnhancer",
-                container: "body"
-            }
-        }
-    });
-
     /*******************************************************************************
      * Unit tests for fluid.prefs.styleElements
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.styleElementsTests", {
-        gradeNames: ["fluid.test.testEnvironment", "fluid.tests.uiEnhancer", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         expectedCssClass: "fl-style-test",
         expectedDefaultFlag: false,
         container: ".flc-styleElements",
@@ -97,7 +86,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.emphasizeLinksTests", {
-        gradeNames: ["fluid.test.testEnvironment", "fluid.tests.uiEnhancer", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         container: ".flc-emphasizeLinks",
         expectedEmphasizeLinksClass: "fl-emphasizeLinks-test",
         expectedDefaultFlag: false,
@@ -137,7 +126,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.inputsLargerTests", {
-        gradeNames: ["fluid.test.testEnvironment", "fluid.tests.uiEnhancer", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         container: ".flc-inputsLarger",
         expectedDefaultFlag: false,
         expectedInputsLargerClass: "fl-text-larger",
@@ -177,7 +166,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.classSwapperTests", {
-        gradeNames: ["fluid.test.testEnvironment", "fluid.tests.uiEnhancer", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         expectedClass: "fl-test",
         components: {
             classSwapper: {
@@ -240,7 +229,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.getSizeTests", {
-        gradeNames: ["fluid.test.testEnvironment", "fluid.tests.uiEnhancer", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         container: ".flc-getSize",
         fontSizeMap: fontSizeMap,
         expectedTestSize: 8,
@@ -285,7 +274,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.textSizeTests", {
-        gradeNames: ["fluid.test.testEnvironment", "fluid.tests.uiEnhancer", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             textSize: {
                 type: "fluid.prefs.enactor.textSize",
@@ -331,7 +320,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.getLineHeightTests", {
-        gradeNames: ["fluid.test.testEnvironment", "fluid.tests.uiEnhancer", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         container: ".flc-lineSpace",
         fontSizeMap: fontSizeMap,
         expectedTestSize: 8,
@@ -401,7 +390,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.lineSpaceTests", {
-        gradeNames: ["fluid.test.testEnvironment", "fluid.tests.uiEnhancer", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             lineSpace: {
                 type: "fluid.prefs.enactor.lineSpace",
@@ -455,7 +444,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.tableOfContentsTests", {
-        gradeNames: ["fluid.test.testEnvironment", "fluid.tests.uiEnhancer", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             toc: {
                 type: "fluid.prefs.enactor.tableOfContents",

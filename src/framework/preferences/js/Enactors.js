@@ -20,7 +20,7 @@ var fluid_1_5 = fluid_1_5 || {};
 (function ($, fluid) {
 
     fluid.defaults("fluid.prefs.enactor", {
-        gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "fluid.prefs.uiEnhancerConnections", "fluid.prefs.modelRelay", "autoInit"]
+        gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "fluid.prefs.modelRelay", "autoInit"]
     });
 
     /********************************************************************************
