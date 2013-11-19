@@ -73,9 +73,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    /************************
-     * combined panel tests *
-     ************************/
+    /*************************
+     * composite panel tests *
+     *************************/
 
     fluid.tests.assertPathsExist = function (root, paths) {
         fluid.each(paths, function (path) {
@@ -106,9 +106,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "range.max": "maximum"
             }
         },
-        model: {
-            value: ["subPanel1", "subPanel1a"]
-        },
         listeners: {
             afterRender: {
                 listener: "{compositePanel}.writeRecord",
@@ -137,9 +134,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "range.min": "minimum",
                 "range.max": "maximum"
             }
-        },
-        model: {
-            value: "subPanel2"
         },
         listeners: {
             afterRender: {
@@ -174,6 +168,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             heading: "Heading"
         },
         selectorsToIgnore: ["subPanel1", "subPanel2"],
+        model: {
+            "fluid_prefs_sub1": ["subPanel1", "subPanel1a"],
+            "fluid_prefs_sub2": "subPanel2"
+        },
         members: {
             fireRecord: {}
         },
@@ -225,7 +223,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     jqUnit.test("fluid.prefs.compositePanel", function () {
-        jqUnit.expect(14);
+        jqUnit.expect(16);
         var that = fluid.tests.compositePanel(".flc-prefs-compositePanel");
 
         var expectedSubPanel1Rules = {
@@ -294,8 +292,483 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The markup for subPanel1 should have rendered correctly", that.subPanel1.model.value[idx], actual);
         });
         jqUnit.assertEquals("The markup for subPanel2 should have rendered correctly", that.subPanel2.model.value, that.subPanel2.locate("header").text());
+        jqUnit.assertDeepEq("The model for the subPanel1 should be the same as the corresponding value in the compositePanel", that.model.fluid_prefs_sub1, that.subPanel1.model.value);
+        jqUnit.assertEquals("The model for the subPanel2 should be the same as the corresponding value in the compositePanel", that.model.fluid_prefs_sub2, that.subPanel2.model.value);
     });
 
+    /* FLUID-5201: renderer fluid decorator */
+
+    fluid.defaults("fluid.tests.panel.sliderTest1", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        selectors: {
+            textSize: ".flc-prefsEditor-min-val",
+            label: ".flc-prefsEditor-min-val-label",
+            smallIcon: ".flc-prefsEditor-min-val-smallIcon",
+            largeIcon: ".flc-prefsEditor-min-val-largeIcon",
+            multiplier: ".flc-prefsEditor-multiplier"
+        },
+        protoTree: {
+            label: {messagekey: "textSizeLabel"},
+            smallIcon: {messagekey: "textSizeSmallIcon"},
+            largeIcon: {messagekey: "textSizeLargeIcon"},
+            multiplier: {messagekey: "multiplier"},
+            textSize: {
+                decorators: {
+                    type: "fluid",
+                    func: "fluid.textfieldSlider"
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5201: renderer fluid decorator in a composite panel", function () {
+        jqUnit.expect(1);
+        var that = fluid.prefs.compositePanel(".fluid-5201", {
+            selectors: {
+                sliderTest1: ".flc-tests-panel-sliderTest1"
+            },
+            selectorsToIgnore: ["sliderTest1"],
+            components: {
+                sliderTest1: {
+                    type: "fluid.tests.panel.sliderTest1",
+                    createOnEvent: "initSubPanels",
+                    container: "{that}.dom.sliderTest1"
+                }
+            },
+            resources: {
+                template: {
+                    resourceText: '<ul><li class="flc-tests-panel-sliderTest1"></li></ul>'
+                },
+                sliderTest1: {
+                    resourceText: '<div class="flc-prefsEditor-min-val"><div class="flc-textfieldSlider-slider"></div><input id="min-val" class="flc-textfieldSlider-field" type="text" /><span class="flc-prefsEditor-multiplier"></span></div>'
+                }
+            }
+        });
+
+        // the first call to refreshView does the initial rendeirng which includes
+        // putting the component defined by the renderer decorator into the components block
+        that.refreshView();
+
+        // the second call to refresh view uses the new components block and should ignore
+        // the renderer decorator component which isn't a panel
+        that.refreshView();
+        jqUnit.assert("The composite panel containing a panel with renderer fluid decorator should have instantiated", that);
+    });
+
+    /* end FLUID-5201 */
+
+    /* FLUID-5202: rebase valuebinding in a renderer selection object */
+
+    fluid.defaults("fluid.tests.panel.dropdownTest1", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        preferenceMap: {
+            "learning.dropdownTest1": {
+                "model.ddVal": "default",
+                "controlValues.ddStrings": "enum"
+            }
+        },
+        strings: {
+            "dropdownTest-en": "English",
+            "dropdownTest-kl": "Klingon",
+            "dropdownTest-bj": "Bajoran",
+            "dropdownTest-rm": "Romulan",
+            "dropdownTest-cd": "Cardassian"
+        },
+        selectors: {
+            textFont: ".flc-prefsEditor-text-font",
+        },
+        stringArrayIndex: {
+            dd: ["dropdownTest-en", "dropdownTest-kl", "dropdownTest-bj", "dropdownTest-rm", "dropdownTest-cd"]
+        },
+        controlValues: {
+            ddStrings: ["en", "kl", "bj", "rm", "cd"]
+        },
+        protoTree: {
+            textFont: {
+                optionnames: "${{that}.stringBundle.dd}",
+                optionlist: "${{that}.options.controlValues.ddStrings}",
+                selection: "${ddVal}"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5202: rebase valuebinding in renderer selection object", function () {
+        var that = fluid.prefs.compositePanel(".fluid-5202", {
+            selectors: {
+                dropdownTest1: ".flc-tests-panel-dropdownTest1"
+            },
+            selectorsToIgnore: ["dropdownTest1"],
+            model: {
+                "learning_dropdownTest1": "kl"
+            },
+            components: {
+                dropdownTest1: {
+                    type: "fluid.tests.panel.dropdownTest1",
+                    createOnEvent: "initSubPanels",
+                    container: "{that}.dom.dropdownTest1"
+                }
+            },
+            resources: {
+                template: {
+                    resourceText: '<ul><li class="flc-tests-panel-dropdownTest1"></li></ul>'
+                },
+                dropdownTest1: {
+                    resourceText: '<select class="flc-prefsEditor-text-font" id="text-font"></select>'
+                }
+            }
+        });
+
+        var expectedTree = {
+            "children": [{
+                "ID": "dropdownTest1_textFont",
+                "componentType": "UISelect",
+                "optionlist": {
+                    "value": [
+                        "en",
+                        "kl",
+                        "bj",
+                        "rm",
+                        "cd"
+                    ]
+                },
+                "optionnames": {
+                    "value": [
+                        "English",
+                        "Klingon",
+                        "Bajoran",
+                        "Romulan",
+                        "Cardassian"
+                    ]
+                },
+                "selection": {
+                    "value": "kl",
+                    "valuebinding": "learning_dropdownTest1"
+                }
+            }]
+        };
+
+        jqUnit.assertDeepEq("The tree should be produced correctly, with all valuebinding rebased.", expectedTree, that.produceTree());
+    });
+
+    /* end FLUID-5202 */
+
+    /* FLUID-5200: rebase parentRelativeID */
+
+    fluid.defaults("fluid.tests.panel.radioTest1", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        preferenceMap: {
+            "learning.radioTest1": {
+                "model.radioVal": "default",
+                "controlValues.radioStrings": "enum"
+            }
+        },
+        selectors: {
+            frequencyRow: ".flc-prefsEditor-frequencyRow",
+            frequencyLabel: ".flc-prefsEditor-frequency-label",
+            frequencyInput: ".flc-prefsEditor-frequencyInput",
+            label: ".flc-prefsEditor-contrast-label"
+        },
+        strings: {
+            "radioTestKey-yes": "Yes",
+            "radioTestKey-no": "No",
+            "radioTestKey-maybe": "Maybe",
+            "radioTestKey-sometimes": "Sometimes"
+        },
+        stringArrayIndex: {
+            radioTestStrings: ["radioTestKey-yes", "radioTestKey-no", "radioTestKey-maybe", "radioTestKey-sometimes"]
+        },
+        controlValues: {
+            radioStrings: ["yes", "no", "maybe", "sometimes"]
+        },
+        repeatingSelectors: ["frequencyRow"],
+        protoTree: {
+            label: {messagekey: "radioTestLabelKey"},
+            expander: {
+                type: "fluid.renderer.selection.inputs",
+                rowID: "frequencyRow",
+                labelID: "frequencyLabel",
+                inputID: "frequencyInput",
+                selectID: "frequency-radio",
+                tree: {
+                    optionnames: "${{that}.stringBundle.radioTestStrings}",
+                    optionlist: "${{that}.options.controlValues.radioStrings}",
+                    selection: "${radioVal}"
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5200: rebase parentRelativeID", function () {
+        var that = fluid.prefs.compositePanel(".fluid-5200", {
+            selectors: {
+                radioTest1: ".flc-tests-panel-radioTest1"
+            },
+            selectorsToIgnore: ["radioTest1"],
+            model: {
+                "learning_radioTest1": "maybe"
+            },
+            components: {
+                radioTest1: {
+                    type: "fluid.tests.panel.radioTest1",
+                    createOnEvent: "initSubPanels",
+                    container: "{that}.dom.radioTest1"
+                }
+            },
+            resources: {
+                template: {
+                    resourceText: '<ul><li class="flc-tests-panel-radioTest1"></li></ul>'
+                },
+                radioTest1: {
+                    resourceText: '<div class="flc-prefsEditor-frequencyRow"><input type="radio" class="flc-prefsEditor-frequencyInput" name="frequency" id="frequency"/><label for="frequency" class="flc-prefsEditor-frequency-label"></label></div>'
+                }
+            }
+        });
+
+        var expectedTree = {
+            "children": [{
+                "ID": "radioTest1_label",
+                "componentType": "UIMessage",
+                "messagekey": {
+                    "value": "radioTestLabelKey"
+                }
+            }, {
+                "ID": "radioTest1_frequency-radio",
+                "componentType": "UISelect",
+                "optionlist": {
+                    "value": [
+                        "yes",
+                        "no",
+                        "maybe",
+                        "sometimes"
+                    ]
+                },
+                "optionnames": {
+                    "value": [
+                        "Yes",
+                        "No",
+                        "Maybe",
+                        "Sometimes"
+                    ]
+                },
+                "selection": {
+                    "value": "maybe",
+                    "valuebinding": "learning_radioTest1"
+                }
+            }, {
+                "ID": "radioTest1_frequencyRow:",
+                "children": [{
+                    "ID": "radioTest1_frequencyInput",
+                    "choiceindex": 0,
+                    "componentType": "UISelectChoice",
+                    "parentRelativeID": "..::radioTest1_frequency-radio"
+                }, {
+                    "ID": "radioTest1_frequencyLabel",
+                    "choiceindex": 0,
+                    "componentType": "UISelectChoice",
+                    "parentRelativeID": "..::radioTest1_frequency-radio"
+                }]
+            }, {
+                "ID": "radioTest1_frequencyRow:",
+                "children": [{
+                    "ID": "radioTest1_frequencyInput",
+                    "choiceindex": 1,
+                    "componentType": "UISelectChoice",
+                    "parentRelativeID": "..::radioTest1_frequency-radio"
+                }, {
+                    "ID": "radioTest1_frequencyLabel",
+                    "choiceindex": 1,
+                    "componentType": "UISelectChoice",
+                    "parentRelativeID": "..::radioTest1_frequency-radio"
+                }]
+            }, {
+                "ID": "radioTest1_frequencyRow:",
+                "children": [{
+                    "ID": "radioTest1_frequencyInput",
+                    "choiceindex": 2,
+                    "componentType": "UISelectChoice",
+                    "parentRelativeID": "..::radioTest1_frequency-radio"
+                }, {
+                    "ID": "radioTest1_frequencyLabel",
+                    "choiceindex": 2,
+                    "componentType": "UISelectChoice",
+                    "parentRelativeID": "..::radioTest1_frequency-radio"
+                }]
+            }, {
+                "ID": "radioTest1_frequencyRow:",
+                "children": [{
+                    "ID": "radioTest1_frequencyInput",
+                    "choiceindex": 3,
+                    "componentType": "UISelectChoice",
+                    "parentRelativeID": "..::radioTest1_frequency-radio"
+                }, {
+                    "ID": "radioTest1_frequencyLabel",
+                    "choiceindex": 3,
+                    "componentType": "UISelectChoice",
+                    "parentRelativeID": "..::radioTest1_frequency-radio"
+                }]
+            }]
+        };
+        jqUnit.assertDeepEq("The tree should be produced correctly, with all valuebinding rebased.", expectedTree, that.produceTree());
+    });
+
+    /* end FLUID-5200 */
+
+    /* FLUID-5203: support multiple text field sliders in one composite panel */
+
+    fluid.defaults("fluid.tests.panel.slider1", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        selectors: {
+            textSize: ".flc-prefsEditor-min-val",
+            label: ".flc-prefsEditor-min-val-label",
+            smallIcon: ".flc-prefsEditor-min-val-smallIcon",
+            largeIcon: ".flc-prefsEditor-min-val-largeIcon",
+            multiplier: ".flc-prefsEditor-multiplier"
+        },
+        range: {
+            min: 1,
+            max: 10
+        },
+        protoTree: {
+            label: {messagekey: "textSizeLabel"},
+            smallIcon: {messagekey: "textSizeSmallIcon"},
+            largeIcon: {messagekey: "textSizeLargeIcon"},
+            multiplier: {messagekey: "multiplier"},
+            textSize: {
+                decorators: {
+                    type: "fluid",
+                    func: "fluid.textfieldSlider",
+                    options: {
+                        rules: {
+                            "slider1": "value"
+                        },
+                        model: "{fluid.tests.panel.slider1}.model",
+                        sourceApplier: "{fluid.tests.panel.slider1}.applier",
+                        range: "{fluid.tests.panel.slider1}.options.range",
+                        sliderOptions: "{fluid.tests.panel.slider1}.options.sliderOptions"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.panel.slider2", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        selectors: {
+            textSize: ".flc-prefsEditor-min-val",
+            label: ".flc-prefsEditor-min-val-label",
+            smallIcon: ".flc-prefsEditor-min-val-smallIcon",
+            largeIcon: ".flc-prefsEditor-min-val-largeIcon",
+            multiplier: ".flc-prefsEditor-multiplier"
+        },
+        range: {
+            min: 0,
+            max: 20
+        },
+        protoTree: {
+            label: {messagekey: "textSizeLabel"},
+            smallIcon: {messagekey: "textSizeSmallIcon"},
+            largeIcon: {messagekey: "textSizeLargeIcon"},
+            multiplier: {messagekey: "multiplier"},
+            textSize: {
+                decorators: {
+                    type: "fluid",
+                    func: "fluid.textfieldSlider",
+                    options: {
+                        rules: {
+                            "slider2": "value"
+                        },
+                        model: "{fluid.tests.panel.slider2}.model",
+                        sourceApplier: "{fluid.tests.panel.slider2}.applier",
+                        range: "{fluid.tests.panel.slider2}.options.range",
+                        sliderOptions: "{fluid.tests.panel.slider2}.options.sliderOptions"
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5203: support multiple text field sliders in one composite panel", function () {
+        jqUnit.expect(4);
+        var that = fluid.prefs.compositePanel(".fluid-5203", {
+            selectors: {
+                slider1: ".flc-tests-panel-slider1",
+                slider2: ".flc-tests-panel-slider2"
+            },
+            selectorsToIgnore: ["slider1", "slider2"],
+            components: {
+                slider1: {
+                    type: "fluid.tests.panel.slider1",
+                    createOnEvent: "initSubPanels",
+                    container: "{that}.dom.slider1"
+                },
+                slider2: {
+                    type: "fluid.tests.panel.slider2",
+                    createOnEvent: "initSubPanels",
+                    container: "{that}.dom.slider2"
+                }
+            },
+            resources: {
+                template: {
+                    resourceText: '<ul><li class="flc-tests-panel-slider1"></li><li class="flc-tests-panel-slider2"></li></ul>'
+                },
+                slider1: {
+                    resourceText: '<div class="flc-prefsEditor-min-val"><div class="flc-textfieldSlider-slider"></div><input id="min-val" class="flc-textfieldSlider-field" type="text" /><span class="flc-prefsEditor-multiplier"></span></div>'
+                },
+                slider2: {
+                    resourceText: '<div class="flc-prefsEditor-min-val"><div class="flc-textfieldSlider-slider"></div><input id="min-val" class="flc-textfieldSlider-field" type="text" /><span class="flc-prefsEditor-multiplier"></span></div>'
+                }
+            }
+        });
+
+        // the first call to refreshView does the initial rendeirng which includes
+        // putting the component defined by the renderer decorator into the components block
+        that.refreshView();
+
+        // the second call to refresh view uses the new components block and should ignore
+        // the renderer decorator component which isn't a panel
+        that.refreshView();
+
+        jqUnit.assert("The initial state with the min value for slider1 has been set properly", 0, $(".flc-tests-panel-slider1 .flc-textfieldSlider-slider").slider("value"));
+        jqUnit.assert("The initial state with the min value for slider2 has been set properly", 1, $(".flc-tests-panel-slider2 .flc-textfieldSlider-slider").slider("value"));
+
+        that.slider1.applier.requestChange("value", 100);
+        that.slider2.applier.requestChange("value", 100);
+        that.refreshView();
+        jqUnit.assert("The max value for slider1 has been set properly", 10, $(".flc-tests-panel-slider1 .flc-textfieldSlider-slider").slider("value"));
+        jqUnit.assert("The max value for slider2 has been set properly", 100, $(".flc-tests-panel-slider2 .flc-textfieldSlider-slider").slider("value"));
+    });
+
+    /* end FLUID-5203 */
+
+    /* start FLUID-5210 */
+
+    fluid.defaults("fluid.tests.fluid_5210.compositePanel", {
+        gradeNames: ["fluid.prefs.compositePanel", "autoInit"],
+        selectors: {
+            originalSelector: ""
+        },
+        selectorsToIgnore: ["originalSelector"],
+        resources: {
+            template: {
+                resourceText: "<div></div>"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5210: merge selectorsToIgnore", function () {
+        var that = fluid.tests.fluid_5210.compositePanel(".fluid-5210", {
+            selectors: {
+                newSelector: ""
+            },
+            selectorsToIgnore: ["newSelector"]
+        });
+
+        var expected = ["originalSelector", "newSelector"];
+
+        jqUnit.assertDeepEq("The selectorsToIgnore should be merged", expected, that.options.selectorsToIgnore);
+    });
+
+    /* end FLUID-5210 */
 
     /*******************************************************************************
      * textFontPanel
@@ -450,7 +923,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /*******************************************************************************
      * Test functions shared by text field slider unit tests
      *******************************************************************************/
-    fluid.tests.testDefault = function (that, expectedNumOfOptions, expectedContrast) {
+    fluid.tests.testDefault = function (that) {
         return function () {
             var inputValue = that.container.find("input").val();
             jqUnit.assertEquals("The default input value has been set to the min value", that.options.range.min, inputValue);
@@ -473,7 +946,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     gradeNames: "fluid.prefs.defaultTestPanel",
                     model: {
-                        value: 1
+                        textSize: 1
                     }
                 }
             },
@@ -497,15 +970,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "{textSize}.refreshView"
                 }, {
                     listenerMaker: "fluid.tests.testDefault",
-                    makerArgs: ["{textSize}", "{that}.options.testOptions.expectedNumOfOptions", "{that}.options.testOptions.defaultValue"],
+                    makerArgs: ["{textSize}"],
                     event: "{textSize}.events.afterRender"
                 }, {
                     func: "fluid.tests.changeInput",
                     args: ["{textSize}.dom.textSize", "{that}.options.testOptions.newValue"]
                 }, {
                     listenerMaker: "fluid.tests.checkModel",
-                    makerArgs: ["value", "{that}.options.testOptions.newValue"],
-                    spec: {path: "value", priority: "last"},
+                    makerArgs: ["textSize", "{that}.options.testOptions.newValue"],
+                    spec: {path: "textSize", priority: "last"},
                     changeEvent: "{textSize}.applier.modelChanged"
                 }]
             }]
@@ -524,7 +997,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     gradeNames: "fluid.prefs.defaultTestPanel",
                     model: {
-                        value: 1
+                        lineSpace: 1
                     }
                 }
             },
@@ -548,15 +1021,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "{lineSpace}.refreshView"
                 }, {
                     listenerMaker: "fluid.tests.testDefault",
-                    makerArgs: ["{lineSpace}", "{that}.options.testOptions.expectedNumOfOptions", "{that}.options.testOptions.defaultValue"],
+                    makerArgs: ["{lineSpace}"],
                     event: "{lineSpace}.events.afterRender"
                 }, {
                     func: "fluid.tests.changeInput",
                     args: ["{lineSpace}.dom.textSize", "{that}.options.testOptions.newValue"]
                 }, {
                     listenerMaker: "fluid.tests.checkModel",
-                    makerArgs: ["value", "{that}.options.testOptions.newValue"],
-                    spec: {path: "value", priority: "last"},
+                    makerArgs: ["lineSpace", "{that}.options.testOptions.newValue"],
+                    spec: {path: "lineSpace", priority: "last"},
                     changeEvent: "{lineSpace}.applier.modelChanged"
                 }]
             }]
