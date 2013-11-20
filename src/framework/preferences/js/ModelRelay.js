@@ -47,7 +47,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 args: ["{that}.options.sourceApplier.modelChanged", "{that}.options.listenerNamespaces"]
             }
         },
-        sourceApplier: null,  // must be supplied by implementors
+        // sourceApplier: {external}.applier must be supplied by implementors
         rules: {}  // must be supplied by implementors, in format: "externalModelKey": "internalModelKey"
     });
 
