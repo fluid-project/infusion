@@ -219,7 +219,6 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.prefs.expandCompositePanels = function (auxSchema, compositePanelList, panelIndex, compositePanelCommonOptions, subPanelCommonOptions,
         compositePanelBasedOnSubCommonOptions, mappedDefaults) {
         var type = "panel";
-        var alwaysFlag = "always";
         var panelsToIgnore = [];
 
         fluid.each(compositePanelList, function (compositeDetail, compositeKey) {
@@ -248,7 +247,7 @@ var fluid_1_5 = fluid_1_5 || {};
             if (!fluid.isPrimitive(thisCompositeOptions.panels)) {
                 fluid.each(thisCompositeOptions.panels, function (subpanelArray, pref) {
                     subPanelList = subPanelList.concat(subpanelArray);
-                    if (pref !== alwaysFlag) {
+                    if (pref !== "always") {
                         fluid.each(subpanelArray, function (onePanel) {
                             fluid.set(subPanelRenderOn, onePanel, pref);
                         });
