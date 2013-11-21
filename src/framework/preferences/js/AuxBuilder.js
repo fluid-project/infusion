@@ -105,7 +105,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
             // Execute the mergeFunc function to retrieve the to-be-added value
             if (option.mergeFunc) {
-                var combinedPathArray = path.split(".").concat(key.split("."));
+                var combinedPathArray = fluid.model.parseEL(path).concat(fluid.model.parseEL(key));
                 value = fluid.invokeGlobalFunction(option.mergeFunc, [option.value, fluid.get(root, combinedPathArray)]);
             }
 
