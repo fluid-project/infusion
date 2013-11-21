@@ -62,7 +62,13 @@ var fluid_1_5 = fluid_1_5 || {};
      ***********************************************/
 
     fluid.defaults("fluid.prefs.panel", {
-        gradeNames: ["fluid.rendererComponent", "fluid.prefs.stringBundle", "fluid.prefs.modelRelay", "autoInit"]
+        gradeNames: ["fluid.rendererComponent", "fluid.prefs.stringBundle", "fluid.prefs.modelRelay", "autoInit"],
+        events: {
+            onDomBind: null
+        },
+        listeners: {
+            "onCreate.onDomBind": "{that}.events.onDomBind"
+        }
     });
 
     /***************************
@@ -79,7 +85,9 @@ var fluid_1_5 = fluid_1_5 || {};
             "{compositePanel}.events.subPanelAfterRender": {
                 listener: "{that}.events.afterRender",
                 args: ["{that}"]
-            }
+            },
+            "onCreate.onDomBind": null, // remove listener
+            "afterRender.onDomBind": "{that}.events.onDomBind"
         },
         rules: {
             expander: {
