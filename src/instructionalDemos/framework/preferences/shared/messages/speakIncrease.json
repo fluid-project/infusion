@@ -1,0 +1,18 @@
+{
+    "increasingHeader": "Increase Size",
+    "incSize": "Magnification",
+    "magFactorMultiplier": "Magnification Factor",
+    "cursorMultiplier": "Cursor Size",
+    "magPos-centre": "Centre",
+    "magPos-left": "Left",
+    "magPos-right": "Right",
+    "magPos-top": "Top",
+    "magPos-bottom": "Bottom",
+    "speakingHeader": "Visual Alternatives",
+    "speakText": "Speak Text",
+    "volLabel": "vol label",
+    "volMultiplier": "vol mult",
+    "wpmLabel": "wpm label",
+    "wpmMultiplier": "wpm mult"
+    
+}

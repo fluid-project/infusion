@@ -1,0 +1,236 @@
+/*
+Copyright 2013 OCAD University
+
+Licensed under the Educational Community License (ECL), Version 2.0 or the New
+BSD license. You may not use this file except in compliance with one these
+Licenses.
+
+You may obtain a copy of the ECL 2.0 License and BSD License at
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+*/
+
+// Declare dependencies
+/*global demo:true, fluid, jQuery*/
+
+// JSLint options
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+
+/*
+ * This file contains panels shared by all of the Preferences Framework demos.
+ * Each demo only uses some of these panels, not necessarily all.
+ */
+var demo = demo || {};
+(function ($, fluid) {
+    /**
+     * Subpanels
+     */
+    fluid.defaults("demo.panels.speak", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        preferenceMap: {
+            "demo.speakText": {
+                "model.speakText": "default"
+            }
+        },
+        selectors: {
+            bool: ".mpe-speakText",
+            choiceLabel: ".mpe-speakText-choice-label"
+        },
+        protoTree: {
+            choiceLabel: {messagekey: "speakText"},
+            bool: "${speakText}"
+        }
+    });
+    fluid.defaults("demo.panels.incSize", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        preferenceMap: {
+            "demo.increaseSize": {
+                "model.incSize": "default"
+            }
+        },
+        selectors: {
+            bool: ".mpe-incSize",
+            label: ".mpe-incSize-label",
+            choiceLabel: ".mpe-incSize-choice-label"
+        },
+        protoTree: {
+            choiceLabel: {messagekey: "incSize"},
+            bool: "${incSize}"
+        }
+    });
+
+    fluid.defaults("demo.panels.vol", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        preferenceMap: {
+            "demo.volume": {
+                // because of FLUID-5190, this must be "value" (for textfieldSlider only)
+                "model.value": "default",
+                "range.min": "minimum",
+                "range.max": "maximum"
+            }
+        },
+        selectors: {
+            vol: ".mpe-slider",
+            multiplier: ".mpe-slider-multiplier"
+        },
+        protoTree: {
+            label: {messagekey: "volLabel"},
+            multiplier: {messagekey: "volMultiplier"},
+            vol: {
+                decorators: {
+                    type: "fluid",
+                    func: "fluid.textfieldSlider",
+                    options: {
+                        rules: {
+                            "value": "value"
+                        },
+                        model: {
+                            value: "{demo.panels.vol}.model.value"
+                        },
+                        sourceApplier: "{demo.panels.vol}.applier",
+                        range: "{demo.panels.vol}.options.range",
+                        sliderOptions: "{demo.panels.vol}.options.sliderOptions"
+                    }
+                }
+            }
+        }
+    });
+    fluid.defaults("demo.panels.wpm", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        preferenceMap: {
+            "demo.wordsPerMinute": {
+                // because of FLUID-5190, this must be "value" (for textfieldSlider only)
+                "model.value": "default",
+                "range.min": "minimum",
+                "range.max": "maximum"
+            }
+        },
+        selectors: {
+            wpm: ".mpe-slider",
+            multiplier: ".mpe-slider-multiplier"
+        },
+        protoTree: {
+            label: {messagekey: "wpmLabel"},
+            multiplier: {messagekey: "wpmMultiplier"},
+            wpm: {
+                decorators: {
+                    type: "fluid",
+                    func: "fluid.textfieldSlider",
+                    options: {
+                        rules: {
+                            "value": "value"
+                        },
+                        model: {
+                            value: "{demo.panels.wpm}.model.value"
+                        },
+                        sourceApplier: "{demo.panels.wpm}.applier",
+                        range: "{demo.panels.wpm}.options.range",
+                        sliderOptions: "{demo.panels.wpm}.options.sliderOptions"
+                    }
+                }
+            }
+        }
+    });
+    fluid.defaults("demo.panels.cursor", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        preferenceMap: {
+            "demo.cursorSize": {
+                // because of FLUID-5190, this must be "value" (for textfieldSlider only)
+                "model.value": "default",
+                "range.min": "minimum",
+                "range.max": "maximum"
+            }
+        },
+        selectors: {
+            cursor: ".mpe-slider",
+            multiplier: ".mpe-slider-multiplier"
+        },
+        protoTree: {
+            multiplier: {messagekey: "cursorMultiplier"},
+            cursor: {
+                decorators: {
+                    type: "fluid",
+                    func: "fluid.textfieldSlider",
+                    options: {
+                        rules: {
+                            "value": "value"
+                        },
+                        model: {
+                            value: "{demo.panels.cursor}.model.value"
+                        },
+                        sourceApplier: "{demo.panels.cursor}.applier",
+                        range: "{demo.panels.cursor}.options.range",
+                        sliderOptions: "{demo.panels.cursor}.options.sliderOptions"
+                    }
+                }
+            }
+        }
+    });
+    fluid.defaults("demo.panels.magFactor", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        preferenceMap: {
+            "demo.magnification": {
+                // because of FLUID-5190, this must be "value" (for textfieldSlider only)
+                "model.value": "default",
+                "range.min": "minimum",
+                "range.max": "maximum"
+            }
+        },
+        selectors: {
+            magFactor: ".mpe-slider",
+            multiplier: ".mpe-slider-multiplier"
+        },
+        protoTree: {
+            multiplier: {messagekey: "magFactorMultiplier"},
+            magFactor: {
+                decorators: {
+                    type: "fluid",
+                    func: "fluid.textfieldSlider",
+                    options: {
+                        rules: {
+                            "value": "value"
+                        },
+                        model: {
+                            value: "{demo.panels.magFactor}.model.value"
+                        },
+                        sourceApplier: "{demo.panels.magFactor}.applier",
+                        range: "{demo.panels.magFactor}.options.range",
+                        sliderOptions: "{demo.panels.magFactor}.options.sliderOptions"
+                    }
+                }
+            }
+        }
+    });
+    fluid.defaults("demo.panels.magPos", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        preferenceMap: {
+            "demo.magnifierPosition": {
+                "model.magPos": "default",
+                "controlValues.magPos": "enum"
+            }
+        },
+        selectors: {
+            magPosRow: ".mpe-radioRow",
+            magPosLabel: ".mpe-radioLabel",
+            magPosInput: ".mpe-radioInput"
+        },
+        stringArrayIndex: {
+            magPos: ["magPos-centre", "magPos-left", "magPos-right", "magPos-top", "magPos-bottom"]
+        },
+        repeatingSelectors: ["magPosRow"],
+        protoTree: {
+            expander: {
+                type: "fluid.renderer.selection.inputs",
+                rowID: "magPosRow",
+                labelID: "magPosLabel",
+                inputID: "magPosInput",
+                selectID: "magnifierPosition",
+                tree: {
+                    optionnames: "${{that}.stringBundle.magPos}",
+                    optionlist: "${{that}.options.controlValues.magPos}",
+                    selection: "${magPos}"
+                }
+            }
+        }
+    });
+
+})(jQuery, fluid);
