@@ -89,22 +89,33 @@ var fluid_1_5 = fluid_1_5 || {};
         var typeObject = fluid.get(root, path);
         var opts = {};
 
-        fluid.each(commonOptions, function (value, key) {
+        fluid.each(commonOptions, function (option, key) {
+            var value;
             var canAdd = true;
 
-            // Execute the validation function to decide if this common option should be added
-            if (value.func) {
-                canAdd = fluid.invokeGlobalFunction(value.func, [root, path, commonOptions, templateValues]);
-                value = value.value;
+            if (option.func || option.mergePolicy) {
+                // Execute the validation function to decide if this common option should be added
+                if (option.func) {
+                    canAdd = fluid.invokeGlobalFunction(option.func, [root, path, commonOptions, templateValues]);
+                    value = option.value;
+                }
+                // Execute the mergePolicy function to retrieve the to-be-added value
+                if (option.mergePolicy) {
+                    var combinedPathArray = path.split(".").concat(key.split("."));
+                    value = fluid.invokeGlobalFunction(option.mergePolicy, [option.value, fluid.get(root, combinedPathArray)]);
+                }
+            } else {
+                value = option;
             }
 
             if (canAdd) {
                 key = fluid.stringTemplate(key, templateValues);
                 value = typeof (value) === "string" ? fluid.stringTemplate(value, templateValues) : value;
+
                 fluid.set(opts, key, value);
             }
         });
-    
+
         if (typeObject) {
             $.extend(true, root[path], $.extend(true, typeObject, opts));
         }
@@ -116,6 +127,14 @@ var fluid_1_5 = fluid_1_5 || {};
         var componentType = fluid.get(root, [path, "type"]);
         var componentOptions = fluid.defaults(componentType);
         return (fluid.hasGrade(componentOptions, "fluid.viewComponent") || fluid.hasGrade(componentOptions, "fluid.rendererComponent"));
+    };
+
+    fluid.prefs.mergeArray = function (target, source) {
+        target = fluid.makeArray(target);
+        source = fluid.makeArray(source);
+
+        target = target.concat(source);
+        return target;
     };
 
     fluid.prefs.checkPrimarySchema = function (primarySchema, prefKey) {
@@ -216,7 +235,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return expandedSchema;
     };
 
-    fluid.prefs.expandCompositePanels = function (auxSchema, compositePanelList, panelIndex, compositePanelCommonOptions, subPanelCommonOptions,
+    fluid.prefs.expandCompositePanels = function (auxSchema, compositePanelList, panelIndex, panelCommonOptions, subPanelCommonOptions,
         compositePanelBasedOnSubCommonOptions, mappedDefaults) {
         var type = "panel";
         var panelsToIgnore = [];
@@ -303,7 +322,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
             components[compositeKey] = compositePanelOptions;
 
-            fluid.prefs.addCommonOptions(components, compositeKey, compositePanelCommonOptions, {
+            fluid.prefs.addCommonOptions(components, compositeKey, panelCommonOptions, {
                 prefKey: compositeKey
             });
 
@@ -326,7 +345,7 @@ var fluid_1_5 = fluid_1_5 || {};
         var compositePanelList = fluid.get(auxSchema, "groups");
         if (compositePanelList) {
             fluid.prefs.expandCompositePanels(auxSchema, compositePanelList, fluid.get(indexes, "panel"),
-                fluid.get(elementCommonOptions, "compositePanel"), fluid.get(elementCommonOptions, "subPanel"),
+                fluid.get(elementCommonOptions, "panel"), fluid.get(elementCommonOptions, "subPanel"),
                 fluid.get(elementCommonOptions, "compositePanelBasedOnSub"), mappedDefaults);
         }
 
@@ -411,13 +430,10 @@ var fluid_1_5 = fluid_1_5 || {};
             panel: {
                 "createOnEvent": "onPrefsEditorMarkupReady",
                 "container": "{prefsEditor}.dom.%prefKey",
-                "options.gradeNames": "fluid.prefs.prefsEditorConnections",
-                "options.resources.template": "{templateLoader}.resources.%prefKey"
-            },
-            compositePanel: {
-                "createOnEvent": "onPrefsEditorMarkupReady",
-                "container": "{prefsEditor}.dom.%prefKey",
-                "options.gradeNames": ["fluid.prefs.prefsEditorConnections", "fluid.prefs.compositePanel"],
+                "options.gradeNames": {
+                    "value" : "fluid.prefs.prefsEditorConnections",
+                    "mergePolicy": "fluid.prefs.mergeArray"  // specify the function that merges this common option with what's from the aux schema
+                },
                 "options.resources.template": "{templateLoader}.resources.%prefKey"
             },
             compositePanelBasedOnSub: {
@@ -430,8 +446,8 @@ var fluid_1_5 = fluid_1_5 || {};
             enactor: {
                 // Conditional handling. Add value to the path only if the execution of func returns true.
                 "container": {
-                    value: "{uiEnhancer}.container",
-                    func: "fluid.prefs.containerNeeded"
+                    "value": "{uiEnhancer}.container",
+                    "func": "fluid.prefs.containerNeeded"
                 },
                 "options.sourceApplier": "{uiEnhancer}.applier"
             }

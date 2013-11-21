@@ -224,13 +224,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         panel: {
             "createOnEvent": "onPrefsEditorMarkupReady",
             "container": "prefsEditor.dom.%prefKey",
-            "options.gradeNames": "fluid.prefs.prefsEditorConnections",
-            "options.resources.template": "templateLoader.resources.%prefKey"
-        },
-        compositePanel: {
-            "createOnEvent": "onPrefsEditorMarkupReady",
-            "container": "prefsEditor.dom.%prefKey",
-            "options.gradeNames": ["fluid.prefs.prefsEditorConnections", "fluid.prefs.compositePanel"],
+            "options.gradeNames": {
+                "value": "fluid.prefs.prefsEditorConnections",
+                "mergePolicy": "fluid.prefs.mergeArray"
+            },
             "options.resources.template": "templateLoader.resources.%prefKey"
         },
         compositePanelBasedOnSub: {
@@ -285,6 +282,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "panel": {
                         "type": "fluid.prefs.panel.contrast",
                         "container": ".flc-prefsEditor-contrast",  // the css selector in the template where the panel is rendered
+                        "gradeNames": ["fluid.tests.panelGrade"],
                         "classnameMap": {
                             "default": "fl-theme-prefsEditor-default",
                             "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
@@ -320,6 +318,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "panel": {
                         "type": "fluid.prefs.panel.contrast",
                         "container": ".flc-prefsEditor-contrast",  // the css selector in the template where the panel is rendered
+                        "gradeNames": ["fluid.tests.panelGrade"],
                         "classnameMap": {
                             "default": "fl-theme-prefsEditor-default",
                             "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
@@ -341,7 +340,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             container: "prefsEditor.dom.fluid_prefs_panel_contrast",
                             createOnEvent: "onPrefsEditorMarkupReady",
                             options: {
-                                gradeNames: "fluid.prefs.prefsEditorConnections",
+                                gradeNames: ["fluid.prefs.prefsEditorConnections", "fluid.tests.panelGrade"],
                                 classnameMap: {
                                     "default": "fl-theme-prefsEditor-default",
                                     "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
@@ -663,7 +662,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "container": "prefsEditor.dom.fluid_prefs_panel_textSize",
                     "createOnEvent": "onPrefsEditorMarkupReady",
                     options: {
-                        gradeNames: "fluid.prefs.prefsEditorConnections",
+                        gradeNames: ["fluid.prefs.prefsEditorConnections"],
                         model: {
                             textSize: 1
                         },
@@ -800,7 +799,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             "container": "prefsEditor.dom.fluid_prefs_panel_textSize",
                             "createOnEvent": "onPrefsEditorMarkupReady",
                             options: {
-                                gradeNames: "fluid.prefs.prefsEditorConnections",
+                                gradeNames: ["fluid.prefs.prefsEditorConnections"],
                                 model: {
                                     textSize: 1
                                 },
@@ -821,7 +820,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             "container": "prefsEditor.dom.fluid_prefs_panel_otherTextSize",
                             "createOnEvent": "onPrefsEditorMarkupReady",
                             options: {
-                                gradeNames: "fluid.prefs.prefsEditorConnections",
+                                gradeNames: ["fluid.prefs.prefsEditorConnections"],
                                 model: {
                                     value: 1
                                 },
@@ -890,7 +889,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             "container": "prefsEditor.dom.fluid_prefs_panel_oneForManyPrefs",
                             "createOnEvent": "onPrefsEditorMarkupReady",
                             options: {
-                                gradeNames: "fluid.prefs.prefsEditorConnections",
+                                gradeNames: ["fluid.prefs.prefsEditorConnections"],
                                 model: {
                                     links: false,
                                     inputsLarger: false
@@ -953,7 +952,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             "container": "prefsEditor.dom.fluid_prefs_panel_textSize",
                             "createOnEvent": "onPrefsEditorMarkupReady",
                             options: {
-                                gradeNames: "fluid.prefs.prefsEditorConnections",
+                                gradeNames: ["fluid.prefs.prefsEditorConnections"],
                                 model: {
                                     textSize: 1
                                 },
@@ -1258,7 +1257,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "container": "prefsEditor.dom.combinedBoth",
                     "createOnEvent": "onPrefsEditorMarkupReady",
                     options: {
-                        gradeNames: ["fluid.prefs.prefsEditorConnections", "fluid.prefs.compositePanel"],
+                        gradeNames: ["fluid.prefs.prefsEditorConnections"],
                         extraOption: 1,
                         resources: {
                             template: "templateLoader.resources.combinedBoth",
@@ -1329,8 +1328,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.test("Test expanding composite panel groups fluid.prefs.expandCompositePanels()", function () {
         var expandedCompositePanel = fluid.prefs.expandCompositePanels(fluid.tests.auxSchema.compositePanelSchema, fluid.tests.auxSchema.compositePanelSchema.groups, fluid.tests.auxSchema.panelIndex,
-                fluid.get(fluid.tests.elementCommonOptions, "compositePanel"), fluid.get(fluid.tests.elementCommonOptions, "subPanel"),
-                fluid.get(fluid.tests.elementCommonOptions, "compositePanelBasedOnSub"), fluid.tests.auxSchema.compositePanelMappedDefaults);
+                fluid.get(fluid.tests.elementCommonOptions, "panel"), fluid.get(fluid.tests.elementCommonOptions, "subPanel"), fluid.get(fluid.tests.elementCommonOptions, "compositePanelBasedOnSub"),
+                fluid.tests.auxSchema.compositePanelMappedDefaults);
 
         jqUnit.assertDeepEq("The auxiliary schema for a composite panel has been parsed correctly", fluid.tests.auxSchema.expandedComposite, expandedCompositePanel);
     });
@@ -1505,7 +1504,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "container": "prefsEditor.dom.combinedBoth2",
                     "createOnEvent": "onPrefsEditorMarkupReady",
                     options: {
-                        gradeNames: ["fluid.prefs.prefsEditorConnections", "fluid.prefs.compositePanel"],
+                        gradeNames: ["fluid.prefs.prefsEditorConnections"],
                         extraOption: 2,
                         resources: {
                             template: "templateLoader.resources.combinedBoth2",
@@ -1578,7 +1577,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.test("Test expanding multiple composite panel groups with fluid.prefs.expandCompositePanels()", function () {
         var expandedCompositePanel = fluid.prefs.expandCompositePanels(fluid.tests.auxSchema.multiCompositePanelSchema, fluid.tests.auxSchema.multiCompositePanelSchema.groups,
-                fluid.tests.auxSchema.multiPanelIndex, fluid.get(fluid.tests.elementCommonOptions, "compositePanel"), fluid.get(fluid.tests.elementCommonOptions, "subPanel"),
+                fluid.tests.auxSchema.multiPanelIndex, fluid.get(fluid.tests.elementCommonOptions, "panel"), fluid.get(fluid.tests.elementCommonOptions, "subPanel"),
                 fluid.get(fluid.tests.elementCommonOptions, "compositePanelBasedOnSub"), fluid.tests.auxSchema.multiCompositePanelMappedDefaults);
 
         jqUnit.assertDeepEq("The auxiliary schema for multiple composite panels has been parsed correctly", fluid.tests.auxSchema.expandedMultiComposite, expandedCompositePanel);
@@ -1658,6 +1657,147 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             mappedDefaults: $.extend(true, {}, fluid.tests.auxSchema.mappedDefaults, fluid.tests.auxSchema.compositePanelMappedDefaults)
         });
         jqUnit.assertDeepEq("The full auxiliary schema with a composite panel has been parsed correctly", expandedFull, auxBuilder.options.expandedAuxSchema);
+    });
+
+    // FLUID-5213: test options for adding common options
+    fluid.tests.returnTrue = function () {
+        return true;
+    };
+
+    fluid.tests.returnFalse = function () {
+        return false;
+    };
+
+    fluid.tests.merge = function (target, source) {
+        return target + " " + source;
+    };
+
+    jqUnit.test("FLUID-5213: Test fluid.prefs.addCommonOptions()", function () {
+        var addCommonOptionsTests = {
+            test1: {
+                root: {},
+                path: "path",
+                commonOptions: {
+                    "subPath1": "subValue1"
+                },
+                templateValues: null,
+                expected: {}
+            },
+            test2: {
+                root: {
+                    path: {}
+                },
+                path: "path",
+                commonOptions: {
+                    "subPath1": {
+                        "key": "value"
+                    }
+                },
+                templateValues: null,
+                expected: {
+                    path: {
+                        subPath1: {
+                            "key": "value"
+                        }
+                    }
+                }
+            },
+            test3: {
+                root: {
+                    path: {}
+                },
+                path: "path",
+                commonOptions: {
+                    "subPath1.subPath2": "subValue1"
+                },
+                templateValues: null,
+                expected: {
+                    path: {
+                        subPath1: {
+                            subPath2: "subValue1"
+                        }
+                    }
+                }
+            },
+            test4: {
+                root: {
+                    path: {}
+                },
+                path: "path",
+                commonOptions: {
+                    "subPath1": {
+                        value: "subValue1",
+                        func: "fluid.tests.returnTrue"
+                    }
+                },
+                templateValues: null,
+                expected: {
+                    path: {
+                        subPath1: "subValue1"
+                    }
+                }
+            },
+            test5: {
+                root: {
+                    path: {}
+                },
+                path: "path",
+                commonOptions: {
+                    "subPath1": {
+                        value: "subValue1",
+                        func: "fluid.tests.returnFalse"
+                    }
+                },
+                templateValues: null,
+                expected: {
+                    path: {
+                    }
+                }
+            },
+            test6: {
+                root: {
+                    path: {
+                        subPath1: "existing"
+                    }
+                },
+                path: "path",
+                commonOptions: {
+                    "subPath1": {
+                        value: "subValue1",
+                        mergePolicy: "fluid.tests.merge"
+                    }
+                },
+                templateValues: null,
+                expected: {
+                    path: {
+                        subPath1: "subValue1 existing"
+                    }
+                }
+            },
+            test7: {
+                root: {
+                    path: {
+                    }
+                },
+                path: "path",
+                commonOptions: {
+                    "%key": "value is %value"
+                },
+                templateValues: {
+                    "key": "subKey",
+                    "value": "subValue"
+                },
+                expected: {
+                    path: {
+                        "subKey": "value is subValue"
+                    }
+                }
+            }
+        };
+
+        fluid.each(addCommonOptionsTests, function (test) {
+            jqUnit.assertDeepEq("The result is expected", test.expected, fluid.prefs.addCommonOptions(test.root, test.path, test.commonOptions, test.templateValues));
+        });
     });
 
     $(document).ready(function () {
