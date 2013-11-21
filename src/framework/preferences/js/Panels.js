@@ -295,9 +295,9 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.prefs.compositePanel.handleRenderOnPreference = function (that, value, createEvent, componentNames) {
         componentNames = fluid.makeArray(componentNames);
+        that.conditionalCreateEvent(value, createEvent);
         fluid.each(componentNames, function (componentName) {
             var comp = that[componentName];
-            that.conditionalCreateEvent(value, createEvent);
             if (!value && comp) {
                 comp.destroy();
             }
