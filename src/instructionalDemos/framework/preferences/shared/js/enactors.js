@@ -15,17 +15,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
-/*
- * This file contains enactors shared by all of the Preferences Framework demos.
- * Each demo only uses some of these enactors, not necessarily all.
- */
 
 var demo = demo || {};
 (function ($, fluid) {
 
     /**
-     * Enactors
+     * These enactors are shared by many of the Preferences Framework demos.
+     * Each demo only uses some of these enactors, as specified in the demo's auxiliary schema.
+     *
+     * These enactors do nothing but display a console message when the model changes.
+     * In the real world, enactors would do more, depending on what they're for.
      */
+
     fluid.defaults("demo.enactors.speak", {
         gradeNames: ["fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
@@ -40,6 +41,7 @@ var demo = demo || {};
             }
         }
     });
+
     fluid.defaults("demo.enactors.incSize", {
         gradeNames: ["fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
@@ -54,66 +56,67 @@ var demo = demo || {};
             }
         }
     });
+
     fluid.defaults("demo.enactors.vol", {
         gradeNames: ["fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
             "demo.volume": {
-                // because of FLUID-5190, this must be "value" (for textfieldSlider only)
-                "model.value": "default"
+                "model.volume": "default"
             }
         },
         modelListeners: {
-            "value": {
+            "volume": {
                 funcName: "demo.logModelValue",
                 args: ["vol", "{change}.value"]
             }
         }
     });
+
     fluid.defaults("demo.enactors.wpm", {
         gradeNames: ["fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
             "demo.wordsPerMinute": {
-                // because of FLUID-5190, this must be "value" (for textfieldSlider only)
-                "model.value": "default"
+                "model.wordsPerMin": "default"
             }
         },
         modelListeners: {
-            "value": {
+            "wordsPerMin": {
                 funcName: "demo.logModelValue",
                 args: ["wpm", "{change}.value"]
             }
         }
     });
+
     fluid.defaults("demo.enactors.cursor", {
         gradeNames: ["fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
             "demo.cursorSize": {
-                // because of FLUID-5190, this must be "value" (for textfieldSlider only)
-                "model.value": "default"
+                "model.cursorMult": "default"
             }
         },
         modelListeners: {
-            "value": {
+            "cursorMult": {
                 funcName: "demo.logModelValue",
                 args: ["cursor", "{change}.value"]
             }
         }
     });
+
     fluid.defaults("demo.enactors.magFactor", {
         gradeNames: ["fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
             "demo.magnification": {
-                // because of FLUID-5190, this must be "value" (for textfieldSlider only)
-                "model.value": "default"
+                "model.mag": "default"
             }
         },
         modelListeners: {
-            "value": {
+            "mag": {
                 funcName: "demo.logModelValue",
                 args: ["magFactor", "{change}.value"]
             }
         }
     });
+
     fluid.defaults("demo.enactors.magPos", {
         gradeNames: ["fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
@@ -128,6 +131,5 @@ var demo = demo || {};
             }
         }
     });
-
 
 })(jQuery, fluid);

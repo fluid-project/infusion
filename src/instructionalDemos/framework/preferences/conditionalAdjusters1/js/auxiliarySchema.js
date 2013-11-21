@@ -46,21 +46,6 @@ var demo = demo || {};
                         "always": ["incSize"],
                         "demo.increaseSize": ["cursor", "magFactor", "magPos"]
                     }
-/*
-                },
-                speakIncrease: {
-                    "container": ".mpe-speakIncrease",
-                    "template": "%prefix/speakIncrease.html",
-                    "message": "%prefix/speakIncrease.json",
-                    "type": "demo.panels.speakIncrease",
-                    "panels": {
-                        "always": ["speak", "incSize"],
-                        "demo.speakText": ["vol", "wpm"],
-                        "demo.increaseSize": ["cursor", "magFactor", "magPos"]
-                    }
-                    // also to try: the 'old' format for panels i.e. just an array of panel names, if there are no conditional panels relevant
-//                    "panels": ["speak", "incSize", "vol", "wpm", "cursor", "magFactor", "magPos"]
-*/
                 }
             },
             speak: {

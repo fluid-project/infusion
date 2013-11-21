@@ -15,17 +15,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
-/*
- * This file defines preferences shared by all of the Preferences Framework demos.
- * Each demo only uses some of these preferences, not necessarily all.
- */
-
 var demo = demo || {};
 (function () {
 
     /**
-     * Primary Schema
+     * This Primary Schema defines preferences shared by all of the Preferences Framework demos.
+     * Each demo only uses some of these preferences, as specified by the demo's auxiliary schema.
      */
+
     demo.primarySchema = {
         "demo.speakText": {
             "type": "boolean",

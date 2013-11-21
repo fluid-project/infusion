@@ -15,14 +15,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
-/*
- * This file contains panels shared by all of the Preferences Framework demos.
- * Each demo only uses some of these panels, not necessarily all.
- */
 var demo = demo || {};
 (function ($, fluid) {
+
     /**
-     * Subpanels
+     * These panels are subpanels shared by a number of the Preferences Framework demos.
+     * Each demo only uses some of these panels, as specified in the demo's auxiliary schema.
+     */
+
+    /**
+     * The "speak text" preference is a boolean, rendered as an on/off switch.
      */
     fluid.defaults("demo.panels.speak", {
         gradeNames: ["fluid.prefs.panel", "autoInit"],
@@ -40,6 +42,10 @@ var demo = demo || {};
             bool: "${speakText}"
         }
     });
+
+    /**
+     * The "increase size" preference is a boolean, rendered as an on/off switch.
+     */
     fluid.defaults("demo.panels.incSize", {
         gradeNames: ["fluid.prefs.panel", "autoInit"],
         preferenceMap: {
@@ -58,12 +64,14 @@ var demo = demo || {};
         }
     });
 
+    /**
+     * The "volume" preference is a range, rendered as a slider.
+     */
     fluid.defaults("demo.panels.vol", {
         gradeNames: ["fluid.prefs.panel", "autoInit"],
         preferenceMap: {
             "demo.volume": {
-                // because of FLUID-5190, this must be "value" (for textfieldSlider only)
-                "model.value": "default",
+                "model.volume": "default",
                 "range.min": "minimum",
                 "range.max": "maximum"
             }
@@ -81,10 +89,12 @@ var demo = demo || {};
                     func: "fluid.textfieldSlider",
                     options: {
                         rules: {
-                            "value": "value"
+                            // the textfieldSlider uses an internal model path of 'value',
+                            // so we must relate that to our model path
+                            "volume": "value"
                         },
                         model: {
-                            value: "{demo.panels.vol}.model.value"
+                            value: "{demo.panels.vol}.model.volume"
                         },
                         sourceApplier: "{demo.panels.vol}.applier",
                         range: "{demo.panels.vol}.options.range",
@@ -94,12 +104,15 @@ var demo = demo || {};
             }
         }
     });
+
+    /**
+     * The "words per minute" preference is a range, rendered as a slider.
+     */
     fluid.defaults("demo.panels.wpm", {
         gradeNames: ["fluid.prefs.panel", "autoInit"],
         preferenceMap: {
             "demo.wordsPerMinute": {
-                // because of FLUID-5190, this must be "value" (for textfieldSlider only)
-                "model.value": "default",
+                "model.wordsPerMin": "default",
                 "range.min": "minimum",
                 "range.max": "maximum"
             }
@@ -117,10 +130,12 @@ var demo = demo || {};
                     func: "fluid.textfieldSlider",
                     options: {
                         rules: {
-                            "value": "value"
+                            // the textfieldSlider uses an internal model path of 'value',
+                            // so we must relate that to our model path
+                            "wordsPerMin": "value"
                         },
                         model: {
-                            value: "{demo.panels.wpm}.model.value"
+                            value: "{demo.panels.wpm}.model.wordsPerMin"
                         },
                         sourceApplier: "{demo.panels.wpm}.applier",
                         range: "{demo.panels.wpm}.options.range",
@@ -130,12 +145,15 @@ var demo = demo || {};
             }
         }
     });
+
+    /**
+     * The "cursor size" preference is a range, rendered as a slider.
+     */
     fluid.defaults("demo.panels.cursor", {
         gradeNames: ["fluid.prefs.panel", "autoInit"],
         preferenceMap: {
             "demo.cursorSize": {
-                // because of FLUID-5190, this must be "value" (for textfieldSlider only)
-                "model.value": "default",
+                "model.cursorMult": "default",
                 "range.min": "minimum",
                 "range.max": "maximum"
             }
@@ -152,10 +170,12 @@ var demo = demo || {};
                     func: "fluid.textfieldSlider",
                     options: {
                         rules: {
-                            "value": "value"
+                            // the textfieldSlider uses an internal model path of 'value',
+                            // so we must relate that to our model path
+                            "cursorMult": "value"
                         },
                         model: {
-                            value: "{demo.panels.cursor}.model.value"
+                            value: "{demo.panels.cursor}.model.cursorMult"
                         },
                         sourceApplier: "{demo.panels.cursor}.applier",
                         range: "{demo.panels.cursor}.options.range",
@@ -165,12 +185,15 @@ var demo = demo || {};
             }
         }
     });
+
+    /**
+     * The "magnification factor" preference is a range, rendered as a slider.
+     */
     fluid.defaults("demo.panels.magFactor", {
         gradeNames: ["fluid.prefs.panel", "autoInit"],
         preferenceMap: {
             "demo.magnification": {
-                // because of FLUID-5190, this must be "value" (for textfieldSlider only)
-                "model.value": "default",
+                "model.mag": "default",
                 "range.min": "minimum",
                 "range.max": "maximum"
             }
@@ -187,10 +210,12 @@ var demo = demo || {};
                     func: "fluid.textfieldSlider",
                     options: {
                         rules: {
-                            "value": "value"
+                            // the textfieldSlider uses an internal model path of 'value',
+                            // so we must relate that to our model path
+                            "mag": "value"
                         },
                         model: {
-                            value: "{demo.panels.magFactor}.model.value"
+                            value: "{demo.panels.magFactor}.model.mag"
                         },
                         sourceApplier: "{demo.panels.magFactor}.applier",
                         range: "{demo.panels.magFactor}.options.range",
@@ -200,6 +225,10 @@ var demo = demo || {};
             }
         }
     });
+
+    /**
+     * The "magnifier position" preference is an enumeration, rendered as a set of radio buttons.
+     */
     fluid.defaults("demo.panels.magPos", {
         gradeNames: ["fluid.prefs.panel", "autoInit"],
         preferenceMap: {
