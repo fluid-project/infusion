@@ -86,26 +86,27 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.prefs.addCommonOptions = function (root, path, commonOptions, templateValues) {
         templateValues = templateValues || {};
 
-        var typeObject = fluid.get(root, path);
+        var existingValue = fluid.get(root, path);
+
+        if (!existingValue) {
+            return root;
+        }
+
         var opts = {};
 
         fluid.each(commonOptions, function (option, key) {
-            var value;
+            var value = option;
             var canAdd = true;
 
-            if (option.func || option.mergePolicy) {
-                // Execute the validation function to decide if this common option should be added
-                if (option.func) {
-                    canAdd = fluid.invokeGlobalFunction(option.func, [root, path, commonOptions, templateValues]);
-                    value = option.value;
-                }
-                // Execute the mergePolicy function to retrieve the to-be-added value
-                if (option.mergePolicy) {
-                    var combinedPathArray = path.split(".").concat(key.split("."));
-                    value = fluid.invokeGlobalFunction(option.mergePolicy, [option.value, fluid.get(root, combinedPathArray)]);
-                }
-            } else {
-                value = option;
+            // Execute the validation function to decide if this common option should be added
+            if (option.validationFunc) {
+                canAdd = fluid.invokeGlobalFunction(option.validationFunc, [root, path, commonOptions, templateValues]);
+                value = option.value;
+            }
+            // Execute the mergeFunc function to retrieve the to-be-added value
+            if (option.mergeFunc) {
+                var combinedPathArray = path.split(".").concat(key.split("."));
+                value = fluid.invokeGlobalFunction(option.mergeFunc, [option.value, fluid.get(root, combinedPathArray)]);
             }
 
             if (canAdd) {
@@ -116,9 +117,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         });
 
-        if (typeObject) {
-            $.extend(true, root[path], $.extend(true, typeObject, opts));
-        }
+        root[path] = fluid.merge({}, root[path], existingValue, opts);
 
         return root;
     };
@@ -127,14 +126,6 @@ var fluid_1_5 = fluid_1_5 || {};
         var componentType = fluid.get(root, [path, "type"]);
         var componentOptions = fluid.defaults(componentType);
         return (fluid.hasGrade(componentOptions, "fluid.viewComponent") || fluid.hasGrade(componentOptions, "fluid.rendererComponent"));
-    };
-
-    fluid.prefs.mergeArray = function (target, source) {
-        target = fluid.makeArray(target);
-        source = fluid.makeArray(source);
-
-        target = target.concat(source);
-        return target;
     };
 
     fluid.prefs.checkPrimarySchema = function (primarySchema, prefKey) {
@@ -432,7 +423,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 "container": "{prefsEditor}.dom.%prefKey",
                 "options.gradeNames": {
                     "value" : "fluid.prefs.prefsEditorConnections",
-                    "mergePolicy": "fluid.prefs.mergeArray"  // specify the function that merges this common option with what's from the aux schema
+                    "mergeFunc": "fluid.arrayConcatPolicy"
                 },
                 "options.resources.template": "{templateLoader}.resources.%prefKey"
             },
@@ -447,7 +438,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 // Conditional handling. Add value to the path only if the execution of func returns true.
                 "container": {
                     "value": "{uiEnhancer}.container",
-                    "func": "fluid.prefs.containerNeeded"
+                    "validationFunc": "fluid.prefs.containerNeeded"
                 },
                 "options.sourceApplier": "{uiEnhancer}.applier"
             }

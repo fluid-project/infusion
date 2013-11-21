@@ -226,7 +226,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "container": "prefsEditor.dom.%prefKey",
             "options.gradeNames": {
                 "value": "fluid.prefs.prefsEditorConnections",
-                "mergePolicy": "fluid.prefs.mergeArray"
+                "mergeFunc": "fluid.arrayConcatPolicy"
             },
             "options.resources.template": "templateLoader.resources.%prefKey"
         },
@@ -1727,7 +1727,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 commonOptions: {
                     "subPath1": {
                         value: "subValue1",
-                        func: "fluid.tests.returnTrue"
+                        validationFunc: "fluid.tests.returnTrue"
                     }
                 },
                 templateValues: null,
@@ -1745,7 +1745,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 commonOptions: {
                     "subPath1": {
                         value: "subValue1",
-                        func: "fluid.tests.returnFalse"
+                        validationFunc: "fluid.tests.returnFalse"
                     }
                 },
                 templateValues: null,
@@ -1764,7 +1764,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 commonOptions: {
                     "subPath1": {
                         value: "subValue1",
-                        mergePolicy: "fluid.tests.merge"
+                        mergeFunc: "fluid.tests.merge"
                     }
                 },
                 templateValues: null,
