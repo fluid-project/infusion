@@ -305,15 +305,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var lbRoot = fetchLightboxRoot();
             var lightbox = createLightbox();
             // Create an input that we can move focus to during the test
-            var newInputElement = document.createElement("input");
-            newInputElement.id = "input1";
+            var newInputElement = $(document.createElement("input"));
+            newInputElement.prop("id", "input1");
             
             $("[id=para1]").after(newInputElement);
             
             assertItemDefault("Initially ", 0);
         
             // Focus the lightbox and make sure the first thumb nail is selected
-            lbRoot[0].focus();
+            jqUnit.simulateFocus(lbRoot);
             assertItemFocused("When lightbox has focus ", 0);
             assertItemDefault("When lightbox has focus ", 1);
             
@@ -322,11 +322,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.jById(orderableIds[0]).blur();
         
             // Change focus to the input1, then back to the lightbox
-            newInputElement.focus();
+            jqUnit.simulateFocus(newInputElement);
             assertItemDefault("After focus leaves the lightbox ", 0);
             
             // Change focus to the lightbox and check that the first thumb nail is still movable.
-            lbRoot[0].focus();
+            jqUnit.simulateFocus(lbRoot);
             assertItemFocused("When lightbox has focus again ", 0);
             assertItemDefault("When lightbox has focus again ", 1);
             
@@ -338,13 +338,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assertItemDefault("Changed focus to second ", 0);
             
             // Change focus to the input1
-            newInputElement.focus();
+            jqUnit.simulateFocus(newInputElement);
             fluid.jById(orderableIds[1]).blur();
     
             assertItemDefault("Lightbox blur with second selected ", 1);
         
             // Focus the lightbox and check that the second thumb nail is still movable
-            lbRoot[0].focus();
+            jqUnit.simulateFocus(lbRoot);
             assertItemFocused("Lightbox refocused with second selected ", 1);
             assertItemDefault("Lightbox refocused with second selected ", 0);
         });
