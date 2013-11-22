@@ -794,13 +794,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("FLUID-4258 declarative listener test", function () {
         var that = fluid.tests.fluid4258head();
         that.applier.requestChange("thing1.nest1", 3);
-        jqUnit.assertDeepEq("Single change correctly reported", 
+        jqUnit.assertDeepEq("Single change correctly reported to same component's listener", 
             [{path: ["thing1", "nest1"], value: 3, oldValue: 2}], that.fireRecord);
         for (var i = 0; i < 2; ++ i) {
             that.fireRecord.length = 0;
             that.events.createEvent.fire();
             that.changeNest2(true);
-            jqUnit.assertDeepEq("Change reported to subcomponent - time " + (i + 1), 
+            jqUnit.assertDeepEq("Change reported to subcomponent's listener to root model - time " + (i + 1), 
                 [{path: ["thing1", "nest2"], value: true, oldValue: false}], that.fireRecord);
             that.child.changeNest2(false);
         }

@@ -212,32 +212,52 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         return fluid.pathUtil.composeSegment(prefix, suffix);
     };
+    
+    /**
+     * Compose a set of path segments supplied as arguments into an escaped EL expression. Escaped version
+     * of fluid.model.composeSegments
+     */
+    
+    // supported, PUBLIC API function    
+    fluid.pathUtil.composeSegments = function () {
+        var path = "";
+        for (var i = 0; i < arguments.length; ++ i) {
+            path = fluid.pathUtil.composePath(path, arguments[i]);
+        }
+        return path;
+    };
+    
+    fluid.model.unescapedParser = {
+        parse: fluid.model.parseEL,
+        compose: fluid.model.composeSegments
+    };
 
     // supported, PUBLIC API record
     fluid.model.defaultGetConfig = {
+        parser: fluid.model.unescapedParser,
         strategies: [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy]
     };
 
     // supported, PUBLIC API record
     fluid.model.defaultSetConfig = {
+        parser: fluid.model.unescapedParser,
         strategies: [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy, fluid.model.defaultCreatorStrategy]
+    };
+    
+    fluid.model.escapedParser = {
+        parse: fluid.pathUtil.parseEL,
+        compose: fluid.pathUtil.composeSegments
     };
 
     // supported, PUBLIC API record
     fluid.model.escapedGetConfig = {
-        parser: {
-            parse: fluid.pathUtil.parseEL,
-            compose: fluid.pathUtil.composePath
-        },
+        parser: fluid.model.escapedParser,
         strategies: [fluid.model.defaultFetchStrategy]
     };
 
     // supported, PUBLIC API record
     fluid.model.escapedSetConfig = {
-        parser: {
-            parse: fluid.pathUtil.parseEL,
-            compose: fluid.pathUtil.composePath
-        },
+        parser: fluid.model.escapedParser,
         strategies: [fluid.model.defaultFetchStrategy, fluid.model.defaultCreatorStrategy]
     };
 
@@ -423,7 +443,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.parseValidModelReference = function (that, name, ref) {
-        function reject(message) {
+        var reject = function (message) {
             fluid.fail("Error in " + name + ": " + ref + message);
         }
         var parsed, target;
@@ -433,6 +453,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 reject(" must be a reference into a component model beginning with \"model\"");
             } else {
                 parsed.modelSegs = parsed.segs.slice(1);
+                delete parsed.path;
             }
             target = fluid.resolveContext(parsed.context, that);
             if (!target) {
@@ -453,6 +474,10 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         parsed.that = target;
         parsed.applier = target.applier;
+        // TODO: remove this when the old ChangeApplier is abolished
+        if (!parsed.path) {
+            parsed.path = target.applier.options.resolverSetConfig.parser.compose.apply(null, parsed.modelSegs);
+        }
         return parsed;   
     };
     
@@ -852,6 +877,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 listeners: [],
                 transListeners: []
             },
+            options: options,
             modelChanged: {},
             preCommit: fluid.makeEventFirer(null, null, "preCommit event for ChangeApplier " + applierId)
         };
@@ -1112,7 +1138,7 @@ var fluid_1_5 = fluid_1_5 || {};
      *  ChangeApplier) */
      
     fluid.makeHolderChangeApplier = function (holder, options) {
-        options = options || {};
+        options = fluid.model.defaultAccessorConfig(options);
         var baseEvents = {
             guards: fluid.event.getEventFirer(false, true, "guard event"),
             postGuards: fluid.event.getEventFirer(false, true, "postGuard event"),
@@ -1123,7 +1149,8 @@ var fluid_1_5 = fluid_1_5 || {};
         // For now, we don't use "id" to avoid confusing component detection which uses
         // a simple algorithm looking for that field
             applierid: fluid.allocateGuid(),
-            holder: holder
+            holder: holder,
+            options: options
         };
         that.parseEL = function (EL) {
             return fluid.model.pathToSegments(EL, options.resolverSetConfig);
