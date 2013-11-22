@@ -321,7 +321,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The createOnEvent for " + componentName + " should be set", initEvent, fluid.get(that, "options.components." + componentName + ".createOnEvent"));
             jqUnit.assertEquals("The " + initEvent + " event should have been added", null, that.options.events[initEvent]);
             jqUnit.assertTrue("The modelListener for " + pref + " should be added", that.options.modelListeners[pref]);
-            jqUnit.assertTrue("The afterRender listener to trigger " + initEvent + " should be added", that.options.listeners["afterRender." + pref]);
             jqUnit.assertTrue("The onCreate listener to trigger " + initEvent + " should be added", that.options.listeners["onCreate." + pref]);
         };
 
@@ -454,7 +453,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         // component creation
-        jqUnit.expect(20);
+        jqUnit.expect(18);
         assertInitialized(that, "alwaysPanel1");
         jqUnit.assertEquals("The createOnEvent for alwaysPanel1 should be set", "initSubPanels", fluid.get(that, "options.components.alwaysPanel1.createOnEvent"));
         assertInitialized(that, "alwaysPanel2");
