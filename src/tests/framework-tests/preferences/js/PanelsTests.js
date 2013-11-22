@@ -1003,6 +1003,62 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     /* end FLUID-5210 */
 
+    /* start FLUID-5220 */
+
+   fluid.defaults("fluid.tests.fluid_5220.subPanel", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"]
+    });
+
+    jqUnit.test("FLUID-5220: onDomBind", function () {
+        var that = fluid.prefs.compositePanel(".fluid-5220", {
+            selectors: {
+                subPanel: ".flc-tests-subPanel"
+            },
+            selectorsToIgnore: ["subPanel"],
+            components: {
+                subPanel: {
+                    type: "fluid.tests.fluid_5220.subPanel",
+                    createOnEvent: "initSubPanels",
+                    container: "{that}.dom.subPanel"
+                }
+            },
+            resources: {
+                template: {
+                    resourceText: '<div><div class="flc-tests-subPanel"></div></div>'
+                },
+                subPanel: {
+                    resourceText: '<div></div>'
+                }
+            }
+        });
+
+        jqUnit.expect(1);
+        that.events.onCreate.addListener(function () {
+            jqUnit.assertTrue("Composite panel onDomBind event is triggered at onCreate", true);
+            that.events.onCreate.removeListener("onCompositePanelCreateDomBind");
+        }, "onCompositePanelCreateDomBind", null, "last");
+
+        that.subPanel.events.onDomBind.addListener(function () {
+            jqUnit.assertDeepEq("Wrong! - Composite panel onCreate should not trigger onDomBind in the subpanel", false);
+            that.subPanel.events.onDomBind.removeListener("onSubPanelCreateDomBind");
+        }, "onSubPanelCreateDomBind", null, "last");
+
+        jqUnit.expect(2);
+        that.events.afterRender.addListener(function () {
+            jqUnit.assertTrue("Composite panel afterRender event is fired", true);
+            that.events.afterRender.removeListener("onCompositePanelAfterRender");
+        }, "onCompositePanelAfterRender", null, "last");
+
+        that.subPanel.events.onDomBind.addListener(function () {
+            jqUnit.assertTrue("The subpanel onDomBind event is triggered when afterRender event of its composite panel gets fired", true);
+            that.subPanel.events.onDomBind.removeListener("onSubPanelAfterRenderDomBind");
+        }, "onSubPanelAfterRenderDomBind", null, "last");
+
+        that.refreshView();
+    });
+
+    /* end FLUID-5220 */
+
     /*******************************************************************************
      * textFontPanel
      *******************************************************************************/
