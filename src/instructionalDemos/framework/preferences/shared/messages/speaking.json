@@ -1,9 +1,8 @@
 {
-    "speakingHeader": "Visual Alternatives",
+    "speakingHeader": "Speaking",
     "speakText": "Speak Text",
-    "volLabel": "vol label",
-    "volMultiplier": "vol mult",
-    "wpmLabel": "wpm label",
-    "wpmMultiplier": "wpm mult"
-    
+    "volLabel": "Volume",
+    "volMultiplier": "percent",
+    "wpmLabel": "Words-per-min",
+    "wpmMultiplier": "words"    
 }
