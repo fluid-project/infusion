@@ -30,7 +30,7 @@ var demo = demo || {};
                 "messagePrefix": "../shared/messages/"
             }
         });
-        return fluid.invokeGlobalFunction(builder.options.assembledPrefsEditorGrade, [container]);
+        return fluid.prefs.create.prefsEditor(container);
     };
 
 })(jQuery, fluid);
