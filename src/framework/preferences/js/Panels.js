@@ -87,7 +87,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 args: ["{that}"]
             },
             "onCreate.onDomBind": null, // remove listener
-            "afterRender.onDomBind": "{that}.events.onDomBind"
+            "afterRender.onDomBind": "{that}.clearDomBinder"
         },
         rules: {
             expander: {
@@ -102,12 +102,21 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         invokers: {
-            refreshView: "{compositePanel}.refreshView"
+            refreshView: "{compositePanel}.refreshView",
+            clearDomBinder: {
+                funcName: "fluid.prefs.subPanel.clearDomBinder",
+                args: ["{that}"]
+            }
         },
         strings: {},
         parentBundle: "{compositePanel}.messageResolver",
         renderOnInit: false
     });
+
+    fluid.prefs.subPanel.clearDomBinder = function (that) {
+        that.dom.clear();
+        that.events.onDomBind.fire(that);
+    };
 
     fluid.prefs.subPanel.safePrefKey = function (prefKey) {
         return prefKey.replace(/[.]/g, "_");
