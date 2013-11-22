@@ -87,7 +87,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 args: ["{that}"]
             },
             "onCreate.onDomBind": null, // remove listener
-            "afterRender.onDomBind": "{that}.clearDomBinder"
+            "afterRender.onDomBind": "{that}.resetDomBinder"
         },
         rules: {
             expander: {
@@ -103,8 +103,8 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         invokers: {
             refreshView: "{compositePanel}.refreshView",
-            clearDomBinder: {
-                funcName: "fluid.prefs.subPanel.clearDomBinder",
+            resetDomBinder: {
+                funcName: "fluid.prefs.subPanel.resetDomBinder",
                 args: ["{that}"]
             }
         },
@@ -113,8 +113,9 @@ var fluid_1_5 = fluid_1_5 || {};
         renderOnInit: false
     });
 
-    fluid.prefs.subPanel.clearDomBinder = function (that) {
-        that.dom.clear();
+    fluid.prefs.subPanel.resetDomBinder = function (that) {
+        that.container = $(that.container.selector);
+        fluid.initDomBinder(that, that.options.selectors);
         that.events.onDomBind.fire(that);
     };
 
