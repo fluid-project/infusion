@@ -92,7 +92,7 @@ var fluid_1_5 = fluid_1_5 || {};
             return root;
         }
 
-        var opts = {};
+        var opts = {}, mergePolicy = {};
 
         fluid.each(commonOptions, function (option, key) {
             var value = option;
@@ -103,10 +103,9 @@ var fluid_1_5 = fluid_1_5 || {};
                 canAdd = fluid.invokeGlobalFunction(option.validationFunc, [root, path, commonOptions, templateValues]);
                 value = option.value;
             }
-            // Execute the mergeFunc function to retrieve the to-be-added value
             if (option.mergeFunc) {
-                var combinedPathArray = fluid.model.parseEL(path).concat(fluid.model.parseEL(key));
-                value = fluid.invokeGlobalFunction(option.mergeFunc, [option.value, fluid.get(root, combinedPathArray)]);
+                mergePolicy[key] = option.mergeFunc;
+                value = option.value;
             }
 
             if (canAdd) {
@@ -117,7 +116,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         });
 
-        root[path] = fluid.merge({}, root[path], existingValue, opts);
+        fluid.set(root, path, fluid.merge(mergePolicy, existingValue, opts));
 
         return root;
     };
@@ -423,7 +422,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 "container": "{prefsEditor}.dom.%prefKey",
                 "options.gradeNames": {
                     "value" : "fluid.prefs.prefsEditorConnections",
-                    "mergeFunc": "fluid.arrayConcatPolicy"
+                    "mergeFunc": fluid.arrayConcatPolicy
                 },
                 "options.resources.template": "{templateLoader}.resources.%prefKey"
             },

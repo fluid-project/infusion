@@ -226,7 +226,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "container": "prefsEditor.dom.%prefKey",
             "options.gradeNames": {
                 "value": "fluid.prefs.prefsEditorConnections",
-                "mergeFunc": "fluid.arrayConcatPolicy"
+                "mergeFunc": fluid.arrayConcatPolicy
             },
             "options.resources.template": "templateLoader.resources.%prefKey"
         },
@@ -340,7 +340,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             container: "prefsEditor.dom.fluid_prefs_panel_contrast",
                             createOnEvent: "onPrefsEditorMarkupReady",
                             options: {
-                                gradeNames: ["fluid.prefs.prefsEditorConnections", "fluid.tests.panelGrade"],
+                                gradeNames: ["fluid.tests.panelGrade", "fluid.prefs.prefsEditorConnections"],
                                 classnameMap: {
                                     "default": "fl-theme-prefsEditor-default",
                                     "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
@@ -1668,10 +1668,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return false;
     };
 
-    fluid.tests.merge = function (target, source) {
-        return target + " " + source;
-    };
-
     jqUnit.test("FLUID-5213: Test fluid.prefs.addCommonOptions()", function () {
         var addCommonOptionsTests = {
             test1: {
@@ -1764,13 +1760,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 commonOptions: {
                     "subPath1": {
                         value: "subValue1",
-                        mergeFunc: "fluid.tests.merge"
+                        mergeFunc: fluid.arrayConcatPolicy
                     }
                 },
                 templateValues: null,
                 expected: {
                     path: {
-                        subPath1: "subValue1 existing"
+                        subPath1: ["existing", "subValue1"]
                     }
                 }
             },
