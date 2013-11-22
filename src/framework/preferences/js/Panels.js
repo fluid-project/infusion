@@ -82,7 +82,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         sourceApplier: "{compositePanel}.applier",
         listeners: {
-            "{compositePanel}.events.subPanelAfterRender": {
+            "{compositePanel}.events.afterRender": {
                 listener: "{that}.events.afterRender",
                 args: ["{that}"]
             },
@@ -180,8 +180,7 @@ var fluid_1_5 = fluid_1_5 || {};
         repeatingSelectors: [],
         events: {
             onRefreshView: null,
-            initSubPanels: null,
-            subPanelAfterRender: null
+            initSubPanels: null
         },
         listeners: {
             "onCreate.combineResources": "{that}.combineResources",
@@ -193,12 +192,7 @@ var fluid_1_5 = fluid_1_5 || {};
             "onCreate.initSubPanels": "{that}.events.initSubPanels",
             "onCreate.hideInactive": "{that}.hideInactive",
             "onCreate.surfaceSubpanelRendererSelectors": "{that}.surfaceSubpanelRendererSelectors",
-            "afterRender.initSubPanels": "{that}.events.initSubPanels",
-            "afterRender.hideInactive": "{that}.hideInactive",
-            "afterRender.subPanelRelay": {
-                listener: "{that}.events.subPanelAfterRender",
-                priority: "last"
-            }
+            "afterRender.hideInactive": "{that}.hideInactive"
         },
         invokers: {
             getDistributeOptionsGrade: {
@@ -364,16 +358,14 @@ var fluid_1_5 = fluid_1_5 || {};
                     var afterRenderListener = "afterRender." + pref;
                     var onCreateListener = "onCreate." + pref;
                     creationEventOpt = fluid.prefs.compositePanel.creationEventName(pref);
-                    var listenerOpts = {
-                        listener: "{that}.conditionalCreateEvent",
-                        args: ["{that}.model." + pref, "{that}.events." + creationEventOpt + ".fire"]
-                    };
                     subPanelCreationOpts[creationEventOpt] = creationEventOpt;
                     events[creationEventOpt] = null;
                     conditionals[pref] = conditionals[pref] || [];
                     conditionals[pref].push(componentName);
-                    listeners[afterRenderListener] = listenerOpts;
-                    listeners[onCreateListener] = listenerOpts;
+                    listeners[onCreateListener] = {
+                        listener: "{that}.conditionalCreateEvent",
+                        args: ["{that}.model." + pref, "{that}.events." + creationEventOpt + ".fire"]
+                    };
                 }
                 distributeOptions.push({
                     source: "{that}.options.subPanelCreationOpts." + creationEventOpt,
