@@ -448,12 +448,12 @@ var fluid_1_5 = fluid_1_5 || {};
                 "container": "{%compositePanel}.dom.%prefKey"
             },
             enactor: {
+                "options.gradeNames": "fluid.prefs.uiEnhancerConnections",
                 // Conditional handling. Add value to the path only if the execution of func returns true.
                 "container": {
                     value: "{uiEnhancer}.container",
                     func: "fluid.prefs.containerNeeded"
-                },
-                "options.sourceApplier": "{uiEnhancer}.applier"
+                }
             }
         },
         indexes: {

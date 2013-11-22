@@ -102,13 +102,18 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.uiEnhancer.starterEnactors", {
         gradeNames: ["fluid.uiEnhancer", "fluid.uiEnhancer.cssClassEnhancerBase", "fluid.uiEnhancer.browserTextEnhancerBase", "autoInit"],
+        connectionsGrade: "fluid.prefs.uiEnhancerConnections",
+        distributeOptions: {
+            source: "{that}.options.connectionsGrade",
+            removeSource: true,
+            target: "{that > fluid.prefs.enactor}.options.gradeNames"
+        },
         components: {
             textSize: {
                 type: "fluid.prefs.enactor.textSize",
                 container: "{uiEnhancer}.container",
                 options: {
                     fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
-                    sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "textSize": "value"
                     },
@@ -122,7 +127,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiEnhancer}.container",
                 options: {
                     classes: "{uiEnhancer}.options.classnameMap.textFont",
-                    sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "textFont": "value"
                     },
@@ -136,7 +140,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiEnhancer}.container",
                 options: {
                     fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
-                    sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "lineSpace": "value"
                     },
@@ -150,7 +153,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiEnhancer}.container",
                 options: {
                     classes: "{uiEnhancer}.options.classnameMap.theme",
-                    sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "theme": "value"
                     },
@@ -164,7 +166,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiEnhancer}.container",
                 options: {
                     cssClass: "{uiEnhancer}.options.classnameMap.links",
-                    sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "links": "value"
                     },
@@ -178,7 +179,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{uiEnhancer}.container",
                 options: {
                     cssClass: "{uiEnhancer}.options.classnameMap.inputsLarger",
-                    sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "inputsLarger": "value"
                     },
@@ -190,10 +190,8 @@ var fluid_1_5 = fluid_1_5 || {};
             tableOfContents: {
                 type: "fluid.prefs.enactor.tableOfContents",
                 container: "{uiEnhancer}.container",
-                // createOnEvent: "onCreateToc",
                 options: {
                     tocTemplate: "{uiEnhancer}.options.tocTemplate",
-                    sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "toc": "value"
                     },

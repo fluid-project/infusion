@@ -240,11 +240,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "container": "%compositePanel.dom.%prefKey"
         },
         enactor: {
+            "options.gradeNames": "fluid.prefs.uiEnhancerConnections",
             "container": {
                 value: "uiEnhancer.container",
                 func: "fluid.prefs.containerNeeded"
-            },
-            "options.sourceApplier": "uiEnhancer.applier"
+            }
         }
     };
 
@@ -253,7 +253,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.tests.testExpandSchemaComponents = function (auxSchema, type, prefKey, componentConfig, index, primarySchema, expectedOutput) {
-        // var panelsTopCommonOptions = fluid.get(fluid.defaults("fluid.prefs.auxBuilder"), "topCommonOptions.panels");
         var panelsCommonOptions = fluid.get(fluid.tests.elementCommonOptions, "panel");
         var output = fluid.prefs.expandSchemaComponents(auxSchema, type, prefKey, componentConfig, index, panelsCommonOptions, primarySchema);
         jqUnit.assertDeepEq("The components and templates blocks are constructed correctly", expectedOutput, output);
@@ -611,7 +610,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     type: "fluid.prefs.enactor.textSize",
                     container: "uiEnhancer.container",
                     options: {
-                        sourceApplier: "uiEnhancer.applier",
+                        gradeNames: "fluid.prefs.uiEnhancerConnections",
                         model: {
                             value: 1
                         },
@@ -991,7 +990,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             type: "fluid.prefs.enactor.textSize",
                             container: "uiEnhancer.container",
                             options: {
-                                sourceApplier: "uiEnhancer.applier",
+                                gradeNames: "fluid.prefs.uiEnhancerConnections",
                                 model: {
                                     value: 1
                                 },
@@ -1908,8 +1907,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "fluid_prefs_enactor_subPanel1": {
                     type: "fluid.prefs.enactor.subPanel1",
                     options: {
+                        gradeNames: "fluid.prefs.uiEnhancerConnections",
                         "cssClass": "fl-link-enhanced",
-                        sourceApplier: "uiEnhancer.applier",
                         model: {
                             value: false
                         },
@@ -1922,8 +1921,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     type: "fluid.prefs.enactor.subPanel2",
                     container: "uiEnhancer.container",
                     options: {
+                        gradeNames: "fluid.prefs.uiEnhancerConnections",
                         "cssClass": "fl-text-larger",
-                        sourceApplier: "uiEnhancer.applier",
                         model: {
                             value: false
                         },
