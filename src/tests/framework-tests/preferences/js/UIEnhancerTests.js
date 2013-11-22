@@ -33,8 +33,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.prefs.enactor.emphasizeLinks",
                 container: "{uiEnhancer}.container",
                 options: {
+                    gradeNames: "fluid.prefs.uiEnhancerConnections",
                     cssClass: emphasizeLinksClass,
-                    sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "emphasizeLinks": "value"
                     },
