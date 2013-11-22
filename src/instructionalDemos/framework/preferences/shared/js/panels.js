@@ -77,6 +77,7 @@ var demo = demo || {};
             }
         },
         selectors: {
+            label: ".mpe-slider-label",
             vol: ".mpe-slider",
             multiplier: ".mpe-slider-multiplier"
         },
@@ -118,6 +119,7 @@ var demo = demo || {};
             }
         },
         selectors: {
+            label: ".mpe-slider-label",
             wpm: ".mpe-slider",
             multiplier: ".mpe-slider-multiplier"
         },
@@ -159,10 +161,12 @@ var demo = demo || {};
             }
         },
         selectors: {
+            label: ".mpe-slider-label",
             cursor: ".mpe-slider",
             multiplier: ".mpe-slider-multiplier"
         },
         protoTree: {
+            label: {messagekey: "cursorLabel"},
             multiplier: {messagekey: "cursorMultiplier"},
             cursor: {
                 decorators: {
@@ -199,10 +203,12 @@ var demo = demo || {};
             }
         },
         selectors: {
+            label: ".mpe-slider-label",
             magFactor: ".mpe-slider",
             multiplier: ".mpe-slider-multiplier"
         },
         protoTree: {
+            label: {messagekey: "magFactorLabel"},
             multiplier: {messagekey: "magFactorMultiplier"},
             magFactor: {
                 decorators: {
@@ -231,6 +237,9 @@ var demo = demo || {};
      */
     fluid.defaults("demo.panels.magPos", {
         gradeNames: ["fluid.prefs.panel", "autoInit"],
+rendererOptions: {
+    debugMode: true
+},
         preferenceMap: {
             "demo.magnifierPosition": {
                 "model.magPos": "default",
@@ -238,6 +247,7 @@ var demo = demo || {};
             }
         },
         selectors: {
+            label: ".mpe-radio-label",
             magPosRow: ".mpe-radioRow",
             magPosLabel: ".mpe-radioLabel",
             magPosInput: ".mpe-radioInput"
@@ -247,6 +257,7 @@ var demo = demo || {};
         },
         repeatingSelectors: ["magPosRow"],
         protoTree: {
+            label: {messagekey: "magPosLabel"},
             expander: {
                 type: "fluid.renderer.selection.inputs",
                 rowID: "magPosRow",

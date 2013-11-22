@@ -67,7 +67,7 @@ var demo = demo || {};
                 panel: {
                     type: "demo.panels.vol",
                     container: ".mpe-speaking-vol",
-                    template: "%prefix/slide-template.html"
+                    template: "%prefix/slider-template.html"
                 }
             },
             wpm: {
@@ -78,7 +78,7 @@ var demo = demo || {};
                 panel: {
                     type: "demo.panels.wpm",
                     container: ".mpe-speaking-wpm",
-                    template: "%prefix/slide-template.html"
+                    template: "%prefix/slider-template.html"
                 }
             },
             incSize: {
@@ -100,7 +100,7 @@ var demo = demo || {};
                 panel: {
                     type: "demo.panels.cursor",
                     container: ".mpe-increasing-cursor",
-                    template: "%prefix/slide-template.html"
+                    template: "%prefix/slider-template.html"
                 }
             },
             magFactor: {
@@ -111,7 +111,7 @@ var demo = demo || {};
                 panel: {
                     type: "demo.panels.magFactor",
                     container: ".mpe-increasing-magFactor",
-                    template: "%prefix/slide-template.html"
+                    template: "%prefix/slider-template.html"
                 }
             },
             magPos: {
