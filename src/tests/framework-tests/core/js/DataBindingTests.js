@@ -908,6 +908,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         child.applier.requestChange("", "interior thing 2");
         jqUnit.assertDeepEq("No change propagated outwards from destroyed component", {outerModel: "exterior thing 2"}, that.model);        
     });
+    
+    fluid.defaults("fluid.tests.allChangeRecorder", {
+        gradeNames: "fluid.tests.changeRecorder",
+        modelListeners: {
+            "": "{that}.record({change}.path, {change}.value, {change}.oldValue)",
+        }
+    });
 
     fluid.defaults("fluid.tests.fluid5024head", {
         gradeNames: ["fluid.standardRelayComponent", "autoInit"],
@@ -915,7 +922,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             child1: {
                 type: "fluid.standardRelayComponent",
                 options: {
-                     gradeNames: "autoInit",
+                     gradeNames: ["fluid.tests.allChangeRecorder", "autoInit"],
                      model: {
                          celsius: 22
                      },
@@ -924,7 +931,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                          target: "{child2}.model.fahrenheit",
                          singleTransform: {
                              type: "fluid.transforms.linearScale",
-                             scale: 9/5,
+                             factor: 9/5,
                              offset: 32
                          }
                      }
@@ -933,15 +940,73 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             child2: {
                 type: "fluid.standardRelayComponent",
                 options: { // no options: model will be initialised via relay
-                    gradeNames: "autoInit"
+                    gradeNames: ["fluid.tests.allChangeRecorder", "autoInit"]
                 }
             }
         }
     });
     
+    // This utility applies the same "floating point slop" testing as the ChangeApplier in order to determine that models
+    // holding approximately equal numerical values are deep equal
+    fluid.tests.checkNearEquality = function (model1, model2) {
+        var holder1 = {model: model1};
+        var request = {type: "ADD", segs: [], value: model2};
+        var options = {changes: 0, changeMap: null};
+        fluid.model.applyHolderChangeRequest(holder1, request, options);
+        return options.changeMap === null; 
+    };
+    
+    fluid.tests.fluid5024Clear = function (that) {
+        that.child1.fireRecord.length = 0;
+        that.child2.fireRecord.length = 0;
+    };
+    
+    fluid.tests.assertTransactionsConcluded = function (that) {
+        // White box testing: use knowledge of the ChangeApplier's implementation to determine that all transactions have been cleaned up
+        var instantiator = fluid.getInstantiator(that);
+        var anyKeys;
+        for (var key in instantiator.modelTransactions) {
+            if (key !== "init") {
+               anyKeys = key;
+            }
+        }
+        for (var key in instantiator.modelTransactions.init) {
+           anyKeys = key;
+        }
+        
+        jqUnit.assertNoValue("All model transactions concluded", anyKeys);
+    };
+    
     jqUnit.test("FLUID-5024: Model relay with model transformation", function () {
         var that = fluid.tests.fluid5024head();
-        jqUnit.assertEqual("Transformed celsius into fahrenheit on init", 22 * 9 / 5 + 32, that.child2.model.fahrenheit);
+        fluid.tests.assertTransactionsConcluded(that);
+        
+        function expectChanges (message, child1Record, child2Record) {
+            jqUnit.assertTrue(message + " change record child 1", fluid.tests.checkNearEquality(child1Record, that.child1.fireRecord));
+            jqUnit.assertTrue(message + " change record child 2", fluid.tests.checkNearEquality(child2Record, that.child2.fireRecord));
+            fluid.tests.fluid5024Clear(that);          
+        }
+        
+        var ttInF = 22 * 9 / 5 + 32;
+        jqUnit.assertEquals("Transformed celsius into fahrenheit on init", ttInF, that.child2.model.fahrenheit);
+        expectChanges("Acquired initial", 
+            [{path: [], value: {celsius: 22}, oldValue: undefined}],
+            [{path: [], value: {fahrenheit: ttInF}, oldValue: undefined}]);
+        
+        that.child2.applier.change("fahrenheit", 451);
+        var ffoInC = (451 - 32) * 5 / 9;
+        expectChanges("Reverse transform propagated", 
+            [{path: [], value: {celsius: ffoInC}, oldValue: {celsius: 22}}],
+            [{path: [], value: {fahrenheit: 451}, oldValue: {fahrenheit: ttInF}}]);
+        jqUnit.assertTrue("Reverse transformed value arrived", fluid.model.isSameValue(ffoInC, that.child1.model.celsius));
+            
+        that.child1.applier.change("celsius", 20);
+        expectChanges("Reverse transform propagated", 
+            [{path: [], value: {celsius: 20}, oldValue: {celsius: ffoInC}}],
+            [{path: [], value: {fahrenheit: 68}, oldValue: {fahrenheit: 251}}]);   
+        jqUnit.assertEquals("Forward transformed value arrived", 68, that.child2.model.fahrenheit);
+        
+        fluid.tests.assertTransactionsConcluded(that);
     });
 
 

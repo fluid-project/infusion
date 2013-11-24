@@ -319,6 +319,7 @@ var fluid_1_5 = fluid_1_5 || {};
             var shadow = fluid.shadowForComponent(mrec[key].that);
             shadow.modelComplete = true;
         });
+        delete instantiator.modelTransactions[transId];
     };
     
     // This modelComponent has now concluded initialisation - commit its initialisation transaction if it is the last such in the wave
@@ -365,23 +366,27 @@ var fluid_1_5 = fluid_1_5 || {};
         var instantiator = fluid.getInstantiator(target), applierId = target.applier.applierId;
         targetSegs = fluid.makeArray(targetSegs);
         sourceSegs = fluid.makeArray(sourceSegs); // take copies since originals will be trashed
-        var sourceListener = function (newValue, oldValue, path, changeRequest) {
+        var sourceListener = function (newValue, oldValue, path, changeRequest, trans, applier) {
             var transId = changeRequest.transactionId;
             var transRec = fluid.getModelTransactionRec(instantiator, transId);
+            if (applier && trans) {
+                transRec[applier.applierId] = trans; // enlist the outer user's original transaction
+            }
             var existing = transRec[applierId];
             var initRecord = instantiator.modelTransactions.init[target.id];
             var noRelay = initRecord && initRecord[linkId] === "noRelay";
-            var relay = !transRec[linkId] && !noRelay;
+            transRec[linkId] = transRec[linkId] || 0;
+            var relay = (transRec[linkId] < 2) && !noRelay;
             if (relay) {
+                ++transRec[linkId];
                 if (!existing) {
                     var newTrans = target.applier.initiate(transId);
                     transRec[applierId] = newTrans;
-                    transRec[linkId] = true;
                     existing = newTrans;
                 }
                 if (transducer) {
                     transducer(existing, newValue, sourceSegs, targetSegs);
-                } else {
+                } else if (newValue !== undefined) {
                     existing.fireChangeRequest({type: "ADD", segs: targetSegs, value: newValue});
                 }
             }
@@ -409,10 +414,13 @@ var fluid_1_5 = fluid_1_5 || {};
             if (shadow.modelComplete) {
                 enlist.completeOnInit = true;
             }
-            enlist[linkId] = "noRelay"; // avoid trying to broadcast this BACK to target again as part of relay
+            // In theory we would like the initial model transaction to progress in only one direction - but in the case
+            // of external relay this direction can't be known - so we will have to rely on link counting and/or culling
+            // to prevent cyclic propagation. In theory if the transformer produces a value of "undefined" we will just ignore it.
+            // enlist[linkId] = "noRelay"; // avoid trying to broadcast this BACK to target again as part of relay
         }
-        fluid.registerDirectChangeRelay(source, sourceSegs, target, targetSegs, linkId, transformPackage.forward);
-        fluid.registerDirectChangeRelay(target, targetSegs, source, sourceSegs, linkId, transformPackage.backward);      
+        fluid.registerDirectChangeRelay(target, targetSegs, source, sourceSegs, linkId, transformPackage.forward);    
+        fluid.registerDirectChangeRelay(source, sourceSegs, target, targetSegs, linkId, transformPackage.backward);  
     };
     
     fluid.parseImplicitRelay = function (that, modelRec, segs) {
@@ -476,23 +484,25 @@ var fluid_1_5 = fluid_1_5 || {};
         parsed.applier = target.applier;
         // TODO: remove this when the old ChangeApplier is abolished
         if (!parsed.path) {
-            parsed.path = target.applier.options.resolverSetConfig.parser.compose.apply(null, parsed.modelSegs);
+            parsed.path = target.applier.composeSegments.apply(null, parsed.modelSegs);
         }
         return parsed;   
     };
     
-    fluid.transformToAdapter = function (transform) {
+    fluid.transformToAdapter = function (transform, targetPath) {
+        var basedTransform = {};
+        basedTransform[targetPath] = transform;
         return function (trans, newValue, sourceSegs, targetSegs) {
             // TODO: More efficient model that can only run invalidated portion of transform (need to access changeMap of source transaction)
-            fluid.model.transformWithRules(newValue, transform, {finalApplier: trans});
+            fluid.model.transformWithRules(newValue, basedTransform, {finalApplier: trans});
         };  
     };
     
-    fluid.makeTransformPackage = function (transform) {
+    fluid.makeTransformPackage = function (transform, sourcePath, targetPath) {
         var inverse = fluid.model.transform.invertConfiguration(transform);
         return {
-            forward: fluid.transformToAdapter(transform),
-            backward: fluid.transformToAdapter(inverse)       
+            forward: fluid.transformToAdapter(transform, targetPath),
+            backward: fluid.transformToAdapter(inverse, sourcePath)
         };
     };
     
@@ -510,7 +520,7 @@ var fluid_1_5 = fluid_1_5 || {};
         var parsedTarget = fluid.parseValidModelReference(that, "modelRelay record member \"target\"", mrrec.target);
        
         var transform = mrrec.singleTransform ? fluid.singleTransformToFull(mrrec.singleTransform) : mrrec.transform;
-        var transformPackage = fluid.makeTransformPackage(transform);
+        var transformPackage = fluid.makeTransformPackage(transform, parsedSource.path, parsedTarget.path);
         fluid.connectModelRelay(parsedSource.that, parsedSource.modelSegs, parsedTarget.that, parsedTarget.modelSegs, transformPackage);
     };
     
@@ -569,7 +579,6 @@ var fluid_1_5 = fluid_1_5 || {};
             applier: "@expand:fluid.makeNewChangeApplier({that}, {that}.options.changeApplierOptions)",
             modelRelay: "@expand:fluid.establishModelRelay({that}, {that}.options.model, {that}.options.modelListeners, {that}.options.modelRelay, {that}.applier)"
         },
-        model: null, // a hack to force the mergePolicy to convert records to array
         mergePolicy: {
             model: {
                 noexpand: true,
@@ -686,7 +695,8 @@ var fluid_1_5 = fluid_1_5 || {};
 
     // Automatically adapts requestChange onto fireChangeRequest
     fluid.bindRequestChange = function (that) {
-        that.requestChange = function (path, value, type) {
+        // The name "requestChange" will be deprecated in 1.5, removed in 2.0
+        that.requestChange = that.change = function (path, value, type) {
             var changeRequest = {
                 path: path,
                 value: value,
@@ -740,6 +750,22 @@ var fluid_1_5 = fluid_1_5 || {};
             segs.length = i;
         });
     };
+    
+    // Called with two primitives which are compared for equality. This takes account of "floating point slop" to avoid
+    // continuing to propagate inverted values as changes
+    // TODO: replace with a pluggable implementation
+    fluid.model.isSameValue = function (a, b) {
+        if (typeof(a) !== "number" || typeof(b) !== "number") {
+            return a === b;
+        } else {
+            if (a === b) {
+                return true;
+            } else {
+                var relError = Math.abs((a - b) / b);
+                return relError < 1e-12; // 64-bit floats have approx 16 digits accuracy, this should deal with most reasonable transforms
+            }
+        }
+    };
 
     fluid.model.applyChangeStrategy = function (target, name, i, segs, source, options, atRoot) {
         var targetSlot = target[name];
@@ -747,7 +773,7 @@ var fluid_1_5 = fluid_1_5 || {};
         var targetCode = fluid.typeCode(targetSlot);
         var changedValue = fluid.NO_VALUE;
         if (sourceCode === "primitive") {
-            if (targetSlot !== source) {
+            if (!fluid.model.isSameValue(targetSlot, source)) {
                 changedValue = source;
             }
         } else if (targetCode !== sourceCode) { // RH is not primitive - array or object and mismatching
@@ -852,7 +878,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return togo;
     };
 
-    fluid.notifyModelChanges = function (listeners, changeMap, newHolder, oldHolder, changeRequest) {
+    fluid.notifyModelChanges = function (listeners, changeMap, newHolder, oldHolder, changeRequest, transaction, applier) {
         for (var i = 0; i < listeners.length; ++ i) {
             var spec = listeners[i];
             var invalidPaths = fluid.matchChanges(changeMap, spec.segs, newHolder);
@@ -860,9 +886,18 @@ var fluid_1_5 = fluid_1_5 || {};
                 var invalidPath = invalidPaths[j];
                 spec.listener = fluid.event.resolveListener(spec.listener);
                 // TODO: process namespace and softNamespace rules, and propagate "sources" in 4th argument
-                spec.listener(fluid.model.getSimple(newHolder, invalidPath), fluid.model.getSimple(oldHolder, invalidPath), invalidPath.slice(1), changeRequest); 
+                spec.listener(fluid.model.getSimple(newHolder, invalidPath), fluid.model.getSimple(oldHolder, invalidPath), invalidPath.slice(1), changeRequest, transaction, applier); 
             }
         }
+    };
+    
+    fluid.bindELMethods = function (applier) {
+        applier.parseEL = function (EL) {
+            return fluid.model.pathToSegments(EL, applier.options.resolverSetConfig);
+        };
+        applier.composeSegments = function () {
+            return applier.options.resolverSetConfig.parser.compose.apply(null, arguments);
+        };
     };
     
     fluid.emptyHolder = { model: undefined };
@@ -887,9 +922,6 @@ var fluid_1_5 = fluid_1_5 || {};
             }
             changeRequest.segs = changeRequest.segs || that.parseEL(changeRequest.path);
         }
-        that.parseEL = function (EL) {
-            return fluid.model.pathToSegments(EL, options.resolverSetConfig);
-        };
         that.modelChanged.addListener = function (spec, listener, namespace, softNamespace) {
             if (typeof(spec) === "string") {
                 spec = {path: spec}
@@ -934,8 +966,10 @@ var fluid_1_5 = fluid_1_5 || {};
                     resolverGetConfig: options.resolverGetConfig
                 },
                 commitOnly: function () {
-                    fluid.notifyModelChanges(that.changeListeners.transListeners, trans.changeRecord.changeMap, newHolder, holder, {transactionId: trans.id});
-                    holder.model = newHolder.model; // It's really as simple as that : P                      
+                    if (holder.model !== newHolder.model) {
+                        fluid.notifyModelChanges(that.changeListeners.transListeners, trans.changeRecord.changeMap, newHolder, holder, {transactionId: trans.id});
+                        holder.model = newHolder.model; // It's really as simple as that : P
+                    }                      
                 },
                 commit: function () {
                     that.preCommit.fire(trans, that);
@@ -948,7 +982,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     preFireChangeRequest(changeRequest);
                     changeRequest.transactionId = trans.id;
                     var deltaMap = fluid.model.applyHolderChangeRequest(newHolder, changeRequest, trans.changeRecord);
-                    fluid.notifyModelChanges(that.changeListeners.listeners, deltaMap, newHolder, holder, changeRequest);
+                    fluid.notifyModelChanges(that.changeListeners.listeners, deltaMap, newHolder, holder, changeRequest, trans, that);
                 }
             };
             fluid.bindRequestChange(trans);
@@ -959,6 +993,7 @@ var fluid_1_5 = fluid_1_5 || {};
         };
         
         fluid.bindRequestChange(that);
+        fluid.bindELMethods(that);
         return that;
     };
 
@@ -1152,9 +1187,6 @@ var fluid_1_5 = fluid_1_5 || {};
             holder: holder,
             options: options
         };
-        that.parseEL = function (EL) {
-            return fluid.model.pathToSegments(EL, options.resolverSetConfig);
-        };
 
         function makeGuardWrapper(cullUnchanged) {
             if (!cullUnchanged) {
@@ -1274,7 +1306,7 @@ var fluid_1_5 = fluid_1_5 || {};
             if (!changeRequest.type) {
                 changeRequest.type = "ADD";
             }
-            changeRequest.segs = fluid.model.pathToSegments(changeRequest.path, options.resolverSetConfig);
+            changeRequest.segs = that.parseEL(changeRequest.path);
         }
 
         var bareApplier = {
@@ -1326,6 +1358,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
         that.fireChangeRequest = sourceWrapModelChanged(that.fireChangeRequest, threadLocal);
         fluid.bindRequestChange(that);
+        fluid.bindELMethods(that);
 
         // TODO: modelChanged has been moved to new model for firing. Once we abolish "guards", fireAgglomerated can go too.
         // Possibly also all the prepareFireEvent/wrapListener/fireSpec nonsense too. 
