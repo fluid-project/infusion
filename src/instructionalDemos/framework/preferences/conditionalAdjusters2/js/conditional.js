@@ -22,15 +22,16 @@ var demo = demo || {};
      * Initialize Preference Editor.
      */
     demo.initPrefsEditor = function (container) {
-        var builder = fluid.prefs.builder({
-            gradeNames: ["demo.auxSchema"],
-            primarySchema: demo.primarySchema,
-            auxiliarySchema: {
-                "templatePrefix": "../shared/html/",
-                "messagePrefix": "../shared/messages/"
+        return fluid.prefs.create(container, {
+            build: {
+                gradeNames: ["demo.auxSchema"],
+                primarySchema: demo.primarySchema,
+                auxiliarySchema: {
+                    "templatePrefix": "../shared/html/",
+                    "messagePrefix": "../shared/messages/"
+                }
             }
         });
-        return fluid.prefs.create.prefsEditor(container);
     };
 
 })(jQuery, fluid);
