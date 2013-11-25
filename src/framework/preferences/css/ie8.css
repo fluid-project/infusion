@@ -3,9 +3,11 @@
 .fl-prefsEditor .fl-prefsEditor-onoff input {
     clip: auto;
     height: 1em;
-    width: 1em;    
-    margin: 0;
+    width: 1em;
+    margin: 0 10px 0 0;
     position: relative;
+    display: inline;
+    float: left;
 }
 .fl-prefsEditor .fl-prefsEditor-onoff .fl-prefsEditor-switch {
     display: none;
