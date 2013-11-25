@@ -25,14 +25,15 @@ var demo = demo || {};
      * Makes use of a schema to configure Preferences Editor
      */
     demo.initPrefsEditor = function (container) {
-        var builder = fluid.prefs.builder({
-            gradeNames: ["fluid.prefs.auxSchema.starter"],
-            auxiliarySchema: {
-                "templatePrefix": "../../../framework/preferences/html/",
-                "messagePrefix": "../../../framework/preferences/messages/"
+        return fluid.prefs.create(container, {
+            build: {
+                gradeNames: ["fluid.prefs.auxSchema.starter"],
+                auxiliarySchema: {
+                    "templatePrefix": "../../../framework/preferences/html/",
+                    "messagePrefix": "../../../framework/preferences/messages/"
+                }
             }
         });
-        return fluid.invokeGlobalFunction(builder.options.assembledPrefsEditorGrade, [container]);
     };
 
 })(jQuery, fluid);

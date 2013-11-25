@@ -893,6 +893,39 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.notVisible("The container for the conditional panel is not visible", compositePanel.locate("fluid_tests_composite_pref_lineSpace"));
     };
 
+    var startsWith = function (str, subStr) {
+        return str.indexOf(subStr) === 0;
+    };
+
+    jqUnit.test("fluid.prefs.create", function () {
+        var pref_defaultNamespace = fluid.prefs.create(".prefs_defaultNamespace", {
+            build: {
+                gradeNames: ["fluid.prefs.auxSchema.starter"],
+                auxiliarySchema: {
+                    "namespace": "",
+                    "templatePrefix": "../../../framework/preferences/html/",
+                    "messagePrefix": "../../../framework/preferences/messages/"
+                }
+            }
+        });
+        jqUnit.assertTrue("The prefs editor should have been returned", fluid.hasGrade(pref_defaultNamespace.options, "fluid.prefs.assembler.prefsEd"));
+        jqUnit.assertTrue("The prefsEditor grade should use the custom namespace", startsWith(pref_defaultNamespace.typeName, "fluid.prefs.created_"));
+
+        var namespace = "fluid.test.namespace";
+        var pref_customNamespace = fluid.prefs.create(".prefs_customNamespace", {
+            build: {
+                gradeNames: ["fluid.prefs.auxSchema.starter"],
+                auxiliarySchema: {
+                    "namespace": namespace,
+                    "templatePrefix": "../../../framework/preferences/html/",
+                    "messagePrefix": "../../../framework/preferences/messages/"
+                }
+            }
+        });
+        jqUnit.assertTrue("The prefs editor should have been returned", fluid.hasGrade(pref_customNamespace.options, "fluid.prefs.assembler.prefsEd"));
+        jqUnit.assertTrue("The prefsEditor grade should use the custom namespace", startsWith(pref_customNamespace.typeName, namespace));
+    });
+
     /***********************
      * Test Initialization *
      ***********************/

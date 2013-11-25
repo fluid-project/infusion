@@ -18,8 +18,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var demo = demo || {};
 (function ($, fluid) {
 
-    demo.initWithSchema = function (container, compOpts, prefsEditorType, template) {
-        var builder = fluid.prefs.builder({
+    var generateBuildOpts = function (template) {
+        return {
             gradeNames: ["fluid.prefs.auxSchema.starter"],
             auxiliarySchema: {
                 "template": template,
@@ -29,20 +29,23 @@ var demo = demo || {};
                     }
                 }
             }
-        });
-        var baseOpts = {
-            prefsEditorType: prefsEditorType
-        };
-        $.extend(true, baseOpts, compOpts);
-        return fluid.invokeGlobalFunction(builder.options.assembledPrefsEditorGrade, [container, baseOpts]);
+        }
     };
 
     demo.initFullWithPreview = function (container, options) {
-        return demo.initWithSchema(container, options, "fluid.prefs.fullPreview", "%prefix/FullPreviewPrefsEditor.html");
+        var prefsEditorOpts = $.extend(true, {prefsEditorType: "fluid.prefs.fullPreview"}, options);
+        return fluid.prefs.create(container, {
+            build: generateBuildOpts("%prefix/FullPreviewPrefsEditor.html"),
+            prefsEditor: prefsEditorOpts
+        });
     };
 
     demo.initFullNoPreview = function (container, options) {
-        return demo.initWithSchema(container, options, "fluid.prefs.fullNoPreview", "%prefix/FullNoPreviewPrefsEditor.html");
+        var prefsEditorOpts = $.extend(true, {prefsEditorType: "fluid.prefs.fullNoPreview"}, options);
+        return fluid.prefs.create(container, {
+            build: generateBuildOpts("%prefix/FullNoPreviewPrefsEditor.html"),
+            prefsEditor: prefsEditorOpts
+        });
     };
 
 })(jQuery, fluid);
