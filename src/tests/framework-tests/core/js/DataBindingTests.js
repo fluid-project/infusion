@@ -917,7 +917,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.fluid5024head", {
-        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
             child1: {
                 type: "fluid.standardRelayComponent",
@@ -946,19 +946,29 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
     
+    fluid.tests.checkNearSuperset = function (model1, model2) {
+        var holder1 = {model: fluid.copy(model1)};
+        var request = {type: "ADD", segs: [], value: fluid.copy(model2)};
+        var options = {changes: 0, changeMap: {}};
+        fluid.model.applyHolderChangeRequest(holder1, request, options);
+        return $.isEmptyObject(options.changeMap);
+    }
+    
     // This utility applies the same "floating point slop" testing as the ChangeApplier in order to determine that models
     // holding approximately equal numerical values are deep equal
-    fluid.tests.checkNearEquality = function (model1, model2) {
-        var holder1 = {model: model1};
-        var request = {type: "ADD", segs: [], value: model2};
-        var options = {changes: 0, changeMap: null};
-        fluid.model.applyHolderChangeRequest(holder1, request, options);
-        return options.changeMap === null; 
+    fluid.tests.checkNearEquality = function (message, model1, model2) {
+        var supersetL = fluid.tests.checkNearSuperset(model1, model2);
+        var supersetR = fluid.tests.checkNearSuperset(model2, model1);
+        var equal = supersetL && supersetR;
+        jqUnit.assertTrue(message + "expected: " + JSON.stringify(model1) + " actual: " + JSON.stringify(model2), equal);
     };
     
-    fluid.tests.fluid5024Clear = function (that) {
+    fluid.tests.fluid5024clear = function (that) {
         that.child1.fireRecord.length = 0;
         that.child2.fireRecord.length = 0;
+        if (that.child3) {
+            that.child3.fireRecord.length = 0;
+        }
     };
     
     fluid.tests.assertTransactionsConcluded = function (that) {
@@ -982,9 +992,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.assertTransactionsConcluded(that);
         
         function expectChanges (message, child1Record, child2Record) {
-            jqUnit.assertTrue(message + " change record child 1", fluid.tests.checkNearEquality(child1Record, that.child1.fireRecord));
-            jqUnit.assertTrue(message + " change record child 2", fluid.tests.checkNearEquality(child2Record, that.child2.fireRecord));
-            fluid.tests.fluid5024Clear(that);          
+            fluid.tests.checkNearEquality(message + " change record child 1", child1Record, that.child1.fireRecord);
+            fluid.tests.checkNearEquality(message + " change record child 2", child2Record, that.child2.fireRecord);
+            fluid.tests.fluid5024clear(that);          
         }
         
         var ttInF = 22 * 9 / 5 + 32;
@@ -1003,12 +1013,97 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.child1.applier.change("celsius", 20);
         expectChanges("Reverse transform propagated", 
             [{path: [], value: {celsius: 20}, oldValue: {celsius: ffoInC}}],
-            [{path: [], value: {fahrenheit: 68}, oldValue: {fahrenheit: 251}}]);   
+            [{path: [], value: {fahrenheit: 68}, oldValue: {fahrenheit: 451}}]);   
         jqUnit.assertEquals("Forward transformed value arrived", 68, that.child2.model.fahrenheit);
         
         fluid.tests.assertTransactionsConcluded(that);
     });
-
+    
+    /** Demonstrate resolving a set of model references which is cyclic in components (although not in values), as well as
+     * double relay and longer "transform" form of relay specification */
+    
+    fluid.defaults("fluid.tests.fluid5024cycleHead", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            child1: {
+                type: "fluid.standardRelayComponent",
+                options : {
+                    gradeNames: ["fluid.tests.allChangeRecorder", "autoInit"],
+                    model: {
+                        forwardValue: "{child2}.model.child2Area",
+                        backwardValue: 97
+                    }
+                }  
+            },
+            child2: {
+                type: "fluid.standardRelayComponent",
+                options : {
+                    gradeNames: ["fluid.tests.allChangeRecorder", "autoInit"],
+                    model: {
+                    },
+                    modelRelay: {
+                        source: "{that}.model.child2Area",
+                        target: "{child3}.model.lastArea",
+                        transform: {
+                            transform: {
+                                type: "fluid.transforms.linearScale",
+                                factor: 10
+                            }
+                        }
+                    }
+                }  
+            },
+            child3: {
+                type: "fluid.standardRelayComponent",
+                options : {
+                    gradeNames: ["fluid.tests.allChangeRecorder", "autoInit"],
+                    model: {
+                        lastArea: 35,
+                        backwardRef: "{child1}.model.backwardValue"
+                    }
+                }
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-5024: Resolving references which are cyclic in components", function () {
+        var that = fluid.tests.fluid5024cycleHead();
+        
+        function expectChanges (message, child1Record, child2Record, child3Record) {
+            fluid.tests.checkNearEquality(message + " change record child 1", child1Record, that.child1.fireRecord);
+            fluid.tests.checkNearEquality(message + " change record child 2", child2Record, that.child2.fireRecord);
+            fluid.tests.checkNearEquality(message + " change record child 3", child3Record, that.child3.fireRecord);
+            fluid.tests.fluid5024clear(that);          
+        }
+        
+        expectChanges("Initial values", [{
+            path: [], value: {forwardValue: 3.5, backwardValue: 97}, oldValue: undefined
+        }], [{
+            path: [], value: {child2Area: 3.5}, oldValue: undefined
+        }], [{
+            path: [], value: {lastArea: 35, backwardRef: 97}, oldValue: undefined
+        }]);
+        
+        that.child3.applier.change("lastArea", 25);
+        
+        expectChanges("Propagated linked change", [{
+            path: [], value: {forwardValue: 2.5, backwardValue: 97}, oldValue: {forwardValue: 3.5, backwardValue: 97}
+        }], [{
+            path: [], value: {child2Area: 2.5}, oldValue: {child2Area: 3.5}
+        }], [{
+            path: [], value: {lastArea: 25, backwardRef: 97}, oldValue: {lastArea: 35, backwardRef: 97}
+        }]);
+        
+        that.child1.applier.change("backwardValue", 77);
+        
+        expectChanges("Propagated backward change", [{
+            path: [], value: {forwardValue: 2.5, backwardValue: 77}, oldValue: {forwardValue: 2.5, backwardValue: 97}
+        }], 
+        [], 
+        [{
+            path: [], value: {lastArea: 25, backwardRef: 77}, oldValue: {lastArea: 25, backwardRef: 97}
+        }]);
+    });
 
     jqUnit.test("FLUID-5151: One single listener function hooked up for multiple model paths only have the last call registered succesfully", function () {
         var holder = {

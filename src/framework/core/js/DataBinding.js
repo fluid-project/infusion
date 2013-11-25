@@ -295,6 +295,18 @@ var fluid_1_5 = fluid_1_5 || {};
         return enlist;
     };
     
+    // Utility to coordinate with our crude "oscillation prevention system" which limits each link to 2 updates (presumably
+    // in opposite directions). In the case of the initial transaction, we need to reset the count given that genuine
+    // changes are arising in the system with each new enlisted model. TODO: if we ever get users operating their own 
+    // transactions, think of a way to incorporate this into that workflow
+    fluid.clearLinkCounts = function (transRec) {
+        fluid.each(transRec, function (value, key) {
+            if (typeof(value) === "number") {
+                transRec[key] = 0;
+            }  
+        }); 
+    };
+    
     // Operate all coordinated transactions by bringing models to their respective initial values, and then commit them all
     fluid.operateInitialTransaction = function (instantiator, mrec) {
         var transId = fluid.allocateGuid();
@@ -313,6 +325,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     transac.fireChangeRequest({type: "ADD", segs: [], value: initModel});
                 });
             }
+            fluid.clearLinkCounts(transRec);
         });
         fluid.each(transacs, function (transac, key) {
             transac.commitOnly();
@@ -376,6 +389,7 @@ var fluid_1_5 = fluid_1_5 || {};
             var initRecord = instantiator.modelTransactions.init[target.id];
             var noRelay = initRecord && initRecord[linkId] === "noRelay";
             transRec[linkId] = transRec[linkId] || 0;
+            // Crude "oscillation prevention" system limits each link to maximum of 2 operations per cycle (presumably in opposite directions)
             var relay = (transRec[linkId] < 2) && !noRelay;
             if (relay) {
                 ++transRec[linkId];
