@@ -340,9 +340,9 @@ var fluid_1_5 = fluid_1_5 || {};
         return auxSchema;
     };
 
-    fluid.prefs.expandSchema = function (schemaToExpand, defaultNamespace, indexes, topCommonOptions, elementCommonOptions, mappedDefaults) {
+    fluid.prefs.expandSchema = function (schemaToExpand, indexes, topCommonOptions, elementCommonOptions, mappedDefaults) {
         var auxSchema = fluid.prefs.expandSchemaImpl(schemaToExpand);
-        auxSchema.namespace = auxSchema.namespace || defaultNamespace;
+        auxSchema.namespace = auxSchema.namespace || "fluid.prefs.created_" + fluid.allocateGuid();
 
         var compositePanelList = fluid.get(auxSchema, "groups");
         if (compositePanelList) {
@@ -401,7 +401,6 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.prefs.auxBuilder", {
         gradeNames: ["fluid.prefs.auxSchema", "autoInit"],
-        defaultNamespace: "fluid.prefs.create",
         mergePolicy: {
             elementCommonOptions: "noexpand"
         },
@@ -482,7 +481,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 func: "fluid.prefs.expandSchema",
                 args: [
                     "{that}.options.auxiliarySchema",
-                    "{that}.options.defaultNamespace",
                     "{that}.options.indexes",
                     "{that}.options.topCommonOptions",
                     "{that}.options.elementCommonOptions",
