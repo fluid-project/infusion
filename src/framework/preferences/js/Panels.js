@@ -66,6 +66,9 @@ var fluid_1_5 = fluid_1_5 || {};
         events: {
             onDomBind: null
         },
+        // Any listener that requires a DOM element, should be registered
+        // to the onDomBind listener. By default it is fired by onCreate, but
+        // when used as a subpanel, it will be triggered by the resetDomBinder invoker.
         listeners: {
             "onCreate.onDomBind": "{that}.events.onDomBind"
         }
@@ -86,6 +89,9 @@ var fluid_1_5 = fluid_1_5 || {};
                 listener: "{that}.events.afterRender",
                 args: ["{that}"]
             },
+            // Changing the firing of onDomBind from the onCreate.
+            // This is due to the fact that the rendering process, controlled by the
+            // composite panel, will set/replace the DOM elements.
             "onCreate.onDomBind": null, // remove listener
             "afterRender.onDomBind": "{that}.resetDomBinder"
         },
@@ -103,6 +109,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         invokers: {
             refreshView: "{compositePanel}.refreshView",
+            // resetDomBinder must fire the onDomBind event
             resetDomBinder: {
                 funcName: "fluid.prefs.subPanel.resetDomBinder",
                 args: ["{that}"]
@@ -113,6 +120,13 @@ var fluid_1_5 = fluid_1_5 || {};
         renderOnInit: false
     });
 
+    /*
+     * Since the composite panel manages the rendering of the subpanels
+     * the markup used by subpanels needs to be completely replaced.
+     * The subpanel's container is refereshed to point at the newly
+     * rendered markup, and the domBinder is re-initialized. Once
+     * this is all done, the onDomBind event is fired.
+     */
     fluid.prefs.subPanel.resetDomBinder = function (that) {
         that.container = $(that.container.selector);
         fluid.initDomBinder(that, that.options.selectors);
