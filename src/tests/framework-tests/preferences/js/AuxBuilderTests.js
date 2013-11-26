@@ -67,6 +67,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.tests.schema = {
+        "namespace": "fluid.tests.prefsEditor",
         "textFont": {
             "type": "fluid.prefs.textFont",
             "classes": {
@@ -112,6 +113,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.expectedSchema = {
+        "namespace": "fluid.tests.prefsEditor",
         "textFont": {
             "type": "fluid.prefs.textFont",
             "classes": {
@@ -241,11 +243,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "container": "%compositePanel.dom.%prefKey"
         },
         enactor: {
+            "options.gradeNames": "fluid.prefs.uiEnhancerConnections",
             "container": {
                 value: "uiEnhancer.container",
                 func: "fluid.prefs.containerNeeded"
-            },
-            "options.sourceApplier": "uiEnhancer.applier"
+            }
         }
     };
 
@@ -254,7 +256,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.tests.testExpandSchemaComponents = function (auxSchema, type, prefKey, componentConfig, index, primarySchema, expectedOutput) {
-        // var panelsTopCommonOptions = fluid.get(fluid.defaults("fluid.prefs.auxBuilder"), "topCommonOptions.panels");
         var panelsCommonOptions = fluid.get(fluid.tests.elementCommonOptions, "panel");
         var output = fluid.prefs.expandSchemaComponents(auxSchema, type, prefKey, componentConfig, index, panelsCommonOptions, primarySchema);
         jqUnit.assertDeepEq("The components and templates blocks are constructed correctly", expectedOutput, output);
@@ -464,12 +465,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests.auxSchema");
 
+    fluid.tests.testEmpty = function (expandedAuxSchema) {
+        var namespace = fluid.get(expandedAuxSchema, "namespace");
+
+        jqUnit.assertTrue("The prefsEditor grade should use the custom namespace", namespace.indexOf("fluid.prefs.created_") === 0);
+        jqUnit.assertEquals("Only namespace is in the expanded aux schema", 1, fluid.keys(expandedAuxSchema).length);
+    };
+
     fluid.tests.testAuxBuilder = function (expandedSchema, expectedExpandedSchema) {
         jqUnit.assertDeepEq("The schema was expanded correctly", expectedExpandedSchema, expandedSchema);
     };
 
-    fluid.tests.auxSchema.defaultNamespace = fluid.defaults("fluid.prefs.auxBuilder").defaultNamespace;
-    fluid.tests.auxSchema.newNamespace = "fluid.prefs.constructedPrefsEditor";
+    fluid.tests.auxSchema.customizedNamespace = "fluid.prefs.constructedPrefsEditor";
 
     fluid.tests.auxSchema.panels = {
         "textSize": {
@@ -559,7 +566,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.auxSchema.namespace = {
-        "namespace": fluid.tests.auxSchema.newNamespace
+        "namespace": fluid.tests.auxSchema.customizedNamespace
     };
 
     fluid.tests.auxSchema.template = {
@@ -597,7 +604,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.auxSchema.expectedEnactors = {
-        "namespace": fluid.tests.auxSchema.newNamespace,
+        "namespace": fluid.tests.auxSchema.customizedNamespace,
         "textSize": {
             "type": "fluid.prefs.textSize",
             "enactor": {
@@ -612,7 +619,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     type: "fluid.prefs.enactor.textSize",
                     container: "uiEnhancer.container",
                     options: {
-                        sourceApplier: "uiEnhancer.applier",
+                        gradeNames: "fluid.prefs.uiEnhancerConnections",
                         model: {
                             value: 1
                         },
@@ -642,7 +649,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.auxSchema.expectedPanels = {
-        "namespace": fluid.tests.auxSchema.defaultNamespace,
+        "namespace": fluid.tests.auxSchema.customizedNamespace,
         "textSize": {
             "type": "fluid.prefs.textSize",
             "panel": {
@@ -725,7 +732,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             auxbuilderOnlyPanel: {
                 type: "fluid.prefs.auxBuilder",
                 options: {
-                    auxiliarySchema: fluid.tests.auxSchema.panels,
+                    auxiliarySchema: $.extend(true, {}, fluid.tests.auxSchema.panels, fluid.tests.auxSchema.namespace),
                     elementCommonOptions: fluid.tests.elementCommonOptions,
                     mappedDefaults: fluid.tests.auxSchema.mappedDefaults
                 }
@@ -733,7 +740,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             auxbuilderManyPanelsOnePref: {
                 type: "fluid.prefs.auxBuilder",
                 options: {
-                    auxiliarySchema: fluid.tests.auxSchema.manyPanelsOnePref,
+                    auxiliarySchema: $.extend(true, {}, fluid.tests.auxSchema.manyPanelsOnePref, fluid.tests.auxSchema.namespace),
                     elementCommonOptions: fluid.tests.elementCommonOptions,
                     mappedDefaults: fluid.tests.auxSchema.mappedDefaults
                 }
@@ -741,7 +748,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             auxbuilderManyPrefsOnePanel: {
                 type: "fluid.prefs.auxBuilder",
                 options: {
-                    auxiliarySchema: fluid.tests.auxSchema.manyPrefsOnePanel,
+                    auxiliarySchema: $.extend(true, {}, fluid.tests.auxSchema.manyPrefsOnePanel, fluid.tests.auxSchema.namespace),
                     elementCommonOptions: fluid.tests.elementCommonOptions,
                     mappedDefaults: fluid.tests.auxSchema.mappedDefaults
                 }
@@ -763,13 +770,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.auxBuilderTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
-            expectedPrefs: {
-                "namespace": fluid.tests.auxSchema.defaultNamespace
-            },
             expectedPanels: fluid.tests.auxSchema.expectedPanels,
             expectedEnactors: fluid.tests.auxSchema.expectedEnactors,
             expectedManyPanelsOnePref: {
-                "namespace": fluid.tests.auxSchema.defaultNamespace,
+                "namespace": fluid.tests.auxSchema.customizedNamespace,
                 "textSize": {
                     "type": "fluid.prefs.textSize",
                     "panel": {
@@ -863,7 +867,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             expectedManyPrefsOnePanel: {
-                "namespace": fluid.tests.auxSchema.defaultNamespace,
+                "namespace": fluid.tests.auxSchema.customizedNamespace,
                 "emphasizeLinks": {
                     "type": "fluid.prefs.emphasizeLinks",
                     "panel": {
@@ -929,7 +933,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             expectedAll: {
-                "namespace": fluid.tests.auxSchema.newNamespace,
+                "namespace": fluid.tests.auxSchema.customizedNamespace,
                 "textSize": {
                     "type": "fluid.prefs.textSize",
                     "panel": {
@@ -992,7 +996,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             type: "fluid.prefs.enactor.textSize",
                             container: "uiEnhancer.container",
                             options: {
-                                sourceApplier: "uiEnhancer.applier",
+                                gradeNames: "fluid.prefs.uiEnhancerConnections",
                                 model: {
                                     value: 1
                                 },
@@ -1025,11 +1029,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test auxBuilder",
             tests: [{
-                expect: 1,
+                expect: 2,
                 name: "expandedAuxSchema - empty",
                 type: "test",
-                func: "fluid.tests.testAuxBuilder",
-                args: ["{auxbuilderEmpty}.options.expandedAuxSchema", "{that}.options.testOptions.expectedPrefs"]
+                func: "fluid.tests.testEmpty",
+                args: ["{auxbuilderEmpty}.options.expandedAuxSchema"]
             }, {
                 expect: 1,
                 name: "expandedAuxSchema - onlyPanel",
@@ -1161,7 +1165,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.auxSchema.compositePanelSchema = {
-        "namespace": fluid.tests.auxSchema.newNamespace, // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed UIO.
+        "namespace": fluid.tests.auxSchema.customizedNamespace, // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed UIO.
         "templatePrefix": "../html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
         "template": "%prefix/prefs.html",
         "messagePrefix": "../messages/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
@@ -1206,7 +1210,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.auxSchema.expandedComposite = {
-        "namespace": fluid.tests.auxSchema.newNamespace, // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed UIO.
+        "namespace": fluid.tests.auxSchema.customizedNamespace, // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed UIO.
         "templatePrefix": "../html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
         "template": "%prefix/prefs.html",
         "messagePrefix": "../messages/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
@@ -1594,8 +1598,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "fluid_prefs_enactor_subPanel1": {
                     type: "fluid.prefs.enactor.subPanel1",
                     options: {
+                        gradeNames: "fluid.prefs.uiEnhancerConnections",
                         "cssClass": "fl-link-enhanced",
-                        sourceApplier: "uiEnhancer.applier",
                         model: {
                             value: false
                         },
@@ -1608,8 +1612,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     type: "fluid.prefs.enactor.subPanel2",
                     container: "uiEnhancer.container",
                     options: {
+                        gradeNames: "fluid.prefs.uiEnhancerConnections",
                         "cssClass": "fl-text-larger",
-                        sourceApplier: "uiEnhancer.applier",
                         model: {
                             value: false
                         },
