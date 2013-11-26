@@ -3654,5 +3654,48 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertValue("Invoker is resolved correctly", component.method);
         component.method();
     });
+    
+    /** FLUID-5212 dynamic grade linkage aka "new demands blocks" **/
+
+    fluid.defaults("fluid.tests.gradeLinkageComponent", {
+        gradeNames: ["autoInit", "fluid.littleComponent", "fluid.applyGradeLinkage"]
+    });
+
+    fluid.defaults("fluid.tests.gradeLinkageRecord", {
+        gradeNames: ["autoInit", "fluid.gradeLinkageRecord"],
+        contextGrades: ["fluid.tests.contributedGrade1"],
+        resultGrades: "fluid.tests.contributedGrade2"
+    });
+
+    fluid.defaults("fluid.tests.fluid5212root", {
+        gradeNames: ["autoInit", "fluid.littleComponent"],
+        distributeOptions: {
+            source: "{that}.options.contributedGradeNames",
+            target: "{that subcomponent}.options.gradeNames"
+        },
+        components: {
+            subcomponent: {
+                type: "fluid.tests.gradeLinkageComponent"
+            }
+        },
+        contributedGradeNames: ["fluid.tests.contributedGrade1"]
+    });
+
+    fluid.defaults("fluid.tests.contributedGrade1", {
+        gradeNames: ["autoInit", "fluid.littleComponent"]
+    });
+
+    fluid.defaults("fluid.tests.contributedGrade2", {
+        gradeNames: ["autoInit", "fluid.littleComponent"]
+    });
+
+    jqUnit.test("Test dynamic grade linkage.", function () {
+        jqUnit.expect(2);
+        var component = fluid.tests.fluid5212root();
+        fluid.each(["fluid.tests.contributedGrade1", "fluid.tests.contributedGrade2"], function (gradeName) {
+            jqUnit.assertTrue("Grade is correctly applied",
+                $.inArray(gradeName, component.subcomponent.options.gradeNames) >= 0);
+        });
+    });
 
 })(jQuery);
