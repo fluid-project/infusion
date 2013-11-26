@@ -79,7 +79,7 @@ var fluid_1_5 = fluid_1_5 || {};
      ***************************/
 
     fluid.defaults("fluid.prefs.subPanel", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel", "{that}.getDomBindGrade", "autoInit"],
         mergePolicy: {
             sourceApplier: "nomerge"
         },
@@ -113,12 +113,32 @@ var fluid_1_5 = fluid_1_5 || {};
             resetDomBinder: {
                 funcName: "fluid.prefs.subPanel.resetDomBinder",
                 args: ["{that}"]
+            },
+            getDomBindGrade: {
+                funcName: "fluid.prefs.subPanel.getDomBindGrade",
+                args: ["{prefsEditor}"]
             }
         },
         strings: {},
         parentBundle: "{compositePanel}.messageResolver",
         renderOnInit: false
     });
+
+    fluid.defaults("fluid.prefs.subPanel.domBind", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        listeners: {
+            "onDomBind.domChange": {
+                listener: "{prefsEditor}.events.onSignificantDOMChange"
+            }
+        }
+    });
+
+    fluid.prefs.subPanel.getDomBindGrade = function (prefsEditor) {
+        var hasListener = fluid.get(prefsEditor, "options.events.onSignificantDOMChange") !== undefined;
+        if (hasListener) {
+            return "fluid.prefs.subPanel.domBind";
+        }
+    };
 
     /*
      * Since the composite panel manages the rendering of the subpanels
