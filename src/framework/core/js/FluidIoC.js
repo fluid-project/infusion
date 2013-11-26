@@ -397,7 +397,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.defaults("fluid.gradeLinkageRecord", {
-        gradeNames: ["autoInit", "fluid.littleComponent"]
+        gradeNames: ["fluid.littleComponent"]
     });
     
     /** A "tag component" to opt in to the grade linkage system (FLUID-5212) which is currently very expensive - 

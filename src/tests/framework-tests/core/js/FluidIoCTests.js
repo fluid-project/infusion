@@ -3663,7 +3663,7 @@ fluid.registerNamespace("fluid.tests");
 
     fluid.defaults("fluid.tests.gradeLinkageRecord", {
         gradeNames: ["autoInit", "fluid.gradeLinkageRecord"],
-        contextGrades: ["fluid.tests.contributedGrade1"],
+        contextGrades: ["fluid.tests.contributedGrade1", "fluid.tests.gradeLinkageComponent"],
         resultGrades: "fluid.tests.contributedGrade2"
     });
 
@@ -3693,8 +3693,7 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.expect(2);
         var component = fluid.tests.fluid5212root();
         fluid.each(["fluid.tests.contributedGrade1", "fluid.tests.contributedGrade2"], function (gradeName) {
-            jqUnit.assertTrue("Grade is correctly applied",
-                $.inArray(gradeName, component.subcomponent.options.gradeNames) >= 0);
+            jqUnit.assertTrue("Grade is correctly applied", fluid.contains(component.subcomponent.options.gradeNames, gradeName));
         });
     });
 
