@@ -34,7 +34,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     uiEnhancer: {
                         options: {
                             gradeNames: ["fluid.uiEnhancer.starterEnactors"],
-                            tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
+                            tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html"
                         }
                     }
                 }

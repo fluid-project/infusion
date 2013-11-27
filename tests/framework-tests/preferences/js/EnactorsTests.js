@@ -450,7 +450,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.prefs.enactor.tableOfContents",
                 container: ".flc-tableOfContents",
                 options: {
-                    tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
+                    tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html",
                     model: {
                         toc: false
                     }

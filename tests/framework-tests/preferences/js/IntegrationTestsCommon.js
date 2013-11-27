@@ -28,7 +28,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // Supply the table of contents' template URL
     fluid.demands("fluid.prefs.enactor.tableOfContents", ["fluid.uiEnhancer"], {
         options: {
-            templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
+            templateUrl: "../../../../src/components/tableOfContents/html/TableOfContents.html"
         }
     });
 
@@ -100,7 +100,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.pageEnhancer({
                 uiEnhancer: {
                     gradeNames: ["fluid.uiEnhancer.starterEnactors"],
-                    tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
+                    tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html"
                 }
             });
             var savedSelections;
@@ -146,8 +146,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             var that = fluid.invokeGlobalFunction(componentName, ["#myPrefsEditor", {
                 gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
-                templatePrefix: "../../../../framework/preferences/html/",
-                messagePrefix: "../../../../framework/preferences/messages/",
+                templatePrefix: "../../../../src/framework/preferences/html/",
+                messagePrefix: "../../../../src/framework/preferences/messages/",
                 templateLoader: {
                     gradeNames: ["fluid.prefs.starterFullPreviewTemplateLoader"]
                 },
@@ -175,7 +175,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.prefs.enhancerOptions = {
         uiEnhancer: {
             gradeNames: ["fluid.uiEnhancer.starterEnactors", "fluid.prefs.rootModel.starter"],
-            tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
+            tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html",
             classnameMap: {
                 "textFont": {
                     "default": "fl-font-times"
@@ -212,8 +212,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.prefs.mungingIntegrationOptions = {
         gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
-        templatePrefix: "../../../../framework/preferences/html/",
-        messagePrefix: "../../../../framework/preferences/messages/",
+        templatePrefix: "../../../../src/framework/preferences/html/",
+        messagePrefix: "../../../../src/framework/preferences/messages/",
         textFont: {
             strings: {
                 textFont: fluid.tests.prefs.testStrings

@@ -118,7 +118,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.test("Rewrite Relative URLs", function () {
-            var prefix = "../../../../framework/fss/css/";
+            var prefix = "../../../../src/framework/fss/css/";
             
             var opts = {
                 prefix: prefix
