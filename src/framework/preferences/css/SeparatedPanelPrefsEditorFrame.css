@@ -2,7 +2,7 @@
     font-family: "OpenSans";
     src: url("../../../lib/fonts/OpenSans-Light.ttf");
     font-weight: 300;
-    font-style: normal;    
+    font-style: normal;
 }
 
 @font-face {
@@ -34,12 +34,12 @@ html {
     background-image: url('../images/default/separatedpanelbg.png');
     background-repeat: repeat;
     height: 100%;
-    overflow-x: scroll;
+    overflow-x: auto;
     overflow-y: hidden;
     color: #766d68;
     padding: 10px 0px;
     margin: 0px;
-    
+
 }
 
 /* Preference Panels */
@@ -65,8 +65,8 @@ html {
 .fl-prefsEditor-separatedPanel h2 {
     color: #766d68;
     padding: 0 0 0.5em 0;
-    margin: 0 0 1.5em 0;   
-    width: 100%; 
+    margin: 0 0 1.5em 0;
+    width: 100%;
     border-bottom: solid #ccc 1px;
     box-shadow: 0px 6px 7px -6px rgba(0,0,0,0.3);
     font-size: 1.2em;
@@ -124,7 +124,7 @@ html {
     -webkit-font-smoothing: antialiased;
     float: left;
     margin: 0.2em 0.3em 0 0;
-    font-size: 1.5em; 
+    font-size: 1.5em;
 }
 .fl-prefsEditor-separatedPanel .fl-icon-next:before {
     content: "\e001";
