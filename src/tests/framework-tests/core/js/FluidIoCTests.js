@@ -3658,7 +3658,12 @@ fluid.registerNamespace("fluid.tests");
     /** FLUID-5212 dynamic grade linkage aka "new demands blocks" **/
 
     fluid.defaults("fluid.tests.gradeLinkageComponent", {
-        gradeNames: ["autoInit", "fluid.littleComponent", "fluid.applyGradeLinkage"]
+        gradeNames: ["autoInit", "fluid.littleComponent", "fluid.applyGradeLinkage"],
+        invokers: {
+            handle: {
+                funcName: "fluid.tests.gradeLinkageComponent.handle"
+            }
+        }
     });
 
     fluid.defaults("fluid.tests.gradeLinkageRecord", {
@@ -3682,19 +3687,38 @@ fluid.registerNamespace("fluid.tests");
     });
 
     fluid.defaults("fluid.tests.contributedGrade1", {
-        gradeNames: ["autoInit", "fluid.littleComponent"]
+        gradeNames: ["autoInit", "fluid.littleComponent"],
+        invokers: {
+            handle: {
+                funcName: "fluid.tests.gradeLinkageComponent.handle1"
+            }
+        }
     });
+
+    fluid.tests.gradeLinkageComponent.handle1 = function () {
+        return false;
+    };
 
     fluid.defaults("fluid.tests.contributedGrade2", {
-        gradeNames: ["autoInit", "fluid.littleComponent"]
+        gradeNames: ["autoInit", "fluid.littleComponent"],
+        invokers: {
+            handle: {
+                funcName: "fluid.tests.gradeLinkageComponent.handle2"
+            }
+        }
     });
 
+    fluid.tests.gradeLinkageComponent.handle2 = function () {
+        return true;
+    };
+
     jqUnit.test("Test dynamic grade linkage.", function () {
-        jqUnit.expect(2);
+        jqUnit.expect(3);
         var component = fluid.tests.fluid5212root();
         fluid.each(["fluid.tests.contributedGrade1", "fluid.tests.contributedGrade2"], function (gradeName) {
             jqUnit.assertTrue("Grade is correctly applied", fluid.contains(component.subcomponent.options.gradeNames, gradeName));
         });
+        jqUnit.assertTrue("Subcomponent invoker is overriden correctly", component.subcomponent.handle());
     });
 
 })(jQuery);
