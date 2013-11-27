@@ -26,7 +26,7 @@ var demo = demo || {};
     var abortDemo = false;
     try {
         $.ajax({
-            url: "../../../build-scripts/build.xml",
+            url: "../../../../build-scripts/build.xml",
             async : false,
             error: function (XMLHttpRequest, state, error) {
                 if (error && error.code === 1012 && (demo.name === "prefsEditor" || demo.name === "uploader")) {
