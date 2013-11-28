@@ -1379,7 +1379,7 @@ var fluid = fluid || fluid_1_5;
             optionsChain: []
         };
         // stronger grades appear to the left in defaults - dynamic grades are stronger still - FLUID-5085
-        return resolveGradesImpl(gradeStruct, (gradeNames || []).concat([defaultName]), true);
+        return resolveGradesImpl(gradeStruct, (fluid.makeArray(gradeNames).reverse() || []).concat([defaultName]), true);
     };
         
     var mergedDefaultsCache = {};
