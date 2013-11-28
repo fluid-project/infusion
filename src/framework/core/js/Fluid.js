@@ -1681,6 +1681,7 @@ var fluid = fluid || fluid_1_5;
     // A special marker object which will be placed at a current evaluation point in the tree in order
     // to protect against circular evaluation
     fluid.inEvaluationMarker = {"__CURRENTLY_IN_EVALUATION__": true};
+    fluid.destroyedMarker = {"__COMPONENT_DESTROYED__": true};
     
     // A path depth above which the core "process strategies" will bail out, assuming that the 
     // structure has become circularly linked. Helpful in environments such as Firebug which will
