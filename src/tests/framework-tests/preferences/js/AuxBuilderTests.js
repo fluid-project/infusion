@@ -226,10 +226,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         panel: {
             "createOnEvent": "onPrefsEditorMarkupReady",
             "container": "prefsEditor.dom.%prefKey",
-            "options.gradeNames": {
-                "value": "fluid.prefs.prefsEditorConnections",
-                "mergeFunc": fluid.arrayConcatPolicy
-            },
+            "options.gradeNames": "fluid.prefs.prefsEditorConnections",
             "options.resources.template": "templateLoader.resources.%prefKey"
         },
         compositePanelBasedOnSub: {
@@ -240,10 +237,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         enactor: {
             "options.gradeNames": "fluid.prefs.uiEnhancerConnections",
-            "container": {
-                value: "uiEnhancer.container",
-                func: "fluid.prefs.containerNeeded"
-            }
+            "container": "uiEnhancer.container"
         }
     };
 
@@ -617,7 +611,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     type: "fluid.prefs.enactor.textSize",
                     container: "uiEnhancer.container",
                     options: {
-                        gradeNames: "fluid.prefs.uiEnhancerConnections",
+                        gradeNames: ["fluid.prefs.uiEnhancerConnections"],
                         model: {
                             value: 1
                         },
@@ -994,7 +988,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             type: "fluid.prefs.enactor.textSize",
                             container: "uiEnhancer.container",
                             options: {
-                                gradeNames: "fluid.prefs.uiEnhancerConnections",
+                                gradeNames: ["fluid.prefs.uiEnhancerConnections"],
                                 model: {
                                     value: 1
                                 },
@@ -1911,7 +1905,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "fluid_prefs_enactor_subPanel1": {
                     type: "fluid.prefs.enactor.subPanel1",
                     options: {
-                        gradeNames: "fluid.prefs.uiEnhancerConnections",
+                        gradeNames: ["fluid.prefs.uiEnhancerConnections"],
                         "cssClass": "fl-link-enhanced",
                         model: {
                             value: false
@@ -1925,7 +1919,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     type: "fluid.prefs.enactor.subPanel2",
                     container: "uiEnhancer.container",
                     options: {
-                        gradeNames: "fluid.prefs.uiEnhancerConnections",
+                        gradeNames: ["fluid.prefs.uiEnhancerConnections"],
                         "cssClass": "fl-text-larger",
                         model: {
                             value: false
@@ -1985,134 +1979,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.returnFalse = function () {
         return false;
     };
-
-    jqUnit.test("FLUID-5213: Test fluid.prefs.addCommonOptions()", function () {
-        var addCommonOptionsTests = {
-            test1: {
-                root: {},
-                path: "path",
-                commonOptions: {
-                    "subPath1": "subValue1"
-                },
-                templateValues: null,
-                expected: {}
-            },
-            test2: {
-                root: {
-                    path: {}
-                },
-                path: "path",
-                commonOptions: {
-                    "subPath1": {
-                        "key": "value"
-                    }
-                },
-                templateValues: null,
-                expected: {
-                    path: {
-                        subPath1: {
-                            "key": "value"
-                        }
-                    }
-                }
-            },
-            test3: {
-                root: {
-                    path: {}
-                },
-                path: "path",
-                commonOptions: {
-                    "subPath1.subPath2": "subValue1"
-                },
-                templateValues: null,
-                expected: {
-                    path: {
-                        subPath1: {
-                            subPath2: "subValue1"
-                        }
-                    }
-                }
-            },
-            test4: {
-                root: {
-                    path: {}
-                },
-                path: "path",
-                commonOptions: {
-                    "subPath1": {
-                        value: "subValue1",
-                        optionRequired: "fluid.tests.returnTrue"
-                    }
-                },
-                templateValues: null,
-                expected: {
-                    path: {
-                        subPath1: "subValue1"
-                    }
-                }
-            },
-            test5: {
-                root: {
-                    path: {}
-                },
-                path: "path",
-                commonOptions: {
-                    "subPath1": {
-                        value: "subValue1",
-                        optionRequired: "fluid.tests.returnFalse"
-                    }
-                },
-                templateValues: null,
-                expected: {
-                    path: {
-                    }
-                }
-            },
-            test6: {
-                root: {
-                    path: {
-                        subPath1: "existing"
-                    }
-                },
-                path: "path",
-                commonOptions: {
-                    "subPath1": {
-                        value: "subValue1",
-                        mergeFunc: fluid.arrayConcatPolicy
-                    }
-                },
-                templateValues: null,
-                expected: {
-                    path: {
-                        subPath1: ["existing", "subValue1"]
-                    }
-                }
-            },
-            test7: {
-                root: {
-                    path: {
-                    }
-                },
-                path: "path",
-                commonOptions: {
-                    "%key": "value is %value"
-                },
-                templateValues: {
-                    "key": "subKey",
-                    "value": "subValue"
-                },
-                expected: {
-                    path: {
-                        "subKey": "value is subValue"
-                    }
-                }
-            }
-        };
-
-        fluid.each(addCommonOptionsTests, function (test) {
-            jqUnit.assertDeepEq("The result is expected", test.expected, fluid.prefs.addCommonOptions(test.root, test.path, test.commonOptions, test.templateValues));
-        });
-    });
 
     $(document).ready(function () {
         fluid.test.runTests([

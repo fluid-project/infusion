@@ -94,26 +94,24 @@ var fluid_1_5 = fluid_1_5 || {};
 
         var opts = {}, mergePolicy = {};
 
-        fluid.each(commonOptions, function (option, key) {
-            var value = option;
-            var canAdd = true;
-
-            // Execute the validation function to decide if this common option should be added
-            if (option.optionRequired) {
-                canAdd = fluid.invokeGlobalFunction(option.optionRequired, [root, path, commonOptions, templateValues]);
-                value = option.value;
+        fluid.each(commonOptions, function (value, key) {
+            // Adds "container" option only for view and renderer components
+            if (key === "container") {
+                var componentType = fluid.get(root, [path, "type"]);
+                var componentOptions = fluid.defaults(componentType);
+                if (!fluid.hasGrade(componentOptions, "fluid.viewComponent") && !fluid.hasGrade(componentOptions, "fluid.rendererComponent")) {
+                    return false;
+                }
             }
-            if (option.mergeFunc) {
-                mergePolicy[key] = option.mergeFunc;
-                value = option.value;
+            // Merge grade names defined in aux schema and system default grades
+            if (key.indexOf("gradeNames") !== -1) {
+                mergePolicy[key] = fluid.arrayConcatPolicy;
             }
 
-            if (canAdd) {
-                key = fluid.stringTemplate(key, templateValues);
-                value = typeof (value) === "string" ? fluid.stringTemplate(value, templateValues) : value;
+            key = fluid.stringTemplate(key, templateValues);
+            value = typeof (value) === "string" ? fluid.stringTemplate(value, templateValues) : value;
 
-                fluid.set(opts, key, value);
-            }
+            fluid.set(opts, key, value);
         });
 
         fluid.set(root, path, fluid.merge(mergePolicy, existingValue, opts));
@@ -146,7 +144,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
         if (componentName) {
 
-            var cmp = components[memberName] = {
+            components[memberName] = {
                 type: componentName,
                 options: componentOptions
             };
@@ -227,7 +225,6 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.prefs.expandCompositePanels = function (auxSchema, compositePanelList, panelIndex, panelCommonOptions, subPanelCommonOptions,
         compositePanelBasedOnSubCommonOptions, mappedDefaults) {
-        var type = "panel";
         var panelsToIgnore = [];
 
         fluid.each(compositePanelList, function (compositeDetail, compositeKey) {
@@ -289,7 +286,6 @@ var fluid_1_5 = fluid_1_5 || {};
                     if (fluid.prefs.checkPrimarySchema(prefSchema, subPanelPrefsKey)) {
                         var opts;
                         if (internalPath.indexOf("model.") === 0) {
-                            var internalModelName = internalPath.slice(6);
                             // Set up the binding in "rules" accepted by the modelRelay base grade of every panel
                             fluid.set(compositePanelOptions, ["options", "rules", safeSubPanelPrefsKey], safeSubPanelPrefsKey);
                             fluid.set(compositePanelOptions, ["options", "model", safeSubPanelPrefsKey], prefSchema[primaryPath]);
@@ -440,10 +436,7 @@ var fluid_1_5 = fluid_1_5 || {};
             panel: {
                 "createOnEvent": "onPrefsEditorMarkupReady",
                 "container": "{prefsEditor}.dom.%prefKey",
-                "options.gradeNames": {
-                    "value" : "fluid.prefs.prefsEditorConnections",
-                    "mergeFunc": fluid.arrayConcatPolicy
-                },
+                "options.gradeNames": "fluid.prefs.prefsEditorConnections",
                 "options.resources.template": "{templateLoader}.resources.%prefKey"
             },
             compositePanelBasedOnSub: {
@@ -454,11 +447,7 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             enactor: {
                 "options.gradeNames": "fluid.prefs.uiEnhancerConnections",
-                // Conditional handling. Add value to the path only if the execution of func returns true.
-                "container": {
-                    "value": "{uiEnhancer}.container",
-                    "optionRequired": "fluid.prefs.containerNeeded"
-                }
+                "container": "{uiEnhancer}.container"
             }
         },
         indexes: {
