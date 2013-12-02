@@ -98,7 +98,7 @@ var fluid_1_5 = fluid_1_5 || {};
             schema: fluid.filterKeys(primarySchema.properties || primarySchema,
                 typeFilter, false)
         });
-        var primary = [suppliedPrimaryGradeName];
+        var primary = [];
         // Lookup all available schema grades from the index that match the
         // top level preference name.
         fluid.each(typeFilter, function merge(type) {
@@ -107,6 +107,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 primary.push.apply(primary, schemaGrades);
             }
         });
+        primary.push(suppliedPrimaryGradeName);
         return primary;
     };
 
