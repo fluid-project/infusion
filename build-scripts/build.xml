@@ -63,9 +63,9 @@
              <equals arg1="true" arg2="${pretreat}" />
         </condition>
         <condition property="sourceDir" value="${src}">
-        <not>
-            <equals arg1="true" arg2="${pretreat}" />
-        </not>
+            <not>
+                <equals arg1="true" arg2="${pretreat}" />
+            </not>
         </condition>
     </target>
 
@@ -127,8 +127,8 @@
 
     <!-- Assembles the core package -->
     <target name="assemble" depends="concatJavaScript">
-        <echo> Coping from ${sourceDir} to ${assembled} </echo>
-        <copy todir="${assembled}">
+        <echo> Coping from ${sourceDir} to ${assembled}/src </echo>
+        <copy todir="${assembled}/src">
             <fileset dir="${sourceDir}" includes="${requiredDirectoriesSelector}">
                 <exclude name="**/*LICENSE.txt" />
                 <exclude name="**/*Dependencies.json" />
@@ -147,9 +147,10 @@
 
     <!-- Assembles a package that includes demos and tests -->
     <target name="assembleFull" depends="assemble">
+        <echo> Coping demos and tests to ${assembled}</echo>
         <copy todir="${assembled}">
-            <fileset dir="${sourceDir}">
-                <include name="*demos/**" />
+            <fileset dir="${base-dir}">
+                <include name="demos/**" />
                 <include name="tests/**" />
             </fileset>
         </copy>
