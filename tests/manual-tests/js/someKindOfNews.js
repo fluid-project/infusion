@@ -30,15 +30,15 @@ var skon = skon || {};
                         "default": "skon-theme-basic"
                     }
                 },
-                tocTemplate: "../../../components/tableOfContents/html/TableOfContents.html"
+                tocTemplate: "../../../src/components/tableOfContents/html/TableOfContents.html"
             }
         });
 
         // Next, start up Preferences Editor
         fluid.prefs.separatedPanel(".flc-prefsEditor-separatedPanel", {
             gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
-            templatePrefix: "../../../framework/preferences/html/",
-            messagePrefix: "../../../framework/preferences/messages/",
+            templatePrefix: "../../../src/framework/preferences/html/",
+            messagePrefix: "../../../src/framework/preferences/messages/",
             messageLoader: {
                 gradeNames: ["fluid.prefs.starterMessageLoader"]
             },
@@ -50,7 +50,7 @@ var skon = skon || {};
             },
             iframeRenderer: {
                 markupProps: {
-                    src: "../../../framework/preferences/html/SeparatedPanelPrefsEditorFrame.html"
+                    src: "../../../src/framework/preferences/html/SeparatedPanelPrefsEditorFrame.html"
                 }
             }
         });

@@ -29,8 +29,8 @@ var demo = demo || {};
             build: {
                 gradeNames: ["fluid.prefs.auxSchema.starter"],
                 auxiliarySchema: {
-                    "templatePrefix": "../../../framework/preferences/html/",
-                    "messagePrefix": "../../../framework/preferences/messages/"
+                    "templatePrefix": "../../../src/framework/preferences/html/",
+                    "messagePrefix": "../../../src/framework/preferences/messages/"
                 }
             }
         });

@@ -25,7 +25,7 @@ var demo = demo || {};
                 "template": template,
                 "tableOfContents": {
                     "enactor": {
-                        "tocTemplate": "../../../components/tableOfContents/html/TableOfContents.html"
+                        "tocTemplate": "../../../src/components/tableOfContents/html/TableOfContents.html"
                     }
                 }
             }
