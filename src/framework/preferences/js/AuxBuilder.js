@@ -99,7 +99,7 @@ var fluid_1_5 = fluid_1_5 || {};
             if (key === "container") {
                 var componentType = fluid.get(root, [path, "type"]);
                 var componentOptions = fluid.defaults(componentType);
-                if (!fluid.hasGrade(componentOptions, "fluid.viewComponent") && !fluid.hasGrade(componentOptions, "fluid.rendererComponent")) {
+                if (typeof(fluid.get(componentOptions, ["argumentMap", "container"])) === "undefined") {
                     return false;
                 }
             }

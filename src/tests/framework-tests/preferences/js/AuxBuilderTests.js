@@ -1971,15 +1971,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("The full auxiliary schema with a composite panel has been parsed correctly", expandedFull, auxBuilder.options.expandedAuxSchema);
     });
 
-    // FLUID-5213: test options for adding common options
-    fluid.tests.returnTrue = function () {
-        return true;
-    };
-
-    fluid.tests.returnFalse = function () {
-        return false;
-    };
-
     $(document).ready(function () {
         fluid.test.runTests([
             "fluid.tests.expandSchemaValueTest",
