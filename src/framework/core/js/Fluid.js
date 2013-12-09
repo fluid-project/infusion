@@ -1088,7 +1088,7 @@ var fluid = fluid || fluid_1_5;
         var identify = fluid.event.identifyListener;
         
         var that;
-        var lazyInit = function () { // Lazy init function to economise on object references
+        var lazyInit = function () { // Lazy init function to economise on object references for events which are never listened to
             that.listeners = {};
             that.byId = {};
             that.sortedListeners = [];

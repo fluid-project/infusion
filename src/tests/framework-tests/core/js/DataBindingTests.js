@@ -1131,4 +1131,62 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         triggerChangeRequest("path2");
     });
     
+    /** FLUID-5045: model transformation documents contextualised by IoC expressions for model relay **/
+    
+    // This tests replicates the setup for the Pager's model which historically was implemented using (and drove the
+    // development of) the old broken "guards/postGuards" validation-semantic system
+    
+    // Taken from Pager.js
+    // 10 -> 1, 11 -> 2
+    fluid.tests.computePageCount = function (model) {
+        return Math.max(1, Math.floor((model.totalRange - 1) / model.pageSize) + 1);
+    };
+    
+    fluid.defaults("fluid.tests.fluid5151root", {
+        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        model: {
+            pageIndex: 0,
+            pageSize: 10,
+            totalRange: 75
+        },
+        modelRelay: [{
+            target: "pageCount",
+            singleTransform: {
+                type: "fluid.transforms.free",
+                args: {
+                    "totalRange": "{that}.model.totalRange",
+                    "pageSize": "{that}.model.pageSize"
+                },
+                func: "fluid.tests.computePageCount"
+            }
+        }, {
+            target: "pageIndex",
+            singleTransform: {
+                type: "fluid.transforms.limitRange",
+                input: "{that}.model.pageIndex",
+                min: 0,
+                max: "{that}.model.pageCount",
+                excludeMax: 1
+            }
+        }
+        ]  
+    });
+    
+    jqUnit.test("FLUID-5045: Model transformation documents contextualised by IoC expressions for model relay", function () {
+        var that = fluid.tests.fluid5151root();
+        var expected = {pageIndex: 0, pageSize: 10, totalRange: 75, pageCount: 8};
+        jqUnit.assertDeepEq("pageCount computed correctly on init", expected, that.model);
+        that.applier.change("pageIndex", -1);
+        jqUnit.assertDeepEq("pageIndex clamped to 0", expected, that.model);
+        that.applier.change("pageIndex", 8);
+        var expected2 = {pageIndex: 7, pageSize: 10, totalRange: 75, pageCount: 8};
+        jqUnit.assertDeepEq("pageIndex clamped to pageCount - 1", expected2, that.model);
+        that.applier.change("totalRange", 30);
+        var expected3 = {pageIndex: 2, pageSize: 10, totalRange: 30, pageCount: 3};
+        jqUnit.assertDeepEq("Recalculation of pageCount and invalidation of pageIndex", expected3, that.model);
+        that.applier.change("", {pageIndex: 20, totalRange: 25, pageSize: 5, pageCount: 99});
+        var expected4 = {pageCount: 5, pageIndex: 4, totalRange: 25, pageSize:5};
+        jqUnit.assertDeepEq("Total invalidation", expected4, that.model);        
+    });
+    
 })(jQuery);
