@@ -396,6 +396,43 @@ var fluid_1_5 = fluid_1_5 || {};
         return shadow && shadow.path !== "" ? null : returnedPath;
     };
     
+    fluid.defaults("fluid.gradeLinkageRecord", {
+        gradeNames: ["fluid.littleComponent"]
+    });
+    
+    /** A "tag component" to opt in to the grade linkage system (FLUID-5212) which is currently very expensive - 
+      * this will become the default once we have a better implementation and have stabilised requirements
+      */
+    fluid.defaults("fluid.applyGradeLinkage", { });
+    
+    fluid.gradeLinkageIndexer = function (defaults) {
+        if (defaults.contextGrades && defaults.resultGrades) {
+            return ["*"];
+        }
+    };
+    
+    fluid.getLinkedGrades = function (gradeNames) {
+        var togo = [];
+        var gradeLinkages = fluid.indexDefaults("gradeLinkages", {
+            gradeNames: "fluid.gradeLinkageRecord",
+            indexFunc: fluid.gradeLinkageIndexer
+        });
+        fluid.each(gradeLinkages["*"], function (defaultsName) {
+            var defaults = fluid.defaults(defaultsName);
+            var exclude = fluid.find(fluid.makeArray(defaults.contextGrades),
+                function (grade) {
+                    if (!fluid.contains(gradeNames, grade)) {
+                        return true;
+                    }
+                }
+            );
+            if (!exclude) {
+                togo.push.apply(togo, fluid.makeArray(defaults.resultGrades));
+            }
+        });
+        return togo;
+    };
+    
     fluid.expandDynamicGrades = function (that, dynamicGrades) {
         var resolved = [];
         fluid.each(dynamicGrades, function (dynamicGrade) {
@@ -429,6 +466,15 @@ var fluid_1_5 = fluid_1_5 || {};
         }, []);
         dynamicGrades.push.apply(dynamicGrades, furtherResolved);
         furtherResolved = fluid.expandDynamicGrades(that, furtherResolved);
+        var allGrades = fluid.makeArray(gradeNames).concat(furtherResolved);
+        if (fluid.contains(allGrades, "fluid.applyGradeLinkage")) {
+            var linkedGrades = fluid.getLinkedGrades(allGrades);
+            fluid.remove_if(linkedGrades, function (gradeName) {
+                return fluid.contains(allGrades, gradeName);
+            });
+            furtherResolved = furtherResolved.concat(linkedGrades);
+        }
+        
         resolved.push.apply(resolved, furtherResolved);
         return furtherResolved;
     };
