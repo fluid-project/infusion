@@ -1586,7 +1586,7 @@ var fluid = fluid || fluid_1_5;
                 builtin = false;
             }
             if (builtin) {
-                fluid.set(builtins, [key, "*"], parsed);
+                fluid.set(builtins, fluid.composePath(key, "*"), parsed);
             }
         });
         return togo;

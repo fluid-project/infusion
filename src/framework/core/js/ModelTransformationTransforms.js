@@ -141,20 +141,13 @@ var fluid = fluid || fluid_1_5;
         togo.outputPath = fluid.model.composePaths(transform.inputPrefix, transformSpec.valuePath);
         return togo;
     };
-    
-    function invokeGlobalOrName (func, args) {
-        func = typeof(func) === "string" ? fluid.getGlobalValue(func) : func;
-        return func.apply(null, args);  
-    };
-    
-    fluid.defaults("fluid.transforms.baseBinaryOp", { 
-        gradeNames: ["fluid.multiInputTransformFunction", "fluid.standardOutputTransformFunction"],
-    });
-    
-    
-    fluid.defaults("fluid.transforms.binaryOp", {
-        variableNames: ["left", "right"],
-        funcLookup: "fluid.transforms.binaryOpLookup"
+
+    fluid.defaults("fluid.transforms.binaryOp", { 
+        gradeNames: [ "fluid.multiInputTransformFunction", "fluid.standardOutputTransformFunction" ],
+        inputVariables: {
+            left: null,
+            right: null
+        }
     });
 
     fluid.transforms.binaryLookup = {
@@ -172,17 +165,12 @@ var fluid = fluid || fluid_1_5;
         "&&": function (a, b) { return a && b; },
         "||": function (a, b) { return a || b; }
     };
-    
-    fluid.transforms.binaryOpLookup = function (operator) {
-        return fluid.transforms.binaryLookup[operator];  
-    };
 
     fluid.transforms.binaryOp = function (inputs, transformSpec, transform) {
-        var func = invokeGlobalOrName(transformSpec.funcLookup, [transformSpec.operator]);
-        if (!func) {
-            fluid.fail("Unable to look up operator " + transformSpec.operator + " to an operator using lookup " + transformSpec.funcLookup);
-        }
-        return (inputs.left === undefined || inputs.right === undefined) ? undefined : func(inputs.left, inputs.right);
+        var operator = fluid.model.transform.getValue(undefined, transformSpec.operator, transform);
+
+        var fun = fluid.transforms.binaryLookup[operator];
+        return (fun === undefined || inputs.left === undefined || inputs.right === undefined) ? undefined : fun(inputs.left, inputs.right);
     };
 
 
