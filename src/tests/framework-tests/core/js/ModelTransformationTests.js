@@ -1836,6 +1836,35 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         checkTransformedOptions(that.transformable);
     });
 
+    var undefinedSingleInput = [{
+        message: "FLUID-5130: non-existing path.",
+        expandWrap: true,
+        transform: {
+            type: "fluid.transforms.count",
+            inputPath: "idontexist"
+        },
+        method: "assertEquals",
+        expected: undefined
+    }, {
+        message: "FLUID-5130: input from expander that evaluates to undefined",
+        expandWrap: true,
+        transform: {
+            type: "fluid.transforms.count",
+            input: {
+                transform: {
+                    type: "fluid.transforms.count",
+                    inputPath: "i.dont.exist"
+                }
+            }
+        },
+        method: "assertEquals",
+        expected: undefined
+    }];
+
+    jqUnit.test("Tests for undefined inputs to standardInputTransformations", function () {
+        testOneStructure(undefinedSingleInput);
+    });
+
     /* --------------- arrayToObject and objectToArray tests -------------------- */
     var arrayObjectArrayTests = [
         {
@@ -2207,7 +2236,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
-/* --------------- fixedArray to outputs -------------------- */
+    /* --------------- array to set-membership tests -------------------- */
     var arrayToSetMembershipTests = [{
         name: "basic test",
         raw: {

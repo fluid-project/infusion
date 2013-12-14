@@ -12,7 +12,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global demo:true, fluid, jQuery*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var demo = demo || {};
@@ -25,13 +25,13 @@ var demo = demo || {};
         var className = $(el).attr("class").match("star-[1-5]")[0];
         return parseInt(className.charAt(className.length - 1), 10);
     };
-    
+
     // Given a function accepting a number, return a function accepting a DOM event targetted at the star with that number
     demo.fiveStar.makeStarHandler = function (that, handler) {
         return function (evt) {
             var number = demo.fiveStar.getStarNum(evt.target);
             handler(number);
-        }
+        };
     };
     /**
      * Apply appropriate ARIA role and attributes
@@ -43,7 +43,7 @@ var demo = demo || {};
             "aria-checked": false
         });
     };
-    
+
     /**
      * When the selected rank changes, update the ARIA to reflect the new value
      */
@@ -66,7 +66,6 @@ var demo = demo || {};
         stars.slice(Math.max(hovered, rank), 5).attr("src", imgs.blank);
     };
     
-    
     /** Update all the UI state to reflect a change in rank **/
     
     demo.fiveStar.updateRank = function (that, newRank) {
@@ -77,11 +76,11 @@ var demo = demo || {};
     /**
      * A very simple five-star ranking widget that allows users to click on a star to set a rank.
      */
-     
+
     fluid.defaults("demo.fiveStar", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         members: {
-            stars: "{that}.dom.stars"  
+            stars: "{that}.dom.stars"
         },
         listeners: {
             onCreate: [{
@@ -92,7 +91,7 @@ var demo = demo || {};
                         funcName: "demo.fiveStar.makeStarHandler",
                         args: ["{that}", "{that}.hoverStars"]
                     }
-                }  
+                }
             }, {
                 "this": "{that}.container",
                 method: "mouseout",
@@ -105,7 +104,7 @@ var demo = demo || {};
                         funcName: "demo.fiveStar.makeStarHandler",
                         args: ["{that}", "{that}.setRank"]
                     }
-                }  
+                }
             }, {
                 funcName: "demo.fiveStar.setARIA",
                 args: "{that}"
@@ -124,7 +123,8 @@ var demo = demo || {};
             },
             renderStarState: {
                 funcName: "demo.fiveStar.renderStarState",
-                args: ["{that}.stars", "{arguments}.0", "{that}.model.rank", "{that}.options.starImages"]  
+                args: ["{that}.stars", "{arguments}.0", "{that}.model.rank", "{that}.options.starImages"],
+                dynamic: true
             },
            /**
             * Highlight the stars up to the given star with the hover colour

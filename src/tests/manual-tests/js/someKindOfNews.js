@@ -19,7 +19,7 @@ var skon = skon || {};
 (function ($, fluid) {
 
     /* Our demo script */
-    skon.slidingUIOptions = function (panel, uioptions) {
+    skon.slidingPrefsEditor = function (panel, prefsEditor) {
         // First, start up Settings Store and Page Enhancer
         fluid.globalSettingsStore();
         fluid.pageEnhancer({
@@ -34,23 +34,23 @@ var skon = skon || {};
             }
         });
 
-        // Next, start up UI Options
-        fluid.uiOptions.fatPanel(".flc-uiOptions-fatPanel", {
-            gradeNames: ["fluid.uiOptions.transformDefaultPanelsOptions"],
-            templatePrefix: "../../../components/uiOptions/html/",
-            messagePrefix: "../../../components/uiOptions/messages/",
+        // Next, start up Preferences Editor
+        fluid.prefs.separatedPanel(".flc-prefsEditor-separatedPanel", {
+            gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
+            templatePrefix: "../../../framework/preferences/html/",
+            messagePrefix: "../../../framework/preferences/messages/",
             messageLoader: {
-                gradeNames: ["fluid.uiOptions.starterMessageLoader"]
+                gradeNames: ["fluid.prefs.starterMessageLoader"]
             },
             templateLoader: {
-                gradeNames: ["fluid.uiOptions.starterFatPanelTemplateLoader"]
+                gradeNames: ["fluid.prefs.starterSeparatedPanelTemplateLoader"]
             },
-            uiOptions: {
-                gradeNames: ["fluid.uiOptions.starterPanels", "fluid.uiOptions.rootModel.starter", "fluid.uiOptions.uiEnhancerRelay"]
+            prefsEditor: {
+                gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"]
             },
             iframeRenderer: {
                 markupProps: {
-                    src: "../../../components/uiOptions/html/FatPanelUIOptionsFrame.html"
+                    src: "../../../framework/preferences/html/SeparatedPanelPrefsEditorFrame.html"
                 }
             }
         });
