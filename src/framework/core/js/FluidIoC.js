@@ -949,7 +949,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             }
             else {
-                mergeRecords.user = {options: userOptions};
+                mergeRecords.user = {options: fluid.expandCompact(userOptions, true)};
             }
         }
         var expandList = fluid.mergeRecordsToList(mergeRecords);
@@ -1880,14 +1880,15 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     }, singularPenRecord);
     
     // unsupported, non-API function
-    fluid.expandCompactRec = function (segs, target, source) {
+    fluid.expandCompactRec = function (segs, target, source, userOptions) {
         var pen = segs.length > 0 ? segs[segs.length - 1] : "";
         var active = singularRecord[pen];
         if (!active && segs.length > 1) {
             active = singularPenRecord[segs[segs.length - 2]]; // support array of listeners and modelListeners
         }
         fluid.each(source, function (value, key) {
-            if (fluid.isPlainObject(value)) {
+            // TODO: hack here to avoid corrupting old-style model references which were listed with "preserve" - eliminate this along with that mergePolicy
+            if (fluid.isPlainObject(value) && !(userOptions && key === "model" && segs.length === 0)) {
                 target[key] = fluid.freshContainer(value);
                 segs.push(key);
                 fluid.expandCompactRec(segs, target[key], value);
@@ -1902,9 +1903,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     };
     
     // unsupported, non-API function    
-    fluid.expandCompact = function (options) {
+    fluid.expandCompact = function (options, userOptions) {
         var togo = {};
-        fluid.expandCompactRec([], togo, options)
+        fluid.expandCompactRec([], togo, options, userOptions)
         return togo;
     };
 

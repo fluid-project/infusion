@@ -23,8 +23,9 @@ var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
     
-    fluid.defaults("fluid.viewComponent", {
-        gradeNames: ["fluid.standardComponent", "autoInit"],
+    // The base grade for fluid.viewComponent and fluid.viewRelayComponent - will be removed again once the old ChangeApplier is eliminated
+    fluid.defaults("fluid.commonViewComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         initFunction: "fluid.initView",
         argumentMap: {
             container: 0,
@@ -33,6 +34,16 @@ var fluid_1_5 = fluid_1_5 || {};
         members: { // Used to allow early access to DOM binder via IoC, but to also avoid triggering evaluation of selectors
             dom: "@expand:fluid.initDomBinder({that}, {that}.options.selectors)"
         }
+    });
+    
+    fluid.defaults("fluid.viewComponent", {
+        gradeNames: ["fluid.commonViewComponent", "fluid.standardComponent", "autoInit"]
+    });
+    
+    // a version of the standard grade fluid.viewComponent that uses the new FLUID-5024 ChangeApplier and model relay system - this will be the default
+    // in Fluid 2.0 and be renamed back to fluid.viewComponent
+    fluid.defaults("fluid.viewRelayComponent", {
+        gradeNames: ["fluid.commonViewComponent", "fluid.standardRelayComponent", "autoInit"]
     });
 
     // unsupported, NON-API function

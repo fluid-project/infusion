@@ -320,16 +320,17 @@ var fluid_1_5 = fluid_1_5 || {};
             return transac;
         });
         fluid.each(mrec, function (recel) {
-            var transac = transacs[recel.that.id];
+            var that = recel.that;
+            var transac = transacs[that.id];
             if (recel.completeOnInit) {
-                transac.initModelEvent();
+                fluid.initModelEvent(transac, that.applier.changeListeners.listeners);
             } else {
                 fluid.each(recel.initModels, function (initModel) {
                     transac.fireChangeRequest({type: "ADD", segs: [], value: initModel});
+                    fluid.clearLinkCounts(transRec, true);
                 });
             }
-            var shadow = fluid.shadowForComponent(recel.that);
-            fluid.clearLinkCounts(transRec, true);
+            var shadow = fluid.shadowForComponent(that);
             shadow.modelComplete = true; // technically this is a little early, but this flag is only read in fluid.connectModelRelay
         });
         
@@ -356,6 +357,7 @@ var fluid_1_5 = fluid_1_5 || {};
         fluid.each(transRec, function (trans) {
             if (trans.transaction) { // some entries are links
                 trans.transaction.commit("relay");
+                trans.transaction.reset();
             }
         });
         fluid.clearLinkCounts(transRec, true); // "options" structures for relayCount are aliased
@@ -524,10 +526,6 @@ var fluid_1_5 = fluid_1_5 || {};
             if (shadow.modelComplete) {
                 enlist.completeOnInit = true;
             }
-            // In theory we would like the initial model transaction to progress in only one direction - but in the case
-            // of external relay this direction can't be known - so we will have to rely on link counting and/or culling
-            // to prevent cyclic propagation. In theory if the transformer produces a value of "undefined" we will just ignore it.
-            // enlist[linkId] = "noRelay"; // avoid trying to broadcast this BACK to target again as part of relay
         }
         if (options.update) { // it is a call via parseImplicitRelay for a relay document
             if (options.targetApplier) {
@@ -569,8 +567,9 @@ var fluid_1_5 = fluid_1_5 || {};
         // fired from fluid.model.updateRelays via invalidator event
         that.runTransform = function (trans, transRec) {
             trans.commit(); // this will reach the special "half-transactional listener" registered in fluid.connectModelRelay,
-            // branch with options.targetApplier
-            fluid.resetTransaction(trans, that.forwardApplier);
+            // branch with options.targetApplier - by committing the transaction, we update the relay document in bulk and then cause
+            // it to execute (via "transducer")
+            trans.reset();
         }
         that.forwardApplier = fluid.makeNewChangeApplier(that.forwardHolder);
         that.forwardApplier.isRelayApplier = true; // special annotation so these can be discovered in the transaction record
@@ -637,6 +636,8 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         } else if (fluid.isPrimitive(modelRec) || !fluid.isPlainObject(modelRec)) {
             value = modelRec;
+        } else if (modelRec.expander && fluid.isPlainObject(modelRec.expander)) {
+            value = fluid.expandOptions(modelRec, that);
         } else {
             value = fluid.freshContainer(modelRec);
             fluid.each(modelRec, function (innerValue, key) {
@@ -704,6 +705,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
     
+    // supported, PUBLIC API grade
     fluid.defaults("fluid.modelRelayComponent", {
         gradeNames: ["fluid.commonModelComponent", "fluid.eventedComponent", "autoInit"],
         changeApplierOptions: {
@@ -727,18 +729,19 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    // supported, PUBLIC API record    
+    // supported, PUBLIC API record
     fluid.defaults("fluid.standardComponent", {
         gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "autoInit"]
     });
 
+    // supported, PUBLIC API record
     fluid.defaults("fluid.standardRelayComponent", {
         gradeNames: ["fluid.modelRelayComponent", "autoInit"]
     });
     
-    fluid.modelChangedToChange = function (newApplier, args) {
+    fluid.modelChangedToChange = function (isNewApplier, args) {
         var newModel = args[0], oldModel = args[1], path = args[3]; // in 4th position for old applier 
-        return newApplier ? {
+        return isNewApplier ? {
             value: args[0],
             oldValue: args[1],
             path: args[2]
@@ -749,10 +752,9 @@ var fluid_1_5 = fluid_1_5 || {};
         };
     };
  
-    fluid.resolveModelListener = function (that, record) {
-        var newApplier = fluid.hasGrade(that.options, "fluid.modelRelayComponent");
+    fluid.resolveModelListener = function (that, record, isNewApplier) {
         var togo = function (newModel, oldModel, changes, path) {
-            var change = fluid.modelChangedToChange(newApplier, arguments)
+            var change = fluid.modelChangedToChange(isNewApplier, arguments)
             var args = [change];
             var localRecord = {change: change, arguments: args};
             if (record.args) {
@@ -773,15 +775,34 @@ var fluid_1_5 = fluid_1_5 || {};
             }
             var records = fluid.event.resolveListenerRecord(value, that, "modelListeners", null, false);
             var parsed = fluid.parseValidModelReference(that, "modelListeners entry", path);
+            var isNewApplier = parsed.applier.preCommit;
             // Bypass fluid.event.dispatchListener by means of "standard = false" and enter our custom workflow including expanding "change":
             fluid.each(records.records, function (record) {
-                var func = fluid.resolveModelListener(that, record);
-                fluid.addSourceGuardedListener(parsed.applier, {
+                var func = fluid.resolveModelListener(that, record, isNewApplier);
+                var spec = {
+                    listener: func, // for initModelEvent
+                    segs: parsed.modelSegs,
                     path: parsed.path,
                     transactional: true
-                }, record.guardSource, func, "modelChanged", record.namespace, record.softNamespace);
+                };
+                fluid.addSourceGuardedListener(parsed.applier, spec, record.guardSource, func, "modelChanged", record.namespace, record.softNamespace);
                 fluid.recordChangeListener(that, parsed.applier, func);
-            });  
+                function initModelEvent() {
+                    if (isNewApplier && fluid.isModelComplete(parsed.that)) {
+                        var trans = parsed.applier.initiate();
+                        fluid.initModelEvent(trans, [spec]);
+                        trans.commit();
+                    }
+                }
+                if (that !== parsed.that && !fluid.isModelComplete(that)) { // TODO: Use FLUID-4883 "latched events" when available
+                    // Don't confuse the end user by firing their listener before the component is constructed
+                    // TODO: Better detection than this is requred - we assume that the target component will not be discovered as part
+                    // of the initial transaction wave, but if it is, it will get a double notification - we really need "wave of explosions"
+                    // since we are currently too early in initialisation of THIS component in order to tell if other will be found
+                    // independently.
+                    that.events.onCreate.addListener(initModelEvent);
+                }
+            });
         });
     };
 
@@ -1036,11 +1057,8 @@ var fluid_1_5 = fluid_1_5 || {};
         };
     };
     
-    // A little-used utility which will reset a transaction without closing it, ready to accumulate further changes.
-    // Used in the contextual model relay system to incrementally accumulate changes to a relay document
-    fluid.resetTransaction = function (trans, applier) {
-        trans.reset();
-        trans.newHolder.model = fluid.copy(applier.holder.model); 
+    fluid.initModelEvent = function (trans, listeners) {
+        fluid.notifyModelChanges(listeners, "ADD", trans.newHolder, fluid.emptyHolder, {transactionId: trans.id});
     };
     
     fluid.emptyHolder = { model: undefined };
@@ -1098,35 +1116,31 @@ var fluid_1_5 = fluid_1_5 || {};
         };
         
         that.initiate = function (transactionId) {
-            var newHolder = { model: fluid.copy(holder.model) };
             var trans = {
                 instanceId: fluid.allocateGuid(), // for debugging only
                 id: transactionId || fluid.allocateGuid(),
-                newHolder: newHolder,
                 changeRecord: {
                     resolverSetConfig: options.resolverSetConfig, // here to act as "options" in applyHolderChangeRequest
                     resolverGetConfig: options.resolverGetConfig
                 },
                 reset: function () {
+                    trans.newHolder = { model: fluid.copy(holder.model) };
                     trans.changeRecord.changes = 0;
                     trans.changeRecord.changeMap = {}
                 },
                 commit: function (code) {
                     that.preCommit.fire(trans, that, code);
                     if (trans.changeRecord.changes > 0) {
-                        fluid.notifyModelChanges(that.changeListeners.transListeners, trans.changeRecord.changeMap, newHolder, holder, {transactionId: trans.id});
-                        holder.model = newHolder.model; // It's really as simple as that : P
-                        trans.reset();
+                        var oldHolder = {model: holder.model};
+                        holder.model = trans.newHolder.model;
+                        fluid.notifyModelChanges(that.changeListeners.transListeners, trans.changeRecord.changeMap, holder, oldHolder, {transactionId: trans.id});
                     }  
-                },
-                initModelEvent: function () {
-                    fluid.notifyModelChanges(that.changeListeners.listeners, "ADD", newHolder, fluid.emptyHolder, {transactionId: trans.id});
                 },
                 fireChangeRequest: function (changeRequest) {
                     preFireChangeRequest(changeRequest);
                     changeRequest.transactionId = trans.id;
-                    var deltaMap = fluid.model.applyHolderChangeRequest(newHolder, changeRequest, trans.changeRecord);
-                    fluid.notifyModelChanges(that.changeListeners.listeners, deltaMap, newHolder, holder, changeRequest, trans, that);
+                    var deltaMap = fluid.model.applyHolderChangeRequest(trans.newHolder, changeRequest, trans.changeRecord);
+                    fluid.notifyModelChanges(that.changeListeners.listeners, deltaMap, trans.newHolder, holder, changeRequest, trans, that);
                 }
             };
             trans.reset();
@@ -1315,7 +1329,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     /** Make a "new-style" ChangeApplier that allows the base model reference to be overwritten. This is
      *  re-read on every access from the object "holder" (in typical usage, the component owning the 
-     *  ChangeApplier) */
+     *  ChangeApplier). This implementation will be removed after the 1.5 release */
      
     fluid.makeHolderChangeApplier = function (holder, options) {
         options = fluid.model.defaultAccessorConfig(options);
@@ -1328,7 +1342,7 @@ var fluid_1_5 = fluid_1_5 || {};
         var that = {
         // For now, we don't use "id" to avoid confusing component detection which uses
         // a simple algorithm looking for that field
-            applierid: fluid.allocateGuid(),
+            applierId: fluid.allocateGuid(),
             holder: holder,
             options: options
         };
@@ -1461,44 +1475,13 @@ var fluid_1_5 = fluid_1_5 || {};
         };
         fluid.bindRequestChange(bareApplier);
 
-        // This function is a helper to participate in the process of model initialisation. During a component's construction,
-        // values may arise in the model that it would be helpful if could be broadcast so that listeners could react in the normal
-        // workflow of changeEvents. Right now, a ChangeApplier user must request this event manually which creates an "early time period"
-        // in which the model contents are inconsistent, but in the future we might like to fire this at the point of creation of the
-        // ChangeApplier, especially once FLUID-4258 is implemented and we can head off the risk of "late listeners".
-        that.initModelEvent = function () {
-            var newModel = {};
-            fluid.model.copyModel(newModel, holder.model);
-            fluid.clear(holder.model);
-            that.requestChange("", newModel);
-        };
-
         that.fireChangeRequest = function (changeRequest, defeatGuards) {
             preFireChangeRequest(changeRequest);
             var guardFireSpec = defeatGuards ? null : getFireSpec("guards", changeRequest.path);
             var postGuardSpec = getFireSpec("postGuards", changeRequest.path);
-//            if (guardFireSpec && guardFireSpec.transListeners.length > 0 || postGuardSpec.transListeners.length > 0) {
-                var ation = that.initiate();
-                ation.fireChangeRequest(changeRequest);
-                ation.commit();
-//            }
-/*            else {
-                if (!defeatGuards) {
-                    // TODO: this use of "listeners" seems pointless since we have just verified that there are no transactional listeners
-                    var prevent = fireFromSpec("guards", guardFireSpec, [holder.model, changeRequest, bareApplier], "listeners");
-                    if (prevent === false) {
-                        return false;
-                    }
-                }
-                var oldModel = holder.model;
-                if (!options.thin) {
-                    oldModel = {};
-                    fluid.model.copyModel(oldModel, holder.model);
-                }
-                fluid.model.applyChangeRequest(holder.model, changeRequest, options.resolverSetConfig);
-                fireAgglomerated("modelChanged", "all", [changeRequest], [holder.model, oldModel, null, null], 2, 3);
-            }
-            */
+            var ation = that.initiate();
+            ation.fireChangeRequest(changeRequest);
+            ation.commit();
         };
 
         that.fireChangeRequest = sourceWrapModelChanged(that.fireChangeRequest, threadLocal);

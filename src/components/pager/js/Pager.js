@@ -29,7 +29,7 @@ var fluid_1_5 = fluid_1_5 || {};
      ******************/
     // TODO: Convert one day to the "visibility model" system (FLUID-4928)
     fluid.pager.updateStyles = function (pageListThat, newModel, oldModel) {
-        if (oldModel.pageIndex !== undefined) {
+        if (oldModel && oldModel.pageIndex !== undefined) {
             var oldLink = pageListThat.pageLinks.eq(oldModel.pageIndex);
             oldLink.removeClass(pageListThat.options.styles.currentPage);
         }
@@ -41,6 +41,7 @@ var fluid_1_5 = fluid_1_5 || {};
         link.unbind("click.fluid.pager");
         link.bind("click.fluid.pager", function () {
             initiatePageChange.fire(eventArg);
+            return false;
         });
     };
     
@@ -61,7 +62,7 @@ var fluid_1_5 = fluid_1_5 || {};
     
     // Abstract grade representing all pageLists
     fluid.defaults("fluid.pager.pageList", {
-        gradeNames: ["fluid.viewComponent"]
+        gradeNames: ["fluid.viewRelayComponent"]
     });
     
     fluid.defaults("fluid.pager.directPageList", {
@@ -70,11 +71,10 @@ var fluid_1_5 = fluid_1_5 || {};
             onCreate: {
                 funcName: "fluid.pager.bindLinkClicks",
                 args: ["{that}.pageLinks", "{pager}.events.initiatePageChange"]
-            },
-            "{pager}.events.onModelChange": {
-                funcName: "fluid.pager.updateStyles",
-                args: ["{that}", "{arguments}.0", "{arguments}.1"] // newModel, oldModel
             }
+        },
+        modelListeners: {
+            "{pager}.model": "fluid.pager.updateStyles({that}, {change}.value, {change}.oldValue)" 
         },
         members: {
             pageLinks: "{that}.dom.pageLinks",
@@ -190,7 +190,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return obj;
     };
     
-    fluid.pager.renderedPageList.onModelChange = function (that, newModel, oldModel) {
+    fluid.pager.renderedPageList.onModelChange = function (that, newModel) {
        function pageToComponent(current) {
             return function (page) {
                 return page === -1 ? {
@@ -219,7 +219,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.defaults("fluid.pager.renderedPageList", {
-        gradeNames: ["fluid.rendererComponent", "fluid.pager.pageList", "autoInit"],
+        gradeNames: ["fluid.rendererRelayComponent", "fluid.pager.pageList", "autoInit"],
         rendererOptions: {
             cutpoints: [ 
                 {
@@ -244,11 +244,10 @@ var fluid_1_5 = fluid_1_5 || {};
             onCreate: {
                 funcName: "fluid.pager.renderedPageList.renderLinkBody", 
                 args: ["{that}.options.linkBody", "{that}.options.rendererOptions"]  
-            },
-            "{pager}.events.onModelChange": {
-                funcName: "fluid.pager.renderedPageList.onModelChange",
-                args: ["{that}", "{arguments}.0", "{arguments}.1"]
             }
+        },
+        modelListeners: {
+            "{pager}.model": "fluid.pager.renderedPageList.onModelChange({that}, {change}.value)"
         },
         invokers: {
             produceTree: {
@@ -275,7 +274,7 @@ var fluid_1_5 = fluid_1_5 || {};
     
     
     fluid.defaults("fluid.pager.previousNext", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         members: {
             previous: "{that}.dom.previous",
             next: "{that}.dom.next"
@@ -292,11 +291,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 funcName: "fluid.pager.bindLinkClick", 
                 args: ["{that}.next", "{pager}.events.initiatePageChange", {relativePage: +1}]
             }
-            ],
-            "{pager}.events.onModelChange": {
-                funcName: "fluid.pager.previousNext.update",
-                args: ["{that}", "{that}.options.styles.disabled", "{arguments}.0"] // newModel
-            }
+            ]
+        },
+        modelListeners: {
+            "{pager}.model": "fluid.pager.previousNext.update({that}, {that}.options.styles.disabled, {change}.value)" 
         }
     });
     
@@ -306,7 +304,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.defaults("fluid.pager.pagerBar", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         components: {
             pageList: {
                 type: "fluid.pager.pageList",
@@ -352,48 +350,6 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
     
-    // TODO: Remove this and replace with FLUID-4258 scheme
-    fluid.pager.preInit = function (that) {
-        var applier = fluid.getForComponent(that, "applier");
-        // Explicit namespace to evade FLUID-5077
-        applier.postGuards.addListener({path: "pageSize", transactional: true}, 
-                fluid.pager.pageCountGuard, "pageSizeGuard");
-        applier.postGuards.addListener({path: "totalRange", transactional: true}, 
-                fluid.pager.pageCountGuard, "totalRangeGuard");
-                
-        applier.guards.addListener({path: "pageIndex", transactional: true}, 
-                fluid.pager.pageIndexGuard);
-        
-        applier.modelChanged.addListener({path: "*"},
-            function (newModel, oldModel, changes) {
-                that.events.onModelChange.fire(newModel, oldModel);
-        });
-    };
-    
-    // guards pageIndex, pageSize - transactional
-    fluid.pager.pageCountGuard = function (newModel, changeRequest, iApplier) {
-        var newPageCount = fluid.pager.computePageCount(newModel);
-        iApplier.requestChange("pageCount", newPageCount);
-        // TODO: this unnatural action is required to ensure shortened pageCount properly invalidates pageIndex - failure in transactional ChangeApplier design
-        iApplier.fireChangeRequest({
-            type: "ADD",
-            path: "pageIndex",
-            value: newModel.pageIndex,
-            forceChange: true
-        });
-    };
-    
-    // guards pageIndex - may produce culled change - nontransactional?
-    fluid.pager.pageIndexGuard = function (newModel, changeRequest) {
-        var newPageIndex = changeRequest.value;
-        if (changeRequest.value >= newModel.pageCount) {
-            changeRequest.value = newModel.pageCount - 1;
-        }
-        if (changeRequest.value < 0) {
-            changeRequest.value = 0;
-        }
-    };
-    
     fluid.pager.summaryAria = function (element) {
         element.attr({
             "aria-relevant": "all",
@@ -405,19 +361,18 @@ var fluid_1_5 = fluid_1_5 || {};
     
     
     fluid.defaults("fluid.pager.summary", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         listeners: {
             onCreate: {
                funcName: "fluid.pager.summaryAria",
                args: "{that}.container"
-            },
-            onModelChange: {
-                funcName: "fluid.pager.summary.onModelChange",
-                args: ["{that}.container", "{that}.options.strings.message", "{arguments}.0", "{arguments}.1"] 
             }
         },
-        events: {
-            onModelChange: null
+        modelListeners: {
+            "{pager}.model": {
+                funcName: "fluid.pager.summary.onModelChange",
+                args: ["{that}.container", "{that}.options.strings.message", "{change}.value"] 
+            }
         }
     });
 
@@ -432,7 +387,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
        
     fluid.defaults("fluid.pager.directPageSize", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         listeners: {
             onCreate: {
                 "this": "{that}.container",
@@ -443,25 +398,24 @@ var fluid_1_5 = fluid_1_5 || {};
                         args: ["{pager}.events.initiatePageSizeChange", "{that}.container"]
                     }
                 }
-            },
-            "{pager}.events.onModelChange": {
-                funcName: "fluid.pager.directPageSize.onModelChange",
-                args: ["{that}.container", "{arguments}.0", "{arguments}.1"] // newModel, oldModel
             }
+        },
+        modelListeners: {
+            "{pager}.model.pageSize": "fluid.pager.updateNodeValue({that}.container, {change}.value)"  
         }
     });
     
     fluid.pager.directPageSize.onChange = function (initiatePageSizeChange, node) {
+        // Annoying function-returning function since with current framework this must be an onCreate listener to perform jQuery binding - 
+        // replace with "new renderer decorator system" (FLUID-5047)
         return function () {
             initiatePageSizeChange.fire(node.val() || 1);
         }
     };
-    
-    fluid.pager.directPageSize.onModelChange = function (node, newModel, oldModel) {
-        // TODO: better done with source tracking or change culling
-        if (node.val() !== newModel.pageSize) {
-            node.val(newModel.pageSize);
-        }
+
+    // Although this is much better with the new ChangeApplier, it still also needs to be replaced with a FLUID-5047 view-binding system    
+    fluid.pager.updateNodeValue = function (node, value) {
+        node.val(value);
     };
 
     fluid.pager.initiatePageChangeListener = function (that, arg) {
@@ -481,13 +435,35 @@ var fluid_1_5 = fluid_1_5 || {};
      *******************/
 
     fluid.defaults("fluid.pager", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         events: {
             initiatePageChange: null,
             initiatePageSizeChange: null,
             onModelChange: null,
             onRenderPageLinks: null,
             afterRender: null
+        },
+        model: {
+            pageIndex: 0,
+            pageSize: 1,
+            totalRange: {
+                expander: {
+                    func: "{that}.acquireDefaultRange"
+                }
+            }
+        },
+        selectors: {
+            pagerBar: ".flc-pager-top, .flc-pager-bottom",
+            summary: ".flc-pager-summary",
+            pageSize: ".flc-pager-page-size",
+        },
+        
+        strings: {
+            last: " (last)"
+        },
+        
+        markup: {
+            rangeAnnotation: "<b> %first </b><br/>&mdash;<br/><b> %last </b>"
         },
         distributeOptions: {
             source: "{that}.options.pageList",
@@ -500,17 +476,36 @@ var fluid_1_5 = fluid_1_5 || {};
                 pageStrategy: fluid.pager.gappedPageStrategy(3, 1)
             }
         },
+        modelRelay: [{
+            target: "pageCount",
+            singleTransform: {
+                type: "fluid.transforms.free",
+                args: {
+                    "totalRange": "{that}.model.totalRange",
+                    "pageSize": "{that}.model.pageSize"
+                },
+                func: "fluid.pager.computePageCount"
+            }
+        }, {
+            target: "pageIndex",
+            singleTransform: {
+                type: "fluid.transforms.limitRange",
+                input: "{that}.model.pageIndex",
+                min: 0,
+                max: "{that}.model.pageCount",
+                excludeMax: 1
+            }
+        }],
+        modelListeners: {
+            "": "{that}.events.onModelChange.fire({change}.value, {change}.oldValue)"
+        },
         listeners: {
-            onCreate: [ {
+            onCreate: {
                 namespace: "containerRole",
                 "this": "{that}.container",
                 method: "attr",
                 args: ["role", "application"]  
-            }, {
-                func: "{that}.applier.initModelEvent",
-                namespace: "initModel"
-                }
-            ],
+            },
             initiatePageChange: {
                 funcName: "fluid.pager.initiatePageChangeListener",
                 args: ["{that}", "{arguments}.0"]   
@@ -557,33 +552,6 @@ var fluid_1_5 = fluid_1_5 || {};
                     }
                 }
             }
-        },
-
-        model: {
-            pageIndex: 0,
-            pageSize: 1,
-            totalRange: {
-                expander: {
-                    func: "{that}.acquireDefaultRange"
-                }
-            }
-        },
-        changeApplierOptions: {
-            cullUnchanged: true
-        },
-               
-        selectors: {
-            pagerBar: ".flc-pager-top, .flc-pager-bottom",
-            summary: ".flc-pager-summary",
-            pageSize: ".flc-pager-page-size",
-        },
-        
-        strings: {
-            last: " (last)"
-        },
-        
-        markup: {
-            rangeAnnotation: "<b> %first </b><br/>&mdash;<br/><b> %last </b>"
         }
     });
     

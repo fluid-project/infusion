@@ -170,7 +170,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             preserve, comp.options.model === model);
         var mergedModel = $.extend(true, {}, model, defaultModel);
         
-        jqUnit.assertDeepEq("Merged model contents" + presString, mergedModel, comp.options.model);                     
+        jqUnit.assertDeepEq("Merged model contents " + presString, mergedModel, comp.options.model);                     
     }
  
     
@@ -873,6 +873,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Propagated change outwards", expected5, that.model);
     });
     
+    
+    fluid.tests.fluid3674childRecord = function (that, newModel) {
+        that.parentInitModel = newModel;
+    };
+    
     fluid.defaults("fluid.tests.fluid3674eventHead", {
         gradeNames: ["fluid.standardRelayComponent", "autoInit"],
         model: {
@@ -886,8 +891,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.standardRelayComponent",
                 createOnEvent: "createEvent",
                 options: {
-                    gradeNames: "autoInit",
                     model: "{fluid3674eventHead}.model.outerModel"
+                }
+            },
+            child2: {
+                type: "fluid.standardRelayComponent",
+                options: {
+                    modelListeners: {
+                        "{fluid3674eventHead}.model": "fluid.tests.fluid3674childRecord({that}, {change}.value)"
+                    }
                 }
             }
         }
@@ -898,6 +910,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.events.createEvent.fire();
         var child = that.child;
         jqUnit.assertEquals("Outer model propagated inwards on creation", "outerValue", child.model);
+        jqUnit.assertDeepEq("Outer model propagated to bare listener inwards on creation", that.model, that.child2.parentInitModel); 
+        
         that.applier.requestChange("outerModel", "exterior thing");
         jqUnit.assertEquals("Propagated change inwards through relay", "exterior thing", child.model);
         child.applier.requestChange("", "interior thing");
@@ -1142,7 +1156,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return Math.max(1, Math.floor((model.totalRange - 1) / model.pageSize) + 1);
     };
     
-    fluid.defaults("fluid.tests.fluid5151root", {
+    fluid.defaults("fluid.tests.fluid5045root", {
         gradeNames: ["fluid.standardRelayComponent", "autoInit"],
         model: {
             pageIndex: 0,
@@ -1173,11 +1187,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
     
     jqUnit.test("FLUID-5045: Model transformation documents contextualised by IoC expressions for model relay", function () {
-        var that = fluid.tests.fluid5151root();
+        var that = fluid.tests.fluid5045root();
         var expected = {pageIndex: 0, pageSize: 10, totalRange: 75, pageCount: 8};
         jqUnit.assertDeepEq("pageCount computed correctly on init", expected, that.model);
         that.applier.change("pageIndex", -1);
         jqUnit.assertDeepEq("pageIndex clamped to 0", expected, that.model);
+        that.applier.change("pageIndex", -1);
+        jqUnit.assertDeepEq("pageIndex clamped to 0 second time", expected, that.model);
         that.applier.change("pageIndex", 8);
         var expected2 = {pageIndex: 7, pageSize: 10, totalRange: 75, pageCount: 8};
         jqUnit.assertDeepEq("pageIndex clamped to pageCount - 1", expected2, that.model);

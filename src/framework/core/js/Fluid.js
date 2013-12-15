@@ -354,6 +354,8 @@ var fluid = fluid || fluid_1_5;
         return totest && (totest.jquery || Object.prototype.toString.call(totest) === "[object Array]");
     };
     
+    /** Determines whether the supplied object is a plain JSON-forming container - that is, it is either a plain Object
+     * or a plain Array */
     fluid.isPlainObject = function (totest) {
         if (!totest) {
             return false; // FLUID-5172 - on IE8 the line below produces [object Object] rather than [object Null] or [object Undefined]
