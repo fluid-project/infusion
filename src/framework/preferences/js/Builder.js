@@ -198,4 +198,13 @@ var fluid_1_5 = fluid_1_5 || {};
         return auxTypes;
     };
 
+    /*
+     * A one-stop-shop function to build and instantiate a prefsEditor from a schema.
+     */
+    fluid.prefs.create = function (container, options) {
+        options = options || {};
+        var builder = fluid.prefs.builder(options.build);
+        return fluid.invokeGlobalFunction(builder.options.assembledPrefsEditorGrade, [container, options.prefsEditor]);
+    };
+
 })(jQuery, fluid_1_5);

@@ -104,7 +104,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 fluid.set(opts, key, value);
             }
         });
-    
+
         if (typeObject) {
             $.extend(true, root[path], $.extend(true, typeObject, opts));
         }
@@ -238,9 +238,26 @@ var fluid_1_5 = fluid_1_5 || {};
             templates = fluid.prefs.rearrangeDirect(thisCompositeOptions, compositeKey, "template");
             messages = fluid.prefs.rearrangeDirect(thisCompositeOptions, compositeKey, "message");
 
+            var subPanelList = []; // list of subpanels to generate options for
             var subPanels = {};
+            var subPanelRenderOn = {};
 
-            fluid.each(thisCompositeOptions.panels, function (subPanelID) {
+            // panels can contain an array of always on panels, or an object
+            // describing which panels are always and which are initialized by a preference value
+            if (!fluid.isPrimitive(thisCompositeOptions.panels)) {
+                fluid.each(thisCompositeOptions.panels, function (subpanelArray, pref) {
+                    subPanelList = subPanelList.concat(subpanelArray);
+                    if (pref !== "always") {
+                        fluid.each(subpanelArray, function (onePanel) {
+                            fluid.set(subPanelRenderOn, onePanel, pref);
+                        });
+                    }
+                });
+            } else {
+                subPanelList = thisCompositeOptions.panels;
+            }
+
+            fluid.each(subPanelList, function (subPanelID) {
                 panelsToIgnore.push(subPanelID);
                 var subPanelPrefsKey = fluid.get(auxSchema, [subPanelID, "type"]);
                 var safeSubPanelPrefsKey = fluid.prefs.subPanel.safePrefKey(subPanelPrefsKey);
@@ -250,6 +267,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 var subPanelType = fluid.get(subPanelOptions, "type");
 
                 fluid.set(subPanels, [safeSubPanelPrefsKey, "type"], subPanelType);
+                var renderOn = fluid.get(subPanelRenderOn, subPanelID);
+                if (renderOn) {
+                    fluid.set(subPanels, [safeSubPanelPrefsKey, "options", "renderOnPreference"], renderOn);
+                }
 
                 // Deal with preferenceMap related options
                 var map = fluid.defaults(subPanelType).preferenceMap[subPanelPrefsKey];
@@ -319,9 +340,9 @@ var fluid_1_5 = fluid_1_5 || {};
         return auxSchema;
     };
 
-    fluid.prefs.expandSchema = function (schemaToExpand, defaultNamespace, indexes, topCommonOptions, elementCommonOptions, mappedDefaults) {
+    fluid.prefs.expandSchema = function (schemaToExpand, indexes, topCommonOptions, elementCommonOptions, mappedDefaults) {
         var auxSchema = fluid.prefs.expandSchemaImpl(schemaToExpand);
-        auxSchema.namespace = auxSchema.namespace || defaultNamespace;
+        auxSchema.namespace = auxSchema.namespace || "fluid.prefs.created_" + fluid.allocateGuid();
 
         var compositePanelList = fluid.get(auxSchema, "groups");
         if (compositePanelList) {
@@ -380,7 +401,6 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.prefs.auxBuilder", {
         gradeNames: ["fluid.prefs.auxSchema", "autoInit"],
-        defaultNamespace: "fluid.prefs.create",
         mergePolicy: {
             elementCommonOptions: "noexpand"
         },
@@ -424,16 +444,15 @@ var fluid_1_5 = fluid_1_5 || {};
                 "%subPrefKey": "{templateLoader}.resources.%subPrefKey"
             },
             subPanel: {
-                "createOnEvent": "initSubPanels",
                 "container": "{%compositePanel}.dom.%prefKey"
             },
             enactor: {
+                "options.gradeNames": "fluid.prefs.uiEnhancerConnections",
                 // Conditional handling. Add value to the path only if the execution of func returns true.
                 "container": {
                     value: "{uiEnhancer}.container",
                     func: "fluid.prefs.containerNeeded"
-                },
-                "options.sourceApplier": "{uiEnhancer}.applier"
+                }
             }
         },
         indexes: {
@@ -462,7 +481,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 func: "fluid.prefs.expandSchema",
                 args: [
                     "{that}.options.auxiliarySchema",
-                    "{that}.options.defaultNamespace",
                     "{that}.options.indexes",
                     "{that}.options.topCommonOptions",
                     "{that}.options.elementCommonOptions",

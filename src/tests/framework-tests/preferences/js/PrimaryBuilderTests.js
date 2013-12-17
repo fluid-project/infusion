@@ -135,7 +135,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             name: "Primary Builder",
             tests: [{
                 expect: 4,
-                name: "Primary schema is assambled correctectly.",
+                name: "Primary schema is assembled correctly.",
                 sequence: [{
                     func: "fluid.tests.primaryBuilder",
                     args: ["{primaryBuilderSchema}.options.schema"]
@@ -145,7 +145,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             name: "Primary Builder with supplied primary schema",
             tests: [{
                 expect: 4,
-                name: "Primary schema is assambled correctectly.",
+                name: "Primary schema is assembled correctly.",
                 sequence: [{
                     func: "fluid.tests.primaryBuilderWithSuppliedPrimarySchema",
                     args: ["{primaryBuilderWithSuppliedPrimarySchemaSchema}.options.schema"]
@@ -193,7 +193,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var verifySchema = function (contributedSchema, finalSchema) {
         jqUnit.assertValue("Final Schema is defined",
             finalSchema);
-        jqUnit.assertDeepEq("Schemas are merged correctectly",
+        jqUnit.assertDeepEq("Schemas are merged correctly",
             contributedSchema, finalSchema);
     };
 

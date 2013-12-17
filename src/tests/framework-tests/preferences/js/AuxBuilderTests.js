@@ -67,6 +67,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.tests.schema = {
+        "namespace": "fluid.tests.prefsEditor",
         "textFont": {
             "type": "fluid.prefs.textFont",
             "classes": {
@@ -112,6 +113,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.expectedSchema = {
+        "namespace": "fluid.tests.prefsEditor",
         "textFont": {
             "type": "fluid.prefs.textFont",
             "classes": {
@@ -237,15 +239,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "%subPrefKey": "templateLoader.resources.%subPrefKey"
         },
         subPanel: {
-            "createOnEvent": "initSubPanels",
             "container": "%compositePanel.dom.%prefKey"
         },
         enactor: {
+            "options.gradeNames": "fluid.prefs.uiEnhancerConnections",
             "container": {
                 value: "uiEnhancer.container",
                 func: "fluid.prefs.containerNeeded"
-            },
-            "options.sourceApplier": "uiEnhancer.applier"
+            }
         }
     };
 
@@ -254,7 +255,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.tests.testExpandSchemaComponents = function (auxSchema, type, prefKey, componentConfig, index, primarySchema, expectedOutput) {
-        // var panelsTopCommonOptions = fluid.get(fluid.defaults("fluid.prefs.auxBuilder"), "topCommonOptions.panels");
         var panelsCommonOptions = fluid.get(fluid.tests.elementCommonOptions, "panel");
         var output = fluid.prefs.expandSchemaComponents(auxSchema, type, prefKey, componentConfig, index, panelsCommonOptions, primarySchema);
         jqUnit.assertDeepEq("The components and templates blocks are constructed correctly", expectedOutput, output);
@@ -464,12 +464,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests.auxSchema");
 
+    fluid.tests.testEmpty = function (expandedAuxSchema) {
+        var namespace = fluid.get(expandedAuxSchema, "namespace");
+
+        jqUnit.assertTrue("The prefsEditor grade should use the custom namespace", namespace.indexOf("fluid.prefs.created_") === 0);
+        jqUnit.assertEquals("Only namespace is in the expanded aux schema", 1, fluid.keys(expandedAuxSchema).length);
+    };
+
     fluid.tests.testAuxBuilder = function (expandedSchema, expectedExpandedSchema) {
         jqUnit.assertDeepEq("The schema was expanded correctly", expectedExpandedSchema, expandedSchema);
     };
 
-    fluid.tests.auxSchema.defaultNamespace = fluid.defaults("fluid.prefs.auxBuilder").defaultNamespace;
-    fluid.tests.auxSchema.newNamespace = "fluid.prefs.constructedPrefsEditor";
+    fluid.tests.auxSchema.customizedNamespace = "fluid.prefs.constructedPrefsEditor";
 
     fluid.tests.auxSchema.panels = {
         "textSize": {
@@ -559,7 +565,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.auxSchema.namespace = {
-        "namespace": fluid.tests.auxSchema.newNamespace
+        "namespace": fluid.tests.auxSchema.customizedNamespace
     };
 
     fluid.tests.auxSchema.template = {
@@ -597,7 +603,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.auxSchema.expectedEnactors = {
-        "namespace": fluid.tests.auxSchema.newNamespace,
+        "namespace": fluid.tests.auxSchema.customizedNamespace,
         "textSize": {
             "type": "fluid.prefs.textSize",
             "enactor": {
@@ -612,7 +618,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     type: "fluid.prefs.enactor.textSize",
                     container: "uiEnhancer.container",
                     options: {
-                        sourceApplier: "uiEnhancer.applier",
+                        gradeNames: "fluid.prefs.uiEnhancerConnections",
                         model: {
                             value: 1
                         },
@@ -642,7 +648,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.auxSchema.expectedPanels = {
-        "namespace": fluid.tests.auxSchema.defaultNamespace,
+        "namespace": fluid.tests.auxSchema.customizedNamespace,
         "textSize": {
             "type": "fluid.prefs.textSize",
             "panel": {
@@ -725,7 +731,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             auxbuilderOnlyPanel: {
                 type: "fluid.prefs.auxBuilder",
                 options: {
-                    auxiliarySchema: fluid.tests.auxSchema.panels,
+                    auxiliarySchema: $.extend(true, {}, fluid.tests.auxSchema.panels, fluid.tests.auxSchema.namespace),
                     elementCommonOptions: fluid.tests.elementCommonOptions,
                     mappedDefaults: fluid.tests.auxSchema.mappedDefaults
                 }
@@ -733,7 +739,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             auxbuilderManyPanelsOnePref: {
                 type: "fluid.prefs.auxBuilder",
                 options: {
-                    auxiliarySchema: fluid.tests.auxSchema.manyPanelsOnePref,
+                    auxiliarySchema: $.extend(true, {}, fluid.tests.auxSchema.manyPanelsOnePref, fluid.tests.auxSchema.namespace),
                     elementCommonOptions: fluid.tests.elementCommonOptions,
                     mappedDefaults: fluid.tests.auxSchema.mappedDefaults
                 }
@@ -741,7 +747,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             auxbuilderManyPrefsOnePanel: {
                 type: "fluid.prefs.auxBuilder",
                 options: {
-                    auxiliarySchema: fluid.tests.auxSchema.manyPrefsOnePanel,
+                    auxiliarySchema: $.extend(true, {}, fluid.tests.auxSchema.manyPrefsOnePanel, fluid.tests.auxSchema.namespace),
                     elementCommonOptions: fluid.tests.elementCommonOptions,
                     mappedDefaults: fluid.tests.auxSchema.mappedDefaults
                 }
@@ -763,13 +769,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.auxBuilderTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
-            expectedPrefs: {
-                "namespace": fluid.tests.auxSchema.defaultNamespace
-            },
             expectedPanels: fluid.tests.auxSchema.expectedPanels,
             expectedEnactors: fluid.tests.auxSchema.expectedEnactors,
             expectedManyPanelsOnePref: {
-                "namespace": fluid.tests.auxSchema.defaultNamespace,
+                "namespace": fluid.tests.auxSchema.customizedNamespace,
                 "textSize": {
                     "type": "fluid.prefs.textSize",
                     "panel": {
@@ -863,7 +866,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             expectedManyPrefsOnePanel: {
-                "namespace": fluid.tests.auxSchema.defaultNamespace,
+                "namespace": fluid.tests.auxSchema.customizedNamespace,
                 "emphasizeLinks": {
                     "type": "fluid.prefs.emphasizeLinks",
                     "panel": {
@@ -929,7 +932,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             expectedAll: {
-                "namespace": fluid.tests.auxSchema.newNamespace,
+                "namespace": fluid.tests.auxSchema.customizedNamespace,
                 "textSize": {
                     "type": "fluid.prefs.textSize",
                     "panel": {
@@ -992,7 +995,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             type: "fluid.prefs.enactor.textSize",
                             container: "uiEnhancer.container",
                             options: {
-                                sourceApplier: "uiEnhancer.applier",
+                                gradeNames: "fluid.prefs.uiEnhancerConnections",
                                 model: {
                                     value: 1
                                 },
@@ -1025,11 +1028,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test auxBuilder",
             tests: [{
-                expect: 1,
+                expect: 2,
                 name: "expandedAuxSchema - empty",
                 type: "test",
-                func: "fluid.tests.testAuxBuilder",
-                args: ["{auxbuilderEmpty}.options.expandedAuxSchema", "{that}.options.testOptions.expectedPrefs"]
+                func: "fluid.tests.testEmpty",
+                args: ["{auxbuilderEmpty}.options.expandedAuxSchema"]
             }, {
                 expect: 1,
                 name: "expandedAuxSchema - onlyPanel",
@@ -1161,7 +1164,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.auxSchema.compositePanelSchema = {
-        "namespace": fluid.tests.auxSchema.newNamespace, // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed UIO.
+        "namespace": fluid.tests.auxSchema.customizedNamespace, // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed UIO.
         "templatePrefix": "../html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
         "template": "%prefix/prefs.html",
         "messagePrefix": "../messages/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
@@ -1206,7 +1209,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.auxSchema.expandedComposite = {
-        "namespace": fluid.tests.auxSchema.newNamespace, // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed UIO.
+        "namespace": fluid.tests.auxSchema.customizedNamespace, // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed UIO.
         "templatePrefix": "../html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
         "template": "%prefix/prefs.html",
         "messagePrefix": "../messages/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
@@ -1282,7 +1285,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             "fluid_prefs_subPanel1": {
                                 "type": "fluid.prefs.panel.subPanel1",
                                 "container": "combinedBoth.dom.fluid_prefs_subPanel1",
-                                createOnEvent: "initSubPanels",
                                 "options": {
                                     range: {
                                         min: 1,
@@ -1294,7 +1296,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             "fluid_prefs_subPanel2": {
                                 "type": "fluid.prefs.panel.subPanel2",
                                 "container": "combinedBoth.dom.fluid_prefs_subPanel2",
-                                createOnEvent: "initSubPanels",
                                 options: {}
                             }
                         }
@@ -1529,7 +1530,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             "fluid_prefs_subPanel3": {
                                 "type": "fluid.prefs.panel.subPanel3",
                                 "container": "combinedBoth2.dom.fluid_prefs_subPanel3",
-                                createOnEvent: "initSubPanels",
                                 "options": {
                                     range: {
                                         min: 20,
@@ -1540,7 +1540,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             "fluid_prefs_subPanel4": {
                                 "type": "fluid.prefs.panel.subPanel4",
                                 "container": "combinedBoth2.dom.fluid_prefs_subPanel4",
-                                createOnEvent: "initSubPanels",
                                 options: {}
                             }
                         }
@@ -1584,6 +1583,325 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("The auxiliary schema for multiple composite panels has been parsed correctly", fluid.tests.auxSchema.expandedMultiComposite, expandedCompositePanel);
     });
 
+    /******************************************************
+    * Support subpanels with renderOnPreference requests
+    ******************************************************/
+
+    fluid.defaults("fluid.prefs.schemas.subPanel5", {
+        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        schema: {
+            "fluid.prefs.subPanel5": {
+                "default": "sub5"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.schemas.subPanel6", {
+        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        schema: {
+            "fluid.prefs.subPanel6": {
+                "default": "sub6"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.schemas.subPanel7", {
+        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        schema: {
+            "fluid.prefs.subPanel5": {
+                "default": "sub7"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.schemas.subPanel8", {
+        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        schema: {
+            "fluid.prefs.subPanel8": {
+                "default": "sub8"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.panel.combinedBoth3", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"]
+    });
+
+    fluid.defaults("fluid.prefs.panel.subPanel5", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        preferenceMap: {
+            "fluid.prefs.subPanel5": {
+                "model.value": "default"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.panel.subPanel6", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        preferenceMap: {
+            "fluid.prefs.subPanel6": {
+                "model.value": "default"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.panel.subPanel7", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        preferenceMap: {
+            "fluid.prefs.subPanel7": {
+                "model.value": "default"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.panel.subPanel8", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        preferenceMap: {
+            "fluid.prefs.subPanel8": {
+                "model.value": "default"
+            }
+        }
+    });
+
+    fluid.tests.auxSchema.renderOnPrefMappedDefaults = $.extend(true, {}, fluid.tests.auxSchema.multiCompositePanelMappedDefaults, {
+        "fluid.prefs.subPanel5": {
+            "type": "boolean",
+            "default": false
+        },
+        "fluid.prefs.subPanel6": {
+            "type": "boolean",
+            "default": false
+        },
+        "fluid.prefs.subPanel7": {
+            "type": "boolean",
+            "default": false
+        },
+        "fluid.prefs.subPanel8": {
+            "type": "boolean",
+            "default": false
+        }
+    });
+
+    fluid.tests.auxSchema.renderOnPreflIndex = $.extend(true, {}, fluid.tests.auxSchema.multiPanelIndex, {
+        "fluid.prefs.subPanel5": ["fluid.prefs.panel.subPanel5"],
+        "fluid.prefs.subPanel6": ["fluid.prefs.panel.subPanel6"],
+        "fluid.prefs.subPanel7": ["fluid.prefs.panel.subPanel7"],
+        "fluid.prefs.subPanel8": ["fluid.prefs.panel.subPanel8"]
+    });
+
+    fluid.tests.auxSchema.renderOnPrefSchema = {
+        "groups": {
+            "combinedBoth3": {
+                "container": "#flc-combinedBoth3",
+                "template": "%prefix/combinedBoth3.html",
+                "message": "%prefix/combinedBoth3.json",
+                "type": "fluid.prefs.panel.combinedBoth3",
+                "panels": {
+                    "always": ["subPanel5"],
+                    "fluid.prefs.subPanel5": ["subPanel6"],
+                    "fluid.prefs.subPanel6": ["subPanel7", "subPanel8"]
+                },
+                "renderOnPrefOption": 1
+            }
+        },
+        "subPanel5": {
+            "type": "fluid.prefs.subPanel5",
+            "panel": {
+                "type": "fluid.prefs.panel.subPanel5",
+                "container": "#flc-prefs-subPanel5",  // the css selector in the template where the panel is rendered
+                "template": "%prefix/subPanel5.html",
+                "message": "%prefix/subPanel5.json"
+            }
+        },
+        "subPanel6": {
+            "type": "fluid.prefs.subPanel6",
+            "panel": {
+                "type": "fluid.prefs.panel.subPanel6",
+                "container": "#flc-prefs-subPanel6",  // the css selector in the template where the panel is rendered
+                "template": "%prefix/subPanel6.html",
+                "message": "%prefix/subPanel6.json"
+            }
+        },
+        "subPanel7": {
+            "type": "fluid.prefs.subPanel7",
+            "panel": {
+                "type": "fluid.prefs.panel.subPanel7",
+                "container": "#flc-prefs-subPanel7",  // the css selector in the template where the panel is rendered
+                "template": "%prefix/subPanel7.html",
+                "message": "%prefix/subPanel7.json"
+            }
+        },
+        "subPanel8": {
+            "type": "fluid.prefs.subPanel8",
+            "panel": {
+                "type": "fluid.prefs.panel.subPanel8",
+                "container": "#flc-prefs-subPanel8",  // the css selector in the template where the panel is rendered
+                "template": "%prefix/subPanel8.html",
+                "message": "%prefix/subPanel8.json"
+            }
+        }
+    };
+
+    fluid.tests.auxSchema.renderOnPrefExpandedComposite = {
+        "groups": {
+            "combinedBoth3": {
+                "container": "#flc-combinedBoth3",
+                "template": "%prefix/combinedBoth3.html",
+                "message": "%prefix/combinedBoth3.json",
+                "type": "fluid.prefs.panel.combinedBoth3",
+                "panels": {
+                    "always": ["subPanel5"],
+                    "fluid.prefs.subPanel5": ["subPanel6"],
+                    "fluid.prefs.subPanel6": ["subPanel7", "subPanel8"]
+                },
+                "renderOnPrefOption": 1
+            }
+        },
+        "subPanel5": {
+            "type": "fluid.prefs.subPanel5",
+            "panel": {
+                "type": "fluid.prefs.panel.subPanel5",
+                "container": "#flc-prefs-subPanel5",  // the css selector in the template where the panel is rendered
+                "template": "%prefix/subPanel5.html",
+                "message": "%prefix/subPanel5.json"
+            }
+        },
+        "subPanel6": {
+            "type": "fluid.prefs.subPanel6",
+            "panel": {
+                "type": "fluid.prefs.panel.subPanel6",
+                "container": "#flc-prefs-subPanel6",  // the css selector in the template where the panel is rendered
+                "template": "%prefix/subPanel6.html",
+                "message": "%prefix/subPanel6.json"
+            }
+        },
+        "subPanel7": {
+            "type": "fluid.prefs.subPanel7",
+            "panel": {
+                "type": "fluid.prefs.panel.subPanel7",
+                "container": "#flc-prefs-subPanel7",  // the css selector in the template where the panel is rendered
+                "template": "%prefix/subPanel7.html",
+                "message": "%prefix/subPanel7.json"
+            }
+        },
+        "subPanel8": {
+            "type": "fluid.prefs.subPanel8",
+            "panel": {
+                "type": "fluid.prefs.panel.subPanel8",
+                "container": "#flc-prefs-subPanel8",  // the css selector in the template where the panel is rendered
+                "template": "%prefix/subPanel8.html",
+                "message": "%prefix/subPanel8.json"
+            }
+        },
+        panels: {
+            "selectors": {
+                "combinedBoth3": "#flc-combinedBoth3"
+            },
+            "components": {
+                "combinedBoth3": {
+                    "type": "fluid.prefs.panel.combinedBoth3",
+                    "container": "prefsEditor.dom.combinedBoth3",
+                    "createOnEvent": "onPrefsEditorMarkupReady",
+                    options: {
+                        gradeNames: ["fluid.prefs.prefsEditorConnections", "fluid.prefs.compositePanel"],
+                        renderOnPrefOption: 1,
+                        resources: {
+                            template: "templateLoader.resources.combinedBoth3",
+                            "fluid_prefs_subPanel5": "templateLoader.resources.fluid_prefs_subPanel5",
+                            "fluid_prefs_subPanel6": "templateLoader.resources.fluid_prefs_subPanel6",
+                            "fluid_prefs_subPanel7": "templateLoader.resources.fluid_prefs_subPanel7",
+                            "fluid_prefs_subPanel8": "templateLoader.resources.fluid_prefs_subPanel8"
+                        },
+                        selectors: {
+                            "fluid_prefs_subPanel5": "#flc-prefs-subPanel5",
+                            "fluid_prefs_subPanel6": "#flc-prefs-subPanel6",
+                            "fluid_prefs_subPanel7": "#flc-prefs-subPanel7",
+                            "fluid_prefs_subPanel8": "#flc-prefs-subPanel8"
+                        },
+                        "selectorsToIgnore": ["fluid_prefs_subPanel5", "fluid_prefs_subPanel6", "fluid_prefs_subPanel7", "fluid_prefs_subPanel8"],
+                        model: {
+                            "fluid_prefs_subPanel5": false,
+                            "fluid_prefs_subPanel6": false,
+                            "fluid_prefs_subPanel7": false,
+                            "fluid_prefs_subPanel8": false
+                        },
+                        rules: {
+                            "fluid_prefs_subPanel5": "fluid_prefs_subPanel5",
+                            "fluid_prefs_subPanel6": "fluid_prefs_subPanel6",
+                            "fluid_prefs_subPanel7": "fluid_prefs_subPanel7",
+                            "fluid_prefs_subPanel8": "fluid_prefs_subPanel8"
+                        },
+                        components: {
+                            "fluid_prefs_subPanel5": {
+                                "type": "fluid.prefs.panel.subPanel5",
+                                "container": "combinedBoth3.dom.fluid_prefs_subPanel5",
+                                options: {}
+                            },
+                            "fluid_prefs_subPanel6": {
+                                "type": "fluid.prefs.panel.subPanel6",
+                                "container": "combinedBoth3.dom.fluid_prefs_subPanel6",
+                                options: {
+                                    "renderOnPreference": "fluid.prefs.subPanel5"
+                                }
+                            },
+                            "fluid_prefs_subPanel7": {
+                                "type": "fluid.prefs.panel.subPanel7",
+                                "container": "combinedBoth3.dom.fluid_prefs_subPanel7",
+                                options: {
+                                    "renderOnPreference": "fluid.prefs.subPanel6"
+                                }
+                            },
+                            "fluid_prefs_subPanel8": {
+                                "type": "fluid.prefs.panel.subPanel8",
+                                "container": "combinedBoth3.dom.fluid_prefs_subPanel8",
+                                options: {
+                                    "renderOnPreference": "fluid.prefs.subPanel6"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        templateLoader: {
+            templates: {
+                "combinedBoth3": "%prefix/combinedBoth3.html",
+                "fluid_prefs_subPanel5": "%prefix/subPanel5.html",
+                "fluid_prefs_subPanel6": "%prefix/subPanel6.html",
+                "fluid_prefs_subPanel7": "%prefix/subPanel7.html",
+                "fluid_prefs_subPanel8": "%prefix/subPanel8.html"
+            }
+        },
+        messageLoader: {
+            templates: {
+                "combinedBoth3": "%prefix/combinedBoth3.json",
+                "fluid_prefs_subPanel5": "%prefix/subPanel5.json",
+                "fluid_prefs_subPanel6": "%prefix/subPanel6.json",
+                "fluid_prefs_subPanel7": "%prefix/subPanel7.json",
+                "fluid_prefs_subPanel8": "%prefix/subPanel8.json"
+            }
+        },
+        rootModel: {
+            members: {
+                rootModel: {
+                    fluid_prefs_subPanel5: false,
+                    fluid_prefs_subPanel6: false,
+                    fluid_prefs_subPanel7: false,
+                    fluid_prefs_subPanel8: false
+                }
+            }
+        },
+        panelsToIgnore: ["subPanel5", "subPanel6", "subPanel7", "subPanel8"]
+    };
+
+    jqUnit.test("Test expanding composite panel group having subpanels rendered on particular pref key with fluid.prefs.expandCompositePanels()", function () {
+        var expandedCompositePanel = fluid.prefs.expandCompositePanels(fluid.tests.auxSchema.renderOnPrefSchema, fluid.tests.auxSchema.renderOnPrefSchema.groups,
+                fluid.tests.auxSchema.renderOnPrefIndex, fluid.get(fluid.tests.elementCommonOptions, "compositePanel"), fluid.get(fluid.tests.elementCommonOptions, "subPanel"),
+                fluid.get(fluid.tests.elementCommonOptions, "compositePanelBasedOnSub"), fluid.tests.auxSchema.renderOnPrefMappedDefaults);
+
+        jqUnit.assertDeepEq("The auxiliary schema for multiple composite panels has been parsed correctly", fluid.tests.auxSchema.renderOnPrefExpandedComposite, expandedCompositePanel);
+    });
+
     fluid.tests.auxSchema.expandedRestForAll = {
         panels: {
             "gradeNames": ["fluid.prefs.prefsEditor", "autoInit"]
@@ -1594,8 +1912,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "fluid_prefs_enactor_subPanel1": {
                     type: "fluid.prefs.enactor.subPanel1",
                     options: {
+                        gradeNames: "fluid.prefs.uiEnhancerConnections",
                         "cssClass": "fl-link-enhanced",
-                        sourceApplier: "uiEnhancer.applier",
                         model: {
                             value: false
                         },
@@ -1608,8 +1926,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     type: "fluid.prefs.enactor.subPanel2",
                     container: "uiEnhancer.container",
                     options: {
+                        gradeNames: "fluid.prefs.uiEnhancerConnections",
                         "cssClass": "fl-text-larger",
-                        sourceApplier: "uiEnhancer.applier",
                         model: {
                             value: false
                         },

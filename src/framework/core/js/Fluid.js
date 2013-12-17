@@ -631,11 +631,11 @@ var fluid = fluid || fluid_1_5;
      * can be found
      */
     fluid.contains = function (obj, value) {
-        return obj ? fluid.find(obj, function (thisValue) {
+        return obj ? (fluid.isArrayable(obj) ? $.inArray(value, obj) !== -1 : fluid.find(obj, function (thisValue) {
             if (value === thisValue) {
                 return true;
             }
-        }) : undefined;
+        })) : undefined;
     };
     
     /**
@@ -1379,7 +1379,7 @@ var fluid = fluid || fluid_1_5;
             optionsChain: []
         };
         // stronger grades appear to the left in defaults - dynamic grades are stronger still - FLUID-5085
-        return resolveGradesImpl(gradeStruct, (gradeNames || []).concat([defaultName]), true);
+        return resolveGradesImpl(gradeStruct, (fluid.makeArray(gradeNames).reverse() || []).concat([defaultName]), true);
     };
         
     var mergedDefaultsCache = {};
