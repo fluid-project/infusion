@@ -62,6 +62,11 @@ function initIframe() {
 		});
 
 		iframeWin.QUnit.testStart(function( data ) {
+		    // AMB: Hoisted this up here so it is possible to run tests from link URL in the case they fail
+		    var current = QUnit.id( QUnit.config.current.id );
+        // Update Rerun link to point to the standalone test suite page
+        current.getElementsByTagName( "a" )[ 0 ].href = iframe.src;  
+		  
 			// Capture test name for messages
 			testName = data.name;
 		});
@@ -133,6 +138,10 @@ QUnit.testSuites = function( name, suites ) {
 	}
 };
 
+QUnit.testStart(function() {
+
+});
+
 QUnit.testDone(function() {
 	if ( !executingComposite ) {
 		return;
@@ -160,8 +169,6 @@ QUnit.testDone(function() {
 		}
 	}
 
-	// Update Rerun link to point to the standalone test suite page
-	current.getElementsByTagName( "a" )[ 0 ].href = src;
 });
 
 })( QUnit );

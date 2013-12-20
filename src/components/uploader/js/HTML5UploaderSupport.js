@@ -265,10 +265,12 @@ var fluid_1_5 = fluid_1_5 || {};
         
         fileInput.focus(function () {
             that.browseButton.addClass("focus");
+            that.events.onFocusFileInput.fire(that, fileInput, true);
         });
         
         fileInput.blur(function () {
             that.browseButton.removeClass("focus");
+            that.events.onFocusFileInput.fire(that, fileInput, false);
         });
     };
     
@@ -279,22 +281,23 @@ var fluid_1_5 = fluid_1_5 || {};
             fileTypes = fileTypes.join();
             multiFileInput.attr("accept", fileTypes);
         }
-        fluid.uploader.bindEventsToFileInput(that, multiFileInput);
         return multiFileInput;
     };
     
     fluid.uploader.renderFreshMultiFileInput = function (that) {
         var previousInput = that.locate("fileInputs").last();
         previousInput.hide();
-        previousInput.attr("tabindex", -1);
+        previousInput.prop("tabindex", -1);
         var newInput = fluid.uploader.renderMultiFileInput(that);
-        previousInput.after(newInput);      
+        previousInput.after(newInput);
+        fluid.uploader.bindEventsToFileInput(that, newInput);
     };
     
     fluid.uploader.setupBrowseButtonView = function (that) {
         var multiFileInput = fluid.uploader.renderMultiFileInput(that);        
         that.browseButton.append(multiFileInput);
-        that.browseButton.attr("tabindex", -1);
+        fluid.uploader.bindEventsToFileInput(that, multiFileInput);
+        that.browseButton.prop("tabindex", -1);
     };
     
     fluid.uploader.isEnabled = function (element) {
@@ -333,6 +336,7 @@ var fluid_1_5 = fluid_1_5 || {};
             fileInputs: ".flc-uploader-html5-input"
         },
         events: {
+            onFocusFileInput: null,
             onBrowse: null,
             onFilesQueued: null
         },
