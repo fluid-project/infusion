@@ -35,11 +35,11 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         listeners: {
             "onCreate.initTabs": {
-                "this": "{that}.contaienr",
+                "this": "{that}.container",
                 "method": "tabs",
-                "args": "tabOptions"
+                "args": "{that}.options.tabOptions"
             }
-        }
+        },
         finalInitFunction: "fluid.tabs.finalInit"
     });
 
