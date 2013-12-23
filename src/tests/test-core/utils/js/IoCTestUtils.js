@@ -33,6 +33,14 @@ var fluid_1_5 = fluid_1_5 || {};
             onBeginSequenceStep: null,
             onEndSequenceStep: null
         },
+        members: {
+            capturedMarkup: {
+                expander: {
+                    funcName: "fluid.test.captureMarkup",
+                    args: "{that}.options.markupFixture"
+                }
+            }
+        },
         listeners: {
             onCreate: {
                 listener: "fluid.test.testEnvironment.runTests",
@@ -97,6 +105,22 @@ var fluid_1_5 = fluid_1_5 || {};
         };
     };
 
+    fluid.test.expandModuleSource = function (moduleSource, testCaseState, testCaseHolder) {
+        var funcSpec = moduleSource.func || moduleSource.funcName;
+        var func = testCaseState.expandFunction(funcSpec);
+        var args = testCaseState.expand(fluid.makeArray(moduleSource.args));
+        return func.apply(null, args);
+    };
+    
+    fluid.test.captureMarkup = function (markupFixture) {
+        if (markupFixture) {
+            var markupContainer = fluid.container(markupFixture, false);
+            return {
+                container: markupContainer,
+                markup: markupContainer[0].innerHTML
+            };
+        } 
+    };
 
     fluid.test.testEnvironment.runTests = function (that) {
         var visitOptions = {};
@@ -112,10 +136,9 @@ var fluid_1_5 = fluid_1_5 || {};
             events: that.events
         };
         if (that.options.markupFixture) {
-            var markupContainer = fluid.container(that.options.markupFixture, false);
-            that.storedMarkup = markupContainer.html();
             that.events.onDestroy.addListener(function () {
-                markupContainer.html(that.storedMarkup);
+                console.log("Restored markup " + that.capturedMarkup.markup);
+                that.capturedMarkup.container[0].innerHTML = that.capturedMarkup.markup;
             });
         }
         fluid.each(that.testCaseHolders, function (testCaseHolder) {
@@ -123,6 +146,9 @@ var fluid_1_5 = fluid_1_5 || {};
             testCaseState.testCaseHolder = testCaseHolder;
             testCaseState.expand = fluid.test.makeExpander(testCaseHolder);
             testCaseState.expandFunction = fluid.test.makeFuncExpander(testCaseState.expand);
+            if (testCaseHolder.options.moduleSource) {
+                testCaseHolder.options.modules = fluid.test.expandModuleSource(testCaseHolder.options.moduleSource, testCaseState, testCaseHolder);
+            }
             fluid.test.processTestCaseHolder(testCaseState);
         });
         // Fire this event so that environments which registered no tests (due to qunit filtering)
@@ -133,7 +159,8 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.test.testCaseHolder", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         mergePolicy: {
-            modules: "noexpand"
+            modules: "noexpand",
+            moduleSource: "noexpand"
         },
         events: {
             onTestCaseStart: null
@@ -267,8 +294,9 @@ var fluid_1_5 = fluid_1_5 || {};
                 event.removeListener(wrapped);
             } 
         }
-        else {
+        else if (analysed.path) {
             var id;
+            
             bind = function (wrapped) {
                 var options = {};
                 fluid.set(options, ["listeners"].concat(analysed.path), {
@@ -283,6 +311,8 @@ var fluid_1_5 = fluid_1_5 || {};
             unbind = function (wrapped) {
                 fluid.clearDistributions(analysed.head, id);  
             };
+        } else {
+            fluid.fail("Error decoding event fixture ", fixture, ": must be able to look up member \"event\" to one or more events");
         }
         return fluid.test.makeBinder(listener, bind, unbind);
     };
@@ -452,7 +482,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.test.processTestCase = function (testCaseState) {
         var testCase = testCaseState.testCase;
         jqUnit.module(testCase.name);
-        var fixtures = testCase.tests;
+        var fixtures = fluid.makeArray(testCase.tests);
         fluid.each(fixtures, function (fixture) {
             var testType = "asyncTest";
 
@@ -489,7 +519,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.test.processTestCaseHolder = function (testCaseState) {
-        var modules = testCaseState.testCaseHolder.options.modules;
+        var modules = fluid.makeArray(testCaseState.testCaseHolder.options.modules);
         fluid.each(modules, function (testCase) {
             testCaseState.testCase = testCase;
             testCaseState.finisher = function () {

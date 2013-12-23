@@ -3469,6 +3469,56 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertDeepEq("The output of an expander argument is same as the return of the expander function", that.options.inputObject, that.options.outputObject);
     });
     
+    /** FLUID-5242: Corruption when distributing listener records to multiple components **/
+    
+    fluid.defaults("fluid.tests.tooltip", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            afterOpen: null
+        }
+    });
+    
+    fluid.defaults("fluid.tests.trackTooltips", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        mergePolicy: { 
+            tooltipListeners: "noexpand" 
+        }, 
+        distributeOptions: { 
+            source: "{that}.options.tooltipListeners", 
+            removeSource: true, 
+            target: "{that fluid.tests.tooltip}.options.listeners" 
+        }, 
+        tooltipListeners: { 
+            afterOpen: { 
+                funcName: "fluid.tests.trackTooltip", 
+                args: ["{trackTooltips}", "{arguments}.2", "{arguments}.1"] 
+            }
+        },
+        components: {
+            tooltip1: {
+                type: "fluid.tests.tooltip"
+            },
+            tooltip2: {
+                type: "fluid.tests.tooltip"
+            }
+        },
+        members: {
+            fireRecord: []
+        }
+    });
+    
+    fluid.tests.trackTooltip = function (that, arg1, arg2) {
+        that.fireRecord.push({arg1: arg1, arg2: arg2});
+    };
+    
+    jqUnit.test("FLUID-5242: Corruption of listener blocks when distributed to multiple components", function () {
+        var that = fluid.tests.trackTooltips();
+        that.tooltip1.events.afterOpen.fire(0, 1, 2);
+        that.tooltip2.events.afterOpen.fire(0, 1, 2);
+        var expected = [{arg1: 2, arg2: 1}, {arg1: 2, arg2: 1}];
+        jqUnit.assertDeepEq("Listeners fired without argument corruption", expected, that.fireRecord);
+    });
+    
     /** FLUID-5108: Source and supplied dynamic grades that both have common option(s) are not merged correctly **/
     
     fluid.defaults("fluid.tests.fluid5108", {

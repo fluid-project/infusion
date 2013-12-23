@@ -27,14 +27,18 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.tooltip.makeOpenHandler = function (that) {
-        return function (event) {
-           that.events.afterOpen.fire();
+        return function (event, tooltip) {
+           if (!that.destroyed) {
+               that.events.afterOpen.fire(that, event.target, tooltip.tooltip, event);
+           }
         };
     };
     
     fluid.tooltip.makeCloseHandler = function (that) {
-        return function (event) {
-            that.events.afterClose.fire();
+        return function (event, tooltip) {
+            if (!that.destroyed) { // underlying jQuery UI component will fire various spurious close events after it has been destroyed
+                that.events.afterClose.fire(that, event.target, tooltip.tooltip, event);
+            }
         };
     };
 
@@ -43,8 +47,15 @@ var fluid_1_5 = fluid_1_5 || {};
             content: fluid.tooltip.createContentFunc(that.options.content),
             position: that.options.position,
             items: that.options.items,
+            tooltipClass: that.options.styles.tooltip,
             open: fluid.tooltip.makeOpenHandler(that),
-            close: fluid.tooltip.makeCloseHandler(that)
+            close: fluid.tooltip.makeCloseHandler(that),
+            hide: {
+                duration: that.options.delay
+            },
+            show: {
+                duration: that.options.delay
+            }
         });
         that.elm = that.container.tooltip("widget");
         that.elm.addClass(that.options.styles.tooltip);
@@ -59,19 +70,20 @@ var fluid_1_5 = fluid_1_5 || {};
         //that.container.data("ui-tooltip").tooltip.html(content);
     };
     
+    fluid.tooltip.doDestroy = function (that) {
+        if (!that.destroyed) {
+            // jQuery UI framework will throw a fit if we have instantiated a widget on a DOM element and then
+            // removed it from the DOM. This apparently can't be detected via the jQuery UI API itself.
+            if ($.contains(document, that.container[0])) {
+                that.container.tooltip("destroy");
+            }
+            that.destroyed = true; // TODO: proper framework facility for this coming with FLUID-4890  
+        }
+    };
+    
     fluid.defaults("fluid.tooltip", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         invokers: {
-          /**
-           * Destroys the underlying jquery ui tooltip
-           */
-            // NB - can't name this "destroy" due to collision with new fabricated "destroy" method - however API is
-            // preserved since that method forwards to this one via listener
-            doDestroy: {
-                "this": "{that}.container",
-                method: "tooltip",
-                args: "destroy"
-            },
           /**
            * Manually displays the tooltip
            */
@@ -102,12 +114,12 @@ var fluid_1_5 = fluid_1_5 || {};
             tooltip: ""
         },
         events: {
-            afterOpen: null,
-            afterClose: null  
+            afterOpen: null,  // arguments: that, event.target, tooltip, event
+            afterClose: null  // arguments: that, event.target, tooltip, event
         },
         listeners: {
             onCreate: "fluid.tooltip.setup",
-            onDestroy: "{that}.doDestroy"
+            onDestroy: "fluid.tooltip.doDestroy"
         },
         content: "",
         position: {

@@ -22,11 +22,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // Note that throughout these tests, an explicit tooltip "destroy" is necessary after each test, since
         // the tooltip markup is created outside the container qunit-fixture which is operated by the standard
         // QUnit setup/teardown cycle
-        
-        jqUnit.module("Tooltip Tests", {teardown: function () {
-            var ttel = $(".testTooltip");
-            ttel.tooltip("destroy");
-        }});
     
         jqUnit.test("Options Mapping", function () {
             var testOptions = {
@@ -45,20 +40,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var tt = fluid.tooltip(".testTooltip", testOptions);
             var uiTTOptions = $(".testTooltip").tooltip("option");
             
-            jqUnit.assertEquals("The 'content' option is set correctly", testOptions.content, uiTTOptions.content);
-            jqUnit.assertEquals("The 'items' option is set correctly", testOptions.items, uiTTOptions.items);
-            jqUnit.assertLeftHand("The 'position' option is set correctly", testOptions.position, uiTTOptions.position);
+            jqUnit.assertEquals("The \"content\" option is set correctly", testOptions.content, uiTTOptions.content);
+            jqUnit.assertEquals("The \"items\" option is set correctly", testOptions.items, uiTTOptions.items);
+            jqUnit.assertLeftHand("The \"position\" option is set correctly", testOptions.position, uiTTOptions.position);
+            tt.destroy();
         });
         
         jqUnit.test("Styling added", function () {
             var style = "styleClass";
             var tt = fluid.tooltip(".testTooltip", {
+                content: "Tooltip",
                 styles: {
                     tooltip: style
                 }
             });
+            tt.open();
+            var tooltip = $("[id^=ui-tooltip]");
             
-            jqUnit.assertTrue("The css class is applied to the tooltip element", $("[id^=ui-tooltip]").hasClass(style));
+            jqUnit.assertTrue("The css class is applied to the tooltip element", tooltip.hasClass(style));
+            tt.destroy()
         });
         
         jqUnit.test("Tooltip element tests", function () {
@@ -66,10 +66,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var ttELM = $("[id^=ui-tooltip]");
             var newContent = "New Content";
             
+            //jQuery UI no longer exposes the implementing markup programmatically
             //jqUnit.assertTrue("The tooltip element is exposed correctly", 0 === tt.elm.index(ttELM));
             
-            //tt.updateContent(newContent);
-            //jqUnit.assertTrue("The tooltip content should have updated", newContent, ttELM.text());
+            tt.updateContent(newContent);
+            jqUnit.assertTrue("The tooltip content should have updated", newContent, ttELM.text());
+            tt.destroy();
         });
         
         jqUnit.asyncTest("Tooltip manual open/close tests", function () {
@@ -89,10 +91,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
             
             tt.open();
+            tt.destroy();
         });
         
         jqUnit.test("Tooltip destroy tests", function () {
-            var tt = fluid.tooltip(".testTooltip");
+            var tt = fluid.tooltip(".testTooltip", {content: "Tooltip"});
+            tt.open();
             jqUnit.assertEquals("There should be a tooltip element present", 1, $("[id^=ui-tooltip]").length);
             tt.destroy();
             jqUnit.assertEquals("There should no longer be a tooltip element", 0, $("[id^=ui-tooltip]").length);
@@ -105,6 +109,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Initially, the tooltip should contain first text", expected1, tipEl.text());
             tt.updateContent(update);
             jqUnit.assertEquals("After update, the tooltip should contain second text", expected2, tipEl.text());
+            tt.destroy();
         };
 
         jqUnit.asyncTest("FLUID-4780: Dynamic update of tooltip content: text", function () {

@@ -623,8 +623,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 thatReorderer.requestMovement(dropManager.lastPosition(), item);
                 // refocus on the active item because moving places focus on the body
                 thatReorderer.activeItem.focus();
-            },
-            handle: thatReorderer.dom.fastLocate("grabHandle", item)
+            }
+            // This can no longer be supported in jQuery UI after version 1.10.2 since the upstream API has been broken permanently.
+            // See https://github.com/jquery/jquery-ui/pull/963
+            // handle: thatReorderer.dom.fastLocate("grabHandle", item)
         });
     };
     
