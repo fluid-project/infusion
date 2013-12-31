@@ -137,7 +137,6 @@ var fluid_1_5 = fluid_1_5 || {};
         };
         if (that.options.markupFixture) {
             that.events.onDestroy.addListener(function () {
-                console.log("Restored markup " + that.capturedMarkup.markup);
                 that.capturedMarkup.container[0].innerHTML = that.capturedMarkup.markup;
             });
         }
@@ -392,6 +391,9 @@ var fluid_1_5 = fluid_1_5 || {};
             sequencePos: 0,
             executors: []
         };
+        if (fixture.sequence.length === 0) {
+            fluid.fail("Error in test fixture ", fixture, ": no elements in sequence");
+        }
         that.decode = function (pos) {
             return that.executors[pos] =
                     fluid.test.decodeFixture(that.testCaseState, that.fixture.sequence[pos]);

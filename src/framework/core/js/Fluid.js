@@ -373,6 +373,11 @@ var fluid = fluid || fluid_1_5;
         return fluid.isDOMNode(obj) || obj.jquery;
     };
     
+    fluid.isComponent = function (obj) {
+        // TODO: improve this strategy in time - we may want to actually use a constructor-based test when we can drop IE8
+        return obj && obj.typeName && obj.id;  
+    };
+    
     /** Return an empty container as the same type as the argument (either an
      * array or hash */
     fluid.freshContainer = function (tocopy) {
@@ -1621,7 +1626,7 @@ var fluid = fluid || fluid_1_5;
     // each object for all time, since after first resolution it will be concrete.
     function regenerateCursor (source, segs, limit, sourceStrategy) {
         for (var i = 0; i < limit; ++ i) {
-            source = sourceStrategy(source, segs[i], i, segs);
+            source = sourceStrategy(source, segs[i], i, fluid.makeArray(segs)); // copy for FLUID-5243
         }
         return source;
     }

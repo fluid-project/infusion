@@ -189,7 +189,8 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         avatarCreator: fluid.reorderer.defaultAvatarCreator,
         keysets: fluid.reorderer.defaultKeysets,
-        containerRole:       "{that}.layoutHandler.options.containerRole", // These two ginger options injected "upwards" from layoutHandler
+        // These two ginger options injected "upwards" from layoutHandler and actually time its construction (before FLUID-4925)
+        containerRole:       "{that}.layoutHandler.options.containerRole",
         selectablesTabindex: "{that}.layoutHandler.options.selectablesTabindex",
         layoutHandler: "fluid.listLayoutHandler",
         
@@ -431,7 +432,7 @@ var fluid_1_5 = fluid_1_5 || {};
     // unsupported, NON-API function
     fluid.reorderer.requestMovement = function (thatReorderer, requestedPosition, item) {
         item = fluid.unwrap(item);
-      // Temporary censoring to get around ModuleLayout inability to update relative to self.
+        // Temporary censoring to get around ModuleLayout inability to update relative to self.
         if (!requestedPosition || fluid.unwrap(requestedPosition.element) === item) {
             return;
         }
@@ -575,8 +576,9 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         );
         var avatar;
+        var handle = thatReorderer.dom.fastLocate("grabHandle", item);
     
-        thatReorderer.dom.fastLocate("grabHandle", item).draggable({
+        item.draggable({
             refreshPositions: false,
             scroll: true,
             helper: function () {
@@ -623,10 +625,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 thatReorderer.requestMovement(dropManager.lastPosition(), item);
                 // refocus on the active item because moving places focus on the body
                 thatReorderer.activeItem.focus();
-            }
-            // This can no longer be supported in jQuery UI after version 1.10.2 since the upstream API has been broken permanently.
+            },
+            // This explicit detection is now required for jQuery UI after version 1.10.2 since the upstream API has been broken permanently.
             // See https://github.com/jquery/jquery-ui/pull/963
-            // handle: thatReorderer.dom.fastLocate("grabHandle", item)
+            handle: handle === item ? null : handle
         });
     };
     

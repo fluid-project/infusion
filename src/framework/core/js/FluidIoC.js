@@ -32,9 +32,8 @@ var fluid_1_5 = fluid_1_5 || {};
         for (var name in that) {
             var newPath = instantiator.composePath(path, name);
             var component = that[name];
-            // Every component *should* have an id, but some clients (e.g. DOM binder) may not yet be compliant
             // This entire algorithm is primitive and expensive and will be removed once we can abolish manual init components
-            if (!component || !component.typeName || (component.id && options.visited && options.visited[component.id])) {continue; }
+            if (!fluid.isComponent(component) || (options.visited && options.visited[component.id])) {continue; }
             if (options.visited) {
                 options.visited[component.id] = true;
             }
@@ -1965,14 +1964,15 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     // "cursor arguments" which should be advertised somehow (at least their number)
     function regenerateCursor (source, segs, limit, sourceStrategy) {
         for (var i = 0; i < limit; ++ i) {
-            source = sourceStrategy(source, segs[i], i, segs);
+            // copy segs to avoid aliasing with FLUID-5243 
+            source = sourceStrategy(source, segs[i], i, fluid.makeArray(segs));
         }
         return source;
     }
 
     // unsupported, NON-API function
     fluid.isUnexpandable = function (source) {
-        return fluid.isPrimitive(source) || source.nodeType !== undefined || source.jquery || !fluid.isPlainObject(source);
+        return fluid.isPrimitive(source) || fluid.isComponent(source) || source.nodeType !== undefined || source.jquery || !fluid.isPlainObject(source);
     };
 
     // unsupported, NON-API function    

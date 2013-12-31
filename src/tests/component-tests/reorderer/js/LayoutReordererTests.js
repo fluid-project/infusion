@@ -22,6 +22,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     $(document).ready(function () {
         jqUnit.module("LayoutReorderer Tests");
         
+        jqUnit.test("grabHandle propagatation test (FLUID-5243)", function () {
+            var that = fluid.reorderLayout("#" + fluid.testUtils.moduleLayout.portalRootId, {
+                selectors: {
+                    grabHandle: ".title"
+                }  
+            });
+            jqUnit.assertEquals("grabHandle propagated through expansion", ".title", 
+                that.options.selectors.grabHandle);
+        })
+        
         var k = fluid.testUtils.reorderer.bindReorderer(fluid.testUtils.moduleLayout.portletIds);
         
         jqUnit.test("Default selectors", function () {
@@ -318,7 +328,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     modules: "td > div"
                 }
             };
-
             tabIndexTest("#portlet-reorderer-root", options);
         });    
 

@@ -2325,6 +2325,7 @@ fluid.registerNamespace("fluid.tests");
             // if this test fails, the browser will bomb with a stack overflow
             jqUnit.assertValue("Circular test delivered instantiator", circular.child1.options.instantiator);
             try {
+                delete circular.typeName; // necessary to defeat new framework's detection of components - update as necessary
                 fluid.expandOptions(circular, circular);
             } catch (e2) {
                 jqUnit.assertTrue("Framework exception caught in circular expansion", e2 instanceof fluid.FluidError);
@@ -3622,6 +3623,74 @@ fluid.registerNamespace("fluid.tests");
         var component = fluid.tests.dynamicInvoker();
         jqUnit.assertValue("Invoker is resolved correctly", component.method);
         component.method();
+    });
+    
+    /*** FLUID-5243 expansion aliasing test ***/
+    
+    fluid.defaults("fluid.tests.fluid5243Reorderer", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        layoutHandler: "fluid.tests.fluid5243ModuleLayout",
+        mergePolicy: {
+            "selectors.labelSource": "selectors.grabHandle",
+            "selectors.selectables": "selectors.movables",
+        },
+        containerRole: "{that}.layoutHandler.options.containerRole",
+        selectors: {
+            movables:    ".flc-reorderer-movable",
+            selectables: ".flc-reorderer-movable",
+            grabHandle: ""
+        },
+        components: {
+            layoutHandler: {
+                type: "{that}.options.layoutHandler",
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.fluid5243ModuleLayout", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        containerRole: "regions",
+        selectors: {
+            modules: "{fluid5243Reorderer}.options.selectors.modules",
+            columns: "{fluid5243Reorderer}.options.selectors.columns",  
+        },
+        invokers: {
+            makeComputeModules: {
+                funcName: "fluid.identity"
+            }  
+        },
+        distributeOptions: {
+            target: "{fluid5243Reorderer}.options",
+            record: {
+                selectors: {
+                    movables: {
+                        expander: {
+                            func: "{that}.makeComputeModules",
+                            args: [false],
+                        }
+                    },
+                    selectables: {
+                        expander: {
+                            func: "{that}.makeComputeModules",
+                            args: [true],
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-5243 re-entrant aliasing of path segments options corruption", function () {
+        var that = fluid.tests.fluid5243Reorderer({
+            selectors: {
+                grabHandle: ".title",
+                columns: ".flc-reorderer-column",
+                modules: ".flc-reorderer-module"
+            }
+        });
+        
+        jqUnit.assertEquals("Noncorruption of reentrant options references", ".title",
+            that.options.selectors.grabHandle);
     });
 
 })(jQuery);
