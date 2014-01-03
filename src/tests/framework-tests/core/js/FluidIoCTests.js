@@ -73,7 +73,7 @@ fluid.registerNamespace("fluid.tests");
     {
         message: "user modifies value to default",
         options: {
-            defaultSource: "sourceValue",
+            defaultSource: "sourceValue"
         },
         expected: {
             defaultSource: "sourceValue",
@@ -908,7 +908,7 @@ fluid.registerNamespace("fluid.tests");
             self: "{that}"
         },
         events: {
-            testEvent: null,
+            testEvent: null
         },
         listeners: {
             testEvent: [{
@@ -2014,7 +2014,7 @@ fluid.registerNamespace("fluid.tests");
             onCreate: fluid.tests.makeTimedChildListener("onCreate"),
             onAttach: fluid.tests.makeTimedChildListener("onAttach", true),
             onDestroy: fluid.tests.makeTimedChildListener("onDestroy", true),
-            onClear: fluid.tests.makeTimedChildListener("onClear", true),
+            onClear: fluid.tests.makeTimedChildListener("onClear", true)
         }
     });
 
@@ -2201,7 +2201,7 @@ fluid.registerNamespace("fluid.tests");
     fluid.defaults("fluid.tests.guidedChild", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         mergePolicy: {
-            parent: "nomerge",
+            parent: "nomerge"
         },
         finalInitFunction: "fluid.tests.guidedChildInit"
     });
@@ -2283,7 +2283,7 @@ fluid.registerNamespace("fluid.tests");
                 fluid.pushSoftFailure(-1);
             }
         });
-    };
+    }
 
     circularTest("fluid.tests.circularEvent", "event circularity test");
 
@@ -2661,7 +2661,7 @@ fluid.registerNamespace("fluid.tests");
         components: {
             templateLoader: {
                 type: "fluid.littleComponent"
-            },
+            }
         },
         distributeOptions: {
             source: "{that}.options.templateLoader",
@@ -2692,7 +2692,7 @@ fluid.registerNamespace("fluid.tests");
         components: {
             subComponent: {
                 type: "fluid.tests.subComponent1"
-            },
+            }
         },
         distributeOptions: {
             source: "{that}.options.subComponentMaterial",
@@ -3133,7 +3133,7 @@ fluid.registerNamespace("fluid.tests");
     defineFluid5033Grade(1);
 
     fluid.defaults("fluid.tests.fluid5033Root", {
-        gradeNames: ["fluid.tests.fluid5033Grade", "autoInit"],
+        gradeNames: ["fluid.tests.fluid5033Grade", "autoInit"]
     });
 
     jqUnit.test("FLUID-5033 - grade reloading updates cache", function () {
@@ -3223,7 +3223,7 @@ fluid.registerNamespace("fluid.tests");
         events: {
             addEvent: null,
             addEvent2: null,
-            addEvent3: null,
+            addEvent3: null
         },
         listeners: {
             addEvent: "fluid.tests.fluid5127listener({that}.one, {arguments}.0, {that})",
@@ -3416,7 +3416,7 @@ fluid.registerNamespace("fluid.tests");
                 options: {
                     gradeNames: ["{fluid.tests.fluid5094}.options.gradeName"]
                 }
-            },
+            }
         },
         passDownObject: "{nonExistedGrade}.options.fakeOption",
         distributeOptions: {
@@ -3632,7 +3632,7 @@ fluid.registerNamespace("fluid.tests");
         layoutHandler: "fluid.tests.fluid5243ModuleLayout",
         mergePolicy: {
             "selectors.labelSource": "selectors.grabHandle",
-            "selectors.selectables": "selectors.movables",
+            "selectors.selectables": "selectors.movables"
         },
         containerRole: "{that}.layoutHandler.options.containerRole",
         selectors: {
@@ -3642,7 +3642,7 @@ fluid.registerNamespace("fluid.tests");
         },
         components: {
             layoutHandler: {
-                type: "{that}.options.layoutHandler",
+                type: "{that}.options.layoutHandler"
             }
         }
     });
@@ -3652,7 +3652,7 @@ fluid.registerNamespace("fluid.tests");
         containerRole: "regions",
         selectors: {
             modules: "{fluid5243Reorderer}.options.selectors.modules",
-            columns: "{fluid5243Reorderer}.options.selectors.columns",  
+            columns: "{fluid5243Reorderer}.options.selectors.columns"
         },
         invokers: {
             makeComputeModules: {
@@ -3666,13 +3666,13 @@ fluid.registerNamespace("fluid.tests");
                     movables: {
                         expander: {
                             func: "{that}.makeComputeModules",
-                            args: [false],
+                            args: [false]
                         }
                     },
                     selectables: {
                         expander: {
                             func: "{that}.makeComputeModules",
-                            args: [true],
+                            args: [true]
                         }
                     }
                 }
