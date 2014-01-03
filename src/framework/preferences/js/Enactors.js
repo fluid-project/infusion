@@ -23,6 +23,18 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "fluid.prefs.modelRelay", "autoInit"]
     });
 
+    /********************************************************************************
+     * The grade that contains the connections between an enactor and uiEnhancer
+     ********************************************************************************/
+
+    fluid.defaults("fluid.prefs.uiEnhancerConnections", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        mergePolicy: {
+            sourceApplier: "nomerge"
+        },
+        sourceApplier: "{uiEnhancer}.applier"
+    });
+
     /**********************************************************************************
      * styleElements
      *

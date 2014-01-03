@@ -395,6 +395,43 @@ var fluid_1_5 = fluid_1_5 || {};
         return shadow && shadow.path !== "" ? null : returnedPath;
     };
     
+    fluid.defaults("fluid.gradeLinkageRecord", {
+        gradeNames: ["fluid.littleComponent"]
+    });
+    
+    /** A "tag component" to opt in to the grade linkage system (FLUID-5212) which is currently very expensive - 
+      * this will become the default once we have a better implementation and have stabilised requirements
+      */
+    fluid.defaults("fluid.applyGradeLinkage", { });
+    
+    fluid.gradeLinkageIndexer = function (defaults) {
+        if (defaults.contextGrades && defaults.resultGrades) {
+            return ["*"];
+        }
+    };
+    
+    fluid.getLinkedGrades = function (gradeNames) {
+        var togo = [];
+        var gradeLinkages = fluid.indexDefaults("gradeLinkages", {
+            gradeNames: "fluid.gradeLinkageRecord",
+            indexFunc: fluid.gradeLinkageIndexer
+        });
+        fluid.each(gradeLinkages["*"], function (defaultsName) {
+            var defaults = fluid.defaults(defaultsName);
+            var exclude = fluid.find(fluid.makeArray(defaults.contextGrades),
+                function (grade) {
+                    if (!fluid.contains(gradeNames, grade)) {
+                        return true;
+                    }
+                }
+            );
+            if (!exclude) {
+                togo.push.apply(togo, fluid.makeArray(defaults.resultGrades));
+            }
+        });
+        return togo;
+    };
+    
     fluid.expandDynamicGrades = function (that, dynamicGrades) {
         var resolved = [];
         fluid.each(dynamicGrades, function (dynamicGrade) {
@@ -428,6 +465,15 @@ var fluid_1_5 = fluid_1_5 || {};
         }, []);
         dynamicGrades.push.apply(dynamicGrades, furtherResolved);
         furtherResolved = fluid.expandDynamicGrades(that, furtherResolved);
+        var allGrades = fluid.makeArray(gradeNames).concat(furtherResolved);
+        if (fluid.contains(allGrades, "fluid.applyGradeLinkage")) {
+            var linkedGrades = fluid.getLinkedGrades(allGrades);
+            fluid.remove_if(linkedGrades, function (gradeName) {
+                return fluid.contains(allGrades, gradeName);
+            });
+            furtherResolved = furtherResolved.concat(linkedGrades);
+        }
+        
         resolved.push.apply(resolved, furtherResolved);
         return furtherResolved;
     };
@@ -584,8 +630,6 @@ var fluid_1_5 = fluid_1_5 || {};
         return togo.join("\n");
     };
 
-    var localRecordExpected = /arguments|options|container|source|sourcePath/;
-
     // unsupported, NON-API function
     fluid.resolveContext = function (context, that) {
         var instantiator = fluid.getInstantiator(that);
@@ -616,13 +660,15 @@ var fluid_1_5 = fluid_1_5 || {};
         return foundComponent;
     };
 
+    var localRecordExpected = /arguments|options|container|source|sourcePath|change/;
+
     // unsupported, NON-API function
     fluid.makeStackFetcher = function (parentThat, localRecord) {
         var fetcher = function (parsed) {
             var context = parsed.context;
             if (localRecord && localRecordExpected.test(context)) {
                 var fetched = fluid.get(localRecord[context], parsed.path);
-                return context === "arguments" || context === "source" || context === "sourcePath" ? fetched : {
+                return context === "arguments" || context === "source" || context === "sourcePath" || context === "change" ? fetched : {
                     marker: context === "options" ? fluid.EXPAND : fluid.EXPAND_NOW,
                     value: fetched
                 };
@@ -864,7 +910,7 @@ var fluid_1_5 = fluid_1_5 || {};
     // TODO: overall efficiency could huge be improved by resorting to the hated PROTOTYPALISM as an optimisation
     // for this mergePolicy which occurs in every component. Although it is a deep structure, the root keys are all we need
     var addPolicyBuiltins = function (policy) {
-        fluid.each(["gradeNames", "mergePolicy", "argumentMap", "components", "dynamicComponents", "members", "invokers", "events", "listeners", "distributeOptions", "transformOptions"], function (key) {
+        fluid.each(["gradeNames", "mergePolicy", "argumentMap", "components", "dynamicComponents", "members", "invokers", "events", "listeners", "modelListeners", "distributeOptions", "transformOptions"], function (key) {
             fluid.set(policy, [key, "*", "noexpand"], true);
         });
         return policy;
@@ -1369,17 +1415,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var demandspec = fluid.determineDemands(parentThat, funcNames);
         return fluid.embodyDemands(parentThat, demandspec, initArgs, options);
     };
-
-    // Convert a record which may harbour a "this/method" pair into an object which mocks the function.apply operation, pre-bound (for FLUID-4878)
+    
     // unsupported, non-API function
-    fluid.recordToApplicable = function (record, that) {
-        var recthis = record["this"];
-        if (record.method ^ recthis) {
-            fluid.fail("Record ", that, " must contain both entries \"method\" and \"this\" if it contains either");
-        }
-        if (!record.method) {
-            return null;
-        }
+    fluid.thisistToApplicable = function (record, recthis, that) {
         return {
             apply: function (noThis, args) {
                 // Resolve this material late, to deal with cases where the target has only just been brought into existence
@@ -1398,7 +1436,30 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 fluid.log("Applying arguments ", args, " to method " + record.method + " of instance ", resolvedThis);
                 return resolvedFunc.apply(resolvedThis, args);
             }
+        };      
+    };
+    
+    fluid.changeToApplicable = function (record, that) {
+        return {
+            apply: function (noThis, args) {
+                var parsed = fluid.resolveModelReference(that, record.changePath);
+                var value = fluid.expandOptions(record.value, that, {}, {arguments: args});
+                fluid.fireSourcedChange(parsed.that.applier, parsed.path, value, record.source); 
+            }
         };
+    };
+
+    // Convert "exotic records" into an applicable form ("this/method" for FLUID-4878 or "changePath" for FLUID-3674)
+    // unsupported, non-API function
+    fluid.recordToApplicable = function (record, that) {
+        if (record.changePath) {
+            return fluid.changeToApplicable(record, that);
+        }
+        var recthis = record["this"];
+        if (record.method ^ recthis) {
+            fluid.fail("Record ", that, " must contain both entries \"method\" and \"this\" if it contains either");
+        }
+        return record.method ? fluid.thisistToApplicable(record, recthis, that) : null;
     };
 
     // TODO: make a *slightly* more performant version of fluid.invoke that perhaps caches the demands
@@ -1438,6 +1499,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             for (var i = 0; i < invokeSpec.preExpand.length; ++ i) {
                 var value = invokeSpec.preExpand[i];
                 if (typeof(value) === "string") {
+                    if (value.indexOf("}.model") !== -1) {
+                        return {noFast: true}
+                    }
                     if (value === "{arguments}") {
                         argMap[i] = "*";
                     } else if (value.indexOf(argPrefix) === 0) {
@@ -1548,16 +1612,15 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         var togo = function () {
             fluid.pushActivity("dispatchListener", "firing to listener to event named %eventName of component %that",
                 {eventName: eventName, that: that});
-            if (typeof(listener) === "string") {
-                listener = fluid.event.resolveListener({globalName: listener}); // just resolves globals
-            }
+
             var args = indirectArgs? arguments[0] : fluid.makeArray(arguments);
             var demandspec = fluid.determineDemands(that, eventName); // TODO: This name may contain a namespace
             if (demandspec.args.length === 0 && eventSpec.args) {
                 demandspec.args = eventSpec.args;
             }
+            // TODO: create a "fast path" here as for invokers. Eliminate redundancy with invoker code
             var resolved = fluid.embodyDemands(that, demandspec, args, {passArgs: true});
-            var togo = listener.apply(null, resolved.args);
+            var togo = fluid.event.invokeListener(listener, resolved.args);
             fluid.popActivity();
             return togo;
         };
@@ -1575,7 +1638,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     };
 
     // unsupported, non-API function
-    fluid.event.resolveListenerRecord = function (lisrec, that, eventName, namespace) {
+    fluid.event.resolveListenerRecord = function (lisrec, that, eventName, namespace, standard) {
         var badRec = function (record, extra) {
             fluid.fail("Error in listener record - could not resolve reference ", record, " to a listener or firer. "
                     + "Did you miss out \"events.\" when referring to an event firer?" + extra);
@@ -1608,17 +1671,17 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             if (!listener) {
                 badRec(record, "");
             }
-            var firer;
+            var firer = false;
             if (listener.typeName === "fluid.event.firer") {
                 listener = listener.fire;
                 firer = true;
             }
-            expanded.listener = expanded.args || firer ? fluid.event.dispatchListener(that, listener, eventName, expanded) : listener;
+            expanded.listener = (standard && (expanded.args || firer)) ? fluid.event.dispatchListener(that, listener, eventName, expanded) : listener;
             return expanded;
         });
         var togo = {
             records: transRecs,
-            adderWrapper: fluid.event.makeTrackedListenerAdder(that)
+            adderWrapper: standard ? fluid.event.makeTrackedListenerAdder(that) : null
         };
         fluid.popActivity();
         return togo;
@@ -1797,12 +1860,21 @@ outer:  for (var i = 0; i < exist.length; ++i) {
          return rec;
     };
     
+    var singularPenRecord = {
+        listeners: "listener",
+        modelListeners: "modelListener"
+    };
+    
+    var singularRecord = $.extend({
+        invokers: "invoker"
+    }, singularPenRecord);
+    
     // unsupported, non-API function
     fluid.expandCompactRec = function (segs, target, source) {
         var pen = segs.length > 0 ? segs[segs.length - 1] : "";
-        var active = pen === "invokers" ? "invoker" : (pen === "listeners" ? "listener" : "");
-        if (!active && segs.length > 1 && segs[segs.length - 2] === "listeners") { // support array of listeners
-            active = "listener";
+        var active = singularRecord[pen];
+        if (!active && segs.length > 1) {
+            active = singularPenRecord[segs[segs.length - 2]]; // support array of listeners and modelListeners
         }
         fluid.each(source, function (value, key) {
             if (fluid.isPlainObject(value)) {

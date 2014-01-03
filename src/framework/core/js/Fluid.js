@@ -636,11 +636,11 @@ var fluid = fluid || fluid_1_5;
      * can be found
      */
     fluid.contains = function (obj, value) {
-        return obj ? fluid.find(obj, function (thisValue) {
+        return obj ? (fluid.isArrayable(obj) ? $.inArray(value, obj) !== -1 : fluid.find(obj, function (thisValue) {
             if (value === thisValue) {
                 return true;
             }
-        }) : undefined;
+        })) : undefined;
     };
     
     /**
@@ -1024,6 +1024,14 @@ var fluid = fluid || fluid_1_5;
         });
         return togo.sort(fluid.priorityComparator);
     };
+        
+    // unsupported, non-API function    
+    fluid.event.invokeListener = function (listener, args) {
+        if (typeof(listener) === "string") {
+            listener = fluid.event.resolveListener({globalName: listener}); // just resolves globals
+        }
+        return listener.apply(null, args);
+    };
     
     // unsupported, NON-API function
     fluid.event.resolveListener = function (listener) {
@@ -1207,15 +1215,15 @@ var fluid = fluid || fluid_1_5;
         return { records: records };
     };
     
+    fluid.expandOptions = function (material) {
+        fluid.fail("fluid.expandOptions could not be loaded - please include FluidIoC.js in order to operate IoC-driven event with descriptor " + material);      
+    };
+    
     // unsupported, NON-API function
     fluid.mergeListeners = function (that, events, listeners) {
         fluid.each(listeners, function (value, key) {
             var firer, namespace;
             if (key.charAt(0) === "{") {
-                if (!fluid.expandOptions) {
-                    fluid.fail("fluid.expandOptions could not be loaded - please include FluidIoC.js in order to operate IoC-driven event with descriptor " +
-                        key);
-                }
                 firer = fluid.expandOptions(key, that);
                 if (!firer) {
                     fluid.fail("Error in listener record: key " + key + " could not be looked up to an event firer - did you miss out \"events.\" when referring to an event firer?");
@@ -1232,7 +1240,7 @@ var fluid = fluid || fluid_1_5;
                 }
                 firer = events[key];
             }
-            var record = fluid.event.resolveListenerRecord(value, that, key, namespace);
+            var record = fluid.event.resolveListenerRecord(value, that, key, namespace, true);
             fluid.event.addListenerToFirer(firer, record.records, namespace, record.adderWrapper);
         });
     };
@@ -1260,19 +1268,23 @@ var fluid = fluid || fluid_1_5;
             that.events[eventKey] = fluid.eventFromRecord(eventSpec, eventKey, that);
         });
     };
-    
+
+    // unsupported, NON-API function    
     fluid.mergeListenerPolicy = function (target, source, key) {
         // cf. triage in mergeListeners
         var hasNamespace = key.charAt(0) !== "{" && key.indexOf(".") !== -1;
-        return hasNamespace ? (source || target) : fluid.makeArray(target).concat(fluid.makeArray(source));
+        return hasNamespace ? (source || target) : fluid.arrayConcatPolicy(target, source);
     };
-    
-    fluid.mergeListenersPolicy = function (target, source) {
-        target = target || {};
-        fluid.each(source, function (listeners, key) {
-            target[key] = fluid.mergeListenerPolicy(target[key], listeners, key);
-        });
-        return target;
+
+    // unsupported, NON-API function    
+    fluid.makeMergeListenersPolicy = function (merger) {
+        return function (target, source) {
+            target = target || {};
+            fluid.each(source, function (listeners, key) {
+                target[key] = merger(target[key], listeners, key);
+            });
+            return target;
+        };
     };
     
     /** Removes duplicated and empty elements from an already sorted array **/
@@ -1372,7 +1384,7 @@ var fluid = fluid || fluid_1_5;
             optionsChain: []
         };
         // stronger grades appear to the left in defaults - dynamic grades are stronger still - FLUID-5085
-        return resolveGradesImpl(gradeStruct, (gradeNames || []).concat([defaultName]), true);
+        return resolveGradesImpl(gradeStruct, (fluid.makeArray(gradeNames).reverse() || []).concat([defaultName]), true);
     };
         
     var mergedDefaultsCache = {};
@@ -1460,7 +1472,8 @@ var fluid = fluid || fluid_1_5;
             fluid.popActivity();
         }
     };
-    
+
+    // unsupported, NON-API function    
     fluid.doIndexDefaults = function (defaultName, defaults, index, indexSpec) {
         var requiredGrades = fluid.makeArray(indexSpec.gradeNames);
         for (var i = 0; i < requiredGrades.length; ++ i) {
@@ -1822,7 +1835,7 @@ var fluid = fluid || fluid_1_5;
         options.initter = function () {
             // This hack is necessary to ensure that the FINAL evaluation doesn't balk when discovering a trunk path which was already 
             // visited during self-driving via the expander. This bi-modality is sort of rubbish, but we currently don't have "room" 
-            // in the strategy API to express when full evaluation is required - and the "flooding API" is not standardised.
+            // in the strategy API to express when full evaluation is required - and the "flooding API" is not standardised. See FLUID-4930
             options.evaluateFully = true;
             fluid.fetchMergeChildren(options.target, 0, [], options.sources, options.mergePolicy, options);
         };
@@ -2009,7 +2022,7 @@ var fluid = fluid || fluid_1_5;
             onDestroy: null
         },
         mergePolicy: {
-            listeners: fluid.mergeListenersPolicy
+            listeners: fluid.makeMergeListenersPolicy(fluid.mergeListenerPolicy)
         }
     });
     
@@ -2027,8 +2040,17 @@ var fluid = fluid || fluid_1_5;
         },
         mergePolicy: {
             model: "preserve",
-            applier: "nomerge"
+            applier: "nomerge",
+            modelListeners: fluid.makeMergeListenersPolicy(fluid.arrayConcatPolicy)
         }
+    });
+    
+    fluid.defaults("fluid.modelRelayComponent", {
+        gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "autoInit"]
+    });
+    
+    fluid.defaults("fluid.standardComponent", {
+        gradeNames: ["fluid.modelRelayComponent", "autoInit"]
     });
     
     /** A special "marker object" which is recognised as one of the arguments to
@@ -2115,6 +2137,9 @@ var fluid = fluid || fluid_1_5;
         if (evented) {
             fluid.instantiateFirers(that, options);
             fluid.mergeListeners(that, that.events, options.listeners);
+            if (fluid.mergeModelListeners) {
+                fluid.mergeModelListeners(that, options.modelListeners);
+            }
         }
         if (!fluid.hasGrade(options, "autoInit")) {
             fluid.clearLifecycleFunctions(options);
@@ -2211,12 +2236,6 @@ var fluid = fluid || fluid_1_5;
                 fluid.invokeGlobalFunction(entryType, args);
         } else {
             togo = entry.apply(null, args);
-        }
-
-        // TODO: deprecate "returnedOptions" and incorporate into regular ginger world system
-        var returnedOptions = togo ? togo.returnedOptions : null;
-        if (returnedOptions && returnedOptions.listeners) {
-            fluid.mergeListeners(that, that.events, returnedOptions.listeners);
         }
         return togo;
     };

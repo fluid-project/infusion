@@ -62,7 +62,16 @@ var fluid_1_5 = fluid_1_5 || {};
      ***********************************************/
 
     fluid.defaults("fluid.prefs.panel", {
-        gradeNames: ["fluid.rendererComponent", "fluid.prefs.stringBundle", "fluid.prefs.modelRelay", "autoInit"]
+        gradeNames: ["fluid.rendererComponent", "fluid.prefs.stringBundle", "fluid.prefs.modelRelay", "autoInit"],
+        events: {
+            onDomBind: null
+        },
+        // Any listener that requires a DOM element, should be registered
+        // to the onDomBind listener. By default it is fired by onCreate, but
+        // when used as a subpanel, it will be triggered by the resetDomBinder invoker.
+        listeners: {
+            "onCreate.onDomBind": "{that}.events.onDomBind"
+        }
     });
 
     /***************************
@@ -70,16 +79,21 @@ var fluid_1_5 = fluid_1_5 || {};
      ***************************/
 
     fluid.defaults("fluid.prefs.subPanel", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel", "{that}.getDomBindGrade", "autoInit"],
         mergePolicy: {
             sourceApplier: "nomerge"
         },
         sourceApplier: "{compositePanel}.applier",
         listeners: {
-            "{compositePanel}.events.subPanelAfterRender": {
+            "{compositePanel}.events.afterRender": {
                 listener: "{that}.events.afterRender",
                 args: ["{that}"]
-            }
+            },
+            // Changing the firing of onDomBind from the onCreate.
+            // This is due to the fact that the rendering process, controlled by the
+            // composite panel, will set/replace the DOM elements.
+            "onCreate.onDomBind": null, // remove listener
+            "afterRender.onDomBind": "{that}.resetDomBinder"
         },
         rules: {
             expander: {
@@ -87,13 +101,57 @@ var fluid_1_5 = fluid_1_5 || {};
                 args: ["{that}.options.preferenceMap"]
             }
         },
+        model: {
+            expander: {
+                func: "fluid.prefs.subPanel.getInitialModel",
+                args: ["{compositePanel}.model", "{that}.options.preferenceMap"]
+            }
+        },
         invokers: {
-            refreshView: "{compositePanel}.refreshView"
+            refreshView: "{compositePanel}.refreshView",
+            // resetDomBinder must fire the onDomBind event
+            resetDomBinder: {
+                funcName: "fluid.prefs.subPanel.resetDomBinder",
+                args: ["{that}"]
+            },
+            getDomBindGrade: {
+                funcName: "fluid.prefs.subPanel.getDomBindGrade",
+                args: ["{prefsEditor}"]
+            }
         },
         strings: {},
         parentBundle: "{compositePanel}.messageResolver",
         renderOnInit: false
     });
+
+    fluid.defaults("fluid.prefs.subPanel.domBind", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        listeners: {
+            "onDomBind.domChange": {
+                listener: "{prefsEditor}.events.onSignificantDOMChange"
+            }
+        }
+    });
+
+    fluid.prefs.subPanel.getDomBindGrade = function (prefsEditor) {
+        var hasListener = fluid.get(prefsEditor, "options.events.onSignificantDOMChange") !== undefined;
+        if (hasListener) {
+            return "fluid.prefs.subPanel.domBind";
+        }
+    };
+
+    /*
+     * Since the composite panel manages the rendering of the subpanels
+     * the markup used by subpanels needs to be completely replaced.
+     * The subpanel's container is refereshed to point at the newly
+     * rendered markup, and the domBinder is re-initialized. Once
+     * this is all done, the onDomBind event is fired.
+     */
+    fluid.prefs.subPanel.resetDomBinder = function (that) {
+        that.container = $(that.container.selector);
+        fluid.initDomBinder(that, that.options.selectors);
+        that.events.onDomBind.fire(that);
+    };
 
     fluid.prefs.subPanel.safePrefKey = function (prefKey) {
         return prefKey.replace(/[.]/g, "_");
@@ -117,40 +175,67 @@ var fluid_1_5 = fluid_1_5 || {};
         return rules;
     };
 
+    fluid.prefs.subPanel.getInitialModel = function (parentModel, preferenceMap) {
+        var initialModel = {};
+        fluid.each(preferenceMap, function (prefObj, prefKey) {
+            $.each(prefObj, function (prefRule) {
+                if (prefRule.indexOf("model.") === 0) {
+                    fluid.set(initialModel, prefRule.slice(6), fluid.get(parentModel, fluid.prefs.subPanel.safePrefKey(prefKey)));
+                }
+            });
+        });
+        return initialModel;
+    };
+
     /**********************************
      * Base grade for composite panel *
      **********************************/
 
+    fluid.registerNamespace("fluid.prefs.compositePanel");
+
+    fluid.prefs.compositePanel.arrayMergePolicy = function (target, source) {
+        target = fluid.makeArray(target);
+        source = fluid.makeArray(source);
+        fluid.each(source, function (selector) {
+            if ($.inArray(selector, target) < 0) {
+                target.push(selector);
+            }
+        });
+        return target;
+    };
+
     fluid.defaults("fluid.prefs.compositePanel", {
-        gradeNames: ["fluid.prefs.panel", "autoInit", "{that}.getDistributeOptionsGrade"],
+        gradeNames: ["fluid.prefs.panel", "autoInit", "{that}.getDistributeOptionsGrade", "{that}.getSubPanelLifecycleBindings"],
         mergePolicy: {
-            subPanelOverrides: "noexpand"
+            subPanelOverrides: "noexpand",
+            selectorsToIgnore: fluid.prefs.compositePanel.arrayMergePolicy
         },
         selectors: {}, // requires selectors into the template which will act as the containers for the subpanels
         selectorsToIgnore: [], // should match the selectors that are used to identify the containers for the subpanels
         repeatingSelectors: [],
         events: {
-            initSubPanels: null,
-            subPanelAfterRender: null,
+            onRefreshView: null,
+            initSubPanels: null
         },
         listeners: {
             "onCreate.combineResources": "{that}.combineResources",
-            "onCreate.surfaceSubpanelRendererSelectors": "{that}.surfaceSubpanelRendererSelectors",
             "onCreate.appendTemplate": {
                 "this": "{that}.container",
                 "method": "append",
                 "args": ["{that}.options.resources.template.resourceText"]
             },
             "onCreate.initSubPanels": "{that}.events.initSubPanels",
-            "afterRender.initSubPanels": "{that}.events.initSubPanels",
-            "afterRender.subPanelRelay": {
-                listener: "{that}.events.subPanelAfterRender",
-                priority: "last"
-            }
+            "onCreate.hideInactive": "{that}.hideInactive",
+            "onCreate.surfaceSubpanelRendererSelectors": "{that}.surfaceSubpanelRendererSelectors",
+            "afterRender.hideInactive": "{that}.hideInactive"
         },
         invokers: {
             getDistributeOptionsGrade: {
                 funcName: "fluid.prefs.compositePanel.assembleDistributeOptions",
+                args: ["{that}.options.components"]
+            },
+            getSubPanelLifecycleBindings: {
+                funcName: "fluid.prefs.compositePanel.subPanelLifecycleBindings",
                 args: ["{that}.options.components"]
             },
             combineResources: {
@@ -159,7 +244,7 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             surfaceSubpanelRendererSelectors: {
                 funcName: "fluid.prefs.compositePanel.surfaceSubpanelRendererSelectors",
-                args: ["{that}.options.components", "{that}.options.selectors"]
+                args: ["{that}", "{that}.options.components", "{that}.options.selectors"]
             },
             produceSubPanelTrees: {
                 funcName: "fluid.prefs.compositePanel.produceSubPanelTrees",
@@ -172,6 +257,17 @@ var fluid_1_5 = fluid_1_5 || {};
             produceTree: {
                 funcName: "fluid.prefs.compositePanel.produceTree",
                 args: ["{that}"]
+            },
+            hideInactive: {
+                funcName: "fluid.prefs.compositePanel.hideInactive",
+                args: ["{that}"]
+            },
+            handleRenderOnPreference: {
+                funcName: "fluid.prefs.compositePanel.handleRenderOnPreference",
+                args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+            },
+            conditionalCreateEvent: {
+                funcName: "fluid.prefs.compositePanel.conditionalCreateEvent",
             }
         },
         subPanelOverrides: {
@@ -188,20 +284,44 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         components: {},
-        resources: {} // template is reserved for the compositePanel's template, the subpanel template should have same key as the selector for its container.
+        resources: {}, // template is reserved for the compositePanel's template, the subpanel template should have same key as the selector for its container.
     });
+
+    /*
+     * Attempts to prefetch a components options before it is instantiated.
+     * Only use in cases where the instatiated component cannot be used.
+     */
+    fluid.prefs.compositePanel.prefetchComponentOptions = function (type, options) {
+        var baseOptions = fluid.getGradedDefaults(type, fluid.get(options, "gradeNames"));
+        return fluid.merge(baseOptions.mergePolicy, baseOptions, options);
+    };
+    /*
+     * Should only be used when fluid.prefs.compositePanel.isActivatePanel cannot.
+     * While this implementation doesn't require an instantiated component, it may in
+     * the process miss some configuration provided by distribute options and demands.
+     */
+    fluid.prefs.compositePanel.isPanel = function (type, options) {
+        var opts = fluid.prefs.compositePanel.prefetchComponentOptions(type, options);
+        return fluid.hasGrade(opts, "fluid.prefs.panel");
+    };
+
+    fluid.prefs.compositePanel.isActivePanel = function (comp) {
+        return comp && fluid.hasGrade(comp.options, "fluid.prefs.panel");
+    };
 
     /*
      * Creates a grade containing the distributeOptions rules needed for the subcomponents
      */
     fluid.prefs.compositePanel.assembleDistributeOptions = function (components) {
-        var gradeName = "fluid.prefs.compositePanel.distributeOptions";
+        var gradeName = "fluid.prefs.compositePanel.distributeOptions_" + fluid.allocateGuid();
         var distributeRules = [];
-        $.each(components, function (componentName) {
-            distributeRules.push({
-                source: "{that}.options.subPanelOverrides",
-                target: "{that > " + componentName + "}.options"
-            });
+        $.each(components, function (componentName, componentOptions) {
+            if (fluid.prefs.compositePanel.isPanel(componentOptions.type, componentOptions.options)) {
+                distributeRules.push({
+                    source: "{that}.options.subPanelOverrides",
+                    target: "{that > " + componentName + "}.options"
+                });
+            }
         });
 
         fluid.defaults(gradeName, {
@@ -210,6 +330,111 @@ var fluid_1_5 = fluid_1_5 || {};
         });
 
         return gradeName;
+    };
+
+    fluid.prefs.compositePanel.conditionalCreateEvent = function (value, createEvent) {
+        if (value) {
+            createEvent();
+        }
+    };
+
+
+    fluid.prefs.compositePanel.handleRenderOnPreference = function (that, value, createEvent, componentNames) {
+        componentNames = fluid.makeArray(componentNames);
+        that.conditionalCreateEvent(value, createEvent);
+        fluid.each(componentNames, function (componentName) {
+            var comp = that[componentName];
+            if (!value && comp) {
+                comp.destroy();
+            }
+        });
+        that.refreshView();
+    };
+
+    fluid.prefs.compositePanel.creationEventName = function (pref) {
+        return "initOn_" + pref;
+    };
+
+    fluid.prefs.compositePanel.generateModelListeners = function (conditionals) {
+        return fluid.transform(conditionals, function (componentNames, pref) {
+            var eventName = fluid.prefs.compositePanel.creationEventName(pref);
+            return {
+                func: "{that}.handleRenderOnPreference",
+                args: ["{change}.value", "{that}.events." + eventName + ".fire", componentNames]
+            };
+        });
+    };
+
+    /*
+     * Creates a grade containing all of the lifecycle binding configuration needed for the subpanels.
+     * This includes the following:
+     * - adding events used to trigger the initialization of the subpanels
+     * - adding the createOnEvent configuration for the subpanels
+     * - binding handlers to model changed events
+     * - binding handlers to afterRender and onCreate
+     */
+    fluid.prefs.compositePanel.subPanelLifecycleBindings = function (components) {
+        var gradeName = "fluid.prefs.compositePanel.subPanelCreationTimingDistibution_" + fluid.allocateGuid();
+        var distributeOptions = [];
+        var subPanelCreationOpts = {
+            "default": "initSubPanels"
+        };
+        var conditionals = {};
+        var listeners = {};
+        var events = {};
+        $.each(components, function (componentName, componentOptions) {
+            if (fluid.prefs.compositePanel.isPanel(componentOptions.type, componentOptions.options)) {
+                var creationEventOpt = "default";
+                // would have had renderOnPreference directly sourced from the componentOptions
+                // however, the set of configuration specified there is restricted.
+                var renderOnPreference = fluid.get(componentOptions, "options.renderOnPreference");
+                if (renderOnPreference) {
+                    var pref = fluid.prefs.subPanel.safePrefKey(renderOnPreference);
+                    var afterRenderListener = "afterRender." + pref;
+                    var onCreateListener = "onCreate." + pref;
+                    creationEventOpt = fluid.prefs.compositePanel.creationEventName(pref);
+                    subPanelCreationOpts[creationEventOpt] = creationEventOpt;
+                    events[creationEventOpt] = null;
+                    conditionals[pref] = conditionals[pref] || [];
+                    conditionals[pref].push(componentName);
+                    listeners[onCreateListener] = {
+                        listener: "{that}.conditionalCreateEvent",
+                        args: ["{that}.model." + pref, "{that}.events." + creationEventOpt + ".fire"]
+                    };
+                }
+                distributeOptions.push({
+                    source: "{that}.options.subPanelCreationOpts." + creationEventOpt,
+                    target: "{that}.options.components." + componentName + ".createOnEvent"
+                });
+            }
+        });
+
+        fluid.defaults(gradeName, {
+            gradeNames: ["fluid.eventedComponent", "autoInit"],
+            events: events,
+            listeners: listeners,
+            modelListeners: fluid.prefs.compositePanel.generateModelListeners(conditionals),
+            subPanelCreationOpts: subPanelCreationOpts,
+            distributeOptions: distributeOptions
+        });
+        return gradeName;
+    };
+
+    /*
+     * Used to hide the containers of inactive sub panels.
+     * This is necessary as the composite panel's template is the one that has their containers and
+     * it would be undesirable to have them visible when their associated panel has not been created.
+     * Also, hiding them allows for the subpanel to initialize, as it requires their container to be present.
+     * The subpanels need to be initialized before rendering, for the produce function to source the rendering
+     * information from it.
+     */
+    fluid.prefs.compositePanel.hideInactive = function (that) {
+        fluid.each(that.options.components, function (componentOpts, componentName) {
+            var comp = that[componentName];
+            if(fluid.prefs.compositePanel.isPanel(componentOpts.type, componentOpts.options) && !fluid.prefs.compositePanel.isActivePanel(that[componentName])) {
+                that.locate(componentName).hide();
+            }
+        });
     };
 
     /*
@@ -254,26 +479,32 @@ var fluid_1_5 = fluid_1_5 || {};
     /*
      * Surfaces the rendering selectors from the subpanels to the compositePanel,
      * and scopes them to the subpanel's container.
+     * Since this is used by the cutpoint generator, which only gets run once, we need to
+     * surface all possible subpanel selectors, and not just the active ones.
      */
-    fluid.prefs.compositePanel.surfaceSubpanelRendererSelectors = function (components, selectors) {
+    fluid.prefs.compositePanel.surfaceSubpanelRendererSelectors = function (that, components, selectors) {
         fluid.each(components, function (compOpts, compName) {
-            var comp = fluid.defaults(compOpts.type);
-            fluid.each(comp.selectors, function (selector, selName) {
-                if (!comp.selectorsToIgnore || $.inArray(selName, comp.selectorsToIgnore) < 0) {
-                    fluid.set(selectors,  fluid.prefs.compositePanel.rebaseSelectorName(compName, selName), selectors[compName] + " " + selector);
-                }
-            });
+            if (fluid.prefs.compositePanel.isPanel(compOpts.type, compOpts.options)) {
+                var opts = fluid.prefs.compositePanel.prefetchComponentOptions(compOpts.type, compOpts.options);
+                fluid.each(opts.selectors, function (selector, selName) {
+                    if (!opts.selectorsToIgnore || $.inArray(selName, opts.selectorsToIgnore) < 0) {
+                        fluid.set(selectors,  fluid.prefs.compositePanel.rebaseSelectorName(compName, selName), selectors[compName] + " " + selector);
+                    }
+                });
+            }
         });
     };
 
     fluid.prefs.compositePanel.surfaceRepeatingSelectors = function (components) {
         var repeatingSelectors = [];
         fluid.each(components, function (compOpts, compName) {
-            var comp = fluid.defaults(compOpts.type);
-            var rebasedRepeatingSelectors = fluid.transform(comp.repeatingSelectors, function (selector) {
-                return fluid.prefs.compositePanel.rebaseSelectorName(compName, selector);
-            });
-            repeatingSelectors = repeatingSelectors.concat(rebasedRepeatingSelectors);
+            if (fluid.prefs.compositePanel.isPanel(compOpts.type, compOpts.options)) {
+                var opts = fluid.prefs.compositePanel.prefetchComponentOptions(compOpts.type, compOpts.options);
+                var rebasedRepeatingSelectors = fluid.transform(opts.repeatingSelectors, function (selector) {
+                    return fluid.prefs.compositePanel.rebaseSelectorName(compName, selector);
+                });
+                repeatingSelectors = repeatingSelectors.concat(rebasedRepeatingSelectors);
+            }
         });
         return repeatingSelectors;
     };
@@ -290,6 +521,11 @@ var fluid_1_5 = fluid_1_5 || {};
         return memberName + "_" + value;
     };
 
+    fluid.prefs.compositePanel.rebaseParentRelativeID = function (val, memberName) {
+        var slicePos = "..::".length; // ..:: refers to the parentRelativeID prefix used in the renderer
+        return val.slice(0, slicePos) + fluid.prefs.compositePanel.rebaseID(val.slice(slicePos), memberName);
+    };
+
     fluid.prefs.compositePanel.rebaseValueBinding = function (value, modelRelayRules) {
         return fluid.find(modelRelayRules, function (oldModelPath, newModelPath) {
             if (value === oldModelPath) {
@@ -300,16 +536,24 @@ var fluid_1_5 = fluid_1_5 || {};
         }) || value;
     };
 
-    fluid.prefs.compositePanel.rebaseTree = function (tree, memberName, modelRelayRules) {
+    fluid.prefs.compositePanel.rebaseTree = function (model, tree, memberName, modelRelayRules) {
         var rebased = fluid.transform(tree, function (val, key) {
             if (key === "children") {
                 return fluid.transform(val, function (v) {
-                    return fluid.prefs.compositePanel.rebaseTree(v, memberName, modelRelayRules);
+                    return fluid.prefs.compositePanel.rebaseTree(model, v, memberName, modelRelayRules);
                 });
+            } else if (key === "selection") {
+                return fluid.prefs.compositePanel.rebaseTree(model, val, memberName, modelRelayRules);
             } else if (key === "ID") {
                 return fluid.prefs.compositePanel.rebaseID(val, memberName);
+            } else if (key === "parentRelativeID") {
+                return fluid.prefs.compositePanel.rebaseParentRelativeID(val, memberName);
             } else if (key === "valuebinding") {
                 return fluid.prefs.compositePanel.rebaseValueBinding(val, modelRelayRules);
+            } else if (key === "value" && tree["valuebinding"]) {
+                var valuebinding = tree["valuebinding"];
+                var modelValue = fluid.get(model, fluid.prefs.compositePanel.rebaseValueBinding(valuebinding, modelRelayRules));
+                return modelValue !== undefined ? modelValue : val;
             } else {
                 return val;
             }
@@ -321,7 +565,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.prefs.compositePanel.produceTree = function (that) {
         var produceTreeOption = that.options.produceTree;
         var ownTree = produceTreeOption ?
-            (typeof(produceTreeOption) === "string" ? fluid.getGlobalValue(produceTreeOption) : produceTreeOption) (that) :
+            (typeof (produceTreeOption) === "string" ? fluid.getGlobalValue(produceTreeOption) : produceTreeOption)(that) :
             that.expandProtoTree();
         var subPanelTree = that.produceSubPanelTrees();
         var tree = {
@@ -340,12 +584,14 @@ var fluid_1_5 = fluid_1_5 || {};
         var tree = {children: []};
         fluid.each(that.options.components, function (options, componentName) {
             var subPanel = that[componentName];
-            var expanderOptions = fluid.renderer.modeliseOptions(subPanel.options.expanderOptions, {ELstyle: "${}"}, subPanel);
-            var expander = fluid.renderer.makeProtoExpander(expanderOptions, subPanel);
-            var subTree = subPanel.produceTree();
-            subTree = fluid.get(subPanel.options, "rendererFnOptions.noexpand") ? subTree : expander(subTree);
-            var rebasedTree = fluid.prefs.compositePanel.rebaseTree(subTree, componentName, that[componentName].options.rules);
-            tree.children = tree.children.concat(rebasedTree.children);
+            if (fluid.prefs.compositePanel.isActivePanel(subPanel)) {
+                var expanderOptions = fluid.renderer.modeliseOptions(subPanel.options.expanderOptions, {ELstyle: "${}"}, subPanel);
+                var expander = fluid.renderer.makeProtoExpander(expanderOptions, subPanel);
+                var subTree = subPanel.produceTree();
+                subTree = fluid.get(subPanel.options, "rendererFnOptions.noexpand") ? subTree : expander(subTree);
+                var rebasedTree = fluid.prefs.compositePanel.rebaseTree(that.model, subTree, componentName, subPanel.options.rules);
+                tree.children = tree.children.concat(rebasedTree.children);
+            }
         });
         return tree;
     };
@@ -367,24 +613,6 @@ var fluid_1_5 = fluid_1_5 || {};
         parentBundle: "{fluid.prefs.prefsEditorLoader}.msgBundle"
     });
 
-    /****************************************
-     * Preferences Editor Text Field Slider *
-     ****************************************/
-
-    fluid.defaults("fluid.prefs.textfieldSlider", {
-        gradeNames: ["fluid.textfieldSlider", "autoInit"],
-        model: "{fluid.prefs.panel}.model",
-        range: "{fluid.prefs.panel}.options.range",
-        listeners: {
-            modelChanged: {
-                listener: "{fluid.prefs.panel}.applier.requestChange",
-                args: ["{that}.options.path", "{arguments}.0"]
-            }
-        },
-        path: "value",
-        sliderOptions: "{fluid.prefs.panel}.options.sliderOptions"
-    });
-
     /********************************
      * Preferences Editor Text Size *
      ********************************/
@@ -396,7 +624,7 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.prefs.panel", "autoInit"],
         preferenceMap: {
             "fluid.prefs.textSize": {
-                "model.value": "default",
+                "model.textSize": "default",
                 "range.min": "minimum",
                 "range.max": "maximum"
             }
@@ -423,7 +651,18 @@ var fluid_1_5 = fluid_1_5 || {};
             textSize: {
                 decorators: {
                     type: "fluid",
-                    func: "fluid.prefs.textfieldSlider"
+                    func: "fluid.textfieldSlider",
+                    options: {
+                        rules: {
+                            "textSize": "value"
+                        },
+                        model: {
+                            value: "{that}.model.textSize"
+                        },
+                        sourceApplier: "{that}.applier",
+                        range: "{that}.options.range",
+                        sliderOptions: "{that}.options.sliderOptions"
+                    }
                 }
             }
         },
@@ -488,7 +727,7 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.prefs.panel", "autoInit"],
         preferenceMap: {
             "fluid.prefs.lineSpace": {
-                "model.value": "default",
+                "model.lineSpace": "default",
                 "range.min": "minimum",
                 "range.max": "maximum"
             }
@@ -515,7 +754,18 @@ var fluid_1_5 = fluid_1_5 || {};
             lineSpace: {
                 decorators: {
                     type: "fluid",
-                    func: "fluid.prefs.textfieldSlider"
+                    func: "fluid.textfieldSlider",
+                    options: {
+                        rules: {
+                            "lineSpace": "value"
+                        },
+                        model: {
+                            value: "{that}.model.lineSpace"
+                        },
+                        sourceApplier: "{that}.applier",
+                        range: "{that}.options.range",
+                        sliderOptions: "{that}.options.sliderOptions"
+                    }
                 }
             }
         },
