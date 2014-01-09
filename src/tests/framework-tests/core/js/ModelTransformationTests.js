@@ -725,19 +725,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         method: "assertDeepEq",
         expected: source.sheep
     }, {
-        message: "arrayValue() with a nested transformation",
+        message: "FLUID-5248: arrayValue() with a nested transformation",
         expandWrap: false,
         transform: {
             "b": {
                 "transform": {
                     "type": "fluid.transforms.arrayValue",
                     "value": {
-                        "value": { 
-                            "transform": {
-                                "type": "fluid.transforms.linearScale",
-                                "value": 5,
-                                "factor": 0.1
-                            }
+                        "transform": {
+                            "type": "fluid.transforms.linearScale",
+                            "value": 5,
+                            "factor": 0.1
                         }
                     }
                 }
@@ -745,11 +743,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         method: "assertDeepEq",
         expected: {
-            "b": [
-                {
-                    "value": 0.5
-                }
-            ]
+            "b": [0.5]
         }
     }];
 
