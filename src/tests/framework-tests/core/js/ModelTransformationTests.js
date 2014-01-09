@@ -724,6 +724,33 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         method: "assertDeepEq",
         expected: source.sheep
+    }, {
+        message: "arrayValue() with a nested transformation",
+        expandWrap: false,
+        transform: {
+            "b": {
+                "transform": {
+                    "type": "fluid.transforms.arrayValue",
+                    "value": {
+                        "value": { 
+                            "transform": {
+                                "type": "fluid.transforms.linearScale",
+                                "value": 5,
+                                "factor": 0.1
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        method: "assertDeepEq",
+        expected: {
+            "b": [
+                {
+                    "value": 0.5
+                }
+            ]
+        }
     }];
 
     jqUnit.test("fluid.transforms.arrayValue()", function () {
