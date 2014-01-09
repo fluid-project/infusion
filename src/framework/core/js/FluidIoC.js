@@ -433,7 +433,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return togo;
     };
     
-    fluid.expandDynamicGrades = function (that, dynamicGrades) {
+    fluid.expandDynamicGrades = function (that, gradeNames, dynamicGrades) {
         var resolved = [];
         fluid.each(dynamicGrades, function (dynamicGrade) {
             var expanded = fluid.expandOptions(dynamicGrade, that);
@@ -444,6 +444,15 @@ var fluid_1_5 = fluid_1_5 || {};
                 resolved = resolved.concat(expanded);
             }
         });
+        var allGrades = fluid.makeArray(gradeNames).concat(resolved);
+        if (fluid.contains(allGrades, "fluid.applyGradeLinkage")) {
+            var linkedGrades = fluid.getLinkedGrades(allGrades);
+            fluid.remove_if(linkedGrades, function (gradeName) {
+                return fluid.contains(allGrades, gradeName);
+            });
+            resolved = resolved.concat(linkedGrades);
+        }
+        
         return resolved;    
     };
     
@@ -465,15 +474,7 @@ var fluid_1_5 = fluid_1_5 || {};
             return gradeName.charAt(0) === "{" && !fluid.contains(dynamicGrades, gradeName);
         }, []);
         dynamicGrades.push.apply(dynamicGrades, furtherResolved);
-        furtherResolved = fluid.expandDynamicGrades(that, furtherResolved);
-        var allGrades = fluid.makeArray(gradeNames).concat(furtherResolved);
-        if (fluid.contains(allGrades, "fluid.applyGradeLinkage")) {
-            var linkedGrades = fluid.getLinkedGrades(allGrades);
-            fluid.remove_if(linkedGrades, function (gradeName) {
-                return fluid.contains(allGrades, gradeName);
-            });
-            furtherResolved = furtherResolved.concat(linkedGrades);
-        }
+        furtherResolved = fluid.expandDynamicGrades(that, gradeNames, furtherResolved);
         
         resolved.push.apply(resolved, furtherResolved);
         return furtherResolved;
@@ -489,7 +490,7 @@ var fluid_1_5 = fluid_1_5 || {};
         var dynamicGrades = fluid.remove_if(gradeNames, function (gradeName) {
             return gradeName.charAt(0) === "{" || !fluid.hasGrade(defaultsBlock.target, gradeName);
         }, []);
-        var resolved = fluid.expandDynamicGrades(that, dynamicGrades);
+        var resolved = fluid.expandDynamicGrades(that, gradeNames, dynamicGrades);
         if (resolved.length !== 0) {
             do { // repeatedly collect dynamic grades whilst they arrive (FLUID-5155)
                 var furtherResolved = fluid.collectDynamicGrades(that, shadow, defaultsBlock, gradeNames, dynamicGrades, resolved);
