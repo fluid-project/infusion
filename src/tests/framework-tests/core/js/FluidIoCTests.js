@@ -3648,7 +3648,7 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertTrue("Dynamic invoker is called", true);
     };
  
-    jqUnit.test("Test dynamic grade invoker contribution.", function () {
+    jqUnit.test("Test dynamic grade invoker contribution", function () {
         jqUnit.expect(2);
         var component = fluid.tests.dynamicInvoker();
         jqUnit.assertValue("Invoker is resolved correctly", component.method);
@@ -3712,7 +3712,7 @@ fluid.registerNamespace("fluid.tests");
         return true;
     };
 
-    jqUnit.test("Test dynamic grade linkage.", function () {
+    jqUnit.test("Test dynamic grade linkage", function () {
         jqUnit.expect(3);
         var component = fluid.tests.fluid5212root();
         fluid.each(["fluid.tests.contributedGrade1", "fluid.tests.contributedGrade2"], function (gradeName) {
@@ -3720,5 +3720,25 @@ fluid.registerNamespace("fluid.tests");
         });
         jqUnit.assertTrue("Subcomponent invoker is overriden correctly", component.subcomponent.handle());
     });
+    
+    /** FLUID-5246 - dynamic grade linkage without initial dynamic grades **/
+    
+    fluid.defaults("fluid.tests.staticGradeLinkageRecord", {
+        gradeNames: ["autoInit", "fluid.gradeLinkageRecord"],
+        contextGrades: ["fluid.tests.fluid5246Root"],
+        resultGrades: ["fluid.tests.fluid5246Result"]
+    });
+    
+    fluid.defaults("fluid.tests.fluid5246Root", {
+        gradeNames: ["autoInit", "fluid.littleComponent", "fluid.applyGradeLinkage"]
+    });
+    
+    fluid.defaults("fluid.tests.fluid5246Result", {
+        gradeNames: ["autoInit", "fluid.littleComponent"]
+    });
 
+    jqUnit.test("FLUID-5246 - static use of grade linkage", function () {
+        var that = fluid.tests.fluid5246Root();
+        jqUnit.assertTrue("Resolved statically linked grade is present", fluid.hasGrade(that.options, "fluid.tests.fluid5246Result")); 
+    });
 })(jQuery);
