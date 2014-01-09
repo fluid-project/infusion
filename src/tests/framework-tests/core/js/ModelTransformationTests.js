@@ -221,6 +221,38 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         model: {},
         method: "assertDeepEq"
+    }, {
+        message: "FLUID-5247: An array of transformers, where the new key has an escaped '.', should still output to the array entries",
+        transform: {
+            "labrador\\.retriever": [
+                {
+                    transform: {
+                        type: "fluid.transforms.linearScale",
+                        value: 3,
+                        factor: 2,
+                        offset: 5
+                    }
+                }, {
+                    "cat": {
+                        transform: {
+                            type: "fluid.transforms.literalValue",
+                            value: "I'm a cat"
+                        }
+                    }
+                }, {
+                    transform: {
+                        type: "fluid.transforms.literalValue",
+                        value: "And I'm a squirrel",
+                        outputPath: "squirrel"
+                    }
+                }
+            ]
+        },
+        expected: {
+            "labrador.retriever": [ 11, { cat: "I'm a cat"}, { "squirrel": "And I'm a squirrel"} ]
+        },
+        model: {},
+        method: "assertDeepEq"
     }];
 
     jqUnit.test("fluid.transforms.outputTests()", function () {
