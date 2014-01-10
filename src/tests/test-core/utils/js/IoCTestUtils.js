@@ -92,7 +92,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.test.makeExpander = function (that) {
         return function (toExpand) {
             return fluid.expandOptions(toExpand, that);
-        };  
+        };
     };
 
     fluid.test.makeFuncExpander = function (expander) {

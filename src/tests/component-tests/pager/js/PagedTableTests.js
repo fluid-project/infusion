@@ -147,10 +147,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.trackTooltip = function (disp, that, target, tooltip) {
         var targetId = target.id;
         if (disp === "open") {
-            console.log("Open tooltip " + targetId);
             that.tooltipMap[targetId] = tooltip;
         } else {
-            console.log("Close tooltip " + targetId);
             delete that.tooltipMap[targetId];
         }
     };

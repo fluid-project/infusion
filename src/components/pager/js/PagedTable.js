@@ -96,12 +96,23 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         return togo;
     };
+    
+    fluid.pagedTable.configureTooltip = function (pagedTable, renderedPageList) {
+        console.log(JSON.stringify(renderedPageList.rendererOptions.idMap));  
+    };
 
     fluid.defaults("fluid.pagedTable", {
         gradeNames: ["fluid.pager", "fluid.table", "autoInit"],
         components: {
             rangeAnnotator: {
                 type: "fluid.pagedTable.rangeAnnotator"
+            }
+        },
+        distributeOptions: {
+            target: "{that renderedPageList}.options.listeners.afterRender",
+            record: {
+                funcName: "fluid.pagedTable.configureTooltip",
+                args: ["{pagedTable}", "{arguments}.0"]  
             }
         },
         annotateSortedColumn: false,
