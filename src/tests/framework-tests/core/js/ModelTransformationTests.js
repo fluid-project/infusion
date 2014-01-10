@@ -44,6 +44,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         lots: 172,
         lt: "<",
         catsAreDecent: true,
+        catsAreEvil: false,
         floatyLowy: 12.3910,
         floatyHighy: 12.52,
         floaty2: -9876.789
@@ -519,7 +520,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     var conditionTests = [
         {
-            message: "simple condition",
+            message: "simple condition - true",
             expandWrap: true,
             transform: {
                 type: "fluid.transforms.condition",
@@ -529,6 +530,51 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             method: "assertEquals",
             expected: "it was true"
+        }, {
+            message: "simple condition - false",
+            expandWrap: true,
+            transform: {
+                type: "fluid.transforms.condition",
+                conditionPath: "catsAreEvil",
+                "true": "it was true",
+                "false": "it was false"
+            },
+            method: "assertEquals",
+            expected: "it was false"
+        }, {
+            message: "condition setting an object- true",
+            expandWrap: true,
+            transform: {
+                type: "fluid.transforms.condition",
+                conditionPath: "catsAreDecent",
+                "true": {
+                    "result": "it was true"
+                },
+                "false": {
+                    "result": "it was false"
+                }
+            },
+            method: "assertDeepEq",
+            expected: {
+                "result": "it was true"
+            }
+        }, {
+            message: "condition setting an object - false",
+            expandWrap: true,
+            transform: {
+                type: "fluid.transforms.condition",
+                conditionPath: "catsAreEvil",
+                "true": {
+                    "result": "it was true"
+                },
+                "false": {
+                    "result": "it was false"
+                }
+            },
+            method: "assertDeepEq",
+            expected: {
+                result: "it was false"
+            }
         }, {
             message: "truePath condition",
             expandWrap: true,
