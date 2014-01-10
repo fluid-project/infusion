@@ -464,10 +464,10 @@ var fluid = fluid || fluid_1_5;
     };
     
     // unsupported, NON-API function
-    fluid.model.transform.flatSchemaStrategy = function (flatSchema) {
+    fluid.model.transform.flatSchemaStrategy = function (flatSchema, getConfig) {
         var keys = fluid.model.sortByKeyLength(flatSchema);
         return function (root, segment, index, segs) {
-            var path = fluid.path.apply(null, segs.slice(0, index));
+            var path = getConfig.parser.compose.apply(null, segs.slice(0, index));
           // TODO: clearly this implementation could be much more efficient
             for (var i = 0; i < keys.length; ++i) {
                 var key = keys[i];
@@ -585,7 +585,7 @@ var fluid = fluid || fluid_1_5;
         // Modify schemaStrategy if we collected flat schema options for the setConfig of finalApplier
         if (transform.collectedFlatSchemaOpts !== undefined) {
             $.extend(transform.collectedFlatSchemaOpts, options.flatSchema);
-            schemaStrategy = fluid.model.transform.flatSchemaStrategy(transform.collectedFlatSchemaOpts);
+            schemaStrategy = fluid.model.transform.flatSchemaStrategy(transform.collectedFlatSchemaOpts, getConfig);
         }
         setConfig.strategies = [fluid.model.defaultFetchStrategy, schemaStrategy ? fluid.model.transform.schemaToCreatorStrategy(schemaStrategy)
                 : fluid.model.defaultCreatorStrategy];
