@@ -576,6 +576,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expected: {
                 conclusion: "Congratulations, you are a genius"
             }
+        }, {
+            message: "Explicit output in both cases",
+            expandWrap: true,
+            transform: {
+                type: "fluid.transforms.condition",
+                conditionPath: "catsAreDecent",
+                "true": {
+                    "Antranig": "cat"
+                },
+                "false": {
+                    "Kasper": "polar"
+                }
+            },
+            method: "assertDeepEq",
+            expected: {
+                "Antranig": "meow"
+            }
         }
     ];
 
