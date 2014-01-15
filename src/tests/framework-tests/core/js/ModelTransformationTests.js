@@ -577,7 +577,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 conclusion: "Congratulations, you are a genius"
             }
         }, {
-            message: "Explicit output in both cases",
+            message: "GPII-5251: Only one of the conditions should be executed",
             expandWrap: true,
             transform: {
                 type: "fluid.transforms.condition",
