@@ -593,6 +593,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expected: {
                 "Antranig": "meow"
             }
+        }, {
+            message: "GPII-5250: Only one of the conditions should be executed",
+            expandWrap: false,
+            transform: {
+                value: {
+                    transform: {
+                        type: "fluid.transforms.condition",
+                        conditionPath: "goat", //evaluates to false
+                        "true": {
+                            newA: "a",
+                            newB: "b",
+                            conditonUsed: "goat"
+                        },
+                        "false": {
+                            conditionUsed: "goat"
+                        }
+                    }
+                }
+            },
+            method: "assertDeepEq",
+            expected: { 
+                value: {
+                    conditionUsed: false
+                }
+            }
         }
     ];
 
