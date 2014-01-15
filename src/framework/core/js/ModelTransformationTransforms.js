@@ -66,9 +66,9 @@ var fluid = fluid || fluid_1_5;
         transform.collectedFlatSchemaOpts = transform.collectedFlatSchemaOpts || {};
         transform.collectedFlatSchemaOpts[transform.outputPrefix] = "array";
         transform.outputPrefixOp.push(0);
-        //allow both 'input' and 'value' as default/
+        //allow both 'input' and 'value' as input - as well as inputPath
         var value = transformSpec.input || transformSpec.value;
-        var value = fluid.model.transform.getValue(transformSpec.inputPath, input, transform);
+        value = fluid.model.transform.getValue(transformSpec.inputPath, value, transform);
         value = fluid.makeArray(value);
 
         transform.outputPrefixOp.pop();
