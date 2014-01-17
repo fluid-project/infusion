@@ -1611,7 +1611,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
 
     // unsupported, non-API function
     fluid.event.dispatchListener = function (that, listener, eventName, eventSpec, indirectArgs) {
-        return function () {
+        var togo = function () {
             fluid.pushActivity("dispatchListener", "firing to listener to event named %eventName of component %that",
                 {eventName: eventName, that: that});
 
@@ -1626,6 +1626,8 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             fluid.popActivity();
             return togo;
         };
+        fluid.event.impersonateListener(listener, togo);
+        return togo;
     };
 
     // unsupported, non-API function
@@ -1648,7 +1650,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             {eventName: eventName, that: that});
         var records = fluid.makeArray(lisrec);
         var transRecs = fluid.transform(records, function (record) {
-            var expanded = fluid.isPrimitive(record) || record.expander ? {listener: record} : record;
+            // TODO: FLUID-5242 fix - we copy here since distributeOptions does not copy options blocks that it distributes and we can hence corrupt them.
+            // need to clarify policy on options sharing - for slightly better efficiency, copy should happen during distribution and not here
+            var expanded = fluid.isPrimitive(record) || record.expander ? {listener: record} : fluid.copy(record);
             var methodist = fluid.recordToApplicable(record, that);
             if (methodist) {
                 expanded.listener = methodist;

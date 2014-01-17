@@ -3741,4 +3741,47 @@ fluid.registerNamespace("fluid.tests");
         var that = fluid.tests.fluid5246Root();
         jqUnit.assertTrue("Resolved statically linked grade is present", fluid.hasGrade(that.options, "fluid.tests.fluid5246Result"));
     });
+    
+    /** FLUID-5254 - failure of impersonateListener in dispatchListener **/
+    
+    fluid.tests.fluid5254Listener = function (that) {
+        that.invocations++;
+    };
+    
+    fluid.defaults("fluid.tests.fluid5254Root", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            rootEvent: null,
+            creationEvent: null
+        },
+        components: {
+            child: {
+                createOnEvent: "creationEvent", 
+                type: "fluid.eventedComponent",
+                options: {
+                    events: {
+                        childEvent: "{fluid5254Root}.events.rootEvent"
+                    },
+                    members: {
+                        invocations: 0
+                    }
+                }
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-5254 - failure to impersonate raw listener in injected event", function () {
+        var that = fluid.tests.fluid5254Root();
+        that.events.creationEvent.fire();
+        var listener = function () {
+            fluid.tests.fluid5254Listener(that.child)
+        };
+        that.child.events.childEvent.addListener(listener);
+        that.events.rootEvent.fire();
+        jqUnit.assertEquals("Exactly one invocation for raw listener to injected event", 1, that.child.invocations);
+        that.child.events.childEvent.removeListener(listener);
+        that.events.rootEvent.fire();
+        jqUnit.assertEquals("Exactly one invocation for raw listener to injected event", 1, that.child.invocations);
+    });
+    
 })(jQuery);
