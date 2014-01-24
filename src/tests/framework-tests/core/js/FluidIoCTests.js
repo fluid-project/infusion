@@ -3861,4 +3861,37 @@ fluid.registerNamespace("fluid.tests");
         var that = fluid.tests.fluid5246Root();
         jqUnit.assertTrue("Resolved statically linked grade is present", fluid.hasGrade(that.options, "fluid.tests.fluid5246Result"));
     });
+    
+    /** FLUID-5245 - distributeOptions based on grades which are themselves dynamic **/
+    
+    fluid.makeComponents({
+        "fluid.tests.pageList":               "fluid.littleComponent",
+        "fluid.tests.renderedPageList":       "fluid.littleComponent"
+    });
+    
+    fluid.defaults("fluid.tests.fluid5245Root", {
+        gradeNames: ["autoInit", "fluid.littleComponent"],
+        distributeOptions: [{
+            source: "{that}.options.pageList",
+            removeSource: true,
+            target: "{that fluid.tests.pageList}"
+        }, {
+            target: "{that fluid.tests.renderedPageList}.options.dynamicToDynamic",
+            record: 0 // test distribution of falsy values at the same time
+        }],
+        components: {
+            pageList: {
+                type: "fluid.tests.pageList"  
+            }  
+        },
+        pageList: {
+            type: "fluid.tests.renderedPageList"
+        }
+    });
+    
+    jqUnit.test("FLUID-5245 - distributeOptions based on grades which were themselves distributed", function () {
+        var that = fluid.tests.fluid5245Root();
+        jqUnit.assertEquals("Successfully distributed option", 0, that.pageList.options.dynamicToDynamic);  
+    });
+    
 })(jQuery);
