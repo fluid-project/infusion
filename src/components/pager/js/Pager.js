@@ -580,10 +580,6 @@ var fluid_1_5 = fluid_1_5 || {};
         
         strings: {
             last: " (last)"
-        },
-        
-        markup: {
-            rangeAnnotation: "<b> %first </b><br/>&mdash;<br/><b> %last </b>"
         }
     });
     

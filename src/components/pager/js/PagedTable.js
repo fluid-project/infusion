@@ -26,16 +26,13 @@ var fluid_1_5 = fluid_1_5 || {};
     // cf. ancient SVN-era version in bitbucket at https://bitbucket.org/fluid/infusion/src/adf319d9b279/branches/FLUID-2881/src/webapp/components/pager/js/PagedTable.js
 
     fluid.defaults("fluid.pagedTable.rangeAnnotator", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
-        listeners: {
-            "{pagedTable}.events.onRenderPageLinks": {
-                funcName: "fluid.pagedTable.rangeAnnotator.onRenderPageLinks",
-                args: ["{pagedTable}", "{arguments}.0", "{arguments}.1"]
-            }
-        }
+        gradeNames: ["fluid.eventedComponent", "autoInit"]
     });
 
-    fluid.pagedTable.rangeAnnotator.onRenderPageLinks = function (that, tree, newModel) {
+    // TODO: Get rid of this old-style kind of architecture - we should just react to model changes directly and not inject this
+    // peculiar event up and down the place. Probably best to have new renderer first.
+    fluid.pagedTable.rangeAnnotator.onRenderPageLinks = function (that, tree, newModel, pagerBar) {
+        console.log("onRenderPageLinks: pagerBar " + pagerBar.id);
         var roots = {};
         var column = that.options.annotateColumnRange || (that.options.annotateSortedColumn ? newModel.sortKey : null);
         if (!column) {
@@ -51,39 +48,24 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         var tModel = {};
         fluid.model.copyModel(tModel, newModel);
+        var tooltipInfo = {};
 
-        fluid.transform(tree, function (cell) {
-            if (cell.ID === "page-link:link") {
+        fluid.each(tree, function (cell) {
+            if (cell.ID === "page-link:link" && !cell.current) {
                 var page = cell.pageIndex;
                 var start = page * tModel.pageSize;
                 tModel.pageIndex = page;
                 var limit = fluid.pager.computePageLimit(tModel);
                 var iValue = fetchValue(start);
                 var lValue = fetchValue(limit - 1);
-
-                var tooltipOpts = fluid.copy(that.options.tooltip.options) || {};
-
-                if (!tooltipOpts.content) {
-                    tooltipOpts.content = function () {
-                        return fluid.stringTemplate(that.options.markup.rangeAnnotation, {
-                            first: iValue,
-                            last: lValue
-                        });
-                    };
-                }
-
-                if (!cell.current) {
-                    var decorators = [
-                        {
-                            type: "fluid",
-                            func: that.options.tooltip.type,
-                            options: tooltipOpts
-                        }
-                    ];
-                    cell.decorators = cell.decorators.concat(decorators);
-                }
+                
+                tooltipInfo[page] = {
+                    first: iValue,
+                    last: lValue
+                };
             }
         });
+        pagerBar.tooltipInfo = tooltipInfo;
     };
 
 
@@ -97,29 +79,47 @@ var fluid_1_5 = fluid_1_5 || {};
         return togo;
     };
     
-    fluid.pagedTable.configureTooltip = function (pagedTable, renderedPageList) {
-        console.log(JSON.stringify(renderedPageList.rendererOptions.idMap));  
+    fluid.pagedTable.configureTooltip = function (pagedTable, pagerBar, renderedPageList) {
+        var idMap = renderedPageList.rendererOptions.idMap;
+        var idToContent = {};
+        fluid.each(pagerBar.tooltipInfo, function (value, index) {
+            idToContent[idMap["pageLink:"+index]] = fluid.stringTemplate(pagedTable.options.markup.rangeAnnotation, value);
+        });
+        pagerBar.tooltip.applier.requestChange("idToContent", idToContent);
+        console.log("afterRender: pagerBar " + pagerBar.id + ": " + JSON.stringify(idToContent));  
     };
 
     fluid.defaults("fluid.pagedTable", {
         gradeNames: ["fluid.pager", "fluid.table", "autoInit"],
-        components: {
-            rangeAnnotator: {
-                type: "fluid.pagedTable.rangeAnnotator"
-            }
-        },
-        distributeOptions: {
+        distributeOptions: [{
             target: "{that renderedPageList}.options.listeners.afterRender",
             record: {
                 funcName: "fluid.pagedTable.configureTooltip",
-                args: ["{pagedTable}", "{arguments}.0"]  
+                args: ["{pagedTable}", "{pagerBar}", "{arguments}.0"]
+                // NB! Use of "pagerBar" depends on FLUID-5258 - we will need a new annotation when this is fixed
             }
-        },
+        }, {
+            target: "{that renderedPageList}.options.listeners.onRenderPageLinks",
+            record: {
+                funcName: "fluid.pagedTable.rangeAnnotator.onRenderPageLinks",
+                args: ["{pagedTable}", "{arguments}.0", "{arguments}.1", "{pagerBar}"] // FLUID-5258 as above
+            }
+        }, {
+            target: "{that pagerBar}.options.components.tooltip",
+            source: "{that}.options.tooltip"
+        }],
         annotateSortedColumn: false,
         annotateColumnRange: undefined, // specify a "key" from the columnDefs
+        
+        markup: {
+            rangeAnnotation: "<b> %first </b><br/>&mdash;<br/><b> %last </b>"
+        },
 
         tooltip: {
-            type: "fluid.tooltip"
+            type: "fluid.tooltip",
+            container: "{that}.container",
+            options: {
+            }
         },
         invokers: {
             acquireDefaultRange: {

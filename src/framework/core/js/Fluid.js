@@ -583,9 +583,9 @@ var fluid = fluid || fluid_1_5;
         return togo;
     };
     
-    /** Extracts a particular member from each member of a container, returning a new container of the same type
+    /** Extracts a particular member from each top-level member of a container, returning a new container of the same type
      * @param holder {Array|Object} The container to be filtered
-     * @param name {String|Array of String} An EL path to be fetched from each member
+     * @param name {String|Array of String} An EL path to be fetched from each top-level member
      */
     
     fluid.getMembers = function (holder, name) {

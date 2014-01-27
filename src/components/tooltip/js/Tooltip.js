@@ -21,25 +21,25 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.registerNamespace("fluid.tooltip");
     
     fluid.tooltip.computeContentFunc = function (that) {
-        that.contentFunc = that.options.contentFunc ? that.options.contentFunc : that.modelToContentFunc;
+        that.contentFunc = that.options.contentFunc ? that.options.contentFunc : that.modelToContentFunc();
     };
     
-    fluid.tooltip.updateContent = function (that, content) {
+    fluid.tooltip.updateContentImpl = function (that) {
         that.computeContentFunc();
         if (that.initialised) {
             that.container.tooltip("option", "content", that.contentFunc);
+        }      
+    }
+    
+    fluid.tooltip.updateContent = function (that, content) {
+        if (that.model.content !== content) { // TODO: Remove with FLUID-3674 branch
+            that.applier.requestChange("content", content);
         }
-        // FLUID-4780:
-        // The following line is a workaround for an issue we found in the VideoPlayer (FLUID-4743).
-        // jQuery UI has a fix for it: http://bugs.jqueryui.com/ticket/8544
-        // When we upgrade jQuery UI, we should clean out this workaround
-        // Update: Although the jQuery UI update is now complete, we are leaving this comment material here
-        // until we can verify this fix with the VideoPlayer implementation.
-        //that.container.data("ui-tooltip").tooltip.html(content);
     };
     
     fluid.tooltip.idSearchFunc = function (idToContentFunc) {
-        return function (target) {
+        return function (callback) {
+            var target = this;
             var idToContent = idToContentFunc();
             var ancestor = fluid.findAncestor(target, function (element) {
                 return idToContent[element.id];
@@ -55,14 +55,26 @@ var fluid_1_5 = fluid_1_5 || {};
                 return that.model.idToContent;
             });
         } else if (model.content) {
-            return model.content;
+            return function () {
+                return model.content;
+            }
         } 
+    };
+    
+    // Because of strange dispatching within tooltip widget's "_open" method 
+    // ->   this._trigger( "open", event, { tooltip: tooltip };
+    // the target of the outer event will incorrect
+    fluid.tooltip.resolveTarget = function (event) {
+        while (event.originalEvent && event.originalEvent.target) {
+            event = event.originalEvent;
+        }
+        return event.target;
     };
     
     fluid.tooltip.makeOpenHandler = function (that) {
         return function (event, tooltip) {
            if (that.initialised) {
-               that.events.afterOpen.fire(that, event.target, tooltip.tooltip, event);
+               that.events.afterOpen.fire(that, fluid.tooltip.resolveTarget(event), tooltip.tooltip, event);
            }
         };
     };
@@ -70,30 +82,21 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.tooltip.makeCloseHandler = function (that) {
         return function (event, tooltip) {
             if (that.initialised) { // underlying jQuery UI component will fire various spurious close events after it has been destroyed
-                that.events.afterClose.fire(that, event.target, tooltip.tooltip, event);
+                that.events.afterClose.fire(that, fluid.tooltip.resolveTarget(event), tooltip.tooltip, event);
             }
         };
     };
 
     fluid.tooltip.setup = function (that) {
-        that.updateContent();
-        that.container.tooltip({
+        fluid.tooltip.updateContentImpl(that);
+        var directOptions = {
             content: that.contentFunc,
-            position: that.options.position,
-            items: that.options.items,
-            tooltipClass: that.options.styles.tooltip,
             open: fluid.tooltip.makeOpenHandler(that),
-            close: fluid.tooltip.makeCloseHandler(that),
-            hide: {
-                duration: that.options.delay
-            },
-            show: {
-                duration: that.options.delay
-            }
-        });
+            close: fluid.tooltip.makeCloseHandler(that)
+        };
+        var fullOptions = $.extend(true, directOptions, that.options.widgetOptions);
+        that.container.tooltip(fullOptions);
         that.initialised = true;
-        that.elm = that.container.tooltip("widget");
-        //that.elm.addClass(that.options.styles.tooltip);
     };
     
     
@@ -110,6 +113,19 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.defaults("fluid.tooltip", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
+        widgetOptions: {
+            tooltipClass: "{that}.options.styles.tooltip",
+            position: "{that}.options.position",
+            items: "{that}.options.items",
+            show: {
+                duration: "{that}.options.duration",
+                delay: "{that}.options.delay"
+            },
+            hide: {
+                duration: "{that}.options.duration",
+                delay: "{that}.options.delay"
+            }
+        },
         invokers: {
           /**
            * Manually displays the tooltip
@@ -134,7 +150,7 @@ var fluid_1_5 = fluid_1_5 || {};
            */
             updateContent: {
                 funcName: "fluid.tooltip.updateContent",
-                args: ["{that}"]
+                args: ["{that}", "{arguments}.0"]
             },
             computeContentFunc: {
                 funcName: "fluid.tooltip.computeContentFunc",
@@ -163,7 +179,10 @@ var fluid_1_5 = fluid_1_5 || {};
             onDestroy: "fluid.tooltip.doDestroy"
         },
         modelListeners: {
-            "": "{that}.updateContent" // TODO: better scheme when FLUID-3674 is merged
+            "": {
+                funcName: "fluid.tooltip.updateContentImpl", // TODO: better scheme when FLUID-3674 is merged
+                args: "{that}"
+            }
         },
         position: {
             my: "left top",

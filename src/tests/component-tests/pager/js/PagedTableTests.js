@@ -569,10 +569,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         //total queue size allowed is current_page + 2 * (j + m) + self + 2 skipped_pages                        
         var totalPages = 2 * (j + m) + 3;
         var allPagesAfterClickedEachFn = function (index, element) {
-                if (!$(element).hasClass("flc-pager-pageLink-skip")) {
-                    jqUnit.assertTrue("On [page " + i + "] and checking [" + $(element).find('a').attr('id') + "]", shouldExistInList(i, element));
-                }
-            };
+            if (!$(element).hasClass("flc-pager-pageLink-skip")) {
+                jqUnit.assertTrue("On [page " + i + "] and checking [" + $(element).find('a').attr('id') + "]", shouldExistInList(i, element));
+            }
+        };
         
         var i = 1;
 

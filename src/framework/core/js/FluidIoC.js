@@ -755,11 +755,6 @@ var fluid_1_5 = fluid_1_5 || {};
         delete shadow.listeners;
     };
 
-    // utility used only in one place, duplicating a little logic with instantiator.getThatStack
-    fluid.getParentComponent = function (that) {
-        var instantiator = fluid.getInstantiator(that);
-    };
-
     // unsupported, non-API function
     fluid.recordListener = function (event, listener, shadow) {
         var listeners = shadow.listeners;

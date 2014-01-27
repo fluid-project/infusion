@@ -38,9 +38,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 items: "*"
             };
             var tt = fluid.tooltip(".testTooltip", testOptions);
+            tt.open();
             var uiTTOptions = $(".testTooltip").tooltip("option");
             
-            jqUnit.assertEquals("The \"content\" option is set correctly", testOptions.content, uiTTOptions.content);
+            var ttELM = $("[id^=ui-tooltip]");
+            
+            jqUnit.assertEquals("The \"content\" option is set correctly", testOptions.content(), ttELM.text());
             jqUnit.assertEquals("The \"items\" option is set correctly", testOptions.items, uiTTOptions.items);
             jqUnit.assertLeftHand("The \"position\" option is set correctly", testOptions.position, uiTTOptions.position);
             tt.destroy();
@@ -78,6 +81,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var tt = fluid.tooltip(".testTooltip", {
                 content: "Tooltip Content",
                 delay: 0,
+                duration: 0,
                 listeners: {
                     afterOpen: function () {
                         jqUnit.assertTrue("The tooltip should be visible", $("[id^=ui-tooltip]").is(":visible"));
