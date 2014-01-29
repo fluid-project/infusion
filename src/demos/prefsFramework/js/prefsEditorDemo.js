@@ -22,16 +22,66 @@ var demo = demo || {};
 
     // add extra prefs to the starter primary schemas
     demo.prefsEditor.primarySchema = {
+        "demo.prefs.simplify": {
+            "type": "boolean",
+            "default": false
+        }
     };
 
     // Fine-tune the starter aux schema and add extra panels
     demo.prefsEditor.auxSchema = {
+        // adjust paths
         templatePrefix: "../../framework/preferences/html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
         messagePrefix: "../../framework/preferences/messages/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
         tableOfContents: {
             enactor: {
                 tocTemplate: "../../components/tableOfContents/html/TableOfContents.html"
             }
-        }
+        },
+
+        // sepcify augmented container template for panels
+        template: "html/SeparatedPanelPrefsEditor.html",
+
+        // add panels and enactors for extra settings
+        simplify: {
+            type: "demo.prefs.simplify",
+            enactor: {
+                "type": "demo.prefsEditor.simplifyEnactor"
+            },
+            panel: {
+                "type": "demo.prefsEditor.simplifyPanel",
+                "container": ".demo-prefsEditor-simplify",
+                "template": "html/SimplifyPanelTemplate.html",
+                "message": "messages/simplify.json"
+            }
+        },
     };
+
+    fluid.defaults("demo.prefsEditor.simplifyPanel", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        preferenceMap: {
+            "demo.prefs.simplify": {
+                "model.simplify": "default"
+            }
+        },
+        selectors: {
+            simplify: ".demo-prefsEditor-simplify",
+            label: ".demo-prefsEditor-simplify-label",
+            choiceLabel: ".demo-prefsEditor-simplify-choice-label"
+        },
+        protoTree: {
+            label: {messagekey: "simplifyLabel"},
+            choiceLabel: {messagekey: "simplifyChoiceLabel"},
+            simplify: "${simplify}"
+        }
+    });
+
+    fluid.defaults("demo.prefsEditor.simplifyEnactor", {
+        gradeNames: ["fluid.prefs.enactor", "autoInit"],
+        preferenceMap: {
+            "demo.prefs.simplify": {
+                "model.value": "default"
+            }
+        }
+    });
 })(jQuery, fluid);
