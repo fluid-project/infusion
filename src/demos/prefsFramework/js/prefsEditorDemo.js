@@ -25,6 +25,10 @@ var demo = demo || {};
         "demo.prefs.simplify": {
             "type": "boolean",
             "default": false
+        },
+        "demo.prefs.speak": {
+            "type": "boolean",
+            "default": false
         }
     };
 
@@ -56,8 +60,24 @@ var demo = demo || {};
                 message: "messages/simplify.json"
             }
         },
+        speak: {
+            type: "demo.prefs.speak",
+            enactor: {
+                type: "demo.prefsEditor.speakEnactor",
+                container: "body"
+            },
+            panel: {
+                type: "demo.prefsEditor.speakPanel",
+                container: ".demo-prefsEditor-speak",
+                template: "html/SpeakPanelTemplate.html",
+                message: "messages/speak.json"
+            }
+        }
     };
 
+    /**********************************************************************************
+     * simplifyPanel
+     **********************************************************************************/
     fluid.defaults("demo.prefsEditor.simplifyPanel", {
         gradeNames: ["fluid.prefs.panel", "autoInit"],
         preferenceMap: {
@@ -74,6 +94,28 @@ var demo = demo || {};
             label: {messagekey: "simplifyLabel"},
             choiceLabel: {messagekey: "simplifyChoiceLabel"},
             simplify: "${simplify}"
+        }
+    });
+
+    /**********************************************************************************
+     * speakPanel
+     **********************************************************************************/
+    fluid.defaults("demo.prefsEditor.speakPanel", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        preferenceMap: {
+            "demo.prefs.speak": {
+                "model.speak": "default"
+            }
+        },
+        selectors: {
+            speak: ".demo-prefsEditor-speak",
+            label: ".demo-prefsEditor-speak-label",
+            choiceLabel: ".demo-prefsEditor-speak-choice-label"
+        },
+        protoTree: {
+            label: {messagekey: "speakLabel"},
+            choiceLabel: {messagekey: "speakChoiceLabel"},
+            speak: "${speak}"
         }
     });
 
@@ -152,5 +194,17 @@ var demo = demo || {};
             that.set(newModel.simplify);
         });
     };
+
+    /**********************************************************************************
+     * speakEnactor
+     **********************************************************************************/
+    fluid.defaults("demo.prefsEditor.speakEnactor", {
+        gradeNames: ["fluid.prefs.enactor", "autoInit"],
+        preferenceMap: {
+            "demo.prefs.speak": {
+                "model.speak": "default"
+            }
+        }
+    });
 
 })(jQuery, fluid);
