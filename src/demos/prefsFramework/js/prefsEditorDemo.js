@@ -18,17 +18,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var demo = demo || {};
 
 (function ($, fluid) {
+    fluid.registerNamespace("demo.prefsEditor");
 
-    fluid.defaults("demo.prefsEditor.auxSchema", {
-        gradeNames: ["fluid.prefs.auxSchema.starter"],
-        auxiliarySchema: {
-            templatePrefix: "../../framework/preferences/html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
-            messagePrefix: "../../framework/preferences/messages/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
-            tableOfContents: {
-                enactor: {
-                    tocTemplate: "../../components/tableOfContents/html/TableOfContents.html"
-                }
+    // add extra prefs to the starter primary schemas
+    demo.prefsEditor.primarySchema = {
+    };
+
+    // Fine-tune the starter aux schema and add extra panels
+    demo.prefsEditor.auxSchema = {
+        templatePrefix: "../../framework/preferences/html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
+        messagePrefix: "../../framework/preferences/messages/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
+        tableOfContents: {
+            enactor: {
+                tocTemplate: "../../components/tableOfContents/html/TableOfContents.html"
             }
-        }        
-    });
+        }
+    };
 })(jQuery, fluid);

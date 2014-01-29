@@ -80,8 +80,9 @@
             $(document).ready(function () {
                 var prefsEditor = fluid.prefs.create(".flc-prefsEditor-separatedPanel", {
                     build: {
-                        gradeNames: ["demo.prefsEditor.auxSchema"]//,
-//                        primarySchema: demo.prefsEditor.primarySchema
+                        gradeNames: ["fluid.prefs.auxSchema.starter"], // this will add the starter set
+                        primarySchema: demo.prefsEditor.primarySchema,
+                        auxiliarySchema: demo.prefsEditor.auxSchema // this will augment the starter set
                     }
                 });
             });
