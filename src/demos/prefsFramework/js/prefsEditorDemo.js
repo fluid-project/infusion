@@ -195,16 +195,4 @@ var demo = demo || {};
         });
     };
 
-    /**********************************************************************************
-     * speakEnactor
-     **********************************************************************************/
-    fluid.defaults("demo.prefsEditor.speakEnactor", {
-        gradeNames: ["fluid.prefs.enactor", "autoInit"],
-        preferenceMap: {
-            "demo.prefs.speak": {
-                "model.speak": "default"
-            }
-        }
-    });
-
 })(jQuery, fluid);
