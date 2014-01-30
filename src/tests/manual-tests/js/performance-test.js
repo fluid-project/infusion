@@ -49,7 +49,7 @@ var makePaths = function () {
         togo.push(segs.join("."));
     }
     return togo;
-}
+};
 
 var paths = makePaths();
 

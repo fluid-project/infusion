@@ -246,6 +246,10 @@ var fluid = fluid || fluid_1_5;
             }
             var expanded = fluid.model.transform.getValue(transformSpec.inputPath, transformSpec.value, transform);
             transformArgs.unshift(expanded);
+            //if the function has no input, the result is considered undefined, and this is returned
+            if (expanded === undefined) {
+                return undefined;
+            }
         } else if (fluid.hasGrade(expdef, "fluid.multiInputTransformFunction")) {
             var inputs = {};
             fluid.each(expdef.inputVariables, function (v, k) {
@@ -408,6 +412,7 @@ var fluid = fluid || fluid_1_5;
         }
         // if rule is an array, save path for later use in schema strategy on final applier (so output will be interpreted as array)
         if (fluid.isArrayable(rule)) {
+            transform.collectedFlatSchemaOpts = transform.collectedFlatSchemaOpts || {};
             transform.collectedFlatSchemaOpts[transform.outputPrefix] = "array";
         }
         fluid.each(rule, function (value, key) {
@@ -458,10 +463,10 @@ var fluid = fluid || fluid_1_5;
     };
     
     // unsupported, NON-API function
-    fluid.model.transform.flatSchemaStrategy = function (flatSchema) {
+    fluid.model.transform.flatSchemaStrategy = function (flatSchema, getConfig) {
         var keys = fluid.model.sortByKeyLength(flatSchema);
         return function (root, segment, index, segs) {
-            var path = fluid.path.apply(null, segs.slice(0, index));
+            var path = getConfig.parser.compose.apply(null, segs.slice(0, index));
           // TODO: clearly this implementation could be much more efficient
             for (var i = 0; i < keys.length; ++i) {
                 var key = keys[i];
@@ -560,7 +565,7 @@ var fluid = fluid || fluid_1_5;
             source: source,
             target: schemaStrategy ? fluid.model.transform.defaultSchemaValue(schemaStrategy(null, "", 0, [""])) : {},
             resolverGetConfig: getConfig,
-            collectedFlatSchemaOpts: {}, //to hold options for flat schema collected during transforms
+            collectedFlatSchemaOpts: undefined, //to hold options for flat schema collected during transforms
             queuedChanges: [],
             queuedTransforms: [] // TODO: This is used only by wildcard applier - explain its operation
         };
@@ -577,9 +582,9 @@ var fluid = fluid || fluid_1_5;
 
         var setConfig = fluid.copy(fluid.model.escapedSetConfig);
         // Modify schemaStrategy if we collected flat schema options for the setConfig of finalApplier
-        if (!$.isEmptyObject(transform.collectedFlatSchemaOpts)) {
+        if (transform.collectedFlatSchemaOpts !== undefined) {
             $.extend(transform.collectedFlatSchemaOpts, options.flatSchema);
-            schemaStrategy = fluid.model.transform.flatSchemaStrategy(transform.collectedFlatSchemaOpts);
+            schemaStrategy = fluid.model.transform.flatSchemaStrategy(transform.collectedFlatSchemaOpts, getConfig);
         }
         setConfig.strategies = [fluid.model.defaultFetchStrategy, schemaStrategy ? fluid.model.transform.schemaToCreatorStrategy(schemaStrategy)
                 : fluid.model.defaultCreatorStrategy];

@@ -1,4 +1,4 @@
 build/
 products/
 node_modules/
-src/components/uiOptions/css/fss/
+src/framework/preferences/css/fss/

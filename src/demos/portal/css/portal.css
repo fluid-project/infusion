@@ -7,7 +7,7 @@
 }
 
 .finalreportlinks a {
-        
+
 }
 
 html {
@@ -25,12 +25,12 @@ h3 {}
 
 
 a {
-    color:#00aeef; 
+    color:#00aeef;
     text-decoration:none;
 }
 
 .fl-col-mixed-300 .p_framework {
-    padding-left:0; 
+    padding-left:0;
     padding-right:20px;
 }
 .fl-col-mixed-300 .p_integration {
@@ -39,13 +39,13 @@ a {
 }
 .fl-col-mixed-300 .p_components {
     margin:0 320px;
-    padding: 0 20px; 
-    border:2px solid #ccc; 
+    padding: 0 20px;
+    border:2px solid #ccc;
     border-width:0 2px;
 }
 
 .letusknow {
-    font-size:1.5em;    
+    font-size:1.5em;
     margin:-1.5em 0 0 0;
     padding-bottom:2.5em;
     text-align:center;
@@ -56,7 +56,7 @@ a {
     height:165px;
     overflow:hidden;
     border:2px solid #ccc;
-    padding:5px;   
+    padding:5px;
     margin:2px;
     color:#666;
     float:left;
@@ -116,7 +116,7 @@ a {
 
 .demo .demoHeader h4 {
     font:bold 1.1em Arial, Helvetica, sans-serif;
-    margin-left:73px;    
+    margin-left:73px;
 }
 
 .demo .demoHeader a , .demo .demoHeader strong{
@@ -132,7 +132,7 @@ a {
 
 .production, .preview, .sneak {
     float:left;
-    width:100%;    
+    width:100%;
 }
 
 .production h3 {color:#39b54a;}

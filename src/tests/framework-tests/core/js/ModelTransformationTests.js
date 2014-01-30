@@ -221,6 +221,38 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         model: {},
         method: "assertDeepEq"
+    }, {
+        message: "FLUID-5247: An array of transformers, where the new key has an escaped '.', should still output to the array entries",
+        transform: {
+            "labrador\\.retriever": [
+                {
+                    transform: {
+                        type: "fluid.transforms.linearScale",
+                        value: 3,
+                        factor: 2,
+                        offset: 5
+                    }
+                }, {
+                    "cat": {
+                        transform: {
+                            type: "fluid.transforms.literalValue",
+                            value: "I'm a cat"
+                        }
+                    }
+                }, {
+                    transform: {
+                        type: "fluid.transforms.literalValue",
+                        value: "And I'm a squirrel",
+                        outputPath: "squirrel"
+                    }
+                }
+            ]
+        },
+        expected: {
+            "labrador.retriever": [ 11, { cat: "I'm a cat"}, { "squirrel": "And I'm a squirrel"} ]
+        },
+        model: {},
+        method: "assertDeepEq"
     }];
 
     jqUnit.test("fluid.transforms.outputTests()", function () {
@@ -692,6 +724,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         method: "assertDeepEq",
         expected: source.sheep
+    }, {
+        message: "FLUID-5248: arrayValue() with a nested transformation",
+        expandWrap: false,
+        transform: {
+            "b": {
+                "transform": {
+                    "type": "fluid.transforms.arrayValue",
+                    "value": {
+                        "transform": {
+                            "type": "fluid.transforms.linearScale",
+                            "value": 5,
+                            "factor": 0.1
+                        }
+                    }
+                }
+            }
+        },
+        method: "assertDeepEq",
+        expected: {
+            "b": [0.5]
+        }
     }];
 
     jqUnit.test("fluid.transforms.arrayValue()", function () {
@@ -1836,6 +1889,35 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         checkTransformedOptions(that.transformable);
     });
 
+    var undefinedSingleInput = [{
+        message: "FLUID-5130: non-existing path.",
+        expandWrap: true,
+        transform: {
+            type: "fluid.transforms.count",
+            inputPath: "idontexist"
+        },
+        method: "assertEquals",
+        expected: undefined
+    }, {
+        message: "FLUID-5130: input from expander that evaluates to undefined",
+        expandWrap: true,
+        transform: {
+            type: "fluid.transforms.count",
+            input: {
+                transform: {
+                    type: "fluid.transforms.count",
+                    inputPath: "i.dont.exist"
+                }
+            }
+        },
+        method: "assertEquals",
+        expected: undefined
+    }];
+
+    jqUnit.test("Tests for undefined inputs to standardInputTransformations", function () {
+        testOneStructure(undefinedSingleInput);
+    });
+
     /* --------------- arrayToObject and objectToArray tests -------------------- */
     var arrayObjectArrayTests = [
         {
@@ -2207,7 +2289,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
-/* --------------- fixedArray to outputs -------------------- */
+    /* --------------- array to set-membership tests -------------------- */
     var arrayToSetMembershipTests = [{
         name: "basic test",
         raw: {

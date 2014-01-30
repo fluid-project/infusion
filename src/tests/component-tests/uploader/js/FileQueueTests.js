@@ -209,7 +209,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var filesize_6 = array_generator(2, 10000);  //(10000 + 1) * 10000 /2 = 50005000
 
             var test_filesize = function (files, expected) {
-                testQueue.files = files;
+                fluid.model.copyModel(testQueue.files, files);
                 jqUnit.assertEquals("testQueue uploaded files byte",
                     expected, testQueue.totalBytes());
             };
