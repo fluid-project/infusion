@@ -28,7 +28,7 @@
     cursor: move;
     /*height: 20px; */
     background-color: #A5CFEF;
-    background-position: right center;
+    background-position: right 1px center;
     background-repeat: no-repeat;
     background-image: url("../images/move.png");
     padding: 4px;
@@ -39,7 +39,7 @@
     cursor: default;
     background-color: #fff;
     background-image: url("../images/locked.png");	
-    background-position: right center;
+    background-position: right 1px center;
 }
 
 /* 

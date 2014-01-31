@@ -13,7 +13,7 @@
         <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
         <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.widget.js"></script>
         <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.position.js"></script>
-        <script type="text/javascript" src="../../../../lib/jquery/plugins/tooltip/js/jquery.ui.tooltip.js"></script> 
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.tooltip.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/FluidDocument.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/jquery.keyboard-a11y.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
@@ -22,10 +22,10 @@
         <script type="text/javascript" src="../../../../components/tooltip/js/Tooltip.js"></script>
         <script type="text/javascript" src="../../../../components/inlineEdit/js/InlineEdit.js"></script>
         <script type="text/javascript" src="../../../../components/undo/js/Undo.js"></script>
-        
+
         <!--  These dependencies are needed for one test (which requires the renderer)  -->
         <script type="text/javascript" src="../../../../framework/core/js/DataBinding.js"></script>
-        <script type="text/javascript" src="../../../../framework/core/js/FluidDOMUtilities.js"></script>   
+        <script type="text/javascript" src="../../../../framework/core/js/FluidDOMUtilities.js"></script>
         <script type="text/javascript" src="../../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
         <script type="text/javascript" src="../../../../framework/renderer/js/fluidParser.js"></script>
         <script type="text/javascript" src="../../../../framework/renderer/js/fluidRenderer.js"></script>
@@ -34,7 +34,7 @@
         <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
         <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
         <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit-browser.js"></script>
-        <script type="text/javascript" src="../../../lib/jquery-ui/js/jquery.simulate.js"></script>        
+        <script type="text/javascript" src="../../../lib/jquery-ui/js/jquery.simulate.js"></script>
 
         <!--  These are tests that have been written using this page as data and test supports -->
         <script type="text/javascript" src="../js/InlineEditTests.js"></script>
@@ -56,14 +56,14 @@
               <input id="edit" type="text" class="flc-inlineEdit-edit" value="this is the hidden text for the first editor" />
           </div>
       </form>
-        
+
       <form id="inline-edit2" action="#" class="inlineEditable">
           <div id="display2" class="flc-inlineEdit-text">Click me to edit...</div>
           <input id="edit2" type="text" class="flc-inlineEdit-edit" value="this is the hidden text for the second editor" />
       </form>
-      
+
       <div id="custom-renderRoot">
-      
+
         <form id="inline-edit-custom" class="customContainer" action="#">
           <div id="display-custom" class="customText"></div>
           <div id="edit-container-custom" class="customEditContainer">
@@ -71,16 +71,16 @@
           </div>
         </form>
       </div>
-      
+
       <form id="inline-edit-textarea" action="#">
           <div id="display-custom" class="customText"></div>
           <div id="edit-container-custom" class="customEditContainer">
               <textarea id="edit-custom" class="customEdit">This is the hidden text for the custom editor</textarea>
           </div>
       </form>
-      
+
       <div id="custom-renderRoot-text-as-default">
-      
+
         <form id="inline-edit-custom-text-as-default" class="customContainer" action="#">
           <div id="display-custom-text-as-default" class="customText">Click here to edit</div>
           <div id="edit-container-custom-text-as-default" class="customEditContainer">
@@ -88,14 +88,14 @@
           </div>
         </form>
       </div>
-      
+
       <form id="inline-edit-textarea-text-as-default" action="#">
           <div id="display-custom" class="customText">Click here to edit</div>
           <div id="edit-container-custom" class="customEditContainer">
               <textarea id="edit-custom" class="customEdit">This is the hidden text for the custom editor</textarea>
           </div>
-      </form>      
-        
+      </form>
+
       <!-- Self-rendering inline edit -->
       <form id="inline-edit-self-render" action="#">
           <div id="display-self-render" class="flc-inlineEdit-text">Click me to edit...</div>
@@ -116,13 +116,13 @@
       <form id="inline-edit-undo2" action="#">
           <div id="display-undoable2" class="flc-inlineEdit-text">Click me to edit...</div>
       </form>
-      
+
       <!-- Existing textEditButton -->
-      <blockquote class="existingTextEditButton">    
+      <blockquote class="existingTextEditButton">
         The quick brown fox jumped <strong class="flc-inlineEdit-text">over the lazy dogs</strong>
-        <a class="flc-inlineEdit-textEditButton" href="http://fluidproject.org">button</a> and then... 
+        <a class="flc-inlineEdit-textEditButton" href="http://fluidproject.org">button</a> and then...
       </blockquote>
-      
+
       <!-- Test using inline edit to edit a table cell -->
       <table id="inline-edit-table-cell">
         <tr>
@@ -141,7 +141,7 @@
         </tr>
       </table>
 
-      <!-- Test two copies of multiple inline edits with undo - we need to make sure we cover containment 
+      <!-- Test two copies of multiple inline edits with undo - we need to make sure we cover containment
            within a group when using the multiple inline edit API -->
       <p id="inline-multiple-edits">
         <span class="flc-inlineEditable"><span class="flc-inlineEdit-text">These edit fields</span></span>
@@ -152,13 +152,13 @@
         <span class="flc-inlineEditable"><span class="flc-inlineEdit-text">and with</span></span>
         <span class="flc-inlineEditable"><span class="flc-inlineEdit-text">selectOnEdit true.</span>(2nd copy)</span>,
         as well as each being individually undoable.
-      </p>    
-  
-      <!-- Test overriding the tooltip text -->	
+      </p>
+
+      <!-- Test overriding the tooltip text -->
       <p id="inline-override-tooltip">
         <span class="flc-inlineEdit-text" id="text1">This text has a tooltip with custom text.</span>
       </p>
-      
+
       <!-- IOC test -->
       <p id="ioc-inline-edit">
         <span class="flc-ioc-inlineEditable"><span class="flc-inlineEdit-text">This IoC test</span></span>

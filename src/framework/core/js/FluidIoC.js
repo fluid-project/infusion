@@ -32,9 +32,8 @@ var fluid_1_5 = fluid_1_5 || {};
         for (var name in that) {
             var newPath = instantiator.composePath(path, name);
             var component = that[name];
-            // Every component *should* have an id, but some clients (e.g. DOM binder) may not yet be compliant
             // This entire algorithm is primitive and expensive and will be removed once we can abolish manual init components
-            if (!component || !component.typeName || (component.id && options.visited && options.visited[component.id])) {continue; }
+            if (!fluid.isComponent(component) || (options.visited && options.visited[component.id])) {continue; }
             if (options.visited) {
                 options.visited[component.id] = true;
             }
@@ -161,6 +160,9 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     // unsupported, NON-API function
+    // Part of the early "distributeOptions" workflow. Given the description of the blocks to be distributed, assembles "canned" records
+    // suitable to be either registered into the shadow record for later or directly pushed to an existing component, as well as honouring
+    // any "removeSource" annotations by removing these options from the source block.
     fluid.filterBlocks = function (contextThat, sourceBlocks, sourcePath, targetSegs, exclusions, removeSource) {
         var togo = [], offset = 0;
         fluid.each(sourceBlocks, function (block) {
@@ -225,36 +227,70 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     };
+    
+    // Use this peculiar signature since the actual component and shadow itself may not exist yet. Perhaps clean up with FLUID-4925
+    fluid.noteCollectedDistribution = function (parentShadow, memberName, distribution) {
+        fluid.model.setSimple(parentShadow, ["collectedDistributions", memberName, distribution.id], true);
+    };
+    
+    fluid.isCollectedDistribution = function (parentShadow, memberName, distribution) {
+        return fluid.model.getSimple(parentShadow, ["collectedDistributions", memberName, distribution.id]);
+    };
+    
+    fluid.clearCollectedDistributions = function (parentShadow, memberName) {
+        fluid.model.applyChangeRequest(parentShadow, {path: ["collectedDistributions", memberName], type: "DELETE"});
+    };
 
     // unsupported, NON-API function
-    fluid.collectDistributions = function (distributedBlocks, distribution, thatStack, contextHashes, memberNames, i) {
-        if (fluid.matchIoCSelector(distribution.selector, thatStack, contextHashes, memberNames, i)) {
+    fluid.collectDistributions = function (distributedBlocks, parentShadow, distribution, thatStack, contextHashes, memberNames, i) {
+        var lastMember = memberNames[memberNames.length - 1];
+        if (!fluid.isCollectedDistribution(parentShadow, lastMember, distribution) && 
+                fluid.matchIoCSelector(distribution.selector, thatStack, contextHashes, memberNames, i)) {
             distributedBlocks.push.apply(distributedBlocks, distribution.blocks);
+            fluid.noteCollectedDistribution(parentShadow, lastMember, distribution);
+        }
+    };
+    
+    // Slightly silly function to clean up the "appliedDistributions" records. In general we need to be much more aggressive both
+    // about clearing instantiation garbage (e.g. onCreate and most of the shadow) 
+    // as well as caching frequently-used records such as the "thatStack" which
+    // would mean this function could be written in a sensible way
+    fluid.registerCollectedClearer = function (shadow, parentShadow, memberName) {
+        if (!shadow.collectedClearer && parentShadow) {
+            shadow.collectedClearer = function () {
+                fluid.clearCollectedDistributions(parentShadow, memberName);
+            };
         }
     };
 
     // unsupported, NON-API function
-    fluid.receiveDistributions = function (parentThat, gradeNames, memberName) {
-        var instantiator = fluid.getInstantiator(parentThat);
-        var thatStack = instantiator.getThatStack(parentThat); // most specific is at end
+    fluid.receiveDistributions = function (parentThat, gradeNames, memberName, that) {
+        var instantiator = fluid.getInstantiator(parentThat || that);
+        var thatStack = instantiator.getThatStack(parentThat || that); // most specific is at end
         var memberNames = fluid.getMemberNames(instantiator, thatStack);
-        memberNames.push(memberName);
         var distributedBlocks = [];
         var shadows = fluid.transform(thatStack, function (thisThat) {
             return instantiator.idToShadow[thisThat.id];
         });
+        var parentShadow = shadows[shadows.length - (parentThat ? 1 : 2)];
         var contextHashes = fluid.getMembers(shadows, "contextHash");
-        contextHashes.push(fluid.gradeNamesToHash(gradeNames));
-        thatStack.push({}); // fake "that" since we try to match selectors before creation for FLUID-5013
+        if (parentThat) { // if called before construction of component from embodyDemands - NB this path will be abolished/amalgamated
+            memberNames.push(memberName);
+            contextHashes.push(fluid.gradeNamesToHash(gradeNames));
+            thatStack.push(that);
+        } else {
+            fluid.registerCollectedClearer(shadows[shadows.length - 1], parentShadow, memberNames[memberNames.length - 1]);
+        }
         for (var i = 0; i < thatStack.length - 1; ++ i) {
             fluid.each(shadows[i].distributions, function (distribution) {
-                fluid.collectDistributions(distributedBlocks, distribution, thatStack, contextHashes, memberNames, i);
+                fluid.collectDistributions(distributedBlocks, parentShadow, distribution, thatStack, contextHashes, memberNames, i);
             });
         }
         return distributedBlocks;
     };
 
     // unsupported, NON-API function
+    // convert "preBlocks" as produced from fluid.filterBlocks into "real blocks" suitable to be used by the expansion machinery.
     fluid.applyDistributions = function (that, preBlocks, targetShadow) {
         var distributedBlocks = fluid.transform(preBlocks, function (preBlock) {
             return fluid.generateExpandBlock(preBlock, that, targetShadow.mergePolicy);
@@ -262,13 +298,14 @@ var fluid_1_5 = fluid_1_5 || {};
         var mergeOptions = targetShadow.mergeOptions;
         mergeOptions.mergeBlocks.push.apply(mergeOptions.mergeBlocks, distributedBlocks);
         mergeOptions.updateBlocks();
+        return distributedBlocks;
     };
 
     // unsupported, NON-API function
     fluid.parseExpectedOptionsPath = function (path, role) {
         var segs = fluid.model.parseEL(path);
         if (segs.length > 1 && segs[0] !== "options") {
-            fluid.fail("Error in options distribution record ", record, " - only " + role + " paths beginning with \"options\" are supported");
+            fluid.fail("Error in options distribution path ", path, " - only " + role + " paths beginning with \"options\" are supported");
         }
         return segs.slice(1);
     };
@@ -284,7 +321,7 @@ var fluid_1_5 = fluid_1_5 || {};
         var id = fluid.allocateGuid();
         var distributions = (targetShadow.distributions = targetShadow.distributions || []);
         distributions.push({
-            id: id,
+            id: id, // This id is used in clearDistributions - which itself currently only seems to appear in IoCTestUtils
             selector: selector,
             blocks: blocks
         });
@@ -332,12 +369,12 @@ var fluid_1_5 = fluid_1_5 || {};
             }
             var targetSegs = fluid.model.parseEL(targetRef.path);
             var preBlocks;
-            if (record.record) {
+            if (record.record !== undefined) {
                 preBlocks = [(fluid.makeDistributionRecord(that, record.record, [], targetSegs, [], 0))];
             }
             else {
                 var thatShadow = fluid.shadowForComponent(that);
-                var source = fluid.parseContextReference(record.source || "{that}.options");
+                var source = fluid.parseContextReference(record.source || "{that}.options"); // TODO: This is probably not a sensible default
                 if (source.context !== "that") {
                     fluid.fail("Error in options distribution record ", record, " only a context of {that} is supported");
                 }
@@ -433,7 +470,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return togo;
     };
 
-    fluid.expandDynamicGrades = function (that, gradeNames, dynamicGrades) {
+    fluid.expandDynamicGrades = function (that, shadow, gradeNames, dynamicGrades) {
         var resolved = [];
         fluid.each(dynamicGrades, function (dynamicGrade) {
             var expanded = fluid.expandOptions(dynamicGrade, that);
@@ -452,10 +489,21 @@ var fluid_1_5 = fluid_1_5 || {};
             });
             resolved = resolved.concat(linkedGrades);
         }
-
+        var distributedBlocks = fluid.receiveDistributions(null, null, null, that);
+        if (distributedBlocks.length > 0) {
+            var readyBlocks = fluid.applyDistributions(that, distributedBlocks, shadow);
+            // rely on the fact that "dirty tricks are not permitted" wrt. resolving gradeNames - each element must be a literal entry or array
+            // holding primitive or EL values - otherwise we would have to go all round the houses and reenter the top of fluid.computeDynamicGrades
+            var gradeNamesList = fluid.transform(fluid.getMembers(readyBlocks, ["source", "gradeNames"]), fluid.makeArray);
+            resolved = resolved.concat.apply(resolved, gradeNamesList);
+        }
         return resolved;
     };
 
+    // Discover further grades that are entailed by the given base typeName and the current total "dynamic grades list" held in the argument "resolved".
+    // These are looked up conjointly in the grade registry, and then any further i) dynamic grades references {} ii) grade linkage records 
+    // are expanded and added into the list and concatenated into "resolved". Additional grades discovered during this function are returned as
+    // "furtherResolved".
     fluid.collectDynamicGrades = function (that, shadow, defaultsBlock, gradeNames, dynamicGrades, resolved) {
         var newDefaults = fluid.copy(fluid.getGradedDefaults(that.typeName, resolved));
         gradeNames.length = 0; // acquire derivatives of dynamic grades (FLUID-5054)
@@ -474,9 +522,10 @@ var fluid_1_5 = fluid_1_5 || {};
             return gradeName.charAt(0) === "{" && !fluid.contains(dynamicGrades, gradeName);
         }, []);
         dynamicGrades.push.apply(dynamicGrades, furtherResolved);
-        furtherResolved = fluid.expandDynamicGrades(that, gradeNames, furtherResolved);
+        furtherResolved = fluid.expandDynamicGrades(that, shadow, gradeNames, furtherResolved);
 
         resolved.push.apply(resolved, furtherResolved);
+
         return furtherResolved;
     };
 
@@ -490,12 +539,16 @@ var fluid_1_5 = fluid_1_5 || {};
         var dynamicGrades = fluid.remove_if(gradeNames, function (gradeName) {
             return gradeName.charAt(0) === "{" || !fluid.hasGrade(defaultsBlock.target, gradeName);
         }, []);
-        var resolved = fluid.expandDynamicGrades(that, gradeNames, dynamicGrades);
+        var resolved = fluid.expandDynamicGrades(that, shadow, gradeNames, dynamicGrades);
         if (resolved.length !== 0) {
             do { // repeatedly collect dynamic grades whilst they arrive (FLUID-5155)
                 var furtherResolved = fluid.collectDynamicGrades(that, shadow, defaultsBlock, gradeNames, dynamicGrades, resolved);
             }
             while (furtherResolved.length !== 0);
+        }
+        if (shadow.collectedClearer) {
+            shadow.collectedClearer();
+            delete shadow.collectedClearer;
         }
     };
 
@@ -799,10 +852,12 @@ var fluid_1_5 = fluid_1_5 || {};
             // recurse path, it must have been injected
             if (childRecord && childRecord.path === childPath) {
                 fluid.fireEvent(child, "events.onDestroy", [child, name, component]);
+                // TODO: There needs to be a call to fluid.clearDistributions here
                 fluid.clearListeners(childRecord);
                 fluid.visitComponentChildren(child, function(gchild, gchildname, newPath, parentPath) {
                     that.clearComponent(child, gchildname, null, options, true, parentPath);
                 }, options, childPath);
+                fluid.fireEvent(child, "events.afterDestroy", [child, name, component]);
                 delete that.idToShadow[child.id];
                 delete idToInstantiator[child.id];
             }
@@ -960,6 +1015,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return function () {
             instantiator.clearComponent(that, "", that, null, true);
             fluid.fireEvent(that, "events.onDestroy", [that, "", null]);
+            fluid.fireEvent(that, "events.afterDestroy", [that, "", null]);
         };
     };
 
@@ -1038,8 +1094,9 @@ var fluid_1_5 = fluid_1_5 || {};
         var demands = fluid.makeArray(demandspec.args);
 
         var upDefaults = fluid.defaults(demandspec.funcName);
-
-        var distributions = upDefaults && parentThat ? fluid.receiveDistributions(parentThat, upDefaults.gradeNames, options.memberName) : [];
+        
+        var fakeThat = {}; // fake "that" for receiveDistributions since we try to match selectors before creation for FLUID-5013
+        var distributions = upDefaults && parentThat ? fluid.receiveDistributions(parentThat, upDefaults.gradeNames, options.memberName, fakeThat) : [];
 
         var argMap = upDefaults? upDefaults.argumentMap : null;
         var inferMap = false;
@@ -1611,7 +1668,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
 
     // unsupported, non-API function
     fluid.event.dispatchListener = function (that, listener, eventName, eventSpec, indirectArgs) {
-        return function () {
+        var togo = function () {
             fluid.pushActivity("dispatchListener", "firing to listener to event named %eventName of component %that",
                 {eventName: eventName, that: that});
 
@@ -1626,6 +1683,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             fluid.popActivity();
             return togo;
         };
+        return togo;
     };
 
     // unsupported, non-API function
@@ -1648,7 +1706,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             {eventName: eventName, that: that});
         var records = fluid.makeArray(lisrec);
         var transRecs = fluid.transform(records, function (record) {
-            var expanded = fluid.isPrimitive(record) || record.expander ? {listener: record} : record;
+            // TODO: FLUID-5242 fix - we copy here since distributeOptions does not copy options blocks that it distributes and we can hence corrupt them.
+            // need to clarify policy on options sharing - for slightly better efficiency, copy should happen during distribution and not here
+            var expanded = fluid.isPrimitive(record) || record.expander ? {listener: record} : fluid.copy(record);
             var methodist = fluid.recordToApplicable(record, that);
             if (methodist) {
                 expanded.listener = methodist;
@@ -2035,14 +2095,15 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     // "cursor arguments" which should be advertised somehow (at least their number)
     function regenerateCursor (source, segs, limit, sourceStrategy) {
         for (var i = 0; i < limit; ++ i) {
-            source = sourceStrategy(source, segs[i], i, segs);
+            // copy segs to avoid aliasing with FLUID-5243 
+            source = sourceStrategy(source, segs[i], i, fluid.makeArray(segs));
         }
         return source;
     }
 
     // unsupported, NON-API function
     fluid.isUnexpandable = function (source) {
-        return fluid.isPrimitive(source) || source.nodeType !== undefined || source.jquery || !fluid.isPlainObject(source);
+        return fluid.isPrimitive(source) || fluid.isComponent(source) || source.nodeType !== undefined || source.jquery || !fluid.isPlainObject(source);
     };
 
     // unsupported, NON-API function
