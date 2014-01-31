@@ -50,6 +50,7 @@
         <script type="text/javascript" src="../../framework/renderer/js/fluidParser.js"></script>
         <script type="text/javascript" src="../../framework/renderer/js/fluidRenderer.js"></script>
         <script type="text/javascript" src="../../framework/renderer/js/RendererUtilities.js"></script>
+        <script type="text/javascript" src="../../framework/enhancement/js/ProgressiveEnhancement"></script>
 
         <script type="text/javascript" src="../../framework/preferences/js/URLUtilities.js"></script>
         <script type="text/javascript" src="../../framework/preferences/js/Store.js"></script>
@@ -78,9 +79,12 @@
             $(document).ready(function () {
                 var prefsEditor = fluid.prefs.create(".flc-prefsEditor-separatedPanel", {
                     build: {
-                        gradeNames: ["fluid.prefs.auxSchema.starter"], // this will add the starter set
-                        primarySchema: demo.prefsEditor.primarySchema,
-                        auxiliarySchema: demo.prefsEditor.auxSchema // this will augment the starter set
+                        gradeNames: [
+                            "fluid.prefs.auxSchema.starter", // this will add the starter set
+                            "demo.prefsEditor.auxSchema.simplify", // this will add the simplify adjuster and enactor
+                            "demo.prefsEditor.progressiveEnhancement" // progressive enhancment
+                        ],
+                        primarySchema: demo.prefsEditor.primarySchema
                     }
                 });
             });

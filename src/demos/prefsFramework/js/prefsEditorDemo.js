@@ -12,13 +12,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global demo:true, fluid, jQuery*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var demo = demo || {};
 
 (function ($, fluid) {
     fluid.registerNamespace("demo.prefsEditor");
+
+    // Progressive Enhancement checks
+    demo.isChrome = function () {
+        return !!window.chrome;
+    };
+
+    demo.isFirefox = function () {
+        return navigator.userAgent.toLowerCase().indexOf("firefox") >= 0;
+    };
+
+    demo.supportsTTS = function () {
+        // currenlty due to lack of implementation or bugs, TTS is only supported in Chrome and Firefox
+        return demo.isChrome() || demo.isFirefox();
+    };
+
+    fluid.enhance.check({
+        "fluid.supportsTTS": "demo.supportsTTS"
+    });
 
     // add extra prefs to the starter primary schemas
     demo.prefsEditor.primarySchema = {
@@ -32,48 +50,80 @@ var demo = demo || {};
         }
     };
 
-    // Fine-tune the starter aux schema and add extra panels
-    demo.prefsEditor.auxSchema = {
-        // adjust paths
-        templatePrefix: "../../framework/preferences/html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
-        messagePrefix: "../../framework/preferences/messages/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
-        tableOfContents: {
-            enactor: {
-                tocTemplate: "../../components/tableOfContents/html/TableOfContents.html"
-            }
-        },
+    fluid.defaults("demo.prefsEditor.progressiveEnhancement", {
+        gradeNames: ["fluid.progressiveCheckerForComponent"],
+        componentName: "demo.prefsEditor.progressiveEnhancement",
+        progressiveCheckerOptions: {
+            checks: [{
+                feature: "{fluid.supportsTTS}",
+                contextName: "demo.prefsEditor.auxSchema.speak"
+            }]
+        }
+    });
 
-        // sepcify augmented container template for panels
-        template: "html/SeparatedPanelPrefsEditor.html",
+    // Fine-tune the starter aux schema and add simplify panel
+    fluid.defaults("demo.prefsEditor.auxSchema.simplify", {
+        auxiliarySchema: {
+            // adjust paths
+            templatePrefix: "../../framework/preferences/html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
+            messagePrefix: "../../framework/preferences/messages/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
+            tableOfContents: {
+                enactor: {
+                    tocTemplate: "../../components/tableOfContents/html/TableOfContents.html"
+                }
+            },
 
-        // add panels and enactors for extra settings
-        simplify: {
-            type: "demo.prefs.simplify",
-            enactor: {
-                type: "demo.prefsEditor.simplifyEnactor",
-                container: "body"
-            },
-            panel: {
-                type: "demo.prefsEditor.simplifyPanel",
-                container: ".demo-prefsEditor-simplify",
-                template: "html/SimplifyPanelTemplate.html",
-                message: "messages/simplify.json"
-            }
-        },
-        speak: {
-            type: "demo.prefs.speak",
-            enactor: {
-                type: "demo.prefsEditor.speakEnactor",
-                container: "body"
-            },
-            panel: {
-                type: "demo.prefsEditor.speakPanel",
-                container: ".demo-prefsEditor-speak",
-                template: "html/SpeakPanelTemplate.html",
-                message: "messages/speak.json"
+            // sepcify augmented container template for panels
+            template: "html/SeparatedPanelPrefsEditor.html",
+
+            // add panels and enactors for extra settings
+            simplify: {
+                type: "demo.prefs.simplify",
+                enactor: {
+                    type: "demo.prefsEditor.simplifyEnactor",
+                    container: "body"
+                },
+                panel: {
+                    type: "demo.prefsEditor.simplifyPanel",
+                    container: ".demo-prefsEditor-simplify",
+                    template: "html/SimplifyPanelTemplate.html",
+                    message: "messages/simplify.json"
+                }
             }
         }
-    };
+    });
+
+    // Fine-tune the starter aux schema and add speak panel
+    fluid.defaults("demo.prefsEditor.auxSchema.speak", {
+        auxiliarySchema: {
+            // adjust paths
+            templatePrefix: "../../framework/preferences/html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
+            messagePrefix: "../../framework/preferences/messages/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
+            tableOfContents: {
+                enactor: {
+                    tocTemplate: "../../components/tableOfContents/html/TableOfContents.html"
+                }
+            },
+
+            // sepcify augmented container template for panels
+            template: "html/SeparatedPanelPrefsEditorWithTTS.html",
+
+            speak: {
+                type: "demo.prefs.speak",
+                enactor: {
+                    type: "demo.prefsEditor.speakEnactor",
+                    container: "body"
+                },
+                panel: {
+                    type: "demo.prefsEditor.speakPanel",
+                    container: ".demo-prefsEditor-speak",
+                    template: "html/SpeakPanelTemplate.html",
+                    message: "messages/speak.json"
+                }
+            }
+        }
+    });
+
 
     /**********************************************************************************
      * simplifyPanel
