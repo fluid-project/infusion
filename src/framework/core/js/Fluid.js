@@ -373,6 +373,11 @@ var fluid = fluid || fluid_1_5;
         return fluid.isDOMNode(obj) || obj.jquery;
     };
     
+    fluid.isComponent = function (obj) {
+        // TODO: improve this strategy in time - we may want to actually use a constructor-based test when we can drop IE8
+        return obj && obj.typeName && obj.id;  
+    };
+    
     /** Return an empty container as the same type as the argument (either an
      * array or hash */
     fluid.freshContainer = function (tocopy) {
@@ -578,9 +583,9 @@ var fluid = fluid || fluid_1_5;
         return togo;
     };
     
-    /** Extracts a particular member from each member of a container, returning a new container of the same type
+    /** Extracts a particular member from each top-level member of a container, returning a new container of the same type
      * @param holder {Array|Object} The container to be filtered
-     * @param name {String|Array of String} An EL path to be fetched from each members
+     * @param name {String|Array of String} An EL path to be fetched from each top-level member
      */
     
     fluid.getMembers = function (holder, name) {
@@ -1634,7 +1639,7 @@ var fluid = fluid || fluid_1_5;
     // each object for all time, since after first resolution it will be concrete.
     function regenerateCursor (source, segs, limit, sourceStrategy) {
         for (var i = 0; i < limit; ++ i) {
-            source = sourceStrategy(source, segs[i], i, segs);
+            source = sourceStrategy(source, segs[i], i, fluid.makeArray(segs)); // copy for FLUID-5243
         }
         return source;
     }
@@ -2010,11 +2015,12 @@ var fluid = fluid || fluid_1_5;
     
     fluid.defaults("fluid.eventedComponent", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
-        events: { // Four standard lifecycle points common to all components
-            onCreate:  null,
-            onAttach:  null, // events other than onCreate are only fired for IoC-configured components
-            onClear:   null,
-            onDestroy: null
+        events: { // Five standard lifecycle points common to all components
+            onCreate:     null,
+            onAttach:     null, // onAttach, onClear are only fired for IoC-configured components
+            onClear:      null,
+            onDestroy:    null,
+            afterDestroy: null
         },
         mergePolicy: {
             listeners: fluid.makeMergeListenersPolicy(fluid.mergeListenerPolicy)
@@ -2193,6 +2199,7 @@ var fluid = fluid || fluid_1_5;
         return function () {
             fluid.fireEvent(that, "events.onClear", [that, "", null]);
             fluid.fireEvent(that, "events.onDestroy", [that, "", null]);
+            fluid.fireEvent(that, "events.afterDestroy", [that, "", null]);
         };
     };
     
