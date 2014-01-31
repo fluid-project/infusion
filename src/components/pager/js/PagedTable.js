@@ -32,7 +32,7 @@ var fluid_1_5 = fluid_1_5 || {};
     // TODO: Get rid of this old-style kind of architecture - we should just react to model changes directly and not inject this
     // peculiar event up and down the place. Probably best to have new renderer first.
     fluid.pagedTable.rangeAnnotator.onRenderPageLinks = function (that, tree, newModel, pagerBar) {
-        console.log("onRenderPageLinks: pagerBar " + pagerBar.id);
+        pagerBar.tooltip.close(); // Close any existing tooltips otherwise they will linger after their parent is destroyed
         var roots = {};
         var column = that.options.annotateColumnRange || (that.options.annotateSortedColumn ? newModel.sortKey : null);
         if (!column) {
@@ -86,7 +86,6 @@ var fluid_1_5 = fluid_1_5 || {};
             idToContent[idMap["pageLink:"+index]] = fluid.stringTemplate(pagedTable.options.markup.rangeAnnotation, value);
         });
         pagerBar.tooltip.applier.requestChange("idToContent", idToContent);
-        console.log("afterRender: pagerBar " + pagerBar.id + ": " + JSON.stringify(idToContent));  
     };
 
     fluid.defaults("fluid.pagedTable", {

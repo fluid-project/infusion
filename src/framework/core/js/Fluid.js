@@ -2015,11 +2015,12 @@ var fluid = fluid || fluid_1_5;
     
     fluid.defaults("fluid.eventedComponent", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
-        events: { // Four standard lifecycle points common to all components
-            onCreate:  null,
-            onAttach:  null, // events other than onCreate are only fired for IoC-configured components
-            onClear:   null,
-            onDestroy: null
+        events: { // Five standard lifecycle points common to all components
+            onCreate:     null,
+            onAttach:     null, // onAttach, onClear are only fired for IoC-configured components
+            onClear:      null,
+            onDestroy:    null,
+            afterDestroy: null
         },
         mergePolicy: {
             listeners: fluid.makeMergeListenersPolicy(fluid.mergeListenerPolicy)
@@ -2198,6 +2199,7 @@ var fluid = fluid || fluid_1_5;
         return function () {
             fluid.fireEvent(that, "events.onClear", [that, "", null]);
             fluid.fireEvent(that, "events.onDestroy", [that, "", null]);
+            fluid.fireEvent(that, "events.afterDestroy", [that, "", null]);
         };
     };
     

@@ -15,6 +15,8 @@
         <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.position.js"></script>
         <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.tooltip.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidDOMUtilities.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/DataBinding.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/FluidView.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/FluidIoC.js"></script>
@@ -23,6 +25,8 @@
         <!--  These are the jqUnit test framework js files -->
         <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
         <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit-browser.js"></script>
+        <script type="text/javascript" src="../../../test-core/utils/js/IoCTestUtils.js"></script>
 
         <!--  These are tests that have been written using this page as data and test supports -->
         <script type="text/javascript" src="../js/TooltipTests.js"></script>
@@ -38,5 +42,14 @@
       <div id="qunit-fixture">
         <a class="testTooltip">tooltip anchor</a>
       </div>
+      <div id="ioc-fixture">
+         <div class="delegating-root">
+             <a class="testDelegateTooltip" id="anchor-1" href="#">tooltip anchor 1</a>
+             <a class="testDelegateTooltip" id="anchor-2" href="#">tooltip anchor 2</a>
+         </div>
+      </div>
+      <script>
+          $(document).ready(fluid.tests.tooltip.runTests);
+      </script>
     </body>
 </html>

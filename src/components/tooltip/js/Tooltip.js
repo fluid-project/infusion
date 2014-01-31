@@ -73,8 +73,11 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.tooltip.makeOpenHandler = function (that) {
         return function (event, tooltip) {
+           fluid.tooltip.closeAll(that);
+           var originalTarget = fluid.tooltip.resolveTarget(event);
+           that.openIdMap[fluid.allocateSimpleId(originalTarget)] = true;
            if (that.initialised) {
-               that.events.afterOpen.fire(that, fluid.tooltip.resolveTarget(event), tooltip.tooltip, event);
+               that.events.afterOpen.fire(that, originalTarget, tooltip.tooltip, event);
            }
         };
     };
@@ -85,6 +88,21 @@ var fluid_1_5 = fluid_1_5 || {};
                 that.events.afterClose.fire(that, fluid.tooltip.resolveTarget(event), tooltip.tooltip, event);
             }
         };
+    };
+    
+    fluid.tooltip.closeAll = function (that) {
+        fluid.each(that.openIdMap, function (value, key) {
+            var target = fluid.byId(key);
+            // "white-box" behaviour - fabricating this fake event shell is the only way we can get the plugin to 
+            // close a tooltip which was not opened on the root element. This will be very fragile to changes in
+            // jQuery UI and the underlying widget code
+            that.container.tooltip("close", {
+                type: "close",
+                currentTarget: target, 
+                target: target
+            });  
+        });
+        fluid.clear(that.openIdMap);
     };
 
     fluid.tooltip.setup = function (that) {
@@ -102,6 +120,7 @@ var fluid_1_5 = fluid_1_5 || {};
     
     fluid.tooltip.doDestroy = function (that) {
         if (that.initialised) {
+            fluid.tooltip.closeAll(that);
             // jQuery UI framework will throw a fit if we have instantiated a widget on a DOM element and then
             // removed it from the DOM. This apparently can't be detected via the jQuery UI API itself.
             if ($.contains(document, that.container[0])) {
@@ -139,9 +158,8 @@ var fluid_1_5 = fluid_1_5 || {};
            * Manually hides the tooltip
            */
             close: {
-                "this": "{that}.container",
-                method: "tooltip",
-                args: "close"
+                funcName: "fluid.tooltip.closeAll",
+                args: "{that}"
             },
           /**
            * Updates the contents displayed in the tooltip. Deprecated - use the
@@ -166,6 +184,9 @@ var fluid_1_5 = fluid_1_5 || {};
             content: "{that}.options.content" 
             // content: String,
             // idToContent: Object {String -> String}
+        },
+        members: {
+            openIdMap: {}  
         },
         styles: {
             tooltip: ""

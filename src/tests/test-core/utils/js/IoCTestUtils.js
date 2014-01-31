@@ -136,7 +136,7 @@ var fluid_1_5 = fluid_1_5 || {};
             events: that.events
         };
         if (that.options.markupFixture) {
-            that.events.onDestroy.addListener(function () {
+            that.events.afterDestroy.addListener(function () {
                 that.capturedMarkup.container[0].innerHTML = that.capturedMarkup.markup;
             });
         }
@@ -198,7 +198,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.test.decodeElement = function (testCaseState, fixture) {
         var element = testCaseState.expand(fixture.element);
         var jel = fluid.wrap(element);
-        if (!jel) {
+        if (!jel || jel.length === 0) {
             fluid.fail("Unable to decode entry \"element\" of fixture ", fixture, " to a DOM element");
         }
         return jel;
@@ -209,12 +209,14 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.test.decoders.func = function (testCaseState, fixture) {
         return {
             execute: function () {
-                var testFunc = testCaseState.expandFunction(fixture.func);
+                var testFunc = testCaseState.expandFunction(fixture.func || fixture.funcName);
                 var args = testCaseState.expand(fixture.args);
                 testFunc.apply(null, fluid.makeArray(args));
             }
         };
     };
+    
+    fluid.test.decoders.funcName = fluid.test.decoders.func;
 
     fluid.test.decoders.jQueryTrigger = function (testCaseState, fixture) {
         var event = fixture.jQueryTrigger;
@@ -333,7 +335,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return that;
     };
 
-    fluid.test.decoderDucks = ["func", "event", "changeEvent", "jQueryTrigger", "jQueryBind"];
+    fluid.test.decoderDucks = ["func", "funcName", "event", "changeEvent", "jQueryTrigger", "jQueryBind"];
 
     fluid.test.decodeFixture = function (testCaseState, fixture) {
         var ducks = fluid.test.decoderDucks;
@@ -468,7 +470,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
                 var options = $.extend(true, {}, env.options, {
                     listeners: {
-                        onDestroy: nextLater
+                        afterDestroy: nextLater
                     }
                 });
                 fluid.invokeGlobalFunction(env.type, [options]);
@@ -522,6 +524,9 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.test.processTestCaseHolder = function (testCaseState) {
         var modules = fluid.makeArray(testCaseState.testCaseHolder.options.modules);
+        if (modules.length === 0) {
+            fluid.fail("Error in test case environment ", testCaseState, ": no modules found in options.modules");
+        }
         fluid.each(modules, function (testCase) {
             testCaseState.testCase = testCase;
             testCaseState.finisher = function () {

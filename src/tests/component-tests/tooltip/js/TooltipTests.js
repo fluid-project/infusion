@@ -17,7 +17,161 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 (function ($) {
-    $(document).ready(function () {
+    fluid.registerNamespace("fluid.tests.tooltip");
+        
+    fluid.tests.tooltip.trackTooltip = function (disp, that, target, tooltip) {
+        var targetId = target.id;
+        if (disp === "open") {
+            that.tooltipMap[targetId] = tooltip;
+        } else {
+            delete that.tooltipMap[targetId];
+        }
+    };
+    
+    // Converts a string to the expected DOM contents for a tooltip whose content is just that string
+    fluid.tests.tooltip.stringToNode = function (string) {
+        return [ {
+            nodeText: string
+        }]
+    };
+    
+    fluid.tests.tooltip.assertVisible = function (message, trackTooltips, expectedKeys, contentMap, contentToNode) {
+        var visibleKeys = fluid.keys(trackTooltips.tooltipMap);
+        jqUnit.assertDeepEq(message, fluid.makeArray(expectedKeys), visibleKeys);
+        fluid.each(trackTooltips.tooltipMap, function (tooltip, key) {
+            if (contentMap) {
+                jqUnit.assertNode("The contents of the tooltip should be set", contentToNode(contentMap[key]), $(".ui-tooltip-content", tooltip));
+            } else {
+                contentToNode(tooltip, key);
+            }
+            
+        });
+    }
+    
+    fluid.defaults("fluid.tests.tooltip.trackTooltips", {
+        mergePolicy: {
+            tooltipListeners: "noexpand"
+        },
+        distributeOptions: {
+            source: "{that}.options.tooltipListeners",
+            removeSource: true,
+            target: "{that fluid.tooltip}.options.listeners"
+        },
+        tooltipListeners: {
+            afterOpen: {
+                funcName: "fluid.tests.tooltip.trackTooltip",
+                args: ["open", "{trackTooltips}", "{arguments}.1", "{arguments}.2"] // event.target, tooltip
+            },
+            afterClose: {
+                funcName: "fluid.tests.tooltip.trackTooltip",
+                args: ["close", "{trackTooltips}", "{arguments}.1", "{arguments}.2"] // event.target, tooltip
+            }
+        },
+        members: {
+            tooltipMap: {}
+        }
+    });
+    
+    fluid.tests.bindFocusNotify = function (that) {
+        that.container.focusin(that.events.notifyFocusChange.fire);
+        that.container.focusout(that.events.notifyFocusChange.fire);
+    };
+    
+    fluid.defaults("fluid.tests.focusNotifier", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
+        events: {
+            notifyFocusChange: null
+        },
+        listeners: {
+            onCreate: "fluid.tests.bindFocusNotify"
+        }
+    });
+    
+    fluid.tests.delegateTest = {
+        idToContent: {
+            "anchor-1": "Tooltip Content 1",
+            "anchor-2": "Tooltip Content 2"
+        }
+    };
+    
+    fluid.tests.delegateTest.assertVisible = function (trackTooltips, visibleAnchors) {
+        fluid.tests.tooltip.assertVisible("Correct tooltips visible", trackTooltips, visibleAnchors, 
+                fluid.tests.delegateTest.idToContent, fluid.tests.tooltip.stringToNode) 
+    };
+    
+    fluid.tests.delegateTest.assertVisibleMaker = function (trackTooltips, visibleAnchors) {
+        return function () {
+            fluid.tests.delegateTest.assertVisible(trackTooltips, visibleAnchors);
+        };
+    };
+    
+    fluid.tests.tooltip.markupBlaster = function (tooltip) {
+        tooltip.close();
+        var markup = tooltip.container.html();
+        tooltip.container.html(markup);
+    };
+    
+    fluid.tests.tooltip.module = {
+        name: "Delegating tooltip tests",
+        tests: {
+            name: "Tooltip visibility",
+            sequence: [{
+                element: "#anchor-1",
+                jQueryTrigger: "focus"
+            }, {
+                event: "{trackTooltips}.events.notifyFocusChange",
+                listenerMaker: "fluid.tests.delegateTest.assertVisibleMaker",
+                makerArgs: ["{trackTooltips}", "anchor-1"]
+            }, {
+                funcName: "fluid.tests.tooltip.markupBlaster",
+                args: "{tree}.tooltip"
+            }, {
+                funcName: "fluid.tests.delegateTest.assertVisible",
+                args: ["{trackTooltips}", []]
+            }]
+        }
+    };
+    
+    fluid.defaults("fluid.tests.tooltip.tree", {
+        gradeNames: ["fluid.tests.tooltip.trackTooltips", "fluid.tests.focusNotifier", "autoInit"],
+        components: {
+            tooltip: {
+                type: "fluid.tooltip",
+                container: ".delegating-root",
+                options: {
+                    gradeNames: [],
+                    items: ".testDelegateTooltip",
+                    model: {
+                        idToContent: fluid.tests.delegateTest.idToContent
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.tooltip.delegateEnv", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        markupFixture: "#ioc-fixture",
+        components: {
+            tree: {
+                type: "fluid.tests.tooltip.tree",
+                container: ".delegating-root"
+            },
+            fixtures: {
+                type: "fluid.test.testCaseHolder",
+                options: {
+                    modules: fluid.tests.tooltip.module
+                }
+            }
+        }
+    });
+    
+    fluid.tests.tooltip.runTests = function () {
+      
+        fluid.test.runTests(["fluid.tests.tooltip.delegateEnv"]);
+        
+        jqUnit.module("Standard Tooltip Tests");
+      
         
         // Note that throughout these tests, an explicit tooltip "destroy" is necessary after each test, since
         // the tooltip markup is created outside the container qunit-fixture which is operated by the standard
@@ -155,6 +309,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             tt.open();
         });
-
-    });
+    };
+    
 })(jQuery);

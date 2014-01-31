@@ -857,6 +857,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 fluid.visitComponentChildren(child, function(gchild, gchildname, newPath, parentPath) {
                     that.clearComponent(child, gchildname, null, options, true, parentPath);
                 }, options, childPath);
+                fluid.fireEvent(child, "events.afterDestroy", [child, name, component]);
                 delete that.idToShadow[child.id];
                 delete idToInstantiator[child.id];
             }
@@ -1014,6 +1015,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return function () {
             instantiator.clearComponent(that, "", that, null, true);
             fluid.fireEvent(that, "events.onDestroy", [that, "", null]);
+            fluid.fireEvent(that, "events.afterDestroy", [that, "", null]);
         };
     };
 

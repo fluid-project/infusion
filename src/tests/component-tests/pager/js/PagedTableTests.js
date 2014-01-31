@@ -143,56 +143,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     // This IoC-enabled test must come first, as a result of an undiagnosed Firefox issue which causes the running
     // of the plain QUnit tests to somehow clobber the markup belonging to it
-    
-    fluid.tests.trackTooltip = function (disp, that, target, tooltip) {
-        var targetId = target.id;
-        if (disp === "open") {
-            that.tooltipMap[targetId] = tooltip;
-        } else {
-            delete that.tooltipMap[targetId];
-        }
-    };
-    
-    fluid.defaults("fluid.tests.trackTooltips", {
-        mergePolicy: {
-            tooltipListeners: "noexpand"
-        },
-        distributeOptions: {
-            source: "{that}.options.tooltipListeners",
-            removeSource: true,
-            target: "{that fluid.tooltip}.options.listeners"
-        },
-        tooltipListeners: {
-            afterOpen: {
-                funcName: "fluid.tests.trackTooltip",
-                args: ["open", "{trackTooltips}", "{arguments}.1", "{arguments}.2"] // event.target, tooltip
-            },
-            afterClose: {
-                funcName: "fluid.tests.trackTooltip",
-                args: ["close", "{trackTooltips}", "{arguments}.1", "{arguments}.2"] // event.target, tooltip
-            }
-        },
-        members: {
-            tooltipMap: {}
-        }
-    });
-    
-    fluid.tests.bindFocusNotify = function (that) {
-        that.container.focusin(that.events.notifyFocusChange.fire);
-        that.container.focusout(that.events.notifyFocusChange.fire);
-    };
-    
-    fluid.defaults("fluid.tests.focusNotifier", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
-        events: {
-            notifyFocusChange: null
-        },
-        listeners: {
-            onCreate: "fluid.tests.bindFocusNotify"
-        }
-    });
-    
-    
+       
     fluid.tests.tooltipModuleSource = function (pager) {
         var pageLinksTop = $("a", pager.pagerBar.locate("pageLinks"));
         var pageLinksBottom = $("a", pager["pagerBar-1"].locate("pageLinks"));
@@ -210,9 +161,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             sequence.push({
                 event: "{trackTooltips}.events.notifyFocusChange",
                 listener: function () {
-                    var visibleKeys = fluid.keys(pager.tooltipMap);
-                    jqUnit.assertDeepEq(message, targetIds, visibleKeys);
-                    fluid.each(pager.tooltipMap, function (tooltip) {
+                    fluid.tests.tooltip.assertVisible("The contents of the tooltip should be set", pager, targetIds, null, function (tooltip) {
                         jqUnit.assertNode("The contents of the tooltip should be set", tooltipContents[0], $("b", tooltip));
                     });
                 }
@@ -260,7 +209,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.tests.renderedPager",
                 container: "#rendered-ioc",
                 options: {
-                    gradeNames: ["fluid.tests.trackTooltips", "fluid.tests.focusNotifier"]
+                    gradeNames: ["fluid.tests.tooltip.trackTooltips", "fluid.tests.focusNotifier"]
                 }
             },
             fixtures: {
