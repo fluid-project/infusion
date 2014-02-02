@@ -23,50 +23,101 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     fluid.registerNamespace("fluid.tests.pager");
     
-    // NB: ensure to destroy each pager at the end of a test fixture in order to prevent leakage of tooltips, which 
-    // disrupts the final test which makes a lot of assumptions
+    // NB: ensure to destroy each pager at the end of a test fixture in order to prevent leakage of tooltips
       
-    /** Convenience rendered pager creator **/
-    var renderedPager = function (container, options) {
-        var defaultSetupOptions = {
-            columnDefs: [ 
-                {
-                    key: "animal",
-                    valuebinding: "*.animal",  
-                    sortable: true
-                }
-            ],
-            tooltip: {
-                type: "fluid.tooltip",
-                options: {
-                    delay: 0
-                }
-            },
-            annotateColumnRange: "animal",
-            dataOffset: "pets",
-            model: {
-                pageSize: 2
-            },
-            dataModel: {
-                pets: [
-                    {
-                        animal: "dog"
-                    },
-                    {
-                        animal: "cat"
-                    },
-                    {
-                        animal: "bird"
-                    },
-                    {
-                        animal: "fish"
-                    }
-                ]
+    fluid.defaults("fluid.tests.renderedPager", {
+        gradeNames: ["fluid.pagedTable", "autoInit"],
+        mergePolicy: {
+            dataModel: "replace"
+        },
+        columnDefs: [ 
+            {
+                key: "animal",
+                valuebinding: "*.animal",  
+                sortable: true
             }
-        };
-       
-        return fluid.pagedTable(container, fluid.merge("replace", defaultSetupOptions, options));
+        ],
+        tooltip: {
+            type: "fluid.tooltip",
+            options: {
+                delay: 0
+            }
+        },
+        annotateColumnRange: "animal",
+        dataOffset: "pets",
+        model: {
+            pageSize: 2
+        },
+        dataModel: {
+            pets: [
+                {
+                    animal: "dog"
+                },
+                {
+                    animal: "cat"
+                },
+                {
+                    animal: "bird"
+                },
+                {
+                    animal: "fish"
+                }
+            ]
+        }
+    });
+    
+    fluid.tests.pager.animalDataModel = {
+        pets: [
+            {
+                category: "B",
+                breed: "Siberian Husky",
+                origin: "Russia"
+            },
+            {
+                category: "C",
+                breed: "Old German Shepherd Dog",
+                origin: "Germany"
+            },
+            {
+                category: "A",
+                breed: "Old England Old English Terrier",
+                origin: "Germany"
+            },
+            {
+                category: "D",
+                breed: "Kuvasz",
+                origin: "Hungary"
+            },
+            {
+                category: "D",
+                breed: "King Shepherd",
+                origin: "United States"
+            },
+            {
+                category: "B",
+                breed: "Kishu",
+                origin: "Japan"
+            }
+        ]
     };
+    
+    fluid.tests.pager.animalColumnDefs = [ 
+        {
+            key: "category",
+            valuebinding: "*.category",  
+            sortable: true
+        },
+        {
+            key: "breed",
+            valuebinding: "*.breed",
+            sortable: true 
+        },
+        {
+            key: "origin",
+            valuebinding: "*.origin",
+            sortable: true
+        }
+    ];
     
     
     /** Convenience strategy pager creator **/
@@ -84,9 +135,105 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             pageList: pageList
         };
-        var pager = renderedPager("#rendered", opt);
+        var pager = fluid.tests.renderedPager("#rendered", opt);
         return pager;
     };
+
+    $(document).ready(function () {
+
+    // This IoC-enabled test must come first, as a result of an undiagnosed Firefox issue which causes the running
+    // of the plain QUnit tests to somehow clobber the markup belonging to it
+       
+    fluid.tests.tooltipModuleSource = function (pager) {
+        var pageLinksTop = $("a", pager.pagerBar.locate("pageLinks"));
+        var pageLinksBottom = $("a", pager["pagerBar-1"].locate("pageLinks"));
+        
+        var tooltipContents = [
+            [
+                {nodeName: "b", nodeText: "bird"},
+                {nodeName: "b", nodeText: "fish"}
+            ]
+        ];
+
+        var sequence = [];
+        
+        var assertVisibleTips = function (message, targetIds) {
+            sequence.push({
+                event: "{trackTooltips}.events.notifyFocusChange",
+                listener: function () {
+                    fluid.tests.tooltip.assertVisible("The contents of the tooltip should be set", pager, targetIds, null, function (tooltip) {
+                        jqUnit.assertNode("The contents of the tooltip should be set", tooltipContents[0], $("b", tooltip));
+                    });
+                }
+            })
+        };
+
+        var tooltipTest = function (location) {
+            return function (idx, linkEl) {
+                var linkId = linkEl.id;
+                var link = $(linkEl);
+                sequence.push({
+                    element: link,
+                    jQueryTrigger: "focus"
+                });
+
+                if (link.hasClass(pager.pagerBar.options.styles.currentPage)) { // assumption that this will not change between now and then!
+                    assertVisibleTips("There shouldn't be any tooltips visible when the currentPage is focused", []);
+                } else {
+                    assertVisibleTips("Only the tooltip for page link " + (idx + 1) + ", in the " + location + " page bar is visible", [linkId]);
+                }
+                sequence.push({
+                    element: link,
+                    jQueryTrigger: "blur"
+                });
+                assertVisibleTips("There shouldn't be any tooltips visible when none of the pageLinks are focused", []);
+            };
+        };
+        
+        pageLinksTop.each(tooltipTest("top"));
+        pageLinksBottom.each(tooltipTest("bottom"));
+        return {
+            name: "Pager tooltip tests",
+            tests: {
+                name: "Tooltip visibility",
+                sequence: sequence
+            }
+        }
+    };
+
+    fluid.defaults("fluid.tests.pagerTooltipEnv", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        markupFixture: "#rendered-ioc",
+        components: {
+            pager: {
+                type: "fluid.tests.renderedPager",
+                container: "#rendered-ioc",
+                options: {
+                    gradeNames: ["fluid.tests.tooltip.trackTooltips", "fluid.tests.focusNotifier"]
+                }
+            },
+            fixtures: {
+                type: "fluid.test.testCaseHolder",
+                options: {
+                    moduleSource: {
+                        func: "fluid.tests.tooltipModuleSource",
+                        args: "{pager}"
+                    }
+                }
+            }
+        }
+    });
+
+    // QUnit's markup restoration cycle can't play nicely with ours. It grabs the document's markup at a slightly later point
+    // than our initialisation - during which time we have rendered already and clobbered it. It doesn't expose an event
+    // that lets us hook into this process, so we must make sure that plain tests and IoC tests always use different markup 
+    // areas.
+    
+    var rendered = $("#rendered").html();
+    var rendered_ioc = $("<div id=\"rendered-ioc\"></div>").html(rendered);
+    rendered_ioc.appendTo(document.body);
+    fluid.test.runTests(["fluid.tests.pagerTooltipEnv"]);
+
 
     // Just tests that the pager will initialize with only a container, and dataModel passed in.
     // The rest of the options are the defaults.
@@ -97,10 +244,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertValue("The default pager initialized", pager);
         pager.destroy();
     });
-    
+   
     
     jqUnit.test("Pager Current Page label", function () {
-        var pager = renderedPager("#rendered");
+        var pager = fluid.tests.renderedPager("#rendered");
         var currentPages = $(".fl-pager-currentPage", pager.container);
         
         currentPages.each(function (idx, currentPage) {
@@ -149,8 +296,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return {
                 type: "fluid.pager.renderedPageList",
                 options: {
-                    dataModel: fluid.tests.pager.animalDataModel,
-                    columnDefs: fluid.tests.pager.animalColumnDefs,
+                    dataModel: fluid.copy(fluid.tests.pager.animalDataModel),
+                    columnDefs: fluid.copy(fluid.tests.pager.animalColumnDefs),
                     pageStrategy: fluid.pager.gappedPageStrategy(j, m)
                 }
             };
@@ -205,72 +352,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
         clickNext();
     });
- 
-    fluid.tests.pager.animalDataModel = {
-        pets: [
-            {
-                category: "B",
-                breed: "Siberian Husky",
-                origin: "Russia"
-            },
-            {
-                category: "C",
-                breed: "Old German Shepherd Dog",
-                origin: "Germany"
-            },
-            {
-                category: "A",
-                breed: "Old England Old English Terrier",
-                origin: "Germany"
-            },
-            {
-                category: "D",
-                breed: "Kuvasz",
-                origin: "Hungary"
-            },
-            {
-                category: "D",
-                breed: "King Shepherd",
-                origin: "United States"
-            },
-            {
-                category: "B",
-                breed: "Kishu",
-                origin: "Japan"
-            }
-        ]
-    };
-    
-    fluid.tests.pager.animalColumnDefs = [ 
-        {
-            key: "category",
-            valuebinding: "*.category",  
-            sortable: true
-        },
-        {
-            key: "breed",
-            valuebinding: "*.breed",
-            sortable: true 
-        },
-        {
-            key: "origin",
-            valuebinding: "*.origin",
-            sortable: true
-        }
-    ];
          
     jqUnit.test("Page Table Header aria-sort and title, and body rendering test", function () {
         var strings = fluid.defaults("fluid.table").strings;
 
         var opt = {
-            dataModel: fluid.tests.pager.animalDataModel,
-            columnDefs: fluid.tests.pager.animalColumnDefs,
+            dataModel: fluid.copy(fluid.tests.pager.animalDataModel),
+            columnDefs: fluid.copy(fluid.tests.pager.animalColumnDefs),
             annotateColumnRange: "category",
             model: {
                 pageSize: 6
             }
         };
-        var pager = renderedPager("#rendered", opt);
+        var pager = fluid.tests.renderedPager("#rendered", opt);
         var currentHeaders = pager.locate("headerSortStylisticOffset");
         
         // Check that the table data was actually rendered into the markup
@@ -359,7 +453,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
     
       
-     /** 
+    /** 
      * Test consistentGappedPageStrategy Strategy
      */
     jqUnit.asyncTest("Pager consistentGappedPageStrategy", function () {            
@@ -424,10 +518,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         //total queue size allowed is current_page + 2 * (j + m) + self + 2 skipped_pages                        
         var totalPages = 2 * (j + m) + 3;
         var allPagesAfterClickedEachFn = function (index, element) {
-                if (!$(element).hasClass("flc-pager-pageLink-skip")) {
-                    jqUnit.assertTrue("On [page " + i + "] and checking [" + $(element).find('a').attr('id') + "]", shouldExistInList(i, element));
-                }
-            };
+            if (!$(element).hasClass("flc-pager-pageLink-skip")) {
+                jqUnit.assertTrue("On [page " + i + "] and checking [" + $(element).find('a').attr('id') + "]", shouldExistInList(i, element));
+            }
+        };
         
         var i = 1;
 
@@ -450,51 +544,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
         clickNext();
     });
-    
-    
-    jqUnit.test("Pager tooltip", function () {
-        var pager = renderedPager("#rendered");
-        var pageLinksTop = $("a", pager.pagerBar.locate("pageLinks"));
-        var pageLinksBottom = $("a", pager["pagerBar-1"].locate("pageLinks"));
-        // TODO: This method of locating tooltips makes horrendous assumptions
-        var tooltips = $(".ui-tooltip-content");
-        var midPoint = tooltips.length / 2;
-        
-        var splitTooltips = {
-            top: tooltips.slice(0, midPoint),
-            bottom: tooltips.slice(midPoint)
-        };
-        
-        var tooltipContents = [
-            [
-                {nodeName: "b", nodeText: "bird"},
-                {nodeName: "b", nodeText: "fish"}
-            ]
-        ];
 
-        var tooltipTest = function (location) {
-            var toolTipIdx = 0;
-            return function (idx, link) {
-                link = $(link);
-                var tooltip = splitTooltips[location].eq(toolTipIdx);
-
-                link.focus();
-                if (link.hasClass(pager.pagerBar.options.styles.currentPage)) {
-                    jqUnit.assertEquals("There shouldn't be any tooltips visible when the currentPage is focused", 0, tooltips.filter(":visible").length);
-                } else {
-                    jqUnit.assertTrue("The tooltip for page link " + (idx + 1) + ", in the " + location + " page bar is visible", tooltip.is(":visible"));
-                    jqUnit.assertEquals("Only 1 tooltip is visible", 1, tooltips.filter(":visible").length);
-                    jqUnit.assertNode("The contents of the tooltip should be set", tooltipContents[toolTipIdx], $("b", tooltip));
-                    toolTipIdx++;
-                }
-                link.blur();
-                jqUnit.assertEquals("There shouldn't be any tooltips visible when none of the pageLinks are focused", 0, tooltips.filter(":visible").length);
-            };
-        };
-        
-        pageLinksTop.each(tooltipTest("top"));
-        pageLinksBottom.each(tooltipTest("bottom"));
-        pager.destroy();
+    
     });
     
 })(jQuery);

@@ -3,6 +3,7 @@ Copyright 2007-2010 University of Cambridge
 Copyright 2007-2009 University of Toronto
 Copyright 2010-2011 Lucendo Development Ltd.
 Copyright 2010 OCAD University
+Copyright 2005-2013 jQuery Foundation, Inc. and other contributors
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -24,6 +25,46 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+    // polyfill for $.browser which was removed in jQuery 1.9 and later
+    // Taken from jquery-migrate-1.2.1.js, 
+    // jQuery Migrate - v1.2.1 - 2013-05-08
+    // https://github.com/jquery/jquery-migrate
+    // Copyright 2005, 2013 jQuery Foundation, Inc. and other contributors; Licensed MIT
+    
+    fluid.uaMatch = function (ua) {
+        ua = ua.toLowerCase();
+
+        var match = /(chrome)[ \/]([\w.]+)/.exec( ua ) ||
+            /(webkit)[ \/]([\w.]+)/.exec( ua ) ||
+            /(opera)(?:.*version|)[ \/]([\w.]+)/.exec( ua ) ||
+            /(msie) ([\w.]+)/.exec( ua ) ||
+        ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec( ua ) || [];
+
+        return {
+            browser: match[ 1 ] || "",
+            version: match[ 2 ] || "0"
+        };
+    };
+    
+    var matched, browser;
+
+    // Don't clobber any existing jQuery.browser in case it's different
+    if (!$.browser) {
+        matched = fluid.uaMatch(navigator.userAgent);
+        browser = {};
+      
+        if (matched.browser) {
+            browser[matched.browser] = true;
+            browser.version = matched.version;
+        }
+        // Chrome is Webkit, but Webkit is also Safari.
+        if (browser.chrome) {
+            browser.webkit = true;
+        } else if (browser.webkit) {
+            browser.safari = true;
+        }
+        $.browser = browser;
+    }
 
     // Private constants.
     var NAMESPACE_KEY = "fluid-scoped-data";
@@ -56,13 +97,13 @@ var fluid_1_5 = fluid_1_5 || {};
 
     var lastFocusedElement = null;
     
-    $(document).bind("focusin", function(event){
+    $(document).bind("focusin", function (event){
         lastFocusedElement = event.target;
     });
     
-    fluid.getLastFocusedElement = function() {
+    fluid.getLastFocusedElement = function () {
         return lastFocusedElement;
-    }
+    };
 
 
     var ENABLEMENT_KEY = "enablement";

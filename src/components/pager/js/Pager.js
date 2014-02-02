@@ -160,7 +160,7 @@ var fluid_1_5 = fluid_1_5 || {};
             localID: page + 1,
             value: page + 1,
             pageIndex: page,
-            decorators: [
+            decorators: [{ identify: "pageLink:" + page},
                 {
                     type: "jQuery",
                     func: "click", 
@@ -221,6 +221,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.pager.renderedPageList", {
         gradeNames: ["fluid.rendererComponent", "fluid.pager.pageList", "autoInit"],
         rendererOptions: {
+            idMap: {},
             cutpoints: [ 
                 {
                     id: "page-link:link",
@@ -579,10 +580,6 @@ var fluid_1_5 = fluid_1_5 || {};
         
         strings: {
             last: " (last)"
-        },
-        
-        markup: {
-            rangeAnnotation: "<b> %first </b><br/>&mdash;<br/><b> %last </b>"
         }
     });
     
