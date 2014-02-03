@@ -336,9 +336,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
             button.focus();
             jqUnit.assertTrue("After focus, display and textEditButton are focussed", display.parent().hasClass(inlineEditor.options.styles.focus));
-            jqUnit.isVisible("After enter pressed, display field is visible", "#display");
-            jqUnit.notVisible("After enter pressed, edit field is hidden", "#edit-container");
-            jqUnit.isVisible("After enter pressed, button is visible", button);
+            jqUnit.isVisible("Before enter pressed, display field is visible", "#display");
+            jqUnit.notVisible("Before enter pressed, edit field is hidden", "#edit-container");
+            jqUnit.isVisible("Before enter pressed, button is visible", button);
             button.simulate("keydown", {keyCode: $.ui.keyCode.ENTER});
                 
             jqUnit.assertEquals("After enter pressed, edit field contains same text as display field", display.text(), edit.prop("value"));
