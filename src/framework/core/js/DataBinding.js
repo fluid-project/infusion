@@ -171,7 +171,7 @@ var fluid_1_5 = fluid_1_5 || {};
             return fluid.model.accessImpl(root, EL, newValue, config, initSegs, returnSegs, fluid.model.traverseWithStrategy);
         }
     };
-
+    
     // Implementation notes: The EL path manipulation utilities here are somewhat more thorough
     // and expensive versions of those provided in Fluid.js - there is some duplication of
     // functionality. This is a tradeoff between stability and performance - the versions in
@@ -179,11 +179,11 @@ var fluid_1_5 = fluid_1_5 || {};
     // as \. and \ as \\ as the versions here. The implementations here are not
     // performant and are left here partially as an implementation note. Problems will
     // arise if clients manipulate JSON structures containing "." characters in keys as if they
-    // are models. The basic  utilities fluid.path(), fluid.parseEL and fluid.composePath are
+    // are models. The basic utilities fluid.path(), fluid.parseEL and fluid.composePath are
     // the ones recommended for general users and the following implementations will
     // be upgraded to use regexes in future to make them better alternatives
 
-    fluid.pathUtil = {};
+    fluid.registerNamespace("fluid.pathUtil");
 
     var getPathSegmentImpl = function (accept, path, i) {
         var segment = null; // TODO: rewrite this with regexes and replaces
@@ -219,6 +219,107 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     var globalAccept = []; // TODO: serious reentrancy risk here, why is this impl like this?
+
+    /** A version of fluid.model.parseEL that apples escaping rules - this allows path segments
+     * to contain period characters . - characters "\" and "}" will also be escaped. WARNING -
+     * this current implementation is EXTREMELY slow compared to fluid.model.parseEL and should
+     * not be used in performance-sensitive applications */
+    // supported, PUBLIC API function
+    fluid.pathUtil.parseEL = function (path) {
+        var togo = [];
+        var index = 0;
+        var limit = path.length;
+        while (index < limit) {
+            var firstdot = getPathSegmentImpl(globalAccept, path, index);
+            togo.push(globalAccept[0]);
+            index = firstdot + 1;
+        }
+        return togo;
+    };
+
+    // supported, PUBLIC API function
+    fluid.pathUtil.composeSegment = function (prefix, toappend) {
+        toappend = toappend.toString();
+        for (var i = 0; i < toappend.length; ++i) {
+            var c = toappend.charAt(i);
+            if (c === '.' || c === '\\' || c === '}') {
+                prefix += '\\';
+            }
+            prefix += c;
+        }
+        return prefix;
+    };
+
+    /** Escapes a single path segment by replacing any character ".", "\" or "}" with
+     * itself prepended by \
+     */
+     // supported, PUBLIC API function
+    fluid.pathUtil.escapeSegment = function (segment) {
+        return fluid.pathUtil.composeSegment("", segment);
+    };
+
+    /**
+     * Compose a prefix and suffix EL path, where the prefix is already escaped.
+     * Prefix may be empty, but not null. The suffix will become escaped.
+     */
+    // supported, PUBLIC API function
+    fluid.pathUtil.composePath = function (prefix, suffix) {
+        if (prefix.length !== 0) {
+            prefix += '.';
+        }
+        return fluid.pathUtil.composeSegment(prefix, suffix);
+    };
+    
+    /**
+     * Compose a set of path segments supplied as arguments into an escaped EL expression. Escaped version
+     * of fluid.model.composeSegments
+     */
+    
+    // supported, PUBLIC API function    
+    fluid.pathUtil.composeSegments = function () {
+        var path = "";
+        for (var i = 0; i < arguments.length; ++ i) {
+            path = fluid.pathUtil.composePath(path, arguments[i]);
+        }
+        return path;
+    };
+    
+    fluid.model.unescapedParser = {
+        parse: fluid.model.parseEL,
+        compose: fluid.model.composeSegments
+    };
+
+    // supported, PUBLIC API record
+    fluid.model.defaultGetConfig = {
+        parser: fluid.model.unescapedParser,
+        strategies: [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy]
+    };
+
+    // supported, PUBLIC API record
+    fluid.model.defaultSetConfig = {
+        parser: fluid.model.unescapedParser,
+        strategies: [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy, fluid.model.defaultCreatorStrategy]
+    };
+    
+    fluid.model.escapedParser = {
+        parse: fluid.pathUtil.parseEL,
+        compose: fluid.pathUtil.composeSegments
+    };
+
+    // supported, PUBLIC API record
+    fluid.model.escapedGetConfig = {
+        parser: fluid.model.escapedParser,
+        strategies: [fluid.model.defaultFetchStrategy]
+    };
+
+    // supported, PUBLIC API record
+    fluid.model.escapedSetConfig = {
+        parser: fluid.model.escapedParser,
+        strategies: [fluid.model.defaultFetchStrategy, fluid.model.defaultCreatorStrategy]
+    };
+
+
+    /** OLD CHANGEAPPLIER IMPLEMENTATION (Infusion 1.5 and before - this will be removed on Fluid 2.0) **/
 
     /** Parses a path segment, following escaping rules, starting from character index i in the supplied path */
     fluid.pathUtil.getPathSegment = function (path, i) {
@@ -256,53 +357,6 @@ var fluid_1_5 = fluid_1_5 || {};
         return fluid.pathUtil.getPathSegment(path, lastdot + 1);
     };
 
-    /** A version of fluid.model.parseEL that apples escaping rules - this allows path segments
-     * to contain period characters . - characters "\" and "}" will also be escaped. WARNING -
-     * this current implementation is EXTREMELY slow compared to fluid.model.parseEL and should
-     * not be used in performance-sensitive applications */
-
-    fluid.pathUtil.parseEL = function (path) {
-        var togo = [];
-        var index = 0;
-        var limit = path.length;
-        while (index < limit) {
-            var firstdot = getPathSegmentImpl(globalAccept, path, index);
-            togo.push(globalAccept[0]);
-            index = firstdot + 1;
-        }
-        return togo;
-    };
-
-    var composeSegment = function (prefix, toappend) {
-        toappend = toappend.toString();
-        for (var i = 0; i < toappend.length; ++i) {
-            var c = toappend.charAt(i);
-            if (c === '.' || c === '\\' || c === '}') {
-                prefix += '\\';
-            }
-            prefix += c;
-        }
-        return prefix;
-    };
-
-    /** Escapes a single path segment by replacing any character ".", "\" or "}" with
-     * itself prepended by \
-     */
-    fluid.pathUtil.escapeSegment = function (segment) {
-        return composeSegment("", segment);
-    };
-
-    /**
-     * Compose a prefix and suffix EL path, where the prefix is already escaped.
-     * Prefix may be empty, but not null. The suffix will become escaped.
-     */
-    fluid.pathUtil.composePath = function (prefix, suffix) {
-        if (prefix.length !== 0) {
-            prefix += '.';
-        }
-        return composeSegment(prefix, suffix);
-    };
-
     /** Helpful utility for use in resolvers - matches a path which has already been
       * parsed into segments **/
 
@@ -319,7 +373,8 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     /** Determine the path by which a given path is nested within another **/
-
+    // TODO: This utility is not used in the framework, and will cease to be useful in client code
+    // once we move over to the declarative system for change binding
     fluid.pathUtil.getExcessPath = function (base, longer) {
         var index = longer.indexOf(base);
         if (index !== 0) {
@@ -404,30 +459,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 delete pen.root[last];
             }
         }
-    };
-
-    fluid.model.defaultGetConfig = {
-        strategies: [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy]
-    };
-
-    fluid.model.defaultSetConfig = {
-        strategies: [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy, fluid.model.defaultCreatorStrategy]
-    };
-
-    fluid.model.escapedGetConfig = {
-        parser: {
-            parse: fluid.pathUtil.parseEL,
-            compose: fluid.pathUtil.composePath
-        },
-        strategies: [fluid.model.defaultFetchStrategy]
-    };
-
-    fluid.model.escapedSetConfig = {
-        parser: {
-            parse: fluid.pathUtil.parseEL,
-            compose: fluid.pathUtil.composePath
-        },
-        strategies: [fluid.model.defaultFetchStrategy, fluid.model.defaultCreatorStrategy]
     };
 
     /** Add a listener to a ChangeApplier event that only acts in the case the event

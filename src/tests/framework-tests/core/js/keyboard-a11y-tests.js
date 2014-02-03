@@ -219,7 +219,7 @@ if (!fluid.unwrap) {
         jqUnit.assertFalse(nonSelectableItem.fluid("tabindex.has"));
     });
 
-    jqUnit.test("Selects first item when container is focusssed by default", function () {
+    jqUnit.test("Selects first item when container is focussed by default", function () {
         // Don't specify any options, just use the default behaviour.
         var menu = makeMenuSelectable();
         jqUnit.assertFirstMenuItemIsSelectedOnFocus(menu);
