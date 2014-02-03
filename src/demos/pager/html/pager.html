@@ -1,27 +1,25 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en"> 
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
     <head>
         <meta name="generator" content="HTML Tidy, see www.w3.org" />
         <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
 
-        <title>Pager Demo</title>      
-        
+        <title>Pager Demo</title>
+
         <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-reset-global.css" />
         <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-base-global.css" />
-        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-layout.css" />        
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-layout.css" />
         <link rel="stylesheet" type="text/css" href="../../../components/pager/css/Pager.css" media="all" />
-        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/plugins/tooltip/css/jquery.tooltip.css" media="all" />
-        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/jquery.ui.theme.css" />
+        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/default-theme/jquery.ui.theme.css" />
         <link rel="stylesheet" type="text/css" href="../css/pager.css" />
-        
-        
+
+
         <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.widget.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.position.js"></script>
-        <script type="text/javascript" src="../../../lib/jquery/plugins/bgiframe/js/jquery.bgiframe.js"></script>
-        <script type="text/javascript" src="../../../lib/jquery/plugins/tooltip/js/jquery.ui.tooltip.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.tooltip.js"></script>
         <script type="text/javascript" src="../../../lib/json/js/json2.js"></script>
 
         <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
@@ -44,7 +42,7 @@
         <script type="text/javascript" src="../../../components/pager/js/Table.js"></script>
         <script type="text/javascript" src="../../../components/pager/js/PagedTable.js"></script>
         <script type="text/javascript" src="../js/pagerDemo.js"></script>
-        
+
     </head>
 
 <body>
@@ -53,7 +51,7 @@
         <h1>School Roster</h1>
         <div class="flc-pager-summary">Summary goes here</div>
 
-        <div class="flc-pager-top">    
+        <div class="flc-pager-top">
             <ul class="demo-pager-bar fl-force-left fl-focus">
                 <li class="flc-pager-previous demo-pager-previous"><a href="#" title="Previous Page">&lt; Previous</a></li>
                 <li>
@@ -64,7 +62,7 @@
                     </ul>
                 </li>
                 <li class="demo-pager-next flc-pager-next"><a href="#" title="Next Page">Next &gt;</a></li>
-            </ul> 
+            </ul>
         </div>
 
         <div class="demo-pager-page-size fl-force-right fl-focus">
@@ -75,7 +73,7 @@
                 <option value="50">50</option>
             </select>
         </div>
-        
+
         <div id="membership-table" class="fl-container-flex demo-pager-table-data fl-pager-data">
            <table summary="Table of all students and teachers." xmlns:rsf="http://ponder.org.uk">
                 <thead>
@@ -86,19 +84,19 @@
                         <th><span rsf:id="user-comment" class="demo-pager-head-comments">Comments</span></th>
                     </tr>
                 </thead>
-    
+
                 <tbody>
                     <tr rsf:id="row:">
                         <td><span rsf:id="user-link">Edee</span></td>
                         <td><span rsf:id="user-email">edee@none.none</span></td>
-                        <td><span rsf:id="user-role">Instructor</span></td>      
+                        <td><span rsf:id="user-role">Instructor</span></td>
                         <td><span rsf:id="user-comment">The best teacher.</span></td>
                     </tr>
                 </tbody>
             </table>
-        </div>        
-    
-        <div class="flc-pager-bottom">    
+        </div>
+
+        <div class="flc-pager-bottom">
             <ul class="demo-pager-bar fl-force-left fl-focus">
                 <li class="flc-pager-previous demo-pager-previous"><a href="#">&lt; Previous</a></li>
                 <li>
@@ -109,11 +107,11 @@
                     </ul>
                 </li>
                 <li class="flc-pager-next demo-pager-next"><a href="#">Next &gt;</a></li>
-            </ul> 
+            </ul>
         </div>
-    
+
     </div>
-    
+
     <script type="text/javascript">
         demo.initPager();
     </script>

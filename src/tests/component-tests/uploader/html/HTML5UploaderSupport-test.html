@@ -28,6 +28,7 @@
     <!--  These are the jqUnit test js files -->
     <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
     <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+    <script type="text/javascript" src="../../../test-core/utils/js/IoCTestUtils.js"></script>
 
     <script type="text/javascript" src="../js/UploaderTestUtilities.js"></script>
     <script type="text/javascript" src="../js/HTML5UploaderSupportTests.js"></script>
@@ -46,6 +47,11 @@
         <div id="browseButtonContainer">
             <a href="#" id="browseButton" class="flc-uploader-button-browse">Browse Files...</a>
         </div>
-     </div>
+    </div>
+    <!-- A separate instance for the IoC testing fixtures to avoid confusing standard Qunit markup teardown -->
+    <div id="iocBrowseButtonContainer">
+        <a href="#" id="iocBrowseButton" class="flc-uploader-button-browse">Browse Files...</a>
+    </div>
+    <a href="#" id="focusTarget" />
 </body>
 </html>

@@ -1205,4 +1205,37 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Total invalidation", expected4, that.model);        
     });
     
+     // FLUID-3674: Old-fashioned model sharing between components is still possible (remove this test when old grades are removed)
+    var fluid3674Model = {
+        key: "value"
+    };
+
+    fluid.defaults("fluid.tests.fluid3674root", {
+        gradeNames: ["fluid.modelComponent", "autoInit"],
+        model: fluid3674Model,
+        components: {
+            sub: {
+                type: "fluid.modelComponent",
+                options: {
+                    model: "{fluid3674root}.model",
+                    members: {
+                        applier: "{fluid3674root}.applier"
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.asyncTest("FLUID-3674: The direct model sharing btw components is maintained", function () {
+        var newModelValue = "another value",
+            that = fluid.tests.fluid3674root();
+
+        jqUnit.assertDeepEq("The subcomponent shares the same model", fluid3674Model, that.sub.model);
+        that.applier.modelChanged.addListener("key", function (newModel) {
+            jqUnit.assertEquals("The change request from the subcomponent triggers the model listener registered in the parent component", newModelValue, fluid.get(newModel, "key"));
+            jqUnit.start();
+        });
+        that.sub.applier.requestChange("key", newModelValue);
+    });
+    
 })(jQuery);

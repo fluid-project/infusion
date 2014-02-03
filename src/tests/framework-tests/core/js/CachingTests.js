@@ -27,6 +27,7 @@ fluid.registerNamespace("fluid.tests");
     fluid.defaults("fluid.tests.cacheComponent", {
         resources: {
             template: {
+                dataType: "json",
                 url: fluid.tests.cacheTestUrl,
                 forceCache: true
             }  
@@ -54,6 +55,7 @@ fluid.registerNamespace("fluid.tests");
     fluid.tests.testResources = {
         cacheTestUrl: {
             template: {
+                dataType: "json",
                 url: fluid.tests.cacheTestUrl,
                 forceCache: true,
                 fetchClass: "slowTemplate"
@@ -61,6 +63,7 @@ fluid.registerNamespace("fluid.tests");
         },
         cacheTestUrl2: {
             template: {
+                dataType: "json",
                 url: fluid.tests.cacheTestUrl2,
                 forceCache: true,
                 fetchClass: "fastTemplate"
@@ -68,6 +71,7 @@ fluid.registerNamespace("fluid.tests");
         },
         cacheTestUrl3: {
             template: {
+                dataType: "json",
                 url: fluid.tests.cacheTestUrl3,
                 forceCache: true,
                 fetchClass: "joinlessTemplate"
@@ -77,6 +81,7 @@ fluid.registerNamespace("fluid.tests");
 
     fluid.tests.finalResources = {
         template: {
+            dataType: "json",
             url: fluid.tests.cacheTestUrl4,
             forceCache: true
         }

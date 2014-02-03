@@ -99,12 +99,12 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     /**
-     * If obj is a jQuery, this function will return the first DOM element within it.
+     * If obj is a jQuery, this function will return the first DOM element within it. Otherwise, the object will be returned unchanged.
      * 
      * @param {jQuery} obj the jQuery instance to unwrap into a pure DOM element
      */
     fluid.unwrap = function (obj) {
-        return obj && obj.jquery && obj.length === 1 ? obj[0] : obj; // Unwrap the element if it's a jQuery.
+        return obj && obj.jquery && obj.length === 1 ? obj[0] : obj;
     };
     
     /**
