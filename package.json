@@ -35,11 +35,12 @@
     "preinstall": "sudo npm i -g grunt-cli"
   },
   "devDependencies": {
-    "grunt": "~0.4.1",
+    "grunt": "~0.4.2",
     "grunt-contrib-uglify": "~0.2.2",
     "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-copy": "~0.4.1",
     "grunt-contrib-concat": "~0.3.0",
-    "grunt-contrib-compress": "~0.5.2"
+    "grunt-contrib-compress": "~0.5.2",
+    "grunt-modulefiles": "git://github.com/fluid-project/grunt-modulefiles.git#1d2c18"
   }
 }
