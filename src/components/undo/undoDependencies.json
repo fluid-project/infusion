@@ -2,7 +2,7 @@
     "undo": {
         "name": "Undo",
         "description": "Step-back for model-based interactions.",
-        "files": "Undo.js",
+        "files": "./js/Undo.js",
         "dependencies": [
             "jQuery",
             "framework"

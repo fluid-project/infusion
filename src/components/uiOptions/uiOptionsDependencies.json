@@ -3,7 +3,7 @@
         "name": "User Interface Options",
         "description": "An instance of a preference editor created by the Infusion Preferences Framework. Users customize their preferences and needs for viewing content.",
         "files": [
-            "UIOptions.js"
+            "./js/UIOptions.js"
         ],
         "dependencies": ["jQuery", "framework", "preferences"]
     }

@@ -1,6 +1,8 @@
-{"tabs": {
-    "name": "Tabs",
-    "description": "A wrapper for jquery ui tabs",
-    "files": ["Tabs.js"],
-    "dependencies": ["jQuery", "jQueryUICore", "jQueryUIWidgets", "framework"]
-}}
+{
+    "tabs": {
+        "name": "Tabs",
+        "description": "A wrapper for jquery ui tabs",
+        "files": ["./js/Tabs.js"],
+        "dependencies": ["jQuery", "jQueryUICore", "jQueryUIWidgets", "framework"]
+    }
+}

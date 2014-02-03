@@ -39,13 +39,18 @@ module.exports = function(grunt) {
                 }]
             }
         },
+        modulefiles: {
+            all: {
+                src: ["./build/**/*Dependencies.json"]
+            }
+        },
         concat: {
             options: {
                 separator: ';',
                 banner: "/*! <%= pkg.name %> - v<%= pkg.version %> <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %>*/\n"
             },
-            dist: {
-              src: ['./build/src/lib/**/*.js', './build/src/framework/**/*.js', './build/src/components/**/*.js'],
+            all: {
+              src: "<%= modulefiles.all.output %>",
               dest: './build/infusionAll.js'
             }
         },
@@ -70,10 +75,11 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-compress');
+    grunt.loadNpmTasks('grunt-modulefiles');
 
     // Custom task(s):
-    grunt.registerTask("source", ["clean", "copy", "concat"]);
-    grunt.registerTask("minify", ["clean", "copy", "uglify", "concat"]);
+    grunt.registerTask("source", ["clean", "copy", "modulefiles", "concat"]);
+    grunt.registerTask("minify", ["clean", "copy", "uglify", "modulefiles", "concat"]);
     grunt.registerTask("srczip", ["source", "compress", "clean:build"]);
     grunt.registerTask("minzip", ["minify", "compress", "clean:build"]);
     grunt.registerTask("default", ["minzip"]);
