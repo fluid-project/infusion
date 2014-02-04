@@ -50,7 +50,7 @@ module.exports = function(grunt) {
                 banner: "/*! <%= pkg.name %> - v<%= pkg.version %> <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %>*/\n"
             },
             all: {
-              src: "<%= modulefiles.all.output %>",
+              src: "<%= modulefiles.all.output.files %>",
               dest: './build/infusionAll.js'
             }
         },
