@@ -6,12 +6,14 @@ module.exports = function(grunt) {
     grunt.initConfig({
         // Project package file destination.
         pkg: grunt.file.readJSON("package.json"),
+        allBuildName: "<%= pkg.name %>",
+        customBuildName: (grunt.option("name") || "custom") + "-<%= pkg.name %>",
         clean: {
             build: "build",
             products: "products"
         },
         copy: {
-            src: {
+            all: {
                 files: [{
                     src: ['src/**'],
                     dest: 'build/'
@@ -28,7 +30,7 @@ module.exports = function(grunt) {
             options: {
                 mangle: false
             },
-            my_target: {
+            all: {
                 files: [{
                     expand: true,     // Enable dynamic expansion.
                     cwd: './build/src/',      // Src matches are relative to this path.
@@ -57,21 +59,35 @@ module.exports = function(grunt) {
         },
         modulefiles: {
             all: {
-                src: ["./build/**/*Dependencies.json"]
+                src: ["./src/**/*Dependencies.json"]
             },
             custom: {
                 options: {
                     exclude: grunt.option("exclude"),
                     include: grunt.option("include")
                 },
-                src: ["**/*Dependencies.json"]
+                src: ["./src/**/*Dependencies.json"]
             }
         },
         map: {
-            customCopy: {
+            copyDirs: {
                 prop: "copy.custom.files.0.src",
                 fn: function (str) {
                     return str + "/**";
+                }
+            },
+            concatAllFiles: {
+                prop: "concat.all.src",
+                fn: function (str) {
+                    console.log(str);
+                    return "build/" + str;
+                }
+            },
+            concatCustomFiles: {
+                prop: "concat.custom.src",
+                fn: function (str) {
+                    console.log(str);
+                    return "build/" + str;
                 }
             }
         },
@@ -82,17 +98,17 @@ module.exports = function(grunt) {
             },
             all: {
               src: "<%= modulefiles.all.output.files %>",
-              dest: './build/infusionAll.js'
+              dest: './build/<%= allBuildName %>.js'
             },
             custom: {
               src: "<%= modulefiles.custom.output.files %>",
-              dest: './build/myInfusion.js'
+              dest: './build/<%= customBuildName %>.js'
             }
         },
         compress: {
             all: {
                 options: {
-                    archive: "products/infusionAll.zip"
+                    archive: "products/<%= allBuildName %>-<%= pkg.version %>.zip"
                 },
                 files: [{
                     expand: true,     // Enable dynamic expansion.
@@ -103,7 +119,7 @@ module.exports = function(grunt) {
             },
             custom: {
                 options: {
-                    archive: "products/myInfusion.zip"
+                    archive: "products/<%= customBuildName %>-<%= pkg.version %>.zip"
                 },
                 files: "<%= compress.all.files %>"
             }
@@ -126,10 +142,34 @@ module.exports = function(grunt) {
         grunt.config.set(this.data.prop, transformed);
     });
 
-    grunt.registerTask("source", ["clean", "copy", "modulefiles", "concat"]);
-    grunt.registerTask("minify", ["clean", "copy", "uglify", "modulefiles", "concat"]);
-    grunt.registerTask("srczip", ["source", "compress", "clean:build"]);
-    grunt.registerTask("minzip", ["minify", "compress", "clean:build"]);
-    grunt.registerTask("custom", ["clean", "modulefiles:custom", "map", "copy:custom", "uglify:custom", "concat:custom", "compress:custom", "clean:build"]);
-    grunt.registerTask("default", ["minzip"]);
+    grunt.registerTask("pathMap", "", function (target) {
+        if (target === "all") {
+            grunt.task.run("map:concatAllFiles");
+        } else if (target === "custom") {
+            grunt.task.run("map:copyDirs", "map:concatCustomFiles");
+        }
+    });
+
+    // Task for organizing the build
+    grunt.registerTask("build", "Generates a minified or source distribution for the specified build target", function (target) {
+        var tasks = [
+            "clean",
+            "modulefiles:" + target,
+            "pathMap:" + target,
+            "copy:" + target,
+            "uglify:" + target,
+            "concat:" + target,
+            "compress:" + target,
+            "clean:build"
+        ];
+        // remove the uglify task when creating a source build
+        if (grunt.option("source")) {
+            _.pull(tasks, "uglify:" + target);
+        }
+        grunt.task.run(tasks);
+    });
+
+    // grunt.registerTask("default", ["minzip"]);
+    grunt.registerTask("default", ["build:all"]);
+    grunt.registerTask("custom", ["build:custom"]);
 };
