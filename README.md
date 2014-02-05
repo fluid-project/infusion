@@ -11,16 +11,16 @@ Infusion includes:
 
 ##Where Can I See Infusion Components?##
 
-    http://fluidproject.org/products/infusion/infusion-demos/
+<http://fluidproject.org/products/infusion/infusion-demos/>
 
 
 ##How Do I Get Infusion?##
 
 You can checkout and fork Infusion on github:
 
-    https://github.com/fluid-project/infusion
+<https://github.com/fluid-project/infusion>
 
-See [How Do I Create an Infusion Package?][], for details on creating custom packages of Infusion.
+See [How Do I Create an Infusion Package?](#how-do-i-create-an-infusion-package), for details on creating custom packages of Infusion.
 
 ##Who Makes Infusion, and How Can I Help?##
 
@@ -28,7 +28,7 @@ The Fluid community is an international group of designers, developers, and test
 
 The best way to join the Fluid Community is to jump in to any of our community activities. Visit our "Get Involved" page for links to our mailing lists, chat room, wiki, etc.:
 
-    http://fluidproject.org/getinvolved/
+<http://fluidproject.org/getinvolved/>
 
 
 ##How Do I Create an Infusion Package?##
@@ -41,9 +41,8 @@ Strictly speaking, Infusion can be used directly from source. However, you may w
 * [grunt-cli](http://gruntjs.com/)
 
 All other dependencies will be installed by running the following from the project root:
-```
-npm install
-```
+
+    npm install
 
 ###Package Types###
 
@@ -51,17 +50,13 @@ npm install
 
 Will include all of Infusion. The source files packaged along with the single concatenated js file will include all of the demos and unit tests. This is a good choice if you are trying to learn Infusion
 
-```
-grunt
-```
+    grunt
 
 #####Custom Build#####
 
 Will only include the modules you request, and all of their dependencies, minus any that are explicitely excluded. Unlike the all build, none of the demos ore tests are included with a custom package.
 
-```
-grunt custom
-```
+    grunt custom
 
 ###Build Options###
 
@@ -72,35 +67,29 @@ _the value can be ommited if --source is the last flag specified_
 
 By default all packages are minified. This option will allow you to maintain the readable spacing and comments.
 
-```
-grunt --source=true
+    grunt --source=true
 
-grunt custom --source=true
-```
+    grunt custom --source=true
 
 ####--include####
 
 __value__: "module(s)" (String)
 _only available to custom packages_
 
-The include option takes in a comma separated string of the [Modules][] to be included in a custom package.
+The include option takes in a comma separated string of the [Modules](#modules) to be included in a custom package.
 
-```
-grunt custom --include="inlineEdit, uiOptions"
-```
+    grunt custom --include="inlineEdit, uiOptions"
 
 ####--exclude####
 
 __value__: "module(s)" (String)
 _only available to custom packages_
 
-The exclude option takes in a comma separated string of the [Modules][] to be excluded from a custom package. The --exlclude option takes priority over --include.
+The exclude option takes in a comma separated string of the [Modules](#modules) to be excluded from a custom package. The --exlclude option takes priority over --include.
 
-```
-grunt custom --exclude="jQuery"
+    grunt custom --exclude="jQuery"
 
-grunt custom --include="framework" --exclude="jQuery"
-```
+    grunt custom --include="framework" --exclude="jQuery"
 
 ####--name####
 
@@ -109,9 +98,7 @@ _only available to custom packages_
 
 By default custom packages are named like _custom-infusion-<version>.zip_ and the concatenated js file is called _custom-infusion.js_. By supplying the --name option you can replace "custom" with any other valued name you like.
 
-```
-grunt custom --name="myPackage"
-```
+    grunt custom --name="myPackage"
 
 ###Modules###
 
