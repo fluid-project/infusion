@@ -1,0 +1,152 @@
+
+##What Is Infusion?##
+
+Infusion is a different kind of JavaScript framework. Our approach is to leave you in control-- it's your interface, using your markup, your way. Infusion is accessible and very, very configurable.
+
+Infusion includes:
+* an application framework for developing flexible stuff with JavaScript and jQuery
+* a collection of accessible UI components
+* a lightweight CSS framework
+
+
+##Where Can I See Infusion Components?##
+
+    http://fluidproject.org/products/infusion/infusion-demos/
+
+
+##How Do I Get Infusion?##
+
+You can checkout and fork Infusion on github:
+
+    https://github.com/fluid-project/infusion
+
+See [How Do I Create an Infusion Package?][], for details on creating custom packages of Infusion.
+
+##Who Makes Infusion, and How Can I Help?##
+
+The Fluid community is an international group of designers, developers, and testers who focus on a common mission: improving the user experience and accessibility of the open web.
+
+The best way to join the Fluid Community is to jump in to any of our community activities. Visit our "Get Involved" page for links to our mailing lists, chat room, wiki, etc.:
+
+    http://fluidproject.org/getinvolved/
+
+
+##How Do I Create an Infusion Package?##
+
+Strictly speaking, Infusion can be used directly from source. However, you may want to minimize on round trips to the server and on file size. With this in mind, you will likely want to create source and minified versions of the concatenated JavaScript files by using the grunt build described below. Additionally you'll also be able to remove any unneed features and libraries that you may already have in your project.
+
+###Dependencies###
+
+* [node.js](http://nodejs.org/)
+* [grunt-cli](http://gruntjs.com/)
+
+All other dependencies will be installed by running the following from the project root:
+```
+npm install
+```
+
+###Package Types###
+
+####Infusion all build####
+
+Will include all of Infusion. The source files packaged along with the single concatenated js file will include all of the demos and unit tests. This is a good choice if you are trying to learn Infusion
+
+```
+grunt
+```
+
+#####Custom Build#####
+
+Will only include the modules you request, and all of their dependencies, minus any that are explicitely excluded. Unlike the all build, none of the demos ore tests are included with a custom package.
+
+```
+grunt custom
+```
+
+###Build Options###
+
+####--source####
+
+__value__: true (Boolean) 
+_the value can be ommited if --source is the last flag specified_
+
+By default all packages are minified. This option will allow you to maintain the readable spacing and comments.
+
+```
+grunt --source=true
+
+grunt custom --source=true
+```
+
+####--include####
+
+__value__: "module(s)" (String)
+_only available to custom packages_
+
+The include option takes in a comma separated string of the [Modules][] to be included in a custom package.
+
+```
+grunt custom --include="inlineEdit, uiOptions"
+```
+
+####--exclude####
+
+__value__: "module(s)" (String)
+_only available to custom packages_
+
+The exclude option takes in a comma separated string of the [Modules][] to be excluded from a custom package. The --exlclude option takes priority over --include.
+
+```
+grunt custom --exclude="jQuery"
+
+grunt custom --include="framework" --exclude="jQuery"
+```
+
+####--name####
+
+__value__: "custom name"
+_only available to custom packages_
+
+By default custom packages are named like _custom-infusion-<version>.zip_ and the concatenated js file is called _custom-infusion.js_. By supplying the --name option you can replace "custom" with any other valued name you like.
+
+```
+grunt custom --name="myPackage"
+```
+
+###Modules###
+
+####Framework Modules####
+
+* enhancement
+* framework
+* fss
+* preferences
+* renderer
+
+####Component Modules####
+
+* inlineEdit
+* pager
+* progress
+* reorderer
+* slidingPanel
+* tableOfContents
+* tabs
+* textfieldSlider
+* tooltip
+* uiOptions
+* undo
+* uploader
+
+####External Libraries####
+
+* fastXmlPull
+* fonts
+* jQuery
+* jQueryScrollToPlugin
+* jQueryTouchPunchPlugin
+* jQueryUICore
+* jQueryUIWidgets
+* json
+* swfobject
+* swfupload
