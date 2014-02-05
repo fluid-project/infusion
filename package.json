@@ -41,6 +41,7 @@
     "grunt-contrib-copy": "~0.4.1",
     "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-compress": "~0.5.2",
-    "grunt-modulefiles": "git://github.com/fluid-project/grunt-modulefiles.git#eb782a"
+    "grunt-modulefiles": "git://github.com/fluid-project/grunt-modulefiles.git#eb782a",
+    "lodash": "~2.4.1"
   }
 }
