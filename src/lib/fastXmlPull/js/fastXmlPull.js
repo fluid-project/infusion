@@ -102,7 +102,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.XMLP._errs[fluid.XMLP.ERR_CLOSE_ENTITY = 5 ] = "Entity: missing closing sequence"; 
     fluid.XMLP._errs[fluid.XMLP.ERR_PI_TARGET = 6 ] = "PI: target is required"; 
     fluid.XMLP._errs[fluid.XMLP.ERR_ELM_EMPTY = 7 ] = "Element: cannot be both empty and closing"; 
-    fluid.XMLP._errs[fluid.XMLP.ERR_ELM_NAME = 8 ] = "Element: name must immediatly follow \"<\""; 
+    fluid.XMLP._errs[fluid.XMLP.ERR_ELM_NAME = 8 ] = "Element: name must immediately follow \"<\""; 
     fluid.XMLP._errs[fluid.XMLP.ERR_ELM_LT_NAME = 9 ] = "Element: \"<\" not allowed in element names"; 
     fluid.XMLP._errs[fluid.XMLP.ERR_ATT_VALUES = 10] = "Attribute: values are required and must be in quotes"; 
     fluid.XMLP._errs[fluid.XMLP.ERR_ATT_LT_NAME = 11] = "Element: \"<\" not allowed in attribute names"; 
@@ -301,7 +301,8 @@ var fluid_1_5 = fluid_1_5 || {};
                     attrval = attrname;
                     valRegex = that.attrStartRegex;
                     }
-                if (!that.m_attributes[attrname]) {
+                if (!that.m_attributes[attrname] || that.m_attributes[attrname] === attrval) {
+                    // last branch required because of fresh duplicate attribute bug introduced in IE10 and above - FLUID-5204 
                     that.m_attributes[attrname] = attrval;
                     }
                 else { 

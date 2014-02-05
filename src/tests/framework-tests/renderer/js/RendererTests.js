@@ -1629,6 +1629,7 @@ fluid.registerNamespace("fluid.tests");
         });
 
         jqUnit.asyncTest("FLUID-4885 test: fixChildren array check", function () {
+            jqUnit.expect(1);
             var iframe = $(".FLUID-4885-test");
             iframe.load(function () {
                 var iframeDoc = iframe[0].contentDocument;

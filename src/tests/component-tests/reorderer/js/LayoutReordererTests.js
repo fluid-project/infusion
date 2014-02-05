@@ -37,7 +37,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.test("Default selectors", function () {
             var testReorderer = fluid.reorderLayout("#default-selector-test");
             var item1 = $("#portlet-1");
-            var item2 = $("#portlet-2").focus();
+            var item2 = jqUnit.simulateFocus($("#portlet-2"));
             
             // Sniff test the reorderer that was created - keyboard selection
             jqUnit.assertTrue("focus on item2", item2.hasClass("fl-reorderer-movable-selected"));
@@ -52,8 +52,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
             
-            fluid.jById(fluid.testUtils.moduleLayout.portletIds[2]).focus();
-            var text2 = fluid.jById("text-2").focus();
+            jqUnit.simulateFocus(fluid.jById(fluid.testUtils.moduleLayout.portletIds[2]));
+            var text2 = jqUnit.simulateFocus(fluid.jById("text-2"));
             text2.simulate("keypress", {keyCode: fluid.reorderer.keys.m});
             
             jqUnit.assertEquals("After typing M into text field, portlet 2 should still be the active item", 
@@ -75,7 +75,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             // focus on portlet 3 - it is underneath a locked portlet
             var portlet3 = fluid.jById(fluid.testUtils.moduleLayout.portletIds[3]);
-            portlet3.focus();
+            jqUnit.simulateFocus(portlet3);
             
             var label = fluid.getAriaLabeller(portlet3);
             jqUnit.assertValue("Aria labeller is present", label);
@@ -112,7 +112,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             portlet3[0].blur();
             // focus on portlet 8 
             var portlet8 = fluid.byId(fluid.testUtils.moduleLayout.portletIds[8]);
-            $(portlet8).focus();
+            jqUnit.simulateFocus($(portlet8));
     
             jqUnit.assertTrue("Temporary moved state is cleared", 
                 portlet3.attr("aria-label").indexOf("moved from") === -1);
@@ -173,7 +173,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
             layoutReorderer.events.afterMove.addListener(afterMoveListener);
             
-            var item2 = fluid.jById(fluid.testUtils.moduleLayout.portletIds[2]).focus();
+            var item2 = jqUnit.simulateFocus(fluid.jById(fluid.testUtils.moduleLayout.portletIds[2]));
             var item3 = fluid.jById(fluid.testUtils.moduleLayout.portletIds[3]);
             
             // Sniff test the reorderer that was created - keyboard selection and movement    
@@ -227,7 +227,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             expectOrder("after ctrl-down, expect order 1, 2, 3, 4", [1, 2, 3, 4, 5, 6, 7, 8, 9]);
 
-            item3.focus();
+            jqUnit.simulateFocus(item3);
             jqUnit.assertTrue("focus on item3", item3.hasClass("fl-reorderer-movable-selected"));
             key(layoutReorderer, k.ctrlKeyEvent("DOWN"), item3);
 
