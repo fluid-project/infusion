@@ -1683,6 +1683,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             fluid.popActivity();
             return togo;
         };
+        fluid.event.impersonateListener(listener, togo);
         return togo;
     };
 
