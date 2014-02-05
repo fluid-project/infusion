@@ -1,4 +1,4 @@
-var _ = require('lodash');
+var _ = require("lodash");
 
 module.exports = function(grunt) {
 
@@ -15,8 +15,8 @@ module.exports = function(grunt) {
         copy: {
             all: {
                 files: [{
-                    src: ['src/**'],
-                    dest: 'build/'
+                    src: ["src/**"],
+                    dest: "build/"
                 }]
             },
             custom: {
@@ -33,27 +33,27 @@ module.exports = function(grunt) {
             all: {
                 files: [{
                     expand: true,     // Enable dynamic expansion.
-                    cwd: './build/src/',      // Src matches are relative to this path.
-                    src: ['components/**/*.js'], // Actual pattern(s) to match.
-                    dest: './build/src/'   // Destination path prefix.
+                    cwd: "./build/src/",      // Src matches are relative to this path.
+                    src: ["components/**/*.js"], // Actual pattern(s) to match.
+                    dest: "./build/src/"   // Destination path prefix.
                 }, {
                     expand: true,
-                    cwd: './build/src/',
-                    src: ['framework/**/*.js'],
-                    dest: './build/src/'
+                    cwd: "./build/src/",
+                    src: ["framework/**/*.js"],
+                    dest: "./build/src/"
                 }, {
                     expand: true,
-                    cwd: './build/src/',
-                    src: ['lib/**/*.js'],
-                    dest: './build/src/'
+                    cwd: "./build/src/",
+                    src: ["lib/**/*.js"],
+                    dest: "./build/src/"
                 }]
             },
             custom: {
                 files: [{
                     expand: true,     // Enable dynamic expansion.
-                    cwd: './build',      // Src matches are relative to this path.
-                    src: ['**/*.js'], // Actual pattern(s) to match.
-                    dest: './build'   // Destination path prefix.
+                    cwd: "./build",      // Src matches are relative to this path.
+                    src: ["**/*.js"], // Actual pattern(s) to match.
+                    dest: "./build"   // Destination path prefix.
                 }]
             }
         },
@@ -93,16 +93,16 @@ module.exports = function(grunt) {
         },
         concat: {
             options: {
-                separator: ';',
+                separator: ";",
                 banner: "/*! <%= pkg.name %> - v<%= pkg.version %> <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %>*/\n"
             },
             all: {
               src: "<%= modulefiles.all.output.files %>",
-              dest: './build/<%= allBuildName %>.js'
+              dest: "./build/<%= allBuildName %>.js"
             },
             custom: {
               src: "<%= modulefiles.custom.output.files %>",
-              dest: './build/<%= customBuildName %>.js'
+              dest: "./build/<%= customBuildName %>.js"
             }
         },
         compress: {
@@ -112,9 +112,9 @@ module.exports = function(grunt) {
                 },
                 files: [{
                     expand: true,     // Enable dynamic expansion.
-                    cwd: './build/',      // Src matches are relative to this path.
-                    src: ['**/*'], // Actual pattern(s) to match.
-                    dest: './infusion'   // Destination path prefix in the zip package
+                    cwd: "./build/",      // Src matches are relative to this path.
+                    src: ["**/*"], // Actual pattern(s) to match.
+                    dest: "./infusion"   // Destination path prefix in the zip package
                 }]
             },
             custom: {
@@ -128,16 +128,16 @@ module.exports = function(grunt) {
 
     // Load the plugin(s):
     grunt.loadNpmTasks("grunt-contrib-uglify");
-    grunt.loadNpmTasks('grunt-contrib-clean');
-    grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-contrib-compress');
-    grunt.loadNpmTasks('grunt-modulefiles');
+    grunt.loadNpmTasks("grunt-contrib-clean");
+    grunt.loadNpmTasks("grunt-contrib-copy");
+    grunt.loadNpmTasks("grunt-contrib-concat");
+    grunt.loadNpmTasks("grunt-contrib-compress");
+    grunt.loadNpmTasks("grunt-modulefiles");
 
     // Custom tasks:
 
     // Simple task for transforming a property
-    grunt.registerMultiTask('map', 'a task wrapper around the map function from lodash', function () {
+    grunt.registerMultiTask("map", "a task wrapper around the map function from lodash", function () {
         var transformed = _.map(grunt.config.get(this.data.prop), this.data.fn);
         grunt.config.set(this.data.prop, transformed);
     });
