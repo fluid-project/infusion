@@ -93,7 +93,7 @@ The exclude option takes in a comma separated string of the [Modules](#modules) 
 
 ####--name####
 
-__value__: "custom name"
+__value__: "custom name" (String)
 _only available to custom packages_
 
 By default custom packages are named like _custom-infusion-<version>.zip_ and the concatenated js file is called _custom-infusion.js_. By supplying the --name option you can replace "custom" with any other valued name you like.
