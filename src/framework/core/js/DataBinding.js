@@ -289,7 +289,7 @@ var fluid_1_5 = fluid_1_5 || {};
             enlist = {
                 that: that,
                 complete: fluid.isModelComplete(that) 
-            }
+            };
             instantiator.modelTransactions.init[that.id] = enlist;
         }
         return enlist;
@@ -378,7 +378,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }  
         });
         return updates;
-    }
+    };
     
     fluid.transformToAdapter = function (transform, targetPath) {
         var basedTransform = {};
@@ -398,7 +398,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.parseValidModelReference = function (that, name, ref) {
         var reject = function (message) {
             fluid.fail("Error in " + name + ": " + ref + message);
-        }
+        };
         var parsed, target;
         if (ref.charAt(0) === "{") {
             parsed = fluid.parseModelReference(that, ref);
@@ -417,7 +417,7 @@ var fluid_1_5 = fluid_1_5 || {};
             parsed = {
                 path: ref,
                 modelSegs: that.applier.parseEL(ref)
-            }
+            };
         }
         if (!target.applier) {
             fluid.getForComponent(target, ["applier"]);
@@ -561,14 +561,14 @@ var fluid_1_5 = fluid_1_5 || {};
         };
         that.forwardAdapter = function () { // create a stable function reference for this possibly changing adapter
             that.forwardAdapterImpl.apply(null, arguments);
-        }
+        };
         // fired from fluid.model.updateRelays via invalidator event
         that.runTransform = function (trans, transRec) {
             trans.commit(); // this will reach the special "half-transactional listener" registered in fluid.connectModelRelay,
             // branch with options.targetApplier - by committing the transaction, we update the relay document in bulk and then cause
             // it to execute (via "transducer")
             trans.reset();
-        }
+        };
         that.forwardApplier = fluid.makeNewChangeApplier(that.forwardHolder);
         that.forwardApplier.isRelayApplier = true; // special annotation so these can be discovered in the transaction record
         that.invalidator = fluid.makeEventFirer(null, null, "Invalidator for model relay with applier " + that.forwardApplier.applierId);
@@ -576,14 +576,15 @@ var fluid_1_5 = fluid_1_5 || {};
             that.backwardApplier = fluid.makeNewChangeApplier(that.backwardHolder);
             that.backwardAdapter = function () {
                 that.backwardAdapterImpl.apply(null, arguments);
-            }
+            };
         }
         that.update = that.invalidator.fire; // necessary so that both routes to fluid.connectModelRelay from here hit the first branch
         var implicitOptions = {
             relayCount: 0, // this count is updated in fluid.model.updateRelays
             targetApplier: that.forwardApplier, // this special field identifies us to fluid.connectModelRelay
             update: that.update,
-            refCount: 0};
+            refCount: 0
+        };
         that.forwardHolder.model = fluid.parseImplicitRelay(componentThat, transform, [], implicitOptions); 
         that.refCount = implicitOptions.refCount; 
         that.generateAdapters();
@@ -596,7 +597,7 @@ var fluid_1_5 = fluid_1_5 || {};
         var withPath = $.extend(true, {valuePath: ""}, singleTransform);
         return {
             "": {
-                 transform: withPath
+                transform: withPath
             }
         };
     };
@@ -642,7 +643,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 segs.push(key);
                 var innerTrans = fluid.parseImplicitRelay(that, innerValue, segs, options);
                 if (innerTrans !== undefined) {
-                     value[key] = innerTrans;
+                    value[key] = innerTrans;
                 }
                 segs.pop();
             });
@@ -948,7 +949,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.model.stepTargetAccess = function (target, type, segs, startpos, endpos, options) {
         for (var i = startpos; i < endpos; ++ i) {
             var oldTrunk = target[segs[i]];
-            var target = fluid.model.traverseWithStrategy(target, segs, i, options[type === "ADD" ? "resolverSetConfig" : "resolverGetConfig"], 
+            target = fluid.model.traverseWithStrategy(target, segs, i, options[type === "ADD" ? "resolverSetConfig" : "resolverGetConfig"], 
                 segs.length - i - 1);
             if (oldTrunk !== target && options.changeMap) {
                 fluid.model.setChangedPath(options, segs.slice(0, i + 1), "ADD");
@@ -962,7 +963,7 @@ var fluid_1_5 = fluid_1_5 || {};
         options.resolverSetConfig = options.resolverSetConfig || fluid.model.defaultSetConfig;
         options.resolverGetConfig = options.resolverGetConfig || fluid.model.defaultGetConfig;
         return options;      
-    }
+    };
     
     // After the 1.5 release, this will replace the old "applyChangeRequest"
     // Changes: "MERGE" action abolished
@@ -1083,7 +1084,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         that.modelChanged.addListener = function (spec, listener, namespace, softNamespace) {
             if (typeof(spec) === "string") {
-                spec = {path: spec}
+                spec = {path: spec};
             } else {
                 spec = fluid.copy(spec);
             }
@@ -1124,7 +1125,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 reset: function () {
                     trans.newHolder = { model: fluid.copy(holder.model) };
                     trans.changeRecord.changes = 0;
-                    trans.changeRecord.changeMap = {}
+                    trans.changeRecord.changeMap = {};
                 },
                 commit: function (code) {
                     that.preCommit.fire(trans, that, code);
@@ -1380,7 +1381,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
             if (pathSpec.charAt(0) === "!") {
                 transactional = true;
-                pathSpec = pathSpec.substring(1)
+                pathSpec = pathSpec.substring(1);
             }
             var wrapped = function (changePath, fireSpec, accum) {
                 var guid = fluid.event.identifyListener(listener);
