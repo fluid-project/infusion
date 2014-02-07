@@ -79,14 +79,12 @@ module.exports = function(grunt) {
             concatAllFiles: {
                 prop: "concat.all.src",
                 fn: function (str) {
-                    console.log(str);
                     return "build/" + str;
                 }
             },
             concatCustomFiles: {
                 prop: "concat.custom.src",
                 fn: function (str) {
-                    console.log(str);
                     return "build/" + str;
                 }
             }
