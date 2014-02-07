@@ -2014,6 +2014,7 @@ fluid.registerNamespace("fluid.tests");
             onCreate: fluid.tests.makeTimedChildListener("onCreate"),
             onAttach: fluid.tests.makeTimedChildListener("onAttach", true),
             onDestroy: fluid.tests.makeTimedChildListener("onDestroy", true),
+            afterDestroy: fluid.tests.makeTimedChildListener("afterDestroy", true),
             onClear: fluid.tests.makeTimedChildListener("onClear", true)
         }
     });
@@ -2101,12 +2102,33 @@ fluid.registerNamespace("fluid.tests");
             {key: "eventTimeComponent.onClear", name: "eventTimeComponent", parent: "lifecycle"},
             {key: "eventTimeComponent.onDestroy", name: "eventTimeComponent", parent: "lifecycle"},
             {key: "root.onClear", name: "injected", parent: "recordingComponent"}, // NO destroy here!
+            {key: "eventTimeComponent.afterDestroy", name: "eventTimeComponent", parent: "lifecycle"},
             "eventTimeComponent.postInitFunction",
             {key: "root.onAttach", name: "injected", parent: "recordingComponent"}, // re-inject 2nd time
             "eventTimeComponent.onCreate",
             {key: "eventTimeComponent.onAttach", name: "eventTimeComponent", parent: "lifecycle"}
         ];
         jqUnit.assertDeepEq("Expected initialisation sequence", expected, testComp.listenerRecord);
+    });
+    
+    /** FLUID-5268 - direct root "afterDestroy" listener **/
+    
+    fluid.defaults("fluid.tests.fluid5268", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+    });
+    
+    jqUnit.test("Component lifecycle test - FLUID-5268 afterDestroy", function () {
+        var afterDestroyed = false;
+        var afterDestroy = function () {
+            afterDestroyed = true;
+        };
+        var that = fluid.tests.fluid5268({
+            listeners: {
+                afterDestroy: afterDestroy
+            }
+        });
+        that.destroy();
+        jqUnit.assertTrue("Expected afterDestroyed notification", afterDestroyed);
     });
 
     /** FLUID-4257 - automatic listener teardown test **/
@@ -3779,6 +3801,48 @@ fluid.registerNamespace("fluid.tests");
     jqUnit.test("FLUID-5246 - static use of grade linkage", function () {
         var that = fluid.tests.fluid5246Root();
         jqUnit.assertTrue("Resolved statically linked grade is present", fluid.hasGrade(that.options, "fluid.tests.fluid5246Result"));
+    });
+    
+    /** FLUID-5254 - failure of impersonateListener in dispatchListener **/
+    
+    fluid.tests.fluid5254Listener = function (that) {
+        that.invocations++;
+    };
+    
+    fluid.defaults("fluid.tests.fluid5254Root", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            rootEvent: null,
+            creationEvent: null
+        },
+        components: {
+            child: {
+                createOnEvent: "creationEvent", 
+                type: "fluid.eventedComponent",
+                options: {
+                    events: {
+                        childEvent: "{fluid5254Root}.events.rootEvent"
+                    },
+                    members: {
+                        invocations: 0
+                    }
+                }
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-5254 - failure to impersonate raw listener in injected event", function () {
+        var that = fluid.tests.fluid5254Root();
+        that.events.creationEvent.fire();
+        var listener = function () {
+            fluid.tests.fluid5254Listener(that.child)
+        };
+        that.child.events.childEvent.addListener(listener);
+        that.events.rootEvent.fire();
+        jqUnit.assertEquals("Exactly one invocation for raw listener to injected event", 1, that.child.invocations);
+        that.child.events.childEvent.removeListener(listener);
+        that.events.rootEvent.fire();
+        jqUnit.assertEquals("Exactly one invocation for raw listener to injected event", 1, that.child.invocations);
     });
     
     /** FLUID-5245 - distributeOptions based on grades which are themselves dynamic **/

@@ -350,7 +350,7 @@ var fluid = fluid || fluid_1_5;
 
         fluid.each(options, function (outPath, key) {
             // write to output path given in options the value <presentValue> or <missingValue> depending on whether key is found in user input
-            var outVal = (value.indexOf(key) !== -1) ? transformSpec.presentValue : transformSpec.missingValue;
+            var outVal = ($.inArray(key, value) !== -1) ? transformSpec.presentValue : transformSpec.missingValue;
             fluid.model.transform.setValue(outPath, outVal, transform);
         });
         // TODO: Why does this transform make no return?

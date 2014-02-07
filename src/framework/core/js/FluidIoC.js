@@ -758,14 +758,16 @@ var fluid_1_5 = fluid_1_5 || {};
         });
         delete shadow.listeners;
     };
-
+    
     // unsupported, non-API function
     fluid.recordListener = function (event, listener, shadow) {
-        var listeners = shadow.listeners;
-        if (!listeners) {
-            listeners = shadow.listeners = [];
+        if (event.ownerId !== shadow.that.id) { // don't bother recording listeners registered from this component itself
+            var listeners = shadow.listeners;
+            if (!listeners) {
+                listeners = shadow.listeners = [];
+            }
+            listeners.push({event: event, listener: listener});
         }
-        listeners.push({event: event, listener: listener});
     };
 
     var idToInstantiator = {};
@@ -819,6 +821,7 @@ var fluid_1_5 = fluid_1_5 || {};
             if (created) {
                 idToInstantiator[component.id] = that;
                 var shadow = that.idToShadow[component.id] = {};
+                shadow.that = component;
                 shadow.path = path;
             }
             if (that.pathToComponent[path]) {
@@ -1695,6 +1698,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             fluid.popActivity();
             return togo;
         };
+        fluid.event.impersonateListener(listener, togo);
         return togo;
     };
 

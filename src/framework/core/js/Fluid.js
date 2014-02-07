@@ -1069,7 +1069,10 @@ var fluid = fluid || fluid_1_5;
      * be checked for <code>false</code> in which case further listeners will be shortcircuited, and this
      * will be the return value of fire()
      */
-    fluid.makeEventFirer = function (unicast, preventable, name) {
+    fluid.makeEventFirer = function (unicast, preventable, name, ownerId) {
+        var listeners; // = {}
+        var byId; // = {}
+        var sortedListeners; // = []
         
         function fireToListeners(listeners, args, wrapper) {
             if (!listeners) { return; }
@@ -1132,6 +1135,8 @@ var fluid = fluid || fluid_1_5;
             that.addListener.apply(null, arguments);
         };
         that = {
+            eventId: fluid.allocateGuid(),
+            ownerId: ownerId,
             name: name,
             typeName: "fluid.event.firer",
             addListener: function () {
@@ -1258,7 +1263,7 @@ var fluid = fluid || fluid_1_5;
                 event = fluid.event.resolveEvent(that, eventKey, eventSpec);
             }
         } else {
-            event = fluid.makeEventFirer(eventSpec === "unicast", eventSpec === "preventable", fluid.event.nameEvent(that, eventKey));
+            event = fluid.makeEventFirer(eventSpec === "unicast", eventSpec === "preventable", fluid.event.nameEvent(that, eventKey), that.id);
         }
         return event;
     };
@@ -2158,7 +2163,7 @@ var fluid = fluid || fluid_1_5;
                 }
             }
             if (value) {
-                that.options[key] = fluid.makeEventFirer(null, null, key);
+                that.options[key] = fluid.makeEventFirer(null, null, key, that.id);
                 fluid.event.addListenerToFirer(that.options[key], value);
             }
         });
