@@ -480,11 +480,9 @@ var fluid_1_5 = fluid_1_5 || {};
                 transRec[applier.applierId] = {transaction: trans}; // enlist the outer user's original transaction
             }
             var existing = transRec[applierId];
-            // var initRecord = instantiator.modelTransactions.init[target.id];
-            // var noRelay = initRecord && initRecord[linkId] === "noRelay";
             transRec[linkId] = transRec[linkId] || 0;
             // Crude "oscillation prevention" system limits each link to maximum of 2 operations per cycle (presumably in opposite directions)
-            var relay = (transRec[linkId] < 2); // && !noRelay;
+            var relay = transRec[linkId] < 2;
             if (relay) {
                 ++transRec[linkId];
                 if (!existing) {
