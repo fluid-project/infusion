@@ -2095,6 +2095,7 @@ fluid.registerNamespace("fluid.tests");
             onCreate: fluid.tests.makeTimedChildListener("onCreate"),
             onAttach: fluid.tests.makeTimedChildListener("onAttach", true),
             onDestroy: fluid.tests.makeTimedChildListener("onDestroy", true),
+            afterDestroy: fluid.tests.makeTimedChildListener("afterDestroy", true),
             onClear: fluid.tests.makeTimedChildListener("onClear", true)
         }
     });
@@ -2182,12 +2183,33 @@ fluid.registerNamespace("fluid.tests");
             {key: "eventTimeComponent.onClear", name: "eventTimeComponent", parent: "lifecycle"},
             {key: "eventTimeComponent.onDestroy", name: "eventTimeComponent", parent: "lifecycle"},
             {key: "root.onClear", name: "injected", parent: "recordingComponent"}, // NO destroy here!
+            {key: "eventTimeComponent.afterDestroy", name: "eventTimeComponent", parent: "lifecycle"},
             "eventTimeComponent.postInitFunction",
             {key: "root.onAttach", name: "injected", parent: "recordingComponent"}, // re-inject 2nd time
             "eventTimeComponent.onCreate",
             {key: "eventTimeComponent.onAttach", name: "eventTimeComponent", parent: "lifecycle"}
         ];
         jqUnit.assertDeepEq("Expected initialisation sequence", expected, testComp.listenerRecord);
+    });
+    
+    /** FLUID-5268 - direct root "afterDestroy" listener **/
+    
+    fluid.defaults("fluid.tests.fluid5268", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+    });
+    
+    jqUnit.test("Component lifecycle test - FLUID-5268 afterDestroy", function () {
+        var afterDestroyed = false;
+        var afterDestroy = function () {
+            afterDestroyed = true;
+        };
+        var that = fluid.tests.fluid5268({
+            listeners: {
+                afterDestroy: afterDestroy
+            }
+        });
+        that.destroy();
+        jqUnit.assertTrue("Expected afterDestroyed notification", afterDestroyed);
     });
 
     /** FLUID-4257 - automatic listener teardown test **/
