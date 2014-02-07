@@ -33,7 +33,7 @@ The best way to join the Fluid Community is to jump in to any of our community a
 
 ##How Do I Create an Infusion Package?##
 
-Strictly speaking, Infusion can be used directly from source. However, you may want to minimize on round trips to the server and on file size. With this in mind, you will likely want to create source and minified versions of the concatenated JavaScript files by using the grunt build described below. Additionally you'll also be able to remove any unneed features and libraries that you may already have in your project.
+Strictly speaking, Infusion can be used directly from source (i.e. by including each individual required file). However, for simplicity and performance reasons, you may wish to create a concatenated, minified file. The Grunt build options described below will also allow you to remove any unneeded features or libraries that you may already have in your project.
 
 ###Dependencies###
 
@@ -46,15 +46,15 @@ All other dependencies will be installed by running the following from the proje
 
 ###Package Types###
 
-####Infusion all build####
+####Infusion All Build####
 
-Will include all of Infusion. The source files packaged along with the single concatenated js file will include all of the demos and unit tests. This is a good choice if you are trying to learn Infusion
+Will include all of Infusion. The source files packaged along with the single concatenated js file will include all of the demos and unit tests. This is a good choice if you are trying to learn Infusion.
 
     grunt
 
 #####Custom Build#####
 
-Will only include the modules you request, and all of their dependencies, minus any that are explicitely excluded. Unlike the all build, none of the demos ore tests are included with a custom package.
+Will only include the modules you request, and all of their dependencies, minus any that are explicitely excluded. Unlike the "all" build, none of the demos or tests are included with a custom package.
 
     grunt custom
 
@@ -62,7 +62,7 @@ Will only include the modules you request, and all of their dependencies, minus 
 
 ####--source####
 
-__value__: true (Boolean) 
+__value__: true (Boolean)
 _the value can be ommited if --source is the last flag specified_
 
 By default all packages are minified. This option will allow you to maintain the readable spacing and comments.
@@ -76,7 +76,7 @@ By default all packages are minified. This option will allow you to maintain the
 __value__: "module(s)" (String)
 _only available to custom packages_
 
-The include option takes in a comma separated string of the [Modules](#modules) to be included in a custom package.
+The `--include` option takes in a comma-separated string of the [Modules](#modules) to be included in a custom package. If omitted, all modules will be included (demos and tests will not be included).
 
     grunt custom --include="inlineEdit, uiOptions"
 
@@ -85,7 +85,7 @@ The include option takes in a comma separated string of the [Modules](#modules) 
 __value__: "module(s)" (String)
 _only available to custom packages_
 
-The exclude option takes in a comma separated string of the [Modules](#modules) to be excluded from a custom package. The --exlclude option takes priority over --include.
+The exclude option takes in a comma-separated string of the [Modules](#modules) to be excluded from a custom package. The `--exclude` option takes priority over `--include`.
 
     grunt custom --exclude="jQuery"
 
@@ -93,12 +93,12 @@ The exclude option takes in a comma separated string of the [Modules](#modules) 
 
 ####--name####
 
-__value__: "custom name" (String)
+__value__: "custom prefix" (String)
 _only available to custom packages_
 
-By default custom packages are named like _custom-infusion-<version>.zip_ and the concatenated js file is called _custom-infusion.js_. By supplying the --name option you can replace "custom" with any other valued name you like.
+By default, custom packages are given a name with the form _custom-infusion-<version>.zip_ and the concatenated js file is called _custom-infusion.js_. By supplying the `--name` option, you can replace "custom" with any other valid string you like.
 
-    grunt custom --name="myPackage"
+    grunt custom --name="myPackage"    # this produces myPackage-infusion.js
 
 ###Modules###
 
