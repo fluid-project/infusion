@@ -157,7 +157,6 @@ module.exports = function(grunt) {
         grunt.task.run(tasks);
     });
 
-    // grunt.registerTask("default", ["minzip"]);
     grunt.registerTask("default", ["build:all"]);
     grunt.registerTask("custom", ["build:custom"]);
 };
