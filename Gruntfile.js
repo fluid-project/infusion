@@ -34,18 +34,8 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,     // Enable dynamic expansion.
                     cwd: "./build/src/",      // Src matches are relative to this path.
-                    src: ["components/**/*.js"], // Actual pattern(s) to match.
+                    src: ["components/**/*.js", "framework/**/*.js", "lib/**/*.js"], // Actual pattern(s) to match.
                     dest: "./build/src/"   // Destination path prefix.
-                }, {
-                    expand: true,
-                    cwd: "./build/src/",
-                    src: ["framework/**/*.js"],
-                    dest: "./build/src/"
-                }, {
-                    expand: true,
-                    cwd: "./build/src/",
-                    src: ["lib/**/*.js"],
-                    dest: "./build/src/"
                 }]
             },
             custom: {
