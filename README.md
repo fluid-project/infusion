@@ -93,12 +93,12 @@ The exclude option takes in a comma-separated string of the [Modules](#modules) 
 
 ####--name####
 
-__value__: "custom prefix" (String)
+__value__: "custom suffix" (String)
 _only available to custom packages_
 
-By default, custom packages are given a name with the form _custom-infusion-<version>.zip_ and the concatenated js file is called _custom-infusion.js_. By supplying the `--name` option, you can replace "custom" with any other valid string you like.
+By default, custom packages are given a name with the form _infusion-custom-<version>.zip_ and the concatenated js file is called _infusion-custom.js_. By supplying the `--name` option, you can replace "custom" with any other valid string you like.
 
-    grunt custom --name="myPackage"    # this produces myPackage-infusion.js
+    grunt custom --name="myPackage"    # this produces infusion-myPackage.js
 
 ###Modules###
 

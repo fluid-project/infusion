@@ -6,8 +6,8 @@ module.exports = function(grunt) {
     grunt.initConfig({
         // Project package file destination.
         pkg: grunt.file.readJSON("package.json"),
-        allBuildName: "<%= pkg.name %>",
-        customBuildName: (grunt.option("name") || "custom") + "-<%= pkg.name %>",
+        allBuildName: "<%= pkg.name %>-all",
+        customBuildName: "<%= pkg.name %>-" + (grunt.option("name") || "custom"),
         clean: {
             build: "build",
             products: "products"
