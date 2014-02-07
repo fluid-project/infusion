@@ -60,18 +60,25 @@ module.exports = function(grunt) {
             }
         },
         map: {
+            // append "/**" to the end of all of all of
+            // directory paths for copy:custom to ensure that
+            // all of the subdirectories and files are copied over
             copyDirs: {
                 prop: "copy.custom.files.0.src",
                 fn: function (str) {
                     return str + "/**";
                 }
             },
+            // prepend "build/" to all of the file paths for
+            // concat:all to rebase the paths to the build directory
             concatAllFiles: {
                 prop: "concat.all.src",
                 fn: function (str) {
                     return "build/" + str;
                 }
             },
+            // prepend "build/" to all of the file paths for
+            // concat:custom to rebase the paths to the build directory
             concatCustomFiles: {
                 prop: "concat.custom.src",
                 fn: function (str) {
@@ -130,7 +137,7 @@ module.exports = function(grunt) {
         grunt.config.set(this.data.prop, transformed);
     });
 
-    grunt.registerTask("pathMap", "", function (target) {
+    grunt.registerTask("pathMap", "Triggers the map task for the specified build target", function (target) {
         if (target === "all") {
             grunt.task.run("map:concatAllFiles");
         } else if (target === "custom") {
