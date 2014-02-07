@@ -1,6 +1,6 @@
 ## Overview ##
 
-The fss directory and all of the contained css files were initially generated through the ant build (generatePrefsEditorThemes) by transforming the fss themes for the purpose of using them as part of UI Options. When switching from ant to grunt for building Infusion, it was decided to temporarily remove the custom css generation step. The reason is that this will be replaced with a css pre-processor. 
+The fss directory and all of the contained css files were initially generated through the ant build target 'generatePrefsEditorThemes'. This transformed the fss themes to have stronger precedence so they could be used in UI Options. When switching the Infusion build from ant to grunt, the custom css generation step was temporarily removed. This step will be replaced with a css pre-processor.
 
 ## Transformations Required ##
 
