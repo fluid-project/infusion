@@ -85,7 +85,9 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.tooltip.makeCloseHandler = function (that) {
         return function (event, tooltip) {
             if (that.initialised) { // underlying jQuery UI component will fire various spurious close events after it has been destroyed
-                that.events.afterClose.fire(that, fluid.tooltip.resolveTarget(event), tooltip.tooltip, event);
+                var originalTarget = fluid.tooltip.resolveTarget(event);
+                delete that.openIdMap[originalTarget.id];
+                that.events.afterClose.fire(that, originalTarget, tooltip.tooltip, event);
             }
         };
     };
