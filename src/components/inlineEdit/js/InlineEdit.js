@@ -428,7 +428,7 @@ var fluid_1_5 = fluid_1_5 || {};
      * 
      * @return {jQuery} The accessible button located after the display text
      */
-    fluid.inlineEdit.setupTextEditButton = function (that) {
+    fluid.inlineEdit.setupTextEditButton = function (that, model) {
         var opts = that.options;
         var textEditButton = that.locate("textEditButton");
         
@@ -441,9 +441,9 @@ var fluid_1_5 = fluid_1_5 || {};
              * Set text for the button and listen
              * for modelChanged to keep it updated
              */ 
-            fluid.inlineEdit.updateTextEditButton(markup, that.model.value || opts.strings.defaultViewText, opts.strings.textEditButton);
+            fluid.inlineEdit.updateTextEditButton(markup, model.value || opts.strings.defaultViewText, opts.strings.textEditButton);
             that.events.modelChanged.addListener(function () {
-                fluid.inlineEdit.updateTextEditButton(markup, that.model.value || opts.strings.defaultViewText, opts.strings.textEditButton);
+                fluid.inlineEdit.updateTextEditButton(markup, model.value || opts.strings.defaultViewText, opts.strings.textEditButton);
             });        
             
             that.locate("text").after(markup);
@@ -587,13 +587,13 @@ var fluid_1_5 = fluid_1_5 || {};
       * @return {jQuery} The display container containing the display text and 
       * textEditbutton for display mode view
       */
-    fluid.inlineEdit.defaultDisplayModeRenderer = function (that, edit) {
+    fluid.inlineEdit.defaultDisplayModeRenderer = function (that, edit, model) {
         var styles = that.options.styles;
         
         var displayModeWrapper = fluid.inlineEdit.setupDisplayModeContainer(styles);
         displayModeContainer = that.viewEl.wrap(displayModeWrapper).parent();
         
-        that.textEditButton = fluid.inlineEdit.setupTextEditButton(that);
+        that.textEditButton = fluid.inlineEdit.setupTextEditButton(that, model);
         displayModeContainer.append(that.textEditButton);
         
         fluid.inlineEdit.bindEventHandlers(that, edit, displayModeContainer);
@@ -738,7 +738,7 @@ var fluid_1_5 = fluid_1_5 || {};
             displayModeRenderer: {
                 expander: {
                     func: "{that}.options.displayModeRenderer",
-                    args: ["{that}", "{that}.edit"]
+                    args: ["{that}", "{that}.edit", "{that}.model"]
                 }
             }
         },

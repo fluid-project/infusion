@@ -211,7 +211,12 @@ fluid.registerNamespace("fluid.tests");
             var that = fluid.tests.testGradedView("#pager-top", {model: model});
             jqUnit.assertValue("Constructed component", that);
             jqUnit.assertEquals("Constructed functioning DOM binder", 3, that.locate("page-link").length);
-            jqUnit.assertEquals("View component correctly preserved model", that.model, model);   
+            // Distinguish between the behaviour of the "old" and "new" modelComponents
+            if (fluid.hasGrade(that.options, "fluid.modelRelayComponent")) {
+                jqUnit.assertDeepEq("View component acquired model", model, that.model);  
+            } else {
+                jqUnit.assertEquals("View component correctly preserved model", model, that.model);
+            }   
         });
       
         fluid.tests.blurTester = function (container, options) {

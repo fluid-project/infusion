@@ -400,8 +400,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
         
             } else if (fluid.reorderer.noModifier(evt)) {
-                item.blur();
-                $(relativeItem.element).focus();
+                fluid.blur(item);
+                fluid.focus($(relativeItem.element));
             }
             return false;
         }
@@ -448,7 +448,7 @@ var fluid_1_5 = fluid_1_5 || {};
         //$(thatReorderer.activeItem).removeClass(options.styles.selected);
        
         // refocus on the active item because moving places focus on the body
-        activeItem.focus();
+        fluid.focus(activeItem);
         
         thatReorderer.refresh();
         

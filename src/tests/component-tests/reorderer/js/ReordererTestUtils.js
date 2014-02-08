@@ -119,7 +119,7 @@ var fluid = fluid || fluid_1_5;
     fluid.testUtils.reorderer.stepReorderer = function (container, options) {    
         var that = fluid.invokeGlobalFunction(options.reordererOptions.reordererFn, [container, options.reordererOptions]);
         for (var i = 0; i < options.expectedOrderArrays.length; i++) { 
-            var focusItem = $(options.itemSelector).focus();
+            var focusItem = fluid.focus($(options.itemSelector));
             var expectedOrder = options.expectedOrderArrays[i];
             jqUnit.assertTrue("focus on item " + focusItem.selector, focusItem.hasClass("fl-reorderer-movable-selected"));   
             options.reordererOptions.key(that, fluid.testUtils.reorderer.ctrlKeyEvent(options.direction), options.itemIndex ? options.itemIndex : options.itemSelector);                

@@ -358,6 +358,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     var binaryOpTests = [{
+        message: "binaryOp - compound",
+        expandWrap: true,
+        transform: {
+            type: "fluid.transforms.binaryOp",
+            operator: "+",
+            left: {
+                transform: {
+                    type: "fluid.transforms.binaryOp",
+                    left: 3,
+                    right: 3,
+                    operator: "*"
+                }
+            },
+            right: 5
+        },
+        method: "assertEquals",
+        expected: 14
+    }, {
         message: "binaryOp - ===",
         expandWrap: true,
         transform: {
@@ -2287,6 +2305,109 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.each(arrayObjectArrayTests, function (v) {
             arrayTest(v);
         });
+    });
+    
+    /* --------------- fluid.transforms.limitRange tests --------------------*/
+    
+    var limitRangeTests = [{
+        message: "limitRange minimum",
+        transform: {
+            type: "fluid.transforms.limitRange",
+            min: 0,
+            max: 10,
+            value: -3
+        },
+        expected: 0,
+        method: "assertEquals",
+        expandWrap: true
+    }, {
+        message: "limitRange maximum",
+        transform: {
+            type: "fluid.transforms.limitRange",
+            min: 0,
+            max: 10,
+            value: 13
+        },
+        expected: 10,
+        method: "assertEquals",
+        expandWrap: true
+    }, {
+        message: "limitRange excludeMin",
+        transform: {
+            type: "fluid.transforms.limitRange",
+            min: -15,
+            max: 10,
+            excludeMin: 1,
+            value: -Infinity
+        },
+        expected: -14,
+        method: "assertEquals",
+        expandWrap: true
+    }, {
+        message: "limitRange excludeMax",
+        transform: {
+            type: "fluid.transforms.limitRange",
+            min: 0,
+            max: 17,
+            excludeMax: 2.5,
+            value: 999
+        },
+        expected: 14.5,
+        method: "assertEquals",
+        expandWrap: true
+    }, {
+        message: "limitRange with inputPath",
+        transform: {
+            type: "fluid.transforms.limitRange",
+            min: -3,
+            max: 3,
+            excludeMax: 1,
+            inputPath: "halfdozen"
+        },
+        expected: 2,
+        method: "assertEquals",
+        expandWrap: true
+    }
+    ];
+    
+    jqUnit.test("limitRange tests", function () {
+        testOneStructure(limitRangeTests);
+    });
+    
+    /* --------------- fluid.transforms.free tests -------------------- */
+    
+    fluid.tests.addThree = function (a, b, c) {
+        return a + b + c;
+    };
+    
+    fluid.tests.addNumbers = function (options) {
+        return fluid.tests.addThree.apply(null, options.numbers);
+    };
+    
+    var freeTests = [{
+        message: "free multi-arg",
+        transform: {
+            type: "fluid.transforms.free",
+            func: "fluid.tests.addThree",
+            args: [1, 2, 3]
+        },
+        expected: 6,
+        method: "assertEquals",
+        expandWrap: true
+    }, {
+        message: "free compound arg",
+        transform: {
+            type: "fluid.transforms.free",
+            func: "fluid.tests.addNumbers",
+            args: {numbers: [1, 2, 3]}
+        },
+        expected: 6,
+        method: "assertEquals",
+        expandWrap: true
+    }];
+    
+    jqUnit.test("free tests", function () {
+        testOneStructure(freeTests);
     });
 
     /* --------------- array to set-membership tests -------------------- */

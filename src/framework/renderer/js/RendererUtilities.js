@@ -108,8 +108,8 @@ fluid_1_5 = fluid_1_5 || {};
         return that;
     };
 
-    fluid.defaults("fluid.rendererComponent", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+    fluid.defaults("fluid.commonRendererComponent", {
+        gradeNames: [],
         initFunction: "fluid.initRendererComponent",
         mergePolicy: {
             "rendererOptions.idMap": "nomerge",
@@ -144,6 +144,14 @@ fluid_1_5 = fluid_1_5 || {};
             }
         }
     });
+    
+    fluid.defaults("fluid.rendererComponent", {
+        gradeNames: ["fluid.commonRendererComponent", "fluid.viewComponent", "autoInit"]
+    });
+    
+    fluid.defaults("fluid.rendererRelayComponent", {
+        gradeNames: ["fluid.commonRendererComponent", "fluid.viewRelayComponent", "autoInit"]
+    });
 
     fluid.rendererComponent.renderOnInit = function (renderOnInit, that) {
         if (renderOnInit) {
@@ -172,6 +180,8 @@ fluid_1_5 = fluid_1_5 || {};
 
     fluid.initRendererComponent = function (componentName, container, options) {
         var that = fluid.initView(componentName, container, options, {gradeNames: ["fluid.rendererComponent"]});
+        var model = fluid.getForComponent(that, "model"); // Force resolution of these due to our terrible workflow
+        var applier = fluid.getForComponent(that, "applier");
         fluid.diagnoseFailedView(componentName, that, fluid.defaults(componentName), arguments);
 
         fluid.fetchResources(that.options.resources); // TODO: deal with asynchrony
