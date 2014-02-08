@@ -354,6 +354,8 @@ var fluid = fluid || fluid_1_5;
         return totest && (totest.jquery || Object.prototype.toString.call(totest) === "[object Array]");
     };
     
+    /** Determines whether the supplied object is a plain JSON-forming container - that is, it is either a plain Object
+     * or a plain Array */
     fluid.isPlainObject = function (totest) {
         if (!totest) {
             return false; // FLUID-5172 - on IE8 the line below produces [object Object] rather than [object Null] or [object Undefined]
@@ -811,7 +813,7 @@ var fluid = fluid || fluid_1_5;
         return root[segment];
     };
 
-    // unsupported, NON-API function   
+    // unsupported, NON-API function
     fluid.model.pathToSegments = function (EL, config) {
         var parser = config && config.parser ? config.parser.parse : fluid.model.parseEL;
         var segs = typeof(EL) === "number" || typeof(EL) === "string" ? parser(EL) : EL;
@@ -979,6 +981,8 @@ var fluid = fluid || fluid_1_5;
     
     var fluid_prefix = fluid.generateUniquePrefix();
     
+    fluid.fluidInstance = fluid_prefix;
+    
     var fluid_guid = 1;
     
     /** Allocate an string value that will be very likely unique within this Fluid scope (frame or process) **/
@@ -1097,10 +1101,10 @@ var fluid = fluid || fluid_1_5;
         var identify = fluid.event.identifyListener;
         
         var that;
-        var lazyInit = function () { // Lazy init function to economise on object references
-            listeners = {};
-            byId = {};
-            sortedListeners = [];
+        var lazyInit = function () { // Lazy init function to economise on object references for events which are never listened to
+            that.listeners = {};
+            that.byId = {};
+            that.sortedListeners = [];
             that.addListener = function (listener, namespace, predicate, priority, softNamespace) {
                 if (!listener) {
                     return;
@@ -1116,17 +1120,17 @@ var fluid = fluid || fluid_1_5;
                 var record = {listener: listener, predicate: predicate,
                     namespace: namespace,
                     softNamespace: softNamespace,
-                    priority: fluid.event.mapPriority(priority, sortedListeners.length)};
-                byId[id] = record;
+                    priority: fluid.event.mapPriority(priority, that.sortedListeners.length)};
+                that.byId[id] = record;
                 if (softNamespace) {
-                    var thisListeners = (listeners[namespace] = fluid.makeArray(listeners[namespace]));
+                    var thisListeners = (that.listeners[namespace] = fluid.makeArray(that.listeners[namespace]));
                     thisListeners.push(record);
                 }
                 else {
-                    listeners[namespace] = record;
+                    that.listeners[namespace] = record;
                 }
                 
-                sortedListeners = fluid.event.sortListeners(listeners);
+                that.sortedListeners = fluid.event.sortListeners(that.listeners);
             };
             that.addListener.apply(null, arguments);
         };
@@ -1140,11 +1144,11 @@ var fluid = fluid || fluid_1_5;
             },
 
             removeListener: function (listener) {
-                if (!listeners) { return; }
+                if (!that.listeners) { return; }
                 var namespace, id;
                 if (typeof (listener) === "string") {
                     namespace = listener;
-                    var record = listeners[listener];
+                    var record = that.listeners[listener];
                     if (!record) {
                         return;
                     }
@@ -1156,18 +1160,18 @@ var fluid = fluid || fluid_1_5;
                         fluid.fail("Cannot remove unregistered listener function ", listener, " from event " + that.name);
                     }
                 }
-                var rec = byId[id];
+                var rec = that.byId[id];
                 var softNamespace = rec && rec.softNamespace;
                 namespace = namespace || (rec && rec.namespace) || id;
-                delete byId[id];
+                delete that.byId[id];
                 if (softNamespace) {
-                    fluid.remove_if(listeners[namespace], function (thisLis) {
+                    fluid.remove_if(that.listeners[namespace], function (thisLis) {
                         return thisLis.listener.$$fluid_guid === id;
                     });
                 } else {
-                    delete listeners[namespace];
+                    delete that.listeners[namespace];
                 }
-                sortedListeners = fluid.event.sortListeners(listeners);
+                that.sortedListeners = fluid.event.sortListeners(that.listeners);
             },
             // NB - this method exists currently solely for the convenience of the new,
             // transactional changeApplier. As it exists it is hard to imagine the function
@@ -1177,13 +1181,13 @@ var fluid = fluid || fluid_1_5;
                 return fireToListeners(listeners, args, wrapper);
             },
             fire: function () {
-                return fireToListeners(sortedListeners, arguments);
+                return fireToListeners(that.sortedListeners, arguments);
             }
         };
         return that;
     };
     
-    // This name will be deprecated in Fluid 2.0 for fluid.makeEventFirer (or fluid.eventFirer)
+    // This name will be deprecated in Fluid 1.5 for fluid.makeEventFirer (or fluid.eventFirer)
     fluid.event.getEventFirer = fluid.makeEventFirer;
     
     /** Fire the specified event with supplied arguments. This call is an optimisation utility
@@ -1577,22 +1581,24 @@ var fluid = fluid || fluid_1_5;
             return togo;
         }
         fluid.each(mergePolicy, function (value, key) {
-            var parsed = {}, builtin = false;
+            var parsed = {}, builtin = true;
             if (typeof(value) === "function") {
                 parsed.func = value;
-                builtin = true;
+            }
+            else if (typeof(value) === "object") {
+                parsed = value;  
             }
             else if (!fluid.isDefaultValueMergePolicy(value)) {
                 var split = value.split(/\s*,\s*/);
                 for (var i = 0; i < split.length; ++ i) {
                     parsed[split[i]] = true;
                 }
-                builtin = true;
             }
             else {
                 // Convert to ginger self-reference - NB, this can only be parsed by IoC
                 fluid.set(defaultValues, key, "{that}.options." + value);
                 togo.hasDefaults = true;
+                builtin = false;
             }
             if (builtin) {
                 fluid.set(builtins, fluid.composePath(key, "*"), parsed);
@@ -1946,13 +1952,17 @@ var fluid = fluid || fluid_1_5;
             fluid.destroyValue(baseMergeOptions.target, path);
         };
         
-        // Decode the now available mergePolicy
-        var mergePolicy = fluid.driveStrategy(options, "mergePolicy", mergeOptions.strategy);
-        mergePolicy = $.extend({}, fluid.rootMergePolicy, mergePolicy);
-        var compiledPolicy = fluid.compileMergePolicy(mergePolicy);
-        // TODO: expandComponentOptions has already put some builtins here - performance implications of the now huge
-        // default mergePolicy material need to be investigated as well as this deep merge
-        $.extend(true, sharedMergePolicy, compiledPolicy.builtins); // ensure it gets broadcast to all sharers
+        var compiledPolicy;
+        function computeMergePolicy() {
+            // Decode the now available mergePolicy
+            var mergePolicy = fluid.driveStrategy(options, "mergePolicy", mergeOptions.strategy);
+            mergePolicy = $.extend({}, fluid.rootMergePolicy, mergePolicy);
+            compiledPolicy = fluid.compileMergePolicy(mergePolicy);
+            // TODO: expandComponentOptions has already put some builtins here - performance implications of the now huge
+            // default mergePolicy material need to be investigated as well as this deep merge
+            $.extend(true, sharedMergePolicy, compiledPolicy.builtins); // ensure it gets broadcast to all sharers
+        }
+        computeMergePolicy();
         
         if (compiledPolicy.hasDefaults) {
             if (fluid.generateExpandBlock) {
@@ -1981,6 +1991,9 @@ var fluid = fluid || fluid_1_5;
         }
                 
         fluid.computeComponentAccessor(that);
+        if (!baseMergeOptions.target.mergePolicy) {
+            computeMergePolicy();
+        }
 
         return mergeOptions;
     };
@@ -2027,33 +2040,6 @@ var fluid = fluid || fluid_1_5;
         mergePolicy: {
             listeners: fluid.makeMergeListenersPolicy(fluid.mergeListenerPolicy)
         }
-    });
-    
-    
-    fluid.preInitModelComponent = function (that) {
-        that.model = that.options.model || {};
-        that.applier = that.options.applier || (fluid.makeChangeApplier ? fluid.makeChangeApplier(that.model, that.options.changeApplierOptions) : null);
-    };
-    
-    fluid.defaults("fluid.modelComponent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        preInitFunction: {
-            namespace: "preInitModelComponent",
-            listener: "fluid.preInitModelComponent"
-        },
-        mergePolicy: {
-            model: "preserve",
-            applier: "nomerge",
-            modelListeners: fluid.makeMergeListenersPolicy(fluid.arrayConcatPolicy)
-        }
-    });
-    
-    fluid.defaults("fluid.modelRelayComponent", {
-        gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "autoInit"]
-    });
-    
-    fluid.defaults("fluid.standardComponent", {
-        gradeNames: ["fluid.modelRelayComponent", "autoInit"]
     });
     
     /** A special "marker object" which is recognised as one of the arguments to
@@ -2140,9 +2126,6 @@ var fluid = fluid || fluid_1_5;
         if (evented) {
             fluid.instantiateFirers(that, options);
             fluid.mergeListeners(that, that.events, options.listeners);
-            if (fluid.mergeModelListeners) {
-                fluid.mergeModelListeners(that, options.modelListeners);
-            }
         }
         if (!fluid.hasGrade(options, "autoInit")) {
             fluid.clearLifecycleFunctions(options);

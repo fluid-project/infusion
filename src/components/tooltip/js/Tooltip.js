@@ -61,20 +61,16 @@ var fluid_1_5 = fluid_1_5 || {};
         } 
     };
     
-    // Because of strange dispatching within tooltip widget's "_open" method 
+    // Note that fluid.resolveEventTarget is required 
+    // because of strange dispatching within tooltip widget's "_open" method 
     // ->   this._trigger( "open", event, { tooltip: tooltip };
-    // the target of the outer event will incorrect
-    fluid.tooltip.resolveTarget = function (event) {
-        while (event.originalEvent && event.originalEvent.target) {
-            event = event.originalEvent;
-        }
-        return event.target;
-    };
+    // the target of the outer event will be incorrect
+
     
     fluid.tooltip.makeOpenHandler = function (that) {
         return function (event, tooltip) {
            fluid.tooltip.closeAll(that);
-           var originalTarget = fluid.tooltip.resolveTarget(event);
+           var originalTarget = fluid.resolveEventTarget(event);
            that.openIdMap[fluid.allocateSimpleId(originalTarget)] = true;
            if (that.initialised) {
                that.events.afterOpen.fire(that, originalTarget, tooltip.tooltip, event);
@@ -85,7 +81,9 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.tooltip.makeCloseHandler = function (that) {
         return function (event, tooltip) {
             if (that.initialised) { // underlying jQuery UI component will fire various spurious close events after it has been destroyed
-                that.events.afterClose.fire(that, fluid.tooltip.resolveTarget(event), tooltip.tooltip, event);
+                var originalTarget = fluid.resolveEventTarget(event);
+                delete that.openIdMap[originalTarget.id];
+                that.events.afterClose.fire(that, originalTarget, tooltip.tooltip, event);
             }
         };
     };

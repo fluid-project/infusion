@@ -186,87 +186,6 @@ fluid.registerNamespace("fluid.tests");
         }
     });
 
-    /** FLUID-3674: New model semantic tests **/
-
-    fluid.tests.fluid3674recorder = function (that, path, value, oldValue) {
-        that.fireRecord.push({path: path, value: value, oldValue: oldValue});
-    };
-
-    fluid.defaults("fluid.tests.fluid3674head", {
-        gradeNames: ["fluid.standardComponent", "autoInit"],
-        members: {
-            fireRecord: []
-        },
-        model: {
-            thing1: {
-                nest1: 2,
-                nest2: false
-            },
-            thing2: 3
-        },
-        events: {
-            createEvent: null
-        },
-        invokers: {
-            record: "fluid.tests.fluid3674recorder({that}, {arguments}.0, {arguments}.1, {arguments}.2)",
-            changeNest2: {
-                changePath: "thing1.nest2",
-                value: "{arguments}.0"
-            },
-            changeThing2: {
-                changePath: "thing2",
-                source: "internalSource",
-                value: "{arguments}.0"
-            }
-        },
-        components: {
-            child: {
-                type: "fluid.standardComponent",
-                createOnEvent: "createEvent",
-                options: {
-                    modelListeners: {
-                        "{fluid3674head}.model.thing1.nest2": {
-                            func: "{fluid3674head}.record",
-                            args: ["{change}.path", "{change}.value", "{change}.oldValue"]
-                        }
-                    },
-                    invokers: {
-                        changeNest2: {
-                            changePath: "{fluid3674head}.model.thing1.nest2",
-                            value: "{arguments}.0"
-                        }
-                    }
-                }
-            }
-        },
-        modelListeners: {
-            "thing1.nest1": "{that}.record({change}.path, {change}.value, {change}.oldValue)",
-            "thing2": {
-                func: "{that}.record",
-                args: "{change}.value",
-                guardSource: "internalSource"
-            }
-        }
-    });
-
-    jqUnit.test("FLUID-3674 declarative listener test", function () {
-        var that = fluid.tests.fluid3674head();
-        that.applier.requestChange("thing1.nest1", 3);
-        jqUnit.assertDeepEq("Single change correctly reported",
-            [{path: ["thing1", "nest1"], value: 3, oldValue: 2}], that.fireRecord);
-        for (var i = 0; i < 2; ++ i) {
-            that.fireRecord.length = 0;
-            that.events.createEvent.fire();
-            that.changeNest2(true);
-            jqUnit.assertDeepEq("Change reported to subcomponent - time " + (i + 1),
-                [{path: ["thing1", "nest2"], value: true, oldValue: false}], that.fireRecord);
-            that.child.changeNest2(false);
-        }
-        that.fireRecord.length = 0;
-        that.changeThing2(5);
-        jqUnit.assertDeepEq("Source guarded change not reported", [], that.fireRecord);
-    });
-
     /** Preservation of material with "exotic types" (with constructor) for FLUID-5089 **/
 
     fluid.tests.customType = new Date();
@@ -3077,7 +2996,7 @@ fluid.registerNamespace("fluid.tests");
         var defs = fluid.defaults("fluid.tests.fluid5023comp2");
 
         jqUnit.assertUndefined("The defaults should not have the tempId", defs.model.tempId);
-        jqUnit.assertNotEquals("The ids in the models are not equal", c1.applier.model.tempId, c2.applier.model.tempId);
+        jqUnit.assertNotEquals("The ids in the models are not equal", c1.model.tempId, c2.model.tempId);
 
         delete fluid.staticEnvironment.testSharedGrade;
     });
