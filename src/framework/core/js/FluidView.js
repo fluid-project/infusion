@@ -553,7 +553,7 @@ var fluid_1_5 = fluid_1_5 || {};
     var dismissList = {}; 
      
     $(document).click(function (event) { 
-        var target = event.target; 
+        var target = fluid.resolveEventTarget(event);
         while (target) { 
             if (dismissList[target.id]) { 
                 return; 
@@ -595,6 +595,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return Date.now ? Date.now() : (new Date()).getTime();
     };
     
+    
     /** Sets an interation on a target control, which morally manages a "blur" for
      * a possibly composite region.
      * A timed blur listener is set on the control, which waits for a short period of
@@ -607,7 +608,8 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     
     fluid.deadMansBlur = function (control, options) {
-        var that = fluid.initLittleComponent("fluid.deadMansBlur", options);
+        // TODO: This should be rewritten as a proper component
+        var that = {options: $.extend(true, {}, fluid.defaults("fluid.deadMansBlur"), options)};
         that.blurPending = false;
         that.lastCancel = 0;
         that.canceller = function (event) {

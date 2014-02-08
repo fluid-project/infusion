@@ -1953,7 +1953,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         }
         fluid.each(source, function (value, key) {
             // TODO: hack here to avoid corrupting old-style model references which were listed with "preserve" - eliminate this along with that mergePolicy
-            if (fluid.isPlainObject(value) && !(userOptions && key === "model" && segs.length === 0)) {
+            if (fluid.isPlainObject(value) && !fluid.isDOMish(value) && !(userOptions && key === "model" && segs.length === 0)) {
                 target[key] = fluid.freshContainer(value);
                 segs.push(key);
                 fluid.expandCompactRec(segs, target[key], value);
