@@ -105,7 +105,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     // unsupported, NON-API function
     fluid.memberFromRecord = function (memberrec, name, that) {
-        var value = fluid.expandOptions(memberrec, that);
+        var value = fluid.expandOptions(memberrec, that, null, null, {freeRoot: true});
         return value;
     };
 
@@ -512,6 +512,7 @@ var fluid_1_5 = fluid_1_5 || {};
         fluid.cacheShadowGrades(that, shadow);
         // This cheap strategy patches FLUID-5091 for now - some more sophisticated activity will take place
         // at this site when we have a full fix for FLUID-5028
+        shadow.mergeOptions.destroyValue("mergePolicy");
         shadow.mergeOptions.destroyValue("components");
         shadow.mergeOptions.destroyValue("invokers");
 
@@ -643,6 +644,9 @@ var fluid_1_5 = fluid_1_5 || {};
             if (index > 1) {
                 return atval;
             }
+            if (atval === undefined && component.hasOwnProperty(thisSeg)) { // avoid recomputing properties that have been explicitly evaluated to undefined
+                return fluid.NO_VALUE;
+            }
             if (atval === undefined) { // pick up components in instantiation here - we can cut this branch by attaching early
                 var parentPath = instantiator.idToShadow[component.id].path;
                 var childPath = fluid.composePath(parentPath, thisSeg);
@@ -754,14 +758,16 @@ var fluid_1_5 = fluid_1_5 || {};
         });
         delete shadow.listeners;
     };
-
+    
     // unsupported, non-API function
     fluid.recordListener = function (event, listener, shadow) {
-        var listeners = shadow.listeners;
-        if (!listeners) {
-            listeners = shadow.listeners = [];
+        if (event.ownerId !== shadow.that.id) { // don't bother recording listeners registered from this component itself
+            var listeners = shadow.listeners;
+            if (!listeners) {
+                listeners = shadow.listeners = [];
+            }
+            listeners.push({event: event, listener: listener});
         }
-        listeners.push({event: event, listener: listener});
     };
 
     var idToInstantiator = {};
@@ -775,6 +781,7 @@ var fluid_1_5 = fluid_1_5 || {};
             nickName: "instantiator",
             pathToComponent: {},
             idToShadow: {},
+            modelTransactions: {init: {}}, // a map of transaction id to map of component id to records of components enlisted in a current model initialisation transaction
             composePath: fluid.composePath // For speed, we declare that no component's name may contain a period
         };
         // We frequently get requests for components not in this instantiator - e.g. from the dynamicEnvironment or manually created ones
@@ -814,6 +821,7 @@ var fluid_1_5 = fluid_1_5 || {};
             if (created) {
                 idToInstantiator[component.id] = that;
                 var shadow = that.idToShadow[component.id] = {};
+                shadow.that = component;
                 shadow.path = path;
             }
             if (that.pathToComponent[path]) {
@@ -893,6 +901,7 @@ var fluid_1_5 = fluid_1_5 || {};
         fluid.pushActivity("expandOptions", "expanding options %args for component %that ", {that: that, args: args});
         var expandOptions = fluid.makeStackResolverOptions(that, localRecord);
         expandOptions.mergePolicy = mergePolicy;
+        expandOptions.freeRoot = outerExpandOptions && outerExpandOptions.freeRoot;
         var expanded = outerExpandOptions && outerExpandOptions.defer ?
             fluid.makeExpandOptions(args, expandOptions) : fluid.expand(args, expandOptions);
         fluid.popActivity();
@@ -999,7 +1008,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             }
             else {
-                mergeRecords.user = {options: userOptions};
+                mergeRecords.user = {options: fluid.expandCompact(userOptions, true)};
             }
         }
         var expandList = fluid.mergeRecordsToList(mergeRecords);
@@ -1100,7 +1109,10 @@ var fluid_1_5 = fluid_1_5 || {};
 
         var argMap = upDefaults? upDefaults.argumentMap : null;
         var inferMap = false;
-        if (!argMap && (upDefaults || (options && options.componentRecord)) && !options.passArgs) {
+        if (upDefaults) {
+            options.passArgs = false; // Don't attempt to construct a component using "passArgs" spec
+        }
+        if (!argMap && (upDefaults || (options && options.componentRecord))) {
             inferMap = true;
             // infer that it must be a little component if we have any reason to believe it is a component
             if (demands.length < 2) {
@@ -1184,11 +1196,14 @@ var fluid_1_5 = fluid_1_5 || {};
                     args[i] = fluid.expand(arg, expandOptions);
                 }
                 else { // It is the component options
+                    if (options.passArgs) {
+                        fluid.fail("Error invoking function " + demandspec.funcName + ": found component creator rather than free function");
+                    }
                     if (typeof(arg) === "object" && !arg.targetTypeName) {
                         arg.targetTypeName = demandspec.funcName;
                     }
                     mergeRecords.demands = [];
-                    fluid.each(demandspec.backSpecs.reverse(), function (backSpec) {
+                    fluid.each((demandspec.backSpecs).reverse(), function (backSpec) {
                         fluid.pushDemandSpec(mergeRecords.demands, backSpec.options, backSpec.mergeOptions);
                     });
                     fluid.pushDemandSpec(mergeRecords.demands, demandspec.options || arg, demandspec.mergeOptions);
@@ -1501,9 +1516,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.changeToApplicable = function (record, that) {
         return {
             apply: function (noThis, args) {
-                var parsed = fluid.resolveModelReference(that, record.changePath);
+                var parsed = fluid.parseValidModelReference(that, "changePath listener record", record.changePath);
                 var value = fluid.expandOptions(record.value, that, {}, {arguments: args});
-                fluid.fireSourcedChange(parsed.that.applier, parsed.path, value, record.source);
+                fluid.fireSourcedChange(parsed.applier, parsed.path, value, record.source); 
             }
         };
     };
@@ -1794,7 +1809,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         // occurred - this was implemented wrongly in 1.4.
         var firer;
         if (isComposite) {
-            firer = fluid.event.getEventFirer(null, null, " [composite] " + fluid.event.nameEvent(that, eventName));
+            firer = fluid.makeEventFirer(null, null, " [composite] " + fluid.event.nameEvent(that, eventName));
             var dispatcher = fluid.event.dispatchListener(that, firer.fire, eventName, eventSpec, isMultiple);
             if (isMultiple) {
                 fluid.event.listenerEngine(origin, dispatcher, adder);
@@ -1930,14 +1945,15 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     }, singularPenRecord);
 
     // unsupported, non-API function
-    fluid.expandCompactRec = function (segs, target, source) {
+    fluid.expandCompactRec = function (segs, target, source, userOptions) {
         var pen = segs.length > 0 ? segs[segs.length - 1] : "";
         var active = singularRecord[pen];
         if (!active && segs.length > 1) {
             active = singularPenRecord[segs[segs.length - 2]]; // support array of listeners and modelListeners
         }
         fluid.each(source, function (value, key) {
-            if (fluid.isPlainObject(value)) {
+            // TODO: hack here to avoid corrupting old-style model references which were listed with "preserve" - eliminate this along with that mergePolicy
+            if (fluid.isPlainObject(value) && !fluid.isDOMish(value) && !(userOptions && key === "model" && segs.length === 0)) {
                 target[key] = fluid.freshContainer(value);
                 segs.push(key);
                 fluid.expandCompactRec(segs, target[key], value);
@@ -1950,11 +1966,11 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             target[key] = value;
         });
     };
-
-    // unsupported, non-API function
-    fluid.expandCompact = function (options) {
+    
+    // unsupported, non-API function    
+    fluid.expandCompact = function (options, userOptions) {
         var togo = {};
-        fluid.expandCompactRec([], togo, options)
+        fluid.expandCompactRec([], togo, options, userOptions)
         return togo;
     };
 
@@ -2067,7 +2083,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.fetchExpandChildren = function (target, i, segs, source, mergePolicy, miniWorld, options) {
         if (source.expander /* && source.expander.type */) { // possible expander at top level
             var expanded = fluid.expandExpander(target, source, options);
-            if (fluid.isPrimitive(expanded) || fluid.isDOMish(expanded) || !fluid.isPlainObject(expanded) || (fluid.isArrayable(expanded) ^ fluid.isArrayable(target))) {
+            if (options.freeRoot || fluid.isPrimitive(expanded) || fluid.isDOMish(expanded) || !fluid.isPlainObject(expanded) || (fluid.isArrayable(expanded) ^ fluid.isArrayable(target))) {
                 return expanded;
             }
             else { // make an attempt to preserve the root reference if possible

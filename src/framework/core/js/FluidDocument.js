@@ -50,18 +50,25 @@ var fluid_1_5 = fluid_1_5 || {};
 
     // Don't clobber any existing jQuery.browser in case it's different
     if (!$.browser) {
-        matched = fluid.uaMatch(navigator.userAgent);
-        browser = {};
-      
-        if (matched.browser) {
-            browser[matched.browser] = true;
-            browser.version = matched.version;
-        }
-        // Chrome is Webkit, but Webkit is also Safari.
-        if (browser.chrome) {
-            browser.webkit = true;
-        } else if (browser.webkit) {
-            browser.safari = true;
+        if (!!navigator.userAgent.match(/Trident\/7\./)) {
+            browser = { // From http://stackoverflow.com/questions/18684099/jquery-fail-to-detect-ie-11
+                msie: true,
+                version: 11
+            }
+        } else {
+            matched = fluid.uaMatch(navigator.userAgent);
+            browser = {};
+          
+            if (matched.browser) {
+                browser[matched.browser] = true;
+                browser.version = matched.version;
+            }
+            // Chrome is Webkit, but Webkit is also Safari.
+            if (browser.chrome) {
+                browser.webkit = true;
+            } else if (browser.webkit) {
+                browser.safari = true;
+            }
         }
         $.browser = browser;
     }
@@ -136,7 +143,23 @@ var fluid_1_5 = fluid_1_5 || {};
         fluid.setScopedData(target, ENABLEMENT_KEY, true);
     };
     
-    // This function is necessary since simulation of focus events by jQuery under IE
+    // This utility is required through the use of newer versions of jQuery which will obscure the original
+    // event responsible for interaction with a target. This is currently use in Tooltip.js and FluidView.js
+    // "dead man's blur" but would be of general utility
+    
+    fluid.resolveEventTarget = function (event) {
+        while (event.originalEvent && event.originalEvent.target) {
+            event = event.originalEvent;
+        }
+        return event.target;
+    };
+    
+    // These function (fluid.focus() and fluid.blur()) serve several functions. They should be used by
+    // all implementation both in test cases and component implementation which require to trigger a focus
+    // event. Firstly, they restore the old behaviour in jQuery versions prior to 1.10 in which a focus 
+    // trigger synchronously relays to a focus handler. In newer jQueries this defers to the real browser
+    // relay with numerous platform and timing-dependent effects. 
+    // Secondly, they are necessary since simulation of focus events by jQuery under IE
     // is not sufficiently good to intercept the "focusin" binding. Any code which triggers
     // focus or blur synthetically throughout the framework and client code must use this function,
     // especially if correct cross-platform interaction is required with the "deadMansBlur" function.
@@ -144,12 +167,14 @@ var fluid_1_5 = fluid_1_5 || {};
     function applyOp(node, func) {
         node = $(node);
         node.trigger("fluid-"+func);
+        node.triggerHandler(func);
         node[func]();
+        return node;
     }
     
     $.each(["focus", "blur"], function(i, name) {
         fluid[name] = function(elem) {
-            applyOp(elem, name);
+            return applyOp(elem, name);
         }
     });
     

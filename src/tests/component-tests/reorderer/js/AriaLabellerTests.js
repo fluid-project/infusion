@@ -49,7 +49,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var labellerTester = fluid.tests.labellerTester("#list1");
             jqUnit.assertNotUndefined("reorderer created", labellerTester.reorderer);
 
-            $("#list1item3").focus();
+            fluid.focus($("#list1item3"));
             k.compositeKey(labellerTester.reorderer, fluid.testUtils.reorderer.ctrlKeyEvent("DOWN"), 2);
             assertItemsInOrder("after ctrl-down, order should be ", [1, 2, 4, 3, 5]);
 

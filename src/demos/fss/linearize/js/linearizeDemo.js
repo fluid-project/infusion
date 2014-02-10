@@ -43,23 +43,23 @@ var demo = demo || {};
     };
     
     demo.linearize.preInit = function (that) {
-        that.setAlignmnet = function (newAlignmnet, oldAlignmnet) {
+        that.setAlignment = function (newAlignment, oldAlignment) {
             var styles = that.options.styles;
             var styledElm = that.locate("styled");
             
-            if (oldAlignmnet) {
-                styledElm.removeClass(styles[oldAlignmnet]);
+            if (oldAlignment) {
+                styledElm.removeClass(styles[oldAlignment]);
             }
             
-            styledElm.addClass(styles[newAlignmnet]);
-            that.currentAlignmnet = newAlignmnet;
+            styledElm.addClass(styles[newAlignment]);
+            that.currentAlignment = newAlignment;
         };
         
         that.addLinearization = function () {
             that.locate("alignment").removeClass(that.options.styles.alignmentDisabled);
             that.locate("styled").addClass(that.options.styles.linear);
             that.locate("alignmentChoice").prop("disabled", false);
-            that.setAlignmnet(that.locate("alignmentChoice").val());
+            that.setAlignment(that.locate("alignmentChoice").val());
         };
         
         that.removeLinearization = function () {
@@ -137,7 +137,7 @@ var demo = demo || {};
             afterLayoutChanged: null
         },
         listeners: {
-            afterAlignmentChanged: "{demo.linearize}.setAlignmnet",
+            afterAlignmentChanged: "{demo.linearize}.setAlignment",
             afterLayoutChanged: "{demo.linearize}.setLayout"
         }, 
         model: {

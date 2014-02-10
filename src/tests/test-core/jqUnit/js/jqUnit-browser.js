@@ -115,20 +115,6 @@ var jqUnit = jqUnit || {};
             return togo;
         };
     };
-    
-    /** Accepts a jQuery element on which to simulate a focus event. Since the results of this are browser-dependent
-     * in an apparently undetectable way, this method focuses the jQuery element on IE and the raw DOM element on
-     * other browsers.
-     */
-    
-    jqUnit.simulateFocus = function (jqel) {
-        if ($.browser.msie) {
-            jqel.focus();
-        } else {
-            jqel[0].focus();
-        }
-        return jqel;
-    };
         
     // Canonicalise a list of DOM elements (or a jQuery) by converting elements to their ids (allocated if necessary)
     jqUnit.canonicaliseDom = function (list) {

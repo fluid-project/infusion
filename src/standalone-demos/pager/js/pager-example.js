@@ -29,7 +29,9 @@ var demo = demo || {};
             },
             listeners: {
                 onModelChange: function (newModel, oldModel) {
-                    $(selectorPrefix + (oldModel.pageIndex + 1)).addClass("hidden");
+                    if (oldModel) {
+                        $(selectorPrefix + (oldModel.pageIndex + 1)).addClass("hidden");
+                    }
                     $(selectorPrefix + (newModel.pageIndex + 1)).removeClass("hidden");
                 }
             }

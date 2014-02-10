@@ -18,7 +18,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     $(document).ready(function () {
 
-        jqUnit.module("Nested Reorder Tests");
+        jqUnit.module("Nested Reorderer Tests");
 
         var itemIds = function (prefix, indexes) {
             return fluid.testUtils.reorderer.prepend(prefix, indexes);

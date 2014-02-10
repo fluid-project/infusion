@@ -38,11 +38,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return obj;
         };    
         
-        jqUnit.test("reorderGrid API", function () {            
+        jqUnit.test("reorderGrid API", function () {
             var options = assembleOptions(false);
             var containerSelector = "[id='" + lightboxRootId + "']";
             var gridReorderer = fluid.reorderGrid(containerSelector, options);
-            var item2 = fluid.jById(orderableIds[1]).focus();
+            var item2 = fluid.focus(fluid.jById(orderableIds[1]));
             var item3 = fluid.jById(orderableIds[2]);
             var item5 = fluid.jById(orderableIds[4]);
             

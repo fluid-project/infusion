@@ -62,7 +62,7 @@ function fetchLightboxRoot() {
 
 function focusLightbox() {
     var root = fetchLightboxRoot();
-    jqUnit.simulateFocus(root);
+    fluid.focus(root);
 }
 
 function findOrderableByDivAndId(containerEl) {

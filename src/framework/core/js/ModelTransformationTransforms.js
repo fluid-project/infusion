@@ -543,4 +543,38 @@ var fluid = fluid || fluid_1_5;
         });
         return newArray;
     };
+    
+    fluid.defaults("fluid.transforms.limitRange", {
+        gradeNames: "fluid.standardTransformFunction"  
+    });
+    
+    fluid.transforms.limitRange = function (value, transformSpec, transform) {
+        var min = transformSpec.min;
+        if (min !== undefined) {
+            var excludeMin = transformSpec.excludeMin || 0;
+            min += excludeMin;
+            if (value < min) {
+                value = min;
+            }  
+        }
+        var max = transformSpec.max;
+        if (max !== undefined) {
+            var excludeMax = transformSpec.excludeMax || 0;
+            max -= excludeMax;
+            if (value > max) {
+                value = max;
+            }  
+        }
+        return value;
+    };
+    
+    fluid.defaults("fluid.transforms.free", {
+        gradeNames: "fluid.transformFunction"  
+    });
+    
+    fluid.transforms.free = function (transformSpec, transform) {
+        var args = fluid.makeArray(transformSpec.args);
+        return fluid.invokeGlobalFunction(transformSpec.func, args);
+    };
+    
 })(jQuery, fluid_1_5);
