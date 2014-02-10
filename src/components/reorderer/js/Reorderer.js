@@ -672,7 +672,6 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.reorderer.refresh = function (dom, events, selectableContext, activeItem) {
-        events.onRefresh.fire();
         dom.refresh("movables");
         dom.refresh("selectables");
         dom.refresh("grabHandle", dom.fastLocate("movables"));
@@ -682,6 +681,7 @@ var fluid_1_5 = fluid_1_5 || {};
             selectableContext.selectables = dom.fastLocate("selectables");
             selectableContext.selectablesUpdated(activeItem);
         }
+        events.onRefresh.fire(); // This should be last otherwise handlers will see stale DOM binder contents 
     };
     
     /**
