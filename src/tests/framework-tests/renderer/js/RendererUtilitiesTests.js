@@ -1831,4 +1831,68 @@ fluid.registerNamespace("fluid.tests");
                 "${{test}.string}", that.locate("simpleBound6").text());
         });
     };
+
+    // FLUID-5272 Case 1: The model relay system throws "applier.preCommit is undefined" when the target is an independently defined view or renderer component
+    fluid.defaults("fluid.tests.fluid5272sub", {
+        gradeNames: ["fluid.rendererComponent", "fluid.standardRelayComponent", "autoInit"]
+    });
+
+    fluid.defaults("fluid.tests.fluid5272Case1", {
+        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        model: {
+            celsius: 22,
+        },
+        modelRelay: {
+            source: "{that}.model.celsius",
+            target: "{sub}.model.fahrenheit",
+            singleTransform: {
+                type: "fluid.transforms.linearScale",
+                factor: 9/5,
+                offset: 32
+            }
+        },
+        components: {
+            sub: {
+                type: "fluid.tests.fluid5272sub",
+                container: "#FLUID-5272-for-target"
+            }
+        }
+    });
+
+    jqUnit.test("The model relay with transformation works with renderer components", function () {
+        var that = fluid.tests.fluid5272Case1(),
+            expectedValue = 22 * 9 / 5 + 32;
+
+        jqUnit.assertDeepEq("The target model is transformed properly", expectedValue, that.sub.model.fahrenheit);
+    });
+
+    // FLUID-5271 Case 2: The model relay system throws "trans.transaction.reset is not a function" when the source is a view or renderer component
+    fluid.defaults("fluid.tests.fluid5272Case2", {
+        gradeNames: ["fluid.viewComponent", "fluid.standardRelayComponent", "autoInit"],
+        model: {
+            celsius: 22,
+        },
+        modelRelay: {
+            source: "{that}.model.celsius",
+            target: "{sub}.model.fahrenheit",
+            singleTransform: {
+                type: "fluid.transforms.linearScale",
+                factor: 9/5,
+                offset: 32
+            }
+        },
+        components: {
+            sub: {
+                type: "fluid.standardRelayComponent"
+            }
+        }
+    });
+
+    jqUnit.test("The model relay with transformation works with renderer components", function () {
+        var that = fluid.tests.fluid5272Case2("#FLUID-5272-for-source"),
+            expectedValue = 22 * 9 / 5 + 32;
+
+        jqUnit.assertDeepEq("The target model is transformed properly", expectedValue, that.sub.model.fahrenheit);
+    });
+
 })(jQuery);
