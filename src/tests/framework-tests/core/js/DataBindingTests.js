@@ -1284,9 +1284,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("Models are transformed and relayed properly", function () {
-        var thatOnSource = fluid.tests.fluid5270OnSource(),
-            thatOnTarget = fluid.tests.fluid5270OnTarget(),
+    jqUnit.test("FLUID-5270: Transforming relay from child to parent", function () {
+        var thatOnSource = fluid.tests.fluid5270OnSource();
+        var thatOnTarget = fluid.tests.fluid5270OnTarget(),
             expectedValue = 22 * 9 / 5 + 32;
 
         jqUnit.assertDeepEq("The target model is transformed properly - modelRelay on the source component", expectedValue, thatOnSource.sub.model.fahrenheit);
