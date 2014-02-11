@@ -99,7 +99,10 @@ var fluid_1_5 = fluid_1_5 || {};
             if (key === "container") {
                 var componentType = fluid.get(root, [path, "type"]);
                 var componentOptions = fluid.defaults(componentType);
-                if (typeof(fluid.get(componentOptions, ["argumentMap", "container"])) === "undefined") {
+                // Note that this approach is not completely reliable, although it has been reviewed as "good enough" - 
+                // a grade which modifies the creation signature of its principal type would cause numerous other problems.
+                // We can review this awkward kind of "anticipatory logic" when the new renderer arrives. 
+                if (fluid.get(componentOptions, ["argumentMap", "container"]) === undefined) {
                     return false;
                 }
             }
