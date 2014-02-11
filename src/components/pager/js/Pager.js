@@ -498,7 +498,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }],
         modelListeners: {
-            "": "{that}.events.onModelChange.fire({change}.value, {change}.oldValue)"
+            "": "{that}.events.onModelChange.fire({change}.value, {change}.oldValue, {that})"
         },
         listeners: {
             onCreate: {
