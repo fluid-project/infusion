@@ -180,7 +180,11 @@
                 </ul>
             </div>
         </div>
-
     </div>
+    <script>
+        var runTests = fluid.tests.runPagedTableTests; 
+        fluid = fluid_1_5 = null; // test FLUID-5271 for some substantial part of the framework
+        runTests();
+    </script>
   </body>
 </html>

@@ -17,7 +17,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, indent: 4 */
 
-(function ($) {
+(function ($, fluid) {
   
     jqUnit.module("Paged Table Tests");
     
@@ -139,11 +139,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return pager;
     };
 
-    $(document).ready(function () {
-
-    // This IoC-enabled test must come first, as a result of an undiagnosed Firefox issue which causes the running
-    // of the plain QUnit tests to somehow clobber the markup belonging to it
-       
     fluid.tests.tooltipModuleSource = function (pager) {
         var pageLinksTop = $("a", pager.pagerBar.locate("pageLinks"));
         var pageLinksBottom = $("a", pager["pagerBar-1"].locate("pageLinks"));
@@ -223,6 +218,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
+    
+    fluid.tests.runPagedTableTests = function () {
+
+    // This IoC-enabled test must come first, as a result of an undiagnosed Firefox issue which causes the running
+    // of the plain QUnit tests to somehow clobber the markup belonging to it
+       
 
     // QUnit's markup restoration cycle can't play nicely with ours. It grabs the document's markup at a slightly later point
     // than our initialisation - during which time we have rendered already and clobbered it. It doesn't expose an event
@@ -233,7 +234,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var rendered_ioc = $("<div id=\"rendered-ioc\"></div>").html(rendered);
     rendered_ioc.appendTo(document.body);
     fluid.test.runTests(["fluid.tests.pagerTooltipEnv"]);
-
+    
+    jqUnit.module("Paged Table Tests");
 
     // Just tests that the pager will initialize with only a container, and dataModel passed in.
     // The rest of the options are the defaults.
@@ -546,6 +548,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     
-    });
+    };
     
-})(jQuery);
+})(jQuery, fluid_1_5);
