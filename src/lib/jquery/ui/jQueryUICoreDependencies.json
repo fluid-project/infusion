@@ -8,6 +8,8 @@
             "./js/jquery.ui.mouse.js",
             "./js/jquery.ui.position.js"
         ],
-        "dependencies": "jQuery"
+        "dependencies": [
+            "jQuery"
+        ]
     }
 }

@@ -17,6 +17,9 @@
             "./js/FluidIoC.js",
             "./js/FluidRequests.js"
         ],
-        "dependencies": ["jQuery", "jQueryUICore"]
+        "dependencies": [
+            "jQuery",
+            "jQueryUICore"
+        ]
     }
 }

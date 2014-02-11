@@ -3,7 +3,13 @@
         "name": "Sliding Panel",
         "description": "A widget that slides a panel in and out of view.",
         "cssFiles": [],
-        "files": ["./js/SlidingPanel.js"],
-        "dependencies": ["jQuery", "jQueryUICore", "framework"]
+        "files": [
+            "./js/SlidingPanel.js"
+        ],
+        "dependencies": [
+            "jQuery",
+            "jQueryUICore",
+            "framework"
+        ]
     }
 }

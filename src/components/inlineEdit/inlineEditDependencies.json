@@ -3,7 +3,18 @@
         "name": "Inline Edit",
         "description": "Edit text without changing context.",
         "cssFiles": "InlineEdit.css",
-        "files": ["./js/InlineEdit.js", "./js/InlineEditIntegrations.js"],
-        "dependencies": ["jQuery", "jQueryUICore", "jQueryUIWidgets", "framework", "undo", "tooltip", "fss"]
+        "files": [
+            "./js/InlineEdit.js",
+            "./js/InlineEditIntegrations.js"
+        ],
+        "dependencies": [
+            "jQuery",
+            "jQueryUICore",
+            "jQueryUIWidgets",
+            "framework",
+            "undo",
+            "tooltip",
+            "fss"
+        ]
     }
 }

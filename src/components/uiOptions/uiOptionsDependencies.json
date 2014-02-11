@@ -5,6 +5,10 @@
         "files": [
             "./js/UIOptions.js"
         ],
-        "dependencies": ["jQuery", "framework", "preferences"]
+        "dependencies": [
+            "jQuery",
+            "framework",
+            "preferences"
+        ]
     }
 }

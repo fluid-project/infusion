@@ -3,7 +3,17 @@
         "name": "Pager",
         "description": "Sort and organize large amounts of data.",
         "cssFiles": "Pager.css",
-        "files": ["./js/Pager.js", "./js/Table.js", "./js/PagedTable.js"],
-        "dependencies": ["jQuery", "jQueryUIWidgets", "framework", "renderer", "tooltip"]
+        "files": [
+            "./js/Pager.js",
+            "./js/Table.js",
+            "./js/PagedTable.js"
+        ],
+        "dependencies": [
+            "jQuery",
+            "jQueryUIWidgets",
+            "framework",
+            "renderer",
+            "tooltip"
+        ]
     }
 }
