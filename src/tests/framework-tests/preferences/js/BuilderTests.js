@@ -903,9 +903,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 gradeNames: ["fluid.prefs.auxSchema.starter"],
                 auxiliarySchema: {
                     "namespace": "",
-                    "templatePrefix": "../../../framework/preferences/html/",
-                    "messagePrefix": "../../../framework/preferences/messages/"
+                    "templatePrefix": "../../../../framework/preferences/html/",
+                    "messagePrefix": "../../../../framework/preferences/messages/"
                 }
+            },
+            prefsEditor: {
+                prefsEditorType: "fluid.prefs.fullNoPreview"
             }
         });
         jqUnit.assertTrue("The prefs editor should have been returned", fluid.hasGrade(pref_defaultNamespace.options, "fluid.prefs.assembler.prefsEd"));
@@ -917,10 +920,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 gradeNames: ["fluid.prefs.auxSchema.starter"],
                 auxiliarySchema: {
                     "namespace": namespace,
-                    "templatePrefix": "../../../framework/preferences/html/",
-                    "messagePrefix": "../../../framework/preferences/messages/"
+                    "templatePrefix": "../../../../framework/preferences/html/",
+                    "messagePrefix": "../../../../framework/preferences/messages/"
                 }
-            }
+            },
+            prefsEditor: {
+                prefsEditorType: "fluid.prefs.fullNoPreview"
+            },
         });
         jqUnit.assertTrue("The prefs editor should have been returned", fluid.hasGrade(pref_customNamespace.options, "fluid.prefs.assembler.prefsEd"));
         jqUnit.assertTrue("The prefsEditor grade should use the custom namespace", startsWith(pref_customNamespace.typeName, namespace));
