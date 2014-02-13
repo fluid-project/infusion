@@ -1,0 +1,137 @@
+
+/* General styles */
+
+@font-face {
+    font-family: "Icons";
+    src:url('../fonts/icons.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/icons.eot'),
+         url('../fonts/icons.ttf');
+}
+
+@font-face {
+    font-family: "Fluid-star";
+    src:url('../fonts/fluid-star.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/fluid-star.eot'),
+         url('../fonts/fluid-star.ttf');
+}
+
+.fl-demoMenu {
+    font-family: 'Open Sans', sans-serif;
+    color: #fff;
+    background-color: rgba(51,51,51,.8);
+}
+
+
+.fl-demoMenu h1,
+.fl-demoMenu h2 {
+    margin: 0;
+    
+}
+
+.fl-demoMenu .fl-demoMenu-body {
+    margin: 1rem;
+}
+
+.fl-demoMenu a {
+    color: #FFCC00;
+}
+
+/* Header area with title */
+.fl-demoMenu-title {
+    background-color: #333333;
+    font-family: 'Roboto Slab', serif;
+    color: #fff;
+    padding: 0.5rem;
+}
+
+.fl-demoMenu-title h1 {
+    display: inline-block;
+    padding: 0.5rem;
+}
+
+.fl-demoMenu-title .fl-fluid-star {
+    text-decoration: none;
+    color: #fff;
+    font-size: 1.5rem;
+    font-family: "Fluid-star";
+    padding: 0.2rem 0.7rem;
+}
+
+.fl-demoMenu-title .fl-fluid-star:before{
+    content: "\e600";
+}
+
+/* Description of the component */
+.fl-demoMenu-description {
+    
+}
+
+/* Instruction text */
+.fl-demoMenu-instructions {
+    border: 0.2rem solid #FFCC00;
+    padding: 1rem;
+}
+
+
+/* Icon links to code, API, and designs. */ 
+.fl-demoMenu-links ul li {
+    display: inline-block;
+    list-style: none outside none;
+    margin: 2rem 0.5rem 2rem 0;
+}
+
+.fl-demoMenu-links ul li a {
+    color: #fff;
+    text-decoration: none;
+    text-transform:lowercase;
+}
+
+.fl-demoMenu-links ul li .fl-icon {
+    display: inline-block;
+    background-color: #fff;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50rem;
+    font-family: icons;
+    color: #333333;
+}
+
+.fl-demoMenu-links ul li .fl-icon:before{
+    position: relative;
+    top: 0.35rem;
+    left: 0.41rem;
+    font-size: 1.2rem;
+}
+
+.fl-icon-api:before{
+    content: "\e602";
+}
+
+.fl-icon-github:before {
+    content: "\e601";
+}
+
+.fl-icon-design:before {
+    content: "\e603";
+}
+
+.fl-demo-links-feedback a{
+    display:block;
+}
+
+/* Footer / Close button */
+.fl-demoMenu-footer {
+    margin: 1rem;
+}
+
+.fl-demoMenu-footer a {
+    background-color: #fff;
+    border-radius: 0.3rem; 
+    padding: 0.3rem 1rem;
+    color:  #333333;
+    text-decoration: none;
+    text-transform: lowercase;
+    display: inline-block;
+    margin: 1rem 0;
+}
+
