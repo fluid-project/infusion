@@ -36,6 +36,10 @@
     color: #FFCC00;
 }
 
+.fl-demoMenu *:focus {
+    outline: 0.2rem solid #FFCC00;
+}
+
 /* Header area with title */
 .fl-demoMenu-title {
     background-color: #333333;
@@ -51,10 +55,10 @@
 
 .fl-demoMenu-title .fl-fluid-star {
     text-decoration: none;
-    color: #fff;
     font-size: 1.5rem;
     font-family: "Fluid-star";
     padding: 0.2rem 0.7rem;
+    color: #fff;
 }
 
 .fl-demoMenu-title .fl-fluid-star:before{
@@ -135,3 +139,124 @@
     margin: 1rem 0;
 }
 
+/* Theming */
+
+/* black on white */
+.fl-theme-uio-bw .fl-demoMenu,
+.fl-theme-uio-bw .fl-demoMenu a,
+.fl-theme-uio-bw .fl-demoMenu-links ul li .fl-icon  {
+    color: #000;
+    background-color: #fff;
+}
+
+.fl-theme-uio-bw .fl-demoMenu {
+    border: 0.2rem solid #fff;
+    outline:  0.2rem solid #000;
+}
+
+.fl-theme-uio-bw .fl-demoMenu-title .fl-fluid-star,
+.fl-theme-uio-bw .fl-demoMenu .fl-demoMenu-title a,
+.fl-theme-uio-bw .fl-demoMenu .fl-demoMenu-title {
+    background-color: #000;
+    color: #fff;
+}
+
+.fl-theme-uio-bw .fl-demoMenu a { text-decoration: underline; }
+.fl-theme-uio-bw .fl-demoMenu *:focus { outline: 0.2rem solid #000; }
+.fl-theme-uio-bw .fl-demoMenu-instructions { border: 0.2rem solid #000; }
+
+/* white on black */
+.fl-theme-uio-wb .fl-demoMenu,
+.fl-theme-uio-wb .fl-demoMenu a, 
+.fl-theme-uio-wb .fl-demoMenu-links ul li .fl-icon {
+    color: #fff;
+    background-color: #000;
+}
+
+.fl-theme-uio-wb .fl-demoMenu {
+    border: 0.2rem solid #000;
+    outline:  0.2rem solid #fff;
+}
+
+.fl-theme-uio-wb .fl-demoMenu .fl-demoMenu-title .fl-fluid-star,
+.fl-theme-uio-wb .fl-demoMenu .fl-demoMenu-title a,
+.fl-theme-uio-wb .fl-demoMenu .fl-demoMenu-title {
+    background-color: #fff;
+    color: #000;
+}
+
+.fl-theme-uio-wb .fl-demoMenu a { text-decoration: underline; }
+.fl-theme-uio-wb .fl-demoMenu *:focus { outline: 0.2rem solid #fff; }
+.fl-theme-uio-wb .fl-demoMenu-instructions { border: 0.2rem solid #fff; }
+
+/* Low contrast: light grey on dark grey */
+.fl-theme-uio-lgdg .fl-demoMenu,
+.fl-theme-uio-lgdg .fl-demoMenu a, 
+.fl-theme-uio-lgdg .fl-demoMenu-links ul li .fl-icon {
+    color: #bdbdbb;
+    background-color: #555;
+}
+
+.fl-theme-uio-lgdg .fl-demoMenu {
+    border: 0.2rem solid #555;
+    outline:  0.2rem solid #bdbdbb;
+}
+
+.fl-theme-uio-lgdg .fl-demoMenu .fl-demoMenu-title .fl-fluid-star,
+.fl-theme-uio-lgdg .fl-demoMenu .fl-demoMenu-title a,
+.fl-theme-uio-lgdg .fl-demoMenu .fl-demoMenu-title {
+    background-color: #bdbdbb;
+    color: #555;
+}
+
+.fl-theme-uio-lgdg .fl-demoMenu a { text-decoration: underline; }
+.fl-theme-uio-lgdg .fl-demoMenu *:focus { outline: 0.2rem solid #bdbdbb; }
+.fl-theme-uio-lgdg .fl-demoMenu-instructions { border: 0.2rem solid #bdbdbb; }
+
+/* Yellow on Black */
+.fl-theme-uio-yb .fl-demoMenu,
+.fl-theme-uio-yb .fl-demoMenu a, 
+.fl-theme-uio-yb .fl-demoMenu-links ul li .fl-icon {
+    color: #FFFF00;
+    background-color: #000;
+}
+
+.fl-theme-uio-yb .fl-demoMenu {
+    border: 0.2rem solid #000;
+    outline:  0.2rem solid #FFFF00;
+}
+
+.fl-theme-uio-yb .fl-demoMenu .fl-demoMenu-title .fl-fluid-star,
+.fl-theme-uio-yb .fl-demoMenu .fl-demoMenu-title a,
+.fl-theme-uio-yb .fl-demoMenu .fl-demoMenu-title {
+    background-color: #FFFF00;
+    color: #000;
+}
+
+.fl-theme-uio-yb .fl-demoMenu a { text-decoration: underline; }
+.fl-theme-uio-yb .fl-demoMenu *:focus { outline: 0.2rem solid #FFFF00; }
+.fl-theme-uio-yb .fl-demoMenu-instructions { border: 0.2rem solid #FFFF00; }
+
+/* Black on Yellow */
+.fl-theme-uio-by .fl-demoMenu,
+.fl-theme-uio-by .fl-demoMenu a,
+.fl-theme-uio-by .fl-demoMenu-links ul li .fl-icon  {
+    color: #000;
+    background-color: #FFFF00;
+}
+
+.fl-theme-uio-by .fl-demoMenu {
+    border: 0.2rem solid #FFFF00;
+    outline:  0.2rem solid #000;
+}
+
+.fl-theme-uio-by .fl-demoMenu-title .fl-fluid-star,
+.fl-theme-uio-by .fl-demoMenu .fl-demoMenu-title a,
+.fl-theme-uio-by .fl-demoMenu .fl-demoMenu-title {
+    background-color: #000;
+    color: #FFFF00;
+}
+
+.fl-theme-uio-by .fl-demoMenu a { text-decoration: underline; }
+.fl-theme-uio-by .fl-demoMenu *:focus { outline: 0.2rem solid #000; }
+.fl-theme-uio-by .fl-demoMenu-instructions { border: 0.2rem solid #000; }
