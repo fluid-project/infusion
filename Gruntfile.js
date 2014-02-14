@@ -28,6 +28,12 @@ module.exports = function(grunt) {
                     src: "<%= modulefiles.custom.output.dirs %>",
                     dest: "build/"
                 }]
+            },
+            necessities: {
+                files: [{
+                    src: ["README.md", "ReleaseNotes.txt", "Infusion-LICENSE.txt"],
+                    dest: "build/"
+                }]
             }
         },
         uglify: {
@@ -158,6 +164,7 @@ module.exports = function(grunt) {
             "modulefiles:" + target,
             "pathMap:" + target,
             "copy:" + target,
+            "copy:necessities",
             "uglify:" + target,
             "concat:" + target,
             "compress:" + target,
