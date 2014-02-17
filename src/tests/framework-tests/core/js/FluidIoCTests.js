@@ -302,6 +302,29 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertUndefined("Event returned to nonpreventable through merge", result);
     });
 
+    /** FLUID-5239 **/
+
+    // dynamically creating name to show that anything starting with "source" will not be resolved by IoC
+    var name = "source" + fluid.allocateGuid();
+
+    fluid.defaults("fluid." + name, {
+        gradeNames: ["fluid.eventedComponent", "autoInit"]
+    });
+
+    jqUnit.test("FLUID-5239: Component name starting with 'source'", function () {
+        jqUnit.expect(1);
+        fluid[name]({
+            listeners: {
+                onCreate: {
+                    listener: "jqUnit.assertNotUndefined",
+                    args: ["The reference to {" + name + "} should resolve to the component", "{" + name + "}"]
+                }
+            }
+        });
+    });
+
+    /** end FLUID-5239 **/
+
     /** FLUID-4634 demands exclusion test **/
 
     fluid.defaults("fluid.tests.demandedEvent1", {
@@ -3456,7 +3479,7 @@ fluid.registerNamespace("fluid.tests");
         }
     });
 
-    jqUnit.test("FLUID-5094: Dynamic grade merging takes the undefined source passed in from IoCSS into account rather than ignoring it", function () {
+    jqUnit.test("FLUID-5094: Dynamic grade merging takes an undefined source passed in from IoCSS into account rather than ignoring it", function () {
         var root = fluid.tests.fluid5094({
             gradeName: "fluid.tests.fluid5094Grade"
         });
@@ -3491,6 +3514,7 @@ fluid.registerNamespace("fluid.tests");
         var that = fluid.tests.fluid5117();
         jqUnit.assertDeepEq("The output of an expander argument is same as the return of the expander function", that.options.inputObject, that.options.outputObject);
     });
+
     
     /** FLUID-5242: Corruption when distributing listener records to multiple components **/
     
@@ -3639,6 +3663,7 @@ fluid.registerNamespace("fluid.tests");
     fluid.tests.dynamicInvokerGrade.method = function () {
         jqUnit.assertTrue("Dynamic invoker is called", true);
     };
+
 
     jqUnit.test("Test dynamic grade invoker contribution", function () {
         jqUnit.expect(2);
