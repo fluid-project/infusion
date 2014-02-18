@@ -33,6 +33,15 @@ module.exports = function(grunt) {
                 files: [{
                     src: ["README.md", "ReleaseNotes.txt", "Infusion-LICENSE.txt"],
                     dest: "build/"
+                }, {
+                    // The jQuery license file needs to be copied explicitly since
+                    // "src/lib/jQuery" directory contains several jQuery modules
+                    // that have individual dependencies.json files.
+                    src: 'src/lib/jQuery/jQuery-LICENSE.txt',
+                    dest: 'build/lib/jQuery/jQuery-LICENSE.txt',
+                    filter: function(filePath, filePath2) {
+                        return grunt.file.exists("build/lib/jQuery/");
+                    }
                 }]
             }
         },
