@@ -236,25 +236,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertTrue("Horizon name resolved into checker grade", checkerGrades.indexOf("fluid.tests.enhanceTarget.progressiveCheck") !== -1);
     });
 
-    fluid.defaults("fluid.tests.suppliedProgresiveCheck", {
+    fluid.defaults("fluid.tests.suppliedProgressiveCheck", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
     });
 
     jqUnit.test("FLUID-5264: supplied progressive checks", function () {
-        var that = fluid.tests.suppliedProgresiveCheck({
+        var that = fluid.tests.suppliedProgressiveCheck({
             gradeNames: ["fluid.progressiveCheckerForComponent"],
-            componentName: "fluid.tests.suppliedProgresiveCheck",
+            componentName: "fluid.tests.suppliedProgressiveCheck",
             progressiveCheckerOptions: {
                 checks: [
                     {
                         feature: "{fluid.test}",
-                        contextName: "fluid.supplicedProgressiveCheck.test"
+                        contextName: "fluid.suppliedProgressiveCheck.test"
                     }
                 ]
             }
         });
 
-        jqUnit.assertTrue("Context name resolved into checker grade", that.progressiveChecker.options.gradeNames.indexOf("fluid.enhanceTarget.test") !== -1);
+        jqUnit.assertTrue("Context name resolved into checker grade", that.progressiveChecker.options.gradeNames.indexOf("fluid.suppliedProgressiveCheck.test") !== -1);
     });
 
 })(jQuery);
