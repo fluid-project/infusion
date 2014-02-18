@@ -1831,4 +1831,62 @@ fluid.registerNamespace("fluid.tests");
                 "${{test}.string}", that.locate("simpleBound6").text());
         });
     };
+
+    // FLUID-5279: "that.produceTree is not a function" when refreshView() is called as a model (relayed) listenr on a renderer relay component
+    fluid.defaults("fluid.tests.fluid5279", {
+        gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
+        components: {
+            attributes: {
+                type: "fluid.rendererRelayComponent",
+                createOnEvent: "afterRender",
+                container: ".flc-sub",
+                options: {
+                    model: "{fluid5279}.model",
+                    modelListeners: {
+                        "audio": "{that}.refreshView"
+                    },
+                    events: {
+                        afterRender: "{fluid5279}.events.afterAttributesRendered"
+                    },
+                    resources: {
+                        template: {
+                            resourceText: "<div></div>"
+                        }
+                    }
+                }
+            }
+        },
+        model: {
+            audio: "available"
+        },
+        resources: {
+            template: {
+                resourceText: "<div></div>"
+            }
+        },
+        events: {
+            afterAttributesRendered: null,
+            onReady: {
+                events: {
+                    onCreate: "onCreate",
+                    afterAttributesRendered: "afterAttributesRendered"
+                },
+                args: "{that}"
+            }
+        },
+        listeners: {
+            "onCreate.init": "{that}.refreshView"
+        }
+    });
+
+    jqUnit.asyncTest("FLUID-5279: Direct model sharing for renderer relay components", function () {
+        var that = fluid.tests.fluid5279(".flc-main", {
+            listeners: {
+                onReady: function (that) {
+                    jqUnit.assertNotUndefined("The component has been instantiated", that);
+                    jqUnit.start();
+                }
+            }
+        });
+    });
 })(jQuery);
