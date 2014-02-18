@@ -15,12 +15,16 @@ module.exports = function(grunt) {
         copy: {
             all: {
                 files: [{
-                    src: ["src/**"],
+                    expand: true,
+                    cwd: "src/",
+                    src: ["**"],
                     dest: "build/"
                 }]
             },
             custom: {
                 files: [{
+                    expand: true,
+                    cwd: "src/",
                     src: "<%= modulefiles.custom.output.dirs %>",
                     dest: "build/"
                 }]
@@ -33,9 +37,9 @@ module.exports = function(grunt) {
             all: {
                 files: [{
                     expand: true,     // Enable dynamic expansion.
-                    cwd: "./build/src/",      // Src matches are relative to this path.
+                    cwd: "./build/",      // Src matches are relative to this path.
                     src: ["components/**/*.js", "framework/**/*.js", "lib/**/*.js"], // Actual pattern(s) to match.
-                    dest: "./build/src/"   // Destination path prefix.
+                    dest: "./build/"   // Destination path prefix.
                 }]
             },
             custom: {
@@ -49,14 +53,16 @@ module.exports = function(grunt) {
         },
         modulefiles: {
             all: {
-                src: ["./src/**/*Dependencies.json"]
+                cwd: "src/",
+                src: ["**/*Dependencies.json"]
             },
             custom: {
                 options: {
                     exclude: grunt.option("exclude"),
                     include: grunt.option("include")
                 },
-                src: ["./src/**/*Dependencies.json"]
+                cwd: "src/",
+                src: ["**/*Dependencies.json"]
             }
         },
         map: {
