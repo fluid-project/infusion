@@ -189,7 +189,8 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         avatarCreator: fluid.reorderer.defaultAvatarCreator,
         keysets: fluid.reorderer.defaultKeysets,
-        containerRole:       "{that}.layoutHandler.options.containerRole", // These two ginger options injected "upwards" from layoutHandler
+        // These two ginger options injected "upwards" from layoutHandler and actually time its construction (before FLUID-4925)
+        containerRole:       "{that}.layoutHandler.options.containerRole",
         selectablesTabindex: "{that}.layoutHandler.options.selectablesTabindex",
         layoutHandler: "fluid.listLayoutHandler",
         
@@ -399,8 +400,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
         
             } else if (fluid.reorderer.noModifier(evt)) {
-                item.blur();
-                $(relativeItem.element).focus();
+                fluid.blur(item);
+                fluid.focus($(relativeItem.element));
             }
             return false;
         }
@@ -431,7 +432,7 @@ var fluid_1_5 = fluid_1_5 || {};
     // unsupported, NON-API function
     fluid.reorderer.requestMovement = function (thatReorderer, requestedPosition, item) {
         item = fluid.unwrap(item);
-      // Temporary censoring to get around ModuleLayout inability to update relative to self.
+        // Temporary censoring to get around ModuleLayout inability to update relative to self.
         if (!requestedPosition || fluid.unwrap(requestedPosition.element) === item) {
             return;
         }
@@ -447,7 +448,7 @@ var fluid_1_5 = fluid_1_5 || {};
         //$(thatReorderer.activeItem).removeClass(options.styles.selected);
        
         // refocus on the active item because moving places focus on the body
-        activeItem.focus();
+        fluid.focus(activeItem);
         
         thatReorderer.refresh();
         
@@ -575,8 +576,9 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         );
         var avatar;
+        var handle = thatReorderer.dom.fastLocate("grabHandle", item);
     
-        thatReorderer.dom.fastLocate("grabHandle", item).draggable({
+        item.draggable({
             refreshPositions: false,
             scroll: true,
             helper: function () {
@@ -624,7 +626,9 @@ var fluid_1_5 = fluid_1_5 || {};
                 // refocus on the active item because moving places focus on the body
                 thatReorderer.activeItem.focus();
             },
-            handle: thatReorderer.dom.fastLocate("grabHandle", item)
+            // This explicit detection is now required for jQuery UI after version 1.10.2 since the upstream API has been broken permanently.
+            // See https://github.com/jquery/jquery-ui/pull/963
+            handle: handle === item ? null : handle
         });
     };
     
@@ -668,7 +672,6 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.reorderer.refresh = function (dom, events, selectableContext, activeItem) {
-        events.onRefresh.fire();
         dom.refresh("movables");
         dom.refresh("selectables");
         dom.refresh("grabHandle", dom.fastLocate("movables"));
@@ -678,6 +681,7 @@ var fluid_1_5 = fluid_1_5 || {};
             selectableContext.selectables = dom.fastLocate("selectables");
             selectableContext.selectablesUpdated(activeItem);
         }
+        events.onRefresh.fire(); // This should be last otherwise handlers will see stale DOM binder contents 
     };
     
     /**

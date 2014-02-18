@@ -301,14 +301,14 @@ var fluid_1_5 = fluid_1_5 || {};
     /** A body renderer implementation which uses the Fluid renderer to render a table section **/
 
     fluid.defaults("fluid.table.selfRender", {
-        gradeNames: ["fluid.rendererComponent", "autoInit"],
+        gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
         listeners: {
             onCreate: [{
                 "this": "{that}.root",
                 method: "addClass",
                 args: "{that}.options.styles.root"
             }],
-            onModelChange: [{
+            onIndexModelChange: [{
                 funcName: "fluid.table.onModelChange",
                 namespace: "onModelChange",
                 args: ["{fluid.table}", "{fluid.table.selfRender}", "{arguments}.0", "{arguments}.1"] // newModel, oldModel
@@ -326,8 +326,11 @@ var fluid_1_5 = fluid_1_5 || {};
                 args: ["{that}.options.columnDefs", "{fluid.table}.model", "{that}.options"]
             }
         },
+        modelListeners: {
+            "{fluid.table}.model": "{that}.events.onIndexModelChange.fire({change}.value, {change}.oldValue)" 
+        },
         events: {
-            onModelChange: "{fluid.table}.events.onModelChange"
+            onIndexModelChange: null
         },
         invokers: {
             sortInvoker: {

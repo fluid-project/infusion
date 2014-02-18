@@ -229,9 +229,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var inlineEditor = fluid.inlineEdit("#empty-inline-edit");
             jqUnit.assertEquals("After initialization of empty display, display has default invitation text: ", fluid.defaults("fluid.inlineEdit").strings.defaultViewText, display.text());
             var button = inlineEditor.textEditButton;
-            button.focus();
+            fluid.focus(button);
             jqUnit.assertEquals("After focus, display has default focussed invitation text: ", fluid.defaults("fluid.inlineEdit").strings.defaultFocussedViewText, display.text());
-            button.blur();
+            fluid.blur(button);
             jqUnit.assertEquals("After blur, display has default invitation text: ", fluid.defaults("fluid.inlineEdit").strings.defaultViewText, display.text());
         });
 
@@ -334,11 +334,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("TextEditButton is tabbable", fluid.tabindex(button) >= 0);
             jqUnit.assertFalse("Initially display field is not focused", display.hasClass(inlineEditor.options.styles.focus));
     
-            button.focus();
+            fluid.focus(button);
             jqUnit.assertTrue("After focus, display and textEditButton are focussed", display.parent().hasClass(inlineEditor.options.styles.focus));
-            jqUnit.isVisible("After enter pressed, display field is visible", "#display");
-            jqUnit.notVisible("After enter pressed, edit field is hidden", "#edit-container");
-            jqUnit.isVisible("After enter pressed, button is visible", button);
+            jqUnit.isVisible("Before enter pressed, display field is visible", "#display");
+            jqUnit.notVisible("Before enter pressed, edit field is hidden", "#edit-container");
+            jqUnit.isVisible("Before enter pressed, button is visible", button);
             button.simulate("keydown", {keyCode: $.ui.keyCode.ENTER});
                 
             jqUnit.assertEquals("After enter pressed, edit field contains same text as display field", display.text(), edit.prop("value"));
@@ -354,7 +354,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("After changing text and pressing enter, display field contains new text", testString, display.text());
             jqUnit.isVisible("After enter pressed, button is visible", button);
     
-            display.blur();
+            fluid.blur(display);
             jqUnit.assertFalse("After blur, display field is not focused", display.hasClass(inlineEditor.options.styles.focus));
         });
 
@@ -808,7 +808,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var text = editor.locate("text");
                 
                 jqUnit.assertTrue("The display and textEditButton containerWrapper should have the fl-inlineEdit-inlineBlock class on focus", text.parent().hasClass(editor.options.styles.displayView));
-                button.focus();
+                fluid.focus(button);
                 jqUnit.assertTrue("The display and textEditButton containerWrapper should have the fl-inlineEdit-container class on focus", text.parent().hasClass(editor.options.styles.focus));
             });
             

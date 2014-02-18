@@ -227,7 +227,7 @@ var fluid_1_5 = fluid_1_5 || {};
              url:     resourceSpec.href,
              success: thisCallback.success, 
              error:   thisCallback.error,
-             dataType: "text"};
+             dataType: resourceSpec.dataType || "text"};
         fluid.fetchResources.timeSuccessCallback(resourceSpec);
         options = fluid.merge(fluid.defaults("fluid.fetchResources.issueRequest").mergePolicy,
                       options, resourceSpec.options);

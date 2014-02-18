@@ -272,7 +272,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             q.addFile(mountainTestFile);
             q.addFile(oceanTestFile);
             
-            $("#qunit-fixture .flc-uploader-queue")[0].focus();
+            fluid.focus($("#qunit-fixture .flc-uploader-queue"));
             // Ensure that the first item is focussed.
             jqUnit.assertTrue("The first row should be selected.",
                                 locateRows(q).eq(0).hasClass(q.options.styles.selected));

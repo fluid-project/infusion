@@ -88,6 +88,13 @@ var fluid = fluid || fluid_1_5;
             for (key in obj) {}
             return key === undefined || hasOwn.call( obj, key );
         },
+        
+        isEmptyObject: function (obj) {
+            for ( var name in obj ) {
+                return false;
+            }
+            return true;
+        },
       
         inArray: function (elem, array) {
             if (indexOf) {

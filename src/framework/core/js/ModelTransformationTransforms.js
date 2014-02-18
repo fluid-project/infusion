@@ -20,7 +20,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var fluid_1_5 = fluid_1_5 || {};
 var fluid = fluid || fluid_1_5;
 
-(function ($) {
+(function ($, fluid) {
     "use strict";
 
     fluid.registerNamespace("fluid.model.transform");
@@ -350,7 +350,7 @@ var fluid = fluid || fluid_1_5;
 
         fluid.each(options, function (outPath, key) {
             // write to output path given in options the value <presentValue> or <missingValue> depending on whether key is found in user input
-            var outVal = (value.indexOf(key) !== -1) ? transformSpec.presentValue : transformSpec.missingValue;
+            var outVal = ($.inArray(key, value) !== -1) ? transformSpec.presentValue : transformSpec.missingValue;
             fluid.model.transform.setValue(outPath, outVal, transform);
         });
         // TODO: Why does this transform make no return?
@@ -543,4 +543,38 @@ var fluid = fluid || fluid_1_5;
         });
         return newArray;
     };
+    
+    fluid.defaults("fluid.transforms.limitRange", {
+        gradeNames: "fluid.standardTransformFunction"  
+    });
+    
+    fluid.transforms.limitRange = function (value, transformSpec, transform) {
+        var min = transformSpec.min;
+        if (min !== undefined) {
+            var excludeMin = transformSpec.excludeMin || 0;
+            min += excludeMin;
+            if (value < min) {
+                value = min;
+            }  
+        }
+        var max = transformSpec.max;
+        if (max !== undefined) {
+            var excludeMax = transformSpec.excludeMax || 0;
+            max -= excludeMax;
+            if (value > max) {
+                value = max;
+            }  
+        }
+        return value;
+    };
+    
+    fluid.defaults("fluid.transforms.free", {
+        gradeNames: "fluid.transformFunction"  
+    });
+    
+    fluid.transforms.free = function (transformSpec, transform) {
+        var args = fluid.makeArray(transformSpec.args);
+        return fluid.invokeGlobalFunction(transformSpec.func, args);
+    };
+    
 })(jQuery, fluid_1_5);

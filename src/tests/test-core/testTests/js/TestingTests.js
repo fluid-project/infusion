@@ -34,19 +34,23 @@ fluid.defaults("fluid.tests.myTestTree", {
 /** Component under test **/
 
 fluid.defaults("fluid.tests.cat", {
-    gradeNames: ["fluid.littleComponent", "autoInit"]
+    gradeNames: ["fluid.littleComponent", "autoInit"],
+    invokers: {
+        makeSound: "fluid.tests.cat.makeSound"  
+    }
 });
 
-fluid.tests.cat.preInit = function (that) {
-    that.makeSound = function () {
-        return "meow";
-    };
+fluid.tests.cat.makeSound = function () {
+    return "meow";
 };
 
 /** Test Case Holder - holds declarative representation of test cases **/
 
 fluid.defaults("fluid.tests.catTester", {
     gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+    invokers: {
+        testMeow: "fluid.tests.globalCatTest"
+    },
     modules: [ /* declarative specification of tests */ {
         name: "Cat test case",
         tests: [{
@@ -69,9 +73,6 @@ fluid.tests.globalCatTest = function (catt) {
     jqUnit.assertEquals("Sound", "meow", catt.makeSound());
 }; 
 
-fluid.tests.catTester.preInit = function (that) {
-    that.testMeow = fluid.tests.globalCatTest;
-};
 
 fluid.defaults("fluid.tests.asyncTest", {
     gradeNames: ["fluid.rendererComponent", "autoInit"],
@@ -248,6 +249,54 @@ fluid.defaults("fluid.tests.initTester", {
     }]
 });
 
+fluid.defaults("fluid.tests.dynamicCATT", {
+    gradeNames: ["fluid.modelComponent", "autoInit"],
+    catts: ["catt1", "catt2"],
+    dynamicComponents: {
+        catts: {
+            sources: "{that}.options.catts",
+            type: "fluid.tests.cat"
+        }
+    }  
+});
+
+fluid.defaults("fluid.tests.sourceTester", {
+    gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+    components: {
+        tree: {
+            type: "fluid.tests.dynamicCATT"
+        },
+        fixtures: {
+            type: "fluid.test.testCaseHolder",
+            options: {
+                moduleSource: {
+                    funcName: "fluid.tests.cattModuleSource",
+                    args: "{sourceTester}.tree"
+                }
+            }
+        }
+    }
+});
+
+fluid.tests.cattModuleSource = function (dynamic) {
+    var sequence = [];
+    fluid.visitComponentChildren(dynamic, function (child) {
+        sequence.push({
+            name: "Test Meow " + (sequence.length + 1),
+            type: "test",
+            func: "fluid.tests.globalCatTest",
+            args: child
+        })  
+    }, {});
+    return {
+        name: "Dynamic module source tests",
+        tests: {
+            name: "Dynamic CATT tests",
+            sequence: sequence
+        }
+    };
+}
+
 /** Global driver function **/
 
 fluid.tests.testTests = function () {
@@ -263,6 +312,7 @@ fluid.tests.testTests = function () {
                     }
                 }  
             }
-        }
+        },
+        "fluid.tests.sourceTester"
     ]);
 };

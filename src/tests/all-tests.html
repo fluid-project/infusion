@@ -11,7 +11,7 @@
 <!-- Stupid bloody escaping rules:
     find . -name "*-test.html" | awk '{print "\""$1"\","}' -->
     <script>
-    QUnit.testSuites([
+    QUnit.testSuites("Framework Tests", [
         "./framework-tests/core/html/FluidJS-test.html",
         "./framework-tests/core/html/FluidJSStandalone-test.html",
         "./framework-tests/core/html/keyboard-a11y-test.html",
@@ -27,7 +27,6 @@
         "./framework-tests/renderer/html/RendererUtilities-test.html",
         "./framework-tests/preferences/html/AuxBuilder-test.html",
         "./framework-tests/preferences/html/Builder-test.html",
-        "./framework-tests/preferences/html/CSSGenerator-test.html",
         "./framework-tests/preferences/html/Enactors-test.html",
         "./framework-tests/preferences/html/SeparatedPanelPrefsEditor-test.html",
         "./framework-tests/preferences/html/FullNoPreviewPrefsEditor-test.html",
@@ -39,11 +38,15 @@
         "./framework-tests/preferences/html/Store-test.html",
         "./framework-tests/preferences/html/UIEnhancer-test.html",
         "./framework-tests/preferences/html/PrefsEditor-test.html",
-        "./framework-tests/preferences/html/URLUtilities-test.html",
-        "./test-core/testTests/html/Testing-test.html",
+        "./framework-tests/preferences/html/URLUtilities-test.html"
+    ]);
+    QUnit.testSuites("IoC Testing Framework Tests", [
+        "./test-core/testTests/html/Testing-test.html"
+    ]);
+    QUnit.testSuites("Component Tests", [
         "./component-tests/inlineEdit/html/InlineEdit-test.html",
-        "./component-tests/pager/html/PagedTable-test.html",
         "./component-tests/pager/html/Pager-test.html",
+        "./component-tests/pager/html/PagedTable-test.html",
         "./component-tests/progress/html/Progress-test.html",
         "./component-tests/reorderer/html/AriaLabeller-test.html",
         "./component-tests/reorderer/html/GeometricManager-test.html",

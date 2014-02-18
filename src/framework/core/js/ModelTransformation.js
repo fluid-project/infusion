@@ -20,7 +20,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var fluid_1_5 = fluid_1_5 || {};
 var fluid = fluid || fluid_1_5;
 
-(function ($) {
+(function ($, fluid) {
     "use strict";
 
     fluid.registerNamespace("fluid.model.transform");
@@ -432,6 +432,7 @@ var fluid = fluid || fluid_1_5;
     };
     
     // unsupported, NON-API function
+    // 3rd arg is disused by the framework and always defaults to fluid.model.transform.processRule
     fluid.model.transform.makeStrategy = function (transform, handleFn, transformFn) {
         transformFn = transformFn || fluid.model.transform.processRule;
         transform.expand = function (rules) {
@@ -588,7 +589,7 @@ var fluid = fluid || fluid_1_5;
         }
         setConfig.strategies = [fluid.model.defaultFetchStrategy, schemaStrategy ? fluid.model.transform.schemaToCreatorStrategy(schemaStrategy)
                 : fluid.model.defaultCreatorStrategy];
-        transform.finalApplier = fluid.makeChangeApplier(transform.target, {resolverSetConfig: setConfig});
+        transform.finalApplier = options.finalApplier || fluid.makeChangeApplier(transform.target, {resolverSetConfig: setConfig});
         
         if (transform.queuedTransforms.length > 0) {
             transform.typeStack = [];
