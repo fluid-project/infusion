@@ -55,13 +55,26 @@ var fluid = fluid || fluid_1_5;
         return transformSpec.value;  
     };
     
-
+    //this cannot be a standardInputTransformFunction as need to modify the outputPrefix before
+    //interpreting the input-value in case it itself outputs (fixing FLUID-5248) 
     fluid.defaults("fluid.transforms.arrayValue", { 
-        gradeNames: "fluid.standardTransformFunction"
+        gradeNames: ["fluid.transformFunction", "fluid.standardOutputTransformFunction"]
     });
     
-    fluid.transforms.arrayValue = fluid.makeArray;
+    fluid.transforms.arrayValue = function (transformSpec, transform) {
+        //we need to modify the outputPrefix manually, in case one of the subtransformations does output
+        transform.collectedFlatSchemaOpts = transform.collectedFlatSchemaOpts || {};
+        transform.collectedFlatSchemaOpts[transform.outputPrefix] = "array";
+        transform.outputPrefixOp.push(0);
+        //allow both 'input' and 'value' as input - as well as inputPath
+        var value = transformSpec.input || transformSpec.value;
+        value = fluid.model.transform.getValue(transformSpec.inputPath, value, transform);
+        value = fluid.makeArray(value);
 
+        transform.outputPrefixOp.pop();
+
+        return value;
+    }
 
     fluid.defaults("fluid.transforms.count", { 
         gradeNames: "fluid.standardTransformFunction"

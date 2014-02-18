@@ -763,6 +763,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: {
             "b": [0.5]
         }
+    }, {
+        message: "FLUID-5248: arrayValue() with a nested transformation WITH outputPath statement",
+        expandWrap: false,
+        transform: {
+            "b": {
+                "transform": {
+                    "type": "fluid.transforms.arrayValue",
+                    "value": {
+                        "transform": {
+                            "outputPath": "value",
+                            "type": "fluid.transforms.linearScale",
+                            "value": 5,
+                            "factor": 0.1
+                        }
+                    }
+                }
+            }
+        },
+        method: "assertDeepEq",
+        expected: {
+            "b": [ { "value": 0.5 } ]
+        }
     }];
 
     jqUnit.test("fluid.transforms.arrayValue()", function () {
