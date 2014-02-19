@@ -1832,14 +1832,4 @@ fluid.registerNamespace("fluid.tests");
         });
     };
 
-    // FLUID-5277: Improve the error message when an nonexistent container is provided for fluid.viewRelayComponent and fluid.rendererRelayComponent
-    fluid.defaults("fluid.tests.fluid5277", {
-        gradeNames: ["fluid.rendererRelayComponent", "autoInit"]
-    });
-
-    jqUnit.test("FLUID-5277: Improve the error message when an nonexistent container is provided for fluid.viewRelayComponent and fluid.rendererRelayComponent", function () {
-        var that = fluid.tests.fluid5277("#nonexistent-container");
-        jqUnit.assertUndefined("Failed at instantiating the component with an nonexistent container", that);
-    });
-
 })(jQuery);
