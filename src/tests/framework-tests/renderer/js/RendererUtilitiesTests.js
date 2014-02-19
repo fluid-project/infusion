@@ -744,7 +744,7 @@ fluid.registerNamespace("fluid.tests");
             fluid.each(inputs, function (element) {element.click();});
             jqUnit.assertDomEquals("Click handlers registered by afterRender", inputs, that.clicked);
         });
-        
+
         // FLUID-5279: "that.produceTree is not a function" when refreshView() is called as a model (relayed) listenr on a renderer relay component
         fluid.defaults("fluid.tests.fluid5279", {
             gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
@@ -791,7 +791,7 @@ fluid.registerNamespace("fluid.tests");
                 "onCreate.init": "{that}.refreshView"
             }
         });
-    
+
         jqUnit.asyncTest("FLUID-5279: Direct model sharing for renderer relay components", function () {
             var that = fluid.tests.fluid5279(".flc-main", {
                 listeners: {
@@ -801,6 +801,66 @@ fluid.registerNamespace("fluid.tests");
                     }
                 }
             });
+        });
+
+        // FLUID-5279: The relayed new value takes precedence over the default model value
+        fluid.defaults("fluid.tests.fluid5279_1", {
+            gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
+            components: {
+                attributes: {
+                    type: "fluid.tests.fluid5279_1_sub",
+                    createOnEvent: "afterRender",
+                    container: ".flc-fluid5279-1-sub",
+                    options: {
+                        model: "{fluid5279_1}.model",
+                        modelListeners: {
+                            "audio": "{that}.refreshView"
+                        },
+                        resources: {
+                            template: {
+                                resourceText: "<div></div>"
+                            }
+                        }
+                    }
+                }
+            },
+            model: {
+                audio: "available"
+            },
+            resources: {
+                template: {
+                    resourceText: "<div></div>"
+                }
+            }
+        });
+
+        fluid.defaults("fluid.tests.fluid5279_1_sub", {
+            gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
+            protoTree: {
+                expander: {
+                    "type": "fluid.renderer.condition",
+                    "condition": {
+                        "funcName": "fluid.tests.fluid5279_1.checkAudio",
+                        "args": "${audio}"
+                    }
+                }
+            },
+            model: {
+                audio: "available"
+            }
+        });
+
+        fluid.tests.fluid5279_1.newValue = "unavailable";
+
+        fluid.tests.fluid5279_1.checkAudio = function (audioValue) {
+            jqUnit.assertEquals("The relayed new value takes precedence over the default model value", fluid.tests.fluid5279_1.newValue, audioValue);
+        };
+
+        jqUnit.asyncTest("FLUID-5279-1: The relayed new value takes precedence over the default model value", function () {
+            var that = fluid.tests.fluid5279_1(".flc-fluid5279-1-main");
+            that.applier.requestChange("audio", fluid.tests.fluid5279_1.newValue);
+            that.refreshView();
+            jqUnit.start();
         });
 
         jqUnit.module("Protocomponent Expander Tests");
@@ -1872,7 +1932,7 @@ fluid.registerNamespace("fluid.tests");
             },
             renderOnInit: true
         });
-        
+
         jqUnit.test("FLUID-4986: Select", function () {
             var that = fluid.tests.fluid4986("#FLUID-4986");
             jqUnit.assertEquals("Select should be rendered properly", that.model.select, that.locate("select").val());
