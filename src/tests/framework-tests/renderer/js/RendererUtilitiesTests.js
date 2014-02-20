@@ -803,16 +803,16 @@ fluid.registerNamespace("fluid.tests");
             });
         });
 
-        // FLUID-5279: The relayed new value takes precedence over the default model value
-        fluid.defaults("fluid.tests.fluid5279_1", {
+        // FLUID-5280: The relayed new value takes precedence over the default model value
+        fluid.defaults("fluid.tests.fluid5280", {
             gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
             components: {
                 attributes: {
-                    type: "fluid.tests.fluid5279_1_sub",
+                    type: "fluid.tests.fluid5280sub",
                     createOnEvent: "afterRender",
-                    container: ".flc-fluid5279-1-sub",
+                    container: ".flc-fluid5280-sub",
                     options: {
-                        model: "{fluid5279_1}.model",
+                        model: "{fluid5280}.model",
                         modelListeners: {
                             "audio": "{that}.refreshView"
                         },
@@ -834,13 +834,13 @@ fluid.registerNamespace("fluid.tests");
             }
         });
 
-        fluid.defaults("fluid.tests.fluid5279_1_sub", {
+        fluid.defaults("fluid.tests.fluid5280sub", {
             gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
             protoTree: {
                 expander: {
                     "type": "fluid.renderer.condition",
                     "condition": {
-                        "funcName": "fluid.tests.fluid5279_1.checkAudio",
+                        "funcName": "fluid.tests.fluid5280.checkAudio",
                         "args": "${audio}"
                     }
                 }
@@ -850,17 +850,16 @@ fluid.registerNamespace("fluid.tests");
             }
         });
 
-        fluid.tests.fluid5279_1.newValue = "unavailable";
+        fluid.tests.fluid5280.newValue = "unavailable";
 
-        fluid.tests.fluid5279_1.checkAudio = function (audioValue) {
-            jqUnit.assertEquals("The relayed new value takes precedence over the default model value", fluid.tests.fluid5279_1.newValue, audioValue);
+        fluid.tests.fluid5280.checkAudio = function (audioValue) {
+            jqUnit.assertEquals("The relayed new value takes precedence over the default model value", fluid.tests.fluid5280.newValue, audioValue);
         };
 
-        jqUnit.asyncTest("FLUID-5279-1: The relayed new value takes precedence over the default model value", function () {
-            var that = fluid.tests.fluid5279_1(".flc-fluid5279-1-main");
-            that.applier.requestChange("audio", fluid.tests.fluid5279_1.newValue);
+        jqUnit.test("FLUID-5280: The relayed new value takes precedence over the default model value", function () {
+            var that = fluid.tests.fluid5280(".flc-fluid5280-main");
+            that.applier.requestChange("audio", fluid.tests.fluid5280.newValue);
             that.refreshView();
-            jqUnit.start();
         });
 
         jqUnit.module("Protocomponent Expander Tests");
