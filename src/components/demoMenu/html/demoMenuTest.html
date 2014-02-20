@@ -1,0 +1,29 @@
+<html>
+<head>
+<script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+<script type="text/javascript" src="../../../framework/core/js/FluidDocument.js"></script>
+<script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+<script type="text/javascript" src="../../../framework/core/js/FluidRequests.js"></script>
+<script type="text/javascript" src="../../../framework/core/js/FluidDOMUtilities.js"></script>
+<script type="text/javascript" src="../../../framework/core/js/FluidIoC.js"></script>
+<script type="text/javascript" src="../../../framework/core/js/DataBinding.js"></script>
+<script type="text/javascript" src="../../../framework/core/js/FluidView.js"></script>
+<script type="text/javascript" src="../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
+<script type="text/javascript" src="../../../framework/renderer/js/fluidParser.js"></script>
+<script type="text/javascript" src="../../../framework/renderer/js/fluidRenderer.js"></script>
+<script type="text/javascript" src="../../../framework/renderer/js/RendererUtilities.js"></script>
+<script type="text/javascript" src="../js/DemoMenu.js"></script>
+</head>
+<body>
+<div class="flc-demoMenu"></div>
+<script type="text/javascript">
+$(document).ready(function () {
+    fluid.demoMenu(".flc-demoMenu", {
+        strings: {
+            title: "Test Title"
+        }
+    });
+})
+</script>
+</body>
+</html>

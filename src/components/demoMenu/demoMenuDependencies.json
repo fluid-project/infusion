@@ -1,0 +1,13 @@
+{
+    "demoMenu": {
+        "name": "Demo Menu",
+        "description": "Demo Menu",
+        "files": [
+            "./js/DemoMenu.js"
+        ],
+        "dependencies": [
+            "jQuery",
+            "framework"
+        ]
+    }
+}
