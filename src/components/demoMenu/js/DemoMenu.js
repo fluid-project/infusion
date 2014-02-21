@@ -15,22 +15,23 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         selectors: {
             title: ".flc-demoMenu-title",
+            description: ".flc-demoMenu-description",
+            instructionsHeading: ".flc-demoMenu-instructionsHeading",
             instructions: ".flc-demoMenu-instructions"
         },
         protoTree: {
             title: {messagekey: "title"},
-            instructions: {
-                decorators: [{
-                    type: "jQuery",
-                    func: "html",
-                    args: "${{that}.options.markup.instructions}"
-                }]}
+            description: {markup: "${{that}.options.markup.description}"},
+            instructionsHeading: {messagekey: "instructionsHeading"},
+            instructions: {markup: "${{that}.options.markup.instructions}"}
         },
         strings: {
-            title: "Title"
+            title: "Title",
+            instructionsHeading: "Instructions"
         },
         markup: {
-            instructions: "<ul><li>Instructions</li></ul>"
+            description: "A description of the component should appear here. It should say: <ul><li>What the component does.</li><li>Why it is interesting / useful.</li></ul>",
+            instructions: "<p>Do this to do this. Do that to do that.</p>"
         }
     });
 
