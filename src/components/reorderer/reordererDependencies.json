@@ -7,12 +7,12 @@
             "ImageReorderer.css"
         ],
         "files": [
-            "ReordererDOMUtilities.js",
-            "GeometricManager.js",
-            "Reorderer.js",
-            "ImageReorderer.js",
-            "ModuleLayout.js",
-            "LayoutReorderer.js"
+            "./js/ReordererDOMUtilities.js",
+            "./js/GeometricManager.js",
+            "./js/Reorderer.js",
+            "./js/ImageReorderer.js",
+            "./js/ModuleLayout.js",
+            "./js/LayoutReorderer.js"
         ],
         "dependencies": [
             "jQuery",

@@ -2,6 +2,8 @@
     "swfupload": {
         "name": "SWFUpload",
         "description": "A Flash and JavaScript library used by the Infusion Uploader to enable multiple file uploads.",
-        "files": "swfupload.js"
+        "files": [
+            "./js/swfupload.js"
+        ]
     }
 }
