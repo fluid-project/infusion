@@ -70,6 +70,14 @@
     
 }
 
+.fl-componentName {
+    font-weight: bold;
+}
+
+.fl-componentVersion {
+    font-style: italic;
+}
+
 /* Instruction text */
 .fl-demoMenu-instructions {
     border: 0.2rem solid #FFCC00;
