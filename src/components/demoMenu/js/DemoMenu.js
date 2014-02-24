@@ -2,7 +2,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
     fluid.defaults("fluid.demoMenu", {
-        gradeNames: ["fluid.rendererComponent", "autoInit"],
+        gradeNames: ["fluid.rendererComponent", "fluid.modelComponent", "autoInit"],
         resources: {
             template: {
                 href: "../html/demoMenuTemplate.html"
@@ -11,14 +11,45 @@ var fluid_1_5 = fluid_1_5 || {};
         listeners: {
             "onCreate.showTemplate": {
                 "funcName": "fluid.demoMenu.showTemplate"
+            },
+            "afterRender.registerShowButtonListener": {
+                "this": "{that}.dom.showButton",
+                "method": "click",
+                "args": "{that}.toggleShowMenu"
+            },
+            "afterRender.setVisibility": {
+                "funcName": "{that}.setVisibility"
+            }
+        },
+        model: {
+            showMenu: true
+        },
+        modelListeners: {
+            showMenu: {
+                funcName: "{that}.setVisibility"
+            }
+        },
+        invokers: {
+            toggleShowMenu: {
+                funcName: "fluid.demoMenu.toggleShowMenu",
+                args: ["{that}", "{that}.model.showMenu"],
+                dynamic: true
+            },
+            setVisibility: {
+                "this": "{that}.dom.menuBody",
+                "method": "toggle",
+                "args": ["{that}.model.showMenu"]
             }
         },
         selectors: {
+            showButton: ".flc-demoMenu-showButton",
+            menuBody: ".flc-demoMenu-body",
             title: ".flc-demoMenu-title",
             description: ".flc-demoMenu-description",
             instructionsHeading: ".flc-demoMenu-instructionsHeading",
             instructions: ".flc-demoMenu-instructions"
         },
+        selectorsToIgnore: ["showButton", "menuBody"],
         protoTree: {
             title: {messagekey: "title"},
             description: {markup: "${{that}.options.markup.description}"},
@@ -40,5 +71,9 @@ var fluid_1_5 = fluid_1_5 || {};
             that.refreshView();
         });
     };
+
+    fluid.demoMenu.toggleShowMenu = function (that, value) {
+        that.applier.requestChange("showMenu", !value);
+    }
 
 })(jQuery, fluid_1_5);
