@@ -44,7 +44,6 @@ var fluid_1_5 = fluid_1_5 || {};
         selectors: {
             showButton: ".flc-demoMenu-showButton",
             menuBody: ".flc-demoMenu-body",
-            title: ".flc-demoMenu-title",
             componentName: ".flc-demoMenu-componentName",
             componentVersion: ".flc-demoMenu-componentVersion",
             description: ".flc-demoMenu-description",
@@ -53,7 +52,6 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         selectorsToIgnore: ["showButton", "menuBody"],
         protoTree: {
-            title: {messagekey: "title"},
             componentName: {messagekey: "componentName"},
             componentVersion: {messagekey: "componentVersion"},
             description: {markup: "${{that}.options.markup.description}"},
@@ -61,7 +59,6 @@ var fluid_1_5 = fluid_1_5 || {};
             instructions: {markup: "${{that}.options.markup.instructions}"}
         },
         strings: {
-            title: "Title",
             componentName: "Component Name",
             componentVersion: "Version #",
             instructionsHeading: "Instructions"
