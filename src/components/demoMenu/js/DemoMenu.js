@@ -32,6 +32,11 @@ var fluid_1_5 = fluid_1_5 || {};
                 "method": "attr",
                 "args": ["href", "${{that}.options.markup.designLinkHref}"]
             },
+            "afterRender.setFeedbackLinkHref": {
+                "this": "{that}.dom.feedbackLink",
+                "method": "attr",
+                "args": ["href", "${{that}.options.markup.feedbackLinkHref}"]
+            },
             "afterRender.setVisibility": {
                 "funcName": "{that}.setVisibility"
             }
@@ -69,9 +74,12 @@ var fluid_1_5 = fluid_1_5 || {};
             apiLink: ".flc-demoMenu-apiLink",
             apiLinkText: ".flc-demoMenu-apiLinkText",
             designLink: ".flc-demoMenu-designLink",
-            designLinkText: ".flc-demoMenu-designLinkText"
+            designLinkText: ".flc-demoMenu-designLinkText",
+            feedbackText: ".flc-demoMenu-feedbackText",
+            feedbackLink: ".flc-demoMenu-feedbackLink",
+            feedbackLinkText: ".flc-demoMenu-feedbackLinkText"
         },
-        selectorsToIgnore: ["showButton", "menuBody", "codeLink", "apiLink", "designLink"],
+        selectorsToIgnore: ["showButton", "menuBody", "codeLink", "apiLink", "designLink", "feedbackLink"],
         protoTree: {
             componentName: {messagekey: "componentName"},
             componentVersion: {messagekey: "componentVersion"},
@@ -80,7 +88,9 @@ var fluid_1_5 = fluid_1_5 || {};
             instructions: {markup: "${{that}.options.markup.instructions}"},
             codeLinkText: {messagekey: "codeLinkText"},
             apiLinkText: {messagekey: "apiLinkText"},
-            designLinkText: {messagekey: "designLinkText"}
+            designLinkText: {messagekey: "designLinkText"},
+            feedbackText: {messagekey: "feedbackText"},
+            feedbackLinkText: {messagekey: "feedbackLinkText"}
         },
         strings: {
             componentName: "Component Name",
@@ -88,14 +98,17 @@ var fluid_1_5 = fluid_1_5 || {};
             instructionsHeading: "Instructions",
             codeLinkText: "code",
             apiLinkText: "API",
-            designLinkText: "design"
+            designLinkText: "design",
+            feedbackText: "Feedback statement and link",
+            feedbackLinkText: "Link text"
         },
         markup: {
             description: "A description of the component should appear here. It should say: <ul><li>What the component does.</li><li>Why it is interesting / useful.</li></ul>",
             instructions: "<p>Do this to do this. Do that to do that.</p>",
             codeLinkHref: "#",
             apiLinkHref: "#",
-            designLinkHref: "#"
+            designLinkHref: "#",
+            feedbackLinkHref: "#"
         }
     });
 
