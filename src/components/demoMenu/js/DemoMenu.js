@@ -12,13 +12,13 @@ var fluid_1_5 = fluid_1_5 || {};
             "onCreate.showTemplate": {
                 "funcName": "fluid.demoMenu.showTemplate"
             },
-            "afterRender.registerShowButtonListener": {
-                "this": "{that}.dom.showButton",
+            "afterRender.registerToggleListener": {
+                "this": "{that}.dom.toggleControl",
                 "method": "click",
-                "args": "{that}.toggleShowMenu"
+                "args": "{that}.toggleMenu"
             },
             "afterRender.registerCloseListener": {
-                "this": "{that}.dom.closeLink",
+                "this": "{that}.dom.closeControl",
                 "method": "click",
                 "args": "{that}.closeMenu"
             },
@@ -60,8 +60,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 "method": "toggle",
                 "args": ["{that}.model.showMenu"]
             },
-            toggleShowMenu: {
-                funcName: "fluid.demoMenu.toggleShowMenu",
+            toggleMenu: {
+                funcName: "fluid.demoMenu.toggleMenu",
                 args: ["{that}", "{that}.model.showMenu"],
                 dynamic: true
             },
@@ -71,7 +71,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         selectors: {
-            showButton: ".flc-demoMenu-showButton",
+            toggleControl: ".flc-demoMenu-toggleControl",
             menuBody: ".flc-demoMenu-body",
             componentName: ".flc-demoMenu-componentName",
             componentVersion: ".flc-demoMenu-componentVersion",
@@ -87,10 +87,10 @@ var fluid_1_5 = fluid_1_5 || {};
             feedbackText: ".flc-demoMenu-feedbackText",
             feedbackLink: ".flc-demoMenu-feedbackLink",
             feedbackLinkText: ".flc-demoMenu-feedbackLinkText",
-            closeLink: ".flc-demoMenu-closeLink",
-            closeLinkText: ".flc-demoMenu-closeLinkText"
+            closeControl: ".flc-demoMenu-closeControl",
+            closeText: ".flc-demoMenu-closeText"
         },
-        selectorsToIgnore: ["showButton", "menuBody", "codeLink", "apiLink", "designLink", "feedbackLink", "closeLink"],
+        selectorsToIgnore: ["toggleControl", "menuBody", "codeLink", "apiLink", "designLink", "feedbackLink", "closeControl"],
         protoTree: {
             componentName: {messagekey: "componentName"},
             componentVersion: {messagekey: "componentVersion"},
@@ -102,7 +102,7 @@ var fluid_1_5 = fluid_1_5 || {};
             designLinkText: {messagekey: "designLinkText"},
             feedbackText: {messagekey: "feedbackText"},
             feedbackLinkText: {messagekey: "feedbackLinkText"},
-            closeLinkText: {messagekey: "closeLinkText"}
+            closeText: {messagekey: "closeText"}
         },
         strings: {
             componentName: "Component Name",
@@ -113,7 +113,7 @@ var fluid_1_5 = fluid_1_5 || {};
             designLinkText: "design",
             feedbackText: "Feedback statement and link",
             feedbackLinkText: "Link text",
-            closeLinkText: "close"
+            closeText: "close"
         },
         markup: {
             description: "A description of the component should appear here. It should say: <ul><li>What the component does.</li><li>Why it is interesting / useful.</li></ul>",
@@ -131,7 +131,7 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
 
-    fluid.demoMenu.toggleShowMenu = function (that, value) {
+    fluid.demoMenu.toggleMenu = function (that, value) {
         that.applier.requestChange("showMenu", !value);
     };
 
