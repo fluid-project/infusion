@@ -17,6 +17,21 @@ var fluid_1_5 = fluid_1_5 || {};
                 "method": "click",
                 "args": "{that}.toggleShowMenu"
             },
+            "afterRender.setCodeLinkHref": {
+                "this": "{that}.dom.codeLink",
+                "method": "attr",
+                "args": ["href", "${{that}.options.markup.codeLinkHref}"]
+            },
+            "afterRender.setApiLinkHref": {
+                "this": "{that}.dom.apiLink",
+                "method": "attr",
+                "args": ["href", "${{that}.options.markup.apiLinkHref}"]
+            },
+            "afterRender.setDesignLinkHref": {
+                "this": "{that}.dom.designLink",
+                "method": "attr",
+                "args": ["href", "${{that}.options.markup.designLinkHref}"]
+            },
             "afterRender.setVisibility": {
                 "funcName": "{that}.setVisibility"
             }
@@ -48,24 +63,39 @@ var fluid_1_5 = fluid_1_5 || {};
             componentVersion: ".flc-demoMenu-componentVersion",
             description: ".flc-demoMenu-description",
             instructionsHeading: ".flc-demoMenu-instructionsHeading",
-            instructions: ".flc-demoMenu-instructions"
+            instructions: ".flc-demoMenu-instructions",
+            codeLink: ".flc-demoMenu-codeLink",
+            codeLinkText: ".flc-demoMenu-codeLinkText",
+            apiLink: ".flc-demoMenu-apiLink",
+            apiLinkText: ".flc-demoMenu-apiLinkText",
+            designLink: ".flc-demoMenu-designLink",
+            designLinkText: ".flc-demoMenu-designLinkText"
         },
-        selectorsToIgnore: ["showButton", "menuBody"],
+        selectorsToIgnore: ["showButton", "menuBody", "codeLink", "apiLink", "designLink"],
         protoTree: {
             componentName: {messagekey: "componentName"},
             componentVersion: {messagekey: "componentVersion"},
             description: {markup: "${{that}.options.markup.description}"},
             instructionsHeading: {messagekey: "instructionsHeading"},
-            instructions: {markup: "${{that}.options.markup.instructions}"}
+            instructions: {markup: "${{that}.options.markup.instructions}"},
+            codeLinkText: {messagekey: "codeLinkText"},
+            apiLinkText: {messagekey: "apiLinkText"},
+            designLinkText: {messagekey: "designLinkText"}
         },
         strings: {
             componentName: "Component Name",
             componentVersion: "Version #",
-            instructionsHeading: "Instructions"
+            instructionsHeading: "Instructions",
+            codeLinkText: "code",
+            apiLinkText: "API",
+            designLinkText: "design"
         },
         markup: {
             description: "A description of the component should appear here. It should say: <ul><li>What the component does.</li><li>Why it is interesting / useful.</li></ul>",
-            instructions: "<p>Do this to do this. Do that to do that.</p>"
+            instructions: "<p>Do this to do this. Do that to do that.</p>",
+            codeLinkHref: "#",
+            apiLinkHref: "#",
+            designLinkHref: "#"
         }
     });
 
