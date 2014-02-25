@@ -17,6 +17,11 @@ var fluid_1_5 = fluid_1_5 || {};
                 "method": "click",
                 "args": "{that}.toggleShowMenu"
             },
+            "afterRender.registerCloseListener": {
+                "this": "{that}.dom.closeLink",
+                "method": "click",
+                "args": "{that}.closeMenu"
+            },
             "afterRender.setCodeLinkHref": {
                 "this": "{that}.dom.codeLink",
                 "method": "attr",
@@ -50,15 +55,19 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         invokers: {
+            setVisibility: {
+                "this": "{that}.dom.menuBody",
+                "method": "toggle",
+                "args": ["{that}.model.showMenu"]
+            },
             toggleShowMenu: {
                 funcName: "fluid.demoMenu.toggleShowMenu",
                 args: ["{that}", "{that}.model.showMenu"],
                 dynamic: true
             },
-            setVisibility: {
-                "this": "{that}.dom.menuBody",
-                "method": "toggle",
-                "args": ["{that}.model.showMenu"]
+            closeMenu: {
+                funcName: "fluid.demoMenu.closeMenu",
+                args: "{that}"
             }
         },
         selectors: {
@@ -77,9 +86,11 @@ var fluid_1_5 = fluid_1_5 || {};
             designLinkText: ".flc-demoMenu-designLinkText",
             feedbackText: ".flc-demoMenu-feedbackText",
             feedbackLink: ".flc-demoMenu-feedbackLink",
-            feedbackLinkText: ".flc-demoMenu-feedbackLinkText"
+            feedbackLinkText: ".flc-demoMenu-feedbackLinkText",
+            closeLink: ".flc-demoMenu-closeLink",
+            closeLinkText: ".flc-demoMenu-closeLinkText"
         },
-        selectorsToIgnore: ["showButton", "menuBody", "codeLink", "apiLink", "designLink", "feedbackLink"],
+        selectorsToIgnore: ["showButton", "menuBody", "codeLink", "apiLink", "designLink", "feedbackLink", "closeLink"],
         protoTree: {
             componentName: {messagekey: "componentName"},
             componentVersion: {messagekey: "componentVersion"},
@@ -90,7 +101,8 @@ var fluid_1_5 = fluid_1_5 || {};
             apiLinkText: {messagekey: "apiLinkText"},
             designLinkText: {messagekey: "designLinkText"},
             feedbackText: {messagekey: "feedbackText"},
-            feedbackLinkText: {messagekey: "feedbackLinkText"}
+            feedbackLinkText: {messagekey: "feedbackLinkText"},
+            closeLinkText: {messagekey: "closeLinkText"}
         },
         strings: {
             componentName: "Component Name",
@@ -100,7 +112,8 @@ var fluid_1_5 = fluid_1_5 || {};
             apiLinkText: "API",
             designLinkText: "design",
             feedbackText: "Feedback statement and link",
-            feedbackLinkText: "Link text"
+            feedbackLinkText: "Link text",
+            closeLinkText: "close"
         },
         markup: {
             description: "A description of the component should appear here. It should say: <ul><li>What the component does.</li><li>Why it is interesting / useful.</li></ul>",
@@ -120,6 +133,10 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.demoMenu.toggleShowMenu = function (that, value) {
         that.applier.requestChange("showMenu", !value);
-    }
+    };
+
+    fluid.demoMenu.closeMenu = function (that) {
+        that.applier.requestChange("showMenu", false);
+    };
 
 })(jQuery, fluid_1_5);
