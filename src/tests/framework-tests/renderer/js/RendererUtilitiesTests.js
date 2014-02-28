@@ -862,6 +862,90 @@ fluid.registerNamespace("fluid.tests");
             that.refreshView();
         });
 
+        // FLUID-5280: When the change request is fired at the onReady event, the relayed new value still
+        // takes precedence over the default value.
+        fluid.defaults("fluid.tests.fluid5280_1", {
+            gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
+            components: {
+                sub: {
+                    type: "fluid.tests.fluid5280_1.sub",
+                    createOnEvent: "afterRender",
+                    container: "#flc-fluid5280_1-sub",
+                    options: {
+                        model: "{fluid5280_1}.model",
+                        events: {
+                            afterRender: "{fluid5280_1}.events.afterSubRendered"
+                        },
+                        modelListeners: {
+                            "audio": "{that}.refreshView"
+                        }
+                    }
+                }
+            },
+            model: {
+                audio: "available"
+            },
+            resources: {
+                template: {
+                    resourceText: "<div></div>"
+                }
+            },
+            events: {
+                afterSubRendered: null,
+                onReady: {
+                    events: {
+                        onCreate: "onCreate",
+                        afterSubRendered: "afterSubRendered"
+                    },
+                    args: "{that}"
+                }
+            },
+            renderOnInit: true
+        });
+
+        fluid.defaults("fluid.tests.fluid5280_1.sub", {
+            gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
+            protoTree: {
+                expander: {
+                    "type": "fluid.renderer.condition",
+                    "condition": {
+                        "funcName": "fluid.tests.fluid5280_1.sub.check",
+                        "args": "${audio}"
+                    }
+                }
+            },
+            model: {
+                audio: "available"
+            },
+            resources: {
+                template: {
+                    resourceText: "<div></div>"
+                }
+            }
+        });
+
+        fluid.tests.fluid5280_1.counts = 0;
+        fluid.tests.fluid5280_1.newValue = "unavailable";
+        fluid.tests.fluid5280_1.sub.check = function (audioValue) {
+            if (fluid.tests.fluid5280_1.counts === 0) {
+                jqUnit.assertEquals("Received the initial audio value", "available", audioValue);
+            } else if (fluid.tests.fluid5280_1.counts === 1) {
+                jqUnit.assertEquals("The audio value is updated", "unavailable", audioValue);
+            }
+            fluid.tests.fluid5280_1.counts++;
+        };
+
+        jqUnit.asyncTest("FLUID-5280_1: When the change request is fired at the onReady event, the relayed new value still takes precedence over the default value", function () {
+            var that = fluid.tests.fluid5280_1("#flc-fluid5280_1-main", {
+                listeners: {
+                    onReady: function (that) {
+                        that.applier.requestChange("audio", fluid.tests.fluid5280_1.newValue);
+                        jqUnit.start();
+                    }
+                }
+            });
+        });
+
         jqUnit.module("Protocomponent Expander Tests");
 
         jqUnit.test("makeProtoExpander Basic Tests", function () {
