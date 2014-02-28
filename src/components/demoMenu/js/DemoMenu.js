@@ -23,7 +23,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 "args": "{that}.closeMenu"
             },
             "afterRender.bindBlurHandler": {
-                "funcName": "{that}.bindBlurHandler"
+                "funcName": "fluid.demoMenu.bindBlurHandler",
+                "args": "{that}"
             },
             "afterRender.setCodeLinkHref": {
                 "this": "{that}.dom.codeLink",
@@ -70,10 +71,6 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             closeMenu: {
                 funcName: "fluid.demoMenu.closeMenu",
-                args: "{that}"
-            },
-            bindBlurHandler: {
-                funcName: "fluid.demoMenu.bindBlurHandler",
                 args: "{that}"
             }
         },
