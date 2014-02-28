@@ -77,6 +77,9 @@ var fluid_1_5 = fluid_1_5 || {};
         selectors: {
             toggleControl: ".flc-demoMenu-toggleControl",
             menuBody: ".flc-demoMenu-body",
+            titleBegin: ".flc-demoMenu-title-begin",
+            titleLinkText: ".flc-demoMenu-title-linkText",
+            titleEnd: ".flc-demoMenu-title-end",
             componentName: ".flc-demoMenu-componentName",
             componentVersion: ".flc-demoMenu-componentVersion",
             description: ".flc-demoMenu-description",
@@ -96,6 +99,9 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         selectorsToIgnore: ["toggleControl", "menuBody", "codeLink", "apiLink", "designLink", "feedbackLink", "closeControl"],
         protoTree: {
+            titleBegin: {messagekey: "titleBegin"},
+            titleLinkText: {messagekey: "titleLinkText"},
+            titleEnd: {messagekey: "titleEnd"},
             componentName: {messagekey: "componentName"},
             componentVersion: {messagekey: "componentVersion"},
             description: {markup: "${{that}.options.markup.description}"},
@@ -109,6 +115,9 @@ var fluid_1_5 = fluid_1_5 || {};
             closeText: {messagekey: "closeText"}
         },
         strings: {
+            titleBegin: "A ",
+            titleLinkText: "fluid project",
+            titleEnd: " component demo",
             componentName: "Component Name",
             componentVersion: "Version #",
             instructionsHeading: "Instructions",
