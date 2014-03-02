@@ -120,11 +120,15 @@ var fluid = fluid || fluid_1_5;
     });
 
     /* simple linear transformation */
-    fluid.transforms.linearScale = function (inputs) {        
-        if (typeof(inputs.value) !== "number" || typeof(inputs.factor) !== "number" || typeof(inputs.offset) !== "number") {
+    fluid.transforms.linearScale = function (inputs) {
+        var value = inputs.value();
+        var factor = inputs.factor();
+        var offset = inputs.offset();
+
+        if (typeof(value) !== "number" || typeof(factor) !== "number" || typeof(offset) !== "number") {
             return undefined;
         }
-        return inputs.value * inputs.factor + inputs.offset;
+        return value * factor + offset;
     };
 
     /* TODO: This inversion doesn't work if the value and factors are given as paths in the source model */
@@ -167,35 +171,42 @@ var fluid = fluid || fluid_1_5;
     };
 
     fluid.transforms.binaryOp = function (inputs, transformSpec, transform) {
+        var left = inputs.left();
+        var right = inputs.right();
+
         var operator = fluid.model.transform.getValue(undefined, transformSpec.operator, transform);
 
         var fun = fluid.transforms.binaryLookup[operator];
-        return (fun === undefined || inputs.left === undefined || inputs.right === undefined) ? undefined : fun(inputs.left, inputs.right);
+        return (fun === undefined || left === undefined || right === undefined) ? 
+            undefined : fun(left, right);
     };
 
-    fluid.defaults("fluid.transforms.condition", {
-        gradeNames: ["fluid.transformFunction", "fluid.standardOutputTransformFunction"]
-    });
-
-    fluid.transforms.condition = function (transformSpec, transform) {
-        //transform should contain condition or conditionPath:
-        var condition = fluid.model.transform.getValue(transformSpec.conditionPath, transformSpec.condition, transform);
-
-        //evaluate true/false value depending on condition
-        if (condition === true) {
-            return fluid.model.transform.getValue(transformSpec.truePath, transformSpec['true'], transform);
-        } else if (condition === false) {
-            return fluid.model.transform.getValue(transformSpec.falsePath, transformSpec['false'], transform);
+fluid.defaults("fluid.transforms.condition", {
+        gradeNames: [ "fluid.multiInputTransformFunction", "fluid.standardOutputTransformFunction" ],
+        inputVariables: {
+            "true": null,
+            "false": null,
+            "condition": null
         }
+     });
+
+    fluid.transforms.condition = function (inputs) {
+        var condition = inputs.condition();
+        if (condition === null) {
+            return undefined;
+        }
+
+        return inputs[condition]();
     };
 
-    fluid.defaults("fluid.transforms.valueMapper", { 
+
+    fluid.defaults("fluid.transforms.valueMapper", {
         gradeNames: ["fluid.transformFunction", "fluid.lens"],
         invertConfiguration: "fluid.transforms.valueMapper.invert",
         collectInputPaths: "fluid.transforms.valueMapper.collect"
     });
 
-    // unsupported, NON-API function    
+    // unsupported, NON-API function
     fluid.model.transform.matchValueMapperFull = function (outerValue, transformSpec, transform) {
         var o = transformSpec.options;
         if (o.length === 0) {
