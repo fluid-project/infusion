@@ -181,7 +181,7 @@ var fluid = fluid || fluid_1_5;
             undefined : fun(left, right);
     };
 
-fluid.defaults("fluid.transforms.condition", {
+    fluid.defaults("fluid.transforms.condition", {
         gradeNames: [ "fluid.multiInputTransformFunction", "fluid.standardOutputTransformFunction" ],
         inputVariables: {
             "true": null,

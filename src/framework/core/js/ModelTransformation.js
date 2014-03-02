@@ -258,7 +258,7 @@ var fluid = fluid || fluid_1_5;
                     input = (input === undefined && v !== null) ? v : input; // if no match, assign default if one exists (v != null)
                     //ensure the transformations wont evaluated again
                     //instead relace with a function returning the value directly
-                    inputs[k] = function () { return input };
+                    inputs[k] = function () { return input; };
                     //return the result
                     return input;
                 };
