@@ -130,7 +130,7 @@ var fluid = fluid || fluid_1_5;
     /* TODO: This inversion doesn't work if the value and factors are given as paths in the source model */
     fluid.transforms.linearScale.invert = function  (transformSpec, transform) {
         var togo = fluid.copy(transformSpec);
-        
+
         if (togo.factor) {
             togo.factor = (togo.factor === 0) ? 0 : 1 / togo.factor;
         }
@@ -173,24 +173,21 @@ var fluid = fluid || fluid_1_5;
         return (fun === undefined || inputs.left === undefined || inputs.right === undefined) ? undefined : fun(inputs.left, inputs.right);
     };
 
-
-    fluid.defaults("fluid.transforms.condition", { 
-        gradeNames: [ "fluid.multiInputTransformFunction", "fluid.standardOutputTransformFunction" ],
-        inputVariables: {
-            "true": null,
-            "false": null,
-            "condition": null
-        }
+    fluid.defaults("fluid.transforms.condition", {
+        gradeNames: ["fluid.transformFunction", "fluid.standardOutputTransformFunction"]
     });
-    
-    fluid.transforms.condition = function (inputs) {
-        if (inputs.condition === null) {
-            return undefined;
+
+    fluid.transforms.condition = function (transformSpec, transform) {
+        //transform should contain condition or conditionPath:
+        var condition = fluid.model.transform.getValue(transformSpec.conditionPath, transformSpec.condition, transform);
+
+        //evaluate true/false value depending on condition
+        if (condition === true) {
+            return fluid.model.transform.getValue(transformSpec.truePath, transformSpec['true'], transform);
+        } else if (condition === false) {
+            return fluid.model.transform.getValue(transformSpec.falsePath, transformSpec['false'], transform);
         }
-
-        return inputs[inputs.condition];
     };
-
 
     fluid.defaults("fluid.transforms.valueMapper", { 
         gradeNames: ["fluid.transformFunction", "fluid.lens"],
