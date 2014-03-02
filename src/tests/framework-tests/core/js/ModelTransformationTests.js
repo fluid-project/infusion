@@ -594,6 +594,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expected: {
                 conclusion: "Congratulations, you are a genius"
             }
+        }, {
+            message: "GPII-5251: Only one of the conditions should be executed",
+            expandWrap: true,
+            transform: {
+                type: "fluid.transforms.condition",
+                conditionPath: "catsAreDecent",
+                "true": {
+                    "Antranig": "cat"
+                },
+                "false": {
+                    "Kasper": "polar"
+                }
+            },
+            method: "assertDeepEq",
+            expected: {
+                "Antranig": "meow"
+            }
         }
     ];
 
@@ -1553,32 +1570,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     var multiInputTransformations = {
         transform: {
-            type: "fluid.transforms.condition",
-            condition: {
+            type: "fluid.transforms.linearScale",
+            valuePath: "foo.bar",
+            factorPath: "boo.har",
+            offset: {
                 transform: {
                     type: "fluid.transforms.binaryOp",
-                    leftPath: "hello.world",
-                    operator: "&&",
-                    right: false
+                    leftPath: "choo.choo",
+                    rightPath: "boo.hoo",
+                    operator: "+"
                 }
-            },
-            "false": {
-                transform: {
-                    type: "fluid.transforms.value",
-                    inputPath: "falsey.goes.here",
-                    outputPath: "conclusion"
-                }
-            },
-            truePath: "kasper.rocks"
+            }
         }
     };
 
     jqUnit.test("collect inputPath from multiInput transformations", function () {
         var paths = fluid.model.transform.collectInputPaths(multiInputTransformations);
         var expected = [
-            "falsey.goes.here",
-            "hello.world",
-            "kasper.rocks"
+            "boo.har",
+            "boo.hoo",
+            "choo.choo",
+            "foo.bar"
         ];
         jqUnit.assertDeepEq("Collected input paths", expected, paths.sort());
     });
