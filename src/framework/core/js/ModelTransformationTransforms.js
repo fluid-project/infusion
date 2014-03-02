@@ -188,7 +188,7 @@ fluid.defaults("fluid.transforms.condition", {
             "false": null,
             "condition": null
         }
-     });
+    });
 
     fluid.transforms.condition = function (inputs) {
         var condition = inputs.condition();
