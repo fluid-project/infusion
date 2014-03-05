@@ -745,7 +745,7 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertDomEquals("Click handlers registered by afterRender", inputs, that.clicked);
         });
 
-        // FLUID-5279: "that.produceTree is not a function" when refreshView() is called as a model (relayed) listenr on a renderer relay component
+        // FLUID-5279: "that.produceTree is not a function" when refreshView() is called as a model (relayed) listener on a renderer relay component
         fluid.defaults("fluid.tests.fluid5279", {
             gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
             components: {
@@ -803,7 +803,7 @@ fluid.registerNamespace("fluid.tests");
             });
         });
 
-        // FLUID-5280: The relayed new value takes precedence over the default model value
+        // FLUID-5280: During initial transaction, give priority to recently modified values
         fluid.defaults("fluid.tests.fluid5280", {
             gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
             components: {
@@ -861,90 +861,38 @@ fluid.registerNamespace("fluid.tests");
             that.applier.requestChange("audio", fluid.tests.fluid5280.newValue);
             that.refreshView();
         });
-
-        // FLUID-5280: When the change request is fired at the onReady event, the relayed new value still
-        // takes precedence over the default value.
-        fluid.defaults("fluid.tests.fluid5280_1", {
-            gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
-            components: {
-                sub: {
-                    type: "fluid.tests.fluid5280_1.sub",
-                    createOnEvent: "afterRender",
-                    container: "#flc-fluid5280_1-sub",
-                    options: {
-                        model: "{fluid5280_1}.model",
-                        events: {
-                            afterRender: "{fluid5280_1}.events.afterSubRendered"
-                        },
-                        modelListeners: {
-                            "audio": "{that}.refreshView"
-                        }
-                    }
-                }
-            },
-            model: {
-                audio: "available"
-            },
-            resources: {
-                template: {
-                    resourceText: "<div></div>"
-                }
-            },
-            events: {
-                afterSubRendered: null,
-                onReady: {
-                    events: {
-                        onCreate: "onCreate",
-                        afterSubRendered: "afterSubRendered"
-                    },
-                    args: "{that}"
-                }
-            },
-            renderOnInit: true
-        });
-
-        fluid.defaults("fluid.tests.fluid5280_1.sub", {
+        
+        // FLUID-5281: protoComponent expansion should respect new ChangeApplier idiom of "floating base model reference"
+        
+        fluid.defaults("fluid.tests.fluid5282root", {
             gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
             protoTree: {
                 expander: {
                     "type": "fluid.renderer.condition",
                     "condition": {
-                        "funcName": "fluid.tests.fluid5280_1.sub.check",
-                        "args": "${audio}"
+                        "funcName": "fluid.tests.fluid5282check",
+                        "args": ["{that}", "${audio}"]
                     }
                 }
             },
             model: {
                 audio: "available"
             },
-            resources: {
-                template: {
-                    resourceText: "<div></div>"
-                }
-            }
+            renderOnInit: true
         });
-
-        fluid.tests.fluid5280_1.counts = 0;
-        fluid.tests.fluid5280_1.newValue = "unavailable";
-        fluid.tests.fluid5280_1.sub.check = function (audioValue) {
-            if (fluid.tests.fluid5280_1.counts === 0) {
-                jqUnit.assertEquals("Received the initial audio value", "available", audioValue);
-            } else if (fluid.tests.fluid5280_1.counts === 1) {
-                jqUnit.assertEquals("The audio value is updated", "unavailable", audioValue);
-            }
-            fluid.tests.fluid5280_1.counts++;
+        
+        fluid.tests.fluid5282check = function (that, audioValue) {
+            that.lastAudioValue = audioValue;
         };
-
-        jqUnit.asyncTest("FLUID-5280_1: When the change request is fired at the onReady event, the relayed new value still takes precedence over the default value", function () {
-            var that = fluid.tests.fluid5280_1("#flc-fluid5280_1-main", {
-                listeners: {
-                    onReady: function (that) {
-                        that.applier.requestChange("audio", fluid.tests.fluid5280_1.newValue);
-                        jqUnit.start();
-                    }
-                }
-            });
+        
+        jqUnit.test("FLUID-5282: protoComponent expansion should respect floating model reference", function () {
+            var that = fluid.tests.fluid5282root("#FLUID-5282");
+            jqUnit.assertEquals("Initial model value evaluated", "available", that.lastAudioValue);
+            that.applier.change("audio", "unavailable");
+            that.refreshView();
+            jqUnit.assertEquals("Updated model value evaluated", "unavailable", that.lastAudioValue);            
         });
+
 
         jqUnit.module("Protocomponent Expander Tests");
 
