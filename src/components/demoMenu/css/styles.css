@@ -18,18 +18,23 @@
 .fl-demoMenu {
     font-family: 'Open Sans', sans-serif;
     color: #fff;
-    background-color: rgba(51,51,51,.8);
+    background-color: rgba(51,51,51,.96);
+    font-size: 0.8em;
 }
 
 
-.fl-demoMenu h1,
+.fl-demoMenu h1 {
+    margin: 0;
+    font-size: 1.4em;
+}
+
 .fl-demoMenu h2 {
     margin: 0;
-    
+    font-size: 1em;
 }
 
 .fl-demoMenu .fl-demoMenu-body {
-    margin: 1rem;
+/** TODO: remove this if not needed */
 }
 
 .fl-demoMenu a {
@@ -37,32 +42,41 @@
 }
 
 .fl-demoMenu *:focus {
-    outline: 0.2rem solid #FFCC00;
+    outline: 0.2em solid #FFCC00;
+}
+
+
+/* The Star icon that acts as a toggle button */
+.fl-fluid-star {
+    text-decoration: none;
+    font-size: 1.5em;
+    font-family: "Fluid-star";
+    margin: 1em 0 0 0.6em;
+    color: #fff;
+    float: left;
+   
+}
+
+.fl-fluid-star:before{
+    content: "\e600";
 }
 
 /* Header area with title */
 .fl-demoMenu-title {
     background-color: #333333;
     font-family: 'Roboto Slab', serif;
-    color: #fff;
-    padding: 0.5rem;
+    color: #ccc;
+    padding: 0.5em;
 }
 
 .fl-demoMenu-title h1 {
     display: inline-block;
-    padding: 0.5rem;
+    padding: 0.5em;
 }
 
-.fl-fluid-star {
+.fl-demoMenu-title a {
     text-decoration: none;
-    font-size: 1.5rem;
-    font-family: "Fluid-star";
-    padding: 0.2rem 0.7rem;
     color: #fff;
-}
-
-.fl-fluid-star:before{
-    content: "\e600";
 }
 
 /* Description of the component */
@@ -80,8 +94,8 @@
 
 /* Instruction text */
 .fl-demoMenu-instructions {
-    border: 0.2rem solid #FFCC00;
-    padding: 1rem;
+    border: 0.2em solid #FFCC00;
+    padding: 1em;
 }
 
 
@@ -89,7 +103,7 @@
 .fl-demoMenu-links ul li {
     display: inline-block;
     list-style: none outside none;
-    margin: 2rem 0.5rem 2rem 0;
+    margin: 2em 0.5em 2em 0;
 }
 
 .fl-demoMenu-links ul li a {
@@ -101,18 +115,18 @@
 .fl-demoMenu-links ul li .fl-icon {
     display: inline-block;
     background-color: #fff;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50rem;
+    width: 2em;
+    height: 2em;
+    border-radius: 50em;
     font-family: icons;
     color: #333333;
 }
 
 .fl-demoMenu-links ul li .fl-icon:before{
     position: relative;
-    top: 0.35rem;
-    left: 0.41rem;
-    font-size: 1.2rem;
+    top: 0.35em;
+    left: 0.41em;
+    font-size: 1.2em;
 }
 
 .fl-icon-api:before{
@@ -133,18 +147,18 @@
 
 /* Footer / Close button */
 .fl-demoMenu-footer {
-    margin: 1rem;
+    margin: 1em;
 }
 
 .fl-demoMenu-footer a {
     background-color: #fff;
-    border-radius: 0.3rem; 
-    padding: 0.3rem 1rem;
+    border-radius: 0.3em; 
+    padding: 0.3em 1em;
     color:  #333333;
     text-decoration: none;
     text-transform: lowercase;
     display: inline-block;
-    margin: 1rem 0;
+    margin: 1em 0;
 }
 
 /* Theming */
@@ -158,8 +172,8 @@
 }
 
 .fl-theme-uio-bw .fl-demoMenu {
-    border: 0.2rem solid #fff;
-    outline:  0.2rem solid #000;
+    border: 0.2em solid #fff;
+    outline:  0.2em solid #000;
 }
 
 .fl-theme-uio-bw .fl-demoMenu-title .fl-fluid-star,
@@ -170,8 +184,8 @@
 }
 
 .fl-theme-uio-bw .fl-demoMenu a { text-decoration: underline; }
-.fl-theme-uio-bw .fl-demoMenu *:focus { outline: 0.2rem solid #000; }
-.fl-theme-uio-bw .fl-demoMenu-instructions { border: 0.2rem solid #000; }
+.fl-theme-uio-bw .fl-demoMenu *:focus { outline: 0.2em solid #000; }
+.fl-theme-uio-bw .fl-demoMenu-instructions { border: 0.2em solid #000; }
 
 /* white on black */
 .fl-theme-uio-wb .fl-demoMenu,
@@ -182,8 +196,8 @@
 }
 
 .fl-theme-uio-wb .fl-demoMenu {
-    border: 0.2rem solid #000;
-    outline:  0.2rem solid #fff;
+    border: 0.2em solid #000;
+    outline:  0.2em solid #fff;
 }
 
 .fl-theme-uio-wb .fl-demoMenu .fl-demoMenu-title .fl-fluid-star,
@@ -194,8 +208,8 @@
 }
 
 .fl-theme-uio-wb .fl-demoMenu a { text-decoration: underline; }
-.fl-theme-uio-wb .fl-demoMenu *:focus { outline: 0.2rem solid #fff; }
-.fl-theme-uio-wb .fl-demoMenu-instructions { border: 0.2rem solid #fff; }
+.fl-theme-uio-wb .fl-demoMenu *:focus { outline: 0.2em solid #fff; }
+.fl-theme-uio-wb .fl-demoMenu-instructions { border: 0.2em solid #fff; }
 
 /* Low contrast: light grey on dark grey */
 .fl-theme-uio-lgdg .fl-demoMenu,
@@ -206,8 +220,8 @@
 }
 
 .fl-theme-uio-lgdg .fl-demoMenu {
-    border: 0.2rem solid #555;
-    outline:  0.2rem solid #bdbdbb;
+    border: 0.2em solid #555;
+    outline:  0.2em solid #bdbdbb;
 }
 
 .fl-theme-uio-lgdg .fl-demoMenu .fl-demoMenu-title .fl-fluid-star,
@@ -218,8 +232,8 @@
 }
 
 .fl-theme-uio-lgdg .fl-demoMenu a { text-decoration: underline; }
-.fl-theme-uio-lgdg .fl-demoMenu *:focus { outline: 0.2rem solid #bdbdbb; }
-.fl-theme-uio-lgdg .fl-demoMenu-instructions { border: 0.2rem solid #bdbdbb; }
+.fl-theme-uio-lgdg .fl-demoMenu *:focus { outline: 0.2em solid #bdbdbb; }
+.fl-theme-uio-lgdg .fl-demoMenu-instructions { border: 0.2em solid #bdbdbb; }
 
 /* Yellow on Black */
 .fl-theme-uio-yb .fl-demoMenu,
@@ -230,8 +244,8 @@
 }
 
 .fl-theme-uio-yb .fl-demoMenu {
-    border: 0.2rem solid #000;
-    outline:  0.2rem solid #FFFF00;
+    border: 0.2em solid #000;
+    outline:  0.2em solid #FFFF00;
 }
 
 .fl-theme-uio-yb .fl-demoMenu .fl-demoMenu-title .fl-fluid-star,
@@ -242,8 +256,8 @@
 }
 
 .fl-theme-uio-yb .fl-demoMenu a { text-decoration: underline; }
-.fl-theme-uio-yb .fl-demoMenu *:focus { outline: 0.2rem solid #FFFF00; }
-.fl-theme-uio-yb .fl-demoMenu-instructions { border: 0.2rem solid #FFFF00; }
+.fl-theme-uio-yb .fl-demoMenu *:focus { outline: 0.2em solid #FFFF00; }
+.fl-theme-uio-yb .fl-demoMenu-instructions { border: 0.2em solid #FFFF00; }
 
 /* Black on Yellow */
 .fl-theme-uio-by .fl-demoMenu,
@@ -254,8 +268,8 @@
 }
 
 .fl-theme-uio-by .fl-demoMenu {
-    border: 0.2rem solid #FFFF00;
-    outline:  0.2rem solid #000;
+    border: 0.2em solid #FFFF00;
+    outline:  0.2em solid #000;
 }
 
 .fl-theme-uio-by .fl-demoMenu-title .fl-fluid-star,
@@ -266,5 +280,5 @@
 }
 
 .fl-theme-uio-by .fl-demoMenu a { text-decoration: underline; }
-.fl-theme-uio-by .fl-demoMenu *:focus { outline: 0.2rem solid #000; }
-.fl-theme-uio-by .fl-demoMenu-instructions { border: 0.2rem solid #000; }
+.fl-theme-uio-by .fl-demoMenu *:focus { outline: 0.2em solid #000; }
+.fl-theme-uio-by .fl-demoMenu-instructions { border: 0.2em solid #000; }
