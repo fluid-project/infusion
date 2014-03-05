@@ -1,6 +1,12 @@
 
 /* General styles */
 
+.fl-group:after { /* clearfix (aka. group) */
+  content: "";
+  display: table;
+  clear: both;
+}
+
 @font-face {
     font-family: "Icons";
     src:url('../fonts/icons.eot?#iefix') format('embedded-opentype'),
@@ -33,16 +39,8 @@
     font-size: 1em;
 }
 
-.fl-demoMenu .fl-demoMenu-body {
-/** TODO: remove this if not needed */
-}
-
-.fl-demoMenu a {
-    color: #FFCC00;
-}
-
 .fl-demoMenu *:focus {
-    outline: 0.2em solid #FFCC00;
+    outline: 0.1em solid #FFCC00;
 }
 
 
@@ -79,9 +77,10 @@
     color: #fff;
 }
 
-/* Description of the component */
-.fl-demoMenu-description {
-    
+/* Content area of the component */
+
+.fl-demoMenu-contents {
+    padding: 1.5em;
 }
 
 .fl-demoMenu-componentName {
@@ -92,18 +91,25 @@
     font-style: italic;
 }
 
-/* Instruction text */
 .fl-demoMenu-instructions {
     border: 0.2em solid #FFCC00;
     padding: 1em;
 }
 
+.fl-demoMenu-instructions h2 {
+    text-transform: uppercase;
+    font-weight: normal;
+}
 
 /* Icon links to code, API, and designs. */ 
+.fl-demoMenu-links ul{
+    padding:1em;
+}
+
 .fl-demoMenu-links ul li {
     display: inline-block;
     list-style: none outside none;
-    margin: 2em 0.5em 2em 0;
+    margin: 2em 2em 2em 0;
 }
 
 .fl-demoMenu-links ul li a {
@@ -143,6 +149,7 @@
 
 .fl-demo-links-feedback a{
     display:block;
+    color: #FFCC00;
 }
 
 /* Footer / Close button */
@@ -159,6 +166,7 @@
     text-transform: lowercase;
     display: inline-block;
     margin: 1em 0;
+    float: right;
 }
 
 /* Theming */
