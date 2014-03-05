@@ -255,11 +255,8 @@ var fluid = fluid || fluid_1_5;
             fluid.each(expdef.inputVariables, function (v, k) {
                 inputs[k] = function () {
                     var input = fluid.model.transform.getValue(transformSpec[k + "Path"], transformSpec[k], transform);
-                    input = (input === undefined && v !== null) ? v : input; // if no match, assign default if one exists (v != null)
-                    //ensure the transformations wont evaluated again
-                    //instead relace with a function returning the value directly
-                    inputs[k] = function () { return input; };
-                    //return the result
+                    // if no match, assign default if one exists (v != null)
+                    input = (input === undefined && v !== null) ? v : input;
                     return input;
                 };
             });
