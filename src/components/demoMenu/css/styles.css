@@ -28,7 +28,6 @@
     font-size: 0.8em;
 }
 
-
 .fl-demoMenu h1 {
     margin: 0;
     font-size: 1.4em;
@@ -43,21 +42,42 @@
     outline: 0.1em solid #FFCC00;
 }
 
-
 /* The Star icon that acts as a toggle button */
-.fl-fluid-star {
+
+.fl-fluid-star a {
     text-decoration: none;
     font-size: 1.5em;
     font-family: "Fluid-star";
     margin: 1em 0 0 0.6em;
     color: #fff;
     float: left;
+    z-index: 1; /* Z-index and position relative is defined so it appears properly relative to the panel's title. */
+    position:relative;
    
 }
 
-.fl-fluid-star:before{
+.fl-fluid-star a:before{
     content: "\e600";
 }
+
+/* Demo Menu Visibility */
+
+.fl-demoMenu-body {
+    position:relative;
+    left: 0em;
+    transition: left 0.5s ease;
+}
+
+.fl-demoMenu-hidden {
+    width: 4em;
+    height: 4em;
+}
+
+.fl-demoMenu-hidden .fl-demoMenu-body {
+    position: relative;
+    left: -50em;
+}
+
 
 /* Header area with title */
 .fl-demoMenu-title {
