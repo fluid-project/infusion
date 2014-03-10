@@ -22,10 +22,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 "method": "click",
                 "args": "{that}.closeMenu"
             },
-            "afterRender.bindBlurHandler": {
-                "funcName": "fluid.demoMenu.bindBlurHandler",
-                "args": "{that}"
-            },
             "afterRender.setCodeLinkHref": {
                 "this": "{that}.dom.codeLink",
                 "method": "attr",
@@ -154,15 +150,6 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.demoMenu.closeMenu = function (that) {
         that.applier.requestChange("showMenu", false);
-    };
-
-    fluid.demoMenu.bindBlurHandler = function (that) {
-        fluid.deadMansBlur(that.container, {
-            exclusions: [that.container],
-            handler: function () {
-                fluid.demoMenu.closeMenu(that);
-            }
-        });
     };
 
 })(jQuery, fluid_1_5);
