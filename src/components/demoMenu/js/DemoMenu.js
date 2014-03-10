@@ -60,9 +60,9 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         invokers: {
             setVisibility: {
-                "this": "{that}.dom.menuBody",
-                "method": "toggle",
-                "args": ["{that}.model.showMenu"]
+                funcName: "fluid.demoMenu.setVisibility",
+                args: ["{that}", "{that}.model.showMenu"],
+                dynamic: true
             },
             toggleMenu: {
                 funcName: "fluid.demoMenu.toggleMenu",
@@ -75,8 +75,8 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         selectors: {
+            demoMenuRoot: ".flc-demoMenu-root",
             toggleControl: ".flc-demoMenu-toggleControl",
-            menuBody: ".flc-demoMenu-body",
             titleBegin: ".flc-demoMenu-title-begin",
             titleLinkText: ".flc-demoMenu-title-linkText",
             titleEnd: ".flc-demoMenu-title-end",
@@ -97,7 +97,7 @@ var fluid_1_5 = fluid_1_5 || {};
             closeControl: ".flc-demoMenu-closeControl",
             closeText: ".flc-demoMenu-closeText"
         },
-        selectorsToIgnore: ["toggleControl", "menuBody", "codeLink", "apiLink", "designLink", "feedbackLink", "closeControl"],
+        selectorsToIgnore: ["demoMenuRoot", "toggleControl", "codeLink", "apiLink", "designLink", "feedbackLink", "closeControl"],
         protoTree: {
             titleBegin: {messagekey: "titleBegin"},
             titleLinkText: {messagekey: "titleLinkText"},
@@ -142,6 +142,10 @@ var fluid_1_5 = fluid_1_5 || {};
         fluid.fetchResources(that.options.resources, function () {
             that.refreshView();
         });
+    };
+
+    fluid.demoMenu.setVisibility = function (that, value) {
+        that.locate("demoMenuRoot").toggleClass("fl-demoMenu-hidden", !value);
     };
 
     fluid.demoMenu.toggleMenu = function (that, value) {
