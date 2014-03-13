@@ -44,6 +44,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         lots: 172,
         lt: "<",
         catsAreDecent: true,
+        catsAreNotDecent: false,
         floatyLowy: 12.3910,
         floatyHighy: 12.52,
         floaty2: -9876.789
@@ -593,6 +594,38 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             method: "assertDeepEq",
             expected: {
                 conclusion: "Congratulations, you are a genius"
+            }
+        }, {
+            message: "Nesting with two operands being provided by paths",
+            expandWrap: true,
+            transform: {
+                type: "fluid.transforms.condition",
+                condition: {
+                    transform: {
+                        type: "fluid.transforms.binaryOp",
+                        leftPath: "catsAreDecent",
+                        operator: "||",
+                        rightPath: "catsAreNotDecent"
+                    }
+                },
+                "true": {
+                    transform: {
+                        type: "fluid.transforms.literalValue",
+                        value: "the true block is expected",
+                        outputPath: "conclusion"
+                    }
+                },
+                "false": {
+                    transform: {
+                        type: "fluid.transforms.literalValue",
+                        value: "the false block is not expected",
+                        outputPath: "conclusion"
+                    }
+                },
+            },
+            method: "assertDeepEq",
+            expected: {
+                conclusion: "the true block is expected"
             }
         }
     ];
