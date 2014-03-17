@@ -24,7 +24,6 @@
 .fl-demoMenu {
     font-family: 'Open Sans', sans-serif;
     color: #fff;
-    background-color: rgba(51,51,51,.96);
     font-size: 0.8em;
 }
 
@@ -48,34 +47,31 @@
     text-decoration: none;
     font-size: 1.5em;
     font-family: "Fluid-star";
-    margin: 1em 0 0 0.6em;
+    padding: 0.8em 0.4em;
     color: #fff;
     float: left;
     z-index: 1; /* Z-index and position relative is defined so it appears properly relative to the panel's title. */
     position:relative;
-   
+    background-color: rgba(51,51,51,.96);
 }
+
 
 .fl-fluid-star a:before{
     content: "\e600";
 }
 
-/* Demo Menu Visibility */
-
+/* The Demo Menu itself */
 .fl-demoMenu-body {
     position:relative;
     left: 0em;
-    transition: left 0.5s ease;
+    transition: left 0.5s ease; /* Create the sliding effect when showing and hiding */
+    background-color: rgba(51,51,51,.96);
 }
 
-.fl-demoMenu-hidden {
-    width: 4em;
-    height: 4em;
-}
-
+/* Demo Menu Visibility */
 .fl-demoMenu-hidden .fl-demoMenu-body {
     position: relative;
-    left: -50em;
+    left: -200em;
 }
 
 
