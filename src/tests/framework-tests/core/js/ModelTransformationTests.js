@@ -44,6 +44,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         lots: 172,
         lt: "<",
         catsAreDecent: true,
+        catsAreNotDecent: false,
         floatyLowy: 12.3910,
         floatyHighy: 12.52,
         floaty2: -9876.789
@@ -593,6 +594,88 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             method: "assertDeepEq",
             expected: {
                 conclusion: "Congratulations, you are a genius"
+            }
+        }, {
+            message: "Conditional transform with only the true block having another transformation",
+            expandWrap: true,
+            transform: {
+                type: "fluid.transforms.condition",
+                condition: {
+                    transform: {
+                        type: "fluid.transforms.binaryOp",
+                        leftPath: "catsAreDecent",
+                        operator: "||",
+                        rightPath: "catsAreNotDecent"
+                    }
+                },
+                "true": {
+                    transform: {
+                        type: "fluid.transforms.literalValue",
+                        value: "the true block is expected",
+                        outputPath: "conclusion"
+                    }
+                },
+                "false": "this is from the false block"
+            },
+            method: "assertDeepEq",
+            expected: {
+                conclusion: "the true block is expected"
+            }
+        }, {
+            message: "Conditional transform with only the false block having another transformation",
+            expandWrap: true,
+            transform: {
+                type: "fluid.transforms.condition",
+                condition: {
+                    transform: {
+                        type: "fluid.transforms.binaryOp",
+                        leftPath: "catsAreDecent",
+                        operator: "||",
+                        rightPath: "catsAreNotDecent"
+                    }
+                },
+                "true": "this is from the true block",
+                "false": {
+                    transform: {
+                        type: "fluid.transforms.literalValue",
+                        value: "the false block is expected",
+                        outputPath: "conclusion"
+                    }
+                }
+            },
+            method: "assertDeepEq",
+            expected: "this is from the true block"
+        }, {
+            message: "Conditional transform with both true and false blocks having another transformation",
+            expandWrap: true,
+            transform: {
+                type: "fluid.transforms.condition",
+                condition: {
+                    transform: {
+                        type: "fluid.transforms.binaryOp",
+                        leftPath: "catsAreDecent",
+                        operator: "||",
+                        rightPath: "catsAreNotDecent"
+                    }
+                },
+                "true": {
+                    transform: {
+                        type: "fluid.transforms.literalValue",
+                        value: "the true block is expected",
+                        outputPath: "conclusion"
+                    }
+                },
+                "false": {
+                    transform: {
+                        type: "fluid.transforms.literalValue",
+                        value: "the false block is not expected",
+                        outputPath: "conclusion"
+                    }
+                }
+            },
+            method: "assertDeepEq",
+            expected: {
+                conclusion: "the true block is expected"
             }
         }
     ];
