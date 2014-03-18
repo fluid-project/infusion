@@ -744,6 +744,64 @@ fluid.registerNamespace("fluid.tests");
             fluid.each(inputs, function (element) {element.click();});
             jqUnit.assertDomEquals("Click handlers registered by afterRender", inputs, that.clicked);
         });
+        
+        // FLUID-5279: "that.produceTree is not a function" when refreshView() is called as a model (relayed) listenr on a renderer relay component
+        fluid.defaults("fluid.tests.fluid5279", {
+            gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
+            components: {
+                attributes: {
+                    type: "fluid.rendererRelayComponent",
+                    createOnEvent: "afterRender",
+                    container: ".flc-sub",
+                    options: {
+                        model: "{fluid5279}.model",
+                        modelListeners: {
+                            "audio": "{that}.refreshView"
+                        },
+                        events: {
+                            afterRender: "{fluid5279}.events.afterAttributesRendered"
+                        },
+                        resources: {
+                            template: {
+                                resourceText: "<div></div>"
+                            }
+                        }
+                    }
+                }
+            },
+            model: {
+                audio: "available"
+            },
+            resources: {
+                template: {
+                    resourceText: "<div></div>"
+                }
+            },
+            events: {
+                afterAttributesRendered: null,
+                onReady: {
+                    events: {
+                        onCreate: "onCreate",
+                        afterAttributesRendered: "afterAttributesRendered"
+                    },
+                    args: "{that}"
+                }
+            },
+            listeners: {
+                "onCreate.init": "{that}.refreshView"
+            }
+        });
+    
+        jqUnit.asyncTest("FLUID-5279: Direct model sharing for renderer relay components", function () {
+            var that = fluid.tests.fluid5279(".flc-main", {
+                listeners: {
+                    onReady: function (that) {
+                        jqUnit.assertNotUndefined("The component has been instantiated", that);
+                        jqUnit.start();
+                    }
+                }
+            });
+        });
 
         jqUnit.module("Protocomponent Expander Tests");
 
@@ -1814,6 +1872,7 @@ fluid.registerNamespace("fluid.tests");
             },
             renderOnInit: true
         });
+        
         jqUnit.test("FLUID-4986: Select", function () {
             var that = fluid.tests.fluid4986("#FLUID-4986");
             jqUnit.assertEquals("Select should be rendered properly", that.model.select, that.locate("select").val());

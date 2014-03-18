@@ -154,21 +154,29 @@ fluid_1_5 = fluid_1_5 || {};
     });
 
     fluid.rendererComponent.renderOnInit = function (renderOnInit, that) {
-        if (renderOnInit) {
+        if (renderOnInit || that.renderOnInit) {
             that.refreshView();
         }
     };
 
     fluid.rendererComponent.refreshView = function (that) {
-        fluid.renderer.clearDecorators(that);
-        that.events.prepareModelForRender.fire(that.model, that.applier, that);
-        var tree = that.produceTree(that);
-        if (that.renderer.expander) {
-            tree = that.renderer.expander(tree);
+        if (!that.renderer) { 
+            // Terrible stopgap fix for FLUID-5279 - all of this implementation will be swept away
+            // model relay may cause this to be called during init, and we have no proper definition for "that.renderer" since it is
+            // constructed in a terrible way
+            that.renderOnInit = true;
+            return;
+        } else {
+            fluid.renderer.clearDecorators(that);
+            that.events.prepareModelForRender.fire(that.model, that.applier, that);
+            var tree = that.produceTree(that);
+            if (that.renderer.expander) {
+                tree = that.renderer.expander(tree);
+            }
+            that.events.onRenderTree.fire(that, tree);
+            that.renderer.render(tree);
+            that.events.afterRender.fire(that);
         }
-        that.events.onRenderTree.fire(that, tree);
-        that.renderer.render(tree);
-        that.events.afterRender.fire(that);
     };
 
     fluid.rendererComponent.produceTree = function (that) {
