@@ -173,7 +173,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         root.activeTests += count;
         if (count === -1) {
-            fluid.log(fluid.logLevel.IMPORTANT, "Starting QUnit due to destruction of tree ", root);
+            fluid.log(fluid.logLevel.INFO, "Starting QUnit due to destruction of tree ", root);
             QUnit.start();
         }
         if (root.activeTests === 0) {

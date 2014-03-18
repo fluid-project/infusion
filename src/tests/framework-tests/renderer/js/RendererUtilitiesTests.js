@@ -1831,4 +1831,5 @@ fluid.registerNamespace("fluid.tests");
                 "${{test}.string}", that.locate("simpleBound6").text());
         });
     };
+
 })(jQuery);
