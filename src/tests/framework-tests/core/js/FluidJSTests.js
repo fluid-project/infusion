@@ -641,6 +641,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.gradeUsingComponent();
     });
 
+    /** FLUID-5288: Improved diagnostic for incomplete grade hierarchy **/
+    
+
+
+    jqUnit.test("FLUID-5288: Improved diagnostic for component with incomplete grade hierarchy", function () {
+        fluid.pushSoftFailure(true);
+        jqUnit.expect(3);
+        try {
+            // TODO: shouldn't we be able to instantiate grades which involve a forward reference!
+            fluid.defaults("fluid.missingGradeComponent", {
+                gradeNames: ["fluid.nonexistentGrade", "autoInit"]
+            });
+            var that = fluid.missingGradeComponent();
+        } catch (e) {
+            jqUnit.assertTrue("Should receive framework error", e instanceof fluid.FluidError);
+            var message = e.toString();
+            jqUnit.assertTrue("Error text should be correct", message.indexOf("is incomplete") !== -1);
+            jqUnit.assertTrue("Error text should mention blank grade", message.indexOf("fluid.nonexistentGrade") !== -1);
+        } finally {
+            fluid.pushSoftFailure(-1);
+        }
+    });
 
     fluid.registerNamespace("fluid.tests.initSubcomponentTest");
     
