@@ -92,6 +92,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.afterHideFunc1 = function (separatedPanel) {
         return function () {
             jqUnit.assertEquals("Reset button is invisible", false, $(".flc-prefsEditor-reset").is(":visible"));
+            jqUnit.assertDeepEq("Only the changed preferences are saved", fluid.tests.prefs.bwSkin, fluid.staticEnvironment.settingsStore.get());
         };
     };
     fluid.tests.afterShowFunc2 = function (separatedPanel) {
@@ -123,7 +124,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Separated panel integration tests",
             tests: [{
-                expect: 22,
+                expect: 23,
                 name: "Separated panel integration tests",
                 sequence: [{
                     listener: "fluid.tests.testSeparatedPanel",
