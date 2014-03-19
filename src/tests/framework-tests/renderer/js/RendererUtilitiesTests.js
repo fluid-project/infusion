@@ -804,7 +804,7 @@ fluid.registerNamespace("fluid.tests");
             });
         });
 
-        // FLUID-5280: The relayed new value takes precedence over the default model value
+        // FLUID-5280: During initial transaction, give priority to recently modified values
         fluid.defaults("fluid.tests.fluid5280", {
             gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
             components: {
@@ -862,6 +862,38 @@ fluid.registerNamespace("fluid.tests");
             that.applier.requestChange("audio", fluid.tests.fluid5280.newValue);
             that.refreshView();
         });
+
+        // FLUID-5281: protoComponent expansion should respect new ChangeApplier idiom of "floating base model reference"
+
+        fluid.defaults("fluid.tests.fluid5282root", {
+            gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
+            protoTree: {
+                expander: {
+                    "type": "fluid.renderer.condition",
+                    "condition": {
+                        "funcName": "fluid.tests.fluid5282check",
+                        "args": ["{that}", "${audio}"]
+                    }
+                }
+            },
+            model: {
+                audio: "available"
+            },
+            renderOnInit: true
+        });
+
+        fluid.tests.fluid5282check = function (that, audioValue) {
+            that.lastAudioValue = audioValue;
+        };
+
+        jqUnit.test("FLUID-5282: protoComponent expansion should respect floating model reference", function () {
+            var that = fluid.tests.fluid5282root("#FLUID-5282");
+            jqUnit.assertEquals("Initial model value evaluated", "available", that.lastAudioValue);
+            that.applier.change("audio", "unavailable");
+            that.refreshView();
+            jqUnit.assertEquals("Updated model value evaluated", "unavailable", that.lastAudioValue);
+        });
+
 
         jqUnit.module("Protocomponent Expander Tests");
 

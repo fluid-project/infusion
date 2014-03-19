@@ -67,6 +67,7 @@ fluid_1_5 = fluid_1_5 || {};
     /** "Renderer component" infrastructure **/
   // TODO: fix this up with IoC and improved handling of templateSource as well as better
   // options layout (model appears in both rOpts and eOpts)
+  // "options" here is the original "rendererFnOptions"
     fluid.renderer.createRendererSubcomponent = function (container, selectors, options, parentThat, fossils) {
         options = options || {};
         var source = options.templateSource ? options.templateSource : {node: $(container)};
@@ -81,12 +82,7 @@ fluid_1_5 = fluid_1_5 || {};
             fluid.renderer.reverseMerge(rendererOptions, cascadeOptions, fluid.keys(cascadeOptions));
         }
 
-        var expanderOptions = fluid.renderer.modeliseOptions(options.expanderOptions, {ELstyle: "${}"}, parentThat);
-        fluid.renderer.reverseMerge(expanderOptions, options, ["resolverGetConfig", "resolverSetConfig"]);
         var that = {};
-        if (!options.noexpand) {
-            that.expander = fluid.renderer.makeProtoExpander(expanderOptions, parentThat);
-        }
 
         var templates = null;
         that.render = function (tree) {
@@ -158,6 +154,13 @@ fluid_1_5 = fluid_1_5 || {};
             that.refreshView();
         }
     };
+    
+    fluid.protoExpanderForComponent = function (parentThat, options) {
+        var expanderOptions = fluid.renderer.modeliseOptions(options.expanderOptions, {ELstyle: "${}"}, parentThat);
+        fluid.renderer.reverseMerge(expanderOptions, options, ["resolverGetConfig", "resolverSetConfig"]);
+        var expander = fluid.renderer.makeProtoExpander(expanderOptions, parentThat);
+        return expander;
+    };
 
     fluid.rendererComponent.refreshView = function (that) {
         if (!that.renderer) { 
@@ -170,8 +173,11 @@ fluid_1_5 = fluid_1_5 || {};
             fluid.renderer.clearDecorators(that);
             that.events.prepareModelForRender.fire(that.model, that.applier, that);
             var tree = that.produceTree(that);
-            if (that.renderer.expander) {
-                tree = that.renderer.expander(tree);
+            var rendererFnOptions = that.renderer.rendererFnOptions;
+            // Terrible stopgap fix for FLUID-5821 - given that model reference may be rebound, generate the expander from scratch on every render
+            if (!rendererFnOptions.noexpand) {
+                var expander = fluid.protoExpanderForComponent(that, rendererFnOptions);
+                tree = expander(tree);
             }
             that.events.onRenderTree.fire(that, tree);
             that.renderer.render(tree);
@@ -227,9 +233,9 @@ fluid_1_5 = fluid_1_5 || {};
         if (rendererFnOptions.rendererTargetSelector) {
             container = function () {return that.dom.locate(rendererFnOptions.rendererTargetSelector); };
         }
-
         var renderer = {
             fossils: {},
+            rendererFnOptions: rendererFnOptions,
             boundPathForNode: function (node) {
                 return fluid.boundPathForNode(node, renderer.fossils);
             }
