@@ -37,7 +37,7 @@
     font-size: 1em;
 }
 
-.fl-demoMenu *:focus,
+.fl-demoMenu *:active,
 .fl-demoMenu *:focus {
     outline: 0.2em solid #27A9E1;
 }
