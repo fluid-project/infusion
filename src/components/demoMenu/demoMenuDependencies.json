@@ -1,9 +1,9 @@
 {
-    "demoMenu": {
+    "overviewPanel": {
         "name": "Demo Menu",
         "description": "Demo Menu",
         "files": [
-            "./js/DemoMenu.js"
+            "./js/OverviewPanel.js"
         ],
         "dependencies": [
             "jQuery",
