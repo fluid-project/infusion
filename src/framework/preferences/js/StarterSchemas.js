@@ -200,7 +200,7 @@ var fluid_1_5 = fluid_1_5 || {};
         schema: {
             "fluid.prefs.textFont": {
                 "type": "string",
-                "default": "",
+                "default": "default",
                 "enum": ["default", "times", "comic", "arial", "verdana"]
             }
         }
