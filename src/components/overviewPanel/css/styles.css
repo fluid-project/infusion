@@ -21,6 +21,22 @@
          url('../fonts/fluid-star.ttf');
 }
 
+.fl-overviewPanel-container {
+    /* 
+     * APPLY this class on the container for the overviewPanel component.
+     * Customize these values to change the positioning.
+     * 
+     * Note: If you change the position, you may have to change the position of 
+     * .fl-overviewPanel-hidden .fl-overviewPanel-body so that the transition
+     * goes in the desired direction.
+     */
+    position:fixed;
+    top:0;
+    left:0;
+    width:24em;
+    overflow: auto;
+}
+
 .fl-overviewPanel {
     font-family: 'Open Sans', sans-serif;
     color: #fff;
