@@ -1,6 +1,24 @@
+/*
+Copyright 2013-2014 OCAD University
+
+Licensed under the Educational Community License (ECL), Version 2.0 or the New
+BSD license. You may not use this file except in compliance with one these
+Licenses.
+
+You may obtain a copy of the ECL 2.0 License and BSD License at
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+*/
+
+// Declare dependencies
+/* global require, module */
+
+// JSHint options
+/* jshint bitwise: true, camelcase: true, curly: true, eqeqeq: true, es3: true, forin: true, freeze: true, immed: true, indent: 4, latedef: true, newcap: true, noarg: true, noempty: true, nonbsp: true, nonew: true, plusplus: false, quotmark: double, undef: true, unused: true, strict: true, trailing: true, maxerr: 1000, browser: true, jquery: true, worker: true */
+
 var _ = require("lodash");
 
 module.exports = function(grunt) {
+    "use strict";
 
     // Project configuration.
     grunt.initConfig({
@@ -37,9 +55,9 @@ module.exports = function(grunt) {
                     // The jQuery license file needs to be copied explicitly since
                     // "src/lib/jQuery" directory contains several jQuery modules
                     // that have individual dependencies.json files.
-                    src: 'src/lib/jQuery/jQuery-LICENSE.txt',
-                    dest: 'build/lib/jQuery/jQuery-LICENSE.txt',
-                    filter: function(filePath, filePath2) {
+                    src: "src/lib/jQuery/jQuery-LICENSE.txt",
+                    dest: "build/lib/jQuery/jQuery-LICENSE.txt",
+                    filter: function() {
                         return grunt.file.exists("build/lib/jQuery/");
                     }
                 }]
@@ -113,12 +131,12 @@ module.exports = function(grunt) {
                 banner: "/*! <%= pkg.name %> - v<%= pkg.version %> <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %>*/\n"
             },
             all: {
-              src: "<%= modulefiles.all.output.files %>",
-              dest: "./build/<%= allBuildName %>.js"
+                src: "<%= modulefiles.all.output.files %>",
+                dest: "./build/<%= allBuildName %>.js"
             },
             custom: {
-              src: "<%= modulefiles.custom.output.files %>",
-              dest: "./build/<%= customBuildName %>.js"
+                src: "<%= modulefiles.custom.output.files %>",
+                dest: "./build/<%= customBuildName %>.js"
             }
         },
         compress: {
@@ -139,6 +157,13 @@ module.exports = function(grunt) {
                 },
                 files: "<%= compress.all.files %>"
             }
+        },
+        jshint: {
+            src: ["src/**"],
+            buildScripts: ["Gruntfile.js"],
+            options: {
+                jshintrc: true
+            }
         }
     });
 
@@ -148,6 +173,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-compress");
+    grunt.loadNpmTasks("grunt-contrib-jshint");
     grunt.loadNpmTasks("grunt-modulefiles");
 
     // Custom tasks:
