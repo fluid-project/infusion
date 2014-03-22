@@ -196,7 +196,7 @@ var fluid = fluid || fluid_1_5;
             return undefined;
         }
 
-        return inputs[!!condition]();
+        return inputs[condition ? "true" : "false"]();
     };
 
 
