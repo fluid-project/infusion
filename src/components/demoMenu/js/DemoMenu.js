@@ -1,3 +1,21 @@
+/*
+Copyright 2014 OCAD University
+
+Licensed under the Educational Community License (ECL), Version 2.0 or the New
+BSD license. You may not use this file except in compliance with one these
+Licenses.
+
+You may obtain a copy of the ECL 2.0 License and BSD License at
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+
+*/
+
+// Declare dependencies
+/*global fluid, jQuery*/
+
+// JSLint options
+/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
@@ -9,9 +27,8 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         listeners: {
-            "onCreate.showTemplate": {
-                "funcName": "fluid.demoMenu.showTemplate"
-            },
+            "onCreate.setVisibility": "{that}.setVisibility",
+            "onCreate.showTemplate": "fluid.demoMenu.showTemplate",
             "afterRender.registerToggleListener": {
                 "this": "{that}.dom.toggleControl",
                 "method": "click",
@@ -41,9 +58,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 "this": "{that}.dom.feedbackLink",
                 "method": "attr",
                 "args": ["href", "${{that}.options.markup.feedbackLinkHref}"]
-            },
-            "afterRender.setVisibility": {
-                "funcName": "{that}.setVisibility"
             }
         },
         model: {
@@ -71,7 +85,6 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         selectors: {
-            demoMenuRoot: ".flc-demoMenu-root",
             toggleControl: ".flc-demoMenu-toggleControl",
             titleBegin: ".flc-demoMenu-title-begin",
             titleLinkText: ".flc-demoMenu-title-linkText",
@@ -93,7 +106,7 @@ var fluid_1_5 = fluid_1_5 || {};
             closeControl: ".flc-demoMenu-closeControl",
             closeText: ".flc-demoMenu-closeText"
         },
-        selectorsToIgnore: ["demoMenuRoot", "toggleControl", "codeLink", "apiLink", "designLink", "feedbackLink", "closeControl"],
+        selectorsToIgnore: ["toggleControl", "codeLink", "apiLink", "designLink", "feedbackLink", "closeControl"],
         protoTree: {
             titleBegin: {messagekey: "titleBegin"},
             titleLinkText: {messagekey: "titleLinkText"},
@@ -109,6 +122,9 @@ var fluid_1_5 = fluid_1_5 || {};
             feedbackText: {messagekey: "feedbackText"},
             feedbackLinkText: {messagekey: "feedbackLinkText"},
             closeText: {messagekey: "closeText"}
+        },
+        styles: {
+            hidden: "fl-demoMenu-hidden"
         },
         strings: {
             titleBegin: "A ",
@@ -134,14 +150,14 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
+    fluid.demoMenu.setVisibility = function (that, value) {
+        that.container.toggleClass(that.options.styles.hidden, !value);
+    };
+
     fluid.demoMenu.showTemplate = function (that) {
         fluid.fetchResources(that.options.resources, function () {
             that.refreshView();
         });
-    };
-
-    fluid.demoMenu.setVisibility = function (that, value) {
-        that.locate("demoMenuRoot").toggleClass("fl-demoMenu-hidden", !value);
     };
 
     fluid.demoMenu.toggleMenu = function (that, value) {
