@@ -1293,4 +1293,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("The target model is transformed properly - modelRelay on the target component", expectedValue, thatOnTarget.sub.model.fahrenheit);
     });
 
+    // FLUID-5293: The model relay using "fluid.transforms.arrayToSetMembership" isn't transformed properly
+    fluid.defaults("fluid.tests.fluid5293", {
+        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        model: {
+            accessibilityHazard: []
+        },
+        modelRelay: [{
+            source: "{that}.model.accessibilityHazard",
+            target: "{that}.model.modelInTransit",
+            singleTransform: {
+                type: "fluid.transforms.arrayToSetMembership",
+                options: {
+                    "flashing": "flashing",
+                    "noflashing": "noflashing"
+                }
+            }
+        }]
+    });
+
+    jqUnit.test("FLUID-5270: Transforming relay from child to parent", function () {
+        var that = fluid.tests.fluid5293();
+        var expectedModel = {
+            accessibilityHazard: [],
+            modelInTransit: {
+                flashing: false,
+                noflashing: false
+            }
+        };
+
+        jqUnit.assertDeepEq("The top compnent model is transformed properly", expectedModel, that.model);
+    });
+
 })(jQuery);
