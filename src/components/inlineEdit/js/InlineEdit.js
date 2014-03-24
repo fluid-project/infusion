@@ -12,12 +12,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/* global fluid_1_5:true */
-
-// JSHint options
-/* jshint bitwise: true, camelcase: false, curly: true, eqeqeq: true, es3: true, forin: true, freeze: true, immed: true, indent: 4, latedef: true, newcap: true, noarg: true, noempty: true, nonbsp: true, nonew: true, plusplus: false, quotmark: double, undef: true, unused: true, strict: true, trailing: true, maxerr: 1000, browser: true, jquery: true, worker: true */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
