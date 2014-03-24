@@ -1322,7 +1322,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         };
 
-        jqUnit.assertDeepEq("The top compnent model is transformed properly", expectedModel, that.model);
+        jqUnit.assertDeepEq("The top component model is transformed properly", expectedModel, that.model);
     });
 
 })(jQuery);
