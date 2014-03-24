@@ -19,16 +19,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
-    fluid.defaults("fluid.demoMenu", {
+    fluid.defaults("fluid.overviewPanel", {
         gradeNames: ["fluid.rendererComponent", "fluid.modelComponent", "autoInit"],
         resources: {
             template: {
-                href: "../html/demoMenuTemplate.html"
+                href: "../html/overviewPanelTemplate.html"
             }
         },
         listeners: {
             "onCreate.setVisibility": "{that}.setVisibility",
-            "onCreate.showTemplate": "fluid.demoMenu.showTemplate",
+            "onCreate.showTemplate": "fluid.overviewPanel.showTemplate",
             "afterRender.registerToggleListener": {
                 "this": "{that}.dom.toggleControl",
                 "method": "click",
@@ -70,41 +70,41 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         invokers: {
             setVisibility: {
-                funcName: "fluid.demoMenu.setVisibility",
+                funcName: "fluid.overviewPanel.setVisibility",
                 args: ["{that}", "{that}.model.showMenu"],
                 dynamic: true
             },
             toggleMenu: {
-                funcName: "fluid.demoMenu.toggleMenu",
+                funcName: "fluid.overviewPanel.toggleMenu",
                 args: ["{that}", "{that}.model.showMenu"],
                 dynamic: true
             },
             closeMenu: {
-                funcName: "fluid.demoMenu.closeMenu",
+                funcName: "fluid.overviewPanel.closeMenu",
                 args: "{that}"
             }
         },
         selectors: {
-            toggleControl: ".flc-demoMenu-toggleControl",
-            titleBegin: ".flc-demoMenu-title-begin",
-            titleLinkText: ".flc-demoMenu-title-linkText",
-            titleEnd: ".flc-demoMenu-title-end",
-            componentName: ".flc-demoMenu-componentName",
-            componentVersion: ".flc-demoMenu-componentVersion",
-            description: ".flc-demoMenu-description",
-            instructionsHeading: ".flc-demoMenu-instructionsHeading",
-            instructions: ".flc-demoMenu-instructions",
-            codeLink: ".flc-demoMenu-codeLink",
-            codeLinkText: ".flc-demoMenu-codeLinkText",
-            apiLink: ".flc-demoMenu-apiLink",
-            apiLinkText: ".flc-demoMenu-apiLinkText",
-            designLink: ".flc-demoMenu-designLink",
-            designLinkText: ".flc-demoMenu-designLinkText",
-            feedbackText: ".flc-demoMenu-feedbackText",
-            feedbackLink: ".flc-demoMenu-feedbackLink",
-            feedbackLinkText: ".flc-demoMenu-feedbackLinkText",
-            closeControl: ".flc-demoMenu-closeControl",
-            closeText: ".flc-demoMenu-closeText"
+            toggleControl: ".flc-overviewPanel-toggleControl",
+            titleBegin: ".flc-overviewPanel-title-begin",
+            titleLinkText: ".flc-overviewPanel-title-linkText",
+            titleEnd: ".flc-overviewPanel-title-end",
+            componentName: ".flc-overviewPanel-componentName",
+            componentVersion: ".flc-overviewPanel-componentVersion",
+            description: ".flc-overviewPanel-description",
+            instructionsHeading: ".flc-overviewPanel-instructionsHeading",
+            instructions: ".flc-overviewPanel-instructions",
+            codeLink: ".flc-overviewPanel-codeLink",
+            codeLinkText: ".flc-overviewPanel-codeLinkText",
+            apiLink: ".flc-overviewPanel-apiLink",
+            apiLinkText: ".flc-overviewPanel-apiLinkText",
+            designLink: ".flc-overviewPanel-designLink",
+            designLinkText: ".flc-overviewPanel-designLinkText",
+            feedbackText: ".flc-overviewPanel-feedbackText",
+            feedbackLink: ".flc-overviewPanel-feedbackLink",
+            feedbackLinkText: ".flc-overviewPanel-feedbackLinkText",
+            closeControl: ".flc-overviewPanel-closeControl",
+            closeText: ".flc-overviewPanel-closeText"
         },
         selectorsToIgnore: ["toggleControl", "codeLink", "apiLink", "designLink", "feedbackLink", "closeControl"],
         protoTree: {
@@ -124,7 +124,7 @@ var fluid_1_5 = fluid_1_5 || {};
             closeText: {messagekey: "closeText"}
         },
         styles: {
-            hidden: "fl-demoMenu-hidden"
+            hidden: "fl-overviewPanel-hidden"
         },
         strings: {
             titleBegin: "A ",
@@ -150,21 +150,21 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.demoMenu.setVisibility = function (that, value) {
+    fluid.overviewPanel.setVisibility = function (that, value) {
         that.container.toggleClass(that.options.styles.hidden, !value);
     };
 
-    fluid.demoMenu.showTemplate = function (that) {
+    fluid.overviewPanel.showTemplate = function (that) {
         fluid.fetchResources(that.options.resources, function () {
             that.refreshView();
         });
     };
 
-    fluid.demoMenu.toggleMenu = function (that, value) {
+    fluid.overviewPanel.toggleMenu = function (that, value) {
         that.applier.requestChange("showMenu", !value);
     };
 
-    fluid.demoMenu.closeMenu = function (that) {
+    fluid.overviewPanel.closeMenu = function (that) {
         that.applier.requestChange("showMenu", false);
     };
 
