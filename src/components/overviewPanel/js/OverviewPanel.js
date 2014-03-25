@@ -32,12 +32,12 @@ var fluid_1_5 = fluid_1_5 || {};
             "afterRender.registerToggleListener": {
                 "this": "{that}.dom.toggleControl",
                 "method": "click",
-                "args": "{that}.toggleMenu"
+                "args": "{that}.togglePanel"
             },
             "afterRender.registerCloseListener": {
                 "this": "{that}.dom.closeControl",
                 "method": "click",
-                "args": "{that}.closeMenu"
+                "args": "{that}.closePanel"
             },
             "afterRender.setCodeLinkHref": {
                 "this": "{that}.dom.codeLink",
@@ -74,13 +74,13 @@ var fluid_1_5 = fluid_1_5 || {};
                 args: ["{that}", "{that}.model.showPanel"],
                 dynamic: true
             },
-            toggleMenu: {
-                funcName: "fluid.overviewPanel.toggleMenu",
+            togglePanel: {
+                funcName: "fluid.overviewPanel.togglePanel",
                 args: ["{that}", "{that}.model.showPanel"],
                 dynamic: true
             },
-            closeMenu: {
-                funcName: "fluid.overviewPanel.closeMenu",
+            closePanel: {
+                funcName: "fluid.overviewPanel.closePanel",
                 args: "{that}"
             }
         },
@@ -160,11 +160,11 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
 
-    fluid.overviewPanel.toggleMenu = function (that, value) {
+    fluid.overviewPanel.togglePanel = function (that, value) {
         that.applier.requestChange("showPanel", !value);
     };
 
-    fluid.overviewPanel.closeMenu = function (that) {
+    fluid.overviewPanel.closePanel = function (that) {
         that.applier.requestChange("showPanel", false);
     };
 

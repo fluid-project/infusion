@@ -166,20 +166,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         });
 
-        var verifyCloseMenuInvoker = function (that) {
+        var verifyClosePanelInvoker = function (that) {
             assertPanelIsOpen(that);
-            that.closeMenu();
+            that.closePanel();
             assertPanelIsClosed(that);
             jqUnit.start();
         };
 
-        jqUnit.asyncTest("Verify closeMenu invoker", function () {
+        jqUnit.asyncTest("Verify closePanel invoker", function () {
             jqUnit.expect(4);
             fluid.overviewPanel(".flc-overviewPanel", {
                 resources: resources,
                 listeners: {
                     "afterRender": {
-                        "listener": verifyCloseMenuInvoker,
+                        "listener": verifyClosePanelInvoker,
                         "priority": "last"
                     }
                 },
