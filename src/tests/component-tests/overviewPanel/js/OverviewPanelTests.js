@@ -32,7 +32,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             titleLinkText: "bbb",
             titleEnd: "ccc",
             componentName: "ddd",
-            componentVersion: "eee",
             instructionsHeading: "fff",
             codeLinkText: "ggg",
             apiLinkText: "hhh",
@@ -81,7 +80,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         jqUnit.asyncTest("Verify Rendering", function () {
-            jqUnit.expect(18);
+            jqUnit.expect(17);
             fluid.overviewPanel(".flc-overviewPanel", {
                 resources: resources,
                 listeners: {
