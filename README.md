@@ -113,6 +113,7 @@ By default, custom packages are given a name with the form _infusion-custom-<ver
 ####Component Modules####
 
 * inlineEdit
+* overviewPanel
 * pager
 * progress
 * reorderer
