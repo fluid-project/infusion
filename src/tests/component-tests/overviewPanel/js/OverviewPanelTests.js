@@ -189,5 +189,63 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         });
 
+        var verifyToggleControl = function (that) {
+            assertPanelIsOpen(that);
+            that.locate("toggleControl").click();
+            assertPanelIsClosed(that);
+            that.locate("toggleControl").click();
+            assertPanelIsOpen(that);
+            that.locate("closeControl").click();
+            assertPanelIsClosed(that);
+            that.locate("toggleControl").click();
+            assertPanelIsOpen(that);
+            jqUnit.start();
+        };
+
+        jqUnit.asyncTest("Verify toggle control", function () {
+            jqUnit.expect(10);
+            fluid.overviewPanel(".flc-overviewPanel", {
+                resources: resources,
+                listeners: {
+                    "afterRender": {
+                        "listener": verifyToggleControl,
+                        "priority": "last"
+                    }
+                },
+                model: {
+                    showPanel: true
+                }
+            });
+        });
+
+        var verifyTogglePanelInvoker = function (that) {
+            assertPanelIsOpen(that);
+            that.togglePanel();
+            assertPanelIsClosed(that);
+            that.togglePanel();
+            assertPanelIsOpen(that);
+            that.closePanel();
+            assertPanelIsClosed(that);
+            that.togglePanel();
+            assertPanelIsOpen(that);
+            jqUnit.start();
+        };
+
+        jqUnit.asyncTest("Verify togglePanel invoker", function () {
+            jqUnit.expect(10);
+            fluid.overviewPanel(".flc-overviewPanel", {
+                resources: resources,
+                listeners: {
+                    "afterRender": {
+                        "listener": verifyTogglePanelInvoker,
+                        "priority": "last"
+                    }
+                },
+                model: {
+                    showPanel: true
+                }
+            });
+        });
+
     });
 })(jQuery);
