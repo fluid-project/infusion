@@ -42,22 +42,22 @@ var fluid_1_5 = fluid_1_5 || {};
             "afterRender.setCodeLinkHref": {
                 "this": "{that}.dom.codeLink",
                 "method": "attr",
-                "args": ["href", "${{that}.options.markup.codeLinkHref}"]
+                "args": ["href", "${{that}.options.links.codeLinkHref}"]
             },
             "afterRender.setApiLinkHref": {
                 "this": "{that}.dom.apiLink",
                 "method": "attr",
-                "args": ["href", "${{that}.options.markup.apiLinkHref}"]
+                "args": ["href", "${{that}.options.links.apiLinkHref}"]
             },
             "afterRender.setDesignLinkHref": {
                 "this": "{that}.dom.designLink",
                 "method": "attr",
-                "args": ["href", "${{that}.options.markup.designLinkHref}"]
+                "args": ["href", "${{that}.options.links.designLinkHref}"]
             },
             "afterRender.setFeedbackLinkHref": {
                 "this": "{that}.dom.feedbackLink",
                 "method": "attr",
-                "args": ["href", "${{that}.options.markup.feedbackLinkHref}"]
+                "args": ["href", "${{that}.options.links.feedbackLinkHref}"]
             }
         },
         model: {
@@ -139,7 +139,9 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         markup: {
             description: "A description of the component should appear here. It should say: <ul><li>What the component does.</li><li>Why it is interesting / useful.</li></ul>",
-            instructions: "<p>Do this to do this. Do that to do that.</p>",
+            instructions: "<p>Do this to do this. Do that to do that.</p>"
+        },
+        links: {
             codeLinkHref: "#",
             apiLinkHref: "#",
             designLinkHref: "#",

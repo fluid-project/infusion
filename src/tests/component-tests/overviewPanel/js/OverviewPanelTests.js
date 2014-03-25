@@ -43,7 +43,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         var markup = {
             description: "aaa<span>bbb</span>",
-            instructions: "ccc<span>ddd</span>",
+            instructions: "ccc<span>ddd</span>"
+        };
+
+        var links = {
             codeLinkHref: "#aaa",
             apiLinkHref: "#bbb",
             designLinkHref: "#ccc",
@@ -71,10 +74,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Check markup with selector 'instructions'", markup.instructions, that.locate("instructions").html());
 
             // check links
-            jqUnit.assertEquals("Check link for selector 'codeLink'", markup.codeLinkHref, that.locate("codeLink").attr("href"));
-            jqUnit.assertEquals("Check link for selector 'apiLink'", markup.apiLinkHref, that.locate("apiLink").attr("href"));
-            jqUnit.assertEquals("Check link for selector 'designLink'", markup.designLinkHref, that.locate("designLink").attr("href"));
-            jqUnit.assertEquals("Check link for selector 'feedbackLink'", markup.feedbackLinkHref, that.locate("feedbackLink").attr("href"));
+            jqUnit.assertEquals("Check link for selector 'codeLink'", links.codeLinkHref, that.locate("codeLink").attr("href"));
+            jqUnit.assertEquals("Check link for selector 'apiLink'", links.apiLinkHref, that.locate("apiLink").attr("href"));
+            jqUnit.assertEquals("Check link for selector 'designLink'", links.designLinkHref, that.locate("designLink").attr("href"));
+            jqUnit.assertEquals("Check link for selector 'feedbackLink'", links.feedbackLinkHref, that.locate("feedbackLink").attr("href"));
 
             jqUnit.start();
         };
@@ -91,7 +94,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 strings: strings,
-                markup: markup
+                markup: markup,
+                links: links
             });
         });
 
