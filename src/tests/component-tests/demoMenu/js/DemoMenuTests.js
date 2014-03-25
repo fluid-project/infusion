@@ -19,11 +19,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     $(document).ready(function () {
 
-        jqUnit.module("DemoMenu Tests");
+        jqUnit.module("OverviewPanel Tests");
 
         var resources = {
             template: {
-                href: "../../../../components/demoMenu/html/demoMenuTemplate.html"
+                href: "../../../../components/overviewPanel/html/overviewPanelTemplate.html"
             }
         };
 
@@ -51,12 +51,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             feedbackLinkHref: "#ddd"
         };
 
-        var assertMenuIsClosed = function (that) {
+        var assertPanelIsClosed = function (that) {
             jqUnit.assertFalse("Check that model.showMenu is false", that.model.showMenu);
             jqUnit.assertTrue("Check that container has hidden style", that.container.hasClass(that.options.styles.hidden));
         };
 
-        var assertMenuIsOpen = function (that) {
+        var assertPanelIsOpen = function (that) {
             jqUnit.assertTrue("Check that model.showMenu is true", that.model.showMenu);
             jqUnit.assertFalse("Check that container does not have hidden style", that.container.hasClass(that.options.styles.hidden));
         };
@@ -82,7 +82,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.asyncTest("Verify Rendering", function () {
             jqUnit.expect(18);
-            fluid.demoMenu(".flc-demoMenu", {
+            fluid.overviewPanel(".flc-overviewPanel", {
                 resources: resources,
                 listeners: {
                     "afterRender": {
@@ -97,13 +97,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         var verifyWhenInitiallyHidden = function (that) {
-            // test that the menu is closed at onCreate
-            assertMenuIsClosed(that);
+            // test that the panel is closed at onCreate
+            assertPanelIsClosed(that);
         };
 
         jqUnit.asyncTest("Verify when initially hidden", function () {
             jqUnit.expect(2);
-            fluid.demoMenu(".flc-demoMenu", {
+            fluid.overviewPanel(".flc-overviewPanel", {
                 resources: resources,
                 listeners: {
                     "onCreate": {
@@ -122,14 +122,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         var verifyWhenInitiallyVisible = function (that) {
-            // check that the menu is open at the point of afterRender
-            assertMenuIsOpen(that);
+            // check that the panel is open at the point of afterRender
+            assertPanelIsOpen(that);
             jqUnit.start();
         };
 
         jqUnit.asyncTest("Verify when initially visible", function () {
             jqUnit.expect(2);
-            fluid.demoMenu(".flc-demoMenu", {
+            fluid.overviewPanel(".flc-overviewPanel", {
                 resources: resources,
                 listeners: {
                     "afterRender": {
@@ -144,15 +144,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         var verifyCloseControl = function (that) {
-            assertMenuIsOpen(that);
+            assertPanelIsOpen(that);
             that.locate("closeControl").click();
-            assertMenuIsClosed(that);
+            assertPanelIsClosed(that);
             jqUnit.start();
         };
 
         jqUnit.asyncTest("Verify close control", function () {
             jqUnit.expect(4);
-            fluid.demoMenu(".flc-demoMenu", {
+            fluid.overviewPanel(".flc-overviewPanel", {
                 resources: resources,
                 listeners: {
                     "afterRender": {
@@ -167,15 +167,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         var verifyCloseMenuInvoker = function (that) {
-            assertMenuIsOpen(that);
+            assertPanelIsOpen(that);
             that.closeMenu();
-            assertMenuIsClosed(that);
+            assertPanelIsClosed(that);
             jqUnit.start();
         };
 
         jqUnit.asyncTest("Verify closeMenu invoker", function () {
             jqUnit.expect(4);
-            fluid.demoMenu(".flc-demoMenu", {
+            fluid.overviewPanel(".flc-overviewPanel", {
                 resources: resources,
                 listeners: {
                     "afterRender": {
