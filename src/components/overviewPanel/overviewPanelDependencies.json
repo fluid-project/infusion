@@ -1,7 +1,7 @@
 {
     "overviewPanel": {
-        "name": "Demo Menu",
-        "description": "Demo Menu",
+        "name": "Overview Panel",
+        "description": "Overview Panel",
         "files": [
             "./js/OverviewPanel.js"
         ],
