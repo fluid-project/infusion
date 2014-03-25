@@ -61,22 +61,22 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         model: {
-            showMenu: true
+            showPanel: true
         },
         modelListeners: {
-            showMenu: {
+            showPanel: {
                 funcName: "{that}.setVisibility"
             }
         },
         invokers: {
             setVisibility: {
                 funcName: "fluid.overviewPanel.setVisibility",
-                args: ["{that}", "{that}.model.showMenu"],
+                args: ["{that}", "{that}.model.showPanel"],
                 dynamic: true
             },
             toggleMenu: {
                 funcName: "fluid.overviewPanel.toggleMenu",
-                args: ["{that}", "{that}.model.showMenu"],
+                args: ["{that}", "{that}.model.showPanel"],
                 dynamic: true
             },
             closeMenu: {
@@ -161,11 +161,11 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.overviewPanel.toggleMenu = function (that, value) {
-        that.applier.requestChange("showMenu", !value);
+        that.applier.requestChange("showPanel", !value);
     };
 
     fluid.overviewPanel.closeMenu = function (that) {
-        that.applier.requestChange("showMenu", false);
+        that.applier.requestChange("showPanel", false);
     };
 
 })(jQuery, fluid_1_5);

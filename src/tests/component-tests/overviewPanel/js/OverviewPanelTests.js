@@ -52,12 +52,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         var assertPanelIsClosed = function (that) {
-            jqUnit.assertFalse("Check that model.showMenu is false", that.model.showMenu);
+            jqUnit.assertFalse("Check that model.showPanel is false", that.model.showPanel);
             jqUnit.assertTrue("Check that container has hidden style", that.container.hasClass(that.options.styles.hidden));
         };
 
         var assertPanelIsOpen = function (that) {
-            jqUnit.assertTrue("Check that model.showMenu is true", that.model.showMenu);
+            jqUnit.assertTrue("Check that model.showPanel is true", that.model.showPanel);
             jqUnit.assertFalse("Check that container does not have hidden style", that.container.hasClass(that.options.styles.hidden));
         };
 
@@ -116,7 +116,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 model: {
-                    showMenu: false
+                    showPanel: false
                 }
             });
         });
@@ -138,7 +138,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 model: {
-                    showMenu: true
+                    showPanel: true
                 }
             });
         });
@@ -161,7 +161,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 model: {
-                    showMenu: true
+                    showPanel: true
                 }
             });
         });
@@ -184,7 +184,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 model: {
-                    showMenu: true
+                    showPanel: true
                 }
             });
         });
