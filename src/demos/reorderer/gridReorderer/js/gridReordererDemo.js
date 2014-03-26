@@ -11,21 +11,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global demo:true, fluid*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*global fluid */
 
 var demo = demo || {};
 
-demo.initGridReorderer = function () {
-    return fluid.reorderGrid('.demoSelector-gridReorderer-alphabetGrid', {
-        styles: {
-            dragging: "demo-gridReorderer-dragging",
-            avatar: "demo-gridReorderer-avatar",
-            selected: "demo-gridReorderer-selected",
-            dropMarker: "demo-gridReorderer-dropMarker"
-        },
-        disableWrap: true
-    });
-};
+(function (){
+    "use strict";
+
+    demo.initGridReorderer = function () {
+        return fluid.reorderGrid(".demoSelector-gridReorderer-alphabetGrid", {
+            styles: {
+                dragging: "demo-gridReorderer-dragging",
+                avatar: "demo-gridReorderer-avatar",
+                selected: "demo-gridReorderer-selected",
+                dropMarker: "demo-gridReorderer-dropMarker"
+            },
+            disableWrap: true
+        });
+    };
+})();
