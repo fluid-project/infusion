@@ -10,14 +10,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global demo:true, fluid, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*global fluid */
 
 var demo = demo || {};
 
 (function ($, fluid) {
+    "use strict";
+
     fluid.registerNamespace("demo.fiveStar");
 
     // This assumes the className is of the form "star-x" where x is the starNum
@@ -65,9 +64,9 @@ var demo = demo || {};
         stars.slice(hovered + 1, rank).attr("src", imgs.select);
         stars.slice(Math.max(hovered, rank), 5).attr("src", imgs.blank);
     };
-    
+
     /** Update all the UI state to reflect a change in rank **/
-    
+
     demo.fiveStar.updateRank = function (that, newRank) {
         demo.fiveStar.updateARIA(that.stars, newRank);
         that.refreshView();
@@ -114,12 +113,12 @@ var demo = demo || {};
             "rank": {
                 funcName: "demo.fiveStar.updateRank",
                 args: ["{that}", "{change}.value"]
-            }  
+            }
         },
         invokers: {
             setRank: {
-               changePath: "rank",
-               value: "{arguments}.0"
+                changePath: "rank",
+                value: "{arguments}.0"
             },
             renderStarState: {
                 funcName: "demo.fiveStar.renderStarState",

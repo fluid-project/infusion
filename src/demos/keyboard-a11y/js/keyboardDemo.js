@@ -10,15 +10,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global demo:true, fluid, jQuery*/
+/*global fluid */
 
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+var demo = demo || {};
 
 (function ($, fluid) {
-  
+    "use strict";
+
     fluid.registerNamespace("demo.imageViewer");
-    
+
     //=====================================================================
     // Utility functions
     //
@@ -26,7 +26,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /**
      * Assign any relevant ARIA roles, states, properties to the image viewer.
      */
-    demo.imageViewer.setARIA = function (container, thumbContainer, image) {
+    demo.imageViewer.setARIA = function (container, thumbContainer) {
         container.attr("role", "application");
         thumbContainer.attr("role", "listbox");
         $(demo.imageViewer.selectors.thumbSelector, thumbContainer).attr({
@@ -45,7 +45,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var src = thumb.attr("src");
         image.attr("src", src);
         image.attr("alt", thumb.attr("alt"));
-        
+
         // update the current selection
         thumb.parent().attr("aria-selected", true);
 
@@ -64,7 +64,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     demo.imageViewer.bindEventHandlers = function (fiveStarRanker, model) {
-        fiveStarRanker.applier.modelChanged.addListener("rank", function (newModel, oldModel) {
+        fiveStarRanker.applier.modelChanged.addListener("rank", function (newModel) {
             // change the rank of the current image to the new rank
             var currImg = $(demo.imageViewer.selectors.image).attr("src");
             model[currImg] = newModel.rank;
@@ -74,7 +74,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     //=====================================================================
     // Main keyboard accessibility plugin functions
     //
-    
+
     /**
      * Ensure that the image thumbnails can be navigated using the keyboard
      */
@@ -88,7 +88,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // the default orientation is vertical, so we need to specify that this is horizontal.
             // this affects what arrow keys will move selection
             direction: fluid.a11y.orientation.HORIZONTAL,
-        
+
             onSelect: function (thumbEl) {
                 $(thumbEl).addClass(demo.imageViewer.styles.selected);
             },
@@ -141,7 +141,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 starContainer.addClass(demo.imageViewer.styles.selected);
                 fiveStarRanker.hoverStars(starEl);
             },
-            onUnselect: function (thumbEl) {
+            onUnselect: function () {
                 starContainer.removeClass(demo.imageViewer.styles.selected);
                 fiveStarRanker.refreshView();
             }
@@ -160,11 +160,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     //=====================================================================
     // Setup functions
     //
-    
+
     demo.imageViewer.setUpModel = function (thumbContainer) {
         var thumbnails = $(demo.imageViewer.selectors.thumbImgSelector, thumbContainer);
         var model = {};
-        fluid.each(thumbnails, function (value, key) {
+        fluid.each(thumbnails, function (value) {
             model[$(value).attr("src")] = 1;
         });
         return model;
@@ -179,7 +179,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         demo.imageViewer.makeFiveStarsNavigable(ranker);
         demo.imageViewer.makeFiveStarsActivatable(ranker);
 
-        return ranker;        
+        return ranker;
     };
 
     demo.imageViewer.setUpImageViewer = function (that, ranker) {
@@ -198,7 +198,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     //=====================================================================
     // Demo initialization
-    
+
     // Note that the "imageViewer" is a non-component, it assembles raw objects and functions
     // to create a component-like structure manually
 
@@ -212,11 +212,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.model = demo.imageViewer.setUpModel(that.thumbContainer);
 
         var fiveStarRanker = demo.imageViewer.setUpFiveStarRanker(demo.imageViewer.selectors.ranker);
-        
+
         demo.imageViewer.setUpImageViewer(that, fiveStarRanker);
     };
-    
-    
+
+
     /**
      * Defaults for the demo
      */
