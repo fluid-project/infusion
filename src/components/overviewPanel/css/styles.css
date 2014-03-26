@@ -53,8 +53,8 @@
     font-size: 1em;
 }
 
-.fl-overviewPanel *:active,
-.fl-overviewPanel *:focus {
+.fl-overviewPanel a:active,
+.fl-overviewPanel a:focus {
     outline: 0.2em solid #27A9E1;
 }
 
@@ -64,7 +64,7 @@
     text-decoration: none;
     font-size: 1.5em;
     font-family: "Fluid-star";
-    margin: 0.2em 0 0 0.2em;
+    margin: 0.2em 0 0.2em 0.2em;
     padding: 0.7em 0.3em;
     color: #fff;
     float: left;
@@ -83,15 +83,17 @@
 .fl-overviewPanel-body {
     position:relative;
     left: 0em;
-    transition: left 0.5s linear; /* Create the sliding effect when showing and hiding */
+    transition: left 0.2s ease, visibility 0.2s linear; /* Create the sliding effect when showing and hiding */
     background-color:#444; /* IE8 */
     background-color: rgba(51,51,51,.96);
+    visibility:visible;
 }
 
 /* Demo Menu Visibility */
 .fl-overviewPanel-hidden .fl-overviewPanel-body {
     position: relative;
-    left: -200em;
+    left: -30em; /* Change (minus) this value if the edge of the panel stays on the screen before visibility:hidden takes effect. */
+    visibility:hidden;
 }
 
 
