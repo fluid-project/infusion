@@ -10,14 +10,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global demo:true, fluid, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*global fluid */
 
 var demo = demo || {};
 (function ($) {
-    
+    "use strict";
+
     /**
      * Build the cutpoints array, which defines renderer IDs for each HTML element that will be
      * rendered.
@@ -45,7 +43,7 @@ var demo = demo || {};
     /**
      * Build a component subtree that describes how to render the various strings in the demo.
      * These are literal values, and so the rendered markup is not bound directly to the model.
-     * 
+     *
      * The practice of using the renderer to display the strings in the interface is useful for
      * internationalization.
      */
@@ -65,10 +63,10 @@ var demo = demo || {};
      * Build a component subtree that describes how to render the drop-down used to select
      * the location. This uses the framework's explodeSelectionToInputs() function to build
      * most of the subtree given the data and a few strings.
-     * 
+     *
      * By using 'valuebinding' in conjunction with the 'autobind: true' option, when the user
      * changes the location, the new value will be automatically updated in the model.
-     * 
+     *
      * Note that this subtree has the same structure as the wine list subtree, despite the fact
      * that the location is rendered in a <select> element, and the wine list is rendered as
      * radio buttons.
@@ -93,10 +91,10 @@ var demo = demo || {};
      * Build a component subtree that describes how to render the radio buttons used to select
      * the wine. This uses the framework's explodeSelectionToInputs() function to build
      * most of the subtree given the data and a few strings.
-     * 
+     *
      * By using 'valuebinding' in conjunction with the 'autobind: true' option, when the user
      * changes the wine, the new value will be automatically updated in the model.
-     * 
+     *
      * Note that this subtree has the same structure as the location subtree, despite the fact
      * that the wine list is rendered as radio buttons, and the location is rendered in a
      * <select> element.
@@ -122,7 +120,7 @@ var demo = demo || {};
      * the framework's transform() function to build a subtree element for each data item. This
      * method is similar to the explodeSelectionToInputs() function, but because these inputs are
      * embedded in <table> cells with other data, each 'row' has more children than a typical input.
-     * 
+     *
      * By using 'valuebinding' in conjunction with the 'autobind: true' option, when the user
      * selects canapes, the new values will be automatically updated in the model.
      */
@@ -171,10 +169,10 @@ var demo = demo || {};
             }
             return string;
         };
-    
+
         var listMembers = function (obj, tab) {
             var string = "";
-            
+
             for (var key in obj) {
                 if (obj.hasOwnProperty(key) && key !== "modelToHtmlString") {
                     string += tab + key + ": ";
@@ -189,7 +187,7 @@ var demo = demo || {};
             }
             return string;
         };
-        
+
         return listMembers(model, "");
     };
 
@@ -207,7 +205,7 @@ var demo = demo || {};
      */
     var setupDataModel = function () {
         var applier = fluid.makeChangeApplier(demo.data);
-        applier.modelChanged.addListener("*", function (model, oldModel, changeRequest) {
+        applier.modelChanged.addListener("*", function () {
             displayDataModel();
         });
         return applier;
