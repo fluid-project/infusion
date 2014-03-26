@@ -250,7 +250,7 @@ var fluid_1_5 = fluid_1_5 || {};
             produceTree: {
                 funcName: "fluid.identity",
                 args: "{that}.pageTree",
-                dynamic: true,
+                dynamic: true
             },
             assembleComponent: {
                 funcName: "fluid.pager.renderedPageList.assembleComponent",
