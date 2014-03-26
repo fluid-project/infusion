@@ -511,7 +511,7 @@ var fluid_1_5 = fluid_1_5 || {};
             if (fluid.dom.isContainer(handle, evt.target)) {
                 $(this).focus();
             }
-        }
+        };
 
         var selectables = thatReorderer.dom.fastLocate("selectables");
         for (var i = 0; i < selectables.length; ++i) {
