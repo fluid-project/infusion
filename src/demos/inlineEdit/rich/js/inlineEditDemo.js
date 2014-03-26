@@ -13,18 +13,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global demo:true, fluid, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*global fluid */
 
 var demo = demo || {};
 
 (function ($, fluid) {
+    "use strict";
+
     demo.initRichInlineEdit = function () {
         /**
          * Create cancel and save buttons for a rich inline editor.
-         * @param {Object} editor 
+         * @param {Object} editor
          */
         var makeButtons = function (editor) {
             $(".demo-save", editor.container).click(function () {
@@ -37,30 +36,30 @@ var demo = demo || {};
                 return false;
             });
         };
-        
+
         var tinyMCEOptions = {
             tinyMCE: {
                 width: 1024,
                 theme: "advanced",
                 theme_advanced_toolbar_location : "top"
-            }, 
+            },
             componentDecorators: {
                 type: "fluid.undoDecorator",
                 options: {
                     selectors: demo.initRichInlineEdit.selectors,
                     renderer: demo.initRichInlineEdit.undoRenderer
-                }                
+                }
             },
             strings: {
                 textEditButton: "Edit"
             },
-            tooltipText: "Use the Edit link to make changes"            
+            tooltipText: "Use the Edit link to make changes"
         };
 
         // Create a TinyMCE-based Rich Inline Edit component.
         var tinyEditor = fluid.inlineEdit.tinyMCE("#demo-richInlineEdit-container-tinyMCE", tinyMCEOptions);
         makeButtons(tinyEditor);
-        
+
                 // Create a TinyMCE-based Rich Inline Edit component.
         var tinyEditor2 = fluid.inlineEdit.tinyMCE("#demo-richInlineEdit-container-tinyMCE-2", tinyMCEOptions);
         makeButtons(tinyEditor2);
@@ -79,8 +78,8 @@ var demo = demo || {};
             },
             tooltipText: "Use the Edit link to make changes"
         });
-        makeButtons(ckEditor);    
-    };    
+        makeButtons(ckEditor);
+    };
 
     demo.initRichInlineEdit.selectors = {
         undoContainer: ".demo-undoContainer",
@@ -88,9 +87,9 @@ var demo = demo || {};
         redoContainer: ".demo-redoContainer",
         redoControl: ".demo-redoControl"
     };
-    
+
     demo.initRichInlineEdit.undoRenderer = function (that, targetContainer) {
-        var markup = 
+        var markup =
             "<span class='flc-undo demo-inlineEdit-inlinePadding'>" +
             "<span class='demo-undoContainer' role='button'><a href='#' class='demo-undoControl'>Undo edit</a></span>" +
             "<span class='demo-redoContainer' role='button'><a href='#' class='demo-redoControl'>Redo edit</a></span>" +
@@ -99,6 +98,6 @@ var demo = demo || {};
         var button = $("a", targetContainer);
         button.after(markupNode);
         return markupNode;
-    };    
+    };
 
 })(jQuery, fluid);

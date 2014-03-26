@@ -10,16 +10,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global demo:true, fluid, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*global fluid */
 
 var demo = demo || {};
 (function ($, fluid) {
-    
+    "use strict";
+
     demo.undoRenderer = function (that, targetContainer) {
-        var markup = 
+        var markup =
             "<span class='flc-undo'>" +
             "<span class='demo-undoContainer' role='button'><a href='#' class='demo-undoControl'><img src='../images/inline_edit_undo_button_16x16.png' alt='Undo edit'></a></span>" +
             "<span class='demo-redoContainer' role='button'><a href='#' class='demo-redoControl'><img src='../images/inline_edit_redo_button_16x16.png' alt='Redo edit'></a></span>" +
@@ -28,16 +26,16 @@ var demo = demo || {};
         targetContainer.append(markupNode);
         return markupNode;
     };
-    
+
     /**
-     * Initialize all simple inline edit components present on the inline-edit 
+     * Initialize all simple inline edit components present on the inline-edit
      * demo.
      */
     demo.initInlineEdit = function () {
-          
+
         /**
          * Simple inline edits example.
-         */            
+         */
         fluid.inlineEdit(".demoSelector-inlineEdit-container-title", {
             componentDecorators: {
                 type: "fluid.undoDecorator",
@@ -54,7 +52,7 @@ var demo = demo || {};
                 defaultFocussedViewText: "Edit this (click or press enter)"
             }
         });
-        
+
         fluid.inlineEdit(".demoSelector-inlineEdit-container-caption", {
             componentDecorators: {
                 type: "fluid.undoDecorator",
@@ -69,11 +67,11 @@ var demo = demo || {};
             }
         });
     };
-        
+
     demo.initInlineEdit.selectors = {
         undoContainer: ".demo-undoContainer",
         undoControl: ".demo-undoControl",
         redoContainer: ".demo-redoContainer",
         redoControl: ".demo-redoControl"
-    };    
+    };
 })(jQuery, fluid);
