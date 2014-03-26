@@ -19,6 +19,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+
+    fluid.registerNamespace("fluid.overviewPanel");
+    fluid.overviewPanel.preventDefault = function (event) {
+        event.preventDefault();
+    };
+
     fluid.defaults("fluid.overviewPanel", {
         gradeNames: ["fluid.rendererComponent", "fluid.modelComponent", "autoInit"],
         resources: {
@@ -34,10 +40,20 @@ var fluid_1_5 = fluid_1_5 || {};
                 "method": "click",
                 "args": "{that}.togglePanel"
             },
+            "afterRender.preventDefaultOnToggleControl": {
+                "this": "{that}.dom.toggleControl",
+                "method": "click",
+                "args": fluid.overviewPanel.preventDefault
+            },
             "afterRender.registerCloseListener": {
                 "this": "{that}.dom.closeControl",
                 "method": "click",
                 "args": "{that}.closePanel"
+            },
+            "afterRender.preventDefaultOnCloseControl": {
+                "this": "{that}.dom.closeControl",
+                "method": "click",
+                "args": fluid.overviewPanel.preventDefault
             },
             "afterRender.setCodeLinkHref": {
                 "this": "{that}.dom.codeLink",
