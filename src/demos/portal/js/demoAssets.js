@@ -12,15 +12,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global demo:true, fluid, jQuery*/
+/*global fluid */
 
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
-var fluid = fluid || {};
 var demo = demo || {};
 
 (function ($, fluid) {
+    "use strict";
+
     // ensure browser is permitted to crawl the filesystem before running demo
     // If the browser is not, AND the demo is known to require ajax, then halt the demo and show warning
     var abortDemo = false;
@@ -42,16 +40,7 @@ var demo = demo || {};
     /**
      * Using the demo's base url, collect any CSS, JS, HTML code assets
      */
-    var loadedLength = 0;
     var firstContentLoaded = null;
-    var extractKeysFromObject = function (obj) {
-        var keys = [];
-        for (var key in obj) {
-            keys.push(key);
-        }
-        return keys;
-    };
-
     var dataModel = {
         "html" : {
             path : demo.path + "html/" + demo.name + ".html",
@@ -75,12 +64,6 @@ var demo = demo || {};
         }
     };
 
-    var status = {
-        "html" : null,
-        "css" : null,
-        "js" : null
-    };
-
     var setDemoIframe = function (error) {
         $(document).ready(function () {
             if (error) {
@@ -94,11 +77,11 @@ var demo = demo || {};
 
     var entityEscape = function (value) {
         return value
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/\"/g, '&quot;')
-            .replace(/\'/g, '&#39;')
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/\"/g, "&quot;")
+            .replace(/\'/g, "&#39;")
         ;
     };
 
@@ -162,8 +145,8 @@ var demo = demo || {};
     };
 
     var makeTab = function (name) {
-        var aux = $('.fl-tabs');
-        var tab = $('<li/>').html('<a href="#' + name + '" title=' + name + '>' + name + '</a>');
+        var aux = $(".fl-tabs");
+        var tab = $("<li/>").html("<a href='#" + name + "' title=" + name + ">" + name + "</a>");
         $("a", tab).attr("tabindex", -1);
         aux.append(tab);
 
@@ -173,15 +156,15 @@ var demo = demo || {};
     };
 
     var makeContent = function (name, data) {
-        var code = $('<code/>');
-        var plain = $('<textarea/>');
+        var code = $("<code/>");
+        var plain = $("<textarea/>");
 
         data = (name === "html") ?  extractHTML(data) : entityEscape(data);
 
         code.addClass(name).html(data).hide();
         plain.addClass(name + " plaintext").html(data).hide();
 
-        $('.fl-tabs-content').append(code).append(plain);
+        $(".fl-tabs-content").append(code).append(plain);
 
         code.chili();
         return code;
@@ -189,14 +172,14 @@ var demo = demo || {};
 
     var togglePlainColorized = function () {
         // plain view
-        $(".codeOptions [href=#plaintext]").click(function (e) {
+        $(".codeOptions [href=#plaintext]").click(function () {
             var langID = $("#tabs .fl-tabs-active a").attr("title");
             $("code." + langID).hide(); // hide colorised
             $("textarea." + langID).show(); // show plaintext
         });
 
         // normal black
-        $(".codeOptions [href=#normal]").click(function (e) {
+        $(".codeOptions [href=#normal]").click(function () {
             var langID = $("#tabs .fl-tabs-active a").attr("title");
             $("code." + langID).show(); // show colorised
             $("textarea." + langID).hide(); // hide plaintext
@@ -229,7 +212,7 @@ var demo = demo || {};
 
         // If we're ready to select the tab, load up the live demo iframe OR the same origin policy warning iframe
         if (selectTabNow) {
-            initKeyboardNav($('.fl-tabs'));
+            initKeyboardNav($(".fl-tabs"));
             selectTab(firstContentLoaded);
             togglePlainColorized();
             setDemoIframe();
@@ -242,10 +225,10 @@ var demo = demo || {};
             $.ajax({
                 url: data.path,
                 dataType: "text",
-                error: function (XMLHttpRequest, state, error) {
+                error: function () {
                     loadComplete(name, false);
                 },
-                success: function (data, state) {
+                success: function (data) {
                     loadComplete(name, data);
                 }
             });
