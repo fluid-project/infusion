@@ -10,14 +10,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global window, fluid:true, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
-var fluid = fluid || {};
+/*global fluid */
 
 (function ($, fluid) {
+    "use strict";
+
     fluid.registerNamespace("fluid.themer");
 
     fluid.themer.setupThemer = function (that) {
@@ -30,12 +27,12 @@ var fluid = fluid || {};
         // first time automatic theming
         that.switchThemes();
     };
-    
+
     fluid.themer.switchThemes = function (that) {
         that.setTheme(that.currentTheme);
         that.highlightTheme(that.currentTheme);
     };
-    
+
     fluid.themer.highlightTheme = function (that, theme) {
         var sels = that.options.selectors;
         var className = that.options.styles.activeEl;
@@ -43,7 +40,7 @@ var fluid = fluid || {};
         $(sels.activeEl).removeClass(className);
         $(sels.themes[theme]).closest(sels.activeEl).addClass(className);
     };
-    
+
     fluid.themer.getTheme = function (themeSelectors, el) {
         var theme = false;
         $.each(themeSelectors, function (t, s) {
@@ -54,7 +51,7 @@ var fluid = fluid || {};
         });
         return theme;
     };
-    
+
     fluid.themer.setTheme = function (that, theme) {
         var themeStyles = that.options.styles.themes;
         that.locate("themeDestination", $(document)).removeClass().addClass(themeStyles[theme]);
@@ -64,13 +61,13 @@ var fluid = fluid || {};
         gradeNames: ["fluid.viewComponent", "autoInit"],
         startupTheme: "iphone",
         members: {
-            currentTheme: "{that}.options.startupTheme"  
+            currentTheme: "{that}.options.startupTheme"
         },
         listeners: {
             onCreate: [{
                 funcName: "fluid.themer.setupThemer",
                 args: "{that}"
-            }] 
+            }]
         },
         invokers: {
             switchThemes: {
@@ -91,7 +88,7 @@ var fluid = fluid || {};
             setTheme: {
                 funcName: "fluid.themer.setTheme",
                 args: ["{that}", "{arguments}.0"] // theme
-            },            
+            }
         },
         selectors: {
             themeDestination: "body",

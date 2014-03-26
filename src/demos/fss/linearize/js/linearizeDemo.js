@@ -11,69 +11,67 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global demo:true, fluid, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*global fluid */
 
 var demo = demo || {};
 
-(function ($) {
-    
+(function () {
+    "use strict";
+
     /*************
-     * linearize * 
+     * linearize *
      *************/
     fluid.registerNamespace("demo.linearize");
-    
+
     demo.linearize.finalInit = function (that) {
         var layoutSelector = that.locate("layout");
-        
+
         // bind event listener for layout checkbox
         that.applier.modelChanged.addListener("layouts.selection", function (newModel) {
             that.events.afterLayoutChanged.fire(newModel.layouts.selection.length);
         });
-        
+
         // bind event listener for alignment selectbox
         that.applier.modelChanged.addListener("alignments.selection", function (newModel, oldModel) {
             that.events.afterAlignmentChanged.fire(newModel.alignments.selection, oldModel.alignments.selection);
         });
-        
+
         that.setLayout(layoutSelector.is(":checked"));
         that.refreshView();
     };
-    
+
     demo.linearize.preInit = function (that) {
         that.setAlignment = function (newAlignment, oldAlignment) {
             var styles = that.options.styles;
             var styledElm = that.locate("styled");
-            
+
             if (oldAlignment) {
                 styledElm.removeClass(styles[oldAlignment]);
             }
-            
+
             styledElm.addClass(styles[newAlignment]);
             that.currentAlignment = newAlignment;
         };
-        
+
         that.addLinearization = function () {
             that.locate("alignment").removeClass(that.options.styles.alignmentDisabled);
             that.locate("styled").addClass(that.options.styles.linear);
             that.locate("alignmentChoice").prop("disabled", false);
             that.setAlignment(that.locate("alignmentChoice").val());
         };
-        
+
         that.removeLinearization = function () {
             that.locate("alignment").addClass(that.options.styles.alignmentDisabled);
             that.locate("styled").removeClass(that.options.styles.linear);
             that.locate("alignmentChoice").prop("disabled", true);
         };
-        
+
         that.setLayout = function (linearize) {
             that[linearize ? "addLinearization" : "removeLinearization"]();
         };
     };
-    
-    demo.linearize.produceTree = function (that) {
+
+    demo.linearize.produceTree = function () {
         var tree = {
             "expander": {
                 "type": "fluid.renderer.selection.inputs",
@@ -102,10 +100,10 @@ var demo = demo || {};
                 }
             }
         };
-        
+
         return tree;
     };
-    
+
     fluid.defaults("demo.linearize", {
         gradeNames: ["fluid.rendererComponent", "autoInit"],
         preInitFunction: "demo.linearize.preInit",
@@ -139,7 +137,7 @@ var demo = demo || {};
         listeners: {
             afterAlignmentChanged: "{demo.linearize}.setAlignment",
             afterLayoutChanged: "{demo.linearize}.setLayout"
-        }, 
+        },
         model: {
             layouts: {
                 selection: [],
@@ -154,4 +152,4 @@ var demo = demo || {};
         },
         produceTree: "demo.linearize.produceTree"
     });
-})(jQuery);
+})();
