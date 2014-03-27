@@ -34,9 +34,9 @@ fluid_1_5 = fluid_1_5 || {};
                 return [string.substring(0, string.length - 1), true];
             }
             var replace = string.charAt(backpos + 1);
-            if (replace === "n") { replace = "\n" };
-            if (replace === "r") { replace = "\r" };
-            if (replace === "t") { replace = "\t" };
+            if (replace === "n") { replace = "\n"; }
+            if (replace === "r") { replace = "\r"; }
+            if (replace === "t") { replace = "\t"; }
             string = string.substring(0, backpos) + replace + string.substring(backpos + 2);
             pos = backpos + 1;
         }
@@ -50,11 +50,11 @@ fluid_1_5 = fluid_1_5 || {};
         var togo = {};
         text = text.replace(/\r\n/g, "\n");
         text = text.replace(/\r/g, "\n");
-        lines = text.split("\n");
+        var lines = text.split("\n");
         var contin, key, valueComp, valueRaw, valueEsc;
         for (var i = 0; i < lines.length; ++ i) {
             var line = $.trim(lines[i]);
-            if (!line || line.charAt(0) === "#" || line.charAt(0) === '!') {
+            if (!line || line.charAt(0) === "#" || line.charAt(0) === "!") {
                 continue;
             }
             if (!contin) {
