@@ -1905,7 +1905,10 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.compactStringToRec = function (string, type) {
         var openPos = string.indexOf("(");
         var closePos = string.indexOf(")");
-        if (openPos === -1 ^ closePos === -1 || openPos > closePos) {
+        // TODO: The bitwise operator '^' is used here.
+        // It should either be replaced or have a detailed explanation
+        // provided for why it is needed.
+        if (openPos === -1 ^ closePos === -1 || openPos > closePos) { // jshint ignore:line
             fluid.fail("Badly-formed compact " + type + " record without matching parentheses: ", string);
         }
         if (openPos !== -1 && closePos !== -1) {
@@ -1936,7 +1939,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             var rem = string.substring(fluid.expandPrefix.length);
             rec = {
                 expander: fluid.compactStringToRec(rem, "expander")
-            }
+            };
         }
         else if (active) {
             rec = fluid.compactStringToRec(string, active);
