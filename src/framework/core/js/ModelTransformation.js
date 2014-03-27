@@ -258,8 +258,12 @@ var fluid = fluid || fluid_1_5;
         } else if (fluid.hasGrade(expdef, "fluid.multiInputTransformFunction")) {
             var inputs = {};
             fluid.each(expdef.inputVariables, function (v, k) {
-                var input = fluid.model.transform.getValue(transformSpec[k + "Path"], transformSpec[k], transform);
-                inputs[k] = (input === undefined && v !== null) ? v : input; // if no match, assign default if one exists (v != null)
+                inputs[k] = function () {
+                    var input = fluid.model.transform.getValue(transformSpec[k + "Path"], transformSpec[k], transform);
+                    // if no match, assign default if one exists (v != null)
+                    input = (input === undefined && v !== null) ? v : input;
+                    return input;
+                };
             });
             transformArgs.unshift(inputs);
         }
