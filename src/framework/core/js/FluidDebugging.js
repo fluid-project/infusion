@@ -22,7 +22,7 @@ var fluid = fluid || fluid_1_5;
     fluid.renderTimestamp = function (date) {
         var zeropad = function (num, width) {
             if (!width) { width = 2; }
-            var numstr = (num == undefined? "" : num.toString());
+            var numstr = (num === undefined ? "" : num.toString());
             return "00000".substring(5 - width + numstr.length) + numstr;
         };
         return zeropad(date.getHours()) + ":" + zeropad(date.getMinutes()) + ":" + zeropad(date.getSeconds()) + "." + zeropad(date.getMilliseconds(), 3);
