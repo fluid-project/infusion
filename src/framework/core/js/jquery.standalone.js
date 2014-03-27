@@ -1,4 +1,4 @@
-/* 
+/*
  * Definitions in this file taken from:
  *
  * jQuery JavaScript Library v1.6.1
@@ -16,11 +16,17 @@
  * http://jquery.org/license
  * Date: Thu May 12 15:04:36 2011 -0400
  */
- 
+
+ // Declare dependencies
+ /* global jQuery:true */
+ /* exported jQuery */
+
 var fluid_1_5 = fluid_1_5 || {};
 var fluid = fluid || fluid_1_5;
 
 (function (fluid) {
+    "use strict";
+
     // Save a reference to some core methods
     var toString = Object.prototype.toString;
     var hasOwn = Object.prototype.hasOwnProperty;
@@ -33,12 +39,12 @@ var fluid = fluid || fluid_1_5;
     var trimLeft = /^\s+/,
         trimRight = /\s+$/,
         trim = String.prototype.trim;
-    
+
     var jQuery = fluid.jQueryStandalone = {
-      
+
         // The current version of jQuery being used
         jquery: "1.6.1-fluidStandalone",
-      
+
         noConflict: function (deep) {
             if (window.$ === jQuery) {
                 window.$ = _$;
@@ -48,9 +54,9 @@ var fluid = fluid || fluid_1_5;
             }
             return jQuery;
         },
-      
+
         isArray: Array.isArray || function (obj) {
-            toString.call(obj) === "[object Array]"
+            return toString.call(obj) === "[object Array]";
         },
 
         // Use native String.trim function wherever possible
@@ -61,12 +67,12 @@ var fluid = fluid || fluid_1_5;
         function( text ) {
             return text === null ? "" : text.toString().replace( trimLeft, "" ).replace( trimRight, "" );
         },
-        
+
         // A crude way of determining if an object is a window
         isWindow: function (obj) {
             return obj && typeof obj === "object" && "setInterval" in obj;
         },
-      
+
         isPlainObject: function (obj) {
             // Must be an Object.
             // Because of IE, we also have to check the presence of the constructor property.
@@ -74,7 +80,7 @@ var fluid = fluid || fluid_1_5;
             if ( !obj || toString.call(obj) !== "[object Object]" || obj.nodeType || jQuery.isWindow( obj ) ) {
                 return false;
             }
-        
+
             // Not own constructor property must be Object
             if ( obj.constructor &&
                 !hasOwn.call(obj, "constructor") &&
@@ -85,17 +91,21 @@ var fluid = fluid || fluid_1_5;
             // if last one is own, then all properties are own.
             // TODO: Isn't this enormously expensive?
             var key;
-            for (key in obj) {}
+            for (key in obj) {} // jshint ignore:line
             return key === undefined || hasOwn.call( obj, key );
         },
-        
+
         isEmptyObject: function (obj) {
+            /* jshint ignore:start */
+            // attempts to loop through an object,
+            // if any properties are found it will return false.
             for ( var name in obj ) {
                 return false;
             }
+            /* jshint ignore:end */
             return true;
         },
-      
+
         inArray: function (elem, array) {
             if (indexOf) {
                 return indexOf.call( array, elem );
@@ -107,14 +117,14 @@ var fluid = fluid || fluid_1_5;
             }
             return -1;
         },
-        
+
         extend: function () {
-            var options, 
+            var options,
                 target = arguments[0] || {},
                 i = 1,
                 length = arguments.length,
                 deep = false;
-          
+
             // Handle a deep copy situation
             if (typeof target === "boolean") {
                 deep = target;
@@ -122,20 +132,23 @@ var fluid = fluid || fluid_1_5;
                 // skip the boolean and the target
                 i = 2;
             }
-          
+
             // Handle case when target is a string or something (possible in deep copy)
-            if (typeof target !== "object" && !typeof(target) === "function") {
+            // TODO: Does !typeof(target) always return false?
+            // Either this should be corrected or a more detailed explanation of what it is doing
+            // should be provided.
+            if (typeof target !== "object" && !typeof(target) === "function") { // jshint ignore:line
                 target = {};
             }
-          
+
             for ( ; i < length; i++ ) {
                 // Only deal with non-null/undefined values
-                if ( (options = arguments[ i ]) != null ) {
+                if ( (options = arguments[ i ]) !== null ) {
                     // Extend the base object
                     for (var name in options) {
                         var src = target[ name ];
                         var copy = options[ name ];
-                
+
                         // Prevent never-ending loop
                         if ( target === copy ) {
                             continue;
@@ -160,8 +173,8 @@ var fluid = fluid || fluid_1_5;
             }
             return target;
         }
-    }
-  
+    };
+
 })(fluid_1_5);
 
 var jQuery = fluid.jQueryStandalone;
