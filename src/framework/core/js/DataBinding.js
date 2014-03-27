@@ -1492,7 +1492,6 @@ var fluid_1_5 = fluid_1_5 || {};
 
         that.fireChangeRequest = function (changeRequest) {
             preFireChangeRequest(changeRequest);
-            var postGuardSpec = getFireSpec("postGuards", changeRequest.path);
             var ation = that.initiate();
             ation.fireChangeRequest(changeRequest);
             ation.commit();
