@@ -177,7 +177,7 @@ var fluid_1_5 = fluid_1_5 || {};
             else {
                 fluid.log("Request for cached resource which is in flight: url " + canon);
                 cached.addListener(function(response) {
-                options.success(response);
+                    options.success(response);
                 });
             }
         }
@@ -222,7 +222,8 @@ var fluid_1_5 = fluid_1_5 || {};
             url:     resourceSpec.href,
             success: thisCallback.success,
             error:   thisCallback.error,
-            dataType: resourceSpec.dataType || "text"};
+            dataType: resourceSpec.dataType || "text"
+        };
         fluid.fetchResources.timeSuccessCallback(resourceSpec);
         options = fluid.merge(fluid.defaults("fluid.fetchResources.issueRequest").mergePolicy,
                       options, resourceSpec.options);
