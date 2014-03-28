@@ -13,109 +13,108 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, sakai:true*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid */
 
 var sakai = sakai || {};
 
+(function () {
+    "use strict";
 
-sakai.initFluidSiteSettingTable = function () {
-    var resources = {
-        users: {
-            href: "../js/demo_site_membership.json"
-        },
-        site: {
-            href: "../js/demo_site.json"
-        }
-    };
-    fluid.each(resources, function (resource) {
-        resource.options = { dataType: "text"};
-    });
-    
-    function initPager() {
-      
-        var model = {
-            site: JSON.parse(resources.site.resourceText),
-            selecteds: [],
-            users: JSON.parse(resources.users.resourceText)
+    sakai.initFluidSiteSettingTable = function () {
+        var resources = {
+            users: {
+                href: "../js/demo_site_membership.json"
+            },
+            site: {
+                href: "../js/demo_site.json"
+            }
         };
-        var columnDefs = [ 
-            {key: "selection",
-            valuebinding: "selecteds.*.selected",
-            sortable: true
-            },
-            {key: "user-link",
-            valuebinding: "*.userDisplayName",  
-            components: {
-                target: "/dev/sn/profile.html?user=${*.userId}",
-                linktext: fluid.VALUE
-            },
-            sortable: true
-            },
-            {key: "user-email",
-            valuebinding: "*.userEmail",
-            components: {
-                linktext: fluid.VALUE,
-                target: "mailto:${VALUE}"
-            },
-            sortable: true
-            },
-            {key: "user-role",
-            valuebinding: "*.memberRole",
-            components: {
-                selection: fluid.VALUE, 
-                optionlist: {valuebinding: "site.userRoles"}
-            },
-            // test FLUID-2247 - remove sortable from this column 
-            },
-            {key: "user-status",
-            valuebinding: "*.active",
-            components: {
-                selection: fluid.VALUE,
-                optionlist: {value: ["Active", "Inactive"]}
-            },
-            sortable: true}
-        ];
-  
-        var pager = fluid.pagedTable(".ss-members", {
-            dataModel: model,
-            // Test FLUID-2663
-            model: {
-                pageIndex: 3
-            },
-            dataOffset: "users.membership_collection",
-            columnDefs: columnDefs,
-            //annotateColumnRange: "user-link",
-            annotateSortedColumn: true,
-            components: {
-                bodyRenderer: {
-                    type: "fluid.table.selfRender",
-                    options: {
-                        selectors: {
-                            root: ".site-setting-body"
-                        },
-                        renderOptions: {debugMode: false}
-                    }
+        fluid.each(resources, function (resource) {
+            resource.options = { dataType: "text"};
+        });
+
+        function initPager() {
+
+            var model = {
+                site: JSON.parse(resources.site.resourceText),
+                selecteds: [],
+                users: JSON.parse(resources.users.resourceText)
+            };
+            var columnDefs = [
+                {key: "selection",
+                valuebinding: "selecteds.*.selected",
+                sortable: true
+                },
+                {key: "user-link",
+                valuebinding: "*.userDisplayName",
+                components: {
+                    target: "/dev/sn/profile.html?user=${*.userId}",
+                    linktext: fluid.VALUE
+                },
+                sortable: true
+                },
+                {key: "user-email",
+                valuebinding: "*.userEmail",
+                components: {
+                    linktext: fluid.VALUE,
+                    target: "mailto:${VALUE}"
+                },
+                sortable: true
+                },
+                {key: "user-role",
+                valuebinding: "*.memberRole",
+                components: {
+                    selection: fluid.VALUE,
+                    optionlist: {valuebinding: "site.userRoles"}
                 }
-            },
-            decorators: {
-                unsortableHeader: [{
-                    type: "attrs",
-                    attributes: {
-                        title: null
+                // test FLUID-2247 - remove sortable from this column
+                },
+                {key: "user-status",
+                valuebinding: "*.active",
+                components: {
+                    selection: fluid.VALUE,
+                    optionlist: {value: ["Active", "Inactive"]}
+                },
+                sortable: true}
+            ];
+
+            fluid.pagedTable(".ss-members", {
+                dataModel: model,
+                // Test FLUID-2663
+                model: {
+                    pageIndex: 3
+                },
+                dataOffset: "users.membership_collection",
+                columnDefs: columnDefs,
+                //annotateColumnRange: "user-link",
+                annotateSortedColumn: true,
+                components: {
+                    bodyRenderer: {
+                        type: "fluid.table.selfRender",
+                        options: {
+                            selectors: {
+                                root: ".site-setting-body"
+                            },
+                            renderOptions: {debugMode: false}
+                        }
                     }
                 },
-                {
-                    type: "addClass",
-                    classes: "fl-pager-disabled"
-                }]
-            }
-        });
-    }
-    
-    fluid.fetchResources(resources, initPager);
-    
-};
+                decorators: {
+                    unsortableHeader: [{
+                        type: "attrs",
+                        attributes: {
+                            title: null
+                        }
+                    },
+                    {
+                        type: "addClass",
+                        classes: "fl-pager-disabled"
+                    }]
+                }
+            });
+        }
 
+        fluid.fetchResources(resources, initPager);
+
+    };
+})();
