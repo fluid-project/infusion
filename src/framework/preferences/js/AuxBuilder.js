@@ -9,16 +9,11 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 
 (function ($, fluid) {
+    "use strict";
 
     fluid.registerNamespace("fluid.prefs");
 
@@ -99,9 +94,9 @@ var fluid_1_5 = fluid_1_5 || {};
             if (key === "container") {
                 var componentType = fluid.get(root, [path, "type"]);
                 var componentOptions = fluid.defaults(componentType);
-                // Note that this approach is not completely reliable, although it has been reviewed as "good enough" - 
+                // Note that this approach is not completely reliable, although it has been reviewed as "good enough" -
                 // a grade which modifies the creation signature of its principal type would cause numerous other problems.
-                // We can review this awkward kind of "anticipatory logic" when the new renderer arrives. 
+                // We can review this awkward kind of "anticipatory logic" when the new renderer arrives.
                 if (fluid.get(componentOptions, ["argumentMap", "container"]) === undefined) {
                     return false;
                 }
@@ -122,7 +117,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return root;
     };
 
-    fluid.prefs.containerNeeded = function (root, path, commonOptions, templateValues) {
+    fluid.prefs.containerNeeded = function (root, path, commonOptions) {
         var componentType = fluid.get(root, [path, "type"]);
         var componentOptions = fluid.defaults(componentType);
         return (fluid.hasGrade(componentOptions, "fluid.viewComponent") || fluid.hasGrade(componentOptions, "fluid.rendererComponent"));
@@ -141,7 +136,7 @@ var fluid_1_5 = fluid_1_5 || {};
         var rootModel = {};
 
         var componentName = fluid.prefs.removeKey(componentOptions, "type");
-        var regexp = new RegExp("\\.", 'g');
+        var regexp = new RegExp("\\.", "g");
         var memberName = componentName.replace(regexp,  "_");
         var flattenedPrefKey = prefKey.replace(regexp,  "_");
 

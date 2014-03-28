@@ -11,15 +11,10 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+    "use strict";
 
     /*****************************
      * Preferences Editor Loader *
@@ -105,11 +100,11 @@ var fluid_1_5 = fluid_1_5 || {};
         that.events.onMsgBundleReady.fire();
     };
 
-    // TODO: This mixin grade appears to be supplied manually by various test cases but no longer appears in 
+    // TODO: This mixin grade appears to be supplied manually by various test cases but no longer appears in
     // the main configuration. We should remove the need for users to supply this - also the use of "defaultPanels" in fact
     // refers to "starter panels"
     fluid.defaults("fluid.prefs.transformDefaultPanelsOptions", {
-        // Do not supply "fluid.prefs.inline" here, since when this is used as a mixin for separatedPanel, it ends up displacing the 
+        // Do not supply "fluid.prefs.inline" here, since when this is used as a mixin for separatedPanel, it ends up displacing the
         // more refined type of the prefsEditorLoader
         gradeNames: ["fluid.viewComponent", "autoInit"],
         distributeOptions: [{
@@ -146,7 +141,7 @@ var fluid_1_5 = fluid_1_5 || {};
     /**
      * A configurable component that works in conjunction with or without the Preferences Editor template
      * path component (fluid.prefsResourcePath) to allow users to set either the location of their own
-     * templates or the templates that are relative to the path defined in the Preferences Editor template 
+     * templates or the templates that are relative to the path defined in the Preferences Editor template
      * path component.
      *
      * @param {Object} options
