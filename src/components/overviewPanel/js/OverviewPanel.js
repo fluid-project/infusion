@@ -58,31 +58,47 @@ var fluid_1_5 = fluid_1_5 || {};
             "afterRender.setCodeLinkHref": {
                 "this": "{that}.dom.codeLink",
                 "method": "attr",
-                "args": ["href", "${{that}.options.links.codeLinkHref}"]
+                "args": ["href", "{that}.options.links.codeLinkHref"]
             },
             "afterRender.setApiLinkHref": {
                 "this": "{that}.dom.apiLink",
                 "method": "attr",
-                "args": ["href", "${{that}.options.links.apiLinkHref}"]
+                "args": ["href", "{that}.options.links.apiLinkHref"]
             },
             "afterRender.setDesignLinkHref": {
                 "this": "{that}.dom.designLink",
                 "method": "attr",
-                "args": ["href", "${{that}.options.links.designLinkHref}"]
+                "args": ["href", "{that}.options.links.designLinkHref"]
             },
             "afterRender.setFeedbackLinkHref": {
                 "this": "{that}.dom.feedbackLink",
                 "method": "attr",
-                "args": ["href", "${{that}.options.links.feedbackLinkHref}"]
-            }
+                "args": ["href", "{that}.options.links.feedbackLinkHref"]
+            },
+            "afterRender.setToggleControlAria": {
+                "this": "{that}.dom.toggleControl",
+                "method": "attr",
+                "args": {
+                    "role": "button",
+                    "aria-controls": { expander: { "this": "{that}.container", "method": "attr", args: "id" } }
+                }
+            },
+            "afterRender.setCloseControlAria": {
+                "this": "{that}.dom.closeControl",
+                "method": "attr",
+                "args": {
+                    "role": "button",
+                    "aria-controls": { expander: { "this": "{that}.container", "method": "attr", args: "id" } }
+                }
+            },
+            "afterRender.setAriaStates": "{that}.setAriaStates"
         },
         model: {
             showPanel: true
         },
         modelListeners: {
-            showPanel: {
-                funcName: "{that}.setVisibility"
-            }
+            "showPanel.setVisibility": "{that}.setVisibility",
+            "showPanel.setAriaStates": "{that}.setAriaStates"
         },
         invokers: {
             setVisibility: {
@@ -98,6 +114,11 @@ var fluid_1_5 = fluid_1_5 || {};
             closePanel: {
                 funcName: "fluid.overviewPanel.closePanel",
                 args: "{that}"
+            },
+            setAriaStates: {
+                funcName: "fluid.overviewPanel.setAriaStates",
+                args: ["{that}", "{that}.model.showPanel"],
+                dynamic: true
             }
         },
         selectors: {
@@ -181,6 +202,12 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.overviewPanel.closePanel = function (that) {
         that.applier.requestChange("showPanel", false);
+    };
+
+    fluid.overviewPanel.setAriaStates = function (that, value) {
+        that.locate("toggleControl").attr("aria-pressed", !value);
+        that.locate("toggleControl").attr("aria-expanded", value);
+        that.locate("closeControl").attr("aria-expanded", value);
     };
 
 })(jQuery, fluid_1_5);

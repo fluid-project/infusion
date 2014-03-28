@@ -53,14 +53,35 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             feedbackLinkHref: "#ddd"
         };
 
-        var assertPanelIsClosed = function (that) {
+        var assertModelAndStylesForClosedPanel = function (that) {
             jqUnit.assertFalse("Check that model.showPanel is false", that.model.showPanel);
             jqUnit.assertTrue("Check that container has hidden style", that.container.hasClass(that.options.styles.hidden));
         };
 
+        var assertAriaForClosedPanel = function (that) {
+            jqUnit.assertEquals("Check that toggleControl aria-pressed is true",
+                "true", that.locate("toggleControl").attr("aria-pressed"));
+            jqUnit.assertEquals("Check that toggleControl aria-expanded is false",
+                "false", that.locate("toggleControl").attr("aria-expanded"));
+            jqUnit.assertEquals("Check that closeControl aria-expanded is false",
+                "false", that.locate("closeControl").attr("aria-expanded"));
+        };
+
+        var assertPanelIsClosed = function (that) {
+            assertModelAndStylesForClosedPanel(that);
+            assertAriaForClosedPanel(that);
+        };
+
         var assertPanelIsOpen = function (that) {
             jqUnit.assertTrue("Check that model.showPanel is true", that.model.showPanel);
-            jqUnit.assertFalse("Check that container does not have hidden style", that.container.hasClass(that.options.styles.hidden));
+            jqUnit.assertFalse("Check that container does not have hidden style",
+                that.container.hasClass(that.options.styles.hidden));
+            jqUnit.assertEquals("Check that toggleControl aria-pressed is false",
+                "false", that.locate("toggleControl").attr("aria-pressed"));
+            jqUnit.assertEquals("Check that toggleControl aria-expanded is true",
+                "true", that.locate("toggleControl").attr("aria-expanded"));
+            jqUnit.assertEquals("Check that closeControl aria-expanded is true",
+                "true", that.locate("closeControl").attr("aria-expanded"));
         };
 
         var verifyRendering = function (that, strings) {
@@ -79,11 +100,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Check link for selector 'designLink'", links.designLinkHref, that.locate("designLink").attr("href"));
             jqUnit.assertEquals("Check link for selector 'feedbackLink'", links.feedbackLinkHref, that.locate("feedbackLink").attr("href"));
 
+            // check aria-controls
+            var containerId = that.container.attr("id");
+            jqUnit.assertEquals("Check aria-controls on toggleControl (" + containerId + ")",
+                containerId, that.locate("toggleControl").attr("aria-controls"));
+            jqUnit.assertEquals("Check aria-controls on closeControl (" + containerId + ")",
+                containerId, that.locate("closeControl").attr("aria-controls"));
+
             jqUnit.start();
         };
 
         jqUnit.asyncTest("Verify Rendering", function () {
-            jqUnit.expect(17);
+            jqUnit.expect(19);
             fluid.overviewPanel(".flc-overviewPanel", {
                 resources: resources,
                 listeners: {
@@ -99,22 +127,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         });
 
-        var verifyWhenInitiallyHidden = function (that) {
-            // test that the panel is closed at onCreate
-            assertPanelIsClosed(that);
+
+        var verifyAtOnCreateWhenInitiallyHidden = function (that) {
+            assertModelAndStylesForClosedPanel(that);
+        };
+
+        var verifyAtAfterRenderWhenInitiallyHidden = function (that) {
+            assertAriaForClosedPanel(that);
+            jqUnit.start();
         };
 
         jqUnit.asyncTest("Verify when initially hidden", function () {
-            jqUnit.expect(2);
+            jqUnit.expect(5);
             fluid.overviewPanel(".flc-overviewPanel", {
                 resources: resources,
                 listeners: {
                     "onCreate": {
-                        "listener": verifyWhenInitiallyHidden,
+                        "listener": verifyAtOnCreateWhenInitiallyHidden,
                         "priority": "last"
                     },
                     "afterRender": {
-                        "listener": "jqUnit.start",
+                        "listener": verifyAtAfterRenderWhenInitiallyHidden,
                         "priority": "last"
                     }
                 },
@@ -131,7 +164,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         jqUnit.asyncTest("Verify when initially visible", function () {
-            jqUnit.expect(2);
+            jqUnit.expect(5);
             fluid.overviewPanel(".flc-overviewPanel", {
                 resources: resources,
                 listeners: {
@@ -154,7 +187,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         jqUnit.asyncTest("Verify close control", function () {
-            jqUnit.expect(4);
+            jqUnit.expect(10);
             fluid.overviewPanel(".flc-overviewPanel", {
                 resources: resources,
                 listeners: {
@@ -177,7 +210,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         jqUnit.asyncTest("Verify closePanel invoker", function () {
-            jqUnit.expect(4);
+            jqUnit.expect(10);
             fluid.overviewPanel(".flc-overviewPanel", {
                 resources: resources,
                 listeners: {
@@ -206,7 +239,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         jqUnit.asyncTest("Verify toggle control", function () {
-            jqUnit.expect(10);
+            jqUnit.expect(25);
             fluid.overviewPanel(".flc-overviewPanel", {
                 resources: resources,
                 listeners: {
@@ -235,7 +268,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         jqUnit.asyncTest("Verify togglePanel invoker", function () {
-            jqUnit.expect(10);
+            jqUnit.expect(25);
             fluid.overviewPanel(".flc-overviewPanel", {
                 resources: resources,
                 listeners: {
