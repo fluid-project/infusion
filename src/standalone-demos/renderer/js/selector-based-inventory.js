@@ -10,17 +10,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid:true, jQuery*/
+/* global fluid */
 
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
-var fluid = fluid || {};
+var demo = demo || {};
 
 fluid.inventoryExample =  (function () {
+    "use strict";
 
     var parsedTemplate = null;
-    
+
     /**
      * Renders the HTML table using a fully fleshed-out component tree.
      */
@@ -129,17 +127,15 @@ fluid.inventoryExample =  (function () {
         }
     };
 
-    return {
-        setup: function () {
-            var fullEl = fluid.byId("render-full");
-            fullEl.onclick = function () {
-                initTableFullTree();
-            };
+    demo.init = function () {
+        var fullEl = fluid.byId("render-full");
+        fullEl.onclick = function () {
+            initTableFullTree();
+        };
 
-            var abridgedEl = fluid.byId("render-abridged");
-            abridgedEl.onclick = function () {
-                initTableAbridgedTree();
-            };
-        }
+        var abridgedEl = fluid.byId("render-abridged");
+        abridgedEl.onclick = function () {
+            initTableAbridgedTree();
+        };
     };
 })();
