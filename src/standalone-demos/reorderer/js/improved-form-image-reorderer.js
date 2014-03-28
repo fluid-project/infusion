@@ -10,46 +10,45 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global demo:true, fluid, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid */
 
 var demo = demo || {};
 (function ($) {
-    var postOrder = function (images) {
+    "use strict";
+
+    var postOrder = function () {
         // Serialize the form and post it back to the server.
         var form = $("form.flc-imageReorderer");
         var imageOrder = $(form).serialize();
         $.ajax({
             type: "POST",
-            url: form.action, 
-            data: imageOrder, 
-            complete: function (data, ajaxStatus) {
+            url: form.action,
+            data: imageOrder,
+            complete: function () {
                 // Handle success or failure by being nice to the user.
             }
         });
     };
-    
-    var afterMoveListener = function (item, pos, images) {        
+
+    var afterMoveListener = function (item, pos, images) {
         // Update the order correctly.
         images.each(function (idx, image) {
             $(image).children("input").val(idx);
         });
-        
+
         // POST it back to the server.
         postOrder(images);
     };
-    
+
     demo.formBasedImageReorderer = function () {
-        var reorderer = fluid.reorderImages(".flc-imageReorderer", {
+        return fluid.reorderImages(".flc-imageReorderer", {
             selectors: {
                 movables: ".flc-imageReorderer-item"
             },
-            
+
             listeners: {
                 afterMove: afterMoveListener
             }
-        });  
+        });
     };
 })(jQuery);
