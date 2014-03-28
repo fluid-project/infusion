@@ -117,7 +117,7 @@ var fluid_1_5 = fluid_1_5 || {};
         return root;
     };
 
-    fluid.prefs.containerNeeded = function (root, path, commonOptions) {
+    fluid.prefs.containerNeeded = function (root, path) {
         var componentType = fluid.get(root, [path, "type"]);
         var componentOptions = fluid.defaults(componentType);
         return (fluid.hasGrade(componentOptions, "fluid.viewComponent") || fluid.hasGrade(componentOptions, "fluid.rendererComponent"));
