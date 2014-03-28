@@ -11,15 +11,10 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, continue: true, elsecatch: true, operator: true, jslintok:true, undef: true, newcap: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+    "use strict";
 
     if (!fluid.renderer) {
         fluid.fail("fluidRenderer.js is a necessary dependency of RendererUtilities");
@@ -130,7 +125,7 @@ fluid_1_5 = fluid_1_5 || {};
         events: {
             prepareModelForRender: null,
             onRenderTree: null,
-            afterRender: null,
+            afterRender: null
         },
         listeners: {
             onCreate: {
@@ -140,11 +135,11 @@ fluid_1_5 = fluid_1_5 || {};
             }
         }
     });
-    
+
     fluid.defaults("fluid.rendererComponent", {
         gradeNames: ["fluid.commonRendererComponent", "fluid.viewComponent", "autoInit"]
     });
-    
+
     fluid.defaults("fluid.rendererRelayComponent", {
         gradeNames: ["fluid.commonRendererComponent", "fluid.viewRelayComponent", "autoInit"]
     });
@@ -154,7 +149,7 @@ fluid_1_5 = fluid_1_5 || {};
             that.refreshView();
         }
     };
-    
+
     fluid.protoExpanderForComponent = function (parentThat, options) {
         var expanderOptions = fluid.renderer.modeliseOptions(options.expanderOptions, {ELstyle: "${}"}, parentThat);
         fluid.renderer.reverseMerge(expanderOptions, options, ["resolverGetConfig", "resolverSetConfig"]);
@@ -163,7 +158,7 @@ fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.rendererComponent.refreshView = function (that) {
-        if (!that.renderer) { 
+        if (!that.renderer) {
             // Terrible stopgap fix for FLUID-5279 - all of this implementation will be swept away
             // model relay may cause this to be called during init, and we have no proper definition for "that.renderer" since it is
             // constructed in a terrible way
@@ -186,16 +181,16 @@ fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.rendererComponent.produceTree = function (that) {
-       var produceTreeOption = that.options.produceTree;
-       return produceTreeOption ?
-           (typeof(produceTreeOption) === "string" ? fluid.getGlobalValue(produceTreeOption) : produceTreeOption) (that) :
-           that.options.protoTree;
+        var produceTreeOption = that.options.produceTree;
+        return produceTreeOption ?
+            (typeof(produceTreeOption) === "string" ? fluid.getGlobalValue(produceTreeOption) : produceTreeOption) (that) :
+            that.options.protoTree;
     };
 
     fluid.initRendererComponent = function (componentName, container, options) {
         var that = fluid.initView(componentName, container, options, {gradeNames: ["fluid.rendererComponent"]});
-        var model = fluid.getForComponent(that, "model"); // Force resolution of these due to our terrible workflow
-        var applier = fluid.getForComponent(that, "applier");
+        fluid.getForComponent(that, "model"); // Force resolution of these due to our terrible workflow
+        fluid.getForComponent(that, "applier");
         fluid.diagnoseFailedView(componentName, that, fluid.defaults(componentName), arguments);
 
         fluid.fetchResources(that.options.resources); // TODO: deal with asynchrony
@@ -574,9 +569,14 @@ fluid_1_5 = fluid_1_5 || {};
                 var target = [];
                 var comp = { children: target};
                 var child = children[i];
+                /* jshint ignore:start */
+                // The function supplied to expandLeafOrCond requires the "target" from the for loop scope.
+                // Since this function will be called with a predetermined set of arguments
+                // it will not be possible to remove the function out of the for loop scope
                 var childPusher = function (comp) {
                     target[target.length] = comp;
-                }; // jslint:ok - function in loop
+                };
+                /* jshint ignore:end */
                 expandLeafOrCond(child, target, childPusher);
                 // Rescue the case of an expanded leaf into single component - TODO: check what sense this makes of the grammar
                 if (comp.children.length === 1 && !comp.children[0].ID) {
@@ -594,7 +594,7 @@ fluid_1_5 = fluid_1_5 || {};
 
         // We have reached something which is either a leaf or Cond - either inside
         // a Cond or as an entry in children.
-        var expandLeafOrCond = function (entry, target, pusher) { // jslint:ok - forward declaration
+        expandLeafOrCond = function (entry, target, pusher) {
             var componentType = fluid.renderer.inferComponentType(entry);
             if (!componentType && (fluid.isPrimitive(entry) || detectBareBound(entry))) {
                 componentType = "UIBound";
@@ -616,6 +616,16 @@ fluid_1_5 = fluid_1_5 || {};
         // give rise to one or many elements with the SAME key - if "expandSingle" discovers
         // "thing with children" they will all share the same key found in proto.
         expandCond = function (proto, target) {
+            var expandToTarget = function (expander) {
+                var expanded = fluid.invokeGlobalFunction(expander.type, [expander, proto, key, expandConfig]);
+                if (expanded !== fluid.renderer.NO_COMPONENT) {
+                    fluid.each(expanded, function (el) {target[target.length] = el; });
+                }
+            };
+            var condPusher = function (comp) {
+                comp.ID = key;
+                target[target.length] = comp;
+            };
             for (var key in proto) {
                 var entry = proto[key];
                 if (key.charAt(0) === IDescape) {
@@ -623,18 +633,8 @@ fluid_1_5 = fluid_1_5 || {};
                 }
                 if (key === "expander") {
                     var expanders = fluid.makeArray(entry);
-                    fluid.each(expanders, function (expander) {
-                        var expanded = fluid.invokeGlobalFunction(expander.type, [expander, proto, key, expandConfig]);
-                        if (expanded !== fluid.renderer.NO_COMPONENT) {
-                            fluid.each(expanded, function (el) {target[target.length] = el; });
-                        }
-                    }); // jslint:ok - function in loop
+                    fluid.each(expanders, expandToTarget);
                 } else if (entry) {
-                    var condPusher = function (comp) {
-                        comp.ID = key;
-                        target[target.length] = comp;
-                    }; // jslint:ok - function in loop
-
                     if (entry.children) {
                         if (key.indexOf(":") === -1) {
                             key = key + ":";
