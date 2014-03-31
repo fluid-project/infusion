@@ -2319,7 +2319,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }]
                 }]
             }
-         }
+        }
     ];
 
     var arrayTest = function (json) {
