@@ -330,7 +330,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         };
 
-        var checkSingleFileUploader = function (uploader, fileset) {
+        var checkSingleFileUploader = function (uploader) {
             // TODO: probably not possible to test error behaviour for single-file?
             jqUnit.assertEquals("The single-file uploader is in fact the single-file version",
                                 "fluid.uploader.singleFileUploader", uploader.typeName);
