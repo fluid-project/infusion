@@ -11,10 +11,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid, jqUnit */
 
 (function ($) {
     "use strict";
@@ -159,7 +156,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     offset: 5
                 }, {
                     type: "fluid.transforms.literalValue",
-                    value: "ooooops",
+                    value: "ooooops"
                 }]
             }
         },
@@ -178,7 +175,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     outputPath: "math"
                 }, {
                     type: "fluid.transforms.literalValue",
-                    value: "ooooops",
+                    value: "ooooops"
                 }]
             }
         },
@@ -283,7 +280,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: {
             value: 12
         },
-        fullyinvertible: true,
+        fullyinvertible: true
     }, {
         message: "linearScale - factor parameter only",
         model: {
@@ -1271,7 +1268,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Default array structure should have been created by transform", expected, result);
     });
 
-   jqUnit.test("transform with custom schema and collected schema options for flatSchema", function () {
+    jqUnit.test("transform with custom schema and collected schema options for flatSchema", function () {
         var rules = {
             "0.0.feline": [
                 {
@@ -2062,9 +2059,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             invertedRules: {
                 transform: [
                     {
-                        type: 'fluid.transforms.value',
-                        inputPath: 'b',
-                        outputPath: 'b'
+                        type: "fluid.transforms.value",
+                        inputPath: "b",
+                        outputPath: "b"
                     }, {
                         type: "fluid.transforms.objectToArray",
                         inputPath: "c.dotted\\.key",
