@@ -26,7 +26,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var options = fluid.expandOptions($.extend({}, checkerOptions, {checks: checks}), null);
         var names = fluid.progressiveChecker(options).options.gradeNames;
         return fluid.find(names, function (name) {
-            return /fluid\.progressiveChecker|fluid\.littleComponent|fluid\.typeFount|autoInit/.test(name) ? undefined : name
+            return (/fluid\.progressiveChecker|fluid\.littleComponent|fluid\.typeFount|autoInit/).test(name) ? undefined : name;
         });
     };
 
