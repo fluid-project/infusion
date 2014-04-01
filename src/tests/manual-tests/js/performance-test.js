@@ -30,7 +30,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var mod = index % 64;
         var togo = [];
         while (true) {
-            var bit = mod & 1;
+            var bit = mod & 1; // jshint ignore:line
             togo.push(bit? "thing1" : "thing0");
             if (mod < 2) {
                 break;
@@ -50,10 +50,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     var paths = makePaths();
-
-    var config = {
-        strategies: [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy]
-    };
 
     for (var j = 0; j < 5; ++ j) {
 
