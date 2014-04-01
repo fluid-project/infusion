@@ -12,48 +12,44 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global window, jqUnit, asyncTest, equals, jQuery, module, ok, test*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var jqUnit = jqUnit || {};
 
 // A function to load the testswarm agent if running in the testswarm environment
 // This code was derived from testsuite.js ( http://code.google.com/p/jquery-ui/source/browse/trunk/tests/unit/testsuite.js )
 (function ($, fluid) {
+    "use strict";
+
     var param = "swarmURL=";
     var url = window.location.search;
     url = decodeURIComponent(url.slice(url.indexOf(param) + param.length));
-    
+
     if (url && url.indexOf("http") === 0) {
         var injectPath = window.location.protocol + "//" + window.location.host + "/js/inject.js";
-        document.write("<scr" + "ipt src='" + injectPath + "?" + (new Date()).getTime() + "'></scr" + "ipt>");
+        document.write("<scr" + "ipt src='" + injectPath + "?" + (new Date()).getTime() + "'></scr" + "ipt>"); // jshint ignore:line
     }
-    
-    
+
+
     /*******************************************
      * Browser-dependent jqUnit test functions *
      *******************************************/
-    
+
     var testFns = {
         isVisible: function (msg, selector) {
-            jqUnit.okWithPrefix($(selector).is(':visible'), msg);
+            jqUnit.okWithPrefix($(selector).is(":visible"), msg);
         },
-        
+
         notVisible: function (msg, selector) {
-            jqUnit.okWithPrefix($(selector).is(':hidden'), msg);
+            jqUnit.okWithPrefix($(selector).is(":hidden"), msg);
         },
-        
+
         exists: function (msg, selector) {
             jqUnit.okWithPrefix((selector)[0], msg);
         },
-        
+
         notExists: function (msg, selector) {
             jqUnit.okWithPrefix(!$(selector)[0], msg);
         },
-        
+
         // Overrides jQuery's animation routines to be synchronous. Careful!
         subvertAnimations: function () {
             $.fn.fadeIn = function (speed, callback) {
@@ -62,7 +58,7 @@ var jqUnit = jqUnit || {};
                     callback();
                 }
             };
-            
+
             $.fn.fadeOut = function (speed, callback) {
                 this.hide();
                 if (callback) {
@@ -71,32 +67,32 @@ var jqUnit = jqUnit || {};
             };
         }
     };
-    
+
     // Mix these test functions into the jqUnit namespace.
     $.extend(jqUnit, testFns);
-     
-     
+
+
     /*
      * A number of utility functions for creating "duck-type" events for testing various key
      * stroke combinations.
      */
-    
+
     jqUnit.bindKeySimulator = function (keyLookup, targetNamespace) {
         var tn = fluid.registerNamespace(targetNamespace);
         tn.keyEvent = function (keyCode, target) {
             return {
                 keyCode: keyLookup[keyCode],
                 target: fluid.unwrap(target),
-                preventDefault: function () {}, 
-                stopPropagation: function () {} 
+                preventDefault: function () {},
+                stopPropagation: function () {}
             };
         };
-        
+
         tn.ctrlKeyEvent = function (keyCode, target) {
             return tn.modKeyEvent("CTRL", keyCode, target);
         };
-    
-    
+
+
         tn.modKeyEvent = function (modifier, keyCode, target) {
             var togo = tn.keyEvent(keyCode, target);
             modifier = jQuery.makeArray(modifier);
@@ -115,24 +111,23 @@ var jqUnit = jqUnit || {};
             return togo;
         };
     };
-        
+
     // Canonicalise a list of DOM elements (or a jQuery) by converting elements to their ids (allocated if necessary)
     jqUnit.canonicaliseDom = function (list) {
         return fluid.transform(list, function (element) {
             return fluid.allocateSimpleId(element);
         });
     };
-    
+
     // Compare two lists of DOM elements (or jQueries) for being equal by virtue of containing the same DOM elements
     jqUnit.assertDomEquals = function (message, expected, actual) {
         return jqUnit.assertCanoniseEqual(message, expected, actual, jqUnit.canonicaliseDom);
     };
-    
+
     /** Condense a DOM node into a plain Javascript object, to facilitate testing against
      * a trial, with the use of assertDeepEq or similar
      */
     jqUnit.assertNode = function (message, expected, node) {
-        var togo = {};
         if (!node.nodeType) { // Some types of DOM nodes (e.g. select) have a valid "length" property
             if (node.length === 1 && expected.length === undefined) {
                 node = node[0];
@@ -162,7 +157,7 @@ var jqUnit = jqUnit || {};
             var evalue = expected[key];
             var pass = evalue === attr;
             if (attr === false || attr === true) { // support for IE refusing to honour XHTML values
-                pass = !!evalue === attr;
+                pass = !!evalue === attr; // jshint ignore:line - compare boolean values
             }
             if (key !== "children") {
                 jqUnit.assertTrue(message + messageExt + " expected value: " + evalue + " actual: " + attr, pass);
@@ -173,6 +168,5 @@ var jqUnit = jqUnit || {};
             }
         }
     };
-      
-    
+
 })(jQuery, fluid_1_5);
