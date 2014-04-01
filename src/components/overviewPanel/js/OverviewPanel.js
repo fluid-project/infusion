@@ -10,15 +10,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 */
 
-// Declare dependencies
-/*global fluid, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+
+    "use strict";
 
     fluid.registerNamespace("fluid.overviewPanel");
     fluid.overviewPanel.preventDefault = function (event) {
@@ -88,6 +84,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 "method": "attr",
                 "args": {
                     "role": "button",
+                    "aria-label": "{that}.options.strings.closePanelLabel",
                     "aria-controls": { expander: { "this": "{that}.container", "method": "attr", args: "id" } }
                 }
             },
@@ -162,6 +159,8 @@ var fluid_1_5 = fluid_1_5 || {};
             hidden: "fl-overviewPanel-hidden"
         },
         strings: {
+            openPanelLabel: "Open demo instructions",
+            closePanelLabel: "Close demo instructions",
             titleBegin: "A",
             titleLinkText: "fluid project",
             titleEnd: "component demo",
@@ -186,8 +185,8 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.overviewPanel.setVisibility = function (that, value) {
-        that.container.toggleClass(that.options.styles.hidden, !value);
+    fluid.overviewPanel.setVisibility = function (that, showPanel) {
+        that.container.toggleClass(that.options.styles.hidden, !showPanel);
     };
 
     fluid.overviewPanel.showTemplate = function (that) {
@@ -196,18 +195,23 @@ var fluid_1_5 = fluid_1_5 || {};
         });
     };
 
-    fluid.overviewPanel.togglePanel = function (that, value) {
-        that.applier.requestChange("showPanel", !value);
+    fluid.overviewPanel.togglePanel = function (that, showPanel) {
+        that.applier.requestChange("showPanel", !showPanel);
     };
 
     fluid.overviewPanel.closePanel = function (that) {
         that.applier.requestChange("showPanel", false);
     };
 
-    fluid.overviewPanel.setAriaStates = function (that, value) {
-        that.locate("toggleControl").attr("aria-pressed", !value);
-        that.locate("toggleControl").attr("aria-expanded", value);
-        that.locate("closeControl").attr("aria-expanded", value);
+    fluid.overviewPanel.setAriaStates = function (that, showPanel) {
+        that.locate("toggleControl").attr("aria-pressed", !showPanel);
+        that.locate("toggleControl").attr("aria-expanded", showPanel);
+        that.locate("closeControl").attr("aria-expanded", showPanel);
+        if (showPanel) {
+            that.locate("toggleControl").attr("aria-label", that.options.strings.closePanelLabel);
+        } else {
+            that.locate("toggleControl").attr("aria-label", that.options.strings.openPanelLabel);
+        }
     };
 
 })(jQuery, fluid_1_5);

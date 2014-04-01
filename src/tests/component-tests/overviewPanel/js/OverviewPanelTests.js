@@ -10,13 +10,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 */
 
-// Declare dependencies
-/*global fluid, jqUnit, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 (function ($) {
+
+    "use strict";
+
     $(document).ready(function () {
 
         jqUnit.module("OverviewPanel Tests");
@@ -65,6 +62,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "false", that.locate("toggleControl").attr("aria-expanded"));
             jqUnit.assertEquals("Check that closeControl aria-expanded is false",
                 "false", that.locate("closeControl").attr("aria-expanded"));
+            jqUnit.assertEquals("Check toggleControl aria-label",
+                that.options.strings.openPanelLabel, that.locate("toggleControl").attr("aria-label"));
+            jqUnit.assertEquals("Check closeControl aria-label",
+                that.options.strings.closePanelLabel, that.locate("closeControl").attr("aria-label"));
         };
 
         var assertPanelIsClosed = function (that) {
@@ -82,6 +83,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "true", that.locate("toggleControl").attr("aria-expanded"));
             jqUnit.assertEquals("Check that closeControl aria-expanded is true",
                 "true", that.locate("closeControl").attr("aria-expanded"));
+            jqUnit.assertEquals("Check toggleControl aria-label",
+                that.options.strings.closePanelLabel, that.locate("toggleControl").attr("aria-label"));
+            jqUnit.assertEquals("Check closeControl aria-label",
+                that.options.strings.closePanelLabel, that.locate("closeControl").attr("aria-label"));
         };
 
         var verifyRendering = function (that, strings) {
@@ -138,7 +143,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         jqUnit.asyncTest("Verify when initially hidden", function () {
-            jqUnit.expect(5);
+            jqUnit.expect(7);
             fluid.overviewPanel(".flc-overviewPanel", {
                 resources: resources,
                 listeners: {
@@ -164,7 +169,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         jqUnit.asyncTest("Verify when initially visible", function () {
-            jqUnit.expect(5);
+            jqUnit.expect(7);
             fluid.overviewPanel(".flc-overviewPanel", {
                 resources: resources,
                 listeners: {
@@ -187,7 +192,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         jqUnit.asyncTest("Verify close control", function () {
-            jqUnit.expect(10);
+            jqUnit.expect(14);
             fluid.overviewPanel(".flc-overviewPanel", {
                 resources: resources,
                 listeners: {
@@ -210,7 +215,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         jqUnit.asyncTest("Verify closePanel invoker", function () {
-            jqUnit.expect(10);
+            jqUnit.expect(14);
             fluid.overviewPanel(".flc-overviewPanel", {
                 resources: resources,
                 listeners: {
@@ -239,7 +244,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         jqUnit.asyncTest("Verify toggle control", function () {
-            jqUnit.expect(25);
+            jqUnit.expect(35);
             fluid.overviewPanel(".flc-overviewPanel", {
                 resources: resources,
                 listeners: {
@@ -268,7 +273,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         jqUnit.asyncTest("Verify togglePanel invoker", function () {
-            jqUnit.expect(25);
+            jqUnit.expect(35);
             fluid.overviewPanel(".flc-overviewPanel", {
                 resources: resources,
                 listeners: {
