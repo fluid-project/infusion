@@ -159,8 +159,6 @@ var fluid_1_5 = fluid_1_5 || {};
             hidden: "fl-overviewPanel-hidden"
         },
         strings: {
-            openPanelLabel: "Open demo instructions",
-            closePanelLabel: "Close demo instructions",
             titleBegin: "A",
             titleLinkText: "fluid project",
             titleEnd: "component demo",
@@ -171,7 +169,9 @@ var fluid_1_5 = fluid_1_5 || {};
             designLinkText: "design",
             feedbackText: "Feedback statement and link",
             feedbackLinkText: "Link text",
-            closeText: "close"
+            closeText: "close",
+            openPanelLabel: "Open demo instructions",
+            closePanelLabel: "Close demo instructions"
         },
         markup: {
             description: "A description of the component should appear here. It should say: <ul><li>What the component does.</li><li>Why it is interesting / useful.</li></ul>",
