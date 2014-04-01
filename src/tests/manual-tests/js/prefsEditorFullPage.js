@@ -10,13 +10,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global skon:true, fluid, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid, alert */
 
 var demo = demo || {};
 (function ($, fluid) {
+    "use strict";
+
     /**
      * The Preferences Editor interface is defined by several HTML templates. The component
      * needs to know where those templates are. This variable will be used by all
