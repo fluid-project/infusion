@@ -906,7 +906,9 @@ var fluid_1_5 = fluid_1_5 || {};
             ++ options.changes;
             notePath("changeMap");
         }
-        notePath("deltaMap");
+        if (!fluid.model.isChangedPath(options.deltaMap, segs)) {
+            notePath("deltaMap");
+        }
     };
 
     fluid.model.fetchChangeChildren = function (target, i, segs, source, options) {
