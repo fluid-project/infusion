@@ -33,6 +33,7 @@ var fluid_1_5 = fluid_1_5 || {};
 var fluid = fluid || fluid_1_5;
 
 (function ($, fluid) {
+    "use strict";
 
     fluid.version = "Infusion 1.5";
 
