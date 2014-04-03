@@ -1458,7 +1458,9 @@ var fluid = fluid || fluid_1_5;
             options.listeners = fluid.transform(options.listeners, function (record) {
                 var togo = fluid.makeArray(record);
                 return fluid.transform(togo, function (onerec) {
-                    onerec.componentSource = componentName;
+                    if (!fluid.isPrimitive(onerec)) {
+                        onerec.componentSource = componentName;
+                    }
                     return onerec;
                 });
             });
