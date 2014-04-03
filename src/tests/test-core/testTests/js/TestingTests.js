@@ -286,7 +286,7 @@
                 type: "test",
                 func: "fluid.tests.globalCatTest",
                 args: child
-            })
+            });
         }, {});
         return {
             name: "Dynamic module source tests",
@@ -295,7 +295,7 @@
                 sequence: sequence
             }
         };
-    }
+    };
 
     /** Global driver function **/
 

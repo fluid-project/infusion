@@ -10,7 +10,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/* global fluid, jqUnit, QUnit */
+/* global jqUnit, QUnit */
 
 var fluid_1_5 = fluid_1_5 || {};
 
@@ -291,7 +291,7 @@ var fluid_1_5 = fluid_1_5 || {};
             };
             unbind = function (wrapped) {
                 event.removeListener(wrapped);
-            }
+            };
         }
         else if (analysed.path) {
             var id;
@@ -396,7 +396,8 @@ var fluid_1_5 = fluid_1_5 || {};
             fluid.fail("Error in test fixture ", fixture, ": no elements in sequence");
         }
         that.decode = function (pos) {
-            return that.executors[pos] = fluid.test.decodeFixture(that.testCaseState, that.fixture.sequence[pos]);
+            that.executors[pos] = fluid.test.decodeFixture(that.testCaseState, that.fixture.sequence[pos]);
+            return that.executors[pos];
         };
         that.sequenceText = function (pos) {
             return (pos === undefined ? that.sequencePos : pos) + " of " + that.count;
