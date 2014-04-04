@@ -159,8 +159,8 @@ var fluid_1_5 = fluid_1_5 || {};
             hidden: "fl-overviewPanel-hidden"
         },
         strings: {
-            titleBegin: "A",
-            titleLinkText: "fluid project",
+            titleBegin: "An",
+            titleLinkText: "Infusion",
             titleEnd: "component demo",
             componentName: "Component Name",
             instructionsHeading: "Instructions",
