@@ -1,12 +1,4 @@
 
-/* General styles */
-
-.fl-group:after { /* clearfix (aka. group) */
-  content: "";
-  display: table;
-  clear: both;
-}
-
 @font-face {
     font-family: "Icons";
     src:url('../fonts/icons.eot?#iefix') format('embedded-opentype'),
@@ -37,6 +29,15 @@
     overflow: auto;
 }
 
+/* General styles */
+
+.fl-overviewPanel-group:after { /* clearfix (aka. group) */
+  content: "";
+  display: table;
+  clear: both;
+}
+
+
 .fl-overviewPanel {
     font-family: 'Open Sans', sans-serif;
     color: #fff;
@@ -60,7 +61,7 @@
 
 /* The Star icon that acts as a toggle button */
 
-.fl-fluid-star a {
+.fl-overviewPanel-icon-fluidStar a {
     text-decoration: none;
     font-size: 1.5em;
     font-family: "Fluid-star";
@@ -75,7 +76,7 @@
 }
 
 
-.fl-fluid-star a:before{
+.fl-overviewPanel-icon-fluidStar a:before{
     content: "\e600";
 }
 
@@ -156,7 +157,9 @@
     text-transform:lowercase;
 }
 
-.fl-overviewPanel-links ul li .fl-icon {
+.fl-overviewPanel-links-icon-api,
+.fl-overviewPanel-links-icon-github,
+.fl-overviewPanel-links-icon-design {
     display: inline-block;
     background-color: #fff;
     width: 2em;
@@ -166,26 +169,28 @@
     color: #333333;
 }
 
-.fl-overviewPanel-links ul li .fl-icon:before{
+.fl-overviewPanel-links-icon-api:before,
+.fl-overviewPanel-links-icon-github:before,
+.fl-overviewPanel-links-icon-design:before{
     position: relative;
     top: 0.35em;
     left: 0.41em;
     font-size: 1.2em;
 }
 
-.fl-icon-api:before{
+.fl-overviewPanel-links-icon-api:before{
     content: "\e602";
 }
 
-.fl-icon-github:before {
+.fl-overviewPanel-links-icon-github:before {
     content: "\e601";
 }
 
-.fl-icon-design:before {
+.fl-overviewPanel-links-icon-design:before {
     content: "\e603";
 }
 
-.fl-demo-links-feedback a{
+.fl-overviewPanel-feedback-link a{
     display:block;
     color: #FFCC00;
 }
@@ -211,18 +216,20 @@
 
 /* black on white */
 .fl-theme-uio-bw .fl-overviewPanel,
+.fl-theme-uio-bw .fl-overviewPanel-body,
 .fl-theme-uio-bw .fl-overviewPanel a,
-.fl-theme-uio-bw .fl-overviewPanel-links ul li .fl-icon  {
+.fl-theme-uio-bw .fl-overviewPanel .fl-overviewPanel-links-icon-api,
+.fl-theme-uio-bw .fl-overviewPanel .fl-overviewPanel-links-icon-github,
+.fl-theme-uio-bw .fl-overviewPanel .fl-overviewPanel-links-icon-design {
     color: #000;
     background-color: #fff;
 }
 
 .fl-theme-uio-bw .fl-overviewPanel {
-    border: 0.2em solid #fff;
-    outline:  0.2em solid #000;
+    border: 0.2em solid #000;
 }
 
-.fl-theme-uio-bw .fl-overviewPanel-title .fl-fluid-star,
+.fl-theme-uio-bw .fl-overviewPanel .fl-overviewPanel-title .fl-overviewPanel-icon-fluidStar,
 .fl-theme-uio-bw .fl-overviewPanel .fl-overviewPanel-title a,
 .fl-theme-uio-bw .fl-overviewPanel .fl-overviewPanel-title {
     background-color: #000;
@@ -235,18 +242,20 @@
 
 /* white on black */
 .fl-theme-uio-wb .fl-overviewPanel,
+.fl-theme-uio-wb .fl-overviewPanel-body,
 .fl-theme-uio-wb .fl-overviewPanel a, 
-.fl-theme-uio-wb .fl-overviewPanel-links ul li .fl-icon {
+.fl-theme-uio-wb .fl-overviewPanel .fl-overviewPanel-links-icon-api,
+.fl-theme-uio-wb .fl-overviewPanel .fl-overviewPanel-links-icon-github,
+.fl-theme-uio-wb .fl-overviewPanel .fl-overviewPanel-links-icon-design {
     color: #fff;
     background-color: #000;
 }
 
 .fl-theme-uio-wb .fl-overviewPanel {
     border: 0.2em solid #000;
-    outline:  0.2em solid #fff;
 }
 
-.fl-theme-uio-wb .fl-overviewPanel .fl-overviewPanel-title .fl-fluid-star,
+.fl-theme-uio-wb .fl-overviewPanel .fl-overviewPanel-title .fl-overviewPanel-icon-fluidStar,
 .fl-theme-uio-wb .fl-overviewPanel .fl-overviewPanel-title a,
 .fl-theme-uio-wb .fl-overviewPanel .fl-overviewPanel-title {
     background-color: #fff;
@@ -259,18 +268,20 @@
 
 /* Low contrast: light grey on dark grey */
 .fl-theme-uio-lgdg .fl-overviewPanel,
+.fl-theme-uio-lgdg .fl-overviewPanel-body,
 .fl-theme-uio-lgdg .fl-overviewPanel a, 
-.fl-theme-uio-lgdg .fl-overviewPanel-links ul li .fl-icon {
+.fl-theme-uio-lgdg .fl-overviewPanel .fl-overviewPanel-links-icon-api,
+.fl-theme-uio-lgdg .fl-overviewPanel .fl-overviewPanel-links-icon-github,
+.fl-theme-uio-lgdg .fl-overviewPanel .fl-overviewPanel-links-icon-design {
     color: #bdbdbb;
     background-color: #555;
 }
 
 .fl-theme-uio-lgdg .fl-overviewPanel {
     border: 0.2em solid #555;
-    outline:  0.2em solid #bdbdbb;
 }
 
-.fl-theme-uio-lgdg .fl-overviewPanel .fl-overviewPanel-title .fl-fluid-star,
+.fl-theme-uio-lgdg .fl-overviewPanel .fl-overviewPanel-title .fl-overviewPanel-icon-fluidStar,
 .fl-theme-uio-lgdg .fl-overviewPanel .fl-overviewPanel-title a,
 .fl-theme-uio-lgdg .fl-overviewPanel .fl-overviewPanel-title {
     background-color: #bdbdbb;
@@ -283,18 +294,20 @@
 
 /* Yellow on Black */
 .fl-theme-uio-yb .fl-overviewPanel,
+.fl-theme-uio-yb .fl-overviewPanel-body,
 .fl-theme-uio-yb .fl-overviewPanel a, 
-.fl-theme-uio-yb .fl-overviewPanel-links ul li .fl-icon {
+.fl-theme-uio-yb .fl-overviewPanel .fl-overviewPanel-links-icon-api,
+.fl-theme-uio-yb .fl-overviewPanel .fl-overviewPanel-links-icon-github,
+.fl-theme-uio-yb .fl-overviewPanel .fl-overviewPanel-links-icon-design {
     color: #FFFF00;
     background-color: #000;
 }
 
 .fl-theme-uio-yb .fl-overviewPanel {
     border: 0.2em solid #000;
-    outline:  0.2em solid #FFFF00;
 }
 
-.fl-theme-uio-yb .fl-overviewPanel .fl-overviewPanel-title .fl-fluid-star,
+.fl-theme-uio-yb .fl-overviewPanel .fl-overviewPanel-title .fl-overviewPanel-icon-fluidStar,
 .fl-theme-uio-yb .fl-overviewPanel .fl-overviewPanel-title a,
 .fl-theme-uio-yb .fl-overviewPanel .fl-overviewPanel-title {
     background-color: #FFFF00;
@@ -307,18 +320,20 @@
 
 /* Black on Yellow */
 .fl-theme-uio-by .fl-overviewPanel,
+.fl-theme-uio-by .fl-overviewPanel-body,
 .fl-theme-uio-by .fl-overviewPanel a,
-.fl-theme-uio-by .fl-overviewPanel-links ul li .fl-icon  {
+.fl-theme-uio-by .fl-overviewPanel .fl-overviewPanel-links-icon-api,
+.fl-theme-uio-by .fl-overviewPanel .fl-overviewPanel-links-icon-github,
+.fl-theme-uio-by .fl-overviewPanel .fl-overviewPanel-links-icon-design  {
     color: #000;
     background-color: #FFFF00;
 }
 
 .fl-theme-uio-by .fl-overviewPanel {
-    border: 0.2em solid #FFFF00;
-    outline:  0.2em solid #000;
+    border: 0.2em solid #000;
 }
 
-.fl-theme-uio-by .fl-overviewPanel-title .fl-fluid-star,
+.fl-theme-uio-by .fl-overviewPanel .fl-overviewPanel-title .fl-overviewPanel-icon-fluidStar,
 .fl-theme-uio-by .fl-overviewPanel .fl-overviewPanel-title a,
 .fl-theme-uio-by .fl-overviewPanel .fl-overviewPanel-title {
     background-color: #000;
