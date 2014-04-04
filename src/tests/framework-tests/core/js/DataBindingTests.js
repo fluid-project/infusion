@@ -1312,7 +1312,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
-    jqUnit.test("FLUID-5270: Transforming relay from child to parent", function () {
+    jqUnit.test("FLUID-5293: Transforming relay from child to parent", function () {
         var that = fluid.tests.fluid5293();
         var expectedModel = {
             accessibilityHazard: [],
@@ -1322,7 +1322,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         };
 
-        jqUnit.assertDeepEq("The top component model is transformed properly", expectedModel, that.model);
+        jqUnit.assertDeepEq("The initial forward transformation is performed properly", expectedModel, that.model);
+
+        var expectedModelAfterChangeRequest = {
+            accessibilityHazard: ["flashing", "noflashing"],
+            modelInTransit: {
+                flashing: true,
+                noflashing: true
+            }
+        };
+
+        that.applier.requestChange("modelInTransit.flashing", true);
+        that.applier.requestChange("modelInTransit.noflashing", true);
+        jqUnit.assertDeepEq("The backward transformation to add array values is performed properly", expectedModelAfterChangeRequest, that.model);
+
+        that.applier.requestChange("modelInTransit.flashing", false);
+        that.applier.requestChange("modelInTransit.noflashing", false);
+        jqUnit.assertDeepEq("The inverted transformation to remove array values is performed properly", expectedModel, that.model);
     });
 
 })(jQuery);
