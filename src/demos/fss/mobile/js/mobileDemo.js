@@ -10,7 +10,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid */
+/* global fluid */
 
 (function ($, fluid) {
     "use strict";
