@@ -671,22 +671,22 @@ var fluid_1_5 = fluid_1_5 || {};
         enlist.initModels = initModels;
 
         var instantiator = fluid.getInstantiator(that);
+        /* jshint ignore:start */
+        // TODO: jshint doesn't like the empty do block.
+        // This should either be cleaned up or have a detailed
+        // explanation for why it is needed.
         function updateRelays(transaction) {
-            /* jshint ignore:start */
-            // TODO: jshint doesn't like the empty do block.
-            // This should either be cleaned up or have a detailed
-            // explanation for why it is needed.
             do {
             } while (fluid.model.updateRelays(instantiator, transaction.id) > 0);
-            /* jshint ignore:end */
         }
+        /* jshint ignore:end */
 
         function commitRelays(transaction, applier, code) {
             if (code !== "relay") { // don't commit relays if this commit is already a relay commit
                 fluid.model.commitRelays(instantiator, transaction.id);
             }
         }
-        applier.preCommit.addListener(updateRelays);
+        applier.preCommit.addListener(updateRelays); // jshint ignore:line
         applier.preCommit.addListener(commitRelays);
 
         fluid.deenlistModelComponent(that);
@@ -1257,7 +1257,7 @@ var fluid_1_5 = fluid_1_5 || {};
             // TODO: The bitwise operator '^' is used here.
             // It should either be replaced or have a detailed explanation
             // provided for why it is needed.
-            if (((path === "") ^ (spec === "")) && exact) { // jshint ingore:line
+            if (((path === "") ^ (spec === "")) && exact) { // jshint ignore:line
                 return null;
             }
             // FLUID-4625 - symmetry on spec and path is actually undesirable, but this

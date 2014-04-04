@@ -59,7 +59,7 @@ fluid_1_5 = fluid_1_5 || {};
         }
 
         function init(baseURLin, debugModeIn, cutpointsIn) {
-            t.rootlump = XMLLump(0, -1); // jshint ignore:line - capital letter
+            t.rootlump = XMLLump(0, -1); // jshint ignore:line
             tagstack = [t.rootlump];
             lumpindex = 0;
             nestingdepth = 0;
@@ -94,7 +94,7 @@ fluid_1_5 = fluid_1_5 || {};
         }
 
         function newLump() {
-            var togo = XMLLump(lumpindex, nestingdepth); // jshint ignore:line - capital letter
+            var togo = XMLLump(lumpindex, nestingdepth); // jshint ignore:line
             if (debugMode) {
                 togo.line = parser.getLineNumber();
                 togo.column = parser.getColumnNumber();

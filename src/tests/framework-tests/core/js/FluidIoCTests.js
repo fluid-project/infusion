@@ -1280,7 +1280,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             sourceStrategy: fluid.concreteTrundler,
             fetcher: fluid.tests.simpleFetcher(contexts),
             mergePolicy: {}
-            });
+        });
         var target = expandOptions.target;
         contexts.outerConfig = {root: outerConfig, config: {strategies: [fluid.model.defaultFetchStrategy]}};
         contexts.self = {root: target, config: {strategies: [expandOptions.strategy]}};

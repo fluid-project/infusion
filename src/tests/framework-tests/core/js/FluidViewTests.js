@@ -289,7 +289,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     // TODO: The bitwise operator '^' is used here.
                     // It should either be replaced or have a detailed explanation
                     // provided for why it is needed.
-                    jqUnit.assertTrue(message + " - Blur handler has not executed", shouldBlur ^ !blurReceived); // jshint ingore:line
+                    jqUnit.assertTrue(message + " - Blur handler has not executed", shouldBlur ^ !blurReceived); // jshint ignore:line
                     noteTime();
                     jqUnit.start();
                 };

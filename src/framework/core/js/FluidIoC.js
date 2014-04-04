@@ -276,16 +276,16 @@ var fluid_1_5 = fluid_1_5 || {};
         } else {
             fluid.registerCollectedClearer(shadows[shadows.length - 1], parentShadow, memberNames[memberNames.length - 1]);
         }
+        /* jshint ignore:start */
+        // The function supplied to fluid.each requires the index "i" from the for loop scope.
+        // Since this function will be called with a predetermined set of arguments
+        // it will not be possible to remove the function out of the for loop scope
         for (var i = 0; i < thatStack.length - 1; ++ i) {
-            /* jshint ignore:start */
-            // The function supplied to fluid.each requires the index "i" from the for loop scope.
-            // Since this function will be called with a predetermined set of arguments
-            // it will not be possible to remove the function out of the for loop scope
             fluid.each(shadows[i].distributions, function (distribution) {
                 fluid.collectDistributions(distributedBlocks, parentShadow, distribution, thatStack, contextHashes, memberNames, i);
             });
-            /* jshint ignore:end */
         }
+        /* jshint ignore:end */
         return distributedBlocks;
     };
 
@@ -2048,7 +2048,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         }
         else if (options.ELstyle && options.ELstyle !== "${}") {
             //TODO: provide a comment about why the redefinition is needed
-            var parsed = fluid.extractELWithContext(string, options); // jshint ignore:line, redefinition
+            var parsed = fluid.extractELWithContext(string, options); // jshint ignore:line
             if (parsed) {
                 return fetch(parsed);
             }
@@ -2057,7 +2057,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             var i1 = string.indexOf("${");
             var i2 = string.indexOf("}", i1 + 2);
             if (i1 !== -1 && i2 !== -1) {
-                var parsed; // jshint ignore:line, redefinition
+                var parsed; // jshint ignore:line
                 if (string.charAt(i1 + 2) === "{") {
                     parsed = fluid.parseContextReference(string, i1 + 2, "}");
                     i2 = parsed.endpos;

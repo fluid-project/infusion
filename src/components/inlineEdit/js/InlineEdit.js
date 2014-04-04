@@ -632,7 +632,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.inlineEdit.standardDisplayView.refreshView = function (componentThat, viewEl) {
+    fluid.inlineEdit.standardDisplayView.refreshView = function (componentThat) {
         if (componentThat.model.value) {
             fluid.inlineEdit.showEditedText(componentThat);
         } else if (componentThat.options.strings.defaultViewText) {
@@ -701,7 +701,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 fluid.set(that.options, ["components", "undo"], { type: "fluid.undo", options: decorator.options});
                 that.decorators = [ fluid.initDependent(that, "undo")];
             }
-        };
+        }
     };
 
     /**

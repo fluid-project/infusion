@@ -240,7 +240,7 @@ var fluid_1_5 = fluid_1_5 || {};
             return null;
         }
         // Need to ensure container is set early, without relying on an IoC mechanism - rethink this with asynchrony
-        var receiver = function (that, options, strategy) {
+        var receiver = function (that) {
             that.container = container;
         };
         var that = fluid.initLittleComponent(componentName, userOptions, localOptions || {gradeNames: ["fluid.viewComponent"]}, receiver);

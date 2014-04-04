@@ -17,10 +17,6 @@
  * Date: Thu May 12 15:04:36 2011 -0400
  */
 
- // Declare dependencies
- /* global jQuery:true */
- /* exported jQuery */
-
 var fluid_1_5 = fluid_1_5 || {};
 var fluid = fluid || fluid_1_5;
 
@@ -91,20 +87,19 @@ var fluid = fluid || fluid_1_5;
             // if last one is own, then all properties are own.
             // TODO: Isn't this enormously expensive?
             var key;
-            for (key in obj) {} // jshint ignore:line
-            return key === undefined || hasOwn.call( obj, key );
+            for (key in obj) {}
+            return key === undefined || hasOwn.call( obj, key ); // jshint ignore:line
         },
-
+        /* jshint ignore:start */
+        // attempts to loop through an object,
+        // if any properties are found it will return false.
         isEmptyObject: function (obj) {
-            /* jshint ignore:start */
-            // attempts to loop through an object,
-            // if any properties are found it will return false.
             for ( var name in obj ) {
                 return false;
             }
-            /* jshint ignore:end */
             return true;
         },
+        /* jshint ignore:end */
 
         inArray: function (elem, array) {
             if (indexOf) {
@@ -177,4 +172,4 @@ var fluid = fluid || fluid_1_5;
 
 })(fluid_1_5);
 
-var jQuery = fluid.jQueryStandalone;
+var jQuery = fluid.jQueryStandalone; // jshint ignore:line

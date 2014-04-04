@@ -165,7 +165,7 @@ var fluid = fluid || fluid_1_5;
      * @param {String} message the error message to log
      * @param ... Additional arguments, suitable for being sent to native console.log function
      */
-    fluid.fail = function (message /*, ... */) { // jshint ignore:line - defined but not used variable
+    fluid.fail = function (message /*, ... */) { // jshint ignore:line
         var args = fluid.makeArray(arguments);
         var activity = fluid.makeArray(fluid.describeActivity()); // Take copy since we will destructively modify
         fluid.popActivity(activity.length);
@@ -308,7 +308,7 @@ var fluid = fluid || fluid_1_5;
      * priority does not exceed that set by the most recent call to the <code>fluid.setLogging</code> function,
      * the message will not appear.
      */
-    fluid.log = function (message /*, ... */) { // jshint ingore:line - defined but not used variable
+    fluid.log = function (message /*, ... */) { // jshint ignore:line
         var directArgs = fluid.makeArray(arguments);
         var userLogLevel = fluid.logLevel.INFO;
         if (fluid.isLogLevel(directArgs[0])) {
@@ -607,7 +607,7 @@ var fluid = fluid || fluid_1_5;
             // TODO: The bitwise operator '^' is used here.
             // It should either be replaced or have a detailed explanation
             // provided for why it is needed.
-            return exclude ^ ($.inArray(key, keys) === -1); // jshint ingore:line
+            return exclude ^ ($.inArray(key, keys) === -1); // jshint ignore:line
         });
     };
 
@@ -1677,7 +1677,7 @@ var fluid = fluid || fluid_1_5;
     }
 
     // unsupported, NON-API function
-    fluid.fetchMergeChildren = function (target, i, segs, sources, mergePolicy, options) {
+    fluid.fetchMergeChildren = function (target, i, segs, sources, mergePolicy, options) { // jshint ignore:line
         var thisPolicy = fluid.derefMergePolicy(mergePolicy);
         for (var j = sources.length - 1; j >= 0; -- j) { // this direction now irrelevant - control is in the strategy
             var source = sources[j];

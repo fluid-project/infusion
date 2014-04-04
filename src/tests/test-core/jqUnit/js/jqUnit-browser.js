@@ -157,7 +157,7 @@ var jqUnit = jqUnit || {};
             var evalue = expected[key];
             var pass = evalue === attr;
             if (attr === false || attr === true) { // support for IE refusing to honour XHTML values
-                pass = !!evalue === attr; // jshint ignore:line - compare boolean values
+                pass = !!evalue === attr; // jshint ignore:line
             }
             if (key !== "children") {
                 jqUnit.assertTrue(message + messageExt + " expected value: " + evalue + " actual: " + attr, pass);

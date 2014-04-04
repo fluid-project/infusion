@@ -192,7 +192,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         selectors: {
             modules: "{reorderer}.options.selectors.modules",
-            columns: "{reorderer}.options.selectors.columns",
+            columns: "{reorderer}.options.selectors.columns"
         },
         distributeOptions: {
             target: "{reorderer}.options",

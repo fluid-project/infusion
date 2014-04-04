@@ -1395,7 +1395,7 @@
             jqUnit.assertEquals("Simple unescaping", "This is a thing", fluid.unescapeProperties("This\\ is\\ a\\ thing")[0]);
             jqUnit.assertEquals("Unicode unescaping", "\u30b5\u30a4\u30c8\u304b\u3089\u3053\u306e\u30da\u30fc\u30b8\u3092\u524a\u9664", fluid.unescapeProperties("\\u30b5\\u30a4\\u30c8\\u304b\\u3089\\u3053\\u306e\\u30da\\u30fc\\u30b8\\u3092\\u524a\\u9664")[0]);
             // 10 slashes ACTUALLY means 5 REAL \ characters
-            jqUnit.assertDeepEq("Random junk", ["\\\\\\\\\\ \t\nThing\x53\u0000", true], fluid.unescapeProperties("\\\\\\\\\\\\\\\\\\\\\ \\t\\nThing\\x53\\u0000\\")); // jshint ignore:line - testing unescaping function
+            jqUnit.assertDeepEq("Random junk", ["\\\\\\\\\\ \t\nThing\x53\u0000", true], fluid.unescapeProperties("\\\\\\\\\\\\\\\\\\\\\ \\t\\nThing\\x53\\u0000\\")); // jshint ignore:line
         });
 
         jqUnit.test("Nested data binding", function () {

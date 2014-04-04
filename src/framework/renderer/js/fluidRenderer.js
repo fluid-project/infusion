@@ -203,7 +203,7 @@ fluid_1_5 = fluid_1_5 || {};
                 //  tree.childmap[child.ID] = child; // moved out of branch to allow
                 // "relative id expressions" to be easily parsed
                 }
-                else { // jshint ignore:line - TODO: review the above
+                else { // jshint ignore:line
                     var prefix = child.ID.substring(0, colpos);
                     var childlist = tree.childmap[prefix];
                     if (!childlist) {
@@ -1466,7 +1466,7 @@ fluid_1_5 = fluid_1_5 || {};
             else {
               // TODO: fetch via AJAX, and convert format if necessary
             }
-        } // jshint ignore:line - empty block
+        } // jshint ignore:line
         else if (messageSource.type === "resolver") {
             return messageSource.resolver.resolve;
         }
