@@ -944,7 +944,8 @@ var fluid_1_5 = fluid_1_5 || {};
             if (!fluid.model.isSameValue(targetSlot, source)) {
                 changedValue = source;
             }
-        } else if (targetCode !== sourceCode) { // RH is not primitive - array or object and mismatching
+        } else if (targetCode !== sourceCode || sourceCode === "array" && source.length !== targetSlot.length) {
+            // RH is not primitive - array or object and mismatching or any array rewrite
             changedValue = fluid.freshContainer(source);
         }
         if (changedValue !== fluid.NO_VALUE) {

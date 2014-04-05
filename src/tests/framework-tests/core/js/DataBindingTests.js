@@ -329,11 +329,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: {v: {a: 1}},
         changes: 1,
         changeMap: {v: "ADD"}
+    }, {
+        message: "Array on array - avoid mouse droppings",
+        model: [{a: 1}, {b: 2}],
+        request: {type: "ADD", path: "", value: [{b: 2}]},
+        expected: [{b: 2}],
+        changes: 1,
+        changeMap: "ADD"
     }
     ];
 
     jqUnit.test("ApplyHolderChangeRequest - cautious application + invalidation", function () {
-        for (var i = 0; i < fluid.tests.changeTests.length; ++ i) {
+        for (var i = 13; i < fluid.tests.changeTests.length; ++ i) {
             var test = fluid.tests.changeTests[i];
             var holder = {model: fluid.copy(test.model)};
             var options = {changeMap: {}, changes: 0};
