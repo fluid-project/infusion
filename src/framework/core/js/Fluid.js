@@ -993,7 +993,7 @@ var fluid = fluid || fluid_1_5;
     };
 
     fluid.event.identifyListener = function (listener) {
-        if (!listener.$$fluid_guid) {
+        if (typeof(listener) !== "string" && !listener.$$fluid_guid) {
             listener.$$fluid_guid = fluid.allocateGuid();
         }
         return listener.$$fluid_guid;
