@@ -340,7 +340,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     ];
 
     jqUnit.test("ApplyHolderChangeRequest - cautious application + invalidation", function () {
-        for (var i = 13; i < fluid.tests.changeTests.length; ++ i) {
+        for (var i = 0; i < fluid.tests.changeTests.length; ++ i) {
             var test = fluid.tests.changeTests[i];
             var holder = {model: fluid.copy(test.model)};
             var options = {changeMap: {}, changes: 0};
