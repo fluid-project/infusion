@@ -28,7 +28,7 @@ var demo = demo || {};
     demo.initPager = function () {
         var resources = {
             users: {
-                href: "../data/pager.json",
+                href: "data/pager.json",
                 options: {
                     dataType: "json"
                 }

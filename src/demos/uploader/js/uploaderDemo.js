@@ -27,7 +27,7 @@ var demo = demo || {};
         // Since the template is actually a standalone Web page, we also need to 
         // specify a selector that points to the part of the page we're interested in.
         
-        var templateURL = "../../../components/uploader/html/Uploader.html";
+        var templateURL = "../../components/uploader/html/Uploader.html";
         var fragmentSelector = ".fl-uploader";
         
         $("#uploader-contents").load(templateURL + " " + fragmentSelector, function () {
