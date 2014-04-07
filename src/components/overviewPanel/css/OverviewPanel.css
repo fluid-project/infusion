@@ -19,14 +19,20 @@
      * Customize these values to change the positioning.
      * 
      * Note: If you change the position, you may have to change the position of 
-     * .fl-overviewPanel-hidden .fl-overviewPanel-body so that the transition
-     * goes in the desired direction.
+     * .fl-overviewPanel-hidden styles so that the transition goes in the desired 
+     * direction.
      */
     position:fixed;
     top:0;
     left:0;
     width:24em;
     overflow: auto;
+    
+    /* Note about transitions:
+     * There are two transitions: one for fl-overviewPanel-container and one for 
+     * fl-overviewPanel-body. Both these transitions are necessary for the desired
+     * visual effect when hiding and showing.
+     */
 }
 
 /* General styles */
@@ -37,8 +43,10 @@
   clear: both;
 }
 
-
 .fl-overviewPanel {
+    transition: left 0.2s linear;
+    position: relative;
+    left: 0;
     font-family: 'Open Sans', sans-serif;
     color: #fff;
     font-size: 0.8em;
@@ -61,6 +69,13 @@
 
 /* The Star icon that acts as a toggle button */
 
+.fl-overviewPanel-icon-fluidStar {
+    position:fixed;
+    top:0.2em;
+    left:0.2em;
+    z-index: 1; /* Z-index and position relative is defined so it appears properly relative to the panel's title. */    
+}
+
 .fl-overviewPanel-icon-fluidStar a {
     text-decoration: none;
     font-size: 1.5em;
@@ -69,10 +84,9 @@
     padding: 0.7em 0.3em;
     color: #fff;
     float: left;
-    z-index: 1; /* Z-index and position relative is defined so it appears properly relative to the panel's title. */
     position:relative;
     background-color: #333; /* IE8 */
-    background-color: rgba(51,51,51,.96);
+    background-color: rgba(51,51,51,.96);    
 }
 
 
@@ -91,19 +105,27 @@
 }
 
 /* Demo Menu Visibility */
+
+.fl-overviewPanel-container.fl-overviewPanel-hidden{
+    width: 0;
+}
+
+.fl-overviewPanel-hidden .fl-overviewPanel {
+    left: -30em; 
+}
+
 .fl-overviewPanel-hidden .fl-overviewPanel-body {
     position: relative;
     left: -30em; /* Change (minus) this value if the edge of the panel stays on the screen before visibility:hidden takes effect. */
     visibility:hidden;
 }
 
-
 /* Header area with title */
 .fl-overviewPanel-title {
     background-color: #333;
     font-family: 'Roboto Slab', serif;
     color: #ccc;
-    padding: 0.5em;
+    padding: 0.5em 0.5em 0.5em 3em;
 }
 
 .fl-overviewPanel-title h1 {
@@ -133,6 +155,7 @@
 .fl-overviewPanel-instructions {
     border: 0.2em solid #FFCC00;
     padding: 1em;
+    margin-top: 2em;
 }
 
 .fl-overviewPanel-instructions h2 {
@@ -154,7 +177,6 @@
 .fl-overviewPanel-links ul li a {
     color: #fff;
     text-decoration: none;
-    text-transform:lowercase;
 }
 
 .fl-overviewPanel-links-icon-api,
@@ -240,6 +262,16 @@
 .fl-theme-uio-bw .fl-overviewPanel *:focus { outline: 0.2em solid #000; }
 .fl-theme-uio-bw .fl-overviewPanel-instructions { border: 0.2em solid #000; }
 
+.fl-theme-uio-bw .fl-overviewPanel-hidden .fl-overviewPanel { /* when hidden */
+    border-width: 0;
+}
+
+.fl-theme-uio-bw .fl-overviewPanel-hidden .fl-overviewPanel-icon-fluidStar a{
+    border: 0.1em solid #000;
+    outline: 0.3em solid #fff;
+}
+
+
 /* white on black */
 .fl-theme-uio-wb .fl-overviewPanel,
 .fl-theme-uio-wb .fl-overviewPanel-body,
@@ -265,6 +297,12 @@
 .fl-theme-uio-wb .fl-overviewPanel a { text-decoration: underline; }
 .fl-theme-uio-wb .fl-overviewPanel *:focus { outline: 0.2em solid #fff; }
 .fl-theme-uio-wb .fl-overviewPanel-instructions { border: 0.2em solid #fff; }
+
+.fl-theme-uio-wb .fl-overviewPanel-hidden .fl-overviewPanel-icon-fluidStar a{
+    border: 0.1em solid #fff;
+    outline: 0.3em solid #000;
+}
+
 
 /* Low contrast: light grey on dark grey */
 .fl-theme-uio-lgdg .fl-overviewPanel,
@@ -292,6 +330,12 @@
 .fl-theme-uio-lgdg .fl-overviewPanel *:focus { outline: 0.2em solid #bdbdbb; }
 .fl-theme-uio-lgdg .fl-overviewPanel-instructions { border: 0.2em solid #bdbdbb; }
 
+.fl-theme-uio-lgdg .fl-overviewPanel-hidden .fl-overviewPanel-icon-fluidStar a{
+    border: 0.1em solid #bdbdbb;
+    outline: 0.3em solid #555;
+}
+
+
 /* Yellow on Black */
 .fl-theme-uio-yb .fl-overviewPanel,
 .fl-theme-uio-yb .fl-overviewPanel-body,
@@ -318,6 +362,12 @@
 .fl-theme-uio-yb .fl-overviewPanel *:focus { outline: 0.2em solid #FFFF00; }
 .fl-theme-uio-yb .fl-overviewPanel-instructions { border: 0.2em solid #FFFF00; }
 
+.fl-theme-uio-yb .fl-overviewPanel-hidden .fl-overviewPanel-icon-fluidStar a{
+    border: 0.1em solid #ffff00;
+    outline: 0.3em solid #000;
+}
+
+
 /* Black on Yellow */
 .fl-theme-uio-by .fl-overviewPanel,
 .fl-theme-uio-by .fl-overviewPanel-body,
@@ -343,3 +393,8 @@
 .fl-theme-uio-by .fl-overviewPanel a { text-decoration: underline; }
 .fl-theme-uio-by .fl-overviewPanel *:focus { outline: 0.2em solid #000; }
 .fl-theme-uio-by .fl-overviewPanel-instructions { border: 0.2em solid #000; }
+
+.fl-theme-uio-by .fl-overviewPanel-hidden .fl-overviewPanel-icon-fluidStar a{
+    border: 0.1em solid #000;
+    outline: 0.3em solid #ffff00;
+}
