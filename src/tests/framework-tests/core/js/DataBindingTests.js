@@ -1316,10 +1316,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "noflashing": "noflashing"
                 }
             }
-        }]
+        }],
+        components: {
+            sub: {
+                type: "fluid.standardRelayComponent",
+                options: {
+                    model: {
+                        accessibilityHazard: "{fluid5293}.model.accessibilityHazard",
+                        highContrast: "{fluid5293}.model.modelInTransit.highContrast",
+                        signLanguage: "{fluid5293}.model.modelInTransit.signLanguage"
+                    }
+                }
+            }
+        }
     });
 
-    jqUnit.test("FLUID-5293: Transforming relay from child to parent", function () {
+    jqUnit.test("FLUID-5293: Model relay and transformation for array elements", function () {
         var that = fluid.tests.fluid5293();
         var expectedModel = {
             accessibilityHazard: [],
@@ -1345,7 +1357,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         that.applier.requestChange("modelInTransit.flashing", false);
         that.applier.requestChange("modelInTransit.noflashing", false);
-        jqUnit.assertDeepEq("The inverted transformation to remove array values is performed properly", expectedModel, that.model);
+        jqUnit.assertDeepEq("The backward transformation to remove array values is performed properly", expectedModel, that.model);
+
+        var expectedSubcomponentModel = {
+            accessibilityHazard: ["flashing", "noflashing"],
+            highContrast: true,
+            signLanguage: true
+        };
+        that.applier.requestChange("accessibilityHazard", ["flashing", "noflashing"]);
+        jqUnit.assertDeepEq("The change request on the model array element is properly relayed and transformed to the subcomponent", expectedSubcomponentModel, that.sub.model);
     });
 
 })(jQuery);
