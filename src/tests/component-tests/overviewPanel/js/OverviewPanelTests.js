@@ -49,75 +49,75 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         titleLink: "#eee"
     };
 
+    fluid.tests.overviewPanel.assertModelAndStylesForClosedPanel = function (that) {
+        jqUnit.assertFalse("Check that model.showPanel is false", that.model.showPanel);
+        jqUnit.assertTrue("Check that container has hidden style", that.container.hasClass(that.options.styles.hidden));
+    };
+
+    fluid.tests.overviewPanel.assertAriaForClosedPanel = function (that) {
+        jqUnit.assertEquals("Check that toggleControl aria-pressed is true",
+            "true", that.locate("toggleControl").attr("aria-pressed"));
+        jqUnit.assertEquals("Check that toggleControl aria-expanded is false",
+            "false", that.locate("toggleControl").attr("aria-expanded"));
+        jqUnit.assertEquals("Check that closeControl aria-expanded is false",
+            "false", that.locate("closeControl").attr("aria-expanded"));
+        jqUnit.assertEquals("Check toggleControl aria-label",
+            that.options.strings.openPanelLabel, that.locate("toggleControl").attr("aria-label"));
+        jqUnit.assertEquals("Check closeControl aria-label",
+            that.options.strings.closePanelLabel, that.locate("closeControl").attr("aria-label"));
+    };
+
+    fluid.tests.overviewPanel.assertPanelIsClosed = function (that) {
+        fluid.tests.overviewPanel.assertModelAndStylesForClosedPanel(that);
+        fluid.tests.overviewPanel.assertAriaForClosedPanel(that);
+    };
+
+    fluid.tests.overviewPanel.assertPanelIsOpen = function (that) {
+        jqUnit.assertTrue("Check that model.showPanel is true", that.model.showPanel);
+        jqUnit.assertFalse("Check that container does not have hidden style",
+            that.container.hasClass(that.options.styles.hidden));
+        jqUnit.assertEquals("Check that toggleControl aria-pressed is false",
+            "false", that.locate("toggleControl").attr("aria-pressed"));
+        jqUnit.assertEquals("Check that toggleControl aria-expanded is true",
+            "true", that.locate("toggleControl").attr("aria-expanded"));
+        jqUnit.assertEquals("Check that closeControl aria-expanded is true",
+            "true", that.locate("closeControl").attr("aria-expanded"));
+        jqUnit.assertEquals("Check toggleControl aria-label",
+            that.options.strings.closePanelLabel, that.locate("toggleControl").attr("aria-label"));
+        jqUnit.assertEquals("Check closeControl aria-label",
+            that.options.strings.closePanelLabel, that.locate("closeControl").attr("aria-label"));
+    };
+
+    fluid.tests.overviewPanel.verifyRendering = function (that, strings, markup, links) {
+        // check strings
+        fluid.each(strings, function (value, key) {
+            jqUnit.assertEquals("Check string with selector '" + key + "'", value, that.locate(key).text());
+        });
+
+        // check markup
+        jqUnit.assertEquals("Check markup with selector 'description'", markup.description, that.locate("description").html());
+        jqUnit.assertEquals("Check markup with selector 'instructions'", markup.instructions, that.locate("instructions").html());
+
+        // check links
+        jqUnit.assertEquals("Check link for selector 'codeLink'", links.codeLink, that.locate("codeLink").attr("href"));
+        jqUnit.assertEquals("Check link for selector 'apiLink'", links.apiLink, that.locate("apiLink").attr("href"));
+        jqUnit.assertEquals("Check link for selector 'designLink'", links.designLink, that.locate("designLink").attr("href"));
+        jqUnit.assertEquals("Check link for selector 'feedbackLink'", links.feedbackLink, that.locate("feedbackLink").attr("href"));
+        jqUnit.assertEquals("Check link for selector 'titleLink'", links.titleLink, that.locate("titleLink").attr("href"));
+
+        // check aria-controls
+        var containerId = that.container.attr("id");
+        jqUnit.assertEquals("Check aria-controls on toggleControl (" + containerId + ")",
+            containerId, that.locate("toggleControl").attr("aria-controls"));
+        jqUnit.assertEquals("Check aria-controls on closeControl (" + containerId + ")",
+            containerId, that.locate("closeControl").attr("aria-controls"));
+
+        jqUnit.start();
+    };
+
     $(document).ready(function () {
 
         jqUnit.module("OverviewPanel Tests");
-
-        var assertModelAndStylesForClosedPanel = function (that) {
-            jqUnit.assertFalse("Check that model.showPanel is false", that.model.showPanel);
-            jqUnit.assertTrue("Check that container has hidden style", that.container.hasClass(that.options.styles.hidden));
-        };
-
-        var assertAriaForClosedPanel = function (that) {
-            jqUnit.assertEquals("Check that toggleControl aria-pressed is true",
-                "true", that.locate("toggleControl").attr("aria-pressed"));
-            jqUnit.assertEquals("Check that toggleControl aria-expanded is false",
-                "false", that.locate("toggleControl").attr("aria-expanded"));
-            jqUnit.assertEquals("Check that closeControl aria-expanded is false",
-                "false", that.locate("closeControl").attr("aria-expanded"));
-            jqUnit.assertEquals("Check toggleControl aria-label",
-                that.options.strings.openPanelLabel, that.locate("toggleControl").attr("aria-label"));
-            jqUnit.assertEquals("Check closeControl aria-label",
-                that.options.strings.closePanelLabel, that.locate("closeControl").attr("aria-label"));
-        };
-
-        var assertPanelIsClosed = function (that) {
-            assertModelAndStylesForClosedPanel(that);
-            assertAriaForClosedPanel(that);
-        };
-
-        var assertPanelIsOpen = function (that) {
-            jqUnit.assertTrue("Check that model.showPanel is true", that.model.showPanel);
-            jqUnit.assertFalse("Check that container does not have hidden style",
-                that.container.hasClass(that.options.styles.hidden));
-            jqUnit.assertEquals("Check that toggleControl aria-pressed is false",
-                "false", that.locate("toggleControl").attr("aria-pressed"));
-            jqUnit.assertEquals("Check that toggleControl aria-expanded is true",
-                "true", that.locate("toggleControl").attr("aria-expanded"));
-            jqUnit.assertEquals("Check that closeControl aria-expanded is true",
-                "true", that.locate("closeControl").attr("aria-expanded"));
-            jqUnit.assertEquals("Check toggleControl aria-label",
-                that.options.strings.closePanelLabel, that.locate("toggleControl").attr("aria-label"));
-            jqUnit.assertEquals("Check closeControl aria-label",
-                that.options.strings.closePanelLabel, that.locate("closeControl").attr("aria-label"));
-        };
-
-        var verifyRendering = function (that, strings, markup, links) {
-            // check strings
-            fluid.each(strings, function (value, key) {
-                jqUnit.assertEquals("Check string with selector '" + key + "'", value, that.locate(key).text());
-            });
-
-            // check markup
-            jqUnit.assertEquals("Check markup with selector 'description'", markup.description, that.locate("description").html());
-            jqUnit.assertEquals("Check markup with selector 'instructions'", markup.instructions, that.locate("instructions").html());
-
-            // check links
-            jqUnit.assertEquals("Check link for selector 'codeLink'", links.codeLink, that.locate("codeLink").attr("href"));
-            jqUnit.assertEquals("Check link for selector 'apiLink'", links.apiLink, that.locate("apiLink").attr("href"));
-            jqUnit.assertEquals("Check link for selector 'designLink'", links.designLink, that.locate("designLink").attr("href"));
-            jqUnit.assertEquals("Check link for selector 'feedbackLink'", links.feedbackLink, that.locate("feedbackLink").attr("href"));
-            jqUnit.assertEquals("Check link for selector 'titleLink'", links.titleLink, that.locate("titleLink").attr("href"));
-
-            // check aria-controls
-            var containerId = that.container.attr("id");
-            jqUnit.assertEquals("Check aria-controls on toggleControl (" + containerId + ")",
-                containerId, that.locate("toggleControl").attr("aria-controls"));
-            jqUnit.assertEquals("Check aria-controls on closeControl (" + containerId + ")",
-                containerId, that.locate("closeControl").attr("aria-controls"));
-
-            jqUnit.start();
-        };
 
         jqUnit.asyncTest("Verify Rendering", function () {
             jqUnit.expect(20);
@@ -125,7 +125,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 resources: fluid.tests.overviewPanel.resources,
                 listeners: {
                     "afterRender": {
-                        "listener": verifyRendering,
+                        "listener": fluid.tests.overviewPanel.verifyRendering,
                         "args": ["{that}", fluid.tests.overviewPanel.strings, fluid.tests.overviewPanel.markup, fluid.tests.overviewPanel.links],
                         "priority": "last"
                     }
@@ -138,11 +138,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 
         var verifyAtOnCreateWhenInitiallyHidden = function (that) {
-            assertModelAndStylesForClosedPanel(that);
+            fluid.tests.overviewPanel.assertModelAndStylesForClosedPanel(that);
         };
 
         var verifyAtAfterRenderWhenInitiallyHidden = function (that) {
-            assertAriaForClosedPanel(that);
+            fluid.tests.overviewPanel.assertAriaForClosedPanel(that);
             jqUnit.start();
         };
 
@@ -168,7 +168,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         var verifyWhenInitiallyVisible = function (that) {
             // check that the panel is open at the point of afterRender
-            assertPanelIsOpen(that);
+            fluid.tests.overviewPanel.assertPanelIsOpen(that);
             jqUnit.start();
         };
 
@@ -189,9 +189,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         var verifyCloseControl = function (that) {
-            assertPanelIsOpen(that);
+            fluid.tests.overviewPanel.assertPanelIsOpen(that);
             that.locate("closeControl").click();
-            assertPanelIsClosed(that);
+            fluid.tests.overviewPanel.assertPanelIsClosed(that);
             jqUnit.start();
         };
 
@@ -212,9 +212,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         var verifyClosePanelInvoker = function (that) {
-            assertPanelIsOpen(that);
+            fluid.tests.overviewPanel.assertPanelIsOpen(that);
             that.closePanel();
-            assertPanelIsClosed(that);
+            fluid.tests.overviewPanel.assertPanelIsClosed(that);
             jqUnit.start();
         };
 
@@ -235,15 +235,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         var verifyToggleControl = function (that) {
-            assertPanelIsOpen(that);
+            fluid.tests.overviewPanel.assertPanelIsOpen(that);
             that.locate("toggleControl").click();
-            assertPanelIsClosed(that);
+            fluid.tests.overviewPanel.assertPanelIsClosed(that);
             that.locate("toggleControl").click();
-            assertPanelIsOpen(that);
+            fluid.tests.overviewPanel.assertPanelIsOpen(that);
             that.locate("closeControl").click();
-            assertPanelIsClosed(that);
+            fluid.tests.overviewPanel.assertPanelIsClosed(that);
             that.locate("toggleControl").click();
-            assertPanelIsOpen(that);
+            fluid.tests.overviewPanel.assertPanelIsOpen(that);
             jqUnit.start();
         };
 
@@ -264,15 +264,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         var verifyTogglePanelInvoker = function (that) {
-            assertPanelIsOpen(that);
+            fluid.tests.overviewPanel.assertPanelIsOpen(that);
             that.togglePanel();
-            assertPanelIsClosed(that);
+            fluid.tests.overviewPanel.assertPanelIsClosed(that);
             that.togglePanel();
-            assertPanelIsOpen(that);
+            fluid.tests.overviewPanel.assertPanelIsOpen(that);
             that.closePanel();
-            assertPanelIsClosed(that);
+            fluid.tests.overviewPanel.assertPanelIsClosed(that);
             that.togglePanel();
-            assertPanelIsOpen(that);
+            fluid.tests.overviewPanel.assertPanelIsOpen(that);
             jqUnit.start();
         };
 
