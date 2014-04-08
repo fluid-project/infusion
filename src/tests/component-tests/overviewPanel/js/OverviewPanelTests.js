@@ -47,7 +47,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             codeLinkHref: "#aaa",
             apiLinkHref: "#bbb",
             designLinkHref: "#ccc",
-            feedbackLinkHref: "#ddd"
+            feedbackLinkHref: "#ddd",
+            titleLinkHref: "#eee"
         };
 
         var assertModelAndStylesForClosedPanel = function (that) {
@@ -104,6 +105,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Check link for selector 'apiLink'", links.apiLinkHref, that.locate("apiLink").attr("href"));
             jqUnit.assertEquals("Check link for selector 'designLink'", links.designLinkHref, that.locate("designLink").attr("href"));
             jqUnit.assertEquals("Check link for selector 'feedbackLink'", links.feedbackLinkHref, that.locate("feedbackLink").attr("href"));
+            jqUnit.assertEquals("Check link for selector 'titleLink'", links.titleLinkHref, that.locate("titleLink").attr("href"));
 
             // check aria-controls
             var containerId = that.container.attr("id");
@@ -116,7 +118,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         jqUnit.asyncTest("Verify Rendering", function () {
-            jqUnit.expect(19);
+            jqUnit.expect(20);
             fluid.overviewPanel(".flc-overviewPanel", {
                 resources: resources,
                 listeners: {

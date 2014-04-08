@@ -51,6 +51,11 @@ var fluid_1_5 = fluid_1_5 || {};
                 "method": "click",
                 "args": fluid.overviewPanel.preventDefault
             },
+            "afterRender.setTitleLinkHref": {
+                "this": "{that}.dom.titleLink",
+                "method": "attr",
+                "args": ["href", "{that}.options.links.titleLinkHref"]
+            },
             "afterRender.setCodeLinkHref": {
                 "this": "{that}.dom.codeLink",
                 "method": "attr",
@@ -121,6 +126,7 @@ var fluid_1_5 = fluid_1_5 || {};
         selectors: {
             toggleControl: ".flc-overviewPanel-toggleControl",
             titleBegin: ".flc-overviewPanel-title-begin",
+            titleLink: ".flc-overviewPanel-titleLink",
             titleLinkText: ".flc-overviewPanel-title-linkText",
             titleEnd: ".flc-overviewPanel-title-end",
             componentName: ".flc-overviewPanel-componentName",
@@ -139,7 +145,7 @@ var fluid_1_5 = fluid_1_5 || {};
             closeControl: ".flc-overviewPanel-closeControl",
             closeText: ".flc-overviewPanel-closeText"
         },
-        selectorsToIgnore: ["toggleControl", "codeLink", "apiLink", "designLink", "feedbackLink", "closeControl"],
+        selectorsToIgnore: ["toggleControl", "titleLink", "codeLink", "apiLink", "designLink", "feedbackLink", "closeControl"],
         protoTree: {
             titleBegin: {messagekey: "titleBegin"},
             titleLinkText: {messagekey: "titleLinkText"},
@@ -178,6 +184,7 @@ var fluid_1_5 = fluid_1_5 || {};
             instructions: "<p>Do this to do this. Do that to do that.</p>"
         },
         links: {
+            titleLinkHref: "http://fluidproject.org/projects/",
             codeLinkHref: "#",
             apiLinkHref: "#",
             designLinkHref: "#",
