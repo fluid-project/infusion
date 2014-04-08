@@ -1365,6 +1365,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             signLanguage: true
         };
         that.applier.requestChange("accessibilityHazard", ["flashing", "noflashing"]);
+        jqUnit.assertDeepEq("The transformation from array elements to the intermediary object is performed properly", expectedModelAfterChangeRequest, that.model);
         jqUnit.assertDeepEq("The change request on the model array element is properly relayed and transformed to the subcomponent", expectedSubcomponentModel, that.sub.model);
     });
 
