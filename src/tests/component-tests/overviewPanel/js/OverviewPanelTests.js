@@ -95,8 +95,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         // check markup
-        jqUnit.assertEquals("Check markup with selector 'description'", markup.description, that.locate("description").html());
-        jqUnit.assertEquals("Check markup with selector 'instructions'", markup.instructions, that.locate("instructions").html());
+        jqUnit.assertEquals("Check markup with selector 'description'",
+            markup.description, that.locate("description").html().replace(/SPAN/g, "span"));
+        jqUnit.assertEquals("Check markup with selector 'instructions'",
+            markup.instructions, that.locate("instructions").html().replace(/SPAN/g, "span"));
 
         // check links
         jqUnit.assertEquals("Check link for selector 'codeLink'", links.codeLink, that.locate("codeLink").attr("href"));
