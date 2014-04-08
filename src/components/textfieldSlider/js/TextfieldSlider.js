@@ -33,7 +33,9 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     model: "{textfieldSlider}.model",
                     range: "{textfieldSlider}.options.range",
-                    applier: "{textfieldSlider}.applier"
+                    members: {
+                        applier: "{textfieldSlider}.applier"
+                    }
                 }
             },
             slider: {
@@ -42,7 +44,9 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     model: "{textfieldSlider}.model",
                     range: "{textfieldSlider}.options.range",
-                    applier: "{textfieldSlider}.applier",
+                    members: {
+                        applier: "{textfieldSlider}.applier"
+                    },
                     sliderOptions: "{textfieldSlider}.options.sliderOptions"
                 }
             }
@@ -110,15 +114,13 @@ var fluid_1_5 = fluid_1_5 || {};
         var oldValue = model.value;
         var newValue = changeRequest.value;
 
-        var isValidNum = !isNaN(parseInt(newValue, 10));
-
-        if (isValidNum) {
+        if (!isNaN(parseInt(newValue, 10))) {
             if (newValue < range.min) {
                 newValue = range.min;
             } else if (newValue > range.max) {
                 newValue = range.max;
             }
-            changeRequest.value = newValue;
+            changeRequest.value = Number(newValue);
         } else {
             changeRequest.value = oldValue;
         }

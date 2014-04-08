@@ -61,7 +61,8 @@ function fetchLightboxRoot() {
 }
 
 function focusLightbox() {
-    fetchLightboxRoot()[0].focus();
+    var root = fetchLightboxRoot();
+    fluid.focus(root);
 }
 
 function findOrderableByDivAndId(containerEl) {

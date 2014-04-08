@@ -76,22 +76,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     });
     
-    fluid.tests.pagerModelChange = function (newModel, oldModel, pageChangeStats) {
-        pageChangeStats.pageNum = newModel.pageIndex;
-        pageChangeStats.oldPageNum = oldModel.pageIndex;      
+    fluid.tests.pagerModelChange = function (newPageIndex, oldPageIndex, pageChangeStats) {
+        pageChangeStats.pageNum = newPageIndex;
+        pageChangeStats.oldPageNum = oldPageIndex;      
     };
 
-    // TODO: Write this up as a successful example of refactoring through use of the new framework    
+    // TODO: Write this up as a successful example of refactoring through use of the new framework
+    // TODO: Now even more successful with FLUID-4258 system    
     var pageChangeOptions = {
         members: {
             pageChangeStats: {}
         },
-        listeners: {
-            onModelChange: {
-                funcName: "fluid.tests.pagerModelChange",
-                args: ["{arguments}.0", "{arguments}.1", "{fluid.pager}.pageChangeStats"]
-
-            }
+        modelListeners: {
+            "pageIndex": "fluid.tests.pagerModelChange({change}.value, {change}.oldValue, {fluid.pager}.pageChangeStats)"
         }
     };
     

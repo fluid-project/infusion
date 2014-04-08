@@ -63,7 +63,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var k = fluid.testUtils.reorderer.bindReorderer(itemIds);
             var options = assembleOptions(false); 
             var listReorderer = fluid.reorderList("#list1", options);
-            var item2 = $("#list1item2").focus();
+            var item2 = fluid.focus($("#list1item2"));
             var item3 = $("#list1item3");
             
             // Sniff test the reorderer that was created - keyboard selection and movement
@@ -128,7 +128,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
             var listReorderer = fluid.reorderList("#list2", options);
             
-            var item1 = $("#list2item1").focus();
+            var item1 = fluid.focus($("#list2item1"));
             var item2 = $("#list2item2");
             var item3 = $("#list2item3");
                 

@@ -151,8 +151,30 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertEquals("Calling on allocateSimpleId with parameter returns an ID starts with 'fluid-id-'", 0, fluidId.indexOf("fluid-id-"));
             jqUnit.assertEquals("The element ID should be set after allocateSimpleId is called with element.", fluidId, element.id);
         });
-          
-          
+        
+        
+        // FLUID-5277: Improve the error message when an nonexistent container is provided for fluid.viewRelayComponent and fluid.rendererRelayComponent
+        fluid.defaults("fluid.tests.fluid5277", {
+            gradeNames: ["fluid.viewRelayComponent", "autoInit"]
+        });
+    
+        jqUnit.test("FLUID-5277: Improve the error message when an nonexistent container is provided for fluid.viewRelayComponent and fluid.rendererRelayComponent", function () {
+            var ourError;
+            fluid.pushSoftFailure(function () {
+                ourError = fluid.makeArray(arguments).join("");
+                throw new Error();
+            });
+            jqUnit.expect(2);
+            try {
+                var that = fluid.tests.fluid5277("#nonexistent-container");
+            } catch (e) {
+                jqUnit.assertValue("Triggered framework diagnostic", ourError);
+                jqUnit.assertTrue("Diagnostic message is correct", ourError.indexOf("did not match any markup") !== -1);
+            } finally {
+                fluid.pushSoftFailure(-1);
+            }
+        });
+        
               
         fluid.tests.testComponent = function (container, options) {
             var that = fluid.initView("fluid.tests.testComponent", container, options);
@@ -211,7 +233,12 @@ fluid.registerNamespace("fluid.tests");
             var that = fluid.tests.testGradedView("#pager-top", {model: model});
             jqUnit.assertValue("Constructed component", that);
             jqUnit.assertEquals("Constructed functioning DOM binder", 3, that.locate("page-link").length);
-            jqUnit.assertEquals("View component correctly preserved model", that.model, model);   
+            // Distinguish between the behaviour of the "old" and "new" modelComponents
+            if (fluid.hasGrade(that.options, "fluid.modelRelayComponent")) {
+                jqUnit.assertDeepEq("View component acquired model", model, that.model);  
+            } else {
+                jqUnit.assertEquals("View component correctly preserved model", model, that.model);
+            }   
         });
       
         fluid.tests.blurTester = function (container, options) {
@@ -231,13 +258,6 @@ fluid.registerNamespace("fluid.tests");
      
         function noteTime() {
             jqUnit.assertTrue("Time : " + fluid.renderTimestamp(new Date()), true);  
-        }
-     
-        // This function is necessary since simulation of focus events by jQuery under IE
-        // is not sufficiently good to intercept the "focusin" binding.
-        function applyOp(node, func) {
-            var raw = fluid.unwrap(node);
-            raw[func] ? raw[func]() : node[func]();   
         }
      
         function blurTest(message, provokeTarget, provokeOp, shouldBlur, excludeMaker) { 
@@ -266,7 +286,7 @@ fluid.registerNamespace("fluid.tests");
                 
                 excluded.append($("<input></input>").addClass("excluded"));
                 
-                applyOp(input, "focus");
+                fluid.focus(input);
                  
                 var blurOutwaiter = function () {
                     jqUnit.assertTrue(message + " - Blur handler has not executed", shouldBlur ^ !blurReceived);
@@ -274,10 +294,15 @@ fluid.registerNamespace("fluid.tests");
                     jqUnit.start();
                 };
     
-                applyOp(input, "blur");
+                fluid.blur(input);
                 window.setTimeout(function () {
                     fluid.log("Apply " + provokeOp + " to " + provokeTarget);
-                    applyOp(blurTester.locate(provokeTarget), provokeOp);
+                    var element = blurTester.locate(provokeTarget);
+                    if (provokeOp === "click") {
+                        element.click();
+                    } else{
+                        fluid[provokeOp](element);
+                    }
                 }, blurrer.options.delay - 100);
                  
                 window.setTimeout(blurOutwaiter, blurrer.options.delay + 300);

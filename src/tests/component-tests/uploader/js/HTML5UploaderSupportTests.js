@@ -276,38 +276,96 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         /****************************
          * browseButtonView() Tests *
          ****************************/
-        
-        jqUnit.test("Uploader HTML5 browseHandler", function () {
-            var browseButton = $("#browseButton");
-            var browseButtonView = fluid.uploader.html5Strategy.browseButtonView("#browseButtonContainer", {
-                queueSettings: {
-                    fileTypes: []
+         
+        fluid.defaults("fluid.tests.uploader.HTML5.browseTree", {
+            //markupFixture: "#iocBrowseButtonContainer",
+            gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+            components: {
+                browseButtonView: {
+                    type: "fluid.uploader.html5Strategy.browseButtonView",
+                    container: "#iocBrowseButtonContainer",
+                    options: {
+                        queueSettings: {
+                            fileTypes: []
+                        }
+                    }
+                },
+                fixtures: {
+                    type: "fluid.tests.uploader.HTML5.browseTreeFixtures"
                 }
-            });
+            }
+        });
+        
+        fluid.defaults("fluid.tests.uploader.HTML5.browseTreeFixtures", {
+            gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+            modules: [ {
+                name: "Browse button tests",
+                tests: [{
+                    name: "Focus sequence",
+                    sequence: [ {
+                        func: "fluid.tests.uploader.HTML5.initial",
+                        args: ["{browseButtonView}"]
+                    }, {
+                        func: "fluid.tests.uploader.HTML5.focusInput",
+                        args: ["{browseButtonView}", 1, true]
+                    }, {
+                        listener: "fluid.tests.uploader.HTML5.checkFocused",
+                        event: "{browseButtonView}.events.onFocusFileInput"
+                    }, {
+                        func: "fluid.tests.uploader.HTML5.focusInput",
+                        args: ["{browseButtonView}", 1, false]
+                    }, {
+                        listener: "fluid.tests.uploader.HTML5.checkFocused",
+                        event: "{browseButtonView}.events.onFocusFileInput"
+                    }]
+                }]
+            }]
+        });
+        
+        fluid.tests.uploader.HTML5.focusInput = function (browseButtonView, index, focus) {
+            var inputs = browseButtonView.browseButton.children();
+            var input = inputs.eq(index);
+            window.setTimeout(function () {
+                if (focus) {
+                  input[0].focus();
+                } else { // a Firefox bug makes a direct "blur" on the element itself ineffective at transferring focus away
+                  $("#focusTarget").focus();
+                }
+            }, 100); // This delay is necessary on Firefox since there seems an initial "refractory period" on load where the upload control will not accept focus
+        };
+        
+        fluid.tests.uploader.HTML5.checkFocused = function (browseButtonView, fileInput, isFocus) {
+            var browseButton = browseButtonView.browseButton;
+            var message = isFocus ? "On focus, the browseButton input has the focus class" : "On blur, the browseButton no longer has the focus class";
+            jqUnit.assertEquals(message, isFocus, browseButton.hasClass("focus"));
+        };
+        
+        fluid.tests.uploader.HTML5.initial = function (browseButtonView) {
+            var browseButton = $("#iocBrowseButton");
 
             var inputs = browseButton.children();
             jqUnit.assertEquals("There should be one multi-file input element at the start", 1, inputs.length);
             jqUnit.assertEquals("The multi-file input element should be visible and in the tab order to start", 
-                0, inputs.eq(0).attr("tabindex"));
+                0, inputs.eq(0).prop("tabindex"));
             
             browseButtonView.renderFreshMultiFileInput();
             inputs = browseButton.children();
             jqUnit.assertEquals("After the first batch of files have processed, there should now be two multi-file input elements", 
                 2, inputs.length);
             jqUnit.assertEquals("The original multi-file input element should be removed from the tab order", 
-                -1, inputs.eq(0).attr("tabindex"));            
+                -1, inputs.eq(0).prop("tabindex"));            
             jqUnit.assertEquals("The second multi-file input element should be visible and in the tab order", 
-                0, inputs.eq(1).attr("tabindex"));
+                0, inputs.eq(1).prop("tabindex"));
             
             browseButtonView.disable();
             jqUnit.assertTrue("The browse browseButton has been disabled", inputs.eq(1).prop("disabled"));
             browseButtonView.enable();
-            jqUnit.assertFalse("The browse browseButton has been enabled", inputs.eq(1).prop("disabled"));                      
-            inputs.eq(1).focus();
-            jqUnit.assertTrue("On focus, the browseButton input has the focus class", browseButton.hasClass("focus"));
-            inputs.eq(1).blur();
-            jqUnit.assertFalse("On blur, the browseButton no longer has the focus class", browseButton.hasClass("focus"));
-        });
+            jqUnit.assertFalse("The browse browseButton has been enabled", inputs.eq(1).prop("disabled"));                                   
+        };
+        
+        fluid.test.runTests([
+        "fluid.tests.uploader.HTML5.browseTree"
+        ])
         
         
         /********************

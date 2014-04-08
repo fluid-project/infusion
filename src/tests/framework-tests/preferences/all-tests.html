@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>Preferences Editor complete tests runner</title>
+    <title>Preferences Framework complete tests runner</title>
 
     <link rel="stylesheet" href="../../lib/qunit/css/qunit.css" type="text/css" media="screen">
     <link rel="stylesheet" href="../../lib/qunit/addons/composite/qunit-composite.css">
@@ -11,10 +11,9 @@
 <!-- Stupid bloody escaping rules:
     find . -name "*-test.html" | awk '{print "\""$1"\","}' -->
     <script>
-    QUnit.testSuites([
+    QUnit.testSuites("Preferences Framework Tests", [
         "./html/AuxBuilder-test.html",
         "./html/Builder-test.html",
-        "./html/CSSGenerator-test.html",
         "./html/Enactors-test.html",
         "./html/SeparatedPanelPrefsEditor-test.html",
         "./html/FullNoPreviewPrefsEditor-test.html",

@@ -20,7 +20,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var fluid_1_5 = fluid_1_5 || {};
 var fluid = fluid || fluid_1_5;
 
-(function ($) {
+(function ($, fluid) {
     "use strict";
 
     fluid.registerNamespace("fluid.model.transform");
@@ -253,8 +253,12 @@ var fluid = fluid || fluid_1_5;
         } else if (fluid.hasGrade(expdef, "fluid.multiInputTransformFunction")) {
             var inputs = {};
             fluid.each(expdef.inputVariables, function (v, k) {
-                var input = fluid.model.transform.getValue(transformSpec[k + "Path"], transformSpec[k], transform);
-                inputs[k] = (input === undefined && v !== null) ? v : input; // if no match, assign default if one exists (v != null)
+                inputs[k] = function () {
+                    var input = fluid.model.transform.getValue(transformSpec[k + "Path"], transformSpec[k], transform);
+                    // if no match, assign default if one exists (v != null)
+                    input = (input === undefined && v !== null) ? v : input;
+                    return input;
+                };
             });
             transformArgs.unshift(inputs);
         }
@@ -432,6 +436,7 @@ var fluid = fluid || fluid_1_5;
     };
     
     // unsupported, NON-API function
+    // 3rd arg is disused by the framework and always defaults to fluid.model.transform.processRule
     fluid.model.transform.makeStrategy = function (transform, handleFn, transformFn) {
         transformFn = transformFn || fluid.model.transform.processRule;
         transform.expand = function (rules) {
@@ -463,10 +468,10 @@ var fluid = fluid || fluid_1_5;
     };
     
     // unsupported, NON-API function
-    fluid.model.transform.flatSchemaStrategy = function (flatSchema) {
+    fluid.model.transform.flatSchemaStrategy = function (flatSchema, getConfig) {
         var keys = fluid.model.sortByKeyLength(flatSchema);
         return function (root, segment, index, segs) {
-            var path = fluid.path.apply(null, segs.slice(0, index));
+            var path = getConfig.parser.compose.apply(null, segs.slice(0, index));
           // TODO: clearly this implementation could be much more efficient
             for (var i = 0; i < keys.length; ++i) {
                 var key = keys[i];
@@ -584,11 +589,11 @@ var fluid = fluid || fluid_1_5;
         // Modify schemaStrategy if we collected flat schema options for the setConfig of finalApplier
         if (transform.collectedFlatSchemaOpts !== undefined) {
             $.extend(transform.collectedFlatSchemaOpts, options.flatSchema);
-            schemaStrategy = fluid.model.transform.flatSchemaStrategy(transform.collectedFlatSchemaOpts);
+            schemaStrategy = fluid.model.transform.flatSchemaStrategy(transform.collectedFlatSchemaOpts, getConfig);
         }
         setConfig.strategies = [fluid.model.defaultFetchStrategy, schemaStrategy ? fluid.model.transform.schemaToCreatorStrategy(schemaStrategy)
                 : fluid.model.defaultCreatorStrategy];
-        transform.finalApplier = fluid.makeChangeApplier(transform.target, {resolverSetConfig: setConfig});
+        transform.finalApplier = options.finalApplier || fluid.makeChangeApplier(transform.target, {resolverSetConfig: setConfig});
         
         if (transform.queuedTransforms.length > 0) {
             transform.typeStack = [];

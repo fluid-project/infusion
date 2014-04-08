@@ -604,60 +604,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Listeners correctly merged", $.extend(expected2, expected1), that.values); 
     });
 
-    fluid.tests.initLifecycle = function (that) {
-        that.initted = true;  
-    };
-    
-    fluid.defaults("fluid.tests.lifecycleTest", {
-        gradeNames: ["fluid.modelComponent", "autoInit"],
-        preInitFunction: "fluid.tests.initLifecycle"  
-    });
-    
-    jqUnit.test("Proper merging of lifecycle functions", function () {
-        var model = { value: 3 };
-        var that = fluid.tests.lifecycleTest({model: model});
-        jqUnit.assertEquals("Grade preInit function fired", model, that.model);
-        jqUnit.assertEquals("Custom preInit function fired", true, that.initted);
-    });
-    
-    fluid.tests.initLifecycle1 = function (that) {
-        that.initted = 1;  
-    };
-    
-    fluid.tests.initLifecycle2 = function (that) {
-        that.initted = 2;
-    };
-    
-    fluid.tests.initLifecycleM = function (that) {
-        that.initMultiple = that.initMultiple || 0;
-        that.initMultiple++;  
-    };
-    
-    fluid.defaults("fluid.tests.lifecycleTest2", {
-        gradeNames: ["fluid.modelComponent", "autoInit"],
-        preInitFunction: [{
-            namespace: "preInitModelComponent",
-            listener: "fluid.identity"
-        }, {
-            priority: 2,
-            listener: "fluid.tests.initLifecycle2"
-        }, {
-            priority: 1,
-            listener: "fluid.tests.initLifecycle1"
-        }],
-        postInitFunction: [ // This tests FLUID-4779
-            "fluid.tests.initLifecycleM",
-            "fluid.tests.initLifecycleM"
-        ]
-    });
-    
-    jqUnit.test("Detailed interaction of priority and namespacing with lifecycle functions", function () {
-        var model = { value: 3 };
-        var that = fluid.tests.lifecycleTest2({model: model});
-        jqUnit.assertUndefined("Grade preInit function defeated", that.model);
-        jqUnit.assertEquals("Priority order respected", 1, that.initted);
-        jqUnit.assertEquals("Two global name listeners added", 2, that.initMultiple);
-    });
 
     /** Test FLUID-4776 - only one instance of preinit function registered **/
    
@@ -695,6 +641,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.gradeUsingComponent();
     });
 
+    /** FLUID-5288: Improved diagnostic for incomplete grade hierarchy **/
+    
+
+
+    jqUnit.test("FLUID-5288: Improved diagnostic for component with incomplete grade hierarchy", function () {
+        fluid.pushSoftFailure(true);
+        jqUnit.expect(3);
+        try {
+            // TODO: shouldn't we be able to instantiate grades which involve a forward reference!
+            fluid.defaults("fluid.missingGradeComponent", {
+                gradeNames: ["fluid.nonexistentGrade", "autoInit"]
+            });
+            var that = fluid.missingGradeComponent();
+        } catch (e) {
+            jqUnit.assertTrue("Should receive framework error", e instanceof fluid.FluidError);
+            var message = e.toString();
+            jqUnit.assertTrue("Error text should be correct", message.indexOf("is incomplete") !== -1);
+            jqUnit.assertTrue("Error text should mention blank grade", message.indexOf("fluid.nonexistentGrade") !== -1);
+        } finally {
+            fluid.pushSoftFailure(-1);
+        }
+    });
 
     fluid.registerNamespace("fluid.tests.initSubcomponentTest");
     
