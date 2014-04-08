@@ -993,7 +993,7 @@ var fluid = fluid || fluid_1_5;
     };
 
     fluid.event.identifyListener = function (listener) {
-        if (!listener.$$fluid_guid) {
+        if (typeof(listener) !== "string" && !listener.$$fluid_guid) {
             listener.$$fluid_guid = fluid.allocateGuid();
         }
         return listener.$$fluid_guid;
@@ -1454,7 +1454,9 @@ var fluid = fluid || fluid_1_5;
             options.listeners = fluid.transform(options.listeners, function (record) {
                 var togo = fluid.makeArray(record);
                 return fluid.transform(togo, function (onerec) {
-                    onerec.componentSource = componentName;
+                    if (!fluid.isPrimitive(onerec)) {
+                        onerec.componentSource = componentName;
+                    }
                     return onerec;
                 });
             });
@@ -1724,6 +1726,9 @@ var fluid = fluid || fluid_1_5;
         var strategy = function (target, name, i, segs, sources, policy) {
             if (i > fluid.strategyRecursionBailout) {
                 fluid.fail("Overflow/circularity in options merging, current path is ", segs, " at depth " , i, " - please protect components from merging using the \"nomerge\" merge policy");
+            }
+            if (fluid.isPrimitive(target)) { // For "use strict"
+                return undefined; // Review this after FLUID-4925 since the only trigger is in slow component lookahead
             }
             if (fluid.isTracing) {
                 fluid.tracing.pathCount.push(fluid.path(segs.slice(0, i)));
