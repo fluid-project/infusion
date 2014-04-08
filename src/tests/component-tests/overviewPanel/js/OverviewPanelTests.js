@@ -14,42 +14,44 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     "use strict";
 
+    fluid.registerNamespace("fluid.tests.overviewPanel");
+
+    fluid.tests.overviewPanel.resources = {
+        template: {
+            href: "../../../../components/overviewPanel/html/overviewPanelTemplate.html"
+        }
+    };
+
+    fluid.tests.overviewPanel.strings = {
+        titleBegin: "aaa",
+        titleLinkText: "bbb",
+        titleEnd: "ccc",
+        componentName: "ddd",
+        instructionsHeading: "fff",
+        codeLinkText: "ggg",
+        apiLinkText: "hhh",
+        designLinkText: "iii",
+        feedbackText: "jjj",
+        feedbackLinkText: "lll",
+        closeText: "mmm"
+    };
+
+    fluid.tests.overviewPanel.markup = {
+        description: "aaa<span>bbb</span>",
+        instructions: "ccc<span>ddd</span>"
+    };
+
+    fluid.tests.overviewPanel.links = {
+        codeLink: "#aaa",
+        apiLink: "#bbb",
+        designLink: "#ccc",
+        feedbackLink: "#ddd",
+        titleLink: "#eee"
+    };
+
     $(document).ready(function () {
 
         jqUnit.module("OverviewPanel Tests");
-
-        var resources = {
-            template: {
-                href: "../../../../components/overviewPanel/html/overviewPanelTemplate.html"
-            }
-        };
-
-        var strings = {
-            titleBegin: "aaa",
-            titleLinkText: "bbb",
-            titleEnd: "ccc",
-            componentName: "ddd",
-            instructionsHeading: "fff",
-            codeLinkText: "ggg",
-            apiLinkText: "hhh",
-            designLinkText: "iii",
-            feedbackText: "jjj",
-            feedbackLinkText: "lll",
-            closeText: "mmm"
-        };
-
-        var markup = {
-            description: "aaa<span>bbb</span>",
-            instructions: "ccc<span>ddd</span>"
-        };
-
-        var links = {
-            codeLinkHref: "#aaa",
-            apiLinkHref: "#bbb",
-            designLinkHref: "#ccc",
-            feedbackLinkHref: "#ddd",
-            titleLinkHref: "#eee"
-        };
 
         var assertModelAndStylesForClosedPanel = function (that) {
             jqUnit.assertFalse("Check that model.showPanel is false", that.model.showPanel);
@@ -90,7 +92,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 that.options.strings.closePanelLabel, that.locate("closeControl").attr("aria-label"));
         };
 
-        var verifyRendering = function (that, strings) {
+        var verifyRendering = function (that, strings, markup, links) {
             // check strings
             fluid.each(strings, function (value, key) {
                 jqUnit.assertEquals("Check string with selector '" + key + "'", value, that.locate(key).text());
@@ -101,11 +103,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Check markup with selector 'instructions'", markup.instructions, that.locate("instructions").html());
 
             // check links
-            jqUnit.assertEquals("Check link for selector 'codeLink'", links.codeLinkHref, that.locate("codeLink").attr("href"));
-            jqUnit.assertEquals("Check link for selector 'apiLink'", links.apiLinkHref, that.locate("apiLink").attr("href"));
-            jqUnit.assertEquals("Check link for selector 'designLink'", links.designLinkHref, that.locate("designLink").attr("href"));
-            jqUnit.assertEquals("Check link for selector 'feedbackLink'", links.feedbackLinkHref, that.locate("feedbackLink").attr("href"));
-            jqUnit.assertEquals("Check link for selector 'titleLink'", links.titleLinkHref, that.locate("titleLink").attr("href"));
+            jqUnit.assertEquals("Check link for selector 'codeLink'", links.codeLink, that.locate("codeLink").attr("href"));
+            jqUnit.assertEquals("Check link for selector 'apiLink'", links.apiLink, that.locate("apiLink").attr("href"));
+            jqUnit.assertEquals("Check link for selector 'designLink'", links.designLink, that.locate("designLink").attr("href"));
+            jqUnit.assertEquals("Check link for selector 'feedbackLink'", links.feedbackLink, that.locate("feedbackLink").attr("href"));
+            jqUnit.assertEquals("Check link for selector 'titleLink'", links.titleLink, that.locate("titleLink").attr("href"));
 
             // check aria-controls
             var containerId = that.container.attr("id");
@@ -120,17 +122,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Verify Rendering", function () {
             jqUnit.expect(20);
             fluid.overviewPanel(".flc-overviewPanel", {
-                resources: resources,
+                resources: fluid.tests.overviewPanel.resources,
                 listeners: {
                     "afterRender": {
                         "listener": verifyRendering,
-                        "args": ["{that}", strings],
+                        "args": ["{that}", fluid.tests.overviewPanel.strings, fluid.tests.overviewPanel.markup, fluid.tests.overviewPanel.links],
                         "priority": "last"
                     }
                 },
-                strings: strings,
-                markup: markup,
-                links: links
+                strings: fluid.tests.overviewPanel.strings,
+                markup: fluid.tests.overviewPanel.markup,
+                links: fluid.tests.overviewPanel.links
             });
         });
 
@@ -147,7 +149,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Verify when initially hidden", function () {
             jqUnit.expect(7);
             fluid.overviewPanel(".flc-overviewPanel", {
-                resources: resources,
+                resources: fluid.tests.overviewPanel.resources,
                 listeners: {
                     "onCreate": {
                         "listener": verifyAtOnCreateWhenInitiallyHidden,
@@ -173,7 +175,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Verify when initially visible", function () {
             jqUnit.expect(7);
             fluid.overviewPanel(".flc-overviewPanel", {
-                resources: resources,
+                resources: fluid.tests.overviewPanel.resources,
                 listeners: {
                     "afterRender": {
                         "listener": verifyWhenInitiallyVisible,
@@ -196,7 +198,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Verify close control", function () {
             jqUnit.expect(14);
             fluid.overviewPanel(".flc-overviewPanel", {
-                resources: resources,
+                resources: fluid.tests.overviewPanel.resources,
                 listeners: {
                     "afterRender": {
                         "listener": verifyCloseControl,
@@ -219,7 +221,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Verify closePanel invoker", function () {
             jqUnit.expect(14);
             fluid.overviewPanel(".flc-overviewPanel", {
-                resources: resources,
+                resources: fluid.tests.overviewPanel.resources,
                 listeners: {
                     "afterRender": {
                         "listener": verifyClosePanelInvoker,
@@ -248,7 +250,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Verify toggle control", function () {
             jqUnit.expect(35);
             fluid.overviewPanel(".flc-overviewPanel", {
-                resources: resources,
+                resources: fluid.tests.overviewPanel.resources,
                 listeners: {
                     "afterRender": {
                         "listener": verifyToggleControl,
@@ -277,7 +279,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Verify togglePanel invoker", function () {
             jqUnit.expect(35);
             fluid.overviewPanel(".flc-overviewPanel", {
-                resources: resources,
+                resources: fluid.tests.overviewPanel.resources,
                 listeners: {
                     "afterRender": {
                         "listener": verifyTogglePanelInvoker,

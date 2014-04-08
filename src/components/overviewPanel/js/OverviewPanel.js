@@ -51,37 +51,16 @@ var fluid_1_5 = fluid_1_5 || {};
                 "method": "click",
                 "args": fluid.overviewPanel.preventDefault
             },
-            "afterRender.setTitleLinkHref": {
-                "this": "{that}.dom.titleLink",
-                "method": "attr",
-                "args": ["href", "{that}.options.links.titleLinkHref"]
-            },
-            "afterRender.setCodeLinkHref": {
-                "this": "{that}.dom.codeLink",
-                "method": "attr",
-                "args": ["href", "{that}.options.links.codeLinkHref"]
-            },
-            "afterRender.setApiLinkHref": {
-                "this": "{that}.dom.apiLink",
-                "method": "attr",
-                "args": ["href", "{that}.options.links.apiLinkHref"]
-            },
-            "afterRender.setDesignLinkHref": {
-                "this": "{that}.dom.designLink",
-                "method": "attr",
-                "args": ["href", "{that}.options.links.designLinkHref"]
-            },
-            "afterRender.setFeedbackLinkHref": {
-                "this": "{that}.dom.feedbackLink",
-                "method": "attr",
-                "args": ["href", "{that}.options.links.feedbackLinkHref"]
+            "afterRender.setLinkHrefs": {
+                "funcName": "fluid.overviewPanel.setLinkHrefs",
+                "args": ["{that}", "{that}.options.links"]
             },
             "afterRender.setToggleControlAria": {
                 "this": "{that}.dom.toggleControl",
                 "method": "attr",
                 "args": {
                     "role": "button",
-                    "aria-controls": { expander: { "this": "{that}.container", "method": "attr", args: "id" } }
+                    "aria-controls": "{that}.containerId"
                 }
             },
             "afterRender.setCloseControlAria": {
@@ -90,7 +69,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 "args": {
                     "role": "button",
                     "aria-label": "{that}.options.strings.closePanelLabel",
-                    "aria-controls": { expander: { "this": "{that}.container", "method": "attr", args: "id" } }
+                    "aria-controls": "{that}.containerId"
                 }
             },
             "afterRender.setAriaStates": "{that}.setAriaStates"
@@ -102,16 +81,24 @@ var fluid_1_5 = fluid_1_5 || {};
             "showPanel.setVisibility": "{that}.setVisibility",
             "showPanel.setAriaStates": "{that}.setAriaStates"
         },
+        members: {
+            containerId: {
+                expander: {
+                    // create an id for that.container, if it does not have one already,
+                    // and set that.containerId to the id value
+                    funcName: "fluid.allocateSimpleId",
+                    args: "{that}.container"
+                }
+            }
+        },
         invokers: {
             setVisibility: {
                 funcName: "fluid.overviewPanel.setVisibility",
-                args: ["{that}", "{that}.model.showPanel"],
-                dynamic: true
+                args: ["{that}", "{that}.model.showPanel"]
             },
             togglePanel: {
                 funcName: "fluid.overviewPanel.togglePanel",
-                args: ["{that}", "{that}.model.showPanel"],
-                dynamic: true
+                args: ["{that}", "{that}.model.showPanel"]
             },
             closePanel: {
                 funcName: "fluid.overviewPanel.closePanel",
@@ -119,8 +106,7 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             setAriaStates: {
                 funcName: "fluid.overviewPanel.setAriaStates",
-                args: ["{that}", "{that}.model.showPanel"],
-                dynamic: true
+                args: ["{that}", "{that}.model.showPanel"]
             }
         },
         selectors: {
@@ -184,11 +170,11 @@ var fluid_1_5 = fluid_1_5 || {};
             instructions: "<p>Do this to do this. Do that to do that.</p>"
         },
         links: {
-            titleLinkHref: "http://fluidproject.org/products/infusion/",
-            codeLinkHref: "#",
-            apiLinkHref: "#",
-            designLinkHref: "#",
-            feedbackLinkHref: "#"
+            titleLink: "http://fluidproject.org/products/infusion/",
+            codeLink: "#",
+            apiLink: "#",
+            designLink: "#",
+            feedbackLink: "#"
         }
     });
 
@@ -208,6 +194,12 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.overviewPanel.closePanel = function (that) {
         that.applier.requestChange("showPanel", false);
+    };
+
+    fluid.overviewPanel.setLinkHrefs = function (that, linkMap) {
+        fluid.each(linkMap, function (linkHref, selector) {
+            that.locate(selector).attr("href", linkHref);
+        });
     };
 
     fluid.overviewPanel.setAriaStates = function (that, showPanel) {
