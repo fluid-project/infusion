@@ -1726,6 +1726,9 @@ var fluid = fluid || fluid_1_5;
             if (i > fluid.strategyRecursionBailout) {
                 fluid.fail("Overflow/circularity in options merging, current path is ", segs, " at depth " , i, " - please protect components from merging using the \"nomerge\" merge policy");
             }
+            if (fluid.isPrimitive(target)) { // For "use strict"
+                return undefined; // Review this after FLUID-4925 since the only trigger is in slow component lookahead
+            }
             if (fluid.isTracing) {
                 fluid.tracing.pathCount.push(fluid.path(segs.slice(0, i)));
             }
