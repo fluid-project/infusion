@@ -115,6 +115,61 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.start();
     };
 
+    fluid.tests.overviewPanel.verifyAtOnCreateWhenInitiallyHidden = function (that) {
+        fluid.tests.overviewPanel.assertModelAndStylesForClosedPanel(that);
+    };
+
+    fluid.tests.overviewPanel.verifyAtAfterRenderWhenInitiallyHidden = function (that) {
+        fluid.tests.overviewPanel.assertAriaForClosedPanel(that);
+        jqUnit.start();
+    };
+
+    fluid.tests.overviewPanel.verifyWhenInitiallyVisible = function (that) {
+        // check that the panel is open at the point of afterRender
+        fluid.tests.overviewPanel.assertPanelIsOpen(that);
+        jqUnit.start();
+    };
+
+    fluid.tests.overviewPanel.verifyCloseControl = function (that) {
+        fluid.tests.overviewPanel.assertPanelIsOpen(that);
+        that.locate("closeControl").click();
+        fluid.tests.overviewPanel.assertPanelIsClosed(that);
+        jqUnit.start();
+    };
+
+    fluid.tests.overviewPanel.verifyClosePanelInvoker = function (that) {
+        fluid.tests.overviewPanel.assertPanelIsOpen(that);
+        that.closePanel();
+        fluid.tests.overviewPanel.assertPanelIsClosed(that);
+        jqUnit.start();
+    };
+
+    fluid.tests.overviewPanel.verifyToggleControl = function (that) {
+        fluid.tests.overviewPanel.assertPanelIsOpen(that);
+        that.locate("toggleControl").click();
+        fluid.tests.overviewPanel.assertPanelIsClosed(that);
+        that.locate("toggleControl").click();
+        fluid.tests.overviewPanel.assertPanelIsOpen(that);
+        that.locate("closeControl").click();
+        fluid.tests.overviewPanel.assertPanelIsClosed(that);
+        that.locate("toggleControl").click();
+        fluid.tests.overviewPanel.assertPanelIsOpen(that);
+        jqUnit.start();
+    };
+
+    fluid.tests.overviewPanel.verifyTogglePanelInvoker = function (that) {
+        fluid.tests.overviewPanel.assertPanelIsOpen(that);
+        that.togglePanel();
+        fluid.tests.overviewPanel.assertPanelIsClosed(that);
+        that.togglePanel();
+        fluid.tests.overviewPanel.assertPanelIsOpen(that);
+        that.closePanel();
+        fluid.tests.overviewPanel.assertPanelIsClosed(that);
+        that.togglePanel();
+        fluid.tests.overviewPanel.assertPanelIsOpen(that);
+        jqUnit.start();
+    };
+
     $(document).ready(function () {
 
         jqUnit.module("OverviewPanel Tests");
@@ -136,27 +191,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         });
 
-
-        var verifyAtOnCreateWhenInitiallyHidden = function (that) {
-            fluid.tests.overviewPanel.assertModelAndStylesForClosedPanel(that);
-        };
-
-        var verifyAtAfterRenderWhenInitiallyHidden = function (that) {
-            fluid.tests.overviewPanel.assertAriaForClosedPanel(that);
-            jqUnit.start();
-        };
-
         jqUnit.asyncTest("Verify when initially hidden", function () {
             jqUnit.expect(7);
             fluid.overviewPanel(".flc-overviewPanel", {
                 resources: fluid.tests.overviewPanel.resources,
                 listeners: {
                     "onCreate": {
-                        "listener": verifyAtOnCreateWhenInitiallyHidden,
+                        "listener": fluid.tests.overviewPanel.verifyAtOnCreateWhenInitiallyHidden,
                         "priority": "last"
                     },
                     "afterRender": {
-                        "listener": verifyAtAfterRenderWhenInitiallyHidden,
+                        "listener": fluid.tests.overviewPanel.verifyAtAfterRenderWhenInitiallyHidden,
                         "priority": "last"
                     }
                 },
@@ -166,19 +211,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         });
 
-        var verifyWhenInitiallyVisible = function (that) {
-            // check that the panel is open at the point of afterRender
-            fluid.tests.overviewPanel.assertPanelIsOpen(that);
-            jqUnit.start();
-        };
-
         jqUnit.asyncTest("Verify when initially visible", function () {
             jqUnit.expect(7);
             fluid.overviewPanel(".flc-overviewPanel", {
                 resources: fluid.tests.overviewPanel.resources,
                 listeners: {
                     "afterRender": {
-                        "listener": verifyWhenInitiallyVisible,
+                        "listener": fluid.tests.overviewPanel.verifyWhenInitiallyVisible,
                         "priority": "last"
                     }
                 },
@@ -187,13 +226,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
         });
-
-        var verifyCloseControl = function (that) {
-            fluid.tests.overviewPanel.assertPanelIsOpen(that);
-            that.locate("closeControl").click();
-            fluid.tests.overviewPanel.assertPanelIsClosed(that);
-            jqUnit.start();
-        };
 
         jqUnit.asyncTest("Verify close control", function () {
             jqUnit.expect(14);
@@ -201,7 +233,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 resources: fluid.tests.overviewPanel.resources,
                 listeners: {
                     "afterRender": {
-                        "listener": verifyCloseControl,
+                        "listener": fluid.tests.overviewPanel.verifyCloseControl,
                         "priority": "last"
                     }
                 },
@@ -210,13 +242,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
         });
-
-        var verifyClosePanelInvoker = function (that) {
-            fluid.tests.overviewPanel.assertPanelIsOpen(that);
-            that.closePanel();
-            fluid.tests.overviewPanel.assertPanelIsClosed(that);
-            jqUnit.start();
-        };
 
         jqUnit.asyncTest("Verify closePanel invoker", function () {
             jqUnit.expect(14);
@@ -224,7 +249,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 resources: fluid.tests.overviewPanel.resources,
                 listeners: {
                     "afterRender": {
-                        "listener": verifyClosePanelInvoker,
+                        "listener": fluid.tests.overviewPanel.verifyClosePanelInvoker,
                         "priority": "last"
                     }
                 },
@@ -233,19 +258,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
         });
-
-        var verifyToggleControl = function (that) {
-            fluid.tests.overviewPanel.assertPanelIsOpen(that);
-            that.locate("toggleControl").click();
-            fluid.tests.overviewPanel.assertPanelIsClosed(that);
-            that.locate("toggleControl").click();
-            fluid.tests.overviewPanel.assertPanelIsOpen(that);
-            that.locate("closeControl").click();
-            fluid.tests.overviewPanel.assertPanelIsClosed(that);
-            that.locate("toggleControl").click();
-            fluid.tests.overviewPanel.assertPanelIsOpen(that);
-            jqUnit.start();
-        };
 
         jqUnit.asyncTest("Verify toggle control", function () {
             jqUnit.expect(35);
@@ -253,7 +265,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 resources: fluid.tests.overviewPanel.resources,
                 listeners: {
                     "afterRender": {
-                        "listener": verifyToggleControl,
+                        "listener": fluid.tests.overviewPanel.verifyToggleControl,
                         "priority": "last"
                     }
                 },
@@ -263,26 +275,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         });
 
-        var verifyTogglePanelInvoker = function (that) {
-            fluid.tests.overviewPanel.assertPanelIsOpen(that);
-            that.togglePanel();
-            fluid.tests.overviewPanel.assertPanelIsClosed(that);
-            that.togglePanel();
-            fluid.tests.overviewPanel.assertPanelIsOpen(that);
-            that.closePanel();
-            fluid.tests.overviewPanel.assertPanelIsClosed(that);
-            that.togglePanel();
-            fluid.tests.overviewPanel.assertPanelIsOpen(that);
-            jqUnit.start();
-        };
-
         jqUnit.asyncTest("Verify togglePanel invoker", function () {
             jqUnit.expect(35);
             fluid.overviewPanel(".flc-overviewPanel", {
                 resources: fluid.tests.overviewPanel.resources,
                 listeners: {
                     "afterRender": {
-                        "listener": verifyTogglePanelInvoker,
+                        "listener": fluid.tests.overviewPanel.verifyTogglePanelInvoker,
                         "priority": "last"
                     }
                 },
