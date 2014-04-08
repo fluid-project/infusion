@@ -165,8 +165,8 @@ var fluid_1_5 = fluid_1_5 || {};
             hidden: "fl-overviewPanel-hidden"
         },
         strings: {
-            titleBegin: "A",
-            titleLinkText: "fluid project",
+            titleBegin: "An",
+            titleLinkText: "Infusion",
             titleEnd: "component demo",
             componentName: "Component Name",
             instructionsHeading: "Instructions",
@@ -184,7 +184,7 @@ var fluid_1_5 = fluid_1_5 || {};
             instructions: "<p>Do this to do this. Do that to do that.</p>"
         },
         links: {
-            titleLinkHref: "http://fluidproject.org/projects/",
+            titleLinkHref: "http://fluidproject.org/products/infusion/",
             codeLinkHref: "#",
             apiLinkHref: "#",
             designLinkHref: "#",
