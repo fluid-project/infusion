@@ -487,7 +487,7 @@ var fluid_1_5 = fluid_1_5 || {};
             var existing = transRec[applierId];
             transRec[linkId] = transRec[linkId] || 0;
             // Crude "oscillation prevention" system limits each link to maximum of 2 operations per cycle (presumably in opposite directions)
-            var relay = transRec[linkId] < 2;
+            var relay = true; // TODO: See FLUID-5303 - we currently disable this check entirely to solve FLUID-5293 - perhaps we might remove link counts entirely
             if (relay) {
                 ++transRec[linkId];
                 if (!existing) {
@@ -903,10 +903,11 @@ var fluid_1_5 = fluid_1_5 || {};
             segs.shift();          
         };
         if (!fluid.model.isChangedPath(options.changeMap, segs)) {
-            ++ options.changes;
+            ++options.changes;
             notePath("changeMap");
         }
         if (!fluid.model.isChangedPath(options.deltaMap, segs)) {
+            ++options.deltas;
             notePath("deltaMap");
         }
     };
@@ -985,6 +986,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.model.applyHolderChangeRequest = function (holder, request, options) {
         options = fluid.model.defaultAccessorConfig(options);
         options.deltaMap = options.changeMap ? {} : null;
+        options.deltas = 0;
         var length = request.segs.length;
         var pen, atRoot = length === 0;
         if (atRoot) {
@@ -1010,7 +1012,7 @@ var fluid_1_5 = fluid_1_5 || {};
         } else {
             fluid.fail("Unrecognised change type of " + request.type);
         }
-        return options.deltaMap;
+        return options.deltas ? options.deltaMap : null;
     };
     
     // Here we only support for now very simple expressions which have at most one

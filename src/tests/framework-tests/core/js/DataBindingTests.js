@@ -1323,8 +1323,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     model: {
                         accessibilityHazard: "{fluid5293}.model.accessibilityHazard",
-                        highContrast: "{fluid5293}.model.modelInTransit.highContrast",
-                        signLanguage: "{fluid5293}.model.modelInTransit.signLanguage"
+                        highContrast: "{fluid5293}.model.modelInTransit.flashing",
+                        signLanguage: "{fluid5293}.model.modelInTransit.noflashing"
                     }
                 }
             }
