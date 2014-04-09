@@ -367,12 +367,9 @@ var fluid = fluid || fluid_1_5;
         }
     };
 
-    fluid.model.transform.lookupType = function (typeName) {
+    fluid.model.transform.lookupType = function (typeName, transformSpec) {
         if (!typeName) {
-            // TODO: jshint doesn't like that transformSpec is undefined
-            // This should either be cleaned up or a detailed explanation of
-            // why it is needed should be provided.
-            fluid.fail("Transformation record is missing a type name: ", transformSpec); // jshint ignore:line
+            fluid.fail("Transformation record is missing a type name: ", transformSpec);
         }
         if (typeName.indexOf(".") === -1) {
             typeName = "fluid.transforms." + typeName;
