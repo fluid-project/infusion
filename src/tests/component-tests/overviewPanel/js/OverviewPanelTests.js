@@ -88,7 +88,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             that.options.strings.closePanelLabel, that.locate("closeControl").attr("aria-label"));
     };
 
-    fluid.tests.overviewPanel.verifyRendering = function (that, strings, markup, links) {
+    fluid.tests.overviewPanel.verifyRenderingListener = function (that, strings, markup, links) {
         // check strings
         fluid.each(strings, function (value, key) {
             jqUnit.assertEquals("Check string with selector '" + key + "'", value, that.locate(key).text());
@@ -126,13 +126,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.start();
     };
 
-    fluid.tests.overviewPanel.verifyWhenInitiallyVisible = function (that) {
+    fluid.tests.overviewPanel.verifyWhenInitiallyVisibleListener = function (that) {
         // check that the panel is open at the point of afterRender
         fluid.tests.overviewPanel.assertPanelIsOpen(that);
         jqUnit.start();
     };
 
-    fluid.tests.overviewPanel.verifyCloseControl = function (that) {
+    fluid.tests.overviewPanel.verifyCloseControlListener = function (that) {
         fluid.tests.overviewPanel.assertPanelIsOpen(that);
         that.locate("closeControl").click();
         fluid.tests.overviewPanel.assertPanelIsClosed(that);
@@ -141,7 +141,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.start();
     };
 
-    fluid.tests.overviewPanel.verifyToggleControl = function (that) {
+    fluid.tests.overviewPanel.verifyToggleControlListener = function (that) {
         fluid.tests.overviewPanel.assertPanelIsOpen(that);
         that.locate("toggleControl").click();
         fluid.tests.overviewPanel.assertPanelIsClosed(that);
@@ -153,6 +153,81 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.overviewPanel.assertPanelIsOpen(that);
         jqUnit.start();
     };
+
+    fluid.defaults("fluid.tests.overviewPanel.verifyRendering", {
+        gradeNames: ["fluid.overviewPanel", "autoInit"],
+        resources: fluid.tests.overviewPanel.resources,
+        listeners: {
+            "afterRender": {
+                "listener": fluid.tests.overviewPanel.verifyRenderingListener,
+                "args": ["{that}", fluid.tests.overviewPanel.strings, fluid.tests.overviewPanel.markup, fluid.tests.overviewPanel.links],
+                "priority": "last"
+            }
+        },
+        strings: fluid.tests.overviewPanel.strings,
+        markup: fluid.tests.overviewPanel.markup,
+        links: fluid.tests.overviewPanel.links
+    });
+
+    fluid.defaults("fluid.tests.overviewPanel.verifyWhenInitiallyHidden", {
+        gradeNames: ["fluid.overviewPanel", "autoInit"],
+        resources: fluid.tests.overviewPanel.resources,
+        listeners: {
+            "onCreate": {
+                "listener": fluid.tests.overviewPanel.verifyAtOnCreateWhenInitiallyHidden,
+                "priority": "last"
+            },
+            "afterRender": {
+                "listener": fluid.tests.overviewPanel.verifyAtAfterRenderWhenInitiallyHidden,
+                "priority": "last"
+            }
+        },
+        model: {
+            showPanel: false
+        }
+    });
+
+    fluid.defaults("fluid.tests.overviewPanel.verifyWhenInitiallyVisible", {
+        gradeNames: ["fluid.overviewPanel", "autoInit"],
+        resources: fluid.tests.overviewPanel.resources,
+        listeners: {
+            "afterRender": {
+                "listener": fluid.tests.overviewPanel.verifyWhenInitiallyVisibleListener,
+                "priority": "last"
+            }
+        },
+        model: {
+            showPanel: true
+        }
+    });
+
+    fluid.defaults("fluid.tests.overviewPanel.verifyCloseControl", {
+        gradeNames: ["fluid.overviewPanel", "autoInit"],
+        resources: fluid.tests.overviewPanel.resources,
+        listeners: {
+            "afterRender": {
+                "listener": fluid.tests.overviewPanel.verifyCloseControlListener,
+                "priority": "last"
+            }
+        },
+        model: {
+            showPanel: true
+        }
+    });
+
+    fluid.defaults("fluid.tests.overviewPanel.verifyToggleControl", {
+        gradeNames: ["fluid.overviewPanel", "autoInit"],
+        resources: fluid.tests.overviewPanel.resources,
+        listeners: {
+            "afterRender": {
+                "listener": fluid.tests.overviewPanel.verifyToggleControlListener,
+                "priority": "last"
+            }
+        },
+        model: {
+            showPanel: true
+        }
+    });
 
     $(document).ready(function () {
 
@@ -160,90 +235,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.asyncTest("Verify Rendering", function () {
             jqUnit.expect(20);
-            // TODO introduce one grade per test
-            // for example: fluid.tests.overviewPanel.verifyRendering(".flc-overviewPanel");
-            // would replaces lines 184-196
-            fluid.overviewPanel(".flc-overviewPanel", {
-                resources: fluid.tests.overviewPanel.resources,
-                listeners: {
-                    "afterRender": {
-                        "listener": fluid.tests.overviewPanel.verifyRendering,
-                        "args": ["{that}", fluid.tests.overviewPanel.strings, fluid.tests.overviewPanel.markup, fluid.tests.overviewPanel.links],
-                        "priority": "last"
-                    }
-                },
-                strings: fluid.tests.overviewPanel.strings,
-                markup: fluid.tests.overviewPanel.markup,
-                links: fluid.tests.overviewPanel.links
-            });
+            fluid.tests.overviewPanel.verifyRendering(".flc-overviewPanel");
         });
 
         jqUnit.asyncTest("Verify when initially hidden", function () {
             jqUnit.expect(7);
-            fluid.overviewPanel(".flc-overviewPanel", {
-                resources: fluid.tests.overviewPanel.resources,
-                listeners: {
-                    "onCreate": {
-                        "listener": fluid.tests.overviewPanel.verifyAtOnCreateWhenInitiallyHidden,
-                        "priority": "last"
-                    },
-                    "afterRender": {
-                        "listener": fluid.tests.overviewPanel.verifyAtAfterRenderWhenInitiallyHidden,
-                        "priority": "last"
-                    }
-                },
-                model: {
-                    showPanel: false
-                }
-            });
+            fluid.tests.overviewPanel.verifyWhenInitiallyHidden(".flc-overviewPanel");
         });
 
         jqUnit.asyncTest("Verify when initially visible", function () {
             jqUnit.expect(7);
-            fluid.overviewPanel(".flc-overviewPanel", {
-                resources: fluid.tests.overviewPanel.resources,
-                listeners: {
-                    "afterRender": {
-                        "listener": fluid.tests.overviewPanel.verifyWhenInitiallyVisible,
-                        "priority": "last"
-                    }
-                },
-                model: {
-                    showPanel: true
-                }
-            });
+            fluid.tests.overviewPanel.verifyWhenInitiallyVisible(".flc-overviewPanel");
         });
 
         jqUnit.asyncTest("Verify close control", function () {
             jqUnit.expect(21);
-            fluid.overviewPanel(".flc-overviewPanel", {
-                resources: fluid.tests.overviewPanel.resources,
-                listeners: {
-                    "afterRender": {
-                        "listener": fluid.tests.overviewPanel.verifyCloseControl,
-                        "priority": "last"
-                    }
-                },
-                model: {
-                    showPanel: true
-                }
-            });
+            fluid.tests.overviewPanel.verifyCloseControl(".flc-overviewPanel");
         });
 
         jqUnit.asyncTest("Verify toggle control", function () {
             jqUnit.expect(35);
-            fluid.overviewPanel(".flc-overviewPanel", {
-                resources: fluid.tests.overviewPanel.resources,
-                listeners: {
-                    "afterRender": {
-                        "listener": fluid.tests.overviewPanel.verifyToggleControl,
-                        "priority": "last"
-                    }
-                },
-                model: {
-                    showPanel: true
-                }
-            });
+            fluid.tests.overviewPanel.verifyToggleControl(".flc-overviewPanel");
         });
 
     });
