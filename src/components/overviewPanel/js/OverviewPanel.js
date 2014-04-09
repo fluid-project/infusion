@@ -17,8 +17,13 @@ var fluid_1_5 = fluid_1_5 || {};
     "use strict";
 
     fluid.registerNamespace("fluid.overviewPanel");
-    fluid.overviewPanel.preventDefault = function (event) {
-        event.preventDefault();
+
+    fluid.overviewPanel.makeBooleanListener = function (that, selector, method, path, value) {
+        var elem = that.locate(selector);
+        elem[method](function (evt) {
+            that.applier.change(path, value === "toggle" ? !that.model[path] : value);
+            evt.preventDefault();
+        });
     };
 
     fluid.defaults("fluid.overviewPanel", {
@@ -32,24 +37,12 @@ var fluid_1_5 = fluid_1_5 || {};
             "onCreate.setVisibility": "{that}.setVisibility",
             "onCreate.showTemplate": "fluid.overviewPanel.showTemplate",
             "afterRender.registerToggleListener": {
-                "this": "{that}.dom.toggleControl",
-                "method": "click",
-                "args": "{that}.togglePanel"
-            },
-            "afterRender.preventDefaultOnToggleControl": {
-                "this": "{that}.dom.toggleControl",
-                "method": "click",
-                "args": fluid.overviewPanel.preventDefault
+                "funcName": "fluid.overviewPanel.makeBooleanListener",
+                "args": ["{that}", "toggleControl", "click", "showPanel", "toggle"]
             },
             "afterRender.registerCloseListener": {
-                "this": "{that}.dom.closeControl",
-                "method": "click",
-                "args": "{that}.closePanel"
-            },
-            "afterRender.preventDefaultOnCloseControl": {
-                "this": "{that}.dom.closeControl",
-                "method": "click",
-                "args": fluid.overviewPanel.preventDefault
+                "funcName": "fluid.overviewPanel.makeBooleanListener",
+                "args": ["{that}", "closeControl", "click", "showPanel", false]
             },
             "afterRender.setLinkHrefs": {
                 "funcName": "fluid.overviewPanel.setLinkHrefs",
@@ -95,14 +88,6 @@ var fluid_1_5 = fluid_1_5 || {};
             setVisibility: {
                 funcName: "fluid.overviewPanel.setVisibility",
                 args: ["{that}", "{that}.model.showPanel"]
-            },
-            togglePanel: {
-                funcName: "fluid.overviewPanel.togglePanel",
-                args: ["{that}", "{that}.model.showPanel"]
-            },
-            closePanel: {
-                funcName: "fluid.overviewPanel.closePanel",
-                args: "{that}"
             },
             setAriaStates: {
                 funcName: "fluid.overviewPanel.setAriaStates",
@@ -186,14 +171,6 @@ var fluid_1_5 = fluid_1_5 || {};
         fluid.fetchResources(that.options.resources, function () {
             that.refreshView();
         });
-    };
-
-    fluid.overviewPanel.togglePanel = function (that, showPanel) {
-        that.applier.requestChange("showPanel", !showPanel);
-    };
-
-    fluid.overviewPanel.closePanel = function (that) {
-        that.applier.requestChange("showPanel", false);
     };
 
     fluid.overviewPanel.setLinkHrefs = function (that, linkMap) {
