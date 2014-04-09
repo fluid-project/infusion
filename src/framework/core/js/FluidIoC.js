@@ -1536,10 +1536,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             return fluid.changeToApplicable(record, that);
         }
         var recthis = record["this"];
-        // TODO: The bitwise operator '^' is used here.
-        // It should either be replaced or have a detailed explanation
-        // provided for why it is needed.
-        if (record.method ^ recthis) { // jshint ignore:line
+        if (record.method ^ recthis) {
             fluid.fail("Record ", that, " must contain both entries \"method\" and \"this\" if it contains either");
         }
         return record.method ? fluid.thisistToApplicable(record, recthis, that) : null;
@@ -1905,10 +1902,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.compactStringToRec = function (string, type) {
         var openPos = string.indexOf("(");
         var closePos = string.indexOf(")");
-        // TODO: The bitwise operator '^' is used here.
-        // It should either be replaced or have a detailed explanation
-        // provided for why it is needed.
-        if (openPos === -1 ^ closePos === -1 || openPos > closePos) { // jshint ignore:line
+        if (openPos === -1 ^ closePos === -1 || openPos > closePos) {
             fluid.fail("Badly-formed compact " + type + " record without matching parentheses: ", string);
         }
         if (openPos !== -1 && closePos !== -1) {
@@ -2096,10 +2090,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.fetchExpandChildren = function (target, i, segs, source, mergePolicy, miniWorld, options) {
         if (source.expander /* && source.expander.type */) { // possible expander at top level
             var expanded = fluid.expandExpander(target, source, options);
-            // TODO: The bitwise operator '^' is used here.
-            // It should either be replaced or have a detailed explanation
-            // provided for why it is needed.
-            if (options.freeRoot || fluid.isPrimitive(expanded) || fluid.isDOMish(expanded) || !fluid.isPlainObject(expanded) || (fluid.isArrayable(expanded) ^ fluid.isArrayable(target))) { // jshint ignore:line
+            if (options.freeRoot || fluid.isPrimitive(expanded) || fluid.isDOMish(expanded) || !fluid.isPlainObject(expanded) || (fluid.isArrayable(expanded) ^ fluid.isArrayable(target))) {
                 return expanded;
             }
             else { // make an attempt to preserve the root reference if possible

@@ -1253,11 +1253,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.pathUtil.matchPath = function (spec, path, exact) {
         var togo = [];
         while (true) {
-
-            // TODO: The bitwise operator '^' is used here.
-            // It should either be replaced or have a detailed explanation
-            // provided for why it is needed.
-            if (((path === "") ^ (spec === "")) && exact) { // jshint ignore:line
+            if (((path === "") ^ (spec === "")) && exact) {
                 return null;
             }
             // FLUID-4625 - symmetry on spec and path is actually undesirable, but this

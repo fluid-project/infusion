@@ -604,10 +604,7 @@ var fluid = fluid || fluid_1_5;
 
     fluid.filterKeys = function (toFilter, keys, exclude) {
         return fluid.remove_if($.extend({}, toFilter), function (value, key) {
-            // TODO: The bitwise operator '^' is used here.
-            // It should either be replaced or have a detailed explanation
-            // provided for why it is needed.
-            return exclude ^ ($.inArray(key, keys) === -1); // jshint ignore:line
+            return exclude ^ ($.inArray(key, keys) === -1);
         });
     };
 

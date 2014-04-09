@@ -30,12 +30,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var mod = index % 64;
         var togo = [];
         while (true) {
-            var bit = mod & 1; // jshint ignore:line
+            var bit = mod & 1;
             togo.push(bit? "thing1" : "thing0");
             if (mod < 2) {
                 break;
             }
-            mod = mod >> 1; // jshint ignore:line
+            mod = mod >> 1;
         }
         return togo;
     };
