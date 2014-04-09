@@ -506,7 +506,7 @@ var fluid_1_5 = fluid_1_5 || {};
             return evt.stopPropagation();
         };
 
-        var handelClick = function (evt) {
+        var handleClick = function (evt) {
             var handle = fluid.unwrap(thatReorderer.dom.fastLocate("grabHandle", this));
             if (fluid.dom.isContainer(handle, evt.target)) {
                 $(this).focus();
@@ -521,7 +521,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
                 selectable.bind("blur.fluid.reorderer", handleBlur);
                 selectable.focus(handleFocus);
-                selectable.click(handelClick);
+                selectable.click(handleClick);
 
                 selectable.attr("role", thatReorderer.options.containerRole.item);
                 selectable.attr("aria-selected", "false");
