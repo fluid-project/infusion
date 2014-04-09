@@ -277,9 +277,8 @@ var fluid_1_5 = fluid_1_5 || {};
             fluid.registerCollectedClearer(shadows[shadows.length - 1], parentShadow, memberNames[memberNames.length - 1]);
         }
         /* jshint ignore:start */
-        // The function supplied to fluid.each requires the index "i" from the for loop scope.
-        // Since this function will be called with a predetermined set of arguments
-        // it will not be possible to remove the function out of the for loop scope
+        // This use of function creation within a loop is acceptable since 
+        // the function does not attempt to close directly over the loop counter
         for (var i = 0; i < thatStack.length - 1; ++ i) {
             fluid.each(shadows[i].distributions, function (distribution) {
                 fluid.collectDistributions(distributedBlocks, parentShadow, distribution, thatStack, contextHashes, memberNames, i);
