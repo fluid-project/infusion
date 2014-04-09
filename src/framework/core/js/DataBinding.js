@@ -686,7 +686,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 fluid.model.commitRelays(instantiator, transaction.id);
             }
         }
-        applier.preCommit.addListener(updateRelays); // jshint ignore:line
+        applier.preCommit.addListener(updateRelays); /* updateRelays is defined within jshint ignore block above */ // jshint ignore:line
         applier.preCommit.addListener(commitRelays);
 
         fluid.deenlistModelComponent(that);
