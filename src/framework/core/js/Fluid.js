@@ -1690,9 +1690,8 @@ var fluid = fluid || fluid_1_5;
             // traversal of concrete properties to do the final merge.
             if (source !== undefined) {
                 /* jshint ignore:start */
-                // The function supplied to fluid.each requires the index "i" from the for loop scope.
-                // Since this function will be called with a predetermined set of arguments
-                // it will not be possible to remove the function out of the for loop scope
+                // This use of function creation within a loop is acceptable since 
+                // the function does not attempt to close directly over the loop counter
                 fluid.each(source, function (newSource, name) {
                     if (!target.hasOwnProperty(name)) { // only request each new target key once -- all sources will be queried per strategy
                         segs[i] = name;
@@ -1978,9 +1977,10 @@ var fluid = fluid || fluid_1_5;
         };
 
         var compiledPolicy;
+        var mergePolicy;
         function computeMergePolicy() {
             // Decode the now available mergePolicy
-            var mergePolicy = fluid.driveStrategy(options, "mergePolicy", mergeOptions.strategy);
+            mergePolicy = fluid.driveStrategy(options, "mergePolicy", mergeOptions.strategy);
             mergePolicy = $.extend({}, fluid.rootMergePolicy, mergePolicy);
             compiledPolicy = fluid.compileMergePolicy(mergePolicy);
             // TODO: expandComponentOptions has already put some builtins here - performance implications of the now huge
@@ -1999,9 +1999,7 @@ var fluid = fluid || fluid_1_5;
                 updateBlocks();
             }
             else {
-                // TODO: jshint doens't like that mergePolicy has not been defined.
-                // This should either be cleaned up or a detailed explanation of why it is needed should be provided.
-                fluid.fail("Cannot operate mergePolicy ", mergePolicy, " for component ", that, " without including FluidIoC.js"); // jshint ignore:line
+                fluid.fail("Cannot operate mergePolicy ", mergePolicy, " for component ", that, " without including FluidIoC.js");
             }
         }
         that.options = options;
