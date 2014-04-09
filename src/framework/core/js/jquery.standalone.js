@@ -90,16 +90,13 @@ var fluid = fluid || fluid_1_5;
             for (key in obj) {}
             return key === undefined || hasOwn.call( obj, key ); // jshint ignore:line
         },
-        /* jshint ignore:start */
-        // attempts to loop through an object,
-        // if any properties are found it will return false.
+
         isEmptyObject: function (obj) {
-            for ( var name in obj ) {
+            for ( var name in obj ) { // jshint ignore:line
                 return false;
             }
             return true;
         },
-        /* jshint ignore:end */
 
         inArray: function (elem, array) {
             if (indexOf) {
@@ -129,10 +126,7 @@ var fluid = fluid || fluid_1_5;
             }
 
             // Handle case when target is a string or something (possible in deep copy)
-            // TODO: Does !typeof(target) always return false?
-            // Either this should be corrected or a more detailed explanation of what it is doing
-            // should be provided.
-            if (typeof target !== "object" && !typeof(target) === "function") { // jshint ignore:line
+            if (typeof target !== "object" && typeof(target) !== "function") {
                 target = {};
             }
 
