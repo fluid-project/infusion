@@ -569,9 +569,8 @@ fluid_1_5 = fluid_1_5 || {};
                 var target = [];
                 var comp = { children: target};
                 /* jshint ignore:start */
-                // The function supplied to expandLeafOrCond requires the "target" from the for loop scope.
-                // Since this function will be called with a predetermined set of arguments
-                // it will not be possible to remove the function out of the for loop scope
+                // This use of function creation within a loop is acceptable since 
+                // the function does not attempt to close directly over the loop counter
                 var child = children[i];
                 var childPusher = function (comp) {
                     target[target.length] = comp;
