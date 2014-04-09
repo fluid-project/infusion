@@ -108,7 +108,7 @@ var demo = demo || {};
         }
     };
 
-    demo.init = function () {
+    demo.IDBasedInventory = function () {
         var fullEl = fluid.byId("render-full");
         fullEl.onclick = function () {
             initTableFullTree();

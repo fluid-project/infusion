@@ -127,7 +127,7 @@ fluid.inventoryExample =  (function () {
         }
     };
 
-    demo.init = function () {
+    demo.selectorBasedInventory = function () {
         var fullEl = fluid.byId("render-full");
         fullEl.onclick = function () {
             initTableFullTree();

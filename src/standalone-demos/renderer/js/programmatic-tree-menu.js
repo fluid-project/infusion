@@ -119,7 +119,7 @@ fluid.dataBindingExample = (function ($) {
         $("#canape-list input").click(dumpCanapeModel);
     };
 
-    demo.init = function () {
+    demo.programmaticTreeMenu = function () {
         var fullEl = fluid.byId("render");
         var rendered;
         fullEl.onclick = function () {

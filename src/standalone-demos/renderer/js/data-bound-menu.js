@@ -161,7 +161,7 @@ var demo = demo || {};
         jQuery("#food-list input").click(dumpFoodModel);
     };
 
-    demo.init = function () {
+    demo.dataBoundMenu = function () {
         var fullEl = fluid.byId("render");
         var rendered;
         fullEl.onclick = function () {
