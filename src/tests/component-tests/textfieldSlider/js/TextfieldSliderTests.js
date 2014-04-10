@@ -11,22 +11,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, expect, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid, jqUnit */
 
 (function ($) {
+    "use strict";
+
     $(document).ready(function () {
         jqUnit.module("TextfieldSlider Tests");
 
-        var getTextfieldSlider = function (options) {
+        var createTextfieldSlider = function (options) {
             return fluid.textfieldSlider(".fl-textfield-slider", options);
         };
 
         jqUnit.test("Test Init", function () {
             jqUnit.expect(8);
-            var textfieldSlider = getTextfieldSlider({model: {value: 15}});
+            var textfieldSlider = createTextfieldSlider({model: {value: 15}});
             jqUnit.assertEquals("Slider value is set to input value", 15, $(".flc-textfieldSlider-slider").slider("value"));
             jqUnit.assertEquals("Textfield value is set", 15, $(".flc-textfieldSlider-field").val());
             jqUnit.assertEquals("The model should be set", 15, textfieldSlider.model.value);
@@ -56,7 +55,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.test("Test Min/Max Size", function () {
             jqUnit.expect(18);
 
-            var textfieldSlider = getTextfieldSlider({range: {min: 5, max: 55}});
+            createTextfieldSlider({range: {min: 5, max: 55}});
             testSetting(56, 55);
             testSetting(55, 55);
             testSetting(4, 5);
@@ -68,7 +67,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.test("Test Negative Scale", function () {
             jqUnit.expect(15);
 
-            var textfieldSlider = getTextfieldSlider({range: {min: -15, max: -5}});
+            createTextfieldSlider({range: {min: -15, max: -5}});
             testSetting(56, -5);
             testSetting(-10, -10);
             testSetting(-16, -15);
@@ -104,7 +103,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.asyncTest("afterRender event - init", function () {
             jqUnit.expect(1);
-            getTextfieldSlider({
+            createTextfieldSlider({
                 listeners: {
                     afterRender: function () {
                         jqUnit.assert("The afterRender event fired");
@@ -116,7 +115,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.asyncTest("afterRender event", function () {
             jqUnit.expect(1);
-            var that = getTextfieldSlider({
+            var that = createTextfieldSlider({
                 listeners: {
                     afterRender: function () {
                         jqUnit.assert("The afterRender event fired");

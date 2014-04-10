@@ -10,16 +10,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global skon:true, fluid, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid */
 
 var skon = skon || {};
 (function ($, fluid) {
+    "use strict";
 
     /* Our demo script */
-    skon.slidingPrefsEditor = function (panel, prefsEditor) {
+    skon.slidingPrefsEditor = function () {
         // First, start up Settings Store and Page Enhancer
         fluid.globalSettingsStore();
         fluid.pageEnhancer({

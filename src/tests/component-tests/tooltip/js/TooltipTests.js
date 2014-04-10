@@ -7,18 +7,17 @@ Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
- 
+
  */
 
 // Declare dependencies
-/*global fluid, jqUnit, jQuery, start*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid, jqUnit */
 
 (function ($, fluid) {
+    "use strict";
+
     fluid.registerNamespace("fluid.tests.tooltip");
-        
+
     fluid.tests.tooltip.trackTooltip = function (disp, that, target, tooltip) {
         var targetId = target.id;
         if (disp === "open") {
@@ -27,14 +26,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             delete that.tooltipMap[targetId];
         }
     };
-    
+
     // Converts a string to the expected DOM contents for a tooltip whose content is just that string
     fluid.tests.tooltip.stringToNode = function (string) {
         return [ {
             nodeText: string
-        }]
+        }];
     };
-    
+
     fluid.tests.tooltip.assertVisible = function (message, trackTooltips, expectedKeys, contentMap, contentToNode) {
         var visibleKeys = fluid.keys(trackTooltips.tooltipMap);
         jqUnit.assertDeepEq(message, fluid.makeArray(expectedKeys), visibleKeys);
@@ -44,10 +43,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             } else {
                 contentToNode(tooltip, key);
             }
-            
+
         });
-    }
-    
+    };
+
     fluid.defaults("fluid.tests.tooltip.trackTooltips", {
         mergePolicy: {
             tooltipListeners: "noexpand"
@@ -71,12 +70,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             tooltipMap: {}
         }
     });
-    
+
     fluid.tests.bindFocusNotify = function (that) {
         that.container.focusin(that.events.notifyFocusChange.fire);
         that.container.focusout(that.events.notifyFocusChange.fire);
     };
-    
+
     fluid.defaults("fluid.tests.focusNotifier", {
         gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         events: {
@@ -86,31 +85,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             onCreate: "fluid.tests.bindFocusNotify"
         }
     });
-    
+
     fluid.tests.delegateTest = {
         idToContent: {
             "anchor-1": "Tooltip Content 1",
             "anchor-2": "Tooltip Content 2"
         }
     };
-    
+
     fluid.tests.delegateTest.assertVisible = function (trackTooltips, visibleAnchors) {
-        fluid.tests.tooltip.assertVisible("Correct tooltips visible", trackTooltips, visibleAnchors, 
-                fluid.tests.delegateTest.idToContent, fluid.tests.tooltip.stringToNode) 
+        fluid.tests.tooltip.assertVisible("Correct tooltips visible", trackTooltips, visibleAnchors,
+                fluid.tests.delegateTest.idToContent, fluid.tests.tooltip.stringToNode);
     };
-    
+
     fluid.tests.delegateTest.assertVisibleMaker = function (trackTooltips, visibleAnchors) {
         return function () {
             fluid.tests.delegateTest.assertVisible(trackTooltips, visibleAnchors);
         };
     };
-    
+
     fluid.tests.tooltip.markupBlaster = function (tooltip) {
         tooltip.close();
         var markup = tooltip.container.html();
         tooltip.container.html(markup);
     };
-    
+
     fluid.tests.tooltip.module = {
         name: "Delegating tooltip tests",
         tests: {
@@ -131,7 +130,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }]
         }
     };
-    
+
     fluid.defaults("fluid.tests.tooltip.tree", {
         gradeNames: ["fluid.tests.tooltip.trackTooltips", "fluid.tests.focusNotifier", "autoInit"],
         components: {
@@ -165,44 +164,44 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-    
+
     fluid.tests.tooltip.runTests = function () {
-      
+
         fluid.test.runTests(["fluid.tests.tooltip.delegateEnv"]);
-        
+
         jqUnit.module("Standard Tooltip Tests");
-      
-        
+
+
         // Note that throughout these tests, an explicit tooltip "destroy" is necessary after each test, since
         // the tooltip markup is created outside the container qunit-fixture which is operated by the standard
         // QUnit setup/teardown cycle
-    
+
         jqUnit.test("Options Mapping", function () {
             var testOptions = {
                 content: function () {
                     return "Tooltip";
                 },
-                
+
                 position: {
                     my: "top",
                     at: "bottom",
                     offset: "5 5"
                 },
-                
+
                 items: "*"
             };
             var tt = fluid.tooltip(".testTooltip", testOptions);
             tt.open();
             var uiTTOptions = $(".testTooltip").tooltip("option");
-            
+
             var ttELM = $("[id^=ui-tooltip]");
-            
+
             jqUnit.assertEquals("The \"content\" option is set correctly", testOptions.content(), ttELM.text());
             jqUnit.assertEquals("The \"items\" option is set correctly", testOptions.items, uiTTOptions.items);
             jqUnit.assertLeftHand("The \"position\" option is set correctly", testOptions.position, uiTTOptions.position);
             tt.destroy();
         });
-        
+
         jqUnit.test("Styling added", function () {
             var style = "styleClass";
             var tt = fluid.tooltip(".testTooltip", {
@@ -213,24 +212,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
             tt.open();
             var tooltip = $("[id^=ui-tooltip]");
-            
+
             jqUnit.assertTrue("The css class is applied to the tooltip element", tooltip.hasClass(style));
-            tt.destroy()
+            tt.destroy();
         });
-        
+
         jqUnit.test("Tooltip element tests", function () {
             var tt = fluid.tooltip(".testTooltip");
             var ttELM = $("[id^=ui-tooltip]");
             var newContent = "New Content";
-            
+
             //jQuery UI no longer exposes the implementing markup programmatically
             //jqUnit.assertTrue("The tooltip element is exposed correctly", 0 === tt.elm.index(ttELM));
-            
+
             tt.updateContent(newContent);
             jqUnit.assertTrue("The tooltip content should have updated", newContent, ttELM.text());
             tt.destroy();
         });
-        
+
         jqUnit.asyncTest("Tooltip manual open/close tests", function () {
             var tt = fluid.tooltip(".testTooltip", {
                 content: "Tooltip Content",
@@ -247,11 +246,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 }
             });
-            
+
             tt.open();
             tt.destroy();
         });
-        
+
         jqUnit.test("Tooltip destroy tests", function () {
             var tt = fluid.tooltip(".testTooltip", {content: "Tooltip"});
             tt.open();
@@ -310,5 +309,5 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             tt.open();
         });
     };
-    
-})(jQuery, fluid_1_5);
+
+})(jQuery, fluid);

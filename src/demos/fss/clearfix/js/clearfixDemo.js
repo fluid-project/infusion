@@ -10,52 +10,51 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global demo:true, fluid, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid */
 
 var demo = demo || {};
 
-(function ($) {
+(function () {
+    "use strict";
+
     fluid.registerNamespace("demo.cssFixApplier");
-    
+
     demo.cssFixApplier.preInit = function (that) {
         var opts = that.options;
-        
+
         that.setFixDescription = function (fix) {
             that.locate("fixDescription").text(opts.strings[fix] || "");
         };
-        
+
         that.addFixStyle = function (fix) {
             that.locate("fixContainer").addClass(opts.styles[fix]);
         };
-        
-        that.removeFixStyles = function (fix) {
+
+        that.removeFixStyles = function () {
             var styles = [];
             fluid.each(opts.styles, function (style) {
                 styles.push(style);
             });
             that.locate("fixContainer").removeClass(styles.join(" "));
         };
-        
+
         that.setFix = function (fix) {
             that.removeFixStyles(fix);
             that.addFixStyle(fix);
             that.setFixDescription(fix);
         };
     };
-    
+
     demo.cssFixApplier.finalInit = function (that) {
         // bind event listener for fix selectbox
         that.applier.modelChanged.addListener("selection", function (newModel, oldModel) {
             that.events.afterFixSelectionChanged.fire(newModel.selection, oldModel.selection);
         });
-        
+
         that.setFix(that.model.selection);
     };
-    
-    demo.cssFixApplier.produceTree = function (that) {
+
+    demo.cssFixApplier.produceTree = function () {
         var tree = {
             fixChoice: {
                 "selection": "${selection}",
@@ -66,10 +65,10 @@ var demo = demo || {};
                 messagekey: "fixLabel"
             }
         };
-        
+
         return tree;
     };
-    
+
     fluid.defaults("demo.cssFixApplier", {
         gradeNames: ["fluid.rendererComponent", "autoInit"],
         preInitFunction: "demo.cssFixApplier.preInit",
@@ -79,8 +78,8 @@ var demo = demo || {};
             tabs: {
                 type: "fluid.tabs",
                 container: "{demo.cssFixApplier}.container"
-            }          
-        },        
+            }
+        },
         selectors: {
             fixLabel: ".democ-cssFix-fixLabel",
             fixChoice: ".democ-cssFix-fixChoice",
@@ -111,4 +110,4 @@ var demo = demo || {};
         },
         renderOnInit: true
     });
-})(jQuery);
+})();
