@@ -88,7 +88,7 @@ var fluid = fluid || fluid_1_5;
             // TODO: Isn't this enormously expensive?
             var key;
             for (key in obj) {}
-            return key === undefined || hasOwn.call( obj, key ); /* actually ignoring the empty for block on the previous line */ // jshint ignore:line
+            return key === undefined || hasOwn.call( obj, key );
         },
 
         isEmptyObject: function (obj) {

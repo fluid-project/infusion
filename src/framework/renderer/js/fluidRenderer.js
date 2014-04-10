@@ -203,7 +203,7 @@ fluid_1_5 = fluid_1_5 || {};
                 //  tree.childmap[child.ID] = child; // moved out of branch to allow
                 // "relative id expressions" to be easily parsed
                 }
-                else { // jshint ignore:line
+                else {
                     var prefix = child.ID.substring(0, colpos);
                     var childlist = tree.childmap[prefix];
                     if (!childlist) {
