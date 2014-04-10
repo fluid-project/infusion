@@ -276,15 +276,13 @@ var fluid_1_5 = fluid_1_5 || {};
         } else {
             fluid.registerCollectedClearer(shadows[shadows.length - 1], parentShadow, memberNames[memberNames.length - 1]);
         }
-        /* jshint ignore:start */
         // This use of function creation within a loop is acceptable since 
         // the function does not attempt to close directly over the loop counter
         for (var i = 0; i < thatStack.length - 1; ++ i) {
             fluid.each(shadows[i].distributions, function (distribution) {
                 fluid.collectDistributions(distributedBlocks, parentShadow, distribution, thatStack, contextHashes, memberNames, i);
-            });
+            }); /* jshint ignore:line */
         }
-        /* jshint ignore:end */
         return distributedBlocks;
     };
 

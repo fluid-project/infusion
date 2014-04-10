@@ -1689,16 +1689,14 @@ var fluid = fluid || fluid_1_5;
             // will THEN return to "evaluation of arguments" (expander blocks) and only then FINALLY to this "slow"
             // traversal of concrete properties to do the final merge.
             if (source !== undefined) {
-                /* jshint ignore:start */
                 // This use of function creation within a loop is acceptable since 
                 // the function does not attempt to close directly over the loop counter
-                fluid.each(source, function (newSource, name) {
+                fluid.each(source, function (newSource, name) { 
                     if (!target.hasOwnProperty(name)) { // only request each new target key once -- all sources will be queried per strategy
                         segs[i] = name;
                         options.strategy(target, name, i + 1, segs, sources, mergePolicy);
                     }
-                });
-                /* jshint ignore:end */
+                }); //jshint ignore:line
                 if (thisPolicy.replace) { // this branch primarily deals with a policy of replace at the root
                     break;
                 }

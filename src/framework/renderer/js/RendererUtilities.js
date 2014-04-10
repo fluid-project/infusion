@@ -568,16 +568,15 @@ fluid_1_5 = fluid_1_5 || {};
                 // each child in this list will lead to a WHOLE FORKED set of children.
                 var target = [];
                 var comp = { children: target};
-                /* jshint ignore:start */
+
+                var child = children[i];
                 // This use of function creation within a loop is acceptable since 
                 // the function does not attempt to close directly over the loop counter
-                var child = children[i];
                 var childPusher = function (comp) {
                     target[target.length] = comp;
-                };
+                }; /* jshint ignore:line */
 
                 expandLeafOrCond(child, target, childPusher);
-                /* jshint ignore:end */
                 // Rescue the case of an expanded leaf into single component - TODO: check what sense this makes of the grammar
                 if (comp.children.length === 1 && !comp.children[0].ID) {
                     comp = comp.children[0];
