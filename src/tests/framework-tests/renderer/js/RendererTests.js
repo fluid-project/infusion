@@ -1203,8 +1203,7 @@
             };
             fluid.selfRender(node, tree);
             var block = $("div", node);
-            // TODO: Add a comment about why eval is needed here.
-            var result = eval(block.html()); // jshint ignore:line
+            var result = eval(block.html()); /* required to test initBlock rendering */ // jshint ignore:line
             jqUnit.assertDeepEq("Idempotent transit", args, result);
         });
 

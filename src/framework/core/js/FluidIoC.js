@@ -2035,13 +2035,13 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             fluid.popActivity(2);
             return togo;
         }
+        var parsed;
         if (options.bareContextRefs && string.charAt(0) === "{" && string.indexOf("}") > 0) {
-            var parsed = fluid.parseContextReference(string);
+            parsed = fluid.parseContextReference(string);
             return fetch(parsed);
         }
         else if (options.ELstyle && options.ELstyle !== "${}") {
-            //TODO: provide a comment about why the redefinition is needed
-            var parsed = fluid.extractELWithContext(string, options); // jshint ignore:line
+            parsed = fluid.extractELWithContext(string, options);
             if (parsed) {
                 return fetch(parsed);
             }
@@ -2050,7 +2050,6 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             var i1 = string.indexOf("${");
             var i2 = string.indexOf("}", i1 + 2);
             if (i1 !== -1 && i2 !== -1) {
-                var parsed; // jshint ignore:line
                 if (string.charAt(i1 + 2) === "{") {
                     parsed = fluid.parseContextReference(string, i1 + 2, "}");
                     i2 = parsed.endpos;
