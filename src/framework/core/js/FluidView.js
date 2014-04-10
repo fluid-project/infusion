@@ -465,7 +465,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.allocateSimpleId = function (element) {
         var simpleId = "fluid-id-" + fluid.allocateGuid();
-        if (!element) {
+        if (!element || fluid.isPrimitive(element)) {
             return simpleId;
         }
         element = fluid.unwrap(element);
