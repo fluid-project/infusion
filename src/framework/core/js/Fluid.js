@@ -1751,14 +1751,10 @@ var fluid = fluid || fluid_1_5;
 
             var start, limit, mul;
             if (newPolicy.replace) {
-                start = 1 - sources.length;
-                limit = 0;
-                mul = -1;
+                start = 1 - sources.length; limit = 0; mul = -1; /* on one line for easier visual comparison of the two algorithms  */ // jshint ignore:line
             }
             else {
-                start = 0;
-                limit = sources.length - 1;
-                mul = +1;
+                start = 0; limit = sources.length - 1; mul = +1; /* on one line for easier visual comparison of the two algorithms  */ // jshint ignore:line
             }
             var newSources = [];
             var thisTarget;
