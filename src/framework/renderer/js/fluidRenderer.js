@@ -1466,7 +1466,7 @@ fluid_1_5 = fluid_1_5 || {};
             else {
               // TODO: fetch via AJAX, and convert format if necessary
             }
-        } // jshint ignore:line
+        }
         else if (messageSource.type === "resolver") {
             return messageSource.resolver.resolve;
         }

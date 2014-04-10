@@ -384,7 +384,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.transformToAdapter = function (transform, targetPath) {
         var basedTransform = {};
         basedTransform[targetPath] = transform;
-        return function (trans, newValue, sourceSegs, targetSegs) { // jshint ignore:line
+        return function (trans, newValue, sourceSegs, targetSegs) { /* unused parameter left for documentation purposes */ // jshint ignore:line
             // TODO: More efficient model that can only run invalidated portion of transform (need to access changeMap of source transaction)
             fluid.model.transformWithRules(newValue, basedTransform, {finalApplier: trans});
         };

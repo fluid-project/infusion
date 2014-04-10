@@ -34,7 +34,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.tooltip.idSearchFunc = function (idToContentFunc) {
-        return function (callback) { // jshint ignore:line
+        return function (callback) { /* unused parameter left for documentation purposes */ // jshint ignore:line
             var target = this;
             var idToContent = idToContentFunc();
             var ancestor = fluid.findAncestor(target, function (element) {
