@@ -36,6 +36,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         closeText: "mmm"
     };
 
+    fluid.tests.overviewPanel.labels = {
+        openPanelLabel: "label_aaa",
+        closePanelLabel: "label_bbb"
+    };
+
     fluid.tests.overviewPanel.markup = {
         description: "aaa<span>bbb</span>",
         instructions: "ccc<span>ddd</span>"
@@ -49,22 +54,38 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         titleLink: "#eee"
     };
 
+    fluid.tests.overviewPanel.expectedAriaForClosedPanel = [
+        {selector: "toggleControl", attr: "aria-pressed", value: "true"},
+        {selector: "toggleControl", attr: "aria-expanded", value: "false"},
+        {selector: "closeControl", attr: "aria-expanded", value: "false"},
+        {selector: "toggleControl", attr: "aria-label", value: fluid.tests.overviewPanel.labels.openPanelLabel},
+        {selector: "closeControl", attr: "aria-label", value: fluid.tests.overviewPanel.labels.closePanelLabel}
+    ];
+
+    fluid.tests.overviewPanel.expectedAriaForOpenPanel = [
+        {selector: "toggleControl", attr: "aria-pressed", value: "false"},
+        {selector: "toggleControl", attr: "aria-expanded", value: "true"},
+        {selector: "closeControl", attr: "aria-expanded", value: "true"},
+        {selector: "toggleControl", attr: "aria-label", value: fluid.tests.overviewPanel.labels.closePanelLabel},
+        {selector: "closeControl", attr: "aria-label", value: fluid.tests.overviewPanel.labels.closePanelLabel}
+    ];
+
+    fluid.tests.overviewPanel.assertAttributes = function (that, expectedAttributes) {
+        fluid.each(expectedAttributes, function (expected) {
+            var message = "Check that selector \"" + expected.selector
+                + "\" has " + expected.attr + " value \"" + expected.value + "\"";
+            jqUnit.assertEquals(message, expected.value,
+                that.locate(expected.selector).attr(expected.attr));
+        });
+    }
+
     fluid.tests.overviewPanel.assertModelAndStylesForClosedPanel = function (that) {
         jqUnit.assertFalse("Check that model.showPanel is false", that.model.showPanel);
         jqUnit.assertTrue("Check that container has hidden style", that.container.hasClass(that.options.styles.hidden));
     };
 
     fluid.tests.overviewPanel.assertAriaForClosedPanel = function (that) {
-        jqUnit.assertEquals("Check that toggleControl aria-pressed is true",
-            "true", that.locate("toggleControl").attr("aria-pressed"));
-        jqUnit.assertEquals("Check that toggleControl aria-expanded is false",
-            "false", that.locate("toggleControl").attr("aria-expanded"));
-        jqUnit.assertEquals("Check that closeControl aria-expanded is false",
-            "false", that.locate("closeControl").attr("aria-expanded"));
-        jqUnit.assertEquals("Check toggleControl aria-label",
-            that.options.strings.openPanelLabel, that.locate("toggleControl").attr("aria-label"));
-        jqUnit.assertEquals("Check closeControl aria-label",
-            that.options.strings.closePanelLabel, that.locate("closeControl").attr("aria-label"));
+        fluid.tests.overviewPanel.assertAttributes(that, fluid.tests.overviewPanel.expectedAriaForClosedPanel);
     };
 
     fluid.tests.overviewPanel.assertPanelIsClosed = function (that) {
@@ -76,16 +97,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertTrue("Check that model.showPanel is true", that.model.showPanel);
         jqUnit.assertFalse("Check that container does not have hidden style",
             that.container.hasClass(that.options.styles.hidden));
-        jqUnit.assertEquals("Check that toggleControl aria-pressed is false",
-            "false", that.locate("toggleControl").attr("aria-pressed"));
-        jqUnit.assertEquals("Check that toggleControl aria-expanded is true",
-            "true", that.locate("toggleControl").attr("aria-expanded"));
-        jqUnit.assertEquals("Check that closeControl aria-expanded is true",
-            "true", that.locate("closeControl").attr("aria-expanded"));
-        jqUnit.assertEquals("Check toggleControl aria-label",
-            that.options.strings.closePanelLabel, that.locate("toggleControl").attr("aria-label"));
-        jqUnit.assertEquals("Check closeControl aria-label",
-            that.options.strings.closePanelLabel, that.locate("closeControl").attr("aria-label"));
+        fluid.tests.overviewPanel.assertAttributes(that, fluid.tests.overviewPanel.expectedAriaForOpenPanel);
     };
 
     fluid.tests.overviewPanel.verifyRenderingListener = function (that, strings, markup, links) {
@@ -184,7 +196,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         model: {
             showPanel: false
-        }
+        },
+        strings: fluid.tests.overviewPanel.labels
     });
 
     fluid.defaults("fluid.tests.overviewPanel.verifyWhenInitiallyVisible", {
@@ -198,7 +211,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         model: {
             showPanel: true
-        }
+        },
+        strings: fluid.tests.overviewPanel.labels
     });
 
     fluid.defaults("fluid.tests.overviewPanel.verifyCloseControl", {
@@ -212,7 +226,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         model: {
             showPanel: true
-        }
+        },
+        strings: fluid.tests.overviewPanel.labels
     });
 
     fluid.defaults("fluid.tests.overviewPanel.verifyToggleControl", {
@@ -226,7 +241,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         model: {
             showPanel: true
-        }
+        },
+        strings: fluid.tests.overviewPanel.labels
     });
 
     $(document).ready(function () {
