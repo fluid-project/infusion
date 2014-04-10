@@ -1696,7 +1696,7 @@ var fluid = fluid || fluid_1_5;
                         segs[i] = name;
                         options.strategy(target, name, i + 1, segs, sources, mergePolicy);
                     }
-                }); //jshint ignore:line
+                });  /* function in loop */ //jshint ignore:line
                 if (thisPolicy.replace) { // this branch primarily deals with a policy of replace at the root
                     break;
                 }

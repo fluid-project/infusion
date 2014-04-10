@@ -574,7 +574,7 @@ fluid_1_5 = fluid_1_5 || {};
                 // the function does not attempt to close directly over the loop counter
                 var childPusher = function (comp) {
                     target[target.length] = comp;
-                }; /* jshint ignore:line */
+                };  /* function in loop */ /* jshint ignore:line */
 
                 expandLeafOrCond(child, target, childPusher);
                 // Rescue the case of an expanded leaf into single component - TODO: check what sense this makes of the grammar

@@ -281,7 +281,7 @@ var fluid_1_5 = fluid_1_5 || {};
         for (var i = 0; i < thatStack.length - 1; ++ i) {
             fluid.each(shadows[i].distributions, function (distribution) {
                 fluid.collectDistributions(distributedBlocks, parentShadow, distribution, thatStack, contextHashes, memberNames, i);
-            }); /* jshint ignore:line */
+            });  /* function in loop */ /* jshint ignore:line */
         }
         return distributedBlocks;
     };
