@@ -17,6 +17,9 @@
  * Date: Thu May 12 15:04:36 2011 -0400
  */
 
+/* global jQuery:true */
+/* exported jQuery */
+
 var fluid_1_5 = fluid_1_5 || {};
 var fluid = fluid || fluid_1_5;
 
@@ -92,7 +95,8 @@ var fluid = fluid || fluid_1_5;
         },
 
         isEmptyObject: function (obj) {
-            for ( var name in obj ) { // jshint ignore:line
+            var name;
+            for ( name in obj ) {
                 return false;
             }
             return true;
@@ -166,4 +170,4 @@ var fluid = fluid || fluid_1_5;
 
 })(fluid_1_5);
 
-var jQuery = fluid.jQueryStandalone; // jshint ignore:line
+var jQuery = fluid.jQueryStandalone;
