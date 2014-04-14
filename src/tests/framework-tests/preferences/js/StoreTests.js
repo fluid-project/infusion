@@ -10,12 +10,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, expect, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid, jqUnit */
 
 (function ($) {
+    "use strict";
+
     $(document).ready(function () {
         var testSettings = {
             textSize: "1.5",
@@ -23,21 +22,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             theme: "bw",
             layout: false
         };
-        
+
         var cookieName = "fluid-cookieStore-test";
-        
+
         var dropCookie = function (cookieName) {
             var date = new Date();
             document.cookie = cookieName + "=; expires=" + date.toGMTString() + "; path=/";
         };
-        
+
         var assembleCookieTest = function (cookieOptions, expectedAssembledCookie) {
             var assembledCookie = fluid.cookieStore.assembleCookie(cookieOptions);
             jqUnit.assertEquals("The expected cookie string should have been assembled", expectedAssembledCookie, assembledCookie);
         };
-        
+
         jqUnit.module("Store Tests");
-                
+
         jqUnit.test("assembleCookie: all cookieOptions set", function () {
             var expected = "cookieName=cookieValue; expires=Fri, 15 Jul 2011 16:44:24 GMT; path=/";
             var opts = {
@@ -48,7 +47,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
             assembleCookieTest(opts, expected);
         });
-        
+
         jqUnit.test("assembleCookie: no expiry date set", function () {
             var expected = "cookieName=cookieValue; path=/";
             var opts = {
@@ -58,7 +57,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
             assembleCookieTest(opts, expected);
         });
-        
+
         jqUnit.test("assembleCookie: no path set", function () {
             var expected = "cookieName=cookieValue; expires=Fri, 15 Jul 2011 16:44:24 GMT";
             var opts = {
@@ -68,7 +67,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
             assembleCookieTest(opts, expected);
         });
-        
+
         jqUnit.test("assembleCookie: no path or expiry date set", function () {
             var expected = "cookieName=cookieValue";
             var opts = {
@@ -77,7 +76,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
             assembleCookieTest(opts, expected);
         });
-        
+
         jqUnit.test("Cookie", function () {
             var store = fluid.cookieStore({
                 cookie: {
@@ -85,17 +84,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
             store.set(testSettings);
-            
+
             // Check that we get back the test settings correctly.
             var result = store.get();
             jqUnit.assertLeftHand("The settings are saved and retrieved correctly.", testSettings, result);
-            
+
             // Change the results, save again. It should work again.
             var differentSettings = fluid.copy(testSettings);
             differentSettings.textSize = "2";
             store.set(differentSettings);
             jqUnit.assertEquals("Changed settings are saved correctly.", store.get().textSize, "2");
-            
+
             // Check the cookie directly and make sure it's there.
             var startIndex = document.cookie.indexOf(store.options.cookie.name);
             jqUnit.assertTrue("Our cookie should be floating somewhere in the browser.",
@@ -108,8 +107,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
             var cookieStr = decodeURIComponent(document.cookie.substring(startIndex, endIndex));
 
-            jqUnit.assertTrue("Our cookie should contain the textSize 2.",
-                               cookieStr.indexOf('"textSize":"2"') > 0);
+            jqUnit.assertTrue("Our cookie should contain the textSize 2.", cookieStr.indexOf("\"textSize\":\"2\"") > 0);
 
             // Remove test cookie
             dropCookie(store.options.cookie.name);
@@ -118,18 +116,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.test("Temp store", function () {
             var store = fluid.tempStore();
             store.set(testSettings);
-            
+
             // Check that we get back the test settings correctly.
             var result = store.get();
             jqUnit.assertDeepEq("The settings are saved and retrieved correctly.", testSettings, result);
-            
+
             // Change the results, save again. It should work again.
             var differentSettings = fluid.copy(testSettings);
             differentSettings.textSize = "32";
             store.set(differentSettings);
             jqUnit.assertEquals("Changed settings are saved correctly.", "32", store.get().textSize);
             jqUnit.assertEquals("Theme was saved correctly.", "bw", store.get().theme);
-            
+
         });
 
     });

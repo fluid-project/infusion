@@ -11,12 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid:true, fluid_1_5:true, jQuery*/
-
-// JSLint options
-/*jslint white: true, elsecatch: true, jslintok: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 var fluid = fluid || fluid_1_5;
 
@@ -556,7 +550,7 @@ var fluid = fluid || fluid_1_5;
         gradeNames: "fluid.standardTransformFunction"
     });
 
-    fluid.transforms.limitRange = function (value, transformSpec, transform) {
+    fluid.transforms.limitRange = function (value, transformSpec) {
         var min = transformSpec.min;
         if (min !== undefined) {
             var excludeMin = transformSpec.excludeMin || 0;
@@ -580,7 +574,7 @@ var fluid = fluid || fluid_1_5;
         gradeNames: "fluid.transformFunction"
     });
 
-    fluid.transforms.free = function (transformSpec, transform) {
+    fluid.transforms.free = function (transformSpec) {
         var args = fluid.makeArray(transformSpec.args);
         return fluid.invokeGlobalFunction(transformSpec.func, args);
     };

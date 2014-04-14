@@ -13,36 +13,35 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid_1_5:true, jQuery, swfobject, SWFUpload */
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global SWFUpload */
 
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+    "use strict";
+
     // TODO: This context name is required, but has no visible detection support
     fluid.enhance.check({"fluid.uploader.flash.10": true});
-    
+
     /**********************
      * uploader.swfUpload *
      **********************/
-    
+
     fluid.demands("fluid.uploaderImpl", "fluid.uploader.swfUpload", {
         horizon: "fluid.uploader.progressiveCheck",
         funcName: "fluid.uploader.multiFileUploader"
     });
-        
+
     fluid.demands("fluid.uploader.strategy", "fluid.uploader.swfUpload", {
         horizon: "fluid.uploader.progressiveCheck",
         funcName: "fluid.uploader.swfUploadStrategy"
     });
-    
+
     fluid.defaults("fluid.uploader.swfUploadStrategy", {
         gradeNames: ["fluid.uploader.strategy", "autoInit"],
         components: {
             local: {
-                type: "fluid.uploader.swfUploadStrategy.local"  
+                type: "fluid.uploader.swfUploadStrategy.local"
             },
             engine: {
                 type: "fluid.uploader.swfUploadStrategy.engine",
@@ -52,7 +51,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             }
         },
-        
+
         // TODO: Rename this to "flashSettings" and remove the "flash" prefix from each option
         flashMovieSettings: {
             flashURL: "../../../lib/swfupload/flash/swfupload.swf",
@@ -70,15 +69,15 @@ var fluid_1_5 = fluid_1_5 || {};
             uploaderWrapperFlash10: "fl-uploader-flash10-wrapper"
         }
     });
-    
+
     fluid.uploader.swfUploadStrategy.stop = function (queue) {
-        // FLUID-822: Instead of actually stopping SWFUpload right away, we wait until the current file 
+        // FLUID-822: Instead of actually stopping SWFUpload right away, we wait until the current file
         // is finished and then don't bother to upload any new ones. This is due an issue where SWFUpload
         // appears to hang while Uploading a file that was previously stopped. I have a lingering suspicion
         // that this may actually be a bug in our Image Gallery demo, rather than in SWFUpload itself.
-        that.queue.shouldStop = true;      
+        queue.shouldStop = true;
     };
-    
+
     fluid.defaults("fluid.uploader.swfUploadStrategy.remote", {
         gradeNames: ["fluid.uploader.remote", "autoInit"],
         invokers: {
@@ -100,7 +99,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uploader.swfUploadStrategy.local", {
         gradeNames: ["fluid.uploader.local", "autoInit"],
         members: {
-            swfUpload: "{engine}.swfUpload",
+            swfUpload: "{engine}.swfUpload"
         },
         invokers: {
             browse: {
@@ -124,13 +123,13 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     });
-    
+
     fluid.uploader.swfUploadStrategy.browse = function (that) {
         if (that.options.file_queue_limit === 1) {
             that.swfUpload.selectFile();
         } else {
             that.swfUpload.selectFiles();
-        }  
+        }
     };
 
     fluid.uploader.swfUploadStrategy.flashVersionTag = function () {
@@ -140,12 +139,12 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.uploader.swfUploadStrategy.mergeSwfConfig = function (queueSettings, flashMovieSettings) {
         return $.extend({}, queueSettings, flashMovieSettings);
     };
-    
+
     fluid.uploader.swfUploadStrategy.makeSwfUpload = function (swfUploadConfig) {
         return new SWFUpload(swfUploadConfig);
     };
 
-    
+
     fluid.defaults("fluid.uploader.swfUploadStrategy.engine", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         components: {
@@ -154,7 +153,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.typeFount",
                 options: {
                     targetTypeName: {
-                        expander: {funcName: "fluid.uploader.swfUploadStrategy.flashVersionTag"},
+                        expander: {funcName: "fluid.uploader.swfUploadStrategy.flashVersionTag"}
                     }
                 }
             }
@@ -192,17 +191,17 @@ var fluid_1_5 = fluid_1_5 || {};
     /*
      * Transform HTML5 MIME types into file types for SWFUpload.
      */
-    fluid.uploader.swfUploadStrategy.fileTypeTransformer = function (model, expandSpec) { 
+    fluid.uploader.swfUploadStrategy.fileTypeTransformer = function (model, expandSpec) {
         var fileExts = "";
-        var mimeTypes = fluid.get(model, expandSpec.path); 
+        var mimeTypes = fluid.get(model, expandSpec.path);
         var mimeTypesMap = fluid.uploader.mimeTypeRegistry;
-        
+
         if (!mimeTypes) {
             return "*";
         } else if (typeof (mimeTypes) === "string") {
             return mimeTypes;
         }
-        
+
         fluid.each(mimeTypes, function (mimeType) {
             fluid.each(mimeTypesMap, function (mimeTypeForExt, ext) {
                 if (mimeTypeForExt === mimeType) {
@@ -213,11 +212,11 @@ var fluid_1_5 = fluid_1_5 || {};
 
         return fileExts.length === 0 ? "*" : fileExts.substring(0, fileExts.length - 1);
     };
-    
+
     /**********************
      * swfUpload.setupDOM *
      **********************/
-    
+
     fluid.uploader.swfUploadStrategy.flash10SetupDOM = function (uploaderContainer, browseButton, progressBar, styles) {
         // Wrap the whole uploader first.
         uploaderContainer.wrap("<div class='" + styles.uploaderWrapperFlash10 + "'></div>");
@@ -227,28 +226,28 @@ var fluid_1_5 = fluid_1_5 || {};
         flashContainer.addClass(styles.browseButtonOverlay);
         uploaderContainer.after(flashContainer);
         progressBar.append(flashContainer);
-        browseButton.attr("tabindex", -1);        
-        return flashContainer;   
+        browseButton.attr("tabindex", -1);
+        return flashContainer;
     };
-    
+
     fluid.demands("fluid.uploader.swfUploadStrategy.setupDOM", [
         "fluid.uploader.swfUploadStrategy.engine",
         "fluid.uploader.flash.10"
     ], {
         funcName: "fluid.uploader.swfUploadStrategy.flash10SetupDOM",
-        args: [            
+        args: [
             "{uploader}.container",
             "{uploader}.dom.browseButton",
             "{totalProgress}.dom.progressBar",
             "{swfUploadStrategy}.options.styles"
         ]
     });
-     
-     
+
+
     /*********************************
      * swfUpload.setupConfig *
      *********************************/
-      
+
     // Maps SWFUpload's setting names to our component's setting names.
     fluid.uploader.swfUploadStrategy.swfUploadOptionsMap = {
         uploadURL: "upload_url",
@@ -271,16 +270,16 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.uploader.swfUploadStrategy.swfUploadEventMap = {
         "swfupload_loaded_handler": "afterReady",
         "file_dialog_start_handler": "onFileDialog",
-        "file_queued_handler": "onFileQueued",         
-        "file_queue_error_handler": "onQueueError", 
+        "file_queued_handler": "onFileQueued",
+        "file_queue_error_handler": "onQueueError",
         "file_dialog_complete_handler": "afterFileDialog",
         "upload_start_handler": "onFileStart",
         "upload_progress_handler": "onFileProgress",
         "upload_complete_handler": "onFileComplete",
-        "upload_error_handler": "onFileError", 
+        "upload_error_handler": "onFileError",
         "upload_success_handler": "onFileSuccess"
     };
-    
+
     fluid.uploader.swfUploadStrategy.mapNames = function (nameMap, source, target) {
         var result = target || {};
         for (var key in source) {
@@ -289,10 +288,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 result[mappedKey] = source[key];
             }
         }
-        
+
         return result;
     };
-    
+
     fluid.uploader.swfUploadStrategy.convertConfigForSWFUpload = function (flashContainer, config, events, queueSettings) {
         config.flashButtonPeerId = fluid.allocateSimpleId(flashContainer.children().eq(0));
         // Map the event and settings names to SWFUpload's expectations.
@@ -309,7 +308,7 @@ var fluid_1_5 = fluid_1_5 || {};
         });
         return $.extend(convertedConfig, firers);
     };
-    
+
     fluid.uploader.swfUploadStrategy.flash10SetupConfig = function (config, events, flashContainer, browseButton, queueSettings) {
         var isTransparent = config.flashButtonAlwaysVisible ? false : (!$.browser.msie || config.flashButtonTransparentEvenInIE);
         config.flashButtonImageURL = isTransparent ? undefined : config.flashButtonImageURL;
@@ -318,7 +317,7 @@ var fluid_1_5 = fluid_1_5 || {};
         config.flashButtonWindowMode = isTransparent ? SWFUpload.WINDOW_MODE.TRANSPARENT : SWFUpload.WINDOW_MODE.OPAQUE;
         return fluid.uploader.swfUploadStrategy.convertConfigForSWFUpload(flashContainer, config, events, queueSettings);
     };
-    
+
     fluid.demands("fluid.uploader.swfUploadStrategy.setupConfig", [
         "fluid.uploader.swfUploadStrategy.engine",
         "fluid.uploader.flash.10"
@@ -333,28 +332,28 @@ var fluid_1_5 = fluid_1_5 || {};
         ]
     });
 
-     
+
     /*********************************
      * swfUpload.eventBinder *
      *********************************/
-     
+
     var unbindSWFUploadSelectFiles = function () {
-        // There's a bug in SWFUpload 2.2.0b3 that causes the entire browser to crash 
+        // There's a bug in SWFUpload 2.2.0b3 that causes the entire browser to crash
         // if selectFile() or selectFiles() is invoked. Remove them so no one will accidently crash their browser.
         SWFUpload.prototype.selectFile = fluid.identity;
         SWFUpload.prototype.selectFiles = fluid.identity;
     };
-    
+
     var convertFileStatus = function (swfFileStatus) {
         var converted = fluid.uploader.swfUploadStrategy.convertCode(swfFileStatus, fluid.uploader.fileStatusConstants, SWFUpload.FILE_STATUS);
         // Some parts of the Uploader core apparatus set native file status codes (e.g. CANCELLED), avoid converting them twice
         // - this is obviously unsatisfactory because we have a race between SWF's onFileError and core onFileError handlers - TODO
         return converted || swfFileStatus;
     };
-    
+
     fluid.uploader.swfUploadStrategy.bindFileEventListeners = function (model, events) {
         // Manually update our public model to keep it in sync with SWFUpload's insane,
-        // always-changing references to its internal model.        
+        // always-changing references to its internal model.
         var manualModelUpdater = function (file) {
             var modelFile = fluid.find_if(model, function (modelFile) {
                 return modelFile.id === file.id;
@@ -367,19 +366,19 @@ var fluid_1_5 = fluid_1_5 || {};
             events[event].addListener(manualModelUpdater);
         });
     };
-    
+
     // Convert one value from SWF's lookup table to ours, by finding key agreement
     fluid.uploader.swfUploadStrategy.convertCode = function (value, uploaderCodes, swfCodes) {
         var key = fluid.keyForValue(swfCodes, value);
         return uploaderCodes[key];
     };
-    
+
     fluid.uploader.swfUploadStrategy.mapQueuedFile = function (origFile, events, queue, queueSettings) {
         var file = $.extend({}, origFile); // shallow copy of file to avoid corrupting SWF's instance
         file.filestatus = convertFileStatus(origFile.filestatus);
         var fileSizeLimit = queueSettings.fileSizeLimit * 1000;
         var fileUploadLimit = queueSettings.fileUploadLimit;
-        var processedFiles = queue.getReadyFiles().length + queue.getUploadedFiles().length; 
+        var processedFiles = queue.getReadyFiles().length + queue.getUploadedFiles().length;
 
         if (file.size > fileSizeLimit) {
             file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
@@ -390,17 +389,17 @@ var fluid_1_5 = fluid_1_5 || {};
             events.afterFileQueued.fire(file);
         }
     };
-    
+
     fluid.uploader.swfUploadStrategy.flash10EventBinder = function (queue, queueSettings, events) {
-        unbindSWFUploadSelectFiles();      
-              
+        unbindSWFUploadSelectFiles();
+
         events.onFileQueued.addListener(function (file) {
             fluid.uploader.swfUploadStrategy.mapQueuedFile(file, events, queue, queueSettings);
-        });        
-        
+        });
+
         fluid.uploader.swfUploadStrategy.bindFileEventListeners(queue.files, events);
     };
-    
+
     fluid.demands("fluid.uploader.swfUploadStrategy.eventBinder", [
         "fluid.uploader.swfUploadStrategy.engine",
         "fluid.uploader.flash.10"

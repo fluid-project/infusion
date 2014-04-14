@@ -11,26 +11,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid */
 
 (function ($, fluid) {
+    "use strict";
+
     var absoluteProgress, floatyProgress, staticProgressOne, staticProgressTwo;
-    
-    function customCallback() {    
-        $("#custom").show('slow')
+
+    function customCallback() {
+        $("#custom").show("slow")
             .animate({fontSize: "1.1em"}, 600)
             .animate({fontSize: "1em"}, 400)
             .animate({fontSize: "1.2em"}, 600)
             .animate({fontSize: "1em"}, 400)
             .animate({fontSize: "1.3em"}, 600)
             .animate({fontSize: "0em"}, 600)
-            .hide('slow');
+            .hide("slow");
     }
-    
-    function differentCustomCallback() {    
+
+    function differentCustomCallback() {
         $("#floatyProgress .fluid-progress-bar")
             .animate({marginLeft: "1.5em"}, 600)
             .animate({marginLeft: "0.5em"}, 400)
@@ -39,11 +38,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             .animate({marginLeft: "1.5em"}, 600)
             .animate({marginLeft: "0.5em"}, 600);
     }
-    var customShowAnimation = {params: {opacity: "show", width: "200px"}, duration: "fast", callback: function () { 
+    var customShowAnimation = {params: {opacity: "show", width: "200px"}, duration: "fast", callback: function () {
         differentCustomCallback();
     }};
- 
-    var customHideAnimation = {params: {opacity: "hide", width: 0}, duration: "fast", callback: function () { 
+
+    var customHideAnimation = {params: {opacity: "hide", width: 0}, duration: "fast", callback: function () {
         customCallback();
     }};
 
@@ -69,7 +68,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             staticProgressTwo.hide();
         });
     };
- 
+
     $(function () {
         absoluteProgress = fluid.progress("#absoluteProgress");
         floatyProgress = fluid.progress("#floatyProgress", {selectors: {
@@ -77,6 +76,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }, animate: "backwards"});
         staticProgressOne = fluid.progress("#staticProgressOne", {animate: "both"});
         staticProgressTwo = fluid.progress("#staticProgressTwo", {animate: "none"});
-        bindButtonHandlers(); 
+        bindButtonHandlers();
     });
 })(jQuery, fluid);
