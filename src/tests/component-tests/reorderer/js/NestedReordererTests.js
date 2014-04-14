@@ -10,12 +10,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global afterMoveCallbackWasCalled, callbackConfirmer, fluid, itemIds, itemIds2, jqUnit, setUp, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid, jqUnit */
 
 (function ($) {
+    "use strict";
+
     $(document).ready(function () {
 
         jqUnit.module("Nested Reorderer Tests");

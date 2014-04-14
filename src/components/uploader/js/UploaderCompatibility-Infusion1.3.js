@@ -9,23 +9,18 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 /**************************************************************************************
  * Note: this file should not be included in the InfusionAll build.                   *
  * Instead, users should add this file manually if backwards compatibility is needed. *
  **************************************************************************************/
- 
+
 (function (fluid) {
-    
+    "use strict";
+
     fluid.registerNamespace("fluid.compat.fluid_1_3.uploader");
-    
+
     fluid.enhance.check({"fluid.uploader.fluid_1_3" : true});
 
     fluid.compat.fluid_1_3.uploader.fileTypeTransformer = function (val) {
@@ -33,12 +28,12 @@ var fluid_1_5 = fluid_1_5 || {};
         if (fluid.isArrayable(val) || typeof (val) !== "string") {
             return val;
         }
-        
+
         var exts = val.split(";");
         if (exts.length === 0) {
             return undefined;
         }
-        
+
         var mimeTypes = [];
         fluid.each(exts, function (ext) {
             ext = ext.substring(2);
@@ -47,10 +42,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 mimeTypes.push(mimeType);
             }
         });
-        
+
         return mimeTypes;
     };
-    
+
     fluid.compat.fluid_1_3.uploader.optionsRules = {
         // TODO: Remove these when model transformation can handle additive transformations.
         "gradeNames": "gradeNames",
@@ -65,19 +60,19 @@ var fluid_1_5 = fluid_1_5 || {};
         "listeners": "listeners",
         "strings": "strings",
         "mergePolicy": "mergePolicy",
-        
+
         "queueSettings.fileTypes": {
             transform: {
-                type: "fluid.compat.fluid_1_3.uploader.fileTypeTransformer", 
+                type: "fluid.compat.fluid_1_3.uploader.fileTypeTransformer",
                 inputPath: "queueSettings.fileTypes"
             }
         }
     };
-    
+
     fluid.demands("fluid.uploader", "fluid.uploader.fluid_1_3", {
         options: fluid.transformOne(fluid.compat.fluid_1_3.uploader.optionsRules)
     });
-    
+
     // TODO: In theory, this could be done with a mergePolicy on "transformOptions", if only we could ensure a scheme
     // for ordering fluid_1_2.uploader before fluid_1_3.uploader in the sequence
     fluid.demands("fluid.uploader", ["fluid.uploader.fluid_1_2", "fluid.uploader.fluid_1_3"], {

@@ -11,31 +11,26 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+    "use strict";
 
     // TODO: This context name is required, but has no visible detection support
     fluid.enhance.check({"fluid.uploader.flash.9": true});
 
     fluid.registerNamespace("fluid.uploader.swfUploadStrategy");
-    
+
     /**********************************************************************************
      * The functions in this file, which provide support for Flash 9 in the Uploader, *
-     * have been deprecated as of Infusion 1.3.                                       * 
+     * have been deprecated as of Infusion 1.3.                                       *
      **********************************************************************************/
-    
+
     fluid.uploader.swfUploadStrategy.flash9SetupDOM = function (styles) {
         var container = $("<div><span></span></div>");
         container.addClass(styles.flash9Container);
         $("body").append(container);
-        return container;       
+        return container;
     };
 
     fluid.demands("fluid.uploader.swfUploadStrategy.setupDOM", [
@@ -65,7 +60,7 @@ var fluid_1_5 = fluid_1_5 || {};
     });
 
     fluid.uploader.swfUploadStrategy.flash9EventBinder = function (model, events, local, browseButton) {
-        browseButton.click(function (e) {        
+        browseButton.click(function (e) {
             local.browse();
             e.preventDefault();
         });

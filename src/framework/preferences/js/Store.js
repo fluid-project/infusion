@@ -10,15 +10,10 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+    "use strict";
 
     /**
      * A Generic data source grade that defines an API for getting and setting
@@ -35,7 +30,7 @@ var fluid_1_5 = fluid_1_5 || {};
     /****************
      * Cookie Store *
      ****************/
-     
+
     /**
      * SettingsStore Subcomponent that uses a cookie for persistence.
      * @param {Object} options
@@ -83,22 +78,22 @@ var fluid_1_5 = fluid_1_5 || {};
         var retObj = JSON.parse(decodeURIComponent(cookie.substring(startIndex, endIndex)));
         return retObj;
     };
-    
+
     /**
      * Assembles the cookie string
      * @param {Object} cookie settings
      */
     fluid.cookieStore.assembleCookie = function (cookieOptions) {
         var cookieStr = cookieOptions.name + "=" + cookieOptions.data;
-        
+
         if (cookieOptions.expires) {
             cookieStr += "; expires=" + cookieOptions.expires;
         }
-        
+
         if (cookieOptions.path) {
             cookieStr += "; path=" + cookieOptions.path;
         }
-        
+
         return cookieStr;
     };
 
@@ -111,7 +106,7 @@ var fluid_1_5 = fluid_1_5 || {};
         cookieOptions.data = encodeURIComponent(JSON.stringify(settings));
         document.cookie = fluid.cookieStore.assembleCookie(cookieOptions);
     };
-    
+
 
     /**************
      * Temp Store *
