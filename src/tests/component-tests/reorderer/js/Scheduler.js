@@ -87,7 +87,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
         },
 
-        postOrder: function (jsonString, urlToPostJSON) { /* unused parameter left for documentation purposes */ // jshint ignore:line
+        postOrder: function (/* jsonString, urlToPostJSON */) {
             /*
              * By default this does nothing since we don't have a server to respond to this POST request.
              * But if you did want to actually post the JSON data, you'd just call the following method:

@@ -165,7 +165,7 @@ var fluid = fluid || fluid_1_5;
      * @param {String} message the error message to log
      * @param ... Additional arguments, suitable for being sent to native console.log function
      */
-    fluid.fail = function (message /*, ... */) { /* unused parameter left for documentation purposes */ // jshint ignore:line
+    fluid.fail = function (/* message, ... */) {
         var args = fluid.makeArray(arguments);
         var activity = fluid.makeArray(fluid.describeActivity()); // Take copy since we will destructively modify
         fluid.popActivity(activity.length);
@@ -308,7 +308,7 @@ var fluid = fluid || fluid_1_5;
      * priority does not exceed that set by the most recent call to the <code>fluid.setLogging</code> function,
      * the message will not appear.
      */
-    fluid.log = function (message /*, ... */) { /* unused parameter left for documentation purposes */ // jshint ignore:line
+    fluid.log = function (/* message /*, ... */) {
         var directArgs = fluid.makeArray(arguments);
         var userLogLevel = fluid.logLevel.INFO;
         if (fluid.isLogLevel(directArgs[0])) {
@@ -1691,7 +1691,7 @@ var fluid = fluid || fluid_1_5;
             if (source !== undefined) {
                 // This use of function creation within a loop is acceptable since 
                 // the function does not attempt to close directly over the loop counter
-                fluid.each(source, function (newSource, name) { 
+                fluid.each(source, function (newSource, name) {
                     if (!target.hasOwnProperty(name)) { // only request each new target key once -- all sources will be queried per strategy
                         segs[i] = name;
                         options.strategy(target, name, i + 1, segs, sources, mergePolicy);
