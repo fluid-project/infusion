@@ -5,8 +5,8 @@
         "feedbackLinkText": "Let us know!"
     },
     "markup": {
-        "description": "The Progress component allows ...",
-        "instructions": "<ul><li>...</li><li>...</li></ul>"
+        "description": "The Progress component provides a usable and accessible linear progress display for use on its own or with other Fluid components. It is highly flexible -- customizable for use in many contexts.",
+        "instructions": "<ul><li>Click on the 'Submit' button to observe the progress comonent.</li></ul>"
     },
     "links": {
         "codeLink": "https://github.com/fluid-project/infusion/tree/master/src/components/progress",

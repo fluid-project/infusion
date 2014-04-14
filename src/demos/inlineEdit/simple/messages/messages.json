@@ -6,8 +6,8 @@
         "feedbackLinkText": "Let us know!"
     },
     "markup": {
-        "description": "The Simple Text Inline Edit allows ...",
-        "instructions": "<ul><li>...</li><li>...</li></ul>"
+        "description": "Inline Edit allows a user to do quick edits to simple text without having to switch modes or screens. All work is done on the same interface which helps the user maintain context.",
+        "instructions": "<ul><li>Click on or tab to either of the editable text fields.</li><li>Type something and hit Enter or Tab</li><li>Try the Undo/Redo button.</li></ul>"
     },
     "links": {
         "codeLink": "https://github.com/fluid-project/infusion/tree/master/src/components/inlineEdit",
