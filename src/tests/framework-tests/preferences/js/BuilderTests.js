@@ -10,13 +10,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, expect, start, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid, jqUnit */
 
 (function ($) {
-
     "use strict";
 
     fluid.registerNamespace("fluid.tests");
@@ -645,7 +641,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.assertBuilderMunging = function (prefsEditor) {
+    fluid.tests.assertBuilderMunging = function () {
         return function (prefsEditor) {
             jqUnit.assertEquals("Munging options for prefsEditor should be passed down to the prefsEditor", 1, prefsEditor.prefsEditorLoader.prefsEditor.options.userOption);
             jqUnit.assertEquals("Munging options for store should be passed down to the prefsEditor", 2, prefsEditor.store.settingsStore.options.storeOption);
@@ -774,7 +770,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         selectors: {
-            bool: ".fluid-tests-composite-input",
+            bool: ".fluid-tests-composite-input"
         },
         protoTree: {
             bool: "${speakText}"
@@ -784,7 +780,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.cmpPanel.base", {
         gradeNames: ["fluid.prefs.panel", "autoInit"],
         selectors: {
-            bool: ".fluid-tests-composite-input",
+            bool: ".fluid-tests-composite-input"
         },
         protoTree: {
             bool: "${value}"
@@ -822,7 +818,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.tests.composite.auxSchema"],
         primarySchema: fluid.tests.composite.primarySchema,
         auxiliarySchema: {
-            "templatePrefix": "../testResources/html/",
+            "templatePrefix": "../testResources/html/"
         }
     });
 
@@ -926,7 +922,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             prefsEditor: {
                 prefsEditorType: "fluid.prefs.fullNoPreview"
-            },
+            }
         });
         jqUnit.assertTrue("The prefs editor should have been returned", fluid.hasGrade(pref_customNamespace.options, "fluid.prefs.assembler.prefsEd"));
         jqUnit.assertTrue("The prefsEditor grade should use the custom namespace", startsWith(pref_customNamespace.typeName, namespace));

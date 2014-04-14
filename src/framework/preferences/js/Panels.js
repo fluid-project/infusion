@@ -9,16 +9,11 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 
 (function ($, fluid) {
+    "use strict";
 
     /**********************
      * stringBundle grade *
@@ -267,7 +262,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
             },
             conditionalCreateEvent: {
-                funcName: "fluid.prefs.compositePanel.conditionalCreateEvent",
+                funcName: "fluid.prefs.compositePanel.conditionalCreateEvent"
             }
         },
         subPanelOverrides: {
@@ -284,7 +279,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         components: {},
-        resources: {}, // template is reserved for the compositePanel's template, the subpanel template should have same key as the selector for its container.
+        resources: {} // template is reserved for the compositePanel's template, the subpanel template should have same key as the selector for its container.
     });
 
     /*
@@ -390,7 +385,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 var renderOnPreference = fluid.get(componentOptions, "options.renderOnPreference");
                 if (renderOnPreference) {
                     var pref = fluid.prefs.subPanel.safePrefKey(renderOnPreference);
-                    var afterRenderListener = "afterRender." + pref;
                     var onCreateListener = "onCreate." + pref;
                     creationEventOpt = fluid.prefs.compositePanel.creationEventName(pref);
                     subPanelCreationOpts[creationEventOpt] = creationEventOpt;
@@ -430,7 +424,6 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.prefs.compositePanel.hideInactive = function (that) {
         fluid.each(that.options.components, function (componentOpts, componentName) {
-            var comp = that[componentName];
             if(fluid.prefs.compositePanel.isPanel(componentOpts.type, componentOpts.options) && !fluid.prefs.compositePanel.isActivePanel(that[componentName])) {
                 that.locate(componentName).hide();
             }
@@ -550,8 +543,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 return fluid.prefs.compositePanel.rebaseParentRelativeID(val, memberName);
             } else if (key === "valuebinding") {
                 return fluid.prefs.compositePanel.rebaseValueBinding(val, modelRelayRules);
-            } else if (key === "value" && tree["valuebinding"]) {
-                var valuebinding = tree["valuebinding"];
+            } else if (key === "value" && tree.valuebinding) {
+                var valuebinding = tree.valuebinding;
                 var modelValue = fluid.get(model, fluid.prefs.compositePanel.rebaseValueBinding(valuebinding, modelRelayRules));
                 return modelValue !== undefined ? modelValue : val;
             } else {

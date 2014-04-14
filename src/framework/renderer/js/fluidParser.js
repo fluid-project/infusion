@@ -11,41 +11,36 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, continue: true, elsecatch: true, operator: true, jslintok:true, undef: true, newcap: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+    "use strict";
 
-    // unsupported, non-API function      
+    // unsupported, non-API function
     fluid.parseTemplate = function (template, baseURL, scanStart, cutpoints_in, opts) {
         opts = opts || {};
-      
+
         if (!template) {
             fluid.fail("empty template supplied to fluid.parseTemplate");
         }
-      
+
         var t;
         var parser;
         var tagstack;
         var lumpindex = 0;
         var nestingdepth = 0;
         var justended = false;
-        
+
         var defstart = -1;
-        var defend = -1;   
-        
+        var defend = -1;
+
         var debugMode = false;
-        
+
         var cutpoints = []; // list of selector, tree, id
         var simpleClassCutpoints = {};
-        
+
         var cutstatus = [];
-        
+
         var XMLLump = function (lumpindex, nestingdepth) {
             return {
                 //rsfID: "",
@@ -58,13 +53,13 @@ fluid_1_5 = fluid_1_5 || {};
                 parent: t
             };
         };
-        
+
         function isSimpleClassCutpoint(tree) {
             return tree.length === 1 && tree[0].predList.length === 1 && tree[0].predList[0].clazz;
         }
-        
+
         function init(baseURLin, debugModeIn, cutpointsIn) {
-            t.rootlump = XMLLump(0, -1); // jslint:ok - capital letter
+            t.rootlump = XMLLump(0, -1); /* capital letter */ // jshint ignore:line
             tagstack = [t.rootlump];
             lumpindex = 0;
             nestingdepth = 0;
@@ -87,7 +82,7 @@ fluid_1_5 = fluid_1_5 || {};
                 }
             }
         }
-        
+
         function findTopContainer() {
             for (var i = tagstack.length - 1; i >= 0; --i) {
                 var lump = tagstack[i];
@@ -97,9 +92,9 @@ fluid_1_5 = fluid_1_5 || {};
             }
             return t.rootlump;
         }
-        
+
         function newLump() {
-            var togo = XMLLump(lumpindex, nestingdepth); // jslint:ok - capital letter
+            var togo = XMLLump(lumpindex, nestingdepth); /* capital letter */ // jshint ignore:line
             if (debugMode) {
                 togo.line = parser.getLineNumber();
                 togo.column = parser.getColumnNumber();
@@ -109,7 +104,7 @@ fluid_1_5 = fluid_1_5 || {};
             ++lumpindex;
             return togo;
         }
-        
+
         function addLump(mmap, ID, lump) {
             var list = mmap[ID];
             if (!list) {
@@ -118,19 +113,19 @@ fluid_1_5 = fluid_1_5 || {};
             }
             list[list.length] = lump;
         }
-          
+
         function checkContribute(ID, lump) {
             if (ID.indexOf("scr=contribute-") !== -1) {
                 var scr = ID.substring("scr=contribute-".length);
                 addLump(t.collectmap, scr, lump);
             }
         }
-        
+
         function debugLump(lump) {
           // TODO expand this to agree with the Firebug "self-selector" idiom
             return "<" + lump.tagname + ">";
         }
-        
+
         function hasCssClass(clazz, totest) {
             if (!totest) {
                 return false;
@@ -138,7 +133,7 @@ fluid_1_5 = fluid_1_5 || {};
             // algorithm from jQuery
             return (" " + totest + " ").indexOf(" " + clazz + " ") !== -1;
         }
-        
+
         function matchNode(term, headlump, headclazz) {
             if (term.predList) {
                 for (var i = 0; i < term.predList.length; ++i) {
@@ -150,29 +145,30 @@ fluid_1_5 = fluid_1_5 || {};
                 return true;
             }
         }
-        
+
         function tagStartCut(headlump) {
             var togo;
             var headclazz = headlump.attributemap["class"];
+            var i;
             if (headclazz) {
                 var split = headclazz.split(" ");
-                for (var i = 0; i < split.length; ++i) {
+                for (i = 0; i < split.length; ++i) {
                     var simpleCut = simpleClassCutpoints[$.trim(split[i])];
                     if (simpleCut) {
                         return simpleCut;
                     }
                 }
             }
-            for (var i = 0; i < cutpoints.length; ++i) { // jslint:ok - scoping
+            for (i = 0; i < cutpoints.length; ++i) {
                 var cut = cutpoints[i];
                 var cutstat = cutstatus[i];
                 var nextterm = cutstat.length; // the next term for this node
                 if (nextterm < cut.tree.length) {
                     var term = cut.tree[nextterm];
                     if (nextterm > 0) {
-                        if (cut.tree[nextterm - 1].child && 
+                        if (cut.tree[nextterm - 1].child &&
                                 cutstat[nextterm - 1] !== headlump.nestingdepth - 1) {
-                            continue; // it is a failure to match if not at correct nesting depth 
+                            continue; // it is a failure to match if not at correct nesting depth
                         }
                     }
                     var isMatch = matchNode(term, headlump, headclazz);
@@ -194,7 +190,7 @@ fluid_1_5 = fluid_1_5 || {};
             }
             return togo;
         }
-          
+
         function tagEndCut() {
             if (cutpoints) {
                 for (var i = 0; i < cutpoints.length; ++i) {
@@ -205,7 +201,7 @@ fluid_1_5 = fluid_1_5 || {};
                 }
             }
         }
-        
+
         function processTagEnd() {
             tagEndCut();
             var endlump = newLump();
@@ -216,8 +212,8 @@ fluid_1_5 = fluid_1_5 || {};
             tagstack.length--;
             justended = true;
         }
-        
-        function processTagStart(isempty, text) {
+
+        function processTagStart(isempty) {
             ++nestingdepth;
             if (justended) {
                 justended = false;
@@ -249,7 +245,7 @@ fluid_1_5 = fluid_1_5 || {};
                     }
                 }
             }
-        
+
             if (ID) {
                 // TODO: ensure this logic is correct on RSF Server
                 if (ID.charCodeAt(0) === 126) { // "~"
@@ -278,7 +274,7 @@ fluid_1_5 = fluid_1_5 || {};
                     stacktop.finallump[prefix] = headlump;
                 }
             }
-            
+
             // TODO: accelerate this by grabbing original template text (requires parser
             // adjustment) as well as dealing with empty tags
             headlump.text = "<" + tagname + fluid.dumpAttributes(attrs) + (isempty && !ID? "/>" : ">");
@@ -293,9 +289,9 @@ fluid_1_5 = fluid_1_5 || {};
                 }
             }
         }
-        
 
-        
+
+
         function processDefaultTag() {
             if (defstart !== -1) {
                 if (t.firstdocumentindex === -1) {
@@ -304,27 +300,28 @@ fluid_1_5 = fluid_1_5 || {};
                 var text = parser.getContent().substr(defstart, defend - defstart);
                 justended = false;
                 var newlump = newLump();
-                newlump.text = text; 
+                newlump.text = text;
                 defstart = -1;
             }
         }
-       
+
        /** ACTUAL BODY of fluid.parseTemplate begins here **/
-          
+
         t = fluid.XMLViewTemplate();
-        
+
         init(baseURL, opts.debugMode, cutpoints_in);
-    
+
         var idpos = template.indexOf(fluid.ID_ATTRIBUTE);
         if (scanStart) {
-            var brackpos = template.indexOf('>', idpos);
+            var brackpos = template.indexOf(">", idpos);
             parser = fluid.XMLP(template.substring(brackpos + 1));
         }
         else {
-            parser = fluid.XMLP(template); 
+            parser = fluid.XMLP(template);
         }
-    
-parseloop: while (true) {
+
+parseloop:
+        while (true) {
             var iEvent = parser.next();
             switch (iEvent) {
             case fluid.XMLP._ELM_B:
@@ -338,7 +335,7 @@ parseloop: while (true) {
                 break;
             case fluid.XMLP._ELM_EMP:
                 processDefaultTag();
-                //var text = parser.getContent().substr(parser.getContentBegin(), parser.getContentEnd() - parser.getContentBegin());    
+                //var text = parser.getContent().substr(parser.getContentBegin(), parser.getContentEnd() - parser.getContentBegin());
                 processTagStart(true, "");
                 break;
             case fluid.XMLP._PI:
@@ -356,7 +353,7 @@ parseloop: while (true) {
                 break;
             case fluid.XMLP._ERROR:
                 fluid.setLogging(true);
-                var message = "Error parsing template: " + parser.m_cAlt + " at line " + parser.getLineNumber(); 
+                var message = "Error parsing template: " + parser.m_cAlt + " at line " + parser.getLineNumber();
                 fluid.log(message);
                 fluid.log("Just read: " + parser.m_xml.substring(parser.m_iP - 30, parser.m_iP));
                 fluid.log("Still to read: " + parser.m_xml.substring(parser.m_iP, parser.m_iP + 30));
@@ -367,15 +364,15 @@ parseloop: while (true) {
             }
         }
         processDefaultTag();
-        var excess = tagstack.length - 1; 
+        var excess = tagstack.length - 1;
         if (excess) {
-            fluid.fail("Error parsing template - unclosed tag(s) of depth " + (excess) + 
+            fluid.fail("Error parsing template - unclosed tag(s) of depth " + (excess) +
                 ": " + fluid.transform(tagstack.splice(1, excess), function (lump) {return debugLump(lump);}).join(", "));
         }
         return t;
     };
 
-    // unsupported, non-API function    
+    // unsupported, non-API function
     fluid.debugLump = function (lump) {
         var togo = lump.text;
         togo += " at ";
@@ -383,21 +380,21 @@ parseloop: while (true) {
         togo += lump.parent.href === null? "" : " in file " + lump.parent.href;
         return togo;
     };
-    
+
     // Public definitions begin here
-    
+
     fluid.ID_ATTRIBUTE = "rsf:id";
 
-    // unsupported, non-API function    
+    // unsupported, non-API function
     fluid.getPrefix = function (id) {
-        var colpos = id.indexOf(':');
+        var colpos = id.indexOf(":");
         return colpos === -1? id : id.substring(0, colpos);
     };
-    
+
     // unsupported, non-API function
     fluid.SplitID = function (id) {
         var that = {};
-        var colpos = id.indexOf(':');
+        var colpos = id.indexOf(":");
         if (colpos === -1) {
             that.prefix = id;
         }
@@ -408,7 +405,7 @@ parseloop: while (true) {
         return that;
     };
 
-    // unsupported, non-API function    
+    // unsupported, non-API function
     fluid.XMLViewTemplate = function () {
         return {
             globalmap: {},
@@ -417,13 +414,13 @@ parseloop: while (true) {
             firstdocumentindex: -1
         };
     };
-    
+
     // TODO: find faster encoder
     fluid.XMLEncode = function (text) {
-        return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;"); 
+        return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;");
     };
-    
-    // unsupported, non-API function    
+
+    // unsupported, non-API function
     fluid.dumpAttributes = function (attrcopy) {
         var togo = "";
         for (var attrname in attrcopy) {
@@ -435,7 +432,7 @@ parseloop: while (true) {
         return togo;
     };
 
-    // unsupported, non-API function    
+    // unsupported, non-API function
     fluid.aggregateMMap = function (target, source) {
         for (var key in source) {
             var targhas = target[key];
@@ -445,7 +442,7 @@ parseloop: while (true) {
             target[key] = target[key].concat(source[key]);
         }
     };
-    
+
     /** Returns a "template structure", with globalmap in the root, and a list
      * of entries {href, template, cutpoints} for each parsed template.
      */
@@ -457,8 +454,8 @@ parseloop: while (true) {
             var resource = resourceSpec[templateList[i]];
             var lastslash = resource.href.lastIndexOf("/");
             var baseURL = lastslash === -1? "" : resource.href.substring(0, lastslash + 1);
-              
-            var template = fluid.parseTemplate(resource.resourceText, baseURL, 
+
+            var template = fluid.parseTemplate(resource.resourceText, baseURL,
                 opts.scanStart && i === 0, resource.cutpoints, opts);
             if (i === 0) {
                 fluid.aggregateMMap(togo.globalmap, template.globalmap);
@@ -466,11 +463,11 @@ parseloop: while (true) {
             template.href = resource.href;
             template.baseURL = baseURL;
             template.resourceKey = resource.resourceKey;
-      
+
             togo[i] = template;
             fluid.aggregateMMap(togo.globalmap, template.rootlump.downmap);
         }
         return togo;
     };
-      
+
 })(jQuery, fluid_1_5);

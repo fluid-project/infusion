@@ -10,14 +10,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid:true, jQuery*/
+/* global fluid */
 
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+var demo = demo || {};
 
-var fluid = fluid || {};
-
-fluid.dataBindingExample = (function ($) {
+(function ($) {
+    "use strict";
 
     /*
      * Utility function to display the selected items, which are identified
@@ -46,7 +44,7 @@ fluid.dataBindingExample = (function ($) {
     // curry the food model into an event listener that updates the display (after waiting a moment
     // to give the renderer a chance to actually update the model)
     var dumpFoodModel = function () {
-        var timeOut = setTimeout(function () {
+        setTimeout(function () {
             dumpModel(foodModel, jQuery("#autobound-model"));
         }, 50);
     };
@@ -54,7 +52,7 @@ fluid.dataBindingExample = (function ($) {
     // curry the wine model into an event listener that updates the display (after waiting a moment
     // to give the renderer a chance to actually update the model)
     var dumpWineModel = function () {
-        var timeOut = setTimeout(function () {
+        setTimeout(function () {
             dumpModel(wineModel, jQuery("bound-model"));
         }, 50);
     };
@@ -150,7 +148,7 @@ fluid.dataBindingExample = (function ($) {
         // fluid.selfRender() in the options parameter.
         fluid.selfRender(jQuery("#wine-list"), wineTree, {model: wineModel});
         dumpModel(wineModel, jQuery("#bound-model"));
-        
+
         // The autoBind option tells the renderer to automatically update the model when the value
         // of an input changes. Without this parameter, the model must be updated manually through
         // a call to fluid.applyBoundChange().
@@ -163,24 +161,22 @@ fluid.dataBindingExample = (function ($) {
         jQuery("#food-list input").click(dumpFoodModel);
     };
 
-    return {
-        setup: function () {
-            var fullEl = fluid.byId("render");
-            var rendered;
-            fullEl.onclick = function () {
-                renderMenu();
-                rendered = true;
-            };
+    demo.dataBoundMenu = function () {
+        var fullEl = fluid.byId("render");
+        var rendered;
+        fullEl.onclick = function () {
+            renderMenu();
+            rendered = true;
+        };
 
-            // This call to fluid.applyBoundChange() will update the model associated with the inputs
-            // with whatever the current value of the inputs are.
-            var applyButton = fluid.byId("apply-change");
-            applyButton.onclick = function () {
-                if (!rendered) {return; }
-                var inputs = $("input", $("#wine-list"));
-                fluid.applyBoundChange(inputs);
-                dumpModel(wineModel, $("#bound-model"));
-            };
-        }
+        // This call to fluid.applyBoundChange() will update the model associated with the inputs
+        // with whatever the current value of the inputs are.
+        var applyButton = fluid.byId("apply-change");
+        applyButton.onclick = function () {
+            if (!rendered) {return; }
+            var inputs = $("input", $("#wine-list"));
+            fluid.applyBoundChange(inputs);
+            dumpModel(wineModel, $("#bound-model"));
+        };
     };
 })(jQuery);

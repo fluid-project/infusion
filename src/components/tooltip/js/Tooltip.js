@@ -9,36 +9,32 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+    "use strict";
+
     fluid.registerNamespace("fluid.tooltip");
-    
+
     fluid.tooltip.computeContentFunc = function (that) {
         that.contentFunc = that.options.contentFunc ? that.options.contentFunc : that.modelToContentFunc();
     };
-    
+
     fluid.tooltip.updateContentImpl = function (that) {
         that.computeContentFunc();
         if (that.initialised) {
             that.container.tooltip("option", "content", that.contentFunc);
-        }      
-    }
-    
+        }
+    };
+
     fluid.tooltip.updateContent = function (that, content) {
         if (that.model.content !== content) { // TODO: Remove with FLUID-3674 branch
             that.applier.requestChange("content", content);
         }
     };
-    
+
     fluid.tooltip.idSearchFunc = function (idToContentFunc) {
-        return function (callback) {
+        return function (/* callback*/) {
             var target = this;
             var idToContent = idToContentFunc();
             var ancestor = fluid.findAncestor(target, function (element) {
@@ -47,7 +43,7 @@ var fluid_1_5 = fluid_1_5 || {};
             return ancestor ? idToContent[ancestor.id] : null;
         };
     };
-    
+
     fluid.tooltip.modelToContentFunc = function (that) {
         var model = that.model;
         if (model.idToContent) {
@@ -57,27 +53,27 @@ var fluid_1_5 = fluid_1_5 || {};
         } else if (model.content) {
             return function () {
                 return model.content;
-            }
-        } 
+            };
+        }
     };
-    
-    // Note that fluid.resolveEventTarget is required 
-    // because of strange dispatching within tooltip widget's "_open" method 
+
+    // Note that fluid.resolveEventTarget is required
+    // because of strange dispatching within tooltip widget's "_open" method
     // ->   this._trigger( "open", event, { tooltip: tooltip };
     // the target of the outer event will be incorrect
 
-    
+
     fluid.tooltip.makeOpenHandler = function (that) {
         return function (event, tooltip) {
-           fluid.tooltip.closeAll(that);
-           var originalTarget = fluid.resolveEventTarget(event);
-           that.openIdMap[fluid.allocateSimpleId(originalTarget)] = true;
-           if (that.initialised) {
-               that.events.afterOpen.fire(that, originalTarget, tooltip.tooltip, event);
-           }
+            fluid.tooltip.closeAll(that);
+            var originalTarget = fluid.resolveEventTarget(event);
+            that.openIdMap[fluid.allocateSimpleId(originalTarget)] = true;
+            if (that.initialised) {
+                that.events.afterOpen.fire(that, originalTarget, tooltip.tooltip, event);
+            }
         };
     };
-    
+
     fluid.tooltip.makeCloseHandler = function (that) {
         return function (event, tooltip) {
             if (that.initialised) { // underlying jQuery UI component will fire various spurious close events after it has been destroyed
@@ -87,18 +83,18 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         };
     };
-    
+
     fluid.tooltip.closeAll = function (that) {
         fluid.each(that.openIdMap, function (value, key) {
             var target = fluid.byId(key);
-            // "white-box" behaviour - fabricating this fake event shell is the only way we can get the plugin to 
+            // "white-box" behaviour - fabricating this fake event shell is the only way we can get the plugin to
             // close a tooltip which was not opened on the root element. This will be very fragile to changes in
             // jQuery UI and the underlying widget code
             that.container.tooltip("close", {
                 type: "close",
-                currentTarget: target, 
+                currentTarget: target,
                 target: target
-            });  
+            });
         });
         fluid.clear(that.openIdMap);
     };
@@ -114,8 +110,8 @@ var fluid_1_5 = fluid_1_5 || {};
         that.container.tooltip(fullOptions);
         that.initialised = true;
     };
-    
-    
+
+
     fluid.tooltip.doDestroy = function (that) {
         if (that.initialised) {
             fluid.tooltip.closeAll(that);
@@ -124,10 +120,10 @@ var fluid_1_5 = fluid_1_5 || {};
             if ($.contains(document, that.container[0])) {
                 that.container.tooltip("destroy");
             }
-            that.initialised = false; // TODO: proper framework facility for this coming with FLUID-4890  
+            that.initialised = false; // TODO: proper framework facility for this coming with FLUID-4890
         }
     };
-    
+
     fluid.defaults("fluid.tooltip", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         widgetOptions: {
@@ -179,12 +175,12 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         model: {
             // backward compatibility for pre-1.5 users of Tooltip
-            content: "{that}.options.content" 
+            content: "{that}.options.content"
             // content: String,
             // idToContent: Object {String -> String}
         },
         members: {
-            openIdMap: {}  
+            openIdMap: {}
         },
         styles: {
             tooltip: ""

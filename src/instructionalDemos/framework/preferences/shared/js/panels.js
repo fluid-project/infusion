@@ -10,13 +10,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global demo:true, fluid, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid */
 
 var demo = demo || {};
 (function ($, fluid) {
+    "use strict";
 
     /**
      * These panels are subpanels shared by a number of the Preferences Framework demos.
@@ -237,9 +235,9 @@ var demo = demo || {};
      */
     fluid.defaults("demo.panels.magPos", {
         gradeNames: ["fluid.prefs.panel", "autoInit"],
-rendererOptions: {
-    debugMode: true
-},
+        rendererOptions: {
+            debugMode: true
+        },
         preferenceMap: {
             "demo.magnifierPosition": {
                 "model.magPos": "default",

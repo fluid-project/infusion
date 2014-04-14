@@ -8,13 +8,11 @@ Licenses.
 You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
-/*global require, module, console, __dirname*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
+/* global require, module, console, __dirname */
 
 (function () {
+    "use strict";
+
     var fs = require("fs"),
         path = require("path"),
         vm = require("vm");
@@ -31,7 +29,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         console: console,
         setTimeout: setTimeout
     });
-    
+
     context.window = context;
 
     /** Load a standard, non-require-aware Fluid framework file into the Fluid context **/
@@ -50,15 +48,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     loadIncludes("includes.json");
-    
+
     var fluid = context.fluid;
     // FLUID-4913: QUnit calls window.addEventListener on load. We need to add
     // it to the context it will be loaded in.
     context.addEventListener = fluid.identity;
-    
+
     fluid.loadInContext = loadInContext;
     fluid.loadIncludes = loadIncludes;
-    
+
     /** Load a node-aware JavaScript file using either a supplied or the native
       * Fluid require function (the difference relates primarily to the base
       * directory used for loading - although the file will need to make use of
@@ -72,12 +70,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
         return module;
     };
-    
+
     /** Produce a loader object exposing a "require" object which will automatically
      * prefix the supplied directory name to any requested modules before forwarding
-     * the operation to fluid.require 
+     * the operation to fluid.require
      */
-    
+
     fluid.getLoader = function (dirName, foreignRequire) {
         return {
             require: function (moduleName, namespace) {
@@ -86,7 +84,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
                 return fluid.require(moduleName, foreignRequire, namespace);
             }
-        }
+        };
     };
 
     /**

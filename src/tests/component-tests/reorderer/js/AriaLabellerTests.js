@@ -10,27 +10,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, jQuery, itemIds*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid, jqUnit */
 
 (function ($) {
+    "use strict";
+
     $(document).ready(function () {
         fluid.setLogging(true);
-        
+
         fluid.registerNamespace("fluid.tests");
-        
+
         jqUnit.module("Aria Labeller Tests");
-        
+
         var itemIds = ["list1item1", "list1item2", "list1item3", "list1item4", "list1item5"];
-        
+
         var k = fluid.testUtils.reorderer.bindReorderer(itemIds);
 
         function assertItemsInOrder(message, expectOrder) {
-            return fluid.testUtils.reorderer.assertItemsInOrder(message, expectOrder, 
+            return fluid.testUtils.reorderer.assertItemsInOrder(message, expectOrder,
                 $("li", $("#list1")), "list1item");
-        }        
+        }
 
         fluid.defaults("fluid.tests.labellerTester", {
             gradeNames: ["fluid.viewComponent", "autoInit"],
@@ -40,10 +39,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         });
-        
-        fluid.demands("fluid.reorderList", "fluid.tests.labellerTester", 
+
+        fluid.demands("fluid.reorderList", "fluid.tests.labellerTester",
             ["{labellerTester}.container", "{options}"]);
-        
+
         jqUnit.test("IoC instantiation", function () {
 
             var labellerTester = fluid.tests.labellerTester("#list1");

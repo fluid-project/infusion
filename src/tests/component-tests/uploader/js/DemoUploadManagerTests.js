@@ -12,55 +12,54 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, jQuery, start*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid, jqUnit */
 
 (function ($) {
+    "use strict";
+
     $(function () {
         fluid.registerNamespace("fluid.uploader.tests");
         fluid.enhance.forgetAll();
-        
+
         fluid.enhance.check({
             "fluid.uploader.tests": true
         });
-        
-        var events;        
-        
+
+        var events;
+
         // Setup test files.
         var file1 = {
             id: 0,
             size: 400000
         };
-               
+
         var file2 = {
             id: 1,
             size: 600000
         };
-                
+
         var file3 =  {
             id: 2,
             size: 800000
         };
-        
+
         var file_smallerThanChunkSize =  {
             id: 3,
             size: 165432
         };
-        
+
         var file_largerAndNotMultipleOfChunkSize =  {
             id: 4,
             size: 812345
         };
-        
+
         var allFiles = [file1, file2, file3, file_smallerThanChunkSize, file_largerAndNotMultipleOfChunkSize];
-        
-        
+
+
         // Silly little data structure for capturing the sequence and parameters of the upload flow.
         var eventTracker = function (testBody) {
             var emptyFunction = function () {};
-            
+
             var listeners = {
                 onFileStart: emptyFunction,
                 onFileProgress: emptyFunction,
@@ -68,24 +67,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 afterFileComplete: emptyFunction,
                 afterUploadComplete: emptyFunction
             };
-            
+
             var tracker = jqUnit.invocationTracker({
-                runTestsOnFunctionNamed: "afterUploadComplete", 
+                runTestsOnFunctionNamed: "afterUploadComplete",
                 testBody: testBody
             });
-            
+
             tracker.interceptAll(listeners);
             tracker.listeners = listeners;
-            
+
             return tracker;
         };
-        
+
         fluid.defaults("fluid.uploader.tests.demoShell", {
             gradeNames: ["fluid.littleComponent", "autoInit"],
             nickName: "uploader",
             components: {
                 queue: {
-                    type: "fluid.uploader.fileQueue"  
+                    type: "fluid.uploader.fileQueue"
                 },
                 remote: {
                     type: "fluid.uploader.demo.remote",
@@ -106,7 +105,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         var uploadFilesAndTest = function (files, testBody) {
             var tracker = eventTracker(testBody);
-            
+
             var demo = fluid.uploader.tests.demoShell({
                 components: {
                     remote: {
@@ -120,49 +119,49 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             demo.queue.start();
             demo.remote.uploadNextFile();
-            
+
             tracker.transcript.files = files;
-            return tracker.transcript;    
+            return tracker.transcript;
         };
-        
+
         var uploadFirstFileAndTest = function (testBody) {
             return uploadFilesAndTest([file1], testBody);
         };
-        
+
         var uploadAllFilesAndTest = function (testBody) {
             return uploadFilesAndTest([file1, file2, file3], testBody);
         };
-        
+
         var uploadSmallFileAndTest = function (testBody) {
             return uploadFilesAndTest([file_smallerThanChunkSize], testBody);
         };
-        
+
         var uploadNotMultipleFileAndTest = function (testBody) {
             return uploadFilesAndTest([file_largerAndNotMultipleOfChunkSize], testBody);
         };
-        
+
         var checkEventSequenceForFile = function (transcript, file) {
             // Check that each event corresponds to the specified file.
             for (var i = 0; i < transcript.length; i++) {
                 jqUnit.assertEquals("In each event callback, the file id should be correctly set.",
                                     file.id, transcript[i].args[0].id);
             }
-            
+
             // Then check the file sequence.
             var lastEvent = transcript.length - 1;
             jqUnit.assertEquals("We should get onFileStart first.",
-                                "onFileStart", transcript[0].name);    
+                                "onFileStart", transcript[0].name);
             jqUnit.assertEquals("The second to last event should be onFileSuccess.",
-                                "onFileSuccess", transcript[lastEvent - 1].name);      
+                                "onFileSuccess", transcript[lastEvent - 1].name);
             jqUnit.assertEquals("And the last event should be afterFileComplete.",
                                 "afterFileComplete", transcript[lastEvent].name);
             for (i = 1; i < lastEvent - 1; i++) {
                 jqUnit.assertEquals("Then an onFileProgress.",
-                                    "onFileProgress", transcript[i].name);      
-            }   
+                                    "onFileProgress", transcript[i].name);
+            }
         };
-                
-        new jqUnit.module("DemoEngine Tests", {setup: function () {
+
+        jqUnit.module("DemoEngine Tests", {setup: function () {
             events = {};
             fluid.mergeListeners(events, fluid.defaults("fluid.uploader.multiFileUploader").events);
 
@@ -170,7 +169,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 allFiles[i].filestatus = fluid.uploader.fileStatusConstants.QUEUED;
             }
         }});
-        
+
         jqUnit.asyncTest("Simulated upload flow: sequence of events.", function () {
             // Test with just one file.
             uploadFirstFileAndTest(function (transcript) {
@@ -180,11 +179,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                              "afterUploadComplete", transcript[transcript.length - 1].name);
                 jqUnit.assertDeepEq("The argument to afterUploadComplete should be an array containing the current batch.",
                                     transcript.files, transcript[transcript.length - 1].args[0]);
-                                    
+
                 jqUnit.start();
             });
         });
-    
+
         jqUnit.asyncTest("Simulated upload flow: sequence of events for multiple files.", function () {
             // Upload three files.
             uploadAllFilesAndTest(function (transcript) {
@@ -206,14 +205,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.start();
             });
         });
-        
+
         jqUnit.asyncTest("Simulated upload flow: onFileProgress data.", function () {
             uploadFirstFileAndTest(function (transcript) {
                 // Check that we're getting valid progress data for the onFileProgress events.
                 jqUnit.assertEquals("The first onFileProgress event should have 200000 bytes complete.",
                                     200000, transcript[1].args[1]);
                 jqUnit.assertEquals("The first onFileProgress event should have 400000 bytes in total.",
-                                    400000, transcript[1].args[2]);                    
+                                    400000, transcript[1].args[2]);
                 jqUnit.assertEquals("The first onFileProgress event should have 400000 bytes complete.",
                                     400000, transcript[2].args[1]);
                 jqUnit.assertEquals("The first onFileProgress event should have 400000 bytes in total.",
@@ -221,7 +220,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.start();
             });
         });
-    
+
         jqUnit.asyncTest("Chunking test: smaller files don't get reported larger because of demo file chunking.", function () {
             uploadSmallFileAndTest(function (transcript) {
                 // Check that we're getting valid progress data for the onFileProgress events.
@@ -241,11 +240,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("The first onFileProgress event should have 200000 bytes complete.",
                                     200000, transcript[1].args[1]);
                 jqUnit.assertEquals("The second onFileProgress event should have 200000 more bytes complete.",
-                                    400000, transcript[2].args[1]);                    
+                                    400000, transcript[2].args[1]);
                 jqUnit.assertEquals("The third onFileProgress event should have 200000 more bytes complete.",
-                                    600000, transcript[3].args[1]);                    
+                                    600000, transcript[3].args[1]);
                 jqUnit.assertEquals("The fourth onFileProgress event should have 200000 more bytes complete.",
-                                    800000, transcript[4].args[1]);                    
+                                    800000, transcript[4].args[1]);
                 jqUnit.assertEquals("The last onFileProgress event should have 12345 more bytes complete.",
                                     812345, transcript[5].args[1]);
                 jqUnit.start();

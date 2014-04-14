@@ -10,12 +10,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, QUnit, jQuery */
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid, jqUnit */
 
 (function ($) {
+    "use strict";
 
     fluid.staticEnvironment.demo = fluid.typeTag("fluid.tableOfContentsTest");
     fluid.demands("fluid.tableOfContents.levels", ["fluid.tableOfContents", "fluid.tableOfContentsTest"], {
@@ -30,12 +28,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tableOfContents.generateGUIDMock = function () {
-        return 'test';
+        return "test";
     };
 
     // Use our custom GUID for testing purposes.
     fluid.demands("fluid.allocateSimpleId", "fluid.tableOfContents", {
-        funcName: 'fluid.tableOfContents.generateGUIDMock'
+        funcName: "fluid.tableOfContents.generateGUIDMock"
     });
 
     /* For testing a page with no headings */
@@ -273,7 +271,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The correct number of links are rendered", testHeadings.headingInfo.length, tocLinks.length);
         // #FLUID-4352: check if <ul> exists when there is no tocLinks
         if (tocLinks.length === 0) {
-            jqUnit.assertEquals("<ul> should not be defined when no headers are found", 0, $('ul', that.locate('flc-toc-tocContainer')).length);
+            jqUnit.assertEquals("<ul> should not be defined when no headers are found", 0, $("ul", that.locate("flc-toc-tocContainer")).length);
         }
         fluid.each(tocLinks, function (elm, idx) {
             var hInfo = testHeadings.headingInfo[idx];
@@ -282,7 +280,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("ToC text set correctly", fluid.get(hInfo, "text"), elm.text());
             // To address IE7 problem, http://bugs.jquery.com/ticket/7117
             // To fix, strip it URI if the windows.location is in href. Otherwise, do nothing.
-            var eleHref = elm.attr("href").replace($(location).attr('href'), '');
+            var eleHref = elm.attr("href").replace($(location).attr("href"), "");
             jqUnit.assertEquals("ToC anchor set correctly", fluid.get(hInfo, "url"), eleHref);
         });
     };
@@ -369,9 +367,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.test("Test gradualModelLevelFn", function () {
-            var modelLevel = ['level1', 'level2'];
-            var subHeadings = [{level: 6, text: 'h6', url: '#h6'}];
-            var expectedModelLevel = [{level: 5, text: 'h6', url: '#h6'}];
+            var modelLevel = ["level1", "level2"];
+            var subHeadings = [{level: 6, text: "h6", url: "#h6"}];
+            var expectedModelLevel = [{level: 5, text: "h6", url: "#h6"}];
 
             var gradualIndentationModel = fluid.tableOfContents.modelBuilder.gradualModelLevelFn(modelLevel, subHeadings);
             jqUnit.assertDeepEq("gradual indentation model returns the subHeadings with level decremented by exactly 1.", gradualIndentationModel, expectedModelLevel);
@@ -381,7 +379,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.test("Test skippedModelLevelFn", function () {
-            var modelLevel = ['level1', 'level2', {headings: ['subHeading1', 'subHeading2']}];
+            var modelLevel = ["level1", "level2", {headings: ["subHeading1", "subHeading2"]}];
             var modelLevelClone = fluid.copy(modelLevel);
             var subHeadings = modelLevelClone.pop();
             var skippedIndentationModel = fluid.tableOfContents.modelBuilder.skippedModelLevelFn(modelLevelClone, subHeadings.headings);
@@ -403,7 +401,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 
         jqUnit.test("objModel: test construction of the levels, items object used by generateTree", function () {
-            var levelObj = fluid.tableOfContents.levels.objModel('level', 1);
+            var levelObj = fluid.tableOfContents.levels.objModel("level", 1);
             jqUnit.assertEquals("The last character of the ID should be a ':'", ":", levelObj.ID.substr(levelObj.ID.length - 1));
             jqUnit.assertEquals("Should create an empty children array", 0, levelObj.children.length);
         });
@@ -436,20 +434,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // fluid tableOfContents" tests
 
         jqUnit.test("insertAnchor", function () {
-            var tocTestAnchorName = 'tocTestAnchor';
-            var tocInsertAnchorElement = $('#tocInsertAnchor');
+            var tocTestAnchorName = "tocTestAnchor";
+            var tocInsertAnchorElement = $("#tocInsertAnchor");
             fluid.tableOfContents.insertAnchor(tocTestAnchorName, tocInsertAnchorElement);
             // check if the anchor is inserted before the element, in that case, index 0 should be the anchor
             // the first-child test below assumes that there is only 2 element in the wrapper, including the inserted anchor element.
-            var tocInsertAnchorWrapperFirstChild = $('#tocInsertAnchorWrapper :first-child');
-            jqUnit.assertEquals("ToC insert anchor correctly: id", tocTestAnchorName, tocInsertAnchorWrapperFirstChild.prop('id'));
-            jqUnit.assertEquals("ToC insert anchor correctly: name", tocTestAnchorName, tocInsertAnchorWrapperFirstChild.attr('name'));
+            var tocInsertAnchorWrapperFirstChild = $("#tocInsertAnchorWrapper :first-child");
+            jqUnit.assertEquals("ToC insert anchor correctly: id", tocTestAnchorName, tocInsertAnchorWrapperFirstChild.prop("id"));
+            jqUnit.assertEquals("ToC insert anchor correctly: name", tocTestAnchorName, tocInsertAnchorWrapperFirstChild.attr("name"));
         });
 
         jqUnit.test("finalInit public function: headingTextToAnchorInfo", function () {
             // setup and init the ToC component
             var toc = renderTOCComponent();
-            var tocBodyHeading = $('#amphibians');
+            var tocBodyHeading = $("#amphibians");
             var anchorInfo = toc.headingTextToAnchorInfo(tocBodyHeading);
 
             // test goes here
@@ -473,9 +471,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
           * @precondition   Must be rendered
           */
         var renderTOCAnchorTest = function () {
-            var anchorLinks = $('.flc-toc-levels-link');
-            anchorLinks.each(function (anchorIndex, anchorValue) {
-                var anchorHref = anchorLinks.eq(anchorIndex).attr('href');
+            var anchorLinks = $(".flc-toc-levels-link");
+            anchorLinks.each(function (anchorIndex) {
+                var anchorHref = anchorLinks.eq(anchorIndex).attr("href");
                 jqUnit.assertTrue("Component test headings: TOC anchors should map to the headers correctly - " + anchorHref, $(anchorHref)[0]);
             });
         };
@@ -488,17 +486,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var testHeadings = {
                     headingInfo : []
                 };
-            var headings = $('#flc-toc').children(':header');
+            var headings = $("#flc-toc").children(":header");
             var serializeHeading = function (level, text, url) {
                 // macro to serialize heading elements, level, text, url into Object form.
-                return {'level': level, 'text': text, 'url' : url};
+                return {"level": level, "text": text, "url" : url};
             };
-            headings.each(function (headingsIndex, headingsInfo) {
+            headings.each(function (headingsIndex) {
                 var currLink = headings.eq(headingsIndex);
                 testHeadings.headingInfo.push(serializeHeading(
-                    currLink.prop('tagName').substr(currLink.prop('tagName').length - 1),
+                    currLink.prop("tagName").substr(currLink.prop("tagName").length - 1),
                     currLink.text(),
-                    '#test'
+                    "#test"
                 ));
             });
             renderTOCComponent("#flc-toc", {
@@ -562,13 +560,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          */
         jqUnit.asyncTest("Component test refreshView", function () {
             // craft headingInfo so renderTOCTest() can use it
-            var testHeadingsStart = {
-                headingInfo: [{
-                    level: "2",
-                    text: "H2",
-                    url: "#test"
-                }]
-            };
             var testHeadingRefreshed = {
                 headingInfo: [{
                     level: "2",
