@@ -1,4 +1,5 @@
 {
+    "templateUrl": "../shared/html/overviewPanelTemplate-noDesign.html",
     "strings": {
         "componentName": "Keyboard Accessibility Plugin",
         "feedbackText": "Found a bug? Have a question?",

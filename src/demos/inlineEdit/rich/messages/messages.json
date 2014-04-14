@@ -1,5 +1,5 @@
 {
-    "templateUrl": "../../../components/overviewPanel/html/overviewPanelTemplate.html",
+    "templateUrl": "../../shared/html/overviewPanelTemplate-noDesign.html",
     "strings": {
         "componentName": "Rich Text Inline Edit",
         "feedbackText": "Found a bug? Have a question?",
