@@ -1,0 +1,16 @@
+{
+    "strings": {
+        "componentName": "Keyboard Accessibility Plugin",
+        "feedbackText": "Found a bug? Have a question?",
+        "feedbackLinkText": "Let us know!"
+    },
+    "markup": {
+        "description": "The Keyboard Accessibility Plugin allows ...",
+        "instructions": "<ul><li>...</li><li>...</li></ul>"
+    },
+    "links": {
+        "codeLink": "https://github.com/fluid-project/infusion/blob/master/src/framework/core/js/jquery.keyboard-a11y.js",
+        "apiLink": "http://wiki.fluidproject.org/display/docs/Keyboard+Accessibility+Plugin+API",
+        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Keyboard Accessibility Plugin feedback"
+    }
+}

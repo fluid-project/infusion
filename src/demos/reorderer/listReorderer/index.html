@@ -8,6 +8,7 @@
         <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-layout.css" />
         <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-text.css" />
         <link rel="stylesheet" type="text/css" href="../../../components/reorderer/css/Reorderer.css" />
+        <link rel="stylesheet" type="text/css" href="../../../components/overviewPanel/css/OverviewPanel.css" />
         <link href="css/listReorderer.css" type="text/css" rel="stylesheet"/>
         
         <!--  Required javascript modules for the Reorderer which can be replaced with the build generated file Fluid-all.js -->
@@ -26,11 +27,22 @@
         <script type="text/javascript" src="../../../components/reorderer/js/ReordererDOMUtilities.js"></script>
         <script type="text/javascript" src="../../../components/reorderer/js/GeometricManager.js"></script>
         <script type="text/javascript" src="../../../components/reorderer/js/Reorderer.js"></script>
+
+        <!-- required for the Overview Panel -->
+        <script type="text/javascript" src="../../../framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/RendererUtilities.js"></script>
+
+        <script type="text/javascript" src="../../../components/overviewPanel/js/OverviewPanel.js"></script>
+        <script type="text/javascript" src="../../shared/js/overviewWrapper.js"></script>
         
         <script type="text/javascript" src="js/listReordererDemo.js"></script>
     </head>
   
     <body>
+        <div class="flc-overviewPanel fl-overviewPanel-container"></div>
         <div id="demo-selector-listReorderer" class="demo-listReorderer-container fl-container-flex">
             <h1>Event Planner - To Do List</h1>
             <p><strong>Mouse instructions:</strong> Drag and drop items with the mouse.</p>

@@ -1,0 +1,18 @@
+{
+    "templateUrl": "../../../components/overviewPanel/html/overviewPanelTemplate.html",
+    "strings": {
+        "componentName": "List Reorderer",
+        "feedbackText": "Found a bug? Have a question?",
+        "feedbackLinkText": "Let us know!"
+    },
+    "markup": {
+        "description": "The List Reorderer allows ...",
+        "instructions": "<ul><li>...</li><li>...</li></ul>"
+    },
+    "links": {
+        "codeLink": "https://github.com/fluid-project/infusion/tree/master/src/components/reorderer",
+        "apiLink": "http://wiki.fluidproject.org/display/docs/List+Reorderer+API",
+        "designLink": "http://wiki.fluidproject.org/display/Infusion13/List+Reorderer+Design+Overview",
+        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=List Reorderer feedback"
+    }
+}

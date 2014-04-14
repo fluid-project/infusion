@@ -1,0 +1,16 @@
+{
+    "strings": {
+        "componentName": "Progress",
+        "feedbackText": "Found a bug? Have a question?",
+        "feedbackLinkText": "Let us know!"
+    },
+    "markup": {
+        "description": "The Progress component allows ...",
+        "instructions": "<ul><li>...</li><li>...</li></ul>"
+    },
+    "links": {
+        "codeLink": "https://github.com/fluid-project/infusion/tree/master/src/components/progress",
+        "apiLink": "http://wiki.fluidproject.org/display/docs/Progress+API",
+        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Progress feedback"
+    }
+}

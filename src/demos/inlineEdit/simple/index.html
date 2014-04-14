@@ -8,6 +8,7 @@
         <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-layout.css" />
         <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/default-theme/jquery.ui.theme.css" />
         <link rel="stylesheet" type="text/css" href="../../../components/inlineEdit/css/InlineEdit.css" />
+        <link rel="stylesheet" type="text/css" href="../../../components/overviewPanel/css/OverviewPanel.css" />
         <link rel="stylesheet" type="text/css" href="css/InlineEdit.css" />
 
         <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
@@ -25,12 +26,23 @@
         <script type="text/javascript" src="../../../components/inlineEdit/js/InlineEdit.js"></script>
         <script type="text/javascript" src="../../../components/undo/js/Undo.js"></script>
 
+        <!-- required for the Overview Panel -->
+        <script type="text/javascript" src="../../../framework/core/js/FluidDOMUtilities.js"></script>      
+        <script type="text/javascript" src="../../../framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/RendererUtilities.js"></script>
+        <script type="text/javascript" src="../../../components/overviewPanel/js/OverviewPanel.js"></script>
+        <script type="text/javascript" src="../../shared/js/overviewWrapper.js"></script>
+
         <script type="text/javascript" src="js/inlineEditDemo.js"></script>
 
         <title>Inline Edit Demo</title>
     </head>
 
     <body class="demo-inlineEdit-indent">
+        <div class="flc-overviewPanel fl-overviewPanel-container"></div>
 		<p class="demo-inlineEdit-p"><strong>Mouse instructions:</strong> Click an editable area to activate the text area. Use the 'Escape' key to cancel, or the 'Enter,' 'Return' or 'Tab' key to finish editing.</p>
 		<p class="demo-inlineEdit-p"><strong>Keyboard instructions:</strong> Use the 'Enter' or 'Return' key to activate the text area. Use the 'Escape' button to cancel, or the 'Enter,' 'Return' or 'Tab' key to finish editing.</p>
 

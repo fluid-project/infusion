@@ -1,0 +1,18 @@
+{
+    "templateUrl": "../../../components/overviewPanel/html/overviewPanelTemplate.html",
+    "strings": {
+        "componentName": "Image Reorderer",
+        "feedbackText": "Found a bug? Have a question?",
+        "feedbackLinkText": "Let us know!"
+    },
+    "markup": {
+        "description": "The Image Reorderer allows ...",
+        "instructions": "<ul><li>...</li><li>...</li></ul>"
+    },
+    "links": {
+        "codeLink": "https://github.com/fluid-project/infusion/tree/master/src/components/reorderer",
+        "apiLink": "http://wiki.fluidproject.org/display/docs/Image+Reorderer+API",
+        "designLink": "http://wiki.fluidproject.org/display/Infusion13/Image+Reorderer+Design+Overview",
+        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Image Reorderer feedback"
+    }
+}

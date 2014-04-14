@@ -1,0 +1,16 @@
+{
+    "strings": {
+        "componentName": "Pager",
+        "feedbackText": "Found a bug? Have a question?",
+        "feedbackLinkText": "Let us know!"
+    },
+    "markup": {
+        "description": "The Pager allows ...",
+        "instructions": "<ul><li>...</li><li>...</li></ul>"
+    },
+    "links": {
+        "codeLink": "https://github.com/fluid-project/infusion/tree/master/src/components/pager",
+        "apiLink": "http://wiki.fluidproject.org/display/docs/Pager+API",
+        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Pager feedback"
+    }
+}

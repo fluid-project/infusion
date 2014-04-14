@@ -1,0 +1,17 @@
+{
+    "templateUrl": "../../../components/overviewPanel/html/overviewPanelTemplate.html",
+    "strings": {
+        "componentName": "FSS Contextual Styles",
+        "feedbackText": "Found a bug? Have a question?",
+        "feedbackLinkText": "Let us know!"
+    },
+    "markup": {
+        "description": "The FSS Contextual styles allow ...",
+        "instructions": "<ul><li>...</li><li>...</li></ul>"
+    },
+    "links": {
+        "codeLink": "https://github.com/fluid-project/infusion/tree/master/src/framework/fss",
+        "apiLink": "http://wiki.fluidproject.org/display/docs/Fluid+Skinning+System+-+FSS",
+        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=FSS Contextual Styles feedback"
+    }
+}

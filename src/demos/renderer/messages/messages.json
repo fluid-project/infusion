@@ -1,0 +1,16 @@
+{
+    "strings": {
+        "componentName": "Renderer",
+        "feedbackText": "Found a bug? Have a question?",
+        "feedbackLinkText": "Let us know!"
+    },
+    "markup": {
+        "description": "The Renderer allows ...",
+        "instructions": "<ul><li>...</li><li>...</li></ul>"
+    },
+    "links": {
+        "codeLink": "https://github.com/fluid-project/infusion/tree/master/src/framework/renderer",
+        "apiLink": "http://wiki.fluidproject.org/display/docs/Renderer",
+        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Renderer feedback"
+    }
+}
