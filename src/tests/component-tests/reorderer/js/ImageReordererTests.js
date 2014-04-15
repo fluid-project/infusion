@@ -73,9 +73,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             assertItemFocused("Initially ", 0);
         
-            // the test framework doesn't seem to properly focus, so we force the issue
-            fluid.byId(orderableIds[0]).focus();
-        
             // Test: down arrow to the fifth image
             keyDown(lightbox, downEvt, 0);
             assertItemDefault("After down arrow ", 0);
@@ -97,7 +94,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assertItemDefault("After down arrow wrap ", 12);
             
             // Tests for FLUID-1589
-            var box2 = fluid.jById(orderableIds[2]).focus();
+            var box2 = fluid.focus(fluid.jById(orderableIds[2]));
             keyDown(lightbox, upEvt, 2);
             assertItemFocused("After up arrow wrap irregular ", 10);
             assertItemDefault("After up arrow wrap irregular ", 2);
@@ -113,8 +110,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assertItemFocused("Initially ", 0);
             assertItemDefault("Initially ", 1);
         
-            // the test framework doesn't seem to properly focus, so we force the issue
-            fluid.byId(orderableIds[0]).focus();
+            fluid.focus(fluid.byId(orderableIds[0]));
         
             // Test: right arrow to the second image
             keyDown(lightbox, rightEvt, 0);
@@ -305,52 +301,51 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var lbRoot = fetchLightboxRoot();
             var lightbox = createLightbox();
             // Create an input that we can move focus to during the test
-            var newInputElement = document.createElement("input");
-            newInputElement.id = "input1";
+            var newInputElement = $(document.createElement("input"));
+            newInputElement.prop("id", "input1");
             
             $("[id=para1]").after(newInputElement);
             
             assertItemDefault("Initially ", 0);
         
             // Focus the lightbox and make sure the first thumb nail is selected
-            lbRoot[0].focus();
+            fluid.focus(lbRoot);
             assertItemFocused("When lightbox has focus ", 0);
             assertItemDefault("When lightbox has focus ", 1);
             
-            // Calling blur because the test framework doesn't behave like the browsers do. 
-            // The browsers will call blur when something else gets focus.
-            fluid.jById(orderableIds[0]).blur();
+            // Calling blur because simulated focus events do not trigger blur events synchronously
+            fluid.blur(fluid.jById(orderableIds[0]));
         
             // Change focus to the input1, then back to the lightbox
-            newInputElement.focus();
+            fluid.focus(newInputElement);
             assertItemDefault("After focus leaves the lightbox ", 0);
             
             // Change focus to the lightbox and check that the first thumb nail is still movable.
-            lbRoot[0].focus();
+            fluid.focus(lbRoot);
             assertItemFocused("When lightbox has focus again ", 0);
             assertItemDefault("When lightbox has focus again ", 1);
             
-            fluid.jById(orderableIds[0]).blur();
+            fluid.blur(fluid.jById(orderableIds[0]));
         
             // set focus to another image.
-            fluid.jById(orderableIds[1]).focus();
+            fluid.focus(fluid.jById(orderableIds[1]));
             assertItemFocused("Changed focus to second ", 1);
             assertItemDefault("Changed focus to second ", 0);
             
             // Change focus to the input1
-            newInputElement.focus();
-            fluid.jById(orderableIds[1]).blur();
+            fluid.focus(newInputElement);
+            fluid.blur(fluid.jById(orderableIds[1]));
     
             assertItemDefault("Lightbox blur with second selected ", 1);
         
             // Focus the lightbox and check that the second thumb nail is still movable
-            lbRoot[0].focus();
+            fluid.focus(lbRoot);
             assertItemFocused("Lightbox refocused with second selected ", 1);
             assertItemDefault("Lightbox refocused with second selected ", 0);
         });
         
         function testFocusBlur(initiator) {
-            jqUnit.test("ItemFocusBlur: with " + initiator, function () {
+            jqUnit.asyncTest("ItemFocusBlur: with " + initiator, function () {
                 var lightbox = createLightbox();
                 var selected = false;
                 var selectListener = function () {
@@ -360,13 +355,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var testItem = fluid.jById(orderableIds[0]);
                 
                 assertItemDefault("Before test item gets focus, it should be in default state", 0);
-                
-                testItem[initiator]();
-                assertItemFocused("After test item gets focus, it should be in selected state", 0);
-                jqUnit.assertTrue("onSelect listener should be called ", selected);
-
-                testItem.blur();    
-                assertItemDefault("After test item gets blur, it should be in default state", 0);
+                testItem.focus(function () {
+                    assertItemFocused("After test item gets focus, it should be in selected state", 0);
+                    jqUnit.assertTrue("onSelect listener should be called ", selected);
+    
+                    fluid.blur(testItem);    
+                    assertItemDefault("After test item gets blur, it should be in default state", 0);
+                    jqUnit.start();
+                });
+                testItem.triggerHandler(initiator);
             });
         }
         
@@ -437,7 +434,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("after first lightbox focus, first image should be selected", "true", firstImage.attr("aria-selected"));
             
             var thirdImage = fluid.jById(orderableIds[2]);
-            thirdImage.focus();
+            fluid.focus(thirdImage);
             jqUnit.assertEquals("after setting active item to third image, first image should not be selected", "false", firstImage.attr("aria-selected"));
             jqUnit.assertEquals("after setting active item to third image, third image should be selected", "true", thirdImage.attr("aria-selected"));
         
@@ -445,8 +442,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             newInputElement.id = "input1";
             
             $("[id=para1]").after(newInputElement);
-            $("[id=input1]").get(0).focus();
-            fluid.jById(orderableIds[2]).blur();
+            fluid.focus($("[id=input1]").get(0));
+            fluid.blur(fluid.jById(orderableIds[2]));
             jqUnit.assertEquals("after removing focus from lightbox, third image should not be selected", "false", thirdImage.attr("aria-selected"));
         });
         
@@ -516,7 +513,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             horizontalNavigationTest(lightbox, k.keyEvent("k"), k.keyEvent("j"));
                                     
-            fluid.jById(orderableIds[0]).focus();
+            fluid.focus(fluid.jById(orderableIds[0]));
             verticalNavigationTest(lightbox, k.keyEvent("i"), k.keyEvent("m"));
         });
            
@@ -537,13 +534,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             horizontalNavigationTest(lightbox, k.keyEvent("k"), k.keyEvent("j"));
     
-            fluid.jById(orderableIds[0]).focus();
+            fluid.focus(fluid.jById(orderableIds[0]));
             horizontalNavigationTest(lightbox, k.keyEvent("RIGHT"), k.keyEvent("LEFT"));
                                     
-            fluid.jById(orderableIds[0]).focus();
+            fluid.focus(fluid.jById(orderableIds[0]));
             verticalNavigationTest(lightbox, k.keyEvent("i"), k.keyEvent("m"));
     
-            fluid.jById(orderableIds[0]).focus();
+            fluid.focus(fluid.jById(orderableIds[0]));
             verticalNavigationTest(lightbox, k.keyEvent("UP"), k.keyEvent("DOWN"));
     
         });
@@ -631,7 +628,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             
             jqUnit.assertEquals("There should be no movable elements with the dragging style", 0, numItemsWithClass(movables, draggingClass));
             
-            movable.focus(); //Setting focus on the item is necessary to recreate the circumstances that caused FLUID-3288
+            fluid.focus(movable); //Setting focus on the item is necessary to recreate the circumstances that caused FLUID-3288
             compositeKey(lightbox,  k.ctrlKeyEvent("RIGHT"), index, true);
             
             jqUnit.assertTrue("The moved item retains the dragging class", movable.hasClass(draggingClass));

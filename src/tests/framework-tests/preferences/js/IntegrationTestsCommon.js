@@ -122,8 +122,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var saveButton = prefsEditor.locate("save");
                 saveButton.click();
                 fluid.tests.prefs.checkModelSelections("model from bwSkin", fluid.tests.prefs.bwSkin, prefsEditor.model);
-                jqUnit.assertEquals("Save event fired with selections", prefsEditor.model, savedSelections);
-                jqUnit.assertEquals("Direct save event fired with selections", prefsEditor.model, savedSelections2);
+                jqUnit.assertDeepEq("Save event fired with selections", fluid.tests.prefs.bwSkin, savedSelections);
+                jqUnit.assertDeepEq("Direct save event fired with selections", fluid.tests.prefs.bwSkin, savedSelections2);
                 fluid.tests.prefs.applierRequestChanges(prefsEditor, fluid.tests.prefs.ybSkin);
 
                 var cancelButton = prefsEditor.locate("cancel");

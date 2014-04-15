@@ -93,7 +93,7 @@ if (!fluid.unwrap) {
 
     var createAndFocusMenu = function (selectionOptions) {
         var menu = makeMenuSelectable(selectionOptions);
-        menu.container.focus();
+        fluid.focus(menu.container);
 
         // Sanity check.
         if (!selectionOptions || selectionOptions.autoSelectFirstItem) {
@@ -140,13 +140,13 @@ if (!fluid.unwrap) {
         jqUnit.assertSelected(getSecondMenuItem());
 
         // Move focus to another element altogether.
-        getSecondMenuItem().blur();
+        fluid.blur(getSecondMenuItem());
         var link = jQuery(LINK_AFTER_SEL);
-        link.focus();
+        fluid.focus(link);
         jqUnit.assertNothingSelected();
 
         // Move focus back to the menu.
-        menu.container.focus();
+        fluid.focus(menu.container);
     }
 
     // Mix in additional test-specific asserts.
@@ -170,7 +170,7 @@ if (!fluid.unwrap) {
             this.assertNothingSelected();
 
             // Then focus the menu container and check that the first item is actually selected.
-            menu.container.focus();
+            fluid.focus(menu.container);
             this.assertSelected(getFirstMenuItem());
         }
     };
@@ -219,7 +219,7 @@ if (!fluid.unwrap) {
         jqUnit.assertFalse(nonSelectableItem.fluid("tabindex.has"));
     });
 
-    jqUnit.test("Selects first item when container is focusssed by default", function () {
+    jqUnit.test("Selects first item when container is focussed by default", function () {
         // Don't specify any options, just use the default behaviour.
         var menu = makeMenuSelectable();
         jqUnit.assertFirstMenuItemIsSelectedOnFocus(menu);
@@ -307,13 +307,13 @@ if (!fluid.unwrap) {
         var menu = createAndFocusMenu(options);
 
         // Programmatically throw focus onto the first menu item. It should be selected.
-        getThirdMenuItem().focus();
+        fluid.focus(getThirdMenuItem());
         jqUnit.assertSelected(getThirdMenuItem());
         jqUnit.assertNotSelected(getFirstMenuItem());
         jqUnit.assertNotSelected(getSecondMenuItem());
 
         // Now try another. It should still work.
-        getFirstMenuItem().focus();
+        fluid.focus(getFirstMenuItem());
         jqUnit.assertSelected(getFirstMenuItem());
         jqUnit.assertNotSelected(getSecondMenuItem());
         jqUnit.assertNotSelected(getThirdMenuItem());
@@ -325,7 +325,7 @@ if (!fluid.unwrap) {
         jqUnit.assertNotSelected(getThirdMenuItem());
 
         // And finally, switch back to programmatically calling focus.
-        getThirdMenuItem().focus();
+        fluid.focus(getThirdMenuItem());
         jqUnit.assertSelected(getThirdMenuItem());
         jqUnit.assertNotSelected(getFirstMenuItem());
         jqUnit.assertNotSelected(getSecondMenuItem());
@@ -358,7 +358,7 @@ if (!fluid.unwrap) {
 
     jqUnit.test("selectNext() with wrapping", function () {
         var menu = makeMenuSelectable();
-        menu.container.focus();
+        fluid.focus(menu.container);
 
         // Invoke selectNext twice. We should be on the last item.
         for (var x = 0; x < 2; x += 1) {
@@ -399,7 +399,7 @@ if (!fluid.unwrap) {
         // Need to simulate browser behaviour by calling blur on the selected item, which is scary.
         var link = $(LINK_AFTER_SEL);
         menu.container.fluid("selectable.currentSelection").blur();
-        link.focus();
+        fluid.focus(link);
 
         // Now check to see that the item isn't still selected once we've moved focus off the widget.
         jqUnit.assertNotSelected(getFirstMenuItem());
@@ -543,7 +543,7 @@ if (!fluid.unwrap) {
         var menuContainer = $(MENU_SEL);
         var selThat = $(MENU_SEL).fluid("selectable", 
                 $.extend({selectableSelector: MENU_ITEM_SEL}, setupHandlers())).that();
-        menuContainer.focus();
+        fluid.focus(menuContainer);
         var firstMenuItem = getFirstMenuItem();
         jqUnit.assertSelected(firstMenuItem);
         firstMenuItem.remove();

@@ -369,9 +369,14 @@ var fluid_1_5 = fluid_1_5 || {};
      * Saves the current model and fires onSave
      */
     fluid.prefs.prefsEditor.save = function (that) {
-        that.events.onSave.fire(that.model);
-
         var savedSelections = fluid.copy(that.model);
+
+        fluid.each(savedSelections, function (value, key) {
+            if (fluid.get(that.rootModel, key) === value) {
+                delete savedSelections[key];
+            }
+        });
+        that.events.onSave.fire(savedSelections);
         that.setSettings(savedSelections);
     };
 

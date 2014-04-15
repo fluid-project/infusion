@@ -22,7 +22,7 @@ var jqUnit = jqUnit || {};
 
 // A function to load the testswarm agent if running in the testswarm environment
 // This code was derived from testsuite.js ( http://code.google.com/p/jquery-ui/source/browse/trunk/tests/unit/testsuite.js )
-(function () {
+(function ($, fluid) {
     var param = "swarmURL=";
     var url = window.location.search;
     url = decodeURIComponent(url.slice(url.indexOf(param) + param.length));
@@ -115,7 +115,6 @@ var jqUnit = jqUnit || {};
             return togo;
         };
     };
-    
         
     // Canonicalise a list of DOM elements (or a jQuery) by converting elements to their ids (allocated if necessary)
     jqUnit.canonicaliseDom = function (list) {
@@ -176,4 +175,4 @@ var jqUnit = jqUnit || {};
     };
       
     
-})();
+})(jQuery, fluid_1_5);
