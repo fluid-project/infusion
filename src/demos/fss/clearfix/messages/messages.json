@@ -1,13 +1,13 @@
 {
-    "templateUrl": "../../../components/overviewPanel/html/overviewPanelTemplate.html",
+    "templateUrl": "../../shared/html/overviewPanelTemplate-noDesign.html",
     "strings": {
         "componentName": "FSS Clearfix Styles",
         "feedbackText": "Found a bug? Have a question?",
         "feedbackLinkText": "Let us know!"
     },
     "markup": {
-        "description": "The FSS Clearfix styles allow ...",
-        "instructions": "<ul><li>...</li><li>...</li></ul>"
+        "description": "The FSS Clearfix styles ensure that content is rendered inside its parent element when that content is floated",
+        "instructions": "<ul><li>Initially, no fix styles are applied.</li><li>Use the drop-down control in the upper left-hand corner of the page to apply a fix, and observe the effects on the content.</li></ul>"
     },
     "links": {
         "codeLink": "https://github.com/fluid-project/infusion/tree/master/src/framework/fss",

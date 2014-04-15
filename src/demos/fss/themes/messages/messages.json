@@ -1,13 +1,13 @@
 {
-    "templateUrl": "../../../components/overviewPanel/html/overviewPanelTemplate.html",
+    "templateUrl": "../../shared/html/overviewPanelTemplate-noDesign.html",
     "strings": {
         "componentName": "FSS Themes",
         "feedbackText": "Found a bug? Have a question?",
         "feedbackLinkText": "Let us know!"
     },
     "markup": {
-        "description": "The FSS Themes allow ...",
-        "instructions": "<ul><li>...</li><li>...</li></ul>"
+        "description": "The FSS Themes file defines several different colour themes that can be applied to the page. The styles are designed to work with the various widgets and layouts provided by the FSS. Seven themes are shown:",
+        "instructions": "<ul><li>Mist</li><li>Slate</li><li>Coal</li><li>High Contrast (black on white)</li><li>High Contrast (white on black)</li><li>High Contrast (yellow on black)</li><li>High Contrast (black on yellow)</li></ul>"
     },
     "links": {
         "codeLink": "https://github.com/fluid-project/infusion/tree/master/src/framework/fss",

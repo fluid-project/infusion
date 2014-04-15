@@ -1,13 +1,13 @@
 {
-    "templateUrl": "../../../components/overviewPanel/html/overviewPanelTemplate.html",
+    "templateUrl": "../../shared/html/overviewPanelTemplate-noDesign.html",
     "strings": {
         "componentName": "FSS Layout Styles",
         "feedbackText": "Found a bug? Have a question?",
         "feedbackLinkText": "Let us know!"
     },
     "markup": {
-        "description": "The FSS Layout styles allow ...",
-        "instructions": "<ul><li>...</li><li>...</li></ul>"
+        "description": "The FSS Layout styles provide class names that can be used to set container widths, lay out columns, and create various common interface widgets.",
+        "instructions": "<ul><li>The background colours on this page are present only to help the viewer distinguish elements. They are not part of the styles.</li></ul>"
     },
     "links": {
         "codeLink": "https://github.com/fluid-project/infusion/tree/master/src/framework/fss",

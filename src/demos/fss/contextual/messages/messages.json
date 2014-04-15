@@ -1,13 +1,13 @@
 {
-    "templateUrl": "../../../components/overviewPanel/html/overviewPanelTemplate.html",
+    "templateUrl": "../../shared/html/overviewPanelTemplate-noDesign.html",
     "strings": {
-        "componentName": "FSS Contextual Styles",
+        "componentName": "FSS Contextual Base and Reset Styles",
         "feedbackText": "Found a bug? Have a question?",
         "feedbackLinkText": "Let us know!"
     },
     "markup": {
-        "description": "The FSS Contextual styles allow ...",
-        "instructions": "<ul><li>...</li><li>...</li></ul>"
+        "description": "The FSS Contextual Base and Reset styles can be used to apply the Base and Reset styles to only a portion of the page.",
+        "instructions": "<ul><li>Each grey block on the page describes which styles are applied to it.</li></ul>"
     },
     "links": {
         "codeLink": "https://github.com/fluid-project/infusion/tree/master/src/framework/fss",

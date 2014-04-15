@@ -1,13 +1,13 @@
 {
-    "templateUrl": "../../../components/overviewPanel/html/overviewPanelTemplate.html",
+    "templateUrl": "../../shared/html/overviewPanelTemplate-noDesign.html",
     "strings": {
         "componentName": "FSS Text Styles",
         "feedbackText": "Found a bug? Have a question?",
         "feedbackLinkText": "Let us know!"
     },
     "markup": {
-        "description": "The FSS Text styles allow ...",
-        "instructions": "<ul><li>...</li><li>...</li></ul>"
+        "description": "The FSS Text file includes classes for setting font size, font family, line height, etc.",
+        "instructions": "<ul><li>The left column shows the browser's default font.</li><li>The centre column has the 'Times' class applied to it, with a smaller font size.</li><li>The right column is styled for full justification.</li></ul>"
     },
     "links": {
         "codeLink": "https://github.com/fluid-project/infusion/tree/master/src/framework/fss",

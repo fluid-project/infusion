@@ -31,3 +31,9 @@ ul li {
 	margin-right:5px;
 	float:left;
 }
+
+.fl-overviewPanel-container ul li {
+    width: inherit;
+    float: none;
+    list-style: inherit;
+}
