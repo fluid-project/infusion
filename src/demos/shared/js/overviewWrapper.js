@@ -20,7 +20,7 @@ var demo = demo || {};
 (function ($, fluid) {
     var resources = {
         bundle: {
-            href: "messages/messages.json"
+            href: "messages/config.json"
         }
     };
 
