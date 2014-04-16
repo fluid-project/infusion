@@ -7,8 +7,10 @@ Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
-
 */
+
+// Declare dependencies
+/* global fluid, jqUnit */
 
 (function ($) {
 
@@ -72,12 +74,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.overviewPanel.assertAttributes = function (that, expectedAttributes) {
         fluid.each(expectedAttributes, function (expected) {
-            var message = "Check that selector \"" + expected.selector
-                + "\" has " + expected.attr + " value \"" + expected.value + "\"";
+            var message = "Check that selector \"" + expected.selector +
+                "\" has " + expected.attr + " value \"" + expected.value + "\"";
             jqUnit.assertEquals(message, expected.value,
                 that.locate(expected.selector).attr(expected.attr));
         });
-    }
+    };
 
     fluid.tests.overviewPanel.assertModelAndStylesForClosedPanel = function (that) {
         jqUnit.assertFalse("Check that model.showPanel is false", that.model.showPanel);
