@@ -12,16 +12,11 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
-    
+    "use strict";
+
     fluid.registerNamespace("fluid.moduleLayout");
 
     /**
@@ -46,7 +41,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     /**
-     * Move an item within the layout object. 
+     * Move an item within the layout object.
      */
     // unsupported - NON-API function
     fluid.moduleLayout.updateLayout = function (item, target, position, layout) {
@@ -62,14 +57,14 @@ var fluid_1_5 = fluid_1_5 || {};
         } else {
             var relativeItemIndices = fluid.moduleLayout.findColumnAndItemIndices(target, layout);
             targetCol = layout.columns[relativeItemIndices.columnIndex].elements;
-            position = fluid.dom.normalisePosition(position, 
-                  itemIndices.columnIndex === relativeItemIndices.columnIndex, 
+            position = fluid.dom.normalisePosition(position,
+                  itemIndices.columnIndex === relativeItemIndices.columnIndex,
                   relativeItemIndices.itemIndex, itemIndices.itemIndex);
             var relative = position === fluid.position.BEFORE ? 0 : 1;
             targetCol.splice(relativeItemIndices.itemIndex + relative, 0, item);
         }
     };
-       
+
     /**
      * Builds a layout object from a set of columns and modules.
      * @param {jQuery} container
@@ -79,7 +74,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.moduleLayout.layoutFromFlat = function (container, columns, portlets) {
         var layout = {};
         layout.container = container;
-        layout.columns = fluid.transform(columns, 
+        layout.columns = fluid.transform(columns,
             function (column) {
                 return {
                     container: column,
@@ -91,7 +86,7 @@ var fluid_1_5 = fluid_1_5 || {};
             });
         return layout;
     };
-      
+
     /**
      * Builds a layout object from a serialisable "layout" object consisting of id lists
      */
@@ -106,7 +101,7 @@ var fluid_1_5 = fluid_1_5 || {};
             })
         };
     };
-      
+
     /**
      * Serializes the current layout into a structure of ids
      */
@@ -121,7 +116,7 @@ var fluid_1_5 = fluid_1_5 || {};
             })
         };
     };
-    
+
     fluid.moduleLayout.defaultOnShowKeyboardDropWarning = function (item, dropWarning) {
         if (dropWarning) {
             var offset = $(item).offset();
@@ -131,17 +126,17 @@ var fluid_1_5 = fluid_1_5 || {};
             dropWarning.css("left", offset.left);
         }
     };
-    
+
     /**
      * Module Layout Handler for reordering content modules.
-     * 
+     *
      * General movement guidelines:
-     * 
+     *
      * - Arrowing sideways will always go to the top (moveable) module in the column
      * - Moving sideways will always move to the top available drop target in the column
      * - Wrapping is not necessary at this first pass, but is ok
      */
-    
+
     fluid.defaults("fluid.moduleLayoutHandler", {
         gradeNames: ["fluid.layoutHandler", "autoInit"],
         orientation:         fluid.orientation.VERTICAL,
@@ -156,7 +151,7 @@ var fluid_1_5 = fluid_1_5 || {};
         listeners: {
             "onShowKeyboardDropWarning.setPosition": "fluid.moduleLayout.defaultOnShowKeyboardDropWarning",
             onRefresh: {
-                priority: "first", 
+                priority: "first",
                 listener: "{that}.computeLayout"
             },
             onMove: {
@@ -173,7 +168,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         invokers: { // Use very specific arguments for selectors to avoid circularity
-            // also, do not share our DOM binder for our own selectors with parent, to avoid inability to 
+            // also, do not share our DOM binder for our own selectors with parent, to avoid inability to
             // update DOM binder's selectors after initialisation - and since we require a DOM binder in order to compute
             // the modified selectors for upward injection
             computeLayout: {
@@ -197,7 +192,7 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         selectors: {
             modules: "{reorderer}.options.selectors.modules",
-            columns: "{reorderer}.options.selectors.columns",  
+            columns: "{reorderer}.options.selectors.columns"
         },
         distributeOptions: {
             target: "{reorderer}.options",
@@ -206,26 +201,26 @@ var fluid_1_5 = fluid_1_5 || {};
                     movables: {
                         expander: {
                             func: "{that}.makeComputeModules",
-                            args: [false],
+                            args: [false]
                         }
                     },
                     dropTargets: {
                         expander: {
                             func: "{that}.makeComputeModules",
-                            args: [false],
+                            args: [false]
                         }
                     },
                     selectables: {
                         expander: {
                             func: "{that}.makeComputeModules",
-                            args: [true],
+                            args: [true]
                         }
                     }
                 }
             }
         }
     });
-     
+
     fluid.moduleLayout.computeLayout = function (that, modulesSelector, dom) {
         var togo;
         if (modulesSelector) {
@@ -248,30 +243,30 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         return modules;
     };
-    
+
     fluid.moduleLayout.makeComputeModules = function (that, all) {
         return function () {
             return that.computeModules(all);
-        }
+        };
     };
-    
+
     fluid.moduleLayout.isLocked = function (item, lockedModulesSelector, dom) {
         var lockedModules = lockedModulesSelector ? dom.fastLocate("lockedModules") : [];
         return $.inArray(item, lockedModules) !== -1;
     };
-    
+
     fluid.moduleLayout.onMoveListener = function (item, requestedPosition, layout) {
         fluid.moduleLayout.updateLayout(item, requestedPosition.element, requestedPosition.position, layout);
     };
 
     fluid.moduleLayoutHandler.finalInit = function (that) {
         var options = that.options;
-        
-        that.getRelativePosition  = 
-            fluid.reorderer.relativeInfoGetter(options.orientation, 
-                 fluid.reorderer.WRAP_LOCKED_STRATEGY, fluid.reorderer.GEOMETRIC_STRATEGY, 
+
+        that.getRelativePosition  =
+            fluid.reorderer.relativeInfoGetter(options.orientation,
+                 fluid.reorderer.WRAP_LOCKED_STRATEGY, fluid.reorderer.GEOMETRIC_STRATEGY,
                  that.dropManager, options.disableWrap);
-                 
+
         that.getGeometricInfo = function () {
             var extents = [];
             var togo = {extents: extents,
@@ -295,13 +290,13 @@ var fluid_1_5 = fluid_1_5 || {};
                     elements: fluid.makeArray(column.elements),
                     parentElement: column.container
                 };
-              //  fluid.log("Geometry col " + col + " elements " + fluid.dumpEl(thisEls.elements) + " isLocked [" + 
+              //  fluid.log("Geometry col " + col + " elements " + fluid.dumpEl(thisEls.elements) + " isLocked [" +
               //       fluid.transform(thisEls.elements, togo.elementMapper).join(", ") + "]");
                 extents.push(thisEls);
             }
             return togo;
         };
-        
+
         that.getModel = function () {
             return fluid.moduleLayout.layoutToIds(that.layout);
         };

@@ -11,55 +11,54 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid:true, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
-fluid = fluid || {};
+/* global fluid */
 
 // TODO: This is a very old-style file that is largely kept around for reference purposes, and
 // has largely been supplanted by new support for bubbling focus events in more recent versions
 // of jQuery - please communicate with the Fluid team if you find yourself thinking of using it
 
-fluid.debug = (function () {
+(function () {
+    "use strict";
 
-    var outputEventDetails = function (eventType, event, caughtBy) {
-        fluid.log(new Date() + " " + eventType + " was called on target " + fluid.dumpEl(event.target) + ", caught by " + fluid.dumpEl(caughtBy));
-    };
+    fluid.debug = (function () {
 
-    var focusOutputter = function (evt) {
-        outputEventDetails("Focus", evt, this);
-    };
+        var outputEventDetails = function (eventType, event, caughtBy) {
+            fluid.log(new Date() + " " + eventType + " was called on target " + fluid.dumpEl(event.target) + ", caught by " + fluid.dumpEl(caughtBy));
+        };
 
-    var blurOutputter = function (evt) {
-        outputEventDetails("Blur", evt, this);
-    };
+        var focusOutputter = function (evt) {
+            outputEventDetails("Focus", evt, this);
+        };
 
-    var addFocusChangeListeners = function (jQueryElements) {
-        jQueryElements.focus(focusOutputter);
-        jQueryElements.blur(blurOutputter);
-    };
+        var blurOutputter = function (evt) {
+            outputEventDetails("Blur", evt, this);
+        };
 
-    return {
-        listenForFocusEvents: function (context) {
-            fluid.setLogging(true);
-            var focussableElements  = [];
+        var addFocusChangeListeners = function (jQueryElements) {
+            jQueryElements.focus(focusOutputter);
+            jQueryElements.blur(blurOutputter);
+        };
 
-            var everything = context ? jQuery("*", context) : jQuery("*");
-            fluid.log("Everything: " + everything.length);
-            everything.each(function () {
-               //if (jQuery(this).hasTabindex()) {
-                focussableElements.push(this);
-              // }
-            });
+        return {
+            listenForFocusEvents: function (context) {
+                fluid.setLogging(true);
+                var focussableElements  = [];
 
-            addFocusChangeListeners(jQuery(focussableElements));
-        }
-    }; // End of public return.
-}) (); // End of fluid.debug namespace.
+                var everything = context ? jQuery("*", context) : jQuery("*");
+                fluid.log("Everything: " + everything.length);
+                everything.each(function () {
+                   //if (jQuery(this).hasTabindex()) {
+                    focussableElements.push(this);
+                  // }
+                });
 
-// Call listenForFocusEvents when the document is ready.
-jQuery(document).ready(function () {
-    fluid.debug.listenForFocusEvents();
-});
+                addFocusChangeListeners(jQuery(focussableElements));
+            }
+        }; // End of public return.
+    }) (); // End of fluid.debug namespace.
+
+    // Call listenForFocusEvents when the document is ready.
+    jQuery(document).ready(function () {
+        fluid.debug.listenForFocusEvents();
+    });
+})();

@@ -12,37 +12,32 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid:true, fluid_1_5:true, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, elsecatch: true, operator: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 var fluid = fluid || fluid_1_5;
 
 (function ($, fluid) {
+    "use strict";
 
     // $().fluid("selectable", args)
     // $().fluid("selectable".that()
     // $().fluid("pager.pagerBar", args)
     // $().fluid("reorderer", options)
 
-/** Create a "bridge" from code written in the Fluid standard "that-ist" style,
- *  to the standard JQuery UI plugin architecture specified at http://docs.jquery.com/UI/Guidelines .
- *  Every Fluid component corresponding to the top-level standard signature (JQueryable, options)
- *  will automatically convert idiomatically to the JQuery UI standard via this adapter. 
- *  Any return value which is a primitive or array type will become the return value
- *  of the "bridged" function - however, where this function returns a general hash
- *  (object) this is interpreted as forming part of the Fluid "return that" pattern,
- *  and the function will instead be bridged to "return this" as per JQuery standard,
- *  permitting chaining to occur. However, as a courtesy, the particular "this" returned
- *  will be augmented with a function that() which will allow the original return
- *  value to be retrieved if desired.
- *  @param {String} name The name under which the "plugin space" is to be injected into
- *  JQuery
- *  @param {Object} peer The root of the namespace corresponding to the peer object.
- */
+    /** Create a "bridge" from code written in the Fluid standard "that-ist" style,
+     *  to the standard JQuery UI plugin architecture specified at http://docs.jquery.com/UI/Guidelines .
+     *  Every Fluid component corresponding to the top-level standard signature (JQueryable, options)
+     *  will automatically convert idiomatically to the JQuery UI standard via this adapter.
+     *  Any return value which is a primitive or array type will become the return value
+     *  of the "bridged" function - however, where this function returns a general hash
+     *  (object) this is interpreted as forming part of the Fluid "return that" pattern,
+     *  and the function will instead be bridged to "return this" as per JQuery standard,
+     *  permitting chaining to occur. However, as a courtesy, the particular "this" returned
+     *  will be augmented with a function that() which will allow the original return
+     *  value to be retrieved if desired.
+     *  @param {String} name The name under which the "plugin space" is to be injected into
+     *  JQuery
+     *  @param {Object} peer The root of the namespace corresponding to the peer object.
+     */
 
     fluid.thatistBridge = function (name, peer) {
 
@@ -61,8 +56,8 @@ var fluid = fluid || fluid_1_5;
                 return ret;
             };
             var type = typeof(ret);
-            return !ret || type === "string" || type === "number" || type === "boolean"
-                || (ret && ret.length !== undefined) ? ret : this;
+            return !ret || type === "string" || type === "number" || type === "boolean" ||
+                (ret && ret.length !== undefined) ? ret : this;
         };
         $.fn[name] = togo;
         return togo;
@@ -77,8 +72,8 @@ var fluid = fluid || fluid_1_5;
  */
 
     // -- Private functions --
-    
-    
+
+
     var normalizeTabindexName = function () {
         return $.browser.msie ? "tabIndex" : "tabindex";
     };
@@ -90,7 +85,7 @@ var fluid = fluid || fluid_1_5;
 
         return $(elements[0]).is("a, input, button, select, area, textarea, object");
     };
-    
+
     var getValue = function (elements) {
         if (elements.length <= 0) {
             return undefined;
@@ -110,13 +105,13 @@ var fluid = fluid || fluid_1_5;
             $(item).attr(normalizeTabindexName(), toIndex);
         });
     };
-    
+
     // -- Public API --
-    
+
     /**
      * Gets the value of the tabindex attribute for the first item, or sets the tabindex value of all elements
      * if toIndex is specified.
-     * 
+     *
      * @param {String|Number} toIndex
      */
     fluid.tabindex = function (target, toIndex) {
@@ -208,7 +203,7 @@ var fluid = fluid || fluid_1_5;
         makeElementsTabFocussable(target);
     };
 
-    /*********************************************************************** 
+    /***********************************************************************
      * Selectable functionality - geometrising a set of nodes such that they
      * can be navigated (by setting focus) using a set of directional keys
      */
@@ -333,7 +328,7 @@ var fluid = fluid || fluid_1_5;
         reifyIndex(selectionContext);
     };
 
-    var arrowKeyHandler = function (selectionContext, keyMap, userHandlers) {
+    var arrowKeyHandler = function (selectionContext, keyMap) {
         return function (evt) {
             if (evt.which === keyMap.next) {
                 focusNextElement(selectionContext);
@@ -350,7 +345,7 @@ var fluid = fluid || fluid_1_5;
         var keyMap;
         if (direction === fluid.a11y.orientation.HORIZONTAL) {
             keyMap = LEFT_RIGHT_KEYMAP;
-        } 
+        }
         else if (direction === fluid.a11y.orientation.VERTICAL) {
             // Assume vertical in any other case.
             keyMap = UP_DOWN_KEYMAP;
@@ -413,7 +408,7 @@ var fluid = fluid || fluid_1_5;
 
         var selectableElements = options.selectableElements ? options.selectableElements :
             container.find(options.selectableSelector);
-          
+
         // Context stores the currently active item(undefined to start) and list of selectables.
         var that = {
             container: container,
@@ -451,11 +446,11 @@ var fluid = fluid || fluid_1_5;
             that.selectables = container.find(options.selectableSelector);
             that.selectablesUpdated();
         };
-        
+
         that.selectedElement = function () {
             return that.activeItemIndex < 0 ? null : that.selectables[that.activeItemIndex];
         };
-        
+
         // Add various handlers to the container.
         if (keyMap && !that.options.noBubbleListeners) {
             container.keydown(arrowKeyHandler(that, keyMap));
@@ -463,7 +458,7 @@ var fluid = fluid || fluid_1_5;
         container.keydown(tabKeyHandler(that));
         container.focus(containerFocusHandler(that));
         container.blur(containerBlurHandler(that));
-        
+
         that.selectablesUpdated();
 
         return that;
@@ -528,7 +523,7 @@ var fluid = fluid || fluid_1_5;
     };
 
     /********************************************************************
-     *  Activation functionality - declaratively associating actions with 
+     *  Activation functionality - declaratively associating actions with
      * a set of keyboard bindings.
      */
 
@@ -548,7 +543,7 @@ var fluid = fluid || fluid_1_5;
 
     /** Constructs a raw "keydown"-facing handler, given a binding entry. This
      *  checks whether the key event genuinely triggers the event and forwards it
-     *  to any "activateHandler" registered in the binding. 
+     *  to any "activateHandler" registered in the binding.
      */
     var makeActivationHandler = function (binding) {
         return function (evt) {
@@ -624,5 +619,5 @@ var fluid = fluid || fluid_1_5;
         keys: [$.ui.keyCode.ENTER, $.ui.keyCode.SPACE]
     };
 
-  
+
 })(jQuery, fluid_1_5);

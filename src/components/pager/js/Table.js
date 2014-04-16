@@ -12,15 +12,10 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+    "use strict";
 
     // cf. ancient SVN-era version in bitbucket at https://bitbucket.org/fluid/infusion/src/adf319d9b279/branches/FLUID-2881/src/webapp/components/pager/js/Table.js
 
@@ -292,7 +287,7 @@ var fluid_1_5 = fluid_1_5 || {};
         tableThat.permutation = sorted;
     };
 
-    fluid.table.onModelChange = function (tableThat, renderThat, newModel, oldModel) {
+    fluid.table.onModelChange = function (tableThat, renderThat, newModel) {
         renderThat.sortInvoker(newModel);
         tableThat.dataModel = tableThat.fetchDataModel();
         tableThat.filtered = tableThat.options.modelFilter(tableThat.dataModel, newModel, tableThat.permutation);
@@ -327,7 +322,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         modelListeners: {
-            "{fluid.table}.model": "{that}.events.onIndexModelChange.fire({change}.value, {change}.oldValue)" 
+            "{fluid.table}.model": "{that}.events.onIndexModelChange.fire({change}.value, {change}.oldValue)"
         },
         events: {
             onIndexModelChange: null
@@ -369,11 +364,11 @@ var fluid_1_5 = fluid_1_5 || {};
         rendererFnOptions: {
             templateSource: {node: "{that}.dom.root"},
             renderTarget: "{that}.dom.root",
-            noexpand: true,
+            noexpand: true
         },
         rendererOptions: {
             model: "{table}.options.dataModel",
-            idMap: {},
+            idMap: {}
         }
     });
 
@@ -414,10 +409,10 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         invokers: {
-             fetchDataModel: {
-                 funcName: "fluid.table.fetchDataModel",
-                 args: ["{that}.options.dataModel", "{that}.options.dataOffset"]
-             }
+            fetchDataModel: {
+                funcName: "fluid.table.fetchDataModel",
+                args: ["{that}.options.dataModel", "{that}.options.dataOffset"]
+            }
         },
 
         styles: {
@@ -435,7 +430,7 @@ var fluid_1_5 = fluid_1_5 || {};
         // Offset of the tree's "main" data from the overall dataModel root
         dataOffset: "",
         // strategy for generating a tree row, either "explode" or an array of columnDef objects
-        columnDefs: [], // [{key: "columnName", valuebinding: "*.valuePath", sortable: true/false}]
+        columnDefs: [] // [{key: "columnName", valuebinding: "*.valuePath", sortable: true/false}]
     });
 
 })(jQuery, fluid_1_5);

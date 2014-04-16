@@ -13,145 +13,143 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jQuery*/
+/* global fluid */
 
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+(function () {
+    "use strict";
 
-/**
- * This file contains test constants and setup and teardown functions that are used when testing with the data in the Lightbox.html file.
- * TODO: Rework this file and testing strategy so it is properly namespaced and uses composition of options for configuration rather than
- * multiple drivers and bare functions.
- */
-var numOfImages = 14;
+    /**
+     * This file contains test constants and setup and teardown functions that are used when testing with the data in the ImageReordererTests.html file.
+     * TODO: Rework this file and testing strategy uses composition of options for configuration rather than multiple drivers.
+     */
+    fluid.registerNamespace("fluid.testUtils.imageReorderer");
 
-// The id of the root node of the lightbox
-var lightboxRootId = "gallery:::gallery-thumbs:::";
+    fluid.testUtils.imageReorderer.numOfImages = 14;
 
-var orderableIndices = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+    // The id of the root node of the lightbox
+    fluid.testUtils.imageReorderer.imageReordererRootId = "gallery:::gallery-thumbs:::";
 
-var makeOrderableIds = function (indices) {
-    return fluid.transform(indices, 
-        function (index) {
-            return "gallery:::gallery-thumbs:::lightbox-cell:" + index + ":";
-        });
-};
+    var orderableIndices = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
 
-var makeImageIds = function (indices) {
-    return fluid.transform(indices, 
-        function (index) {
-            return "fluid.img." + index;
-        });
-};
+    var makeOrderableIds = function (indices) {
+        return fluid.transform(indices,
+            function (index) {
+                return "gallery:::gallery-thumbs:::lightbox-cell:" + index + ":";
+            });
+    };
 
-var orderableIds = makeOrderableIds(orderableIndices);
+    var makeImageIds = function (indices) {
+        return fluid.transform(indices,
+            function (index) {
+                return "fluid.img." + index;
+            });
+    };
 
-var imageIds = makeImageIds(orderableIndices);
+    fluid.testUtils.imageReorderer.orderableIds = makeOrderableIds(orderableIndices);
 
-var orderableBaseId = "gallery:::gallery-thumbs:::lightbox-cell:";
-var selectByDivAndId = "div[id=^" + orderableBaseId + "]";
+    fluid.testUtils.imageReorderer.imageIds = makeImageIds(orderableIndices);
 
-// CSS class names
-var defaultClass = "fl-reorderer-movable-default";
-var selectedClass = "fl-reorderer-movable-selected";
-var draggingClass = "fl-reorderer-movable-dragging";
+    // CSS class names
+    fluid.testUtils.imageReorderer.defaultClass = "fl-reorderer-movable-default";
+    fluid.testUtils.imageReorderer.selectedClass = "fl-reorderer-movable-selected";
+    fluid.testUtils.imageReorderer.draggingClass = "fl-reorderer-movable-dragging";
 
-function fetchLightboxRoot() {
-    return fluid.jById(lightboxRootId);
-}
+    fluid.testUtils.imageReorderer.fetchLightboxRoot = function () {
+        return fluid.jById(fluid.testUtils.imageReorderer.imageReordererRootId);
+    };
 
-function focusLightbox() {
-    var root = fetchLightboxRoot();
-    fluid.focus(root);
-}
+    fluid.testUtils.imageReorderer.focusLightbox = function () {
+        var root = fluid.testUtils.imageReorderer.fetchLightboxRoot();
+        fluid.focus(root);
+    };
 
-function findOrderableByDivAndId(containerEl) {
-    //return jQuery(selectByDivAndId, containerEl);
-    return fluid.jById(lightboxRootId).children();
-}
+    function findOrderableByDivAndId() {
+        return fluid.jById(fluid.testUtils.imageReorderer.imageReordererRootId).children();
+    }
 
 
-function findNoOrderables() {
-    return [];
-}
+    function findNoOrderables() {
+        return [];
+    }
 
-function createLightbox(options) {
-    var reorderer;
-    var listenerConfig = { // afterMove listener to test FLUID-4391
-        listeners: {
-            afterMove: function () {
-                reorderer.moveCount++;
+    fluid.testUtils.imageReorderer.createImageReorderer = function (options) {
+        var reorderer;
+        var listenerConfig = { // afterMove listener to test FLUID-4391
+            listeners: {
+                afterMove: function () {
+                    reorderer.moveCount++;
+                }
             }
-        }  
+        };
+        // TODO: produce a mergePolicy that can do this non-destructively
+        var mergedOptions = fluid.merge(null, {}, listenerConfig, options);
+        reorderer = fluid.reorderImages(fluid.testUtils.imageReorderer.fetchLightboxRoot(), mergedOptions);
+        reorderer.moveCount = 0;
+        return reorderer;
     };
-    // TODO: produce a mergePolicy that can do this non-destructively
-    var mergedOptions = fluid.merge(null, {}, listenerConfig, options);
-    reorderer = fluid.reorderImages(fetchLightboxRoot(), mergedOptions);
-    reorderer.moveCount = 0;
-    return reorderer;
-}
 
-function createLightboxWithNoOrderables() {
-    return createLightbox({
-        selectors: {
-            movables: findNoOrderables
-        }
-    });
-}
+    fluid.testUtils.imageReorderer.createImageReordererWithNoOrderables = function () {
+        return fluid.testUtils.imageReorderer.createImageReorderer({
+            selectors: {
+                movables: findNoOrderables
+            }
+        });
+    };
 
-var altKeys = { 
-    modifier: function (evt) {
-        return (evt.ctrlKey && evt.shiftKey);
-    }, 
-    up: fluid.reorderer.keys.i, 
-    down: fluid.reorderer.keys.m,
-    right: fluid.reorderer.keys.k,
-    left: fluid.reorderer.keys.j
-};
-    
-function createAltKeystrokeLightbox() {
-    return createLightbox({
-        keysets: [altKeys],
-        selectors: {
-            movables: findOrderableByDivAndId
-        }
-    });
-}
-
-function createMultiKeystrokeLightbox() {
-    var altKeys2 = { 
+    var altKeys = {
         modifier: function (evt) {
-            return evt.altKey;
-        }, 
-        up: fluid.reorderer.keys.UP, 
-        down: fluid.reorderer.keys.DOWN,
-        right: fluid.reorderer.keys.RIGHT,
-        left: fluid.reorderer.keys.LEFT
+            return (evt.ctrlKey && evt.shiftKey);
+        },
+        up: fluid.reorderer.keys.i,
+        down: fluid.reorderer.keys.m,
+        right: fluid.reorderer.keys.k,
+        left: fluid.reorderer.keys.j
     };
-    
-    return createLightbox({
-        keysets: [altKeys, altKeys2],
-        selectors: {
-            movables: findOrderableByDivAndId
-        }
-    });
-}
 
-function createMultiOverlappingKeystrokeLightbox() {
-    var altKeys2 = { 
-        modifier: function (evt) {
-            return evt.ctrlKey;
-        }, 
-        up: fluid.reorderer.keys.UP, 
-        down: fluid.reorderer.keys.DOWN,
-        right: fluid.reorderer.keys.RIGHT,
-        left: fluid.reorderer.keys.LEFT
+    fluid.testUtils.imageReorderer.createAltKeystrokeImageReorderer = function () {
+        return fluid.testUtils.imageReorderer.createImageReorderer({
+            keysets: [altKeys],
+            selectors: {
+                movables: findOrderableByDivAndId
+            }
+        });
     };
-    
-    return createLightbox({
-        keysets: [altKeys, altKeys2],
-        selectors: {
-            movables: findOrderableByDivAndId
-        }
-    });
-}
+
+    fluid.testUtils.imageReorderer.createMultiKeystrokeImageReorderer = function () {
+        var altKeys2 = {
+            modifier: function (evt) {
+                return evt.altKey;
+            },
+            up: fluid.reorderer.keys.UP,
+            down: fluid.reorderer.keys.DOWN,
+            right: fluid.reorderer.keys.RIGHT,
+            left: fluid.reorderer.keys.LEFT
+        };
+
+        return fluid.testUtils.imageReorderer.createImageReorderer({
+            keysets: [altKeys, altKeys2],
+            selectors: {
+                movables: findOrderableByDivAndId
+            }
+        });
+    };
+
+    fluid.testUtils.imageReorderer.createMultiOverlappingKeystrokeImageReorderer = function () {
+        var altKeys2 = {
+            modifier: function (evt) {
+                return evt.ctrlKey;
+            },
+            up: fluid.reorderer.keys.UP,
+            down: fluid.reorderer.keys.DOWN,
+            right: fluid.reorderer.keys.RIGHT,
+            left: fluid.reorderer.keys.LEFT
+        };
+
+        return fluid.testUtils.imageReorderer.createImageReorderer({
+            keysets: [altKeys, altKeys2],
+            selectors: {
+                movables: findOrderableByDivAndId
+            }
+        });
+    };
+})();

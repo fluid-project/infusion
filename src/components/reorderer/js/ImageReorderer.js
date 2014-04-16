@@ -12,22 +12,17 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
-    
+    "use strict";
+
     fluid.registerNamespace("fluid.reorderImages");
-    
+
     fluid.reorderImages.deriveLightboxCellBase = function (namebase, index) {
         return namebase + "lightbox-cell:" + index + ":";
     };
-            
+
     fluid.reorderImages.addThumbnailActivateHandler = function (container) {
         var enterKeyHandler = function (evt) {
             if (evt.which === fluid.reorderer.keys.ENTER) {
@@ -35,11 +30,11 @@ var fluid_1_5 = fluid_1_5 || {};
                 document.location = thumbnailAnchors.attr("href");
             }
         };
-        
+
         container.keypress(enterKeyHandler);
     };
-    
-    // Custom query method seeks all tags descended from a given root with a 
+
+    // Custom query method seeks all tags descended from a given root with a
     // particular tag name, whose id matches a regex.
     fluid.reorderImages.seekNodesById = function (rootnode, tagname, idmatch) {
         var inputs = rootnode.getElementsByTagName(tagname);
@@ -53,31 +48,31 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         return togo;
     };
-    
+
     fluid.reorderImages.createImageCellFinder = function (parentNode, containerId) {
-        containerId = containerId || parentNode.prop("id")
+        containerId = containerId || parentNode.prop("id");
         parentNode = fluid.unwrap(parentNode);
-        
+
         var lightboxCellNamePattern = "^" + fluid.reorderImages.deriveLightboxCellBase(containerId, "[0-9]+") + "$";
-        
+
         return function () {
             // This orderable finder assumes that the lightbox thumbnails are 'div' elements
             return fluid.reorderImages.seekNodesById(parentNode, "div", lightboxCellNamePattern);
         };
     };
-    
+
     fluid.reorderImages.seekForm = function (container) {
         return fluid.findAncestor(container, function (element) {
             return $(element).is("form");
         });
     };
-    
+
     fluid.reorderImages.seekInputs = function (container, reorderform) {
-        return fluid.reorderImages.seekNodesById(reorderform, 
-                             "input", 
+        return fluid.reorderImages.seekNodesById(reorderform,
+                             "input",
                              "^" + fluid.reorderImages.deriveLightboxCellBase(container.prop("id"), "[^:]*") + "reorder-index$");
     };
-    
+
     fluid.reorderImages.mapIdsToNames = function (container, reorderform) {
         var inputs = fluid.reorderImages.seekInputs(container, reorderform);
         for (var i = 0; i < inputs.length; i++) {
@@ -86,32 +81,32 @@ var fluid_1_5 = fluid_1_5 || {};
             input.name = name || input.id;
         }
     };
-    
+
     /**
      * Returns a default afterMove listener using the id-based, form-driven scheme for communicating with the server.
      * It is implemented by nesting hidden form fields inside each thumbnail container. The value of these form elements
-     * represent the order for each image. This default listener submits the form's default 
+     * represent the order for each image. This default listener submits the form's default
      * action via AJAX.
-     * 
-     * @param {jQueryable} container the Image Reorderer's container element 
+     *
+     * @param {jQueryable} container the Image Reorderer's container element
      */
     fluid.reorderImages.createIDAfterMoveListener = function (container) {
         var reorderform = fluid.reorderImages.seekForm(container);
         fluid.reorderImages.mapIdsToNames(container, reorderform);
-        
+
         return function () {
             var inputs, i;
             inputs = fluid.reorderImages.seekInputs(container, reorderform);
-            
+
             for (i = 0; i < inputs.length; i += 1) {
                 inputs[i].value = i;
             }
-        
+
             if (reorderform && reorderform.action) {
                 var order = $(reorderform).serialize();
-                $.post(reorderform.action, 
+                $.post(reorderform.action,
                        order,
-                       function (type, data, evt) { /* No-op response */ });
+                       function () { /* No-op response */ });
             }
         };
     };
@@ -120,11 +115,11 @@ var fluid_1_5 = fluid_1_5 || {};
     /**
      * Creates a new Lightbox instance from the specified parameters, providing full control over how
      * the Lightbox is configured.
-     * 
-     * @param {Object} container 
-     * @param {Object} options 
+     *
+     * @param {Object} container
+     * @param {Object} options
      */
-   
+
     fluid.defaults("fluid.reorderImages", {
         gradeNames: ["fluid.reorderer", "autoInit"],
         layoutHandler: "fluid.gridLayoutHandler",
@@ -146,9 +141,9 @@ var fluid_1_5 = fluid_1_5 || {};
             labelSource: ".flc-reorderer-imageTitle"
         }
     });
-    
+
     // This function now deprecated. Please use fluid.reorderImages() instead.
     fluid.lightbox = fluid.reorderImages;
-    
+
 
 })(jQuery, fluid_1_5);

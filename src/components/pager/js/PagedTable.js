@@ -12,15 +12,11 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+    "use strict";
+
     fluid.registerNamespace("fluid.pagedTable");
 
     // cf. ancient SVN-era version in bitbucket at https://bitbucket.org/fluid/infusion/src/adf319d9b279/branches/FLUID-2881/src/webapp/components/pager/js/PagedTable.js
@@ -58,7 +54,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 var limit = fluid.pager.computePageLimit(tModel);
                 var iValue = fetchValue(start);
                 var lValue = fetchValue(limit - 1);
-                
+
                 tooltipInfo[page] = {
                     first: iValue,
                     last: lValue
@@ -78,7 +74,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         return togo;
     };
-    
+
     fluid.pagedTable.configureTooltip = function (pagedTable, pagerBar, renderedPageList) {
         var idMap = renderedPageList.rendererOptions.idMap;
         var idToContent = {};
@@ -109,7 +105,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }],
         annotateSortedColumn: false,
         annotateColumnRange: undefined, // specify a "key" from the columnDefs
-        
+
         markup: {
             rangeAnnotation: "<b> %first </b><br/>&mdash;<br/><b> %last </b>"
         },
