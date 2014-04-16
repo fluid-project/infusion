@@ -55,7 +55,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.themer.setTheme = function (that, theme) {
         var themeStyles = that.options.styles.themes;
         var themes = "";
-        fluid.each(themeStyles, function (value, key) {
+        fluid.each(themeStyles, function (value) {
             themes = themes + value + " ";
         });
         that.locate("themeDestination", $(document)).removeClass(themes).addClass(themeStyles[theme]);
