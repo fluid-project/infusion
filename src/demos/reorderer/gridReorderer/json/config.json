@@ -1,9 +1,7 @@
 {
     "templateUrl": "../../shared/html/overviewPanelTemplate-noDesign.html",
     "strings": {
-        "componentName": "Grid Reorderer",
-        "feedbackText": "Found a bug? Have a question?",
-        "feedbackLinkText": "Let us know!"
+        "componentName": "Grid Reorderer"
     },
     "markup": {
         "description": "The Grid Reorderer allows users to reorder items in a linear, flowed set using drag and drop, numbering and/or keyboard interactions",

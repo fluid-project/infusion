@@ -1,9 +1,7 @@
 {
     "templateUrl": "../../shared/html/overviewPanelTemplate-noDesign.html",
     "strings": {
-        "componentName": "FSS Base File",
-        "feedbackText": "Found a bug? Have a question?",
-        "feedbackLinkText": "Let us know!"
+        "componentName": "FSS Base File"
     },
     "markup": {
         "description": "The FSS Base file applies a default set of styles. This file works well with the Reset file.",

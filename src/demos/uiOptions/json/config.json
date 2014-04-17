@@ -1,8 +1,6 @@
 {
     "strings": {
-        "componentName": "User Interface Options",
-        "feedbackText": "Found a bug? Have a question?",
-        "feedbackLinkText": "Let us know!"
+        "componentName": "User Interface Options"
     },
     "markup": {
         "description": "The User Interface Options component (UI Options) allows users to transform the presentation of the user interface and content resources so that they are personalized to the individual user's needs.",

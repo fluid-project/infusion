@@ -1,9 +1,7 @@
 {
     "templateUrl": "../../../components/overviewPanel/html/overviewPanelTemplate.html",
     "strings": {
-        "componentName": "List Reorderer",
-        "feedbackText": "Found a bug? Have a question?",
-        "feedbackLinkText": "Let us know!"
+        "componentName": "List Reorderer"
     },
     "markup": {
         "description": "The List Reorderer provides reordering of elements in a list through drag and drop and/or numbering.",

@@ -1,9 +1,7 @@
 {
     "templateUrl": "../../../components/overviewPanel/html/overviewPanelTemplate.html",
     "strings": {
-        "componentName": "Layout Reorderer",
-        "feedbackText": "Found a bug? Have a question?",
-        "feedbackLinkText": "Let us know!"
+        "componentName": "Layout Reorderer"
     },
     "markup": {
         "description": "The Layout Reorderer provides drag and drop customization of modules in a portal environment.",

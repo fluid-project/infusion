@@ -1,13 +1,11 @@
 {
     "templateUrl": "../../shared/html/overviewPanelTemplate-noDesign.html",
     "strings": {
-        "componentName": "FSS Linearization Styles",
-        "feedbackText": "Found a bug? Have a question?",
-        "feedbackLinkText": "Let us know!"
+        "componentName": "FSS Linearization Styles"
     },
     "markup": {
         "description": "The FSS Linearization class will automatically linearize columns that have been created using the FSS Layout classes.",
-        "instructions": "<ul><li>Turn on the 'linearize' checkbox in the top left corner of the screen to add the linearizationc class to the container of the demo.</li><li>The different tabs show different types of layout that can be linearized.</li></ul>"
+        "instructions": "<ul><li>Turn on the 'linearize' checkbox in the top left corner of the screen to add the linearization class to the container of the demo.</li><li>The different tabs show different types of layout that can be linearized.</li></ul>"
     },
     "links": {
         "codeLink": "https://github.com/fluid-project/infusion/tree/master/src/framework/fss",

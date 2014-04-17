@@ -1,9 +1,7 @@
 {
     "templateUrl": "../../shared/html/overviewPanelTemplate-noDesign.html",
     "strings": {
-        "componentName": "FSS Contextual Base and Reset Styles",
-        "feedbackText": "Found a bug? Have a question?",
-        "feedbackLinkText": "Let us know!"
+        "componentName": "FSS Contextual Base and Reset Styles"
     },
     "markup": {
         "description": "The FSS Contextual Base and Reset styles can be used to apply the Base and Reset styles to only a portion of the page.",

@@ -1,9 +1,7 @@
 {
     "templateUrl": "../../shared/html/overviewPanelTemplate-noDesign.html",
     "strings": {
-        "componentName": "Simple Text Inline Edit",
-        "feedbackText": "Found a bug? Have a question?",
-        "feedbackLinkText": "Let us know!"
+        "componentName": "Simple Text Inline Edit"
     },
     "markup": {
         "description": "Inline Edit allows a user to do quick edits to simple text without having to switch modes or screens. All work is done on the same interface which helps the user maintain context.",

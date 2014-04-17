@@ -1,9 +1,7 @@
 {
     "templateUrl": "../shared/html/overviewPanelTemplate-noDesign.html",
     "strings": {
-        "componentName": "Renderer",
-        "feedbackText": "Found a bug? Have a question?",
-        "feedbackLinkText": "Let us know!"
+        "componentName": "Renderer"
     },
     "markup": {
         "description": "The Renderer allows users to create user interface templates in pure HTML and render pages entirely on the client side.",

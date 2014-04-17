@@ -1,9 +1,7 @@
 {
     "templateUrl": "../../shared/html/overviewPanelTemplate-noDesign.html",
     "strings": {
-        "componentName": "FSS Clearfix Styles",
-        "feedbackText": "Found a bug? Have a question?",
-        "feedbackLinkText": "Let us know!"
+        "componentName": "FSS Clearfix Styles"
     },
     "markup": {
         "description": "The FSS Clearfix styles ensure that content is rendered inside its parent element when that content is floated",

@@ -1,8 +1,6 @@
 {
     "strings": {
-        "componentName": "Uploader",
-        "feedbackText": "Found a bug? Have a question?",
-        "feedbackLinkText": "Let us know!"
+        "componentName": "Uploader"
     },
     "markup": {
         "description": "The Uploader allows users to upload multiple files. The user can select desired files from their computer, view them in a queue, add or remove files to and from the queue, and upload them.",

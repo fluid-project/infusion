@@ -1,9 +1,7 @@
 {
     "templateUrl": "../../shared/html/overviewPanelTemplate-noDesign.html",
     "strings": {
-        "componentName": "FSS Mobile Styles",
-        "feedbackText": "Found a bug? Have a question?",
-        "feedbackLinkText": "Let us know!"
+        "componentName": "FSS Mobile Styles"
     },
     "markup": {
         "description": "The FSS Mobile styles will style common user interface elements to more closely resemble native mobile interfaces.",
