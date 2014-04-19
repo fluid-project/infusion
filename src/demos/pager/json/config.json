@@ -5,7 +5,7 @@
     },
     "markup": {
         "description": "The Pager allows users to break up long lists of items into separate pages. They may decide whether or not they want paging, and how many results are displayed per page.",
-        "instructions": "<ul><li>Try using the page links to jump to the first, last, and the 'middle' pages easily.</li><li>The page links have a tooltip that conveys the range of data on that page. Try jumping to an item or a certain set of records (e.g. students with a name starting with 'G').</li></ul>"
+        "instructions": "<ul><li>Try using the page links to jump to the first, last, and the 'middle' pages easily.</li></ul>"
     },
     "links": {
         "codeLink": "https://github.com/fluid-project/infusion/tree/master/src/components/pager",
