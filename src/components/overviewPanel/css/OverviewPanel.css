@@ -27,6 +27,7 @@
     left:0;
     width:24em;
     overflow: auto;
+    z-index: 9999;
     
     /* Note about transitions:
      * There are two transitions: one for fl-overviewPanel-container and one for 

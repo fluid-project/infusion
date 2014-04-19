@@ -1,0 +1,17 @@
+{
+    "templateUrl": "../../shared/html/overviewPanelTemplate-noDesign.html",
+    "strings": {
+        "componentName": "FSS Reset File",
+        "feedbackText": "Found a bug? Have a question?",
+        "feedbackLinkText": "Let us know!"
+    },
+    "markup": {
+        "description": "The FSS Reset file normalizes visual discrepancies between browsers.",
+        "instructions": "<ul><li>The left side of this page shows the default browser styling, which might look different on different browsers.</li><li>The right side of this page shows the same content with the Reset file included. This styling will be more consistent across browsers.</li></ul>"
+    },
+    "links": {
+        "codeLink": "https://github.com/fluid-project/infusion/tree/master/src/framework/fss",
+        "apiLink": "http://wiki.fluidproject.org/display/docs/Fluid+Skinning+System+-+FSS",
+        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=FSS Reset File feedback"
+    }
+}
