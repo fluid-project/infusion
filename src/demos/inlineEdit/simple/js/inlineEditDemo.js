@@ -19,8 +19,8 @@ var demo = demo || {};
     demo.undoRenderer = function (that, targetContainer) {
         var markup =
             "<span class='flc-undo'>" +
-            "<span class='demo-undoContainer' role='button'><a href='#' class='demo-undoControl'><img src='../images/inline_edit_undo_button_16x16.png' alt='Undo edit'></a></span>" +
-            "<span class='demo-redoContainer' role='button'><a href='#' class='demo-redoControl'><img src='../images/inline_edit_redo_button_16x16.png' alt='Redo edit'></a></span>" +
+            "<span class='demo-undoContainer' role='button'><a href='#' class='demo-undoControl'><img src='images/inline_edit_undo_button_16x16.png' alt='Undo edit'></a></span>" +
+            "<span class='demo-redoContainer' role='button'><a href='#' class='demo-redoControl'><img src='images/inline_edit_redo_button_16x16.png' alt='Redo edit'></a></span>" +
             "</span>";
         var markupNode = $(markup);
         targetContainer.append(markupNode);

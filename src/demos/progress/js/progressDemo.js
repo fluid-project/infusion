@@ -80,6 +80,7 @@ var demo = demo || {};
     };
 
     demo.initShoppingDemo = function (percent, steps) {
+
         var submitButton = $(".progress-demo-submit button");
         var statusText = $(".demoSelector-progress-status-text");
         var restartDemo = $(".demoSelector-progress-restart");

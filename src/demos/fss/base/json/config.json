@@ -1,0 +1,15 @@
+{
+    "templateUrl": "../../shared/html/overviewPanelTemplate-noDesign.html",
+    "strings": {
+        "componentName": "FSS Base File"
+    },
+    "markup": {
+        "description": "The FSS Base file applies a default set of styles. This file works well with the Reset file.",
+        "instructions": "<ul><li>The left side of this page shows the default browser styling, which might look different on different browsers.</li><li>The right side of this page shows the same content with the Base file included. This styling will be more consistent across browsers.</li></ul>"
+    },
+    "links": {
+        "codeLink": "https://github.com/fluid-project/infusion/tree/master/src/framework/fss",
+        "apiLink": "http://wiki.fluidproject.org/display/docs/Fluid+Skinning+System+-+FSS",
+        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=FSS Base File feedback"
+    }
+}

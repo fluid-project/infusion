@@ -144,9 +144,9 @@ var demo = demo || {};
             stars: "[class^='star-']"
         },
         starImages: {
-            blank: "../images/star-blank.gif",
-            hover: "../images/star-orange.gif",
-            select: "../images/star-green.gif"
+            blank: "images/star-blank.gif",
+            hover: "images/star-orange.gif",
+            select: "images/star-green.gif"
         },
         model: {
             rank: 1

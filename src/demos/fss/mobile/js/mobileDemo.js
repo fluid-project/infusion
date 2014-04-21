@@ -54,7 +54,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.themer.setTheme = function (that, theme) {
         var themeStyles = that.options.styles.themes;
-        that.locate("themeDestination", $(document)).removeClass().addClass(themeStyles[theme]);
+        var themes = "";
+        fluid.each(themeStyles, function (value) {
+            themes = themes + value + " ";
+        });
+        that.locate("themeDestination", $(document)).removeClass(themes).addClass(themeStyles[theme]);
     };
 
     fluid.defaults("fluid.themer", {
@@ -91,7 +95,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         selectors: {
-            themeDestination: "body",
+            themeDestination: ".flc-demo-body",
             activeEl: "li",
             themes: {
                 iphone: "[href=#iphone]",

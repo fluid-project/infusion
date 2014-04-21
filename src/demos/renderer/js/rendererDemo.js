@@ -222,7 +222,7 @@ var demo = demo || {};
                 applier: applier,
                 autoBind: true
             };
-            fluid.selfRender($("body"), buildComponentTree(), options);
+            fluid.selfRender($(".demo-container"), buildComponentTree(), options);
         });
     };
 

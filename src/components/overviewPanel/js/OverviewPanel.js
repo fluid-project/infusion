@@ -144,11 +144,11 @@ var fluid_1_5 = fluid_1_5 || {};
             codeLinkText: "code",
             apiLinkText: "API",
             designLinkText: "design",
-            feedbackText: "Feedback statement and link",
-            feedbackLinkText: "Link text",
+            feedbackText: "Found a bug? Have a question?",
+            feedbackLinkText: "Let us know!",
             closeText: "close",
-            openPanelLabel: "Open demo instructions",
-            closePanelLabel: "Close demo instructions"
+            openPanelLabel: "Open the overview panel",
+            closePanelLabel: "Close the overview panel"
         },
         markup: {
             description: "A description of the component should appear here. It should say: <ul><li>What the component does.</li><li>Why it is interesting / useful.</li></ul>",
