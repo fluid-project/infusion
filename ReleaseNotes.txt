@@ -78,6 +78,7 @@ MIT License:
     * Micro Clearfix http://nicolasgallagher.com/micro-clearfix-hack/
     * SWFUpload v2.2.0.1: http://swfupload.org/
     * SWFObject v2.2: http://code.google.com/p/swfobject/
+    * Buzz v1.1.0 http://buzz.jaysalvat.com
 
 zlib/libpng License:
     * fastXmlPull is based on XML for Script's Fast Pull Parser v3.1
