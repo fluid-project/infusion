@@ -24,11 +24,12 @@
         <link rel="stylesheet" type="text/css" href="../../lib/jquery/ui/css/fl-theme-lgdg/lgdg.css" />
         <link rel="stylesheet" type="text/css" href="../../framework/preferences/css/PrefsEditor.css" />
         <link rel="stylesheet" type="text/css" href="../../framework/preferences/css/SeparatedPanelPrefsEditor.css" />
+        <link rel="stylesheet" type="text/css" href="../../components/overviewPanel/css/OverviewPanel.css" />
         <!--[if IE 8]>
             <link rel="stylesheet" type="text/css" href="../../../framework/preferences/css/ie8.css" />
         <![endif]-->
 
-        <link href="main.css" rel="stylesheet" type="text/css" media="screen">
+        <link href="css/main.css" rel="stylesheet" type="text/css" media="screen">
 
         <script type="text/javascript" src="../../lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../lib/jquery/ui/js/jquery.ui.core.js"></script>
@@ -71,6 +72,11 @@
 
         <script type="text/javascript" src="js/SelfVoicingEnactor.js"></script>
         <script type="text/javascript" src="js/prefsEditorDemo.js"></script>
+
+        <!-- for Overview Panel -->
+        <script type="text/javascript" src="../../components/overviewPanel/js/OverviewPanel.js"></script>
+        <script type="text/javascript" src="../shared/js/overviewWrapper.js"></script>
+
         <title>NOAA Education Resources: Climate Change Impacts Collection</title>
     </head>
 
@@ -91,6 +97,7 @@
             });
         </script>
 
+        <div class="flc-overviewPanel fl-overviewPanel-container"></div>
         <!-- BEGIN markup for Preference Editor -->
         <div class="flc-prefsEditor-separatedPanel fl-prefsEditor-separatedPanel">
             <!-- This is the div that will contain the Preference Editor component -->
@@ -146,7 +153,7 @@
                     <div id="mainBlock">
                         <div id="mainNavElements">
                             <nav class="navigation">
-                                <div class="dropdown" onmouseover="changeClass('a')" onmouseout="changeAgain('a')" onclick="changeAgain('a')">
+                                <div class="dropdown" onmouseover="demo.changeClass('a')" onmouseout="demo.changeAgain('a')" onclick="demo.changeAgain('a')">
                                     <a href="#" class="mainnavitems"><b>Ocean and Coasts</b></a><span class="spacer">|</span>
 
                                     <div id="a" style="display:none;  z-index:10000; position:relative; background-color:#0057a5;top:8px; ">
@@ -184,7 +191,7 @@
                                     <div style="height:2px;"></div>
                                 </div>
 
-                                <div class="dropdown" onmouseover="changeClass('b')" onmouseout="changeAgain('b')" onclick="changeAgain('b')">
+                                <div class="dropdown" onmouseover="demo.changeClass('b')" onmouseout="demo.changeAgain('b')" onclick="demo.changeAgain('b')">
                                     <a href="#" class="mainnavitems"><b>Climate</b></a><span class="spacer">|</span>
                                     <div id="b" style="display:none;  z-index:10000; position:relative; background-color:#0057a5;top:8px; ">
 
@@ -214,7 +221,7 @@
                                     <div style="height:2px;"></div>
                                 </div>
 
-                                <div class="dropdown" onmouseover="changeClass('c')" onmouseout="changeAgain('c')" onclick="changeAgain('c')">
+                                <div class="dropdown" onmouseover="demo.changeClass('c')" onmouseout="demo.changeAgain('c')" onclick="demo.changeAgain('c')">
                                     <a href="#" class="mainnavitems"><b>Weather and Atmosphere</b></a><span class="spacer">|</span>
                                     <div id="c" style="display:none;  z-index:10000; position:relative; background-color:#0057a5;top:8px; ">
 
@@ -248,7 +255,7 @@
 
                                 </div>
 
-                                <div class="dropdown" onmouseover="changeClass('d')" onmouseout="changeAgain('d')" onclick="changeAgain('d')">
+                                <div class="dropdown" onmouseover="demo.changeClass('d')" onmouseout="demo.changeAgain('d')" onclick="demo.changeAgain('d')">
                                     <a href="#" class="mainnavitems"><b>Marine Life</b></a><span class="spacer">|</span>
                                     <div id="d" style="display: none; z-index: 10000; position: relative; background-color: rgb(0, 87, 165); top: 8px;">
 
@@ -281,7 +288,7 @@
                                     <div style="height:2px;"></div>
                                 </div>
 
-                                <div class="dropdown" onmouseover="changeClass('e')" onmouseout="changeAgain('e')" onclick="changeAgain('e')">
+                                <div class="dropdown" onmouseover="demo.changeClass('e')" onmouseout="demo.changeAgain('e')" onclick="demo.changeAgain('e')">
                                     <a href="#" class="mainnavitems"><b>Freshwater</b></a><span class="spacer">|</span>
 
                                     <div id="e" style="display:none;  z-index:10000; position:relative; background-color:#0057a5;top:8px; ">
@@ -309,7 +316,7 @@
                                     <div style="height:2px;"></div>
                                 </div>
 
-                                <div class="dropdown" onmouseover="changeClass('f')" onmouseout="changeAgain('f')" onclick="changeAgain('f')">
+                                <div class="dropdown" onmouseover="demo.changeClass('f')" onmouseout="demo.changeAgain('f')" onclick="demo.changeAgain('f')">
                                     <a href="#" class="mainnavitems"><b>Special Topics</b></a><span class="spacer"></span>
                                     <div id="f" style="display:none;  z-index:10000; position:relative; background-color:#0057a5;top:8px; ">
                                         <div class="top">
@@ -390,7 +397,7 @@
                                 <ul>
 
                                     <li>
-                                        <div id="container0" onmouseover="changeClass('d0')" onmouseout="changeAgain('d0')" onclick="changeAgain('d0')" class="container">
+                                        <div id="container0" onmouseover="demo.changeClass('d0')" onmouseout="demo.changeAgain('d0')" onclick="demo.changeAgain('d0')" class="container">
                                             <a class="linker" href="#">Acid Oceans Video (MS, HS)</a>
                                             <div style="display: none;" id="d0" class="rollover_resources_off">
                                                 <p class="hover_text">
@@ -401,7 +408,7 @@
                                     </li>
 
                                     <li>
-                                        <div id="container1" onmouseover="changeClass('d1')" onmouseout="changeAgain('d1')" onclick="changeAgain('d1')" class="container">
+                                        <div id="container1" onmouseover="demo.changeClass('d1')" onmouseout="demo.changeAgain('d1')" onclick="demo.changeAgain('d1')" class="container">
                                             <a class="linker" href="#">Ocean Acidification Podcast (MS, HS)</a>
                                             <div style="display: none;" id="d1" class="rollover_resources_off">
                                                 <p class="hover_text">
@@ -415,7 +422,7 @@
                                     </li>
 
                                     <li>
-                                        <div id="container2" onmouseover="changeClass('d2')" onmouseout="changeAgain('d2')" onclick="changeAgain('d2')" class="container">
+                                        <div id="container2" onmouseover="demo.changeClass('d2')" onmouseout="demo.changeAgain('d2')" onclick="demo.changeAgain('d2')" class="container">
                                             <a class="linker" href="#">The Melting North Pole (MS, HS)</a>
                                             <div style="display: none;" id="d2" class="rollover_resources_off">
                                                 <p class="hover_text">
@@ -426,7 +433,7 @@
                                     </li>
 
                                     <li>
-                                        <div id="container3" onmouseover="changeClass('d3')" onmouseout="changeAgain('d3')" onclick="changeAgain('d3')" class="container">
+                                        <div id="container3" onmouseover="demo.changeClass('d3')" onmouseout="demo.changeAgain('d3')" onclick="demo.changeAgain('d3')" class="container">
                                             <a class="linker" href="#">Climate Change Wildlife and Wildlands Video (MS, HS)</a>
                                             <div style="display: none;" id="d3" class="rollover_resources_off">
                                                 <p class="hover_text">
@@ -444,7 +451,7 @@
                                 <ul>
 
                                     <li>
-                                        <div id="container4" onmouseover="changeClass('d4')" onmouseout="changeAgain('d4')" onclick="changeAgain('d4')" class="container">
+                                        <div id="container4" onmouseover="demo.changeClass('d4')" onmouseout="demo.changeAgain('d4')" onclick="demo.changeAgain('d4')" class="container">
                                             <a class="linker" href="#">Climate Change and Corals (ES, MS)</a>
                                             <div style="display: none;" id="d4" class="rollover_resources_off">
                                                 <p class="hover_text">
@@ -455,7 +462,7 @@
                                     </li>
 
                                     <li>
-                                        <div id="container5" onmouseover="changeClass('d5')" onmouseout="changeAgain('d5')" onclick="changeAgain('d5')" class="container">
+                                        <div id="container5" onmouseover="demo.changeClass('d5')" onmouseout="demo.changeAgain('d5')" onclick="demo.changeAgain('d5')" class="container">
                                             <a class="linker" href="#">Explore Your Eco-Region (MS)</a>
                                             <div id="d5" class="rollover_resources_off">
                                                 <p class="hover_text">
@@ -469,7 +476,7 @@
                                     </li>
 
                                     <li>
-                                        <div id="container6" onmouseover="changeClass('d6')" onmouseout="changeAgain('d6')" onclick="changeAgain('d6')" class="container">
+                                        <div id="container6" onmouseover="demo.changeClass('d6')" onmouseout="demo.changeAgain('d6')" onclick="demo.changeAgain('d6')" class="container">
                                             <a class="linker" href="#">Our Changing World - Alaska (MS)</a>
                                             <div id="d6" class="rollover_resources_off">
                                                 <p class="hover_text">
@@ -484,7 +491,7 @@
                                     </li>
 
                                     <li>
-                                        <div id="container7" onmouseover="changeClass('d7')" onmouseout="changeAgain('d7')" onclick="changeAgain('d7')" class="container">
+                                        <div id="container7" onmouseover="demo.changeClass('d7')" onmouseout="demo.changeAgain('d7')" onclick="demo.changeAgain('d7')" class="container">
                                             <a class="linker" href="#">Drought Online Unit (MS)</a>
                                             <div id="d7" class="rollover_resources_off">
                                                 <p class="hover_text">
@@ -495,7 +502,7 @@
                                     </li>
 
                                     <li>
-                                        <div id="container8" onmouseover="changeClass('d8')" onmouseout="changeAgain('d8')" onclick="changeAgain('d8')" class="container">
+                                        <div id="container8" onmouseover="demo.changeClass('d8')" onmouseout="demo.changeAgain('d8')" onclick="demo.changeAgain('d8')" class="container">
                                             <a class="linker" href="#">Are You Getting Thirsty? (HS)</a>
                                             <div id="d8" class="rollover_resources_off">
                                                 <p class="hover_text">
@@ -508,7 +515,7 @@
                                     </li>
 
                                     <li>
-                                        <div id="container9" onmouseover="changeClass('d9')" onmouseout="changeAgain('d9')" onclick="changeAgain('d9')" class="container">
+                                        <div id="container9" onmouseover="demo.changeClass('d9')" onmouseout="demo.changeAgain('d9')" onclick="demo.changeAgain('d9')" class="container">
                                             <a class="linker" href="#">Climate Change Education Modules (MS)</a>
                                             <div id="d9" class="rollover_resources_off">
                                                 <p class="hover_text">
@@ -524,7 +531,7 @@
                                 <ul>
 
                                     <li>
-                                        <div id="container10" onmouseover="changeClass('d10')" onmouseout="changeAgain('d10')" onclick="changeAgain('d10')" class="container">
+                                        <div id="container10" onmouseover="demo.changeClass('d10')" onmouseout="demo.changeAgain('d10')" onclick="demo.changeAgain('d10')" class="container">
                                             <a class="linker" href="#">Climate Predictions</a>
                                             <div id="d10" class="rollover_resources_off">
                                                 <p class="hover_text">
@@ -535,7 +542,7 @@
                                     </li>
 
                                     <li>
-                                        <div id="container11" onmouseover="changeClass('d11')" onmouseout="changeAgain('d11')" onclick="changeAgain('d11')" class="container">
+                                        <div id="container11" onmouseover="demo.changeClass('d11')" onmouseout="demo.changeAgain('d11')" onclick="demo.changeAgain('d11')" class="container">
                                             <a class="linker" href="#">Climate At A Glance</a>
                                             <div id="d11" class="rollover_resources_off">
                                                 <p class="hover_text">
@@ -546,7 +553,7 @@
                                     </li>
 
                                     <li>
-                                        <div id="container12" onmouseover="changeClass('d12')" onmouseout="changeAgain('d12')" onclick="changeAgain('d12')" class="container">
+                                        <div id="container12" onmouseover="demo.changeClass('d12')" onmouseout="demo.changeAgain('d12')" onclick="demo.changeAgain('d12')" class="container">
                                             <a class="linker" href="#">Sea Level Trends</a>
                                             <div id="d12" class="rollover_resources_off">
                                                 <p class="hover_text">
@@ -557,7 +564,7 @@
                                     </li>
 
                                     <li>
-                                        <div id="container13" onmouseover="changeClass('d13')" onmouseout="changeAgain('d13')" onclick="changeAgain('d13')" class="container">
+                                        <div id="container13" onmouseover="demo.changeClass('d13')" onmouseout="demo.changeAgain('d13')" onclick="demo.changeAgain('d13')" class="container">
                                             <a class="linker" href="#">U.S. Drought Portal</a>
                                             <div id="d13" class="rollover_resources_off">
                                                 <p class="hover_text">
@@ -568,7 +575,7 @@
                                     </li>
 
                                     <li>
-                                        <div id="container14" onmouseover="changeClass('d14')" onmouseout="changeAgain('d14')" onclick="changeAgain('d14')" class="container">
+                                        <div id="container14" onmouseover="demo.changeClass('d14')" onmouseout="demo.changeAgain('d14')" onclick="demo.changeAgain('d14')" class="container">
                                             <a class="linker" href="#">Sea Ice Interactive Data</a>
                                             <div id="d14" class="rollover_resources_off">
                                                 <p class="hover_text">
@@ -579,7 +586,7 @@
                                     </li>
 
                                     <li>
-                                        <div id="container15" onmouseover="changeClass('d15')" onmouseout="changeAgain('d15')" onclick="changeAgain('d15')" class="container">
+                                        <div id="container15" onmouseover="demo.changeClass('d15')" onmouseout="demo.changeAgain('d15')" onclick="demo.changeAgain('d15')" class="container">
                                             <a class="linker" href="#">Data For Google Earth</a>
                                             <div id="d15" class="rollover_resources_off">
                                                 <p class="hover_text">
@@ -590,7 +597,7 @@
                                     </li>
 
                                     <li>
-                                        <div id="container16" onmouseover="changeClass('d16')" onmouseout="changeAgain('d16')" onclick="changeAgain('d16')" class="container">
+                                        <div id="container16" onmouseover="demo.changeClass('d16')" onmouseout="demo.changeAgain('d16')" onclick="demo.changeAgain('d16')" class="container">
                                             <a class="linker" href="#">Extreme Weather and Climate Events</a>
                                             <div id="d16" class="rollover_resources_off">
                                                 <p class="hover_text">
@@ -609,7 +616,7 @@
                                 <ul>
 
                                     <li>
-                                        <div id="container17" onmouseover="changeClass('d17')" onmouseout="changeAgain('d17')" onclick="changeAgain('d17')" class="container">
+                                        <div id="container17" onmouseover="demo.changeClass('d17')" onmouseout="demo.changeAgain('d17')" onclick="demo.changeAgain('d17')" class="container">
                                             <a class="linker" href="#">Climate Change Impacts in Eastern U.S.</a>
                                             <div id="d17" class="rollover_resources_off">
                                                 <p class="hover_text">
@@ -623,7 +630,7 @@
                                     </li>
 
                                     <li>
-                                        <div id="container18" onmouseover="changeClass('d18')" onmouseout="changeAgain('d18')" onclick="changeAgain('d18')" class="container">
+                                        <div id="container18" onmouseover="demo.changeClass('d18')" onmouseout="demo.changeAgain('d18')" onclick="demo.changeAgain('d18')" class="container">
                                             <a class="linker" href="#">Climate Change Impacts in Western U.S.</a>
                                             <div id="d18" class="rollover_resources_off">
                                                 <p class="hover_text">
@@ -637,7 +644,7 @@
                                     </li>
 
                                     <li>
-                                        <div id="container19" onmouseover="changeClass('d19')" onmouseout="changeAgain('d19')" onclick="changeAgain('d19')" class="container">
+                                        <div id="container19" onmouseover="demo.changeClass('d19')" onmouseout="demo.changeAgain('d19')" onclick="demo.changeAgain('d19')" class="container">
                                             <a class="linker" href="#">Climate Change Impacts: Key U.S. Findings</a>
                                             <div id="d19" class="rollover_resources_off">
                                                 <p class="hover_text">
@@ -650,7 +657,7 @@
                                     </li>
 
                                     <li>
-                                        <div id="container20" onmouseover="changeClass('d20')" onmouseout="changeAgain('d20')" onclick="changeAgain('d20')" class="container">
+                                        <div id="container20" onmouseover="demo.changeClass('d20')" onmouseout="demo.changeAgain('d20')" onclick="demo.changeAgain('d20')" class="container">
                                             <a class="linker" href="#">NOAA Ocean Acidification Webpage</a>
                                             <div id="d20" class="rollover_resources_off">
                                                 <p class="hover_text">
@@ -661,7 +668,7 @@
                                     </li>
 
                                     <li>
-                                        <div id="container21" onmouseover="changeClass('d21')" onmouseout="changeAgain('d21')" onclick="changeAgain('d21')" class="container">
+                                        <div id="container21" onmouseover="demo.changeClass('d21')" onmouseout="demo.changeAgain('d21')" onclick="demo.changeAgain('d21')" class="container">
                                             <a class="linker" href="#">Climate Change FAQs</a>
                                             <div id="d21" class="rollover_resources_off">
                                                 <p class="hover_text">
@@ -674,7 +681,7 @@
                                     </li>
 
                                     <li>
-                                        <div id="container22" onmouseover="changeClass('d22')" onmouseout="changeAgain('d22')" onclick="changeAgain('d22')" class="container">
+                                        <div id="container22" onmouseover="demo.changeClass('d22')" onmouseout="demo.changeAgain('d22')" onclick="demo.changeAgain('d22')" class="container">
                                             <a class="linker" href="#">Global Climate Change Impacts Report</a>
                                             <div id="d22" class="rollover_resources_off">
                                                 <p class="hover_text">

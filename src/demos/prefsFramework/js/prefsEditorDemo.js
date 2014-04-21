@@ -18,6 +18,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var demo = demo || {};
 
 (function ($, fluid) {
+    "use strict";
+
     fluid.registerNamespace("demo.prefsEditor");
 
     // Progressive Enhancement checks
