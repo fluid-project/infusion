@@ -55,14 +55,14 @@
      * positions of fl-overviewPanel-contents.
      */
     top: 4.5em;    /* Change this if needed - offset the height of fl-overviewPanel-title.  */
-    bottom: 8.5em; /* Change this if needed - offset the height of fl-overviewPanel-footer. */
+    bottom: 10.5em; /* Change this if needed - offset the height of fl-overviewPanel-footer. */
     padding: 1.5em;
     position: absolute;
     overflow: auto;
 }
 
 .fl-overviewPanel .fl-overviewPanel-footer {
-    height: 8.5em;
+    height: 10.5em;
     position: absolute;
     bottom: 0;
     left: 0;
@@ -201,7 +201,7 @@
 }
 
 .fl-overviewPanel .fl-overviewPanel-links ul{
-    margin: 1.6em 0;
+    margin: 1.6em 0 1em 0;
     padding-left: 0;
 }
 
@@ -248,11 +248,6 @@
     content: "\e603";
 }
 
-.fl-overviewPanel .fl-overviewPanel-feedback-link {
-    display: inline-block;
-    margin-left: 1em;
-}
-
 .fl-overviewPanel .fl-overviewPanel-feedback-link a{
     color: #FFCC00;
 }
@@ -268,7 +263,7 @@
     text-transform: lowercase;
     display: inline-block;
     float: right;
-    margin-right: 1em;
+    margin: 1em 1em 0 0;
 }
 
 /* Theming */
