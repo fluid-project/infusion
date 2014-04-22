@@ -29,12 +29,37 @@
     overflow: auto;
     z-index: 9999;
     
+    height: 100%;
     /* Note about transitions:
      * There are two transitions: one for fl-overviewPanel-container and one for 
      * fl-overviewPanel-body. Both these transitions are necessary for the desired
      * visual effect when hiding and showing.
      */
 }
+
+.fl-overviewPanel-title {
+    background-color: #333;
+    font-family: 'Roboto Slab', serif;
+    color: #ccc;
+    padding: 0.5em 0.5em 0.5em 3em;
+    height: 3.5em;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.fl-overviewPanel-contents {
+    padding: 1.5em;
+}
+
+.fl-overviewPanel-footer {
+    margin: 1em;
+    height: 3.5em;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
 
 /* General styles */
 
@@ -50,7 +75,9 @@
     left: 0;
     font-family: 'Open Sans', sans-serif;
     color: #fff;
-    font-size: 0.8em;
+    font-size: 14px;
+    
+    height: inherit;
 }
 
 .fl-overviewPanel h1 {
@@ -125,12 +152,6 @@
 }
 
 /* Header area with title */
-.fl-overviewPanel-title {
-    background-color: #333;
-    font-family: 'Roboto Slab', serif;
-    color: #ccc;
-    padding: 0.5em 0.5em 0.5em 3em;
-}
 
 .fl-overviewPanel-title h1 {
     display: inline-block;
@@ -144,9 +165,6 @@
 
 /* Content area of the component */
 
-.fl-overviewPanel-contents {
-    padding: 1.5em;
-}
 
 .fl-overviewPanel-componentName {
     font-weight: bold;
@@ -222,9 +240,6 @@
 }
 
 /* Footer / Close button */
-.fl-overviewPanel-footer {
-    margin: 1em;
-}
 
 .fl-overviewPanel-footer a {
     background-color: #fff;
