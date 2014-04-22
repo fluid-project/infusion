@@ -15,7 +15,7 @@
 
 .fl-overviewPanel-container {
     /* 
-     * APPLY this class on the container for the overviewPanel component.
+     * APPLY this class on the container enclosing the overviewPanel component.
      * Customize these values to change the positioning.
      * 
      * Note: If you change the position, you may have to change the position of 
@@ -26,13 +26,11 @@
     top:0;
     left:0;
     width:24em;
-    
-    overflow: auto;
     z-index: 9999;
     font-size: 14px;
     font-family: 'Open Sans', sans-serif;
-    
     height: 100%;
+
     /* Note about transitions:
      * There are two transitions: one for fl-overviewPanel-container and one for 
      * fl-overviewPanel-body. Both these transitions are necessary for the desired
@@ -45,22 +43,30 @@
     font-family: 'Roboto Slab', serif;
     color: #ccc;
     padding: 0.5em 0.5em 0.5em 3em;
-    height: 3.5em;
+    height: 4.5em;
     position: absolute;
     top: 0;
     left: 0;
 }
 
 .fl-overviewPanel .fl-overviewPanel-contents {
+    /* 
+     * If changing the height of title or footer, make sure the top and bottom
+     * positions of fl-overviewPanel-contents.
+     */
+    top: 4.5em;    /* Change this if needed - offset the height of fl-overviewPanel-title.  */
+    bottom: 8.5em; /* Change this if needed - offset the height of fl-overviewPanel-footer. */
     padding: 1.5em;
+    position: absolute;
+    overflow: auto;
 }
 
 .fl-overviewPanel .fl-overviewPanel-footer {
-    margin: 1em;
-    height: 3.5em;
+    height: 8.5em;
     position: absolute;
     bottom: 0;
     left: 0;
+    width: 100%;
 }
 
 
@@ -131,6 +137,7 @@
     background-color:#444; /* IE8 */
     background-color: rgba(51,51,51,.96);
     visibility:visible;
+    height: 100%;
 }
 
 /* Demo Menu Visibility */
@@ -168,6 +175,8 @@
 
 .fl-overviewPanel .fl-overviewPanel-componentName {
     font-weight: bold;
+    margin: 0.6em 0;
+    display:block;
 }
 
 .fl-overviewPanel .fl-overviewPanel-componentVersion {
@@ -186,8 +195,14 @@
 }
 
 /* Icon links to code, API, and designs. */ 
+.fl-overviewPanel .fl-overviewPanel-links {
+    text-align: center;
+    padding-top: 0.5em;
+}
+
 .fl-overviewPanel .fl-overviewPanel-links ul{
     margin: 1.6em 0;
+    padding-left: 0;
 }
 
 .fl-overviewPanel .fl-overviewPanel-links ul li {
@@ -218,7 +233,6 @@
 .fl-overviewPanel .fl-overviewPanel-links-icon-design:before{
     position: relative;
     top: 0.35em;
-    left: 0.41em;
     font-size: 1.2em;
 }
 
@@ -234,14 +248,18 @@
     content: "\e603";
 }
 
+.fl-overviewPanel .fl-overviewPanel-feedback-link {
+    display: inline-block;
+    margin-left: 1em;
+}
+
 .fl-overviewPanel .fl-overviewPanel-feedback-link a{
-    display:block;
     color: #FFCC00;
 }
 
 /* Footer / Close button */
 
-.fl-overviewPanel .fl-overviewPanel-footer a {
+.fl-overviewPanel .fl-overviewPanel-footer .fl-overviewPanel-closeControl {
     background-color: #fff;
     border-radius: 0.3em; 
     padding: 0.3em 1em;
@@ -249,8 +267,8 @@
     text-decoration: none;
     text-transform: lowercase;
     display: inline-block;
-    margin: 1em 0;
     float: right;
+    margin-right: 1em;
 }
 
 /* Theming */
