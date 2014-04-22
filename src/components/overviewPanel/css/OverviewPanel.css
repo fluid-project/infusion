@@ -109,8 +109,8 @@
 /* Demo Menu Visibility */
 
 .fl-overviewPanel-container.fl-overviewPanel-hidden{
-    width: 2.4em;
-    height: 3.2em; /* make the hidden container the same size as the star button. This way the star button 
+    width: 3em;
+    height: 4.2em; /* make the hidden container the same size as the star button. This way the star button 
                       appears properly and the hidden container doesn't block interaction with content below it. */
     overflow: hidden;
 }
