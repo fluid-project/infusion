@@ -30,12 +30,9 @@
     font-size: 14px;
     font-family: 'Open Sans', sans-serif;
     height: 100%;
-
-    /* Note about transitions:
-     * There are two transitions: one for fl-overviewPanel-container and one for 
-     * fl-overviewPanel-body. Both these transitions are necessary for the desired
-     * visual effect when hiding and showing.
-     */
+    
+    /* Transition used to control hide/show of this container */
+    transition: all 0.1s linear;
 }
 
 .fl-overviewPanel .fl-overviewPanel-title {
@@ -54,7 +51,7 @@
      * If changing the height of title or footer, make sure the top and bottom
      * positions of fl-overviewPanel-contents.
      */
-    top: 4.5em;    /* Change this if needed - offset the height of fl-overviewPanel-title.  */
+    top: 4.5em;     /* Change this if needed - offset the height of fl-overviewPanel-title.  */
     bottom: 10.5em; /* Change this if needed - offset the height of fl-overviewPanel-footer. */
     padding: 1.5em;
     position: absolute;
@@ -73,12 +70,10 @@
 /* General styles */
 
 .fl-overviewPanel {
-    transition: left 0.2s linear;
     position: relative;
     left: 0;
     color: #fff;
     font-size: 14px;
-    
     height: inherit;
 }
 
@@ -98,9 +93,9 @@
 }
 
 .fl-overviewPanel-group:after { /* clearfix (aka. group) */
-  content: "";
-  display: table;
-  clear: both;
+    content: "";
+    display: table;
+    clear: both;
 }
 
 /* The Star icon that acts as a toggle button */
@@ -118,7 +113,7 @@
     font-family: "Fluid-star";
     margin: 0.2em 0 0.2em 0.2em;
     padding: 0.7em 0.3em;
-    color: #fff;
+    color: #FFCC00;
     float: left;
     position:relative;
     background-color: #333; /* IE8 */
@@ -131,33 +126,39 @@
 
 /* The Demo Menu itself */
 .fl-overviewPanel .fl-overviewPanel-body {
-    position:relative;
-    left: 0em;
-    transition: left 0.2s ease, visibility 0.2s linear; /* Create the sliding effect when showing and hiding */
     background-color:#444; /* IE8 */
     background-color: rgba(51,51,51,.96);
-    visibility:visible;
     height: 100%;
+    
+    /* This transition has a delay so that outer fl-overviewPanel-container can execute its transition first.
+       Without this delay both transitions would play together and not create the desired sliding effect. */ 
+    transition: all 0.2s linear 0.1s;
+    left: 0em;
+    visibility:visible;
+    position:relative;
 }
 
 /* Demo Menu Visibility */
 
+.fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-body {
+    position:relative;
+    transition: all 0.2s linear; /* Create the sliding effect when showing and hiding */
+    left: -30em;
+    visibility: hidden;
+}
+
 .fl-overviewPanel-container.fl-overviewPanel-hidden{
+    /* make the hidden container the same size as the star button. This way the star button 
+     * appears properly and the hidden container doesn't block interaction with content below it.*/
     width: 3em;
-    height: 4.2em; /* make the hidden container the same size as the star button. This way the star button 
-                      appears properly and the hidden container doesn't block interaction with content below it. */
-    overflow: hidden;
+    height: 4.2em; 
+    
+    /* This transition has a delay so that the width and height doesn't collapse to above values
+       until the inner fl-overviewPanel-body container has done its transition. Without this delay
+       both transitions would play together and not create the desired sliding effect. */ 
+    transition: all 0.1s linear 0.3s;                 
 }
 
-.fl-overviewPanel-hidden .fl-overviewPanel {
-    left: -30em; 
-}
-
-.fl-overviewPanel-hidden .fl-overviewPanel-body {
-    position: relative;
-    left: -30em; /* Change (minus) this value if the edge of the panel stays on the screen before visibility:hidden takes effect. */
-    visibility:hidden;
-}
 
 /* Header area with title */
 
