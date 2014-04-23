@@ -297,7 +297,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.prefs.enactor.textSize.getRoot =function (root) {
+    fluid.prefs.enactor.textSize.getRoot = function (root) {
         return $(root || "html");
     };
 
