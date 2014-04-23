@@ -259,7 +259,7 @@ var fluid_1_5 = fluid_1_5 || {};
     /*******************************************************************************
      * textSize
      *
-     * Sets the text size on the container to the multiple provided.
+     * Sets the text size on the root element to the multiple provided.
      *******************************************************************************/
 
     // Note that the implementors need to provide the container for this view component
@@ -268,6 +268,14 @@ var fluid_1_5 = fluid_1_5 || {};
         preferenceMap: {
             "fluid.prefs.textSize": {
                 "model.value": "default"
+            }
+        },
+        members: {
+            root: {
+                expander: {
+                    "funcName": "fluid.prefs.enactor.textSize.getRoot",
+                    "args": ["html"]
+                }
             }
         },
         fontSizeMap: {},  // must be supplied by implementors
@@ -279,15 +287,6 @@ var fluid_1_5 = fluid_1_5 || {};
             getTextSizeInPx: {
                 funcName: "fluid.prefs.enactor.getTextSizeInPx",
                 args: ["{that}.container", "{that}.options.fontSizeMap"]
-            },
-            getTextSizeInEm: {
-                funcName: "fluid.prefs.enactor.textSize.getTextSizeInEm",
-                args: [{expander: {func: "{that}.getTextSizeInPx"}}, {expander: {func: "{that}.getPx2EmFactor"}}],
-                dynamic: true
-            },
-            getPx2EmFactor: {
-                funcName: "fluid.prefs.enactor.textSize.getPx2EmFactor",
-                args: ["{that}.container", "{that}.options.fontSizeMap"]
             }
         },
         listeners: {
@@ -298,40 +297,21 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
+    fluid.prefs.enactor.textSize.getRoot =function (root) {
+        return $(root || "html");
+    };
+
     fluid.prefs.enactor.textSize.set = function (times, that) {
         // Calculating the initial size here rather than using a members expand because the "font-size"
         // cannot be detected on hidden containers such as separated paenl iframe.
         if (!that.initialSize) {
-            that.initialSize = that.getTextSizeInEm();
+            that.initialSize = that.getTextSizeInPx();
         }
 
         if (that.initialSize) {
             var targetSize = times * that.initialSize;
-            that.container.css("font-size", targetSize + "em");
+            that.root.css("font-size", targetSize + "px");
         }
-    };
-
-    /**
-     * Return "font-size" in em
-     * @param (Object) container
-     * @param (Object) fontSizeMap: the mapping between the font size string values ("small", "medium" etc) to px values
-     */
-    fluid.prefs.enactor.textSize.getTextSizeInEm = function (textSizeInPx, px2emFactor) {
-        // retrieve fontSize in px, convert and return in em
-        return Math.round(textSizeInPx / px2emFactor * 10000) / 10000;
-    };
-
-    /**
-     * Return the base font size used for converting text size from px to em
-     */
-    fluid.prefs.enactor.textSize.getPx2EmFactor = function (container, fontSizeMap) {
-        // The base font size for converting text size to em is the computed font size of the container's
-        // parent element unless the container itself has been the DOM root element "HTML"
-        // The reference to this algorithm: http://clagnut.com/blog/348/
-        if (container.get(0).tagName !== "HTML") {
-            container = container.parent();
-        }
-        return fluid.prefs.enactor.getTextSizeInPx(container, fontSizeMap);
     };
 
     fluid.prefs.enactor.textSize.finalInit = function (that) {
