@@ -273,7 +273,8 @@ var fluid_1_5 = fluid_1_5 || {};
         members: {
             root: {
                 expander: {
-                    "funcName": "fluid.prefs.enactor.textSize.getRoot",
+                    "this": "{that}.container",
+                    "method": "closest", // ensure that the correct document is being used. i.e. in an iframe
                     "args": ["html"]
                 }
             }
@@ -297,11 +298,8 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    fluid.prefs.enactor.textSize.getRoot = function (root) {
-        return $(root || "html");
-    };
-
     fluid.prefs.enactor.textSize.set = function (times, that) {
+        times = times || 1;
         // Calculating the initial size here rather than using a members expand because the "font-size"
         // cannot be detected on hidden containers such as separated paenl iframe.
         if (!that.initialSize) {
