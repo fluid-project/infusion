@@ -34,7 +34,7 @@ var fluid_1_5 = fluid_1_5 || {};
             onCreateSlidingPanelReady: {
                 events: {
                     iframeRendered: "afterRender",
-                    onMsgBundleReady: "onMsgBundleReady"
+                    onMsgResolverReady: "onMsgResolverReady"
                 }
             },
             templatesAndIframeReady: {
@@ -74,7 +74,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     gradeNames: ["fluid.prefs.msgLookup"],
                     members: {
-                        messageResolver: "{separatedPanel}.msgBundle"
+                        messageResolver: "{separatedPanel}.msgResolver"
                     },
                     strings: {
                         showText: "{that}.msgLookup.slidingPanelShowText",

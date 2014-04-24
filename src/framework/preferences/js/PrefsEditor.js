@@ -54,17 +54,17 @@ var fluid_1_5 = fluid_1_5 || {};
         events: {
             onPrefsEditorTemplatesLoaded: null,
             onPrefsEditorMessagesLoaded: null,
-            onMsgBundleReady: null,
+            onMsgResolverReady: null,
             onCreatePrefsEditorReady: {
                 events: {
                     templateLoaded: "onPrefsEditorTemplatesLoaded",
-                    msgBundleReady: "onMsgBundleReady"
+                    msgResolverReady: "onMsgResolverReady"
                 }
             }
         },
         listeners: {
             onPrefsEditorMessagesLoaded: {
-                funcName: "fluid.prefs.prefsEditorLoader.createMsgBundle",
+                funcName: "fluid.prefs.prefsEditorLoader.createMsgResolver",
                 args: ["{arguments}.0", "{that}"]
             }
         },
@@ -89,15 +89,15 @@ var fluid_1_5 = fluid_1_5 || {};
         }]
     });
 
-    fluid.prefs.prefsEditorLoader.createMsgBundle = function (messageResources, that) {
+    fluid.prefs.prefsEditorLoader.createMsgResolver = function (messageResources, that) {
         var completeMessage;
         fluid.each(messageResources, function (oneResource) {
             var message = JSON.parse(oneResource.resourceText);
             completeMessage = $.extend({}, completeMessage, message);
         });
         var parentResolver = fluid.messageResolver({messageBase: completeMessage});
-        that.msgBundle = fluid.messageResolver({messageBase: {}, parents: [parentResolver]});
-        that.events.onMsgBundleReady.fire();
+        that.msgResolver = fluid.messageResolver({messageBase: {}, parents: [parentResolver]});
+        that.events.onMsgResolverReady.fire();
     };
 
     // TODO: This mixin grade appears to be supplied manually by various test cases but no longer appears in

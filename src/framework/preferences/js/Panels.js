@@ -603,7 +603,7 @@ var fluid_1_5 = fluid_1_5 || {};
             "{fluid.prefs.prefsEditor}.events.onPrefsEditorRefresh": "{fluid.prefs.panel}.refreshView"
         },
         strings: {},
-        parentBundle: "{fluid.prefs.prefsEditorLoader}.msgBundle"
+        parentBundle: "{fluid.prefs.prefsEditorLoader}.msgResolver"
     });
 
     /********************************
