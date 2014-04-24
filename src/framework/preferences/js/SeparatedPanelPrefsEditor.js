@@ -72,13 +72,13 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{separatedPanel}.container",
                 createOnEvent: "onCreateSlidingPanelReady",
                 options: {
-                    gradeNames: ["fluid.prefs.stringBundle"],
+                    gradeNames: ["fluid.prefs.msgLookup"],
                     members: {
                         messageResolver: "{separatedPanel}.msgBundle"
                     },
                     strings: {
-                        showText: "{that}.stringBundle.slidingPanelShowText",
-                        hideText: "{that}.stringBundle.slidingPanelHideText"
+                        showText: "{that}.msgLookup.slidingPanelShowText",
+                        hideText: "{that}.msgLookup.slidingPanelHideText"
                     },
                     invokers: {
                         operateShow: {
