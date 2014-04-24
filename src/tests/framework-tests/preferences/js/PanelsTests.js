@@ -619,7 +619,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         protoTree: {
             textFont: {
-                optionnames: "${{that}.stringBundle.dd}",
+                optionnames: "${{that}.msgLookup.dd}",
                 optionlist: "${{that}.options.controlValues.ddStrings}",
                 selection: "${ddVal}"
             }
@@ -723,7 +723,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 inputID: "frequencyInput",
                 selectID: "frequency-radio",
                 tree: {
-                    optionnames: "${{that}.stringBundle.radioTestStrings}",
+                    optionnames: "${{that}.msgLookup.radioTestStrings}",
                     optionlist: "${{that}.options.controlValues.radioStrings}",
                     selection: "${radioVal}"
                 }
