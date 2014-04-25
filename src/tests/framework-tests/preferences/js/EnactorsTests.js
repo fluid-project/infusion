@@ -332,18 +332,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.testGetLineHeight = function () {
-        // Mimic IE with its DOM lineHeight structure
-        var container = [{currentStyle: {lineHeight: "10"}}];
+        var container = $(".flc-lineSpace");
         var lineHeight = fluid.prefs.enactor.lineSpace.getLineHeight(container);
-        jqUnit.assertEquals("getLineHeight with IE simulation", "10", lineHeight);
 
-        container = [{currentStyle: {lineHeight: "14pt"}}];
-        lineHeight = fluid.prefs.enactor.lineSpace.getLineHeight(container);
-        jqUnit.assertEquals("getLineHeight with IE simulation", "14pt", lineHeight);
-
-        container = $(".flc-lineSpace");
-        lineHeight = fluid.prefs.enactor.lineSpace.getLineHeight(container);
-        jqUnit.assertEquals("getLineHeight without IE simulation", "12px", lineHeight);
+        // In IE8 and IE9 the lineHeight is returned as a mutliplier
+        // Newer versions of IE and other browsers return the calculated piSxel value
+        if ($.browser.msie && $.browser.version < 10) {
+            jqUnit.assertEquals("getLineHeight multiplier in IE8 and IE9", 2, lineHeight);
+        } else {
+            jqUnit.assertEquals("getLineHeight in px", "12px", lineHeight);
+        }
     };
 
     var testNumerizeLineHeight = function (lineHeight, expected) {
@@ -368,13 +366,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test getLineHeight",
             tests: [{
-                expect: 3,
+                expect: 1,
                 name: "Get line height",
                 type: "test",
                 func: "fluid.tests.testGetLineHeight"
             }]
         }, {
-            name: "Test getLineHeight",
+            name: "Test numerizeLineHeight",
             tests: [{
                 expect: 4,
                 name: "Get numerized line height",

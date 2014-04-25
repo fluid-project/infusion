@@ -382,18 +382,11 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    // Return "line-height" css value
+    // Get the line-height of an element
+    // In IE8 and IE9 this will return the line-height multiplier
+    // In other browsers it will return the pixel value of the line height.
     fluid.prefs.enactor.lineSpace.getLineHeight = function (container) {
-        var lineHeight;
-
-        // A work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
-        if (container[0].currentStyle) {
-            lineHeight = container[0].currentStyle.lineHeight;
-        } else {
-            lineHeight = container.css("line-height");
-        }
-
-        return lineHeight;
+        return container.css("line-height");
     };
 
     // Interprets browser returned "line-height" value, either a string "normal", a number with "px" suffix or "undefined"
