@@ -393,7 +393,7 @@ var fluid_1_5 = fluid_1_5 || {};
     // into a numeric value in em.
     // Return 0 when the given "lineHeight" argument is "undefined" (http://issues.fluidproject.org/browse/FLUID-4500).
     fluid.prefs.enactor.lineSpace.numerizeLineHeight = function (lineHeight, fontSize) {
-        // Handel the given "lineHeight" argument is "undefined", which occurs when firefox detects
+        // Handle the given "lineHeight" argument is "undefined", which occurs when firefox detects
         // "line-height" css value on a hidden container. (http://issues.fluidproject.org/browse/FLUID-4500)
         if (!lineHeight) {
             return 0;
