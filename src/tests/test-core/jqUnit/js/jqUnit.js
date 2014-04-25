@@ -15,10 +15,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /* global fluid, QUnit */
 
+var jqUnit = jqUnit || {};
+
 (function ($) {
     "use strict";
 
-    var jqUnit = fluid.registerNamespace("jqUnit");
     var QUnitPassthroughs = ["module", "test", "asyncTest", "throws", "raises", "start", "stop", "expect"];
     QUnit.config.reorder = false; // defeat this QUnit feature which frequently just causes confusion
 
