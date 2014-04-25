@@ -32,7 +32,7 @@
     height: 100%;
     
     /* Transition used to control hide/show of this container */
-    transition: all 0.1s linear;
+    transition: all 0.2s linear;
 }
 
 .fl-overviewPanel .fl-overviewPanel-title {
@@ -73,6 +73,7 @@
     position: relative;
     left: 0;
     color: #fff;
+    font-size: 14px;
     height: inherit;
 }
 
@@ -131,18 +132,14 @@
     
     /* This transition has a delay so that outer fl-overviewPanel-container can execute its transition first.
        Without this delay both transitions would play together and not create the desired sliding effect. */ 
-    transition: all 0.2s linear 0.1s;
-    left: 0em;
+    transition: visibility 0.1s linear;
     visibility:visible;
-    position:relative;
 }
 
 /* Demo Menu Visibility */
 
 .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-body {
-    position:relative;
-    transition: all 0.2s linear; /* Create the sliding effect when showing and hiding */
-    left: -30em;
+    transition: visibility 0.1s linear;
     visibility: hidden;
 }
 
@@ -151,11 +148,7 @@
      * appears properly and the hidden container doesn't block interaction with content below it.*/
     width: 3em;
     height: 4.2em; 
-    
-    /* This transition has a delay so that the width and height doesn't collapse to above values
-       until the inner fl-overviewPanel-body container has done its transition. Without this delay
-       both transitions would play together and not create the desired sliding effect. */ 
-    transition: all 0.1s linear 0.3s;                 
+    transition: all 0.2s linear; /* This transition creates the desired sliding effect. */ 
 }
 
 
@@ -226,6 +219,7 @@
     border-radius: 50em;
     font-family: icons;
     color: #333333;
+    line-height: 1em;
 }
 
 .fl-overviewPanel .fl-overviewPanel-links-icon-api:before,
@@ -269,164 +263,164 @@
 /* Theming */
 
 /* black on white */
-.fl-theme-uio-bw .fl-overviewPanel,
-.fl-theme-uio-bw .fl-overviewPanel-body,
-.fl-theme-uio-bw .fl-overviewPanel a,
-.fl-theme-uio-bw .fl-overviewPanel .fl-overviewPanel-links-icon-api,
-.fl-theme-uio-bw .fl-overviewPanel .fl-overviewPanel-links-icon-github,
-.fl-theme-uio-bw .fl-overviewPanel .fl-overviewPanel-links-icon-design {
+.fl-theme-bw .fl-overviewPanel,
+.fl-theme-bw .fl-overviewPanel-body,
+.fl-theme-bw .fl-overviewPanel a,
+.fl-theme-bw .fl-overviewPanel .fl-overviewPanel-links-icon-api,
+.fl-theme-bw .fl-overviewPanel .fl-overviewPanel-links-icon-github,
+.fl-theme-bw .fl-overviewPanel .fl-overviewPanel-links-icon-design {
     color: #000;
     background-color: #fff;
 }
 
-.fl-theme-uio-bw .fl-overviewPanel {
-    border: 0.2em solid #000;
+.fl-theme-bw .fl-overviewPanel {
+    border-right: 0.2em solid #000;
 }
 
-.fl-theme-uio-bw .fl-overviewPanel .fl-overviewPanel-title .fl-overviewPanel-icon-fluidStar,
-.fl-theme-uio-bw .fl-overviewPanel .fl-overviewPanel-title a,
-.fl-theme-uio-bw .fl-overviewPanel .fl-overviewPanel-title {
+.fl-theme-bw .fl-overviewPanel .fl-overviewPanel-title .fl-overviewPanel-icon-fluidStar,
+.fl-theme-bw .fl-overviewPanel .fl-overviewPanel-title a,
+.fl-theme-bw .fl-overviewPanel .fl-overviewPanel-title {
     background-color: #000;
     color: #fff;
 }
 
-.fl-theme-uio-bw .fl-overviewPanel a { text-decoration: underline; }
-.fl-theme-uio-bw .fl-overviewPanel *:focus { outline: 0.2em solid #000; }
-.fl-theme-uio-bw .fl-overviewPanel-instructions { border: 0.2em solid #000; }
+.fl-theme-bw .fl-overviewPanel a { text-decoration: underline; }
+.fl-theme-bw .fl-overviewPanel *:focus { outline: 0.2em solid #000; }
+.fl-theme-bw .fl-overviewPanel-instructions { border: 0.2em solid #000; }
 
-.fl-theme-uio-bw .fl-overviewPanel-hidden .fl-overviewPanel { /* when hidden */
+.fl-theme-bw .fl-overviewPanel-hidden .fl-overviewPanel { /* when hidden */
     border-width: 0;
 }
 
-.fl-theme-uio-bw .fl-overviewPanel-hidden .fl-overviewPanel-icon-fluidStar a{
+.fl-theme-bw .fl-overviewPanel-hidden .fl-overviewPanel-icon-fluidStar a{
     border: 0.1em solid #000;
     outline: 0.3em solid #fff;
 }
 
 
 /* white on black */
-.fl-theme-uio-wb .fl-overviewPanel,
-.fl-theme-uio-wb .fl-overviewPanel-body,
-.fl-theme-uio-wb .fl-overviewPanel a, 
-.fl-theme-uio-wb .fl-overviewPanel .fl-overviewPanel-links-icon-api,
-.fl-theme-uio-wb .fl-overviewPanel .fl-overviewPanel-links-icon-github,
-.fl-theme-uio-wb .fl-overviewPanel .fl-overviewPanel-links-icon-design {
+.fl-theme-wb .fl-overviewPanel,
+.fl-theme-wb .fl-overviewPanel-body,
+.fl-theme-wb .fl-overviewPanel a, 
+.fl-theme-wb .fl-overviewPanel .fl-overviewPanel-links-icon-api,
+.fl-theme-wb .fl-overviewPanel .fl-overviewPanel-links-icon-github,
+.fl-theme-wb .fl-overviewPanel .fl-overviewPanel-links-icon-design {
     color: #fff;
     background-color: #000;
 }
 
-.fl-theme-uio-wb .fl-overviewPanel {
-    border: 0.2em solid #000;
+.fl-theme-wb .fl-overviewPanel {
+    border-right: 0.2em solid #fff;
 }
 
-.fl-theme-uio-wb .fl-overviewPanel .fl-overviewPanel-title .fl-overviewPanel-icon-fluidStar,
-.fl-theme-uio-wb .fl-overviewPanel .fl-overviewPanel-title a,
-.fl-theme-uio-wb .fl-overviewPanel .fl-overviewPanel-title {
+.fl-theme-wb .fl-overviewPanel .fl-overviewPanel-title .fl-overviewPanel-icon-fluidStar,
+.fl-theme-wb .fl-overviewPanel .fl-overviewPanel-title a,
+.fl-theme-wb .fl-overviewPanel .fl-overviewPanel-title {
     background-color: #fff;
     color: #000;
 }
 
-.fl-theme-uio-wb .fl-overviewPanel a { text-decoration: underline; }
-.fl-theme-uio-wb .fl-overviewPanel *:focus { outline: 0.2em solid #fff; }
-.fl-theme-uio-wb .fl-overviewPanel-instructions { border: 0.2em solid #fff; }
+.fl-theme-wb .fl-overviewPanel a { text-decoration: underline; }
+.fl-theme-wb .fl-overviewPanel *:focus { outline: 0.2em solid #fff; }
+.fl-theme-wb .fl-overviewPanel-instructions { border: 0.2em solid #fff; }
 
-.fl-theme-uio-wb .fl-overviewPanel-hidden .fl-overviewPanel-icon-fluidStar a{
+.fl-theme-wb .fl-overviewPanel-hidden .fl-overviewPanel-icon-fluidStar a{
     border: 0.1em solid #fff;
     outline: 0.3em solid #000;
 }
 
 
 /* Low contrast: light grey on dark grey */
-.fl-theme-uio-lgdg .fl-overviewPanel,
-.fl-theme-uio-lgdg .fl-overviewPanel-body,
-.fl-theme-uio-lgdg .fl-overviewPanel a, 
-.fl-theme-uio-lgdg .fl-overviewPanel .fl-overviewPanel-links-icon-api,
-.fl-theme-uio-lgdg .fl-overviewPanel .fl-overviewPanel-links-icon-github,
-.fl-theme-uio-lgdg .fl-overviewPanel .fl-overviewPanel-links-icon-design {
+.fl-theme-lgdg .fl-overviewPanel,
+.fl-theme-lgdg .fl-overviewPanel-body,
+.fl-theme-lgdg .fl-overviewPanel a, 
+.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-links-icon-api,
+.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-links-icon-github,
+.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-links-icon-design {
     color: #bdbdbb;
     background-color: #555;
 }
 
-.fl-theme-uio-lgdg .fl-overviewPanel {
-    border: 0.2em solid #555;
+.fl-theme-lgdg .fl-overviewPanel {
+    border-right: 0.2em solid #bdbdbb;
 }
 
-.fl-theme-uio-lgdg .fl-overviewPanel .fl-overviewPanel-title .fl-overviewPanel-icon-fluidStar,
-.fl-theme-uio-lgdg .fl-overviewPanel .fl-overviewPanel-title a,
-.fl-theme-uio-lgdg .fl-overviewPanel .fl-overviewPanel-title {
+.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-title .fl-overviewPanel-icon-fluidStar,
+.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-title a,
+.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-title {
     background-color: #bdbdbb;
     color: #555;
 }
 
-.fl-theme-uio-lgdg .fl-overviewPanel a { text-decoration: underline; }
-.fl-theme-uio-lgdg .fl-overviewPanel *:focus { outline: 0.2em solid #bdbdbb; }
-.fl-theme-uio-lgdg .fl-overviewPanel-instructions { border: 0.2em solid #bdbdbb; }
+.fl-theme-lgdg .fl-overviewPanel a { text-decoration: underline; }
+.fl-theme-lgdg .fl-overviewPanel *:focus { outline: 0.2em solid #bdbdbb; }
+.fl-theme-lgdg .fl-overviewPanel-instructions { border: 0.2em solid #bdbdbb; }
 
-.fl-theme-uio-lgdg .fl-overviewPanel-hidden .fl-overviewPanel-icon-fluidStar a{
+.fl-theme-lgdg .fl-overviewPanel-hidden .fl-overviewPanel-icon-fluidStar a{
     border: 0.1em solid #bdbdbb;
     outline: 0.3em solid #555;
 }
 
 
 /* Yellow on Black */
-.fl-theme-uio-yb .fl-overviewPanel,
-.fl-theme-uio-yb .fl-overviewPanel-body,
-.fl-theme-uio-yb .fl-overviewPanel a, 
-.fl-theme-uio-yb .fl-overviewPanel .fl-overviewPanel-links-icon-api,
-.fl-theme-uio-yb .fl-overviewPanel .fl-overviewPanel-links-icon-github,
-.fl-theme-uio-yb .fl-overviewPanel .fl-overviewPanel-links-icon-design {
+.fl-theme-yb .fl-overviewPanel,
+.fl-theme-yb .fl-overviewPanel-body,
+.fl-theme-yb .fl-overviewPanel a, 
+.fl-theme-yb .fl-overviewPanel .fl-overviewPanel-links-icon-api,
+.fl-theme-yb .fl-overviewPanel .fl-overviewPanel-links-icon-github,
+.fl-theme-yb .fl-overviewPanel .fl-overviewPanel-links-icon-design {
     color: #FFFF00;
     background-color: #000;
 }
 
-.fl-theme-uio-yb .fl-overviewPanel {
-    border: 0.2em solid #000;
+.fl-theme-yb .fl-overviewPanel {
+    border-right: 0.2em solid #ffcc00;
 }
 
-.fl-theme-uio-yb .fl-overviewPanel .fl-overviewPanel-title .fl-overviewPanel-icon-fluidStar,
-.fl-theme-uio-yb .fl-overviewPanel .fl-overviewPanel-title a,
-.fl-theme-uio-yb .fl-overviewPanel .fl-overviewPanel-title {
+.fl-theme-yb .fl-overviewPanel .fl-overviewPanel-title .fl-overviewPanel-icon-fluidStar,
+.fl-theme-yb .fl-overviewPanel .fl-overviewPanel-title a,
+.fl-theme-yb .fl-overviewPanel .fl-overviewPanel-title {
     background-color: #FFFF00;
     color: #000;
 }
 
-.fl-theme-uio-yb .fl-overviewPanel a { text-decoration: underline; }
-.fl-theme-uio-yb .fl-overviewPanel *:focus { outline: 0.2em solid #FFFF00; }
-.fl-theme-uio-yb .fl-overviewPanel-instructions { border: 0.2em solid #FFFF00; }
+.fl-theme-yb .fl-overviewPanel a { text-decoration: underline; }
+.fl-theme-yb .fl-overviewPanel *:focus { outline: 0.2em solid #FFFF00; }
+.fl-theme-yb .fl-overviewPanel-instructions { border: 0.2em solid #FFFF00; }
 
-.fl-theme-uio-yb .fl-overviewPanel-hidden .fl-overviewPanel-icon-fluidStar a{
+.fl-theme-yb .fl-overviewPanel-hidden .fl-overviewPanel-icon-fluidStar a{
     border: 0.1em solid #ffff00;
     outline: 0.3em solid #000;
 }
 
 
 /* Black on Yellow */
-.fl-theme-uio-by .fl-overviewPanel,
-.fl-theme-uio-by .fl-overviewPanel-body,
-.fl-theme-uio-by .fl-overviewPanel a,
-.fl-theme-uio-by .fl-overviewPanel .fl-overviewPanel-links-icon-api,
-.fl-theme-uio-by .fl-overviewPanel .fl-overviewPanel-links-icon-github,
-.fl-theme-uio-by .fl-overviewPanel .fl-overviewPanel-links-icon-design  {
+.fl-theme-by .fl-overviewPanel,
+.fl-theme-by .fl-overviewPanel-body,
+.fl-theme-by .fl-overviewPanel a,
+.fl-theme-by .fl-overviewPanel .fl-overviewPanel-links-icon-api,
+.fl-theme-by .fl-overviewPanel .fl-overviewPanel-links-icon-github,
+.fl-theme-by .fl-overviewPanel .fl-overviewPanel-links-icon-design  {
     color: #000;
     background-color: #FFFF00;
 }
 
-.fl-theme-uio-by .fl-overviewPanel {
-    border: 0.2em solid #000;
+.fl-theme-by .fl-overviewPanel {
+    border-right: 0.2em solid #000;
 }
 
-.fl-theme-uio-by .fl-overviewPanel .fl-overviewPanel-title .fl-overviewPanel-icon-fluidStar,
-.fl-theme-uio-by .fl-overviewPanel .fl-overviewPanel-title a,
-.fl-theme-uio-by .fl-overviewPanel .fl-overviewPanel-title {
+.fl-theme-by .fl-overviewPanel .fl-overviewPanel-title .fl-overviewPanel-icon-fluidStar,
+.fl-theme-by .fl-overviewPanel .fl-overviewPanel-title a,
+.fl-theme-by .fl-overviewPanel .fl-overviewPanel-title {
     background-color: #000;
     color: #FFFF00;
 }
 
-.fl-theme-uio-by .fl-overviewPanel a { text-decoration: underline; }
-.fl-theme-uio-by .fl-overviewPanel *:focus { outline: 0.2em solid #000; }
-.fl-theme-uio-by .fl-overviewPanel-instructions { border: 0.2em solid #000; }
+.fl-theme-by .fl-overviewPanel a { text-decoration: underline; }
+.fl-theme-by .fl-overviewPanel *:focus { outline: 0.2em solid #000; }
+.fl-theme-by .fl-overviewPanel-instructions { border: 0.2em solid #000; }
 
-.fl-theme-uio-by .fl-overviewPanel-hidden .fl-overviewPanel-icon-fluidStar a{
+.fl-theme-by .fl-overviewPanel-hidden .fl-overviewPanel-icon-fluidStar a{
     border: 0.1em solid #000;
     outline: 0.3em solid #ffff00;
 }
