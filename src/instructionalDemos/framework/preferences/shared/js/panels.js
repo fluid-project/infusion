@@ -263,7 +263,7 @@ var demo = demo || {};
                 inputID: "magPosInput",
                 selectID: "magnifierPosition",
                 tree: {
-                    optionnames: "${{that}.stringBundle.magPos}",
+                    optionnames: "${{that}.msgLookup.magPos}",
                     optionlist: "${{that}.options.controlValues.magPos}",
                     selection: "${magPos}"
                 }
