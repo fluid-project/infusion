@@ -315,7 +315,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
-     * Unit tests for getLineHeight & numerizeLineHeight
+     * Unit tests for getLineHeight & getLineHeightMultiplier
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.getLineHeightTests", {
@@ -344,21 +344,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
-    var testNumerizeLineHeight = function (lineHeight, expected) {
+    var testGetLinehHeightMultiplier = function (lineHeight, expected) {
         var container = $(".flc-lineSpace");
         var fontSize = fluid.prefs.enactor.getTextSizeInPx(container, fontSizeMap);
 
-        var numerizedLineHeight = fluid.prefs.enactor.lineSpace.numerizeLineHeight(lineHeight, Math.round(fontSize));
+        var numerizedLineHeight = fluid.prefs.enactor.lineSpace.getLineHeightMultiplier(lineHeight, Math.round(fontSize));
 
         jqUnit.assertEquals("line-height value '" + lineHeight + "' has been converted correctly", expected, numerizedLineHeight);
     };
 
-    fluid.tests.testNumerizeLineHeight = function () {
+    fluid.tests.testGetLinehHeightMultiplier = function () {
         var undefinedLineHeight;
-        testNumerizeLineHeight(undefinedLineHeight, 0);
-        testNumerizeLineHeight("normal", 1.2);
-        testNumerizeLineHeight("6px", 1);
-        testNumerizeLineHeight("1.5", 1.5);
+        testGetLinehHeightMultiplier(undefinedLineHeight, 0);
+        testGetLinehHeightMultiplier("normal", 1.2);
+        testGetLinehHeightMultiplier("6px", 1);
+        testGetLinehHeightMultiplier("1.5", 1.5);
     };
 
     fluid.defaults("fluid.tests.getLineHeightTester", {
@@ -372,12 +372,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 func: "fluid.tests.testGetLineHeight"
             }]
         }, {
-            name: "Test numerizeLineHeight",
+            name: "Test getLineHeightMultiplier",
             tests: [{
                 expect: 4,
-                name: "Get numerized line height",
+                name: "Get line height multiplier",
                 type: "test",
-                func: "fluid.tests.testNumerizeLineHeight"
+                func: "fluid.tests.testGetLinehHeightMultiplier"
             }]
         }]
     });

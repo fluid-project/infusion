@@ -368,8 +368,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 funcName: "fluid.prefs.enactor.lineSpace.getLineHeight",
                 args: "{that}.container"
             },
-            numerizeLineHeight: {
-                funcName: "fluid.prefs.enactor.lineSpace.numerizeLineHeight",
+            getLineHeightMultiplier: {
+                funcName: "fluid.prefs.enactor.lineSpace.getLineHeightMultiplier",
                 args: [{expander: {func: "{that}.getLineHeight"}}, {expander: {func: "{that}.getTextSizeInPx"}}],
                 dynamic: true
             }
@@ -392,7 +392,7 @@ var fluid_1_5 = fluid_1_5 || {};
     // Interprets browser returned "line-height" value, either a string "normal", a number with "px" suffix or "undefined"
     // into a numeric value in em.
     // Return 0 when the given "lineHeight" argument is "undefined" (http://issues.fluidproject.org/browse/FLUID-4500).
-    fluid.prefs.enactor.lineSpace.numerizeLineHeight = function (lineHeight, fontSize) {
+    fluid.prefs.enactor.lineSpace.getLineHeightMultiplier = function (lineHeight, fontSize) {
         // Handle the given "lineHeight" argument is "undefined", which occurs when firefox detects
         // "line-height" css value on a hidden container. (http://issues.fluidproject.org/browse/FLUID-4500)
         if (!lineHeight) {
@@ -417,12 +417,12 @@ var fluid_1_5 = fluid_1_5 || {};
         // Calculating the initial size here rather than using a members expand because the "line-height"
         // cannot be detected on hidden containers such as separated paenl iframe.
         if (!that.initialSize) {
-            that.initialSize = that.numerizeLineHeight();
+            that.initialSize = that.getLineHeightMultiplier();
         }
 
         // that.initialSize === 0 when the browser returned "lineHeight" css value is undefined,
         // which occurs when firefox detects "line-height" value on a hidden container.
-        // @ See numerizeLineHeight() & http://issues.fluidproject.org/browse/FLUID-4500
+        // @ See getLineHeightMultiplier() & http://issues.fluidproject.org/browse/FLUID-4500
         if (that.initialSize) {
             var targetLineSpace = times * that.initialSize;
             that.container.css("line-height", targetLineSpace);
