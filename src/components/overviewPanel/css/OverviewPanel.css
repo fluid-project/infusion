@@ -40,18 +40,19 @@
     font-family: 'Roboto Slab', serif;
     color: #ccc;
     padding: 0.5em 0.5em 0.5em 3em;
-    height: 4.5em;
+    height: 5.5em;
     position: absolute;
     top: 0;
     left: 0;
+    line-height: 2em;
 }
 
 .fl-overviewPanel .fl-overviewPanel-contents {
     /* 
      * If changing the height of title or footer, make sure the top and bottom
-     * positions of fl-overviewPanel-contents.
+     * positions of fl-overviewPanel-contents are adjusted.
      */
-    top: 4.5em;     /* Change this if needed - offset the height of fl-overviewPanel-title.  */
+    top: 6.5em;     /* Change this if needed - offset the height of fl-overviewPanel-title + 1em (for line-height compensation).  */
     bottom: 10.5em; /* Change this if needed - offset the height of fl-overviewPanel-footer. */
     padding: 1.5em;
     position: absolute;
@@ -64,6 +65,7 @@
     bottom: 0;
     left: 0;
     width: 100%;
+    line-height: 1em;
 }
 
 
@@ -110,14 +112,15 @@
 .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
     text-decoration: none;
     font-size: 1.5em;
-    font-family: "Fluid-star";
+    font-family: "Fluid-star" !important; /* use important to keep learner prefs from changing it. */ 
     margin: 0.2em 0 0.2em 0.2em;
     padding: 0.7em 0.3em;
     color: #FFCC00;
     float: left;
     position:relative;
     background-color: #333; /* IE8 */
-    background-color: rgba(51,51,51,.96);    
+    background-color: rgba(51,51,51,.96);
+    line-height: 1.8em;
 }
 
 .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:before{
@@ -217,7 +220,7 @@
     width: 2em;
     height: 2em;
     border-radius: 50em;
-    font-family: icons;
+    font-family: icons !important; /* use important to keep learner prefs from changing it. */ 
     color: #333333;
     line-height: 1em;
 }
