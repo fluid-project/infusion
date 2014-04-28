@@ -214,7 +214,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
-     * Unit tests for getPx2EmFactor & getTextSizeInEm
+     * fontSizeMap used for the various size related enactor tests
      *******************************************************************************/
 
     var fontSizeMap = {
@@ -226,47 +226,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "x-large":  "23px",
         "xx-large": "30px"
     };
-
-    fluid.defaults("fluid.tests.getSizeTests", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
-        container: ".flc-getSize",
-        fontSizeMap: fontSizeMap,
-        expectedTestSize: 8,
-        expectedSizeAtUndetected: 1,
-        components: {
-            getSizeTester: {
-                type: "fluid.tests.getSizeTester"
-            }
-        }
-    });
-
-    fluid.tests.testGetSize = function (container, fontSizeMap, expectedTestSize, expectedSizeAtUndetected) {
-        container = $(container);
-
-        var px2emFactor = fluid.prefs.enactor.textSize.getPx2EmFactor(container, fontSizeMap);
-        jqUnit.assertEquals("Check that the factor is pulled from the container correctly", expectedTestSize, px2emFactor);
-
-        container = $("html");
-        var textSizeInPx = fluid.prefs.enactor.getTextSizeInPx(container, fontSizeMap);
-        px2emFactor = fluid.prefs.enactor.textSize.getPx2EmFactor(container, fontSizeMap);
-        var fontSizeInEm = fluid.prefs.enactor.textSize.getTextSizeInEm(textSizeInPx, px2emFactor);
-
-        jqUnit.assertEquals("Unable to detect the text size in em for the DOM root element <html>. Always return 1em.", expectedSizeAtUndetected, fontSizeInEm);
-    };
-
-    fluid.defaults("fluid.tests.getSizeTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
-        modules: [{
-            name: "Test getPx2EmFactor & getTextSizeInEm",
-            tests: [{
-                expect: 2,
-                name: "Get text size in em",
-                type: "test",
-                func: "fluid.tests.testGetSize",
-                args: ["{fluid.tests.getSizeTests}.options.container", "{fluid.tests.getSizeTests}.options.fontSizeMap", "{fluid.tests.getSizeTests}.options.expectedTestSize", "{fluid.tests.getSizeTests}.options.expectedSizeAtUndetected"]
-            }]
-        }]
-    });
 
     /*******************************************************************************
      * Unit tests for fluid.prefs.enactor.textSize
@@ -292,12 +251,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.testTextSize = function (that) {
-        var px2emFactor = fluid.prefs.enactor.textSize.getPx2EmFactor(that.container, that.options.fontSizeMap);
-        var expectedInitialSize = Math.round(8 / px2emFactor * 10000) / 10000;
+        var expectedInitialSize = 16;
+        var muliplier = 2;
+        var remTestElm = $("#flc-textSize-remTest");
+        var initialREMSize = fluid.prefs.enactor.getTextSizeInPx(remTestElm, fontSizeMap);
 
         jqUnit.assertEquals("Check that the size is pulled from the container correctly", expectedInitialSize, that.initialSize);
-        that.applier.requestChange("value", 2);
-        jqUnit.assertEquals("The size should be doubled", "16px", that.container.css("fontSize"));
+        that.applier.requestChange("value", muliplier);
+        jqUnit.assertEquals("The size should be doubled", (expectedInitialSize * muliplier) + "px", that.root.css("fontSize"));
+        jqUnit.assertEquals("The font size specified in rem units should be doubled", initialREMSize * muliplier, fluid.prefs.enactor.getTextSizeInPx(remTestElm, fontSizeMap));
+
+        // reset font size of root
+        $("html").css("font-size", that.initialSize + "px");
     };
 
     fluid.defaults("fluid.tests.textSizeTester", {
@@ -305,7 +270,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test text size enactor",
             tests: [{
-                expect: 2,
+                expect: 3,
                 name: "Apply text size in times",
                 type: "test",
                 func: "fluid.tests.testTextSize",
@@ -514,7 +479,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "fluid.tests.emphasizeLinksTests",
             "fluid.tests.inputsLargerTests",
             "fluid.tests.classSwapperTests",
-            "fluid.tests.getSizeTests",
             "fluid.tests.textSizeTests",
             "fluid.tests.getLineHeightTests",
             "fluid.tests.lineSpaceTests",
