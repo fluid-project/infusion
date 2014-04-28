@@ -113,6 +113,7 @@
     text-decoration: none;
     font-size: 1.5em;
     font-family: "Fluid-star" !important; /* FLUID-5321: use important to keep learner prefs from changing it. */ 
+    font-weight: normal !important; /* Keep UIO from changing the weight of icons. Bold icons look poor. */
     margin: 0.2em 0 0.2em 0.2em;
     padding: 0.7em 0.3em;
     color: #FFCC00;
@@ -221,6 +222,7 @@
     height: 2em;
     border-radius: 50em;
     font-family: icons !important; /* FLUID-5321: use important to keep learner prefs from changing it. */ 
+    font-weight: normal !important; /* Keep UIO from changing the weight of icons. Bold icons look poor. */
     color: #333333;
     line-height: 1em;
 }
