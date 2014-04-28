@@ -641,21 +641,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.assertBuilderMunging = function () {
-        return function (prefsEditor) {
-            jqUnit.assertEquals("Munging options for prefsEditor should be passed down to the prefsEditor", 1, prefsEditor.prefsEditorLoader.prefsEditor.options.userOption);
-            jqUnit.assertEquals("Munging options for store should be passed down to the prefsEditor", 2, prefsEditor.store.settingsStore.options.storeOption);
+    fluid.tests.assertBuilderMunging = function (prefsEditor) {
+        jqUnit.assertEquals("Munging options for prefsEditor should be passed down to the prefsEditor", 1, prefsEditor.prefsEditorLoader.prefsEditor.options.userOption);
+        jqUnit.assertEquals("Munging options for store should be passed down to the prefsEditor", 2, prefsEditor.store.settingsStore.options.storeOption);
 
-            jqUnit.assertEquals("Munging options for templatePrefix should be passed down to the template loader", templatePrefix, prefsEditor.prefsEditorLoader.templateLoader.resourcePath.options.value);
-            jqUnit.assertEquals("Munging options for messagePrefix should be passed down to the message loader", messagePrefix, prefsEditor.prefsEditorLoader.messageLoader.resourcePath.options.value);
-            jqUnit.assertTrue("Munging options for onReady event should be passed down to the constructed pref editor", prefsEdReady);
+        jqUnit.assertEquals("Munging options for templatePrefix should be passed down to the template loader", templatePrefix, prefsEditor.prefsEditorLoader.templateLoader.resourcePath.options.value);
+        jqUnit.assertEquals("Munging options for messagePrefix should be passed down to the message loader", messagePrefix, prefsEditor.prefsEditorLoader.messageLoader.resourcePath.options.value);
+        jqUnit.assertTrue("Munging options for onReady event should be passed down to the constructed pref editor", prefsEdReady);
 
-            jqUnit.assertTrue(prefsEditorType + " should be in the base prefsEditor grades", fluid.hasGrade(prefsEditor.prefsEditorLoader.options, prefsEditorType));
-            jqUnit.assertTrue(enhancerType + " should be in the base enhancer grades", fluid.hasGrade(prefsEditor.enhancer.options, enhancerType));
-            jqUnit.assertTrue(storeType + " should be in the base store grades", fluid.hasGrade(prefsEditor.store.options, storeType));
+        jqUnit.assertTrue(prefsEditorType + " should be in the base prefsEditor grades", fluid.hasGrade(prefsEditor.prefsEditorLoader.options, prefsEditorType));
+        jqUnit.assertTrue(enhancerType + " should be in the base enhancer grades", fluid.hasGrade(prefsEditor.enhancer.options, enhancerType));
+        jqUnit.assertTrue(storeType + " should be in the base store grades", fluid.hasGrade(prefsEditor.store.options, storeType));
 
-            jqUnit.assertEquals("Munging options for enhancer should be passed down to the enhancer", "fl-aria", prefsEditor.enhancer.uiEnhancer.options.classnameMap["textFont.default"]);
-        };
+        jqUnit.assertEquals("Munging options for enhancer should be passed down to the enhancer", "fl-aria", prefsEditor.enhancer.uiEnhancer.options.classnameMap["textFont.default"]);
     };
 
     fluid.defaults("fluid.tests.builderMungingTester", {
@@ -666,7 +664,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 9,
                 name: "Builder munging",
                 sequence: [{
-                    listenerMaker: "fluid.tests.assertBuilderMunging",
+                    listener: "fluid.tests.assertBuilderMunging",
                     spec: {priority: "last"},
                     event: "{builderMunging > prefsEd}.events.onReady"
                 }]
