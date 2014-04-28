@@ -112,7 +112,7 @@
 .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
     text-decoration: none;
     font-size: 1.5em;
-    font-family: "Fluid-star" !important; /* use important to keep learner prefs from changing it. */ 
+    font-family: "Fluid-star" !important; /* FLUID-5321: use important to keep learner prefs from changing it. */ 
     margin: 0.2em 0 0.2em 0.2em;
     padding: 0.7em 0.3em;
     color: #FFCC00;
@@ -212,15 +212,15 @@
     text-decoration: none;
 }
 
-.fl-overviewPanel .fl-overviewPanel-links-icon-api,
-.fl-overviewPanel .fl-overviewPanel-links-icon-github,
-.fl-overviewPanel .fl-overviewPanel-links-icon-design {
+.fl-overviewPanel .fl-overviewPanel-footer .fl-overviewPanel-links .fl-overviewPanel-links-icon-api,
+.fl-overviewPanel .fl-overviewPanel-footer .fl-overviewPanel-links .fl-overviewPanel-links-icon-github,
+.fl-overviewPanel .fl-overviewPanel-footer .fl-overviewPanel-links .fl-overviewPanel-links-icon-design {
     display: inline-block;
     background-color: #fff;
     width: 2em;
     height: 2em;
     border-radius: 50em;
-    font-family: icons !important; /* use important to keep learner prefs from changing it. */ 
+    font-family: icons !important; /* FLUID-5321: use important to keep learner prefs from changing it. */ 
     color: #333333;
     line-height: 1em;
 }
