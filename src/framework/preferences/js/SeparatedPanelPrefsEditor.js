@@ -90,7 +90,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         },
                         operateHide: {
                             funcName: "fluid.prefs.separatedPanel.hidePanel",
-                            args: ["{that}.dom.panel", "{separatedPanel}.iframeRenderer.iframe", "{that}.events.afterPanelHide.fire"],
+                            args: ["{that}.dom.panel", "{iframeRenderer}.iframe", "{that}.events.afterPanelHide.fire"],
                             // override default implementation
                             "this": null,
                             "method": null
