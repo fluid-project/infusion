@@ -13,6 +13,29 @@
          url('../fonts/fluid-star.ttf');
 }
 
+@font-face {
+    font-family: 'OpenSans';
+    src: url('fonts/OpenSans-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'OpenSans';
+    src: url('../fonts/OpenSans-Bold.ttf');
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: 'RobotoSlab';
+    src: url('fonts/OpenSans-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'RobotoSlab';
+    src: url('../fonts/RobotoSlab-Bold.ttf');
+    font-weight: bold;
+}
+
+
 .fl-overviewPanel-container {
     /* 
      * APPLY this class on the container enclosing the overviewPanel component.
@@ -28,7 +51,7 @@
     width:24em;
     z-index: 9999;
     font-size: 14px;
-    font-family: 'Open Sans', sans-serif;
+    font-family: "OpenSans","Helvetica Neue","Helvetica",Helvetica,Arial,sans-serif;
     height: 100%;
     min-height: 28em;
     
@@ -38,7 +61,7 @@
 
 .fl-overviewPanel .fl-overviewPanel-title {
     background-color: #333;
-    font-family: 'Roboto Slab', serif;
+    font-family: 'RobotoSlab', serif;
     color: #ccc;
     padding: 0.5em 0.5em 0.5em 3em;
     height: 5.5em;
