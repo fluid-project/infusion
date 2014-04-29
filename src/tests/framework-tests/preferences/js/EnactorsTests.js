@@ -280,7 +280,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
-     * Unit tests for getLineHeight & numerizeLineHeight
+     * Unit tests for getLineHeight & getLineHeightMultiplier
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.getLineHeightTests", {
@@ -297,35 +297,33 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.testGetLineHeight = function () {
-        // Mimic IE with its DOM lineHeight structure
-        var container = [{currentStyle: {lineHeight: "10"}}];
+        var container = $(".flc-lineSpace");
         var lineHeight = fluid.prefs.enactor.lineSpace.getLineHeight(container);
-        jqUnit.assertEquals("getLineHeight with IE simulation", "10", lineHeight);
 
-        container = [{currentStyle: {lineHeight: "14pt"}}];
-        lineHeight = fluid.prefs.enactor.lineSpace.getLineHeight(container);
-        jqUnit.assertEquals("getLineHeight with IE simulation", "14pt", lineHeight);
-
-        container = $(".flc-lineSpace");
-        lineHeight = fluid.prefs.enactor.lineSpace.getLineHeight(container);
-        jqUnit.assertEquals("getLineHeight without IE simulation", "12px", lineHeight);
+        // In IE8 and IE9 the lineHeight is returned as a mutliplier
+        // Newer versions of IE and other browsers return the calculated pixel value
+        if ($.browser.msie && $.browser.version < 10) {
+            jqUnit.assertEquals("getLineHeight multiplier in IE8 and IE9", 2, lineHeight);
+        } else {
+            jqUnit.assertEquals("getLineHeight in px", "12px", lineHeight);
+        }
     };
 
-    var testNumerizeLineHeight = function (lineHeight, expected) {
+    var testGetLineHeightMultiplier = function (lineHeight, expected) {
         var container = $(".flc-lineSpace");
         var fontSize = fluid.prefs.enactor.getTextSizeInPx(container, fontSizeMap);
 
-        var numerizedLineHeight = fluid.prefs.enactor.lineSpace.numerizeLineHeight(lineHeight, Math.round(fontSize));
+        var numerizedLineHeight = fluid.prefs.enactor.lineSpace.getLineHeightMultiplier(lineHeight, Math.round(fontSize));
 
         jqUnit.assertEquals("line-height value '" + lineHeight + "' has been converted correctly", expected, numerizedLineHeight);
     };
 
-    fluid.tests.testNumerizeLineHeight = function () {
+    fluid.tests.testGetLineHeightMultiplier = function () {
         var undefinedLineHeight;
-        testNumerizeLineHeight(undefinedLineHeight, 0);
-        testNumerizeLineHeight("normal", 1.2);
-        testNumerizeLineHeight("6px", 1);
-        testNumerizeLineHeight("1.5", 1.5);
+        testGetLineHeightMultiplier(undefinedLineHeight, 0);
+        testGetLineHeightMultiplier("normal", 1.2);
+        testGetLineHeightMultiplier("6px", 1);
+        testGetLineHeightMultiplier("1.5", 1.5);
     };
 
     fluid.defaults("fluid.tests.getLineHeightTester", {
@@ -333,18 +331,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test getLineHeight",
             tests: [{
-                expect: 3,
+                expect: 1,
                 name: "Get line height",
                 type: "test",
                 func: "fluid.tests.testGetLineHeight"
             }]
         }, {
-            name: "Test getLineHeight",
+            name: "Test getLineHeightMultiplier",
             tests: [{
                 expect: 4,
-                name: "Get numerized line height",
+                name: "Get line height multiplier",
                 type: "test",
-                func: "fluid.tests.testNumerizeLineHeight"
+                func: "fluid.tests.testGetLineHeightMultiplier"
             }]
         }]
     });
