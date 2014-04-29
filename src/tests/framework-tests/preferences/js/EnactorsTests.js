@@ -301,7 +301,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var lineHeight = fluid.prefs.enactor.lineSpace.getLineHeight(container);
 
         // In IE8 and IE9 the lineHeight is returned as a mutliplier
-        // Newer versions of IE and other browsers return the calculated piSxel value
+        // Newer versions of IE and other browsers return the calculated pixel value
         if ($.browser.msie && $.browser.version < 10) {
             jqUnit.assertEquals("getLineHeight multiplier in IE8 and IE9", 2, lineHeight);
         } else {
@@ -309,7 +309,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
-    var testGetLinehHeightMultiplier = function (lineHeight, expected) {
+    var testGetLineHeightMultiplier = function (lineHeight, expected) {
         var container = $(".flc-lineSpace");
         var fontSize = fluid.prefs.enactor.getTextSizeInPx(container, fontSizeMap);
 
@@ -318,12 +318,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("line-height value '" + lineHeight + "' has been converted correctly", expected, numerizedLineHeight);
     };
 
-    fluid.tests.testGetLinehHeightMultiplier = function () {
+    fluid.tests.testGetLineHeightMultiplier = function () {
         var undefinedLineHeight;
-        testGetLinehHeightMultiplier(undefinedLineHeight, 0);
-        testGetLinehHeightMultiplier("normal", 1.2);
-        testGetLinehHeightMultiplier("6px", 1);
-        testGetLinehHeightMultiplier("1.5", 1.5);
+        testGetLineHeightMultiplier(undefinedLineHeight, 0);
+        testGetLineHeightMultiplier("normal", 1.2);
+        testGetLineHeightMultiplier("6px", 1);
+        testGetLineHeightMultiplier("1.5", 1.5);
     };
 
     fluid.defaults("fluid.tests.getLineHeightTester", {
@@ -342,7 +342,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 4,
                 name: "Get line height multiplier",
                 type: "test",
-                func: "fluid.tests.testGetLinehHeightMultiplier"
+                func: "fluid.tests.testGetLineHeightMultiplier"
             }]
         }]
     });
