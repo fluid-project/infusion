@@ -34,7 +34,7 @@ var fluid_1_5 = fluid_1_5 || {};
             onCreateSlidingPanelReady: {
                 events: {
                     iframeRendered: "afterRender",
-                    onMsgBundleReady: "onMsgBundleReady"
+                    onMsgResolverReady: "onMsgResolverReady"
                 }
             },
             templatesAndIframeReady: {
@@ -72,13 +72,13 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: "{separatedPanel}.container",
                 createOnEvent: "onCreateSlidingPanelReady",
                 options: {
-                    gradeNames: ["fluid.prefs.stringBundle"],
+                    gradeNames: ["fluid.prefs.msgLookup"],
                     members: {
-                        messageResolver: "{separatedPanel}.msgBundle"
+                        messageResolver: "{separatedPanel}.msgResolver"
                     },
                     strings: {
-                        showText: "{that}.stringBundle.slidingPanelShowText",
-                        hideText: "{that}.stringBundle.slidingPanelHideText"
+                        showText: "{that}.msgLookup.slidingPanelShowText",
+                        hideText: "{that}.msgLookup.slidingPanelHideText"
                     },
                     invokers: {
                         operateShow: {
@@ -90,7 +90,7 @@ var fluid_1_5 = fluid_1_5 || {};
                         },
                         operateHide: {
                             funcName: "fluid.prefs.separatedPanel.hidePanel",
-                            args: ["{that}.dom.panel", "{that}.events.afterPanelHide.fire"],
+                            args: ["{that}.dom.panel", "{iframeRenderer}.iframe", "{that}.events.afterPanelHide.fire"],
                             // override default implementation
                             "this": null,
                             "method": null
@@ -265,7 +265,8 @@ var fluid_1_5 = fluid_1_5 || {};
 
     // Replace the standard animator since we don't want the panel to become hidden
     // (potential cause of jumping)
-    fluid.prefs.separatedPanel.hidePanel = function (panel, callback) {
+    fluid.prefs.separatedPanel.hidePanel = function (panel, iframe, callback) {
+        iframe.clearQueue(); // FLUID-5334: clear the animation queue
         $(panel).animate({height: 0}, {duration: 400, complete: callback});
     };
 

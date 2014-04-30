@@ -16,13 +16,13 @@ var fluid_1_5 = fluid_1_5 || {};
     "use strict";
 
     /**********************
-     * stringBundle grade *
+     * msgLookup grade *
      **********************/
 
-    fluid.defaults("fluid.prefs.stringBundle", {
+    fluid.defaults("fluid.prefs.msgLookup", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         members: {
-            stringBundle: {
+            msgLookup: {
                 expander: {
                     funcName: "fluid.prefs.stringLookup",
                     args: ["{that}.messageResolver", "{that}.options.stringArrayIndex"]
@@ -57,7 +57,7 @@ var fluid_1_5 = fluid_1_5 || {};
      ***********************************************/
 
     fluid.defaults("fluid.prefs.panel", {
-        gradeNames: ["fluid.rendererComponent", "fluid.prefs.stringBundle", "fluid.prefs.modelRelay", "autoInit"],
+        gradeNames: ["fluid.rendererComponent", "fluid.prefs.msgLookup", "fluid.prefs.modelRelay", "autoInit"],
         events: {
             onDomBind: null
         },
@@ -603,7 +603,7 @@ var fluid_1_5 = fluid_1_5 || {};
             "{fluid.prefs.prefsEditor}.events.onPrefsEditorRefresh": "{fluid.prefs.panel}.refreshView"
         },
         strings: {},
-        parentBundle: "{fluid.prefs.prefsEditorLoader}.msgBundle"
+        parentBundle: "{fluid.prefs.prefsEditorLoader}.msgResolver"
     });
 
     /********************************
@@ -691,7 +691,7 @@ var fluid_1_5 = fluid_1_5 || {};
         protoTree: {
             label: {messagekey: "textFontLabel"},
             textFont: {
-                optionnames: "${{that}.stringBundle.textFont}",
+                optionnames: "${{that}.msgLookup.textFont}",
                 optionlist: "${{that}.options.controlValues.textFont}",
                 selection: "${value}",
                 decorators: {
@@ -806,7 +806,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 inputID: "themeInput",
                 selectID: "theme-radio",
                 tree: {
-                    optionnames: "${{that}.stringBundle.theme}",
+                    optionnames: "${{that}.msgLookup.theme}",
                     optionlist: "${{that}.options.controlValues.theme}",
                     selection: "${value}"
                 }
@@ -822,7 +822,7 @@ var fluid_1_5 = fluid_1_5 || {};
             style: {
                 funcName: "fluid.prefs.panel.contrast.style",
                 args: [
-                    "{that}.dom.themeLabel", "{that}.stringBundle.theme",
+                    "{that}.dom.themeLabel", "{that}.msgLookup.theme",
                     "{that}.options.markup.label", "{that}.options.controlValues.theme",
                     "{that}.options.classnameMap.theme"
                 ],

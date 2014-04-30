@@ -23,7 +23,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.createSlidingPanel = function (options) {
             var commonOptions = {
                 members: {
-                    msgBundle: {
+                    msgResolver: {
                         expander: {
                             funcName: "fluid.messageResolver",
                             args: {
