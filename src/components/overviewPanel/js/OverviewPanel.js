@@ -161,7 +161,7 @@ var fluid_1_5 = fluid_1_5 || {};
         links: {
             titleLink: "http://fluidproject.org/products/infusion/",
             demoCodeLink: "#",
-            infusionCodeLink: "#",
+            infusionCodeLink: "https://github.com/fluid-project/infusion/",
             apiLink: "#",
             designLink: "#",
             feedbackLink: "#"

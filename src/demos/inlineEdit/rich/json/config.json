@@ -8,7 +8,7 @@
         "instructions": "<ul><li>Activate the Edit button.</li><li>Edit the text and click the Save button.</li><li>Try the Undo/Redo button.</li></ul><p>Note that this demo shows three Rich Text Inline Edits, to illustrate how the component works with multiple rich text editors.</p>"
     },
     "links": {
-        "codeLink": "https://github.com/fluid-project/infusion/tree/master/src/components/inlineEdit",
+        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/src/demos/inlineEdit/rich",
         "apiLink": "http://wiki.fluidproject.org/display/docs/Rich+Text+Inline+Edit+API",
         "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Rich Text Inline Edit feedback"
     }
