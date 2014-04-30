@@ -232,8 +232,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("progressiveCheckerForComponent", function () {
         var that = fluid.tests.enhanceTarget();
         var checkerGrades = that.progressiveChecker.options.gradeNames;
-        jqUnit.assertTrue("Context name resolved into checker grade", checkerGrades.indexOf("fluid.enhanceTarget.test") !== -1);
-        jqUnit.assertTrue("Horizon name resolved into checker grade", checkerGrades.indexOf("fluid.tests.enhanceTarget.progressiveCheck") !== -1);
+        jqUnit.assertTrue("Context name resolved into checker grade", $.inArray("fluid.enhanceTarget.test", checkerGrades) !== -1);
+        jqUnit.assertTrue("Horizon name resolved into checker grade", $.inArray("fluid.tests.enhanceTarget.progressiveCheck", checkerGrades) !== -1);
     });
 
 })(jQuery);
