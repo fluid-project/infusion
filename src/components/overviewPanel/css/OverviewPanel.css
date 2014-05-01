@@ -150,10 +150,6 @@
     outline: 0.2em solid rgba(51,51,51,.96);
 }
 
-.fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus {
-    
-}
-
 .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:before{
     content: "\e600";
 }
