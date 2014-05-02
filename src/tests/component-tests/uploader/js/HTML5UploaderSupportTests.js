@@ -20,7 +20,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         // Only run tests in browsers that support HTML5 upload
         if (!window.FormData) {
-            $(".noTestMessage").text("Tests were not run, as the current browser does not support HTML5");
+            jqUnit.test("No Tests Run", function () {
+                // have to run a dummy test to prevent a false failure report when running allTest.html
+                jqUnit.assert("This browser does not support HTML5 upload");
+            });
         } else {
             fluid.registerNamespace("fluid.tests.uploader.html5");
 
