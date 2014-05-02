@@ -50,7 +50,7 @@
     left:0;
     width:24em;
     z-index: 9999;
-    font-size: 14px;
+    font-size: 1em;
     font-family: "OpenSans","Helvetica Neue","Helvetica",Helvetica,Arial,sans-serif;
     height: 100%;
     min-height: 28em;
@@ -99,7 +99,6 @@
     position: relative;
     left: 0;
     color: #fff;
-    font-size: 14px;
     height: inherit;
 }
 
