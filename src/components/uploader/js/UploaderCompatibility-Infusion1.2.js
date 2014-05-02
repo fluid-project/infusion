@@ -10,23 +10,18 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 /**************************************************************************************
  * Note: this file should not be included in the InfusionAll build.                   *
  * Instead, users should add this file manually if backwards compatibility is needed. *
  **************************************************************************************/
- 
+
 (function (fluid) {
-    
+    "use strict";
+
     fluid.registerNamespace("fluid.compat.fluid_1_2.uploader");
-    
+
     fluid.enhance.check({"fluid.uploader.fluid_1_2" : true});
 
     fluid.compat.fluid_1_2.uploader.optionsRules = {
@@ -83,7 +78,7 @@ var fluid_1_5 = fluid_1_5 || {};
         "strings": "strings",
         "mergePolicy": "mergePolicy"
     };
-    
+
     fluid.demands("fluid.uploader", "fluid.uploader.fluid_1_2", {
         options: fluid.transformOne(fluid.compat.fluid_1_2.uploader.optionsRules)
     });

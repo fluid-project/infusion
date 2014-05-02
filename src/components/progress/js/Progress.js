@@ -11,33 +11,29 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
-    fluid.registerNamespace("fluid.progress");    
-    
+    "use strict";
+
+    fluid.registerNamespace("fluid.progress");
+
     fluid.progress.animateDisplay = function (elm, animation, defaultAnimation, callback) {
         animation = (animation) ? animation : defaultAnimation;
         elm.animate(animation.params, animation.duration, callback);
     };
-    
+
     fluid.progress.animateProgress = function (elm, width, speed) {
         // de-queue any left over animations
-        elm.queue("fx", []); 
-        elm.animate({ 
+        elm.queue("fx", []);
+        elm.animate({
             width: width,
             queue: false
-            }, speed);
+        }, speed);
     };
-    
+
     fluid.progress.showProgress = function (that, animation) {
-        var firer = that.events.onProgressBegin.fire
+        var firer = that.events.onProgressBegin.fire;
         if (animation === false) {
             that.displayElement.show();
             firer();
@@ -45,11 +41,11 @@ var fluid_1_5 = fluid_1_5 || {};
             fluid.progress.animateDisplay(that.displayElement, animation, that.options.showAnimation, firer);
         }
     };
-    
+
     fluid.progress.hideProgress = function (that, delay, animation) {
         if (delay) {
             // use a setTimeout to delay the hide for n millis, note use of recursion
-            var timeOut = setTimeout(function () {
+            setTimeout(function () {
                 fluid.progress.hideProgress(that, 0, animation);
             }, delay);
         } else {
@@ -60,9 +56,9 @@ var fluid_1_5 = fluid_1_5 || {};
             } else {
                 fluid.progress.animateDisplay(that.displayElement, animation, that.options.hideAnimation, firer);
             }
-        }   
+        }
     };
-    
+
     fluid.progress.updateWidth = function (that, newWidth, dontAnimate) {
         var currWidth = that.indicator.width();
         var direction = that.options.animate;
@@ -74,17 +70,17 @@ var fluid_1_5 = fluid_1_5 || {};
             that.indicator.width(newWidth);
         }
     };
-         
+
     fluid.progress.percentToPixels = function (that, percent) {
         // progress does not support percents over 100, also all numbers are rounded to integers
         return Math.round((Math.min(percent, 100) * that.progressBar.innerWidth()) / 100);
     };
-    
+
     fluid.progress.refreshRelativeWidth = function (that) {
         var pixels = Math.max(fluid.progress.percentToPixels(that, parseFloat(that.storedPercent)), that.options.minWidth);
         fluid.progress.updateWidth(that, pixels, true);
     };
-        
+
     fluid.progress.initARIA = function (ariaElement, ariaBusyText) {
         ariaElement.attr("role", "progressbar");
         ariaElement.attr("aria-valuemin", "0");
@@ -96,16 +92,16 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         ariaElement.attr("aria-busy", "false");
     };
-    
+
     fluid.progress.updateARIA = function (that, percent) {
         var str = that.options.strings;
         var busy = percent < 100 && percent > 0;
         that.ariaElement.attr("aria-busy", busy);
-        that.ariaElement.attr("aria-valuenow", percent);   
+        that.ariaElement.attr("aria-valuenow", percent);
         // Empty value for ariaBusyText will default to aria-valuenow.
         if (str.ariaBusyText) {
             if (busy) {
-                var busyString = fluid.stringTemplate(str.ariaBusyText, {percentComplete : percent});           
+                var busyString = fluid.stringTemplate(str.ariaBusyText, {percentComplete : percent});
                 that.ariaElement.attr("aria-valuetext", busyString);
             } else if (percent === 100) {
                 // FLUID-2936: JAWS doesn't currently read the "Progress is complete" message to the user, even though we set it here.
@@ -113,50 +109,50 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     };
-        
+
     fluid.progress.updateText = function (label, value) {
         label.html(value);
     };
-    
+
     fluid.progress.repositionIndicator = function (that) {
         that.indicator.css("top", that.progressBar.position().top)
             .css("left", 0)
             .height(that.progressBar.height());
         fluid.progress.refreshRelativeWidth(that);
     };
-        
+
     fluid.progress.updateProgress = function (that, percent, labelText, animationForShow) {
         // show progress before updating, jQuery will handle the case if the object is already displayed
         fluid.progress.showProgress(that, animationForShow);
-            
+
         if (percent !== null) {
             that.storedPercent = percent;
-        
-            var pixels = Math.max(fluid.progress.percentToPixels(that, parseFloat(percent)), that.options.minWidth);   
+
+            var pixels = Math.max(fluid.progress.percentToPixels(that, parseFloat(percent)), that.options.minWidth);
             fluid.progress.updateWidth(that, pixels);
         }
-        
+
         if (labelText !== null) {
             fluid.progress.updateText(that.label, labelText);
         }
-        
+
         // update ARIA
         if (that.ariaElement) {
             fluid.progress.updateARIA(that, percent);
         }
     };
-    
+
     fluid.progress.hideElement = function (element, shouldHide) {
         element.toggle(!shouldHide);
     };
 
    /**
     * Instantiates a new Progress component.
-    * 
+    *
     * @param {jQuery|Selector|Element} container the DOM element in which the Uploader lives
     * @param {Object} options configuration options for the component.
     */
-    
+
     fluid.defaults("fluid.progress", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         members: {
@@ -167,9 +163,9 @@ var fluid_1_5 = fluid_1_5 || {};
             ariaElement: "{that}.dom.ariaElement",
             storedPercent: 0
         },
-        events: {            
+        events: {
             onProgressBegin: null,
-            afterProgressHidden: null            
+            afterProgressHidden: null
         },
         listeners: {
             onCreate: [ {
@@ -185,11 +181,11 @@ var fluid_1_5 = fluid_1_5 || {};
             }],
             onProgressBegin: {
                 // Note: callback deprecated as of 1.5, use onProgressBegin event
-                func: "{that}.options.showAnimation.callback"  
-            },  
+                func: "{that}.options.showAnimation.callback"
+            },
             afterProgressHidden: {
                 // Note: callback deprecated as of 1.5, use afterProgressHidden event
-                func: "{that}.options.hideAnimation.callback"  
+                func: "{that}.options.hideAnimation.callback"
             }
         },
         invokers: {
@@ -214,7 +210,7 @@ var fluid_1_5 = fluid_1_5 || {};
             * Updates the state of the progress bar.
             * This will automatically show the progress bar if it is currently hidden.
             * Percentage is specified as a decimal value, but will be automatically converted if needed.
-            * @param {Number|String} percentage the current percentage, specified as a "float-ish" value 
+            * @param {Number|String} percentage the current percentage, specified as a "float-ish" value
             * @param {String} labelValue the value to set for the label; this can be an HTML string
             * @param {Object} animationForShow the animation to use when showing the progress bar if it is hidden
             */
@@ -234,31 +230,31 @@ var fluid_1_5 = fluid_1_5 || {};
             label: ".flc-progress-label", //optional
             ariaElement: ".flc-progress-bar" // usually required, except in cases where there are more than one progressor for the same data such as a total and a sub-total
         },
-        
+
         strings: {
             //Empty value for ariaBusyText will default to aria-valuenow.
             ariaBusyText: "Progress is %percentComplete percent complete",
             ariaDoneText: "Progress is complete."
         },
-        
+
         // progress display and hide animations, use the jQuery animation primatives, set to false to use no animation
         // animations must be symetrical (if you hide with width, you'd better show with width) or you get odd effects
         // see jQuery docs about animations to customize
         showAnimation: {
             params: {
                 opacity: "show"
-            }, 
+            },
             duration: "slow",
-            //callback has been deprecated and will be removed as of 1.5, instead use onProgressBegin event 
+            //callback has been deprecated and will be removed as of 1.5, instead use onProgressBegin event
             callback: fluid.identity
         }, // equivalent of $().fadeIn("slow")
-        
+
         hideAnimation: {
             params: {
                 opacity: "hide"
-            }, 
-            duration: "slow", 
-            //callback has been deprecated and will be removed as of 1.5, instead use afterProgressHidden event 
+            },
+            duration: "slow",
+            //callback has been deprecated and will be removed as of 1.5, instead use afterProgressHidden event
             callback: fluid.identity
         }, // equivalent of $().fadeOut("slow")
 
@@ -269,5 +265,5 @@ var fluid_1_5 = fluid_1_5 || {};
         initiallyHidden: true, // supports progress indicators which may always be present
         updatePosition: false
     });
-    
+
 })(jQuery, fluid_1_5);

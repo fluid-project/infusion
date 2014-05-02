@@ -9,15 +9,10 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 (function (fluid) {
+    "use strict";
 
     /*******************************************************************************
      * Starter auxiliary schema grade
@@ -30,9 +25,9 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.prefs.auxSchema", "autoInit"],
         auxiliarySchema: {
             "namespace": "fluid.prefs.constructed", // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed PrefsEditor.
-            "templatePrefix": "../../../framework/preferences/html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
+            "templatePrefix": "../../framework/preferences/html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
             "template": "%prefix/SeparatedPanelPrefsEditor.html",
-            "messagePrefix": "../../../framework/preferences/messages/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
+            "messagePrefix": "../../framework/preferences/messages/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
             "message": "%prefix/prefsEditor.json",
             "textSize": {
                 "type": "fluid.prefs.textSize",
@@ -115,7 +110,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 "type": "fluid.prefs.tableOfContents",
                 "enactor": {
                     "type": "fluid.prefs.enactor.tableOfContents",
-                    "tocTemplate": "../../../components/tableOfContents/html/TableOfContents.html"
+                    "tocTemplate": "../../components/tableOfContents/html/TableOfContents.html"
                 },
                 "panel": {
                     "type": "fluid.prefs.panel.layoutControls",
@@ -200,7 +195,7 @@ var fluid_1_5 = fluid_1_5 || {};
         schema: {
             "fluid.prefs.textFont": {
                 "type": "string",
-                "default": "",
+                "default": "default",
                 "enum": ["default", "times", "comic", "arial", "verdana"]
             }
         }

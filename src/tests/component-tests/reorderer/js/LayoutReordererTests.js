@@ -13,27 +13,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid, jqUnit */
 
 (function ($) {
+    "use strict";
+
     $(document).ready(function () {
         jqUnit.module("LayoutReorderer Tests");
-        
+
+        jqUnit.test("grabHandle propagatation test (FLUID-5243)", function () {
+            var that = fluid.reorderLayout("#" + fluid.testUtils.moduleLayout.portalRootId, {
+                selectors: {
+                    grabHandle: ".title"
+                }
+            });
+            jqUnit.assertEquals("grabHandle propagated through expansion", ".title",
+                that.options.selectors.grabHandle);
+        });
+
         var k = fluid.testUtils.reorderer.bindReorderer(fluid.testUtils.moduleLayout.portletIds);
-        
+
         jqUnit.test("Default selectors", function () {
-            var testReorderer = fluid.reorderLayout("#default-selector-test");
+            fluid.reorderLayout("#default-selector-test");
             var item1 = $("#portlet-1");
-            var item2 = $("#portlet-2").focus();
-            
+            var item2 = fluid.focus($("#portlet-2"));
+
             // Sniff test the reorderer that was created - keyboard selection
             jqUnit.assertTrue("focus on item2", item2.hasClass("fl-reorderer-movable-selected"));
             jqUnit.assertTrue("focus on item2 - item1 should be default", item1.hasClass("fl-reorderer-movable-default"));
         });
-        
+
         jqUnit.test("Events within module", function () {
             var reorderer = fluid.reorderLayout("#" + fluid.testUtils.moduleLayout.portalRootId, {
                 selectors: {
@@ -41,90 +50,90 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     modules: fluid.testUtils.moduleLayout.portletSelector
                 }
             });
-            
-            fluid.jById(fluid.testUtils.moduleLayout.portletIds[2]).focus();
-            var text2 = fluid.jById("text-2").focus();
+
+            fluid.focus(fluid.jById(fluid.testUtils.moduleLayout.portletIds[2]));
+            var text2 = fluid.focus(fluid.jById("text-2"));
             text2.simulate("keypress", {keyCode: fluid.reorderer.keys.m});
-            
-            jqUnit.assertEquals("After typing M into text field, portlet 2 should still be the active item", 
+
+            jqUnit.assertEquals("After typing M into text field, portlet 2 should still be the active item",
                 fluid.testUtils.moduleLayout.portletIds[2], reorderer.activeItem.id);
-// This test for FLUID-1690 cannot be made to work in the jqUnit environment yet          
-//            var blurred = false;
-//            text2.blur(function() {blurred = true;});
-            
-//            $("#portlet2 .title").simulate("mousedown");
-//            $("#portlet2 .title").simulate("mouseup");
-//            jqUnit.assertTrue("After mouseDown on title, text field should be blurred", blurred);
-            
+           // This test for FLUID-1690 cannot be made to work in the jqUnit environment yet
+           // var blurred = false;
+           // text2.blur(function() {blurred = true;});
+
+           // $("#portlet2 .title").simulate("mousedown");
+           // $("#portlet2 .title").simulate("mouseup");
+           // jqUnit.assertTrue("After mouseDown on title, text field should be blurred", blurred);
+
         });
-        
+
         jqUnit.test("Drop warning visibility for up and down", function () {
             var reorderer = fluid.testUtils.moduleLayout.initReorderer();
-    
+
             jqUnit.notVisible("On first load the warning should not be visible", "#drop-warning");
-            
+
             // focus on portlet 3 - it is underneath a locked portlet
             var portlet3 = fluid.jById(fluid.testUtils.moduleLayout.portletIds[3]);
-            portlet3.focus();
-            
+            fluid.focus(portlet3);
+
             var label = fluid.getAriaLabeller(portlet3);
             jqUnit.assertValue("Aria labeller is present", label);
-            
+
             var labelElement = portlet3.attr("aria-label");
-            jqUnit.assertTrue("Text labels position of portlet", 
+            jqUnit.assertTrue("Text labels position of portlet",
                 labelElement.indexOf("3 of 4 in column 1 of 4") > -1);
-            
+
             // try to move portlet 3 up
             // Press the ctrl key
             k.keyDown(reorderer, k.ctrlKeyEvent("CTRL"), 3);
             jqUnit.notVisible("After ctrl down, the warning should not be visible", "#drop-warning");
-            
+
             // Press the up arrow key while holding down ctrl
             k.keyDown(reorderer, k.ctrlKeyEvent("UP"), 3);
-            jqUnit.isVisible("After ctrl + up arrow, drop warning should be visible", "#drop-warning"); 
-    
+            jqUnit.isVisible("After ctrl + up arrow, drop warning should be visible", "#drop-warning");
+
             // release the ctrl key
             k.keyUp(reorderer, k.keyEvent("CTRL"), 3);
-            jqUnit.notVisible("After ctrl is released, drop warning should not be visible", "#drop-warning"); 
-    
+            jqUnit.notVisible("After ctrl is released, drop warning should not be visible", "#drop-warning");
+
             // Press the up arrow key while holding down ctrl again
             k.keyDown(reorderer, k.ctrlKeyEvent("CTRL"), 3);
             k.keyDown(reorderer, k.ctrlKeyEvent("UP"), 3);
-            jqUnit.isVisible("After ctrl + up arrow, drop warning should be visible", "#drop-warning"); 
-    
+            jqUnit.isVisible("After ctrl + up arrow, drop warning should be visible", "#drop-warning");
+
             // Press the down arrow key while holding down ctrl
             k.keyDown(reorderer, k.ctrlKeyEvent("DOWN"), 3);
             jqUnit.notVisible("After ctrl + down arrow, drop warning should NOT be visible", "#drop-warning");
-            
-            jqUnit.assertTrue("Label is updated to account for temporary moved state", 
-                portlet3.attr("aria-label").indexOf("moved from") > -1);
-    
-            portlet3[0].blur();
-            // focus on portlet 8 
+
+            jqUnit.assertTrue("Label is updated to account for temporary moved state",
+            portlet3.attr("aria-label").indexOf("moved from") > -1);
+
+            fluid.blur(portlet3[0]);
+            // focus on portlet 8
             var portlet8 = fluid.byId(fluid.testUtils.moduleLayout.portletIds[8]);
-            $(portlet8).focus();
-    
-            jqUnit.assertTrue("Temporary moved state is cleared", 
-                portlet3.attr("aria-label").indexOf("moved from") === -1);
-    
+            fluid.focus($(portlet8));
+
+            jqUnit.assertTrue("Temporary moved state is cleared",
+            portlet3.attr("aria-label").indexOf("moved from") === -1);
+
             // move portlet 8 down
             // Press the ctrl key
             reorderer.handleKeyDown(k.ctrlKeyEvent("CTRL", portlet8));
             jqUnit.notVisible("After ctrl down, the warning should not be visible", "#drop-warning");
-    
+
             reorderer.handleKeyDown(k.ctrlKeyEvent("DOWN", portlet8));
-            jqUnit.notVisible("After moving portlet 8 down, drop warning should not be visible", "#drop-warning"); 
-    
+            jqUnit.notVisible("After moving portlet 8 down, drop warning should not be visible", "#drop-warning");
+
             // try to move portlet 8 down from the bottom position.
             reorderer.handleKeyDown(k.ctrlKeyEvent("DOWN", portlet8));
-            jqUnit.notVisible("After trying to move portlet 8 down, drop warning should not be visible", "#drop-warning"); 
-    
+            jqUnit.notVisible("After trying to move portlet 8 down, drop warning should not be visible", "#drop-warning");
+
             // release the ctrl key
             reorderer.handleKeyUp(k.keyEvent("CTRL", portlet8));
-            jqUnit.notVisible("After ctrl is released, drop warning should not be visible", "#drop-warning"); 
-    
-        });   
-        
+            jqUnit.notVisible("After ctrl is released, drop warning should not be visible", "#drop-warning");
+
+        });
+
         function expectOrder(message, order) {
             var items = fluid.transform($(".portlet"), fluid.getId);
             var expected = fluid.transform(order, function (item) {
@@ -132,9 +141,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
             jqUnit.assertDeepEq(message, expected, items);
         }
-             
+
         jqUnit.module("Reorder Layout Tests");
-        
+
         var assembleOptions = function (isDisableWrap, isLocked) {
             var obj = {
                 selectors: {
@@ -145,70 +154,70 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 disableWrap: isDisableWrap,
                 reordererFn: "fluid.reorderLayout",
                 expectOrderFn: expectOrder,
-                key: fluid.testUtils.reorderer.compositeKey                       
+                key: fluid.testUtils.reorderer.compositeKey
             };
-            
+
             return obj;
-        };       
-        
+        };
+
         jqUnit.test("reorderLayout API", function () {
             var options = assembleOptions();
             var lastLayoutModel = null;
-            
+
             var layoutReorderer = fluid.reorderLayout(".reorderer_container", options);
-            
+
             // Test for FLUID-3121
             var afterMoveListener = function () {
                 lastLayoutModel = layoutReorderer.layoutHandler.getModel();
             };
             layoutReorderer.events.afterMove.addListener(afterMoveListener);
-            
-            var item2 = fluid.jById(fluid.testUtils.moduleLayout.portletIds[2]).focus();
+
+            var item2 = fluid.focus(fluid.jById(fluid.testUtils.moduleLayout.portletIds[2]));
             var item3 = fluid.jById(fluid.testUtils.moduleLayout.portletIds[3]);
-            
-            // Sniff test the reorderer that was created - keyboard selection and movement    
+
+            // Sniff test the reorderer that was created - keyboard selection and movement
             jqUnit.assertTrue("focus on item2", item2.hasClass("fl-reorderer-movable-selected"));
             jqUnit.assertTrue("focus on item2 - item3 should be default", item3.hasClass("fl-reorderer-movable-default"));
             jqUnit.assertEquals("No move callback", null, lastLayoutModel);
-    
+
             layoutReorderer.handleKeyDown(k.keyEvent("DOWN", item2));
             jqUnit.assertTrue("down arrow - item2 should be default", item2.hasClass("fl-reorderer-movable-default"));
             jqUnit.assertTrue("down arrow - item3 should be selected", item3.hasClass("fl-reorderer-movable-selected"));
-    
+
             layoutReorderer.handleKeyDown(k.ctrlKeyEvent("CTRL", item3));
             layoutReorderer.handleKeyDown(k.ctrlKeyEvent("DOWN", item3));
             // Test FLUID-3121 - the afterMoveCallback should successfully execute and obtain the model
             jqUnit.assertNotEquals("Move callback with model", null, lastLayoutModel);
-    
-            expectOrder("after ctrl-down, expect order 1, 2, 4, 3, 5, 6, 7, 8, 9", 
+
+            expectOrder("after ctrl-down, expect order 1, 2, 4, 3, 5, 6, 7, 8, 9",
                 [1, 2, 4, 3, 5, 6, 7, 8, 9]);
         });
-    
-        jqUnit.test("reorderLayout with optional styles", function () {       
+
+        jqUnit.test("reorderLayout with optional styles", function () {
             var options = {
                     selectors: {
                         columns: "[id^='c']",
-                        modules: ".portlet" 
+                        modules: ".portlet"
                     },
                     styles: {
                         defaultStyle: "myDefault",
                         selected: "mySelected"
                     }
                 };
-                
+
             var layoutReorderer = fluid.reorderLayout(".reorderer_container", options);
-            
+
             jqUnit.assertEquals("default class is myDefault", "myDefault", layoutReorderer.options.styles.defaultStyle);
             jqUnit.assertEquals("selected class is mySelected", "mySelected", layoutReorderer.options.styles.selected);
             jqUnit.assertEquals("dragging class is fl-reorderer-movable-dragging", "fl-reorderer-movable-dragging", layoutReorderer.options.styles.dragging);
             jqUnit.assertEquals("mouseDrag class is fl-reorderer-movable-dragging", "fl-reorderer-movable-dragging", layoutReorderer.options.styles.mouseDrag);
-            
+
         });
-        
+
         jqUnit.test("reorderLayout with locked portlets", function () {
             var options = assembleOptions(false, ".locked");
             var layoutReorderer = fluid.reorderLayout(".reorderer_container", options);
-            var item2 = fluid.jById(fluid.testUtils.moduleLayout.portletIds[2]).focus();
+            var item2 = fluid.focus(fluid.jById(fluid.testUtils.moduleLayout.portletIds[2]));
             var item3 = fluid.jById(fluid.testUtils.moduleLayout.portletIds[3]);
             var key = fluid.testUtils.reorderer.compositeKey;
 
@@ -217,7 +226,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             expectOrder("after ctrl-down, expect order 1, 2, 3, 4", [1, 2, 3, 4, 5, 6, 7, 8, 9]);
 
-            item3.focus();
+            fluid.focus(item3);
             jqUnit.assertTrue("focus on item3", item3.hasClass("fl-reorderer-movable-selected"));
             key(layoutReorderer, k.ctrlKeyEvent("DOWN"), item3);
 
@@ -225,41 +234,41 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             $("#portlet-reorderer-root tr").append($("<td id=\"c5\"/>"));
             layoutReorderer.refresh();
-            
+
             var model = layoutReorderer.layoutHandler.layout;
-            
+
             jqUnit.assertEquals("Should now have 5 columns", 5, model.columns.length);
-            
+
             key(layoutReorderer, k.ctrlKeyEvent("LEFT"), item3);
-            
-            jqUnit.assertTrue("Moved to new column", 
+
+            jqUnit.assertTrue("Moved to new column",
                 fluid.dom.isContainer($("#c5")[0], item3[0]));
-                   
-        });        
-       
-        jqUnit.test("reorderLayout, option set disabled wrap, user action ctrl+up", function () {              
+
+        });
+
+        jqUnit.test("reorderLayout, option set disabled wrap, user action ctrl+up", function () {
             var options = {
                 reordererOptions: assembleOptions(true),
                 direction: "UP",
                 expectedOrderArrays: [[1, 2, 3, 4, 5, 6, 7, 8, 9]],
                 itemSelector: fluid.jById(fluid.testUtils.moduleLayout.portletIds[1])
             };
-       
-            fluid.testUtils.reorderer.stepReorderer(".reorderer_container", options);  
-                                    
-        });        
-     
-        jqUnit.test("reorderLayout, option set disabled wrap, user action ctrl+down", function () {  
+
+            fluid.testUtils.reorderer.stepReorderer(".reorderer_container", options);
+
+        });
+
+        jqUnit.test("reorderLayout, option set disabled wrap, user action ctrl+down", function () {
             var options = {
                 reordererOptions: assembleOptions(true),
                 direction: "DOWN",
                 expectedOrderArrays: [[1, 2, 3, 4, 5, 6, 7, 8, 9]],
                 itemSelector: fluid.jById(fluid.testUtils.moduleLayout.portletIds[9])
             };
-       
-            fluid.testUtils.reorderer.stepReorderer(".reorderer_container", options);                      
+
+            fluid.testUtils.reorderer.stepReorderer(".reorderer_container", options);
         });
-        
+
         jqUnit.test("reorderLayout with locked portlets, option set disabled wrap, user action ctrl+up", function () {
             var options = {
                 reordererOptions: assembleOptions(true, ".locked"),
@@ -267,36 +276,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expectedOrderArrays: [[1, 2, 4, 3, 5, 6, 7, 8, 9], [1, 2, 4, 3, 5, 6, 7, 8, 9]],
                 itemSelector: fluid.jById(fluid.testUtils.moduleLayout.portletIds[4])
             };
-       
-            fluid.testUtils.reorderer.stepReorderer(".reorderer_container", options); 
-            
-            jqUnit.assertValue("gives warning message when trying to move item4 up ", $(".flc-reorderer-dropWarning"));                   
-        });       
-       
+
+            fluid.testUtils.reorderer.stepReorderer(".reorderer_container", options);
+
+            jqUnit.assertValue("gives warning message when trying to move item4 up ", $(".flc-reorderer-dropWarning"));
+        });
+
         jqUnit.test("reorderLayout with locked portlets, option set disabled wrap, user action ctrl+right", function () {
             var options = {
                 reordererOptions: assembleOptions(true, ".locked"),
                 direction: "RIGHT",
-                expectedOrderArrays: [[1, 2, 4, 5, 6, 3, 7, 8, 9], [1, 2, 4, 5, 6, 7, 8, 3, 9], 
+                expectedOrderArrays: [[1, 2, 4, 5, 6, 3, 7, 8, 9], [1, 2, 4, 5, 6, 7, 8, 3, 9],
                                       [1, 2, 4, 5, 6, 7, 8, 9, 3], [1, 2, 4, 5, 6, 7, 8, 9, 3]],
                 itemSelector: fluid.jById(fluid.testUtils.moduleLayout.portletIds[3])
             };
-       
-            fluid.testUtils.reorderer.stepReorderer(".reorderer_container", options); 
-        });        
-        
-        jqUnit.test("reorderLayout with locked portlets, option set disabled wrap, user action ctrl+left", function () { 
+
+            fluid.testUtils.reorderer.stepReorderer(".reorderer_container", options);
+        });
+
+        jqUnit.test("reorderLayout with locked portlets, option set disabled wrap, user action ctrl+left", function () {
             var options = {
                 reordererOptions: assembleOptions(true, ".locked"),
                 direction: "LEFT",
-                expectedOrderArrays: [[1, 2, 3, 4, 5, 6, 9, 7, 8], [1, 2, 3, 9, 4, 5, 6, 7, 8], 
+                expectedOrderArrays: [[1, 2, 3, 4, 5, 6, 9, 7, 8], [1, 2, 3, 9, 4, 5, 6, 7, 8],
                                       [1, 2, 3, 9, 4, 5, 6, 7, 8]],
-                itemSelector: fluid.jById(fluid.testUtils.moduleLayout.portletIds[9])                             
+                itemSelector: fluid.jById(fluid.testUtils.moduleLayout.portletIds[9])
             };
-       
-            fluid.testUtils.reorderer.stepReorderer(".reorderer_container", options);                       
+
+            fluid.testUtils.reorderer.stepReorderer(".reorderer_container", options);
         });
-        
+
         var tabIndexTest = function (container, reordererOptions) {
             var layoutReorderer =  fluid.reorderLayout(container, reordererOptions);
             jqUnit.assertEquals("Tabindex should be set to 0 for the container ", 0, layoutReorderer.container.attr("tabindex"));
@@ -318,9 +327,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     modules: "td > div"
                 }
             };
-
             tabIndexTest("#portlet-reorderer-root", options);
-        });    
+        });
 
     });
 })(jQuery);

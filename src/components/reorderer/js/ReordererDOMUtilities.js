@@ -10,19 +10,14 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
-    /** 
+    "use strict";
+    /**
      * Returns the absolute position of a supplied DOM node in pixels.
      * Implementation taken from quirksmode http://www.quirksmode.org/js/findpos.html
-     * At the original time of writing considerably quicker and more reliable than jQuery.offset() 
+     * At the original time of writing considerably quicker and more reliable than jQuery.offset()
      * - this should be reevaluated in time.
      */
     fluid.dom.computeAbsolutePosition = function (element) {
@@ -36,11 +31,11 @@ var fluid_1_5 = fluid_1_5 || {};
             return [curleft, curtop];
         }
     };
-    
-    /** 
+
+    /**
      * Cleanse the children of a DOM node by removing all <script> tags.
      * This is necessary to prevent the possibility that these blocks are
-     * reevaluated if the node were reattached to the document. 
+     * reevaluated if the node were reattached to the document.
      */
     fluid.dom.cleanseScripts = function (element) {
         var cleansed = $.data(element, fluid.dom.cleanseScripts.MARKER);
@@ -50,7 +45,7 @@ var fluid_1_5 = fluid_1_5 || {};
             });
             $.data(element, fluid.dom.cleanseScripts.MARKER, true);
         }
-    };  
+    };
     fluid.dom.cleanseScripts.MARKER = "fluid-scripts-cleansed";
 
     /**
@@ -66,7 +61,7 @@ var fluid_1_5 = fluid_1_5 || {};
             refChild.parentNode.insertBefore(newChild, nextSib);
         }
     };
-    
+
     // The following two functions taken from http://developer.mozilla.org/En/Whitespace_in_the_DOM
     /**
      * Determine whether a node's text content is entirely whitespace.
@@ -80,7 +75,7 @@ var fluid_1_5 = fluid_1_5 || {};
        // Use ECMA-262 Edition 3 String and RegExp features
         return !(/[^\t\n\r ]/.test(node.data));
     };
-    
+
     /**
      * Determine if a node should be ignored by the iterator functions.
      *

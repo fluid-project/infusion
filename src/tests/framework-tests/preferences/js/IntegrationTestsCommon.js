@@ -11,12 +11,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, expect, start, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid, jqUnit */
 
 (function ($) {
+    "use strict";
 
     fluid.staticEnvironment.prefsEditorTest = fluid.typeTag("fluid.tests.prefs");
 
@@ -122,8 +120,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var saveButton = prefsEditor.locate("save");
                 saveButton.click();
                 fluid.tests.prefs.checkModelSelections("model from bwSkin", fluid.tests.prefs.bwSkin, prefsEditor.model);
-                jqUnit.assertEquals("Save event fired with selections", prefsEditor.model, savedSelections);
-                jqUnit.assertEquals("Direct save event fired with selections", prefsEditor.model, savedSelections2);
+                jqUnit.assertDeepEq("Save event fired with selections", fluid.tests.prefs.bwSkin, savedSelections);
+                jqUnit.assertDeepEq("Direct save event fired with selections", fluid.tests.prefs.bwSkin, savedSelections2);
                 fluid.tests.prefs.applierRequestChanges(prefsEditor, fluid.tests.prefs.ybSkin);
 
                 var cancelButton = prefsEditor.locate("cancel");
@@ -144,7 +142,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.start();
             }
 
-            var that = fluid.invokeGlobalFunction(componentName, ["#myPrefsEditor", {
+            fluid.invokeGlobalFunction(componentName, ["#myPrefsEditor", {
                 gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
                 templatePrefix: "../../../../framework/preferences/html/",
                 messagePrefix: "../../../../framework/preferences/messages/",

@@ -1,3 +1,3 @@
 build/
 products/
-src/framework/preferences/css/fss/
+node_modules/

@@ -9,25 +9,20 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 
 (function ($, fluid) {
+    "use strict";
 
     /**********************
-     * stringBundle grade *
+     * msgLookup grade *
      **********************/
 
-    fluid.defaults("fluid.prefs.stringBundle", {
+    fluid.defaults("fluid.prefs.msgLookup", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         members: {
-            stringBundle: {
+            msgLookup: {
                 expander: {
                     funcName: "fluid.prefs.stringLookup",
                     args: ["{that}.messageResolver", "{that}.options.stringArrayIndex"]
@@ -62,7 +57,7 @@ var fluid_1_5 = fluid_1_5 || {};
      ***********************************************/
 
     fluid.defaults("fluid.prefs.panel", {
-        gradeNames: ["fluid.rendererComponent", "fluid.prefs.stringBundle", "fluid.prefs.modelRelay", "autoInit"],
+        gradeNames: ["fluid.rendererComponent", "fluid.prefs.msgLookup", "fluid.prefs.modelRelay", "autoInit"],
         events: {
             onDomBind: null
         },
@@ -267,7 +262,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
             },
             conditionalCreateEvent: {
-                funcName: "fluid.prefs.compositePanel.conditionalCreateEvent",
+                funcName: "fluid.prefs.compositePanel.conditionalCreateEvent"
             }
         },
         subPanelOverrides: {
@@ -284,7 +279,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         },
         components: {},
-        resources: {}, // template is reserved for the compositePanel's template, the subpanel template should have same key as the selector for its container.
+        resources: {} // template is reserved for the compositePanel's template, the subpanel template should have same key as the selector for its container.
     });
 
     /*
@@ -390,7 +385,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 var renderOnPreference = fluid.get(componentOptions, "options.renderOnPreference");
                 if (renderOnPreference) {
                     var pref = fluid.prefs.subPanel.safePrefKey(renderOnPreference);
-                    var afterRenderListener = "afterRender." + pref;
                     var onCreateListener = "onCreate." + pref;
                     creationEventOpt = fluid.prefs.compositePanel.creationEventName(pref);
                     subPanelCreationOpts[creationEventOpt] = creationEventOpt;
@@ -430,7 +424,6 @@ var fluid_1_5 = fluid_1_5 || {};
      */
     fluid.prefs.compositePanel.hideInactive = function (that) {
         fluid.each(that.options.components, function (componentOpts, componentName) {
-            var comp = that[componentName];
             if(fluid.prefs.compositePanel.isPanel(componentOpts.type, componentOpts.options) && !fluid.prefs.compositePanel.isActivePanel(that[componentName])) {
                 that.locate(componentName).hide();
             }
@@ -550,8 +543,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 return fluid.prefs.compositePanel.rebaseParentRelativeID(val, memberName);
             } else if (key === "valuebinding") {
                 return fluid.prefs.compositePanel.rebaseValueBinding(val, modelRelayRules);
-            } else if (key === "value" && tree["valuebinding"]) {
-                var valuebinding = tree["valuebinding"];
+            } else if (key === "value" && tree.valuebinding) {
+                var valuebinding = tree.valuebinding;
                 var modelValue = fluid.get(model, fluid.prefs.compositePanel.rebaseValueBinding(valuebinding, modelRelayRules));
                 return modelValue !== undefined ? modelValue : val;
             } else {
@@ -610,7 +603,7 @@ var fluid_1_5 = fluid_1_5 || {};
             "{fluid.prefs.prefsEditor}.events.onPrefsEditorRefresh": "{fluid.prefs.panel}.refreshView"
         },
         strings: {},
-        parentBundle: "{fluid.prefs.prefsEditorLoader}.msgBundle"
+        parentBundle: "{fluid.prefs.prefsEditorLoader}.msgResolver"
     });
 
     /********************************
@@ -698,7 +691,7 @@ var fluid_1_5 = fluid_1_5 || {};
         protoTree: {
             label: {messagekey: "textFontLabel"},
             textFont: {
-                optionnames: "${{that}.stringBundle.textFont}",
+                optionnames: "${{that}.msgLookup.textFont}",
                 optionlist: "${{that}.options.controlValues.textFont}",
                 selection: "${value}",
                 decorators: {
@@ -813,7 +806,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 inputID: "themeInput",
                 selectID: "theme-radio",
                 tree: {
-                    optionnames: "${{that}.stringBundle.theme}",
+                    optionnames: "${{that}.msgLookup.theme}",
                     optionlist: "${{that}.options.controlValues.theme}",
                     selection: "${value}"
                 }
@@ -829,7 +822,7 @@ var fluid_1_5 = fluid_1_5 || {};
             style: {
                 funcName: "fluid.prefs.panel.contrast.style",
                 args: [
-                    "{that}.dom.themeLabel", "{that}.stringBundle.theme",
+                    "{that}.dom.themeLabel", "{that}.msgLookup.theme",
                     "{that}.options.markup.label", "{that}.options.controlValues.theme",
                     "{that}.options.classnameMap.theme"
                 ],

@@ -11,19 +11,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jQuery*/
+/* global fluid */
 
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+(function () {
+    "use strict";
 
-fluid.Scheduler = (function () {
     var fetchReordererContainer = function (id) {
         return fluid.jById(id);
     };
-    return {
+
+    fluid.Scheduler =  {
         initScheduler: function (containerId) {
             var movableFinder = fluid.Scheduler.createCSSOrderableFinderForClass("movableTopic");
-            var jsonCallback = fluid.Scheduler.createJSONafterMoveCallback(movableFinder);            
+            var jsonCallback = fluid.Scheduler.createJSONafterMoveCallback(movableFinder);
             var container = fetchReordererContainer(containerId);
             var options = {
                 layoutHandler: "fluid.listLayoutHandler",
@@ -32,7 +32,7 @@ fluid.Scheduler = (function () {
                 },
                 afterMoveCallback: jsonCallback
             };
-            
+
             return fluid.reorderer(container, options);
         },
 
@@ -87,7 +87,7 @@ fluid.Scheduler = (function () {
             };
         },
 
-        postOrder: function (jsonString, urlToPostJSON) {
+        postOrder: function (/* jsonString, urlToPostJSON */) {
             /*
              * By default this does nothing since we don't have a server to respond to this POST request.
              * But if you did want to actually post the JSON data, you'd just call the following method:

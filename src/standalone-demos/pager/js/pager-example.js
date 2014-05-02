@@ -12,29 +12,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global demo:true, fluid, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid */
 
 var demo = demo || {};
 
 (function ($, fluid) {
+    "use strict";
+
     demo.initPager = function () {
         var selectorPrefix = "#students-page";
-        
+
         var options = {
             pageList: {
                 type: "fluid.pager.directPageList"
             },
             listeners: {
                 onModelChange: function (newModel, oldModel) {
-                    $(selectorPrefix + (oldModel.pageIndex + 1)).addClass("hidden");
+                    if (oldModel) {
+                        $(selectorPrefix + (oldModel.pageIndex + 1)).addClass("hidden");
+                    }
                     $(selectorPrefix + (newModel.pageIndex + 1)).removeClass("hidden");
                 }
             }
         };
-        
+
         fluid.pager("#gradebook", options);
-    };    
+    };
 })(jQuery, fluid);

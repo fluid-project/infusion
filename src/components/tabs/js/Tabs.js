@@ -10,32 +10,35 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+    "use strict";
+
     /**********************
      * Tabs *
      *********************/
-     
+
     fluid.defaults("fluid.tabs", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         tabOptions: {},
-        events: { 
+        events: {
             // These events are forwarded out of the jQueryUI Tabs' equivalents
             // with signature (that, event, ui)
             tabsselect: "preventable",
             tabsload: null,
-            tabsshow: null  
+            tabsshow: null
+        },
+        listeners: {
+            "onCreate.initTabs": {
+                "this": "{that}.container",
+                "method": "tabs",
+                "args": "{that}.options.tabOptions"
+            }
         },
         finalInitFunction: "fluid.tabs.finalInit"
-    });          
-    
+    });
+
     fluid.tabs.finalInit = function (that) {
         that.container.tabs(that.options.tabOptions);  //jQuery UI Tabs
         fluid.each(that.options.events, function(value, eventName) {

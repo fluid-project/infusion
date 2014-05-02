@@ -4,11 +4,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-ca">
     <head>
         <title>Reorder Table</title>
-        
-        <link type="text/css" rel="stylesheet" media="all" href="../css/sample-code/reorderer/markup-examples.css" />
+
         <link type="text/css" rel="stylesheet" media="all" href="../css/tool_base.css" />
         <link type="text/css" rel="stylesheet" media="all" href="../css/tool.css" />
-        
+
         <!--  These are the required javascript modules for the Reorderer and can be replaced with Fluid-all.js -->
         <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
@@ -19,32 +18,32 @@
         <script type="text/javascript" src="../../../framework/core/js/jquery.keyboard-a11y.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/FluidIoC.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/FluidView.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/DataBinding.js"></script>
-        <script type="text/javascript" src="../../../framework/core/js/FluidIoC.js"></script>
         <script type="text/javascript" src="../../../components/reorderer/js/ReordererDOMUtilities.js"></script>
         <script type="text/javascript" src="../../../components/reorderer/js/GeometricManager.js"></script>
         <script type="text/javascript" src="../../../components/reorderer/js/Reorderer.js"></script>
-        
+
         <style type="text/css">
             @import url("../css/assignment.css");
         </style>
-    
+
     </head>
     <body>
         <h1>Bare Table reordering</h1>
         <div class="portletBody">
-        
-        
+
+
         <ul role="menu" class="navIntraTool actionToolBar">
-        
-        
+
+
           <li role="menuitem" class="firstToolBarItem"><span class=""><a
             onclick="location = 'http://garden.dmc.dc.umich.edu:8080/portal/tool/0ca44450-40ec-4925-b9d8-418626e146d8?panel=Main&amp;sakai_action=doCancel';return false;"
             title="Back to Announcements" href="#">Back to Announcements</a></span></li>
-        
+
         </ul>
-        
+
         <h3>Reorder Announcements</h3>
         <div class="navPanel">
         <div class="viewNav">
@@ -105,7 +104,7 @@
             style="opacity: 1; display: none;" class="messageSuccess"
             id="messageHolder">well done! </span></li>
         </ul>
-        
+
         <form method="post"
           action="http://garden.dmc.dc.umich.edu:8080/portal/tool/0ca44450-40ec-4925-b9d8-418626e146d8?panel=Main"
           name="announcementListForm">
@@ -127,7 +126,7 @@
               <th id="retractDate">Ending Date</th>
               <th />
             </tr>
-        
+
             <tr id="myUniquePrefix.orderable4" tabindex="-1" role="listitem"
               aria-selected="false" aria-disabled="false"
               class="ui-draggable ui-droppable fl-reorderer-movable-default"
@@ -176,7 +175,7 @@
                 name="selectedMembers2" id="check-1" title="Select to remove" />
               </td>
             </tr>
-        
+
             <tr id="myUniquePrefix.orderable2" tabindex="-1" role="listitem"
               aria-selected="false" aria-disabled="false"
               class="fl-reorderer-movable-default ui-draggable ui-droppable"
@@ -201,7 +200,7 @@
                 name="selectedMembers2" id="check-2" title="Select to remove" />
               </td>
             </tr>
-        
+
             <tr id="myUniquePrefix.orderable3" tabindex="-1" role="listitem"
               aria-selected="false" aria-disabled="false"
               class="fl-reorderer-movable-default ui-draggable ui-droppable"
@@ -226,8 +225,8 @@
                 name="selectedMembers2" id="check-3" title="Select to remove" />
               </td>
             </tr>
-        
-        
+
+
           </tbody>
         </table>
         <p class="act"><input type="submit" accesskey="s" value="Update"
@@ -235,8 +234,8 @@
           type="submit" value="Cancel" name="eventSubmit_doCancel" accesskey="x" />
         </p>
         </form>
-        
-        
+
+
         </div>
         <script type="text/javascript">
                 fluid.reorderList("#todo-list", {

@@ -10,6 +10,7 @@
         <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../../lib/json/js/json2.js"></script>  
         <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidDocument.js"></script>
         <!-- This file verifies that the Renderer still basically functions in the absence of the IoC framework -->
         <script type="text/javascript" src="../../../../framework/core/js/FluidDebugging.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/DataBinding.js"></script>
@@ -82,7 +83,7 @@
           <tbody>
               <tr rsf:id="data-row:">
                   <td><a rsf:id="species" class="CATTclick3">name here</a></td>
-                  <td><input rsf:id="score"></input></td>
+                  <td><input rsf:id="score"/></td>
               </tr>
           </tbody>
       </table>
@@ -317,11 +318,11 @@
   <div class="FLUID-3493-test">
    
       <div rsf:id="cell:" class="cell">
-          <div class="preamble"/>
+          <div class="preamble"></div>
           <div rsf:id="payload-1">Some things</div>
           <br class="middle" />
           <div rsf:id="payload-2">Some other things</div>
-          <div class="end"/>
+          <div class="end"></div>
       </div>
    
   </div>

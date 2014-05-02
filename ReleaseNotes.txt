@@ -68,19 +68,17 @@ This is a list of publicly available software that is redistributed with Fluid I
 categorized by license:
 
 MIT License:
-    * jQuery javascript library v1.7.2 http://jquery.com/
-    * jQuery UI dialog, draggable, mouse, position, slider, and tabs javascript widgets v1.8.18: http://ui.jquery.com/
-    * jQuery UI tooltip (pre-release from jQuery UI 1.9 branch) https://github.com/jquery/jquery-ui/tree/tooltip
-    * jQuery QUnit: http://docs.jquery.com/QUnit
+    * jQuery javascript library v1.11.0 http://jquery.com/
+    * jQuery UI button, dialog, draggable, mouse, position, resizable, slider, tabs, and tooltip javascript widgets v1.10.4: http://ui.jquery.com/
+    * jQuery QUnit v1.12.0 http://qunitjs.com
+    * jQuery QUnit Composite v1.0.1 https://github.com/jquery/qunit-composite
     * jQuery Mockjax: https://github.com/appendto/jquery-mockjax
-    * jQuery Chili code highlighter v2.2 http://code.google.com/p/jquery-chili-js/
-    * jQuery UI AriaTabs v12.07.10 https://github.com/fnagel/jQuery-Accessible-RIA/tree/master/Tabs
-    * jQuery bgiframe v2.1 https://github.com/brandonaaron/bgiframe
     * jQuery scrollTo v1.4.2 http://flesler.blogspot.com/2007/10/jqueryscrollto.html
     * jQuery Touch Punch v0.2.2 http://touchpunch.furf.com/
     * Micro Clearfix http://nicolasgallagher.com/micro-clearfix-hack/
     * SWFUpload v2.2.0.1: http://swfupload.org/
     * SWFObject v2.2: http://code.google.com/p/swfobject/
+    * Buzz v1.1.0 http://buzz.jaysalvat.com
 
 zlib/libpng License:
     * fastXmlPull is based on XML for Script's Fast Pull Parser v3.1

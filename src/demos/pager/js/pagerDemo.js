@@ -13,14 +13,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global demo:true, fluid, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid */
 
 var demo = demo || {};
 
 (function ($, fluid) {
+    "use strict";
 
     /**
      * Main demo initialization
@@ -28,26 +26,26 @@ var demo = demo || {};
     demo.initPager = function () {
         var resources = {
             users: {
-                href: "../data/pager.json",
+                href: "data/pager.json",
                 options: {
                     dataType: "json"
                 }
             }
         };
-        
+
         function initPager(resourceSpecs) {
-            
+
             var model = resourceSpecs.users.resourceText;
-            var columnDefs = [ 
+            var columnDefs = [
                 {
                     key: "user-link",
-                    valuebinding: "*.userDisplayName",  
+                    valuebinding: "*.userDisplayName",
                     sortable: true
                 },
                 {
                     key: "user-email",
                     valuebinding: "*.userEmail",
-                    sortable: true 
+                    sortable: true
                 },
                 {
                     key: "user-role",
@@ -60,7 +58,7 @@ var demo = demo || {};
                     sortable: false
                 }
             ];
-          
+
             demo.pager = fluid.pagedTable(".demo-pager-container", {
                 dataModel: model,
                 model: {
@@ -78,7 +76,7 @@ var demo = demo || {};
                             },
                             rendererOptions: {debugMode: false} // Change this to true to diagnose rendering issues
                         }
-                }
+                    }
                 },
                 decorators: {
                     unsortableHeader: [
@@ -96,7 +94,7 @@ var demo = demo || {};
                 }
             });
         }
-        
+
         fluid.fetchResources(resources, initPager);
 
     };

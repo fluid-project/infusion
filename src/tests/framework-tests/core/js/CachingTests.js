@@ -10,14 +10,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global window, fluid, jqUnit, jQuery, start, stop*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
-fluid.registerNamespace("fluid.tests");
+/* global fluid, jqUnit */
 
 (function ($) {
+    "use strict";
+
+    fluid.registerNamespace("fluid.tests");
 
     fluid.tests.cacheTestUrl = "/test/url";
     fluid.tests.cacheTestUrl2 = "/test/url2";
@@ -27,15 +25,16 @@ fluid.registerNamespace("fluid.tests");
     fluid.defaults("fluid.tests.cacheComponent", {
         resources: {
             template: {
+                dataType: "json",
                 url: fluid.tests.cacheTestUrl,
                 forceCache: true
-            }  
+            }
         }
     });
 
     fluid.tests.testResponse = {
-        status: 'success',
-        fortune: 'Are you a turtle?'
+        status: "success",
+        fortune: "Are you a turtle?"
     };
 
     fluid.tests.setMock = function (responseTime, url, callback) {
@@ -54,6 +53,7 @@ fluid.registerNamespace("fluid.tests");
     fluid.tests.testResources = {
         cacheTestUrl: {
             template: {
+                dataType: "json",
                 url: fluid.tests.cacheTestUrl,
                 forceCache: true,
                 fetchClass: "slowTemplate"
@@ -61,6 +61,7 @@ fluid.registerNamespace("fluid.tests");
         },
         cacheTestUrl2: {
             template: {
+                dataType: "json",
                 url: fluid.tests.cacheTestUrl2,
                 forceCache: true,
                 fetchClass: "fastTemplate"
@@ -68,6 +69,7 @@ fluid.registerNamespace("fluid.tests");
         },
         cacheTestUrl3: {
             template: {
+                dataType: "json",
                 url: fluid.tests.cacheTestUrl3,
                 forceCache: true,
                 fetchClass: "joinlessTemplate"
@@ -77,6 +79,7 @@ fluid.registerNamespace("fluid.tests");
 
     fluid.tests.finalResources = {
         template: {
+            dataType: "json",
             url: fluid.tests.cacheTestUrl4,
             forceCache: true
         }
@@ -85,7 +88,7 @@ fluid.registerNamespace("fluid.tests");
     fluid.setLogging(true);
 
     fluid.tests.testCaching = function () {
-        new jqUnit.module("Caching Tests");
+        jqUnit.module("Caching Tests");
 
         function testSimpleCache(message, invoker, requestDelay) {
             jqUnit.test(message + ": Simple caching test with delay " + requestDelay, function () {
@@ -109,7 +112,7 @@ fluid.registerNamespace("fluid.tests");
                     }, 100);
                     jqUnit.stop();
                 });
-            });      
+            });
         }
 
         function testAllSimpleCache(message, invoker) {
@@ -136,13 +139,13 @@ fluid.registerNamespace("fluid.tests");
                 fluid.deliverOptionsStrategy = deliverOptionsStrategy;
                 fluid.computeComponentAccessor = computeComponentAccessor;
                 fluid.computeDynamicComponents = computeDynamicComponents;
-            }      
+            }
         }
-         
+
         function funcInvoker(func) {
             func();
         }
-        
+
         testAllSimpleCache("No IoC", IoCCensorer);
         testAllSimpleCache("With IoC", funcInvoker);
 
@@ -157,10 +160,10 @@ fluid.registerNamespace("fluid.tests");
                 }
                 function finalCallback(finalSpecs) {
                     fluid.each(fluid.tests.testResources, function (resources, key) {
-                        jqUnit.assertEquals("Just one fetch for " + key, 1, fetches[key]);  
+                        jqUnit.assertEquals("Just one fetch for " + key, 1, fetches[key]);
                     });
                     var totalFinal = 0;
-                    fluid.each(finalSpecs, function (spec, key) {
+                    fluid.each(finalSpecs, function (spec) {
                         ++totalFinal;
                         jqUnit.assertEquals("Success", "success", spec.resourceText.status);
                     });
@@ -183,7 +186,7 @@ fluid.registerNamespace("fluid.tests");
                 jqUnit.stop();
             });
         }
-        
+
         function testProleptickSet(mainDelay, collDelay) {
             testProleptickJoinset({cacheTestUrl:   0, cacheTestUrl2:   0, cacheTestUrl3: collDelay, cacheTestUrl4: mainDelay}, "Immediate", 1);
             testProleptickJoinset({cacheTestUrl: 200, cacheTestUrl2: 200, cacheTestUrl3: collDelay, cacheTestUrl4: mainDelay}, "All late",  3);
@@ -193,7 +196,7 @@ fluid.registerNamespace("fluid.tests");
             for (var collDelay = 0; collDelay < 200; collDelay += 100) {
                 testProleptickSet(mainDelay, collDelay);
             }
-        }    
+        }
     };
-   
-})(jQuery); 
+
+})(jQuery);

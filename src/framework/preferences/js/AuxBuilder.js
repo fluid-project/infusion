@@ -9,16 +9,11 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 
 (function ($, fluid) {
+    "use strict";
 
     fluid.registerNamespace("fluid.prefs");
 
@@ -86,33 +81,43 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.prefs.addCommonOptions = function (root, path, commonOptions, templateValues) {
         templateValues = templateValues || {};
 
-        var typeObject = fluid.get(root, path);
-        var opts = {};
+        var existingValue = fluid.get(root, path);
+
+        if (!existingValue) {
+            return root;
+        }
+
+        var opts = {}, mergePolicy = {};
 
         fluid.each(commonOptions, function (value, key) {
-            var canAdd = true;
-
-            // Execute the validation function to decide if this common option should be added
-            if (value.func) {
-                canAdd = fluid.invokeGlobalFunction(value.func, [root, path, commonOptions, templateValues]);
-                value = value.value;
+            // Adds "container" option only for view and renderer components
+            if (key === "container") {
+                var componentType = fluid.get(root, [path, "type"]);
+                var componentOptions = fluid.defaults(componentType);
+                // Note that this approach is not completely reliable, although it has been reviewed as "good enough" -
+                // a grade which modifies the creation signature of its principal type would cause numerous other problems.
+                // We can review this awkward kind of "anticipatory logic" when the new renderer arrives.
+                if (fluid.get(componentOptions, ["argumentMap", "container"]) === undefined) {
+                    return false;
+                }
+            }
+            // Merge grade names defined in aux schema and system default grades
+            if (key.indexOf("gradeNames") !== -1) {
+                mergePolicy[key] = fluid.arrayConcatPolicy;
             }
 
-            if (canAdd) {
-                key = fluid.stringTemplate(key, templateValues);
-                value = typeof (value) === "string" ? fluid.stringTemplate(value, templateValues) : value;
-                fluid.set(opts, key, value);
-            }
+            key = fluid.stringTemplate(key, templateValues);
+            value = typeof (value) === "string" ? fluid.stringTemplate(value, templateValues) : value;
+
+            fluid.set(opts, key, value);
         });
 
-        if (typeObject) {
-            $.extend(true, root[path], $.extend(true, typeObject, opts));
-        }
+        fluid.set(root, path, fluid.merge(mergePolicy, existingValue, opts));
 
         return root;
     };
 
-    fluid.prefs.containerNeeded = function (root, path, commonOptions, templateValues) {
+    fluid.prefs.containerNeeded = function (root, path) {
         var componentType = fluid.get(root, [path, "type"]);
         var componentOptions = fluid.defaults(componentType);
         return (fluid.hasGrade(componentOptions, "fluid.viewComponent") || fluid.hasGrade(componentOptions, "fluid.rendererComponent"));
@@ -131,13 +136,13 @@ var fluid_1_5 = fluid_1_5 || {};
         var rootModel = {};
 
         var componentName = fluid.prefs.removeKey(componentOptions, "type");
-        var regexp = new RegExp("\\.", 'g');
+        var regexp = new RegExp("\\.", "g");
         var memberName = componentName.replace(regexp,  "_");
         var flattenedPrefKey = prefKey.replace(regexp,  "_");
 
         if (componentName) {
 
-            var cmp = components[memberName] = {
+            components[memberName] = {
                 type: componentName,
                 options: componentOptions
             };
@@ -216,9 +221,8 @@ var fluid_1_5 = fluid_1_5 || {};
         return expandedSchema;
     };
 
-    fluid.prefs.expandCompositePanels = function (auxSchema, compositePanelList, panelIndex, compositePanelCommonOptions, subPanelCommonOptions,
+    fluid.prefs.expandCompositePanels = function (auxSchema, compositePanelList, panelIndex, panelCommonOptions, subPanelCommonOptions,
         compositePanelBasedOnSubCommonOptions, mappedDefaults) {
-        var type = "panel";
         var panelsToIgnore = [];
 
         fluid.each(compositePanelList, function (compositeDetail, compositeKey) {
@@ -280,7 +284,6 @@ var fluid_1_5 = fluid_1_5 || {};
                     if (fluid.prefs.checkPrimarySchema(prefSchema, subPanelPrefsKey)) {
                         var opts;
                         if (internalPath.indexOf("model.") === 0) {
-                            var internalModelName = internalPath.slice(6);
                             // Set up the binding in "rules" accepted by the modelRelay base grade of every panel
                             fluid.set(compositePanelOptions, ["options", "rules", safeSubPanelPrefsKey], safeSubPanelPrefsKey);
                             fluid.set(compositePanelOptions, ["options", "model", safeSubPanelPrefsKey], prefSchema[primaryPath]);
@@ -324,7 +327,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
             components[compositeKey] = compositePanelOptions;
 
-            fluid.prefs.addCommonOptions(components, compositeKey, compositePanelCommonOptions, {
+            fluid.prefs.addCommonOptions(components, compositeKey, panelCommonOptions, {
                 prefKey: compositeKey
             });
 
@@ -347,7 +350,7 @@ var fluid_1_5 = fluid_1_5 || {};
         var compositePanelList = fluid.get(auxSchema, "groups");
         if (compositePanelList) {
             fluid.prefs.expandCompositePanels(auxSchema, compositePanelList, fluid.get(indexes, "panel"),
-                fluid.get(elementCommonOptions, "compositePanel"), fluid.get(elementCommonOptions, "subPanel"),
+                fluid.get(elementCommonOptions, "panel"), fluid.get(elementCommonOptions, "subPanel"),
                 fluid.get(elementCommonOptions, "compositePanelBasedOnSub"), mappedDefaults);
         }
 
@@ -434,12 +437,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 "options.gradeNames": "fluid.prefs.prefsEditorConnections",
                 "options.resources.template": "{templateLoader}.resources.%prefKey"
             },
-            compositePanel: {
-                "createOnEvent": "onPrefsEditorMarkupReady",
-                "container": "{prefsEditor}.dom.%prefKey",
-                "options.gradeNames": ["fluid.prefs.prefsEditorConnections", "fluid.prefs.compositePanel"],
-                "options.resources.template": "{templateLoader}.resources.%prefKey"
-            },
             compositePanelBasedOnSub: {
                 "%subPrefKey": "{templateLoader}.resources.%subPrefKey"
             },
@@ -448,11 +445,7 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             enactor: {
                 "options.gradeNames": "fluid.prefs.uiEnhancerConnections",
-                // Conditional handling. Add value to the path only if the execution of func returns true.
-                "container": {
-                    value: "{uiEnhancer}.container",
-                    func: "fluid.prefs.containerNeeded"
-                }
+                "container": "{uiEnhancer}.container"
             }
         },
         indexes: {

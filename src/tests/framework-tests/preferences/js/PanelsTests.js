@@ -10,12 +10,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, expect, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid, jqUnit */
 
 (function ($) {
+    "use strict";
+
     fluid.registerNamespace("fluid.tests");
 
     /*******************************************************************************
@@ -145,7 +144,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             noexpand: true
         },
         repeatingSelectors: [],
-        produceTree: function (that) {
+        produceTree: function () {
             return {
                 children: [{
                     ID: "header",
@@ -194,7 +193,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                resourceText: '<section><h1 class="heading"></h1><article class="subPanel1"></article><article class="subPanel2"></article></section>'
+                resourceText: "<section><h1 class=\"heading\"></h1><article class=\"subPanel1\"></article><article class=\"subPanel2\"></article></section>"
             },
             subPanel1: {
                 resourceText: "<h2>subPanel1</h2>"
@@ -206,11 +205,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         components: {
             subPanel1: {
                 type: "fluid.tests.subPanel1",
-                container: "{compositePanel}.dom.subPanel1",
+                container: "{compositePanel}.dom.subPanel1"
             },
             subPanel2: {
                 type: "fluid.tests.subPanel2",
-                container: "{compositePanel}.dom.subPanel2",
+                container: "{compositePanel}.dom.subPanel2"
             }
         }
     });
@@ -232,7 +231,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "fluid_prefs_sub2": "value"
         };
 
-        var expectedResourceText = '<section><h1 class="heading"></h1><article class="subPanel1"><h2>subPanel1</h2></article><article class="subPanel2"><h2>subPanel2</h2></article></section>';
+        var expectedResourceText = "<section><h1 class=\"heading\"></h1><article class=\"subPanel1\"><h2>subPanel1</h2></article><article class=\"subPanel2\"><h2>subPanel2</h2></article></section>";
 
         var expectedFireRecord = {
             compositePanel: 3,
@@ -332,7 +331,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 alwaysPanel1: ".alwaysPanel1",
                 alwaysPanel2: ".alwaysPanel2",
                 conditionalPanel1: ".conditionalPanel1",
-                conditionalPanel2: ".conditionalPanel2",
+                conditionalPanel2: ".conditionalPanel2"
             },
             selectorsToIgnore: ["alwaysPanel1", "alwaysPanel2", "conditionalPanel1", "conditionalPanel2"],
             model: {
@@ -343,7 +342,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             strings: {
                 text1: "conditionalPanel1",
-                text2: "conditionalPanel2",
+                text2: "conditionalPanel2"
             },
             components: {
                 alwaysPanel1: {
@@ -356,7 +355,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             }
                         },
                         strings: {
-                            text: "alwaysPanel1",
+                            text: "alwaysPanel1"
                         },
                         selectors: {
                             input: ".input"
@@ -376,7 +375,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             }
                         },
                         strings: {
-                            text: "alwaysPanel2",
+                            text: "alwaysPanel2"
                         },
                         selectors: {
                             input: ".input"
@@ -397,7 +396,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             }
                         },
                         strings: {
-                            text1: "conditionalPanel1",
+                            text1: "conditionalPanel1"
                         },
                         selectors: {
                             text: ".text"
@@ -420,7 +419,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             }
                         },
                         strings: {
-                            text2: "conditionalPanel2",
+                            text2: "conditionalPanel2"
                         },
                         selectors: {
                             text: ".text"
@@ -431,23 +430,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             }
                         }
                     }
-                },
+                }
             },
             resources: {
                 template: {
-                    resourceText: '<div class="alwaysPanel1"></div><div class="conditionalPanel1"></div><div class="alwaysPanel2"></div><div class="conditionalPanel2"></div>'
+                    resourceText: "<div class=\"alwaysPanel1\"></div><div class=\"conditionalPanel1\"></div><div class=\"alwaysPanel2\"></div><div class=\"conditionalPanel2\"></div>"
                 },
                 alwaysPanel1: {
-                    resourceText: '<input type="checkbox" class="input" />'
+                    resourceText: "<input type=\"checkbox\" class=\"input\" />"
                 },
                 alwaysPanel2: {
-                    resourceText: '<input type="checkbox" class="input" />'
+                    resourceText: "<input type=\"checkbox\" class=\"input\" />"
                 },
                 conditionalPanel1: {
-                    resourceText: '<span class="text"></span>'
+                    resourceText: "<span class=\"text\"></span>"
                 },
                 conditionalPanel2: {
-                    resourceText: '<span class="text"></span>'
+                    resourceText: "<span class=\"text\"></span>"
                 }
             }
         });
@@ -572,10 +571,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             resources: {
                 template: {
-                    resourceText: '<ul><li class="flc-tests-panel-sliderTest1"></li></ul>'
+                    resourceText: "<ul><li class=\"flc-tests-panel-sliderTest1\"></li></ul>"
                 },
                 sliderTest1: {
-                    resourceText: '<div class="flc-prefsEditor-min-val"><div class="flc-textfieldSlider-slider"></div><input id="min-val" class="flc-textfieldSlider-field" type="text" /><span class="flc-prefsEditor-multiplier"></span></div>'
+                    resourceText: "<div class=\"flc-prefsEditor-min-val\"><div class=\"flc-textfieldSlider-slider\"></div><input id=\"min-val\" class=\"flc-textfieldSlider-field\" type=\"text\" /><span class=\"flc-prefsEditor-multiplier\"></span></div>"
                 }
             }
         });
@@ -610,7 +609,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "dropdownTest-cd": "Cardassian"
         },
         selectors: {
-            textFont: ".flc-prefsEditor-text-font",
+            textFont: ".flc-prefsEditor-text-font"
         },
         stringArrayIndex: {
             dd: ["dropdownTest-en", "dropdownTest-kl", "dropdownTest-bj", "dropdownTest-rm", "dropdownTest-cd"]
@@ -620,7 +619,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         protoTree: {
             textFont: {
-                optionnames: "${{that}.stringBundle.dd}",
+                optionnames: "${{that}.msgLookup.dd}",
                 optionlist: "${{that}.options.controlValues.ddStrings}",
                 selection: "${ddVal}"
             }
@@ -644,10 +643,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             resources: {
                 template: {
-                    resourceText: '<ul><li class="flc-tests-panel-dropdownTest1"></li></ul>'
+                    resourceText: "<ul><li class=\"flc-tests-panel-dropdownTest1\"></li></ul>"
                 },
                 dropdownTest1: {
-                    resourceText: '<select class="flc-prefsEditor-text-font" id="text-font"></select>'
+                    resourceText: "<select class=\"flc-prefsEditor-text-font\" id=\"text-font\"></select>"
                 }
             }
         });
@@ -724,7 +723,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 inputID: "frequencyInput",
                 selectID: "frequency-radio",
                 tree: {
-                    optionnames: "${{that}.stringBundle.radioTestStrings}",
+                    optionnames: "${{that}.msgLookup.radioTestStrings}",
                     optionlist: "${{that}.options.controlValues.radioStrings}",
                     selection: "${radioVal}"
                 }
@@ -749,10 +748,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             resources: {
                 template: {
-                    resourceText: '<ul><li class="flc-tests-panel-radioTest1"></li></ul>'
+                    resourceText: "<ul><li class=\"flc-tests-panel-radioTest1\"></li></ul>"
                 },
                 radioTest1: {
-                    resourceText: '<div class="flc-prefsEditor-frequencyRow"><input type="radio" class="flc-prefsEditor-frequencyInput" name="frequency" id="frequency"/><label for="frequency" class="flc-prefsEditor-frequency-label"></label></div>'
+                    resourceText: "<div class=\"flc-prefsEditor-frequencyRow\"><input type=\"radio\" class=\"flc-prefsEditor-frequencyInput\" name=\"frequency\" id=\"frequency\"/><label for=\"frequency\" class=\"flc-prefsEditor-frequency-label\"></label></div>"
                 }
             }
         });
@@ -942,13 +941,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             resources: {
                 template: {
-                    resourceText: '<ul><li class="flc-tests-panel-slider1"></li><li class="flc-tests-panel-slider2"></li></ul>'
+                    resourceText: "<ul><li class=\"flc-tests-panel-slider1\"></li><li class=\"flc-tests-panel-slider2\"></li></ul>"
                 },
                 slider1: {
-                    resourceText: '<div class="flc-prefsEditor-min-val"><div class="flc-textfieldSlider-slider"></div><input id="min-val" class="flc-textfieldSlider-field" type="text" /><span class="flc-prefsEditor-multiplier"></span></div>'
+                    resourceText: "<div class=\"flc-prefsEditor-min-val\"><div class=\"flc-textfieldSlider-slider\"></div><input id=\"min-val\" class=\"flc-textfieldSlider-field\" type=\"text\" /><span class=\"flc-prefsEditor-multiplier\"></span></div>"
                 },
                 slider2: {
-                    resourceText: '<div class="flc-prefsEditor-min-val"><div class="flc-textfieldSlider-slider"></div><input id="min-val" class="flc-textfieldSlider-field" type="text" /><span class="flc-prefsEditor-multiplier"></span></div>'
+                    resourceText: "<div class=\"flc-prefsEditor-min-val\"><div class=\"flc-textfieldSlider-slider\"></div><input id=\"min-val\" class=\"flc-textfieldSlider-field\" type=\"text\" /><span class=\"flc-prefsEditor-multiplier\"></span></div>"
                 }
             }
         });
@@ -1005,7 +1004,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     /* start FLUID-5220 */
 
-   fluid.defaults("fluid.tests.fluid_5220.subPanel", {
+    fluid.defaults("fluid.tests.fluid_5220.subPanel", {
         gradeNames: ["fluid.prefs.panel", "autoInit"]
     });
 
@@ -1024,10 +1023,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             resources: {
                 template: {
-                    resourceText: '<div><div class="flc-tests-subPanel"></div></div>'
+                    resourceText: "<div><div class=\"flc-tests-subPanel\"></div></div>"
                 },
                 subPanel: {
-                    resourceText: '<div></div>'
+                    resourceText: "<div></div>"
                 }
             }
         });
@@ -1088,7 +1087,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("There are " + expectedNumOfOptions + " text fonts in the control", expectedNumOfOptions, options.length);
             jqUnit.assertEquals("The first text font is " + expectedFont, expectedFont, options.filter(":selected").val());
 
-            fluid.each(options, function (option, index) {
+            fluid.each(options, function (option) {
                 var css = that.options.classnameMap.textFont[option.value];
                 if (css) {
                     jqUnit.assertTrue("The option has appropriate css applied", $(option).hasClass(css));
@@ -1174,7 +1173,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.contrastPanel.changeChecked = function (inputs, newValue) {
         inputs.removeAttr("checked");
-        inputs.filter("[value='" + newValue + "']").attr("checked", "checked").change();
+        var matchingInput = inputs.filter("[value='" + newValue + "']");
+        matchingInput.prop("checked", "checked").change();
     };
 
     fluid.defaults("fluid.tests.contrastTester", {
@@ -1532,13 +1532,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     resources: {
                         template: {
-                            resourceText: '<h2 class="flc-prefsEditor-linksControls-label"></h2><li class="flc-prefsEditor-emphasizeLinks"></li><li class="flc-prefsEditor-inputsLarger"></li>'
+                            resourceText: "<h2 class=\"flc-prefsEditor-linksControls-label\"></h2><li class=\"flc-prefsEditor-emphasizeLinks\"></li><li class=\"flc-prefsEditor-inputsLarger\"></li>"
                         },
                         emphasizeLinks: {
-                            resourceText: '<input type="checkbox" id="links-choice" class="flc-prefsEditor-links fl-force-left" />'
+                            resourceText: "<input type=\"checkbox\" id=\"links-choice\" class=\"flc-prefsEditor-links fl-force-left\" />"
                         },
                         inputsLarger: {
-                            resourceText: '<input type="checkbox" id="inputs-choice" class="flc-prefsEditor-inputs-larger fl-force-left" />'
+                            resourceText: "<input type=\"checkbox\" id=\"inputs-choice\" class=\"flc-prefsEditor-inputs-larger fl-force-left\" />"
                         }
                     }
                 }
