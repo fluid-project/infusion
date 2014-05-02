@@ -3925,12 +3925,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
     
-    jqUnit.test("FLUID-5333 - destruction during listener notification", function () {    
+    jqUnit.test("FLUID-5333 - destruction during listener notification", function () {
         var that = fluid.tests.fluid5333component();
         jqUnit.assertEquals("Component should be returned in destroyed condition", true, fluid.isDestroyed(that));
         jqUnit.assertUndefined("Listeners after destruction point should not be notified", that.noted);
         that.events.ourEvent.fire(that);
-        jqUnit.assertUndefined("Listeners after destruction point should not be notified", that.noted);        
+        jqUnit.assertUndefined("Listeners after destruction point should not be notified", that.noted);
     });
 
 })(jQuery);
