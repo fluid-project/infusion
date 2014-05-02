@@ -319,6 +319,8 @@ var fluid_1_5 = fluid_1_5 || {};
             transRec[recel.that.applier.applierId] = {transaction: transac};
             return transac;
         });
+        // TODO: This sort has very little effect in any current test (can be replaced by no-op - see FLUID-5339) - but
+        // at least can't be performed in reverse order ("FLUID-3674 event coordination test" will fail) - need more cases
         var recs = fluid.values(mrec).sort(fluid.sortCompleteLast);
         fluid.each(recs, function (recel) {
             var that = recel.that;
