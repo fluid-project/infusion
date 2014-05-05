@@ -130,12 +130,12 @@
     position:fixed;
     top:0.2em;
     left:0.2em;
-    z-index: 1; /* Z-index and position relative is defined so it appears properly relative to the panel's title. */    
+    z-index: 1; /* Z-index and position relative is defined so it appears properly relative to the panel's title. */   
+    font-size: 1.5em; 
 }
 
 .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
     text-decoration: none;
-    font-size: 1.5em;
     font-family: "Fluid-star" !important; /* FLUID-5321: use important to keep learner prefs from changing it. */ 
     font-weight: normal !important; /* Keep UIO from changing the weight of icons. Bold icons look poor. */
     padding: 0.7em 0.3em;
