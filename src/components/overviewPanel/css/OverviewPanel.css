@@ -77,14 +77,14 @@
      * positions of fl-overviewPanel-contents are adjusted.
      */
     top: 6.5em;     /* Change this if needed - offset the height of fl-overviewPanel-title + 1em (for line-height compensation).  */
-    bottom: 13.5em; /* Change this if needed - offset the height of fl-overviewPanel-footer. */
+    bottom: 14.5em; /* Change this if needed - offset the height of fl-overviewPanel-footer. */
     padding: 1.5em;
     position: absolute;
     overflow: auto;
 }
 
 .fl-overviewPanel .fl-overviewPanel-footer {
-    height: 13.5em;
+    height: 14.5em;
     position: absolute;
     bottom: 0;
     left: 0;
