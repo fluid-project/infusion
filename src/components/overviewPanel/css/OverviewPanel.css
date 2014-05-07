@@ -50,7 +50,7 @@
     left:0;
     width:24em;
     z-index: 9999;
-    font-size: 14px;
+    font-size: 1em;
     font-family: "OpenSans","Helvetica Neue","Helvetica",Helvetica,Arial,sans-serif;
     height: 100%;
     min-height: 28em;
@@ -99,7 +99,6 @@
     position: relative;
     left: 0;
     color: #fff;
-    font-size: 14px;
     height: inherit;
 }
 
@@ -116,7 +115,7 @@
 .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus,
 .fl-overviewPanel a:active,
 .fl-overviewPanel a:focus {
-    outline: 0.2em solid #27A9E1;
+    outline: 0.3em solid #27A9E1;
 }
 
 .fl-overviewPanel-group:after { /* clearfix (aka. group) */
@@ -131,12 +130,12 @@
     position:fixed;
     top:0.2em;
     left:0.2em;
-    z-index: 1; /* Z-index and position relative is defined so it appears properly relative to the panel's title. */    
+    z-index: 1; /* Z-index and position relative is defined so it appears properly relative to the panel's title. */   
+    font-size: 1.5em; 
 }
 
 .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
     text-decoration: none;
-    font-size: 1.5em;
     font-family: "Fluid-star" !important; /* FLUID-5321: use important to keep learner prefs from changing it. */ 
     font-weight: normal !important; /* Keep UIO from changing the weight of icons. Bold icons look poor. */
     padding: 0.7em 0.3em;
@@ -178,11 +177,9 @@
 }
 
 .fl-overviewPanel-container.fl-overviewPanel-hidden{
-    /* make the hidden container the same size as the star button. This way the star button 
-     * appears properly and the hidden container doesn't block interaction with content below it.*/
-    width: 2.9em;
-    height: 5.3em; 
-    min-height: 5.3em;
+    /* Make this container essentially hidden. Some dimensions need to be given to avoid a problem with rendering on Safari. */
+    width: 0.01em; 
+    height: 0.01em; 
     
     transition: all 0.2s linear; /* This transition creates the desired sliding effect. */ 
 }
@@ -193,6 +190,7 @@
 .fl-overviewPanel .fl-overviewPanel-title h1 {
     display: inline-block;
     padding: 0.5em;
+    margin-left: 0.2em;
 }
 
 .fl-overviewPanel .fl-overviewPanel-title a {
@@ -301,6 +299,10 @@
     margin-top: 1em;
 }
 
+.fl-overviewPanel .fl-overviewPanel-feedbackText {
+    display:block;
+}
+
 .fl-overviewPanel .fl-overviewPanel-feedback-link a{
     color: #FFCC00;
 }
@@ -361,7 +363,7 @@
 .fl-theme-bw .fl-overviewPanel *:focus,
 .fl-theme-bw .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus,
 .fl-theme-bw .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus  {
-    outline: 0.2em solid #000;
+    outline: 0.3em solid #000;
 }
 
 .fl-theme-bw .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
@@ -401,7 +403,7 @@
 .fl-theme-wb .fl-overviewPanel *:focus,
 .fl-theme-wb .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus,
 .fl-theme-wb .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus  {
-    outline: 0.2em solid #fff;
+    outline: 0.3em solid #fff;
 }
 
 .fl-theme-wb .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
@@ -442,7 +444,7 @@
 .fl-theme-lgdg .fl-overviewPanel *:focus,
 .fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus,
 .fl-theme-lgdg .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus {
-    outline: 0.2em solid #bdbdbb;
+    outline: 0.3em solid #bdbdbb;
 }
 
 .fl-theme-lgdg .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
@@ -482,7 +484,7 @@
 .fl-theme-yb .fl-overviewPanel *:focus,
 .fl-theme-yb .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus,
 .fl-theme-yb .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus {
-     outline: 0.2em solid #FFFF00; 
+     outline: 0.3em solid #FFFF00; 
  }
  
 .fl-theme-yb .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
@@ -528,7 +530,7 @@
 .fl-theme-by .fl-overviewPanel *:focus,
 .fl-theme-by .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus,
 .fl-theme-by .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus {
-    outline: 0.2em solid #000;
+    outline: 0.3em solid #000;
 }
 
 .fl-theme-by .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
