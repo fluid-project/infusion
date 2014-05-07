@@ -72,7 +72,11 @@ var demo = demo || {};
                         type: "fluid.table.selfRender",
                         options: {
                             selectors: {
-                                root: ".demo-pager-table-data"
+                                root: ".demo-pager-table-data",
+                                "user-link": ".user-link",
+                                "user-comment": ".user-comment",
+                                "user-role": ".user-role",
+                                "user-email": ".user-email"
                             },
                             rendererOptions: {debugMode: false} // Change this to true to diagnose rendering issues
                         }

@@ -339,8 +339,11 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         selectors: {
             root: ".flc-pager-body-template",
-            headerSortStylisticOffset: "{table}.options.selectors.headerSortStylisticOffset"
+            headerSortStylisticOffset: "{table}.options.selectors.headerSortStylisticOffset",
+            header: ".flc-table-header",
+            row: ".flc-table-row"
         },
+        repeatingSelectors: ["header", "row"],
         selectorsToIgnore: ["root", "headerSortStylisticOffset"],
         styles: {
             root: "fl-pager",
@@ -356,8 +359,8 @@ var fluid_1_5 = fluid_1_5 || {};
         },
         keyStrategy: "id",
         keyPrefix: "",
-        row: "row:",
-        header: "header:",
+        row: "row:", // should match selector name, deprecated after v1.5
+        header: "header:", // should match selector name, deprecated after v1.5
         strings: "{table}.options.strings",
         columnDefs: "{table}.options.columnDefs",
         // Options passed upstream to the renderer
