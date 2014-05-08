@@ -1,7 +1,7 @@
 /*
 Copyright 2008-2009 University of Cambridge
 Copyright 2008-2009 University of Toronto
-Copyright 2010 OCAD University
+Copyright 2010-2014 OCAD University
 Copyright 2010 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -72,7 +72,11 @@ var demo = demo || {};
                         type: "fluid.table.selfRender",
                         options: {
                             selectors: {
-                                root: ".demo-pager-table-data"
+                                root: ".demo-pager-table-data",
+                                "user-link": ".demo-user-link",
+                                "user-comment": ".demo-user-comment",
+                                "user-role": ".demo-user-role",
+                                "user-email": ".demo-user-email"
                             },
                             rendererOptions: {debugMode: false} // Change this to true to diagnose rendering issues
                         }
