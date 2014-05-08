@@ -93,7 +93,12 @@ var sakai = sakai || {};
                         type: "fluid.table.selfRender",
                         options: {
                             selectors: {
-                                root: ".site-setting-body"
+                                root: ".site-setting-body",
+                                selection: ".demo-selection",
+                                "user-link": ".demo-user-link",
+                                "user-email": ".demo-user-email",
+                                "user-role": ".demo-user-role",
+                                "user-status": ".demo-user-status"
                             },
                             renderOptions: {debugMode: false}
                         }
