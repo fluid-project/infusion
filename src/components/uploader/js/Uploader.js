@@ -120,22 +120,6 @@ var fluid_1_5 = fluid_1_5 || {};
         that.totalProgress.hide();
     };
 
-    // TODO: Refactor this to be a general ARIA utility
-    fluid.uploader.ariaLiveRegionUpdater = function (statusRegion, totalFileStatusText, events) {
-        statusRegion.attr("role", "log");
-        statusRegion.attr("aria-live", "assertive");
-        statusRegion.attr("aria-relevant", "text");
-        statusRegion.attr("aria-atomic", "true");
-
-        var regionUpdater = function () {
-            statusRegion.text(totalFileStatusText.text());
-        };
-
-        events.afterFileDialog.addListener(regionUpdater);
-        events.afterFileRemoved.addListener(regionUpdater);
-        events.afterUploadComplete.addListener(regionUpdater);
-    };
-
     fluid.uploader.renderUploadTotalMessage = function (that) {
         // Render template for the total file status message.
         var numReadyFiles = that.queue.getReadyFiles().length;
@@ -426,7 +410,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         });
     };
-
+    fluid.setLogging(true);
     /**
      * Multiple file Uploader implementation. Use fluid.uploader() for IoC-resolved, progressively
      * enhanceable Uploader, or call this directly if you don't want support for old-style single uploads
@@ -437,6 +421,16 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uploader.multiFileUploader", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         nickName: "uploader",
+        members: {
+            totalFileStatusTextId: {
+                expander: {
+                    // create an id for that.dom.container, if it does not have one already,
+                    // and set that.totalFileStatusTextIdId to the id value
+                    funcName: "fluid.allocateSimpleId",
+                    args: "{that}.dom.totalFileStatusText"
+                }
+            }
+        },
         invokers: {
             /**
              * Opens the native OS browse file dialog.
@@ -467,10 +461,6 @@ var fluid_1_5 = fluid_1_5 || {};
             stop: {
                 funcName: "fluid.uploader.stop",
                 args: ["{that}.strategy.remote", "{that}.events.onUploadStop"]
-            },
-            statusUpdater: {
-                funcName: "fluid.uploader.ariaLiveRegionUpdater",
-                args: ["{that}.dom.statusRegion", "{that}.dom.totalFileStatusText", "{that}.events"]
             }
         },
 
@@ -530,7 +520,6 @@ var fluid_1_5 = fluid_1_5 || {};
             totalFileStatusText: ".flc-uploader-total-progress-text",
             fileUploadLimitText: ".flc-uploader-upload-limit-text",
             instructions: ".flc-uploader-browse-instructions",
-            statusRegion: ".flc-uploader-status-region",
             errorsPanel: ".flc-uploader-errorsPanel"
         },
         noAutoFocus: { // Specifies a member of "focusWithEvent" which the uploader will not attempt to automatically honour
@@ -589,6 +578,22 @@ var fluid_1_5 = fluid_1_5 || {};
                 "this": "{that}.dom.pauseButton",
                 method: "click",
                 args: "{that}.stop"
+            }, {
+                "this": "{that}.dom.totalFileStatusText",
+                method: "attr",
+                args: [{
+                    "role": "log",
+                    "aria-live": "assertive",
+                    "aria-relevant": "text",
+                    "aria-atomic": "true"
+                }]
+            }, {
+                "this": "{that}.dom.fileQueue",
+                method: "attr",
+                args: [{
+                    "aria-controls": "{that}.totalFileStatusTextId",
+                    "aria-labelledby": "{that}.totalFileStatusTextId"
+                }]
             }],
             // Namespace all our standard listeners so they are easy to override
             "afterFileDialog.uploader": {
@@ -668,7 +673,6 @@ var fluid_1_5 = fluid_1_5 || {};
         fluid.uploader.disableElement(that, that.locate("uploadButton"));
 
         fluid.uploader.updateQueueSummaryText(that);
-        that.statusUpdater();
         fluid.uploader.renderFileUploadLimit(that);
 
         // Uploader uses application-style keyboard conventions, so give it a suitable role.
