@@ -1040,6 +1040,103 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         fluid.tests.assertTransactionsConcluded(that);
     });
+    
+    /** FLUID-5361 listener order notification test **/
+    
+    fluid.tests.priorityRecorder = function (that, priority) {
+        that.priorityLog.push(priority);
+    };
+    
+    fluid.tests.recordAndDestroy = function (head, priority, that) {
+        head.priorityLog.push(priority);
+        if (head.destroyNow) {
+            that.applier.modelChanged.removeListener("priority2");
+        }
+    }
+    
+    fluid.defaults("fluid.tests.fluid5361head", {
+        gradeNames: ["fluid.tests.fluid5024head", "autoInit"],
+        members: {
+            priorityLog: []
+        },
+        invokers: {
+            recordPriority: "fluid.tests.priorityRecorder"
+        },
+        components: {
+            child1: {
+                options: {
+                    modelListeners: {
+                        celsius: [{
+                            func: "{fluid5361head}.recordPriority",
+                            priority: 1,
+                            namespace: "priority1",
+                            args: ["{fluid5361head}", 1, "{that}"]
+                        }, {
+                            func: "{fluid5361head}.recordPriority",
+                            priority: 2,
+                            namespace: "priority2", 
+                            args: ["{fluid5361head}", 2, "{that}"]
+                        }, {
+                            func: "{fluid5361head}.recordPriority",
+                            priority: "last",
+                            args: ["{fluid5361head}", "last", "{that}"]
+                        }
+                        ]
+                    }
+                }
+            },
+            child2: {
+                options: {
+                    modelListeners: {
+                        "fahrenheit": [{
+                            path: "fahrenheit",
+                            func: "{fluid5361head}.recordPriority",
+                            priority: 1,
+                            args: ["{fluid5361head}", 1, "{that}"]
+                        }, {
+                            path: "fahrenheit",
+                            func: "{fluid5361head}.recordPriority",
+                            priority: 2,
+                            namespace: "priority2",
+                            args: ["{fluid5361head}", 2, "{that}"]
+                        }, {
+                            path: "fahrenheit",
+                            func: "{fluid5361head}.recordPriority",
+                            priority: "last",
+                            args: ["{fluid5361head}", "last", "{that}"]
+                        }
+                        ]
+                    }
+                }
+            }
+        } 
+    });
+    
+    fluid.defaults("fluid.tests.fluid5361destroyingHead", {
+        gradeNames: ["fluid.tests.fluid5361head", "autoInit"],
+        invokers: {
+            recordPriority: "fluid.tests.recordAndDestroy"
+        }
+    });
+
+    jqUnit.test("FLUID-5361: Model relay with model transformation", function () {
+        var that = fluid.tests.fluid5361head();
+        that.priorityLog = [];
+        that.child1.applier.change("celsius", 25);
+        var expected = [1, 1, 2, 2, "last", "last"];
+        jqUnit.assertDeepEq("Model notifications globally sorted by priority", expected, that.priorityLog);
+        
+        var that2 = fluid.tests.fluid5361destroyingHead();
+        that2.priorityLog = [];
+        that2.destroyNo2 = true;
+        that2.child1.applier.change("celsius", 25);
+
+        jqUnit.assertDeepEq("Model notifications globally sorted by priority, with frozen listener removal", expected, that2.priorityLog);
+        that2.priorityLog = [];
+        that2.child1.applier.change("celsius", 30);
+        var expected2 = [1, 1, "last", "last"];
+        jqUnit.assertDeepEq("Model notifications globally sorted by priority, with actioned listener removal", expected2, that2.priorityLog); 
+    });
 
     /** Demonstrate resolving a set of model references which is cyclic in components (although not in values), as well as
      * double relay and longer "transform" form of relay specification */
