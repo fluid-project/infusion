@@ -214,42 +214,24 @@ var fluid_1_5 = fluid_1_5 || {};
         that.totalProgress.update(100, totalProgressStr);
     };
 
-    /*
-     * Summarizes the status of all the files in the file queue.
-     */
-    fluid.uploader.updateQueueSummaryText = function (that) {
-        var fileQueueTable = that.locate("fileQueue");
-        if (that.queue.files.length === 0) {
-            fileQueueTable.attr("summary", that.options.strings.queue.emptyQueue);
-        } else {
-            var queueSummary = fluid.stringTemplate(that.options.strings.queue.queueSummary, {
-                totalUploaded: that.queue.getUploadedFiles().length,
-                totalInUploadQueue: that.queue.files.length - that.queue.getUploadedFiles().length
-            });
-            fileQueueTable.attr("summary", queueSummary);
-        }
-    };
-
     fluid.uploader.updateStateAfterFileDialog = function (that) {
         var queueLength = that.queue.getReadyFiles().length;
         if (queueLength > 0) {
             fluid.uploader[queueLength === that.options.queueSettings.fileUploadLimit ? "setStateFull" : "setStateLoaded"](that);
             fluid.uploader.renderUploadTotalMessage(that);
             that.locate(that.options.focusWithEvent.afterFileDialog).focus();
-            fluid.uploader.updateQueueSummaryText(that);
+
         }
     };
 
     fluid.uploader.updateStateAfterFileRemoval = function (that) {
         fluid.uploader[that.queue.getReadyFiles().length === 0 ? "setStateEmpty" : "setStateLoaded"] (that);
         fluid.uploader.renderUploadTotalMessage(that);
-        fluid.uploader.updateQueueSummaryText(that);
     };
 
     fluid.uploader.updateStateAfterCompletion = function (that) {
         fluid.uploader[that.queue.getReadyFiles().length === 0 ? "setStateDone" : "setStateLoaded"] (that);
         fluid.uploader.updateTotalAtCompletion(that);
-        fluid.uploader.updateQueueSummaryText(that);
     };
 
     fluid.uploader.uploadNextOrFinish = function (that) {
@@ -660,10 +642,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 stopUpload: "Stop Upload",
                 cancelRemaning: "Cancel remaining Uploads",
                 resumeUpload: "Resume Upload"
-            },
-            queue: {
-                emptyQueue: "File list: No files waiting to be uploaded.",
-                queueSummary: "File list: %totalUploaded files uploaded, %totalInUploadQueue file waiting to be uploaded."
             }
         }
     });
@@ -672,7 +650,6 @@ var fluid_1_5 = fluid_1_5 || {};
         // Upload button should not be enabled until there are files to upload
         fluid.uploader.disableElement(that, that.locate("uploadButton"));
 
-        fluid.uploader.updateQueueSummaryText(that);
         fluid.uploader.renderFileUploadLimit(that);
 
         // Uploader uses application-style keyboard conventions, so give it a suitable role.
