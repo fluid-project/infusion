@@ -73,10 +73,10 @@ var demo = demo || {};
                         options: {
                             selectors: {
                                 root: ".demo-pager-table-data",
-                                "user-link": ".user-link",
-                                "user-comment": ".user-comment",
-                                "user-role": ".user-role",
-                                "user-email": ".user-email"
+                                "user-link": ".demo-user-link",
+                                "user-comment": ".demo-user-comment",
+                                "user-role": ".demo-user-role",
+                                "user-email": ".demo-user-email"
                             },
                             rendererOptions: {debugMode: false} // Change this to true to diagnose rendering issues
                         }

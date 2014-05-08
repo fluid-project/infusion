@@ -66,10 +66,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             bodyRenderer: {
                 options: {
                     selectors: {
-                        category: ".category",
-                        breed: ".breed",
-                        origin: ".origin",
-                        animal: ".animal"
+                        category: ".tests-category",
+                        breed: ".tests-breed",
+                        origin: ".tests-origin",
+                        animal: ".tests-animal"
                     }
                 }
             }
