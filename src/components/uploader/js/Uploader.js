@@ -188,6 +188,8 @@ var fluid_1_5 = fluid_1_5 || {};
         var numFilesInBatch = batch.files.length;
         var fileLabelStr = fluid.uploader.fileOrFiles(that, numFilesInBatch);
 
+        var uploadingSize = batch.totalBytesUploaded + that.queue.sizeOfUploadedFiles();
+
         var totalProgressStr = fluid.stringTemplate(that.options.strings.progress.totalProgressLabel, {
             curFileN: batch.fileIdx,
             totalFilesN: numFilesInBatch,
@@ -195,7 +197,7 @@ var fluid_1_5 = fluid_1_5 || {};
             currBytes: fluid.uploader.formatFileSize(batch.totalBytesUploaded),
             totalBytes: fluid.uploader.formatFileSize(batch.totalBytes),
             uploadedCount: that.queue.getUploadedFiles().length,
-            uploadedSize: fluid.uploader.formatFileSize(batch.totalBytesUploaded),
+            uploadedSize: fluid.uploader.formatFileSize(uploadingSize),
             totalCount: that.queue.files.length,
             totalSize: fluid.uploader.formatFileSize(that.queue.totalBytes())
         });
