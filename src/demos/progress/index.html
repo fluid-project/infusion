@@ -1,6 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
@@ -14,7 +13,7 @@
     <script type="text/javascript" src="../../lib/jquery/ui/js/jquery.ui.core.js"></script>
     <script type="text/javascript" src="../../framework/core/js/Fluid.js"></script>
     <script type="text/javascript" src="../../framework/core/js/FluidIoC.js"></script>
-    <script type="text/javascript" src="../../framework/core/js/FluidDocument.js"></script>      
+    <script type="text/javascript" src="../../framework/core/js/FluidDocument.js"></script>
     <script type="text/javascript" src="../../framework/core/js/FluidView.js"></script>
     <script type="text/javascript" src="../../framework/core/js/DataBinding.js"></script>
 
@@ -64,22 +63,23 @@
         <div class="demo-progress-table-container">
 
             <!-- The customer's order. -->
-            <table summary="This table summarizes the items you have ordered for delivery.">
+            <table>
+                <caption>Order Summary</caption>
                 <tr>
                      <th>Item</th>
-                     <th><abbr title="Quantity">Qty.</abrr></th>
+                     <th><abbr title="Quantity">Qty.</abbr></th>
                      <th>Price</th>
                 </tr>
 
                 <tr>
                      <td>Apples</td>
-                     <td>1<abbr title="pound">lb.</abrr></td>
+                     <td>1<abbr title="pound">lb.</abbr></td>
                      <td>$ 1.12</td>
                 </tr>
 
                 <tr>
                      <td>Bananas</td>
-                     <td>2<abbr title="pounds">lb.</abrr></td>
+                     <td>2<abbr title="pounds">lb.</abbr></td>
                      <td>$ 2.10</td>
                 </tr>
 
@@ -90,14 +90,14 @@
                 </tr>
 
                 <tr>
-                     <td>8<abbr title="pounds">lb.</abrr> Rice</td>
+                     <td>8<abbr title="pounds">lb.</abbr> Rice</td>
                      <td>1</td>
                      <td>$ 5.99</td>
                 </tr>
 
                  <tr>
                      <td>Ground Coffee</td>
-                     <td>1<abbr title="pound">lb.</abrr></td>
+                     <td>1<abbr title="pound">lb.</abbr></td>
                      <td>$10.99</td>
                 </tr>
           </table>
@@ -105,18 +105,18 @@
           <!-- Subtotal, surcharge, and order total table. -->
           <table>
                 <tr>
-                     <td class="demo-progress-total-label">SUBTOTAL</td>
-                     <td headers="subtotal">$23.19</td>
+                     <th id="demo-subtotal" class="demo-progress-total-label">SUBTOTAL</th>
+                     <td headers="demo-subtotal">$23.19</td>
                 </tr>
 
                  <tr>
-                     <td class="demo-progress-total-label">Service Charge</td>
-                     <td headers="service">$ 7.32</td>
+                     <th id="demo-service" class="demo-progress-total-label">Service Charge</th>
+                     <td headers="demo-service">$ 7.32</td>
                 </tr>
 
                 <tr>
-                     <td class="demo-progress-total-label">TOTAL</td>
-                     <td headers="total">$30.51</td>
+                     <th id="demo-total" class="demo-progress-total-label">TOTAL</th>
+                     <td headers="demo-total">$30.51</td>
                 </tr>
 
         </table>
