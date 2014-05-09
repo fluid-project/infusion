@@ -77,14 +77,14 @@
      * positions of fl-overviewPanel-contents are adjusted.
      */
     top: 6.5em;     /* Change this if needed - offset the height of fl-overviewPanel-title + 1em (for line-height compensation).  */
-    bottom: 14.5em; /* Change this if needed - offset the height of fl-overviewPanel-footer. */
+    bottom: 18.5em; /* Change this if needed - offset the height of fl-overviewPanel-footer. */
     padding: 1.5em;
     position: absolute;
     overflow: auto;
 }
 
 .fl-overviewPanel .fl-overviewPanel-footer {
-    height: 14.5em;
+    height: 18.5em;
     position: absolute;
     bottom: 0;
     left: 0;
@@ -150,11 +150,11 @@
     outline: 0.2em solid rgba(51,51,51,.96);
 }
 
-.fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:hover{
+.fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:hover {
     background-color: #444;
 }
 
-.fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:before{
+.fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:before {
     content: "\e600";
 }
 
@@ -176,11 +176,10 @@
     visibility: hidden;
 }
 
-.fl-overviewPanel-container.fl-overviewPanel-hidden{
+.fl-overviewPanel-container.fl-overviewPanel-hidden {
     /* Make this container essentially hidden. Some dimensions need to be given to avoid a problem with rendering on Safari. */
     width: 0.01em; 
     height: 0.01em; 
-    
     transition: all 0.2s linear; /* This transition creates the desired sliding effect. */ 
 }
 
@@ -231,7 +230,7 @@
     padding-top: 0.5em;
 }
 
-.fl-overviewPanel .fl-overviewPanel-links ul{
+.fl-overviewPanel .fl-overviewPanel-links ul {
     margin: 0 auto;
     padding-left: 0;
     width: 80%;
@@ -240,7 +239,7 @@
 .fl-overviewPanel .fl-overviewPanel-links ul li {
     display: inline-block;
     list-style: none outside none;
-    margin: 1em 0 0;
+    margin-bottom: 1.5em ;
     width: 49%;
 }
 
@@ -248,7 +247,18 @@
     color: #fff;
     text-decoration: none;
     transition: color 0.2s ease;
+    width: 100%;
+    text-align:center;
 }
+
+.fl-overviewPanel .fl-overviewPanel-links ul li a:hover {
+    color: #ffcc00;
+}
+
+.fl-overviewPanel-iconContainer {
+    margin: 0 auto;
+}
+
 
 .fl-overviewPanel .fl-overviewPanel-footer .fl-overviewPanel-links .fl-overviewPanel-links-icon {
     display: inline-block;
@@ -270,15 +280,11 @@
     font-size: 1.2em;
 }
 
-.fl-overviewPanel .fl-overviewPanel-links ul li a:hover {
-    color: #ffcc00;
-}
-
 .fl-overviewPanel .fl-overviewPanel-links ul li a:hover .fl-overviewPanel-links-icon{
     background-color: #ffcc00;
 }
 
-.fl-overviewPanel .fl-overviewPanel-links-icon-api:before{
+.fl-overviewPanel .fl-overviewPanel-links-icon-api:before {
     content: "\e602";
 }
 
@@ -294,6 +300,14 @@
     content: "\e603";
 }
 
+.fl-overviewPanel-demoCodeLinkText,
+.fl-overviewPanel-apiLinkText,
+.fl-overviewPanel-designLinkText,
+.fl-overviewPanel-infusionCodeLinkText {
+    display:block;
+}
+
+
 .fl-overviewPanel .fl-overviewPanel-feedback-link {
     text-align: center;
     margin-top: 1em;
@@ -303,7 +317,7 @@
     display:block;
 }
 
-.fl-overviewPanel .fl-overviewPanel-feedback-link a{
+.fl-overviewPanel .fl-overviewPanel-feedback-link a {
     color: #FFCC00;
 }
 
@@ -354,22 +368,27 @@
     color: #fff;
 }
 
-.fl-theme-bw .fl-overviewPanel a { text-decoration: underline; }
+.fl-theme-bw .fl-overviewPanel a {
+    text-decoration: underline;
+}
 
-.fl-theme-bw .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a{
+.fl-theme-bw .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
     outline: 0.2em solid #fff;
 }
 
 .fl-theme-bw .fl-overviewPanel *:focus,
 .fl-theme-bw .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus,
-.fl-theme-bw .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus  {
+.fl-theme-bw .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus {
     outline: 0.3em solid #000;
 }
 
 .fl-theme-bw .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
     outline: 0.1em solid #000;
 }
-.fl-theme-bw .fl-overviewPanel-instructions { border: 0.2em solid #000; }
+
+.fl-theme-bw .fl-overviewPanel-instructions {
+    border: 0.2em solid #000;
+}
 
 
 /* white on black */
@@ -394,15 +413,17 @@
     color: #000;
 }
 
-.fl-theme-wb .fl-overviewPanel a { text-decoration: underline; }
+.fl-theme-wb .fl-overviewPanel a {
+    text-decoration: underline;
+}
 
-.fl-theme-wb .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a{
+.fl-theme-wb .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
     outline: 0.2em solid #000;
 }
 
 .fl-theme-wb .fl-overviewPanel *:focus,
 .fl-theme-wb .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus,
-.fl-theme-wb .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus  {
+.fl-theme-wb .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus {
     outline: 0.3em solid #fff;
 }
 
@@ -410,7 +431,9 @@
     outline: 0.1em solid #fff;
 }
 
-.fl-theme-wb .fl-overviewPanel-instructions { border: 0.2em solid #fff; }
+.fl-theme-wb .fl-overviewPanel-instructions {
+    border: 0.2em solid #fff;
+}
 
 
 /* Low contrast: light grey on dark grey */
@@ -435,9 +458,11 @@
     color: #555;
 }
 
-.fl-theme-lgdg .fl-overviewPanel a { text-decoration: underline; }
+.fl-theme-lgdg .fl-overviewPanel a {
+    text-decoration: underline;
+}
 
-.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a{
+.fl-theme-lgdg .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
     outline: 0.2em solid #555;
 }
 
@@ -451,7 +476,9 @@
     outline: 0.1em solid #bdbdbb;
 }
 
-.fl-theme-lgdg .fl-overviewPanel-instructions { border: 0.2em solid #bdbdbb; }
+.fl-theme-lgdg .fl-overviewPanel-instructions {
+    border: 0.2em solid #bdbdbb;
+}
 
 /* Yellow on Black */
 .fl-theme-yb .fl-overviewPanel,
@@ -475,23 +502,27 @@
     color: #000;
 }
 
-.fl-theme-yb .fl-overviewPanel a { text-decoration: underline; }
+.fl-theme-yb .fl-overviewPanel a {
+    text-decoration: underline;
+}
 
-.fl-theme-yb .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a{
+.fl-theme-yb .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
     outline: 0.2em solid #000;
 }
 
 .fl-theme-yb .fl-overviewPanel *:focus,
 .fl-theme-yb .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus,
 .fl-theme-yb .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:focus {
-     outline: 0.3em solid #FFFF00; 
- }
+    outline: 0.3em solid #FFFF00; 
+}
  
 .fl-theme-yb .fl-overviewPanel-hidden .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
     outline: 0.1em solid #FFFF00;
 }
 
-.fl-theme-yb .fl-overviewPanel-instructions { border: 0.2em solid #FFFF00; }
+.fl-theme-yb .fl-overviewPanel-instructions {
+    border: 0.2em solid #FFFF00;
+}
 
 /* Black on Yellow */
 .fl-theme-by .fl-overviewPanel,
@@ -499,7 +530,7 @@
 .fl-theme-by .fl-overviewPanel a,
 .fl-theme-by .fl-overviewPanel .fl-overviewPanel-links-icon-api,
 .fl-theme-by .fl-overviewPanel .fl-overviewPanel-links-icon-github,
-.fl-theme-by .fl-overviewPanel .fl-overviewPanel-links-icon-design  {
+.fl-theme-by .fl-overviewPanel .fl-overviewPanel-links-icon-design {
     color: #000;
     background-color: #FFFF00;
 }
@@ -523,7 +554,7 @@
     text-decoration: underline;
 }
 
-.fl-theme-by .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a{
+.fl-theme-by .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a {
     outline: 0.2em solid #FFFF00;
 }
 
@@ -537,4 +568,6 @@
     outline: 0.1em solid #000;
 }
 
-.fl-theme-by .fl-overviewPanel-instructions { border: 0.2em solid #000; }
+.fl-theme-by .fl-overviewPanel-instructions {
+    border: 0.2em solid #000;
+}
