@@ -1,5 +1,5 @@
 /*
-Copyright 2010 OCAD University
+Copyright 2010 - 2014 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -232,8 +232,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("progressiveCheckerForComponent", function () {
         var that = fluid.tests.enhanceTarget();
         var checkerGrades = that.progressiveChecker.options.gradeNames;
-        jqUnit.assertTrue("Context name resolved into checker grade", checkerGrades.indexOf("fluid.enhanceTarget.test") !== -1);
-        jqUnit.assertTrue("Horizon name resolved into checker grade", checkerGrades.indexOf("fluid.tests.enhanceTarget.progressiveCheck") !== -1);
+        jqUnit.assertTrue("Context name resolved into checker grade", $.inArray("fluid.enhanceTarget.test", checkerGrades) !== -1);
+        jqUnit.assertTrue("Horizon name resolved into checker grade", $.inArray("fluid.tests.enhanceTarget.progressiveCheck", checkerGrades) !== -1);
     });
 
 })(jQuery);
