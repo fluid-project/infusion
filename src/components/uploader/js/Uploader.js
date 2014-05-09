@@ -121,16 +121,28 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.uploader.renderUploadTotalMessage = function (that) {
-        // Render template for the total file status message.
+        // Preservered for backwards compatibility, should be refactored post v1.5
         var numReadyFiles = that.queue.getReadyFiles().length;
         var bytesReadyFiles = that.queue.sizeOfReadyFiles();
         var fileLabelStr = fluid.uploader.fileOrFiles(that, numReadyFiles);
 
+        var totalCount = that.queue.files.length;
+        var noFilesMsg = that.options.strings.progress.noFiles;
+
         var totalStateStr = fluid.stringTemplate(that.options.strings.progress.toUploadLabel, {
             fileCount: numReadyFiles,
             fileLabel: fileLabelStr,
-            totalBytes: fluid.uploader.formatFileSize(bytesReadyFiles)
+            totalBytes: fluid.uploader.formatFileSize(bytesReadyFiles),
+            uploadedCount: that.queue.getUploadedFiles().length,
+            uploadedSize: fluid.uploader.formatFileSize(that.queue.sizeOfUploadedFiles()),
+            totalCount: totalCount,
+            totalSize: fluid.uploader.formatFileSize(that.queue.totalBytes())
         });
+
+        if (!totalCount && noFilesMsg) {
+            totalStateStr = noFilesMsg;
+        }
+
         that.locate("totalFileStatusText").html(totalStateStr);
     };
 
@@ -170,6 +182,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.uploader.updateTotalProgress = function (that) {
+        // Preservered for backwards compatibility, should be refactored post v1.5
         var batch = that.queue.currentBatch;
         var totalPercent = fluid.uploader.derivePercent(batch.totalBytesUploaded, batch.totalBytes);
         var numFilesInBatch = batch.files.length;
@@ -180,12 +193,18 @@ var fluid_1_5 = fluid_1_5 || {};
             totalFilesN: numFilesInBatch,
             fileLabel: fileLabelStr,
             currBytes: fluid.uploader.formatFileSize(batch.totalBytesUploaded),
-            totalBytes: fluid.uploader.formatFileSize(batch.totalBytes)
+            totalBytes: fluid.uploader.formatFileSize(batch.totalBytes),
+            uploadedCount: that.queue.getUploadedFiles().length,
+            uploadedSize: fluid.uploader.formatFileSize(batch.totalBytesUploaded),
+            totalCount: that.queue.files.length,
+            totalSize: fluid.uploader.formatFileSize(that.queue.totalBytes())
         });
+
         that.totalProgress.update(totalPercent, totalProgressStr);
     };
 
     fluid.uploader.updateTotalAtCompletion = function (that) {
+        // Preservered for backwards compatibility, should be refactored post v1.5
         var numErroredFiles = that.queue.getErroredFiles().length;
         var numTotalFiles = that.queue.files.length;
         var fileLabelStr = fluid.uploader.fileOrFiles(that, numTotalFiles);
@@ -208,7 +227,11 @@ var fluid_1_5 = fluid_1_5 || {};
             totalFilesN: numTotalFiles,
             errorString: errorStr,
             fileLabel: fileLabelStr,
-            totalCurrBytes: fluid.uploader.formatFileSize(that.queue.sizeOfUploadedFiles())
+            totalCurrBytes: fluid.uploader.formatFileSize(that.queue.sizeOfUploadedFiles()),
+            uploadedCount: that.queue.getUploadedFiles().length,
+            uploadedSize: fluid.uploader.formatFileSize(that.queue.sizeOfUploadedFiles()),
+            totalCount: that.queue.files.length,
+            totalSize: fluid.uploader.formatFileSize(that.queue.totalBytes())
         });
 
         that.totalProgress.update(100, totalProgressStr);
@@ -220,7 +243,6 @@ var fluid_1_5 = fluid_1_5 || {};
             fluid.uploader[queueLength === that.options.queueSettings.fileUploadLimit ? "setStateFull" : "setStateLoaded"](that);
             fluid.uploader.renderUploadTotalMessage(that);
             that.locate(that.options.focusWithEvent.afterFileDialog).focus();
-
         }
     };
 
@@ -627,9 +649,10 @@ var fluid_1_5 = fluid_1_5 || {};
         strings: {
             progress: {
                 fileUploadLimitLabel: "%fileUploadLimit %fileLabel maximum",
-                toUploadLabel: "To upload: %fileCount %fileLabel (%totalBytes)",
-                totalProgressLabel: "Uploading: %curFileN of %totalFilesN %fileLabel (%currBytes of %totalBytes)",
-                completedLabel: "Uploaded: %curFileN of %totalFilesN %fileLabel (%totalCurrBytes)%errorString",
+                noFiles: "0 files",
+                toUploadLabel: "%uploadedCount out of %totalCount files uploaded (%uploadedSize of %totalSize)",
+                totalProgressLabel: "%uploadedCount out of %totalCount files uploaded (%uploadedSize of %totalSize)",
+                completedLabel: "%uploadedCount out of %totalCount files uploaded (%uploadedSize of %totalSize)%errorString",
                 numberOfErrors: ", %errorsN %errorLabel",
                 singleFile: "file",
                 pluralFiles: "files",
@@ -651,6 +674,13 @@ var fluid_1_5 = fluid_1_5 || {};
         fluid.uploader.disableElement(that, that.locate("uploadButton"));
 
         fluid.uploader.renderFileUploadLimit(that);
+
+        // placed here for backwards compatibility, as a noFiles string
+        // may not be defined.
+        var noFilesMsg = that.options.strings.progress.noFiles;
+        if (noFilesMsg)  {
+            that.locate("totalFileStatusText").text(noFilesMsg);
+        }
 
         // Uploader uses application-style keyboard conventions, so give it a suitable role.
         that.container.attr("role", "application");
