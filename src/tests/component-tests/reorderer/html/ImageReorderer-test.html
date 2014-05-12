@@ -1,18 +1,13 @@
-<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:wairole="http://www.w3.org/2005/01/wai-rdf/GUIRoleTaxonomy#"
-  xmlns:aaa="http://www.w3.org/2005/07/aaa"
-  xmlns:rsf="http://ponder.org.uk/rsf">
+<!DOCTYPE html>
+<html>
 
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Fluid Image Reorderer Tests</title>
-    <link rsf:id="scr=contribute-style" type="text/css" rel="stylesheet" media="all" href="../../../../framework/fss/css/fss-reset-global.css" />
-    <link rsf:id="scr=contribute-style" type="text/css" rel="stylesheet" media="all" href="../../../../framework/fss/css/fss-base-global.css" />
-    <link rsf:id="scr=contribute-style" type="text/css" rel="stylesheet" media="all" href="../../../../components/reorderer/css/ImageReorderer.css" />
-    <link rsf:id="scr=contribute-style" type="text/css" rel="stylesheet" media="all" href="../../../../components/reorderer/css/Reorderer.css" />
+    <link type="text/css" rel="stylesheet" media="all" href="../../../../framework/fss/css/fss-reset-global.css" />
+    <link type="text/css" rel="stylesheet" media="all" href="../../../../framework/fss/css/fss-base-global.css" />
+    <link type="text/css" rel="stylesheet" media="all" href="../../../../components/reorderer/css/ImageReorderer.css" />
+    <link type="text/css" rel="stylesheet" media="all" href="../../../../components/reorderer/css/Reorderer.css" />
 
     <!--  This is the jqUnit test css file -->
     <link rel="stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
@@ -73,22 +68,22 @@
     <form id="reorder-form" class="fl-focus">
 
       <!-- lightbox-parent is used for testing setup and teardown -->
-      <div rsf:id="lightbox:" id="lightbox-parent" >
+      <div id="lightbox-parent" >
 
         <!--
           Declare the thumbnails as an ARIA grid, that is single-selectable, writeable, and, when
           first receives focus, has the first thumbnail focussed.
         -->
-        <div rsf:id="lightbox-temp-container:" id="gallery:::gallery-thumbs:::" class="image-container width-3-thumb">
+        <div id="gallery:::gallery-thumbs:::" class="image-container width-3-thumb">
 
           <!--
             Orderable items are divs denoted by ids in the following form.
             [lightbox-container-id] + lightbox-cell: + [index] + :
             The createLightboxFromIds() function expects this format when attaching the javascript behaviour of the Lightbox.
           -->
-          <div rsf:id="lightbox-cell:" class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:0:">
+          <div class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:0:">
 
-            <div rsf:id="lightbox-client-cell:">
+            <div>
 
               <!--  The RSF gallery contains the markup for this inner div in another template. -->
               <div class="fl-reorderer-image-inner-container">
@@ -108,11 +103,11 @@
               That is, 'value="0"' denotes the 0'th thumbnail; 'value="1"' the 1st,
               and so on.
             -->
-            <input rsf:id="reorder-index" id="gallery:::gallery-thumbs:::lightbox-cell:0:reorder-index" value="0" type="hidden"/>
+            <input id="gallery:::gallery-thumbs:::lightbox-cell:0:reorder-index" value="0" type="hidden"/>
           </div>
 
           <!--  The remainder of the lightbox cells are used for the stand alone lightbox and the tests, not the RSF gallery -->
-          <div rsf:id="scr=ignore" class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:1:">
+          <div class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:1:">
             <div>
               <div class="fl-reorderer-image-inner-container">
                 <a href="../../../../components/reorderer/images/Kiwano.jpg" >
@@ -126,7 +121,7 @@
             <input id="gallery:::gallery-thumbs:::lightbox-cell:1:reorder-index" value="1" type="hidden"/>
           </div>
 
-          <div rsf:id="scr=ignore" class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:2:">
+          <div class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:2:">
             <div>
               <div class="fl-reorderer-image-inner-container">
                 <a href="../../../../components/reorderer/images/Blackberry.jpg" >
@@ -140,7 +135,7 @@
             <input id="gallery:::gallery-thumbs:::lightbox-cell:2:reorder-index" value="2" type="hidden"/>
           </div>
 
-          <div rsf:id="scr=ignore" class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:3:">
+          <div class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:3:">
             <div>
               <div class="fl-reorderer-image-inner-container">
                 <a href="../../../../components/reorderer/images/Cherry.jpg">
@@ -154,7 +149,7 @@
             <input id="gallery:::gallery-thumbs:::lightbox-cell:3:reorder-index" value="3" type="hidden"/>
           </div>
 
-          <div rsf:id="scr=ignore" class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:4:">
+          <div class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:4:">
             <div>
               <div class="fl-reorderer-image-inner-container">
                 <a href="../../../../components/reorderer/images/Fig.jpg">
@@ -168,7 +163,7 @@
             <input id="gallery:::gallery-thumbs:::lightbox-cell:4:reorder-index" value="4" type="hidden"/>
           </div>
 
-          <div rsf:id="scr=ignore" class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:5:">
+          <div class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:5:">
             <div>
               <div class="fl-reorderer-image-inner-container">
                 <a href="../../../../components/reorderer/images/Grapes.jpg">
@@ -182,7 +177,7 @@
             <input id="gallery:::gallery-thumbs:::lightbox-cell:5:reorder-index" value="5" type="hidden"/>
           </div>
 
-          <div rsf:id="scr=ignore" class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:6:">
+          <div class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:6:">
             <div>
               <div class="fl-reorderer-image-inner-container">
                 <a href="../../../../components/reorderer/images/Kiwi.jpg" >
@@ -196,7 +191,7 @@
             <input id="gallery:::gallery-thumbs:::lightbox-cell:6:reorder-index" value="6" type="hidden"/>
           </div>
 
-          <div rsf:id="scr=ignore" class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:7:">
+          <div class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:7:">
             <div>
               <div class="fl-reorderer-image-inner-container">
                 <a href="../../../../components/reorderer/images/Kumquat.jpg">
@@ -210,7 +205,7 @@
             <input id="gallery:::gallery-thumbs:::lightbox-cell:7:reorder-index" value="7" type="hidden"/>
           </div>
 
-          <div rsf:id="scr=ignore" class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:8:">
+          <div class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:8:">
             <div>
               <div class="fl-reorderer-image-inner-container">
                 <a href="../../../../components/reorderer/images/Lemon.jpg">
@@ -224,7 +219,7 @@
             <input id="gallery:::gallery-thumbs:::lightbox-cell:8:reorder-index" value="8" type="hidden"/>
           </div>
 
-          <div rsf:id="scr=ignore" class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:9:">
+          <div class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:9:">
             <div>
               <div class="fl-reorderer-image-inner-container">
                 <a href="../../../../components/reorderer/images/Orange.jpg">
@@ -238,7 +233,7 @@
             <input id="gallery:::gallery-thumbs:::lightbox-cell:9:reorder-index" value="9" type="hidden"/>
           </div>
 
-          <div rsf:id="scr=ignore" class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:10:">
+          <div class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:10:">
             <div>
               <div class="fl-reorderer-image-inner-container">
                 <a href="../../../../components/reorderer/images/RedApple.jpg">
@@ -252,7 +247,7 @@
             <input id="gallery:::gallery-thumbs:::lightbox-cell:10:reorder-index" value="10" type="hidden"/>
           </div>
 
-          <div rsf:id="scr=ignore" class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:11:">
+          <div class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:11:">
             <div>
               <div class="fl-reorderer-image-inner-container">
                 <a href="../../../../components/reorderer/images/Tamarillo.jpg">
@@ -266,7 +261,7 @@
             <input id="gallery:::gallery-thumbs:::lightbox-cell:11:reorder-index" value="11" type="hidden"/>
           </div>
 
-          <div rsf:id="scr=ignore" class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:12:">
+          <div class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:12:">
             <div>
               <div class="fl-reorderer-image-inner-container">
                 <a href="../../../../components/reorderer/images/Mangosteen.jpg">
@@ -280,7 +275,7 @@
             <input id="gallery:::gallery-thumbs:::lightbox-cell:12:reorder-index" value="12" type="hidden"/>
           </div>
 
-          <div rsf:id="scr=ignore" class="float fl-reorderer-movable-default orderable" id="gallery:::gallery-thumbs:::lightbox-cell:13:">
+          <div class="float fl-reorderer-movable-default orderable" id="gallery:::gallery-thumbs:::lightbox-cell:13:">
             <div>
               <div class="fl-reorderer-image-inner-container">
                 <a href="../../../../components/reorderer/images/Banana.jpg">
@@ -296,7 +291,6 @@
         </div>
       </div>
 
-      <!-- Sample instruction message. In the RSF gallery, this is supplied by the server. -->
       <div class="fl-reorderer-instructions">
         <div class="screen-reader-instructions" tabindex="1">Image Reorderer: To use the keyboard:
                   Screen reader users turn off virtual cursor (insert + z).
