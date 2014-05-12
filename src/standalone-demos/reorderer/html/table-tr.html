@@ -1,7 +1,6 @@
-<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-ca">
+<html lang="en-ca">
     <head>
         <title>Reorder Table</title>
 
@@ -108,23 +107,22 @@
         <form method="post"
           action="http://garden.dmc.dc.umich.edu:8080/portal/tool/0ca44450-40ec-4925-b9d8-418626e146d8?panel=Main"
           name="announcementListForm">
-        <table cellspacing="0" border="0"
-          summary="Table contains a list of announcements. It is five or six columns wide and each row contains a single announcement. Column one indicates if the announcement has an attachment, column two contains the title of the announcement, column three has the name of the author, column four shows the recipient, column five contains the date and time of publication, column six, if present, contains a checkbox - selecting it will mean you want to remove this announcement. The following row will contain announcement text if site owner has set it to be so."
+        <table
           class="listHier lines nolines" id="todo-list"
           role="list"
           aria-multiselectable="false" aria-readonly="false"
           aria-disabled="false" tabindex="0">
           <tbody>
             <tr>
-              <th class="attach" id="numberField" />
-              <th class="attach" id="attach" />
+              <th class="attach" id="numberField"></th>
+              <th class="attach" id="attach"></th>
               <th id="subject">Subject</th>
               <th id="author">From</th>
               <th id="channel">For</th>
               <th id="date">Date</th>
               <th id="releaseDate">Beginning Date</th>
               <th id="retractDate">Ending Date</th>
-              <th />
+              <th></th>
             </tr>
 
             <tr id="myUniquePrefix.orderable4" tabindex="-1" role="listitem"
@@ -134,7 +132,7 @@
               <td style="white-space: nowrap;" class="attach"
                 headers="numberField"><input type="text" id="index4"
                 value="4" size="3" /> <input type="hidden" value="1"
-                id="holder4" size="3" /></td>
+                id="holder4" /></td>
               <td class="attach" headers="attach"> </td>
               <td headers="subject">
               <h4><a title="View announcement zzz"
@@ -158,7 +156,7 @@
               <td style="white-space: nowrap;" class="attach"
                 headers="numberField"><input type="text" id="index1"
                 value="1" size="3" /> <input type="hidden" value="2"
-                id="holder1" size="3" /></td>
+                id="holder1" /></td>
               <td class="attach" headers="attach"> </td>
               <td headers="subject">
               <h4><a title="View announcement aaa"
@@ -183,7 +181,7 @@
               <td style="white-space: nowrap;" class="attach"
                 headers="numberField"><input type="text" id="index2"
                 value="2" size="3" /> <input type="hidden" value="3"
-                id="holder2" size="3" /></td>
+                id="holder2" /></td>
               <td class="attach" headers="attach"> </td>
               <td headers="subject">
               <h4><a title="View announcement bbb"
@@ -208,7 +206,7 @@
               <td style="white-space: nowrap;" class="attach"
                 headers="numberField"><input type="text" id="index3"
                 value="3" size="3" /> <input type="hidden" value="4"
-                id="holder3" size="3" /></td>
+                id="holder3" /></td>
               <td class="attach" headers="attach"> </td>
               <td headers="subject">
               <h4><a title="View announcement ccc"
