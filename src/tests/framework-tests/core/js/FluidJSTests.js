@@ -640,9 +640,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.gradeUsingComponent();
     });
 
+
     /** FLUID-5288: Improved diagnostic for incomplete grade hierarchy **/
-
-
 
     jqUnit.test("FLUID-5288: Improved diagnostic for component with incomplete grade hierarchy", function () {
         fluid.pushSoftFailure(true);
@@ -785,5 +784,5 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The value returned from the bind should be the same as the native call", jqElm.text(), fluid.bind(jqElm, "text"));
         jqUnit.assertEquals("The correct value should be returned", 6, fluid.bind(testObj, "fn", [1, 2]));
     });
-
+    
 })(jQuery);

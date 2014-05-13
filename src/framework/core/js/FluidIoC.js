@@ -722,6 +722,9 @@ var fluid_1_5 = fluid_1_5 || {};
     // unsupported, NON-API function
     fluid.makeStackFetcher = function (parentThat, localRecord) {
         var fetcher = function (parsed) {
+            if (parentThat && parentThat.destroy === fluid.destroyedMarker) {
+                fluid.fail("Cannot resolve reference ", parsed, " from component " + fluid.dumpThat(parentThat) + " which has been destroyed");
+            }
             var context = parsed.context;
             if (localRecord && localRecordExpected.test(context)) {
                 var fetched = fluid.get(localRecord[context], parsed.path);
@@ -857,7 +860,7 @@ var fluid_1_5 = fluid_1_5 || {};
             // only recurse on components which were created in place - if the id record disagrees with the
             // recurse path, it must have been injected
             if (childRecord && childRecord.path === childPath) {
-                fluid.fireEvent(child, "events.onDestroy", [child, name, component]);
+                fluid.doDestroy(child, name, component);
                 // TODO: There needs to be a call to fluid.clearDistributions here
                 fluid.clearListeners(childRecord);
                 fluid.visitComponentChildren(child, function(gchild, gchildname, newPath, parentPath) {
@@ -1024,7 +1027,7 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.makeIoCRootDestroy = function (instantiator, that) {
         return function () {
             instantiator.clearComponent(that, "", that, null, true);
-            fluid.fireEvent(that, "events.onDestroy", [that, "", null]);
+            fluid.doDestroy(that);
             fluid.fireEvent(that, "events.afterDestroy", [that, "", null]);
         };
     };
