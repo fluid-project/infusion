@@ -21,17 +21,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
-    fluid.fetchResources(resources, function(resourceSpecs) {
-        var bundle = JSON.parse(resourceSpecs.bundle.resourceText);
-        fluid.overviewPanel(".flc-overviewPanel", {
-            resources: {
-                template: {
-                    href: bundle.templateUrl || "../../components/overviewPanel/html/overviewPanelTemplate.html"
-                }
-            },
-            strings: bundle.strings,
-            markup: bundle.markup,
-            links: bundle.links
+    $(document).ready(function () {
+        fluid.fetchResources(resources, function(resourceSpecs) {
+            var bundle = JSON.parse(resourceSpecs.bundle.resourceText);
+            fluid.overviewPanel(".flc-overviewPanel", {
+                resources: {
+                    template: {
+                        href: bundle.templateUrl || "../../components/overviewPanel/html/overviewPanelTemplate.html"
+                    }
+                },
+                strings: bundle.strings,
+                markup: bundle.markup,
+                links: bundle.links
+            });
         });
     });
 })(jQuery, fluid);
