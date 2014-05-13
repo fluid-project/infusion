@@ -249,10 +249,27 @@
     transition: color 0.2s ease;
     width: 100%;
     text-align:center;
+    display: inline-block;
+}
+
+.fl-overviewPanel .fl-overviewPanel-links ul li a:focus .fl-overviewPanel-iconContainer,
+.fl-overviewPanel .fl-overviewPanel-links ul li a:focus .fl-overviewPanel-demoCodeLinkText,
+.fl-overviewPanel .fl-overviewPanel-links ul li a:focus .fl-overviewPanel-apiLinkText,
+.fl-overviewPanel .fl-overviewPanel-links ul li a:focus .fl-overviewPanel-designLinkText,
+.fl-overviewPanel .fl-overviewPanel-links ul li a:focus .fl-overviewPanel-infusionCodeLinkText {
+    background: #444;
 }
 
 .fl-overviewPanel .fl-overviewPanel-links ul li a:hover {
     color: #ffcc00;
+}
+
+.fl-overviewPanel .fl-overviewPanel-links ul li a:hover .fl-overviewPanel-iconContainer,
+.fl-overviewPanel .fl-overviewPanel-links ul li a:hover .fl-overviewPanel-demoCodeLinkText,
+.fl-overviewPanel .fl-overviewPanel-links ul li a:hover .fl-overviewPanel-apiLinkText,
+.fl-overviewPanel .fl-overviewPanel-links ul li a:hover .fl-overviewPanel-designLinkText,
+.fl-overviewPanel .fl-overviewPanel-links ul li a:hover .fl-overviewPanel-infusionCodeLinkText {
+    background: #444;
 }
 
 .fl-overviewPanel-iconContainer {
