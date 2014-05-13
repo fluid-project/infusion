@@ -431,13 +431,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             testset.testLoad(uploader, statusRegion, testset);
         };
 
-        var checkFlashIntegration = function (uploader, testset) {
-            checkMultiFileUploaderOptions(uploader, "fluid.uploader.swfUploadStrategy");
-            mockSWFUploadLocal(uploader.strategy.local);
-            checkUploaderIntegration(uploader, addFilesSWF, testset);
-            jqUnit.start();
-        };
-
         var checkHTML5Integration = function (uploader, testset) {
             checkMultiFileUploaderOptions(uploader, "fluid.uploader.html5Strategy");
             checkUploaderIntegration(uploader, addFiles, testset);
@@ -492,28 +485,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 test: checkHTML5Integration,
                 demo: false
-            },
-            {
-                key: "Flash",
-                label: "Flash integration tests",
-                contextTag: [{
-                    type: "typeTag",
-                    typeName: "fluid.browser.supportsFlash"
-                }, {
-                    type: "typeTag",
-                    typeName: "fluid.uploader.flash.10"
-                }
-                ],
-                demoRemote: {
-                    type: "typeTag",
-                    typeName: "fluid.tests.demoRemote"
-                },
-                uploaderConfig: {
-                    type: "progressiveCheckerForComponent",
-                    componentName: "fluid.uploader"
-                },
-                test: checkFlashIntegration,
-                demo: true
             }
         ];
 

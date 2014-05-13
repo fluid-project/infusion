@@ -8,8 +8,6 @@
             "./js/FileQueue.js",
             "./js/FileQueueView.js",
             "./js/ErrorPanel.js",
-            "./js/FlashUploaderSupport.js",
-            "./js/Flash9UploaderSupport.js",
             "./js/HTML5UploaderSupport.js",
             "./js/DemoUploadManager.js",
             "./js/MimeTypeExtensions.js"
@@ -20,8 +18,6 @@
             "jQueryUICore",
             "jQueryScrollToPlugin",
             "framework",
-            "swfobject",
-            "swfupload",
             "progress",
             "enhancement"
         ]

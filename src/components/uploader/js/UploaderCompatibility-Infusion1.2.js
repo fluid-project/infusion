@@ -40,20 +40,6 @@ var fluid_1_5 = fluid_1_5 || {};
                     value: {
                         "strategy": {
                             "options": {
-                                "flashMovieSettings": {
-                                    transform: {
-                                        type: "fluid.transforms.value",
-                                        value: {
-                                            "flashURL": "uploadManager.options.flashURL",
-                                            "flashButtonPeerId": "decorators.0.options.flashButtonPeerId",
-                                            "flashButtonAlwaysVisible": "decorators.0.options.flashButtonAlwaysVisible",
-                                            "flashButtonTransparentEvenInIE": "decorators.0.options.flashButtonTransparentEvenInIE",
-                                            "flashButtonImageURL": "decorators.0.options.flashButtonImageURL",
-                                            "flashButtonCursorEffect": "decorators.0.options.flashButtonCursorEffect",
-                                            "debug": "decorators.0.options.debug"
-                                        }
-                                    }
-                                },
                                 "styles": "decorators.0.options.styles"
                             }
                         },

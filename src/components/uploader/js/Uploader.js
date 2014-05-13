@@ -331,8 +331,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.enhance.check({
         "fluid.browser.supportsBinaryXHR": "fluid.enhance.supportsBinaryXHR",
-        "fluid.browser.supportsFormData": "fluid.enhance.supportsFormData",
-        "fluid.browser.supportsFlash": "fluid.enhance.supportsFlash"
+        "fluid.browser.supportsFormData": "fluid.enhance.supportsFormData"
     });
 
     /**
@@ -367,10 +366,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 {
                     feature: "{fluid.browser.supportsBinaryXHR}",
                     contextName: "fluid.uploader.html5"
-                },
-                {
-                    feature: "{fluid.browser.supportsFlash}",
-                    contextName: "fluid.uploader.swfUpload"
                 }
             ],
             defaultContextName: "fluid.uploader.singleFile"
@@ -555,8 +550,8 @@ var fluid_1_5 = fluid_1_5 || {};
         },
 
         events: {
-            // TODO: this event "afterReady" is currently only fired by the Flash Uploader but is not listened to - it should
-            // be, since SWF or some other piece of the strategy may only be ready asynchronously
+            // TODO: this event "afterReady" was only fired by the Flash Uploader.
+            // It should either be removed or refactored post v1.5
             afterReady: null,
             onFileDialog: null,
             onFilesSelected: null,
@@ -764,7 +759,7 @@ var fluid_1_5 = fluid_1_5 || {};
      *
      **************************************************/
      // Partial TODO: The values of these keys are now our own - however, the key
-     // values themselves still align with those in SWFUpload
+     // values themselves still align with those from SWFUpload
     fluid.uploader.queueErrorConstants = {
         QUEUE_LIMIT_EXCEEDED:    "queue limit exceeded",
         FILE_EXCEEDS_SIZE_LIMIT: "file exceeds size limit",
