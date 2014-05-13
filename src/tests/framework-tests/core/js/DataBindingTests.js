@@ -1386,4 +1386,47 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("The change request on the model array element is properly relayed and transformed to the subcomponent", expectedSubcomponentModel, that.sub.model);
     });
 
+    /** FLUID-5358 - Use of arbitrary functions and fluid.transforms.identity **/
+    
+    fluid.tests.fluid5358Multiply = function (a) {
+        return a * 2;
+    };
+    
+    fluid.defaults("fluid.tests.fluid5358root", {
+        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        model: {
+            baseValue: 1,
+            identityValue: 2
+        },
+        modelRelay: [{
+            source: "baseValue",
+            target: "{sub}.model.multipliedValue",
+            singleTransform: {
+                type: "fluid.tests.fluid5358Multiply"
+            }
+        }, {
+            source: "identityValue",
+            target: "{sub}.model.identityValue",
+            singleTransform: {
+                type: "fluid.transforms.identity"
+            }
+        }
+        ],
+        components: {
+            sub: {
+                type: "fluid.standardRelayComponent"
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-5358: Use of arbitrary functions for relay and fluid.transforms.identity", function () {
+        var that = fluid.tests.fluid5358root();
+        jqUnit.assertEquals("Transformed using free multiply", 2, that.sub.model.multipliedValue);
+        that.sub.applier.change("multipliedValue", 4);
+        jqUnit.assertEquals("No corruption of linked value for noninvertible transform", 1, that.model.baseValue);
+        jqUnit.assertEquals("Transformed using identity relay", 2, that.sub.model.identityValue);
+        that.sub.applier.change("identityValue", 1);
+        jqUnit.assertEquals("Identity relay inverted correctly", 1, that.model.identityValue);
+    });
+
 })(jQuery);
