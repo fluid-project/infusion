@@ -1,9 +1,9 @@
 
 @font-face {
     font-family: "Icons";
-    src:url('../fonts/icons.eot?#iefix') format('embedded-opentype'),
-         url('../fonts/icons.eot'),
-         url('../fonts/icons.ttf');
+    src:url('../fonts/overviewPanel-icons.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/overviewPanel-icons.eot'),
+         url('../fonts/overviewPanel-icons.ttf');
 }
 
 @font-face {
@@ -77,14 +77,14 @@
      * positions of fl-overviewPanel-contents are adjusted.
      */
     top: 6.5em;     /* Change this if needed - offset the height of fl-overviewPanel-title + 1em (for line-height compensation).  */
-    bottom: 13.5em; /* Change this if needed - offset the height of fl-overviewPanel-footer. */
+    bottom: 18.5em; /* Change this if needed - offset the height of fl-overviewPanel-footer. */
     padding: 1.5em;
     position: absolute;
     overflow: auto;
 }
 
 .fl-overviewPanel .fl-overviewPanel-footer {
-    height: 13.5em;
+    height: 18.5em;
     position: absolute;
     bottom: 0;
     left: 0;
@@ -145,8 +145,13 @@
     background-color: #333; /* IE8 */
     background-color: rgba(51,51,51,.96);
     line-height: 1.8em;
+    transition: background-color 0.2s ease;
     outline: 0.2em solid #333;
     outline: 0.2em solid rgba(51,51,51,.96);
+}
+
+.fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:hover {
+    background-color: #444;
 }
 
 .fl-overviewPanel .fl-overviewPanel-icon-fluidStar a:before {
@@ -190,6 +195,11 @@
 .fl-overviewPanel .fl-overviewPanel-title a {
     text-decoration: none;
     color: #fff;
+    transition: color 0.2s ease;
+}
+
+.fl-overviewPanel .fl-overviewPanel-title a:hover {
+    color: #ffcc00;
 }
 
 /* Content area of the component */
@@ -217,29 +227,57 @@
 
 /* Icon links to code, API, and designs. */ 
 .fl-overviewPanel .fl-overviewPanel-links {
-    text-align: center;
     padding-top: 0.5em;
 }
 
 .fl-overviewPanel .fl-overviewPanel-links ul {
-    margin: 1.6em 0 1em 0;
+    margin: 0 auto;
     padding-left: 0;
+    width: 80%;
 }
 
 .fl-overviewPanel .fl-overviewPanel-links ul li {
     display: inline-block;
     list-style: none outside none;
-    margin: 0 1em 0 0;
+    margin-bottom: 1.5em ;
+    width: 49%;
 }
 
 .fl-overviewPanel .fl-overviewPanel-links ul li a {
     color: #fff;
     text-decoration: none;
+    transition: color 0.2s ease;
+    width: 100%;
+    text-align:center;
+    display: inline-block;
 }
 
-.fl-overviewPanel .fl-overviewPanel-footer .fl-overviewPanel-links .fl-overviewPanel-links-icon-api,
-.fl-overviewPanel .fl-overviewPanel-footer .fl-overviewPanel-links .fl-overviewPanel-links-icon-github,
-.fl-overviewPanel .fl-overviewPanel-footer .fl-overviewPanel-links .fl-overviewPanel-links-icon-design {
+.fl-overviewPanel .fl-overviewPanel-links ul li a:focus .fl-overviewPanel-iconContainer,
+.fl-overviewPanel .fl-overviewPanel-links ul li a:focus .fl-overviewPanel-demoCodeLinkText,
+.fl-overviewPanel .fl-overviewPanel-links ul li a:focus .fl-overviewPanel-apiLinkText,
+.fl-overviewPanel .fl-overviewPanel-links ul li a:focus .fl-overviewPanel-designLinkText,
+.fl-overviewPanel .fl-overviewPanel-links ul li a:focus .fl-overviewPanel-infusionCodeLinkText {
+    background: #444;
+}
+
+.fl-overviewPanel .fl-overviewPanel-links ul li a:hover {
+    color: #ffcc00;
+}
+
+.fl-overviewPanel .fl-overviewPanel-links ul li a:hover .fl-overviewPanel-iconContainer,
+.fl-overviewPanel .fl-overviewPanel-links ul li a:hover .fl-overviewPanel-demoCodeLinkText,
+.fl-overviewPanel .fl-overviewPanel-links ul li a:hover .fl-overviewPanel-apiLinkText,
+.fl-overviewPanel .fl-overviewPanel-links ul li a:hover .fl-overviewPanel-designLinkText,
+.fl-overviewPanel .fl-overviewPanel-links ul li a:hover .fl-overviewPanel-infusionCodeLinkText {
+    background: #444;
+}
+
+.fl-overviewPanel-iconContainer {
+    margin: 0 auto;
+}
+
+
+.fl-overviewPanel .fl-overviewPanel-footer .fl-overviewPanel-links .fl-overviewPanel-links-icon {
     display: inline-block;
     background-color: #fff;
     width: 2em;
@@ -249,14 +287,18 @@
     font-weight: normal !important; /* Keep UIO from changing the weight of icons. Bold icons look poor. */
     color: #333333;
     line-height: 1em;
+    text-align: center;
+    transition: background-color 0.2s ease;
 }
 
-.fl-overviewPanel .fl-overviewPanel-links-icon-api:before,
-.fl-overviewPanel .fl-overviewPanel-links-icon-github:before,
-.fl-overviewPanel .fl-overviewPanel-links-icon-design:before {
+.fl-overviewPanel .fl-overviewPanel-footer .fl-overviewPanel-links .fl-overviewPanel-links-icon:before {
     position: relative;
     top: 0.35em;
     font-size: 1.2em;
+}
+
+.fl-overviewPanel .fl-overviewPanel-links ul li a:hover .fl-overviewPanel-links-icon {
+    background-color: #ffcc00;
 }
 
 .fl-overviewPanel .fl-overviewPanel-links-icon-api:before {
@@ -267,8 +309,25 @@
     content: "\e601";
 }
 
+.fl-overviewPanel .fl-overviewPanel-links-icon-code:before {
+    content: "\e600";
+}
+
 .fl-overviewPanel .fl-overviewPanel-links-icon-design:before {
     content: "\e603";
+}
+
+.fl-overviewPanel-demoCodeLinkText,
+.fl-overviewPanel-apiLinkText,
+.fl-overviewPanel-designLinkText,
+.fl-overviewPanel-infusionCodeLinkText {
+    display:block;
+}
+
+
+.fl-overviewPanel .fl-overviewPanel-feedback-link {
+    text-align: center;
+    margin-top: 1em;
 }
 
 .fl-overviewPanel .fl-overviewPanel-feedbackText {

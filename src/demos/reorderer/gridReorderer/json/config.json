@@ -8,7 +8,7 @@
         "instructions": "<ul><li>Try reordering the letters using the mouse.</li><li>Try reordering the letters using only the keyboard: Direction keys (arrow keys or i-j-k-m) move focus; CTRL + direction keys move the item.</li></ul>"
     },
     "links": {
-        "codeLink": "https://github.com/fluid-project/infusion/tree/master/src/components/reorderer",
+        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/src/demos/reorderer/gridReorderer",
         "apiLink": "http://wiki.fluidproject.org/display/docs/Grid+Reorderer+API",
         "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Grid Reorderer feedback"
     }

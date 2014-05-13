@@ -30,12 +30,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         titleEnd: "ccc",
         componentName: "ddd",
         instructionsHeading: "fff",
-        codeLinkText: "ggg",
+        demoCodeLinkText: "ggg",
         apiLinkText: "hhh",
         designLinkText: "iii",
         feedbackText: "jjj",
         feedbackLinkText: "lll",
-        closeText: "mmm"
+        closeText: "mmm",
+        infusionCodeLinkText: "nnn"
     };
 
     fluid.tests.overviewPanel.labels = {
@@ -49,11 +50,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.overviewPanel.links = {
-        codeLink: "#aaa",
+        demoCodeLink: "#aaa",
         apiLink: "#bbb",
         designLink: "#ccc",
         feedbackLink: "#ddd",
-        titleLink: "#eee"
+        titleLink: "#eee",
+        infusionCodeLink: "#fff"
     };
 
     fluid.tests.overviewPanel.expectedAriaForClosedPanel = [
@@ -115,11 +117,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             markup.instructions, that.locate("instructions").html().replace(/SPAN/g, "span"));
 
         // check links
-        jqUnit.assertEquals("Check link for selector 'codeLink'", links.codeLink, that.locate("codeLink").attr("href"));
+        jqUnit.assertEquals("Check link for selector 'demoCodeLink'", links.demoCodeLink, that.locate("demoCodeLink").attr("href"));
         jqUnit.assertEquals("Check link for selector 'apiLink'", links.apiLink, that.locate("apiLink").attr("href"));
         jqUnit.assertEquals("Check link for selector 'designLink'", links.designLink, that.locate("designLink").attr("href"));
         jqUnit.assertEquals("Check link for selector 'feedbackLink'", links.feedbackLink, that.locate("feedbackLink").attr("href"));
         jqUnit.assertEquals("Check link for selector 'titleLink'", links.titleLink, that.locate("titleLink").attr("href"));
+        jqUnit.assertEquals("Check link for selector 'infusionCodeLink'", links.infusionCodeLink, that.locate("infusionCodeLink").attr("href"));
+        
 
         // check aria-controls
         var containerId = that.container.attr("id");
@@ -252,7 +256,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.module("OverviewPanel Tests");
 
         jqUnit.asyncTest("Verify Rendering", function () {
-            jqUnit.expect(20);
+            jqUnit.expect(22);
             fluid.tests.overviewPanel.verifyRendering(".flc-overviewPanel");
         });
 
