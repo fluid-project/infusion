@@ -8,7 +8,7 @@
         "instructions": "<ul><li>The initial view shows the template on the left side of the page and the data model on the right.</li><li>Click the 'Render' button at the top of the page to render the data model into the template.</li><li>Try selecting different values in the form and observe how the data model automatically updates.</li></ul>"
     },
     "links": {
-        "codeLink": "https://github.com/fluid-project/infusion/tree/master/src/framework/renderer",
+        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/src/demos/renderer",
         "apiLink": "http://wiki.fluidproject.org/display/docs/Renderer",
         "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Renderer feedback"
     }

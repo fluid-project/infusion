@@ -434,7 +434,9 @@ var fluid_1_5 = fluid_1_5 || {};
         // and so that component construction does not run ahead of subcomponents for SeparatedPanel
         // (FLUID-4453 - this may be a replacement for a branch removed for a FLUID-2248 fix)
         setTimeout(function () {
-            fluid.prefs.prefsEditor.finishInit(that);
+            if (!fluid.isDestroyed(that)) {
+                fluid.prefs.prefsEditor.finishInit(that);
+            }
         }, 1);
     };
 

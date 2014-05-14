@@ -40,6 +40,11 @@ var fluid = fluid || fluid_1_5;
         return togo;
     };
 
+    // Export the use of the "value" transform under the "identity" name for FLUID-5293
+    fluid.transforms.identity = fluid.transforms.value;
+    fluid.defaults("fluid.transforms.identity", {
+        gradeNames: "fluid.transforms.value"
+    });
 
     fluid.defaults("fluid.transforms.literalValue", {
         gradeNames: "fluid.standardOutputTransformFunction"
@@ -135,6 +140,8 @@ var fluid = fluid || fluid_1_5;
         if (togo.offset) {
             togo.offset = - togo.offset * (togo.factor !== undefined ? togo.factor : 1);
         }
+        // TODO: This rubbish should be done by the inversion machinery by itself. We shouldn't have to repeat it in every
+        // inversion rule
         togo.valuePath = fluid.model.composePaths(transform.outputPrefix, transformSpec.outputPath);
         togo.outputPath = fluid.model.composePaths(transform.inputPrefix, transformSpec.valuePath);
         return togo;

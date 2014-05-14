@@ -3904,4 +3904,33 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Successfully distributed option", 0, that.pageList.options.dynamicToDynamic);
     });
 
+    /*** FLUID-5033 destruction during listener notification ***/
+    
+    fluid.tests.destructingListener = function (that) {
+        that.destroy();
+    };
+    
+    fluid.tests.notingListener = function (that) {
+        that.noted = true;
+    };
+    
+    fluid.defaults("fluid.tests.fluid5333component", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            ourEvent: null
+        },
+        listeners: {
+            onCreate: ["fluid.tests.destructingListener", "fluid.tests.notingListener"],
+            ourEvent: "fluid.tests.notingListener"
+        }
+    });
+    
+    jqUnit.test("FLUID-5333 - destruction during listener notification", function () {
+        var that = fluid.tests.fluid5333component();
+        jqUnit.assertEquals("Component should be returned in destroyed condition", true, fluid.isDestroyed(that));
+        jqUnit.assertUndefined("Listeners after destruction point should not be notified", that.noted);
+        that.events.ourEvent.fire(that);
+        jqUnit.assertUndefined("Listeners after destruction point should not be notified", that.noted);
+    });
+
 })(jQuery);

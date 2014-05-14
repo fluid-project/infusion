@@ -327,6 +327,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: {v: {a: 1}},
         changes: 1,
         changeMap: {v: "ADD"}
+    }, {
+        message: "Array on array - avoid mouse droppings",
+        model: [{a: 1}, {b: 2}],
+        request: {type: "ADD", path: "", value: [{b: 2}]},
+        expected: [{b: 2}],
+        changes: 1,
+        changeMap: "ADD"
     }
     ];
 
@@ -1308,6 +1315,118 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.assertDeepEq("The target model is transformed properly - modelRelay on the source component", expectedValue, thatOnSource.sub.model.fahrenheit);
         jqUnit.assertDeepEq("The target model is transformed properly - modelRelay on the target component", expectedValue, thatOnTarget.sub.model.fahrenheit);
+    });
+
+    // FLUID-5293: The model relay using "fluid.transforms.arrayToSetMembership" isn't transformed properly
+    fluid.defaults("fluid.tests.fluid5293", {
+        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        model: {
+            accessibilityHazard: []
+        },
+        modelRelay: [{
+            source: "{that}.model.accessibilityHazard",
+            target: "{that}.model.modelInTransit",
+            singleTransform: {
+                type: "fluid.transforms.arrayToSetMembership",
+                options: {
+                    "flashing": "flashing",
+                    "noflashing": "noflashing"
+                }
+            }
+        }],
+        components: {
+            sub: {
+                type: "fluid.standardRelayComponent",
+                options: {
+                    model: {
+                        accessibilityHazard: "{fluid5293}.model.accessibilityHazard",
+                        highContrast: "{fluid5293}.model.modelInTransit.flashing",
+                        signLanguage: "{fluid5293}.model.modelInTransit.noflashing"
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5293: Model relay and transformation for array elements", function () {
+        var that = fluid.tests.fluid5293();
+        var expectedModel = {
+            accessibilityHazard: [],
+            modelInTransit: {
+                flashing: false,
+                noflashing: false
+            }
+        };
+
+        jqUnit.assertDeepEq("The initial forward transformation is performed properly", expectedModel, that.model);
+
+        var expectedModelAfterChangeRequest = {
+            accessibilityHazard: ["flashing", "noflashing"],
+            modelInTransit: {
+                flashing: true,
+                noflashing: true
+            }
+        };
+
+        that.applier.requestChange("modelInTransit.flashing", true);
+        that.applier.requestChange("modelInTransit.noflashing", true);
+        jqUnit.assertDeepEq("The backward transformation to add array values is performed properly", expectedModelAfterChangeRequest, that.model);
+
+        that.applier.requestChange("modelInTransit.flashing", false);
+        that.applier.requestChange("modelInTransit.noflashing", false);
+        jqUnit.assertDeepEq("The backward transformation to remove array values is performed properly", expectedModel, that.model);
+
+        var expectedSubcomponentModel = {
+            accessibilityHazard: ["flashing", "noflashing"],
+            highContrast: true,
+            signLanguage: true
+        };
+        that.applier.requestChange("accessibilityHazard", ["flashing", "noflashing"]);
+        jqUnit.assertDeepEq("The transformation from array elements to the intermediary object is performed properly", expectedModelAfterChangeRequest, that.model);
+        jqUnit.assertDeepEq("The change request on the model array element is properly relayed and transformed to the subcomponent", expectedSubcomponentModel, that.sub.model);
+    });
+
+    /** FLUID-5358 - Use of arbitrary functions and fluid.transforms.identity **/
+    
+    fluid.tests.fluid5358Multiply = function (a) {
+        return a * 2;
+    };
+    
+    fluid.defaults("fluid.tests.fluid5358root", {
+        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        model: {
+            baseValue: 1,
+            identityValue: 2
+        },
+        modelRelay: [{
+            source: "baseValue",
+            target: "{sub}.model.multipliedValue",
+            singleTransform: {
+                type: "fluid.tests.fluid5358Multiply"
+            }
+        }, {
+            source: "identityValue",
+            target: "{sub}.model.identityValue",
+            singleTransform: {
+                type: "fluid.transforms.identity"
+            }
+        }
+        ],
+        components: {
+            sub: {
+                type: "fluid.standardRelayComponent"
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-5358: Use of arbitrary functions for relay and fluid.transforms.identity", function () {
+        var that = fluid.tests.fluid5358root();
+        jqUnit.assertEquals("Transformed using free multiply", 2, that.sub.model.multipliedValue);
+        that.sub.applier.change("multipliedValue", 4);
+        jqUnit.assertEquals("No corruption of linked value for noninvertible transform", 1, that.model.baseValue);
+        jqUnit.assertEquals("Transformed using identity relay", 2, that.sub.model.identityValue);
+        that.sub.applier.change("identityValue", 1);
+        jqUnit.assertEquals("Identity relay inverted correctly", 1, that.model.identityValue);
     });
 
 })(jQuery);
