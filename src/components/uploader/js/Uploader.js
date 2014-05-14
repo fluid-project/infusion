@@ -416,7 +416,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         });
     };
-    fluid.setLogging(true);
+
     /**
      * Multiple file Uploader implementation. Use fluid.uploader() for IoC-resolved, progressively
      * enhanceable Uploader, or call this directly if you don't want support for old-style single uploads
