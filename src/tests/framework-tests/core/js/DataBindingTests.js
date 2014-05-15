@@ -1532,4 +1532,45 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Identity relay inverted correctly", 1, that.model.identityValue);
     });
 
+    // FLUID-5368: Using "fluid.transforms.arrayToSetMembership" with any other transforms in modelRelay option causes the source array value missing
+    fluid.registerNamespace("fluid.tests.fluid5368");
+
+    fluid.defaults("fluid.tests.fluid5368", {
+        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        model: {
+            forArrayToSetMembership: ["value1"],
+            forIdentity: ["value2"]
+        },
+        modelRelay: [{
+            source: "{fluid5368}.model.forIdentity",
+            target: "{fluid5368}.model.modelInTransit.forIdentity",
+            singleTransform: {
+                type: "fluid.transforms.identity"
+            }
+        }, {
+            source: "{fluid5368}.model.forArrayToSetMembership",
+            target: "{fluid5368}.model.modelInTransit",
+            singleTransform: {
+                type: "fluid.transforms.arrayToSetMembership",
+                options: {
+                    "value1": "value1"
+                }
+            }
+        }]
+    });
+
+    jqUnit.test("FLUID-5368: Using fluid.transforms.arrayToSetMembership with other transformations in modelRelay option", function () {
+        var that = fluid.tests.fluid5368();
+
+        var expectedModel = {
+            forArrayToSetMembership: ["value1"],
+            forIdentity: ["value2"],
+            modelInTransit: {
+                value1: true,
+                forIdentity: ["value2"]
+            }
+        };
+
+        jqUnit.assertDeepEq("The input model is merged with the default model", expectedModel, that.model);
+    });
 })(jQuery);
