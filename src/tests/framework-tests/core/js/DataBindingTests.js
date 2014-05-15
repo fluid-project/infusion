@@ -1052,7 +1052,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         if (head.destroyNow) {
             that.applier.modelChanged.removeListener("priority2");
         }
-    }
+    };
     
     fluid.defaults("fluid.tests.fluid5361head", {
         gradeNames: ["fluid.tests.fluid5024head", "autoInit"],
@@ -1074,7 +1074,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         }, {
                             func: "{fluid5361head}.recordPriority",
                             priority: 2,
-                            namespace: "priority2", 
+                            namespace: "priority2",
                             args: ["{fluid5361head}", 2, "{that}"]
                         }, {
                             func: "{fluid5361head}.recordPriority",
@@ -1109,7 +1109,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 }
             }
-        } 
+        }
     });
     
     fluid.defaults("fluid.tests.fluid5361destroyingHead", {
@@ -1123,19 +1123,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var that = fluid.tests.fluid5361head();
         that.priorityLog = [];
         that.child1.applier.change("celsius", 25);
-        var expected = [1, 1, 2, 2, "last", "last"];
+        var expected = [2, 2, 1, 1, "last", "last"];
         jqUnit.assertDeepEq("Model notifications globally sorted by priority", expected, that.priorityLog);
         
         var that2 = fluid.tests.fluid5361destroyingHead();
         that2.priorityLog = [];
-        that2.destroyNo2 = true;
+        that2.destroyNow = true;
         that2.child1.applier.change("celsius", 25);
 
         jqUnit.assertDeepEq("Model notifications globally sorted by priority, with frozen listener removal", expected, that2.priorityLog);
         that2.priorityLog = [];
         that2.child1.applier.change("celsius", 30);
         var expected2 = [1, 1, "last", "last"];
-        jqUnit.assertDeepEq("Model notifications globally sorted by priority, with actioned listener removal", expected2, that2.priorityLog); 
+        jqUnit.assertDeepEq("Model notifications globally sorted by priority, with actioned listener removal", expected2, that2.priorityLog);
     });
 
     /** Demonstrate resolving a set of model references which is cyclic in components (although not in values), as well as
@@ -1311,10 +1311,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var that = fluid.tests.fluid5045root();
         var expected = {pageIndex: 0, pageSize: 10, totalRange: 75, pageCount: 8};
         jqUnit.assertDeepEq("pageCount computed correctly on init", expected, that.model);
+        fluid.tests.assertTransactionsConcluded(that);
+        
         that.applier.change("pageIndex", -1);
         jqUnit.assertDeepEq("pageIndex clamped to 0", expected, that.model);
+        fluid.tests.assertTransactionsConcluded(that);
+        
         that.applier.change("pageIndex", -1);
         jqUnit.assertDeepEq("pageIndex clamped to 0 second time", expected, that.model);
+        fluid.tests.assertTransactionsConcluded(that);
+        
         that.applier.change("pageIndex", 8);
         var expected2 = {pageIndex: 7, pageSize: 10, totalRange: 75, pageCount: 8};
         jqUnit.assertDeepEq("pageIndex clamped to pageCount - 1", expected2, that.model);
