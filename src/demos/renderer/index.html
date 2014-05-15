@@ -1,5 +1,5 @@
-<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>Renderer Example</title>
@@ -13,7 +13,7 @@
         <script type="text/javascript" src="../../lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../lib/jquery/ui/js/jquery.ui.core.js"></script>
         <script type="text/javascript" src="../../lib/json/js/json2.js"></script>
-        <script type="text/javascript" src="../../framework/core/js/FluidDocument.js"></script>      
+        <script type="text/javascript" src="../../framework/core/js/FluidDocument.js"></script>
         <script type="text/javascript" src="../../framework/core/js/Fluid.js"></script>
         <script type="text/javascript" src="../../framework/core/js/FluidDOMUtilities.js"></script>
         <script type="text/javascript" src="../../framework/core/js/FluidIoC.js"></script>
@@ -55,16 +55,16 @@
         </div>
 
         <div id="wine-block" class="info-block">
-            <label for="wine-list">label</label>
-            <div class="wine" id="wine-list">
+            <span id="wine-list-label">label</span>
+            <div class="wine" id="wine-list" aria-labelledby="wine-list-label">
                 <input class="wine-button" type="radio" id="wine-butt" value="Wine"/>
                 <label class="wine-name" for="wine-butt">Template for wine list</label>
             </div>
         </div>
 
         <div id="food-block" class="info-block">
-            <label for="canape-list">label</label>
-            <table id="canape-list">
+            <span id="canape-list-label">label</span>
+            <table id="canape-list" aria-labelledby="canape-list-label">
                 <tr>
                     <th class="plate">header</th>
                     <th class="price">header</th>
