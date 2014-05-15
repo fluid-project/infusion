@@ -531,8 +531,17 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     };
+    
+    fluid.model.guardedAdapter = function (componentThat, cond, func, args) {
+        // TODO: We can't use fluid.isModelComplete here because of the broken half-transactional system - it may appear that model has arrived halfway through init transaction
+        var isInit = componentThat.modelRelay === fluid.inEvaluationMarker;
+        var condValue = cond[isInit ? "init" : "live"];
+        if (condValue) {
+            func.apply(null, args);
+        }
+    };
 
-    fluid.makeTransformPackage = function (componentThat, transform, sourcePath, targetPath) {
+    fluid.makeTransformPackage = function (componentThat, transform, sourcePath, targetPath, forwardCond, backwardCond) {
         var that = {
             forwardHolder: {model: transform},
             backwardHolder: {model: null}
@@ -550,7 +559,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 that.generateAdapters(); // TODO: Quick fix for incorrect scheduling of invalidation/transducing
                 // "it so happens" that fluid.registerDirectChangeRelay invokes us with empty newValue in the case of invalidation -> transduction
             }
-            that.forwardAdapterImpl.apply(null, arguments);
+            fluid.model.guardedAdapter(componentThat, forwardCond, that.forwardAdapterImpl, arguments);
         };
         // fired from fluid.model.updateRelays via invalidator event
         that.runTransform = function (trans) {
@@ -565,7 +574,7 @@ var fluid_1_5 = fluid_1_5 || {};
         if (sourcePath !== null) {
             that.backwardApplier = fluid.makeNewChangeApplier(that.backwardHolder);
             that.backwardAdapter = function () {
-                that.backwardAdapterImpl.apply(null, arguments);
+                fluid.model.guardedAdapter(componentThat, backwardCond, that.backwardAdapterImpl, arguments);
             };
         }
         that.update = that.invalidator.fire; // necessary so that both routes to fluid.connectModelRelay from here hit the first branch
@@ -591,6 +600,17 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         };
     };
+    
+    fluid.model.relayConditions = {
+        initOnly: {init: true, live: false},
+        liveOnly: {init: false, live: true},
+        never:    {init: false, live: false},
+        always:   {init: true, live: true}
+    }
+    
+    fluid.model.parseRelayCondition = function (condition) {
+        return fluid.model.relayConditions[condition || "always"];
+    };
 
     fluid.parseModelRelay = function (that, mrrec) {
         var parsedSource = mrrec.source ? fluid.parseValidModelReference(that, "modelRelay record member \"source\"", mrrec.source) :
@@ -598,7 +618,8 @@ var fluid_1_5 = fluid_1_5 || {};
         var parsedTarget = fluid.parseValidModelReference(that, "modelRelay record member \"target\"", mrrec.target);
 
         var transform = mrrec.singleTransform ? fluid.singleTransformToFull(mrrec.singleTransform) : mrrec.transform;
-        var transformPackage = fluid.makeTransformPackage(that, transform, parsedSource.path, parsedTarget.path);
+        var forwardCond = fluid.model.parseRelayCondition(mrrec.forward), backwardCond = fluid.model.parseRelayCondition(mrrec.backward);
+        var transformPackage = fluid.makeTransformPackage(that, transform, parsedSource.path, parsedTarget.path, forwardCond, backwardCond);
         if (transformPackage.refCount === 0) {
             // This first call binds changes emitted from the relay ends to each other, synchronously
             fluid.connectModelRelay(parsedSource.that || that, parsedSource.modelSegs, parsedTarget.that, parsedTarget.modelSegs, {

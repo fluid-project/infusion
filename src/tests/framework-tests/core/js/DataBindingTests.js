@@ -1532,7 +1532,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Identity relay inverted correctly", 1, that.model.identityValue);
     });
 
-    // FLUID-5368: Using "fluid.transforms.arrayToSetMembership" with any other transforms in modelRelay option causes the source array value missing
+    // FLUID-5368: Using "fluid.transforms.arrayToSetMembership" with any other transforms in modelRelay option causes the source array value to be missing
     fluid.registerNamespace("fluid.tests.fluid5368");
 
     fluid.defaults("fluid.tests.fluid5368", {
@@ -1550,6 +1550,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }, {
             source: "{fluid5368}.model.forArrayToSetMembership",
             target: "{fluid5368}.model.modelInTransit",
+            backward: "liveOnly",
             singleTransform: {
                 type: "fluid.transforms.arrayToSetMembership",
                 options: {
