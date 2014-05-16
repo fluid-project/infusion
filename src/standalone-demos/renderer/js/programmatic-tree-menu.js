@@ -93,20 +93,38 @@ fluid.dataBindingExample = (function ($) {
 
     var renderMenu = function () {
 
+        // This object maps the HTML elements in the template (identified by the selector)
+        // to the component in the component tree (identified by the id).
+        var wineSelectorMap = [{selector: ".demo-wine-row", id: "wine-row:"},
+                               {selector: ".demo-wine-option", id: "wine-option"},
+                               {selector: ".demo-wine-label", id: "wine-label"}];
+
         // The component trees are generated programmatically from the data model.
         var wineTree = buildSelectionTreeFromModel(wineModel, "wine");
-        fluid.selfRender($("#wine-list"), wineTree, {model: wineModel});
+        fluid.selfRender($("#wine-list"), wineTree, {model: wineModel, cutpoints: wineSelectorMap});
         dumpModel(wineModel, $("#bound-model"));
+
+        // This object maps the HTML elements in the template (identified by the selector)
+        // to the component in the component tree (identified by the id).
+        var cheeseSelectorMap = [{selector: ".demo-cheese-row", id: "cheese-row:"},
+                                 {selector: ".demo-cheese-option", id: "cheese-option"},
+                                 {selector: ".demo-cheese-label", id: "cheese-label"}];
 
         // The autoBind option tells the renderer to automatically update the model when the value
         // of an input changes. Without this parameter, the model must be updated manually through
         // a call to fluid.applyChange().
         var cheeseTree = buildSelectionTreeFromModel(cheeseModel, "cheese");
-        fluid.selfRender($("#cheese-list"), cheeseTree, {model: cheeseModel, autoBind: true});
+        fluid.selfRender($("#cheese-list"), cheeseTree, {model: cheeseModel, autoBind: true, cutpoints: cheeseSelectorMap});
         dumpModel(cheeseModel, $("#autobound-cheese-model"));
 
+        // This object maps the HTML elements in the template (identified by the selector)
+        // to the component in the component tree (identified by the id).
+        var canapeSelectorMap = [{selector: ".demo-canape-row", id: "canape-row:"},
+                                 {selector: ".demo-canape-option", id: "canape-option"},
+                                 {selector: ".demo-canape-label", id: "canape-label"}];
+
         var canapeTree = buildSelectionTreeFromModel(canapeModel, "canape");
-        fluid.selfRender($("#canape-list"), canapeTree, {model: canapeModel, autoBind: true});
+        fluid.selfRender($("#canape-list"), canapeTree, {model: canapeModel, autoBind: true, cutpoints: canapeSelectorMap});
         dumpModel(canapeModel, $("#autobound-canape-model"));
 
         // when the user changes a selection, automatically update the display of the model,

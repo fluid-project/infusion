@@ -1,7 +1,7 @@
 /*
 Copyright 2008-2009 University of Cambridge
 Copyright 2008-2009 University of Toronto
-Copyright 2010-2013 OCAD University
+Copyright 2010-2014 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -61,6 +61,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     animal: "fish"
                 }
             ]
+        },
+        components: {
+            bodyRenderer: {
+                options: {
+                    selectors: {
+                        category: ".tests-category",
+                        breed: ".tests-breed",
+                        origin: ".tests-origin",
+                        animal: ".tests-animal"
+                    }
+                }
+            }
         }
     });
 

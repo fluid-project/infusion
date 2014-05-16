@@ -144,15 +144,30 @@ var demo = demo || {};
             ]
         };
 
+        // This object maps the HTML elements in the template (identified by the selector)
+        // to the component in the component tree (identified by the id).
+        var wineSelectorMap = [{selector: ".demo-wine-row", id: "wine-row:"},
+                               {selector: ".demo-wine", id: "wine"},
+                               {selector: ".demo-wine-label", id: "wine-label"}];
+
         // The wine list and food list trees will be bound to a data model, which is passed to
         // fluid.selfRender() in the options parameter.
-        fluid.selfRender(jQuery("#wine-list"), wineTree, {model: wineModel});
+        fluid.selfRender(jQuery("#wine-list"), wineTree, {model: wineModel, cutpoints: wineSelectorMap});
         dumpModel(wineModel, jQuery("#bound-model"));
+
+        // This object maps the HTML elements in the template (identified by the selector)
+        // to the component in the component tree (identified by the id).
+        var foodSelectorMap = [{selector: ".demo-cheese-row", id: "cheese-row:"},
+                               {selector: ".demo-cheese", id: "cheese"},
+                               {selector: ".demo-cheese-label", id: "cheese-label"},
+                               {selector: ".demo-canape-row", id: "canape-row:"},
+                               {selector: ".demo-canape", id: "canape"},
+                               {selector: ".demo-canape-label", id: "canape-label"}];
 
         // The autoBind option tells the renderer to automatically update the model when the value
         // of an input changes. Without this parameter, the model must be updated manually through
         // a call to fluid.applyBoundChange().
-        fluid.selfRender(jQuery("#food-list"), foodTree, {model: foodModel, autoBind: true});
+        fluid.selfRender(jQuery("#food-list"), foodTree, {model: foodModel, autoBind: true, cutpoints: foodSelectorMap});
         dumpModel(foodModel, jQuery("#autobound-model"));
 
         // when the user changes a selection, automatically update the display of the model,

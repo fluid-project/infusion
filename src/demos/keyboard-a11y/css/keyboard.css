@@ -88,7 +88,7 @@ p.demo-right {
 	text-align:right;
 }
 
-.demo-container-fiveStar #ranking {
+.demo-container-fiveStar #demo-ranking {
 	display:inline;
     cursor:pointer;
 }

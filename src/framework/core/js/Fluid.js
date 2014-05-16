@@ -1070,8 +1070,9 @@ var fluid = fluid || fluid_1_5;
      * will be the return value of fire()
      */
     fluid.makeEventFirer = function (unicast, preventable, name, ownerId) {
+        var that;
         function fireToListeners(listeners, args, wrapper) {
-            if (!listeners) { return; }
+            if (!listeners || that.destroyed) { return; }
             fluid.log("Firing event " + name + " to list of " + listeners.length + " listeners");
             for (var i = 0; i < listeners.length; ++i) {
                 var lisrec = listeners[i];
@@ -1083,7 +1084,7 @@ var fluid = fluid || fluid_1_5;
                 }
                 var value;
                 var ret = (wrapper ? wrapper(listener) : listener).apply(null, args);
-                if (preventable && ret === false) {
+                if (preventable && ret === false || that.destroyed) {
                     value = false;
                 }
                 if (unicast) {
@@ -1096,12 +1097,15 @@ var fluid = fluid || fluid_1_5;
         }
         var identify = fluid.event.identifyListener;
 
-        var that;
+
         var lazyInit = function () { // Lazy init function to economise on object references for events which are never listened to
             that.listeners = {};
             that.byId = {};
             that.sortedListeners = [];
             that.addListener = function (listener, namespace, predicate, priority, softNamespace) {
+                if (that.destroyed) {
+                    fluid.fail("Cannot add listener to destroyed event firer " + that.name);
+                }
                 if (!listener) {
                     return;
                 }
@@ -1135,6 +1139,9 @@ var fluid = fluid || fluid_1_5;
             ownerId: ownerId,
             name: name,
             typeName: "fluid.event.firer",
+            destroy: function () {
+                that.destroyed = true;
+            },
             addListener: function () {
                 lazyInit.apply(null, arguments);
             },
@@ -1710,6 +1717,7 @@ var fluid = fluid || fluid_1_5;
     // A special marker object which will be placed at a current evaluation point in the tree in order
     // to protect against circular evaluation
     fluid.inEvaluationMarker = {"__CURRENTLY_IN_EVALUATION__": true};
+    fluid.destroyedMarker = {"__COMPONENT_DESTROYED__": true};
 
     // A path depth above which the core "process strategies" will bail out, assuming that the
     // structure has become circularly linked. Helpful in environments such as Firebug which will
@@ -2203,9 +2211,26 @@ var fluid = fluid || fluid_1_5;
     fluid.makeRootDestroy = function (that) {
         return function () {
             fluid.fireEvent(that, "events.onClear", [that, "", null]);
-            fluid.fireEvent(that, "events.onDestroy", [that, "", null]);
+            fluid.doDestroy(that);
             fluid.fireEvent(that, "events.afterDestroy", [that, "", null]);
         };
+    };
+    
+    /** Returns <code>true</code> if the supplied reference holds a component which has been destroyed **/
+    
+    fluid.isDestroyed = function (that) {
+        return that.destroy === fluid.destroyedMarker;
+    };
+
+    // unsupported, NON-API function    
+    fluid.doDestroy = function (that, name, parent) {
+        fluid.fireEvent(that, "events.onDestroy", [that, name || "", parent]);
+        that.destroy = fluid.destroyedMarker;
+        for (var key in that.events) {
+            if (key !== "afterDestroy" && typeof(that.events[key].destroy) === "function") {
+                that.events[key].destroy();
+            }
+        }
     };
 
     fluid.resolveReturnedPath = fluid.identity;
