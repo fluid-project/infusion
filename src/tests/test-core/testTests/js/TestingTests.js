@@ -75,7 +75,7 @@
 
 
     fluid.defaults("fluid.tests.asyncTest", {
-        gradeNames: ["fluid.rendererComponent", "autoInit"],
+        gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
         model: {
             textValue: "initialValue"
         },

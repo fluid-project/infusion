@@ -1040,6 +1040,103 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         fluid.tests.assertTransactionsConcluded(that);
     });
+    
+    /** FLUID-5361 listener order notification test **/
+    
+    fluid.tests.priorityRecorder = function (that, priority) {
+        that.priorityLog.push(priority);
+    };
+    
+    fluid.tests.recordAndDestroy = function (head, priority, that) {
+        head.priorityLog.push(priority);
+        if (head.destroyNow) {
+            that.applier.modelChanged.removeListener("priority2");
+        }
+    };
+    
+    fluid.defaults("fluid.tests.fluid5361head", {
+        gradeNames: ["fluid.tests.fluid5024head", "autoInit"],
+        members: {
+            priorityLog: []
+        },
+        invokers: {
+            recordPriority: "fluid.tests.priorityRecorder"
+        },
+        components: {
+            child1: {
+                options: {
+                    modelListeners: {
+                        celsius: [{
+                            func: "{fluid5361head}.recordPriority",
+                            priority: 1,
+                            namespace: "priority1",
+                            args: ["{fluid5361head}", 1, "{that}"]
+                        }, {
+                            func: "{fluid5361head}.recordPriority",
+                            priority: 2,
+                            namespace: "priority2",
+                            args: ["{fluid5361head}", 2, "{that}"]
+                        }, {
+                            func: "{fluid5361head}.recordPriority",
+                            priority: "last",
+                            args: ["{fluid5361head}", "last", "{that}"]
+                        }
+                        ]
+                    }
+                }
+            },
+            child2: {
+                options: {
+                    modelListeners: {
+                        "fahrenheit": [{
+                            path: "fahrenheit",
+                            func: "{fluid5361head}.recordPriority",
+                            priority: 1,
+                            args: ["{fluid5361head}", 1, "{that}"]
+                        }, {
+                            path: "fahrenheit",
+                            func: "{fluid5361head}.recordPriority",
+                            priority: 2,
+                            namespace: "priority2",
+                            args: ["{fluid5361head}", 2, "{that}"]
+                        }, {
+                            path: "fahrenheit",
+                            func: "{fluid5361head}.recordPriority",
+                            priority: "last",
+                            args: ["{fluid5361head}", "last", "{that}"]
+                        }
+                        ]
+                    }
+                }
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.fluid5361destroyingHead", {
+        gradeNames: ["fluid.tests.fluid5361head", "autoInit"],
+        invokers: {
+            recordPriority: "fluid.tests.recordAndDestroy"
+        }
+    });
+
+    jqUnit.test("FLUID-5361: Model relay with model transformation", function () {
+        var that = fluid.tests.fluid5361head();
+        that.priorityLog = [];
+        that.child1.applier.change("celsius", 25);
+        var expected = [2, 2, 1, 1, "last", "last"];
+        jqUnit.assertDeepEq("Model notifications globally sorted by priority", expected, that.priorityLog);
+        
+        var that2 = fluid.tests.fluid5361destroyingHead();
+        that2.priorityLog = [];
+        that2.destroyNow = true;
+        that2.child1.applier.change("celsius", 25);
+
+        jqUnit.assertDeepEq("Model notifications globally sorted by priority, with frozen listener removal", expected, that2.priorityLog);
+        that2.priorityLog = [];
+        that2.child1.applier.change("celsius", 30);
+        var expected2 = [1, 1, "last", "last"];
+        jqUnit.assertDeepEq("Model notifications globally sorted by priority, with actioned listener removal", expected2, that2.priorityLog);
+    });
 
     /** Demonstrate resolving a set of model references which is cyclic in components (although not in values), as well as
      * double relay and longer "transform" form of relay specification */
@@ -1214,10 +1311,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var that = fluid.tests.fluid5045root();
         var expected = {pageIndex: 0, pageSize: 10, totalRange: 75, pageCount: 8};
         jqUnit.assertDeepEq("pageCount computed correctly on init", expected, that.model);
+        fluid.tests.assertTransactionsConcluded(that);
+        
         that.applier.change("pageIndex", -1);
         jqUnit.assertDeepEq("pageIndex clamped to 0", expected, that.model);
+        fluid.tests.assertTransactionsConcluded(that);
+        
         that.applier.change("pageIndex", -1);
         jqUnit.assertDeepEq("pageIndex clamped to 0 second time", expected, that.model);
+        fluid.tests.assertTransactionsConcluded(that);
+        
         that.applier.change("pageIndex", 8);
         var expected2 = {pageIndex: 7, pageSize: 10, totalRange: 75, pageCount: 8};
         jqUnit.assertDeepEq("pageIndex clamped to pageCount - 1", expected2, that.model);
@@ -1429,4 +1532,46 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Identity relay inverted correctly", 1, that.model.identityValue);
     });
 
+    // FLUID-5368: Using "fluid.transforms.arrayToSetMembership" with any other transforms in modelRelay option causes the source array value to be missing
+    fluid.registerNamespace("fluid.tests.fluid5368");
+
+    fluid.defaults("fluid.tests.fluid5368", {
+        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        model: {
+            forArrayToSetMembership: ["value1"],
+            forIdentity: ["value2"]
+        },
+        modelRelay: [{
+            source: "{fluid5368}.model.forIdentity",
+            target: "{fluid5368}.model.modelInTransit.forIdentity",
+            singleTransform: {
+                type: "fluid.transforms.identity"
+            }
+        }, {
+            source: "{fluid5368}.model.forArrayToSetMembership",
+            target: "{fluid5368}.model.modelInTransit",
+            backward: "liveOnly",
+            singleTransform: {
+                type: "fluid.transforms.arrayToSetMembership",
+                options: {
+                    "value1": "value1"
+                }
+            }
+        }]
+    });
+
+    jqUnit.test("FLUID-5368: Using fluid.transforms.arrayToSetMembership with other transformations in modelRelay option", function () {
+        var that = fluid.tests.fluid5368();
+
+        var expectedModel = {
+            forArrayToSetMembership: ["value1"],
+            forIdentity: ["value2"],
+            modelInTransit: {
+                value1: true,
+                forIdentity: ["value2"]
+            }
+        };
+
+        jqUnit.assertDeepEq("The input model is merged with the default model", expectedModel, that.model);
+    });
 })(jQuery);
