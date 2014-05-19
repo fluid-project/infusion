@@ -1072,7 +1072,7 @@ var fluid = fluid || fluid_1_5;
     fluid.makeEventFirer = function (unicast, preventable, name, ownerId) {
         function fireToListeners(listeners, args, wrapper) {
             if (!listeners) { return; }
-            fluid.log("Firing event " + name + " to list of " + listeners.length + " listeners");
+            fluid.log(fluid.logLevel.TRACE, "Firing event " + name + " to list of " + listeners.length + " listeners");
             for (var i = 0; i < listeners.length; ++i) {
                 var lisrec = listeners[i];
                 lisrec.listener = fluid.event.resolveListener(lisrec.listener);

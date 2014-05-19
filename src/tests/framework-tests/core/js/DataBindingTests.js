@@ -1533,23 +1533,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     // FLUID-5368: Using "fluid.transforms.arrayToSetMembership" with any other transforms in modelRelay option causes the source array value to be missing
-    fluid.registerNamespace("fluid.tests.fluid5368");
 
-    fluid.defaults("fluid.tests.fluid5368", {
+    fluid.defaults("fluid.tests.fluid5368root", {
         gradeNames: ["fluid.standardRelayComponent", "autoInit"],
         model: {
             forArrayToSetMembership: ["value1"],
             forIdentity: ["value2"]
         },
         modelRelay: [{
-            source: "{fluid5368}.model.forIdentity",
-            target: "{fluid5368}.model.modelInTransit.forIdentity",
+            source: "forIdentity",
+            target: "modelInTransit.forIdentity",
             singleTransform: {
                 type: "fluid.transforms.identity"
             }
         }, {
-            source: "{fluid5368}.model.forArrayToSetMembership",
-            target: "{fluid5368}.model.modelInTransit",
+            source: "forArrayToSetMembership",
+            target: "modelInTransit",
             backward: "liveOnly",
             singleTransform: {
                 type: "fluid.transforms.arrayToSetMembership",
@@ -1561,7 +1560,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("FLUID-5368: Using fluid.transforms.arrayToSetMembership with other transformations in modelRelay option", function () {
-        var that = fluid.tests.fluid5368();
+        var that = fluid.tests.fluid5368root();
 
         var expectedModel = {
             forArrayToSetMembership: ["value1"],
@@ -1574,4 +1573,63 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.assertDeepEq("The input model is merged with the default model", expectedModel, that.model);
     });
+    
+    // FLUID-5371: Model relay directive "forward" and "backward"
+    
+    fluid.defaults("fluid.tests.fluid5371root", {
+        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        model: {
+            forwardOnly: 3,
+            forwardOnlyTarget: 3.5,
+            backwardOnly: 5,
+            backwardOnlySource: 5.5,
+            liveOnly: 7
+        },
+        modelRelay: [{
+            source: "forwardOnly",
+            target: "forwardOnlyTarget",
+            backward: "never",
+            singleTransform: {
+                type: "fluid.transforms.identity"
+            }
+        }, {
+            source: "backwardOnlySource",
+            target: "backwardOnly",
+            forward: "never",
+            singleTransform: {
+                type: "fluid.transforms.identity"
+            }
+        }, {
+            source: "liveOnly",
+            target: "liveOnlyTarget",
+            forward: "liveOnly",
+            singleTransform: {
+                type: "fluid.transforms.identity"
+            }
+        }]
+    });
+    
+    jqUnit.test("FLUID-5371: Model relay directives 'forward' and 'backward'", function () {
+        var that = fluid.tests.fluid5371root();
+        jqUnit.assertEquals("Forward init relay with backward never", 3, that.model.forwardOnlyTarget);
+        that.applier.change("forwardOnly", 4);
+        jqUnit.assertEquals("Forward live relay with backward never", 4, that.model.forwardOnlyTarget);
+        
+        that.applier.change("forwardOnlyTarget", 4.5);
+        jqUnit.assert("No backward live relay with backward never", 4, that.model.forwardOnly);
+
+        jqUnit.assertEquals("Backward init relay with forward never", 5, that.model.backwardOnlySource);
+        that.applier.change("backwardOnly", 6);
+        jqUnit.assert("Backward live relay with forward never", 6, that.model.backwardOnlySource);
+        
+        that.applier.change("backwardOnlySource", 6.5);
+        jqUnit.assert("No forward live relay with forward never", 6, that.model.backwardOnly);
+        
+        jqUnit.assertEquals("No init relay with liveOnly forward", undefined, that.model.liveOnlyTarget);
+        that.applier.change("liveOnly", 8);
+        jqUnit.assertEquals("Forward relay with liveOnly forward", 8, that.model.liveOnlyTarget);
+        that.applier.change("liveOnlyTarget", 9);
+        jqUnit.assertEquals("Backward relay with liveOnly forwarD", 9, that.model.liveOnly);
+    });
+    
 })(jQuery);

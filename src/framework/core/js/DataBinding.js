@@ -602,11 +602,11 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     
     fluid.model.relayConditions = {
-        initOnly: {init: true, live: false},
+        initOnly: {init: true,  live: false},
         liveOnly: {init: false, live: true},
         never:    {init: false, live: false},
-        always:   {init: true, live: true}
-    }
+        always:   {init: true,  live: true}
+    };
     
     fluid.model.parseRelayCondition = function (condition) {
         return fluid.model.relayConditions[condition || "always"];
@@ -618,6 +618,9 @@ var fluid_1_5 = fluid_1_5 || {};
         var parsedTarget = fluid.parseValidModelReference(that, "modelRelay record member \"target\"", mrrec.target);
 
         var transform = mrrec.singleTransform ? fluid.singleTransformToFull(mrrec.singleTransform) : mrrec.transform;
+        if (!transform) {
+            fluid.fail("Cannot parse modelRelay record without element \"singleTransform\" or \"transform\":", mrrec);
+        }
         var forwardCond = fluid.model.parseRelayCondition(mrrec.forward), backwardCond = fluid.model.parseRelayCondition(mrrec.backward);
         var transformPackage = fluid.makeTransformPackage(that, transform, parsedSource.path, parsedTarget.path, forwardCond, backwardCond);
         if (transformPackage.refCount === 0) {
@@ -1193,6 +1196,7 @@ var fluid_1_5 = fluid_1_5 || {};
             fluid.remove_if(that.changeListeners.listeners, removePred);
             fluid.remove_if(that.changeListeners.transListeners, removePred);
         };
+        that.modelChanged.isRelayEvent = true; // TODO: cheap helper for IoC testing framework - remove when old ChangeApplier goes
         that.fireChangeRequest = function (changeRequest) {
             var ation = that.initiate();
             ation.fireChangeRequest(changeRequest);

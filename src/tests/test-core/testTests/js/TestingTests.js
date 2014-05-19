@@ -123,6 +123,18 @@
             }
         }
     });
+    
+    // FLUID-5375: Use of IoC testing framework together with new relay grades
+    fluid.defaults("fluid.tests.asyncTestRelayTree", {
+        gradeNames: ["fluid.tests.asyncTestTree", "autoInit"],
+        components: {
+            asyncTest: {
+                options: {
+                    gradeNames: "fluid.modelRelayComponent"
+                }
+            }
+        }
+    });
 
     fluid.defaults("fluid.tests.asyncTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
@@ -150,7 +162,8 @@
                     args: ["{asyncTest}.dom.textField", "{asyncTester}.options.newTextValue"]
                 }, {
                     listenerMaker: "fluid.tests.makeChangeChecker",
-                    makerArgs: ["{asyncTester}.options.newTextValue", "textValue"],
+                    // TODO: simplify once old ChangeApplier is removed
+                    makerArgs: ["{asyncTester}.options.newTextValue", "{asyncTest}", "textValue"],
                     path: "textValue",
                     changeEvent: "{asyncTest}.applier.modelChanged"
                 }, {
@@ -158,7 +171,7 @@
                     args: ["{asyncTest}.dom.textField", "{asyncTester}.options.furtherTextValue"]
                 }, {
                     listenerMaker: "fluid.tests.makeChangeChecker",
-                    makerArgs: ["{asyncTester}.options.furtherTextValue", "textValue"],
+                    makerArgs: ["{asyncTester}.options.furtherTextValue", "{asyncTest}", "textValue"],
                     // alternate style for registering listener
                     spec: {path: "textValue", priority: "last"},
                     changeEvent: "{asyncTest}.applier.modelChanged"
@@ -186,8 +199,9 @@
         field.val(value).change();
     };
 
-    fluid.tests.makeChangeChecker = function (toCheck, path) {
-        return function (newModel) {
+    fluid.tests.makeChangeChecker = function (toCheck, component, path) {
+        return function () {
+            var newModel = component.model;
             var newval = fluid.get(newModel, path);
             jqUnit.assertEquals("Expected model value " + toCheck + " at path " + path, toCheck, newval);
         };
@@ -313,6 +327,7 @@
                     }
                 }
             },
+            "fluid.tests.asyncTestRelayTree",
             "fluid.tests.sourceTester"
         ]);
     };
