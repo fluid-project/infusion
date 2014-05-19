@@ -2,7 +2,7 @@
 Copyright 2008-2009 University of Cambridge
 Copyright 2008-2009 University of Toronto
 Copyright 2010 Lucendo Development Ltd.
-Copyright 2010-2011 OCAD University
+Copyright 2010-2014 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -93,7 +93,12 @@ var sakai = sakai || {};
                         type: "fluid.table.selfRender",
                         options: {
                             selectors: {
-                                root: ".site-setting-body"
+                                root: ".site-setting-body",
+                                selection: ".demo-selection",
+                                "user-link": ".demo-user-link",
+                                "user-email": ".demo-user-email",
+                                "user-role": ".demo-user-role",
+                                "user-status": ".demo-user-status"
                             },
                             renderOptions: {debugMode: false}
                         }

@@ -35,7 +35,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             value: false
         },
         listeners: {
-            "afterAnnounce.next": "{that}.announceNext"
+            "afterAnnounce.next": "{that}.announceNext",
+            "onError.alert": {
+                listener: "alert",
+                args: ["{that}.options.strings.errorMsg"]
+            }
         },
         events: {
             afterAnnounce: null,
@@ -60,7 +64,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             speaking: false
         },
         strings: {
-            loaded: "text to speech enabled"
+            loaded: "text to speech enabled",
+            errorMsg: "Could not connect to the Text-To-Speech server. Please check your internet connection."
         },
         styles: {
             current: "fl-selfVoicing-current"

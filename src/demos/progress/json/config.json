@@ -8,7 +8,7 @@
         "instructions": "<ul><li>Click on the 'Submit' button to observe the progress component.</li></ul>"
     },
     "links": {
-        "codeLink": "https://github.com/fluid-project/infusion/tree/master/src/components/progress",
+        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/src/demos/progress",
         "apiLink": "http://wiki.fluidproject.org/display/docs/Progress+API",
         "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Progress feedback"
     }

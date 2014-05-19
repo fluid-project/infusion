@@ -2,6 +2,7 @@
 Copyright 2009 University of Cambridge
 Copyright 2009 University of Toronto
 Copyright 2010 Lucendo Development Ltd.
+Copyright 2014 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -18,6 +19,18 @@ var demo = demo || {};
 
 (function ($, fluid) {
     "use strict";
+
+    /*
+    var wineSelectorMap = [{selector: ".demo-wine-row", id: "wine-row:"},
+                           {selector: ".demo-wine", id: "wine"},
+                           {selector: ".demo-wine-label", id: "wine-label"}];
+    */
+
+    var listSelectorMap = [
+        {selector: ".test-anch", id: "anch"},
+        {selector: ".test-template2-subtemplate1", id: "template2:subtemplate1"},
+        {selector: ".test-template2-subtemplate2", id: "template2:subtemplate2"}
+    ];
 
     var listTree = {
         children: [{
@@ -48,6 +61,13 @@ var demo = demo || {};
             }]
         }]
     };
+
+    var imagesSelectorMap = [
+        {selector: ".test-thumbs", id: "thumb:"},
+        {selector: ".test-image-url", id: "image-url"},
+        {selector: ".test-image-thumb-url", id: "image-thumb-url"},
+        {selector: ".test-caption-url", id: "caption-url"}
+    ];
 
     var imagesTree = {
         children: [{
@@ -81,6 +101,10 @@ var demo = demo || {};
         }]
     };
 
+    var scriptSelectorMap = [
+        {selector: ".test-script-test", id: "script-test"}
+    ];
+
     /*
      * This tree actually seems to cause the function to be executed, but does
      * NOT result in a <script> tag being rendered to the page. Is that the
@@ -93,6 +117,10 @@ var demo = demo || {};
             "arguments": ["Hello, I've been rendered!"]
         }]
     };
+
+    var selection1SelectorMap = [
+        {selector: ".test-select-test", id: "select-test"}
+    ];
 
     var selectionTree1 = {
         // This first child is all that's needed to render the <select> element
@@ -109,6 +137,12 @@ var demo = demo || {};
             }
         }]
     };
+
+    var selection2SelectorMap = [
+        {selector: ".test-select-test-rows", id: "select-test-row:"},
+        {selector: ".test-select-test-option", id: "select-test-option"},
+        {selector: ".test-select-test-label", id: "select-test-label"}
+    ];
 
     var selectionTree2 = {
         children: [{
@@ -194,6 +228,11 @@ var demo = demo || {};
         selection: ["bar"]
     };
 
+    var jointSelectorMap = [
+        {selector: ".test-joint1", id: "joint1"},
+        {selector: ".test-joint2", id: "joint2"}
+    ];
+
     var jointTree = {
         children: [
             {ID:"joint1", jointID: "joint2"}
@@ -202,15 +241,15 @@ var demo = demo || {};
 
     demo.renderComponents = function () {
         var debugMode = false;
-        fluid.selfRender($("#toc"), listTree, {debugMode: debugMode});
-        fluid.selfRender($("#image-container"), imagesTree, {debugMode: debugMode});
-        fluid.selfRender($("#selection-test1"), selectionTree1, {debugMode: debugMode});
-        fluid.selfRender($("#selection-test2"), selectionTree2, {debugMode: debugMode});
+        fluid.selfRender($("#toc"), listTree, {debugMode: debugMode, cutpoints: listSelectorMap});
+        fluid.selfRender($("#image-container"), imagesTree, {debugMode: debugMode, cutpoints: imagesSelectorMap});
+        fluid.selfRender($("#selection-test1"), selectionTree1, {debugMode: debugMode, cutpoints: selection1SelectorMap});
+        fluid.selfRender($("#selection-test2"), selectionTree2, {debugMode: debugMode, cutpoints: selection2SelectorMap});
         fluid.selfRender($("#selection-test3"),
                                                 buildSelectChoiceTree(selection3model, selectors3),
                                                 {model: selection3model, cutpoints: selectorMap, debugMode: debugMode});
-        fluid.selfRender($("#joint-test"), jointTree, {debugMode: debugMode});
-        fluid.selfRender($("#script"), scriptTree, {debugMode: debugMode});
+        fluid.selfRender($("#joint-test"), jointTree, {debugMode: debugMode, cutpoints: jointSelectorMap});
+        fluid.selfRender($("#script"), scriptTree, {debugMode: debugMode, cutpoints: scriptSelectorMap});
     };
 
     demo.testFunc = function () {
