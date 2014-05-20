@@ -21,6 +21,8 @@ var demo = demo || {};
             gradeNames: ["fluid.prefs.auxSchema.starter"],
             auxiliarySchema: {
                 "template": template,
+                "templatePrefix": "../../../framework/preferences/html/",
+                "messagePrefix": "../../../framework/preferences/messages/",
                 "tableOfContents": {
                     "enactor": {
                         "tocTemplate": "../../../components/tableOfContents/html/TableOfContents.html"
