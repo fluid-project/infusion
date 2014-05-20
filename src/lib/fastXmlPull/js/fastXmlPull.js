@@ -131,13 +131,13 @@ var fluid_1_5 = fluid_1_5 || {};
             }
             if ((fluid.XMLP._ELM_E == iEvent) || (fluid.XMLP._ELM_EMP == iEvent)) {
                 if (stack.length === 0) {
-                    //return this._setErr(XMLP.ERR_DOC_STRUCTURE);
+                    //return fluid.XMLP._setErr(XMLP.ERR_DOC_STRUCTURE);
                     return fluid.XMLP._NONE;
                 }
                 var strTop = stack[stack.length - 1];
                 that.m_stack.length--;
                 if (strTop === null || strTop !== that.getName()) {
-                    return that._setErr(that, fluid.XMLP.ERR_ELM_NESTING);
+                    return fluid.XMLP._setErr(that, fluid.XMLP.ERR_ELM_NESTING);
                 }
             }
 
@@ -246,7 +246,7 @@ var fluid_1_5 = fluid_1_5 || {};
         var iType, strN, iLast;
         iDE = iE = that.m_xml.indexOf(">", iB);
         if (iE == -1) {
-            return that._setErr(that, fluid.XMLP.ERR_CLOSE_ELM);
+            return fluid.XMLP._setErr(that, fluid.XMLP.ERR_CLOSE_ELM);
         }
         if (that.m_xml.charAt(iB) == "/") {
             iType = fluid.XMLP._ELM_E;
