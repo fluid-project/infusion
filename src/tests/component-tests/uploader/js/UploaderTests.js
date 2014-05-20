@@ -107,41 +107,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             isNaN(fluid.uploader.derivePercent(total / total)));
         });
 
-        var events = {
-            afterFileDialog: fluid.event.getEventFirer(),
-            afterFileRemoved: fluid.event.getEventFirer(),
-            onUploadStart: fluid.event.getEventFirer(),
-            onFileProgress: fluid.event.getEventFirer(),
-            afterUploadComplete: fluid.event.getEventFirer()
-        };
-        var status = $("#statusRegion");
-        var totalStatusText = $("#totalFileStatusText");
-
-        var checkStatusAfterFiringEvent = function (text, eventName) {
-            totalStatusText.text(text);
-            events[eventName].fire();
-            jqUnit.assertEquals("The status region should match the total text after firing " + eventName,
-                                totalStatusText.text(), status.text());
-        };
-
-        /*********************************
-         * ariaLiveRegionUpdater() tests *
-         *********************************/
-
-        jqUnit.test("ARIA Updater", function () {
-            fluid.uploader.ariaLiveRegionUpdater(status, totalStatusText, events);
-
-            jqUnit.assertEquals("The status region should be empty to start.", "", status.text());
-
-            totalStatusText.text("hello world");
-            jqUnit.assertEquals("The status region should be empty after invoking the updater.",
-                                "", status.text());
-
-            checkStatusAfterFiringEvent("cat", "afterFileDialog");
-            checkStatusAfterFiringEvent("dog", "afterFileRemoved");
-            checkStatusAfterFiringEvent("shark", "afterUploadComplete");
-        });
-
         /*************************************************************
          * Uploader Integration Tests                                *
          *                                                           *
@@ -353,6 +318,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("The uploader has a file queue", uploader.queue);
             jqUnit.assertTrue("The uploader must have queueSettings", uploader.options.queueSettings);
             jqUnit.assertTrue("The uploader must have an argument map in its options", uploader.options.argumentMap);
+
+            // aria related tests
+            var statusID = uploader.totalFileStatusTextId;
+            var statusArea = uploader.locate("totalFileStatusText");
+            var fileQueue = uploader.locate("fileQueue");
+            jqUnit.assertEquals("The status area has an id set", statusID, statusArea.attr("id"));
+            jqUnit.assertEquals("The status area has the correct aria role", "log", statusArea.attr("role"));
+            jqUnit.assertEquals("The status area has the correct value for aria-live", "assertive", statusArea.attr("aria-live"));
+            jqUnit.assertEquals("The status area has the correct value for aria-relevant", "text", statusArea.attr("aria-relevant"));
+            jqUnit.assertEquals("The status area has the correct value for aria-atomic", "true", statusArea.attr("aria-atomic"));
+            jqUnit.assertEquals("The file queue controls the status", statusID, fileQueue.attr("aria-controls"));
+            jqUnit.assertEquals("The file queue is labelled by the status", statusID, fileQueue.attr("aria-labelledby"));
+
         };
 
         var checkUploaderButton = function (uploader, buttonName, state) {
@@ -413,7 +391,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         var checkUploaderIntegration = function (uploader, addFilesFn, testset) {
-            var statusRegion = $(".flc-uploader-status-region");
+            var statusRegion = $(".flc-uploader-total-progress-text");
             var initialStatusRegionText = statusRegion.text();
 
             checkUploaderButton(uploader, "browseButton", true);

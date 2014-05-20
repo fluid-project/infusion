@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>Keyboard Accessbility Demo</title>
@@ -19,7 +19,7 @@
         <script type="text/javascript" src="../../framework/core/js/FluidView.js"></script>
 
         <!-- required for the Overview Panel -->
-        <script type="text/javascript" src="../../framework/core/js/FluidDOMUtilities.js"></script>      
+        <script type="text/javascript" src="../../framework/core/js/FluidDOMUtilities.js"></script>
         <script type="text/javascript" src="../../framework/core/js/FluidRequests.js"></script>
         <script type="text/javascript" src="../../lib/fastXmlPull/js/fastXmlPull.js"></script>
         <script type="text/javascript" src="../../framework/renderer/js/fluidParser.js"></script>
@@ -41,12 +41,12 @@
             <p><strong>Keyboard instructions:</strong> Arrow keys move the focus. 'Space' or 'Return' or 'Enter' open image in viewer.</p>
 
              <ul class="demo-container-imageThumbnails fl-centered">
-                <!-- The class "selectable" specifies to the Keyboard Accessibility component 
+                <!-- The class "selectable" specifies to the Keyboard Accessibility component
                      which items are to be selectable using keyboard or mouse. -->
 				<li><img class="selectable" src="images/Mangosteen.jpg" alt="mangosteen" /></li>
 				<li><img class="selectable" src="images/Banana.jpg" alt="banana" /></li>
 				<li><img class="selectable" src="images/RedApple.jpg" alt="red apple" /></li>
-				<li><img class="selectable" src="images/Dragonfruit.jpg" alt="dragonfruit" /></li>            
+				<li><img class="selectable" src="images/Dragonfruit.jpg" alt="dragonfruit" /></li>
 				<li><img class="selectable" src="images/Grapes.jpg" alt="bunch of grapes" /></li>
 				<li><img class="selectable" src="images/Fig.jpg" alt="fig" /></li>
 				<li><img class="selectable" src="images/Lemon.jpg" alt="lemon" /></li>
@@ -55,8 +55,8 @@
 			</ul>
 
             <div class="demo-container-fiveStar fl-centered">
-                <label for="ranking">Rank:</label>
-                <div id="ranking" class="demo-fiveStar">
+                <span id="demo-rank">Rank:</span>
+                <div id="demo-ranking" class="demo-fiveStar" aria-labelledby="demo-rank">
                     <img class="star-1" alt="one star" src="images/star-blank.gif" />
                     <img class="star-2" alt="two stars" src="images/star-blank.gif" />
                     <img class="star-3" alt="three stars" src="images/star-blank.gif" />
@@ -69,7 +69,7 @@
 				<img class="demo-image-mainImage" src="images/Banana.jpg" alt="" />
 			</div>
 
-        </div>        
+        </div>
         <script type="text/javascript">
             demo.initImageViewer(".demo-container");
         </script>

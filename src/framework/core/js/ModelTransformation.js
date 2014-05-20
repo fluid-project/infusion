@@ -220,6 +220,13 @@ var fluid = fluid || fluid_1_5;
         };
     };
 
+    fluid.model.transform.aliasStandardInput = function (transformSpec) {
+        return { // alias input and value, and their paths
+            value: transformSpec.value === undefined ? transformSpec.input : transformSpec.value,
+            valuePath: transformSpec.valuePath === undefined ? transformSpec.inputPath : transformSpec.valuePath
+        };
+    };
+
     // unsupported, NON-API function
     fluid.model.transform.doTransform = function (transformSpec, transform, transformOpts) {
         var expdef = transformOpts.defaults;
@@ -234,10 +241,9 @@ var fluid = fluid || fluid_1_5;
         }
         var transformArgs = [transformSpec, transform];
         if (fluid.hasGrade(expdef, "fluid.standardInputTransformFunction")) {
-            if (transformSpec.input !== undefined) {
-                transformSpec.value = transformSpec.input; // alias input and value
-            }
-            var expanded = fluid.model.transform.getValue(transformSpec.inputPath, transformSpec.value, transform);
+            var valueHolder = fluid.model.transform.aliasStandardInput(transformSpec);
+            var expanded = fluid.model.transform.getValue(valueHolder.valuePath, valueHolder.value, transform);
+
             transformArgs.unshift(expanded);
             //if the function has no input, the result is considered undefined, and this is returned
             if (expanded === undefined) {
@@ -341,7 +347,7 @@ var fluid = fluid || fluid_1_5;
     };
     // unsupported, NON-API function
     fluid.model.transform.handleInvertStrategy = function (transformSpec, transform, transformOpts) {
-        var invertor = transformOpts.defaults.invertConfiguration;
+        var invertor = transformOpts.defaults && transformOpts.defaults.invertConfiguration;
         if (invertor) {
             var inverted = fluid.invokeGlobalFunction(invertor, [transformSpec, transform]);
             transform.inverted.push(inverted);

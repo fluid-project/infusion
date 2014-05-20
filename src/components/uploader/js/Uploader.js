@@ -120,33 +120,29 @@ var fluid_1_5 = fluid_1_5 || {};
         that.totalProgress.hide();
     };
 
-    // TODO: Refactor this to be a general ARIA utility
-    fluid.uploader.ariaLiveRegionUpdater = function (statusRegion, totalFileStatusText, events) {
-        statusRegion.attr("role", "log");
-        statusRegion.attr("aria-live", "assertive");
-        statusRegion.attr("aria-relevant", "text");
-        statusRegion.attr("aria-atomic", "true");
-
-        var regionUpdater = function () {
-            statusRegion.text(totalFileStatusText.text());
-        };
-
-        events.afterFileDialog.addListener(regionUpdater);
-        events.afterFileRemoved.addListener(regionUpdater);
-        events.afterUploadComplete.addListener(regionUpdater);
-    };
-
     fluid.uploader.renderUploadTotalMessage = function (that) {
-        // Render template for the total file status message.
+        // Preservered for backwards compatibility, should be refactored post v1.5
         var numReadyFiles = that.queue.getReadyFiles().length;
         var bytesReadyFiles = that.queue.sizeOfReadyFiles();
         var fileLabelStr = fluid.uploader.fileOrFiles(that, numReadyFiles);
 
+        var totalCount = that.queue.files.length;
+        var noFilesMsg = that.options.strings.progress.noFiles;
+
         var totalStateStr = fluid.stringTemplate(that.options.strings.progress.toUploadLabel, {
             fileCount: numReadyFiles,
             fileLabel: fileLabelStr,
-            totalBytes: fluid.uploader.formatFileSize(bytesReadyFiles)
+            totalBytes: fluid.uploader.formatFileSize(bytesReadyFiles),
+            uploadedCount: that.queue.getUploadedFiles().length,
+            uploadedSize: fluid.uploader.formatFileSize(that.queue.sizeOfUploadedFiles()),
+            totalCount: totalCount,
+            totalSize: fluid.uploader.formatFileSize(that.queue.totalBytes())
         });
+
+        if (!totalCount && noFilesMsg) {
+            totalStateStr = noFilesMsg;
+        }
+
         that.locate("totalFileStatusText").html(totalStateStr);
     };
 
@@ -186,22 +182,31 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     fluid.uploader.updateTotalProgress = function (that) {
+        // Preservered for backwards compatibility, should be refactored post v1.5
         var batch = that.queue.currentBatch;
         var totalPercent = fluid.uploader.derivePercent(batch.totalBytesUploaded, batch.totalBytes);
         var numFilesInBatch = batch.files.length;
         var fileLabelStr = fluid.uploader.fileOrFiles(that, numFilesInBatch);
+
+        var uploadingSize = batch.totalBytesUploaded + that.queue.sizeOfUploadedFiles();
 
         var totalProgressStr = fluid.stringTemplate(that.options.strings.progress.totalProgressLabel, {
             curFileN: batch.fileIdx,
             totalFilesN: numFilesInBatch,
             fileLabel: fileLabelStr,
             currBytes: fluid.uploader.formatFileSize(batch.totalBytesUploaded),
-            totalBytes: fluid.uploader.formatFileSize(batch.totalBytes)
+            totalBytes: fluid.uploader.formatFileSize(batch.totalBytes),
+            uploadedCount: that.queue.getUploadedFiles().length,
+            uploadedSize: fluid.uploader.formatFileSize(uploadingSize),
+            totalCount: that.queue.files.length,
+            totalSize: fluid.uploader.formatFileSize(that.queue.totalBytes())
         });
+
         that.totalProgress.update(totalPercent, totalProgressStr);
     };
 
     fluid.uploader.updateTotalAtCompletion = function (that) {
+        // Preservered for backwards compatibility, should be refactored post v1.5
         var numErroredFiles = that.queue.getErroredFiles().length;
         var numTotalFiles = that.queue.files.length;
         var fileLabelStr = fluid.uploader.fileOrFiles(that, numTotalFiles);
@@ -224,26 +229,14 @@ var fluid_1_5 = fluid_1_5 || {};
             totalFilesN: numTotalFiles,
             errorString: errorStr,
             fileLabel: fileLabelStr,
-            totalCurrBytes: fluid.uploader.formatFileSize(that.queue.sizeOfUploadedFiles())
+            totalCurrBytes: fluid.uploader.formatFileSize(that.queue.sizeOfUploadedFiles()),
+            uploadedCount: that.queue.getUploadedFiles().length,
+            uploadedSize: fluid.uploader.formatFileSize(that.queue.sizeOfUploadedFiles()),
+            totalCount: that.queue.files.length,
+            totalSize: fluid.uploader.formatFileSize(that.queue.totalBytes())
         });
 
         that.totalProgress.update(100, totalProgressStr);
-    };
-
-    /*
-     * Summarizes the status of all the files in the file queue.
-     */
-    fluid.uploader.updateQueueSummaryText = function (that) {
-        var fileQueueTable = that.locate("fileQueue");
-        if (that.queue.files.length === 0) {
-            fileQueueTable.attr("summary", that.options.strings.queue.emptyQueue);
-        } else {
-            var queueSummary = fluid.stringTemplate(that.options.strings.queue.queueSummary, {
-                totalUploaded: that.queue.getUploadedFiles().length,
-                totalInUploadQueue: that.queue.files.length - that.queue.getUploadedFiles().length
-            });
-            fileQueueTable.attr("summary", queueSummary);
-        }
     };
 
     fluid.uploader.updateStateAfterFileDialog = function (that) {
@@ -252,20 +245,17 @@ var fluid_1_5 = fluid_1_5 || {};
             fluid.uploader[queueLength === that.options.queueSettings.fileUploadLimit ? "setStateFull" : "setStateLoaded"](that);
             fluid.uploader.renderUploadTotalMessage(that);
             that.locate(that.options.focusWithEvent.afterFileDialog).focus();
-            fluid.uploader.updateQueueSummaryText(that);
         }
     };
 
     fluid.uploader.updateStateAfterFileRemoval = function (that) {
         fluid.uploader[that.queue.getReadyFiles().length === 0 ? "setStateEmpty" : "setStateLoaded"] (that);
         fluid.uploader.renderUploadTotalMessage(that);
-        fluid.uploader.updateQueueSummaryText(that);
     };
 
     fluid.uploader.updateStateAfterCompletion = function (that) {
         fluid.uploader[that.queue.getReadyFiles().length === 0 ? "setStateDone" : "setStateLoaded"] (that);
         fluid.uploader.updateTotalAtCompletion(that);
-        fluid.uploader.updateQueueSummaryText(that);
     };
 
     fluid.uploader.uploadNextOrFinish = function (that) {
@@ -432,6 +422,16 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uploader.multiFileUploader", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         nickName: "uploader",
+        members: {
+            totalFileStatusTextId: {
+                expander: {
+                    // create an id for that.dom.container, if it does not have one already,
+                    // and set that.totalFileStatusTextIdId to the id value
+                    funcName: "fluid.allocateSimpleId",
+                    args: "{that}.dom.totalFileStatusText"
+                }
+            }
+        },
         invokers: {
             /**
              * Opens the native OS browse file dialog.
@@ -462,10 +462,6 @@ var fluid_1_5 = fluid_1_5 || {};
             stop: {
                 funcName: "fluid.uploader.stop",
                 args: ["{that}.strategy.remote", "{that}.events.onUploadStop"]
-            },
-            statusUpdater: {
-                funcName: "fluid.uploader.ariaLiveRegionUpdater",
-                args: ["{that}.dom.statusRegion", "{that}.dom.totalFileStatusText", "{that}.events"]
             }
         },
 
@@ -525,7 +521,6 @@ var fluid_1_5 = fluid_1_5 || {};
             totalFileStatusText: ".flc-uploader-total-progress-text",
             fileUploadLimitText: ".flc-uploader-upload-limit-text",
             instructions: ".flc-uploader-browse-instructions",
-            statusRegion: ".flc-uploader-status-region",
             errorsPanel: ".flc-uploader-errorsPanel"
         },
         noAutoFocus: { // Specifies a member of "focusWithEvent" which the uploader will not attempt to automatically honour
@@ -584,6 +579,22 @@ var fluid_1_5 = fluid_1_5 || {};
                 "this": "{that}.dom.pauseButton",
                 method: "click",
                 args: "{that}.stop"
+            }, {
+                "this": "{that}.dom.totalFileStatusText",
+                method: "attr",
+                args: [{
+                    "role": "log",
+                    "aria-live": "assertive",
+                    "aria-relevant": "text",
+                    "aria-atomic": "true"
+                }]
+            }, {
+                "this": "{that}.dom.fileQueue",
+                method: "attr",
+                args: [{
+                    "aria-controls": "{that}.totalFileStatusTextId",
+                    "aria-labelledby": "{that}.totalFileStatusTextId"
+                }]
             }],
             // Namespace all our standard listeners so they are easy to override
             "afterFileDialog.uploader": {
@@ -635,9 +646,10 @@ var fluid_1_5 = fluid_1_5 || {};
         strings: {
             progress: {
                 fileUploadLimitLabel: "%fileUploadLimit %fileLabel maximum",
-                toUploadLabel: "To upload: %fileCount %fileLabel (%totalBytes)",
-                totalProgressLabel: "Uploading: %curFileN of %totalFilesN %fileLabel (%currBytes of %totalBytes)",
-                completedLabel: "Uploaded: %curFileN of %totalFilesN %fileLabel (%totalCurrBytes)%errorString",
+                noFiles: "0 files",
+                toUploadLabel: "%uploadedCount out of %totalCount files uploaded (%uploadedSize of %totalSize)",
+                totalProgressLabel: "%uploadedCount out of %totalCount files uploaded (%uploadedSize of %totalSize)",
+                completedLabel: "%uploadedCount out of %totalCount files uploaded (%uploadedSize of %totalSize)%errorString",
                 numberOfErrors: ", %errorsN %errorLabel",
                 singleFile: "file",
                 pluralFiles: "files",
@@ -650,10 +662,6 @@ var fluid_1_5 = fluid_1_5 || {};
                 stopUpload: "Stop Upload",
                 cancelRemaning: "Cancel remaining Uploads",
                 resumeUpload: "Resume Upload"
-            },
-            queue: {
-                emptyQueue: "File list: No files waiting to be uploaded.",
-                queueSummary: "File list: %totalUploaded files uploaded, %totalInUploadQueue file waiting to be uploaded."
             }
         }
     });
@@ -662,9 +670,14 @@ var fluid_1_5 = fluid_1_5 || {};
         // Upload button should not be enabled until there are files to upload
         fluid.uploader.disableElement(that, that.locate("uploadButton"));
 
-        fluid.uploader.updateQueueSummaryText(that);
-        that.statusUpdater();
         fluid.uploader.renderFileUploadLimit(that);
+
+        // placed here for backwards compatibility, as a noFiles string
+        // may not be defined.
+        var noFilesMsg = that.options.strings.progress.noFiles;
+        if (noFilesMsg)  {
+            that.locate("totalFileStatusText").text(noFilesMsg);
+        }
 
         // Uploader uses application-style keyboard conventions, so give it a suitable role.
         that.container.attr("role", "application");
