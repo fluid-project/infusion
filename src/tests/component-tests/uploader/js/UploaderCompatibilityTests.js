@@ -25,7 +25,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // TODO: Do this manually so that progressiveEnhancer does not forget it each time - need enhancer groupings
 
         // Choose html5 configuration for all tests since it will cause resolution of multiFileUpload
-        // and not complain about absence of SWF
         fluid.tests.uploader.commonTags = {
             "fluid.browser.supportsBinaryXHR": true,
             "fluid.browser.supportsFormData": true
@@ -44,38 +43,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             uploadManager: {
                 type: "fluid.swfUploadManager",
                 options: {
-                    uploadURL: "include/lib/upload.php",
-                    flashURL: "jscripts/infusion/lib/swfupload/flash/swfupload.swf"
+                    uploadURL: "include/lib/upload.php"
                 }
             },
 
             listeners: {
                 onFileSuccess: [fluid.identity]
-            },
-
-            decorators: [{
-                type: "fluid.swfUploadSetupDecorator",
-                options: {
-                    flashButtonImageURL: "jscripts/infusion/components/uploader/images/browse.png"
-                }
-            }]
+            }
         };
 
         var modernOptions = {
-            components: {
-                strategy: {
-                    options: {
-                        flashMovieSettings: {
-                            flashURL: "jscripts/infusion/lib/swfupload/flash/swfupload.swf",
-                            flashButtonImageURL: "jscripts/infusion/components/uploader/images/browse.png"
-                        }
-                    }
-                }
-            },
-
             queueSettings: {
-                uploadURL: "include/lib/upload.php",
-                flashURL: "jscripts/infusion/lib/swfupload/flash/swfupload.swf" // Lazily moved over in rules.
+                uploadURL: "include/lib/upload.php"
             },
 
             listeners: {
@@ -123,10 +102,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         var checkUploaderOptions = function (uploader) {
             testTransformation({
-                // Flash Settings
-                "uploadManager.options.flashURL": "components.strategy.options.flashMovieSettings.flashURL",
-                "decorators.0.options.flashButtonImageURL": "components.strategy.options.flashMovieSettings.flashButtonImageURL",
-
                 // Queue Settings
                 "uploadManager.options.uploadURL": "queueSettings.uploadURL",
 

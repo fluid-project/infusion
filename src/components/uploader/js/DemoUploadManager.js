@@ -87,7 +87,7 @@ var fluid_1_5 = fluid_1_5 || {};
         file.filestatus = fluid.uploader.fileStatusConstants.CANCELLED;
         that.queue.shouldStop = true;
 
-        // In SWFUpload's world, pausing is a combination of an UPLOAD_STOPPED error and a complete.
+        // Legacy from the SWFUpload implementation, where pausing is a combination of an UPLOAD_STOPPED error and a complete.
         that.events.onFileError.fire(file,
                                      fluid.uploader.errorConstants.UPLOAD_STOPPED,
                                      "The demo upload was paused by the user.");
