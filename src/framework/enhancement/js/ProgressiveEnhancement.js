@@ -11,9 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/* global swfobject */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
@@ -30,12 +27,6 @@ var fluid_1_5 = fluid_1_5 || {};
     };
     fluid.enhance.supportsFormData = function () {
         return !!window.FormData;
-    };
-    fluid.enhance.supportsFlash = function () {
-        return (typeof(swfobject) !== "undefined") && (swfobject.getFlashPlayerVersion().major > 8);
-    };
-    fluid.enhance.majorFlashVersion = function () {
-        return typeof(swfobject) === "undefined" ? 0 : swfobject.getFlashPlayerVersion().major;
     };
 
     /*

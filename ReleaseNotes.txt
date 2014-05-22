@@ -76,8 +76,6 @@ MIT License:
     * jQuery scrollTo v1.4.2 http://flesler.blogspot.com/2007/10/jqueryscrollto.html
     * jQuery Touch Punch v0.2.2 http://touchpunch.furf.com/
     * Micro Clearfix http://nicolasgallagher.com/micro-clearfix-hack/
-    * SWFUpload v2.2.0.1: http://swfupload.org/
-    * SWFObject v2.2: http://code.google.com/p/swfobject/
     * Buzz v1.1.0 http://buzz.jaysalvat.com
 
 zlib/libpng License:
@@ -222,7 +220,3 @@ UI Options:
 
 Uploader:
     FLUID-3996: Deleting files on the local filesystem after they have been added to the Uploader's queue will cause inconsistent behaviour
-    FLUID-3997: Can't tab to the "Browse/Add More" button with the keyboard in IE with Flash 10
-    FLUID-2052: Cannot tab away from the "Browse Files" button with Flash 10*
-    * For information related to known issues with Flash 10 compatibility,
-      see http://wiki.fluidproject.org/x/kwZo

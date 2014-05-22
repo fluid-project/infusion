@@ -22,8 +22,6 @@ src/lib/jquery/plugins
 src/lib/jquery/ui
 
 src/lib/json
-src/lib/swfobject
-src/lib/swfupload
 src/framework/fss
 
 build-scripts

@@ -24,7 +24,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          ****************************/
 
         var mountainTestFile = {
-            id : 0, // SWFUpload file id, used for starting or cancelling and upload
+            id : 0, // used for starting or cancelling and upload
             index : 0, // The index of this file for use in getFile(i)
             name : "Mountain.jpg", // The file name. The path is not included.
             size : 400000, // The file size in bytes
@@ -32,7 +32,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         var oceanTestFile = {
-            id : 230948230984, // SWFUpload file id, used for starting or cancelling and upload
+            id : 230948230984, // used for starting or cancelling and upload
             index : 1, // The index of this file for use in getFile(i)
             name : "Ocean.jpg", // The file name. The path is not included.
             size : 950000000, // The file size in bytes
