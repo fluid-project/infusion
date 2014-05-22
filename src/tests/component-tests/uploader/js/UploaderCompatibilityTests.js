@@ -25,7 +25,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // TODO: Do this manually so that progressiveEnhancer does not forget it each time - need enhancer groupings
 
         // Choose html5 configuration for all tests since it will cause resolution of multiFileUpload
-        // and not complain about absence of SWF
         fluid.tests.uploader.commonTags = {
             "fluid.browser.supportsBinaryXHR": true,
             "fluid.browser.supportsFormData": true
