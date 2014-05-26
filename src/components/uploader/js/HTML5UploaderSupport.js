@@ -212,7 +212,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.uploader.html5Strategy.local.addFiles = function (that, files) {
         // Add files to the file queue without exceeding the fileUploadLimit and the fileSizeLimit
-        // NOTE: fileSizeLimit set to bytes for HTML5 Uploader (KB for SWF Uploader).
+        // NOTE: fileSizeLimit set to bytes for HTML5 Uploader.
         // TODO: These look like they should be part of a real model.
         var queueSettings = that.options.queueSettings;
         var sizeLimit = queueSettings.fileSizeLimit * 1024;
