@@ -12,12 +12,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid, jqUnit */
 
 (function ($) {
+    "use strict";
+
     fluid.setLogging(true);
 
     fluid.registerNamespace("fluid.tests");
@@ -155,7 +154,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         if (defaultModel !== undefined) {
             defaults.model = defaultModel;
         }
-        var compName = "fluid.tests.testMergeComponent." + name;
         fluid.defaults(name, defaults);
         fluid.setGlobalValue(name, function (options) {
             return fluid.initLittleComponent(name, options);
@@ -217,11 +215,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         var applyOldChange = function (request) {
             fluid.model.applyChangeRequest(model, request);
-        }
+        };
         var applyHolderChange = function (request) {
             request.segs = fluid.model.parseEL(request.path);
             fluid.model.applyHolderChangeRequest(holder, request);
-        }
+        };
 
         function applyTests(applyFunc) {
             applyFunc({type: "ADD", path: "path1.nonexistent", value: "value"});
@@ -329,6 +327,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: {v: {a: 1}},
         changes: 1,
         changeMap: {v: "ADD"}
+    }, {
+        message: "Array on array - avoid mouse droppings",
+        model: [{a: 1}, {b: 2}],
+        request: {type: "ADD", path: "", value: [{b: 2}]},
+        expected: [{b: 2}],
+        changes: 1,
+        changeMap: "ADD"
     }
     ];
 
@@ -342,8 +347,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var message = "index " + i + ": " + test.message;
             jqUnit.assertDeepEq(message + ": model contents", test.expected, holder.model);
             if (test.changes !== undefined) {
-               jqUnit.assertEquals(message + ": changes", test.changes, options.changes);
-               jqUnit.assertDeepEq(message + ": changeMap", test.changeMap, options.changeMap);
+                jqUnit.assertEquals(message + ": changes", test.changes, options.changes);
+                jqUnit.assertDeepEq(message + ": changeMap", test.changeMap, options.changeMap);
             }
         }
     });
@@ -454,13 +459,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 innerPath2: 4
             }
         };
-        function nullingGuard(newModel, changeRequest, applier) {
+        function nullingGuard(newModel, changeRequest) {
             if (changeRequest.path === "transWorld.innerPath2") {
                 changeRequest.value = 4;
             }
         }
         var lowExecuted = false;
-        function lowPriorityGuard(newModel, changeRequest, applier) {
+        function lowPriorityGuard() {
             lowExecuted = true;
         }
         var modelChangedCheck = false;
@@ -502,7 +507,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
         var postGuardCheck = 0;
-        function postGuard(newModel, changes, applier) {
+        function postGuard(newModel, changes) {
             jqUnit.assertEquals("PostGuard count", 0, postGuardCheck);
             jqUnit.assertDeepEq("PostGuard model state", newModel, {outerProperty: false, transWorld: {innerPath1: 4, innerPath2: 6}});
             jqUnit.assertEquals("PostGuard change count", 2, changes.length);
@@ -587,7 +592,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Outer listener old", false, outerOldModel.outerProperty);
         jqUnit.assertEquals("Outer listener new", true, outerNewModel.outerProperty);
 
-        function preventingGuard(model, dar) {
+        function preventingGuard() {
             return false;
         }
 
@@ -639,7 +644,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The model should have been guarded and not changed", "a", model.arrayInnerProperty[0].a);
         applier.requestChange("arrayInnerProperty.0.b", "new b");
         jqUnit.assertEquals("The model should have updated", "new b", model.arrayInnerProperty[0].b);
-        var newArray = [{a: "a", b: "b", c: "c"}, {a: "A", b: "B", c: "C"}]
+        var newArray = [{a: "a", b: "b", c: "c"}, {a: "A", b: "B", c: "C"}];
         applier.requestChange("arrayInnerProperty", newArray);
         jqUnit.assertDeepEq("The model should have updated", newArray, model.arrayInnerProperty);
         applier.guards.removeListener("checkingGuard3");
@@ -734,7 +739,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fireRecord: []
         },
         invokers: {
-            record: "fluid.tests.recordChange({that}.fireRecord, {arguments}.0, {arguments}.1, {arguments}.2)",
+            record: "fluid.tests.recordChange({that}.fireRecord, {arguments}.0, {arguments}.1, {arguments}.2)"
         }
     });
 
@@ -858,7 +863,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Inner model successfully initialised", expected2, that.child.model);
 
         var expected3 = [{
-            path: ["innerModel"], oldValue: undefined, value: {nested2: "thing"}
+            path: ["innerModel"],
+            oldValue: undefined,
+            value: {nested2: "thing"}
         }];
         jqUnit.assertDeepEq("Registered initial change", expected3, that.fireRecord);
         that.applier.requestChange("innerModel", "exterior thing");
@@ -926,7 +933,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.allChangeRecorder", {
         gradeNames: "fluid.tests.changeRecorder",
         modelListeners: {
-            "": "{that}.record({change}.path, {change}.value, {change}.oldValue)",
+            "": "{that}.record({change}.path, {change}.value, {change}.oldValue)"
         }
     });
 
@@ -936,19 +943,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             child1: {
                 type: "fluid.standardRelayComponent",
                 options: {
-                     gradeNames: ["fluid.tests.allChangeRecorder", "autoInit"],
-                     model: {
-                         celsius: 22
-                     },
-                     modelRelay: {
-                         source: "{that}.model.celsius",
-                         target: "{child2}.model.fahrenheit",
-                         singleTransform: {
-                             type: "fluid.transforms.linearScale",
-                             factor: 9/5,
-                             offset: 32
-                         }
-                     }
+                    gradeNames: ["fluid.tests.allChangeRecorder", "autoInit"],
+                    model: {
+                        celsius: 22
+                    },
+                    modelRelay: {
+                        source: "{that}.model.celsius",
+                        target: "{child2}.model.fahrenheit",
+                        singleTransform: {
+                            type: "fluid.transforms.linearScale",
+                            factor: 9/5,
+                            offset: 32
+                        }
+                    }
                 }
             },
             child2: {
@@ -966,7 +973,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var options = {changes: 0, changeMap: {}};
         fluid.model.applyHolderChangeRequest(holder1, request, options);
         return $.isEmptyObject(options.changeMap);
-    }
+    };
 
     // This utility applies the same "floating point slop" testing as the ChangeApplier in order to determine that models
     // holding approximately equal numerical values are deep equal
@@ -989,13 +996,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // White box testing: use knowledge of the ChangeApplier's implementation to determine that all transactions have been cleaned up
         var instantiator = fluid.getInstantiator(that);
         var anyKeys;
-        for (var key in instantiator.modelTransactions) {
+        var key;
+        for (key in instantiator.modelTransactions) {
             if (key !== "init") {
-               anyKeys = key;
+                anyKeys = key;
             }
         }
-        for (var key in instantiator.modelTransactions.init) {
-           anyKeys = key;
+        for (key in instantiator.modelTransactions.init) {
+            anyKeys = key;
         }
 
         jqUnit.assertNoValue("All model transactions concluded", anyKeys);
@@ -1091,31 +1099,47 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
 
         expectChanges("Initial values", [{
-            path: [], value: {forwardValue: 3.5, backwardValue: 97}, oldValue: undefined
+            path: [],
+            value: {forwardValue: 3.5, backwardValue: 97},
+            oldValue: undefined
         }], [{
-            path: [], value: {child2Area: 3.5}, oldValue: undefined
+            path: [],
+            value: {child2Area: 3.5},
+            oldValue: undefined
         }], [{
-            path: [], value: {lastArea: 35, backwardRef: 97}, oldValue: undefined
+            path: [],
+            value: {lastArea: 35, backwardRef: 97},
+            oldValue: undefined
         }]);
 
         that.child3.applier.change("lastArea", 25);
 
         expectChanges("Propagated linked change", [{
-            path: [], value: {forwardValue: 2.5, backwardValue: 97}, oldValue: {forwardValue: 3.5, backwardValue: 97}
+            path: [],
+            value: {forwardValue: 2.5, backwardValue: 97},
+            oldValue: {forwardValue: 3.5, backwardValue: 97}
         }], [{
-            path: [], value: {child2Area: 2.5}, oldValue: {child2Area: 3.5}
+            path: [],
+            value: {child2Area: 2.5},
+            oldValue: {child2Area: 3.5}
         }], [{
-            path: [], value: {lastArea: 25, backwardRef: 97}, oldValue: {lastArea: 35, backwardRef: 97}
+            path: [],
+            value: {lastArea: 25, backwardRef: 97},
+            oldValue: {lastArea: 35, backwardRef: 97}
         }]);
 
         that.child1.applier.change("backwardValue", 77);
 
         expectChanges("Propagated backward change", [{
-            path: [], value: {forwardValue: 2.5, backwardValue: 77}, oldValue: {forwardValue: 2.5, backwardValue: 97}
+            path: [],
+            value: {forwardValue: 2.5, backwardValue: 77},
+            oldValue: {forwardValue: 2.5, backwardValue: 97}
         }],
         [],
         [{
-            path: [], value: {lastArea: 25, backwardRef: 77}, oldValue: {lastArea: 25, backwardRef: 97}
+            path: [],
+            value: {lastArea: 25, backwardRef: 77},
+            oldValue: {lastArea: 25, backwardRef: 97}
         }]);
     });
 
@@ -1243,7 +1267,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.fluid5270OnSource", {
         gradeNames: ["fluid.standardRelayComponent", "autoInit"],
         model: {
-            celsius: 22,
+            celsius: 22
         },
         modelRelay: {
             source: "{that}.model.celsius",
@@ -1291,6 +1315,118 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.assertDeepEq("The target model is transformed properly - modelRelay on the source component", expectedValue, thatOnSource.sub.model.fahrenheit);
         jqUnit.assertDeepEq("The target model is transformed properly - modelRelay on the target component", expectedValue, thatOnTarget.sub.model.fahrenheit);
+    });
+
+    // FLUID-5293: The model relay using "fluid.transforms.arrayToSetMembership" isn't transformed properly
+    fluid.defaults("fluid.tests.fluid5293", {
+        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        model: {
+            accessibilityHazard: []
+        },
+        modelRelay: [{
+            source: "{that}.model.accessibilityHazard",
+            target: "{that}.model.modelInTransit",
+            singleTransform: {
+                type: "fluid.transforms.arrayToSetMembership",
+                options: {
+                    "flashing": "flashing",
+                    "noflashing": "noflashing"
+                }
+            }
+        }],
+        components: {
+            sub: {
+                type: "fluid.standardRelayComponent",
+                options: {
+                    model: {
+                        accessibilityHazard: "{fluid5293}.model.accessibilityHazard",
+                        highContrast: "{fluid5293}.model.modelInTransit.flashing",
+                        signLanguage: "{fluid5293}.model.modelInTransit.noflashing"
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5293: Model relay and transformation for array elements", function () {
+        var that = fluid.tests.fluid5293();
+        var expectedModel = {
+            accessibilityHazard: [],
+            modelInTransit: {
+                flashing: false,
+                noflashing: false
+            }
+        };
+
+        jqUnit.assertDeepEq("The initial forward transformation is performed properly", expectedModel, that.model);
+
+        var expectedModelAfterChangeRequest = {
+            accessibilityHazard: ["flashing", "noflashing"],
+            modelInTransit: {
+                flashing: true,
+                noflashing: true
+            }
+        };
+
+        that.applier.requestChange("modelInTransit.flashing", true);
+        that.applier.requestChange("modelInTransit.noflashing", true);
+        jqUnit.assertDeepEq("The backward transformation to add array values is performed properly", expectedModelAfterChangeRequest, that.model);
+
+        that.applier.requestChange("modelInTransit.flashing", false);
+        that.applier.requestChange("modelInTransit.noflashing", false);
+        jqUnit.assertDeepEq("The backward transformation to remove array values is performed properly", expectedModel, that.model);
+
+        var expectedSubcomponentModel = {
+            accessibilityHazard: ["flashing", "noflashing"],
+            highContrast: true,
+            signLanguage: true
+        };
+        that.applier.requestChange("accessibilityHazard", ["flashing", "noflashing"]);
+        jqUnit.assertDeepEq("The transformation from array elements to the intermediary object is performed properly", expectedModelAfterChangeRequest, that.model);
+        jqUnit.assertDeepEq("The change request on the model array element is properly relayed and transformed to the subcomponent", expectedSubcomponentModel, that.sub.model);
+    });
+
+    /** FLUID-5358 - Use of arbitrary functions and fluid.transforms.identity **/
+    
+    fluid.tests.fluid5358Multiply = function (a) {
+        return a * 2;
+    };
+    
+    fluid.defaults("fluid.tests.fluid5358root", {
+        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        model: {
+            baseValue: 1,
+            identityValue: 2
+        },
+        modelRelay: [{
+            source: "baseValue",
+            target: "{sub}.model.multipliedValue",
+            singleTransform: {
+                type: "fluid.tests.fluid5358Multiply"
+            }
+        }, {
+            source: "identityValue",
+            target: "{sub}.model.identityValue",
+            singleTransform: {
+                type: "fluid.transforms.identity"
+            }
+        }
+        ],
+        components: {
+            sub: {
+                type: "fluid.standardRelayComponent"
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-5358: Use of arbitrary functions for relay and fluid.transforms.identity", function () {
+        var that = fluid.tests.fluid5358root();
+        jqUnit.assertEquals("Transformed using free multiply", 2, that.sub.model.multipliedValue);
+        that.sub.applier.change("multipliedValue", 4);
+        jqUnit.assertEquals("No corruption of linked value for noninvertible transform", 1, that.model.baseValue);
+        jqUnit.assertEquals("Transformed using identity relay", 2, that.sub.model.identityValue);
+        that.sub.applier.change("identityValue", 1);
+        jqUnit.assertEquals("Identity relay inverted correctly", 1, that.model.identityValue);
     });
 
 })(jQuery);

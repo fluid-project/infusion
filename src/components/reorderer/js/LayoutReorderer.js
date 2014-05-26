@@ -10,21 +10,16 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
- 
+    "use strict";
+
     /**
      * Simple way to create a layout reorderer.
      * @param {selector} a jQueryable (selector, element, jQuery) for the layout container
      * @param {Object} a map of selectors for columns and modules within the layout
-     * @param {Function} a function to be called when the order changes 
+     * @param {Function} a function to be called when the order changes
      * @param {Object} additional configuration options
      */
     fluid.reorderLayout = function (container, userOptions) {
@@ -37,5 +32,5 @@ var fluid_1_5 = fluid_1_5 || {};
         };
         var options = $.extend(true, assembleOptions, userOptions);
         return fluid.reorderer(container, options);
-    };    
+    };
 })(jQuery, fluid_1_5);

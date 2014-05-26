@@ -54,7 +54,7 @@ Will include all of Infusion. The source files packaged along with the single co
 
 #####Custom Build#####
 
-Will only include the modules you request, and all of their dependencies, minus any that are explicitely excluded. Unlike the "all" build, none of the demos or tests are included with a custom package.
+Will only include the modules you request, and all of their dependencies, minus any that are explicitly excluded. Unlike the "all" build, none of the demos or tests are included with a custom package.
 
     grunt custom
 
@@ -63,7 +63,7 @@ Will only include the modules you request, and all of their dependencies, minus 
 ####--source####
 
 __value__: true (Boolean)
-_the value can be ommited if --source is the last flag specified_
+_the value can be omitted if --source is the last flag specified_
 
 By default all packages are minified. This option will allow you to maintain the readable spacing and comments.
 
@@ -113,6 +113,7 @@ By default, custom packages are given a name with the form _infusion-custom-<ver
 ####Component Modules####
 
 * inlineEdit
+* overviewPanel
 * pager
 * progress
 * reorderer
@@ -135,5 +136,3 @@ By default, custom packages are given a name with the form _infusion-custom-<ver
 * jQueryUICore
 * jQueryUIWidgets
 * json
-* swfobject
-* swfupload

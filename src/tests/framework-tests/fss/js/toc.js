@@ -9,13 +9,8 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global window, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 (function ($) {
+    "use strict";
 
     $().ready(function () {
         var FSSTestTOC = {
@@ -30,28 +25,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 {title: "FSS.Themes", note: "Test for applying themes to layout helpers and other common FSS elements."}
             ]
         };
-    
+
         // parse the # from the filename
         var uri = ("" + window.location).split("fss/");
         var currentTest = parseInt(uri[1].substr(5, 6), 10);
-        var next = '#', prev = '#', totalTests = FSSTestTOC.tests.length, thisTestIndex = currentTest - 1, prevTestIndex = currentTest - 2, nextTestIndex = currentTest;
-    
-        next = (currentTest < totalTests) ? (currentTest + 1) + "." + FSSTestTOC.tests[nextTestIndex].title.toLowerCase() + '.html' : next;
-        prev = (currentTest > 1) ? (currentTest - 1) + "." + FSSTestTOC.tests[prevTestIndex].title.toLowerCase() + '.html' : prev;
-        
-        
+        var next = "#", prev = "#", totalTests = FSSTestTOC.tests.length, thisTestIndex = currentTest - 1, prevTestIndex = currentTest - 2, nextTestIndex = currentTest;
+
+        next = (currentTest < totalTests) ? (currentTest + 1) + "." + FSSTestTOC.tests[nextTestIndex].title.toLowerCase() + ".html" : next;
+        prev = (currentTest > 1) ? (currentTest - 1) + "." + FSSTestTOC.tests[prevTestIndex].title.toLowerCase() + ".html" : prev;
+
+
         // LINKS
-        $('.options a[href=#prev]').attr('href', prev);
-        $('.options a[href=#next]').attr('href', next);    
-        
+        $(".options a[href=#prev]").attr("href", prev);
+        $(".options a[href=#next]").attr("href", next);
+
         // HEADING
-        $('.options h1').text(FSSTestTOC.tests[thisTestIndex].title);
-        
+        $(".options h1").text(FSSTestTOC.tests[thisTestIndex].title);
+
         // NOTES
-        $('#note').text(FSSTestTOC.tests[thisTestIndex].note);
-        
+        $("#note").text(FSSTestTOC.tests[thisTestIndex].note);
+
         // TEST ID
-        $('#page').text('Test ' + (currentTest) + ' of ' + totalTests);
-        
+        $("#page").text("Test " + (currentTest) + " of " + totalTests);
+
     });
 })(jQuery);

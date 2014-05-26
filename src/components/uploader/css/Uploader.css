@@ -8,7 +8,7 @@
 /*
  * Uploader container
  */
-.fl-uploader { 
+.fl-uploader {
     width: 434px;
     position: relative;
     clear: both;
@@ -19,16 +19,16 @@ table.fl-uploader-header {
     width: 434px;
     margin-bottom: 0px; /* override FSS 1em margin on bottom */
     border-bottom: 1px solid #999;
-    color: #333;    
+    color: #333;
     font-size: 0.9em;
     font-weight: bold;
 }
 
-.fl-uploader-header tr { 
+.fl-uploader-header tr {
     width: 100%;
 }
 
-.fl-uploader-header th { 
+.fl-uploader-header th {
     text-align: left;
     border: none;
 }
@@ -54,7 +54,7 @@ table.fl-uploader-header {
 /* Scrollable file queue table */
  .fl-scrollable-scroller {
     display: block;
-    position: relative;  
+    position: relative;
     overflow: auto;
     overflow-x: hidden;
     overflow-y: auto;
@@ -87,7 +87,7 @@ table.fl-uploader-queue {
     font-size: 0.9em;
 }
 
-.fl-uploader-queue tr:focus, .fl-uploader-queue tr.fl-uploader-file-state-ready:hover {  
+.fl-uploader-queue tr:focus, .fl-uploader-queue tr.fl-uploader-file-state-ready:hover {
     background-color: #FFF9DC;
 }
 
@@ -102,7 +102,7 @@ table.fl-uploader-queue {
 .fl-uploader-queue td.fl-uploader-file-name {
     width: 26em;
     overflow: hidden;
-    font-weight:normal;   
+    font-weight:normal;
 }
 
 .fl-uploader-queue .fl-uploader-file-size {
@@ -140,9 +140,9 @@ table.fl-uploader-queue {
 /* remove button */
 .fl-uploader-file-actions .fl-uploader-file-action-remove {
     font-family: 'InfusionIcons';
-    -webkit-font-smoothing: antialiased; 
+    -webkit-font-smoothing: antialiased;
     font-size: 1.4em;
-    cursor: pointer; 
+    cursor: pointer;
 }
 
 
@@ -168,7 +168,7 @@ tr.fl-uploader-file-state-uploaded .fl-uploader-file-name {
 
 tr.fl-uploader-file-state-uploaded button {
     font-family: 'InfusionIcons';
-    -webkit-font-smoothing: antialiased; 
+    -webkit-font-smoothing: antialiased;
     font-size: 1.2em;
 }
 
@@ -180,19 +180,19 @@ tr.fl-uploader-file-state-uploaded button:before {
 }
 
 
-/* 
- * Status footer 
+/*
+ * Status footer
  */
 .fl-uploader-queue-footer {
     z-index:6;
     position: relative;
     background-color: #F7F7F7;
-    border-top: 1px solid #999;    
+    border-top: 1px solid #999;
     color:#4d4d4d;
     font-size:1.07em;
     font-weight:bold;
     padding:8px 6px;
-    vertical-align:middle;  
+    vertical-align:middle;
 }
 
 .fl-uploader span.fl-uploader-browse {
@@ -208,7 +208,7 @@ tr.fl-uploader-file-state-uploaded button:before {
 
 .fl-uploader .fl-infusionIcon-plus {
     font-family: 'InfusionIcons';
-    -webkit-font-smoothing: antialiased; 
+    -webkit-font-smoothing: antialiased;
     font-size: 1.2em;
 }
 
@@ -225,9 +225,9 @@ tr.fl-uploader-file-state-uploaded button:before {
 }
 
 /*
- * Browse files/Add more buttons 
+ * Browse files/Add more buttons
  */
- 
+
 /* Special note about .fl-uploader-browse, .fl-uploader-browse.fl-uploader-browseMore, .fl-uploader-browse input
  *
  * Because of the inconsistencies in affecting <input type="file"> styling across browsers, we've used the following hack:
@@ -262,7 +262,7 @@ tr.fl-uploader-file-state-uploaded button:before {
     bottom: 2em;
     letter-spacing: 5px;
     left: 10px;
-    
+
     /* Make the button invisible */
     opacity: 0;
     -moz-opacity: 0;
@@ -290,13 +290,8 @@ html>body .fl-uploader span.fl-uploader-browse {
     z-index: 7;
 }
 
-.fl-uploader-flash10-wrapper {
-    position: relative;
-    float: left;
-}
-
 /*
- * Upload/Stop Upload buttons 
+ * Upload/Stop Upload buttons
  */
 
 .fl-uploader-buttons {
@@ -350,7 +345,7 @@ html>body .fl-uploader span.fl-uploader-browse {
     cursor: auto;
 }
 
-/* 
+/*
  * Progess bars
  */
 .fl-uploader-file-progress, .fl-uploader-total-progress-okay, .fl-uploader-total-progress-errored {
@@ -363,7 +358,7 @@ html>body .fl-uploader span.fl-uploader-browse {
     left: -1px;
     z-index:-1;
     top: 0;
-    height: 100%;    
+    height: 100%;
 }
 
 /* file progress */
@@ -392,7 +387,7 @@ html>body .fl-uploader span.fl-uploader-browse {
     margin-top: 0.5em;
     border-top: 1px solid #d2d2d2;
     font-size: 0.9em;
-    color: #3da6e5;    
+    color: #3da6e5;
 }
 
 .fl-uploader-errorsPanel-header {
@@ -406,8 +401,8 @@ html>body .fl-uploader span.fl-uploader-browse {
 
 .fl-infusionIcon-warning {
     font-family: 'InfusionIcons';
-    -webkit-font-smoothing: antialiased;   
-    display: inline-block;  
+    -webkit-font-smoothing: antialiased;
+    display: inline-block;
 }
 
 .fl-infusionIcon-warning:before {
@@ -431,7 +426,7 @@ html>body .fl-uploader span.fl-uploader-browse {
 /* Remove error message button */
 .fl-uploader-errorPanel-section-removeButton {
     font-family: 'InfusionIcons';
-    -webkit-font-smoothing: antialiased; 
+    -webkit-font-smoothing: antialiased;
     border-width: 0px;
     width: 18px;
     height: 18px;
@@ -443,7 +438,7 @@ html>body .fl-uploader span.fl-uploader-browse {
 .fl-uploader-errorPanel-section-removeButton:before {
     content: "\e000";
     color: #4D4D4D;
-    position:relative; 
+    position:relative;
     font-size: 1.4em;
 }
 
@@ -483,7 +478,7 @@ html>body .fl-uploader span.fl-uploader-browse {
 /*
  * Misc
  */
- 
+
 /* button for no-js basic version */
 .fl-uploader-basic-save {
     margin-top: 0.6em;
@@ -510,13 +505,6 @@ html>body .fl-uploader span.fl-uploader-browse {
     content: "\e001";
 }
 
-
-/* Hidden SWF for Flash 9*/
-.fl-uploader-flash9-container {
-    overflow: hidden; 
-    width: 1px; 
-    height: 1px;
-}
 
 /* an alternative way to hide the Uploader because of a bug in Opera,
  * described in FLUID-2789 */

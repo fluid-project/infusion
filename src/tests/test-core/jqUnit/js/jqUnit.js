@@ -13,23 +13,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global window, jqUnit, asyncTest, equals, jQuery, module, ok, test*/
+/* global fluid, QUnit */
 
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
-var jqUnit = fluid.registerNamespace("jqUnit");
+var jqUnit = jqUnit || {};
 
 (function ($) {
+    "use strict";
+
     var QUnitPassthroughs = ["module", "test", "asyncTest", "throws", "raises", "start", "stop", "expect"];
     QUnit.config.reorder = false; // defeat this QUnit feature which frequently just causes confusion
-    
+
     for (var i = 0; i < QUnitPassthroughs.length; ++ i) {
         var method = QUnitPassthroughs[i];
         jqUnit[method] = QUnit[method];
         window[method] = undefined; // work around IE8 bug http://stackoverflow.com/questions/1073414/deleting-a-window-property-in-ie
     }
-    
+
     fluid.pushSoftFailure(function (args, activity) {
         if (QUnit.config.current) {
             QUnit.ok(false, "Assertion failure (see console.log for expanded message): ".concat(args));
@@ -45,21 +44,21 @@ var jqUnit = fluid.registerNamespace("jqUnit");
         var that = {};
         that.runTestsOnFunctionNamed = options ? options.runTestsOnFunctionNamed : undefined;
         that.testBody = options ? options.testBody : undefined;
-        
+
         /**
          * An array containing an ordered list of details about each function invocation.
          */
         that.transcript = [];
-        
+
         /**
          * Called to listen for a function's invocation and record its details in the transcript.
-         * 
+         *
          * @param {Object} fnName the function name to listen for
          * @param {Object} onObject the object on which to invoke the method
          */
         that.intercept = function (fnName, onObject) {
             onObject = onObject || window;
-            
+
             var wrappedFn = onObject[fnName];
             onObject[fnName] = function () {
                 that.transcript.push({
@@ -67,16 +66,16 @@ var jqUnit = fluid.registerNamespace("jqUnit");
                     args: arguments
                 });
                 wrappedFn.apply(onObject, arguments);
-                
+
                 if (fnName === that.runTestsOnFunctionNamed) {
                     that.testBody(that.transcript);
                 }
             };
         };
-        
+
         /**
          * Intercepts all the functions on the specified object.
-         * 
+         *
          * @param {Object} obj
          */
         that.interceptAll = function (obj) {
@@ -84,26 +83,26 @@ var jqUnit = fluid.registerNamespace("jqUnit");
                 that.intercept(fnName, obj);
             }
         };
-        
+
         that.clearTranscript = function () {
             that.transcript = [];
         };
-        
+
         return that;
     };
-    
+
     var messageSuffix = "";
     var processMessage = function (message) {
-        return message + messageSuffix;  
+        return message + messageSuffix;
     };
-    
+
     var pok = function (condition, message) {
         QUnit.ok(condition, processMessage(message));
     };
-    
+
     // unsupported, NON-API function
     jqUnit.okWithPrefix = pok;
-    
+
     // unsupported, NON-API function
     jqUnit.setMessageSuffix = function (suffix) {
         messageSuffix = suffix;
@@ -112,20 +111,20 @@ var jqUnit = fluid.registerNamespace("jqUnit");
     /***********************
      * xUnit Compatibility *
      ***********************/
-    
+
     var jsUnitCompat = {
         fail: function (msg) {
-            pok(false, msg);  
+            pok(false, msg);
         },
-        
+
         assert: function (msg) {
-            pok(true, msg);  
+            pok(true, msg);
         },
-        
+
         assertEquals: function (msg, expected, actual) {
             QUnit.equal(actual, expected, processMessage(msg));
         },
-        
+
         assertNotEquals: function (msg, value1, value2) {
             pok(value1 !== value2, msg);
         },
@@ -149,11 +148,11 @@ var jqUnit = fluid.registerNamespace("jqUnit");
         assertValue: function (msg, value) {
             pok(value !== null && value !== undefined, msg);
         },
-        
+
         assertNoValue: function (msg, value) {
             pok(value === null || value === undefined, msg);
         },
-        
+
         assertNull: function (msg, value) {
             QUnit.equal(value, null, processMessage(msg));
         },
@@ -161,11 +160,11 @@ var jqUnit = fluid.registerNamespace("jqUnit");
         assertNotNull: function (msg, value) {
             pok(value !== null, msg);
         },
-        
+
         assertDeepEq: function (msg, expected, actual) {
             QUnit.propEqual(actual, expected, processMessage(msg));
         },
-        
+
         assertDeepNeq: function (msg, unexpected, actual) {
             QUnit.notPropEqual(actual, unexpected, processMessage(msg));
         },
@@ -179,10 +178,10 @@ var jqUnit = fluid.registerNamespace("jqUnit");
     // Mix these compatibility functions into the jqUnit namespace.
     $.extend(jqUnit, jsUnitCompat);
 
-        
+
     /** Sort a component tree into canonical order, to facilitate comparison with
      * deepEq */
-    
+
     jqUnit.sortTree = function (tree) {
         function comparator(ela, elb) {
             var ida = ela.ID || "";
@@ -193,7 +192,7 @@ var jqUnit = fluid.registerNamespace("jqUnit");
                 return ida.localeCompare(idb);
             }
             else {
-                return cola - colb; 
+                return cola - colb;
             }
         }
         if (fluid.isArrayable(tree)) {
@@ -204,44 +203,43 @@ var jqUnit = fluid.registerNamespace("jqUnit");
                 jqUnit.sortTree(value);
             }
         });
-          
+
     };
-    
+
     jqUnit.canonicaliseFunctions = function (tree) {
         return fluid.transform(tree, function (value) {
             if (fluid.isPrimitive(value)) {
                 if (typeof(value) === "function") {
                     return fluid.identity;
                 }
-                else return value;
+                else { return value; }
             }
-            else return jqUnit.canonicaliseFunctions(value);
+            else { return jqUnit.canonicaliseFunctions(value); }
         });
     };
-    
-    /** Assert that two trees are equal after applying a "canonicalisation function". This can be used in 
-     * cases where the criterion for equivalence is looser than exact object equivalence - for example, 
+
+    /** Assert that two trees are equal after applying a "canonicalisation function". This can be used in
+     * cases where the criterion for equivalence is looser than exact object equivalence - for example,
      * when using renderer trees, "jqUnit.sortTree" can be used for canonFunc", or in the case
      * of a resourceSpec, "jqUnit.canonicaliseFunctions". **/
-    
+
     jqUnit.assertCanoniseEqual = function (message, expected, actual, canonFunc) {
         var expected2 = canonFunc(expected);
         var actual2 = canonFunc(actual);
-        jqUnit.assertDeepEq(message, expected2, actual2);  
+        jqUnit.assertDeepEq(message, expected2, actual2);
     };
-    
+
     /** Assert that the actual value object is a subset (considered in terms of shallow key coincidence) of the
-     * expected value object (this method is the one that will be most often used in practice) **/ 
-    
+     * expected value object (this method is the one that will be most often used in practice) **/
+
     jqUnit.assertLeftHand = function (message, expected, actual) {
-        jqUnit.assertDeepEq(message, expected, fluid.filterKeys(actual, fluid.keys(expected)));  
+        jqUnit.assertDeepEq(message, expected, fluid.filterKeys(actual, fluid.keys(expected)));
     };
-    
+
     /** Assert that the actual value object is a superset of the expected value object **/
-    
+
     jqUnit.assertRightHand = function (message, expected, actual) {
-        jqUnit.assertDeepEq(message, fluid.filterKeys(expected, fluid.keys(actual)), actual);  
+        jqUnit.assertDeepEq(message, fluid.filterKeys(expected, fluid.keys(actual)), actual);
     };
-        
 
 })(jQuery);

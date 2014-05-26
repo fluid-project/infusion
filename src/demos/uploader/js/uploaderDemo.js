@@ -13,25 +13,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global demo:true, fluid, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid */
 
 var demo = demo || {};
 
 (function ($, fluid) {
-  
+    "use strict";
+
     demo.uploader = function () {
         // Load the Uploader's markup via AJAX and inject it into this page.
-        // Since the template is actually a standalone Web page, we also need to 
+        // Since the template is actually a standalone Web page, we also need to
         // specify a selector that points to the part of the page we're interested in.
-        
-        var templateURL = "../../../components/uploader/html/Uploader.html";
+
+        var templateURL = "../../components/uploader/html/Uploader.html";
         var fragmentSelector = ".fl-uploader";
-        
+
         $("#uploader-contents").load(templateURL + " " + fragmentSelector, function () {
-            
+
             // Once the template has been loaded into the page, instantiate the Uploader.
             fluid.uploader(".flc-uploader", {
                 demo: true

@@ -1,6 +1,21 @@
+/*
+Copyright 2013-2014 OCAD University
+
+Licensed under the Educational Community License (ECL), Version 2.0 or the New
+BSD license. You may not use this file except in compliance with one these
+Licenses.
+
+You may obtain a copy of the ECL 2.0 License and BSD License at
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+*/
+
+// Declare dependencies
+/* global require, module */
+
 var _ = require("lodash");
 
 module.exports = function(grunt) {
+    "use strict";
 
     // Project configuration.
     grunt.initConfig({
@@ -15,14 +30,33 @@ module.exports = function(grunt) {
         copy: {
             all: {
                 files: [{
-                    src: ["src/**"],
+                    expand: true,
+                    cwd: "src/",
+                    src: ["**"],
                     dest: "build/"
                 }]
             },
             custom: {
                 files: [{
+                    expand: true,
+                    cwd: "src/",
                     src: "<%= modulefiles.custom.output.dirs %>",
                     dest: "build/"
+                }]
+            },
+            necessities: {
+                files: [{
+                    src: ["README.md", "ReleaseNotes.txt", "Infusion-LICENSE.txt"],
+                    dest: "build/"
+                }, {
+                    // The jQuery license file needs to be copied explicitly since
+                    // "src/lib/jQuery" directory contains several jQuery modules
+                    // that have individual dependencies.json files.
+                    src: "src/lib/jQuery/jQuery-LICENSE.txt",
+                    dest: "build/lib/jQuery/jQuery-LICENSE.txt",
+                    filter: function() {
+                        return grunt.file.exists("build/lib/jQuery/");
+                    }
                 }]
             }
         },
@@ -33,9 +67,9 @@ module.exports = function(grunt) {
             all: {
                 files: [{
                     expand: true,     // Enable dynamic expansion.
-                    cwd: "./build/src/",      // Src matches are relative to this path.
+                    cwd: "./build/",      // Src matches are relative to this path.
                     src: ["components/**/*.js", "framework/**/*.js", "lib/**/*.js"], // Actual pattern(s) to match.
-                    dest: "./build/src/"   // Destination path prefix.
+                    dest: "./build/"   // Destination path prefix.
                 }]
             },
             custom: {
@@ -49,14 +83,16 @@ module.exports = function(grunt) {
         },
         modulefiles: {
             all: {
-                src: ["./src/**/*Dependencies.json"]
+                cwd: "src/",
+                src: ["**/*Dependencies.json"]
             },
             custom: {
                 options: {
                     exclude: grunt.option("exclude"),
                     include: grunt.option("include")
                 },
-                src: ["./src/**/*Dependencies.json"]
+                cwd: "src/",
+                src: ["**/*Dependencies.json"]
             }
         },
         map: {
@@ -92,12 +128,12 @@ module.exports = function(grunt) {
                 banner: "/*! <%= pkg.name %> - v<%= pkg.version %> <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %>*/\n"
             },
             all: {
-              src: "<%= modulefiles.all.output.files %>",
-              dest: "./build/<%= allBuildName %>.js"
+                src: "<%= modulefiles.all.output.files %>",
+                dest: "./build/<%= allBuildName %>.js"
             },
             custom: {
-              src: "<%= modulefiles.custom.output.files %>",
-              dest: "./build/<%= customBuildName %>.js"
+                src: "<%= modulefiles.custom.output.files %>",
+                dest: "./build/<%= customBuildName %>.js"
             }
         },
         compress: {
@@ -118,6 +154,13 @@ module.exports = function(grunt) {
                 },
                 files: "<%= compress.all.files %>"
             }
+        },
+        jshint: {
+            src: ["src/**/*.js"],
+            buildScripts: ["Gruntfile.js"],
+            options: {
+                jshintrc: true
+            }
         }
     });
 
@@ -127,6 +170,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-compress");
+    grunt.loadNpmTasks("grunt-contrib-jshint");
     grunt.loadNpmTasks("grunt-modulefiles");
 
     // Custom tasks:
@@ -152,6 +196,7 @@ module.exports = function(grunt) {
             "modulefiles:" + target,
             "pathMap:" + target,
             "copy:" + target,
+            "copy:necessities",
             "uglify:" + target,
             "concat:" + target,
             "compress:" + target,

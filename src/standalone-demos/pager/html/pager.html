@@ -1,5 +1,5 @@
-<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<!DOCTYPE html>
+<html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link href="../css/pager.css" type="text/css" rel="stylesheet" />
@@ -10,28 +10,30 @@
         <script type="text/javascript" src="../../../framework/core/js/ModelTransformation.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/ModelTransformationTransforms.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/FluidDocument.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/FluidView.js"></script>
         <script type="text/javascript" src="../../../components/pager/js/Pager.js"></script>
 
         <script type="text/javascript" src="../js/pager-example.js"></script>
 
-        <title>Gradebook Example</title>
+        <title>HTML Driven Pager Demo</title>
     </head>
     <body>
         <div id="gradebook">
           <form action="#">
             <ul id="pager-top" class="fl-pager-top flc-pager-top">
-                <li value="1" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">1</a></li>
-                <li value="2" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">2</a></li>
-                <li value="3" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">3</a></li>
-                <li value="4" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">4</a></li>
-                <li value="5" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">5</a></li>
-                <li value="6" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">6</a></li>
-                <li value="7" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">7 (last)</a></li>
+                <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">1</a></li>
+                <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">2</a></li>
+                <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">3</a></li>
+                <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">4</a></li>
+                <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">5</a></li>
+                <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">6</a></li>
+                <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">7 (last)</a></li>
                 <li class="fl-pager-previous flc-pager-previous"><a href="#">&lt; previous</a></li>
                 <li class="fl-pager-next flc-pager-next"><a href="#">next &gt;</a></li>
             </ul>
-            <table summary="student grades" id="students-page1">
+            <table id="students-page1">
+              <caption>Student Grades</caption>
               <thead>
                 <tr>
                     <td>Name</td>
@@ -73,7 +75,8 @@
                 </tr>
               </tbody>
             </table>
-            <table summary="student grades" id="students-page2" class="hidden">
+            <table id="students-page2" class="hidden">
+              <caption>Student Grades</caption>
               <thead>
                 <tr>
                     <td>Name</td>
@@ -115,7 +118,8 @@
                 </tr>
               </tbody>
             </table>
-            <table summary="student grades" id="students-page3" class="hidden">
+            <table id="students-page3" class="hidden">
+              <caption>Student Gradees</caption>
               <thead>
                 <tr>
                     <td>Name</td>
@@ -157,7 +161,8 @@
                 </tr>
               </tbody>
             </table>
-            <table summary="student grades" id="students-page4" class="hidden">
+            <table id="students-page4" class="hidden">
+              <caption>Student Grades</caption>
               <thead>
                 <tr>
                     <td>Name</td>
@@ -198,8 +203,9 @@
                     <td></td>
                 </tr>
               </tbody>
-            </table>            
-            <table summary="student grades" id="students-page5" class="hidden">
+            </table>
+            <table id="students-page5" class="hidden">
+              <caption>Student Grades</caption>
               <thead>
                 <tr>
                     <td>Name</td>
@@ -241,7 +247,8 @@
                 </tr>
               </tbody>
             </table>
-            <table summary="student grades" id="students-page6" class="hidden">
+            <table id="students-page6" class="hidden">
+              <caption>Student Grades</caption>
               <thead>
                 <tr>
                     <td>Name</td>
@@ -282,8 +289,9 @@
                     <td>Vestibulum consequat.</td>
                 </tr>
               </tbody>
-            </table>            
-            <table summary="student grades" id="students-page7" class="hidden">
+            </table>
+            <table id="students-page7" class="hidden">
+              <caption>Student Grades</caption>
               <thead>
                 <tr>
                     <td>Name</td>
@@ -308,13 +316,13 @@
               </tbody>
             </table>
             <ul id="pager-bottom" class="fl-pager-bottom flc-pager-bottom">
-                <li value="1" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">1</a></li>
-                <li value="2" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">2</a></li>
-                <li value="3" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">3</a></li>
-                <li value="4" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">4</a></li>
-                <li value="5" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">5</a></li>
-                <li value="6" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">6</a></li>
-                <li value="7" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">7 (last)</a></li>
+                <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">1</a></li>
+                <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">2</a></li>
+                <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">3</a></li>
+                <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">4</a></li>
+                <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">5</a></li>
+                <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">6</a></li>
+                <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">7 (last)</a></li>
                 <li class="fl-pager-previous flc-pager-previous"><a href="#">&lt; previous</a></li>
                 <li class="fl-pager-next flc-pager-next"><a href="#">next &gt;</a></li>
             </ul>

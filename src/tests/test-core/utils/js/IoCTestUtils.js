@@ -10,14 +10,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global jqUnit, QUnit */
 
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+    "use strict";
 
     fluid.registerNamespace("fluid.test");
 
@@ -105,13 +103,13 @@ var fluid_1_5 = fluid_1_5 || {};
         };
     };
 
-    fluid.test.expandModuleSource = function (moduleSource, testCaseState, testCaseHolder) {
+    fluid.test.expandModuleSource = function (moduleSource, testCaseState) {
         var funcSpec = moduleSource.func || moduleSource.funcName;
         var func = testCaseState.expandFunction(funcSpec);
         var args = testCaseState.expand(fluid.makeArray(moduleSource.args));
         return func.apply(null, args);
     };
-    
+
     fluid.test.captureMarkup = function (markupFixture) {
         if (markupFixture) {
             var markupContainer = fluid.container(markupFixture, false);
@@ -119,7 +117,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 container: markupContainer,
                 markup: markupContainer[0].innerHTML
             };
-        } 
+        }
     };
 
     fluid.test.testEnvironment.runTests = function (that) {
@@ -129,7 +127,7 @@ var fluid_1_5 = fluid_1_5 || {};
             if (fluid.hasGrade(component.options, "fluid.test.testCaseHolder")) {
                 that.testCaseHolders.push(component);
             }
-        }
+        };
         fluid.visitComponentChildren(that, visitor, visitOptions, "");
         var testCaseState = {
             root: that,
@@ -173,7 +171,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         root.activeTests += count;
         if (count === -1) {
-            fluid.log(fluid.logLevel.IMPORTANT, "Starting QUnit due to destruction of tree ", root);
+            fluid.log(fluid.logLevel.INFO, "Starting QUnit due to destruction of tree ", root);
             QUnit.start();
         }
         if (root.activeTests === 0) {
@@ -215,7 +213,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         };
     };
-    
+
     fluid.test.decoders.funcName = fluid.test.decoders.func;
 
     fluid.test.decoders.jQueryTrigger = function (testCaseState, fixture) {
@@ -259,7 +257,7 @@ var fluid_1_5 = fluid_1_5 || {};
         };
         return that;
     };
-    
+
     // TODO: This will eventually go into the core framework for "Luke Skywalker Event Binding"
     fluid.analyseTarget = function (testCaseState, material, expectedPrefix) {
         if (typeof(material) === "string" && material.charAt(0) === "{") {
@@ -270,7 +268,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 var holder = testCaseState.testCaseHolder;
                 var head = fluid.resolveContext(headContext, holder);
                 if (!head) {
-                    fluid.fail("Error in test case selector ", material, " cannot resolve to a root component from holder ", holder);   
+                    fluid.fail("Error in test case selector ", material, " cannot resolve to a root component from holder ", holder);
                 }
                 var segs = fluid.model.parseEL(parsed.path);
                 if (segs.length < 2 || segs[0] !== expectedPrefix) {
@@ -293,11 +291,11 @@ var fluid_1_5 = fluid_1_5 || {};
             };
             unbind = function (wrapped) {
                 event.removeListener(wrapped);
-            } 
+            };
         }
         else if (analysed.path) {
             var id;
-            
+
             bind = function (wrapped) {
                 var options = {};
                 fluid.set(options, ["listeners"].concat(analysed.path), {
@@ -305,12 +303,12 @@ var fluid_1_5 = fluid_1_5 || {};
                     namespace: fixture.namespace,
                     priority: fixture.priority
                 });
-                id = fluid.pushDistributions(analysed.head, analysed.selector, 
+                id = fluid.pushDistributions(analysed.head, analysed.selector,
                     [{options: options, recordType: "distribution", priority: fluid.mergeRecordTypes.distribution}]
                 );
             };
-            unbind = function (wrapped) {
-                fluid.clearDistributions(analysed.head, id);  
+            unbind = function () {
+                fluid.clearDistributions(analysed.head, id);
             };
         } else {
             fluid.fail("Error decoding event fixture ", fixture, ": must be able to look up member \"event\" to one or more events");
@@ -362,7 +360,8 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.test.composeSimple = function (f1, f2) {
         return function () {
-            f1(); f2();
+            f1();
+            f2();
         };
     };
 
@@ -376,13 +375,13 @@ var fluid_1_5 = fluid_1_5 || {};
         var c = fluid.test.composeSimple;
         binder.bind(c(preWrap, preFunc), c(postFunc, postWrap));
     };
-    
+
     // This check executes immediately AFTER we apply the first bind of a sequence
     fluid.test.checkTestStart = function (testCaseState) {
         if (!testCaseState.started) { // Support for FLUID-4929
             testCaseState.testCaseHolder.events.onTestCaseStart.fire(testCaseState.testCaseHolder);
             testCaseState.started = true;
-        }      
+        }
     };
 
     fluid.test.sequenceExecutor = function (testCaseState, fixture) {
@@ -397,8 +396,8 @@ var fluid_1_5 = fluid_1_5 || {};
             fluid.fail("Error in test fixture ", fixture, ": no elements in sequence");
         }
         that.decode = function (pos) {
-            return that.executors[pos] =
-                    fluid.test.decodeFixture(that.testCaseState, that.fixture.sequence[pos]);
+            that.executors[pos] = fluid.test.decodeFixture(that.testCaseState, that.fixture.sequence[pos]);
+            return that.executors[pos];
         };
         that.sequenceText = function (pos) {
             return (pos === undefined ? that.sequencePos : pos) + " of " + that.count;
@@ -412,7 +411,6 @@ var fluid_1_5 = fluid_1_5 || {};
         // this: bind, next: exec - do this bind, send it exec (EX) as post-wrapper
         that.execute = function () {
             var thisExec = that.executors[that.sequencePos];
-            var tpos = that.sequencePos;
             var pos = ++that.sequencePos;
             var thisText = that.sequenceText(pos);
             testCaseState.events.onBeginSequenceStep.fire(testCaseState, that);

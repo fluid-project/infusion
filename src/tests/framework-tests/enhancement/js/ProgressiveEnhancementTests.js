@@ -1,5 +1,5 @@
 /*
-Copyright 2010 OCAD University
+Copyright 2010 - 2014 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -11,12 +11,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid, jqUnit */
 
 (function ($) {
+    "use strict";
 
     jqUnit.module("Progressive Enhancement");
 
@@ -28,7 +26,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var options = fluid.expandOptions($.extend({}, checkerOptions, {checks: checks}), null);
         var names = fluid.progressiveChecker(options).options.gradeNames;
         return fluid.find(names, function (name) {
-            return /fluid\.progressiveChecker|fluid\.littleComponent|fluid\.typeFount|autoInit/.test(name) ? undefined : name
+            return (/fluid\.progressiveChecker|fluid\.littleComponent|fluid\.typeFount|autoInit/).test(name) ? undefined : name;
         });
     };
 
@@ -86,8 +84,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.test");
 
-    var STATIC_ENV_NOT_SET = NOT_CHECKED = false;
-    var STATIC_ENV_SET = CHECKED = true;
+    var NOT_CHECKED = false;
+    var CHECKED = true;
+
+    var STATIC_ENV_NOT_SET = NOT_CHECKED;
+    var STATIC_ENV_SET = CHECKED;
 
     var assertEnvKey = function (env, key, shouldExist) {
         jqUnit.expect(1);
@@ -135,7 +136,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var checksNotSet = {
             "check.notSet.one": "fluid.test.notSetEnvironment",
             "check.notSet.two": fluid.test.notSetEnvironment
-        }
+        };
 
         // Run the check and add keys to the static environment
         fluid.enhance.check(checkSet);
@@ -164,7 +165,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.expect(2);
         var checked = "checked.key";
         var unChecked = "static.unChecked";
-        var neverAdded = "never.added";
 
         // Add and verify that keys are in the static environment and checked
         var checkedKey = fluid.enhance.typeToKey(checked);
@@ -232,8 +232,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("progressiveCheckerForComponent", function () {
         var that = fluid.tests.enhanceTarget();
         var checkerGrades = that.progressiveChecker.options.gradeNames;
-        jqUnit.assertTrue("Context name resolved into checker grade", checkerGrades.indexOf("fluid.enhanceTarget.test") !== -1);
-        jqUnit.assertTrue("Horizon name resolved into checker grade", checkerGrades.indexOf("fluid.tests.enhanceTarget.progressiveCheck") !== -1);
+        jqUnit.assertTrue("Context name resolved into checker grade", $.inArray("fluid.enhanceTarget.test", checkerGrades) !== -1);
+        jqUnit.assertTrue("Horizon name resolved into checker grade", $.inArray("fluid.tests.enhanceTarget.progressiveCheck", checkerGrades) !== -1);
     });
 
     fluid.defaults("fluid.tests.suppliedProgressiveCheck", {
