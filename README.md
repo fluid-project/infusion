@@ -6,7 +6,6 @@ Infusion is a different kind of JavaScript framework. Our approach is to leave y
 Infusion includes:
 * an application framework for developing flexible stuff with JavaScript and jQuery
 * a collection of accessible UI components
-* a lightweight CSS framework
 
 
 ##Where Can I See Infusion Components?##
@@ -106,7 +105,7 @@ By default, custom packages are given a name with the form _infusion-custom-<ver
 
 * enhancement
 * framework
-* fss
+* fss _**(deprecated)**_
 * preferences
 * renderer
 
