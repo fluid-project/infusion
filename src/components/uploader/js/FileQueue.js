@@ -11,18 +11,14 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true, jQuery, SWFUpload*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+    "use strict";
+
     fluid.registerNamespace("fluid.uploader");
-    
-    fluid.defaults("fluid.uploader.fileQueue", { 
+
+    fluid.defaults("fluid.uploader.fileQueue", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         members: {
             files: [],
@@ -116,46 +112,46 @@ var fluid_1_5 = fluid_1_5 || {};
         that.setupCurrentBatch();
         that.isUploading = true;
         that.shouldStop = false;
-    }; 
+    };
 
     fluid.uploader.fileQueue.startFile = function (currentBatch) {
         currentBatch.fileIdx++;
         currentBatch.bytesUploadedForFile = 0;
-        currentBatch.previousBytesUploadedForFile = 0; 
+        currentBatch.previousBytesUploadedForFile = 0;
     };
 
     fluid.uploader.fileQueue.finishFile = function (currentBatch) {
         currentBatch.numFilesCompleted++;
     };
-    
+
     fluid.uploader.fileQueue.shouldUploadNextFile = function (that) {
-        return !that.shouldStop && 
-            that.isUploading && 
-            (that.currentBatch.numFilesCompleted + that.currentBatch.numFilesErrored) 
-            < that.currentBatch.files.length;
+        return !that.shouldStop &&
+            that.isUploading &&
+            (that.currentBatch.numFilesCompleted + that.currentBatch.numFilesErrored) <
+            that.currentBatch.files.length;
     };
-    
+
     fluid.uploader.fileQueue.addFile = function (files, file) {
         files.push(file);
     };
-    
+
     fluid.uploader.fileQueue.removeFile = function (files, file) {
         fluid.remove_if(files, function (thisFile) {
             return file === thisFile;
         });
     };
-    
+
     fluid.uploader.fileQueue.sizeOfFiles = function (files) {
         return fluid.accumulate(files, function (file, totalBytes) {
             return totalBytes + file.size;
         }, 0);
     };
-    
+
     fluid.uploader.fileQueue.filterFiles = function (files, filterFn) {
         var filteredFiles = []; // filterFn returns TRUE for the files we want
-        return fluid.remove_if(fluid.makeArray(files), filterFn, filteredFiles); 
+        return fluid.remove_if(fluid.makeArray(files), filterFn, filteredFiles);
     };
-    
+
     fluid.uploader.fileQueue.filesByStatus = function (files, statuses) {
         statuses = fluid.makeArray(statuses);
         return fluid.uploader.fileQueue.filterFiles(files, function (file) {
@@ -164,12 +160,12 @@ var fluid_1_5 = fluid_1_5 || {};
             });
         });
     };
-    
+
     fluid.uploader.fileQueue.sizeOfFilesByStatus = function (files, statuses) {
-        var files = fluid.uploader.fileQueue.filesByStatus(files, statuses);
+        files = fluid.uploader.fileQueue.filesByStatus(files, statuses);
         return fluid.uploader.fileQueue.sizeOfFiles(files);
     };
-    
+
     fluid.uploader.fileQueue.setupCurrentBatch = function (that) {
         that.clearCurrentBatch();
         that.updateCurrentBatch();
@@ -192,13 +188,13 @@ var fluid_1_5 = fluid_1_5 || {};
         currentBatch.files = readyFiles;
         currentBatch.totalBytes = fluid.uploader.fileQueue.sizeOfFiles(readyFiles);
     };
-    
+
     fluid.uploader.fileQueue.updateBatchStatus = function (currentBytes, currentBatch) {
         var byteIncrement = currentBytes - currentBatch.previousBytesUploadedForFile;
         currentBatch.totalBytesUploaded += byteIncrement;
         currentBatch.bytesUploadedForFile += byteIncrement;
-        currentBatch.previousBytesUploadedForFile = currentBytes;      
+        currentBatch.previousBytesUploadedForFile = currentBytes;
     };
 
-          
+
 })(jQuery, fluid_1_5);

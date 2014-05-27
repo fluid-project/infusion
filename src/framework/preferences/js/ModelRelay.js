@@ -9,15 +9,10 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+    "use strict";
 
     /***************************************************************************************
      * modelRelay
@@ -47,7 +42,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 args: ["{that}.options.sourceApplier.modelChanged", "{that}.options.listenerNamespaces"]
             }
         },
-        sourceApplier: null,  // must be supplied by implementors
+        // sourceApplier: {external}.applier must be supplied by implementors
         rules: {}  // must be supplied by implementors, in format: "externalModelKey": "internalModelKey"
     });
 
@@ -64,7 +59,7 @@ var fluid_1_5 = fluid_1_5 || {};
             listenerNamespaces.push(uniqueNamespace);
 
             fluid.addSourceGuardedListener(applier, internalKey, sourceKey, function (newModel) {
-                fluid.fireSourcedChange(sourceApplier, sourceKey, fluid.get(newModel, internalKey), internalKey)
+                fluid.fireSourcedChange(sourceApplier, sourceKey, fluid.get(newModel, internalKey), internalKey);
             });
             fluid.addSourceGuardedListener(sourceApplier, sourceKey, internalKey, function (newModel) {
                 fluid.fireSourcedChange(applier, internalKey, fluid.get(newModel, sourceKey), sourceKey);

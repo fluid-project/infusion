@@ -11,15 +11,10 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+    "use strict";
 
     /*****************************
      * Preferences Editor Loader *
@@ -59,17 +54,17 @@ var fluid_1_5 = fluid_1_5 || {};
         events: {
             onPrefsEditorTemplatesLoaded: null,
             onPrefsEditorMessagesLoaded: null,
-            onMsgBundleReady: null,
+            onMsgResolverReady: null,
             onCreatePrefsEditorReady: {
                 events: {
                     templateLoaded: "onPrefsEditorTemplatesLoaded",
-                    msgBundleReady: "onMsgBundleReady"
+                    msgResolverReady: "onMsgResolverReady"
                 }
             }
         },
         listeners: {
             onPrefsEditorMessagesLoaded: {
-                funcName: "fluid.prefs.prefsEditorLoader.createMsgBundle",
+                funcName: "fluid.prefs.prefsEditorLoader.createMsgResolver",
                 args: ["{arguments}.0", "{that}"]
             }
         },
@@ -94,22 +89,22 @@ var fluid_1_5 = fluid_1_5 || {};
         }]
     });
 
-    fluid.prefs.prefsEditorLoader.createMsgBundle = function (messageResources, that) {
+    fluid.prefs.prefsEditorLoader.createMsgResolver = function (messageResources, that) {
         var completeMessage;
         fluid.each(messageResources, function (oneResource) {
             var message = JSON.parse(oneResource.resourceText);
             completeMessage = $.extend({}, completeMessage, message);
         });
         var parentResolver = fluid.messageResolver({messageBase: completeMessage});
-        that.msgBundle = fluid.messageResolver({messageBase: {}, parents: [parentResolver]});
-        that.events.onMsgBundleReady.fire();
+        that.msgResolver = fluid.messageResolver({messageBase: {}, parents: [parentResolver]});
+        that.events.onMsgResolverReady.fire();
     };
 
-    // TODO: This mixin grade appears to be supplied manually by various test cases but no longer appears in 
+    // TODO: This mixin grade appears to be supplied manually by various test cases but no longer appears in
     // the main configuration. We should remove the need for users to supply this - also the use of "defaultPanels" in fact
     // refers to "starter panels"
     fluid.defaults("fluid.prefs.transformDefaultPanelsOptions", {
-        // Do not supply "fluid.prefs.inline" here, since when this is used as a mixin for separatedPanel, it ends up displacing the 
+        // Do not supply "fluid.prefs.inline" here, since when this is used as a mixin for separatedPanel, it ends up displacing the
         // more refined type of the prefsEditorLoader
         gradeNames: ["fluid.viewComponent", "autoInit"],
         distributeOptions: [{
@@ -146,7 +141,7 @@ var fluid_1_5 = fluid_1_5 || {};
     /**
      * A configurable component that works in conjunction with or without the Preferences Editor template
      * path component (fluid.prefsResourcePath) to allow users to set either the location of their own
-     * templates or the templates that are relative to the path defined in the Preferences Editor template 
+     * templates or the templates that are relative to the path defined in the Preferences Editor template
      * path component.
      *
      * @param {Object} options
@@ -369,9 +364,14 @@ var fluid_1_5 = fluid_1_5 || {};
      * Saves the current model and fires onSave
      */
     fluid.prefs.prefsEditor.save = function (that) {
-        that.events.onSave.fire(that.model);
-
         var savedSelections = fluid.copy(that.model);
+
+        fluid.each(savedSelections, function (value, key) {
+            if (fluid.get(that.rootModel, key) === value) {
+                delete savedSelections[key];
+            }
+        });
+        that.events.onSave.fire(savedSelections);
         that.setSettings(savedSelections);
     };
 
@@ -434,7 +434,9 @@ var fluid_1_5 = fluid_1_5 || {};
         // and so that component construction does not run ahead of subcomponents for SeparatedPanel
         // (FLUID-4453 - this may be a replacement for a branch removed for a FLUID-2248 fix)
         setTimeout(function () {
-            fluid.prefs.prefsEditor.finishInit(that);
+            if (!fluid.isDestroyed(that)) {
+                fluid.prefs.prefsEditor.finishInit(that);
+            }
         }, 1);
     };
 

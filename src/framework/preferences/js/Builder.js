@@ -9,16 +9,12 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 
 (function ($, fluid) {
+    "use strict";
+
     fluid.registerNamespace("fluid.prefs");
 
     fluid.defaults("fluid.prefs.builder", {
@@ -196,6 +192,15 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         });
         return auxTypes;
+    };
+
+    /*
+     * A one-stop-shop function to build and instantiate a prefsEditor from a schema.
+     */
+    fluid.prefs.create = function (container, options) {
+        options = options || {};
+        var builder = fluid.prefs.builder(options.build);
+        return fluid.invokeGlobalFunction(builder.options.assembledPrefsEditorGrade, [container, options.prefsEditor]);
     };
 
 })(jQuery, fluid_1_5);

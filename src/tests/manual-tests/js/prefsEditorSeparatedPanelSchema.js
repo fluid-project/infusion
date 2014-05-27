@@ -10,13 +10,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global demo:true, fluid, jQuery, window*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global demo:true, fluid */
 
 var demo = demo || {};
 (function ($, fluid) {
+    "use strict";
 
     /**
      * Initialize Preference Editor. This version of Preferences Editor uses the
@@ -25,14 +23,20 @@ var demo = demo || {};
      * Makes use of a schema to configure Preferences Editor
      */
     demo.initPrefsEditor = function (container) {
-        var builder = fluid.prefs.builder({
-            gradeNames: ["fluid.prefs.auxSchema.starter"],
-            auxiliarySchema: {
-                "templatePrefix": "../../../framework/preferences/html/",
-                "messagePrefix": "../../../framework/preferences/messages/"
+        return fluid.prefs.create(container, {
+            build: {
+                gradeNames: ["fluid.prefs.auxSchema.starter"],
+                auxiliarySchema: {
+                    "templatePrefix": "../../../framework/preferences/html/",
+                    "messagePrefix": "../../../framework/preferences/messages/",
+                    "tableOfContents": {
+                        "enactor": {
+                            "tocTemplate": "../../../components/tableOfContents/html/TableOfContents.html"
+                        }
+                    }
+                }
             }
         });
-        return fluid.invokeGlobalFunction(builder.options.assembledPrefsEditorGrade, [container]);
     };
 
 })(jQuery, fluid);

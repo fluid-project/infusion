@@ -12,20 +12,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global window, fluid:true, jqUnit, expect, jQuery, ok*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
-var fluid = fluid || {};
-// Import definition of fluid.unwrap, it is just too irritating fiddling around without it
-if (!fluid.unwrap) {
-    fluid.unwrap = function (obj) {
-        return obj && obj.jquery && obj.length === 1 ? obj[0] : obj; // Unwrap the element if it's a jQuery.
-    };
-}
+/* global fluid, jqUnit */
 
 (function ($) {
+    "use strict";
+
     jqUnit.module("keyboard-a11y");
 
     // Constants.
@@ -62,7 +53,7 @@ if (!fluid.unwrap) {
         var blurHandler = function (element) {
             jQuery(element).removeClass("selected");
         };
-        
+
         return {
             onSelect: focusHandler,
             onUnselect: blurHandler
@@ -82,7 +73,7 @@ if (!fluid.unwrap) {
         // Mix in any additional options.
         var mergedOptions = jQuery.extend(selectionOptions, additionalOptions, setupHandlers(),
                 {selectableElements: menuItems});
-        
+
         menuContainer.fluid("selectable", mergedOptions);
 
         return {
@@ -93,7 +84,7 @@ if (!fluid.unwrap) {
 
     var createAndFocusMenu = function (selectionOptions) {
         var menu = makeMenuSelectable(selectionOptions);
-        menu.container.focus();
+        fluid.focus(menu.container);
 
         // Sanity check.
         if (!selectionOptions || selectionOptions.autoSelectFirstItem) {
@@ -129,7 +120,7 @@ if (!fluid.unwrap) {
         var keyEvent = document.createEvent("KeyEvents");
         keyEvent.initKeyEvent("keydown", true, true, window, modifiers.ctrl, modifiers.alt, modifiers.shift, false, withKeycode, 0);
 
-        onElement = fluid.unwrap(onElement);
+        onElement = onElement[0];
 
         onElement.dispatchEvent(keyEvent);
     }
@@ -140,13 +131,13 @@ if (!fluid.unwrap) {
         jqUnit.assertSelected(getSecondMenuItem());
 
         // Move focus to another element altogether.
-        getSecondMenuItem().blur();
+        fluid.blur(getSecondMenuItem());
         var link = jQuery(LINK_AFTER_SEL);
-        link.focus();
+        fluid.focus(link);
         jqUnit.assertNothingSelected();
 
         // Move focus back to the menu.
-        menu.container.focus();
+        fluid.focus(menu.container);
     }
 
     // Mix in additional test-specific asserts.
@@ -170,7 +161,7 @@ if (!fluid.unwrap) {
             this.assertNothingSelected();
 
             // Then focus the menu container and check that the first item is actually selected.
-            menu.container.focus();
+            fluid.focus(menu.container);
             this.assertSelected(getFirstMenuItem());
         }
     };
@@ -219,7 +210,7 @@ if (!fluid.unwrap) {
         jqUnit.assertFalse(nonSelectableItem.fluid("tabindex.has"));
     });
 
-    jqUnit.test("Selects first item when container is focusssed by default", function () {
+    jqUnit.test("Selects first item when container is focussed by default", function () {
         // Don't specify any options, just use the default behaviour.
         var menu = makeMenuSelectable();
         jqUnit.assertFirstMenuItemIsSelectedOnFocus(menu);
@@ -307,13 +298,13 @@ if (!fluid.unwrap) {
         var menu = createAndFocusMenu(options);
 
         // Programmatically throw focus onto the first menu item. It should be selected.
-        getThirdMenuItem().focus();
+        fluid.focus(getThirdMenuItem());
         jqUnit.assertSelected(getThirdMenuItem());
         jqUnit.assertNotSelected(getFirstMenuItem());
         jqUnit.assertNotSelected(getSecondMenuItem());
 
         // Now try another. It should still work.
-        getFirstMenuItem().focus();
+        fluid.focus(getFirstMenuItem());
         jqUnit.assertSelected(getFirstMenuItem());
         jqUnit.assertNotSelected(getSecondMenuItem());
         jqUnit.assertNotSelected(getThirdMenuItem());
@@ -325,7 +316,7 @@ if (!fluid.unwrap) {
         jqUnit.assertNotSelected(getThirdMenuItem());
 
         // And finally, switch back to programmatically calling focus.
-        getThirdMenuItem().focus();
+        fluid.focus(getThirdMenuItem());
         jqUnit.assertSelected(getThirdMenuItem());
         jqUnit.assertNotSelected(getFirstMenuItem());
         jqUnit.assertNotSelected(getSecondMenuItem());
@@ -358,7 +349,7 @@ if (!fluid.unwrap) {
 
     jqUnit.test("selectNext() with wrapping", function () {
         var menu = makeMenuSelectable();
-        menu.container.focus();
+        fluid.focus(menu.container);
 
         // Invoke selectNext twice. We should be on the last item.
         for (var x = 0; x < 2; x += 1) {
@@ -399,7 +390,7 @@ if (!fluid.unwrap) {
         // Need to simulate browser behaviour by calling blur on the selected item, which is scary.
         var link = $(LINK_AFTER_SEL);
         menu.container.fluid("selectable.currentSelection").blur();
-        link.focus();
+        fluid.focus(link);
 
         // Now check to see that the item isn't still selected once we've moved focus off the widget.
         jqUnit.assertNotSelected(getFirstMenuItem());
@@ -417,7 +408,7 @@ if (!fluid.unwrap) {
         getThirdMenuItem().fluid("activate");
         jqUnit.assertEquals("The menu.activatedItem should be set to the third item.", getThirdMenuItem()[0], menu.activatedItem);
     });
-    
+
     function guardMozilla() {
         // These tests can only be run on FF, due to reliance on DOM 2 for synthesizing events.
         if (!$.browser.mozilla) {
@@ -448,7 +439,7 @@ if (!fluid.unwrap) {
         var menu = createAndFocusMenu();
         var eventTarget = null;
 
-        var defaultActivate = function (evt) {
+        var defaultActivate = function () {
             menu.wasActivated = false;
         };
 
@@ -473,59 +464,59 @@ if (!fluid.unwrap) {
         simulateKeyDown(item, $.ui.keyCode.DOWN);
         jqUnit.assertNotUndefined("The menu should have been activated by the down arrow key.", menu.wasActivated);
         jqUnit.assertTrue("The menu should have been activated by the down arrow key.", menu.wasActivated);
-        jqUnit.assertEquals("The event target for activation should have been the item ", fluid.unwrap(item), eventTarget);
+        jqUnit.assertEquals("The event target for activation should have been the item ", item[0], eventTarget);
     });
 
     function makeCustomActivateTest(enabled) {
         jqUnit.test("Multiple custom activate bindings" + (enabled ? "" : " - disabled"), function () {
-        if (guardMozilla()) {return;}
-    
+            if (guardMozilla()) {return;}
+
             var menu = createAndFocusMenu();
-    
+
             // Define additional key bindings.
             var downBinding = {
                 key: $.ui.keyCode.DOWN,
-                activateHandler:  function (element) {
+                activateHandler:  function () {
                     menu.wasActivated = true;
                 }
             };
-    
+
             var upBinding = {
                 modifier: $.ui.keyCode.CTRL,
                 key: $.ui.keyCode.UP,
-                activateHandler: function (element) {
+                activateHandler: function () {
                     menu.wasActivated = "foo";
                 }
             };
-    
+
             var defaultActivate = function () {
                 menu.wasActivated = false;
             };
-    
+
             var options = {
                 additionalBindings: [downBinding, upBinding]
             };
-            
+
             fluid.activatable(menu.items, defaultActivate, options);
-            
+
             if (!enabled) {
                 fluid.enabled(menu.container, false);
             }
-    
+
             // Test that the down arrow works.
             simulateKeyDown(getFirstMenuItem(), $.ui.keyCode.DOWN);
-            jqUnit.assertEquals("The menu should " + (enabled ? "" : " not ") + 
+            jqUnit.assertEquals("The menu should " + (enabled ? "" : " not ") +
                 " have been activated by the down arrow key.", enabled ? true : undefined, menu.wasActivated);
-    
+
             // Reset and try the other key map.
             menu.wasActivated = false;
             simulateKeyDown(getFirstMenuItem(), $.ui.keyCode.UP, $.ui.keyCode.CTRL);
-            
-            jqUnit.assertEquals("The menu should " + (enabled ? "" : " not ") + 
+
+            jqUnit.assertEquals("The menu should " + (enabled ? "" : " not ") +
                 " have been activated by the ctrl key.", enabled ? "foo" : false, menu.wasActivated);
         });
     }
-    
+
     makeCustomActivateTest(true);
     makeCustomActivateTest(false);
 
@@ -535,34 +526,34 @@ if (!fluid.unwrap) {
         var secondMenuItem = getSecondMenuItem();
         jqUnit.assertSelected(secondMenuItem);
         var selectedItem = menu.container.fluid("selectable.currentSelection");
-        ok("The current selection should be a jQuery instance.", selectedItem.jQuery);
+        jqUnit.assertTrue("The current selection should be a jQuery instance.", selectedItem.jquery);
         jqUnit.assertEquals("The current selection should be the second menu item.", secondMenuItem[0], selectedItem[0]);
     });
-    
+
     jqUnit.test("destructibleList and refresh()", function () {
         var menuContainer = $(MENU_SEL);
-        var selThat = $(MENU_SEL).fluid("selectable", 
+        var selThat = $(MENU_SEL).fluid("selectable",
                 $.extend({selectableSelector: MENU_ITEM_SEL}, setupHandlers())).that();
-        menuContainer.focus();
+        fluid.focus(menuContainer);
         var firstMenuItem = getFirstMenuItem();
         jqUnit.assertSelected(firstMenuItem);
         firstMenuItem.remove();
         selThat.refresh();
         var secondMenuItem = getSecondMenuItem();
-        jqUnit.assertSelected(secondMenuItem);        
+        jqUnit.assertSelected(secondMenuItem);
         secondMenuItem.remove();
         selThat.refresh();
         var thirdMenuItem = getThirdMenuItem();
-        jqUnit.assertSelected(thirdMenuItem); 
+        jqUnit.assertSelected(thirdMenuItem);
     });
-    
+
     var quickMakeSelectable = function (containerSelector, options) {
         return $(containerSelector).fluid("selectable", options).that();
     };
-    
+
     jqUnit.test("Leaving container: onLeaveContainer", function () {
         if (guardMozilla()) {return;}
-        
+
         var wasCalled = false;
         quickMakeSelectable(MENU_SEL, {
             selectableSelector: MENU_ITEM_SEL,
@@ -571,16 +562,16 @@ if (!fluid.unwrap) {
             }
         });
         getFirstMenuItem().focus();
-        
+
         // When onLeaveContainer is called, it should be invoked when tabbing out of the container.
         simulateKeyDown(getFirstMenuItem(), $.ui.keyCode.TAB);
-        jqUnit.assertTrue("On leave is called when tabbing out of the selectables container.", 
+        jqUnit.assertTrue("On leave is called when tabbing out of the selectables container.",
                           wasCalled);
     });
-    
+
     jqUnit.test("Leaving container: onUnselect", function () {
         if (guardMozilla()) {return;}
-        
+
         var wasCalled = false;
         quickMakeSelectable(MENU_SEL, {
             selectableSelector: MENU_ITEM_SEL,
@@ -589,15 +580,15 @@ if (!fluid.unwrap) {
             }
         });
         getFirstMenuItem().focus();
-        
+
         simulateKeyDown(getFirstMenuItem(), $.ui.keyCode.TAB);
-        jqUnit.assertTrue("When onLeaveContainer is not specified, onUnselect should be called instead when tabbing out of the selectables container.", 
+        jqUnit.assertTrue("When onLeaveContainer is not specified, onUnselect should be called instead when tabbing out of the selectables container.",
                           wasCalled);
     });
 
     jqUnit.test("No-wrap options", function () {
         if (guardMozilla()) {return;}
-        
+
         var menu = makeMenuSelectable({
             noWrap: true
         });

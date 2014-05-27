@@ -1,0 +1,8 @@
+#uploader-contents {
+    margin: 5em;
+}
+
+/* Shifts the basic uploader so that it isn't covered by the "*" from the overviewPanel */
+.fl-progEnhance-basic {
+    margin: 4em;
+}

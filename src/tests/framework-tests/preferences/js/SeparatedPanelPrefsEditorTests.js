@@ -11,13 +11,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, expect, start, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid, jqUnit */
 
 
 (function ($) {
+    "use strict";
+
     fluid.registerNamespace("fluid.tests");
 
     /*******************************************************************************
@@ -29,7 +28,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "pageEnhancer",
         "slidingPanel",
         "iframeRenderer",
-        "iframeRenderer.iframeEnhancer"];
+        "iframeRenderer.iframeEnhancer"
+    ];
 
     fluid.defaults("fluid.tests.separatedPanelIntegration", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
@@ -89,9 +89,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
     };
 
-    fluid.tests.afterHideFunc1 = function (separatedPanel) {
+    fluid.tests.afterHideFunc1 = function () {
         return function () {
             jqUnit.assertEquals("Reset button is invisible", false, $(".flc-prefsEditor-reset").is(":visible"));
+            jqUnit.assertDeepEq("Only the changed preferences are saved", fluid.tests.prefs.bwSkin, fluid.staticEnvironment.settingsStore.get());
         };
     };
     fluid.tests.afterShowFunc2 = function (separatedPanel) {
@@ -123,7 +124,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Separated panel integration tests",
             tests: [{
-                expect: 22,
+                expect: 23,
                 name: "Separated panel integration tests",
                 sequence: [{
                     listener: "fluid.tests.testSeparatedPanel",

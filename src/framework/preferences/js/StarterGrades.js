@@ -9,15 +9,10 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+    "use strict";
 
     /*******************************************************************************
      * Starter Root Model
@@ -102,13 +97,18 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.uiEnhancer.starterEnactors", {
         gradeNames: ["fluid.uiEnhancer", "fluid.uiEnhancer.cssClassEnhancerBase", "fluid.uiEnhancer.browserTextEnhancerBase", "autoInit"],
+        connectionsGrade: "fluid.prefs.uiEnhancerConnections",
+        distributeOptions: {
+            source: "{that}.options.connectionsGrade",
+            removeSource: true,
+            target: "{that > fluid.prefs.enactor}.options.gradeNames"
+        },
         components: {
             textSize: {
-                type: "fluid.prefs.enactors.textSize",
+                type: "fluid.prefs.enactor.textSize",
                 container: "{uiEnhancer}.container",
                 options: {
                     fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
-                    sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "textSize": "value"
                     },
@@ -118,11 +118,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             textFont: {
-                type: "fluid.prefs.enactors.textFont",
+                type: "fluid.prefs.enactor.textFont",
                 container: "{uiEnhancer}.container",
                 options: {
                     classes: "{uiEnhancer}.options.classnameMap.textFont",
-                    sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "textFont": "value"
                     },
@@ -132,11 +131,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             lineSpace: {
-                type: "fluid.prefs.enactors.lineSpace",
+                type: "fluid.prefs.enactor.lineSpace",
                 container: "{uiEnhancer}.container",
                 options: {
                     fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
-                    sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "lineSpace": "value"
                     },
@@ -146,11 +144,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             contrast: {
-                type: "fluid.prefs.enactors.contrast",
+                type: "fluid.prefs.enactor.contrast",
                 container: "{uiEnhancer}.container",
                 options: {
                     classes: "{uiEnhancer}.options.classnameMap.theme",
-                    sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "theme": "value"
                     },
@@ -160,11 +157,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             emphasizeLinks: {
-                type: "fluid.prefs.enactors.emphasizeLinks",
+                type: "fluid.prefs.enactor.emphasizeLinks",
                 container: "{uiEnhancer}.container",
                 options: {
                     cssClass: "{uiEnhancer}.options.classnameMap.links",
-                    sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "links": "value"
                     },
@@ -174,11 +170,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             inputsLarger: {
-                type: "fluid.prefs.enactors.inputsLarger",
+                type: "fluid.prefs.enactor.inputsLarger",
                 container: "{uiEnhancer}.container",
                 options: {
                     cssClass: "{uiEnhancer}.options.classnameMap.inputsLarger",
-                    sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "inputsLarger": "value"
                     },
@@ -188,12 +183,10 @@ var fluid_1_5 = fluid_1_5 || {};
                 }
             },
             tableOfContents: {
-                type: "fluid.prefs.enactors.tableOfContents",
+                type: "fluid.prefs.enactor.tableOfContents",
                 container: "{uiEnhancer}.container",
-                // createOnEvent: "onCreateToc",
                 options: {
                     tocTemplate: "{uiEnhancer}.options.tocTemplate",
-                    sourceApplier: "{uiEnhancer}.applier",
                     rules: {
                         "toc": "value"
                     },
@@ -229,7 +222,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     gradeNames: "fluid.prefs.prefsEditorConnections",
                     rules: {
-                        "textSize": "value"
+                        "textSize": "textSize"
                     },
                     model: {
                         value: "{fluid.prefs.rootModel}.rootModel.textSize"
@@ -246,7 +239,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     gradeNames: "fluid.prefs.prefsEditorConnections",
                     rules: {
-                        "lineSpace": "value"
+                        "lineSpace": "lineSpace"
                     },
                     model: {
                         value: "{fluid.prefs.rootModel}.rootModel.lineSpace"

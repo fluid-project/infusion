@@ -10,39 +10,42 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global skon:true, fluid, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid */
 
 var demo = demo || {};
 (function ($, fluid) {
+    "use strict";
 
-    demo.initWithSchema = function (container, compOpts, prefsEditorType, template) {
-        var builder = fluid.prefs.builder({
+    var generateBuildOpts = function (template) {
+        return {
             gradeNames: ["fluid.prefs.auxSchema.starter"],
             auxiliarySchema: {
                 "template": template,
+                "templatePrefix": "../../../framework/preferences/html/",
+                "messagePrefix": "../../../framework/preferences/messages/",
                 "tableOfContents": {
                     "enactor": {
                         "tocTemplate": "../../../components/tableOfContents/html/TableOfContents.html"
                     }
                 }
             }
-        });
-        var baseOpts = {
-            prefsEditorType: prefsEditorType
         };
-        $.extend(true, baseOpts, compOpts);
-        return fluid.invokeGlobalFunction(builder.options.assembledPrefsEditorGrade, [container, baseOpts]);
     };
 
     demo.initFullWithPreview = function (container, options) {
-        return demo.initWithSchema(container, options, "fluid.prefs.fullPreview", "%prefix/FullPreviewPrefsEditor.html");
+        var prefsEditorOpts = $.extend(true, {prefsEditorType: "fluid.prefs.fullPreview"}, options);
+        return fluid.prefs.create(container, {
+            build: generateBuildOpts("%prefix/FullPreviewPrefsEditor.html"),
+            prefsEditor: prefsEditorOpts
+        });
     };
 
     demo.initFullNoPreview = function (container, options) {
-        return demo.initWithSchema(container, options, "fluid.prefs.fullNoPreview", "%prefix/FullNoPreviewPrefsEditor.html");
+        var prefsEditorOpts = $.extend(true, {prefsEditorType: "fluid.prefs.fullNoPreview"}, options);
+        return fluid.prefs.create(container, {
+            build: generateBuildOpts("%prefix/FullNoPreviewPrefsEditor.html"),
+            prefsEditor: prefsEditorOpts
+        });
     };
 
 })(jQuery, fluid);

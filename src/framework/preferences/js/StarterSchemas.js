@@ -9,15 +9,10 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 (function (fluid) {
+    "use strict";
 
     /*******************************************************************************
      * Starter auxiliary schema grade
@@ -30,14 +25,14 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.prefs.auxSchema", "autoInit"],
         auxiliarySchema: {
             "namespace": "fluid.prefs.constructed", // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed PrefsEditor.
-            "templatePrefix": "../../../framework/preferences/html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
+            "templatePrefix": "../../framework/preferences/html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
             "template": "%prefix/SeparatedPanelPrefsEditor.html",
-            "messagePrefix": "../../../framework/preferences/messages/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
+            "messagePrefix": "../../framework/preferences/messages/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
             "message": "%prefix/prefsEditor.json",
             "textSize": {
                 "type": "fluid.prefs.textSize",
                 "enactor": {
-                    "type": "fluid.prefs.enactors.textSize"
+                    "type": "fluid.prefs.enactor.textSize"
                 },
                 "panel": {
                     "type": "fluid.prefs.panel.textSize",
@@ -49,7 +44,7 @@ var fluid_1_5 = fluid_1_5 || {};
             "lineSpace": {
                 "type": "fluid.prefs.lineSpace",
                 "enactor": {
-                    "type": "fluid.prefs.enactors.lineSpace",
+                    "type": "fluid.prefs.enactor.lineSpace",
                     "fontSizeMap": {
                         "xx-small": "9px",
                         "x-small": "11px",
@@ -77,7 +72,7 @@ var fluid_1_5 = fluid_1_5 || {};
                     "verdana": "fl-font-prefsEditor-verdana"
                 },
                 "enactor": {
-                    "type": "fluid.prefs.enactors.textFont",
+                    "type": "fluid.prefs.enactor.textFont",
                     "classes": "@textFont.classes"
                 },
                 "panel": {
@@ -100,7 +95,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
                 },
                 "enactor": {
-                    "type": "fluid.prefs.enactors.contrast",
+                    "type": "fluid.prefs.enactor.contrast",
                     "classes": "@contrast.classes"
                 },
                 "panel": {
@@ -114,8 +109,8 @@ var fluid_1_5 = fluid_1_5 || {};
             "tableOfContents": {
                 "type": "fluid.prefs.tableOfContents",
                 "enactor": {
-                    "type": "fluid.prefs.enactors.tableOfContents",
-                    "tocTemplate": "../../../components/tableOfContents/html/TableOfContents.html"
+                    "type": "fluid.prefs.enactor.tableOfContents",
+                    "tocTemplate": "../../components/tableOfContents/html/TableOfContents.html"
                 },
                 "panel": {
                     "type": "fluid.prefs.panel.layoutControls",
@@ -127,7 +122,7 @@ var fluid_1_5 = fluid_1_5 || {};
             "emphasizeLinks": {
                 "type": "fluid.prefs.emphasizeLinks",
                 "enactor": {
-                    "type": "fluid.prefs.enactors.emphasizeLinks",
+                    "type": "fluid.prefs.enactor.emphasizeLinks",
                     "cssClass": "fl-link-enhanced"
                 },
                 "panel": {
@@ -140,7 +135,7 @@ var fluid_1_5 = fluid_1_5 || {};
             "inputsLarger": {
                 "type": "fluid.prefs.inputsLarger",
                 "enactor": {
-                    "type": "fluid.prefs.enactors.inputsLarger",
+                    "type": "fluid.prefs.enactor.inputsLarger",
                     "cssClass": "fl-text-larger"
                 },
                 "panel": {
@@ -200,7 +195,7 @@ var fluid_1_5 = fluid_1_5 || {};
         schema: {
             "fluid.prefs.textFont": {
                 "type": "string",
-                "default": "",
+                "default": "default",
                 "enum": ["default", "times", "comic", "arial", "verdana"]
             }
         }

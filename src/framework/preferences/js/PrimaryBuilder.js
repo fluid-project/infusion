@@ -9,16 +9,9 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
-
     "use strict";
 
     fluid.registerNamespace("fluid.prefs.schemas");
@@ -98,7 +91,7 @@ var fluid_1_5 = fluid_1_5 || {};
             schema: fluid.filterKeys(primarySchema.properties || primarySchema,
                 typeFilter, false)
         });
-        var primary = [suppliedPrimaryGradeName];
+        var primary = [];
         // Lookup all available schema grades from the index that match the
         // top level preference name.
         fluid.each(typeFilter, function merge(type) {
@@ -107,6 +100,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 primary.push.apply(primary, schemaGrades);
             }
         });
+        primary.push(suppliedPrimaryGradeName);
         return primary;
     };
 

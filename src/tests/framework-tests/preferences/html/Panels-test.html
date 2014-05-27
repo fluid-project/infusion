@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>Settings Panels Tests</title>
@@ -14,12 +14,15 @@
         <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.slider.js"></script>
         <script type="text/javascript" src="../../../../lib/json/js/json2.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidIoC.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/DataBinding.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/ModelTransformation.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/ModelTransformationTransforms.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/FluidView.js"></script>
-        <script type="text/javascript" src="../../../../framework/core/js/FluidIoC.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../../../framework/enhancement/js/ProgressiveEnhancement.js"></script>
         <script type="text/javascript" src="../../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
         <script type="text/javascript" src="../../../../framework/renderer/js/fluidParser.js"></script>
         <script type="text/javascript" src="../../../../framework/renderer/js/fluidRenderer.js"></script>
@@ -62,7 +65,7 @@
             <label for="bw" class="flc-prefsEditor-theme-label fl-theme-prefsEditor-bw">
                 <span class="fl-preview-A"></span>
                 <span class="fl-hidden-accessible"></span>
-                <div class="fl-crossout"></div>
+                <span class="fl-crossout"></span>
             </label>
         </div>
     </div>
@@ -109,6 +112,14 @@
         <input type="checkbox" id="links-choice" class="flc-prefsEditor-links fl-force-left" />
         <input type="checkbox" id="inputs-choice" class="flc-prefsEditor-inputs-larger fl-force-left" />
     </div>
+
+    <div class="renderOnPreference"></div>
+    <div class="fluid-5200"></div>
+    <div class="fluid-5201"></div>
+    <div class="fluid-5202"></div>
+    <div class="fluid-5203"></div>
+    <div class="fluid-5210"></div>
+    <div class="fluid-5220"></div>
 
     </body>
 </html>

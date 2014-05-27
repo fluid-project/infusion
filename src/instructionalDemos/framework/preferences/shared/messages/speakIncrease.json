@@ -1,0 +1,19 @@
+{
+    "speakIncreaseHeader": "Speaking and Increasing",
+    "incSize": "Magnification",
+    "magFactorLabel": "Magnification Factor",
+    "magFactorMultiplier": "times",
+    "cursorLabel": "Cursor Size",
+    "cursorMultiplier": "percent",
+    "magPosLabel": "Magnifier Position",
+    "magPos-centre": "Centre",
+    "magPos-left": "Left",
+    "magPos-right": "Right",
+    "magPos-top": "Top",
+    "magPos-bottom": "Bottom",
+    "speakText": "Speak Text",
+    "volLabel": "Volume",
+    "volMultiplier": "percent",
+    "wpmLabel": "Words-per-min",
+    "wpmMultiplier": "words"
+}

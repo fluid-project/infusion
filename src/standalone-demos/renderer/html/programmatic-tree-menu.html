@@ -1,11 +1,12 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns:rsf="http://ponder.org.uk/rsf" xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en">
     <head>
         <title>Renderer Example: Data-Binding with Programmatically-generated Component Tree</title>
         <link rel="stylesheet" type="text/css" href="../css/renderer-examples.css" />
 
         <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../lib/json/js/json2.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/FluidDocument.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/FluidDOMUtilities.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/DataBinding.js"></script>
@@ -31,9 +32,9 @@
 
             <fieldset id="wine-list">
                 <legend>Wines</legend>
-                <div rsf:id="wine-row:">
-                    <input rsf:id="wine-option" type="checkbox" id="wine" value="Wine"/>
-                    <label rsf:id="wine-label" for="wine">Wine</label>
+                <div class="demo-wine-row">
+                    <input class="demo-wine-option" type="checkbox" id="wine" value="Wine"/>
+                    <label class="demo-wine-label" for="wine">Wine</label>
                 </div>
             </fieldset>
             <p><input id="apply-change" type="button" value="Apply change to model"/></p>
@@ -47,17 +48,17 @@
         <div id="food-list">
             <fieldset id="cheese-list">
                 <legend>Cheeses</legend>
-                <div rsf:id="cheese-row:">
-                    <input rsf:id="cheese-option" type="checkbox" id="cheese" value="Cheese"/>
-                    <label rsf:id="cheese-label" for="cheese">Cheese</label>
+                <div class="demo-cheese-row">
+                    <input class="demo-cheese-option" type="checkbox" id="cheese" value="Cheese"/>
+                    <label class="demo-cheese-label" for="cheese">Cheese</label>
                 </div>
             </fieldset>
 
             <fieldset id="canape-list">
                 <legend>Canapes</legend>
-                <div rsf:id="canape-row:">
-                    <input rsf:id="canape-option" type="checkbox" id="canape" value="Canape"/>
-                    <label rsf:id="canape-label" for="canape">Canape</label>
+                <div class="demo-canape-row">
+                    <input class="demo-canape-option" type="checkbox" id="canape" value="Canape"/>
+                    <label class="demo-canape-label" for="canape">Canape</label>
                 </div>
             </fieldset>
         </div>
@@ -71,7 +72,7 @@
       </div>
 
         <script type="text/javascript">
-            fluid.dataBindingExample.setup();
+            demo.programmaticTreeMenu();
         </script>
     </body>
 </html>

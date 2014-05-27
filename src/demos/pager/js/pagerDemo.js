@@ -1,7 +1,7 @@
 /*
 Copyright 2008-2009 University of Cambridge
 Copyright 2008-2009 University of Toronto
-Copyright 2010 OCAD University
+Copyright 2010-2014 OCAD University
 Copyright 2010 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -13,14 +13,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global demo:true, fluid, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid */
 
 var demo = demo || {};
 
 (function ($, fluid) {
+    "use strict";
 
     /**
      * Main demo initialization
@@ -28,26 +26,26 @@ var demo = demo || {};
     demo.initPager = function () {
         var resources = {
             users: {
-                href: "../data/pager.json",
+                href: "data/pager.json",
                 options: {
                     dataType: "json"
                 }
             }
         };
-        
+
         function initPager(resourceSpecs) {
-            
+
             var model = resourceSpecs.users.resourceText;
-            var columnDefs = [ 
+            var columnDefs = [
                 {
                     key: "user-link",
-                    valuebinding: "*.userDisplayName",  
+                    valuebinding: "*.userDisplayName",
                     sortable: true
                 },
                 {
                     key: "user-email",
                     valuebinding: "*.userEmail",
-                    sortable: true 
+                    sortable: true
                 },
                 {
                     key: "user-role",
@@ -60,7 +58,7 @@ var demo = demo || {};
                     sortable: false
                 }
             ];
-          
+
             demo.pager = fluid.pagedTable(".demo-pager-container", {
                 dataModel: model,
                 model: {
@@ -74,11 +72,15 @@ var demo = demo || {};
                         type: "fluid.table.selfRender",
                         options: {
                             selectors: {
-                                root: ".demo-pager-table-data"
+                                root: ".demo-pager-table-data",
+                                "user-link": ".demo-user-link",
+                                "user-comment": ".demo-user-comment",
+                                "user-role": ".demo-user-role",
+                                "user-email": ".demo-user-email"
                             },
                             rendererOptions: {debugMode: false} // Change this to true to diagnose rendering issues
                         }
-                }
+                    }
                 },
                 decorators: {
                     unsortableHeader: [
@@ -96,7 +98,7 @@ var demo = demo || {};
                 }
             });
         }
-        
+
         fluid.fetchResources(resources, initPager);
 
     };

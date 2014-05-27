@@ -11,27 +11,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global window, fluid, jqUnit, jQuery, start, stop*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
-fluid.registerNamespace("fluid.tests");
+/* global fluid, jqUnit */
 
 (function ($) {
+    "use strict";
+
+    fluid.registerNamespace("fluid.tests");
 
     fluid.setLogging(true);
 
     fluid.tests.testView = function () {
- 
-        jqUnit.module("Fluid View Tests");
 
+        jqUnit.module("Fluid View Tests");
 
         jqUnit.test("jById id not found", function () {
             var invalidIdElement = fluid.jById("this-id-does-not-exitst");
             jqUnit.assertEquals("element not found", 0, invalidIdElement.length);
         });
-        
+
         jqUnit.test("FLUID-3953 tests: confusion for namespaced attributes", function () {
             jqUnit.expect(2);
             var node = fluid.byId("FLUID-3953-test");
@@ -41,12 +38,12 @@ fluid.registerNamespace("fluid.tests");
         });
 
         jqUnit.test("findAncestor", function () {
-            var testFunc = function (elementOfArray, indexInArray) {
+            var testFunc = function (elementOfArray) {
                 return elementOfArray.id === "top1";
             };
             jqUnit.assertEquals("Ancestor should be 'top1'", "top1", fluid.findAncestor($("#page-link-1"), testFunc).id);
         });
-        
+
         jqUnit.test("Container: bind to an id", function () {
             try {
                 fluid.pushSoftFailure(true);
@@ -55,7 +52,7 @@ fluid.registerNamespace("fluid.tests");
                 var result = fluid.container("#main-container");
                 jqUnit.assertTrue("One element should be returned when specifying a selector",
                                   1, result.length);
-              
+
                 // Now try with a invalid string... a CSS selector matching two elements
                 try {
                     result = fluid.container(".container");
@@ -63,10 +60,10 @@ fluid.registerNamespace("fluid.tests");
                     jqUnit.assertTrue("We should have received an exception", !!e);
                 }
             } finally {
-                fluid.pushSoftFailure(-1);  
+                fluid.pushSoftFailure(-1);
             }
         });
-    
+
         jqUnit.test("container(): bind to a single jQuery", function () {
             try {
                 fluid.pushSoftFailure(true);
@@ -76,7 +73,7 @@ fluid.registerNamespace("fluid.tests");
                 var result = fluid.container(oneContainer);
                 jqUnit.assertEquals("If a single-element jQuery is used, it should be immediately returned.",
                              oneContainer, result);
-                 
+
                 // Now try with a two-element jQuery, which should cause an exception.
                 var twoContainers = jQuery(".container");
                 try {
@@ -85,24 +82,24 @@ fluid.registerNamespace("fluid.tests");
                     jqUnit.assertTrue("We should have received an exception", !!e);
                 }
             } finally {
-                fluid.pushSoftFailure(-1);  
+                fluid.pushSoftFailure(-1);
             }
         });
-        
+
         jqUnit.test("container(): bind to a DOM element", function () {
             var container = document.getElementById("main-container");
             var result = fluid.container(container);
             jqUnit.assertEquals("If a single DOM element is used, it should be wrapped in a jQuery.",
                                 container, result[0]);
         });
-        
+
         jqUnit.test("container(): garbage object", function () {
             try {
                 fluid.pushSoftFailure(true);
                 jqUnit.expect(1);
                 // Random objects should fail.
                 var container = {foo: "bar"};
-    
+
                 try {
                     fluid.container(container);
                 } catch (e) {
@@ -112,7 +109,7 @@ fluid.registerNamespace("fluid.tests");
                 fluid.pushSoftFailure(-1);
             }
         });
-        
+
         jqUnit.test("DOM binder", function () {
             var container = $(".pager-top");
             var selectors = {
@@ -130,10 +127,10 @@ fluid.registerNamespace("fluid.tests");
                     jqUnit.assertEquals("Found second link: " + method + "(" + i + ")", scoped[0].id, "page-link-" + (i + 1));
                 }
             }
-            
+
             testSublocate("locate");
             testSublocate("fastLocate");
-            
+
             var inexistent = binder.locate("inexistent");
             jqUnit.assertNotNull("Inexistent return", inexistent);
             jqUnit.assertEquals("Inexistent length", 0, inexistent.length);
@@ -142,7 +139,7 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertEquals("Scoped inexistent length", 0, inexistent.length);
         });
 
-       
+
         jqUnit.test("allocateSimpleId", function () {
             var element = {};
             var fluidId = fluid.allocateSimpleId();
@@ -151,31 +148,53 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertEquals("Calling on allocateSimpleId with parameter returns an ID starts with 'fluid-id-'", 0, fluidId.indexOf("fluid-id-"));
             jqUnit.assertEquals("The element ID should be set after allocateSimpleId is called with element.", fluidId, element.id);
         });
-          
-          
-              
+
+
+        // FLUID-5277: Improve the error message when an nonexistent container is provided for fluid.viewRelayComponent and fluid.rendererRelayComponent
+        fluid.defaults("fluid.tests.fluid5277", {
+            gradeNames: ["fluid.viewRelayComponent", "autoInit"]
+        });
+
+        jqUnit.test("FLUID-5277: Improve the error message when an nonexistent container is provided for fluid.viewRelayComponent and fluid.rendererRelayComponent", function () {
+            var ourError;
+            fluid.pushSoftFailure(function () {
+                ourError = fluid.makeArray(arguments).join("");
+                throw new Error();
+            });
+            jqUnit.expect(2);
+            try {
+                fluid.tests.fluid5277("#nonexistent-container");
+            } catch (e) {
+                jqUnit.assertValue("Triggered framework diagnostic", ourError);
+                jqUnit.assertTrue("Diagnostic message is correct", ourError.indexOf("did not match any markup") !== -1);
+            } finally {
+                fluid.pushSoftFailure(-1);
+            }
+        });
+
+
         fluid.tests.testComponent = function (container, options) {
             var that = fluid.initView("fluid.tests.testComponent", container, options);
             that.subcomponent = fluid.initSubcomponent(that, "subcomponent", [that.container, fluid.COMPONENT_OPTIONS]);
             return that;
         };
-        
+
         fluid.tests.subcomponent = function (container, options) {
             var that = fluid.initView("fluid.tests.subcomponent", container, options);
             that.greeting = that.options.greeting;
             return that;
         };
-        
+
         fluid.defaults("fluid.tests.testComponent", {
             subcomponent: {
                 type: "fluid.tests.subcomponent"
-            } 
+            }
         });
-        
+
         fluid.defaults("fluid.tests.subcomponent", {
             greeting: "hello"
         });
-        
+
         var componentWithOverridenSubcomponentOptions = function (greeting) {
             return fluid.tests.testComponent("#main-container", {
                 subcomponent: {
@@ -185,40 +204,45 @@ fluid.registerNamespace("fluid.tests");
                 }
             });
         };
-        
+
         jqUnit.test("initSubcomponents", function () {
             // First, let's check that the defaults are used if no other options are specified.
             var myComponent = fluid.tests.testComponent("#main-container");
-            jqUnit.assertEquals("The subcomponent should have its default options.", 
+            jqUnit.assertEquals("The subcomponent should have its default options.",
                                 "hello", myComponent.subcomponent.greeting);
-           
+
             // Now try overriding the subcomponent options with specific options.
             myComponent = componentWithOverridenSubcomponentOptions("bonjour");
-            jqUnit.assertEquals("The subcomponent's options should have been overridden correctly.", 
+            jqUnit.assertEquals("The subcomponent's options should have been overridden correctly.",
                                 "bonjour", myComponent.subcomponent.greeting);
-                               
+
         });
-        
+
         fluid.defaults("fluid.tests.testGradedView", {
             gradeNames: ["fluid.viewComponent", "autoInit"],
             selectors: {
                 "page-link": ".page-link"
             }
         });
-        
+
         jqUnit.test("Graded View Component", function () {
             var model = {myKey: "myValue"};
             var that = fluid.tests.testGradedView("#pager-top", {model: model});
             jqUnit.assertValue("Constructed component", that);
             jqUnit.assertEquals("Constructed functioning DOM binder", 3, that.locate("page-link").length);
-            jqUnit.assertEquals("View component correctly preserved model", that.model, model);   
+            // Distinguish between the behaviour of the "old" and "new" modelComponents
+            if (fluid.hasGrade(that.options, "fluid.modelRelayComponent")) {
+                jqUnit.assertDeepEq("View component acquired model", model, that.model);
+            } else {
+                jqUnit.assertEquals("View component correctly preserved model", model, that.model);
+            }
         });
-      
+
         fluid.tests.blurTester = function (container, options) {
             var that = fluid.initView("fluid.tests.blurTester", container, options);
-            return that;  
+            return that;
         };
-     
+
         fluid.defaults("fluid.tests.blurTester", {
             selectors: {
                 select: "select",
@@ -228,29 +252,22 @@ fluid.registerNamespace("fluid.tests");
                 excludedParent: ".excludedParent"
             }
         });
-     
+
         function noteTime() {
-            jqUnit.assertTrue("Time : " + fluid.renderTimestamp(new Date()), true);  
+            jqUnit.assertTrue("Time : " + fluid.renderTimestamp(new Date()), true);
         }
-     
-        // This function is necessary since simulation of focus events by jQuery under IE
-        // is not sufficiently good to intercept the "focusin" binding.
-        function applyOp(node, func) {
-            var raw = fluid.unwrap(node);
-            raw[func] ? raw[func]() : node[func]();   
-        }
-     
-        function blurTest(message, provokeTarget, provokeOp, shouldBlur, excludeMaker) { 
+
+        function blurTest(message, provokeTarget, provokeOp, shouldBlur, excludeMaker) {
             jqUnit.test("Dead man's blur test - " + message, function () {
-               
+
                 noteTime();
-                
+
                 var blurReceived = false;
                 var blurTester = fluid.tests.blurTester("#blurrable-widget");
                 var input = blurTester.locate("input");
                 var excluded = $("<div></div>").addClass("excludedParent");
                 blurTester.container.append(excluded);
-                 
+
                 var blurHandler = function () {
                     if (!blurReceived) {
                         jqUnit.assertTrue(message + " - Blur handler should " + (shouldBlur ? "" : "not ") + "execute", shouldBlur);
@@ -261,31 +278,36 @@ fluid.registerNamespace("fluid.tests");
                 var blurrer = fluid.deadMansBlur(input, {
                     delay: 300,
                     exclusions: excludeMaker(blurTester),
-                    handler: blurHandler 
+                    handler: blurHandler
                 });
-                
+
                 excluded.append($("<input></input>").addClass("excluded"));
-                
-                applyOp(input, "focus");
-                 
+
+                fluid.focus(input);
+
                 var blurOutwaiter = function () {
                     jqUnit.assertTrue(message + " - Blur handler has not executed", shouldBlur ^ !blurReceived);
                     noteTime();
                     jqUnit.start();
                 };
-    
-                applyOp(input, "blur");
+
+                fluid.blur(input);
                 window.setTimeout(function () {
                     fluid.log("Apply " + provokeOp + " to " + provokeTarget);
-                    applyOp(blurTester.locate(provokeTarget), provokeOp);
+                    var element = blurTester.locate(provokeTarget);
+                    if (provokeOp === "click") {
+                        element.click();
+                    } else{
+                        fluid[provokeOp](element);
+                    }
                 }, blurrer.options.delay - 100);
-                 
+
                 window.setTimeout(blurOutwaiter, blurrer.options.delay + 300);
-                 
+
                 jqUnit.stop();
             });
         }
-     
+
         var selectExclusions = function (dom) {
             return {selection: dom.locate("select")};
         };
@@ -296,19 +318,19 @@ fluid.registerNamespace("fluid.tests");
                 div:  dom.locate("div")
             };
         };
-        
+
         var excludedExclusions = function (dom) {
             return {excludedParent: dom.locate("excludedParent")};
         };
-     
+
         blurTest("nonExcluded component one", "div", "click", true, selectExclusions);
         blurTest("excluded component one", "select", "focus", false, selectExclusions);
-     
+
         blurTest("excluded component two - a", "div", "click", false, bothExclusions);
         blurTest("excluded component two - b", "select", "focus", false, bothExclusions);
-        
+
         blurTest("excluded component excluded", "excluded", "focus", false, excludedExclusions);
-     
+
         jqUnit.test("ARIA labeller test", function () {
             var target = $("#component-3");
             var labeller = fluid.updateAriaLabel(target, "Label 1");
@@ -318,13 +340,13 @@ fluid.registerNamespace("fluid.tests");
             labeller.update({text: "Label 2"});
             jqUnit.assertEquals("Label updated", "Label 2", target.attr("aria-label"));
         });
-        
+
         jqUnit.test("ARIA labeller live region test", function () {
             var target = $("#component-3");
             var labeller = fluid.updateAriaLabel(target, "Label 1", {
                 dynamicLabel: true
             });
-            
+
             var region = fluid.jById(fluid.defaults("fluid.ariaLabeller").liveRegionId);
             jqUnit.assertEquals("Live region should have the correct label", "Label 1", region.text());
             labeller.update({
@@ -334,4 +356,4 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertEquals("The live region should be updated", target.attr("aria-label"), region.text());
         });
     };
-})(jQuery); 
+})(jQuery);

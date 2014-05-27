@@ -1,4 +1,7 @@
 ﻿
+.demo-container {
+    margin-top: 3em;
+}
 .fl-imageReorderer {
     clear:both;
 }

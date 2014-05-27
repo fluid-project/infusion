@@ -10,13 +10,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, expect, start, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid, jqUnit */
 
 (function ($) {
-
     "use strict";
 
     fluid.registerNamespace("fluid.tests");
@@ -71,7 +67,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             primaryBuilder: {
                 type: "fluid.prefs.primaryBuilder",
                 options: {
-                    typeFilter: ["fluid.prefs.textSize", "fluid.prefs.lineSpace"],
+                    typeFilter: ["fluid.prefs.textSize", "fluid.prefs.lineSpace"]
                 }
             },
             primaryBuilderSchema: {
@@ -135,7 +131,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             name: "Primary Builder",
             tests: [{
                 expect: 4,
-                name: "Primary schema is assambled correctectly.",
+                name: "Primary schema is assembled correctly.",
                 sequence: [{
                     func: "fluid.tests.primaryBuilder",
                     args: ["{primaryBuilderSchema}.options.schema"]
@@ -145,7 +141,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             name: "Primary Builder with supplied primary schema",
             tests: [{
                 expect: 4,
-                name: "Primary schema is assambled correctectly.",
+                name: "Primary schema is assembled correctly.",
                 sequence: [{
                     func: "fluid.tests.primaryBuilderWithSuppliedPrimarySchema",
                     args: ["{primaryBuilderWithSuppliedPrimarySchemaSchema}.options.schema"]
@@ -154,7 +150,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
-    fluid.tests.primaryBuilderWithSuppliedPrimarySchema = function (schema, that) {
+    fluid.tests.primaryBuilderWithSuppliedPrimarySchema = function (schema) {
         verifyBuilder(schema, [
             "fluid.tests.customTextSize",
             "fluid.prefs.schemas.lineSpace",
@@ -193,7 +189,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var verifySchema = function (contributedSchema, finalSchema) {
         jqUnit.assertValue("Final Schema is defined",
             finalSchema);
-        jqUnit.assertDeepEq("Schemas are merged correctectly",
+        jqUnit.assertDeepEq("Schemas are merged correctly",
             contributedSchema, finalSchema);
     };
 

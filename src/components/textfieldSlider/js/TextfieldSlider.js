@@ -9,23 +9,17 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true, fluid, jQuery, $*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
-
 var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
+    "use strict";
 
     /********************
      * Textfield Slider *
      ********************/
 
     fluid.defaults("fluid.textfieldSlider", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.prefs.modelRelay", "autoInit"],
         components: {
             textfield: {
                 type: "fluid.textfieldSlider.textfield",
@@ -33,7 +27,9 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     model: "{textfieldSlider}.model",
                     range: "{textfieldSlider}.options.range",
-                    applier: "{textfieldSlider}.applier"
+                    members: {
+                        applier: "{textfieldSlider}.applier"
+                    }
                 }
             },
             slider: {
@@ -42,7 +38,9 @@ var fluid_1_5 = fluid_1_5 || {};
                 options: {
                     model: "{textfieldSlider}.model",
                     range: "{textfieldSlider}.options.range",
-                    applier: "{textfieldSlider}.applier",
+                    members: {
+                        applier: "{textfieldSlider}.applier"
+                    },
                     sliderOptions: "{textfieldSlider}.options.sliderOptions"
                 }
             }
@@ -110,15 +108,13 @@ var fluid_1_5 = fluid_1_5 || {};
         var oldValue = model.value;
         var newValue = changeRequest.value;
 
-        var isValidNum = !isNaN(parseInt(newValue, 10));
-
-        if (isValidNum) {
+        if (!isNaN(parseInt(newValue, 10))) {
             if (newValue < range.min) {
                 newValue = range.min;
             } else if (newValue > range.max) {
                 newValue = range.max;
             }
-            changeRequest.value = newValue;
+            changeRequest.value = Number(newValue);
         } else {
             changeRequest.value = oldValue;
         }

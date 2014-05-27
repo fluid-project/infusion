@@ -13,12 +13,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/*global fluid_1_5:true, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 var fluid_1_5 = fluid_1_5 || {};
 
 /*******************
@@ -26,53 +20,54 @@ var fluid_1_5 = fluid_1_5 || {};
  *******************/
 
 (function ($, fluid) {
-    
+    "use strict";
+
     fluid.registerNamespace("fluid.uploader.fileQueueView");
-    
+
     // Real data binding would be nice to replace these two pairs.
     fluid.uploader.fileQueueView.rowForFile = function (that, file) {
         return that.locate("fileQueue").find("#" + file.id);
     };
-    
+
     fluid.uploader.fileQueueView.errorRowForFile = function (that, file) {
         return $("#" + file.id + "_error", that.container);
     };
-    
+
     fluid.uploader.fileQueueView.fileForRow = function (that, row) {
         return fluid.find_if(that.model, function (file) {
             return file.id.toString() === row.prop("id");
         });
     };
-    
+
     fluid.uploader.fileQueueView.progressorForFile = function (that, file) {
         var progressId = file.id + "_progress";
         return that.fileProgressors[progressId];
     };
-    
+
     fluid.uploader.fileQueueView.startFileProgress = function (that, file) {
         var fileRowElm = fluid.uploader.fileQueueView.rowForFile(that, file);
         that.scroller.scrollTo(fileRowElm);
-               
+
         // update the progressor and make sure that it's in position
         var fileProgressor = fluid.uploader.fileQueueView.progressorForFile(that, file);
         fileProgressor.refreshView();
         fileProgressor.show();
     };
-        
+
     fluid.uploader.fileQueueView.updateFileProgress = function (that, file, fileBytesComplete, fileTotalBytes) {
         var filePercent = fluid.uploader.derivePercent(fileBytesComplete, fileTotalBytes);
-        var filePercentStr = filePercent + "%";    
+        var filePercentStr = filePercent + "%";
         fluid.uploader.fileQueueView.progressorForFile(that, file).update(filePercent, filePercentStr);
     };
-    
+
     fluid.uploader.fileQueueView.hideFileProgress = function (that, file) {
         var fileRowElm = fluid.uploader.fileQueueView.rowForFile(that, file);
         fluid.uploader.fileQueueView.progressorForFile(that, file).hide();
         if (file.filestatus === fluid.uploader.fileStatusConstants.COMPLETE) {
             that.locate("fileIconBtn", fileRowElm).removeClass(that.options.styles.dim);
-        } 
+        }
     };
-    
+
     fluid.uploader.fileQueueView.removeFileProgress = function (that, file) {
         var fileProgressor = fluid.uploader.fileQueueView.progressorForFile(that, file);
         if (!fileProgressor) {
@@ -81,30 +76,30 @@ var fluid_1_5 = fluid_1_5 || {};
         var rowProgressor = fileProgressor.displayElement;
         rowProgressor.remove();
     };
- 
+
     fluid.uploader.fileQueueView.animateRowRemoval = function (that, row) {
         row.fadeOut("fast", function () {
-            row.remove();  
+            row.remove();
             that.refreshView();
         });
     };
-    
+
     fluid.uploader.fileQueueView.removeFileErrorRow = function (that, file) {
         if (file.filestatus === fluid.uploader.fileStatusConstants.ERROR) {
-            fluid.uploader.fileQueueView.animateRowRemoval(that, errorRowForFile(that, file));
+            fluid.uploader.fileQueueView.animateRowRemoval(that, fluid.uploader.fileQueueView.errorRowForFile(that, file));
         }
     };
-   
+
     fluid.uploader.fileQueueView.removeFileAndRow = function (that, file, row) {
         // Clean up the stuff associated with a file row.
         fluid.uploader.fileQueueView.removeFileProgress(that, file);
         fluid.uploader.fileQueueView.removeFileErrorRow(that, file);
-        
+
         // Remove the file itself.
         that.events.onFileRemoved.fire(file);
         fluid.uploader.fileQueueView.animateRowRemoval(that, row);
     };
-    
+
     fluid.uploader.fileQueueView.removeFileForRow = function (that, row) {
         var file = fluid.uploader.fileQueueView.fileForRow(that, row);
         if (!file || file.filestatus === fluid.uploader.fileStatusConstants.COMPLETE) {
@@ -112,57 +107,57 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         fluid.uploader.fileQueueView.removeFileAndRow(that, file, row);
     };
-    
+
     fluid.uploader.fileQueueView.removeRowForFile = function (that, file) {
         var row = fluid.uploader.fileQueueView.rowForFile(that, file);
         fluid.uploader.fileQueueView.removeFileAndRow(that, file, row);
     };
-    
+
     fluid.uploader.fileQueueView.bindHover = function (row, styles) {
         var over = function () {
             if (row.hasClass(styles.ready) && !row.hasClass(styles.uploading)) {
                 row.addClass(styles.hover);
             }
         };
-        
+
         var out = function () {
             if (row.hasClass(styles.ready) && !row.hasClass(styles.uploading)) {
                 row.removeClass(styles.hover);
-            }   
+            }
         };
         row.hover(over, out);
     };
-    
+
     fluid.uploader.fileQueueView.bindDeleteKey = function (that, row) {
         var deleteHandler = function () {
             fluid.uploader.fileQueueView.removeFileForRow(that, row);
         };
-       
+
         fluid.activatable(row, null, {
             additionalBindings: [{
-                key: $.ui.keyCode.DELETE, 
+                key: $.ui.keyCode.DELETE,
                 activateHandler: deleteHandler
             }]
         });
     };
-    
+
     fluid.uploader.fileQueueView.bindRowHandlers = function (that, row) {
         if ($.browser.msie && $.browser.version < 7) {
             fluid.uploader.fileQueueView.bindHover(row, that.options.styles);
         }
-        
+
         that.locate("fileIconBtn", row).click(function () {
             fluid.uploader.fileQueueView.removeFileForRow(that, row);
         });
-        
+
         fluid.uploader.fileQueueView.bindDeleteKey(that, row);
     };
-    
+
     fluid.uploader.fileQueueView.renderRowFromTemplate = function (that, file) {
         var row = that.rowTemplate.clone(),
             fileName = file.name,
             fileSize = fluid.uploader.formatFileSize(file.size);
-        
+
         row.removeClass(that.options.styles.hiddenTemplate);
         that.locate("fileName", row).text(fileName);
         that.locate("fileSize", row).text(fileSize);
@@ -171,9 +166,9 @@ var fluid_1_5 = fluid_1_5 || {};
         row.addClass(that.options.styles.ready);
         fluid.uploader.fileQueueView.bindRowHandlers(that, row);
         fluid.updateAriaLabel(row, fileName + " " + fileSize);
-        return row;    
+        return row;
     };
-    
+
     fluid.uploader.fileQueueView.createProgressorFromTemplate = function (that, row) {
         // create a new progress bar for the row and position it
         var rowProgressor = that.rowProgressorTemplate.clone();
@@ -183,7 +178,7 @@ var fluid_1_5 = fluid_1_5 || {};
         rowProgressor.css("top", row.position().top);
         rowProgressor.height(row.height()).width(5);
         that.container.after(rowProgressor);
-       
+
         that.fileProgressors[progressId] = fluid.progress(that.options.uploaderContainer, {
             selectors: {
                 progressBar: "#" + rowId,
@@ -193,7 +188,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         });
     };
-    
+
     fluid.uploader.fileQueueView.addFile = function (that, file) {
         var row = fluid.uploader.fileQueueView.renderRowFromTemplate(that, file);
         /* FLUID-2720 - do not hide the row under IE8 */
@@ -207,14 +202,14 @@ var fluid_1_5 = fluid_1_5 || {};
         that.refreshView();
         that.scroller.scrollTo("100%");
     };
-    
+
     // Toggle keyboard row handlers on and off depending on the uploader state
     fluid.uploader.fileQueueView.enableRows = function (rows, state) {
         for (var i = 0; i < rows.length; i++) {
-            fluid.enabled(rows[i], state);  
-        }               
+            fluid.enabled(rows[i], state);
+        }
     };
-    
+
     fluid.uploader.fileQueueView.prepareForUpload = function (that) {
         var rowButtons = that.locate("fileIconBtn", that.locate("fileRows"));
         rowButtons.prop("disabled", true);
@@ -226,32 +221,32 @@ var fluid_1_5 = fluid_1_5 || {};
         var rowButtons = that.locate("fileIconBtn", that.locate("fileRows"));
         rowButtons.prop("disabled", false);
         rowButtons.removeClass(that.options.styles.dim);
-        fluid.uploader.fileQueueView.enableRows(that.locate("fileRows"), true);        
+        fluid.uploader.fileQueueView.enableRows(that.locate("fileRows"), true);
     };
-        
+
     fluid.uploader.fileQueueView.changeRowState = function (that, row, newState) {
         row.removeClass(that.options.styles.ready).removeClass(that.options.styles.error).addClass(newState);
     };
-    
+
     fluid.uploader.fileQueueView.markRowAsComplete = function (that, file) {
         // update styles and keyboard bindings for the file row
         var row = fluid.uploader.fileQueueView.rowForFile(that, file);
         fluid.uploader.fileQueueView.changeRowState(that, row, that.options.styles.uploaded);
         row.attr("title", that.options.strings.status.success);
         fluid.enabled(row, false);
-        
+
         // update the click event and the styling for the file delete button
         var removeRowBtn = that.locate("fileIconBtn", row);
         removeRowBtn.unbind("click");
         removeRowBtn.removeClass(that.options.styles.remove);
-        removeRowBtn.attr("title", that.options.strings.status.success); 
+        removeRowBtn.attr("title", that.options.strings.status.success);
     };
-    
+
     fluid.uploader.fileQueueView.renderErrorInfoFromTemplate = function (that, fileRow, error) {
         // Render the row by cloning the template and binding its id to the file.
         var errorRow = that.errorInfoTemplate.clone();
         errorRow.prop("id", fileRow.prop("id") + "_error");
-        
+
         // Look up the error message and render it.
         var errorType = fluid.keyForValue(fluid.uploader.errorConstants, error);
         var errorMsg = that.options.strings.errors[errorType];
@@ -259,7 +254,7 @@ var fluid_1_5 = fluid_1_5 || {};
         that.locate("fileName", fileRow).after(errorRow);
         that.scroller.scrollTo(errorRow);
     };
-    
+
     fluid.uploader.fileQueueView.showErrorForFile = function (that, file, error) {
         fluid.uploader.fileQueueView.hideFileProgress(that, file);
         if (file.filestatus === fluid.uploader.fileStatusConstants.ERROR) {
@@ -268,7 +263,7 @@ var fluid_1_5 = fluid_1_5 || {};
             fluid.uploader.fileQueueView.renderErrorInfoFromTemplate(that, fileRowElm, error);
         }
     };
-    
+
     fluid.uploader.fileQueueView.addKeyboardNavigation = function (that) {
         fluid.tabbable(that.container);
         that.selectableContext = fluid.selectable(that.container, {
@@ -281,9 +276,9 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         });
     };
-    
+
     fluid.uploader.fileQueueView.prepareTemplateElements = function (that) {
-        // Grab our template elements out of the DOM.  
+        // Grab our template elements out of the DOM.
         that.errorInfoTemplate = that.locate("errorInfoTemplate").remove();
         that.errorInfoTemplate.removeClass(that.options.styles.hiddenTemplate);
         that.rowTemplate = that.locate("rowTemplate").remove();
@@ -292,26 +287,26 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.uploader.fileQueueView.markFileComplete = function (that, file) {
         fluid.uploader.fileQueueView.progressorForFile(that, file).update(100, "100%");
-        fluid.uploader.fileQueueView.markRowAsComplete(that, file);      
+        fluid.uploader.fileQueueView.markRowAsComplete(that, file);
     };
-    
+
     fluid.uploader.fileQueueView.refreshView = function (that) {
         that.selectableContext.refresh();
         that.scroller.refreshView();
     };
-    
+
     /**
      * Creates a new File Queue view.
-     * 
+     *
      * @param {jQuery|selector} container the file queue's container DOM element
      * @param {fileQueue} queue a file queue model instance
      * @param {Object} options configuration options for the view
      */
-    
+
     fluid.defaults("fluid.uploader.fileQueueView", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         members: {
-            fileProgressors: {}  
+            fileProgressors: {}
         },
         invokers: {
             addFile: {
@@ -336,7 +331,7 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             updateFileProgress: {
                 funcName: "fluid.uploader.fileQueueView.updateFileProgress",
-                args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"] // file, fileBytesComplete, fileTotalBytes 
+                args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"] // file, fileBytesComplete, fileTotalBytes
             },
             markFileComplete: {
                 funcName: "fluid.uploader.fileQueueView.markFileComplete",
@@ -363,19 +358,19 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.uploader.fileQueueView.eventBinder"
             }
         },
-        
+
         selectors: {
             fileRows: ".flc-uploader-file",
             fileName: ".flc-uploader-file-name",
             fileSize: ".flc-uploader-file-size",
-            fileIconBtn: ".flc-uploader-file-action",      
+            fileIconBtn: ".flc-uploader-file-action",
             errorText: ".flc-uploader-file-error",
-            
+
             rowTemplate: ".flc-uploader-file-tmplt",
             errorInfoTemplate: ".flc-uploader-file-error-tmplt",
             rowProgressorTemplate: ".flc-uploader-file-progressor-tmplt"
         },
-        
+
         styles: {
             hover: "fl-uploader-file-hover",
             selected: "fl-uploader-file-focus",
@@ -387,10 +382,10 @@ var fluid_1_5 = fluid_1_5 || {};
             dim: "fl-uploader-dim",
             hiddenTemplate: "fl-uploader-hidden-templates"
         },
-        
+
         strings: {
             progress: {
-                toUploadLabel: "To upload: %fileCount %fileLabel (%totalBytes)", 
+                toUploadLabel: "To upload: %fileCount %fileLabel (%totalBytes)",
                 singleFile: "file",
                 pluralFiles: "files"
             },
@@ -398,7 +393,7 @@ var fluid_1_5 = fluid_1_5 || {};
                 success: "File Uploaded",
                 error: "File Upload Error",
                 remove: "Press Delete key to remove file"
-            }, 
+            },
             errors: {
                 HTTP_ERROR: "File upload error: a network error occured or the file was rejected (reason unknown).",
                 IO_ERROR: "File upload error: a network error occured.",
@@ -424,21 +419,21 @@ var fluid_1_5 = fluid_1_5 || {};
             ]
         }
     });
-    
+
     /**
      * EventBinder declaratively binds FileQueueView's methods as listeners to Uploader events using IoC.
      */
     fluid.defaults("fluid.uploader.fileQueueView.eventBinder", {
         gradeNames: ["fluid.eventedComponent", "autoInit"]
     });
-        
+
     /**************
      * Scrollable *
      **************/
-     
+
     fluid.registerNamespace("fluid.scrollable");
-    
-    fluid.scrollable.makeSimple = function (element, options) {
+
+    fluid.scrollable.makeSimple = function (element) {
         return fluid.container(element);
     };
 
@@ -446,7 +441,7 @@ var fluid_1_5 = fluid_1_5 || {};
         table.wrap(options.wrapperMarkup);
         return table.closest(".fl-scrollable-scroller");
     };
-     
+
     /**
      * Simple component cover for the jQuery scrollTo plugin. Provides roughly equivalent
      * functionality to Uploader's old Scroller plugin.
@@ -454,8 +449,8 @@ var fluid_1_5 = fluid_1_5 || {};
      * @param {jQueryable} element the element to make scrollable
      * @param {Object} options for the component
      * @return the scrollable component
-     */ 
-     
+     */
+
     fluid.defaults("fluid.scrollable", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         makeScrollableFn: fluid.scrollable.makeSimple, // NB - a modern style would configure an invoker
@@ -494,23 +489,23 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
 
-    /* 
-     * Updates the view of the scrollable region. This should be called when the content of the scrollable region is changed. 
+    /*
+     * Updates the view of the scrollable region. This should be called when the content of the scrollable region is changed.
      */
     fluid.scrollable.refreshView = function (that) {
-        if ($.browser.msie && $.browser.version === "6.0") {    
+        if ($.browser.msie && $.browser.version === "6.0") {
             that.scrollable.css("height", "");
 
             // Set height, if max-height is reached, to allow scrolling in IE6.
             if (that.scrollable.height() >= parseInt(that.maxHeight, 10)) {
-                that.scrollable.css("height", that.maxHeight);           
+                that.scrollable.css("height", that.maxHeight);
             }
         }
-    };   
+    };
 
-    /** 
+    /**
      * Wraps a table in order to make it scrollable with the jQuery.scrollTo plugin.
-     * Container divs are injected to allow cross-browser support. 
+     * Container divs are injected to allow cross-browser support.
      *
      * @param {jQueryable} table the table to make scrollable
      * @param {Object} options configuration options
@@ -521,10 +516,10 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.scrollable", "autoInit"],
         makeScrollableFn: fluid.scrollable.makeTable,
         wrapperMarkup: "<div class='fl-scrollable-scroller'><div class='fl-scrollable-inner'></div></div>"
-    });    
-    
+    });
+
     fluid.demands("fluid.scrollableTable", "fluid.uploader.fileQueueView", {
         container: "{fileQueueView}.container"
     });
-   
+
 })(jQuery, fluid_1_5);

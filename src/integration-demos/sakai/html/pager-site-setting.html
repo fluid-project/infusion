@@ -1,6 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en">
     <head>
         <meta name="generator" content="HTML Tidy, see www.w3.org" />
         <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
@@ -8,30 +7,30 @@
         <title>The Sakai Foundation</title>
         <meta name="Description" content="The Sakai Foundation" />
         <meta name="Keywords" content="The Sakai Foundation" />
-        
+
         <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-layout.css" />
         <link rel="stylesheet" type="text/css" href="../../../components/pager/css/Pager.css" media="all" />
         <link rel="stylesheet" type="text/css" href="../css/base.css" media="screen" /><!--[if IE]><link rel="stylesheet" type="text/css" href="css/ie/iepc.css" media="screen" /><![endif]-->
         <link rel="stylesheet" type="text/css" href="../css/print.css" media="print" />
         <link rel="stylesheet" type="text/css" href="../css/yui-datatable.css" media="screen" />
-        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/plugins/tooltip/css/jquery.tooltip.css" media="all" />
-        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/jquery.ui.theme.css" />
-        <link rel="stylesheet" type="text/css" href="../css/overrides.css" />        
-        
+        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/default-theme/jquery.ui.theme.css" />
+        <link rel="stylesheet" type="text/css" href="../css/overrides.css" />
+
         <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.widget.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.position.js"></script>
-        <script type="text/javascript" src="../../../lib/jquery/plugins/bgiframe/js/jquery.bgiframe.js"></script>
-        <script type="text/javascript" src="../../../lib/jquery/plugins/tooltip/js/jquery.ui.tooltip.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.tooltip.js"></script>
         <script type="text/javascript" src="../../../lib/json/js/json2.js"></script>
 
         <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/FluidDOMUtilities.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/FluidDocument.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/jquery.keyboard-a11y.js"></script>
-        <script type="text/javascript" src="../../../framework/core/js/DataBinding.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/ModelTransformation.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/ModelTransformationTransforms.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/DataBinding.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/FluidRequests.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/FluidView.js"></script>
         <script type="text/javascript" src="../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
@@ -124,7 +123,7 @@
                             <div class="ss-members fl-pager">
                                 <h2>Members <span class="ss-button"><a href="#" class="buttons add-widgets"><span>Add Members</span></a></span></h2>
 
-                                <table cellpadding="0" cellspacing="0" border="0" class="ss-table">
+                                <table class="ss-table">
                                     <tr>
                                         <td>
                                             <div class="ss-table-head flc-pager-top">
@@ -161,7 +160,7 @@
                                                                 </ul>
                                                             </li>
                                                             <li><a href="#" class="flc-pager-next">Next</a></li>
-                                                        </ul> 
+                                                        </ul>
                                                     </div>
                                                 </div>
                                             </div>
@@ -170,30 +169,30 @@
                                 </table>
 
                                 <div id="membership-table" class="yui-dt site-setting-body">
-                                    <table class="fl-pager-data" summary="" xmlns:rsf="http://ponder.org.uk">
+                                    <table class="fl-pager-data">
                                         <thead>
-                                            <tr class="fl-pager-ui" rsf:id="header:">
-                                                <th id="yui-dt0-th-member-checked" class="w28 bgEBECED flc-pager-sort-header"><div class="yui-dt-liner"><a rsf:id="selection" title="Click to sort" href="#"></a> </div> </th>
-                                                <th id="yui-dt0-th-userDisplayName" class="per47 fs13 flc-pager-sort-header"><div class="yui-dt-liner"><a rsf:id="user-link" title="Click to sort" href="#">Members</a> </div> </th>
-                                                <th id="yui-dt0-th-userEmail" class="per23 fs13 flc-pager-sort-header"><div class="yui-dt-liner"><a rsf:id="user-email" title="Click to sort" href="#">Email</a> </div>  </th>
-                                                <th id="yui-dt0-th-memberRole" class="per18 memberRole flc-pager-sort-header"><div class="yui-dt-liner"><a rsf:id="user-role" title="Click to sort" href="#">Role</a> </div>  </th>
-                                                <th id="yui-dt0-th-active" class="per18 memberStatus flc-pager-sort-header"><div class="yui-dt-liner"><a rsf:id="user-status" title="Click to sort" href="#">Status</a> </div>  </th>
+                                            <tr class="flc-table-header fl-pager-ui">
+                                                <th id="yui-dt0-th-member-checked" class="w28 bgEBECED flc-pager-sort-header"><div class="yui-dt-liner"><a class="demo-selection" title="Click to sort" href="#"></a> </div> </th>
+                                                <th id="yui-dt0-th-userDisplayName" class="per47 fs13 flc-pager-sort-header"><div class="yui-dt-liner"><a class="demo-user-link" title="Click to sort" href="#">Members</a> </div> </th>
+                                                <th id="yui-dt0-th-userEmail" class="per23 fs13 flc-pager-sort-header"><div class="yui-dt-liner"><a class="demo-user-email" title="Click to sort" href="#">Email</a> </div>  </th>
+                                                <th id="yui-dt0-th-memberRole" class="per18 memberRole flc-pager-sort-header"><div class="yui-dt-liner"><a class="demo-user-role" title="Click to sort" href="#">Role</a> </div>  </th>
+                                                <th id="yui-dt0-th-active" class="per18 memberStatus flc-pager-sort-header"><div class="yui-dt-liner"><a class="demo-user-status" title="Click to sort" href="#">Status</a> </div>  </th>
                                             </tr>
                                         </thead>
 
                                         <tbody>
-                                            <tr rsf:id="row:" class="yui-dt-first yui-dt-even">
-                                                <td headers="yui-dt0-th-member-checked" class="w28 bgEBECED"><input rsf:id="selection" type="checkbox" /> </td>
+                                            <tr class="flc-table-row yui-dt-first yui-dt-even">
+                                                <td headers="yui-dt0-th-member-checked" class="w28 bgEBECED"><input class="demo-selection" type="checkbox" /> </td>
 
                                                 <td headers="yui-dt0-th-userDisplayName" class="per47 fs13 ">
                                                     <div class="yui-dt-liner">
-                                                        <a rsf:id="user-link" href="/dev/sn/profile.html?user=6b3fe506-57aa-40a6-ac2f-359c59d219b5">Erica Ackerman</a>
+                                                        <a class="demo-user-link" href="/dev/sn/profile.html?user=6b3fe506-57aa-40a6-ac2f-359c59d219b5">Erica Ackerman</a>
                                                     </div>
                                                 </td>
 
-                                                <td headers="yui-dt0-th-userEmail" class="per23 fs13"><a rsf:id="user-email" href="mailto:ericaack@umich.edu">ericaack@umich.edu</a> </td>
+                                                <td headers="yui-dt0-th-userEmail" class="per23 fs13"><a class="demo-user-email" href="mailto:ericaack@umich.edu">ericaack@umich.edu</a> </td>
 
-                                                <td headers="yui-dt0-th-memberRole" class="per18 memberRole"><select rsf:id="user-role">
+                                                <td headers="yui-dt0-th-memberRole" class="per18 memberRole"><select class="demo-user-role">
                                                     <option value="access">
                                                         access
                                                     </option>
@@ -203,7 +202,7 @@
                                                     </option>
                                                 </select> </td>
 
-                                                <td headers="yui-dt0-th-active" class="per18 memberStatus"><select rsf:id="user-status">
+                                                <td headers="yui-dt0-th-active" class="per18 memberStatus"><select class="demo-user-status">
                                                     <option value="true">
                                                         Active
                                                     </option>
@@ -216,6 +215,13 @@
                                         </tbody>
                                     </table>
                                 </div>
+
+                                <p>Acceptance testing information: As well as the standard pager workflow, this demo
+            applies the "annotateSortedColumn: true" configuration, which supplies a tooltip
+            for page links respecting the order of the current sorted column. The initial configuration
+            is to sort by no column, so these tooltips will not appear until a sort order is
+            first selected
+                                </p>
 
                                 <div class="ss-foot">
                                     <div class="flc-pager-bottom ssth-right">
@@ -307,12 +313,12 @@
                         </div>
 
                         <div class="ssm-add-member-1">
-                            <table cellpadding="0" cellspacing="0" border="0">
+                            <table>
                                 <tr>
                                     <td>
                                         <div class="ssm-bottom">
                                             <textarea id="invitees" rows="3" cols="30">
-                                                                                          
+
                                             </textarea>
                                         </div>
                                     </td>
@@ -355,7 +361,7 @@
                                     <td>
                                         <div class="ssm-bottom">
                                             <textarea id="message" rows="3" cols="30">
-                                                                                          
+
                                             </textarea>
                                         </div>
                                     </td>
@@ -376,11 +382,13 @@
                                 <a href="#" class="save buttons">Send Invitation</a> <a href="#" class="csbc4-link">Close Window &amp; Cancel</a>
                             </div>
                         </div>
+
                     </div>
                     <!-- /lightbox-container -->
                 </div>
                 <!-- /lightbox -->
             </div>
+
 
             <div id="footer-hide">
                 <p>&copy; 2004-2008 The Sakai Foundation<br />

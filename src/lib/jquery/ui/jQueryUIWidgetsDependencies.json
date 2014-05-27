@@ -3,10 +3,13 @@
         "name": "jQuery UI Widgets",
         "description": "A collection of the jQuery UI widgets used by Infusion, including Dialog, Draggable, and Slider.",
         "files": [
-            "jquery.ui.draggable.js",
-            "jquery.ui.dialog.js",
-            "jquery.ui.slider.js",
-            "jquery.ui.tabs.js"            
+            "./js/jquery.ui.draggable.js",
+            "./js/jquery.ui.resizable.js",
+            "./js/jquery.ui.button.js",
+            "./js/jquery.ui.dialog.js",
+            "./js/jquery.ui.slider.js",
+            "./js/jquery.ui.tabs.js",
+            "./js/jquery.ui.tooltip.js"
         ],
         "dependencies": [
             "jQuery",

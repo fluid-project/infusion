@@ -12,12 +12,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jqUnit, expect, start, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/* global fluid, jqUnit */
 
 (function ($) {
+    "use strict";
+
     $(document).ready(function () {
         fluid.enhance.check({"fluid.prefs.tests": true});
 
@@ -148,7 +147,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
 
-            var loader = fluid.prefsTestResourceLoader(null);
+            fluid.prefsTestResourceLoader(null);
         });
 
         jqUnit.asyncTest("Customized Template Loader", function () {
@@ -193,7 +192,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
 
-            var loader = fluid.prefsCustomizedResourceLoader(null);
+            fluid.prefsCustomizedResourceLoader(null);
         });
 
         var assertRootModel = function (model) {
@@ -417,11 +416,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             options: {
                                 components: {
                                     textSize: {
-                                        type: "fluid.prefs.enactors.textSize",
+                                        type: "fluid.prefs.enactor.textSize",
                                         container: "{uiEnhancer}.container",
                                         options: {
+                                            gradeNames: "fluid.prefs.uiEnhancerConnections",
                                             fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
-                                            sourceApplier: "{uiEnhancer}.applier",
                                             rules: {
                                                 "textSize": "value"
                                             }
