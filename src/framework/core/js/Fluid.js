@@ -615,6 +615,7 @@ var fluid = fluid || fluid_1_5;
         return fluid.filterKeys(toCensor, keys, true);
     };
 
+    // TODO: This is not as clever an idea as we think it is - this typically inner-loop function will optimise badly due to closure
     fluid.makeFlatten = function (index) {
         return function (obj) {
             var togo = [];
@@ -1004,6 +1005,7 @@ var fluid = fluid || fluid_1_5;
 
     // unsupported, NON-API function
     fluid.event.mapPriority = function (priority, count) {
+        // TODO: This should respect both priority and count by a bit-partitioning scheme
         return (priority === null || priority === undefined ? count :
            (priority === "last" ? Number.MAX_VALUE :
               (priority === "first" ? -Number.MAX_VALUE : -priority)));
@@ -1071,7 +1073,7 @@ var fluid = fluid || fluid_1_5;
         var that;
         function fireToListeners(listeners, args, wrapper) {
             if (!listeners || that.destroyed) { return; }
-            fluid.log("Firing event " + name + " to list of " + listeners.length + " listeners");
+            fluid.log(fluid.logLevel.TRACE, "Firing event " + name + " to list of " + listeners.length + " listeners");
             for (var i = 0; i < listeners.length; ++i) {
                 var lisrec = listeners[i];
                 lisrec.listener = fluid.event.resolveListener(lisrec.listener);

@@ -321,10 +321,14 @@ var fluid_1_5 = fluid_1_5 || {};
         var listener = fluid.test.decodeListener(testCaseState, fixture);
         var that = fluid.test.makeBinder(listener,
            function (wrapped) {
-            var spec = fixture.path === undefined ? fixture.spec : fixture.path;
-            if (spec === undefined) {
+            var spec = fixture.path === undefined ? fixture.spec : {path: fixture.path};
+            if (spec === undefined || spec.path === undefined) {
                 fluid.fail("Error in changeEvent fixture ", fixture,
                    ": could not find path specification named \"path\" or \"spec\"");
+            }
+            if (event.isRelayEvent) { // special support for new-style change listeners
+                spec.transactional = true;
+                spec.priority = fluid.event.mapPriority("last", 0);
             }
             event.addListener(spec, wrapped, fixture.namespace);
         }, function (wrapped) {
