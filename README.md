@@ -25,7 +25,7 @@ See [How Do I Create an Infusion Package?](#how-do-i-create-an-infusion-package)
 
 The Fluid community is an international group of designers, developers, and testers who focus on a common mission: improving the user experience and accessibility of the open web.
 
-The best way to join the Fluid Community is to jump into any of our community activities. Visit our [website](http://fluidproject.org/) page for links to our mailing lists, chat room, wiki, etc.
+The best way to join the Fluid Community is to jump into any of our community activities. Visit our [website](http://fluidproject.org/) for links to our mailing lists, chat room, wiki, etc.
 
 
 ##How Do I Create an Infusion Package?##

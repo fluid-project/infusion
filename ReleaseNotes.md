@@ -83,8 +83,8 @@ browser's Back button.
 
 Infusion 1.5 was tested with the following browsers:
 
-* Chrome (version ~35)
-* Firefox (version ~29)
+* Chrome (version 35)
+* Firefox (version 29)
 * Internet Explorer (version 8, 9, 10, & 11)
 * Safari (verson 7)
 
