@@ -10,6 +10,7 @@
 * Redesigned UI Options component
 * Substantial improvements to the Infusion IoC system
 * Updated versions of jQuery and jQuery UI
+* Significant refactoring to the Pager component
 
 ## Downloading Infusion ##
 
@@ -82,12 +83,12 @@ browser's Back button.
 
 Infusion 1.5 was tested with the following browsers:
 
-* Chrome
-* Firefox
+* Chrome (version ~35)
+* Firefox (version ~29)
 * Internet Explorer (version 8, 9, 10, & 11)
-* Safari
+* Safari (verson 7)
 
-For more information on see the wiki page on [Fluid Infusion browser support](http://wiki.fluidproject.org/display/fluid/Browser+Support).
+For more information see the [Fluid Infusion browser support](http://wiki.fluidproject.org/display/docs/Browser+Support) wiki page.
 
 
 ## Status of Components and Framework Features ##
