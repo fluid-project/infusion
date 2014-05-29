@@ -6,7 +6,6 @@ Infusion is a different kind of JavaScript framework. Our approach is to leave y
 Infusion includes:
 * an application framework for developing flexible stuff with JavaScript and jQuery
 * a collection of accessible UI components
-* a lightweight CSS framework
 
 
 ##Where Can I See Infusion Components?##
@@ -26,9 +25,7 @@ See [How Do I Create an Infusion Package?](#how-do-i-create-an-infusion-package)
 
 The Fluid community is an international group of designers, developers, and testers who focus on a common mission: improving the user experience and accessibility of the open web.
 
-The best way to join the Fluid Community is to jump in to any of our community activities. Visit our "Get Involved" page for links to our mailing lists, chat room, wiki, etc.:
-
-<http://fluidproject.org/getinvolved/>
+The best way to join the Fluid Community is to jump into any of our community activities. Visit our [website](http://fluidproject.org/) for links to our mailing lists, chat room, wiki, etc.
 
 
 ##How Do I Create an Infusion Package?##
@@ -106,7 +103,7 @@ By default, custom packages are given a name with the form _infusion-custom-<ver
 
 * enhancement
 * framework
-* fss
+* fss _**(deprecated)**_
 * preferences
 * renderer
 
