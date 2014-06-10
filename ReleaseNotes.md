@@ -52,6 +52,7 @@ categorized by license:
 * [jquery.simulate](https://github.com/eduardolundgren/jquery-simulate)
 * [Micro Clearfix](http://nicolasgallagher.com/micro-clearfix-hack/)
 * [Buzz v1.1.0](http://buzz.jaysalvat.com)
+* [html5shiv v3.7.2](https://code.google.com/p/html5shiv/)
 
 ### zlib/libpng License ###
 * [fastXmlPull is based on XML for Script's Fast Pull Parser v3.1](http://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js)
