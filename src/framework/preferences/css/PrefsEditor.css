@@ -273,12 +273,6 @@
     left: 0.46em;
 }
 
-/* FLUID-4966: Fix horizontal scroll bar */
-.fl-prefsEditor .fl-hidden-accessible  {
-    top: 0px;
-    left: 0px;
-}
-
 /* Font Icons */
 .fl-prefsEditor .fl-icon-lines, .fl-prefsEditor .fl-icon-indicator, .fl-prefsEditor .fl-icon-crossout, .fl-prefsEditor .fl-icon-big-a, .fl-prefsEditor .fl-icon-small-a, .fl-prefsEditor .fl-icon-line-space-expanded, .fl-prefsEditor .fl-icon-line-space-condensed,
  .fl-prefsEditor .fl-icon-contrast, .fl-prefsEditor .fl-icon-undo, .fl-prefsEditor .fl-icon-line-space, .fl-prefsEditor .fl-icon-links, .fl-prefsEditor .fl-icon-simplify, .fl-prefsEditor .fl-icon-font, .fl-prefsEditor .fl-icon-size, .fl-prefsEditor .fl-icon-text-to-speech, .fl-prefsEditor .fl-icon-toc {
