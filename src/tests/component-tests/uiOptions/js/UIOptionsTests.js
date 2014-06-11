@@ -21,14 +21,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.module("UIOptions Tests");
 
         jqUnit.asyncTest("Pass in customized toc template", function () {
-            // jqUnit.expect(2);
+            jqUnit.expect(1);
+
             var customizedTocTemplate = "../../../../components/tableOfContents/html/TableOfContents.html";
 
             fluid.uiOptions.prefsEditor(".flc-prefsEditor-separatedPanel", {
                 tocTemplate: customizedTocTemplate,
                 listeners: {
                     onReady: function (that) {
-                        jqUnit.assertEquals("The toc template is applied properly", customizedTocTemplate, that.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.tableOfContents.levels.options.resources.template.href);
+                        jqUnit.assertEquals("The toc template is applied properly", customizedTocTemplate, that.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate);
                         jqUnit.start();
                     }
                 },
