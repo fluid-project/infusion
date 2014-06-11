@@ -13,6 +13,25 @@ var fluid_1_5 = fluid_1_5 || {};
 (function ($, fluid) {
     "use strict";
 
+    fluid.registerNamespace("fluid.uiOptions");
+
+    // A grade to distribute TOC template
+    fluid.defaults("fluid.uiOptions.distributeTocTemplate", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        distributeOptions: {
+               source: "{that}.options.tocTemplate",
+               removeSource: true,
+               target: "{that uiEnhancer}.options.tocTemplate"
+        },
+        enhancer: {
+            distributeOptions: {
+                   source: "{that}.options.tocTemplate",
+                   removeSource: true,
+                   target: "{that > fluid.prefs.enactor.tableOfContents}.options.tocTemplate"
+            }
+        }
+    });
+
     // Gradename to invoke "fluid.uiOptions.prefsEditor"
     fluid.prefs.builder({
         gradeNames: ["fluid.prefs.auxSchema.starter"],
