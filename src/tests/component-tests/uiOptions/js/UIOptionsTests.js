@@ -29,7 +29,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 tocTemplate: customizedTocTemplate,
                 listeners: {
                     onReady: function (that) {
-                        console.log(that);
                         jqUnit.assertEquals("The toc template is applied properly", customizedTocTemplate, that.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.tableOfContents.levels.options.resources.template.href);
                         jqUnit.start();
                     }

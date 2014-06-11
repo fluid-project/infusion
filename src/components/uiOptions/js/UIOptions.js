@@ -19,15 +19,15 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.defaults("fluid.uiOptions.distributeTocTemplate", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         distributeOptions: {
-               source: "{that}.options.tocTemplate",
-               removeSource: true,
-               target: "{that uiEnhancer}.options.tocTemplate"
+            source: "{that}.options.tocTemplate",
+            removeSource: true,
+            target: "{that uiEnhancer}.options.tocTemplate"
         },
         enhancer: {
             distributeOptions: {
-                   source: "{that}.options.tocTemplate",
-                   removeSource: true,
-                   target: "{that > fluid.prefs.enactor.tableOfContents}.options.tocTemplate"
+                source: "{that}.options.tocTemplate",
+                removeSource: true,
+                target: "{that > fluid.prefs.enactor.tableOfContents}.options.tocTemplate"
             }
         }
     });
