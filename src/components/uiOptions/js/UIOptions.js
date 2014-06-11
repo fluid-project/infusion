@@ -13,11 +13,13 @@ var fluid_1_5 = fluid_1_5 || {};
 (function ($, fluid) {
     "use strict";
 
-    fluid.registerNamespace("fluid.uiOptions");
+    // Gradename to invoke "fluid.uiOptions.prefsEditor"
+    fluid.prefs.builder({
+        gradeNames: ["fluid.prefs.auxSchema.starter"]
+    });
 
-    // A grade to distribute TOC template
-    fluid.defaults("fluid.uiOptions.distributeTocTemplate", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+    fluid.defaults("fluid.uiOptions.prefsEditor", {
+        gradeNames: ["fluid.prefs.constructed.prefsEditor", "autoInit"],
         distributeOptions: {
             source: "{that}.options.tocTemplate",
             removeSource: true,
@@ -31,13 +33,5 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     });
-
-    // Gradename to invoke "fluid.uiOptions.prefsEditor"
-    fluid.prefs.builder({
-        gradeNames: ["fluid.prefs.auxSchema.starter"],
-        auxiliarySchema: {
-            "namespace": "fluid.uiOptions"
-        }
-    });
-
+    
 })(jQuery, fluid_1_5);

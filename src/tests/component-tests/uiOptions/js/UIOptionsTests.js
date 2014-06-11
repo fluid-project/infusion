@@ -25,7 +25,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var customizedTocTemplate = "../../../../components/tableOfContents/html/TableOfContents.html";
 
             fluid.uiOptions.prefsEditor(".flc-prefsEditor-separatedPanel", {
-                gradeNames: "fluid.uiOptions.distributeTocTemplate",
                 tocTemplate: customizedTocTemplate,
                 listeners: {
                     onReady: function (that) {
