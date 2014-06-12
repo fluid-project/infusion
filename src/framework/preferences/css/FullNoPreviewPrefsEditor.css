@@ -1,8 +1,8 @@
 /* UI Option styles for Full page without preview */
 
 body {
-    max-width: 960px;
-    min-width: 900px;
+    max-width: 60em;
+    min-width: 56em;
 }
 
 /* Category separator */
