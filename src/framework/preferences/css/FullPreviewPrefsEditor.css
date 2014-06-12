@@ -43,14 +43,13 @@
 /* Slider */
 .fl-prefsEditor-fullPreview .fl-slider {
     float:left;
-    margin-right: 10px;
 }
 
 /* Text controls */
 .fl-prefsEditor-fullPreview label {
     display: block;
     float: left;
-    width: 15em;
+    width: 14em;
 }
 
 /* Layout and link controls */
