@@ -36,11 +36,16 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.tooltip.idSearchFunc = function (idToContentFunc) {
         return function (/* callback*/) {
             var target = this;
-            var idToContent = idToContentFunc();
-            var ancestor = fluid.findAncestor(target, function (element) {
-                return idToContent[element.id];
-            });
-            return ancestor ? idToContent[ancestor.id] : null;
+            if ($.contains( target.ownerDocument, target )) { // prevent widget from trying to open tooltip for element no longer in document (FLUID-5394)
+                var idToContent = idToContentFunc();
+                var ancestor = fluid.findAncestor(target, function (element) {
+                    return idToContent[element.id];
+                });
+                return ancestor ? idToContent[ancestor.id] : null;
+            } else {
+                return null;
+            }
+            
         };
     };
 
@@ -67,7 +72,8 @@ var fluid_1_5 = fluid_1_5 || {};
         return function (event, tooltip) {
             fluid.tooltip.closeAll(that);
             var originalTarget = fluid.resolveEventTarget(event);
-            that.openIdMap[fluid.allocateSimpleId(originalTarget)] = true;
+            var key = fluid.allocateSimpleId(originalTarget);
+            that.openIdMap[key] = true;
             if (that.initialised) {
                 that.events.afterOpen.fire(that, originalTarget, tooltip.tooltip, event);
             }
@@ -87,9 +93,8 @@ var fluid_1_5 = fluid_1_5 || {};
     fluid.tooltip.closeAll = function (that) {
         fluid.each(that.openIdMap, function (value, key) {
             var target = fluid.byId(key);
-            // "white-box" behaviour - fabricating this fake event shell is the only way we can get the plugin to
-            // close a tooltip which was not opened on the root element. This will be very fragile to changes in
-            // jQuery UI and the underlying widget code
+            // "white-box" behaviour - fabricating this fake event shell triggers the standard "close" sequence including notifying
+            // our own handler. This will be very fragile to changes in jQuery UI and the underlying widget code
             that.container.tooltip("close", {
                 type: "close",
                 currentTarget: target,
