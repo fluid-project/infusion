@@ -1332,6 +1332,32 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Total invalidation", expected4, that.model);
     });
 
+    /** FLUID-5397: Mouse droppings within relay documents in complex cases **/
+
+    fluid.defaults("fluid.tests.fluid5397root", {
+        gradeNames: ["fluid.tests.fluid5045root", "autoInit"],
+        model: {
+            pageSize: 20,
+            totalRange: 164
+        }
+    });
+
+    jqUnit.test("FLUID-5397: Mouse droppings within relay documents accrete over time", function () {
+        var that = fluid.tests.fluid5397root();
+        that.applier.change("pageSize", 10);
+        that.applier.change("pageSize", 20);
+        that.applier.change("pageSize", 10);
+        that.applier.change("pageIndex", 16);
+        fluid.tests.assertTransactionsConcluded(that);
+        var expected = {
+            pageIndex: 16,
+            pageCount: 17,
+            pageSize: 10,
+            totalRange: 164
+        };
+        jqUnit.assertDeepEq("Model allows last page", expected, that.model);
+    });
+
      // FLUID-3674: Old-fashioned model sharing between components is still possible (remove this test when old grades are removed)
     var fluid3674Model = {
         key: "value"
