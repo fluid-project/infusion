@@ -161,7 +161,11 @@ var fluid_1_5 = fluid_1_5 || {};
         row.removeClass(that.options.styles.hiddenTemplate);
         that.locate("fileName", row).text(fileName);
         that.locate("fileSize", row).text(fileSize);
-        that.locate("fileIconBtn", row).addClass(that.options.styles.remove);
+
+        var fileIconBtn = that.locate("fileIconBtn", row);
+        fileIconBtn.addClass(that.options.styles.remove);
+        fluid.updateAriaLabel(fileIconBtn, that.options.strings.status.remove);
+
         row.prop("id", file.id);
         row.addClass(that.options.styles.ready);
         fluid.uploader.fileQueueView.bindRowHandlers(that, row);

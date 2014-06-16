@@ -94,6 +94,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The added row should have the correct size.",
                                 fluid.uploader.formatFileSize(file.size),
                                 sizeForRow(q, row));
+
+            var fileIconBtn = row.find(q.options.selectors.fileIconBtn);
+            jqUnit.assertTrue("The added row should have the correct class on the file action button.",
+                                fileIconBtn.hasClass(q.options.styles.remove));
+            jqUnit.assertEquals("The added row should have the correct aria label for the file action button.",
+                                q.options.strings.status.remove,
+                                fileIconBtn.attr("aria-label"));
+
             checkARIA(file, row, q.options.strings.status.remove);
         };
 
