@@ -164,7 +164,7 @@ var fluid_1_5 = fluid_1_5 || {};
 
         var fileIconBtn = that.locate("fileIconBtn", row);
         fileIconBtn.addClass(that.options.styles.remove);
-        fluid.updateAriaLabel(fileIconBtn, that.options.strings.status.remove);
+        fluid.updateAriaLabel(fileIconBtn, that.options.strings.buttons.remove);
 
         row.prop("id", file.id);
         row.addClass(that.options.styles.ready);
@@ -407,6 +407,9 @@ var fluid_1_5 = fluid_1_5 || {};
                 FILE_EXCEEDS_SIZE_LIMIT: "One or more of the files that you attempted to add to the queue exceeded the limit of %fileSizeLimit.",
                 ZERO_BYTE_FILE: "One or more of the files that you attempted to add contained no data.",
                 INVALID_FILETYPE: "One or more files were not added to the queue because they were of the wrong type."
+            },
+            buttons: {
+                remove: "Remove"
             }
         },
         events: {
