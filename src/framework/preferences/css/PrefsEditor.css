@@ -90,7 +90,8 @@
     position: relative;
     height: 1em;
     margin-top: 0;
-    margin-left: 0.5em;
+    margin-left: 0.8em;
+    margin-right: 1.8em;
 }
 
 .fl-prefsEditor .fl-slider a {
@@ -98,9 +99,9 @@
     display:block;
     top:0;
     left:0;
-    height: 2.2em;
-    width: 2.2em;
-    margin-top: -0.75em;
+    height: 1.5em;
+    width: 1.5em;
+    margin-top: -0.4em;
     margin-left: -0.4em;
     background-color: #fff;
     border: 1px solid #b3b3b3;
@@ -122,7 +123,7 @@
 .fl-prefsEditor .fl-slider a:active { outline: none; }
 
 .fl-prefsEditor .fl-slider-horz {
-    width:11em;
+    width: 9em;
 }
 
 .fl-prefsEditor .fl-slider-input {
@@ -352,13 +353,6 @@
     content: "\e012";
 }
 
-/* Theming */
-.fl-theme-bw .ui-slider-horizontal .ui-slider-handle,
-.fl-theme-wb .ui-slider-horizontal .ui-slider-handle,
-.fl-theme-by .ui-slider-horizontal .ui-slider-handle,
-.fl-theme-yb .ui-slider-horizontal .ui-slider-handle,
-.fl-theme-lgdg .ui-slider-horizontal .ui-slider-handle { margin-top: -5px; }
-
 .fl-theme-bw .fl-prefsEditor .fl-slider { background: none; background-color:#000;}
 .fl-theme-bw .fl-prefsEditor .fl-slider a,
 .fl-theme-bw .fl-prefsEditor .fl-slider a:hover {border:1px solid #000; background-color:#fff;}
@@ -378,15 +372,6 @@
 .fl-theme-lgdg .fl-prefsEditor .fl-slider {background: none; background-color:#555555;}
 .fl-theme-lgdg .fl-prefsEditor .fl-slider a,
 .fl-theme-lgdg .fl-prefsEditor .fl-slider a:hover {border:1px solid #bdbdbb; background-color:#555555;}
-
-.fl-theme-bw .fl-prefsEditor .ui-slider .ui-slider-handle,
-.fl-theme-wb .fl-prefsEditor .ui-slider .ui-slider-handle,
-.fl-theme-by .fl-prefsEditor .ui-slider .ui-slider-handle,
-.fl-theme-yb .fl-prefsEditor .ui-slider .ui-slider-handle,
-.fl-theme-lgdg .fl-prefsEditor .ui-slider .ui-slider-handle {
-    height: 1.8em;
-    width: 1.8em;
-}
 
 /* ON/OFF switch */
 .fl-theme-bw .fl-prefsEditor .fl-prefsEditor-switch,
