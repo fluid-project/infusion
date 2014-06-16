@@ -165,7 +165,7 @@ var fluid_1_5 = fluid_1_5 || {};
         row.prop("id", file.id);
         row.addClass(that.options.styles.ready);
         fluid.uploader.fileQueueView.bindRowHandlers(that, row);
-        fluid.updateAriaLabel(row, fileName + " " + fileSize);
+        fluid.updateAriaLabel(row, fileName + " " + fileSize + " " + that.options.strings.status.remove);
         return row;
     };
 
