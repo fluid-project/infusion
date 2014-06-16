@@ -350,23 +350,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var browseButton = $("#iocBrowseButton");
 
                 var inputs = browseButton.children();
+                var firstInput = inputs.eq(0);
                 jqUnit.assertEquals("There should be one multi-file input element at the start", 1, inputs.length);
                 jqUnit.assertEquals("The multi-file input element should be visible and in the tab order to start",
-                    0, inputs.eq(0).prop("tabindex"));
+                    0, firstInput.prop("tabindex"));
+                jqUnit.assertEquals("The aria-lable for the initial multi-file input should be set", browseButtonView.options.strings.browse, firstInput.attr("aria-label"));
 
                 browseButtonView.renderFreshMultiFileInput();
                 inputs = browseButton.children();
+                firstInput = inputs.eq(0);
+                var secondInput = inputs.eq(1);
                 jqUnit.assertEquals("After the first batch of files have processed, there should now be two multi-file input elements",
                     2, inputs.length);
                 jqUnit.assertEquals("The original multi-file input element should be removed from the tab order",
-                    -1, inputs.eq(0).prop("tabindex"));
+                    -1, firstInput.prop("tabindex"));
                 jqUnit.assertEquals("The second multi-file input element should be visible and in the tab order",
-                    0, inputs.eq(1).prop("tabindex"));
+                    0, secondInput.prop("tabindex"));
+                jqUnit.assertEquals("The aria-lable for the second multi-file input should be set", browseButtonView.options.strings.addMore, secondInput.attr("aria-label"));
 
                 browseButtonView.disable();
-                jqUnit.assertTrue("The browse browseButton has been disabled", inputs.eq(1).prop("disabled"));
+                jqUnit.assertTrue("The browse browseButton has been disabled", secondInput.prop("disabled"));
                 browseButtonView.enable();
-                jqUnit.assertFalse("The browse browseButton has been enabled", inputs.eq(1).prop("disabled"));
+                jqUnit.assertFalse("The browse browseButton has been enabled", secondInput.prop("disabled"));
             };
 
             fluid.test.runTests([
