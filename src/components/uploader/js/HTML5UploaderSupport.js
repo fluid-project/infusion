@@ -198,6 +198,7 @@ var fluid_1_5 = fluid_1_5 || {};
             browseButtonView: {
                 type: "fluid.uploader.html5Strategy.browseButtonView",
                 options: {
+                    strings: "{uploader}.options.strings.buttons",
                     queueSettings: "{uploader}.options.queueSettings",
                     selectors: {
                         browseButton: "{uploader}.options.selectors.browseButton"
@@ -284,12 +285,14 @@ var fluid_1_5 = fluid_1_5 || {};
         previousInput.hide();
         previousInput.prop("tabindex", -1);
         var newInput = fluid.uploader.renderMultiFileInput(that);
+        newInput.attr("aria-label", that.options.strings.addMore);
         previousInput.after(newInput);
         fluid.uploader.bindEventsToFileInput(that, newInput);
     };
 
     fluid.uploader.setupBrowseButtonView = function (that) {
         var multiFileInput = fluid.uploader.renderMultiFileInput(that);
+        multiFileInput.attr("aria-label", that.options.strings.browse);
         that.browseButton.append(multiFileInput);
         fluid.uploader.bindEventsToFileInput(that, multiFileInput);
         that.browseButton.prop("tabindex", -1);
@@ -301,6 +304,10 @@ var fluid_1_5 = fluid_1_5 || {};
 
     fluid.defaults("fluid.uploader.html5Strategy.browseButtonView", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
+        strings: {
+            browse: "Browse files",
+            addMore: "Add more"
+        },
         multiFileInputMarkup: "<input type='file' multiple='' class='flc-uploader-html5-input' />",
         queueSettings: {},
         members: {
