@@ -490,7 +490,12 @@ var fluid_1_5 = fluid_1_5 || {};
                 type: "fluid.uploader.fileQueueView",
                 options: {
                     model: "{uploader}.queue.files",
-                    uploaderContainer: "{uploader}.container"
+                    uploaderContainer: "{uploader}.container",
+                    strings: {
+                        buttons: {
+                            remove: "{uploader}.options.strings.buttons.remove"
+                        }
+                    }
                 }
             },
             totalProgress: {
@@ -661,7 +666,8 @@ var fluid_1_5 = fluid_1_5 || {};
                 addMore: "Add More",
                 stopUpload: "Stop Upload",
                 cancelRemaning: "Cancel remaining Uploads",
-                resumeUpload: "Resume Upload"
+                resumeUpload: "Resume Upload",
+                remove: "Remove"
             }
         }
     });
