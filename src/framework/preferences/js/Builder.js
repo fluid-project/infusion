@@ -9,7 +9,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_1_5 = fluid_1_5 || {};
+var fluid_2_0 = fluid_2_0 || {};
 
 
 (function ($, fluid) {
@@ -203,4 +203,4 @@ var fluid_1_5 = fluid_1_5 || {};
         return fluid.invokeGlobalFunction(builder.options.assembledPrefsEditorGrade, [container, options.prefsEditor]);
     };
 
-})(jQuery, fluid_1_5);
+})(jQuery, fluid_2_0);

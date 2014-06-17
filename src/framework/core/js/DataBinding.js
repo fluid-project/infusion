@@ -12,7 +12,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_1_5 = fluid_1_5 || {};
+var fluid_2_0 = fluid_2_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -531,7 +531,7 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         }
     };
-    
+
     fluid.model.guardedAdapter = function (componentThat, cond, func, args) {
         // TODO: We can't use fluid.isModelComplete here because of the broken half-transactional system - it may appear that model has arrived halfway through init transaction
         var isInit = componentThat.modelRelay === fluid.inEvaluationMarker;
@@ -600,14 +600,14 @@ var fluid_1_5 = fluid_1_5 || {};
             }
         };
     };
-    
+
     fluid.model.relayConditions = {
         initOnly: {init: true,  live: false},
         liveOnly: {init: false, live: true},
         never:    {init: false, live: false},
         always:   {init: true,  live: true}
     };
-    
+
     fluid.model.parseRelayCondition = function (condition) {
         return fluid.model.relayConditions[condition || "always"];
     };
@@ -664,8 +664,8 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         return value;
     };
-    
-        
+
+
     // Conclude the transaction by firing to all external listeners in priority order
     fluid.model.notifyExternal = function (transRec) {
         var allChanges = transRec ? fluid.values(transRec.externalChanges) : [];
@@ -676,7 +676,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         fluid.clearLinkCounts(transRec, true); // "options" structures for relayCount are aliased
     };
-    
+
     fluid.model.commitRelays = function (instantiator, transactionId) {
         var transRec = instantiator.modelTransactions[transactionId];
         fluid.each(transRec, function (transEl) {
@@ -728,14 +728,14 @@ var fluid_1_5 = fluid_1_5 || {};
                 fluid.model.commitRelays(instantiator, transaction.id);
             }
         }
-        
+
         function concludeTransaction(transaction, applier, code) {
             if (code !== "relay") {
                 fluid.model.notifyExternal(instantiator.modelTransactions[transaction.id]);
                 delete instantiator.modelTransactions[transaction.id];
             }
         }
-        
+
         applier.preCommit.addListener(updateRelays);
         applier.preCommit.addListener(commitRelays);
         applier.postCommit.addListener(concludeTransaction);
@@ -1104,7 +1104,7 @@ var fluid_1_5 = fluid_1_5 || {};
         }
         return togo;
     };
-    
+
     fluid.storeExternalChange = function (transRec, applier, invalidPath, spec, args) {
         var pathString = applier.composeSegments.apply(null, invalidPath);
         var keySegs = [applier.applierId, fluid.event.identifyListener(spec.listener), spec.listenerIndex, pathString];
@@ -1714,4 +1714,4 @@ var fluid_1_5 = fluid_1_5 || {};
         return togo;
     };
 
-})(jQuery, fluid_1_5);
+})(jQuery, fluid_2_0);

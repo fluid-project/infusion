@@ -26,13 +26,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /* global console, opera, YAHOO*/
 
-var fluid_1_5 = fluid_1_5 || {};
-var fluid = fluid || fluid_1_5;
+var fluid_2_0 = fluid_2_0 || {};
+var fluid = fluid || fluid_2_0;
 
 (function ($, fluid) {
     "use strict";
 
-    fluid.version = "Infusion 1.5";
+    fluid.version = "Infusion 2.0-SNAPSHOT";
 
     // Export this for use in environments like node.js, where it is useful for
     // configuring stack trace behaviour
@@ -1698,7 +1698,7 @@ var fluid = fluid || fluid_1_5;
             // will THEN return to "evaluation of arguments" (expander blocks) and only then FINALLY to this "slow"
             // traversal of concrete properties to do the final merge.
             if (source !== undefined) {
-                // This use of function creation within a loop is acceptable since 
+                // This use of function creation within a loop is acceptable since
                 // the function does not attempt to close directly over the loop counter
                 fluid.each(source, function (newSource, name) {
                     if (!target.hasOwnProperty(name)) { // only request each new target key once -- all sources will be queried per strategy
@@ -2215,14 +2215,14 @@ var fluid = fluid || fluid_1_5;
             fluid.fireEvent(that, "events.afterDestroy", [that, "", null]);
         };
     };
-    
+
     /** Returns <code>true</code> if the supplied reference holds a component which has been destroyed **/
-    
+
     fluid.isDestroyed = function (that) {
         return that.destroy === fluid.destroyedMarker;
     };
 
-    // unsupported, NON-API function    
+    // unsupported, NON-API function
     fluid.doDestroy = function (that, name, parent) {
         fluid.fireEvent(that, "events.onDestroy", [that, name || "", parent]);
         that.destroy = fluid.destroyedMarker;
@@ -2497,4 +2497,4 @@ var fluid = fluid || fluid_1_5;
         };
     };
 
-})(jQuery, fluid_1_5);
+})(jQuery, fluid_2_0);

@@ -9,7 +9,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_1_5 = fluid_1_5 || {};
+var fluid_2_0 = fluid_2_0 || {};
 
 (function (fluid) {
     "use strict";
@@ -53,4 +53,4 @@ var fluid_1_5 = fluid_1_5 || {};
         ppt: "application/vnd.ms-powerpoint",
         pptx: "application/vnd.ms-powerpoint"
     };
-})(fluid_1_5);
+})(fluid_2_0);

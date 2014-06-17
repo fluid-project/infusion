@@ -10,7 +10,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_1_5 = fluid_1_5 || {};
+var fluid_2_0 = fluid_2_0 || {};
 
 /**************************************************************************************
  * Note: this file should not be included in the InfusionAll build.                   *
@@ -69,4 +69,4 @@ var fluid_1_5 = fluid_1_5 || {};
         options: fluid.transformOne(fluid.compat.fluid_1_2.uploader.optionsRules)
     });
 
-})(fluid_1_5);
+})(fluid_2_0);

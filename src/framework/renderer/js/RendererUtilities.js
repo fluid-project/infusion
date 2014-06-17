@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-fluid_1_5 = fluid_1_5 || {};
+fluid_2_0 = fluid_2_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -570,7 +570,7 @@ fluid_1_5 = fluid_1_5 || {};
                 var comp = { children: target};
 
                 var child = children[i];
-                // This use of function creation within a loop is acceptable since 
+                // This use of function creation within a loop is acceptable since
                 // the function does not attempt to close directly over the loop counter
                 var childPusher = function (comp) {
                     target[target.length] = comp;
@@ -659,4 +659,4 @@ fluid_1_5 = fluid_1_5 || {};
         };
     };
 
-})(jQuery, fluid_1_5);
+})(jQuery, fluid_2_0);

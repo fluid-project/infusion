@@ -1,16 +1,12 @@
-# Release Notes for Fluid Infusion 1.5 #
+# Release Notes for Fluid Infusion 2.0 #
 
 [Main Project Site](http://fluidproject.org)
 
 [Documentation](https://github.com/fluid-project/infusion-docs)
 
-## What's New in 1.5? ##
+## What's New in 2.0? ##
 
-* Preferences Framework
-* Redesigned UI Options component
-* Substantial improvements to the Infusion IoC system
-* Updated versions of jQuery and jQuery UI
-* Significant refactoring to the Pager component
+* 
 
 ## Downloading Infusion ##
 
@@ -82,12 +78,9 @@ browser's Back button.
 
 ## Supported Browsers ##
 
-Infusion 1.5 was tested with the following browsers:
+Infusion 2.0 was tested with the following browsers:
 
-* Chrome (version 35)
-* Firefox (version 29)
-* Internet Explorer (version 8, 9, 10, & 11)
-* Safari (verson 7)
+* 
 
 For more information see the [Fluid Infusion browser support](http://wiki.fluidproject.org/display/docs/Browser+Support) wiki page.
 
