@@ -21,7 +21,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             resources: {
                 template: {
                     forceCache: true,
-                    url: "../../../../components/tableOfContents/html/TableOfContents.html"
+                    url: "../../../../src/components/tableOfContents/html/TableOfContents.html"
                 }
             }
         }
@@ -300,7 +300,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             resources: {
                 template: {
                     forceCache: true,
-                    url: "../../../../components/tableOfContents/html/TableOfContents.html"
+                    url: "../../../../src/components/tableOfContents/html/TableOfContents.html"
                 }
             }
         });

@@ -23,7 +23,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Pass in customized toc template", function () {
             jqUnit.expect(1);
 
-            var customizedTocTemplate = "../../../../components/tableOfContents/html/TableOfContents.html";
+            var customizedTocTemplate = "../../../../src/components/tableOfContents/html/TableOfContents.html";
 
             fluid.uiOptions.prefsEditor(".flc-prefsEditor-separatedPanel", {
                 tocTemplate: customizedTocTemplate,
@@ -33,8 +33,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         jqUnit.start();
                     }
                 },
-                templatePrefix: "../../../../framework/preferences/html/",
-                messagePrefix: "../../../../framework/preferences/messages/"
+                templatePrefix: "../../../../src/framework/preferences/html/",
+                messagePrefix: "../../../../src/framework/preferences/messages/"
             });
         });
 

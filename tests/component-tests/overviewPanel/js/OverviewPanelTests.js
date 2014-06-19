@@ -20,7 +20,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.overviewPanel.resources = {
         template: {
-            href: "../../../../components/overviewPanel/html/overviewPanelTemplate.html"
+            href: "../../../../src/components/overviewPanel/html/overviewPanelTemplate.html"
         }
     };
 
@@ -123,7 +123,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Check link for selector 'feedbackLink'", links.feedbackLink, that.locate("feedbackLink").attr("href"));
         jqUnit.assertEquals("Check link for selector 'titleLink'", links.titleLink, that.locate("titleLink").attr("href"));
         jqUnit.assertEquals("Check link for selector 'infusionCodeLink'", links.infusionCodeLink, that.locate("infusionCodeLink").attr("href"));
-        
+
 
         // check aria-controls
         var containerId = that.container.attr("id");
