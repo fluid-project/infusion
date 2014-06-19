@@ -1,5 +1,5 @@
 {
-    "templateUrl": "../../../components/overviewPanel/html/overviewPanelTemplate.html",
+    "templateUrl": "../../../src/components/overviewPanel/html/overviewPanelTemplate.html",
     "strings": {
         "componentName": "Layout Reorderer"
     },
