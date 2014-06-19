@@ -67,11 +67,11 @@ var demo = demo || {};
     fluid.defaults("demo.prefsEditor.auxSchema.simplify", {
         auxiliarySchema: {
             // adjust paths
-            templatePrefix: "../../framework/preferences/html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
-            messagePrefix: "../../framework/preferences/messages/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
+            templatePrefix: "../../src/framework/preferences/html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
+            messagePrefix: "../../src/framework/preferences/messages/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
             tableOfContents: {
                 enactor: {
-                    tocTemplate: "../../components/tableOfContents/html/TableOfContents.html"
+                    tocTemplate: "../../src/components/tableOfContents/html/TableOfContents.html"
                 }
             },
 
@@ -99,11 +99,11 @@ var demo = demo || {};
     fluid.defaults("demo.prefsEditor.auxSchema.speak", {
         auxiliarySchema: {
             // adjust paths
-            templatePrefix: "../../framework/preferences/html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
-            messagePrefix: "../../framework/preferences/messages/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
+            templatePrefix: "../../src/framework/preferences/html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
+            messagePrefix: "../../src/framework/preferences/messages/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
             tableOfContents: {
                 enactor: {
-                    tocTemplate: "../../components/tableOfContents/html/TableOfContents.html"
+                    tocTemplate: "../../src/components/tableOfContents/html/TableOfContents.html"
                 }
             },
 
