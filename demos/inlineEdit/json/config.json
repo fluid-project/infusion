@@ -1,5 +1,5 @@
 {
-    "templateUrl": "../../shared/html/overviewPanelTemplate-noDesign.html",
+    "templateUrl": "../shared/html/overviewPanelTemplate-noDesign.html",
     "strings": {
         "componentName": "Simple Text Inline Edit"
     },

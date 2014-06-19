@@ -27,7 +27,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.overviewPanel(".flc-overviewPanel", {
                 resources: {
                     template: {
-                        href: bundle.templateUrl || "../../components/overviewPanel/html/overviewPanelTemplate.html"
+                        href: bundle.templateUrl || "../src/components/overviewPanel/html/overviewPanelTemplate.html"
                     }
                 },
                 strings: bundle.strings,
