@@ -24,7 +24,7 @@ var demo = demo || {};
                 resources: {
                     template: {
                         forceCache: true,
-                        url: "../../../components/tableOfContents/html/TableOfContents.html"
+                        url: "../../src/components/tableOfContents/html/TableOfContents.html"
                     }
                 }
             }
