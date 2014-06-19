@@ -8,8 +8,11 @@
     <link rel="stylesheet" href="lib/qunit/addons/composite/qunit-composite.css">
     <script src="lib/qunit/js/qunit.js"></script>
     <script src="lib/qunit/addons/composite/qunit-composite.js"></script>
-<!-- Stupid bloody escaping rules:
-    find . -name "*-test.html" | awk '{print "\""$1"\","}' -->
+
+    <!--
+        command line search:
+        find . -name "*-test.html" | awk '{print "\""$1"\","}'
+    -->
     <script>
     QUnit.testSuites("Framework Tests", [
         "./framework-tests/core/html/FluidJS-test.html",

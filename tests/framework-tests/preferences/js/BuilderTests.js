@@ -574,8 +574,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Builder munging tests          *
      **********************************/
     var prefsEditorType = "fluid.prefs.fullNoPreview", storeType = "fluid.tests.store", enhancerType = "fluid.tests.enhancer";
-    var templatePrefix = "../../../../framework/preferences/html/";
-    var messagePrefix = "../../../../framework/preferences/messages/";
+    var templatePrefix = "../../../../src/framework/preferences/html/";
+    var messagePrefix = "../../../../src/framework/preferences/messages/";
     var prefsEdReady = false;
 
     fluid.defaults("fluid.tests.store", {
@@ -600,7 +600,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         "template": "%prefix/FullNoPreviewPrefsEditor.html",
                         "tableOfContents": {
                             "enactor": {
-                                "tocTemplate": "../../../../components/tableOfContents/html/TableOfContents.html"
+                                "tocTemplate": "../../../../src/components/tableOfContents/html/TableOfContents.html"
                             }
                         }
                     }
@@ -897,8 +897,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 gradeNames: ["fluid.prefs.auxSchema.starter"],
                 auxiliarySchema: {
                     "namespace": "",
-                    "templatePrefix": "../../../../framework/preferences/html/",
-                    "messagePrefix": "../../../../framework/preferences/messages/"
+                    "templatePrefix": "../../../../src/framework/preferences/html/",
+                    "messagePrefix": "../../../../src/framework/preferences/messages/"
                 }
             },
             prefsEditor: {
@@ -914,8 +914,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 gradeNames: ["fluid.prefs.auxSchema.starter"],
                 auxiliarySchema: {
                     "namespace": namespace,
-                    "templatePrefix": "../../../../framework/preferences/html/",
-                    "messagePrefix": "../../../../framework/preferences/messages/"
+                    "templatePrefix": "../../../../src/framework/preferences/html/",
+                    "messagePrefix": "../../../../src/framework/preferences/messages/"
                 }
             },
             prefsEditor: {

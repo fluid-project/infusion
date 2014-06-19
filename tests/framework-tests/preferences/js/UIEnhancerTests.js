@@ -53,7 +53,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 container: ".flt-customizedEnactors",
                 options: {
                     gradeNames: ["fluid.uiEnhancer.customizedEnactors"],
-                    tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
+                    tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html"
                 }
             },
             styleElementsTester: {
@@ -111,7 +111,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 container: "body",
                 options: {
                     gradeNames: ["fluid.uiEnhancer.starterEnactors"],
-                    tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html"
+                    tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html"
                 }
             },
             settingsTester: {
@@ -196,7 +196,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 container: "body",
                 options: {
                     gradeNames: ["fluid.uiEnhancer.starterEnactors"],
-                    tocTemplate: "../../../../components/tableOfContents/html/TableOfContents.html",
+                    tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html",
                     classnameMap: {
                         "textFont": {
                             "default": "fl-font-times"

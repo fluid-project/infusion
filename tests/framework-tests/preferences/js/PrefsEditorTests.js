@@ -20,8 +20,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     $(document).ready(function () {
         fluid.enhance.check({"fluid.prefs.tests": true});
 
-        var templatePrefix = "../../../../framework/preferences/html/";
-        var messagePrefix = "../../../../framework/preferences/messages/";
+        var templatePrefix = "../../../../src/framework/preferences/html/";
+        var messagePrefix = "../../../../src/framework/preferences/messages/";
 
         // Define a default configuration but will specify different demands to test the full config with settings
         fluid.defaults("fluid.prefsTests", {
@@ -113,8 +113,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Template Loader", function () {
             jqUnit.expect(4);
 
-            var testTemplatePrefix = "../../../../framework/preferences/html/";
-            var textControlsFullResourcePath = "../../../../framework/preferences/html/PrefsEditorTemplate-textSize.html";
+            var testTemplatePrefix = "../../../../src/framework/preferences/html/";
+            var textControlsFullResourcePath = "../../../../src/framework/preferences/html/PrefsEditorTemplate-textSize.html";
             var linksControlsTemplateName = "PrefsEditorTemplate-linksControls.html";
 
             function testTemplateLoader(resources) {
@@ -153,7 +153,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Customized Template Loader", function () {
             jqUnit.expect(2);
 
-            var testTemplatePrefix = "../../../../framework/preferences/html/";
+            var testTemplatePrefix = "../../../../src/framework/preferences/html/";
             var lineSpaceTemplateName = "PrefsEditorTemplate-lineSpace.html";
 
             function testCustomizedResourceLoader(resources) {
