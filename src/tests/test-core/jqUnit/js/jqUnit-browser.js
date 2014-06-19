@@ -157,7 +157,7 @@ var jqUnit = jqUnit || {};
             var evalue = expected[key];
             var pass = evalue === attr;
             if (attr === false || attr === true) { // support for IE refusing to honour XHTML values
-                pass = !!evalue === attr; /* convert evalue to boolean */ // jshint ignore:line 
+                pass = !!evalue === attr; /* convert evalue to boolean */ // jshint ignore:line
             }
             if (key !== "children") {
                 jqUnit.assertTrue(message + messageExt + " expected value: " + evalue + " actual: " + attr, pass);
@@ -169,4 +169,4 @@ var jqUnit = jqUnit || {};
         }
     };
 
-})(jQuery, fluid_1_5);
+})(jQuery, fluid_2_0);

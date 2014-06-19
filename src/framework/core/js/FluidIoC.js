@@ -10,7 +10,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_1_5 = fluid_1_5 || {};
+var fluid_2_0 = fluid_2_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -276,7 +276,7 @@ var fluid_1_5 = fluid_1_5 || {};
         } else {
             fluid.registerCollectedClearer(shadows[shadows.length - 1], parentShadow, memberNames[memberNames.length - 1]);
         }
-        // This use of function creation within a loop is acceptable since 
+        // This use of function creation within a loop is acceptable since
         // the function does not attempt to close directly over the loop counter
         for (var i = 0; i < thatStack.length - 1; ++ i) {
             fluid.each(shadows[i].distributions, function (distribution) {
@@ -2280,4 +2280,4 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.noexpand = fluid.expander.noexpand; // TODO: check naming and namespacing
 
 
-})(jQuery, fluid_1_5);
+})(jQuery, fluid_2_0);

@@ -28,6 +28,6 @@
     "worker": true,
 
     "globals": {
-        "fluid_1_5": true
+        "fluid_2_0": true
     }
 }
