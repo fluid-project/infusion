@@ -62,51 +62,31 @@ var demo = demo || {};
     };
 
     /**
-     * The basic options for configuring the full-page versions of Preferences Editor are the same,
-     * regardless of whether or not the Preview is used. These settings used by both
-     * full-page version, with and without Preview.
-     */
-    var basicFullPageOpts = {
-        gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
-        // Tell PrefsEditor where to find all the templates, relative to this file
-        templatePrefix: pathToTemplates,
-        messagePrefix: pathToMessages,
-        messageLoader: {
-            gradeNames: ["fluid.prefs.starterMessageLoader"]
-        },
-        // Tell PrefsEditor where to redirect to if the user cancels the operation
-        prefsEditor: {
-            gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"],
-            listeners: {
-                onCancel: function () {
-                    alert("Cancelled - would normally cancel any unsaved changes and return to the previous page.");
-                }
-            }
-        }
-    };
-
-    /**
-     * Initialize Preferences Editor on the "Full Page, No Preview" version.
-     */
-    demo.initFullNoPreview = function (container, options) {
-        var noPreviewOps = {
-            templateLoader: {
-                gradeNames: ["fluid.prefs.starterFullNoPreviewTemplateLoader"]
-            }
-        };
-        fluid.prefs.fullNoPreview(container, $.extend(true, {}, basicFullPageOpts, noPreviewOps, options));
-    };
-
-    /**
-     * Initialize Preferences Editor on the "Full Page, With Preview" version.
+     * Initialize Full Page preferences editor
      */
     demo.initFullWithPreview = function (container, options) {
-        var previewOps = {
+        var opts = {
+            gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
+            // Tell PrefsEditor where to find all the templates, relative to this file
+            templatePrefix: pathToTemplates,
+            messagePrefix: pathToMessages,
+            messageLoader: {
+                gradeNames: ["fluid.prefs.starterMessageLoader"]
+            },
+            // Tell PrefsEditor where to redirect to if the user cancels the operation
+            prefsEditor: {
+                gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"],
+                listeners: {
+                    onCancel: function () {
+                        alert("Cancelled - would normally cancel any unsaved changes and return to the previous page.");
+                    }
+                }
+            },
             templateLoader: {
                 gradeNames: ["fluid.prefs.starterFullPreviewTemplateLoader"]
             }
         };
-        fluid.prefs.fullPreview(container, $.extend(true, {}, basicFullPageOpts, previewOps, options));
+        fluid.prefs.fullPreview(container, $.extend(true, {}, opts, options));
     };
 
 })(jQuery, fluid);
