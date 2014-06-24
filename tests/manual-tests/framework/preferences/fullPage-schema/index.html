@@ -24,9 +24,9 @@
         <link rel="stylesheet" type="text/css" href="../../../../../src/framework/preferences/css/FullPrefsEditor.css" />
         <link rel="stylesheet" type="text/css" href="../../../../../src/framework/preferences/css/FullPreviewPrefsEditor.css" />
 
-        <link rel="stylesheet" type="text/css" href="../shared/css/prefsEditorFullPage.css" /> <!-- Demo style -->
+        <link rel="stylesheet" type="text/css" href="../css/PrefsEditorFullPage.css" /> <!-- Demo style -->
 
-        <title>Preferences Editor: Full Page</title>
+        <title>Preferences Editor: Full Page, With Preview, Using Schema</title>
         <script type="text/javascript" src="../../../../../src/lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../../../src/lib/jquery/ui/js/jquery.ui.core.js"></script>
         <script type="text/javascript" src="../../../../../src/lib/jquery/ui/js/jquery.ui.widget.js"></script>
@@ -54,29 +54,32 @@
         <script type="text/javascript" src="../../../../../src/components/textfieldSlider/js/TextfieldSlider.js"></script>
         <script type="text/javascript" src="../../../../../src/framework/preferences/js/PrefsEditor.js"></script>
         <script type="text/javascript" src="../../../../../src/framework/preferences/js/Panels.js"></script>
-        <script type="text/javascript" src="../../../../../src/framework/preferences/js/StarterGrades.js"></script>
         <script type="text/javascript" src="../../../../../src/framework/preferences/js/FullPreviewPrefsEditor.js"></script>
         <script type="text/javascript" src="../../../../../src/components/tableOfContents/js/TableOfContents.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/preferences/js/PrimaryBuilder.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/preferences/js/AuxBuilder.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/preferences/js/StarterSchemas.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/preferences/js/Builder.js"></script>
 
-        <script type="text/javascript" src="js/prefsEditorFullPage.js"></script>
+        <script type="text/javascript" src="js/prefsEditorFullPageSchema.js"></script>
     </head>
 
     <body>
         <!-- The page-wide UI Enhancer needs to be initialized right away -->
         <script type="text/javascript">
             $(document).ready(function () {
-                demo.initSettingsStore();
-                demo.initPageEnhancer();
                 demo.initFullWithPreview("#myPrefsEditor", {
-                    preview: {
-                        templateUrl: "../shared/html/prefsEditorPreview.html"
+                    prefsEditor: {
+                        preview: {
+                            templateUrl: "../shared/html/prefsEditorPreview.html"
+                        }
                     }
                 });
             });
         </script>
 
         <header>
-            <h1>Preferences Editor: Full Page</h1>
+            <h1>Preferences Editor: Full Page using Schema</h1>
             <p>
                 This is an example of a full page preferences editor. As preferences are changed, they are visible in a preview window. After the preferences are saved, they are applied to the entire page.
             </p>
