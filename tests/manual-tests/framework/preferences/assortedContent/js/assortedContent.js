@@ -12,12 +12,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /* global fluid */
 
-var skon = skon || {};
+var assortedContent = assortedContent || {};
 (function ($, fluid) {
     "use strict";
 
     /* Our demo script */
-    skon.slidingPrefsEditor = function () {
+    assortedContent.slidingPrefsEditor = function () {
         // First, start up Settings Store and Page Enhancer
         fluid.globalSettingsStore();
         fluid.pageEnhancer({
@@ -25,18 +25,18 @@ var skon = skon || {};
                 gradeNames: ["fluid.uiEnhancer.starterEnactors"],
                 classnameMap: {
                     theme: {
-                        "default": "skon-theme-basic"
+                        "default": "assortedContent-theme-basic"
                     }
                 },
-                tocTemplate: "../../../components/tableOfContents/html/TableOfContents.html"
+                tocTemplate: "../../../../../src/components/tableOfContents/html/TableOfContents.html"
             }
         });
 
         // Next, start up Preferences Editor
         fluid.prefs.separatedPanel(".flc-prefsEditor-separatedPanel", {
             gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
-            templatePrefix: "../../../framework/preferences/html/",
-            messagePrefix: "../../../framework/preferences/messages/",
+            templatePrefix: "../../../../../src/framework/preferences/html/",
+            messagePrefix: "../../../../../src/framework/preferences/messages/",
             messageLoader: {
                 gradeNames: ["fluid.prefs.starterMessageLoader"]
             },
@@ -48,7 +48,7 @@ var skon = skon || {};
             },
             iframeRenderer: {
                 markupProps: {
-                    src: "../../../framework/preferences/html/SeparatedPanelPrefsEditorFrame.html"
+                    src: "../../../../../src/framework/preferences/html/SeparatedPanelPrefsEditorFrame.html"
                 }
             }
         });
