@@ -1,5 +1,5 @@
 /*
-Copyright 2011 OCAD University
+Copyright 2011-2014 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -22,15 +22,15 @@ var demo = demo || {};
      * needs to know where those templates are. This variable will be used by all
      * versions of the component.
      */
-    var pathToTemplates = "../../../framework/preferences/html/";
-    var pathToMessages = "../../../framework/preferences/messages/";
+    var pathToTemplates = "../../../../src/framework/preferences/html/";
+    var pathToMessages = "../../../../src/framework/preferences/messages/";
 
     /**
      * The UI Enhancer's Table of Contents uses a template. This path variable is used by all
      * three versions of the component, as well as by the UI Enhancer present in the Preview
      * itself.
      */
-    var pathToTocTemplate = "../../../components/tableOfContents/html/TableOfContents.html";
+    var pathToTocTemplate = "../../../../src/components/tableOfContents/html/TableOfContents.html";
 
     /**
      * Initialize a settings store for the page.
@@ -57,28 +57,26 @@ var demo = demo || {};
         });
     };
 
-    var commonOpts = {
-        gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
-        // Tell preference editor where to find all the templates, relative to this path
-        templatePrefix: pathToTemplates,
-        messagePrefix: pathToMessages,
-        templateLoader: {
-            gradeNames: ["fluid.prefs.starterSeparatedPanelTemplateLoader"]
-        },
-        messageLoader: {
-            gradeNames: ["fluid.prefs.starterMessageLoader"]
-        },
-        prefsEditor: {
-            gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"]
-        }
-    };
-
     /**
      * Initialize Preferences Editor. This version of Preferences Editor uses the
      * page itself as a live preview.
      */
     demo.initPrefsEditor = function (container) {
-        fluid.prefs.separatedPanel(container, commonOpts);
+        fluid.prefs.separatedPanel(container, {
+            gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
+            // Tell preference editor where to find all the templates, relative to this path
+            templatePrefix: pathToTemplates,
+            messagePrefix: pathToMessages,
+            templateLoader: {
+                gradeNames: ["fluid.prefs.starterSeparatedPanelTemplateLoader"]
+            },
+            messageLoader: {
+                gradeNames: ["fluid.prefs.starterMessageLoader"]
+            },
+            prefsEditor: {
+                gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"]
+            }
+        });
     };
 
 })(jQuery, fluid);
