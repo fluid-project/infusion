@@ -12,14 +12,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /* global fluid */
 
-var demo = demo || {};
+var example = example || {};
 (function ($, fluid) {
     "use strict";
 
     /**
      * Auxiliary Schema
      */
-    fluid.defaults("demo.auxSchema", {
+    fluid.defaults("example.auxSchema", {
         gradeNames: ["fluid.prefs.auxSchema", "autoInit"],
         auxiliarySchema: {
             template: "html/prefsEditor.html",
@@ -29,96 +29,96 @@ var demo = demo || {};
                     "container": ".mpe-speaking",
                     "template": "%prefix/speaking.html",
                     "message": "%prefix/speaking.json",
-                    "type": "demo.panels.speaking",
+                    "type": "example.panels.speaking",
                     "panels": {
                         "always": ["speak"],
-                        "demo.speakText": ["vol", "wpm"]
+                        "example.speakText": ["vol", "wpm"]
                     }
                 },
                 increasing: {
                     "container": ".mpe-increasing",
                     "template": "%prefix/increasing.html",
                     "message": "%prefix/increasing.json",
-                    "type": "demo.panels.increasing",
+                    "type": "example.panels.increasing",
                     "panels": {
                         "always": ["incSize"],
-                        "demo.increaseSize": ["cursor", "magFactor", "magPos"]
+                        "example.increaseSize": ["cursor", "magFactor", "magPos"]
                     }
                 }
             },
             speak: {
-                type: "demo.speakText",
+                type: "example.speakText",
                 enactor: {
-                    type: "demo.enactors.speak"
+                    type: "example.enactors.speak"
                 },
                 panel: {
-                    type: "demo.panels.speak",
+                    type: "example.panels.speak",
                     container: ".mpe-speaking-onOff",
                     template: "%prefix/speak-template.html"
                 }
             },
             vol: {
-                type: "demo.volume",
+                type: "example.volume",
                 enactor: {
-                    type: "demo.enactors.vol"
+                    type: "example.enactors.vol"
                 },
                 panel: {
-                    type: "demo.panels.vol",
+                    type: "example.panels.vol",
                     container: ".mpe-speaking-vol",
                     template: "%prefix/slider-template.html"
                 }
             },
             wpm: {
-                type: "demo.wordsPerMinute",
+                type: "example.wordsPerMinute",
                 enactor: {
-                    type: "demo.enactors.wpm"
+                    type: "example.enactors.wpm"
                 },
                 panel: {
-                    type: "demo.panels.wpm",
+                    type: "example.panels.wpm",
                     container: ".mpe-speaking-wpm",
                     template: "%prefix/slider-template.html"
                 }
             },
             incSize: {
-                type: "demo.increaseSize",
+                type: "example.increaseSize",
                 enactor: {
-                    type: "demo.enactors.incSize"
+                    type: "example.enactors.incSize"
                 },
                 panel: {
-                    type: "demo.panels.incSize",
+                    type: "example.panels.incSize",
                     container: ".mpe-increasing-onOff",
                     template: "%prefix/incSize-template.html"
                 }
             },
             cursor: {
-                type: "demo.cursorSize",
+                type: "example.cursorSize",
                 enactor: {
-                    type: "demo.enactors.cursor"
+                    type: "example.enactors.cursor"
                 },
                 panel: {
-                    type: "demo.panels.cursor",
+                    type: "example.panels.cursor",
                     container: ".mpe-increasing-cursor",
                     template: "%prefix/slider-template.html"
                 }
             },
             magFactor: {
-                type: "demo.magnification",
+                type: "example.magnification",
                 enactor: {
-                    type: "demo.enactors.magFactor"
+                    type: "example.enactors.magFactor"
                 },
                 panel: {
-                    type: "demo.panels.magFactor",
+                    type: "example.panels.magFactor",
                     container: ".mpe-increasing-magFactor",
                     template: "%prefix/slider-template.html"
                 }
             },
             magPos: {
-                type: "demo.magnifierPosition",
+                type: "example.magnifierPosition",
                 enactor: {
-                    type: "demo.enactors.magPos"
+                    type: "example.enactors.magPos"
                 },
                 panel: {
-                    type: "demo.panels.magPos",
+                    type: "example.panels.magPos",
                     container: ".mpe-increasing-magPos",
                     template: "%prefix/radioButton-template.html"
                 }

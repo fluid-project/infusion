@@ -12,18 +12,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /* global fluid */
 
-var demo = demo || {};
+var example = example || {};
 (function ($, fluid) {
     "use strict";
 
     /**
      * Initialize Preference Editor.
      */
-    demo.initPrefsEditor = function (container) {
+    example.initPrefsEditor = function (container) {
         return fluid.prefs.create(container, {
             build: {
-                gradeNames: ["demo.auxSchema"],
-                primarySchema: demo.primarySchema,
+                gradeNames: ["example.auxSchema"],
+                primarySchema: example.primarySchema,
                 auxiliarySchema: {
                     "templatePrefix": "../shared/html/",
                     "messagePrefix": "../shared/messages/"

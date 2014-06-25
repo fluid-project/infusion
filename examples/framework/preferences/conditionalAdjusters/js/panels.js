@@ -12,14 +12,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /* global fluid */
 
-var demo = demo || {};
+var example = example || {};
 (function ($, fluid) {
     "use strict";
 
     /**
      * Composite Panels
      */
-    fluid.defaults("demo.panels.speaking", {
+    fluid.defaults("example.panels.speaking", {
         gradeNames: ["fluid.prefs.compositePanel", "autoInit"],
         selectors: {
             label: ".mpe-speaking-header"
@@ -28,7 +28,7 @@ var demo = demo || {};
             label: {messagekey: "speakingHeader"}
         }
     });
-    fluid.defaults("demo.panels.increasing", {
+    fluid.defaults("example.panels.increasing", {
         gradeNames: ["fluid.prefs.compositePanel", "autoInit"],
         selectors: {
             label: ".mpe-increasing-header"

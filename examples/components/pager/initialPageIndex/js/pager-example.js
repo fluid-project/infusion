@@ -15,15 +15,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /* global fluid */
 
-var demo = demo || {};
+var example = example || {};
 
 (function ($, fluid) {
     "use strict";
 
     /**
-     * Main demo initialization
+     * Main example initialization
      */
-    demo.initPager = function () {
+    example.initPager = function () {
         var resources = {
             users: {
                 href: "../shared/data/pager.json",
@@ -59,7 +59,7 @@ var demo = demo || {};
                 }
             ];
 
-            demo.pager = fluid.pagedTable(".demo-pager-container", {
+            example.pager = fluid.pagedTable(".example-pager-container", {
                 dataModel: model,
                 model: {
                     pageIndex: 3
@@ -72,11 +72,11 @@ var demo = demo || {};
                         type: "fluid.table.selfRender",
                         options: {
                             selectors: {
-                                root: ".demo-pager-table-data",
-                                "user-link": ".demo-user-link",
-                                "user-comment": ".demo-user-comment",
-                                "user-role": ".demo-user-role",
-                                "user-email": ".demo-user-email"
+                                root: ".example-pager-table-data",
+                                "user-link": ".example-user-link",
+                                "user-comment": ".example-user-comment",
+                                "user-role": ".example-user-role",
+                                "user-email": ".example-user-email"
                             },
                             rendererOptions: {debugMode: false} // Change this to true to diagnose rendering issues
                         }

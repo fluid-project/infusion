@@ -12,14 +12,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /* global fluid */
 
-var demo = demo || {};
+var example = example || {};
 (function () {
     "use strict";
 
     // Ensure that only the "IMPORTANT" log messages created by the enactor logging function are displayed
     fluid.setLogging(false);
 
-    demo.logModelValue = function (name, changeVal) {
+    example.logModelValue = function (name, changeVal) {
         fluid.log(fluid.logLevel.IMPORTANT, name + " model changed to: " + changeVal);
     };
 

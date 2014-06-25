@@ -12,22 +12,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /* global fluid */
 
-var demo = demo || {};
+var example = example || {};
 (function ($, fluid) {
     "use strict";
 
     /**
-     * These panels are subpanels shared by a number of the Preferences Framework demos.
-     * Each demo only uses some of these panels, as specified in the demo's auxiliary schema.
+     * These panels are subpanels shared by a number of the Preferences Framework examples.
+     * Each example only uses some of these panels, as specified in the example's auxiliary schema.
      */
 
     /**
      * The "speak text" preference is a boolean, rendered as an on/off switch.
      */
-    fluid.defaults("demo.panels.speak", {
+    fluid.defaults("example.panels.speak", {
         gradeNames: ["fluid.prefs.panel", "autoInit"],
         preferenceMap: {
-            "demo.speakText": {
+            "example.speakText": {
                 "model.speakText": "default"
             }
         },
@@ -44,10 +44,10 @@ var demo = demo || {};
     /**
      * The "increase size" preference is a boolean, rendered as an on/off switch.
      */
-    fluid.defaults("demo.panels.incSize", {
+    fluid.defaults("example.panels.incSize", {
         gradeNames: ["fluid.prefs.panel", "autoInit"],
         preferenceMap: {
-            "demo.increaseSize": {
+            "example.increaseSize": {
                 "model.incSize": "default"
             }
         },
@@ -65,10 +65,10 @@ var demo = demo || {};
     /**
      * The "volume" preference is a range, rendered as a slider.
      */
-    fluid.defaults("demo.panels.vol", {
+    fluid.defaults("example.panels.vol", {
         gradeNames: ["fluid.prefs.panel", "autoInit"],
         preferenceMap: {
-            "demo.volume": {
+            "example.volume": {
                 "model.volume": "default",
                 "range.min": "minimum",
                 "range.max": "maximum"
@@ -93,11 +93,11 @@ var demo = demo || {};
                             "volume": "value"
                         },
                         model: {
-                            value: "{demo.panels.vol}.model.volume"
+                            value: "{example.panels.vol}.model.volume"
                         },
-                        sourceApplier: "{demo.panels.vol}.applier",
-                        range: "{demo.panels.vol}.options.range",
-                        sliderOptions: "{demo.panels.vol}.options.sliderOptions"
+                        sourceApplier: "{example.panels.vol}.applier",
+                        range: "{example.panels.vol}.options.range",
+                        sliderOptions: "{example.panels.vol}.options.sliderOptions"
                     }
                 }
             }
@@ -107,10 +107,10 @@ var demo = demo || {};
     /**
      * The "words per minute" preference is a range, rendered as a slider.
      */
-    fluid.defaults("demo.panels.wpm", {
+    fluid.defaults("example.panels.wpm", {
         gradeNames: ["fluid.prefs.panel", "autoInit"],
         preferenceMap: {
-            "demo.wordsPerMinute": {
+            "example.wordsPerMinute": {
                 "model.wordsPerMin": "default",
                 "range.min": "minimum",
                 "range.max": "maximum"
@@ -135,11 +135,11 @@ var demo = demo || {};
                             "wordsPerMin": "value"
                         },
                         model: {
-                            value: "{demo.panels.wpm}.model.wordsPerMin"
+                            value: "{example.panels.wpm}.model.wordsPerMin"
                         },
-                        sourceApplier: "{demo.panels.wpm}.applier",
-                        range: "{demo.panels.wpm}.options.range",
-                        sliderOptions: "{demo.panels.wpm}.options.sliderOptions"
+                        sourceApplier: "{example.panels.wpm}.applier",
+                        range: "{example.panels.wpm}.options.range",
+                        sliderOptions: "{example.panels.wpm}.options.sliderOptions"
                     }
                 }
             }
@@ -149,10 +149,10 @@ var demo = demo || {};
     /**
      * The "cursor size" preference is a range, rendered as a slider.
      */
-    fluid.defaults("demo.panels.cursor", {
+    fluid.defaults("example.panels.cursor", {
         gradeNames: ["fluid.prefs.panel", "autoInit"],
         preferenceMap: {
-            "demo.cursorSize": {
+            "example.cursorSize": {
                 "model.cursorMult": "default",
                 "range.min": "minimum",
                 "range.max": "maximum"
@@ -177,11 +177,11 @@ var demo = demo || {};
                             "cursorMult": "value"
                         },
                         model: {
-                            value: "{demo.panels.cursor}.model.cursorMult"
+                            value: "{example.panels.cursor}.model.cursorMult"
                         },
-                        sourceApplier: "{demo.panels.cursor}.applier",
-                        range: "{demo.panels.cursor}.options.range",
-                        sliderOptions: "{demo.panels.cursor}.options.sliderOptions"
+                        sourceApplier: "{example.panels.cursor}.applier",
+                        range: "{example.panels.cursor}.options.range",
+                        sliderOptions: "{example.panels.cursor}.options.sliderOptions"
                     }
                 }
             }
@@ -191,10 +191,10 @@ var demo = demo || {};
     /**
      * The "magnification factor" preference is a range, rendered as a slider.
      */
-    fluid.defaults("demo.panels.magFactor", {
+    fluid.defaults("example.panels.magFactor", {
         gradeNames: ["fluid.prefs.panel", "autoInit"],
         preferenceMap: {
-            "demo.magnification": {
+            "example.magnification": {
                 "model.mag": "default",
                 "range.min": "minimum",
                 "range.max": "maximum"
@@ -219,11 +219,11 @@ var demo = demo || {};
                             "mag": "value"
                         },
                         model: {
-                            value: "{demo.panels.magFactor}.model.mag"
+                            value: "{example.panels.magFactor}.model.mag"
                         },
-                        sourceApplier: "{demo.panels.magFactor}.applier",
-                        range: "{demo.panels.magFactor}.options.range",
-                        sliderOptions: "{demo.panels.magFactor}.options.sliderOptions"
+                        sourceApplier: "{example.panels.magFactor}.applier",
+                        range: "{example.panels.magFactor}.options.range",
+                        sliderOptions: "{example.panels.magFactor}.options.sliderOptions"
                     }
                 }
             }
@@ -233,13 +233,13 @@ var demo = demo || {};
     /**
      * The "magnifier position" preference is an enumeration, rendered as a set of radio buttons.
      */
-    fluid.defaults("demo.panels.magPos", {
+    fluid.defaults("example.panels.magPos", {
         gradeNames: ["fluid.prefs.panel", "autoInit"],
         rendererOptions: {
             debugMode: true
         },
         preferenceMap: {
-            "demo.magnifierPosition": {
+            "example.magnifierPosition": {
                 "model.magPos": "default",
                 "controlValues.magPos": "enum"
             }

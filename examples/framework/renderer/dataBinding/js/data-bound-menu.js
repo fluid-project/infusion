@@ -12,7 +12,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /* global fluid */
 
-var demo = demo || {};
+var example = example || {};
 
 (function ($) {
     "use strict";
@@ -146,9 +146,9 @@ var demo = demo || {};
 
         // This object maps the HTML elements in the template (identified by the selector)
         // to the component in the component tree (identified by the id).
-        var wineSelectorMap = [{selector: ".demo-wine-row", id: "wine-row:"},
-                               {selector: ".demo-wine", id: "wine"},
-                               {selector: ".demo-wine-label", id: "wine-label"}];
+        var wineSelectorMap = [{selector: ".example-wine-row", id: "wine-row:"},
+                               {selector: ".example-wine", id: "wine"},
+                               {selector: ".example-wine-label", id: "wine-label"}];
 
         // The wine list and food list trees will be bound to a data model, which is passed to
         // fluid.selfRender() in the options parameter.
@@ -157,12 +157,12 @@ var demo = demo || {};
 
         // This object maps the HTML elements in the template (identified by the selector)
         // to the component in the component tree (identified by the id).
-        var foodSelectorMap = [{selector: ".demo-cheese-row", id: "cheese-row:"},
-                               {selector: ".demo-cheese", id: "cheese"},
-                               {selector: ".demo-cheese-label", id: "cheese-label"},
-                               {selector: ".demo-canape-row", id: "canape-row:"},
-                               {selector: ".demo-canape", id: "canape"},
-                               {selector: ".demo-canape-label", id: "canape-label"}];
+        var foodSelectorMap = [{selector: ".example-cheese-row", id: "cheese-row:"},
+                               {selector: ".example-cheese", id: "cheese"},
+                               {selector: ".example-cheese-label", id: "cheese-label"},
+                               {selector: ".example-canape-row", id: "canape-row:"},
+                               {selector: ".example-canape", id: "canape"},
+                               {selector: ".example-canape-label", id: "canape-label"}];
 
         // The autoBind option tells the renderer to automatically update the model when the value
         // of an input changes. Without this parameter, the model must be updated manually through
@@ -176,7 +176,7 @@ var demo = demo || {};
         jQuery("#food-list input").click(dumpFoodModel);
     };
 
-    demo.dataBoundMenu = function () {
+    example.dataBoundMenu = function () {
         var fullEl = fluid.byId("render");
         var rendered;
         fullEl.onclick = function () {

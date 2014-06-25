@@ -14,12 +14,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /* global fluid */
 
-var demo = demo || {};
+var example = example || {};
 
 (function ($, fluid) {
     "use strict";
 
-    demo.initPager = function () {
+    example.initPager = function () {
         var selectorPrefix = "#students-page";
 
         var options = {

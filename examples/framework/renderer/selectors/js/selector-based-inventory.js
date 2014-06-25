@@ -12,7 +12,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /* global fluid */
 
-var demo = demo || {};
+var example = example || {};
 
 fluid.inventoryExample =  (function () {
     "use strict";
@@ -127,7 +127,7 @@ fluid.inventoryExample =  (function () {
         }
     };
 
-    demo.selectorBasedInventory = function () {
+    example.selectorBasedInventory = function () {
         var fullEl = fluid.byId("render-full");
         fullEl.onclick = function () {
             initTableFullTree();

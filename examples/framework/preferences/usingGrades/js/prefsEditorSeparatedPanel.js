@@ -11,9 +11,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/* global demo:true, fluid */
+/* global fluid */
 
-var demo = demo || {};
+var example = example || {};
 (function ($, fluid) {
     "use strict";
 
@@ -35,15 +35,15 @@ var demo = demo || {};
     /**
      * Initialize a settings store for the page.
      */
-    demo.initSettingsStore = function () {
+    example.initSettingsStore = function () {
         fluid.globalSettingsStore();
     };
 
     /**
      * Initialize UI Enhancer for the page. This function is used by the two full-page
-     * Preferences Editor pages as well as by the demo page itself.
+     * Preferences Editor pages as well as by the example page itself.
      */
-    demo.initPageEnhancer = function (customThemeName) {
+    example.initPageEnhancer = function (customThemeName) {
         fluid.pageEnhancer({
             uiEnhancer: {
                 gradeNames: ["fluid.uiEnhancer.starterEnactors"],
@@ -61,7 +61,7 @@ var demo = demo || {};
      * Initialize Preferences Editor. This version of Preferences Editor uses the
      * page itself as a live preview.
      */
-    demo.initPrefsEditor = function (container) {
+    example.initPrefsEditor = function (container) {
         fluid.prefs.separatedPanel(container, {
             gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
             // Tell preference editor where to find all the templates, relative to this path

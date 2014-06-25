@@ -9,53 +9,53 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var demo = demo || {};
+var example = example || {};
 (function () {
     "use strict";
 
     /**
-     * This Primary Schema defines preferences shared by all of the Preferences Framework demos.
-     * Each demo only uses some of these preferences, as specified by the demo's auxiliary schema.
+     * This Primary Schema defines preferences shared by all of the Preferences Framework examples.
+     * Each example only uses some of these preferences, as specified by the example's auxiliary schema.
      */
 
-    demo.primarySchema = {
-        "demo.speakText": {
+    example.primarySchema = {
+        "example.speakText": {
             "type": "boolean",
             "default": false
         },
-        "demo.volume": {
+        "example.volume": {
             "type": "number",
             "default": 60,
             "minimum": 0,
             "maximum": 100,
             "divisibleBy": 5
         },
-        "demo.wordsPerMinute": {
+        "example.wordsPerMinute": {
             "type": "number",
             "default": 180,
             "minimum": 130,
             "maximum": 250,
             "divisibleBy": 10
         },
-        "demo.increaseSize": {
+        "example.increaseSize": {
             "type": "boolean",
             "default": false
         },
-        "demo.cursorSize": {
+        "example.cursorSize": {
             "type": "number",
             "default": 2,
             "minimum": 1,
             "maximum": 5,
             "divisibleBy": 1
         },
-        "demo.magnification": {
+        "example.magnification": {
             "type": "number",
             "default": 100,
             "minimum": 100,
             "maximum": 400,
             "divisibleBy": 10
         },
-        "demo.magnifierPosition": {
+        "example.magnifierPosition": {
             "type": "string",
             "default": "left",
             "enum": ["centre", "left", "right", "top", "bottom"]

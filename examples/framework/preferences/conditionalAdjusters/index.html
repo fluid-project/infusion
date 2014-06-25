@@ -11,9 +11,9 @@
         <link rel="stylesheet" type="text/css" href="../../../../src/framework/preferences/css/PrefsEditor.css" />
         <link rel="stylesheet" type="text/css" href="../../../../src/framework/preferences/css/SeparatedPanelPrefsEditor.css" />
 
-        <link rel="stylesheet" type="text/css" href="../shared/css/demo.css" />
+        <link rel="stylesheet" type="text/css" href="../shared/css/preferences.css" />
 
-        <title>Preferences Editor Demo: Conditional Adjusters</title>
+        <title>Preferences Editor Example: Conditional Adjusters</title>
         <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery.ui.core.js"></script>
         <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery.ui.widget.js"></script>
@@ -62,7 +62,7 @@
     <body class="learning-theme fl-focus">
         <script type="text/javascript">
             $(document).ready(function () {
-                prefsEd = demo.initPrefsEditor(".flc-prefsEditor-separatedPanel");
+                example.initPrefsEditor(".flc-prefsEditor-separatedPanel");
             })
         </script>
 
@@ -83,10 +83,10 @@
 
         <div class="overview">
             <h1>Test of Composite Panels With Conditional Show/Hide of Adjustors</h1>
-            <p>This demo illustrates two composite panels, each with a set of adjusters that are dependent on another boolean adjuster.</p>
+            <p>This example illustrates two composite panels, each with a set of adjusters that are dependent on another boolean adjuster.</p>
             <p>Initially*, you should see only a single on/off switch in each panel. Turning the preference on should reveal the dependent adjusters, and turning the preference off should hide them.</p>
             <p>Any values set with the dependent adjusters should be preserved even if the controlling preference is turned off.</p>
-            <p>* Once the page is loaded, preference values are stored in a cookie, so on subsequent page loads the stored values will be used. To reset the demo to its default state, clear cookies for the page.</p>
+            <p>* Once the page is loaded, preference values are stored in a cookie, so on subsequent page loads the stored values will be used. To reset the example to its default state, clear cookies for the page.</p>
         </div>
     </body>
 </html>

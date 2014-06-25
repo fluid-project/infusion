@@ -3,17 +3,17 @@ main {
     padding: 2em;
 }
 
-.demo-progress-label {
+.example-progress-label {
     text-align: center;
 }
 
-.demo-progress-bar {
+.example-progress-bar {
     border: 2px solid #000;
     height: 2em;
     width: 100%;
 }
 
-.demo-progress-indicator {
+.example-progress-indicator {
         background-color: #699BD8;
         height: 100%;
 }

@@ -12,118 +12,118 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /* global fluid */
 
-var demo = demo || {};
+var example = example || {};
 (function ($, fluid) {
     "use strict";
 
     /**
-     * These enactors are shared by many of the Preferences Framework demos.
-     * Each demo only uses some of these enactors, as specified in the demo's auxiliary schema.
+     * These enactors are shared by many of the Preferences Framework examples.
+     * Each example only uses some of these enactors, as specified in the example's auxiliary schema.
      *
      * These enactors do nothing but display a console message when the model changes.
      * In the real world, enactors would do more, depending on what they're for.
      */
 
-    fluid.defaults("demo.enactors.speak", {
+    fluid.defaults("example.enactors.speak", {
         gradeNames: ["fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
-            "demo.speakText": {
+            "example.speakText": {
                 "model.speak": "default"
             }
         },
         modelListeners: {
             "speak": {
-                funcName: "demo.logModelValue",
+                funcName: "example.logModelValue",
                 args: ["speak", "{change}.value"]
             }
         }
     });
 
-    fluid.defaults("demo.enactors.incSize", {
+    fluid.defaults("example.enactors.incSize", {
         gradeNames: ["fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
-            "demo.increaseSize": {
+            "example.increaseSize": {
                 "model.incSize": "default"
             }
         },
         modelListeners: {
             "incSize": {
-                funcName: "demo.logModelValue",
+                funcName: "example.logModelValue",
                 args: ["incSize", "{change}.value"]
             }
         }
     });
 
-    fluid.defaults("demo.enactors.vol", {
+    fluid.defaults("example.enactors.vol", {
         gradeNames: ["fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
-            "demo.volume": {
+            "example.volume": {
                 "model.volume": "default"
             }
         },
         modelListeners: {
             "volume": {
-                funcName: "demo.logModelValue",
+                funcName: "example.logModelValue",
                 args: ["vol", "{change}.value"]
             }
         }
     });
 
-    fluid.defaults("demo.enactors.wpm", {
+    fluid.defaults("example.enactors.wpm", {
         gradeNames: ["fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
-            "demo.wordsPerMinute": {
+            "example.wordsPerMinute": {
                 "model.wordsPerMin": "default"
             }
         },
         modelListeners: {
             "wordsPerMin": {
-                funcName: "demo.logModelValue",
+                funcName: "example.logModelValue",
                 args: ["wpm", "{change}.value"]
             }
         }
     });
 
-    fluid.defaults("demo.enactors.cursor", {
+    fluid.defaults("example.enactors.cursor", {
         gradeNames: ["fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
-            "demo.cursorSize": {
+            "example.cursorSize": {
                 "model.cursorMult": "default"
             }
         },
         modelListeners: {
             "cursorMult": {
-                funcName: "demo.logModelValue",
+                funcName: "example.logModelValue",
                 args: ["cursor", "{change}.value"]
             }
         }
     });
 
-    fluid.defaults("demo.enactors.magFactor", {
+    fluid.defaults("example.enactors.magFactor", {
         gradeNames: ["fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
-            "demo.magnification": {
+            "example.magnification": {
                 "model.mag": "default"
             }
         },
         modelListeners: {
             "mag": {
-                funcName: "demo.logModelValue",
+                funcName: "example.logModelValue",
                 args: ["magFactor", "{change}.value"]
             }
         }
     });
 
-    fluid.defaults("demo.enactors.magPos", {
+    fluid.defaults("example.enactors.magPos", {
         gradeNames: ["fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
-            "demo.magnifierPosition": {
+            "example.magnifierPosition": {
                 "model.magPos": "default"
             }
         },
         modelListeners: {
             "magPos": {
-                funcName: "demo.logModelValue",
+                funcName: "example.logModelValue",
                 args: ["magPos", "{change}.value"]
             }
         }
