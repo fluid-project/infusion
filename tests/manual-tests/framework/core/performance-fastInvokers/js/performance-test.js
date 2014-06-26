@@ -75,6 +75,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // full invoker: 170us/call when warm (progressively improves)
     // "fast invoker": 1.4us
 
+    var results = [];
     var root = fluid.tests.perfRoot();
     var acc;
     for (var j = 0; j < 5; ++ j) {
@@ -90,9 +91,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         var delay = (Date.now() - now);
 
-        console.log(its + " iterations concluded in " + delay + " ms: " + 1000*(delay/its) + " us/it");
+        results.push(its + " iterations concluded in " + delay + " ms: " + 1000*(delay/its) + " us/it");
     }
 
-    console.log("Accumulates: " + acc);
+    results.push("Accumulates: " + acc);
+
+    $(document).ready(function () {
+        fluid.each(results, function (result) {
+            var resultElm = $("<li>").text(result);
+            $(".results").append(resultElm);
+        });
+    });
 
 })(jQuery, fluid);

@@ -50,6 +50,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     var paths = makePaths();
+    var results = [];
 
     for (var j = 0; j < 5; ++ j) {
 
@@ -60,7 +61,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.get(model, path);
         }
 
-        console.log("Concluded in " + (Date.now() - now) + "ms");
+        results.push("Concluded in " + (Date.now() - now) + "ms");
     }
+
+    $(document).ready(function () {
+        fluid.each(results, function (result) {
+            var resultElm = $("<li>").text(result);
+            $(".results").append(resultElm);
+        });
+    });
 
 })(jQuery, fluid);
