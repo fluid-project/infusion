@@ -1,2 +1,5 @@
 **/lib/**
-**/FLUID-0.3.js
+**/infusion-1.5.js
+build/**
+products/**
+node_modules/**
