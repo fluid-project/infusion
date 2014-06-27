@@ -97,6 +97,17 @@
             fluid.reorderList("tbody", {
                 selectors: {
                     movables: "tr"
+                },
+                components: {
+                    labeller: {
+                        options: {
+                            strings: {
+                                overallTemplate: "%recentStatus to %position",
+                                position:        "%index",
+                                recentStatus:    "moved from row %position"
+                            }
+                        }
+                    }
                 }
             });
         </script>
