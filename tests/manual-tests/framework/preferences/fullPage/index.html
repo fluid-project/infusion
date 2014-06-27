@@ -26,6 +26,9 @@
 
         <link rel="stylesheet" type="text/css" href="../shared/css/prefsEditorFullPage.css" /> <!-- Demo style -->
 
+        <!-- styling for instructions -->
+        <link rel="stylesheet" type="text/css" href="../../../shared/css/instructions.css" />
+
         <title>Preferences Editor: Full Page</title>
         <script type="text/javascript" src="../../../../../src/lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../../../src/lib/jquery/ui/js/jquery.ui.core.js"></script>
@@ -75,12 +78,12 @@
             });
         </script>
 
-        <header>
-            <h1>Preferences Editor: Full Page</h1>
-            <p>
-                This is an example of a full page preferences editor. As preferences are changed, they are visible in a preview window. After the preferences are saved, they are applied to the entire page.
-            </p>
-            <section>
+        <aside class="instructions-container">
+            <div class="instructions-content">
+                <h2>Description</h2>
+                <p>
+                    This is an example of a full page preferences editor. As preferences are changed, they are visible in a preview window. After the preferences are saved, they are applied to the entire page.
+                </p>
                 <h2>Instructions</h2>
                 <ol>
                     <li>
@@ -90,8 +93,8 @@
                     <li>Use the "save and apply" button to apply the preview styles to Preferences Editor</li>
                     <li>Use the "reset" button to reset the styles</li>
                 </ol>
-            </section>
-        </header>
+            </div>
+        </aside>
 
         <div class="content">
             <div class="fl-hidden">
@@ -99,7 +102,7 @@
                 </div>
             </div>
 
-            <h1>Preferences Editor</h1>
+            <h1>Preferences Editor: Full Page</h1>
             <div id="myPrefsEditor"></div>
         </div>
 

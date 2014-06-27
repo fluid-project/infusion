@@ -4,6 +4,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>Performance Tests</title>
 
+        <!-- styling for instructions -->
+        <link rel="stylesheet" type="text/css" href="../../../shared/css/instructions.css" />
+
         <script type="text/javascript" src="../../../../../src/lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../../../src/framework/core/js/Fluid.js"></script>
         <script type="text/javascript" src="../../../../../src/framework/core/js/DataBinding.js"></script>
@@ -12,16 +15,22 @@
         <script type="text/javascript" src="js/performance-test.js"></script>
     </head>
     <body>
-            <h1>Performance Tests</h1>
-            <section>
+        <aside class="instructions-container">
+            <div class="instructions-content">
                 <h2>Instructions</h2>
                 <ol>
-                    <li>See results section below. It may take a few seconds to generate results.</li>
+                    <li>
+                        See results section below.
+                        <p class="instructions-note">
+                            <em><strong>Note:</strong> it may take a few seconds to generate results.</em>
+                        </p>
+                    </li>
                 </ol>
-            </section>
-        </header>
+            </div>
+        </aside>
         <main>
-            <h2>Performance Results</h2>
+            <h1>Performance Tests</h1>
+            <h2>Results</h2>
             <ul class="results"></ul>
         </main>
     </body>

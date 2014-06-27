@@ -25,7 +25,7 @@ var assortedContent = assortedContent || {};
                 gradeNames: ["fluid.uiEnhancer.starterEnactors"],
                 classnameMap: {
                     theme: {
-                        "default": "assortedContent-theme-basic"
+                        // "default": "assortedContent-theme-basic"
                     }
                 },
                 tocTemplate: "../../../../../src/components/tableOfContents/html/TableOfContents.html"
