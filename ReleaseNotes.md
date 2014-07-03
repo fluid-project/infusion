@@ -1,8 +1,12 @@
-# Release Notes for Fluid Infusion 1.5 #
+# Release Notes for Fluid Infusion 1.5.1 #
 
 [Main Project Site](http://fluidproject.org)
 
 [Documentation](https://github.com/fluid-project/infusion-docs)
+
+## What's New in 1.5.1? ##
+
+* Corrected .npmignore file
 
 ## What's New in 1.5? ##
 
