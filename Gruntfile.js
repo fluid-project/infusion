@@ -44,7 +44,7 @@ module.exports = function(grunt) {
             },
             necessities: {
                 files: [{
-                    src: ["README.md", "ReleaseNotes.txt", "Infusion-LICENSE.txt"],
+                    src: ["README.*", "ReleaseNotes.*", "Infusion-LICENSE.*"],
                     dest: "build/"
                 }, {
                     // The jQuery license file needs to be copied explicitly since
