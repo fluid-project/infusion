@@ -97,7 +97,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("merge", function () {
-        jqUnit.expect(8);
+        jqUnit.expect(10);
 
         var bit1 = {prop1: "thing1"};
         var bit2 = {prop2: "thing2"};
@@ -125,6 +125,53 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Replace 1",
             bit1, fluid.merge({"": "replace"}, {}, bits, bit1));
 
+        var simpleArray1 = {
+            a: {
+                b: [1, 2]
+            }
+        };
+
+        var simpleArray2 = {
+            a: {
+                b: [3, 4]
+            }
+        };
+
+        var mergePolicy = {
+            "a.b": fluid.arrayConcatPolicy
+        };
+
+        var expectedMergedSimpleArray = {
+            a: {
+                b: [1, 2, 3, 4]
+            }
+        };
+
+        jqUnit.assertDeepEq("Simple arry merge", expectedMergedSimpleArray, fluid.merge(mergePolicy, simpleArray1, simpleArray2));
+
+        var arrayWithSpecialPath1 = {
+            a: {
+                "b.c": [1, 2]
+            }
+        };
+
+        var arrayWithSpecialPath2 = {
+            a: {
+                "b.c": [3, 4]
+            }
+        };
+
+        var mergePolicy = {
+            "a.b\\.c": fluid.arrayConcatPolicy
+        };
+
+        var expectedMergedArrayWithSpecialPath = {
+            a: {
+                "b.c": [1, 2, 3, 4]
+            }
+        };
+
+        jqUnit.assertDeepEq("Merge objects that have dots in path", expectedMergedArrayWithSpecialPath, fluid.merge(mergePolicy, arrayWithSpecialPath1, arrayWithSpecialPath2));
     });
 
     jqUnit.test("replace merge at depth", function () {
