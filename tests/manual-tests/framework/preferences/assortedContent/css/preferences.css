@@ -1,0 +1,102 @@
+header {
+    color: #FFF;
+}
+
+.assortedContent-theme-basic {
+    background-color: #426088;
+    background-image: url("../images/bg-grad.png");
+    background-position: left top;
+    background-repeat: repeat-x;
+}
+
+.assortedContent-theme-basic .assortedContent-content {
+    background-color: white;
+    margin-top: 50px;
+    padding: 10px;
+}
+
+.assortedContent-theme-basic .assortedContent-header,
+.assortedContent-theme-basic .assortedContent-footer {
+    border: solid 1px #426088;
+    padding: 15px;
+}
+
+.assortedContent-theme-basic .assortedContent-header {
+    background-image:url(../../../../../../demos/reorderer/imageReorderer/images/Banana.jpg);
+}
+.assortedContent-theme-basic .assortedContent-header h1 {
+    font-size:2em;
+}
+.assortedContent-theme-basic .assortedContent-breaking {
+    background-color: red;
+    padding: 5px;
+    margin: 5px;
+}
+
+.assortedContent-theme-basic .assortedContent-header .assortedContent-tagline {
+    font-size:1.5em;
+    font-style: italic;
+}
+.assortedContent-theme-basic .assortedContent-breaking h1 {
+    font-style: italic;
+}
+
+.assortedContent-theme-basic .assortedContent-newsletter-signup {
+    padding: 5px;
+    margin: 5px 0;
+    border: solid 1px #426088;
+}
+/* set button images */
+.assortedContent-theme-basic .fl-button-left {background-image:url(../images/themes/assortedContent/buttons-light-cap.png);}
+.assortedContent-theme-basic .fl-button-inner {background-image:url(../images/themes/assortedContent/buttons-light-bg.png);}
+
+/* table styling */
+.assortedContent-theme-basic th {
+    color: white;
+    background-color: #426088;
+}
+
+.assortedContent-theme-basic .assortedContent-calendar {
+    padding: 15px 0;
+}
+
+.assortedContent-theme-basic .fl-widget {
+    background-color: #dfefff;
+    position: relative;
+}
+
+.assortedContent-theme-basic .fl-widget .fl-widget-titlebar{
+    background-color: #426088;
+    color: white;
+    padding: 0.2em;
+}
+.assortedContent-theme-basic .fl-widget .fl-icon-more  {background-image:url('../images/themes/assortedContent/icon-widget-More.png'); margin-left:0px;}
+.assortedContent-theme-basic .fl-widget .fl-icon-close {background-image:url('../images/themes/assortedContent/icon-widget-Close.png'); margin-right:0px;}
+.assortedContent-theme-basic .fl-grabbable .fl-widget-titlebar {background-image:url('../images/themes/assortedContent/icon-widget-gripper.png');}
+.assortedContent-theme-basic .fl-widget h2 {display:inline;}
+
+/*
+.assortedContent-theme-basic .fl-widget-options {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+*/
+.assortedContent-theme-basic .fl-widget-options a {
+    color: #426088;
+}
+
+.assortedContent-theme-basic .assortedContent-weather {
+    background-image:url(../../../../../../demos/reorderer/imageReorderer/images/Kumquat.jpg);
+}
+.assortedContent-theme-basic .assortedContent-weather .fl-widget-content {
+    background-color:#ffffff;
+    border:1px solid black;
+    padding: 3px;
+    filter:alpha(opacity=60);
+    opacity:0.6;
+}
+/* small adjustment to the FSS button style */
+.fl-button-inner {
+    padding-bottom: 6px;
+}

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Settings Panels Tests</title>
+
+        <!--  This is the jqUnit test css file -->
+        <link rel="stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
+
+        <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery.ui.core.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery.ui.widget.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery.ui.mouse.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery.ui.slider.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/json/js/json2.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformation.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformationTransforms.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/enhancement/js/ProgressiveEnhancement.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/RendererUtilities.js"></script>
+
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/ModelRelay.js"></script>
+        <script type="text/javascript" src="../../../../src/components/textfieldSlider/js/TextfieldSlider.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/PrefsEditor.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/Panels.js"></script>
+
+        <!--  These are the jqUnit test js files -->
+        <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
+        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+        <script type="text/javascript" src="../../../test-core/utils/js/IoCTestUtils.js"></script>
+
+        <!--  These are tests that have been written using this page as data -->
+        <script type="text/javascript" src="../js/PanelsTests.js"></script>
+    </head>
+
+    <body>
+    <h1 id="qunit-header">Settings Panels Test Suite</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+
+    <!-- Test HTML -->
+    <div class="flc-prefs-compositePanel"></div>
+
+    <div class="flc-textFont">
+        <select class="flc-prefsEditor-text-font fl-inputs" id="text-font">
+        </select>
+    </div>
+
+    <div class="flc-contrast">
+        <h2><span class="fl-icon-contrast"></span><span class="flc-prefsEditor-contrast-label heading-text"></span></h2>
+        <div class="flc-prefsEditor-themeRow fl-choice">
+            <input type="radio" class="flc-prefsEditor-themeInput fl-hidden-accessible" name="theme" id="bw" value="bw" />
+            <div class="fl-indicator"></div>
+            <label for="bw" class="flc-prefsEditor-theme-label fl-theme-prefsEditor-bw">
+                <span class="fl-preview-A"></span>
+                <span class="fl-hidden-accessible"></span>
+                <span class="fl-crossout"></span>
+            </label>
+        </div>
+    </div>
+
+    <div class="flc-textSize">
+        <ul class="fl-prefsEditor-topContainer fl-clearfix">
+            <li class="flc-prefsEditor-min-text-size">
+                <label for="min-text-size">Text Size</label>
+                <div class="fl-inputs">
+                    <div class="fl-force-left">
+                        <div class="fl-force-left fl-text-slider-left"><span class="fl-hidden-accessible">icon of a small capital letter 'A'</span></div>
+                        <div class="flc-textfieldSlider-slider fl-force-left fl-slider fl-slider-horz"> </div>
+                        <div class="fl-force-left fl-text-slider-right"><span class="fl-hidden-accessible">icon of a large capital letter 'A'</span></div>
+                    </div>
+                    <div class="fl-slider-input"><input id="min-text-size" class="flc-textfieldSlider-field" type="text" /> times</div>
+
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="flc-lineSpace">
+        <ul class="fl-prefsEditor-topContainer fl-clearfix">
+            <li class="flc-prefsEditor-line-space">
+                <label for="line-space">Line Space</label>
+                <div class="fl-inputs">
+                    <div class="fl-force-left">
+                        <div class="fl-force-left fl-spacing-slider-left"><span class="fl-hidden-accessible">icon of 3 horizontal lines with narrow spacing</span></div>
+                        <div class="flc-textfieldSlider-slider fl-force-left fl-slider fl-slider-horz"> </div>
+                        <div class="fl-force-left fl-spacing-slider-right"><span class="fl-hidden-accessible">icon of 3 horizontal lines with wide spacing</span></div>
+                    </div>
+                    <div class="fl-slider-input"><input id="line-space" class="flc-textfieldSlider-field" type="text" /> times</div>
+
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="flc-layout">
+        <input type="checkbox" id="toc-choice" class="flc-prefsEditor-toc fl-force-left" />
+    </div>
+
+    <div class="flc-links">
+        <input type="checkbox" id="links-choice" class="flc-prefsEditor-links fl-force-left" />
+        <input type="checkbox" id="inputs-choice" class="flc-prefsEditor-inputs-larger fl-force-left" />
+    </div>
+
+    <div class="renderOnPreference"></div>
+    <div class="fluid-5200"></div>
+    <div class="fluid-5201"></div>
+    <div class="fluid-5202"></div>
+    <div class="fluid-5203"></div>
+    <div class="fluid-5210"></div>
+    <div class="fluid-5220"></div>
+
+    </body>
+</html>

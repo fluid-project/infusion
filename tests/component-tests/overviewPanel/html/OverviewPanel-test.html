@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Overview Panel Test Suite</title>
+
+        <!--  This is the jqUnit test css file -->
+        <link rel="stylesheet" type="text/css" media="screen" href="../../../lib/qunit/css/qunit.css" />
+
+        <!--  These are the required javascript modules for the Overview Panel -->
+
+        <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/RendererUtilities.js"></script>
+        <script type="text/javascript" src="../../../../src/components/overviewPanel/js/OverviewPanel.js"></script>
+
+        <!--  These are the jqUnit test framework js files -->
+        <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
+        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+
+        <!--  These are tests that have been written using this page as data and test supports -->
+        <script type="text/javascript" src="../js/OverviewPanelTests.js"></script>
+
+    </head>
+    <body id="body">
+        <!-- This is the markup that jqUnit will look for when running tests and displaying the results -->
+        <h1 id="qunit-header">OverviewPanel Test Suite</h1>
+        <h2 id="qunit-banner"></h2>
+        <div id="qunit-testrunner-toolbar"></div>
+        <h2 id="qunit-userAgent"></h2>
+        <ol id="qunit-tests"></ol>
+        <div id="qunit-fixture">
+            <div class="flc-overviewPanel"></div>
+        </div>
+    </body>
+</html>

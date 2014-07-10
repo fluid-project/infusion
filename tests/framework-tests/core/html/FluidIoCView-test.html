@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>FluidIoC.js View Tests</title>
+
+        <!--  This is the jqUnit test css file -->
+        <link rel="stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
+
+        <!--  These are the required javascript modules  -->
+        <script type="text/javascript" src="../../../../src/lib/json/js/json2.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/JavaProperties.js"></script> <!-- one test case calls formatMessage -->
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidRequests.js"></script>
+
+        <!--  These are the jqUnit test js files -->
+        <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
+        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+
+        <!--  These are tests that have been written using this page as data -->
+        <script type="text/javascript" src="../js/FluidIoCViewTests.js"></script>
+
+    </head>
+    <body>
+    <h1 id="qunit-header">Fluid IoC JS View Test Suite</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+
+    <!-- Test HTML -->
+    <div id="main" style="display:none;" class="container">
+
+      <ul id="pager-top" class="pager-top">
+          <li id="top1" class="page-link"><a href="#" id="page-link-1">1</a></li>
+          <li id="top2" class="page-link"><a href="#" id="page-link-2">2</a></li>
+          <li id="top3" class="page-link"><a href="#" id="page-link-3">3</a></li>
+          <li id="previous-top" class="previous">&lt; previous</li>
+          <li id="next-top" class="next">next &gt;</li>
+      </ul>
+
+      <div class="flc-tests-parentView-container">
+          <div class="flc-tests-parentView-defaultedChildContainer">Cat!</div>
+          <div class="flc-tests-parentView-demandedChildContainer">Dog</div>
+      </div>
+
+      <div class="flc-tests-dynamic-container">
+          <div class="flc-tests-dynamic-component"></div>
+          <div class="flc-tests-dynamic-component"></div>
+          <div class="flc-tests-dynamic-component"></div>
+      </div>
+
+    </div>
+
+
+    </body>
+</html>

@@ -31,15 +31,13 @@ module.exports = function(grunt) {
             all: {
                 files: [{
                     expand: true,
-                    cwd: "src/",
-                    src: ["**"],
+                    src: ["src/**", "tests/**", "demos/**", "examples/**"],
                     dest: "build/"
                 }]
             },
             custom: {
                 files: [{
                     expand: true,
-                    cwd: "src/",
                     src: "<%= modulefiles.custom.output.dirs %>",
                     dest: "build/"
                 }]
@@ -68,7 +66,7 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,     // Enable dynamic expansion.
                     cwd: "./build/",      // Src matches are relative to this path.
-                    src: ["components/**/*.js", "framework/**/*.js", "lib/**/*.js"], // Actual pattern(s) to match.
+                    src: ["src/components/**/*.js", "src/framework/**/*.js", "src/lib/**/*.js"], // Actual pattern(s) to match.
                     dest: "./build/"   // Destination path prefix.
                 }]
             },
@@ -76,23 +74,21 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,     // Enable dynamic expansion.
                     cwd: "./build",      // Src matches are relative to this path.
-                    src: ["**/*.js"], // Actual pattern(s) to match.
+                    src: ["src/**/*.js"], // Actual pattern(s) to match.
                     dest: "./build"   // Destination path prefix.
                 }]
             }
         },
         modulefiles: {
             all: {
-                cwd: "src/",
-                src: ["**/*Dependencies.json"]
+                src: ["src/**/*Dependencies.json"]
             },
             custom: {
                 options: {
                     exclude: grunt.option("exclude"),
                     include: grunt.option("include")
                 },
-                cwd: "src/",
-                src: ["**/*Dependencies.json"]
+                src: ["src/**/*Dependencies.json"]
             }
         },
         map: {
@@ -156,7 +152,7 @@ module.exports = function(grunt) {
             }
         },
         jshint: {
-            src: ["src/**/*.js"],
+            all: ["**/*.js"],
             buildScripts: ["Gruntfile.js"],
             options: {
                 jshintrc: true
