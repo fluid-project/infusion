@@ -4,13 +4,11 @@
 build-scripts
 Gruntfile.js
 products
-project.xml
-project.properties
-pom.xml
 
 src/components
 src/demos
 src/framework/fss
+src/framework/preferences
 src/instructionalDemos
 src/integration-demos
 src/lib/fonts
