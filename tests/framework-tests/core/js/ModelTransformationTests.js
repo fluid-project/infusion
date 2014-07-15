@@ -1549,6 +1549,42 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Perfectly inverted mapping", cattoo.model, reverse);
     });
 
+    jqUnit.test("FLUID-5472: invert valueMapper to boolean values", function () {
+        var model = {
+            audio: true
+        };
+
+        var rules = {
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                inputPath: "audio",
+                options: {
+                    true: {
+                        "outputPath": "audio",
+                        "outputValue": "available"
+                    },
+                    false: {
+                        "outputPath": "audio",
+                        "outputValue": "unavailable"
+                    }
+                }
+            }
+        };
+
+        var expectedTransformedModel = {
+            audio: "available"
+        };
+
+        var transformedModel = fluid.model.transform(model, {value: rules});
+
+        jqUnit.assertDeepEq("The model is transformed properly", expectedTransformedModel, transformedModel.value);
+
+        var inverseRules = fluid.model.transform.invertConfiguration(rules);
+        var invertedModel = fluid.model.transform(transformedModel.value, {value: inverseRules});
+
+        jqUnit.assertDeepEq("The model is inverted properly", model, invertedModel.value);
+    });
+
     var capabilitiesTransformations = {
         "mag-factor": "display.screenEnhancement.magnification",
         "show-cross-hairs": "display.screenEnhancement.showCrosshairs",
