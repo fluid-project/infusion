@@ -1251,6 +1251,69 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         testCompact(" - expanded", expandedRules);
     });
 
+    jqUnit.test("FLUID-5473: valueMapper with default output value", function () {
+        var cases = [{
+            model: {
+                flashing: true,
+                noflashing: false
+            },
+            expected: {
+                flashing: "flashing"
+            }
+        }, {
+            model: {
+                flashing: false,
+                noflashing: true
+            },
+            expected: {
+                flashing: "noflashing"
+            }
+        }, {
+            model: {
+                flashing: true,
+                noflashing: true
+            },
+            expected: {
+                flashing: "unknown"
+            }
+        }, {
+            model: {
+                flashing: false,
+                noflashing: false
+            },
+            expected: {
+                flashing: "unknown"
+            }
+        }];
+
+        var transform = {
+            value: {
+                transform: [{
+                    type: "fluid.transforms.valueMapper",
+                    defaultOutputPath: "flashing",
+                    defaultOutputValue: "unknown",
+                    options: [
+                        {
+                            inputPath: "flashing",
+                            inputValue: true,
+                            outputValue: "flashing"
+                        },
+                        {
+                            inputPath: "noflashing",
+                            inputValue: true,
+                            outputValue: "noflashing"
+                        }
+                    ]
+                }]
+            }
+        };
+
+        fluid.each(cases, function (oneCase) {
+            var actual = fluid.model.transform(oneCase.model, transform);
+            jqUnit.assertDeepEq("The model is transformed properly", oneCase.expected, actual.value);
+        });
+    });
+
     jqUnit.test("transform with custom schema", function () {
         var rules = {
             "0.0.feline": "cat"
