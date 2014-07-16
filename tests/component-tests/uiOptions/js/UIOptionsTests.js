@@ -21,7 +21,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.module("UIOptions Tests");
 
         jqUnit.asyncTest("Pass in customized toc template", function () {
-            jqUnit.expect(1);
+            jqUnit.expect(2);
 
             var customizedTocTemplate = "../../../../src/components/tableOfContents/html/TableOfContents.html";
 
@@ -29,7 +29,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 tocTemplate: customizedTocTemplate,
                 listeners: {
                     onReady: function (that) {
-                        jqUnit.assertEquals("The toc template is applied properly", customizedTocTemplate, that.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate);
+                        jqUnit.assertEquals("The toc template is applied properly to the pageEnhancer", customizedTocTemplate, that.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate);
+                        jqUnit.assertEquals("FLUID-5474: The toc template is applied properly to iframeEnhancer", customizedTocTemplate, that.prefsEditorLoader.iframeRenderer.iframeEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate);
                         jqUnit.start();
                     }
                 },
