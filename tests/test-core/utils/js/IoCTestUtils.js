@@ -171,7 +171,7 @@ var fluid_2_0 = fluid_2_0 || {};
         }
         root.activeTests += count;
         if (count === -1) {
-            fluid.log(fluid.logLevel.INFO, "Starting QUnit due to destruction of tree ", root);
+            fluid.log(fluid.logLevel.TRACE, "Starting QUnit due to destruction of tree ", root);
             QUnit.start();
         }
         if (root.activeTests === 0) {
@@ -181,14 +181,19 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.test.decodeListener = function (testCaseState, fixture) {
-        var listener;
+        var listener, member;
         if (fixture.listener) {
+            member = "listener";
             listener = testCaseState.expandFunction(fixture.listener);
         }
         else if (fixture.listenerMaker) {
+            member = "listenerMaker";
             var maker = testCaseState.expandFunction(fixture.listenerMaker);
             var args = testCaseState.expand(fixture.makerArgs);
             listener = maker.apply(null, args);
+        }
+        if (typeof(listener) !== "function") {
+            fluid.fail("Unable to decode entry " + member + " of fixture ", fixture, " to a function - got ", listener); 
         }
         return listener;
     };

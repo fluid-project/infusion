@@ -73,6 +73,107 @@
         jqUnit.assertEquals("Sound", "meow", catt.makeSound());
     };
 
+    fluid.defaults("fluid.tests.initTree", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        components: {
+    // natural place for this configuration is here - however, moved into driver to test FLUID-5132
+    //        initTest: {
+    //            type: "fluid.tests.initTest",
+    //            createOnEvent: "{initTester}.events.onTestCaseStart"
+    //        },
+            initTester: {
+                type: "fluid.tests.initTester"
+            }
+        }
+    });
+
+    fluid.tests.setup = function (that) {
+        // do some setup, for test purpose just fire onReady
+        that.events.onReady.fire();
+    };
+
+    fluid.defaults("fluid.tests.initTest", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            onReady: null
+        },
+        listeners: {
+            onCreate: "{that}.initialSetup"
+        },
+        invokers: {
+            initialSetup: "fluid.tests.setup",
+            args: ["{that}"]
+        }
+    });
+
+    fluid.defaults("fluid.tests.initTester", {
+        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        modules: [ {
+            name: "Init test case",
+            tests: [{
+                name: "Init sequence",
+                expect: 1,
+                sequence: [{
+                    listener: "fluid.tests.checkEvent",
+                    event: "{initTree initTest}.events.onReady"
+                }]
+            }]
+        }]
+    });
+
+    fluid.defaults("fluid.tests.dynamicCATT", {
+        gradeNames: ["fluid.modelComponent", "autoInit"],
+        catts: ["catt1", "catt2"],
+        dynamicComponents: {
+            catts: {
+                sources: "{that}.options.catts",
+                type: "fluid.tests.cat"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.sourceTester", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        components: {
+            tree: {
+                type: "fluid.tests.dynamicCATT"
+            },
+            fixtures: {
+                type: "fluid.test.testCaseHolder",
+                options: {
+                    moduleSource: {
+                        funcName: "fluid.tests.cattModuleSource",
+                        args: "{sourceTester}.tree"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.tests.cattModuleSource = function (dynamic) {
+        var sequence = [];
+        fluid.visitComponentChildren(dynamic, function (child) {
+            sequence.push({
+                name: "Test Meow " + (sequence.length + 1),
+                type: "test",
+                func: "fluid.tests.globalCatTest",
+                args: child
+            });
+        }, {});
+        return {
+            name: "Dynamic module source tests",
+            tests: {
+                name: "Dynamic CATT tests",
+                sequence: sequence
+            }
+        };
+    };
+
+    if (!fluid.defaults("fluid.viewComponent")) {
+        return;
+    }
+    
+    /**** VIEW-AWARE TESTS FROM HERE ONWARDS ****/
 
     fluid.defaults("fluid.tests.asyncTest", {
         gradeNames: ["fluid.rendererComponent", "autoInit"],
@@ -213,102 +314,6 @@
         var decArray = fluid.values(decorators);
         jqUnit.assertEquals("Constructed one component", 1, decArray.length);
         asyncTest.locate("button").click();
-    };
-
-    fluid.defaults("fluid.tests.initTree", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
-        components: {
-    // natural place for this configuration is here - however, moved into driver to test FLUID-5132
-    //        initTest: {
-    //            type: "fluid.tests.initTest",
-    //            createOnEvent: "{initTester}.events.onTestCaseStart"
-    //        },
-            initTester: {
-                type: "fluid.tests.initTester"
-            }
-        }
-    });
-
-    fluid.tests.setup = function (that) {
-        // do some setup, for test purpose just fire onReady
-        that.events.onReady.fire();
-    };
-
-    fluid.defaults("fluid.tests.initTest", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
-        events: {
-            onReady: null
-        },
-        listeners: {
-            onCreate: "{that}.initialSetup"
-        },
-        invokers: {
-            initialSetup: "fluid.tests.setup",
-            args: ["{that}"]
-        }
-    });
-
-    fluid.defaults("fluid.tests.initTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
-        modules: [ {
-            name: "Init test case",
-            tests: [{
-                name: "Init sequence",
-                expect: 1,
-                sequence: [{
-                    listener: "fluid.tests.checkEvent",
-                    event: "{initTree initTest}.events.onReady"
-                }]
-            }]
-        }]
-    });
-
-    fluid.defaults("fluid.tests.dynamicCATT", {
-        gradeNames: ["fluid.modelComponent", "autoInit"],
-        catts: ["catt1", "catt2"],
-        dynamicComponents: {
-            catts: {
-                sources: "{that}.options.catts",
-                type: "fluid.tests.cat"
-            }
-        }
-    });
-
-    fluid.defaults("fluid.tests.sourceTester", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
-        components: {
-            tree: {
-                type: "fluid.tests.dynamicCATT"
-            },
-            fixtures: {
-                type: "fluid.test.testCaseHolder",
-                options: {
-                    moduleSource: {
-                        funcName: "fluid.tests.cattModuleSource",
-                        args: "{sourceTester}.tree"
-                    }
-                }
-            }
-        }
-    });
-
-    fluid.tests.cattModuleSource = function (dynamic) {
-        var sequence = [];
-        fluid.visitComponentChildren(dynamic, function (child) {
-            sequence.push({
-                name: "Test Meow " + (sequence.length + 1),
-                type: "test",
-                func: "fluid.tests.globalCatTest",
-                args: child
-            });
-        }, {});
-        return {
-            name: "Dynamic module source tests",
-            tests: {
-                name: "Dynamic CATT tests",
-                sequence: sequence
-            }
-        };
     };
 
     /** Global driver function **/
