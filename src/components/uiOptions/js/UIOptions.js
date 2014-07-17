@@ -22,16 +22,14 @@ var fluid_1_5 = fluid_1_5 || {};
         gradeNames: ["fluid.prefs.constructed.prefsEditor", "autoInit"],
         distributeOptions: {
             source: "{that}.options.tocTemplate",
-            removeSource: true,
             target: "{that uiEnhancer}.options.tocTemplate"
         },
         enhancer: {
             distributeOptions: {
                 source: "{that}.options.tocTemplate",
-                removeSource: true,
                 target: "{that > fluid.prefs.enactor.tableOfContents}.options.tocTemplate"
             }
         }
     });
-    
+
 })(jQuery, fluid_1_5);
