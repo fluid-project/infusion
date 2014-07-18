@@ -155,16 +155,15 @@ var fluid = fluid || fluid_2_0;
             togo += c;
         }
         return togo;
-    }
+    };
 
     function printImpl (obj, small, options) {
-        var big = small + options.indentChars, togo;
+        var big = small + options.indentChars, togo, isFunction = typeof(obj) === "function";
         if (obj === null) {
             togo = "null";
         } else if (obj === undefined) {
             togo = "undefined"; // NB - object invalid for JSON interchange
-        }
-        else if (fluid.isPrimitive(obj)) {
+        } else if (fluid.isPrimitive(obj) && !isFunction) {
             togo = JSON.stringify(obj);
         }
         else {
@@ -186,10 +185,11 @@ var fluid = fluid || fluid_2_0;
             }
             else {
                 i = 0;
-                fluid.each(obj, function(value, key) {
+                togo = "{" + (isFunction ? " Function" : "") + "\n"; // NB - Function object invalid for JSON interchange
+                fluid.each(obj, function (value, key) {
                     j[i++] = JSON.stringify(key) + ": " + printImpl(value, big, options);
                 });
-                togo = "{\n" + big + j.join(",\n" + big) + "\n" + small + "}";
+                togo += big + j.join(",\n" + big) + "\n" + small + "}";
             }
             options.stack.pop();
         }

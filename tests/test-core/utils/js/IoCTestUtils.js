@@ -193,7 +193,7 @@ var fluid_2_0 = fluid_2_0 || {};
             listener = maker.apply(null, args);
         }
         if (typeof(listener) !== "function") {
-            fluid.fail("Unable to decode entry " + member + " of fixture ", fixture, " to a function - got ", listener); 
+            fluid.fail("Unable to decode entry " + member + " of fixture ", fixture, " to a function - got ", listener);
         }
         return listener;
     };
@@ -214,6 +214,9 @@ var fluid_2_0 = fluid_2_0 || {};
             execute: function () {
                 var testFunc = testCaseState.expandFunction(fixture.func || fixture.funcName);
                 var args = testCaseState.expand(fixture.args);
+                if (typeof(testFunc) !== "function") {
+                    fluid.fail("Unable to decode entry func or funcName of fixture ", fixture, " to a function - got ", testFunc);
+                }
                 testFunc.apply(null, fluid.makeArray(args));
             }
         };
@@ -238,13 +241,13 @@ var fluid_2_0 = fluid_2_0 || {};
         var listener = fluid.test.decodeListener(testCaseState, fixture);
         var element;
         var that = fluid.test.makeBinder(listener,
-           function (wrapped) {
-            element = fluid.test.decodeElement(testCaseState, fixture);
-            var args = fluid.makeArray(testCaseState.expand(fixture.args));
-            args.unshift(event);
-            args.push(wrapped);
-            element.one.apply(element, args);
-        }, fluid.identity  // do nothing on unbind, jQuery.one has done it
+            function (wrapped) {
+                element = fluid.test.decodeElement(testCaseState, fixture);
+                var args = fluid.makeArray(testCaseState.expand(fixture.args));
+                args.unshift(event);
+                args.push(wrapped);
+                element.one.apply(element, args);
+            }, fluid.identity  // do nothing on unbind, jQuery.one has done it
         );
         return that;
     };

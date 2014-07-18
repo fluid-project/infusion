@@ -12,7 +12,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /* global fluid, jqUnit */
 
-(function ($) {
+(function () {
     "use strict";
 
     fluid.setLogging(true);
@@ -28,6 +28,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         circular.field = circular;
         var renderCircular = fluid.prettyPrintJSON(circular);
         jqUnit.assertValue("Render circular: " + renderCircular, circular);
+        
+        var functionHolder = function () {};
+        functionHolder.listableProperty = 1;
+        var renderFunction = fluid.prettyPrintJSON(functionHolder);
+        jqUnit.assertTrue("Function is annotated", renderFunction.indexOf("Function") !== -1);
+        jqUnit.assertTrue("Function property is listed", renderFunction.indexOf("listableProperty") !== -1);
+        
         var complex = {
             "null": null,
             "boolean": true,
@@ -35,8 +42,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fields: {
                 a: 3,
                 b: {
-                  c: [],
-                  d: [1, false]
+                    c: [],
+                    d: [1, false]
                 }
             }
         };
