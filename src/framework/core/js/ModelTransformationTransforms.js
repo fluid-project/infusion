@@ -230,13 +230,13 @@ var fluid = fluid || fluid_2_0;
 
     fluid.transforms.valueMapper = function (transformSpec, transform) {
         if (!transformSpec.options) {
-            fluid.fail("demultiplexValue requires a list or hash of options at path named \"options\", supplied ", transformSpec);
+            fluid.fail("valueMapper requires a list or hash of options at path named \"options\", supplied ", transformSpec);
         }
         var value = fluid.model.transform.getValue(transformSpec.inputPath, undefined, transform);
         var deref = fluid.isArrayable(transformSpec.options) ? // long form with list of records
             function (testVal) {
                 var index = fluid.model.transform.matchValueMapperFull(testVal, transformSpec, transform);
-                return index === -1 ? null : transformSpec.options[index];
+                return index === -1 ? undefined : transformSpec.options[index];
             } :
             function (testVal) {
                 return transformSpec.options[testVal];
@@ -244,26 +244,22 @@ var fluid = fluid || fluid_2_0;
 
         var indexed = deref(value);
         if (!indexed) {
-            // if no branch matches, try again using this value - WARNING, this seriously
-            // threatens invertibility
+            // if no branch matches, try again using this value - WARNING, this seriously threatens invertibility
             indexed = deref(transformSpec.defaultInputValue);
         }
-        if (!indexed) {
-            return;
-        }
 
-        var outputPath = indexed.outputPath === undefined ? transformSpec.defaultOutputPath : indexed.outputPath;
+        var outputPath = (!indexed || indexed.outputPath === undefined) ? transformSpec.defaultOutputPath : indexed.outputPath;
         transform.outputPrefixOp.push(outputPath);
         var outputValue;
-        if (fluid.isPrimitive(indexed)) {
+        if (fluid.isPrimitive(indexed) && indexed !== undefined) {
             outputValue = indexed;
         } else {
             // if undefinedOutputValue is set, outputValue should be undefined
-            if (indexed.undefinedOutputValue) {
+            if (indexed && indexed.undefinedOutputValue) {
                 outputValue = undefined;
             } else {
                 // get value from outputValue or outputValuePath. If none is found set the outputValue to be that of defaultOutputValue (or undefined)
-                outputValue = fluid.model.transform.resolveParam(indexed, transform, "outputValue", undefined);
+                outputValue = !indexed ? indexed : fluid.model.transform.resolveParam(indexed, transform, "outputValue", undefined);
                 outputValue = (outputValue === undefined) ? transformSpec.defaultOutputValue : outputValue;
             }
         }
