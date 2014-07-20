@@ -1042,7 +1042,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expected: undefined
         },
         "unmatched-definite": {
-            message: "valueMapper with unmatched input value mapped to definite value",
+            message: "valueMapper with undefined input value mapped to definite value",
             model: {},
             expandWrap: true,
             transform: {
