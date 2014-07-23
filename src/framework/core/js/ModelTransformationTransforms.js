@@ -221,7 +221,8 @@ var fluid = fluid || fluid_2_0;
             var option = o[i];
             var value = fluid.firstDefined(fluid.model.transform.getValue(option.inputPath, undefined, transform),
                 outerValue);
-            var matchCount = fluid.model.transform.matchValue(option.undefinedInputValue ? undefined : option.inputValue, value);
+            var matchCount = fluid.model.transform.matchValue(option.undefinedInputValue ? undefined :
+                (option.inputValue === undefined ? transformSpec.defaultInputValue : option.inputValue), value);
             matchPower[i] = {index: i, matchCount: matchCount};
         }
         matchPower.sort(fluid.model.transform.compareMatches);
@@ -230,7 +231,7 @@ var fluid = fluid || fluid_2_0;
 
     fluid.transforms.valueMapper = function (transformSpec, transform) {
         if (!transformSpec.options) {
-            fluid.fail("demultiplexValue requires a list or hash of options at path named \"options\", supplied ", transformSpec);
+            fluid.fail("valueMapper requires a list or hash of options at path named \"options\", supplied ", transformSpec);
         }
         var value = fluid.model.transform.getValue(transformSpec.inputPath, undefined, transform);
         var deref = fluid.isArrayable(transformSpec.options) ? // long form with list of records
@@ -267,7 +268,7 @@ var fluid = fluid || fluid_2_0;
                 outputValue = (outputValue === undefined) ? transformSpec.defaultOutputValue : outputValue;
             }
         }
-        //output if outputPath or defaultOutputPath have been specified and the relevant child hasn't done the outputting
+        // output if outputPath or defaultOutputPath have been specified and the relevant child hasn't done the outputting
         if (typeof(outputPath) === "string" && outputValue !== undefined) {
             fluid.model.transform.setValue(undefined, outputValue, transform, transformSpec.merge);
             outputValue = undefined;
@@ -293,7 +294,7 @@ var fluid = fluid || fluid_2_0;
         var anyCustomOutput = findCustom("outputPath");
         var anyCustomInput = findCustom("inputPath");
         if (!anyCustomOutput) {
-            togo.inputPath = fluid.model.composePaths(transform.outputPrefix, transformSpec.outputPath);
+            togo.inputPath = fluid.model.composePaths(transform.outputPrefix, transformSpec.defaultOutputPath);
         }
         if (!anyCustomInput) {
             togo.defaultOutputPath = fluid.model.composePaths(transform.inputPrefix, transformSpec.inputPath);
@@ -305,7 +306,7 @@ var fluid = fluid || fluid_2_0;
             if (origInputValue === undefined) {
                 fluid.fail("Failure inverting configuration for valueMapper - inputValue could not be resolved for record " + key + ": ", transformSpec);
             }
-            outOption.outputValue = origInputValue;
+            outOption.outputValue = fluid.model.transform.literaliseValue(origInputValue);
             var origOutputValue = def(option.outputValue, transformSpec.defaultOutputValue);
             outOption.inputValue = fluid.model.transform.getValue(option.outputValuePath, origOutputValue, transform);
             if (anyCustomOutput) {

@@ -1635,7 +1635,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
     
-    jqUnit.test("FLUID-5371: Model relay directives 'forward' and 'backward'", function () {
+    jqUnit.test("FLUID-5371: Model relay directives \"forward\" and \"backward\"", function () {
         var that = fluid.tests.fluid5371root();
         jqUnit.assertEquals("Forward init relay with backward never", 3, that.model.forwardOnlyTarget);
         that.applier.change("forwardOnly", 4);
@@ -1656,6 +1656,72 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Forward relay with liveOnly forward", 8, that.model.liveOnlyTarget);
         that.applier.change("liveOnlyTarget", 9);
         jqUnit.assertEquals("Backward relay with liveOnly forwarD", 9, that.model.liveOnly);
+    });
+    
+    // FLUID-5479: Compound values for valueMapper transform - example from metadata editor
+    
+    fluid.defaults("fluid.tests.fluid5479root", {
+        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        model: {
+            accessibilityHazard: []
+        },
+        modelRelay: [{
+            source: "accessibilityHazard",
+            target: "flashingHash",
+            singleTransform: {
+                type: "fluid.transforms.arrayToSetMembership",
+                options: {
+                    "flashing": "flashing",
+                    "noFlashingHazard": "noFlashingHazard"
+                }
+            }
+        }, {
+            source: "flashingHash",
+            target: "flashingRender",
+            singleTransform: {
+                type: "fluid.transforms.valueMapper",
+                inputPath: "",
+                options: [{ // slightly modified from version in ModelTransformationTests.js to test a variant expression of the same rules (all are compound here)
+                    inputValue: {
+                        "flashing": true,
+                        "noFlashingHazard": false
+                    },
+                    outputValue: "yes"
+                }, {
+                    inputValue: {
+                        "flashing": false,
+                        "noFlashingHazard": true
+                    },
+                    outputValue: "no"
+                }, {
+                    inputValue: {
+                        "flashing": false,
+                        "noFlashingHazard": false
+                    },
+                    outputValue: "unknown"
+                }
+            ]
+            }
+        }]
+    });
+    
+    jqUnit.test("FLUID-5479: Model relay with compound valueMapper values - metadata editor example", function () {
+        var that = fluid.tests.fluid5479root();
+        var expectedInitial = {
+            accessibilityHazard: [],
+            flashingHash: {
+                "flashing": false,
+                "noFlashingHazard": false
+            },
+            flashingRender: "unknown"
+        };
+        jqUnit.assertDeepEq("Initial model synchronised", expectedInitial, that.model);
+        that.applier.change("flashingRender", "yes");
+        jqUnit.assertDeepEq("Propagated flashing to upstream model", ["flashing"], that.model.accessibilityHazard);
+        that.applier.change("flashingRender", "no");
+        jqUnit.assertDeepEq("Propagated no flashing to upstream model", ["noFlashingHazard"], that.model.accessibilityHazard);
+        that.applier.change("flashingRender", "unknown");
+        jqUnit.assertDeepEq("Propagated unknown to upstream model", [], that.model.accessibilityHazard);
     });
     
 })(jQuery);
