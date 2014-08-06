@@ -1,5 +1,5 @@
 /*
-Copyright 2012 OCAD University, Antranig Basman
+Copyright 2014 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
