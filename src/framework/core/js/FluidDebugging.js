@@ -199,7 +199,7 @@ var fluid = fluid || fluid_2_0;
     /** Render a complex JSON object into a nicely indented format suitable for human readability.
      * @param obj {Object} The object to be rendered
      * @param options {Object} An options structure governing the rendering process. The only option which
-     * is currently supported is <code>indentChars</code> holding the number of space characters to be used to
+     * is currently supported is <code>indent</code> holding the number of space characters to be used to
      * indent each level of containment.
      */
     fluid.prettyPrintJSON = function (obj, options) {
