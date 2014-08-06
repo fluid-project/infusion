@@ -32,7 +32,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     context.window = context;
 
-    /** Load a standard, non-require-aware Fluid framework file into the Fluid context **/
+    /** Load a standard, non-require-aware Fluid framework file into the Fluid context, given a filename
+     * relative to this directory (src/module) **/
 
     var loadInContext = function (path) {
         var fullpath = buildPath(path);
@@ -53,6 +54,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // FLUID-4913: QUnit calls window.addEventListener on load. We need to add
     // it to the context it will be loaded in.
     context.addEventListener = fluid.identity;
+    
+    fluid.logObjectRenderChars = 1024;
+    
+    // Convert an argument intended for console.log in the node environment to a readable form (the
+    // default action of util.inspect censors at depth 1)
+    fluid.renderLoggingArg = function (arg) {
+        var togo = arg && fluid.isPrimitive(arg) ? arg : fluid.prettyPrintJSON(arg);
+        if (typeof(togo) === "string" && togo.length > fluid.logObjectRenderChars) {
+            togo = togo.substring(0, fluid.logObjectRenderChars) + " .... [output suppressed at " + fluid.logObjectRenderChars + " chars - for more output, increase fluid.logObjectRenderChars]";
+        }
+        return togo;
+    };
+    
+    // Monkey-patch the built-in fluid.doLog utility to improve its behaviour within node.js - see FLUID-5475
+    fluid.doLog = function (args) {
+        args = fluid.transform(args, fluid.renderLoggingArg);
+        console.log(args.join(""));
+    };
 
     fluid.loadInContext = loadInContext;
     fluid.loadIncludes = loadIncludes;

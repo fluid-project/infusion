@@ -24,5 +24,4 @@ tests/all-tests.html
 tests/lib/jquery-ui
 tests/lib/mockjax
 tests/lib/README
-tests/test-core/testTests
 tests/test-core/utils/js/DebugFocus.js

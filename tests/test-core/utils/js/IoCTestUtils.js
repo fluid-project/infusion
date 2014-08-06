@@ -171,7 +171,7 @@ var fluid_2_0 = fluid_2_0 || {};
         }
         root.activeTests += count;
         if (count === -1) {
-            fluid.log(fluid.logLevel.INFO, "Starting QUnit due to destruction of tree ", root);
+            fluid.log(fluid.logLevel.TRACE, "Starting QUnit due to destruction of tree ", root);
             QUnit.start();
         }
         if (root.activeTests === 0) {
@@ -181,14 +181,19 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.test.decodeListener = function (testCaseState, fixture) {
-        var listener;
+        var listener, member;
         if (fixture.listener) {
+            member = "listener";
             listener = testCaseState.expandFunction(fixture.listener);
         }
         else if (fixture.listenerMaker) {
+            member = "listenerMaker";
             var maker = testCaseState.expandFunction(fixture.listenerMaker);
             var args = testCaseState.expand(fixture.makerArgs);
             listener = maker.apply(null, args);
+        }
+        if (typeof(listener) !== "function") {
+            fluid.fail("Unable to decode entry " + member + " of fixture ", fixture, " to a function - got ", listener);
         }
         return listener;
     };
@@ -209,6 +214,9 @@ var fluid_2_0 = fluid_2_0 || {};
             execute: function () {
                 var testFunc = testCaseState.expandFunction(fixture.func || fixture.funcName);
                 var args = testCaseState.expand(fixture.args);
+                if (typeof(testFunc) !== "function") {
+                    fluid.fail("Unable to decode entry func or funcName of fixture ", fixture, " to a function - got ", testFunc);
+                }
                 testFunc.apply(null, fluid.makeArray(args));
             }
         };
@@ -233,13 +241,13 @@ var fluid_2_0 = fluid_2_0 || {};
         var listener = fluid.test.decodeListener(testCaseState, fixture);
         var element;
         var that = fluid.test.makeBinder(listener,
-           function (wrapped) {
-            element = fluid.test.decodeElement(testCaseState, fixture);
-            var args = fluid.makeArray(testCaseState.expand(fixture.args));
-            args.unshift(event);
-            args.push(wrapped);
-            element.one.apply(element, args);
-        }, fluid.identity  // do nothing on unbind, jQuery.one has done it
+            function (wrapped) {
+                element = fluid.test.decodeElement(testCaseState, fixture);
+                var args = fluid.makeArray(testCaseState.expand(fixture.args));
+                args.unshift(event);
+                args.push(wrapped);
+                element.one.apply(element, args);
+            }, fluid.identity  // do nothing on unbind, jQuery.one has done it
         );
         return that;
     };
