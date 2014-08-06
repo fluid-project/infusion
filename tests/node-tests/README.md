@@ -3,7 +3,7 @@ performed by the material in src/module/fluid.js .
 
 To run the tests, execute 
 
-    node basic-node-tests.js 
+    node basic-node-test.js 
 
 from the command line. They should terminate with the message
 
