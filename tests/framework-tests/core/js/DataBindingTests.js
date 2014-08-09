@@ -1119,7 +1119,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("FLUID-5361: Model relay with model transformation", function () {
+    jqUnit.test("FLUID-5361: Global sorting of listeners by priority", function () {
         var that = fluid.tests.fluid5361head();
         that.priorityLog = [];
         that.child1.applier.change("celsius", 25);
@@ -1655,7 +1655,216 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.applier.change("liveOnly", 8);
         jqUnit.assertEquals("Forward relay with liveOnly forward", 8, that.model.liveOnlyTarget);
         that.applier.change("liveOnlyTarget", 9);
-        jqUnit.assertEquals("Backward relay with liveOnly forwarD", 9, that.model.liveOnly);
+        jqUnit.assertEquals("Backward relay with liveOnly forward", 9, that.model.liveOnly);
+    });
+    
+    // FLUID-5489: Avoid all cases of notifying listeners of changes which are null from their point of view
+    
+    fluid.tests.fluid5489diff = [ {
+        modela: undefined,
+        modelb: "thing",
+        eq: false,
+        options: {
+            changeMap: "ADD",
+            changes: 1
+        }
+    }, {
+        modela: "thing",
+        modelb: undefined,
+        eq: false,
+        options: {
+            changeMap: "DELETE",
+            changes: 1
+        }
+    }, {
+        modela: "thing",
+        modelb: "thing",
+        eq: true,
+        options: {
+            changeMap: {},
+            changes: 0
+        }
+    }, {
+        modela: 1,
+        modelb: 1 + 1e-13, // test standard floating point slop
+        eq: true,
+        options: {
+            changeMap: {},
+            changes: 0
+        }
+    }, {
+        modela: {
+            a: {
+            }
+        },
+        modelb: {
+            a: {
+                b: 1
+            }
+        },
+        eq: false,
+        options: {
+            changes: 1,
+            changeMap: {
+                a: {
+                    b: "ADD"
+                }
+            }
+        }
+    }, {
+        modela: {
+            a: {
+                b: 1
+            }
+        },
+        modelb: {
+            a: {
+            }
+        },
+        eq: false,
+        options: {
+            changes: 1,
+            changeMap: {
+                a: {
+                    b: "DELETE"
+                }
+            }
+        }
+    }, {
+        modela: {
+            a: {
+                a: 1,
+                b: 1
+            }
+        },
+        modelb: {
+            a: {
+                b: 2,
+                c: 3
+            }
+        },
+        eq: false,
+        options: {
+            changes: 3,
+            changeMap: {
+                a: {
+                    a: "DELETE",
+                    b: "ADD",
+                    c: "ADD"
+                }
+            }
+        }
+    }, {
+        modela: {
+            a: [0, 1, false]
+        },
+        modelb: {
+            a: [false, 2]
+        },
+        eq: false,
+        options: { // Currently we report invalidation of arrays en bloc
+            changes: 1,
+            changeMap: {
+                a: "ADD"
+            }
+        }
+    }
+    ];
+    
+    jqUnit.test("FLUID-5489: Test fluid.model.diff", function () {
+        fluid.each(fluid.tests.fluid5489diff, function (fixture, index) {
+            var options = {
+                changeMap: {},
+                changes: 0
+            };
+            var eq = fluid.model.diff(fixture.modela, fixture.modelb, options);
+            var fixtureLabel = "index " + index + " modela " + JSON.stringify(fixture.modela) + " modelb " + JSON.stringify(fixture.modelb);
+            jqUnit.assertEquals("Correct result from diff for fixture " + fixtureLabel, fixture.eq, eq);
+            jqUnit.assertLeftHand("Correct change summary from diff for fixture " + fixtureLabel, fixture.options, options);
+        });
+    });
+
+    fluid.tests.recordFire = function (that, value) {
+        that.fireRecord.push(value);
+    };
+    
+    fluid.defaults("fluid.tests.fluid5489root", {
+        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        model: {},
+        members: {
+            fireRecord: []
+        },
+        modelListeners: {
+            innerPath: {
+                funcName: "fluid.tests.fireRecord",
+                args: ["{that}", true]
+            }
+        }
+    });
+
+    
+    jqUnit.test("FLUID-5489: Do not notify null changes for listeners to overbroad", function () {
+        var that = fluid.tests.fluid5489root();
+        jqUnit.assertDeepEq("No firings for no change of member during init", [], that.fireRecord);
+    });
+    
+    // FLUID-5490: New source guarding for changes
+    
+    fluid.defaults("fluid.tests.fluid5490root", {
+        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        model: {},
+        members: {
+            fireRecord: []
+        },
+        modelListeners: {
+            "": [{
+                funcName: "fluid.tests.recordFire",
+                args: ["{that}", "excludeInit"],
+                excludeSource: "init"
+            }, {
+                funcName: "fluid.tests.recordFire",
+                args: ["{that}", "includeInit"],
+                includeSource: "init"
+            }, {
+                funcName: "fluid.tests.recordFire",
+                args: ["{that}", "excludeRelay"],
+                excludeSource: "relay"
+            }, {
+                funcName: "fluid.tests.recordFire",
+                args: ["{that}", "includeRelay"],
+                includeSource: "relay"
+            }, {
+                funcName: "fluid.tests.recordFire",
+                args: ["{that}", "excludeLocal"],
+                excludeSource: "local"
+            }, {
+                funcName: "fluid.tests.recordFire",
+                args: ["{that}", "includeLocal"],
+                includeSource: "local"
+            }]
+        },
+        components: {
+            child: {
+                type: "fluid.standardRelayComponent",
+                options: {
+                    model: "{fluid5490root}.model"
+                }
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-5490: Inclusion and exclusion of sources for model listeners", function () {
+        var that = fluid.tests.fluid5490root();
+        var expected = ["includeInit", "excludeRelay", "excludeLocal"];
+        jqUnit.assertDeepEq("Correct firing record on init", expected, that.fireRecord);
+        that.fireRecord = [];
+        var expected2 = ["excludeInit", "excludeRelay", "includeLocal"];
+        that.applier.change("innerPath1", "value1");
+        jqUnit.assertDeepEq("Correct firing record after local change", expected2, that.fireRecord);
+        that.fireRecord = [];
+        var expected3 = ["excludeInit", "includeRelay", "excludeLocal"];
+        that.child.applier.change("innerPath2", "value2");
+        jqUnit.assertDeepEq("Correct firing record after relay change", expected3, that.fireRecord);
     });
     
     // FLUID-5479: Compound values for valueMapper transform - example from metadata editor
