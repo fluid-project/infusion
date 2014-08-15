@@ -156,6 +156,15 @@ var fluid = fluid || fluid_2_0;
         }
         return togo;
     };
+     
+    // Marker so that we can render a custom string for properties which are not direct and concrete
+    fluid.SYNTHETIC_PROPERTY = {};
+
+    // utility to avoid triggering custom getter code which may have been written by an incompetent person who throws an exception    
+    fluid.getSafeProperty = function (obj, key) {
+        var desc = Object.getOwnPropertyDescriptor(obj, key); // supported on all of our environments - is broken on IE8
+        return desc && !desc.get ? obj[key] : fluid.SYNTHETIC_PROPERTY;
+    };
 
     function printImpl (obj, small, options) {
         var big = small + options.indentChars, togo, isFunction = typeof(obj) === "function";
@@ -163,6 +172,8 @@ var fluid = fluid || fluid_2_0;
             togo = "null";
         } else if (obj === undefined) {
             togo = "undefined"; // NB - object invalid for JSON interchange
+        } else if (obj === fluid.SYNTHETIC_PROPERTY) {
+            togo = "[Synthetic property]";
         } else if (fluid.isPrimitive(obj) && !isFunction) {
             togo = JSON.stringify(obj);
         }
@@ -186,9 +197,10 @@ var fluid = fluid || fluid_2_0;
             else {
                 i = 0;
                 togo = "{" + (isFunction ? " Function" : "") + "\n"; // NB - Function object invalid for JSON interchange
-                fluid.each(obj, function (value, key) {
+                for (var key in obj) {
+                    var value = fluid.getSafeProperty(obj, key);
                     j[i++] = JSON.stringify(key) + ": " + printImpl(value, big, options);
-                });
+                }
                 togo += big + j.join(",\n" + big) + "\n" + small + "}";
             }
             options.stack.pop();
