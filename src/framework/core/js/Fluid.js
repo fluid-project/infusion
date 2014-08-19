@@ -41,8 +41,8 @@ var fluid = fluid || fluid_2_0;
     fluid.environment = {
         fluid: fluid
     };
-
-    var globalObject = window || {};
+    
+    fluid.global = fluid.global || window || {};
 
     // The following flag defeats all logging/tracing activities in the most performance-critical parts of the framework.
     // This should really be performed by a build-time step which eliminates calls to pushActivity/popActivity and fluid.log.
@@ -913,7 +913,7 @@ var fluid = fluid || fluid_2_0;
     fluid.getGlobalValue = function (path, env) {
         if (path) {
             env = env || fluid.environment;
-            return fluid.get(globalObject, path, {type: "environment", value: env});
+            return fluid.get(fluid.global, path, {type: "environment", value: env});
         }
     };
 
@@ -943,18 +943,18 @@ var fluid = fluid || fluid_2_0;
         }
     };
 
-    /** Registers a new global function at a given path (currently assumes that
-     * it lies within the fluid namespace)
+    /** Registers a new global function at a given path
      */
 
     fluid.registerGlobalFunction = function (functionPath, func, env) {
         env = env || fluid.environment;
-        fluid.set(globalObject, functionPath, func, {type: "environment", value: env});
+        fluid.set(fluid.global, functionPath, func, {type: "environment", value: env});
     };
 
     fluid.setGlobalValue = fluid.registerGlobalFunction;
 
-    /** Ensures that an entry in the global namespace exists **/
+    /** Ensures that an entry in the global namespace exists. If it does not, a new entry is created as {} and returned. If an existing
+     * value is found, it is returned instead **/
     fluid.registerNamespace = function (naimspace, env) {
         env = env || fluid.environment;
         var existing = fluid.getGlobalValue(naimspace, env);

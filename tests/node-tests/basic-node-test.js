@@ -30,10 +30,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.log("Test concluded - " + data.name + ": " + data.passed + " passed");
     });
     
-    var expected = 4;
+    var expected = 10;
     
     QUnit.done(function (data) {
-        fluid.log((expected === data.passed ? "Self-test OK" : "Self-test FAILED") + " - " + data.passed + "/" + expected + " tests passed");
+        fluid.log((expected === data.passed && data.failed === 0? "Self-test OK" : "Self-test FAILED") + " - " + data.passed + "/" + (expected + data.failed) + " tests passed");
     });
     
     QUnit.log(function (details) {
@@ -56,6 +56,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.require("test-module", require, "test-module");
         var testModule = fluid.registerNamespace("test-module");
         jqUnit.assertEquals("Loaded module as Fluid namespace", "Export from test-module", testModule.value);
+        jqUnit.assertEquals("Loaded module as Fluid global entry", "Export from test-module", fluid.global["test-module"].value);
+    });
+    
+    jqUnit.test("Test propagation of standard globals", function () {
+        var expectedGlobals = ["console.log", "setTimeout", "clearTimeout", "setInterval", "clearInterval"];
+        
+        fluid.each(expectedGlobals, function (oneGlobal) {
+            var type = typeof(fluid.get(fluid.global, oneGlobal));
+            jqUnit.assertEquals("Global " + oneGlobal + " has type function", "function", type);
+        });
     });
     
     QUnit.load();
