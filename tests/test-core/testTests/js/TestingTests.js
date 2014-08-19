@@ -168,6 +168,90 @@
             }
         };
     };
+    
+    fluid.tests.cancelOrDie = function (that) {
+        that.timer = setTimeout(function () {
+            fluid.fail("Hang timer did not execute before 2000ms");
+        }, 2000);
+    };
+    
+    fluid.tests.cancelTimer = function (that) {
+        jqUnit.assert("Successfully cancelled hang timer");
+        clearTimeout(that.timer);
+        that.events.onUnhang.fire();
+    };
+    
+    fluid.defaults("fluid.tests.hangTester", { // tests FLUID-5252
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        hangWait: 1000, // speed up the test run by detecting a hang after only 1000ms
+        events: {
+            onUnhang: null
+        },
+        listeners: {
+            onSequenceHang: {
+                funcName: "fluid.tests.cancelTimer",
+                args: "{that}"
+            }
+        },
+        components: {
+            fixtures: {
+                type: "fluid.test.testCaseHolder",
+                options: {
+                    modules: [ {
+                        name: "Hang test case",
+                        tests: [{
+                            name: "Hang test sequence",
+                            expect: 1,
+                            sequence: [{
+                                funcName: "fluid.tests.cancelOrDie",
+                                args: "{testEnvironment}"
+                            }, {
+                                event: "{testEnvironment}.events.onUnhang"
+                            }]
+                        }]
+                    }]
+                }
+            }
+        }
+    });
+    
+    fluid.tests.pushListenerReport = function (arg1, that) {
+        that.listenerReport = [arg1];
+    };
+    
+    fluid.tests.expectedListenerArg = ["Direct argument"];
+    
+    fluid.defaults("fluid.tests.listenerArg", { // tests FLUID-5496
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        events: {
+            onPush: null
+        },
+        components: {
+            fixtures: {
+                type: "fluid.test.testCaseHolder",
+                options: {
+                    modules: [ {
+                        name: "Listener arg tester",
+                        tests: [{
+                            name: "Listener arg sequence",
+                            expect: 1,
+                            sequence: [{
+                                func: "{testEnvironment}.events.onPush.fire",
+                                args: "{testEnvironment}"
+                            }, {
+                                event: "{testEnvironment}.events.onPush",
+                                listener: "fluid.tests.pushListenerReport",
+                                args: ["Direct argument", "{arguments}.0"]
+                            }, {
+                                func: "jqUnit.assertDeepEq",
+                                args: ["Reporter should have fired", fluid.tests.expectedListenerArg, "{testEnvironment}.listenerReport"]
+                            }]
+                        }]
+                    }]
+                }
+            }
+        }
+    });
 
     if (!fluid.defaults("fluid.viewComponent")) {
         return;
@@ -333,7 +417,9 @@
                 }
             },
             "fluid.tests.asyncTestRelayTree",
-            "fluid.tests.sourceTester"
+            "fluid.tests.sourceTester",
+            "fluid.tests.hangTester",
+            "fluid.tests.listenerArg"
         ]);
     };
 })();

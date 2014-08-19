@@ -85,7 +85,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         foreignRequire = foreignRequire || require;
         var module = foreignRequire(moduleName);
         if (namespace) {
-            fluid.set(context, namespace, module);
+            fluid.setGlobalValue(namespace, module);
         }
         return module;
     };
