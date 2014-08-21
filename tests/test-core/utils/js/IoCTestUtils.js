@@ -32,6 +32,7 @@ var fluid_2_0 = fluid_2_0 || {};
             onEndSequenceStep: null
         },
         members: {
+            activeTests: 0,
             capturedMarkup: {
                 expander: {
                     funcName: "fluid.test.captureMarkup",
@@ -79,12 +80,6 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.test.browserSequenceListener.onBeginSequenceStep = function (that) {
         that.renderSequence();
-    };
-
-
-    fluid.test.testEnvironment.preInit = function (that) {
-        that.nickName = "testEnvironment"; // workaround for FLUID-4636
-        that.activeTests = 0;
     };
 
     fluid.test.makeExpander = function (that) {
@@ -171,7 +166,7 @@ var fluid_2_0 = fluid_2_0 || {};
         }
         root.activeTests += count;
         if (count === -1) {
-            fluid.log(fluid.logLevel.TRACE, "Starting QUnit due to destruction of tree ", root);
+            fluid.log(fluid.logLevel.TRACE, "Restarting QUnit for new fixture from environment ", root);
             QUnit.start();
         }
         if (root.activeTests === 0) {
@@ -336,7 +331,9 @@ var fluid_2_0 = fluid_2_0 || {};
             }
             if (event.isRelayEvent) { // special support for new-style change listeners
                 spec.transactional = true;
-                spec.priority = fluid.event.mapPriority("last", 0);
+                if (spec.priority === undefined) {
+                    spec.priority = "last";
+                }
             }
             event.addListener(spec, wrapped, fixture.namespace);
         }, function (wrapped) {
@@ -540,7 +537,9 @@ var fluid_2_0 = fluid_2_0 || {};
         fluid.each(modules, function (testCase) {
             testCaseState.testCase = testCase;
             testCaseState.finisher = function () {
-                fluid.test.noteTest(testCaseState.root, -1);
+                setTimeout(function () { // finish asynchronously to avoid destroying components that may be listening in final fixture
+                    fluid.test.noteTest(testCaseState.root, -1);
+                }, 1);
             };
             fluid.test.processTestCase(testCaseState);
         });
