@@ -675,6 +675,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /**************************
      * Composite Panels Tests *
      **************************/
+     
+    fluid.setLogging(fluid.logLevel.TRACE);
 
     fluid.registerNamespace("fluid.tests.composite");
 
@@ -851,13 +853,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["fluid_tests_composite_pref_increaseSize", true]
                 }, {
                     listener: "fluid.tests.composite.tester.conditionalCreation",
-                    event: "{prefsEditor}.prefsEditorLoader.prefsEditor.increasing.events.afterRender"
+                    event: "{prefsEditor}.prefsEditorLoader.prefsEditor.increasing.events.afterRender",
+                    priority: "last"
                 }, {
                     func: "{prefsEditor}.prefsEditorLoader.prefsEditor.applier.requestChange",
                     args: ["fluid_tests_composite_pref_increaseSize", false]
                 }, {
                     listener: "fluid.tests.composite.tester.conditionalDestruction",
-                    event: "{prefsEditor}.prefsEditorLoader.prefsEditor.increasing.events.afterRender"
+                    event: "{prefsEditor}.prefsEditorLoader.prefsEditor.increasing.events.afterRender",
+                    priority: "last"
                 }]
             }]
         }]
