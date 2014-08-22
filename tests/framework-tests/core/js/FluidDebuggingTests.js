@@ -50,5 +50,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var renderedComplex = fluid.prettyPrintJSON(complex);
         var reparsed = JSON.parse(renderedComplex);
         jqUnit.assertDeepEq("Round-tripping complex object", complex, reparsed);
+        
+        function Synthetic () {}
+        var proto = { b: 3 };
+        Synthetic.prototype = proto;
+        var synthetic = new Synthetic();
+        
+        var renderedSynthetic = fluid.prettyPrintJSON(synthetic);
+        jqUnit.assertTrue("Caught synthetic property", renderedSynthetic.indexOf("[Synthetic property]") !== -1);
     });
 })();

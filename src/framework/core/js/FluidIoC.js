@@ -1309,6 +1309,10 @@ var fluid_2_0 = fluid_2_0 || {};
         var events = fluid.makeArray(component.createOnEvent);
         fluid.each(events, function(eventName) {
             var event = eventName.charAt(0) === "{" ? fluid.expandOptions(eventName, that) : that.events[eventName];
+            if (!event || !event.addListener) {
+                fluid.fail("Error instantiating createOnEvent component with name " + componentName + " of parent ", that, " since event specification " +
+                    eventName + " could not be expanded to an event - got ", event);
+            }
             event.addListener(function () {
                 fluid.pushActivity("initDeferred", "instantiating deferred component %componentName of parent %that due to event %eventName",
                  {componentName: componentName, that: that, eventName: eventName});
