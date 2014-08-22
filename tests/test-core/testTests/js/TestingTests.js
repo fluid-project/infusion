@@ -257,6 +257,67 @@
         return;
     }
     
+    // FLUID-5497 model listener priority
+    
+    fluid.tests.storeListenedValue = function (that, value) {
+        that.listenedValue = value;
+    };
+    
+    fluid.tests.makePriorityChangeChecker = function (that, expectedCurrent, expectedListener) {
+        return function () {
+            jqUnit.assertEquals("Current value expected in model", expectedCurrent, that.model);
+            jqUnit.assertEquals("Old value expected in component", expectedListener, that.listenedValue);
+        };
+    };
+
+    fluid.defaults("fluid.tests.modelTestTree", {
+        gradeNames: ["fluid.test.testEnvironment", "fluid.standardRelayComponent", "autoInit"],
+        model: 0,
+        members: {
+            listenedValue: 0
+        },
+        modelListeners: {
+            "": {
+                funcName: "fluid.tests.storeListenedValue",
+                args: ["{that}", "{change}.value"],
+                priority: 0 // Weak priority - note that larger numbers are serviced earlier
+            }
+        },
+        components: {
+            testCases: {
+                type: "fluid.tests.modelPriorityCases"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.modelPriorityCases", {
+        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        modules: [ {
+            name: "FLUID-5497 Model listener priority tests",
+            tests: [{
+                name: "Model priority sequence",
+                expect: 4,
+                sequence: [ {
+                    func: "{modelTestTree}.applier.change",
+                    args: ["", 1]
+                }, {
+                    listenerMaker: "fluid.tests.makePriorityChangeChecker",
+                    makerArgs: ["{modelTestTree}", 1, 0], // listener lags behind us
+                    spec: {path: "", priority: 10}, // higher priority than listener
+                    changeEvent: "{modelTestTree}.applier.modelChanged"
+                }, {
+                    func: "{modelTestTree}.applier.change",
+                    args: ["", 2]
+                }, {
+                    listenerMaker: "fluid.tests.makePriorityChangeChecker",
+                    makerArgs: ["{modelTestTree}", 2, 2], // listener is ahead of us
+                    spec: {path: "", priority: "last"},
+                    changeEvent: "{modelTestTree}.applier.modelChanged"
+                }]
+            }]
+        }]
+    });
+    
     /**** VIEW-AWARE TESTS FROM HERE ONWARDS ****/
 
     fluid.defaults("fluid.tests.asyncTest", {
@@ -419,7 +480,8 @@
             "fluid.tests.asyncTestRelayTree",
             "fluid.tests.sourceTester",
             "fluid.tests.hangTester",
-            "fluid.tests.listenerArg"
+            "fluid.tests.listenerArg",
+            "fluid.tests.modelTestTree"
         ]);
     };
 })();

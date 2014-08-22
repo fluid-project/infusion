@@ -160,7 +160,7 @@ var fluid = fluid || fluid_2_0;
     // Marker so that we can render a custom string for properties which are not direct and concrete
     fluid.SYNTHETIC_PROPERTY = {};
 
-    // utility to avoid triggering custom getter code which may have been written by an incompetent person who throws an exception    
+    // utility to avoid triggering custom getter code which could throw an exception - e.g. express 3.x's request object 
     fluid.getSafeProperty = function (obj, key) {
         var desc = Object.getOwnPropertyDescriptor(obj, key); // supported on all of our environments - is broken on IE8
         return desc && !desc.get ? obj[key] : fluid.SYNTHETIC_PROPERTY;
