@@ -539,6 +539,9 @@ var fluid_2_0 = fluid_2_0 || {};
                         afterDestroy: nextLater
                     }
                 });
+                if (!env.type) {
+                    fluid.fail("Error in IoC Testing fixture - required member \"type\" was not found - fixture was ", env);
+                }
                 fluid.invokeGlobalFunction(env.type, [options]);
                 index++;
             }
