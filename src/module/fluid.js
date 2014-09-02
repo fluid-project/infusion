@@ -8,7 +8,8 @@ Licenses.
 You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
-/* global require, module, console, __dirname */
+/* jshint node: true */
+/* global global */
 
 (function () {
     "use strict";
@@ -80,13 +81,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.loadIncludes = loadIncludes;
 
     /** Load a node-aware JavaScript file using either a supplied or the native
-      * Fluid require function (the difference relates primarily to the base
-      * directory used for loading - although the file will need to make use of
-      * a registerNamespace or similar call to get access to the required global namespace */
+      * Fluid require function. The module name may start with a module reference
+      * of the form ${module-name} to indicate a base reference into an already
+      * loaded module that was previously registered using fluid.module.register.
+      * If the <code>namespace</code> argument is supplied, the module's export
+      * object will be written to that path in the global Fluid namespace */
 
     fluid.require = function (moduleName, foreignRequire, namespace) {
         foreignRequire = foreignRequire || require;
-        var module = foreignRequire(moduleName);
+        var resolved = fluid.module.resolvePath(moduleName);
+        var module = foreignRequire(resolved);
         if (namespace) {
             fluid.setGlobalValue(namespace, module);
         }
@@ -116,6 +120,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.loadTestingSupport = function () {
         fluid.loadIncludes("devIncludes.json");
     };
+    
+    fluid.module.register("infusion", path.resolve(__dirname, "../.."), require);
+    
+    // Export the fluid object into the pan-module node.js global object
+    global.fluid = fluid;
 
     module.exports = fluid;
 

@@ -13,13 +13,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function () {
     "use strict";
     
-    var fluid = require("../../src/module/fluid.js");
+    var fluid = require("../../src/module/fluid.js"),
+        path = require("path");
     
     fluid.loadTestingSupport();
     
     fluid.registerNamespace("fluid.tests");
     
     fluid.loadInContext("../../tests/test-core/testTests/js/TestingTests.js");
+    
+    fluid.require("test-module", require, "test-module");
     
     var QUnit = fluid.registerNamespace("QUnit");
     var jqUnit = fluid.registerNamespace("jqUnit");
@@ -30,7 +33,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.log("Test concluded - " + data.name + ": " + data.passed + " passed");
     });
     
-    var expected = 10;
+    var expected = 12;
     
     QUnit.done(function (data) {
         fluid.log((expected === data.passed && data.failed === 0? "Self-test OK" : "Self-test FAILED") + " - " + data.passed + "/" + (expected + data.failed) + " tests passed");
@@ -39,6 +42,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     QUnit.log(function (details) {
         if (details.source) { // "white-box" inspection of qunit.js shows that it sets this field on error
             fluid.log("Message: " + details.message + "\nSource: " + details.source);
+            if (details.expected !== undefined) {
+                console.log("Expected: ", JSON.stringify(details.expected, null, 4));
+                console.log("Actual: ", JSON.stringify(details.actual, null, 4));
+            }
         }
     });
     
@@ -53,7 +60,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
     
     jqUnit.test("Test fluid.require support", function () {
-        fluid.require("test-module", require, "test-module");
         var testModule = fluid.registerNamespace("test-module");
         jqUnit.assertEquals("Loaded module as Fluid namespace", "Export from test-module", testModule.value);
         jqUnit.assertEquals("Loaded module as Fluid global entry", "Export from test-module", fluid.global["test-module"].value);
@@ -66,6 +72,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var type = typeof(fluid.get(fluid.global, oneGlobal));
             jqUnit.assertEquals("Global " + oneGlobal + " has type function", "function", type);
         });
+    });
+    
+    jqUnit.test("Test module resolvePath", function () {
+        var resolved = fluid.module.resolvePath("${infusion}/src/components/tableOfContents/html/TableOfContents.html");
+        var expected = fluid.module.canonPath(path.resolve(__dirname, "../../src/components/tableOfContents/html/TableOfContents.html"));
+        jqUnit.assertEquals("Resolved path into infusion module", expected, resolved);
+        
+        var pkg = fluid.require("${test-module}/package.json");
+        jqUnit.assertEquals("Loaded package.json via resolved path directly via fluid.require", "test-module", pkg.name);
     });
     
     QUnit.load();
