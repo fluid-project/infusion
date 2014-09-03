@@ -25,6 +25,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var buildPath = function (pathSeg) {
         return path.join(getBaseDir(), pathSeg);
     };
+    
+    // Report of experiments performed with node.js globals done on 1/9/14 - what we might like to write at this point is 
+    // fluid: {global: GLOBAL}; - this "nearly" works but unfortunately the process of transporting the "pan-global" object
+    // across the sandbox initialization boundary ends up shredding it. We end up with a situation where in this file, 
+    // fluid.global.fluid === fluid - but from within Fluid.js, fluid.global.fluid === undefined. node.js docs on sandboxing 
+    // do report that the results can be fragile and version unstable. However, we need to continue with sandboxing because of
+    // the delicate expectations, for example, on visible globals caused by QUnit's sniffing code.  
+    // Experiment performed with node.js 0.8.6 on Windows. 
+    // We achieve a lot of what we might want via "global.fluid = fluid" below. However, other top-level names constructed 
+    // via fluid.registerNamespace will not be exported up to the pan-global. 
 
     var context = vm.createContext({
         console: console,
