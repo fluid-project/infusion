@@ -284,6 +284,7 @@ var fluid_2_0 = fluid_2_0 || {};
         if (!enlist) {
             enlist = {
                 that: that,
+                applier: fluid.getForComponent(that, "applier"), // required for FLUID-5504 even though currently unused
                 complete: fluid.isModelComplete(that)
             };
             instantiator.modelTransactions.init[that.id] = enlist;

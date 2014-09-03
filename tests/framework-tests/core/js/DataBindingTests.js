@@ -1933,4 +1933,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Propagated unknown to upstream model", [], that.model.accessibilityHazard);
     });
     
+    fluid.defaults("fluid.tests.fluid5504root", {
+        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        listeners: {
+            onCreate: "{sub}.subInvoker"
+        },
+        components: {
+            sub: {
+                type: "fluid.standardRelayComponent",
+                options: {
+                    model: {
+                        root: "{fluid5504root}.model"
+                    },
+                    invokers: {
+                        subInvoker: "fluid.identity({that}.model, {arguments}.0)"
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5504: Test for non-ginger access to applier in relay", function () {
+        var that = fluid.tests.fluid5504root();
+        jqUnit.assertValue("Applier must be created", that.applier);
+        that.applier.change("value", 42);
+        jqUnit.assertEquals("Relay must be established", 42, that.sub.model.root.value);
+    });
+    
 })(jQuery);
