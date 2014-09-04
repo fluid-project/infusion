@@ -1028,8 +1028,13 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.makeIoCRootDestroy = function (instantiator, that) {
         return function () {
             instantiator.clearComponent(that, "", that, null, true);
-            fluid.doDestroy(that);
-            fluid.fireEvent(that, "events.afterDestroy", [that, "", null]);
+        };
+    };
+    
+    // NON-API function
+    fluid.fabricateDestroyMethod = function (that, name, instantiator, child) {
+        return function () {
+            instantiator.clearComponent(that, name, child);
         };
     };
 
@@ -1239,13 +1244,6 @@ var fluid_2_0 = fluid_2_0 || {};
             funcName: demandspec.funcName
         };
         return togo;
-    };
-
-    // NON-API function
-    fluid.fabricateDestroyMethod = function (that, name, instantiator, child) {
-        return function () {
-            instantiator.clearComponent(that, name, child);
-        };
     };
 
     /** Instantiate the subcomponent with the supplied name of the supplied top-level component. Although this method
