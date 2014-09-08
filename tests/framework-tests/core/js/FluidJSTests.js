@@ -506,7 +506,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 accumulate.push(i);
             };
         };
-        var firer = fluid.event.getEventFirer();
+        var firer = fluid.makeEventFirer();
         firer.addListener(makeListener(4), null, null, "last");
         firer.addListener(makeListener(3));
         firer.addListener(makeListener(2), null, null, 10);
@@ -521,7 +521,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         jqUnit.expect(2);
-        var firer = fluid.event.getEventFirer();
+        var firer = fluid.makeEventFirer();
         firer.addListener(testListener);
         firer.fire(true);
         firer.removeListener(testListener);
@@ -533,6 +533,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         firer.fire(false);
         firer.removeListener("toRemoveNonExistent"); // for FLUID-4791
         firer.fire(false);
+    });
+    
+    jqUnit.test("FLUID-5506 stack for namespaced listeners", function () {
+        var firer = fluid.makeEventFirer();
+        var record = [];
+        function addOne(arg) {
+            firer.addListener(function () {
+                record.push(arg);
+            }, "namespace");
+        }
+        addOne(1);
+        addOne(2); // this one is top of stack
+        firer.fire();
+        firer.removeListener("namespace");
+        firer.fire(); // listener 1 is now top of stack
+        jqUnit.assertDeepEq("Listener removed by namespace reveals earlier", [2, 1], record);
     });
 
     fluid.defaults("fluid.tests.eventMerge", {
