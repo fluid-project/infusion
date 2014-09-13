@@ -69,8 +69,40 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // it to the context it will be loaded in.
     context.addEventListener = fluid.identity;
     
+    // As well as for efficiency, it's useful to customise this because an uncaught
+    // exception fired from a a setTimeout handler in node.js will prevent any 
+    // further from being serviced, which impedes testing these handlers
+    fluid.invokeLater = function (func) {
+        process.nextTick(func);
+    };
+    
     fluid.logObjectRenderChars = 1024;
     
+    fluid.onUncaughtException = fluid.makeEventFirer({
+        name: "Global uncaught exception handler"
+    });
+    
+    // This registry of priorities will be removed once the implementation of FLUID-5506 is complete
+    fluid.handlerPriorities = {
+        uncaughtException: {
+            log: 100, // high priority - do all logging first
+            fail: "last"
+        }
+    };
+    
+    process.on("uncaughtException", function onUncaughtException (err) {
+        fluid.onUncaughtException.fire(err);
+    });
+    
+    fluid.logUncaughtException = function (err) {
+        var message = "FATAL ERROR: Uncaught exception: " + err.message;
+        fluid.log(fluid.logLevel.FATAL, message);
+        console.log(err.stack);
+    };
+    
+    fluid.onUncaughtException.addListener(fluid.logUncaughtException, "log", null,
+        fluid.handlerPriorities.uncaughtException.log);
+      
     // Convert an argument intended for console.log in the node environment to a readable form (the
     // default action of util.inspect censors at depth 1)
     fluid.renderLoggingArg = function (arg) {

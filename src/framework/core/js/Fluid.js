@@ -43,6 +43,14 @@ var fluid = fluid || fluid_2_0;
     };
     
     fluid.global = fluid.global || window || {};
+    
+    // A standard utility to schedule the invocation of a function after the current
+    // stack returns. On browsers this defaults to setTimeout(func, 1) but in 
+    // other environments can be customised - e.g. to process.nextTick in node.js
+    // In future, this could be optimised in the browser to not dispatch into the event queue
+    fluid.invokeLater = function (func) {
+        return setTimeout(func, 1);
+    };
 
     // The following flag defeats all logging/tracing activities in the most performance-critical parts of the framework.
     // This should really be performed by a build-time step which eliminates calls to pushActivity/popActivity and fluid.log.
