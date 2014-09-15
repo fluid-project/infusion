@@ -319,12 +319,17 @@ var fluid = fluid || fluid_2_0;
         if (hw(transformSpec.inputPath)) {
             matchPath = fluid.model.composePaths(transform.inputPrefix, transformSpec.inputPath);
         }
-        else if (hw(transform.outputPrefix) || hw(transformSpec.outputPath)) {
-            matchPath = fluid.model.composePaths(transform.outputPrefix, transformSpec.outputPath);
+        else if (hw(transform.outputPrefix)) {
+            matchPath = transform.outputPrefix
         }
 
         if (matchPath) {
-            transform.queuedTransforms.push({transformSpec: transformSpec, outputPrefix: transform.outputPrefix, inputPrefix: transform.inputPrefix, matchPath: matchPath});
+            transform.queuedTransforms.push({
+                transformSpec: transformSpec,
+                outputPrefix: transform.outputPrefix,
+                inputPrefix: transform.inputPrefix,
+                matchPath: matchPath
+            });
             return true;
         }
         return false;
@@ -383,8 +388,8 @@ var fluid = fluid || fluid_2_0;
         var defaults = fluid.defaults(typeName);
         return { defaults: defaults, typeName: typeName};
     };
-    
-    // A utility which is helpful in computing inverses involving compound values. 
+
+    // A utility which is helpful in computing inverses involving compound values.
     // For example, with the valueMapper, compound input values are accepted as literals implicitly,
     // whereas as output values they must be escaped. This utility escapes a value if it is not primitive.
     fluid.model.transform.literaliseValue = function (value) {
