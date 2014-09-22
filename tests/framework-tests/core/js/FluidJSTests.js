@@ -342,7 +342,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                           fluid.defaults("timemachine"));
     });
 
-    jqUnit.test("FLUID-4842 test - configurable 'soft failure'", function () {
+    jqUnit.test("FLUID-4842 test - configurable \"soft failure\"", function () {
         var testArgs = [1, "thingit"];
         function failHandle(args) {
             jqUnit.assertDeepEq("Received arguments in error handler", testArgs, args);
