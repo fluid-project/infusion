@@ -1290,6 +1290,9 @@ var fluid = fluid || fluid_2_0;
 
     // unsupported, NON-API function
     fluid.mergeListenerPolicy = function (target, source, key) {
+        if (typeof (key) !== "string") {
+            fluid.fail("Error in listeners declaration - the keys in this structure must resolve to event names - got " + key + " from ", source);
+        }
         // cf. triage in mergeListeners
         var hasNamespace = key.charAt(0) !== "{" && key.indexOf(".") !== -1;
         return hasNamespace ? (source || target) : fluid.arrayConcatPolicy(target, source);

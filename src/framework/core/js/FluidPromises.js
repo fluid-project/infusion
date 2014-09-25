@@ -65,4 +65,69 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.isPromise = function (totest) {
         return totest && typeof(totest.then) === "function";
     };
+    
+    // TRANSFORM ALGORITHM APPLYING PROMISES
+    
+    // Construct a "mini-object" managing the process of a sequence of transforms,
+    // each of which may be synchronous or return a promise
+    fluid.promise.makeTransformer = function (listeners, payload) {
+        return {
+            listeners: listeners,
+            index: 0,
+            payloads: [payload],
+            promise: fluid.promise()
+        };
+    };
+    
+    fluid.promise.progressTransform = function (that, retValue) {
+        that.payloads.push(retValue);
+        that.index++;
+        // No we dun't have no tail recursion
+        fluid.promise.resumeTransform(that);
+    };
+    
+    fluid.promise.resumeTransform = function (that) {
+        var payload = that.payloads[that.index];
+        if (that.index === that.listeners.length) {
+            that.promise.resolve(payload);
+        } else {
+            var lisrec = that.listeners[that.index];
+            lisrec.listener = fluid.event.resolveListener(lisrec.listener);
+            var listener = lisrec.listener;
+            var value = listener(payload);
+            if (fluid.isPromise(value)) {
+                value.then(function (retValue) {
+                    fluid.promise.progressTransform(that, retValue);
+                }, function (error) {
+                    that.promise.reject(error);
+                });
+            } else {
+                fluid.promise.progressTransform(that, value);
+            }
+        }
+    };
+
+   /** Top-level API to operate a Fluid event which manages a sequence of 
+     * chained transforms. Rather than being a standard listener accepting the
+     * same payload, each listener to the event accepts the payload returned by the
+     * previous listener, and returns either a transformed payload or else a promise
+     * yielding such a payload.
+     * @param event {fluid.eventFirer} A Fluid event to which the listeners are to be interpreted as 
+     * elements cooperating in a chained transform.
+     * @param payload {Object} The initial payload input to the transform chain
+     * @param reverse {Boolean} <code>true</code> if the listeners are to be called in
+     * reverse order of priority (typically the case for an inverse transform)
+     * @return {fluid.promise} A promise which will yield either the final transformed
+     * value, or the response of the first transform which fails.
+     */
+    
+    fluid.promise.fireTransformEvent = function (event, payload, reverse) {
+        var listeners = reverse ? fluid.makeArray(event.sortedListeners).reverse() :
+                event.sortedListeners;
+        var transformer = fluid.promise.makeTransformer(listeners, payload);
+        fluid.promise.resumeTransform(transformer);
+        return transformer.promise;
+    };
+    
+    
 })(jQuery, fluid_2_0);

@@ -135,4 +135,123 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertFalse("Detect nonpromises", fluid.isPromise(promise));
         });
     });
+    
+    fluid.tests.linearScale = function (value, options) {
+        var transform = $.extend({
+            type: "fluid.transforms.linearScale",
+            value: value
+        }, options);
+        var fullTransform = {};
+        fluid.set(fullTransform, ["", "transform"], transform);
+        var togo = fluid.model.transformWithRules(value, fullTransform);
+        return togo;
+    };
+    
+    fluid.defaults("fluid.tests.simplePromiseTransform", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            forwardTransform: null,
+            backwardTransform: null
+        },
+        invokers: {
+            linearScale: "fluid.tests.linearScale"
+        },
+        listeners: {
+            forwardTransform: [{
+                func: "{that}.linearScale",
+                args: ["{arguments}.0", {offset: 1}],
+                priority: 2
+            }, {
+                func: "{that}.linearScale",
+                args: ["{arguments}.0", {factor: 2}],
+                priority: 1
+            }],
+            backwardTransform: [{
+                func: "{that}.linearScale",
+                args: ["{arguments}.0", {offset: -1}],
+                priority: 2
+            }, {
+                func: "{that}.linearScale",
+                args: ["{arguments}.0", {factor: 0.5}],
+                priority: 1
+            }]
+        }
+    });
+    
+    jqUnit.test("Simple synchronous transform chain", function () {
+        jqUnit.expect(2);
+        var that = fluid.tests.simplePromiseTransform();
+        var transformed = fluid.promise.fireTransformEvent(that.events.forwardTransform, 1);
+        // This will be synchronous as per Fluid promises impl
+        transformed.then(function (value) {
+            jqUnit.assertEquals("Received forward transformed value", 4, value);
+        });
+        var back = fluid.promise.fireTransformEvent(that.events.backwardTransform, 4, true);
+        back.then(function (value) {
+            jqUnit.assertEquals("Received backward transformed value", 1, value);
+        });
+    });
+    
+    fluid.tests.linearScaleLater = function (value, options) {
+        var promise = fluid.promise();
+        fluid.invokeLater(function() {
+            promise.resolve(fluid.tests.linearScale(value, options));
+        });
+        return promise;
+    };
+    
+    jqUnit.asyncTest("Asynchronous transform chain", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.simplePromiseTransform({
+            invokers: {
+                linearScale: "fluid.tests.linearScaleLater"
+            }
+        });
+        var transformed = fluid.promise.fireTransformEvent(that.events.forwardTransform, 1);
+        transformed.then(function (value) {
+            jqUnit.assertEquals("Received forward transformed value", 4, value);
+            jqUnit.start();
+        });
+    });
+    
+    fluid.tests.firePromiseError = function () {
+        var promise = fluid.promise();
+        fluid.invokeLater(function () {
+            promise.reject({
+                isError: true,
+                message: "This tests an asynchronous error return"
+            });
+        });
+        return promise;
+    };
+    
+    fluid.defaults("fluid.tests.errorPromiseTransform", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            forwardTransform: null
+        },
+        listeners: {
+            forwardTransform: [{
+                funcName: "fluid.tests.firePromiseError",
+                priority: 2
+            }, {
+                funcName: "fluid.fail",
+                args: "This failure should not occur, through being short-circuited in the promise chain",
+                priority: 1
+            }]
+        }
+    });
+    
+    jqUnit.asyncTest("Error promise chain", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.errorPromiseTransform();
+        var transformed = fluid.promise.fireTransformEvent(that.events.forwardTransform, 1);
+        transformed.then(function () {
+            fluid.fail("Failed chain should not produce resolve return");
+        }, function (value) {
+            jqUnit.assertTrue("Failed chain should produce first return's payload", value.isError);
+            jqUnit.start();
+        });
+    });
+    
 })(jQuery);
