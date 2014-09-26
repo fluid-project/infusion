@@ -6,7 +6,7 @@
 
 ## What's New in 2.0? ##
 
-* 
+*
 
 ## Downloading Infusion ##
 
@@ -38,6 +38,7 @@ This is a list of publicly available software that is redistributed with Fluid I
 categorized by license:
 
 ### MIT License ###
+* [Foundation v5.4.5](http://foundation.zurb.com/index.html)
 * [jQuery javascript library v1.11.0](http://jquery.com/)
 * [jQuery UI button, dialog, draggable, mouse, position, resizable, slider, tabs, and tooltip javascript widgets v1.10.4](http://ui.jquery.com/)
 * [jQuery QUnit v1.12.0](http://qunitjs.com)
@@ -47,6 +48,7 @@ categorized by license:
 * [jQuery Touch Punch v0.2.2](http://touchpunch.furf.com/)
 * [jquery.simulate](https://github.com/eduardolundgren/jquery-simulate)
 * [Micro Clearfix](http://nicolasgallagher.com/micro-clearfix-hack/)
+* [Normalize v3.0.1](https://necolas.github.io/normalize.css/)
 * [Buzz v1.1.0](http://buzz.jaysalvat.com)
 * [html5shiv v3.7.2](https://code.google.com/p/html5shiv/)
 
@@ -80,7 +82,7 @@ browser's Back button.
 
 Infusion 2.0 was tested with the following browsers:
 
-* 
+*
 
 For more information see the [Fluid Infusion browser support](http://wiki.fluidproject.org/display/docs/Browser+Support) wiki page.
 
