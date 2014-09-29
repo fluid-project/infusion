@@ -9,14 +9,14 @@
  * Uploader container
  */
 .fl-uploader {
-    width: 434px;
+    width: 29.5rem;
     position: relative;
     clear: both;
 }
 
 /* Header table */
 table.fl-uploader-header {
-    width: 434px;
+    width: 100%;
     margin-bottom: 0px; /* override FSS 1em margin on bottom */
     border-bottom: 1px solid #999;
     color: #333;
@@ -70,6 +70,7 @@ table.fl-uploader-header {
 /* File queue table */
 table.fl-uploader-queue {
     margin: 0;
+    border-spacing: 0px;
 }
 
 
@@ -241,14 +242,14 @@ tr.fl-uploader-file-state-uploaded button:before {
     display: block;
     overflow: hidden;
     height: 2em;
-    width: 8em;
+    width: 7em;
     cursor: default;
 }
 
 /* Fake add files button wrapper ("Add more")
  * Same as above, but width-adjusted for shorter text */
 .fl-uploader-browse.fl-uploader-browseMore {
-   width: 8em;
+   width: 7em;
 }
 
 /* Actual, real add files button (invisible) */
