@@ -787,7 +787,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
                 jqUnit.assertEquals("Should only be one textEditButton", 1, button.length);
                 jqUnit.assertEquals("The textEditButton text should be set", "Edit text " + editor.locate("text").text(), button.text());
-                jqUnit.assertTrue("The textEditButton should have the fl-offScreen-hidden style", button.hasClass(editor.options.styles.textEditButton));
+                jqUnit.assertTrue("The textEditButton should have the fl-hidden-accessible style", button.hasClass(editor.options.styles.textEditButton));
             });
 
             jqUnit.test("Update textEditButton text", function () {
