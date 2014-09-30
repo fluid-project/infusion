@@ -45,6 +45,11 @@
 .example-pager-head-role { width:15%; }
 .example-pager-head-comments { color: #000; }
 
+.example-pager-table-data {
+    width: 100%;
+    clear: both;
+}
+
 /***********************************************
  * The horizontal pager bar containing Previous, Next, and Page links.
  */
