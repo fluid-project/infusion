@@ -57,7 +57,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 var aThen = that.thens[i];
                 aThen[which] && aThen[which](arg);
             }
-            that.thens = null;
+            delete that.thens;
         };
         return that;
     };

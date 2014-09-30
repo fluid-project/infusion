@@ -29,7 +29,7 @@ fluid.module.modules = {};
  * <code>fluid.module.register("my-module", __dirname, require)</code>
  */
 fluid.module.register = function (name, baseDir, moduleRequire) {
-    console.log("Registering module " + name);
+    fluid.log("Registering module " + name + " from path " + baseDir);
     fluid.module.modules[name] = {
         baseDir: fluid.module.canonPath(baseDir),
         require: moduleRequire
