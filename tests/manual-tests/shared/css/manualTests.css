@@ -1,20 +1,26 @@
 .instructions-container {
     box-shadow: 1px 1px 5px 1px #707070;
     background:#fefabc;
-    max-width: 50em;
-    margin: 1em auto;
+    max-width: 50rem;
+    margin: 1rem auto;
 }
 
 .instructions-content {
-    padding: 0.5em 1em;
+    padding: 0.5rem 1rem;
 }
 
 .instructions-content h2 {
-    font-size: 2em;
+    font-size: 2rem;
 }
 
 .instructions-note {
-    padding-top: 0.5em;
+    padding-top: 0.5rem;
+}
+
+main {
+    width: 80%;
+    max-width: 80rem;
+    margin: 2rem auto;
 }
 
 /* Contrast theme specific styles */
