@@ -1,15 +1,15 @@
 /* Themed Appearance + Themed States */
 
-.demo-inlineEdit-padding {
-    padding-top : 0.5cm;
+figure {
+    margin-left : 0;
 }
 
-.demo-inlineEdit-title, .demo-inlineEdit-title-edit {
+.demo-inlineEdit-title,
+.demo-inlineEdit-title-edit {
     font-size : 2em;
 }
 
 .demo-inlineEdit-indent {
-    margin: 1em;
     margin-top: 4em;
 }
 
@@ -18,6 +18,6 @@
     outline: 1px solid black;
 }
 
-.demo-inlineEdit-p {
+.demo-inlineEdit-instructions {
 	margin-bottom: 1em;
 }
