@@ -25,7 +25,8 @@ module.exports = function(grunt) {
         customBuildName: "<%= pkg.name %>-" + (grunt.option("name") || "custom"),
         clean: {
             build: "build",
-            products: "products"
+            products: "products",
+            stylus: "build/**/*.styl"
         },
         copy: {
             all: {
@@ -157,6 +158,18 @@ module.exports = function(grunt) {
             options: {
                 jshintrc: true
             }
+        },
+        stylus: {
+            compile: {
+                files: {
+                    'src/framework/preferences/css/FullNoPreviewPrefsEditor.css': 'src/framework/preferences/css/FullNoPreviewPrefsEditor.styl',
+                    'src/framework/preferences/css/FullPreviewPrefsEditor.css': 'src/framework/preferences/css/FullPreviewPrefsEditor.styl',
+                    'src/framework/preferences/css/SeparatedPanelPrefsEditor.css': 'src/framework/preferences/css/SeparatedPanelPrefsEditor.styl',
+                    'src/framework/preferences/css/FullPrefsEditor.css': 'src/framework/preferences/css/FullPrefsEditor.styl',
+                    'src/framework/preferences/css/PrefsEditor.css': 'src/framework/preferences/css/PrefsEditor.styl',
+                    'src/framework/preferences/css/SeparatedPanelPrefsEditorFrame.css': 'src/framework/preferences/css/SeparatedPanelPrefsEditorFrame.styl'
+                }
+            }
         }
     });
 
@@ -168,6 +181,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-compress");
     grunt.loadNpmTasks("grunt-contrib-jshint");
     grunt.loadNpmTasks("grunt-modulefiles");
+    grunt.loadNpmTasks("grunt-contrib-stylus");
 
     // Custom tasks:
 
@@ -189,10 +203,12 @@ module.exports = function(grunt) {
     grunt.registerTask("build", "Generates a minified or source distribution for the specified build target", function (target) {
         var tasks = [
             "clean",
+            "stylus",
             "modulefiles:" + target,
             "pathMap:" + target,
             "copy:" + target,
             "copy:necessities",
+            "clean:stylus",
             "uglify:" + target,
             "concat:" + target,
             "compress:" + target,
