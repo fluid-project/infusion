@@ -1,0 +1,17 @@
+// Basic stylus functions used by other stylus files
+
+background-gradient(generalStartPos, webkitStartPos, webkitStopPos, startRGB, stopRGB, startPoint, stopPoint)
+    generalContent = generalStartPos, startRGB startPoint, stopRGB stopPoint
+
+    startDecimal = percent-to-decimal(startPoint)
+    stopDecimal = percent-to-decimal(stopPoint)
+
+    webkitContent = linear, webkitStartPos, webkitStopPos, color-stop(startDecimal, startRGB), color-stop(stopDecimal, stopRGB)
+
+    background-image: -o-linear-gradient(generalContent)
+    background-image: -moz-linear-gradient(generalContent)
+    background-image: -webkit-linear-gradient(generalContent)
+    background-image: -ms-linear-gradient(generalContent)
+    background-image: -webkit-gradient(webkitContent)
+    background-image: linear-gradient(generalContent)
+
