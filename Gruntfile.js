@@ -161,12 +161,12 @@ module.exports = function(grunt) {
         stylus: {
             compile: {
                 files: {
-                    'src/framework/preferences/css/FullNoPreviewPrefsEditor.css': 'src/framework/preferences/css/FullNoPreviewPrefsEditor.styl',
-                    'src/framework/preferences/css/FullPreviewPrefsEditor.css': 'src/framework/preferences/css/FullPreviewPrefsEditor.styl',
-                    'src/framework/preferences/css/SeparatedPanelPrefsEditor.css': 'src/framework/preferences/css/SeparatedPanelPrefsEditor.styl',
-                    'src/framework/preferences/css/FullPrefsEditor.css': 'src/framework/preferences/css/FullPrefsEditor.styl',
-                    'src/framework/preferences/css/PrefsEditor.css': 'src/framework/preferences/css/PrefsEditor.styl',
-                    'src/framework/preferences/css/SeparatedPanelPrefsEditorFrame.css': 'src/framework/preferences/css/SeparatedPanelPrefsEditorFrame.styl'
+                    'src/framework/preferences/css/FullNoPreviewPrefsEditor.css': 'src/framework/preferences/css/stylus/FullNoPreviewPrefsEditor.styl',
+                    'src/framework/preferences/css/FullPreviewPrefsEditor.css': 'src/framework/preferences/css/stylus/FullPreviewPrefsEditor.styl',
+                    'src/framework/preferences/css/SeparatedPanelPrefsEditor.css': 'src/framework/preferences/css/stylus/SeparatedPanelPrefsEditor.styl',
+                    'src/framework/preferences/css/FullPrefsEditor.css': 'src/framework/preferences/css/stylus/FullPrefsEditor.styl',
+                    'src/framework/preferences/css/PrefsEditor.css': 'src/framework/preferences/css/stylus/PrefsEditor.styl',
+                    'src/framework/preferences/css/SeparatedPanelPrefsEditorFrame.css': 'src/framework/preferences/css/stylus/SeparatedPanelPrefsEditorFrame.styl'
                 }
             }
         }
