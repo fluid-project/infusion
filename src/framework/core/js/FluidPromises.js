@@ -77,6 +77,26 @@ var fluid_2_0 = fluid_2_0 || {};
         source.then(target.resolve, target.reject);
     };
     
+    /** Returns a promise whose resolved value is mapped from the source promise or value by the supplied function.
+     * @param source {Object|Promise} An object or promise whose value is to be mapped
+     * @param func {Function} A function which will map the resolved promise value
+     * @return {Promise} A promise for the resolved mapped value.
+     */ 
+    fluid.promise.map = function (source, func) {
+        var togo = fluid.promise();
+        if (fluid.isPromise(source)) {
+            source.then(function (value) {
+                var mapped = func(value);
+                togo.resolve(mapped);
+            }, function (error) {
+                togo.reject(error)
+            });
+        } else {
+            togo.resolve(func(source));
+        }
+        return togo;
+    };
+    
     // TRANSFORM ALGORITHM APPLYING PROMISES
     
     // Construct a "mini-object" managing the process of a sequence of transforms,

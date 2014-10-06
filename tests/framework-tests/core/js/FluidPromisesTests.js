@@ -315,5 +315,29 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
     
+    jqUnit.test("fluid.promise.map tests", function () {
+        jqUnit.expect(3);
+        var mapper = function (val) {
+            return val + 1;
+        };
+        var p1 = fluid.promise.map(1, mapper);
+        p1.then(function (resolve) {
+            jqUnit.assertEquals("Mapped value returned from fluid.promise.map", 2, resolve);
+        });
+        var unit = fluid.promise();
+        unit.resolve(1);
+        var p2 = fluid.promise.map(unit, mapper);
+        p2.then(function (resolve) {
+            jqUnit.assertEquals("Mapped promise returned from fluid.promise.map", 2, resolve);
+        });
+        var fail = fluid.promise();
+        fail.reject("Error");
+        var p3 = fluid.promise.map(fail, mapper);
+        p3.then(function (resolve) {
+            jqUnit.fail("Should not resolve from mapping failed promise");
+        }, function (error) {
+            jqUnit.assertEquals("Should receive failure from mapped failed promise", "Error", error);
+        });
+    });
     
 })(jQuery);
