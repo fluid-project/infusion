@@ -25,8 +25,7 @@ module.exports = function(grunt) {
         customBuildName: "<%= pkg.name %>-" + (grunt.option("name") || "custom"),
         clean: {
             build: "build",
-            products: "products",
-            stylus: "build/**/*.styl"
+            products: "products"
         },
         copy: {
             all: {
@@ -208,7 +207,6 @@ module.exports = function(grunt) {
             "pathMap:" + target,
             "copy:" + target,
             "copy:necessities",
-            "clean:stylus",
             "uglify:" + target,
             "concat:" + target,
             "compress:" + target,
