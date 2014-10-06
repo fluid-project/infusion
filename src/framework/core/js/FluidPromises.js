@@ -81,7 +81,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param source {Object|Promise} An object or promise whose value is to be mapped
      * @param func {Function} A function which will map the resolved promise value
      * @return {Promise} A promise for the resolved mapped value.
-     */ 
+     */
     fluid.promise.map = function (source, func) {
         var togo = fluid.promise();
         if (fluid.isPromise(source)) {
@@ -89,7 +89,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 var mapped = func(value);
                 togo.resolve(mapped);
             }, function (error) {
-                togo.reject(error)
+                togo.reject(error);
             });
         } else {
             togo.resolve(func(source));

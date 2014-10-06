@@ -333,7 +333,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var fail = fluid.promise();
         fail.reject("Error");
         var p3 = fluid.promise.map(fail, mapper);
-        p3.then(function (resolve) {
+        p3.then(function () {
             jqUnit.fail("Should not resolve from mapping failed promise");
         }, function (error) {
             jqUnit.assertEquals("Should receive failure from mapped failed promise", "Error", error);

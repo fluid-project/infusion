@@ -156,12 +156,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     /**
-     * Setup testing environment with jqUnit and IoC Test Utils in node.
+     * Set up testing environment with jqUnit and IoC Test Utils in node.
      * This function will load everything necessary for running node jqUnit.
      */
     fluid.loadTestingSupport = function () {
         fluid.loadIncludes("devIncludes.json");
     };
+    
+    if (global.fluid) {
+        var oldPath = global.fluid.module.modules.infusion.baseDir;
+        fluid.fail("Error loading infusion - infusion has already been loaded from the path \n\t" + path.resolve(oldPath) +
+            "\n - please delete the duplicate copy which is found at \n\t" + path.resolve(__dirname) +
+            "\n This can be done automatically by running the task \"grunt dedupe-infusion\"");
+    }
     
     fluid.module.register("infusion", path.resolve(__dirname, "../.."), require);
     
