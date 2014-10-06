@@ -1,31 +1,9 @@
-.demo-container h1 {
-	margin-top:0px;
-    margin-bottom: 0.2em;
-}
-
-.demo-container p {
-	margin-bottom:0.5em;
-}
-p.demo-right {
-	text-align:right;
-    margin-top:1.5em;
-}
-
-.demo-container {
-    width: 97%;
-    margin: 1em;
-    margin-top: 4em;
-    padding: 0.5em;
-    min-width: 30em;
-}
-
 /**/
 /* Main image viewer */
 /**/
 .demo-container-imageViewer {
     width: 100%;
     height: 24em;
-    background-color:#FFFFFF;
     border: 0.1em solid #000;
     text-align:center;
 }
@@ -44,7 +22,6 @@ p.demo-right {
     padding: 1em;
     background-color:#CCCBE4;
     border: 1px solid #000;
-    text-align:center;
     overflow:auto;
     white-space:nowrap;
     z-index:1;
@@ -61,12 +38,11 @@ p.demo-right {
 
 .demo-container-imageThumbnails img {
     max-height:7em;
-    max-width:auto;
 	border:5px solid #fff;
 }
 
-.demo-container-imageThumbnails li img.demo-selected,
-.demo-container-imageThumbnails img:hover {
+.demo-container-imageThumbnails .demo-selected,
+.demo-container-imageThumbnails li:hover img {
     border: 5px solid black;
 }
 
@@ -80,19 +56,13 @@ p.demo-right {
     border-left: 1px solid #000;
     text-align:center;
     padding: 1em 0;
-    width:100%;
     margin-top:1em;
 }
 
-.demo-container-fiveStar label {
-	text-align:right;
-}
-
 .demo-container-fiveStar #demo-ranking {
-	display:inline;
-    cursor:pointer;
+	cursor: pointer;
 }
 
-div.demo-selected {
+#demo-ranking.demo-selected img:focus {
     outline: 3px solid black;
 }

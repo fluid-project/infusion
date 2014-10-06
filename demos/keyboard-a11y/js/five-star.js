@@ -1,5 +1,5 @@
 /*
-Copyright 2010 OCAD University
+Copyright 2010-2014 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -65,11 +65,53 @@ var demo = demo || {};
         stars.slice(Math.max(hovered, rank), 5).attr("src", imgs.blank);
     };
 
-    /** Update all the UI state to reflect a change in rank **/
-
     demo.fiveStar.updateRank = function (that, newRank) {
         demo.fiveStar.updateARIA(that.stars, newRank);
-        that.refreshView();
+    };
+
+    /**
+     * Ensure that the five-star ranking widget can be navigated using the keyboard
+     */
+    demo.fiveStar.makeFiveStarsNavigable = function (that) {
+        var starContainer = that.container;
+
+        //*** Use the Keyboard Accessibility Plugin to ensure that the container is in the tab order
+        starContainer.fluid("tabbable");
+
+        //*** Use the Keyboard Accessibility Plugin to make the start themselves selectable
+        // This overrides some of the defaults
+        starContainer.fluid("selectable", {
+            // the default orientation is vertical, so we need to specify that this is horizontal.
+            // this affects what arrow keys will move selection
+            direction: fluid.a11y.orientation.HORIZONTAL,
+
+            // because the stars don't have the default "selectable" class, we must
+            // specify what is to be selectable:
+            selectableSelector: that.options.selectors.stars,
+
+            // because the same widget is used for images with different ranks, we don't want
+            // the previously selected rank to be re-used
+            rememberSelectionState: false,
+
+            onSelect: function (starEl) {
+                // show visual confirmation when focus is there
+                starContainer.addClass(that.options.styles.selected);
+                that.hoverStars(starEl);
+            },
+            onUnselect: function () {
+                starContainer.removeClass(that.options.styles.selected);
+                that.refreshView();
+            }
+        });
+    };
+
+    /**
+     * Ensure that the five-star ranking widget can be navigated using the keyboard
+     */
+    demo.fiveStar.makeFiveStarsActivatable = function (that) {
+        that.stars.fluid("activatable", function (evt) {
+            that.setRank(demo.fiveStar.getStarNum(evt.target));
+        });
     };
 
     /**
@@ -77,7 +119,7 @@ var demo = demo || {};
      */
 
     fluid.defaults("demo.fiveStar", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         members: {
             stars: "{that}.dom.stars"
         },
@@ -107,13 +149,21 @@ var demo = demo || {};
             }, {
                 funcName: "demo.fiveStar.setARIA",
                 args: "{that}"
-            }]
+            }],
+            "onCreate.makeFiveStarsNavigable": {
+                listener: "demo.fiveStar.makeFiveStarsNavigable",
+                args: ["{that}"]
+            },
+            "onCreate.makeFiveStarsActivatable": {
+                listener: "demo.fiveStar.makeFiveStarsActivatable",
+                args: ["{that}"]
+            }
         },
         modelListeners: {
-            "rank": {
+            "rank": [{
                 funcName: "demo.fiveStar.updateRank",
                 args: ["{that}", "{change}.value"]
-            }
+            }, "{that}.refreshView"]
         },
         invokers: {
             setRank: {
@@ -142,6 +192,9 @@ var demo = demo || {};
         },
         selectors: {
             stars: "[class^='star-']"
+        },
+        styles: {
+            selected: "demo-selected"
         },
         starImages: {
             blank: "images/star-blank.gif",
