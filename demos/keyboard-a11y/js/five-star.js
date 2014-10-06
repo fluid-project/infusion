@@ -19,6 +19,10 @@ var demo = demo || {};
 
     fluid.registerNamespace("demo.fiveStar");
 
+    //=====================================================================
+    // Utility functions
+    //
+
     // This assumes the className is of the form "star-x" where x is the starNum
     demo.fiveStar.getStarNum = function (el) {
         var className = $(el).attr("class").match("star-[1-5]")[0];
@@ -69,6 +73,10 @@ var demo = demo || {};
         demo.fiveStar.updateARIA(that.stars, newRank);
     };
 
+    //=====================================================================
+    // Main keyboard accessibility plugin functions
+    //
+
     /**
      * Ensure that the five-star ranking widget can be navigated using the keyboard
      */
@@ -113,6 +121,9 @@ var demo = demo || {};
             that.setRank(demo.fiveStar.getStarNum(evt.target));
         });
     };
+
+    //=====================================================================
+    // Initialization
 
     /**
      * A very simple five-star ranking widget that allows users to click on a star to set a rank.
