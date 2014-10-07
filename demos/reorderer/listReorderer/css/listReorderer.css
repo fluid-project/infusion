@@ -32,16 +32,16 @@
     background-color: #fff;
     outline: none;
     cursor: move;
-    
+
     /* Change the left, top, and bottom borders on hover and select.
        Leave the right border alone as it serves as the grab indicator. */
-	border-top: 1px solid #00a651; 
+	border-top: 1px solid #00a651;
 	border-left: 1px solid #00a651;
 	border-bottom: 1px solid #00a651;
-    
-    /* set the 5px padding inherited (ol li) to 4px to compensate for 
+
+    /* set the 5px padding inherited (ol li) to 4px to compensate for
        1px hover border. */
-	padding: 4px; 
+	padding: 4px;
 }
 
 .demo-listReorderer-movable-dragging {
@@ -73,4 +73,3 @@
     line-height:0px;
     overflow:hidden;
 }
-
