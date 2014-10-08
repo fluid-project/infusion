@@ -23,6 +23,7 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON("package.json"),
         allBuildName: "<%= pkg.name %>-all",
         customBuildName: "<%= pkg.name %>-" + (grunt.option("name") || "custom"),
+        stylusCompress: !grunt.option("source"),
         clean: {
             build: "build",
             products: "products"
@@ -161,7 +162,7 @@ module.exports = function(grunt) {
         stylus: {
             compile: {
                 options: {
-                    compress: false
+                    compress: "<%= stylusCompress %>"
                 },
                 files: {
                     'src/framework/preferences/css/PrefsEditorThemes.css': 'src/framework/preferences/css/stylus/PrefsEditorThemes.styl',
