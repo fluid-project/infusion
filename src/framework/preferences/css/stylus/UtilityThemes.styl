@@ -1,4 +1,4 @@
-// Contains utility functions for building css for contrast themes
+// Contains utility functions for building contrast themes
 
 themes = {
     ".fl-theme-bw": {
@@ -76,9 +76,9 @@ build-themes-separatedPanelPrefsEditor()
             background-image: none !important
             get-colors-for-separatedPanelPrefsEditor(fColor, bColor)
 
-        {themeName} .fl-prefsEditor-separatedPanel
-            & .fl-panelBar, & .fl-toggleButton, & .fl-prefsEditor-reset
-                get-colors-for-separatedPanelPrefsEditor(fColor, bColor)
+            & .fl-prefsEditor-separatedPanel
+                & .fl-panelBar, & .fl-toggleButton, & .fl-prefsEditor-reset
+                    get-colors-for-separatedPanelPrefsEditor(fColor, bColor)
 
 // For the separated panel iframe
 build-themes-separatedPanelPrefsEditorFrame()
@@ -88,3 +88,212 @@ build-themes-separatedPanelPrefsEditorFrame()
 
         .fl-prefsEditor-separatedPanel{themeName}
             background-image: none
+
+// For the general theme styling that applies to html elements and infusion components
+build-themes-prefsEditorThemes()
+    for themeName in themes
+        fColor = themes[themeName].foregroundColor
+        bColor = themes[themeName].backgroundColor
+
+        {themeName}
+            // General Styling
+            &, & *, .fl-preview-theme&,
+            // Divs, inputs
+            & div, & input,
+            // Headers
+            & h1, & h2, & h3, & h4, & h5, & h6
+                color: fColor !important
+                background-color: bColor !important
+                border-top-color: fColor !important
+                border-right-color: fColor !important
+                border-bottom-color: fColor !important
+                border-left-color: fColor !important
+
+            // iframes
+            & iframe
+                border-top-color: fColor !important
+                border-right-color: fColor !important
+                border-bottom-color: fColor !important
+                border-left-color: fColor !important
+
+            // Links
+            & a
+                color: fColor !important
+                font-weight: bold !important
+                background-color: bColor !important
+
+            // Tables
+            & th
+                border-top-width: 0.1em
+                border-top-style: solid
+                border-top-color: fColor !important
+                border-right-width: 0.1em
+                border-right-style: solid
+                border-right-color: fColor !important
+                border-bottom-width: 0.1em
+                border-bottom-style: solid
+                border-bottom-color: fColor !important
+                border-left-width: 0.1em
+                border-left-style: solid
+                border-left-color: fColor !important
+                background-color: fColor !important
+                color: bColor !important
+
+            & td
+                border-top-width: 0.1em
+                border-top-style: solid
+                border-top-color: fColor !important
+                border-right-width: 0.1em
+                border-right-style: solid
+                border-right-color: fColor !important
+                border-bottom-width: 0.1em
+                border-bottom-style: solid
+                border-bottom-color: fColor !important
+                border-left-width: 0.1em
+                border-left-style: solid
+                border-left-color: fColor !important
+
+            // Focus
+            & .fl-focus:focus, & .fl-focus :focus, &.fl-focus :focus, & .selectable
+                outline-width: 0.2em
+                outline-style: solid
+                outline-color: fColor
+
+            // Infusion Components
+            // Reorderer
+            & .fl-reorderer-dropMarker
+                background-color: #f00 !important
+
+            // Inline edit
+            & .fl-inlineEdit-edit
+                background-color: fColor !important
+                color: bColor !important
+                border-top-width: 0.1em
+                border-top-style: solid
+                border-top-color: bColor !important
+                border-right-width: 0.1em
+                border-right-style: solid
+                border-right-color: bColor !important
+                border-bottom-width: 0.1em
+                border-bottom-style: solid
+                border-bottom-color: bColor !important
+                border-left-width: 0.1em
+                border-left-style: solid
+                border-left-color: bColor !important
+                padding-top: 0.1em
+                padding-right: 0.1em
+                padding-bottom: 0.1em
+                padding-left: 0.1em
+                margin-top: -0.1em
+                margin-right: -0.1em
+                margin-bottom: -0.1em
+                margin-left: -0.1em
+
+            // Inverted color
+            // General Styling
+            &.fl-inverted-color, &.fl-inverted-color *, .fl-preview-theme&.fl-inverted-color
+                color: bColor !important;
+                background-color: fColor !important;
+                border-top-color: bColor !important;
+                border-right-color: bColor !important;
+                border-bottom-color: bColor !important;
+                border-left-color: bColor !important;
+
+            // Focus
+            &.fl-inverted-color.fl-focus :focus
+                outline-width: 0.2em;
+                outline-style: solid;
+                outline-color: bColor;
+
+            & .fl-inverted-color
+                &, & *,
+                // Divs, inputs
+                & div, & input,
+                // Headers
+                & h1, & h2, & h3, & h4, & h5, & h6
+                    color: bColor !important;
+                    background-color: fColor !important;
+                    border-top-color: bColor !important;
+                    border-right-color: bColor !important;
+                    border-bottom-color: bColor !important;
+                    border-left-color: bColor !important;
+
+                // iframes
+                & iframe
+                    border-top-color: bColor !important;
+                    border-right-color: bColor !important;
+                    border-bottom-color: bColor !important;
+                    border-left-color: bColor !important;
+
+                // Links
+                & a
+                    color: bColor !important;
+                    font-weight: bold !important;
+                    background-color: fColor !important;
+
+                // Tables
+                & th
+                    border-top-width: 0.1em;
+                    border-top-style: solid;
+                    border-top-color: bColor !important;
+                    border-right-width: 0.1em;
+                    border-right-style: solid;
+                    border-right-color: bColor !important;
+                    border-bottom-width: 0.1em;
+                    border-bottom-style: solid;
+                    border-bottom-color: bColor !important;
+                    border-left-width: 0.1em;
+                    border-left-style: solid;
+                    border-left-color: bColor !important;
+                    background-color: bColor !important;
+                    color: fColor !important;
+
+                & td
+                    border-top-width: 0.1em;
+                    border-top-style: solid;
+                    border-top-color: bColor !important;
+                    border-right-width: 0.1em;
+                    border-right-style: solid;
+                    border-right-color: bColor !important;
+                    border-bottom-width: 0.1em;
+                    border-bottom-style: solid;
+                    border-bottom-color: bColor !important;
+                    border-left-width: 0.1em;
+                    border-left-style: solid;
+                    border-left-color: bColor !important;
+
+                // Infusion focus element
+                & .fl-focus:focus, & .fl-focus :focus, & .selectable
+                    outline-width: 0.2em;
+                    outline-style: solid;
+                    outline-color: bColor;
+
+                // Infusion Components
+                // Reorderer
+                & .fl-reorderer-dropMarker
+                    background-color: #f00 !important;
+
+                // Inline Edit
+                & .fl-inlineEdit-edit
+                    background-color: bColor !important;
+                    color: fColor !important;
+                    border-top-width: 0.1em;
+                    border-top-style: solid;
+                    border-top-color: fColor !important;
+                    border-right-width: 0.1em;
+                    border-right-style: solid;
+                    border-right-color: fColor !important;
+                    border-bottom-width: 0.1em;
+                    border-bottom-style: solid;
+                    border-bottom-color: fColor !important;
+                    border-left-width: 0.1em;
+                    border-left-style: solid;
+                    border-left-color: fColor !important;
+                    padding-top: 0.1em;
+                    padding-right: 0.1em;
+                    padding-bottom: 0.1em;
+                    padding-left: 0.1em;
+                    margin-top: -0.1em;
+                    margin-right: -0.1em;
+                    margin-bottom: -0.1em;
+                    margin-left: -0.1em;

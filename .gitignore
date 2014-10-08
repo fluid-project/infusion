@@ -1,6 +1,7 @@
 build/
 products/
 node_modules/
+src/framework/preferences/css/PrefsEditorThemes.css
 src/framework/preferences/css/FullNoPreviewPrefsEditor.css
 src/framework/preferences/css/FullPreviewPrefsEditor.css
 src/framework/preferences/css/SeparatedPanelPrefsEditor.css

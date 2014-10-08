@@ -160,7 +160,11 @@ module.exports = function(grunt) {
         },
         stylus: {
             compile: {
+                options: {
+                    compress: false
+                },
                 files: {
+                    'src/framework/preferences/css/PrefsEditorThemes.css': 'src/framework/preferences/css/stylus/PrefsEditorThemes.styl',
                     'src/framework/preferences/css/FullNoPreviewPrefsEditor.css': 'src/framework/preferences/css/stylus/FullNoPreviewPrefsEditor.styl',
                     'src/framework/preferences/css/FullPreviewPrefsEditor.css': 'src/framework/preferences/css/stylus/FullPreviewPrefsEditor.styl',
                     'src/framework/preferences/css/SeparatedPanelPrefsEditor.css': 'src/framework/preferences/css/stylus/SeparatedPanelPrefsEditor.styl',
