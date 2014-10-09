@@ -19,7 +19,7 @@ You can checkout and fork Infusion on github:
 
 <https://github.com/fluid-project/infusion>
 
-See [How Do I Create an Infusion Package?](#how-do-i-create-an-infusion-package), for details on creating custom packages of Infusion.
+See [How Do I Use Infusion That Is Directly Pulled From Github Repository?](#how-do-i-use-infusion-that-is-directly-pulled-from-github-repository), for details on creating custom packages of Infusion. See [How Do I Create an Infusion Package?](#how-do-i-create-an-infusion-package), for details on creating custom packages of Infusion.
 
 ##Who Makes Infusion, and How Can I Help?##
 
@@ -27,6 +27,11 @@ The Fluid community is an international group of designers, developers, and test
 
 The best way to join the Fluid Community is to jump into any of our community activities. Visit our [website](http://fluidproject.org/) for links to our mailing lists, chat room, wiki, etc.
 
+##How Do I Use Infusion That Is Directly Pulled From Github Repository?##
+
+Infusion is in the process of switching to use [stylus](http://learnboost.github.io/stylus/) for stylesheet generation. Some css files have been re-written in stylus. These files only have their stylus files pushed into the github repository. To use infusion that is directly pulled from the github, those stylus files need to be compiled to generate corresponding css files by running the following from the project root:
+
+    grunt stylus
 
 ##How Do I Create an Infusion Package?##
 

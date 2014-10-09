@@ -164,15 +164,25 @@ module.exports = function(grunt) {
                 options: {
                     compress: "<%= stylusCompress %>"
                 },
-                files: {
-                    'src/framework/preferences/css/PrefsEditorThemes.css': 'src/framework/preferences/css/stylus/PrefsEditorThemes.styl',
-                    'src/framework/preferences/css/FullNoPreviewPrefsEditor.css': 'src/framework/preferences/css/stylus/FullNoPreviewPrefsEditor.styl',
-                    'src/framework/preferences/css/FullPreviewPrefsEditor.css': 'src/framework/preferences/css/stylus/FullPreviewPrefsEditor.styl',
-                    'src/framework/preferences/css/SeparatedPanelPrefsEditor.css': 'src/framework/preferences/css/stylus/SeparatedPanelPrefsEditor.styl',
-                    'src/framework/preferences/css/FullPrefsEditor.css': 'src/framework/preferences/css/stylus/FullPrefsEditor.styl',
-                    'src/framework/preferences/css/PrefsEditor.css': 'src/framework/preferences/css/stylus/PrefsEditor.styl',
-                    'src/framework/preferences/css/SeparatedPanelPrefsEditorFrame.css': 'src/framework/preferences/css/stylus/SeparatedPanelPrefsEditorFrame.styl'
-                }
+                files: [{
+                    expand: true,
+                    cwd: "src/",
+                    src: ["**/css/stylus/*.styl"],
+                    dest: "src/",
+                    ext: ".css",
+                    rename: function(dest, src) {
+                        // Move the generated css files one level up out of the stylus directory
+                        var srcSegs = src.split("/");
+                        var filename = srcSegs.pop();
+                        var ignore = srcSegs.pop();
+                        return dest + "/" + srcSegs.join("/") + "/" + filename;
+                    },
+                    filter: function (src) {
+                        // Exclude utility stylus files from the compilation
+                        var filename = src.split("/").pop();
+                        return filename.substring(0, 7) !== "Utility";
+                    }
+                }]
             }
         }
     });

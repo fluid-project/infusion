@@ -6,9 +6,5 @@ The stylus directory contained stylus files were used to generate css files used
 1. In "UtilityThemes.styl", modify "themes" variable to add the foreground and background colors of the new theme;
 2. In the infusion root directory, run "grunt stylus" to rebuild css files with the new theme.
 
-### Prefix renaming ###
-
-The following class prefix needs to be renamed
-
-- "fl-theme-" -> "fl-theme-prefsEditor-"
-
+### How to prevent grunt from compiling utility stylus files ###
+Some stylus files may only contain mixins or functions for other stylus files to import. Those files should not be compiled into css files. To prevent grunt "stylus" task from compiling them, these files can be named by starting with keyword "Utility", for example: Utility.styl, UtilityThemes.styl
