@@ -19,10 +19,11 @@
 
         <link rel="stylesheet" type="text/css" href="../../../../../src/framework/preferences/css/PrefsEditor.css" />
         <link rel="stylesheet" type="text/css" href="../../../../../src/framework/preferences/css/SeparatedPanelPrefsEditor.css" />
-        <link rel="stylesheet" type="text/css" href="css/preferences.css" />
 
         <!-- styling for manual tests -->
         <link rel="stylesheet" type="text/css" href="../../../shared/css/manualTests.css" />
+
+        <link rel="stylesheet" type="text/css" href="css/preferences.css" />
 
         <title>Preferences Editor - Assorted Content</title>
         <script type="text/javascript" src="../../../../../src/lib/jquery/core/js/jquery.js"></script>
@@ -63,17 +64,20 @@
     </head>
 
     <body class="assortedContent-theme-basic fl-focus">
-        <header>
-            <h1>Infusion Test Blog</h1>
-        </header>
-		<div class="flc-prefsEditor-separatedPanel fl-prefsEditor-separatedPanel">
-			<div id="myPrefsEditor" class="flc-slidingPanel-panel flc-prefsEditor-iframe"></div>
+        <!-- BEGIN markup for Preference Editor -->
+        <div class="flc-prefsEditor-separatedPanel fl-prefsEditor-separatedPanel">
+            <!-- This is the div that will contain the Preference Editor component -->
+            <div class="flc-slidingPanel-panel flc-prefsEditor-iframe"></div>
 
-			<div class="fl-panelBar">
-                <button id="reset" class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span>Reset</button>
-				<button class="flc-slidingPanel-toggleButton fl-toggleButton">Show/Hide</button>
-			</div>
-		</div>
+            <!-- This div is for the sliding panel that shows and hides the Preference Editor controls -->
+            <div class="fl-panelBar">
+                <span class="fl-prefsEditor-buttons">
+                    <button id="reset" class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span> Reset</button>
+                    <button id="show-hide" class="flc-slidingPanel-toggleButton fl-prefsEditor-showHide"> Show/Hide</button>
+                </span>
+            </div>
+        </div>
+        <!-- END markup for Preference Editor -->
 
         <aside class="instructions-container">
             <div class="instructions-content">
@@ -90,22 +94,28 @@
         </aside>
 
         <main>
+            <header>
+                <h1>HTML 5 Cheat Sheet</h1>
+            </header>
+
             <nav class="flc-toc-tocContainer toc"></nav>
             <article>
                 <h2>HTML 5</h2>
                 <p>
                     This is only a partial list of HTML5 elements. For a complete list please see the
-                    <a href="https://developer.mozilla.org/en/docs/Web/Guide/HTML/HTML5/HTML5_element_list">HTML5 elmeent list</a>
-                    on <a href="https://developer.mozilla.org/en-US/"><abbr titl="Mozilla Developer Network">MDN</abbr></a>
+                    <a href="https://developer.mozilla.org/en/docs/Web/Guide/HTML/HTML5/HTML5_element_list">HTML5 element list</a>
+                    on <a href="https://developer.mozilla.org/en-US/"><abbr title="Mozilla Developer Network">MDN</abbr></a>
                     or the <a href="http://www.w3.org/TR/html5/">HTML5</a> document from the
                     <a href="http://www.w3.org/"><abbr title="World Wid Web Consortium">W3C</abbr></a>.
                 </p>
                 <section>
                     <h3>Grouping</h3>
-                    <table>
+                    <table class="element-examples">
                         <thead>
-                            <th>Element</th>
-                            <th>Example</th>
+                            <tr>
+                                <th>Element</th>
+                                <th>Example</th>
+                            </tr>
                         </thead>
                         <tbody>
                             <tr>
@@ -162,19 +172,22 @@
                             <tr>
                                 <td>&lt;figure&gt;, &lt;figcaption&gt;</td>
                                 <td>
-                                    <figure>
-                                        <img alt="Fluid Infusion logo", src="http://wiki.fluidproject.org/download/attachments/24939866/INFUSION_orange.png?version=1&modificationDate=1305123162481">
+                                    <figure class="test-figure">
+                                        <img alt="Fluid Infusion logo" src="http://wiki.fluidproject.org/download/attachments/24939866/INFUSION_orange.png">
                                         <figcaption>The Fluid Infusion logo</figcaption>
                                     </figure>
                                 </td>
                             </tr>
                         </tbody>
+                        <tfoot><tr><td colspan=2> </td></tr></tfoot>
                     </table>
                     <h3>Text</h3>
-                    <table>
+                    <table class="element-examples">
                         <thead>
-                            <th>Element</th>
-                            <th>Example</th>
+                            <tr>
+                                <th>Element</th>
+                                <th>Example</th>
+                            </tr>
                         </thead>
                         <tbody>
                             <tr>
@@ -202,56 +215,68 @@
                                 <td>H<sub>2</sub>0, 2<sup>2</sup></td>
                             </tr>
                         </tbody>
+                        <tfoot><tr><td colspan=2> </td></tr></tfoot>
                     </table>
                     <h3>Form</h3>
                     <form>
                         <h4>Mid-term Exam</h4>
-                        <ul>
-                            <fieldset>
-                                <legend>Choose the best way to declare a javascript variable</legend>
-                                <input id="test-radio-var" type="radio" name="javascript_variable" value="var">
-                                <label for="test-radio-var"><code>var i = 1;</code></lable>
-                                <input id="test-radio-no_semicolon" type="radio" name="javascript_variable" value="no_semicolon">
-                                <label for="test-radio-no_semicolon"><code>var i = 1</code></lable>
-                                <input id="test-radio-no_var" type="radio" name="javascript_variable" value="no_var">
-                                <label for="test-radio-no_var"><code>i = 1;</code></lable>
-                                <input id="test-radio-typed" type="radio" name="javascript_variable" value="typed">
-                                <label for="test-radio-typed"><code>int i = 1;</code></lable>
-                            </fieldset>
-                            <fieldset>
-                                <legend>Mark the checkbox if the value is truthy</legend>
-                                <input id="test-checkbox-false-bool" type="checkbox" name="truthy" value="false-bool">
-                                <label for="test-checkbox-false-bool">false</label>
-                                <input id="test-checkbox-false-string" type="checkbox" name="truthy" value="false-string">
-                                <label for="test-checkbox-false-string">"false"</label>
-                                <input id="test-checkbox-true-bool" type="checkbox" name="truthy" value="true-bool">
-                                <label for="test-checkbox-true-bool">true</label>
-                                <input id="test-checkbox-true-string" type="checkbox" name="truthy" value="true-string">
-                                <label for="test-checkbox-true-string">"true"</label>
-                                <input id="test-checkbox-empty-string" type="checkbox" name="truthy" value="empty-string">
-                                <label for="test-checkbox-empty-string">""</label>
-                            </fieldset>
-                            <fieldset>
-                                <legend>Array Values</legend>
-                                <code>var aArray = ["a", "b", "c"];</code>
+                        <fieldset class="radio-buttons">
+                            <legend>Choose the best way to declare a javascript variable</legend>
+                            <ul>
+                                <li>
+                                    <input id="test-radio-var" type="radio" name="javascript_variable" value="var">
+                                    <label for="test-radio-var"><code>var i = 1;</code></label>
+                                </li>
+                                <li>
+                                    <input id="test-radio-no_var" type="radio" name="javascript_variable" value="no_var">
+                                    <label for="test-radio-no_var"><code>i = 1;</code></label>
+                                </li>
+                                <li>
+                                    <input id="test-radio-typed" type="radio" name="javascript_variable" value="typed">
+                                    <label for="test-radio-typed"><code>int i = 1;</code></label>
+                                </li>
+                                <li>
+                                    <input id="test-radio-no_semicolon" type="radio" name="javascript_variable" value="no_semicolon">
+                                    <label for="test-radio-no_semicolon"><code>var i = 1</code></label>
+                                </li>
+                            </ul>
+                        </fieldset>
+                        <fieldset class="checkboxes">
+                            <legend>Select all values that are "truthy"</legend>
+                            <input id="test-checkbox-false-bool" type="checkbox" name="truthy" value="false-bool">
+                            <label for="test-checkbox-false-bool">false</label>
+                            <input id="test-checkbox-false-string" type="checkbox" name="truthy" value="false-string">
+                            <label for="test-checkbox-false-string">"false"</label>
+                            <input id="test-checkbox-true-bool" type="checkbox" name="truthy" value="true-bool">
+                            <label for="test-checkbox-true-bool">true</label>
+                            <input id="test-checkbox-true-string" type="checkbox" name="truthy" value="true-string">
+                            <label for="test-checkbox-true-string">"true"</label>
+                            <input id="test-checkbox-empty-string" type="checkbox" name="truthy" value="empty-string">
+                            <label for="test-checkbox-empty-string">""</label>
+                        </fieldset>
+                        <fieldset class="select-text-input">
+                            <legend>Array Values</legend>
+                            <p>Considering the code sample to the right, answer the following questions:</p>
+                            <code>var aArray = ["a", "b", "c"];</code>
+                            <div>
                                 <label for="test-array-item">Which item is at index 1</label>
                                 <select id="test-array-item" name="select">
                                     <option value="a">a</option>
                                     <option value="b">b</option>
                                     <option value="c">c</option>
                                 </select>
+                            </div>
+                            <div>
                                 <label for="test-array-entry">Enter the method for retrieving the item at position 2</label>
-                                <input id="test-array-enrty" type="text" placeholder="javascript code">
-                            </fieldset>
-                            <fieldset>
-                                <legend>Javascript function</legend>
-                                <textarea>
-                                    Please enter a simple javascript function to find the smallest value of an array.
-                                </textarea>
-                                <button>Run Test</button>
-                            </fieldset>
-                            <input type="submit">
-                        </ul>
+                                <input id="test-array-entry" type="text" placeholder="javascript code">
+                            </div>
+                        </fieldset>
+                        <fieldset class="text-area">
+                            <legend>Javascript function</legend>
+                            <textarea>Please enter a simple javascript function to find the smallest value of an array.</textarea>
+                            <button>Run Script</button>
+                        </fieldset>
+                        <input type="submit" value="Submit answers">
                     </form>
                 </section>
             </article>
