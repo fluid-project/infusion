@@ -793,6 +793,9 @@ var fluid_2_0 = fluid_2_0 || {};
             themeInput: ".flc-prefsEditor-themeInput",
             label: ".flc-prefsEditor-contrast-label"
         },
+        styles: {
+            defaultThemeLabel: "fl-prefsEditor-contrast-defaultThemeLabel"
+        },
         stringArrayIndex: {
             theme: ["contrast-default", "contrast-bw", "contrast-wb", "contrast-by", "contrast-yb", "contrast-lgdg"]
         },
@@ -822,22 +825,31 @@ var fluid_2_0 = fluid_2_0 || {};
             style: {
                 funcName: "fluid.prefs.panel.contrast.style",
                 args: [
-                    "{that}.dom.themeLabel", "{that}.msgLookup.theme",
-                    "{that}.options.markup.label", "{that}.options.controlValues.theme",
-                    "{that}.options.classnameMap.theme"
+                    "{that}.dom.themeLabel",
+                    "{that}.msgLookup.theme",
+                    "{that}.options.markup.label",
+                    "{that}.options.controlValues.theme",
+                    "default",
+                    "{that}.options.classnameMap.theme",
+                    "{that}.options.styles.defaultThemeLabel"
                 ],
                 dynamic: true
             }
         }
     });
 
-    fluid.prefs.panel.contrast.style = function (labels, strings, markup, theme, style) {
+    fluid.prefs.panel.contrast.style = function (labels, strings, markup, theme, defaultThemeName, style, defaultLabelStyle) {
         fluid.each(labels, function (label, index) {
             label = $(label);
             label.html(fluid.stringTemplate(markup, {
                 theme: strings[index]
             }));
-            label.addClass(style[theme[index]]);
+
+            var labelTheme = theme[index];
+            if (labelTheme === defaultThemeName) {
+                label.addClass(defaultLabelStyle);
+            }
+            label.addClass(style[labelTheme]);
         });
     };
 

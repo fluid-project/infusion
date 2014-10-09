@@ -23,7 +23,7 @@
 .fl-prefsEditor-separatedPanel .fl-panelBar {
     width: 100%;
     background-color: #fff;
-    border-bottom: 1px solid #ccc;  
+    border-bottom: 1px solid #ccc;
 }
 
 .fl-prefsEditor-separatedPanel .fl-panelBar .fl-prefsEditor-buttons {
@@ -31,12 +31,12 @@
     border-bottom: 1px solid #ccc;
     border-left: 1px solid #ccc;
     border-bottom-left-radius:8px;
-    border-bottom-right-radius:8px; 
+    border-bottom-right-radius:8px;
     background-color: white;
     min-height: 2em;
     margin-right: 10em;
     display:block;
-    float:right;    
+    float:right;
 }
 
 .fl-prefsEditor-separatedPanel .fl-prefsEditor-showHide,
@@ -73,7 +73,7 @@
     float:left;
     margin-right: 0.3em;
     margin-top: -0.1em;
-    font-size: 1em; 
+    font-size: 1em;
 }
 .fl-prefsEditor-separatedPanel .fl-icon-undo:before {
     content: "\e008";
@@ -81,7 +81,7 @@
 .fl-prefsEditor-separatedPanel .fl-icon-preferences:before {
     content: "\e00f";
 }
-    
+
 
 /* IFrame */
 .fl-prefsEditor-separatedPanel-iframe {
@@ -89,6 +89,7 @@
     background-color: #fff;
     height: 0px;
     display: block;
+    width: 100%;
 }
 
 /* Theming */
@@ -99,26 +100,26 @@
 .fl-theme-lgdg { background-image:none !important; }
 
 .fl-theme-bw,
-.fl-theme-bw .fl-prefsEditor-separatedPanel .fl-panelBar, 
+.fl-theme-bw .fl-prefsEditor-separatedPanel .fl-panelBar,
 .fl-theme-bw .fl-prefsEditor-separatedPanel .fl-toggleButton,
 .fl-theme-yb .fl-prefsEditor-separatedPanel .fl-prefsEditor-reset { background-color: #fff; border-color: #000; }
 
 .fl-theme-wb,
-.fl-theme-wb .fl-prefsEditor-separatedPanel .fl-panelBar, 
+.fl-theme-wb .fl-prefsEditor-separatedPanel .fl-panelBar,
 .fl-theme-wb .fl-prefsEditor-separatedPanel .fl-toggleButton,
 .fl-theme-yb .fl-prefsEditor-separatedPanel .fl-prefsEditor-reset { background-color: #000; border-color: #fff; color: #fff; }
 
 .fl-theme-by,
-.fl-theme-by .fl-prefsEditor-separatedPanel .fl-panelBar, 
+.fl-theme-by .fl-prefsEditor-separatedPanel .fl-panelBar,
 .fl-theme-by .fl-prefsEditor-separatedPanel .fl-toggleButton,
 .fl-theme-yb .fl-prefsEditor-separatedPanel .fl-prefsEditor-reset { background-color: #FFFF00; border-color: #000; }
 
 .fl-theme-yb,
-.fl-theme-yb .fl-prefsEditor-separatedPanel .fl-panelBar, 
+.fl-theme-yb .fl-prefsEditor-separatedPanel .fl-panelBar,
 .fl-theme-yb .fl-prefsEditor-separatedPanel .fl-toggleButton,
 .fl-theme-yb .fl-prefsEditor-separatedPanel .fl-prefsEditor-reset { background-color: #000; border-color: #ffff00; color: #ffff00; }
 
 .fl-theme-lgdg,
-.fl-theme-lgdg .fl-prefsEditor-separatedPanel .fl-panelBar, 
+.fl-theme-lgdg .fl-prefsEditor-separatedPanel .fl-panelBar,
 .fl-theme-lgdg .fl-prefsEditor-separatedPanel .fl-toggleButton,
 .fl-theme-lgdg .fl-prefsEditor-separatedPanel .fl-prefsEditor-reset { background-color: #555555; border-color: #bdbdbb; color: #bdbdbb; }

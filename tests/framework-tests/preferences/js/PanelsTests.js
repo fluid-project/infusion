@@ -1168,6 +1168,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 label = labels.eq(index);
                 jqUnit.assertTrue("The contrast label has appropriate css applied", label.hasClass(that.options.classnameMap.theme[inputValue]));
             });
+
+            jqUnit.assertTrue("The default contrast label has the default label css applied", labels.eq(0).hasClass(that.options.styles.defaultThemeLabel));
         };
     };
 
@@ -1187,7 +1189,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test the contrast settings panel",
             tests: [{
-                expect: 9,
+                expect: 10,
                 name: "Test the rendering of the contrast panel",
                 sequence: [{
                     func: "{contrast}.refreshView"
