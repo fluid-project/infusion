@@ -5,10 +5,17 @@ body {
     min-width: 56em;
 }
 
+.fl-prefsEditor-fullNoPreview {
+    width: 72em;
+}
+
 /* Category separator */
 .fl-prefsEditor-fullNoPreview .fl-prefsEditor-category {
     border-top: 2px solid #dddddd;
     clear:both;
+    -webkit-column-break-inside: avoid;
+    page-break-inside: avoid;
+    break-inside: avoid;
 }
 
 /* Section header icons */
@@ -23,6 +30,12 @@ body {
 }
 
 /* Controls */
+.fl-prefsEditors-controls {
+    -webkit-columns: 15.625rem 4;
+    -moz-columns: 15.625rem 4;
+    columns: 15.625rem 4;
+}
+
 .fl-prefsEditor-fullNoPreview .fl-col-flex {
     padding-top: 15px;
 }
@@ -35,7 +48,7 @@ body {
     clear: left;
 }
 
-.fl-prefsEditor-fullNoPreview label, 
+.fl-prefsEditor-fullNoPreview label,
 .fl-prefsEditor-fullNoPreview .fl-inputs  {
     margin-bottom: 15px;        /* adds space between label, inputs when browser window is narrow */
 }
