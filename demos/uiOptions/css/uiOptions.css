@@ -34,6 +34,25 @@ img {
     box-shadow: rgba(0,0,0,0.4) 0px 0px 5px 1px;
     margin-bottom: 10px;
 }
+
+main {
+    width: 95%;
+    max-width: 950px;
+    margin: 0 auto;
+}
+
+.demo-columns {
+    -webkit-columns: 12.5rem 4;
+    -moz-columns: 12.5rem 4;
+    columns: 12.5rem 4;
+}
+
+.demo-column {
+    -webkit-column-break-inside: avoid;
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
 .content h2 {
     margin-bottom: 0.5em;
     font-weight: normal;
