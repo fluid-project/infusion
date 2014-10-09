@@ -8,6 +8,14 @@
     clear: left;
 }
 
+.fl-prefsEditor-fullPreview-adjusters {
+    width: 60%;
+}
+
+.fl-prefsEditor-fullPreview-previewContainer {
+    width: 35%;
+}
+
 /* Control section headers */
 .fl-prefsEditor-fullPreview h2 {
     border-top: 2px solid #dddddd;
@@ -15,7 +23,7 @@
 }
 
 .fl-prefsEditor-fullPreview .fl-prefsEditor-category {
-    padding-bottom: 20px; 
+    padding-bottom: 20px;
 }
 
 /* Controls */
@@ -49,7 +57,7 @@
 .fl-prefsEditor-fullPreview label {
     display: block;
     float: left;
-    width: 14em;
+    width: 16em;
 }
 
 /* Layout and link controls */
