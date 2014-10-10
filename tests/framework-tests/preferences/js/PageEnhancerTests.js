@@ -49,7 +49,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Page Enhancer Tests",
             tests: [{
-                expect: 9,
+                expect: 6,
                 name: "UIEnhancer options passing",
                 sequence: [{
                     func: "fluid.tests.testInitialState"
@@ -63,15 +63,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.testInitialState = function () {
-        jqUnit.assertEquals("Initially font size classes exist", 3, $(".fl-font-size-90").length);
         jqUnit.assertEquals("Initially white on black class exists", 1, $(".fl-theme-wb").length);
         jqUnit.assertEquals("Initially font-sans class exists", 1, $(".fl-font-sans").length);
         jqUnit.assertEquals("Initially font-arial class exists", 1, $(".fl-font-arial").length);
-        jqUnit.assertEquals("Initially text-spacing class exists", 1, $(".fl-font-spacing-3").length);
     };
 
     fluid.tests.testAfterPageEnhancer = function () {
-        jqUnit.assertEquals("font size classes should not be removed", 3, $(".fl-font-size-90").length);
         jqUnit.assertEquals("FSS theme class has not been removed", 1, $(".fl-theme-wb").length);
         jqUnit.assertEquals("Things are still styled with 'first-class' ", 3, $(".first-class").length);
         jqUnit.assertEquals("Things are still styled with 'last-class' ", 2, $(".last-class").length);
