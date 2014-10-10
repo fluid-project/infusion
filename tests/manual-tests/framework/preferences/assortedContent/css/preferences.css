@@ -40,7 +40,6 @@ table, form {
 .intro {
     width: 75%;
     padding: 0.5rem;
-    margin: 0 auto;
     box-shadow: 1px 1px 3px #292929;
     border-radius: 0.5rem;
 }
@@ -136,7 +135,7 @@ th {
 }
 td {
     border: 1px solid #cccccc;
-    padding: 0.5rem;    
+    padding: 0.5rem;
 }
 td:first-child {
     width: 12rem;
@@ -155,5 +154,3 @@ td:first-child {
     color: white;
     background-color: #426088;
 }
-
-

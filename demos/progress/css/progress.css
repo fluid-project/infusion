@@ -3,7 +3,6 @@
 .demo-progress-container {
     position: relative;
     min-height: 300px;
-	margin: 0 auto;
 	padding: 1em;
 	background-color: white;
 	border: 3px solid black;

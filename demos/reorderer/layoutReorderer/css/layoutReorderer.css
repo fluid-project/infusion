@@ -1,7 +1,6 @@
 
 .demo-layoutReorderer-container {
     width:95%;
-    margin: 0 auto;
     margin-top: 3em;
     background-color: #ccd3ff;
     overflow:auto;
@@ -26,7 +25,6 @@
 .demo-layoutReorderer-module-dragbar {
     /* dragbar is the bar on top of each module */
     cursor: move;
-    /*height: 20px; */
     background-color: #A5CFEF;
     background-position: right 1px center;
     background-repeat: no-repeat;
