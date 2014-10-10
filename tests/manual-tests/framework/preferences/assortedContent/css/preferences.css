@@ -1,5 +1,91 @@
-header {
-    color: #FFF;
+a:hover {
+    background-color: #D2E0E6 ;
+}
+.instructions-container {
+    margin-top: 3rem;
+}
+
+.assortedContent-theme-basic header {
+   text-shadow: 4px 3px 4px #426088;
+}
+.overflow-test {
+    text-overflow:ellipsis;
+    overflow:hidden;
+    white-space:nowrap;
+    border: 1px;
+    border-style: solid;
+    width: 30rem;
+    padding: 1rem;
+    margin: 2rem auto 0;
+    cursor: pointer;
+    transition: width 1s;
+    background: linear-gradient(to bottom right, #426088, rgba(255,255,255,0));
+}
+.overflow-test:hover {
+    width: 35rem;
+    white-space: normal;
+    background: linear-gradient(to top right, #426088, rgba(255,255,255,0));
+}
+main {
+    padding: 1rem 1rem 3rem;
+}
+.assortedContent-theme-basic main {
+    background-color: #ffffff;
+}
+
+table, form {
+    width: 90%;
+    margin: 0 auto;
+}
+.intro {
+    width: 75%;
+    padding: 0.5rem;
+    margin: 0 auto;
+    box-shadow: 1px 1px 3px #292929;
+    border-radius: 0.5rem;
+}
+
+/* form styling */
+fieldset {
+    padding: 1rem;
+    margin-top: 2rem;
+}
+textarea {
+    width: 40rem;
+    height: 5rem;
+    padding: 0.3rem;
+    resize: vertical;
+}
+input[type="submit"] {
+    float: right;
+    margin-top: 1rem;
+}
+.radio-buttons ul {
+    list-style-type: none;
+}
+.radio-buttons li {
+    padding-top: 0.2rem;
+}
+.select-text-input code {
+    float: right;
+}
+.text-area button {
+    width: 10rem;
+    height: 2rem;
+    background-image: url("http://wiki.fluidproject.org/download/attachments/24939866/INFUSION_orange_graphic.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+/* figure styling */
+.test-figure {
+    width: 30rem;
+}
+.test-figure img {
+    width: inherit;
+}
+.test-figure figcaption {
+    text-align: center;
 }
 
 .assortedContent-theme-basic {
@@ -21,9 +107,6 @@ header {
     padding: 15px;
 }
 
-.assortedContent-theme-basic .assortedContent-header {
-    background-image:url(../../../../../../demos/reorderer/imageReorderer/images/Banana.jpg);
-}
 .assortedContent-theme-basic .assortedContent-header h1 {
     font-size:2em;
 }
@@ -41,62 +124,36 @@ header {
     font-style: italic;
 }
 
-.assortedContent-theme-basic .assortedContent-newsletter-signup {
-    padding: 5px;
-    margin: 5px 0;
-    border: solid 1px #426088;
-}
-/* set button images */
-.assortedContent-theme-basic .fl-button-left {background-image:url(../images/themes/assortedContent/buttons-light-cap.png);}
-.assortedContent-theme-basic .fl-button-inner {background-image:url(../images/themes/assortedContent/buttons-light-bg.png);}
-
 /* table styling */
-.assortedContent-theme-basic th {
+caption {
+    padding: 0.3rem;
+    border: 1px;
+    border-style: solid;
+    border-radius: 2rem 2rem 0 0;
+}
+th {
+    padding: 0.3rem;
+}
+td {
+    border: 1px solid #cccccc;
+    padding: 0.5rem;    
+}
+td:first-child {
+    width: 12rem;
+}
+.element-examples td:first-child {
+    font-family: monospace;
+}
+.element-examples tfoot td:first-child {
+    font-family: inherit;
+}
+.assortedContent-theme-basic caption {
+    border-color: #426088;
+}
+.assortedContent-theme-basic th,
+.assortedContent-theme-basic tfoot td {
     color: white;
     background-color: #426088;
 }
 
-.assortedContent-theme-basic .assortedContent-calendar {
-    padding: 15px 0;
-}
 
-.assortedContent-theme-basic .fl-widget {
-    background-color: #dfefff;
-    position: relative;
-}
-
-.assortedContent-theme-basic .fl-widget .fl-widget-titlebar{
-    background-color: #426088;
-    color: white;
-    padding: 0.2em;
-}
-.assortedContent-theme-basic .fl-widget .fl-icon-more  {background-image:url('../images/themes/assortedContent/icon-widget-More.png'); margin-left:0px;}
-.assortedContent-theme-basic .fl-widget .fl-icon-close {background-image:url('../images/themes/assortedContent/icon-widget-Close.png'); margin-right:0px;}
-.assortedContent-theme-basic .fl-grabbable .fl-widget-titlebar {background-image:url('../images/themes/assortedContent/icon-widget-gripper.png');}
-.assortedContent-theme-basic .fl-widget h2 {display:inline;}
-
-/*
-.assortedContent-theme-basic .fl-widget-options {
-    position: absolute;
-    right: 0;
-    top: 0;
-}
-*/
-.assortedContent-theme-basic .fl-widget-options a {
-    color: #426088;
-}
-
-.assortedContent-theme-basic .assortedContent-weather {
-    background-image:url(../../../../../../demos/reorderer/imageReorderer/images/Kumquat.jpg);
-}
-.assortedContent-theme-basic .assortedContent-weather .fl-widget-content {
-    background-color:#ffffff;
-    border:1px solid black;
-    padding: 3px;
-    filter:alpha(opacity=60);
-    opacity:0.6;
-}
-/* small adjustment to the FSS button style */
-.fl-button-inner {
-    padding-bottom: 6px;
-}
