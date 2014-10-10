@@ -22,7 +22,7 @@ var example = example || {};
      * by the "choice" member.
      */
     var dumpModel = function (model, el) {
-        el.text(JSON.stringify(model, ["choice"]));
+        el.text(JSON.stringify(model, ["choice"], "    "));
     };
 
     // The following two data models will be bound to the input elements in the markup.
