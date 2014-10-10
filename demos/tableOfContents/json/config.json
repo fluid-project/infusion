@@ -8,7 +8,7 @@
         "instructions": "<ul><li>Follow any of the links within the Table of Contents to the related section of the page.</li></ul>"
     },
     "links": {
-        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/src/demos/tableOfContents",
+        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/tableOfContents",
         "apiLink": "http://wiki.fluidproject.org/display/docs/Table+of+Contents+API",
         "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Table of Contents feedback"
     }
