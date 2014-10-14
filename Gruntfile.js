@@ -13,6 +13,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /* global require, module */
 
 var _ = require("lodash");
+var path = require("path");
 
 module.exports = function(grunt) {
     "use strict";
@@ -26,7 +27,8 @@ module.exports = function(grunt) {
         stylusCompress: !grunt.option("source"),
         clean: {
             build: "build",
-            products: "products"
+            products: "products",
+            stylus: "src/framework/preferences/css/*.css"
         },
         copy: {
             all: {
@@ -166,21 +168,13 @@ module.exports = function(grunt) {
                 },
                 files: [{
                     expand: true,
-                    cwd: "src/",
-                    src: ["**/css/stylus/*.styl"],
-                    dest: "src/",
+                    src: ["src/**/css/stylus/*.styl"],
                     ext: ".css",
                     rename: function(dest, src) {
                         // Move the generated css files one level up out of the stylus directory
-                        var srcSegs = src.split("/");
-                        var filename = srcSegs.pop();
-                        var ignore = srcSegs.pop();
-                        return dest + "/" + srcSegs.join("/") + "/" + filename;
-                    },
-                    filter: function (src) {
-                        // Exclude utility stylus files from the compilation
-                        var filename = src.split("/").pop();
-                        return filename.substring(0, 7) !== "Utility";
+                        var dir = path.dirname(src);
+                        var filename = path.basename(src);
+                        return path.join(dir, "..", filename);
                     }
                 }]
             }
@@ -234,6 +228,9 @@ module.exports = function(grunt) {
         grunt.task.run(tasks);
     });
 
+    grunt.registerTask("buildStylus", ["clean:stylus", "stylus"]);
+
     grunt.registerTask("default", ["build:all"]);
     grunt.registerTask("custom", ["build:custom"]);
+
 };

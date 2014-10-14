@@ -27,12 +27,6 @@ The Fluid community is an international group of designers, developers, and test
 
 The best way to join the Fluid Community is to jump into any of our community activities. Visit our [website](http://fluidproject.org/) for links to our mailing lists, chat room, wiki, etc.
 
-##How Do I Use Infusion That Is Directly Pulled From Github Repository?##
-
-Infusion is in the process of switching to use [stylus](http://learnboost.github.io/stylus/) for stylesheet generation. Some css files have been re-written in stylus. These files only have their stylus files pushed into the github repository. To use infusion that is directly pulled from the github, those stylus files need to be compiled to generate corresponding css files by running the following from the project root:
-
-    grunt stylus
-
 ##How Do I Create an Infusion Package?##
 
 Strictly speaking, Infusion can be used directly from source (i.e. by including each individual required file). However, for simplicity and performance reasons, you may wish to create a concatenated, minified file. The Grunt build options described below will also allow you to remove any unneeded features or libraries that you may already have in your project.
@@ -138,3 +132,9 @@ By default, custom packages are given a name with the form _infusion-custom-<ver
 * jQueryUICore
 * jQueryUIWidgets
 * json
+
+##Developing with the Preferences Framework##
+
+Infusion is in the process of switching to use [Stylus](http://learnboost.github.io/stylus/) for CSS pre-processing. CSS files for the Preferences Framework have been re-written in Stylus. Only Stylus files are pushed into the github repository. For developing the Preferences Framework, run the following from the project root to compile Stylus files to CSS:
+
+    grunt buildStylus

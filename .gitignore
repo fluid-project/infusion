@@ -1,10 +1,4 @@
 build/
 products/
 node_modules/
-src/framework/preferences/css/PrefsEditorThemes.css
-src/framework/preferences/css/FullNoPreviewPrefsEditor.css
-src/framework/preferences/css/FullPreviewPrefsEditor.css
-src/framework/preferences/css/SeparatedPanelPrefsEditor.css
-src/framework/preferences/css/FullPrefsEditor.css
-src/framework/preferences/css/PrefsEditor.css
-src/framework/preferences/css/SeparatedPanelPrefsEditorFrame.css
+src/framework/preferences/css/*.css
