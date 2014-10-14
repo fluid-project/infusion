@@ -1,17 +1,19 @@
 // Basic stylus functions used by other stylus files
 
-background-gradient(generalStartPos, webkitStartPos, webkitStopPos, startRGB, stopRGB, startPoint, stopPoint)
-    generalContent = generalStartPos, startRGB startPoint, stopRGB stopPoint
+linear-gradient()
+    // Generate the gradient effect used by linear-gradient()
+    content = arguments[0]
+    count = 0
+    for element in arguments
+        if (count != 0)
+            content = content, element
+        count = count + 1
 
-    startDecimal = percent-to-decimal(startPoint)
-    stopDecimal = percent-to-decimal(stopPoint)
-
-    webkitContent = linear, webkitStartPos, webkitStopPos, color-stop(startDecimal, startRGB), color-stop(stopDecimal, stopRGB)
-
-    background-image: -o-linear-gradient(generalContent)
-    background-image: -moz-linear-gradient(generalContent)
-    background-image: -webkit-linear-gradient(generalContent)
-    background-image: -ms-linear-gradient(generalContent)
-    background-image: -webkit-gradient(webkitContent)
-    background-image: linear-gradient(generalContent)
-
+    if current-property
+        add-property(current-property[0], s('-o-linear-gradient(%s)', content))
+        add-property(current-property[0], s('-webkit-linear-gradient(%s)', content))
+        add-property(current-property[0], s('-ms-linear-gradient(%s)', content))
+        add-property(current-property[0], s('-moz-linear-gradient(%s)', content))
+        s('linear-gradient(%s)', content)
+    else
+        error('linear-gradient() must be used within a property')
