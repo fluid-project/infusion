@@ -23,10 +23,10 @@ themes = {
     }
 }
 
-build-themes-prefsEditor(contrastThemes)
-    for themeName in contrastThemes
-        fColor = contrastThemes[themeName].foregroundColor
-        bColor = contrastThemes[themeName].backgroundColor
+build-themes-prefsEditor(contrastThemes) {
+    for themeName in contrastThemes {
+        fColor = contrastThemes[themeName].foregroundColor;
+        bColor = contrastThemes[themeName].backgroundColor;
 
         {themeName} {
             .fl-prefsEditor {
@@ -68,17 +68,20 @@ build-themes-prefsEditor(contrastThemes)
                 color: fColor !important;
             }
         }
+    }
+}
 
 // For the separated panel
-get-colors-for-separatedPanelPrefsEditor(fColor, bColor)
+get-colors-for-separatedPanelPrefsEditor(fColor, bColor) {
     background-color: bColor;
     border-color: fColor;
     color: fColor;
+}
 
-build-themes-separatedPanelPrefsEditor(contrastThemes)
-    for themeName in contrastThemes
-        fColor = contrastThemes[themeName].foregroundColor
-        bColor = contrastThemes[themeName].backgroundColor
+build-themes-separatedPanelPrefsEditor(contrastThemes) {
+    for themeName in contrastThemes {
+        fColor = contrastThemes[themeName].foregroundColor;
+        bColor = contrastThemes[themeName].backgroundColor;
 
         {themeName} {
             background-image: none !important;
@@ -90,22 +93,26 @@ build-themes-separatedPanelPrefsEditor(contrastThemes)
                 }
             }
         }
+    }
+}
 
 // For the separated panel iframe
-build-themes-separatedPanelPrefsEditorFrame(contrastThemes)
-    for themeName in contrastThemes
-        fColor = contrastThemes[themeName].foregroundColor
-        bColor = contrastThemes[themeName].backgroundColor
+build-themes-separatedPanelPrefsEditorFrame(contrastThemes) {
+    for themeName in contrastThemes {
+        fColor = contrastThemes[themeName].foregroundColor;
+        bColor = contrastThemes[themeName].backgroundColor;
 
         .fl-prefsEditor-separatedPanel{themeName} {
             background-image: none;
         }
+    }
+}
 
 // For the general theme styling that applies to html elements and infusion components
-build-themes-prefsEditorThemes(contrastThemes)
-    for themeName in contrastThemes
-        fColor = contrastThemes[themeName].foregroundColor
-        bColor = contrastThemes[themeName].backgroundColor
+build-themes-prefsEditorThemes(contrastThemes) {
+    for themeName in contrastThemes {
+        fColor = contrastThemes[themeName].foregroundColor;
+        bColor = contrastThemes[themeName].backgroundColor;
 
         {themeName} {
             // General Styling
@@ -329,3 +336,5 @@ build-themes-prefsEditorThemes(contrastThemes)
                 }
             }
         }
+    }
+}

@@ -37,17 +37,17 @@ html {
     padding: 10px 0px;
     margin: 0px;
 
-    & .fl-prefsEditor {
+    .fl-prefsEditor {
         font-family: 'OpenSans',"Myriad Pro", Helvetica, Arial, sans-serif;
         line-height: 1.2em !important; // FLUID-4959: fix the line height so it doesn't scale with the Preferences Editor line space scaling.
     }
 
     // Preference Panels
-    & ul.fl-prefsEditor-panels {
+    ul.fl-prefsEditor-panels {
         margin: 0 20px;
         white-space: nowrap;
 
-        & li.fl-prefsEditor-panel {
+        li.fl-prefsEditor-panel {
             border: 1px solid #615e59;
             border-radius: 5px;
             box-shadow: 2px 2px #7a766d;
@@ -62,7 +62,7 @@ html {
         }
     }
 
-    & h2 {
+    h2 {
         color: #766d68;
         padding: 0 0 0.5em 0;
         margin: 0 0 1.5em 0;
@@ -75,40 +75,40 @@ html {
         height: 2em;
     }
 
-    & .fl-inputs {
+    .fl-inputs {
         float: none;
     }
 
-    & label {
+    label {
         font-size: 1em;
     }
 
     // Table of Contents switch
-    & .fl-prefsEditor-separatedPanel-toc {
+    .fl-prefsEditor-separatedPanel-toc {
         width: 6em;
         height:2em;
         margin-right:10px;
         float:left;
 
-        & label {
+        label {
             line-height: 1.7em !important;
         }
     }
 
-    // Emphasize links & buttons panel
-    & .fl-links-buttons-options {
-        & label {
+    // Emphasize links buttons panel
+    .fl-links-buttons-options {
+        label {
             width: 22em;
             display:inline-block;
         }
 
-        & li {
+        li {
             margin-bottom: 0.4em;
         }
     }
 
-    & h2 {
-        & label, & .heading-text {
+    h2 {
+        label, .heading-text {
             float: left;
             padding-top: 0.2em;
             font-size: 1.3em;
@@ -117,7 +117,7 @@ html {
     }
 
     // Font Icons
-    & .fl-icon-next, & .fl-icon-prev {
+    .fl-icon-next, .fl-icon-prev {
         font-family: 'InfusionIcons' !important;
         speak: none;
         font-style: normal;
@@ -130,11 +130,11 @@ html {
         font-size: 1.5em;
     }
 
-    & .fl-icon-next:before {
+    .fl-icon-next:before {
         content: "\e001";
     }
 
-    & .fl-icon-prev:before {
+    .fl-icon-prev:before {
         content: "\e002";
     }
 }

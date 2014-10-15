@@ -23,12 +23,12 @@
 
 // Top bar and show/hide button
 .fl-prefsEditor-separatedPanel {
-    & .fl-panelBar {
+    .fl-panelBar {
         width: 100%;
         background-color: #fff;
         border-bottom: 1px solid #ccc;
 
-        & .fl-prefsEditor-buttons {
+        .fl-prefsEditor-buttons {
             box-shadow: 2px 2px 3px 0px #6f6f6f;
             border-bottom: 1px solid #ccc;
             border-left: 1px solid #ccc;
@@ -42,11 +42,11 @@
         }
     }
 
-    & .fl-prefsEditor-showHide {
+    .fl-prefsEditor-showHide {
         min-width: 15em;
     }
 
-    & .fl-prefsEditor-showHide, & .fl-prefsEditor-reset {
+    .fl-prefsEditor-showHide, .fl-prefsEditor-reset {
         text-transform: lowercase;
         font-weight: bold;
         border: 0;
@@ -59,12 +59,12 @@
         margin-left: 0.5em;
     }
 
-    & .fl-prefsEditor-reset {
+    .fl-prefsEditor-reset {
         border-right: 1px solid #ccc;
     }
 
     // Font icons for reset/save tabs
-    & .fl-icon-undo, & .fl-icon-preferences {
+    .fl-icon-undo, .fl-icon-preferences {
         font-family: 'InfusionIcons' !important;
         speak: none;
         font-style: normal;
@@ -78,11 +78,11 @@
         font-size: 1em;
     }
 
-    & .fl-icon-undo:before {
+    .fl-icon-undo:before {
         content: "\e008";
     }
 
-    & .fl-icon-preferences:before {
+    .fl-icon-preferences:before {
         content: "\e00f";
     }
 }

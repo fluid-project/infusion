@@ -2,17 +2,22 @@
 
 vendors = webkit moz o ms
 
-linear-gradient()
+linear-gradient() {
     // Generate the gradient effect used by linear-gradient()
-    content = arguments[0]
-    count = 0
-    for element in arguments
-        if (count != 0)
-            content = content, element
-        count = count + 1
+    content = arguments[0];
+    count = 0;
+    for element in arguments {
+        if (count != 0) {
+            content = content, element;
+        }
+        count = count + 1;
+    }
 
-    if current-property
-        for vendor in vendors
-            add-property(current-property[0], s('-%s-linear-gradient(%s)', vendor, content))
+    if current-property {
+        for vendor in vendors {
+            add-property(current-property[0], s('-%s-linear-gradient(%s);', vendor, content));
+        }
 
-        s('linear-gradient(%s)', content)
+        s('linear-gradient(%s);', content);
+    }
+}
