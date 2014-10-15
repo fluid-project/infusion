@@ -13,7 +13,6 @@
             "./js/MimeTypeExtensions.js"
         ],
         "dependencies": [
-            "fss",
             "jQuery",
             "jQueryUICore",
             "jQueryScrollToPlugin",

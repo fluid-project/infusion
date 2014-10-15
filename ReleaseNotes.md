@@ -56,10 +56,6 @@ categorized by license:
 ### zlib/libpng License ###
 * [fastXmlPull is based on XML for Script's Fast Pull Parser v3.1](http://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js)
 
-### BSD License ###
-* fss-reset-global.css and fss-reset-contextual are based on [YUI's CSS reset styling v2.5.2](http://developer.yahoo.com/yui/reset/)
-* fss-base-global.css and fss-base-contextual are based on YUI's CSS [base](http://developer.yahoo.com/yui/base/) and [fonts](http://developer.yahoo.com/yui/fonts/) styling v2.5.2
-
 ### ECL 2.0 ###
 * Sample markup and stylesheets from [Sakai v2.5](http://sakaiproject.org)
 
@@ -68,7 +64,6 @@ categorized by license:
 
 ### Public Domain ###
 * Douglas Crockford's [JSON.js (from 2007-11-06)](http://www.json.org/)
-* fss-layout.css uses some styles, related to hiding content, based on HTML5 [Boilerplate v1.0](https://github.com/paulirish/html5-boilerplate/blob/master/README.md)
 
 ## Documentation ##
 
