@@ -19,7 +19,7 @@ You can checkout and fork Infusion on github:
 
 <https://github.com/fluid-project/infusion>
 
-See [How Do I Use Infusion That Is Directly Pulled From Github Repository?](#how-do-i-use-infusion-that-is-directly-pulled-from-github-repository), for details on creating custom packages of Infusion. See [How Do I Create an Infusion Package?](#how-do-i-create-an-infusion-package), for details on creating custom packages of Infusion.
+See [How Do I Create an Infusion Package?](#how-do-i-create-an-infusion-package), for details on creating complete or custom packages of Infusion.
 
 ##Who Makes Infusion, and How Can I Help?##
 
