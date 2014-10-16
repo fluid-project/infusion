@@ -1,6 +1,6 @@
 ## Overview ##
 
-The "stylus" directory contains Stylus files for generating the Preference Framework stylesheets.
+The "[stylus](./)" directory contains Stylus files for generating the Preference Framework stylesheets.
 
 ### How to add a new theme ###
 
@@ -16,7 +16,7 @@ Define your own themes variable that looks like:
     }
 ```
 
-When calling Stylus mixins defined in "utils/Themes.styl", pass in your own themes variable as a parameter, such as:
+When calling Stylus mixins defined in "[utils/Themes.styl](./utils/Themes.styl)", pass in your own themes variable as a parameter, such as:
 
 ```
     build-themes-Enactors(contrastThemes);
