@@ -69,7 +69,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.testAfterPageEnhancer = function () {
-        jqUnit.assertEquals("FSS theme class has not been removed", 1, $(".fl-theme-wb").length);
+        jqUnit.assertEquals("The theme class has not been removed", 1, $(".fl-theme-wb").length);
         jqUnit.assertEquals("Things are still styled with 'first-class' ", 3, $(".first-class").length);
         jqUnit.assertEquals("Things are still styled with 'last-class' ", 2, $(".last-class").length);
     };

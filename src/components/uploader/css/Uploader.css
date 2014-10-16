@@ -17,7 +17,6 @@
 /* Header table */
 table.fl-uploader-header {
     width: 100%;
-    margin-bottom: 0px; /* override FSS 1em margin on bottom */
     border-bottom: 1px solid #999;
     color: #333;
     font-size: 0.9em;

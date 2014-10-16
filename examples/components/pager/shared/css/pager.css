@@ -74,9 +74,6 @@
 /***********************************************
  * Styles for the list of numerated page links.
  */
-.example-pager-links  {
-    margin:0em; /* This is to override FSS-reset's ol and ul styling. We should handle this better. */
-}
 
 .example-pager-pageLink-default a {
     /* Using display:block and float:left, it creates helps create a horizontal list with fixed width elements.*/
