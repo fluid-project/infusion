@@ -36,7 +36,7 @@
 }
 
 /* Hide visually and from screenreaders, but maintain layout */
-..fl-hidden-invisible {
+.fl-hidden-invisible {
     visibility: hidden;
 }
 
