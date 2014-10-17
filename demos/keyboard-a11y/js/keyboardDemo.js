@@ -37,10 +37,6 @@ var demo = demo || {};
         $("#" + thumbID).attr("aria-selected", true);
     };
 
-    demo.imageViewer.setRankFromImage = function (ranker, imageViewerModel, selection) {
-        ranker.setRank(imageViewerModel.imageRanks[selection]);
-    };
-
     demo.imageViewer.updateRank = function (that, rank) {
         that.applier.change(["imageRanks", that.model.selected], rank);
     };
@@ -90,6 +86,16 @@ var demo = demo || {};
         thumbnails.click(handler);
     };
 
+    demo.fiveStar.getRank = function (model) {
+        return model.imageViewer.imageRanks[model.imageViewer.selected];
+    };
+
+    demo.fiveStar.setRank = function (model) {
+        var imageRanks = model.imageViewer.imageRanks;
+        fluid.set(imageRanks, model.imageViewer.selected, model.rank);
+        return imageRanks;
+    };
+
     //=====================================================================
     // Setup functions
     //
@@ -126,6 +132,9 @@ var demo = demo || {};
         styles: {
             selected: "demo-selected"
         },
+        events: {
+            onSelect: null
+        },
         model: {
             expander: {
                 funcName: "demo.imageViewer.setUpModel",
@@ -146,22 +155,28 @@ var demo = demo || {};
                 type: "demo.fiveStar",
                 container: "{that}.dom.ranker",
                 options: {
-                    modelListeners: {
-                        "{imageViewer}.model.selected": {
-                            listener: "{that}.setRankFromImage",
-                            args: ["{change}.value"]
-                        },
-                        "rank": {
-                            listener: "{imageViewer}.updateRank",
-                            args: ["{change}.value"]
+                    modelRelay: [{
+                        source: "{imageViewer}.model.selected",
+                        target: "rank",
+                        singleTransform: {
+                            type: "fluid.transforms.free",
+                            args: {
+                                imageViewer: "{imageViewer}.model"
+                            },
+                            func: "demo.fiveStar.getRank"
                         }
-                    },
-                    invokers: {
-                        setRankFromImage: {
-                            funcName: "demo.imageViewer.setRankFromImage",
-                            args: ["{that}", "{imageViewer}.model", "{arguments}.0"]
+                    }, {
+                        source: "rank",
+                        target: "{imageViewer}.model.imageRanks",
+                        singleTransform: {
+                            type: "fluid.transforms.free",
+                            args: {
+                                rank: "{that}.model.rank",
+                                imageViewer: "{imageViewer}.model"
+                            },
+                            func: "demo.fiveStar.setRank"
                         }
-                    }
+                    }]
                 }
             }
         },
@@ -191,8 +206,9 @@ var demo = demo || {};
             },
             "onCreate.makeThumbnailsActivatable": {
                 listener: "demo.imageViewer.makeThumbnailsActivatable",
-                args: ["{that}.dom.thumbContainer", "{that}.dom.thumbImgSelector", "{that}.select"]
-            }
+                args: ["{that}.dom.thumbContainer", "{that}.dom.thumbImgSelector", "{that}.events.onSelect.fire"]
+            },
+            "onSelect.triggerSelect": "{that}.select"
         },
         invokers: {
             displayImage: {

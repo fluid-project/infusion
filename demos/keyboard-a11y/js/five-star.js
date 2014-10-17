@@ -39,9 +39,9 @@ var demo = demo || {};
     /**
      * Apply appropriate ARIA role and attributes
      */
-    demo.fiveStar.setARIA = function (that) {
-        that.container.attr("role", "radiogroup");
-        that.locate("stars").attr({
+    demo.fiveStar.setARIA = function (container, stars) {
+        container.attr("role", "radiogroup");
+        stars.attr({
             "role": "radio",
             "aria-checked": false
         });
@@ -67,59 +67,6 @@ var demo = demo || {};
         }
         stars.slice(hovered + 1, rank).attr("src", imgs.select);
         stars.slice(Math.max(hovered, rank), 5).attr("src", imgs.blank);
-    };
-
-    demo.fiveStar.updateRank = function (that, newRank) {
-        demo.fiveStar.updateARIA(that.stars, newRank);
-    };
-
-    //=====================================================================
-    // Main keyboard accessibility plugin functions
-    //
-
-    /**
-     * Ensure that the five-star ranking widget can be navigated using the keyboard
-     */
-    demo.fiveStar.makeFiveStarsNavigable = function (that) {
-        var starContainer = that.container;
-
-        //*** Use the Keyboard Accessibility Plugin to ensure that the container is in the tab order
-        starContainer.fluid("tabbable");
-
-        //*** Use the Keyboard Accessibility Plugin to make the start themselves selectable
-        // This overrides some of the defaults
-        starContainer.fluid("selectable", {
-            // the default orientation is vertical, so we need to specify that this is horizontal.
-            // this affects what arrow keys will move selection
-            direction: fluid.a11y.orientation.HORIZONTAL,
-
-            // because the stars don't have the default "selectable" class, we must
-            // specify what is to be selectable:
-            selectableSelector: that.options.selectors.stars,
-
-            // because the same widget is used for images with different ranks, we don't want
-            // the previously selected rank to be re-used
-            rememberSelectionState: false,
-
-            onSelect: function (starEl) {
-                // show visual confirmation when focus is there
-                starContainer.addClass(that.options.styles.selected);
-                that.hoverStars(starEl);
-            },
-            onUnselect: function () {
-                starContainer.removeClass(that.options.styles.selected);
-                that.refreshView();
-            }
-        });
-    };
-
-    /**
-     * Ensure that the five-star ranking widget can be navigated using the keyboard
-     */
-    demo.fiveStar.makeFiveStarsActivatable = function (that) {
-        that.stars.fluid("activatable", function (evt) {
-            that.setRank(demo.fiveStar.getStarNum(evt.target));
-        });
     };
 
     //=====================================================================
@@ -159,22 +106,39 @@ var demo = demo || {};
                 }
             }, {
                 funcName: "demo.fiveStar.setARIA",
-                args: "{that}"
+                args: ["{that}.container", "{that}.stars"]
             }],
-            "onCreate.makeFiveStarsNavigable": {
-                listener: "demo.fiveStar.makeFiveStarsNavigable",
-                args: ["{that}"]
+            // Use the Keyboard Accessibility Plugin to ensure that the container is in the tab order
+            "onCreate.makeTabbable": {
+                listener: "fluid.tabbable",
+                args: ["{that}.container"]
             },
+            // Use the Keyboard Accessibility Plugin to make the stars themselves selectable
+            "onCreate.makeSelectable": {
+                listener: "fluid.selectable",
+                args: ["{that}.container", "{that}.options.selectable"]
+            },
+            // Use the Keyboard Accessibility Plugin to make the stars themselves activatable with the keyboard
             "onCreate.makeFiveStarsActivatable": {
-                listener: "demo.fiveStar.makeFiveStarsActivatable",
-                args: ["{that}"]
+                listener: "fluid.activatable",
+                args: ["{that}.stars", {
+                    expander: {
+                        funcName: "demo.fiveStar.makeStarHandler",
+                        args: ["{that}", "{that}.setRank"]
+                    }
+                }]
             }
         },
         modelListeners: {
             "rank": [{
-                funcName: "demo.fiveStar.updateRank",
-                args: ["{that}", "{change}.value"]
-            }, "{that}.refreshView"]
+                funcName: "demo.fiveStar.updateARIA",
+                args: ["{that}.stars", "{change}.value"]
+            }, "{that}.refreshView"],
+            "containerSelected": {
+                "this": "{that}.container",
+                "method": "toggleClass",
+                "args": ["{that}.options.styles.selected", "{change}.value"]
+            }
         },
         invokers: {
             setRank: {
@@ -199,6 +163,16 @@ var demo = demo || {};
             refreshView: {
                 func: "{that}.renderStarState",
                 args: 0
+            },
+
+            select: {
+                changePath: "containerSelected",
+                value: true
+            },
+
+            unselect: {
+                changePath: "containerSelected",
+                value: false
             }
         },
         selectors: {
@@ -213,7 +187,24 @@ var demo = demo || {};
             select: "images/star-green.gif"
         },
         model: {
+            containerSelected: false,
             rank: 1
+        },
+        selectable: {
+            // the default orientation is vertical, so we need to specify that this is horizontal.
+            // this affects what arrow keys will move selection
+            direction: fluid.a11y.orientation.HORIZONTAL,
+
+            // because the stars don't have the default "selectable" class, we must
+            // specify what is to be selectable:
+            selectableSelector: "{that}.options.selectors.stars",
+
+            // because the same widget is used for images with different ranks, we don't want
+            // the previously selected rank to be re-used
+            rememberSelectionState: false,
+
+            onSelect: "{that}.select",
+            onUnselect: "{that}.unselect"
         }
     });
 })(jQuery, fluid);
