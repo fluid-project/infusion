@@ -55,7 +55,7 @@
  */
 .demo-layoutReorderer-module-content {
     padding: 6px;
-	width: 95%;
+    width: 95%;
     overflow: auto;
 }
 
@@ -91,7 +91,7 @@
 }
 
 .demo-layoutReorderer-movable-dragging {
-	margin: 6px 2px 6px 12px;
+    margin: 6px 2px 6px 12px;
 }
 
 .demo-layoutReorderer-movable-mousedrag {

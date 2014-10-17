@@ -37,7 +37,7 @@
 }
 
 .fl-reorderer-movable-hover {
-	border-color:#666;
+    border-color:#666;
 }
 
 .fl-reorderer-movable-selected {
@@ -51,22 +51,22 @@
 }
 
 .fl-reorderer-movable-dragging{
-	height: 150px !important;
-	width: 150px;
-	border: 2px solid #666;
-	background-color: #eee;
-	float: left;
-	margin: 5px !important;
-	text-align: center;
-	opacity: .2;
-	filter: alpha(opacity=20);
-	padding-top: 10px;
+    height: 150px !important;
+    width: 150px;
+    border: 2px solid #666;
+    background-color: #eee;
+    float: left;
+    margin: 5px !important;
+    text-align: center;
+    opacity: .2;
+    filter: alpha(opacity=20);
+    padding-top: 10px;
 }
 
 .fl-reorderer-imageTitle{
-	margin-top:5px;
-	height: 40px;
-	overflow: hidden;
+    margin-top:5px;
+    height: 40px;
+    overflow: hidden;
 }
 
 .fl-reorderer-imageTitle a{
@@ -86,24 +86,24 @@ div .fl-reorderer-dropMarker {
 }
 
 .fl-reorderer-instructions{
-	color: #666;
-	background-color: lightyellow;
-	padding: 3px;
-	border: 2px solid #ddd;
-	font-size: .9em;
-	position: absolute;
-	top: 0;
-	right: 0;
-	width: 340px;
+    color: #666;
+    background-color: lightyellow;
+    padding: 3px;
+    border: 2px solid #ddd;
+    font-size: .9em;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 340px;
 }
 
 .fl-reorderer-downarrow{
-	font-size: 0px; line-height: 0%; width: 0px;
-	margin: 5px 8px 30px 0;
-	float: left;
-	border-top: 10px solid red;
-	border-left: 10px solid lightyellow;
-	border-right: 10px solid lightyellow;
+    font-size: 0px; line-height: 0%; width: 0px;
+    margin: 5px 8px 30px 0;
+    float: left;
+    border-top: 10px solid red;
+    border-left: 10px solid lightyellow;
+    border-right: 10px solid lightyellow;
 }
 
 .fl-reorderer-screen-reader-instructions {

@@ -38,7 +38,7 @@
 
 .demo-container-imageThumbnails img {
     max-height:7em;
-	border:5px solid #fff;
+    border:5px solid #fff;
 }
 
 .demo-container-imageThumbnails .demo-selected,
@@ -60,7 +60,7 @@
 }
 
 .demo-container-fiveStar #demo-ranking {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 #demo-ranking.demo-selected img:focus {

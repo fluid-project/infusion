@@ -1,8 +1,8 @@
 /* Themed Appearance + Themed States */
 
 .fl-inlineEdit-edit {
-	margin-left : -1px;
-	border      : 2px solid #0085FF;
+    margin-left : -1px;
+    border      : 2px solid #0085FF;
 }
 
 .fl-inlineEdit-simple-editableText {
@@ -23,9 +23,9 @@
 }
 
 .fl-inlineEdit-focus {
-	border        : 1px solid #0085FF;
-	padding       : 1px 0px 0px 1px;
-	margin-bottom : 1px;
+    border        : 1px solid #0085FF;
+    padding       : 1px 0px 0px 1px;
+    margin-bottom : 1px;
 }
 
 /* Base Appearance & States Appearance */
