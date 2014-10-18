@@ -97,51 +97,94 @@ var fluid_2_0 = fluid_2_0 || {};
         return togo;
     };
     
-    // TRANSFORM ALGORITHM APPLYING PROMISES
+    /* General skeleton for all sequential promise algorithms, e.g. transform, reduce, sequence, etc.
+     * These accept a variable "strategy" pair to customise the interchange of values and final return
+     */
+     
+    fluid.promise.makeSequencer = function (sources, options, strategy) {
+        return {
+            sources: sources,
+            index: 0,
+            strategy: strategy,
+            options: options, // available to be supplied to each listener
+            returns: [],
+            promise: fluid.promise() // the final return value
+        };
+    };
     
+    fluid.promise.progressSequence = function (that, retValue) {
+        that.returns.push(retValue);
+        that.index++;
+        // No we dun't have no tail recursion elimination
+        fluid.promise.resumeSequence(that);
+    };
+    
+    fluid.promise.resumeSequence = function (that) {
+        if (that.index === that.sources.length) {
+            that.promise.resolve(that.strategy.resolveResult(that));
+        } else {
+            var value = that.strategy.invokeNext(that);
+            if (fluid.isPromise(value)) {
+                value.then(function (retValue) {
+                    fluid.promise.progressSequence(that, retValue);
+                }, function (error) {
+                    that.promise.reject(error);
+                });
+            } else {
+                fluid.promise.progressSequence(that, value);
+            }
+        }
+    };
+    
+    // SEQUENCE ALGORITHM APPLYING PROMISES
+    
+    fluid.promise.makeSequenceStrategy = function () {
+        return {
+            invokeNext: function (that) {
+                var source = that.sources[that.index];
+                return typeof(source) === "function" ? source(that.options) : source;
+            },
+            resolveResult: function (that) {
+                return that.returns;
+            }
+        };
+    };
+
+    // accepts an array of promises or functions returning promises    
+    fluid.promise.sequence = function (sources, options) {
+        var sequencer = fluid.promise.makeSequencer(sources, options, fluid.promise.makeSequenceStrategy());
+        fluid.promise.resumeSequence(sequencer);
+        return sequencer.promise;
+    };
+    
+    // TRANSFORM ALGORITHM APPLYING PROMISES
+   
+    fluid.promise.makeTransformerStrategy = function () {
+        return {
+            invokeNext: function (that) {
+                var lisrec = that.sources[that.index];
+                lisrec.listener = fluid.event.resolveListener(lisrec.listener);
+                var value = lisrec.listener(that.returns[that.index], that.options);
+                return value;
+            },
+            resolveResult: function (that) {
+                return that.returns[that.index];
+            }
+        };
+    };
+
     // Construct a "mini-object" managing the process of a sequence of transforms,
-    // each of which may be synchronous or return a promise
+    // each of which may be synchronous or return a promise    
     fluid.promise.makeTransformer = function (listeners, payload, options) {
         listeners.unshift({listener:
             function () {
                 return payload;
             }
         });
-        return {
-            listeners: listeners,
-            index: 0,
-            options: options,
-            payloads: [null], // first transformer is dummy returning initial payload
-            promise: fluid.promise()
-        };
-    };
-    
-    fluid.promise.progressTransform = function (that, retValue) {
-        that.payloads.push(retValue);
-        that.index++;
-        // No we dun't have no tail recursion elimination
-        fluid.promise.resumeTransform(that);
-    };
-    
-    fluid.promise.resumeTransform = function (that) {
-        var payload = that.payloads[that.index];
-        if (that.index === that.listeners.length) {
-            that.promise.resolve(payload);
-        } else {
-            var lisrec = that.listeners[that.index];
-            lisrec.listener = fluid.event.resolveListener(lisrec.listener);
-            var listener = lisrec.listener;
-            var value = listener(payload, that.options);
-            if (fluid.isPromise(value)) {
-                value.then(function (retValue) {
-                    fluid.promise.progressTransform(that, retValue);
-                }, function (error) {
-                    that.promise.reject(error);
-                });
-            } else {
-                fluid.promise.progressTransform(that, value);
-            }
-        }
+        var sequencer = fluid.promise.makeSequencer(listeners, options, fluid.promise.makeTransformerStrategy());
+        sequencer.returns.push(null); // first dummy return from initial entry
+        fluid.promise.resumeSequence(sequencer);
+        return sequencer;
     };
     
     fluid.promise.filterNamespaces = function (listeners, namespaces) {
@@ -174,7 +217,6 @@ var fluid_2_0 = fluid_2_0 || {};
                 fluid.makeArray(event.sortedListeners);
         listeners = fluid.promise.filterNamespaces(listeners, options.filterNamespaces);
         var transformer = fluid.promise.makeTransformer(listeners, payload, options);
-        fluid.promise.resumeTransform(transformer);
         return transformer.promise;
     };
     

@@ -315,6 +315,42 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
     
+    fluid.tests.optionValueViaPromise = function (options) {
+        var promise = fluid.promise();
+        fluid.invokeLater(function () {
+            promise.resolve(options.optionValue);
+        });
+        return promise;
+    };
+    
+    jqUnit.asyncTest("fluid.promise.sequence", function () {
+        var sources = [3, fluid.promise(), fluid.tests.optionValueViaPromise];
+        var response = fluid.promise.sequence(sources, {
+            optionValue: 9
+        });
+        fluid.invokeLater(function () {
+            sources[1].resolve(6);
+        });
+        response.then(function (result) {
+            jqUnit.assertDeepEq("Mixture of direct, promised, and function promise elements resolved", [3, 6, 9], result);
+            jqUnit.start();
+        });
+    });
+    
+    jqUnit.asyncTest("fluid.promise.sequence reject", function () {
+        var sources = [fluid.tests.optionValueViaPromise, 6, fluid.promise(), fluid.promise()];
+        var response = fluid.promise.sequence(sources, {
+            optionValue: 9
+        });
+        sources[2].reject(97);
+        response.then(function () {
+            jqUnit.fail("Error - resolved result from rejected sequence");
+        }, function (reason) {
+            jqUnit.assertEquals("Overall sequence rejected with individual reason", 97, reason);
+            jqUnit.start();
+        });
+    });
+    
     jqUnit.test("fluid.promise.map tests", function () {
         jqUnit.expect(3);
         var mapper = function (val) {
