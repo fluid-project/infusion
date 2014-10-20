@@ -150,7 +150,9 @@ var fluid_2_0 = fluid_2_0 || {};
         };
     };
 
-    // accepts an array of promises or functions returning promises    
+    // accepts an array of values, promises or functions returning promises - in the case of functions returning promises,
+    // will assure that at most one of these is "in flight" at a time - that is, the succeeding function will not be invoked
+    // until the promise at the preceding position has resolved    
     fluid.promise.sequence = function (sources, options) {
         var sequencer = fluid.promise.makeSequencer(sources, options, fluid.promise.makeSequenceStrategy());
         fluid.promise.resumeSequence(sequencer);

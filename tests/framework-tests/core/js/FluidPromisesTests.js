@@ -324,7 +324,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     
     jqUnit.asyncTest("fluid.promise.sequence", function () {
-        var sources = [3, fluid.promise(), fluid.tests.optionValueViaPromise];
+        var sources = [3, fluid.promise(), fluid.tests.optionValueViaPromise, function () { return 12;}];
         var response = fluid.promise.sequence(sources, {
             optionValue: 9
         });
@@ -332,7 +332,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             sources[1].resolve(6);
         });
         response.then(function (result) {
-            jqUnit.assertDeepEq("Mixture of direct, promised, and function promise elements resolved", [3, 6, 9], result);
+            jqUnit.assertDeepEq("Mixture of direct, promised, function promise and function value elements resolved", [3, 6, 9, 12], result);
             jqUnit.start();
         });
     });
@@ -347,6 +347,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.fail("Error - resolved result from rejected sequence");
         }, function (reason) {
             jqUnit.assertEquals("Overall sequence rejected with individual reason", 97, reason);
+            jqUnit.start();
+        });
+    });
+    
+    jqUnit.asyncTest("fluid.promise.sequence sequencing", function () {
+        var record = [];
+        var produceTrackingPromise = function (index) {
+            return function () {
+                record.push("produce " + index);
+                var promise = fluid.promise();
+                promise.then(function () {
+                    record.push("resolve " + index);
+                });
+                fluid.invokeLater(function () {
+                    promise.resolve(index);
+                });
+                return promise;
+            };
+        };
+        var sources = [produceTrackingPromise(1), produceTrackingPromise(2), produceTrackingPromise(3)];
+        var response = fluid.promise.sequence(sources);
+        response.then(function (resolved) {
+            jqUnit.assertDeepEq("Promise values resolved to expected", [1, 2, 3], resolved);
+            jqUnit.assertDeepEq("Promise values resolved in sequence",
+                ["produce 1", "resolve 1", "produce 2", "resolve 2", "produce 3", "resolve 3"], record);
             jqUnit.start();
         });
     });
