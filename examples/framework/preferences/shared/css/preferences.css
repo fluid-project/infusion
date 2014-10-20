@@ -2,7 +2,7 @@
     margin: 0 2em 2em 2em;
 }
 
-.fl-prefsEditor-separatedPanel ul.fl-prefsEditor-panels li.fl-prefsEditor-panel {
+.fl-prefsEditor-separatedPanel .fl-prefsEditor-panels .fl-prefsEditor-panel {
     width: auto;
     min-width: 25em;
 }
