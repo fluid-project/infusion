@@ -23,10 +23,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var classnameMap = {
             "textFont": {
                 "default": "",
-                "times": "fl-font-prefsEditor-times",
-                "comic": "fl-font-prefsEditor-comic-sans",
-                "arial": "fl-font-prefsEditor-arial",
-                "verdana": "fl-font-prefsEditor-verdana"
+                "times": "fl-font-times",
+                "comic": "fl-font-comic-sans",
+                "arial": "fl-font-arial",
+                "verdana": "fl-font-verdana"
             },
             "theme": {
                 "default": "fl-prefsEditor-default-theme",
