@@ -37,10 +37,6 @@ var demo = demo || {};
         $("#" + thumbID).attr("aria-selected", true);
     };
 
-    demo.imageViewer.updateRank = function (that, rank) {
-        that.applier.change(["imageRanks", that.model.selected], rank);
-    };
-
 
     //=====================================================================
     // Main keyboard accessibility plugin functions
@@ -218,10 +214,6 @@ var demo = demo || {};
             updateSelection: {
                 funcName: "demo.imageViewer.updateSelection",
                 args: ["{arguments}.0", "{that}.dom.thumbSelector"]
-            },
-            updateRank: {
-                funcName: "demo.imageViewer.updateRank",
-                args: ["{that}", "{arguments}.0"]
             },
             select: {
                 changePath: "selected",
