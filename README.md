@@ -102,7 +102,6 @@ By default, custom packages are given a name with the form _infusion-custom-<ver
 
 * enhancement
 * framework
-* fss _**(deprecated)**_
 * preferences
 * renderer
 

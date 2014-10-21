@@ -3,21 +3,20 @@
 .demo-progress-container {
     position: relative;
     min-height: 300px;
-	margin: 0 auto;
-	padding: 1em;
-	background-color: white;
-	border: 3px solid black;
-	max-width: 30em;
-	min-width: 30em;
+    padding: 1em;
+    background-color: white;
+    border: 3px solid black;
+    max-width: 30em;
+    min-width: 30em;
     margin-top: 1em;
 }
 
 .demo-progress-container h1 {
-	margin-top: 0.5em;
+    margin-top: 0.5em;
 }
 
 .demo-progress-container abbr {
-	border:0px;
+    border:0px;
 }
 
 /* progress bar */
@@ -25,8 +24,8 @@
     display: none;
     text-align: center;
     color: black;
-	margin: 0px auto;
-    width: 20em;	
+    margin: 0px auto;
+    width: 20em;
     z-index: 3000;
 }
 
@@ -66,7 +65,6 @@
 }
 
 .demo-progress-status-container{
-	height:6em;
     background-color: #afddc5;
     padding:1em;
 }
@@ -81,50 +79,50 @@
 /* table styles */
 
 .demo-progress-table-container {
-	margin: 10px 0px 10px 0px;
-	border:3px solid #d2d3d5;
-	padding: 0px 30px 0px 30px;
+    margin: 10px 0px 10px 0px;
+    border:3px solid #d2d3d5;
+    padding: 0px 30px 0px 30px;
 }
 
 .demo-progress-table-container table {
-	width: 100%;
-	border: 0px;
-	margin-top: 10px;
+    width: 100%;
+    border: 0px;
+    margin-top: 10px;
 }
 
 .demo-progress-table-container th {
-	font-weight:bold;
-	text-align:left;
-	border: 0px;
-	padding: 2px;	
+    font-weight:bold;
+    text-align:left;
+    border: 0px;
+    padding: 2px;
 }
 
 .demo-progress-table-container td {
-	border: 0px;
-	padding: 2px;
+    border: 0px;
+    padding: 2px;
 }
 
 .demo-progress-total-label {
-	width:18em;
+    width:18em;
 }
 
 /* Submit controls */
 
 .progress-demo-submit {
-	text-align:right;
-	clear:both;
+    text-align:right;
+    clear:both;
 }
 
 .progress-demo-submit button.enabled {
-	background-color: #8bc5eb;
-	border: 1px solid black;
-	padding:3px 15px 3px 15px;
-	color: black;
+    background-color: #8bc5eb;
+    border: 1px solid black;
+    padding:3px 15px 3px 15px;
+    color: black;
 }
 
 .progress-demo-submit button.disabled {
-	background-color: #cbe5f6;
-	border: 1px solid #cdcccc;
-	padding:3px 15px 3px 15px;
-	color: #cdcccc;
+    background-color: #cbe5f6;
+    border: 1px solid #cdcccc;
+    padding:3px 15px 3px 15px;
+    color: #cdcccc;
 }

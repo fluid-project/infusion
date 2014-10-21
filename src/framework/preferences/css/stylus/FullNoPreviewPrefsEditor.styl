@@ -10,6 +10,9 @@ body {
     .fl-prefsEditor-category {
         border-top: 2px solid #dddddd;
         clear: both;
+        -webkit-column-break-inside: avoid;
+        page-break-inside: avoid;
+        break-inside: avoid;
 
         // Section header icons
         h2 img {
@@ -24,6 +27,12 @@ body {
     }
 
     // Controls
+    .fl-prefsEditors-controls {
+        -webkit-columns: 15.625rem 4;
+        -moz-columns: 15.625rem 4;
+        columns: 15.625rem 4;
+    }
+
     ul {
         float: left;
 

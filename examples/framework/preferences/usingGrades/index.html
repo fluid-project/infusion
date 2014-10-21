@@ -3,10 +3,9 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-        <link rel="stylesheet" type="text/css" href="../../../../src/framework/fss/css/fss-reset-global.css" />
-        <link rel="stylesheet" type="text/css" href="../../../../src/framework/fss/css/fss-base-global.css" />
-        <link rel="stylesheet" type="text/css" href="../../../../src/framework/fss/css/fss-layout.css" />
-        <link rel="stylesheet" type="text/css" href="../../../../src/framework/fss/css/fss-text.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/lib/normalize/css/normalize.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/framework/core/css/fluid.css" />
+
         <link rel="stylesheet" type="text/css" href="../../../../src/lib/jquery/ui/css/fl-theme-by/by.css" />
         <link rel="stylesheet" type="text/css" href="../../../../src/lib/jquery/ui/css/fl-theme-yb/yb.css" />
         <link rel="stylesheet" type="text/css" href="../../../../src/lib/jquery/ui/css/fl-theme-bw/bw.css" />
@@ -18,6 +17,7 @@
         <link rel="stylesheet" type="text/css" href="../../../../src/framework/preferences/css/PrefsEditor.css" />
         <link rel="stylesheet" type="text/css" href="../../../../src/framework/preferences/css/SeparatedPanelPrefsEditor.css" />
         <link rel="stylesheet" type="text/css" href="../../../../demos/uiOptions/css/uiOptions.css" />
+        <link rel="stylesheet" type="text/css" href="css/usingGrades.css" />
 
         <title>Preferences Editor: Using Grades</title>
         <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
@@ -77,18 +77,18 @@
 
             <!-- This div is for the sliding panel that shows and hides the Preferences Editor controls -->
             <div class="fl-panelBar">
-            	<span class="fl-prefsEditor-buttons">
-	                <button id="reset" class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span> Reset</button>
-	            	<button id="show-hide" class="flc-slidingPanel-toggleButton fl-prefsEditor-showHide"> Show/Hide</button>
-            	</span>
+                <span class="fl-prefsEditor-buttons">
+                    <button id="reset" class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span> Reset</button>
+                    <button id="show-hide" class="flc-slidingPanel-toggleButton fl-prefsEditor-showHide"> Show/Hide</button>
+                </span>
             </div>
         </div>
         <!-- END markup for Preferences Editor -->
 
-        <div class="fl-container-950 fl-centered">
+        <main class="fl-centered">
             <div class="flc-toc-tocContainer toc"> </div>
 
-            <div class="fl-clearfix header">
+            <div>
                 <h1>Preferences Editor</h1>
                 <div class="tagline">This page might be a bit difficult to read or use.<br />
                 Why don't you consider using the <span class="disp-pref">display preferences</span> option?</div>
@@ -102,8 +102,8 @@
                     <li>Try tinkering with the options.</li>
                 </ol>
             </div>
-            <div class="fl-col-flex4 content">
-                <div class="fl-col">
+            <div class="example-columns content">
+                <div class="example-column">
                     <h2>Introduction</h2>
                     <img src="../../../../demos/uiOptions/images/photo_orange.png" alt="an orange"/>
                     <p>
@@ -138,7 +138,7 @@
                         Integer mollis nulla eget quam imperdiet vitae elementum sapien adipiscing.
                    </p>
                 </div>
-                <div class="fl-col">
+                <div class="example-column">
                     <p>
                         Sed tempus laoreet facilisis.
                         Curabitur at augue in justo tincidunt cursus.
@@ -174,7 +174,7 @@
                     </p>
 
                 </div>
-                <div class="fl-col">
+                <div class="example-column">
                     <p>
                         Fusce vel massa vitae dui sollicitudin adipiscing eget sed velit.
                         Fusce auctor vehicula turpis non faucibus.
@@ -197,7 +197,7 @@
                         Donec tincidunt consequat libero, quis vulputate magna ullamcorper.
                     </p>
                 </div>
-                <div class="fl-col">
+                <div class="example-column">
                     <h2>Leave some feedback</h2>
                     <form class="feedback-form">
                         <div>
@@ -214,6 +214,6 @@
                     </form>
                 </div>
             </div>
-        </div>
+        </main>
     </body>
 </html>

@@ -6,7 +6,7 @@
 
 ## What's New in 2.0? ##
 
-* 
+*
 
 ## Downloading Infusion ##
 
@@ -38,6 +38,8 @@ This is a list of publicly available software that is redistributed with Fluid I
 categorized by license:
 
 ### MIT License ###
+* [Foundation v5.4.5](http://foundation.zurb.com/index.html)
+* [HTML5 Boilerplate v4.3](http://html5boilerplate.com/)
 * [jQuery javascript library v1.11.0](http://jquery.com/)
 * [jQuery UI button, dialog, draggable, mouse, position, resizable, slider, tabs, and tooltip javascript widgets v1.10.4](http://ui.jquery.com/)
 * [jQuery QUnit v1.12.0](http://qunitjs.com)
@@ -47,15 +49,12 @@ categorized by license:
 * [jQuery Touch Punch v0.2.2](http://touchpunch.furf.com/)
 * [jquery.simulate](https://github.com/eduardolundgren/jquery-simulate)
 * [Micro Clearfix](http://nicolasgallagher.com/micro-clearfix-hack/)
+* [Normalize v3.0.1](https://necolas.github.io/normalize.css/)
 * [Buzz v1.1.0](http://buzz.jaysalvat.com)
 * [html5shiv v3.7.2](https://code.google.com/p/html5shiv/)
 
 ### zlib/libpng License ###
 * [fastXmlPull is based on XML for Script's Fast Pull Parser v3.1](http://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js)
-
-### BSD License ###
-* fss-reset-global.css and fss-reset-contextual are based on [YUI's CSS reset styling v2.5.2](http://developer.yahoo.com/yui/reset/)
-* fss-base-global.css and fss-base-contextual are based on YUI's CSS [base](http://developer.yahoo.com/yui/base/) and [fonts](http://developer.yahoo.com/yui/fonts/) styling v2.5.2
 
 ### ECL 2.0 ###
 * Sample markup and stylesheets from [Sakai v2.5](http://sakaiproject.org)
@@ -65,7 +64,6 @@ categorized by license:
 
 ### Public Domain ###
 * Douglas Crockford's [JSON.js (from 2007-11-06)](http://www.json.org/)
-* fss-layout.css uses some styles, related to hiding content, based on HTML5 [Boilerplate v1.0](https://github.com/paulirish/html5-boilerplate/blob/master/README.md)
 
 ## Documentation ##
 
@@ -80,7 +78,7 @@ browser's Back button.
 
 Infusion 2.0 was tested with the following browsers:
 
-* 
+*
 
 For more information see the [Fluid Infusion browser support](http://wiki.fluidproject.org/display/docs/Browser+Support) wiki page.
 

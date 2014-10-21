@@ -27,7 +27,6 @@
             "./js/Builder.js"
         ],
         "dependencies": [
-            "fss",
             "fonts",
             "jQuery",
             "jQueryUICore",

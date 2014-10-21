@@ -3,13 +3,15 @@
     <head>
         <title>Multiple Versions of Infusion</title>
 
-        <!-- styling for instructions -->
-        <link rel="stylesheet" type="text/css" href="../../../shared/css/instructions.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../../src/lib/normalize/css/normalize.css" />
+
+        <!-- styling for manual tests -->
+        <link rel="stylesheet" type="text/css" href="../../../shared/css/manualTests.css" />
 
         <script type="text/javascript" src="js/infusion-1.5.js"></script>
         <!--  Ensure jQuery plays nice with other toolkits - must be called after all the javascript is loaded. -->
         <script language="JavaScript" type="text/javascript">
-        jQuery.noConflict();
+            jQuery.noConflict();
         </script>
 
         <script type="text/javascript" src="../../../../../src/lib/jquery/core/js/jquery.js"></script>
@@ -67,13 +69,13 @@
         </main>
 
         <script type="text/javascript">
-        // initialize the list using a prior version of Infusion
-        fluid.reorderList("#list-priorVersion");
-        $("#priorVersionNumber").text(fluid.version);
+            // initialize the list using a prior version of Infusion
+            fluid.reorderList("#list-priorVersion");
+            $("#priorVersionNumber").text(fluid.version);
 
-        // initialize the list using the current version of Infusion
-        fluid_2_0.reorderList("#list-currentVersion");
-        $("#currentVersionNumber").text(fluid_2_0.version);
+            // initialize the list using the current version of Infusion
+            fluid_2_0.reorderList("#list-currentVersion");
+            $("#currentVersionNumber").text(fluid_2_0.version);
         </script>
     </body>
 </html>

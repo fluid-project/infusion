@@ -24,7 +24,10 @@ var demo = demo || {};
             selectors: {
                 movables: ".flc-imageReorderer-item"
             },
-            disableWrap: true
+            disableWrap: true,
+            listeners: {
+                "afterMove.postModel": "fluid.identity" // disable the default post action
+            }
         });
     };
 })(jQuery, fluid);

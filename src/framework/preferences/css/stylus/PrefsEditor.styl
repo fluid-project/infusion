@@ -13,8 +13,9 @@
     font-family: "Myriad Pro", Helvetica, Arial, sans-serif;
 
     // Controls
-    ul {
-        margin-left: 0px;
+    .fl-prefsEditor-panels {
+        margin-left: 0;
+        padding: 0;
         li {
             list-style: none;
         }
@@ -289,7 +290,7 @@
     .fl-icon-lines:before {
         content: "\e000";
     }
-    .fl-icon-crossout:before, .fl-choice .fl-theme-prefsEditor-default .fl-crossout:before {
+    .fl-icon-crossout:before, .fl-choice .fl-prefsEditor-contrast-defaultThemeLabel .fl-crossout:before {
         content: "\e004";
     }
     .fl-icon-big-a:before {
@@ -316,7 +317,7 @@
             height: 1em;
         }
 
-        .fl-theme-prefsEditor-default .fl-crossout {
+        .fl-prefsEditor-contrast-defaultThemeLabel .fl-crossout {
             font-family: 'InfusionIcons' !important;
             margin-top: -1.75em;
             font-size: 1.85em;
@@ -324,7 +325,7 @@
 
         label.fl-theme-prefsEditor-default,
         label.fl-theme-prefsEditor-default span,
-        label.fl-theme-prefsEditor-default .fl-crossout {
+        label.fl-prefsEditor-contrast-defaultThemeLabel .fl-crossout {
             background-color: #FFFFFF !important;
             border-color: #433F3D !important;
             color: #433F3D !important;

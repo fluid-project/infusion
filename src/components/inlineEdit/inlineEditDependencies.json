@@ -13,8 +13,7 @@
             "jQueryUIWidgets",
             "framework",
             "undo",
-            "tooltip",
-            "fss"
+            "tooltip"
         ]
     }
 }

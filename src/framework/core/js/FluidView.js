@@ -477,7 +477,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.defaults("fluid.ariaLabeller", {
         labelAttribute: "aria-label",
-        liveRegionMarkup: "<div class=\"liveRegion fl-offScreen-hidden\" aria-live=\"polite\"></div>",
+        liveRegionMarkup: "<div class=\"liveRegion fl-hidden-accessible\" aria-live=\"polite\"></div>",
         liveRegionId: "fluid-ariaLabeller-liveRegion",
         events: {
             generateLiveElement: "unicast"

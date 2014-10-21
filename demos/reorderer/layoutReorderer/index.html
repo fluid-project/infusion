@@ -4,10 +4,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>Simple Layout Reorderer Sample</title>
 
-        <link rel="stylesheet" type="text/css" href="../../../src/framework/fss/css/fss-reset-global.css" />
-        <link rel="stylesheet" type="text/css" href="../../../src/framework/fss/css/fss-base-global.css" />
-        <link rel="stylesheet" type="text/css" href="../../../src/framework/fss/css/fss-layout.css" />
-        <link rel="stylesheet" type="text/css" href="../../../src/framework/fss/css/fss-text.css" />
+        <link rel="stylesheet" type="text/css" href="../../../src/lib/normalize/css/normalize.css" />
+        <link rel="stylesheet" type="text/css" href="../../lib/foundation/css/foundation.css" />
+        <link rel="stylesheet" type="text/css" href="../../../src/framework/core/css/fluid.css" />
         <link rel="stylesheet" type="text/css" href="../../../src/components/reorderer/css/Reorderer.css" />
         <link rel="stylesheet" type="text/css" href="../../../src/components/overviewPanel/css/OverviewPanel.css" />
         <link rel="stylesheet" type="text/css" href="css/layoutReorderer.css" />
@@ -48,18 +47,18 @@
     </head>
     <body>
         <div class="flc-overviewPanel fl-overviewPanel-container"></div>
-        <div class="demo-layoutReorderer-container fl-container-flex" id="demo-layoutReorderer" >
+        <div class="demo-layoutReorderer-container fl-centered" id="demo-layoutReorderer" >
             <h1>The GadgetLife.com</h1>
 
             <p><strong>Mouse instructions: </strong>Drag and drop items with the mouse.</p>
-			<p><strong>Keyboard instructions: </strong>Direction keys (arrow keys or i-j-k-m) move focus. CTRL + direction keys move the item.</p>
+            <p><strong>Keyboard instructions: </strong>Direction keys (arrow keys or i-j-k-m) move focus. CTRL + direction keys move the item.</p>
 
-            <div class="columnSetup3 fluid-vertical-order">
+            <div class="columnSetup3 fluid-vertical-order fl-clearfix">
              <!-- invalid drag n drop message template -->
                 <p class="flc-reorderer-dropWarning demo-layoutReorderer-dropWarning">This element can not be placed here.  The element underneath is locked.</p>
 
                 <!-- Column #1 -->
-                <div class="flc-reorderer-column fl-container-flex25 fl-force-left">
+                <div class="flc-reorderer-column demo-layoutReorderer-leftColumn fl-force-left">
                     <div class="flc-reorderer-module demoSelector-layoutReorderer-locked demo-layoutReorderer-locked">
                         <div class="demoSelector-layoutReorderer demo-layoutReorderer-module-dragbar">Buy ecoSkinns Today!</div>
                         <div class="demo-layoutReorderer-module-content">
@@ -82,7 +81,7 @@
                 </div>
 
                 <!-- Column #2 -->
-                <div class="flc-reorderer-column fl-container-flex50 fl-force-left">
+                <div class="flc-reorderer-column demo-layoutReorderer-centerColumn fl-force-left">
                     <div class="flc-reorderer-module demoSelector-layoutReorderer-locked demo-layoutReorderer-locked">
                         <div class="demoSelector-layoutReorderer demo-layoutReorderer-module-dragbar">The Making of a Thneed</div>
                         <div class="demo-layoutReorderer-module-content">
@@ -112,7 +111,7 @@
                 </div>
 
                 <!-- Column #3 -->
-                <div class="flc-reorderer-column fl-container-flex25 fl-force-left">
+                <div class="flc-reorderer-column demo-layoutReorderer-rightColumn fl-force-left">
                     <div class="flc-reorderer-module demo-layoutReorderer-module">
                         <div class="demoSelector-layoutReorderer demo-layoutReorderer-module-dragbar">News Ticker</div>
                         <div class="demo-layoutReorderer-module-content">
@@ -151,4 +150,3 @@
         </script>
     </body>
 </html>
-

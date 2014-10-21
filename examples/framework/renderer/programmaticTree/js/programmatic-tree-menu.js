@@ -22,7 +22,7 @@ fluid.dataBindingExample = (function ($) {
      * by the "choice" member.
      */
     var dumpModel = function (model, el) {
-        el.text(JSON.stringify(model, ["choice"]));
+        el.text(JSON.stringify(model, ["choice"], "    "));
     };
 
     var expandItemToTree = function (selectId, index) {
