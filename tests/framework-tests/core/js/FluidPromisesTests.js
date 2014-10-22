@@ -376,6 +376,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
     
+    jqUnit.test("fluid.promise.sequence error on non-array", function () {
+        fluid.pushSoftFailure(true);
+        try {
+            fluid.promise.sequence({unearthly: "object"});
+        } catch (e) {
+            jqUnit.assertTrue("Receive framework error on non-array sequence", e instanceof fluid.FluidError);
+        } finally {
+            fluid.pushSoftFailure(-1);
+        }
+    });
+    
     jqUnit.test("fluid.promise.map tests", function () {
         jqUnit.expect(3);
         var mapper = function (val) {

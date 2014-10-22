@@ -102,6 +102,9 @@ var fluid_2_0 = fluid_2_0 || {};
      */
      
     fluid.promise.makeSequencer = function (sources, options, strategy) {
+        if (!fluid.isArrayable(sources)) {
+            fluid.fail("fluid.promise sequence algorithms must be supplied an array as source");
+        }
         return {
             sources: sources,
             index: 0,
