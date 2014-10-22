@@ -52,6 +52,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.remove_if({"one": 1, "three": 3, "five": 5, "seven": 7}, isOdd));
         jqUnit.assertDeepEq("Remove from nothing", {}, fluid.remove_if({}, isOdd));
     });
+    
+    fluid.tests.indexChecker = function (value, index) {
+        jqUnit.assertEquals("Index should remain stable through removal: " + value, value, index);
+        return value === 1 || value === 2;
+    };
+    
+    jqUnit.test("remove_if index stability and target", function () {
+        jqUnit.expect(5);
+        var target = [];
+        fluid.remove_if([0, 1, 2, 3], fluid.tests.indexChecker, target);
+        jqUnit.assertDeepEq("Target contains removed elements in original order", [1, 2], target);
+    });
 
     jqUnit.test("transform", function () {
         function addOne(i) {

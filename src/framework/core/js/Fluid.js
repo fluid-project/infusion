@@ -540,13 +540,12 @@ var fluid = fluid || fluid_2_0;
      */
     fluid.remove_if = function (source, fn, target) {
         if (fluid.isArrayable(source)) {
-            for (var i = 0; i < source.length; ++i) {
+            for (var i = source.length - 1; i >= 0; --i) {
                 if (fn(source[i], i)) {
                     if (target) {
-                        target.push(source[i]);
+                        target.unshift(source[i]);
                     }
                     source.splice(i, 1);
-                    --i;
                 }
             }
         } else {
