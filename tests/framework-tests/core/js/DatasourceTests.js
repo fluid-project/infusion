@@ -184,4 +184,60 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         });
     });
+
+
+    fluid.defaults("fluid.tests.queuedDataSource", {
+        gradeNames: ["fluid.queuedDataSource", "autoInit"],
+        components: {
+            wrappedDataSource: {
+                options: {
+                    invokers: {
+                        "get": "fluid.tests.queuedDataSource.request",
+                        "set": "fluid.tests.queuedDataSource.request",
+                        "delete": "fluid.tests.queuedDataSource.request"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.tests.queuedDataSource.request = function (directModel, callback) {
+        callback(directModel);
+    };
+
+    fluid.tests.queuedDataSource.assertRequest = function (directModel) {
+        jqUnit.assert("The " + directModel.type + " request should have been triggerd");
+    };
+
+    fluid.tests.queuedDataSource.assertResponseQueued = function (queueName, request) {
+        jqUnit.assertEquals("The request was added to the correct queue", request.directModel.queue, queueName);
+    };
+
+    jqUnit.asyncTest("Queued DataSource", function () {
+        jqUnit.expect(6);
+        fluid.tests.queuedDataSource({
+            listeners: {
+                "{writeQueue}.events.queued": {
+                    listener: "fluid.tests.queuedDataSource.assertResponseQueued",
+                    args: ["writeQueue", "{arguments}.0"]
+                },
+                "{readQueue}.events.queued": {
+                    listener: "fluid.tests.queuedDataSource.assertResponseQueued",
+                    args: ["readQueue", "{arguments}.0"]
+                },
+                "onCreate": [{
+                    listener: "{that}.get",
+                    args: [{queue: "readQueue", type: "get"}, fluid.tests.queuedDataSource.assertRequest]
+                }, {
+                    listener: "{that}.set",
+                    args: [{queue: "writeQueue", type: "set"}, fluid.tests.queuedDataSource.assertRequest]
+                }, {
+                    listener: "{that}.delete",
+                    args: [{queue: "writeQueue", type: "delete"}, fluid.tests.queuedDataSource.assertRequest]
+                }, {
+                    listener: "jqUnit.start"
+                }]
+            }
+        });
+    });
 })();
