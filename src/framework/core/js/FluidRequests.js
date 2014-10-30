@@ -343,5 +343,175 @@ var fluid_2_0 = fluid_2_0 || {};
         return fluid.NO_VALUE;
     };
 
+    /** Start datasource **/
+
+    fluid.defaults("fluid.emptyDatasource", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"]
+        // Invokers should be defined for the typical HTTP rest requests
+        // invokers: {
+        //     "get": {},
+        //     "set": {}, // set should handle POST and PUT
+        //     "delete": {}
+        // }
+    });
+
+    fluid.defaults("fluid.requestQueue", {
+        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        events: {
+            queued: null,
+            unqueued: null
+        },
+        model: {
+            isActive: false
+        },
+        members: {
+            queue: []
+        },
+        listeners: {
+            "unqueued": "{that}.start",
+            "queued": "{that}.start"
+        },
+        invokers: {
+            add: {
+                funcName: "fluid.requestQueue.add",
+                args: ["{that}", "{arguments}.0"]
+            },
+            start: {
+                funcName: "fluid.requestQueue.start",
+                args: ["{that}"]
+            }
+        }
+    });
+
+    fluid.requestQueue.add = function (that, request) {
+        that.queue.push(request);
+        that.events.queued.fire(request);
+    };
+
+    fluid.requestQueue.start = function (that) {
+        if (!that.model.isActive && that.queue.length) {
+            var request = that.queue.shift();
+            var callbackProxy = function () {
+                that.applier.change("isActive", false);
+                that.events.unqueued.fire(request);
+                request.callback.apply(null, arguments);
+            };
+
+            that.applier.change("isActive", true);
+            request.method(request.directModel, callbackProxy);
+        }
+    };
+
+    fluid.defaults("fluid.requestQueue.debounce", {
+        gradeNames: ["fluid.requestQueue", "autoInit"],
+        invokers: {
+            add: {
+                funcName: "fluid.requestQueue.debounce.add",
+                args: ["{that}", "{arguments}.0"]
+            }
+        }
+    });
+
+    fluid.requestQueue.debounce.add = function (that, request) {
+        that.queue[0] = request;
+        that.events.queued.fire(request);
+    };
+
+    fluid.defaults("fluid.requestQueue.throttle", {
+        gradeNames: ["fluid.requestQueue", "autoInit"],
+        delay: 10,
+        model: {
+            isThrottled: false
+        },
+        invokers: {
+            add: {
+                funcName: "fluid.requestQueue.throttle.add",
+                args: ["{that}", "{arguments}.0"]
+            }
+        }
+    });
+
+    fluid.requestQueue.throttle.add = function (that, request) {
+        if (!that.model.isThrottled) {
+            that.applier.change("isThrottled", true);
+            that.queue.push(request);
+            that.events.queued.fire(request);
+            setTimeout(function () {
+                that.applier.change("isThrottled", false);
+            }, that.options.delay);
+        }
+    };
+
+    // fluid.defaults("fluid.queuedDataSource", {
+    //     gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+    //     events: {
+    //         requestQueued: null,
+    //         requestUnqueued: null
+    //     },
+    //     model: {
+    //         isActive: false
+    //     },
+    //     members: {
+    //         queue: []
+    //     },
+    //     listeners: {
+    //         "requestUnqueued.setIsActive": {
+    //             changePath: "isActive",
+    //             value: false
+    //         },
+    //         "requestQueued": "{that}.start"
+    //     },
+    //     modelListeners: {
+    //         "isActive": "{that}.start"
+    //     },
+    //     invokers: {
+    //         add: {
+    //             funcName: "fluid.queuedDataSource.add",
+    //             args: ["{that}", "{arguments}.0"]
+    //         },
+    //         start: {
+    //             funcName: "fluid.queuedDataSource.start",
+    //             args: ["{that}"]
+    //         },
+    //         set: {
+    //             funcName: "fluid.queuedDataSource.set",
+    //             args: ["{that}", "{arguments}.0", "{arguments}.1"]
+    //         },
+    //         get: "{wrappedDataSource}.get",
+    //         "delete": "{wrappedDataSource}.delete"
+    //     },
+    //     components: {
+    //         wrappedDataSource: {
+    //             // requires a dataSource that implements the standard set, get, and delete methods.
+    //             type: "fluid.emptyDatasource"
+    //         }
+    //     }
+    // });
+
+    // fluid.queuedDataSource.add = function (that, args) {
+    //     that.queue.push(args);
+    //     that.events.requestQueued.fire(args);
+    // };
+    //
+    // fluid.queuedDataSource.start = function (that) {
+    //     if (!that.model.isActive && that.queue.length) {
+    //         var args = that.queue[0];
+    //         that.applier.change("isActive", true);
+    //
+    //         that.wrappedDataSource.set(args.directModel, function () {
+    //             that.events.requestUnqueued.fire(that.queue.shift());
+    //             args.callback.apply(null, arguments);
+    //         });
+    //     }
+    // };
+    //
+    // fluid.queuedDataSource.set = function (that, directModel, callback) {
+    //     that.add({
+    //         directModel: directModel,
+    //         callback: callback
+    //     });
+    // };
+
+    /** End datasource **/
 
 })(jQuery, fluid_2_0);
