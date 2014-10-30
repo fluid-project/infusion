@@ -345,16 +345,33 @@ var fluid_2_0 = fluid_2_0 || {};
 
     /** Start datasource **/
 
+    /*
+     * A grade definining an emptyDatasource
+     * The primary reason for this grade is to provide details on the
+     * expected structure a DataSource should have.
+     */
     fluid.defaults("fluid.emptyDatasource", {
         gradeNames: ["fluid.eventedComponent", "autoInit"]
-        // Invokers should be defined for the typical HTTP rest requests
+        // Invokers should be defined for the typical HTTP rest requests.
+        // Each method should have the signature (directModel, callback)
+        //
+        // directmodel is a JSON object cotaining the directives and payload
+        // to the request. (e.g. {model: {key: value}} )
+        //
+        // callback is a function that will be called after the request has
+        // returned.
+        //
         // invokers: {
         //     "get": {},
-        //     "set": {}, // set should handle POST and PUT
+        //     "set": {}, // set should handle POST and PUT requests
         //     "delete": {}
         // }
     });
 
+    /*
+     * A basic request queue that will execute each request, one-by-one
+     * in the order that they are received.
+     */
     fluid.defaults("fluid.requestQueue", {
         gradeNames: ["fluid.standardRelayComponent", "autoInit"],
         events: {
@@ -402,6 +419,11 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     };
 
+    /*
+     * A request queue that will only store the latests request in the queue.
+     * Intermediate requests that are queued but not invoked, will be replaced
+     * by new ones.
+     */
     fluid.defaults("fluid.requestQueue.debounce", {
         gradeNames: ["fluid.requestQueue", "autoInit"],
         invokers: {
@@ -412,14 +434,19 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
+
     fluid.requestQueue.debounce.add = function (that, request) {
         that.queue[0] = request;
         that.events.queued.fire(request);
     };
 
+    /*
+     * A request queue that will only queue requests that are received after
+     * a specified delay (in milliseconds).
+     */
     fluid.defaults("fluid.requestQueue.throttle", {
         gradeNames: ["fluid.requestQueue", "autoInit"],
-        delay: 10,
+        delay: 10, // delay in milliseconds
         model: {
             isThrottled: false
         },
