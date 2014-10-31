@@ -346,25 +346,32 @@ var fluid_2_0 = fluid_2_0 || {};
     /** Start dataSource **/
 
     /*
-     * A grade definining an emptyDataSource
-     * The primary reason for this grade is to provide details on the
-     * expected structure a DataSource should have.
+     * A grade defining a DataSource.
+     * This grade illustrates the expected structure a DataSource, as well as
+     * providing a means for identifying dataSources in a component tree by type.
+     *
+     * The ultimate purpose of the "dataSource" abstraction is to abstract over
+     * whether particular functionality is hosted locally or remotely.
      */
-    fluid.defaults("fluid.emptyDataSource", {
+    fluid.defaults("fluid.dataSource", {
         gradeNames: ["fluid.eventedComponent", "autoInit"]
-        // Invokers should be defined for the typical HTTP rest requests.
-        // Each method should have the signature (directModel, callback)
+        // Invokers should be defined for the typical CRUD functions.
         //
-        // directmodel is a JSON object cotaining the directives and payload
-        // to the request. (e.g. {model: {key: value}} )
+        // The "get" and "delete" methods require the signature (directModel, callback).
+        // The "set" method requires the signature (directModel, model, callback)
         //
-        // callback is a function that will be called after the request has
-        // returned.
+        // directModel: A JSON summary of the contents of an URL. It expresses an
+        //              "index" into some set of state which can be read and written.
+        //
+        // callback: A function that will be called after the CRUD operation has
+        //           returned.
+        //
+        // model: The payload sent to the storage.
         //
         // invokers: {
-        //     "get": {},
-        //     "set": {}, // set should handle POST and PUT requests
-        //     "delete": {}
+        //     "get": {}, // handles the Read function
+        //     "set": {}, // handles the Create and Update functions
+        //     "delete": {} // handles the Delete function
         // }
     });
 
@@ -404,7 +411,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * Adds requests to the queue in the order they are received.
      *
      * The request object contains the request function and arguments.
-     * In the form {method: requestFn, directModel: {}, callback: callbackFn}
+     * In the form {method: requestFn, directModel: {}, model: {}, callback: callbackFn}
      */
     fluid.requestQueue.queue = function (that, request) {
         that.requests.push(request);
@@ -421,7 +428,11 @@ var fluid_2_0 = fluid_2_0 || {};
             };
 
             that.applier.change("isActive", true);
-            request.method(request.directModel, callbackProxy);
+            if (request.model) {
+                request.method(request.directModel, request.model, callbackProxy);
+            } else {
+                request.method(request.directModel, callbackProxy);
+            }
         }
     };
 
@@ -444,7 +455,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * Adds only one item to the queue at a time, new requests replace older ones
      *
      * The request object contains the request function and arguments.
-     * In the form {method: requestFn, directModel: {}, callback: callbackFn}
+     * In the form {method: requestFn, directModel: {}, model: {}, callback: callbackFn}
      */
     fluid.requestQueue.debounce.queue = function (that, request) {
         that.requests[0] = request;
@@ -473,7 +484,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * Adds items to the queue after a specified delay.
      *
      * The request object contains the request function and arguments.
-     * In the form {method: requestFn, directModel: {}, callback: callbackFn}
+     * In the form {method: requestFn, directModel: {}, model: {}, callback: callbackFn}
      */
     fluid.requestQueue.throttle.queue = function (that, request) {
         if (!that.model.isThrottled) {
@@ -491,7 +502,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * The queue subcomponents, writeQueue (set/delete) and readQueue (get)
      * can be configured to use any of the request queue grades.
      *
-     * A fully implemented dataSource, following the structure outlined by fluid.emptyDataSource,
+     * A fully implemented dataSource, following the structure outlined by fluid.dataSource,
      * must be provided in the wrappedDataSource subcomponent. The get, set, and delete methods
      * found on the queuedDataSource will call their counterparts in the wrappedDataSource, after
      * filtering through the appropriate queue.
@@ -507,29 +518,30 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             wrappedDataSource: {
                 // requires a dataSource that implements the standard set, get, and delete methods.
-                type: "fluid.emptyDataSource"
+                type: "fluid.dataSource"
             }
         },
         invokers: {
             set: {
-                funcName: "fluid.queuedDataSource.set",
-                args: ["{writeQueue}", "{wrappedDataSource}.set", "{arguments}.0", "{arguments}.1"]
+                funcName: "fluid.queuedDataSource.queue",
+                args: ["{writeQueue}", "{wrappedDataSource}.set", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
             },
             get: {
-                funcName: "fluid.queuedDataSource.set",
-                args: ["{readQueue}", "{wrappedDataSource}.get", "{arguments}.0", "{arguments}.1"]
+                funcName: "fluid.queuedDataSource.queue",
+                args: ["{readQueue}", "{wrappedDataSource}.get", "{arguments}.0", null, "{arguments}.1"]
             },
             "delete": {
-                funcName: "fluid.queuedDataSource.set",
-                args: ["{writeQueue}", "{wrappedDataSource}.delete", "{arguments}.0", "{arguments}.1"]
+                funcName: "fluid.queuedDataSource.queue",
+                args: ["{writeQueue}", "{wrappedDataSource}.delete", "{arguments}.0", null, "{arguments}.1"]
             }
         }
     });
 
-    fluid.queuedDataSource.set = function (queue, requestMethod, directModel, callback) {
+    fluid.queuedDataSource.queue = function (queue, requestMethod, directModel, model, callback) {
         queue.queue({
             method: requestMethod,
             directModel: directModel,
+            model: model,
             callback: callback
         });
     };

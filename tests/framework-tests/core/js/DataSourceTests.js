@@ -201,7 +201,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.queuedDataSource.request = function (directModel, callback) {
+    fluid.tests.queuedDataSource.request = function () {
+        var callback = arguments[arguments.length -1];
+        var directModel = arguments[0];
         callback(directModel);
     };
 
@@ -230,7 +232,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: [{queue: "readQueue", type: "get"}, fluid.tests.queuedDataSource.assertRequest]
                 }, {
                     listener: "{that}.set",
-                    args: [{queue: "writeQueue", type: "set"}, fluid.tests.queuedDataSource.assertRequest]
+                    args: [{queue: "writeQueue", type: "set"}, {key: "value"}, fluid.tests.queuedDataSource.assertRequest]
                 }, {
                     listener: "{that}.delete",
                     args: [{queue: "writeQueue", type: "delete"}, fluid.tests.queuedDataSource.assertRequest]
