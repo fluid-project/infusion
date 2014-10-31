@@ -17,23 +17,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests");
 
-    fluid.tests.asyncLoop = function (fn, delay, cycles) {
-        var count = 0;
-        cycles = Math.abs(cycles) || 1; // must have at least one cycle
-
-        // recursive
-        var timeloop = function () {
-            count++;
-            fn(count);
-
-            if (count < cycles) {
-                setTimeout(timeloop, delay);
-            }
-        };
-
-        timeloop();
-    };
-
     fluid.defaults("fluid.tests.requestQueue", {
         gradeNames: ["fluid.requestQueue", "autoInit"],
         members: {
@@ -93,8 +76,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         setTimeout(callback, 100);
     };
 
-    fluid.tests.verifyRequestQueue = function (that, numRequests, expectedRecord, requestDelay, cleanup) {
-        requestDelay = requestDelay || 0;
+    fluid.tests.verifyRequestQueue = function (that, numRequests, expectedRecord, cleanup) {
         cleanup = cleanup || jqUnit.start;
         var previousCallNum = 0;
 
@@ -117,7 +99,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         };
 
-        fluid.tests.asyncLoop(triggerQueue, requestDelay, numRequests);
+        for (var i = 1; i <= numRequests; i++) {
+            triggerQueue(i);
+        }
     };
 
     fluid.defaults("fluid.tests.requestQueue.fifo", {
