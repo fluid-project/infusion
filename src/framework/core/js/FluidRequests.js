@@ -376,8 +376,10 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     /*
-     * A basic request queue that will execute each request, one-by-one
-     * in the order that they are received.
+     * A grade defining a requestQueue
+     *
+     * The basic functionality of a requestQueue is defined. However, the queue
+     * invoker must be supplied with a valid queuing function.
      */
     fluid.defaults("fluid.requestQueue", {
         gradeNames: ["fluid.standardRelayComponent", "autoInit"],
@@ -396,27 +398,26 @@ var fluid_2_0 = fluid_2_0 || {};
             "queued": "{that}.start"
         },
         invokers: {
-            queue: {
-                funcName: "fluid.requestQueue.queue",
-                args: ["{that}", "{arguments}.0"]
-            },
+            // The queue method must be supplied and should take the signature
+            // (that, request).
+            //
+            // that: A reference to the component itself
+            //
+            // request: A JSON object containing the request method and it's arguments
+            //          in the form:
+            //          {
+            //              method: function,
+            //              directModel: object,
+            //              model: objcet,
+            //              callback: function
+            //          }
+            // queue: {},
             start: {
                 funcName: "fluid.requestQueue.start",
                 args: ["{that}"]
             }
         }
     });
-
-    /*
-     * Adds requests to the queue in the order they are received.
-     *
-     * The request object contains the request function and arguments.
-     * In the form {method: requestFn, directModel: {}, model: {}, callback: callbackFn}
-     */
-    fluid.requestQueue.queue = function (that, request) {
-        that.requests.push(request);
-        that.events.queued.fire(request);
-    };
 
     fluid.requestQueue.start = function (that) {
         if (!that.model.isActive && that.requests.length) {
@@ -434,6 +435,31 @@ var fluid_2_0 = fluid_2_0 || {};
                 request.method(request.directModel, callbackProxy);
             }
         }
+    };
+
+    /*
+     * A basic request queue that will execute each request, one-by-one
+     * in the order that they are received.
+     */
+    fluid.defaults("fluid.requestQueue.fifo", {
+        gradeNames: ["fluid.requestQueue", "autoInit"],
+        invokers: {
+            queue: {
+                funcName: "fluid.requestQueue.fifo.queue",
+                args: ["{that}", "{arguments}.0"]
+            }
+        }
+    });
+
+    /*
+     * Adds requests to the queue in the order they are received.
+     *
+     * The request object contains the request function and arguments.
+     * In the form {method: requestFn, directModel: {}, model: {}, callback: callbackFn}
+     */
+    fluid.requestQueue.fifo.queue = function (that, request) {
+        that.requests.push(request);
+        that.events.queued.fire(request);
     };
 
     /*
@@ -511,10 +537,10 @@ var fluid_2_0 = fluid_2_0 || {};
         gradeNames: ["fluid.standardRelayComponent", "autoInit"],
         components: {
             writeQueue: {
-                type: "fluid.requestQueue"
+                type: "fluid.requestQueue.fifo"
             },
             readQueue: {
-                type: "fluid.requestQueue"
+                type: "fluid.requestQueue.fifo"
             },
             wrappedDataSource: {
                 // requires a dataSource that implements the standard set, get, and delete methods.

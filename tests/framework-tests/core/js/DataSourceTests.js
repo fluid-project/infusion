@@ -120,10 +120,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.asyncLoop(triggerQueue, requestDelay, numRequests);
     };
 
-    jqUnit.asyncTest("Request Queue", function () {
-        fluid.tests.requestQueue({
+    fluid.defaults("fluid.tests.requestQueue.fifo", {
+        gradeNames: ["fluid.requestQueue.fifo", "fluid.tests.requestQueue", "autoInit"]
+    });
+
+    jqUnit.asyncTest("Request Queue: FIFO", function () {
+        fluid.tests.requestQueue.fifo({
             listeners: {
-                "onCreate.verifyRequestQueue": {
+                "onCreate.verifyFifoRequestQueue": {
                     listener: "fluid.tests.verifyRequestQueue",
                     args: ["{that}", 3, {
                         queued: 3,
