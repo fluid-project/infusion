@@ -401,7 +401,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     /*
-     * Adds reqeusts to the queue in the order they are received.
+     * Adds requests to the queue in the order they are received.
      *
      * The request object contains the request function and arguments.
      * In the form {method: requestFn, directModel: {}, callback: callbackFn}
@@ -491,9 +491,9 @@ var fluid_2_0 = fluid_2_0 || {};
      * The queue subcomponents, writeQueue (set/delete) and readQueue (get)
      * can be configured to use any of the request queue grades.
      *
-     * A fully implemented dataSource, following the structure oulined by fluid.emptyDataSource,
+     * A fully implemented dataSource, following the structure outlined by fluid.emptyDataSource,
      * must be provided in the wrappedDataSource subcomponent. The get, set, and delete methods
-     * found on the queuedDataSource will call thier counterparts in the wrappedDataSource, after
+     * found on the queuedDataSource will call their counterparts in the wrappedDataSource, after
      * filtering through the appropriate queue.
      */
     fluid.defaults("fluid.queuedDataSource", {
