@@ -489,41 +489,6 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     /*
-     * A request queue that will only queue requests that are received after
-     * a specified delay (in milliseconds).
-     */
-    fluid.defaults("fluid.requestQueue.throttle", {
-        gradeNames: ["fluid.requestQueue", "autoInit"],
-        delay: 10, // delay in milliseconds
-        model: {
-            isThrottled: false
-        },
-        invokers: {
-            queue: {
-                funcName: "fluid.requestQueue.throttle.queue",
-                args: ["{that}", "{arguments}.0"]
-            }
-        }
-    });
-
-    /*
-     * Adds items to the queue after a specified delay.
-     *
-     * The request object contains the request function and arguments.
-     * In the form {method: requestFn, directModel: {}, model: {}, callback: callbackFn}
-     */
-    fluid.requestQueue.throttle.queue = function (that, request) {
-        if (!that.model.isThrottled) {
-            that.applier.change("isThrottled", true);
-            that.requests.push(request);
-            that.events.queued.fire(request);
-            setTimeout(function () {
-                that.applier.change("isThrottled", false);
-            }, that.options.delay);
-        }
-    };
-
-    /*
      * A dataSource wrapper providing a queuing mechanism for requests.
      * The queue subcomponents, writeQueue (set/delete) and readQueue (get)
      * can be configured to use any of the request queue grades.

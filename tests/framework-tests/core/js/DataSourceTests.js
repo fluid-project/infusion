@@ -166,30 +166,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
-    fluid.defaults("fluid.tests.requestQueue.throttle", {
-        gradeNames: ["fluid.requestQueue.throttle", "fluid.tests.requestQueue", "autoInit"]
-    });
-
-    jqUnit.asyncTest("Request Queue: Throttle", function () {
-        fluid.tests.requestQueue.throttle({
-            listeners: {
-                "onCreate.verifyThrottleRequestQueue": {
-                    listener: "fluid.tests.verifyRequestQueue",
-                    args: ["{that}", 3, {
-                        queued: 2,
-                        unqueued: 2,
-                        request: 2,
-                        isActive: {
-                            "true": 2,
-                            "false": 2
-                        }
-                    }, 6]
-                }
-            }
-        });
-    });
-
-
     fluid.defaults("fluid.tests.queuedDataSource", {
         gradeNames: ["fluid.queuedDataSource", "autoInit"],
         components: {
