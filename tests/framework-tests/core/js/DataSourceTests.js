@@ -109,15 +109,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
         };
 
-        var triggerAdd = function (currentCycle) {
-            that.add({
+        var triggerQueue = function (currentCycle) {
+            that.queue({
                 method: that.request,
                 directModel: {model: currentCycle},
                 callback: assertRequest(currentCycle)
             });
         };
 
-        fluid.tests.asyncLoop(triggerAdd, requestDelay, numRequests);
+        fluid.tests.asyncLoop(triggerQueue, requestDelay, numRequests);
     };
 
     jqUnit.asyncTest("Request Queue", function () {

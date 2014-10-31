@@ -382,15 +382,15 @@ var fluid_2_0 = fluid_2_0 || {};
             isActive: false
         },
         members: {
-            queue: []
+            requests: []
         },
         listeners: {
             "unqueued": "{that}.start",
             "queued": "{that}.start"
         },
         invokers: {
-            add: {
-                funcName: "fluid.requestQueue.add",
+            queue: {
+                funcName: "fluid.requestQueue.queue",
                 args: ["{that}", "{arguments}.0"]
             },
             start: {
@@ -406,14 +406,14 @@ var fluid_2_0 = fluid_2_0 || {};
      * The request object contains the request function and arguments.
      * In the form {method: requestFn, directModel: {}, callback: callbackFn}
      */
-    fluid.requestQueue.add = function (that, request) {
-        that.queue.push(request);
+    fluid.requestQueue.queue = function (that, request) {
+        that.requests.push(request);
         that.events.queued.fire(request);
     };
 
     fluid.requestQueue.start = function (that) {
-        if (!that.model.isActive && that.queue.length) {
-            var request = that.queue.shift();
+        if (!that.model.isActive && that.requests.length) {
+            var request = that.requests.shift();
             var callbackProxy = function () {
                 that.applier.change("isActive", false);
                 that.events.unqueued.fire(request);
@@ -433,8 +433,8 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.defaults("fluid.requestQueue.debounce", {
         gradeNames: ["fluid.requestQueue", "autoInit"],
         invokers: {
-            add: {
-                funcName: "fluid.requestQueue.debounce.add",
+            queue: {
+                funcName: "fluid.requestQueue.debounce.queue",
                 args: ["{that}", "{arguments}.0"]
             }
         }
@@ -446,8 +446,8 @@ var fluid_2_0 = fluid_2_0 || {};
      * The request object contains the request function and arguments.
      * In the form {method: requestFn, directModel: {}, callback: callbackFn}
      */
-    fluid.requestQueue.debounce.add = function (that, request) {
-        that.queue[0] = request;
+    fluid.requestQueue.debounce.queue = function (that, request) {
+        that.requests[0] = request;
         that.events.queued.fire(request);
     };
 
@@ -462,8 +462,8 @@ var fluid_2_0 = fluid_2_0 || {};
             isThrottled: false
         },
         invokers: {
-            add: {
-                funcName: "fluid.requestQueue.throttle.add",
+            queue: {
+                funcName: "fluid.requestQueue.throttle.queue",
                 args: ["{that}", "{arguments}.0"]
             }
         }
@@ -475,10 +475,10 @@ var fluid_2_0 = fluid_2_0 || {};
      * The request object contains the request function and arguments.
      * In the form {method: requestFn, directModel: {}, callback: callbackFn}
      */
-    fluid.requestQueue.throttle.add = function (that, request) {
+    fluid.requestQueue.throttle.queue = function (that, request) {
         if (!that.model.isThrottled) {
             that.applier.change("isThrottled", true);
-            that.queue.push(request);
+            that.requests.push(request);
             that.events.queued.fire(request);
             setTimeout(function () {
                 that.applier.change("isThrottled", false);
@@ -527,7 +527,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.queuedDataSource.set = function (queue, requestMethod, directModel, callback) {
-        queue.add({
+        queue.queue({
             method: requestMethod,
             directModel: directModel,
             callback: callback
