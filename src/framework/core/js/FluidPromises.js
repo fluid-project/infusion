@@ -4,7 +4,6 @@
  
  License MIT
 */
-/* jshint expr: true */
 
 var fluid_2_0 = fluid_2_0 || {};
 
@@ -21,17 +20,25 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.promise = function () {
         var that = {
-            thens: []
+            onResolve: [],
+            onReject: []
             // disposition
             // value
         };
         that.then = function (onResolve, onReject) {
-            if (that.disposition === "resolve") {
-                onResolve && onResolve(that.value);
-            } else if (that.disposition === "reject") {
-                onReject && onReject(that.value);
-            } else {
-                that.thens.push({resolve: onResolve, reject: onReject});
+            if (onResolve) {
+                if (that.disposition === "resolve") {
+                    onResolve(that.value);
+                } else {
+                    that.onResolve.push(onResolve);
+                }
+            }
+            if (onReject) {
+                if (that.disposition === "reject") {
+                    onReject(that.value);
+                } else {
+                    that.onReject.push(onReject);
+                }
             }
         };
         that.resolve = function (value) {
@@ -39,7 +46,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 fluid.fail("Error: resolving promise ", that,
                     " which has received \"" + that.disposition + "\"");
             } else {
-                that.complete("resolve", value);
+                that.complete("resolve", that.onResolve, value);
             }
         };
         that.reject = function (reason) {
@@ -47,17 +54,16 @@ var fluid_2_0 = fluid_2_0 || {};
                 fluid.fail("Error: rejecting promise ", that,
                     "which has received \"" + that.disposition + "\"");
             } else {
-                that.complete("reject", reason);
+                that.complete("reject", that.onReject, reason);
             }
         };
-        that.complete = function (which, arg) {
+        // PRIVATE, NON-API METHOD
+        that.complete = function (which, queue, arg) {
             that.disposition = which;
             that.value = arg;
-            for (var i = 0; i < that.thens.length; ++ i) {
-                var aThen = that.thens[i];
-                aThen[which] && aThen[which](arg);
+            for (var i = 0; i < queue.length; ++ i) {
+                queue[i](arg);
             }
-            delete that.thens;
         };
         return that;
     };

@@ -464,27 +464,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Nested resolver", "resolved", fluid.get(model2, ["nested", "resolver"]));
     });
 
-    jqUnit.test("FLUID-4915: fluid.invokeGlobalFunction", function () {
-        jqUnit.expect(3);
-
-        var testArg = "test arg";
-        fluid.tests.igf = {
-            withArgs: function (arg1) {
-                jqUnit.assertEquals("A single argument should have been passed in", 1, arguments.length);
-                jqUnit.assertEquals("The correct argument should have been passed in", testArg, arg1);
-            },
-            withoutArgs: function () {
-                jqUnit.assertEquals("There should not have been any arguments passed in", 0, arguments.length);
-            }
-        };
-
-        fluid.invokeGlobalFunction("fluid.tests.igf.withArgs", [testArg]);
-        fluid.invokeGlobalFunction("fluid.tests.igf.withoutArgs");
-
-        // clean up after test
-        delete fluid.tests.igf;
-    });
-
     jqUnit.test("messageResolver", function () {
         var bundlea = {
             key1: "value1a",
@@ -653,19 +632,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     /** Test FLUID-4788 - acquiring default initFunctions through the hierarchy **/
 
-    fluid.defaults("fluid.gradeComponent", {
+    fluid.defaults("fluid.tests.gradeComponent", {
         gradeNames: ["autoInit", "fluid.littleComponent"]
     });
-    fluid.gradeComponent.preInit = function () {
-        jqUnit.assert("Pre init function is called by a component of fluid.gradeComponent grade.");
+    fluid.tests.gradeComponent.preInit = function () {
+        jqUnit.assert("Pre init function is called by a component of fluid.tests.gradeComponent grade.");
     };
-    fluid.defaults("fluid.gradeUsingComponent", {
-        gradeNames: ["autoInit", "fluid.gradeComponent"]
+    fluid.defaults("fluid.tests.gradeUsingComponent", {
+        gradeNames: ["autoInit", "fluid.tests.gradeComponent"]
     });
 
-    jqUnit.test("FLUID-4788 test - default lifecycle functions inherited from a grade.", function () {
+    jqUnit.test("FLUID-4788 test - default lifecycle functions inherited from a grade", function () {
         jqUnit.expect(1);
-        fluid.gradeUsingComponent();
+        fluid.tests.gradeUsingComponent();
     });
 
 
@@ -676,15 +655,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.expect(3);
         try {
             // TODO: shouldn't we be able to instantiate grades which involve a forward reference!
-            fluid.defaults("fluid.missingGradeComponent", {
-                gradeNames: ["fluid.nonexistentGrade", "autoInit"]
+            fluid.defaults("fluid.tests.missingGradeComponent", {
+                gradeNames: ["fluid.tests.nonexistentGrade", "autoInit"]
             });
-            fluid.missingGradeComponent();
+            fluid.tests.missingGradeComponent();
         } catch (e) {
             jqUnit.assertTrue("Should receive framework error", e instanceof fluid.FluidError);
             var message = e.toString();
             jqUnit.assertTrue("Error text should be correct", message.indexOf("is incomplete") !== -1);
-            jqUnit.assertTrue("Error text should mention blank grade", message.indexOf("fluid.nonexistentGrade") !== -1);
+            jqUnit.assertTrue("Error text should mention blank grade", message.indexOf("fluid.tests.nonexistentGrade") !== -1);
         } finally {
             fluid.pushSoftFailure(-1);
         }
@@ -794,7 +773,66 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         jqUnit.assertDeepEq("Indexed multiple grades", expected, indexedPanels);
     });
+    
+    fluid.tests.invokeGlobalFunction = {
+        withArgs: function (arg1) {
+            jqUnit.assertEquals("A single argument should have been passed in", 1, arguments.length);
+            jqUnit.assertEquals("The correct argument should have been passed in", "test arg", arg1);
+        },
+        withoutArgs: function () {
+            jqUnit.assertEquals("There should not have been any arguments passed in", 0, arguments.length);
+        }
+    };
 
+    jqUnit.test("FLUID-4915: fluid.invokeGlobalFunction", function () {
+        jqUnit.expect(3);
+
+        fluid.invokeGlobalFunction("fluid.tests.invokeGlobalFunction.withArgs", ["test arg"]);
+        fluid.invokeGlobalFunction("fluid.tests.invokeGlobalFunction.withoutArgs");
+    });
+    
+    
+    fluid.defaults("fluid.tests.functionWithoutArgMap", {
+        gradeNames: "fluid.function"
+    });
+
+    fluid.tests.testInvalidGradedFunction = function (name, spec) {
+        jqUnit.test("fluid.invokeGradedFunction - failure case", function () {
+            jqUnit.expect(1);
+            fluid.pushSoftFailure(true);
+            try {
+                fluid.invokeGradedFunction(name, spec);
+            } catch (e) {
+                jqUnit.assertTrue("Expected framework error from bad fluid.invokeGlobalFunction call", e instanceof fluid.FluidError);
+            } finally {
+                fluid.pushSoftFailure(-1);
+            }
+        });
+    };
+    
+    fluid.tests.testInvalidGradedFunction("fluid.tests.nonexistentName");
+    fluid.tests.testInvalidGradedFunction("fluid.tests.functionWithoutArgMap");
+    fluid.tests.testInvalidGradedFunction("fluid.tests.gradeComponent");
+    
+    fluid.defaults("fluid.tests.functionWithArgMap", {
+        gradeNames: "fluid.function",
+        argumentMap: {
+            numerator: 0,
+            denominator: 1
+        }
+    });
+    
+    fluid.tests.functionWithArgMap = function (numerator, denominator) {
+        return numerator / denominator;
+    };
+    
+    jqUnit.test("fluid.invokeGradedFunction - valid case", function () {
+        var result = fluid.invokeGradedFunction("fluid.tests.functionWithArgMap", {
+            numerator: 1,
+            denominator: 2
+        });
+        jqUnit.assertEquals("Correctly invoked graded function", 0.5, result);
+    });
 
     jqUnit.test("fluid.bind", function () {
         jqUnit.expect(3);
