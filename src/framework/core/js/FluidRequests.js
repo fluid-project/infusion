@@ -462,7 +462,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     // Redirects model changes to explicit request state events, passing along
-    // the relavent request object.
+    // the relevent request object.
     fluid.requestQueue.fireRequestState = function (that, currentReq, previousReq) {
         if (currentReq) {
             that.events.onRequestStart.fire(currentReq);
