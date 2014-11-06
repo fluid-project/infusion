@@ -350,8 +350,9 @@ var fluid_2_0 = fluid_2_0 || {};
      * This grade illustrates the expected structure a dataSource, as well as
      * providing a means for identifying dataSources in a component tree by type.
      *
-     * The ultimate purpose of the "dataSource" abstraction is to abstract over
-     * whether particular functionality is hosted locally or remotely.
+     * The purpose of the "dataSource" abstraction is to express indexed access
+     * to state. A REST/CRUD implementation is an example of a DataSource; however,
+     * it is not limited to this method of interaction.
      */
     fluid.defaults("fluid.dataSource", {
         gradeNames: ["fluid.eventedComponent", "autoInit"]
@@ -360,8 +361,8 @@ var fluid_2_0 = fluid_2_0 || {};
         // The "get" and "delete" methods require the signature (directModel, callback).
         // The "set" method requires the signature (directModel, model, callback)
         //
-        // directModel: A JSON summary of the contents of an URL. It expresses an
-        //              "index" into some set of state which can be read or written.
+        // directModel: A JSON summary expressing an "index" into some set of
+        //              state which can be read or written.
         //
         // callback: A function that will be called after the CRUD operation has
         //           returned.
