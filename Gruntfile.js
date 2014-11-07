@@ -13,6 +13,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /* global require, module */
 
 var _ = require("lodash");
+var path = require("path");
 
 module.exports = function(grunt) {
     "use strict";
@@ -23,9 +24,11 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON("package.json"),
         allBuildName: "<%= pkg.name %>-all",
         customBuildName: "<%= pkg.name %>-" + (grunt.option("name") || "custom"),
+        stylusCompress: !grunt.option("source"),
         clean: {
             build: "build",
-            products: "products"
+            products: "products",
+            stylus: "src/framework/preferences/css/*.css"
         },
         copy: {
             all: {
@@ -160,6 +163,24 @@ module.exports = function(grunt) {
         },
         jsonlint: {
             all: ["src/**/*.json", "tests/**/*.json", "demos/**/*.json", "examples/**/*.json"]
+        },
+        stylus: {
+            compile: {
+                options: {
+                    compress: "<%= stylusCompress %>"
+                },
+                files: [{
+                    expand: true,
+                    src: ["src/**/css/stylus/*.styl"],
+                    ext: ".css",
+                    rename: function(dest, src) {
+                        // Move the generated css files one level up out of the stylus directory
+                        var dir = path.dirname(src);
+                        var filename = path.basename(src);
+                        return path.join(dir, "..", filename);
+                    }
+                }]
+            }
         }
     });
 
@@ -172,6 +193,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-jshint");
     grunt.loadNpmTasks("grunt-jsonlint");
     grunt.loadNpmTasks("grunt-modulefiles");
+    grunt.loadNpmTasks("grunt-contrib-stylus");
 
     // Custom tasks:
 
@@ -193,6 +215,7 @@ module.exports = function(grunt) {
     grunt.registerTask("build", "Generates a minified or source distribution for the specified build target", function (target) {
         var tasks = [
             "clean",
+            "stylus",
             "modulefiles:" + target,
             "pathMap:" + target,
             "copy:" + target,
@@ -208,6 +231,8 @@ module.exports = function(grunt) {
         }
         grunt.task.run(tasks);
     });
+
+    grunt.registerTask("buildStylus", ["clean:stylus", "stylus"]);
 
     grunt.registerTask("default", ["build:all"]);
     grunt.registerTask("custom", ["build:custom"]);

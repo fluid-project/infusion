@@ -71,10 +71,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "type": "fluid.prefs.textFont",
             "classes": {
                 "default": "",
-                "times": "fl-font-prefsEditor-times",
-                "comic": "fl-font-prefsEditor-comic-sans",
-                "arial": "fl-font-prefsEditor-arial",
-                "verdana": "fl-font-prefsEditor-verdana"
+                "times": "fl-font-times",
+                "comic": "fl-font-comic-sans",
+                "arial": "fl-font-arial",
+                "verdana": "fl-font-verdana"
             }
         },
         "contrast": {
@@ -117,10 +117,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "type": "fluid.prefs.textFont",
             "classes": {
                 "default": "",
-                "times": "fl-font-prefsEditor-times",
-                "comic": "fl-font-prefsEditor-comic-sans",
-                "arial": "fl-font-prefsEditor-arial",
-                "verdana": "fl-font-prefsEditor-verdana"
+                "times": "fl-font-times",
+                "comic": "fl-font-comic-sans",
+                "arial": "fl-font-arial",
+                "verdana": "fl-font-verdana"
             }
         },
         "contrast": {
@@ -137,10 +137,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "type": "fluid.prefs.enactor.textFont",
             "classes": {
                 "default": "",
-                "times": "fl-font-prefsEditor-times",
-                "comic": "fl-font-prefsEditor-comic-sans",
-                "arial": "fl-font-prefsEditor-arial",
-                "verdana": "fl-font-prefsEditor-verdana"
+                "times": "fl-font-times",
+                "comic": "fl-font-comic-sans",
+                "arial": "fl-font-arial",
+                "verdana": "fl-font-verdana"
             }
         }, {
             "type": "fluid.prefs.enactor.contrast",
@@ -161,10 +161,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "container": ".flc-prefsEditor-text-font",
             "classnameMap": {
                 "default": "",
-                "times": "fl-font-prefsEditor-times",
-                "comic": "fl-font-prefsEditor-comic-sans",
-                "arial": "fl-font-prefsEditor-arial",
-                "verdana": "fl-font-prefsEditor-verdana"
+                "times": "fl-font-times",
+                "comic": "fl-font-comic-sans",
+                "arial": "fl-font-arial",
+                "verdana": "fl-font-verdana"
             },
             "template": "templates/textFont"
         }, {

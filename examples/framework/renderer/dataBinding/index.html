@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <title>Renderer Example: Data-Binding</title>
+        <link rel="stylesheet" type="text/css" href="../../../../src/lib/normalize/css/normalize.css" />
         <link rel="stylesheet" type="text/css" href="../shared/css/renderer-examples.css" />
 
         <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
@@ -38,8 +39,10 @@
                 </div>
             </fieldset>
             <p><input id="apply-change" type="button" value="Apply change to model"/></p>
-            <p>Model:<br/><span id="bound-model" class="model-dump">
-                This is where the bound model will be displayed.</span>
+            <p>Model:
+<pre class="model-dump"><code id="bound-model">
+This is where the bound model will be displayed.
+</code></pre>
             </p>
         </div>
 
@@ -63,8 +66,12 @@
             </fieldset>
         </div>
 
-        <p>Model:<br/><span id="autobound-model" class="model-dump">
-            This is where the auto-bound model will be displayed.</span>
+        <p>Model:
+<pre class="model-dump">
+<code id="autobound-model">
+This is where the auto-bound model will be displayed.
+</code>
+</pre>
         </p>
       </div>
 

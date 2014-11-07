@@ -7,7 +7,7 @@ The HTML5 Shiv enables use of HTML5 sectioning elements in legacy Internet Explo
 #### `html5shiv.js`
 *  This includes the basic `createElement()` shiv technique, along with monkeypatches for `document.createElement` and `document.createDocumentFragment` for IE6-8. It also applies [basic styling](https://github.com/aFarkas/html5shiv/blob/51da98dabd3c537891b7fe6114633fb10de52473/src/html5shiv.js#L216-220) for HTML5 elements for IE6-9, Safari 4.x and FF 3.x.
 
-####`html5shiv-printshiv.js` 
+####`html5shiv-printshiv.js`
 *  This includes all of the above, as well as a mechanism allowing HTML5 elements to be styled and contain children while being printed in IE 6-8.
 
 ### Who can I get mad at now?
@@ -30,13 +30,13 @@ Include the HTML5 shiv in the `<head>` of your page in a conditional comment and
 
 ```html
 <!--[if lt IE 9]>
-	<script src="bower_components/html5shiv/html5shiv.js"></script>
+    <script src="bower_components/html5shiv/html5shiv.js"></script>
 <![endif]-->
 ```
 
 ###Manual installation
 
-Download and extract the [latest zip package](https://github.com/aFarkas/html5shiv/archive/master.zip) from this repositiory and copy the two files `dist/html5shiv.js` and `dist/html5shiv-printshiv.js` into your project. Then include one of them into your `<head>` as above. 
+Download and extract the [latest zip package](https://github.com/aFarkas/html5shiv/archive/master.zip) from this repositiory and copy the two files `dist/html5shiv.js` and `dist/html5shiv-printshiv.js` into your project. Then include one of them into your `<head>` as above.
 
 ## HTML5 Shiv API
 
@@ -51,13 +51,13 @@ The `elements` option is a space separated string or array, which describes the 
 ```js
 //create a global html5 options object
 window.html5 = {
-  'elements': 'mark section customelement' 
+  'elements': 'mark section customelement'
 };
 ```
 **Configuring `elements` after `html5shiv.js` is included.**
 
 ```js
-//change the html5shiv options object 
+//change the html5shiv options object
 window.html5.elements = 'mark section customelement';
 //and re-invoke the `shivDocument` method
 html5.shivDocument(document);
@@ -67,18 +67,18 @@ html5.shivDocument(document);
 
 If `shivCSS` is set to `true` HTML5 Shiv will add basic styles (mostly display: block) to sectioning elements (like section, article). In most cases a webpage author should include those basic styles in his normal stylesheet to ensure older browser support (i.e. Firefox 3.6) without JavaScript.
 
-The `shivCSS` is true by default and can be set false, only before html5shiv.js is included: 
+The `shivCSS` is true by default and can be set false, only before html5shiv.js is included:
 
 ```js
 //create a global html5 options object
 window.html5 = {
-	'shivCSS': false
+    'shivCSS': false
 };
 ```
 
 ### `html5.shivMethods`
 
-If the `shivMethods` option is set to `true` (by default) HTML5 Shiv will override `document.createElement`/`document.createDocumentFragment` in Internet Explorer 6-8 to allow dynamic DOM creation of HTML5 elements. 
+If the `shivMethods` option is set to `true` (by default) HTML5 Shiv will override `document.createElement`/`document.createDocumentFragment` in Internet Explorer 6-8 to allow dynamic DOM creation of HTML5 elements.
 
 Known issue: If an element is created using the overridden `createElement` method this element returns a document fragment as its `parentNode`, but should be normally `null`. If a script relies on this behavior, `shivMethods`should be set to `false`.
 Note: jQuery 1.7+ has implemented his own HTML5 DOM creation fix for Internet Explorer 6-8. If all your scripts (including Third party scripts) are using jQuery's manipulation and DOM creation methods, you might want to set this option to `false`.
@@ -88,13 +88,13 @@ Note: jQuery 1.7+ has implemented his own HTML5 DOM creation fix for Internet Ex
 ```js
 //create a global html5 options object
 window.html5 = {
-	'shivMethods': false
+    'shivMethods': false
 };
 ```
 **Configuring `elements` after `html5shiv.js` is included.**
 
 ```js
-//change the html5shiv options object 
+//change the html5shiv options object
 window.html5.shivMethods = false;
 ```
 
@@ -137,13 +137,13 @@ container.innerHTML = '<section>This is a section</section>';
 
 ### What about the other HTML5 element projects?
 
-- The original conception and community collaboration story of the project is described at [The History of the HTML5 Shiv](http://paulirish.com/2011/the-history-of-the-html5-shiv/). 
+- The original conception and community collaboration story of the project is described at [The History of the HTML5 Shiv](http://paulirish.com/2011/the-history-of-the-html5-shiv/).
 - [IEPP](https://code.google.com/p/ie-print-protector), by Jon Neal, addressed the printing fault of the original `html5shiv`. It was merged into `html5shiv`.
 - **Shimprove**, in April 2010, patched `cloneNode` and `createElement` was later merged into `html5shiv`
 - **innerShiv**, introduced in August 2010 by JD Barlett, addressed dynamically adding new HTML5 elements into the DOM. [jQuery added support](http://blog.jquery.com/2011/11/03/jquery-1-7-released/) that made innerShiv redundant and `html5shiv` addressed the same issues as well, so the project was completed.
 - The **html5shim** and **html5shiv** sites on Google Code are maintained by Remy Sharp and are identical distribution points of this `html5shiv` project.
 - **Modernizr** is developed by the same people as `html5shiv` and can include the latest version in any custom builds created at modernizr.com
-- This `html5shiv` repo now contains tests for all the edge cases pursued by the above libraries and has been extensively tested, both in development and production. 
+- This `html5shiv` repo now contains tests for all the edge cases pursued by the above libraries and has been extensively tested, both in development and production.
 
 A [detailed changelog of html5shiv](https://github.com/aFarkas/html5shiv/wiki) is available.
 

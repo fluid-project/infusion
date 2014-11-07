@@ -834,7 +834,7 @@ var fluid_2_0 = fluid_2_0 || {};
             tooltip: "fl-inlineEdit-tooltip",
             editModeInstruction: "fl-inlineEdit-editModeInstruction",
             displayView: "fl-inlineEdit-simple-editableText fl-inlineEdit-textContainer",
-            textEditButton: "fl-offScreen-hidden"
+            textEditButton: "fl-hidden-accessible"
         },
 
         events: {

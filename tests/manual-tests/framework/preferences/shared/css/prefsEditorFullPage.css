@@ -1,9 +1,14 @@
 body {
     font-family: "Myriad Pro", Helvetica, Tahoma, Verdana, sans-serif;
 }
-.content {
-    margin: 64px 64px 64px 64px;
+
+main.content {
+    width: 95%;
+    max-width: none;
+    margin: 0;
+    padding-left: 2rem;
 }
+
 h1 {
     font-size: 1.4em;
     margin-bottom: 1em;

@@ -19,14 +19,13 @@ You can checkout and fork Infusion on github:
 
 <https://github.com/fluid-project/infusion>
 
-See [How Do I Create an Infusion Package?](#how-do-i-create-an-infusion-package), for details on creating custom packages of Infusion.
+See [How Do I Create an Infusion Package?](#how-do-i-create-an-infusion-package), for details on creating complete or custom packages of Infusion.
 
 ##Who Makes Infusion, and How Can I Help?##
 
 The Fluid community is an international group of designers, developers, and testers who focus on a common mission: improving the user experience and accessibility of the open web.
 
 The best way to join the Fluid Community is to jump into any of our community activities. Visit our [website](http://fluidproject.org/) for links to our mailing lists, chat room, wiki, etc.
-
 
 ##How Do I Create an Infusion Package?##
 
@@ -103,7 +102,6 @@ By default, custom packages are given a name with the form _infusion-custom-<ver
 
 * enhancement
 * framework
-* fss _**(deprecated)**_
 * preferences
 * renderer
 
@@ -133,3 +131,9 @@ By default, custom packages are given a name with the form _infusion-custom-<ver
 * jQueryUICore
 * jQueryUIWidgets
 * json
+
+##Developing with the Preferences Framework##
+
+Infusion is in the process of switching to use [Stylus](http://learnboost.github.io/stylus/) for CSS pre-processing. CSS files for the Preferences Framework have been re-written in Stylus. Only Stylus files are pushed into the github repository. For developing the Preferences Framework, run the following from the project root to compile Stylus files to CSS:
+
+    grunt buildStylus

@@ -185,7 +185,6 @@ var fluid_2_0 = fluid_2_0 || {};
             afterRender: null
         },
         styles: {
-            containerFlex: "fl-container-flex",
             container: "fl-prefsEditor-separatedPanel-iframe"
         },
         templatePrefix: "./",
@@ -213,7 +212,6 @@ var fluid_2_0 = fluid_2_0 || {};
         });
         that.iframe.attr(that.options.markupProps);
 
-        that.iframe.addClass(styles.containerFlex);
         that.iframe.addClass(styles.container);
         that.iframe.hide();
 
