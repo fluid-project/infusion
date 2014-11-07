@@ -378,6 +378,13 @@
                 options: {
                     gradeNames: "fluid.modelRelayComponent"
                 }
+            },
+            asyncTester: {
+                options: {
+                    modules: [ {
+                        name: "Async test case with model relay"
+                    }]
+                }
             }
         }
     });
@@ -476,12 +483,17 @@
                         }
                     }
                 }
-            },
-            "fluid.tests.asyncTestRelayTree",
-            "fluid.tests.sourceTester",
-            "fluid.tests.hangTester",
-            "fluid.tests.listenerArg",
-            "fluid.tests.modelTestTree"
+            }
         ]);
+        // Test restartable running API
+        fluid.test.runTests(["fluid.tests.asyncTestRelayTree"]);
+        fluid.invokeLater(function () {
+            fluid.test.runTests([
+                "fluid.tests.sourceTester",
+                "fluid.tests.hangTester",
+                "fluid.tests.listenerArg",
+                "fluid.tests.modelTestTree"
+            ]);
+        });
     };
 })();

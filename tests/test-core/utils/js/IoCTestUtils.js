@@ -518,6 +518,42 @@ var fluid_2_0 = fluid_2_0 || {};
         return that;
     };
 
+    fluid.test.makeTestRunner = function () {
+        var that = {
+            index: 0,
+            stopped: true,
+            envs: []
+        };
+        that.next = function () {
+            if (that.index < that.envs.length) {
+                that.stopped = false;
+                var env = that.envs[that.index];
+                if (typeof(env) === "string") {
+                    env = {type: env};
+                }
+                var options = $.extend(true, {}, env.options, {
+                    listeners: {
+                        afterDestroy: that.nextLater
+                    }
+                });
+                fluid.invokeGlobalFunction(env.type, [options]);
+                that.index++;
+            } else {
+                that.stopped = true;
+            }
+        };
+        that.nextLater = function () {
+            fluid.invokeLater(that.next);
+        };
+        that.append = function (envs) {
+            that.envs = that.envs.concat(envs);
+            if (that.stopped) {
+                that.next();
+            }
+        };
+        return that;
+    };
+
     /** Top-level driver function for users. Supply an array of grade names holding the
      *  list of the testing environments to be executed in sequence
      *  @param envs (Array of string/object) The testing environments to be executed - either a simple
@@ -526,27 +562,10 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.test.runTests = function (envs) {
-        var index = 0;
-        var nextLater;
-        var next = function () {
-            if (index < envs.length) {
-                var env = envs[index];
-                if (typeof(env) === "string") {
-                    env = {type: env};
-                }
-                var options = $.extend(true, {}, env.options, {
-                    listeners: {
-                        afterDestroy: nextLater
-                    }
-                });
-                fluid.invokeGlobalFunction(env.type, [options]);
-                index++;
-            }
-        };
-        nextLater = function () {
-            setTimeout(next, 1);
-        };
-        next();
+        if (!fluid.test.iocTestState) {
+            fluid.test.iocTestState = fluid.test.makeTestRunner();
+        }
+        fluid.test.iocTestState.append(envs);
     };
 
     fluid.test.processTestCase = function (testCaseState) {
@@ -596,9 +615,9 @@ var fluid_2_0 = fluid_2_0 || {};
         fluid.each(modules, function (testCase) {
             testCaseState.testCase = testCase;
             testCaseState.finisher = function () {
-                setTimeout(function () { // finish asynchronously to avoid destroying components that may be listening in final fixture
+                fluid.invokeLater(function () { // finish asynchronously to avoid destroying components that may be listening in final fixture
                     fluid.test.noteTest(testCaseState.root, -1);
-                }, 1);
+                });
             };
             fluid.test.processTestCase(testCaseState);
         });
