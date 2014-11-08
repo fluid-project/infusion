@@ -178,6 +178,9 @@ module.exports = function(grunt) {
                     }
                 }]
             }
+        },
+        jsonlint: {
+            all: ["src/**/*.json", "tests/**/*.json", "demos/**/*.json", "examples/**/*.json"]
         }
     });
 
@@ -188,6 +191,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-compress");
     grunt.loadNpmTasks("grunt-contrib-jshint");
+    grunt.loadNpmTasks("grunt-jsonlint");
     grunt.loadNpmTasks("grunt-modulefiles");
     grunt.loadNpmTasks("grunt-contrib-stylus");
 
@@ -232,5 +236,6 @@ module.exports = function(grunt) {
 
     grunt.registerTask("default", ["build:all"]);
     grunt.registerTask("custom", ["build:custom"]);
-
+    
+    grunt.registerTask("lint", "Apply jshint and jsonlint", ["jshint", "jsonlint"]);
 };

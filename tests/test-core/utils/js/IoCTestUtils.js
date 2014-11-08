@@ -544,7 +544,7 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         };
         nextLater = function () {
-            setTimeout(next, 1);
+            fluid.invokeLater(next);
         };
         next();
     };
@@ -596,9 +596,9 @@ var fluid_2_0 = fluid_2_0 || {};
         fluid.each(modules, function (testCase) {
             testCaseState.testCase = testCase;
             testCaseState.finisher = function () {
-                setTimeout(function () { // finish asynchronously to avoid destroying components that may be listening in final fixture
+                fluid.invokeLater(function () { // finish asynchronously to avoid destroying components that may be listening in final fixture
                     fluid.test.noteTest(testCaseState.root, -1);
-                }, 1);
+                });
             };
             fluid.test.processTestCase(testCaseState);
         });

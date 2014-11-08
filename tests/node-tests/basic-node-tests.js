@@ -33,10 +33,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.log("Test concluded - " + data.name + ": " + data.passed + " passed");
     });
     
-    var expected = 12;
+    var expected = 14;
     
     QUnit.done(function (data) {
-        fluid.log((expected === data.passed && data.failed === 0? "Self-test OK" : "Self-test FAILED") + " - " + data.passed + "/" + (expected + data.failed) + " tests passed");
+        fluid.log("Infusion node.js internal tests " +
+            (expected === data.passed && data.failed === 0? "OK" : "FAILED") +
+            " - " + data.passed + "/" + (expected + data.failed) + " tests passed");
     });
     
     QUnit.log(function (details) {
@@ -81,6 +83,45 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         var pkg = fluid.require("${test-module}/package.json");
         jqUnit.assertEquals("Loaded package.json via resolved path directly via fluid.require", "test-module", pkg.name);
+    });
+    
+    fluid.tests.expectFailure = false;
+    
+    fluid.tests.addLogListener = function (listener) {
+        fluid.onUncaughtException.addListener(listener, "log", null,
+            fluid.handlerPriorities.uncaughtException.log);
+    };
+    
+    fluid.tests.onUncaughtException = function () {
+        jqUnit.assertEquals("Expected failure in uncaught exception handler",
+            true, fluid.tests.expectFailure);
+        fluid.onUncaughtException.removeListener("test-uncaught");
+        fluid.onUncaughtException.removeListener("log");
+        fluid.tests.addLogListener(fluid.identity);
+        fluid.tests.expectFailure = false;
+        fluid.invokeLater(function () { // apply this later to avoid nesting uncaught exception handler
+            fluid.invokeLater(function () {
+                fluid.onUncaughtException.removeListener("log"); // restore the original listener
+                console.log("Restarting jqUnit in nested handler");
+                jqUnit.start();
+            });
+            "string".fail(); // provoke a further global uncaught error - should be a no-op
+        });
+    };
+    
+    fluid.tests.benignLogger = function () {
+        fluid.log("Expected global failure received in test case");
+        jqUnit.assert("Expected global failure");
+    };
+    
+    jqUnit.asyncTest("Test uncaught exception handler registration and deregistration", function () {
+        jqUnit.expect(2);
+        fluid.onUncaughtException.addListener(fluid.tests.onUncaughtException, "test-uncaught");
+        fluid.tests.addLogListener(fluid.tests.benignLogger);
+        fluid.tests.expectFailure = true;
+        fluid.invokeLater(function () { // put this in a timeout to avoid bombing QUnit's exception handler
+            "string".fail(); // provoke a global uncaught error
+        });
     });
     
     QUnit.load();
