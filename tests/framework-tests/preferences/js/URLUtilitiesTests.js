@@ -60,8 +60,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         {
             iframeLoc: "file:///E:/Source/gits/infusion-master/src/framework/preferences/html/SeparatedPanelPrefsEditorFrame.html",
             outerLoc: "file:///E:/Source/gits/infusion-master/src/demos/prefsEditor/SeparatedPanelPrefsEditor/html/prefsEditor.html",
-            relPath: "http://localhost:8888/wordpress/wp-content/themes/FSSFive/infusion/framework/preferences/html/",
-            expected: "http://localhost:8888/wordpress/wp-content/themes/FSSFive/infusion/framework/preferences/html/"
+            relPath: "http://localhost:8888/wordpress/wp-content/themes/infusion/framework/preferences/html/",
+            expected: "http://localhost:8888/wordpress/wp-content/themes/infusion/framework/preferences/html/"
         }];
 
         fluid.each(tests, function(test, key) {

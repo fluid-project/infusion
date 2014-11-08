@@ -14,7 +14,7 @@ src/lib/fonts
 src/lib/jquery/plugins
 src/lib/jquery/ui
 src/lib/json
-src/framework/fss
+src/framework/core/css
 
 tests/3rd-party-tests
 tests/component-tests

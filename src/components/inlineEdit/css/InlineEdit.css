@@ -1,8 +1,8 @@
 /* Themed Appearance + Themed States */
 
 .fl-inlineEdit-edit {
-	margin-left : -1px;
-	border      : 2px solid #0085FF;
+    margin-left : -1px;
+    border      : 2px solid #0085FF;
 }
 
 .fl-inlineEdit-simple-editableText {
@@ -11,7 +11,7 @@
 }
 
 .fl-inlineEdit-textContainer {
-    display: inline-block;    	
+    display: inline-block;
 }
 
 .fl-inlineEdit-text {
@@ -19,13 +19,13 @@
     padding-right       : 20px;
     background-image    : url('../images/inline_edit_edit_button_16x16.png');
     background-repeat   : no-repeat;
-    background-position : right center;  
+    background-position : right center;
 }
 
 .fl-inlineEdit-focus {
-	border        : 1px solid #0085FF;
-	padding       : 1px 0px 0px 1px;
-	margin-bottom : 1px;
+    border        : 1px solid #0085FF;
+    padding       : 1px 0px 0px 1px;
+    margin-bottom : 1px;
 }
 
 /* Base Appearance & States Appearance */
@@ -45,7 +45,7 @@
     color       : #FFFFFF;
     padding     : 3px 5px;
     max-width   : 310px;
-    z-index     : 1;    
+    z-index     : 1;
 }
 
 /* :hover */
@@ -60,10 +60,5 @@
 }
 
 .fl-inlineEdit-emptyDefaultViewText {
-    padding-top : 16px;	
-}
-
-/* overrides fss-reset FLUID-3860 */
-p {
-	margin : 0px;
+    padding-top : 16px;
 }

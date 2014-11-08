@@ -32,11 +32,11 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-    /*******************************************************************************
-     * UI Enhancer                                                                 *
-     *                                                                             *
-     * Works in conjunction with FSS to transform the page based on user settings. *
-     *******************************************************************************/
+    /***********************************************
+     * UI Enhancer                                 *
+     *                                             *
+     * Transforms the page based on user settings. *
+     ***********************************************/
 
     fluid.defaults("fluid.uiEnhancer", {
         gradeNames: ["fluid.viewComponent", "autoInit"],

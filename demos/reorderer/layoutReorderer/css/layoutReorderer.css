@@ -1,14 +1,12 @@
 
 .demo-layoutReorderer-container {
     width:95%;
-    height: 100%;
-    margin: 0 auto;
     margin-top: 3em;
     background-color: #ccd3ff;
     overflow:auto;
     padding: 5px;
 }
- 
+
 .demo-layoutReorderer-container h2 {
     margin-top: 0px;
 }
@@ -27,7 +25,6 @@
 .demo-layoutReorderer-module-dragbar {
     /* dragbar is the bar on top of each module */
     cursor: move;
-    /*height: 20px; */
     background-color: #A5CFEF;
     background-position: right 1px center;
     background-repeat: no-repeat;
@@ -39,17 +36,26 @@
     /* Locked module */
     cursor: default;
     background-color: #fff;
-    background-image: url("../images/locked.png");	
+    background-image: url("../images/locked.png");
     background-position: right 1px center;
 }
 
-/* 
+.demo-layoutReorderer-leftColumn,
+.demo-layoutReorderer-rightColumn {
+    width: 25%;
+}
+
+.demo-layoutReorderer-centerColumn {
+    width: 50%;
+}
+
+/*
  * demo-module-content is the box below the dragbar, which contains the
  * actual content of the module
  */
 .demo-layoutReorderer-module-content {
     padding: 6px;
-	width: 95%;
+    width: 95%;
     overflow: auto;
 }
 
@@ -59,7 +65,7 @@
     margin-right: 10px;
     width: 30%;
 }
-	
+
 .demo-layoutReorderer-movable-hover, .demo-layoutReorderer-movable-selected{
     outline: 2px solid #000;
 }
@@ -78,14 +84,14 @@
     opacity: 0.5;
     filter: alpha(opacity=50); /* ie opacity fix */
 }
-.demo-layoutReorderer-avatar .demo-layoutReorderer-module-dragbar, 
+.demo-layoutReorderer-avatar .demo-layoutReorderer-module-dragbar,
 .demo-layoutReorderer-avatar .demo-layoutReorderer-module-content {
     /* hide contents of the module's avatar, while dragging. */
     visibility: hidden;
 }
 
 .demo-layoutReorderer-movable-dragging {
-	margin: 6px 2px 6px 12px;
+    margin: 6px 2px 6px 12px;
 }
 
 .demo-layoutReorderer-movable-mousedrag {

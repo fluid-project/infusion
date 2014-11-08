@@ -66,10 +66,10 @@ var fluid_2_0 = fluid_2_0 || {};
                 "type": "fluid.prefs.textFont",
                 "classes": {
                     "default": "",
-                    "times": "fl-font-prefsEditor-times",
-                    "comic": "fl-font-prefsEditor-comic-sans",
-                    "arial": "fl-font-prefsEditor-arial",
-                    "verdana": "fl-font-prefsEditor-verdana"
+                    "times": "fl-font-times",
+                    "comic": "fl-font-comic-sans",
+                    "arial": "fl-font-arial",
+                    "verdana": "fl-font-verdana"
                 },
                 "enactor": {
                     "type": "fluid.prefs.enactor.textFont",

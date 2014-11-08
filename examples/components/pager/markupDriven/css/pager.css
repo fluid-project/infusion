@@ -26,7 +26,7 @@ input {
 }
 
 .fl-pager-top li,.fl-pager-bottom li {
-	display:inline;
+    display:inline;
     padding-right:.3em;
 }
 
