@@ -575,7 +575,7 @@ var fluid_2_0 = fluid_2_0 || {};
         };
         that.forwardApplier = fluid.makeNewChangeApplier(that.forwardHolder);
         that.forwardApplier.isRelayApplier = true; // special annotation so these can be discovered in the transaction record
-        that.invalidator = fluid.makeEventFirer(null, null, "Invalidator for model relay with applier " + that.forwardApplier.applierId);
+        that.invalidator = fluid.makeEventFirer({name: "Invalidator for model relay with applier " + that.forwardApplier.applierId});
         if (sourcePath !== null) {
             that.backwardApplier = fluid.makeNewChangeApplier(that.backwardHolder);
             that.backwardAdapter = function () {
@@ -1248,8 +1248,8 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             options: options,
             modelChanged: {},
-            preCommit: fluid.makeEventFirer(null, null, "preCommit event for ChangeApplier " + applierId),
-            postCommit: fluid.makeEventFirer(null, null, "postCommit event for ChangeApplier " + applierId)
+            preCommit: fluid.makeEventFirer({name: "preCommit event for ChangeApplier " }),
+            postCommit: fluid.makeEventFirer({name: "postCommit event for ChangeApplier "})
         };
         function preFireChangeRequest(changeRequest) {
             if (!changeRequest.type) {
@@ -1523,9 +1523,9 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.makeHolderChangeApplier = function (holder, options) {
         options = fluid.model.defaultAccessorConfig(options);
         var baseEvents = {
-            guards: fluid.event.getEventFirer(false, true, "guard event"),
-            postGuards: fluid.event.getEventFirer(false, true, "postGuard event"),
-            modelChanged: fluid.event.getEventFirer(false, false, "modelChanged event")
+            guards: fluid.makeEventFirer({preventable: true, name: "guard event"}),
+            postGuards: fluid.makeEventFirer({preventable: true, name: "postGuard event"}),
+            modelChanged: fluid.makeEventFirer({name: "modelChanged event"})
         };
         var threadLocal = fluid.threadLocal(function() { return {sources: {}};});
         var that = {

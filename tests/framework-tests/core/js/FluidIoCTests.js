@@ -2139,18 +2139,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.eventedComponent", "autoInit"]
     });
 
-    jqUnit.test("Component lifecycle test - FLUID-5268 afterDestroy", function () {
-        var afterDestroyed = false;
+    jqUnit.test("Component lifecycle test - FLUID-5268 root afterDestroy", function () {
+        var record = [];
+        var onDestroy = function () {
+            record.push("onDestroy");
+        };
         var afterDestroy = function () {
-            afterDestroyed = true;
+            record.push("afterDestroy");
         };
         var that = fluid.tests.fluid5268({
             listeners: {
+                onDestroy: onDestroy,
                 afterDestroy: afterDestroy
             }
         });
         that.destroy();
-        jqUnit.assertTrue("Expected afterDestroyed notification", afterDestroyed);
+        var expected = ["onDestroy", "afterDestroy"];
+        jqUnit.assertDeepEq("Expected exactly one onDestroy followed by one afterDestroy", expected, record);
     });
 
     /** FLUID-4257 - automatic listener teardown test **/

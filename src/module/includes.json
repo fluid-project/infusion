@@ -12,5 +12,6 @@
     "../lib/fastXmlPull/js/fastXmlPull.js",
     "../framework/renderer/js/fluidParser.js",
     "../framework/renderer/js/fluidRenderer.js",
-    "../framework/renderer/js/RendererUtilities.js"
+    "../framework/renderer/js/RendererUtilities.js",
+    "./module.js"
 ]

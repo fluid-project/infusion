@@ -8,7 +8,8 @@ Licenses.
 You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
-/* global require, module, console, __dirname */
+/* jshint node: true */
+/* global global */
 
 (function () {
     "use strict";
@@ -24,6 +25,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var buildPath = function (pathSeg) {
         return path.join(getBaseDir(), pathSeg);
     };
+    
+    // Report of experiments performed with node.js globals done on 1/9/14 - what we might like to write at this point is 
+    // fluid: {global: GLOBAL}; - this "nearly" works but unfortunately the process of transporting the "pan-global" object
+    // across the sandbox initialization boundary ends up shredding it. We end up with a situation where in this file, 
+    // fluid.global.fluid === fluid - but from within Fluid.js, fluid.global.fluid === undefined. node.js docs on sandboxing 
+    // do report that the results can be fragile and version unstable. However, we need to continue with sandboxing because of
+    // the delicate expectations, for example, on visible globals caused by QUnit's sniffing code.  
+    // Experiment performed with node.js 0.8.6 on Windows. 
+    // We achieve a lot of what we might want via "global.fluid = fluid" below. However, other top-level names constructed 
+    // via fluid.registerNamespace will not be exported up to the pan-global. 
 
     var context = vm.createContext({
         console: console,
@@ -58,8 +69,40 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // it to the context it will be loaded in.
     context.addEventListener = fluid.identity;
     
+    // As well as for efficiency, it's useful to customise this because an uncaught
+    // exception fired from a a setTimeout handler in node.js will prevent any 
+    // further from being serviced, which impedes testing these handlers
+    fluid.invokeLater = function (func) {
+        process.nextTick(func);
+    };
+    
     fluid.logObjectRenderChars = 1024;
     
+    fluid.onUncaughtException = fluid.makeEventFirer({
+        name: "Global uncaught exception handler"
+    });
+    
+    // This registry of priorities will be removed once the implementation of FLUID-5506 is complete
+    fluid.handlerPriorities = {
+        uncaughtException: {
+            log: 100, // high priority - do all logging first
+            fail: "last"
+        }
+    };
+    
+    process.on("uncaughtException", function onUncaughtException (err) {
+        fluid.onUncaughtException.fire(err);
+    });
+    
+    fluid.logUncaughtException = function (err) {
+        var message = "FATAL ERROR: Uncaught exception: " + err.message;
+        fluid.log(fluid.logLevel.FATAL, message);
+        console.log(err.stack);
+    };
+    
+    fluid.onUncaughtException.addListener(fluid.logUncaughtException, "log", null,
+        fluid.handlerPriorities.uncaughtException.log);
+      
     // Convert an argument intended for console.log in the node environment to a readable form (the
     // default action of util.inspect censors at depth 1)
     fluid.renderLoggingArg = function (arg) {
@@ -80,13 +123,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.loadIncludes = loadIncludes;
 
     /** Load a node-aware JavaScript file using either a supplied or the native
-      * Fluid require function (the difference relates primarily to the base
-      * directory used for loading - although the file will need to make use of
-      * a registerNamespace or similar call to get access to the required global namespace */
+      * Fluid require function. The module name may start with a module reference
+      * of the form ${module-name} to indicate a base reference into an already
+      * loaded module that was previously registered using fluid.module.register.
+      * If the <code>namespace</code> argument is supplied, the module's export
+      * object will be written to that path in the global Fluid namespace */
 
     fluid.require = function (moduleName, foreignRequire, namespace) {
         foreignRequire = foreignRequire || require;
-        var module = foreignRequire(moduleName);
+        var resolved = fluid.module.resolvePath(moduleName);
+        var module = foreignRequire(resolved);
         if (namespace) {
             fluid.setGlobalValue(namespace, module);
         }
@@ -116,6 +162,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.loadTestingSupport = function () {
         fluid.loadIncludes("devIncludes.json");
     };
+    
+    fluid.module.register("infusion", path.resolve(__dirname, "../.."), require);
+    
+    // Export the fluid object into the pan-module node.js global object
+    global.fluid = fluid;
 
     module.exports = fluid;
 
