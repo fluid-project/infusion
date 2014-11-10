@@ -425,7 +425,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *       cache. For example pending write requests could be used to service get requests directly.
      */
     fluid.defaults("fluid.queuedDataSource", {
-        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
         members: {
             requests: {
                 read: {},
