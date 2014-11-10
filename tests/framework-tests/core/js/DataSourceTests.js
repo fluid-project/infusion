@@ -38,7 +38,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var expected = {
             singleLevel: "<object a:|\"A\"|b:|\"B\"|c:<array 0:|\"D\"|1:|\"E\"|2:|\"F\"|>g:|5|>",
             nested: "<object a:|\"A\"|b:<object c:|\"C\"|d:<array 0:|\"D\"|1:|\"E\"|>>f:<array 0:|\"F\"|1:|\"G\"|>h:|6|>"
-        }
+        };
 
         jqUnit.assertEquals("The single level object should be converted properly", expected.singleLevel, fluid.toHashKey(singleLevel));
         jqUnit.assertEquals("The multi-level object should be converted properly", expected.nested, fluid.toHashKey(nested));
@@ -202,20 +202,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         var requests = [{
-            method: that.delete,
+            method: that["delete"],
             delay: 0,
             args: [{"path": "delete"}, {"ID": "delete1", "duration": 50}]
         }, {
-            method: that.delete,
+            method: that["delete"],
             delay: 60,
             args: [{"path": "delete"}, {"ID": "delete2", "duration": 50}]
         }, {
-            method: that.delete,
+            method: that["delete"],
             delay: 75,
             duration: 20,
             args: [{"path": "delete"}, {"ID": "delete3", "duration": 50}]
         }, {
-            method: that.delete,
+            method: that["delete"],
             delay: 90,
             args: [{"path": "delete"}, {"ID": "delete4", "duration": 50}]
         }];
@@ -248,7 +248,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             duration: 10,
             args: [{"path": "combined"}, {"key": "value1"}, {"ID": "set1", "duration": 100}]
         }, {
-            method: that.delete,
+            method: that["delete"],
             delay: 50,
             args: [{"path": "combined"}, {"ID": "delete1", "duration": 50}]
         }, {
