@@ -356,18 +356,21 @@ var fluid_2_0 = fluid_2_0 || {};
      */
     fluid.defaults("fluid.dataSource", {
         gradeNames: ["fluid.eventedComponent", "autoInit"]
-        // Invokers should be defined for the typical CRUD functions.
+        // Invokers should be defined for the typical CRUD functions and return
+        // a promise.
         //
-        // The "get" and "delete" methods require the signature (directModel, callback).
-        // The "set" method requires the signature (directModel, model, callback)
+        // The "get" and "delete" methods require the signature (directModel).
+        // The "set" method requires the signature (directModel, model)
         //
-        // directModel: A JSON summary expressing an "index" into some set of
+        // directModel: An object expressing an "index" into some set of
         //              state which can be read or written.
         //
-        // callback: A function that will be called after the CRUD operation has
-        //           returned.
-        //
         // model: The payload sent to the storage.
+        //
+        // options: An object expressing implementation specific details
+        //          regarding the handling of a request. Note: this does not
+        //          include details for identifying the resource. Those should be
+        //          placed in the directModel.
         //
         // invokers: {
         //     "get": {}, // handles the Read function
@@ -408,179 +411,6 @@ var fluid_2_0 = fluid_2_0 || {};
         }
         return str;
     };
-
-    // /*
-    //  * A grade defining a requestQueue
-    //  *
-    //  * The basic functionality of a requestQueue is defined. However, the queue
-    //  * invoker must be supplied with a valid queuing function. A request queue is
-    //  * used to manage concurrent requests.
-    //  */
-    // fluid.defaults("fluid.requestQueue", {
-    //     gradeNames: ["fluid.standardRelayComponent", "autoInit"],
-    //     events: {
-    //         enqueued: null,
-    //         dropped: null,
-    //         onRequestStart: null,
-    //         afterRequestComplete: null
-    //     },
-    //     model: {
-    //         request: null
-    //     },
-    //     members: {
-    //         queue: [],
-    //     },
-    //     listeners: {
-    //         "afterRequestComplete.start": "{that}.start",
-    //         "enqueued.start": "{that}.start"
-    //     },
-    //     modelListeners: {
-    //         "request": {
-    //             listener: "fluid.requestQueue.fireRequestState",
-    //             args: ["{that}", "{change}.value", "{change}.oldValue"]
-    //         }
-    //     },
-    //     invokers: {
-    //         // The enqueue method must be supplied and take the signature
-    //         // (that, request).
-    //         //
-    //         // that: A reference to the component itself
-    //         //
-    //         // request: A JSON object containing the request method and its arguments
-    //         //          in the form:
-    //         //          {
-    //         //              method: function,
-    //         //              directModel: object,
-    //         //              model: object,
-    //         //              callback: function
-    //         //          }
-    //         // enqueue: {},
-    //         start: {
-    //             funcName: "fluid.requestQueue.start",
-    //             args: ["{that}"]
-    //         }
-    //     }
-    // });
-
-    // // Redirects model changes to explicit request state events, passing along
-    // // the relevent request object.
-    // fluid.requestQueue.fireRequestState = function (that, currentReq, previousReq) {
-    //     if (currentReq) {
-    //         that.events.onRequestStart.fire(currentReq);
-    //     } else if (previousReq) {
-    //         that.events.afterRequestComplete.fire(previousReq);
-    //     }
-    // }
-
-    // fluid.requestQueue.start = function (that) {
-    //     if (!that.model.request && that.queue.length) {
-    //         var request = that.queue.shift();
-    //         var callbackProxy = function () {
-    //             that.applier.change("request", null);
-    //             request.callback.apply(null, arguments);
-    //         };
-    //
-    //         that.applier.change("request", request);
-    //         if (request.model) {
-    //             request.method(request.directModel, request.model, callbackProxy);
-    //         } else {
-    //             request.method(request.directModel, callbackProxy);
-    //         }
-    //     }
-    // };
-
-    // /*
-    //  * A request queue that will only store the latests request in the queue.
-    //  * Intermediate requests that are queued but not invoked, will be replaced
-    //  * by new ones.
-    //  */
-    // fluid.defaults("fluid.requestQueue.concurrencyLimited", {
-    //     gradeNames: ["fluid.requestQueue", "autoInit"],
-    //     invokers: {
-    //         enqueue: {
-    //             funcName: "fluid.requestQueue.concurrencyLimited.enqueue",
-    //             args: ["{that}", "{arguments}.0"]
-    //         }
-    //     }
-    // });
-
-    // /*
-    //  * Adds only one item to the queue at a time, new requests replace older ones
-    //  *
-    //  * The request object contains the request function and arguments.
-    //  * In the form {method: requestFn, directModel: {}, model: {}, callback: callbackFn}
-    //  */
-    // fluid.requestQueue.concurrencyLimited.enqueue = function (that, request) {
-    //     var originalReq = that.queue[0];
-    //     that.queue[0] = request;
-    //     if (originalReq) {
-    //         that.events.dropped.fire(originalReq);
-    //     }
-    //     that.events.enqueued.fire(request);
-    // };
-
-    // /*
-    //  * A dataSource wrapper providing a queuing mechanism for requests.
-    //  * Requests are queued based on type (read/write) and resource (directModel).
-    //  *
-    //  * A fully implemented dataSource, following the structure outlined by fluid.dataSource,
-    //  * must be provided in the wrappedDataSource subcomponent. The get, set, and delete methods
-    //  * found on the queuedDataSource will call their counterparts in the wrappedDataSource, after
-    //  * filtering through the appropriate queue.
-    //  */
-    // fluid.defaults("fluid.queuedDataSource", {
-    //     gradeNames: ["fluid.standardRelayComponent", "autoInit"],
-    //     members: {
-    //         requests: {
-    //             read: {},
-    //             write: {}
-    //         }
-    //     },
-    //     components: {
-    //         wrappedDataSource: {
-    //             // requires a dataSource that implements the standard set, get, and delete methods.
-    //             type: "fluid.dataSource"
-    //         }
-    //     },
-    //     events: {
-    //         createRequestQueue: null
-    //     },
-    //     // The requestQueueType can take any grade conforming to the structure
-    //     // outlined by fluid.requestQueue.
-    //     // Modifying the requestQueueType will change the behaviour for all queues.
-    //     requestQueueType: "fluid.requestQueue.concurrencyLimited",
-    //     invokers: {
-    //         set: {
-    //             funcName: "fluid.queuedDataSource.enqueue",
-    //             args: ["{that}.options.requestQueueType", "{that}.requests.write", "{wrappedDataSource}.set", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
-    //         },
-    //         get: {
-    //             funcName: "fluid.queuedDataSource.enqueue",
-    //             args: ["{that}.options.requestQueueType", "{that}.requests.read", "{wrappedDataSource}.get", "{arguments}.0", null, "{arguments}.1"]
-    //         },
-    //         "delete": {
-    //             funcName: "fluid.queuedDataSource.enqueue",
-    //             args: ["{that}.options.requestQueueType", "{that}.requests.write", "{wrappedDataSource}.delete", "{arguments}.0", null, "{arguments}.1"]
-    //         }
-    //     }
-    // });
-    //
-    // fluid.queuedDataSource.enqueue = function (queueType, requestsQueue, requestMethod, directModel, model, callback) {
-    //     var key = fluid.toHashKey(directModel);
-    //     var queue = requestsQueue[key];
-    //
-    //     if (!queue) {
-    //         queue = fluid.invokeGlobalFunction(queueType);
-    //         requestsQueue[key] = queue;
-    //     }
-    //
-    //     queue.enqueue({
-    //         method: requestMethod,
-    //         directModel: directModel,
-    //         model: model,
-    //         callback: callback
-    //     });
-    // };
 
     /*
      * A dataSource wrapper providing a queuing mechanism for requests.
@@ -626,16 +456,16 @@ var fluid_2_0 = fluid_2_0 || {};
         },
         invokers: {
             set: {
-                funcName: "fluid.queuedDataSource.enqueue",
+                funcName: "fluid.queuedDataSource.enqueueWithModel",
                 args: ["{that}", "{that}.requests.write", "{wrappedDataSource}.set", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
             },
             get: {
                 funcName: "fluid.queuedDataSource.enqueue",
-                args: ["{that}", "{that}.requests.read", "{wrappedDataSource}.get", "{arguments}.0", null, "{arguments}.1"]
+                args: ["{that}", "{that}.requests.read", "{wrappedDataSource}.get", "{arguments}.0", "{arguments}.1"]
             },
             "delete": {
                 funcName: "fluid.queuedDataSource.enqueue",
-                args: ["{that}", "{that}.requests.write", "{wrappedDataSource}.delete", "{arguments}.0", null, "{arguments}.1"]
+                args: ["{that}", "{that}.requests.write", "{wrappedDataSource}.delete", "{arguments}.0", "{arguments}.1"]
             },
             start: {
                 funcName: "fluid.queuedDataSource.start",
@@ -646,20 +476,24 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.queuedDataSource.start = function (that, queue) {
         if (!queue.isActive && queue.requests.length) {
+            var promise = fluid.promise();
             var request = queue.requests.shift();
-            var callbackProxy = function () {
+
+            var requestComplete = function () {
                 queue.isActive = false;
                 that.events.afterRequestComplete.fire(request, queue);
-                request.callback.apply(null, arguments);
             };
 
             queue.isActive = true;
             that.events.onRequestStart.fire(request, queue);
-            if (request.model) {
-                request.method(request.directModel, request.model, callbackProxy);
-            } else {
-                request.method(request.directModel, callbackProxy);
-            }
+
+            var args = "model" in request ? [request.directModel, request.model, request.options] : [request.directModel, request.options];
+            var response = request.method.apply(null, args);
+
+            response.then(requestComplete, requestComplete);
+            fluid.promise.follow(response, promise);
+
+            return promise;
         }
     };
 
@@ -669,25 +503,11 @@ var fluid_2_0 = fluid_2_0 || {};
      * The request object contains the request function and arguments.
      * In the form {method: requestFn, directModel: {}, model: {}, callback: callbackFn}
      */
-    fluid.queuedDataSource.enqueueImpl = function (that, request, queue) {
-        var originalReq = queue.requests[0];
-        queue.requests[0] = request;
-        if (originalReq) {
-            that.events.dropped.fire(originalReq, queue);
-        }
-        that.events.enqueued.fire(request, queue);
-    };
-
-    fluid.queuedDataSource.enqueue = function (that, requestsQueue, requestMethod, directModel, model, callback) {
-        var key = fluid.toHashKey(directModel);
+    fluid.queuedDataSource.enqueueImpl = function (that, requestsQueue, request) {
+        var key = fluid.toHashKey(request.directModel);
         var queue = requestsQueue[key];
-        var request = {
-            method: requestMethod,
-            directModel: directModel,
-            model: model,
-            callback: callback
-        };
 
+        // create a queue if one doesn't already exist
         if (!queue) {
             queue = {
                 isActive: false,
@@ -696,7 +516,33 @@ var fluid_2_0 = fluid_2_0 || {};
             requestsQueue[key] = queue;
         }
 
-        fluid.queuedDataSource.enqueueImpl(that, request, queue);
+        var originalReq = queue.requests[0];
+        queue.requests[0] = request;
+        if (originalReq) {
+            that.events.dropped.fire(originalReq, queue);
+        }
+        that.events.enqueued.fire(request, queue);
+    };
+
+    fluid.queuedDataSource.enqueue = function (that, requestsQueue, method, directModel, options) {
+        var request = {
+            method: method,
+            directModel: directModel,
+            options: options
+        };
+
+        fluid.queuedDataSource.enqueueImpl(that, requestsQueue, request);
+    };
+
+    fluid.queuedDataSource.enqueueWithModel = function (that, requestsQueue, method, directModel, model, options) {
+        var request = {
+            method: method,
+            directModel: directModel,
+            model: model,
+            options: options
+        };
+
+        fluid.queuedDataSource.enqueueImpl(that, requestsQueue, request);
     };
 
     /** End dataSource **/
