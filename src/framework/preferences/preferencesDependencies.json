@@ -30,6 +30,7 @@
             "fonts",
             "jQuery",
             "jQueryUICore",
+            "normalize",
             "framework",
             "enhancement",
             "renderer",
