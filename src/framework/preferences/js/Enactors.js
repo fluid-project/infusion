@@ -287,7 +287,7 @@ var fluid_1_5 = fluid_1_5 || {};
             },
             getTextSizeInPx: {
                 funcName: "fluid.prefs.enactor.getTextSizeInPx",
-                args: ["{that}.container", "{that}.options.fontSizeMap"]
+                args: ["{that}.root", "{that}.options.fontSizeMap"]
             }
         },
         listeners: {
