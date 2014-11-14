@@ -440,8 +440,6 @@ var fluid_2_0 = fluid_2_0 || {};
         },
         events: {
             enqueued: null,
-            dropped: null,
-            onRequestStart: null,
             afterRequestComplete: null
         },
         listeners: {
@@ -476,7 +474,6 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.queuedDataSource.start = function (that, queue) {
         if (!queue.isActive && queue.requests.length) {
-            var promise = fluid.promise();
             var request = queue.requests.shift();
 
             var requestComplete = function () {
@@ -485,15 +482,11 @@ var fluid_2_0 = fluid_2_0 || {};
             };
 
             queue.isActive = true;
-            that.events.onRequestStart.fire(request, queue);
-
             var args = "model" in request ? [request.directModel, request.model, request.options] : [request.directModel, request.options];
             var response = request.method.apply(null, args);
 
             response.then(requestComplete, requestComplete);
-            fluid.promise.follow(response, promise);
-
-            return promise;
+            fluid.promise.follow(response, request.promise);
         }
     };
 
@@ -504,8 +497,14 @@ var fluid_2_0 = fluid_2_0 || {};
      * In the form {method: requestFn, directModel: {}, model: {}, callback: callbackFn}
      */
     fluid.queuedDataSource.enqueueImpl = function (that, requestsQueue, request) {
+        var promise = fluid.promise();
         var key = fluid.toHashKey(request.directModel);
         var queue = requestsQueue[key];
+
+        // add promise to the request object
+        // to be resolved in the start method
+        // when the wrapped dataSource's request returns.
+        request.promise = promise;
 
         // create a queue if one doesn't already exist
         if (!queue) {
@@ -516,12 +515,10 @@ var fluid_2_0 = fluid_2_0 || {};
             requestsQueue[key] = queue;
         }
 
-        var originalReq = queue.requests[0];
         queue.requests[0] = request;
-        if (originalReq) {
-            that.events.dropped.fire(originalReq, queue);
-        }
         that.events.enqueued.fire(request, queue);
+
+        return promise;
     };
 
     fluid.queuedDataSource.enqueue = function (that, requestsQueue, method, directModel, options) {
@@ -531,7 +528,7 @@ var fluid_2_0 = fluid_2_0 || {};
             options: options
         };
 
-        fluid.queuedDataSource.enqueueImpl(that, requestsQueue, request);
+        return fluid.queuedDataSource.enqueueImpl(that, requestsQueue, request);
     };
 
     fluid.queuedDataSource.enqueueWithModel = function (that, requestsQueue, method, directModel, model, options) {
@@ -542,7 +539,7 @@ var fluid_2_0 = fluid_2_0 || {};
             options: options
         };
 
-        fluid.queuedDataSource.enqueueImpl(that, requestsQueue, request);
+        return fluid.queuedDataSource.enqueueImpl(that, requestsQueue, request);
     };
 
     /** End dataSource **/
