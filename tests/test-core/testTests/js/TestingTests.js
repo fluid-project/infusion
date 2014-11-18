@@ -318,6 +318,40 @@
         }]
     });
     
+    fluid.defaults("fluid.tests.fluid5559Tree", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        components: {
+            targetTree: {
+                type: "fluid.eventedComponent",
+                createOnEvent: "{testCases}.events.onTestCaseStart"
+            },
+            testCases: {
+                type: "fluid.test.testCaseHolder",
+                options: {
+                    modules: [ {
+                        name: "FLUID-5559 Double firing of onTestCaseStart",
+                        tests: [{
+                            name: "FLUID-5559 sequence",
+                            expect: 2,
+                            sequence: [ {
+                                // Must use IoCSS here - see discussion on FLUID-4929 - must avoid triggering construction
+                                event: "{fluid5559Tree targetTree}.events.onCreate",
+                                listener: "fluid.tests.fluid5559Tree.assertOnce"
+                            }, {
+                                func: "fluid.tests.fluid5559Tree.assertOnce",
+                                args: "{targetTree}"
+                            }]
+                        }]
+                    }]
+                }
+            }
+        }
+    });
+    
+    fluid.tests.fluid5559Tree.assertOnce = function (arg) {
+        jqUnit.assertValue("Received value", arg);
+    };
+    
     /**** VIEW-AWARE TESTS FROM HERE ONWARDS ****/
 
     fluid.defaults("fluid.tests.asyncTest", {
@@ -492,7 +526,8 @@
                 "fluid.tests.sourceTester",
                 "fluid.tests.hangTester",
                 "fluid.tests.listenerArg",
-                "fluid.tests.modelTestTree"
+                "fluid.tests.modelTestTree",
+                "fluid.tests.fluid5559Tree"
             ]);
         });
     };
