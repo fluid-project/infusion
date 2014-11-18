@@ -9,6 +9,7 @@
         "dependencies": [
             "jQuery",
             "jQueryUICore",
+            "normalize",
             "framework"
         ]
     }

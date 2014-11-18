@@ -131,6 +131,7 @@ By default, custom packages are given a name with the form _infusion-custom-<ver
 * jQueryUICore
 * jQueryUIWidgets
 * json
+* normalize
 
 ##Developing with the Preferences Framework##
 

@@ -16,6 +16,7 @@
             "jQuery",
             "jQueryUICore",
             "jQueryScrollToPlugin",
+            "normalize",
             "framework",
             "progress",
             "enhancement"

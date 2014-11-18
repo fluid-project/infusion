@@ -161,9 +161,6 @@ module.exports = function(grunt) {
                 jshintrc: true
             }
         },
-        jsonlint: {
-            all: ["src/**/*.json", "tests/**/*.json", "demos/**/*.json", "examples/**/*.json"]
-        },
         stylus: {
             compile: {
                 options: {
@@ -181,6 +178,9 @@ module.exports = function(grunt) {
                     }
                 }]
             }
+        },
+        jsonlint: {
+            all: ["src/**/*.json", "tests/**/*.json", "demos/**/*.json", "examples/**/*.json"]
         }
     });
 
@@ -236,6 +236,6 @@ module.exports = function(grunt) {
 
     grunt.registerTask("default", ["build:all"]);
     grunt.registerTask("custom", ["build:custom"]);
-    
+
     grunt.registerTask("lint", "Apply jshint and jsonlint", ["jshint", "jsonlint"]);
 };
