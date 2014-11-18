@@ -48,7 +48,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     jqUnit.module("Model Transformation");
-    
+
     fluid.tests.transforms.wrapTransform = function (transform) {
         return {
             value: {
@@ -1184,7 +1184,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Rules transformed to expanded form", expectedRules, expandedRules);
         testCompact(" - expanded", expandedRules);
     });
-    
+
     fluid.tests.transforms.metadataRules = {
         type: "fluid.transforms.valueMapper",
         defaultInputValue: true,
@@ -1206,14 +1206,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         ]
     };
-    
+
     fluid.tests.transforms.inverseMetadataRules =
         fluid.model.transform.invertConfiguration({
             "": {
                 transform: fluid.tests.transforms.metadataRules
             }
         });
-    
+
     fluid.tests.transforms.metadataCases = {
         "forward flashing": {
             message: "valueMapper selects primitive option 1",
@@ -1247,7 +1247,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     };
-    
+
     fluid.tests.transforms.inverseMetadataCases = {
         "backward flashing": {
             message: "valueMapper inverts to primitive 1",
@@ -1281,7 +1281,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     };
-    
+
     jqUnit.test("valueMapper with compound values - FLUID-5479 metadata editing example", function () {
         fluid.tests.transforms.testOneStructure(fluid.tests.transforms.metadataCases, {
             transformWrap: true,
@@ -1663,6 +1663,80 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "im.nested"
         ];
         jqUnit.assertDeepEq("Collected input paths", expected, paths.sort());
+    });
+
+    // FLUID-5512: valueMapper with the default output value
+    fluid.tests.valueMapperWithDefaultOutputCases = {
+        case1: {
+            model: {
+                isTooltipOpen: true,
+                isDialogOpen: true
+            },
+            expected: {
+                value: true
+            }
+        },
+        case2: {
+            model: {
+                isTooltipOpen: false,
+                isDialogOpen: true
+            },
+            expected: {
+                value: false
+            }
+        },
+        case3: {
+            model: {
+                isTooltipOpen: true,
+                isDialogOpen: false
+            },
+            expected: {
+                value: false
+            }
+        },
+        case4: {
+            model: {
+                isTooltipOpen: false,
+                isDialogOpen: false
+            },
+            expected: {
+                value: false
+            }
+        },
+        case5: {
+            model: {
+                isTooltipOpen: undefined,
+                isDialogOpen: false
+            },
+            expected: {
+                value: false
+            }
+        }
+    };
+
+    jqUnit.test("FLUID-5512: valueMapper with the default output value", function () {
+        var rules = {
+            type: "fluid.transforms.valueMapper",
+            inputPath: "",
+            defaultOutputValue: false,
+            options: [{
+                inputValue: {
+                    "isTooltipOpen": true,
+                    "isDialogOpen": true
+                },
+                outputValue: true
+            }]
+        };
+
+        var transform = {
+            value: {
+                transform: rules
+            }
+        };
+
+        fluid.each(fluid.tests.valueMapperWithDefaultOutputCases, function (aCase) {
+            jqUnit.assertDeepEq("The transformed reslut is expected", aCase.expected, fluid.model.transform(aCase.model, transform));
+        });
     });
 
     fluid.tests.transforms.multiInputTransformations = {
