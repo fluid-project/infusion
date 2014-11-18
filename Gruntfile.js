@@ -236,6 +236,6 @@ module.exports = function(grunt) {
 
     grunt.registerTask("default", ["build:all"]);
     grunt.registerTask("custom", ["build:custom"]);
-    
+
     grunt.registerTask("lint", "Apply jshint and jsonlint", ["jshint", "jsonlint"]);
 };

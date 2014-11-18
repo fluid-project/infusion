@@ -540,13 +540,12 @@ var fluid = fluid || fluid_2_0;
      */
     fluid.remove_if = function (source, fn, target) {
         if (fluid.isArrayable(source)) {
-            for (var i = 0; i < source.length; ++i) {
+            for (var i = source.length - 1; i >= 0; --i) {
                 if (fn(source[i], i)) {
                     if (target) {
-                        target.push(source[i]);
+                        target.unshift(source[i]);
                     }
                     source.splice(i, 1);
-                    --i;
                 }
             }
         } else {
@@ -604,7 +603,8 @@ var fluid = fluid || fluid_2_0;
 
     /** Accepts an object to be filtered, and a list of keys. Either all keys not present in
      * the list are removed, or only keys present in the list are returned.
-     * @param toFilter {Array|Object} The object to be filtered - this will be modified by the operation
+     * @param toFilter {Array|Object} The object to be filtered - this will be NOT modified by the operation (current implementation
+     * passes through $.extend shallow algorithm)
      * @param keys {Array of String} The list of keys to operate with
      * @param exclude {boolean} If <code>true</code>, the keys listed are removed rather than included
      * @return the filtered object (the same object that was supplied as <code>toFilter</code>
@@ -1290,6 +1290,9 @@ var fluid = fluid || fluid_2_0;
 
     // unsupported, NON-API function
     fluid.mergeListenerPolicy = function (target, source, key) {
+        if (typeof (key) !== "string") {
+            fluid.fail("Error in listeners declaration - the keys in this structure must resolve to event names - got " + key + " from ", source);
+        }
         // cf. triage in mergeListeners
         var hasNamespace = key.charAt(0) !== "{" && key.indexOf(".") !== -1;
         return hasNamespace ? (source || target) : fluid.arrayConcatPolicy(target, source);
@@ -2042,6 +2045,29 @@ var fluid = fluid || fluid_2_0;
     // The base system grade definitions
 
     fluid.defaults("fluid.function", {});
+    
+    /** Invoke a global function by name and named arguments. A courtesy to allow declaratively encoded function calls
+     * to use named arguments rather than bare arrays.
+     * @param name {String} A global name which can be resolved to a Function. The defaults for this name must
+     * resolve onto a grade including "fluid.function". The defaults record should also contain an entry 
+     * <code>argumentMap</code>, a hash of argument names onto indexes.
+     * @param spec {Object} A named hash holding the argument values to be sent to the function. These will be looked
+     * up in the <code>argumentMap</code> and resolved into a flat list of arguments.
+     * @return {Any} The return value from the function
+     */
+    
+    fluid.invokeGradedFunction = function (name, spec) {
+        var defaults = fluid.defaults(name);
+        if (!defaults || !defaults.argumentMap || !fluid.hasGrade(defaults, "fluid.function")) {
+            fluid.fail("Cannot look up name " + name +
+                " to a function with registered argumentMap - got defaults ", defaults);
+        }
+        var args = [];
+        fluid.each(defaults.argumentMap, function (value, key) {
+            args[value] = spec[key];
+        });
+        return fluid.invokeGlobalFunction(name, args);
+    };
 
     fluid.lifecycleFunctions = {
         preInitFunction: true,
