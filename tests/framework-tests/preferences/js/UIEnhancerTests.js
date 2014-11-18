@@ -135,7 +135,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var expectedTextSize = initialFontSize * testSettings.textSize;
 
         jqUnit.assertEquals("Large text size is set", expectedTextSize.toFixed(0) + "px", uiEnhancer.container.css("fontSize"));
-        jqUnit.assertTrue("Verdana font is set", uiEnhancer.container.hasClass("fl-font-prefsEditor-verdana"));
+        jqUnit.assertTrue("Verdana font is set", uiEnhancer.container.hasClass("fl-font-verdana"));
         jqUnit.assertTrue("High contrast is set", uiEnhancer.container.hasClass("fl-theme-bw"));
     };
 
@@ -199,7 +199,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html",
                     classnameMap: {
                         "textFont": {
-                            "default": "fl-font-times"
+                            "default": "fl-font-default"
                         },
                         "theme": {
                             "yb": "fl-test"
@@ -214,7 +214,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.testOptionsMunging = function (uiEnhancer) {
-        jqUnit.assertTrue("The initial times font is set correctly", uiEnhancer.container.hasClass("fl-font-times"));
+        jqUnit.assertTrue("The initial times font is set correctly", uiEnhancer.container.hasClass("fl-font-default"));
         jqUnit.assertTrue("The initial test theme is set correctly", uiEnhancer.container.hasClass("fl-test"));
     };
 

@@ -2,7 +2,6 @@
 
 .example-pager-container {
     width:95%;
-    margin: 0 auto;
 }
 
 .example-pager-container input {
@@ -45,6 +44,11 @@
 .example-pager-head-role { width:15%; }
 .example-pager-head-comments { color: #000; }
 
+.example-pager-table-data {
+    width: 100%;
+    clear: both;
+}
+
 /***********************************************
  * The horizontal pager bar containing Previous, Next, and Page links.
  */
@@ -54,7 +58,7 @@
 }
 
 .example-pager-bar  li  {
-	display:inline;
+    display:inline;
     float:left;
 }
 
@@ -70,9 +74,6 @@
 /***********************************************
  * Styles for the list of numerated page links.
  */
-.example-pager-links  {
-    margin:0em; /* This is to override FSS-reset's ol and ul styling. We should handle this better. */
-}
 
 .example-pager-pageLink-default a {
     /* Using display:block and float:left, it creates helps create a horizontal list with fixed width elements.*/
@@ -97,8 +98,8 @@
     background: #000;
     padding:0px;
     margin:2px;
-	border: 1px solid #000;
-	text-align:center;
+    border: 1px solid #000;
+    text-align:center;
 }
 
 .example-pager-links .fl-pager-currentPage:visited {
@@ -106,8 +107,8 @@
 }
 
 .example-pager-head a {
-	display:block;
-	width:100%;
+    display:block;
+    width:100%;
 }
 
 /***********************************************

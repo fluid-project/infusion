@@ -334,7 +334,7 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         };
 
-        that.dropChangeFirer = fluid.event.getEventFirer();
+        that.dropChangeFirer = fluid.makeEventFirer();
 
         var blankHolder = {
             element: null

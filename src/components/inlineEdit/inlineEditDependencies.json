@@ -11,10 +11,10 @@
             "jQuery",
             "jQueryUICore",
             "jQueryUIWidgets",
+            "normalize",
             "framework",
             "undo",
-            "tooltip",
-            "fss"
+            "tooltip"
         ]
     }
 }

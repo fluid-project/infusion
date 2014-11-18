@@ -10,11 +10,11 @@
 /* Base Appearance + States */
 .fl-reorderer-movable-default {
     cursor:move;
-} 
+}
 
 /* automatically applied the keyboard selected re-orderable item */
 .fl-reorderer-movable-selected {
-	background-color: lightyellow;
+    background-color: lightyellow;
 }
 
 /* automatically applied as the mouse hovers over re-orderable item */
@@ -24,20 +24,20 @@
 
 /* automatically applied the keyboard selected re-orderable item */
 .fl-reorderer-movable-dragging {
-    background     :#ccc;    
+    background     :#ccc;
 }
 
 .fl-reorderer-avatar {
     cursor          : move;
     list-style-type : none;
     filter          : alpha(opacity=75);
-    opacity         : 0.75;    
+    opacity         : 0.75;
 }
 
 
 .fl-reorderer-dropWarning {
     display : none;
-    padding: 5px 25px; 
+    padding: 5px 25px;
     color : #fff;
     opacity:1;
     filter:alpha(opacity=100);
@@ -46,7 +46,7 @@
 
 /* DROP MARKER: different layouts might require different drop marker appearances */
 /* Horizontal drop marker: designed for vertical layouts (default) */
-.fl-reorderer-verticalLayout .fl-reorderer-dropMarker, 
+.fl-reorderer-verticalLayout .fl-reorderer-dropMarker,
 .fluid-vertical-order .fl-reorderer-dropMarker{
     background-color: #F00;
     height          : 0;

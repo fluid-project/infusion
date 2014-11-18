@@ -272,7 +272,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     /**
-     * A component that works in conjunction with the UI Enhancer component and the Fluid Skinning System (FSS)
+     * A component that works in conjunction with the UI Enhancer component
      * to allow users to set personal user interface preferences. The Preferences Editor component provides a user
      * interface for setting and saving personal preferences, and the UI Enhancer component carries out the
      * work of applying those preferences to the user interface.
