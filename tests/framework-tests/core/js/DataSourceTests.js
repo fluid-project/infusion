@@ -128,10 +128,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         ll: [1, 2, 3]
     };
 
-    fluid.tests.assertRequest = function (requestType, setName, delays, expected) {
+    fluid.tests.assertRequest = function (requestType, setName, delays, expected, delayBuffer) {
+        delayBuffer = delayBuffer || 200; // time in milliseconds to add to the assertion delay, to buffer against setTimeout impressions.
         var promise = fluid.promise();
         var that = fluid.tests.queuedDataSource();
-        var assertionDelay = delays[delays.length - 1] + 200; // time to wait to assert the requests.
+        var assertionDelay = delays[delays.length - 1] + delayBuffer; // time to wait to assert the requests.
 
         fluid.tests.invokeRequestWithDelay(that, requestType, delays, 100, {path: "value"});
 
@@ -142,12 +143,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return promise;
     };
 
-    fluid.tests.assertDelayedRequests = function (requestType, delaySet, expectedSet) {
+    fluid.tests.assertDelayedRequests = function (requestType, delaySet, expectedSet, delayBuffer) {
         var count = 0;
         var promise = fluid.promise();
         var numSets = fluid.keys(delaySet).length;
         fluid.each(delaySet, function (delay, set) {
-            var response = fluid.tests.assertRequest(requestType, set, delay, expectedSet[set]);
+            var response = fluid.tests.assertRequest(requestType, set, delay, expectedSet[set], delayBuffer);
             response.then(function () {
                 count++;
                 if (count >= numSets) {
