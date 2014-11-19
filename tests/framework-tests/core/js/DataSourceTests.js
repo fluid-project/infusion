@@ -67,8 +67,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var ID = fluid.get(model, "ID") || options.ID;
         setTimeout(function () {
             promise.resolve({
-                "requestType": type,
-                "ID": ID
+                requestType: type,
+                ID: ID
             });
         }, options.duration);
         return promise;
