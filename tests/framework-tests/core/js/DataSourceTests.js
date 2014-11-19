@@ -118,18 +118,33 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         ss: [0, 50, 55],
         sl: [0, 50, 200],
         ls: [0, 150, 200],
-        ll: [0, 150, 300]
+        ll: [0, 150, 300],
+        sss: [0, 50, 55, 75],
+        lss: [0, 150, 200, 220],
+        ssl: [0, 50, 75, 200],
+        ssss: [0, 50, 55, 75, 80],
+        lsss: [0, 150, 200, 220, 250],
+        sssl: [0, 50, 60, 75, 200]
     };
 
     fluid.tests.expected100ms = {
         ss: [1, 3],
         sl: [1, 2, 3],
         ls: [1, 2, 3],
-        ll: [1, 2, 3]
+        ll: [1, 2, 3],
+        sss: [1, 4],
+        lss: [1, 2, 4],
+        ssl: [1, 3, 4],
+        ssss: [1, 5],
+        lsss: [1, 2, 5],
+        sssl: [1, 4, 5]
     };
 
     fluid.tests.assertRequest = function (requestType, setName, delays, expected, delayBuffer) {
-        delayBuffer = delayBuffer || 200; // time in milliseconds to add to the assertion delay, to buffer against setTimeout impressions.
+        // Time in milliseconds to add to the assertion delay, to buffer against setTimeout impressions.
+        // Because multiple instances run simultaneously this number may need to be increased to take into
+        // account extra delays related to the thread blocking.
+        delayBuffer = delayBuffer || 300;
         var promise = fluid.promise();
         var that = fluid.tests.queuedDataSource();
         var assertionDelay = delays[delays.length - 1] + delayBuffer; // time to wait to assert the requests.
