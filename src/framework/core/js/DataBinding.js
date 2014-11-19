@@ -1013,6 +1013,7 @@ var fluid_2_0 = fluid_2_0 || {};
         if (sourceCode === "primitive") {
             if (!fluid.model.isSameValue(targetSlot, source)) {
                 changedValue = source;
+                ++options.unchanged;
             }
         } else if (targetCode !== sourceCode || sourceCode === "array" && source.length !== targetSlot.length) {
             // RH is not primitive - array or object and mismatching or any array rewrite
@@ -1099,7 +1100,7 @@ var fluid_2_0 = fluid_2_0 || {};
     // TODO: This algorithm is quite inefficient in that both models will be copied once each
     // supported, PUBLIC API function
     fluid.model.diff = function (modela, modelb, options) {
-        options = options || {changeMap: {}, changes: 0}; // current algorithm can't avoid the expense of changeMap
+        options = options || {changes: 0, unchanged: 0, changeMap: {}}; // current algorithm can't avoid the expense of changeMap
         var typea = fluid.typeCode(modela);
         var typeb = fluid.typeCode(modelb);
         var togo;
@@ -1124,6 +1125,8 @@ var fluid_2_0 = fluid_2_0 || {};
         if (togo === false && options.changes === 0) { // catch all primitive cases
             options.changes = 1;
             options.changeMap = modelb === undefined ? "DELETE" : "ADD";
+        } else if (togo === true && options.unchanged === 0) {
+            options.unchanged = 1;
         }
         return togo;
     };
@@ -1311,6 +1314,7 @@ var fluid_2_0 = fluid_2_0 || {};
                     trans.oldHolder = holder;
                     trans.newHolder = { model: fluid.copy(holder.model) };
                     trans.changeRecord.changes = 0;
+                    trans.changeRecord.unchanged = 0; // just for type consistency - we don't use these values in the ChangeApplier
                     trans.changeRecord.changeMap = {};
                 },
                 commit: function (code) {

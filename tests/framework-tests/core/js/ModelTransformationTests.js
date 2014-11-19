@@ -1718,13 +1718,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var rules = {
             type: "fluid.transforms.valueMapper",
             inputPath: "",
-            defaultOutputValue: false,
             options: [{
                 inputValue: {
                     "isTooltipOpen": true,
                     "isDialogOpen": true
                 },
                 outputValue: true
+            }, { // a "match always" rule
+                undefinedInputValue: true,
+                partialMatches: true,
+                outputValue: false
             }]
         };
 
@@ -1735,7 +1738,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         fluid.each(fluid.tests.valueMapperWithDefaultOutputCases, function (aCase) {
-            jqUnit.assertDeepEq("The transformed reslut is expected", aCase.expected, fluid.model.transform(aCase.model, transform));
+            jqUnit.assertDeepEq("The transformed result is expected", aCase.expected, fluid.model.transform(aCase.model, transform));
         });
     });
 
