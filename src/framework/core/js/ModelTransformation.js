@@ -144,8 +144,8 @@ var fluid = fluid || fluid_2_0;
         // iii) with "partial match mode", a "perfect score" in the top 24 bits is
         // penalised for each mismatch, with a positive score of matches store in the bottom 24 bits
         return stats.unchanged === 0 ? 0
-            : (partialMatches ? 0xffffff000000 - 0x1000000 * stats.changes + stats.unchanged : 
-            (stats.changes ? 0 : 0xffffff000000 + stats.unchanged)) 
+            : (partialMatches ? 0xffffff000000 - 0x1000000 * stats.changes + stats.unchanged :
+            (stats.changes ? 0 : 0xffffff000000 + stats.unchanged));
     };
 
     fluid.firstDefined = function (a, b) {
