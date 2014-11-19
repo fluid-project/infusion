@@ -121,7 +121,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         ll: [0, 150, 300]
     };
 
-    fluid.tests.expedted100ms = {
+    fluid.tests.expected100ms = {
         ss: [1, 3],
         sl: [1, 2, 3],
         ls: [1, 2, 3],
@@ -136,7 +136,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.invokeRequestWithDelay(that, requestType, delays, 100, {path: "value"});
 
         setTimeout(function () {
-            jqUnit.assertDeepEq("The " + requestType  + " requests from set '" + setName +  "' should have been queud correctly.", expected, that.fireRecord[requestType]);
+            jqUnit.assertDeepEq("The " + requestType  + " requests from set '" + setName +  "' should have been queued correctly.", expected, that.fireRecord[requestType]);
             promise.resolve(that);
         }, assertionDelay);
         return promise;
@@ -159,17 +159,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     jqUnit.asyncTest("Queued DataSource - get", function () {
-        var response = fluid.tests.assertDelayedRequests("get", fluid.tests.requestRuns, fluid.tests.expedted100ms);
+        var response = fluid.tests.assertDelayedRequests("get", fluid.tests.requestRuns, fluid.tests.expected100ms);
         response.then(jqUnit.start);
     });
 
     jqUnit.asyncTest("Queued DataSource - set", function () {
-        var response = fluid.tests.assertDelayedRequests("set", fluid.tests.requestRuns, fluid.tests.expedted100ms);
+        var response = fluid.tests.assertDelayedRequests("set", fluid.tests.requestRuns, fluid.tests.expected100ms);
         response.then(jqUnit.start);
     });
 
     jqUnit.asyncTest("Queued DataSource - delete", function () {
-        var response = fluid.tests.assertDelayedRequests("delete", fluid.tests.requestRuns, fluid.tests.expedted100ms);
+        var response = fluid.tests.assertDelayedRequests("delete", fluid.tests.requestRuns, fluid.tests.expected100ms);
         response.then(jqUnit.start);
     });
 })();
