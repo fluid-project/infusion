@@ -223,6 +223,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     };
 
+    var emptyTree = {
+        children: []
+    };
+
+
     var createElm = function (tagName) {
         return fluid.unwrap($("<" + tagName + "/>", {text: tagName}));
     };
@@ -268,6 +273,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     var renderTOCTest = function (that, testHeadings) {
         var tocLinks = locateSet(that, ["link1", "link2", "link3", "link4", "link5", "link6"]);
+        jqUnit.assertEquals("The toc header is rendered correctly", that.options.strings.tocHeader, that.locate("tocHeader").text());
         jqUnit.assertEquals("The correct number of links are rendered", testHeadings.headingInfo.length, tocLinks.length);
         // #FLUID-4352: check if <ul> exists when there is no tocLinks
         if (tocLinks.length === 0) {
@@ -396,7 +402,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             generateTreeTests(skippedHeadingsForGradualIndentationModel.model, skippedHeadingsForGradualIndentationTree);
         });
         jqUnit.test("generateTree: empty tree, []", function () {
-            generateTreeTests([], []);
+            generateTreeTests([], emptyTree);
         });
 
 
@@ -591,6 +597,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         },
                         args: ["{that}.levels", "{that}"],
                         priority: "last"
+                    }
+                }
+            });
+        });
+
+        /**
+        * #FLUID-5567: Test that table of contents header is localizable
+        */
+        jqUnit.asyncTest("FLUID-5567: Table of Contents header localization", function () {
+            renderTOCComponent("#flc-toc-l10n", {
+                strings: {
+                    tocHeader: "Localized ToC Header"
+                },
+                listeners: {
+                    onReady: {
+                        listener: function (that) {
+                            jqUnit.assertEquals("The ToC Header should be localized.", that.options.strings.tocHeader, that.locate("tocHeader").text());
+                            jqUnit.start();
+                        },
+                        args: ["{that}.levels"]
                     }
                 }
             });

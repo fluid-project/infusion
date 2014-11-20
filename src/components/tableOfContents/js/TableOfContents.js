@@ -78,7 +78,8 @@ var fluid_1_5 = fluid_1_5 || {};
                     },
                     listeners: {
                         "{tableOfContents}.events.onRefresh": "{that}.refreshView"
-                    }
+                    },
+                    strings: "{tableOfContents}.options.strings"
                 }
             },
             modelBuilder: {
@@ -106,6 +107,9 @@ var fluid_1_5 = fluid_1_5 || {};
                 "this": "{that}.dom.tocContainer",
                 "method": "show"
             }
+        },
+        strings: {
+            tocHeader: "Table of Contents"
         },
         selectors: {
             headings: ":header:visible:not(.flc-toc-tocContainer :header)",
@@ -274,9 +278,9 @@ var fluid_1_5 = fluid_1_5 || {};
         currentLevel = currentLevel || 0;
         var levelObj = fluid.tableOfContents.levels.objModel("level", currentLevel);
 
-        // FLUID-4352, run generateTree iff there are headings in the model.
+        // FLUID-4352, run generateTree if there are headings in the model.
         if (headingsModel.headings.length === 0) {
-            return [];
+            return currentLevel ? [] : {children: []};
         }
 
         // base case: level is 0, returns {children:[generateTree(nextLevel)]}
@@ -319,14 +323,24 @@ var fluid_1_5 = fluid_1_5 || {};
      * @return  Object  Returned produceTree must be in {headings: [trees]}
      */
     fluid.tableOfContents.levels.produceTree = function (that) {
-        return fluid.tableOfContents.levels.generateTree(that.model);
+        var tree = fluid.tableOfContents.levels.generateTree(that.model);
+        // Add the header to the tree
+        tree.children.push({
+            ID: "tocHeader",
+            messagekey: "tocHeader"
+        });
+        return tree;
     };
 
     fluid.defaults("fluid.tableOfContents.levels", {
         gradeNames: ["fluid.rendererComponent", "autoInit"],
         finalInitFunction: "fluid.tableOfContents.levels.finalInit",
         produceTree: "fluid.tableOfContents.levels.produceTree",
+        strings: {
+            tocHeader: "Table of Contents"
+        },
         selectors: {
+            tocHeader: ".flc-toc-header",
             level1: ".flc-toc-levels-level1",
             level2: ".flc-toc-levels-level2",
             level3: ".flc-toc-levels-level3",
