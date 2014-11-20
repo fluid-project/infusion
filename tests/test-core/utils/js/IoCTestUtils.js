@@ -440,8 +440,8 @@ var fluid_2_0 = fluid_2_0 || {};
     // This check executes immediately AFTER we apply the first bind of a sequence
     fluid.test.checkTestStart = function (testCaseState) {
         if (!testCaseState.started) { // Support for FLUID-4929
-            testCaseState.testCaseHolder.events.onTestCaseStart.fire(testCaseState.testCaseHolder);
             testCaseState.started = true;
+            testCaseState.testCaseHolder.events.onTestCaseStart.fire(testCaseState.testCaseHolder);
         }
     };
 
