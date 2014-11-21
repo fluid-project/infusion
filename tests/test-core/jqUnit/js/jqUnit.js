@@ -243,5 +243,23 @@ var jqUnit = jqUnit || {};
     jqUnit.assertRightHand = function (message, expected, actual) {
         jqUnit.assertDeepEq(message, fluid.filterKeys(expected, fluid.keys(actual)), actual);
     };
+    
+    /** Assert that the supplied callback will produce a framework diagnostic, containing the supplied text
+     * somewhere in its error message - that is, the framework will invoke fluid.fail with a message containing
+     * <code>errorText</code>
+     */
+     
+    jqUnit.expectFrameworkDiagnostic = function (message, toInvoke, errorText) {
+        try {
+            fluid.pushSoftFailure(true);
+            jqUnit.expect(2);
+            toInvoke();
+        } catch (e) {
+            jqUnit.assertTrue(message, e instanceof fluid.FluidError);
+            jqUnit.assertTrue(message + " - message text", e.message.indexOf(errorText) >= 0);
+        } finally {
+            fluid.pushSoftFailure(-1);
+        }
+    };
 
 })(jQuery);
