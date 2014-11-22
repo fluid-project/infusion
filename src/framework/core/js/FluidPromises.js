@@ -44,7 +44,7 @@ var fluid_2_0 = fluid_2_0 || {};
         that.resolve = function (value) {
             if (that.disposition) {
                 fluid.fail("Error: resolving promise ", that,
-                    " which has received \"" + that.disposition + "\"");
+                    " which has already received \"" + that.disposition + "\"");
             } else {
                 that.complete("resolve", that.onResolve, value);
             }
@@ -52,7 +52,7 @@ var fluid_2_0 = fluid_2_0 || {};
         that.reject = function (reason) {
             if (that.disposition) {
                 fluid.fail("Error: rejecting promise ", that,
-                    "which has received \"" + that.disposition + "\"");
+                    "which has already received \"" + that.disposition + "\"");
             } else {
                 that.complete("reject", that.onReject, reason);
             }
