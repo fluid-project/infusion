@@ -44,70 +44,41 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Ancestor should be 'top1'", "top1", fluid.findAncestor($("#page-link-1"), testFunc).id);
         });
 
-        jqUnit.test("Container: bind to an id", function () {
-            try {
-                fluid.pushSoftFailure(true);
-                jqUnit.expect(2);
-                // Give it a valid id string.
-                var result = fluid.container("#main-container");
-                jqUnit.assertTrue("One element should be returned when specifying a selector",
-                                  1, result.length);
-
-                // Now try with a invalid string... a CSS selector matching two elements
-                try {
-                    result = fluid.container(".container");
-                } catch (e) {
-                    jqUnit.assertTrue("We should have received an exception", !!e);
-                }
-            } finally {
-                fluid.pushSoftFailure(-1);
-            }
+        jqUnit.test("fluid.container: bind to an selector", function () {
+            jqUnit.expect(1);
+            // Give it a valid id selector.
+            var result = fluid.container("#main-container");
+            jqUnit.assertTrue("One element should be returned when specifying a selector", 1, result.length);
+            
+            jqUnit.expectFrameworkDiagnostic("Selector matching two elements for container", function () {
+                result = fluid.container(".container");
+            }, "container");
         });
 
-        jqUnit.test("container(): bind to a single jQuery", function () {
-            try {
-                fluid.pushSoftFailure(true);
-                jqUnit.expect(2);
-                // Try with a single-item jQuery.
-                var oneContainer = jQuery("#main-container");
-                var result = fluid.container(oneContainer);
-                jqUnit.assertEquals("If a single-element jQuery is used, it should be immediately returned.",
-                             oneContainer, result);
-
-                // Now try with a two-element jQuery, which should cause an exception.
-                var twoContainers = jQuery(".container");
-                try {
-                    result = fluid.container(twoContainers);
-                } catch (e) {
-                    jqUnit.assertTrue("We should have received an exception", !!e);
-                }
-            } finally {
-                fluid.pushSoftFailure(-1);
-            }
+        jqUnit.test("fluid.container: bind to a jQuery", function () {
+            jqUnit.expect(1);
+            // Try with a single-item jQuery.
+            var oneContainer = jQuery("#main-container");
+            var result = fluid.container(oneContainer);
+            jqUnit.assertEquals("If a single-element jQuery is used, it should be immediately returned.",
+                oneContainer, result);
+            jqUnit.expectFrameworkDiagnostic("jQuery containing two elements for container", function () {
+                result = fluid.container($(".container"));
+            }, "container");
         });
 
-        jqUnit.test("container(): bind to a DOM element", function () {
+        jqUnit.test("fluid.container: bind to a DOM element", function () {
             var container = document.getElementById("main-container");
             var result = fluid.container(container);
             jqUnit.assertEquals("If a single DOM element is used, it should be wrapped in a jQuery.",
                                 container, result[0]);
         });
 
-        jqUnit.test("container(): garbage object", function () {
-            try {
-                fluid.pushSoftFailure(true);
-                jqUnit.expect(1);
-                // Random objects should fail.
+        jqUnit.test("fluid.container: garbage object", function () {
+            jqUnit.expectFrameworkDiagnostic("Garbage object", function () {
                 var container = {foo: "bar"};
-
-                try {
-                    fluid.container(container);
-                } catch (e) {
-                    jqUnit.assertTrue("We should have received an exception", !!e);
-                }
-            } finally {
-                fluid.pushSoftFailure(-1);
-            }
+                fluid.container(container);
+            }, "container");
         });
 
         jqUnit.test("DOM binder", function () {
@@ -156,20 +127,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.test("FLUID-5277: Improve the error message when an nonexistent container is provided for fluid.viewRelayComponent and fluid.rendererRelayComponent", function () {
-            var ourError;
-            fluid.pushSoftFailure(function () {
-                ourError = fluid.makeArray(arguments).join("");
-                throw new Error();
-            });
-            jqUnit.expect(2);
-            try {
+            jqUnit.expectFrameworkDiagnostic("Nonexist container for relay component", function () {
                 fluid.tests.fluid5277("#nonexistent-container");
-            } catch (e) {
-                jqUnit.assertValue("Triggered framework diagnostic", ourError);
-                jqUnit.assertTrue("Diagnostic message is correct", ourError.indexOf("did not match any markup") !== -1);
-            } finally {
-                fluid.pushSoftFailure(-1);
-            }
+            }, "did not match any markup");
         });
 
 

@@ -2315,22 +2315,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     function circularTest(componentName, message) {
         jqUnit.test("FLUID-4978 " + message, function () {
-            try {
-                fluid.pushSoftFailure(true);
-                jqUnit.expect(1);
+            jqUnit.expectFrameworkDiagnostic("Circular construction guarded", function () {
                 fluid.invokeGlobalFunction(componentName);
-            }
-            catch (e) {
-                if (e instanceof fluid.FluidError) {
-                    jqUnit.assert("Circular construction guarded");
-                }
-                else {
-                    jqUnit.fail("Received raw exception " + e + ": circular construction guard failed");
-                }
-            }
-            finally {
-                fluid.pushSoftFailure(-1);
-            }
+            }, "circular");
         });
     }
 
@@ -2391,15 +2378,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("Direct circularity test", function () {
-        try {
-            fluid.pushSoftFailure(true);
-            jqUnit.expect(1);
-            fluid.tests.FLUID5088Circularity();
-        } catch (e) {
-            jqUnit.assertTrue("Framework exception caught in circular expansion", e instanceof fluid.FluidError);
-        } finally {
-            fluid.pushSoftFailure(-1);
-        }
+        jqUnit.expectFrameworkDiagnostic("Framework exception caught in circular expansion", fluid.tests.FLUID5088Circularity, "circular");
     });
 
     /** This test case reproduces a circular reference condition found in the Flash
@@ -2575,15 +2554,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("FLUID-4285 test - prevent unencoded options", function () {
-        try {
-            jqUnit.expect(1);
-            fluid.pushSoftFailure(true);
-            fluid.tests.news.parent();
-        } catch (e) {
-            jqUnit.assert("Caught exception in constructing stray options component");
-        } finally {
-            fluid.pushSoftFailure(-1);
-        }
+        jqUnit.expectFrameworkDiagnostic("Constructing stray options component", fluid.tests.news.parent, "options");
     });
 
     fluid.defaults("fluid.tests.badListener", {
@@ -2597,17 +2568,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("FLUID-4151 test - diagnostic for bad listener resolution", function () {
-        try {
-            jqUnit.expect(1);
-            fluid.pushSoftFailure(true);
-            fluid.tests.badListener();
-        } catch (e) {
-            var message = e.message;
-            var index = message.indexOf("badListener");
-            jqUnit.assertTrue("Caught diagnostic exception in constructing bad listener component", index >= 0);
-        } finally {
-            fluid.pushSoftFailure(-1);
-        }
+        jqUnit.expectFrameworkDiagnostic("Constructing bad listener component", fluid.tests.badListener, "badListener");
     });
 
     /** FLUID-4626 - references between separated component "islands" (without common instantiator) **/
@@ -3909,7 +3870,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Successfully distributed option", 0, that.pageList.options.dynamicToDynamic);
     });
 
-    /*** FLUID-5033 destruction during listener notification ***/
+    /*** FLUID-5333 destruction during listener notification ***/
     
     fluid.tests.destructingListener = function (that) {
         that.destroy();
@@ -3936,6 +3897,42 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertUndefined("Listeners after destruction point should not be notified", that.noted);
         that.events.ourEvent.fire(that);
         jqUnit.assertUndefined("Listeners after destruction point should not be notified", that.noted);
+    });
+    
+    /*** FLUID-5266 diagnostic when accessing createOnEvent component before construction ***/
+    
+    fluid.defaults("fluid.tests.fluid5266root", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            creationEvent: null
+        },
+        components: {
+            child: {
+                type: "fluid.eventedComponent",
+                createOnEvent: "creationEvent",
+                options: {
+                    members: {
+                        initMember: 3
+                    }
+                }
+            }
+        }
+    });
+    
+    // style 1 of ginger reference
+    fluid.defaults("fluid.tests.fluid5266context", {
+        gradeNames: ["fluid.tests.fluid5266root", "autoInit"],
+        reference: "{child}.initMember"
+    });
+    
+    fluid.defaults("fluid.tests.fluid5266direct", {
+        gradeNames: ["fluid.tests.fluid5266root", "autoInit"],
+        reference: "{that}.child.initMember"
+    });
+    
+    jqUnit.test("FLUID-5226 - ginger reference to createOnEvent component should fail", function () {
+        jqUnit.expectFrameworkDiagnostic("Bad ginger reference to createOnEvent via context", fluid.tests.fluid5266context, "createOnEvent");
+        jqUnit.expectFrameworkDiagnostic("Bad ginger reference to createOnEvent via direct member", fluid.tests.fluid5266direct, "createOnEvent");
     });
 
 })(jQuery);

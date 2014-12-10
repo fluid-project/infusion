@@ -79,19 +79,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
     
     fluid.tests.testConflictedPromise = function (resolve1, resolve2) {
-        try {
-            fluid.pushSoftFailure(true);
-            jqUnit.expect(1);
-            var holder = fluid.promise();
-            holder[resolve1]();
-            holder[resolve2]();
-        } catch (e) {
-            if (e instanceof fluid.FluidError) {
-                jqUnit.assert("Double resolution triggers error");
-            }
-        } finally {
-            fluid.pushSoftFailure(-1);
-        }
+        jqUnit.expectFrameworkDiagnostic("Double resolution of promises - " + resolve1 + ", " + resolve2,
+            function () {
+                var holder = fluid.promise();
+                holder[resolve1]();
+                holder[resolve2]();
+            }, "already");
     };
     
     jqUnit.test("Conflicted resolution tests", function () {

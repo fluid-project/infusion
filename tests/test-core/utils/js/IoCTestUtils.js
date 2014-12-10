@@ -437,7 +437,7 @@ var fluid_2_0 = fluid_2_0 || {};
         binder.bind(c(preWrap, preFunc), c(postFunc, postWrap));
     };
 
-    // This check executes immediately AFTER we apply the first bind of a sequence
+    // This check executes immediately BEFORE an initial execute or AFTER an initial bind
     fluid.test.checkTestStart = function (testCaseState) {
         if (!testCaseState.started) { // Support for FLUID-4929
             testCaseState.started = true;
@@ -479,6 +479,9 @@ var fluid_2_0 = fluid_2_0 || {};
         // this: bind, next: exec - do this bind, send it exec (EX) as post-wrapper
         that.execute = function () {
             var thisExec = that.executors[that.sequencePos];
+            if (thisExec.execute) { // All exec cases up front, all bind cases afterwards
+                fluid.test.checkTestStart(testCaseState);
+            }
             var pos = ++that.sequencePos;
             var thisText = that.sequenceText(pos);
             testCaseState.events.onBeginSequenceStep.fire(testCaseState, that);
@@ -490,8 +493,8 @@ var fluid_2_0 = fluid_2_0 || {};
                 }
                 else {
                     fluid.test.bindExecutor(thisExec, fluid.identity, finishSequence, thisText);
+                    fluid.test.checkTestStart(testCaseState);
                 }
-                fluid.test.checkTestStart(testCaseState);
                 return;
             }
             var nextExec = that.decode(pos); // decode the NEXT executor
@@ -500,8 +503,8 @@ var fluid_2_0 = fluid_2_0 || {};
                 var wrappers = nextExec.bind ? [that.execute, fluid.identity] :
                     [fluid.identity, that.execute];
                 fluid.test.bindExecutor(thisExec, wrappers[0], wrappers[1], thisText);
+                fluid.test.checkTestStart(testCaseState);
             }
-            fluid.test.checkTestStart(testCaseState);
 
             if (thisExec.execute) {
                 if (nextExec.bind) {
