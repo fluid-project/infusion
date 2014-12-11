@@ -1052,7 +1052,7 @@ var fluid_2_0 = fluid_2_0 || {};
     // After the 1.5 release, this will replace the old "applyChangeRequest"
     // Changes: "MERGE" action abolished
     // ADD/DELETE at root can be destructive
-    // changes tracked in optional final argument holding "changeMap: {}, changes: 0"
+    // changes tracked in optional final argument holding "changeMap: {}, changes: 0, unchanged: 0"
     fluid.model.applyHolderChangeRequest = function (holder, request, options) {
         options = fluid.model.defaultAccessorConfig(options);
         options.deltaMap = options.changeMap ? {} : null;
@@ -1089,12 +1089,13 @@ var fluid_2_0 = fluid_2_0 || {};
      * not contain circular links.
      * @param modela The first model to be compared
      * @param modelb The second model to be compared
-     * @param options If supplied, will receive a map and summary of the change content between the objects. It should hold 
-     * {changeMap (Object/String), changes (int)} summarising the number and location of the differences
-     * between the structures. The <code>changeMap</code> is an isomorphic map of the object structures to values "ADD" or "DELETE" indicating
-     * that values have been added/removed at that location. <code>changes</code> counts the number of such changes. The two objects are
-     * identical iff <code>changes === 0</code>. Note that in the case the object structure differs at the root, <code>changeMap</code> will hold
+     * @param options {Object} If supplied, will receive a map and summary of the change content between the objects. Structure is:
+     *     changeMap: {Object/String} An isomorphic map of the object structures to values "ADD" or "DELETE" indicating
+     * that values have been added/removed at that location. Note that in the case the object structure differs at the root, <code>changeMap</code> will hold
      * the plain String value "ADD" or "DELETE"
+     *     changes: {Integer} Counts the number of changes between the objects - The two objects are identical iff <code>changes === 0</code>.
+     *     unchanged: {Integer} Counts the number of leaf (primitive) values at which the two objects are identical. Note that the current implementation will
+     * double-count, this summary should be considered indicative rather than precise.
      * @return <code>true</code> if the models are identical
      */
     // TODO: This algorithm is quite inefficient in that both models will be copied once each

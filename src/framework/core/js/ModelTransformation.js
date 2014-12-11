@@ -215,7 +215,7 @@ var fluid = fluid || fluid_2_0;
             var expanded = fluid.model.transform.getValue(valueHolder.valuePath, valueHolder.value, transform);
 
             transformArgs.unshift(expanded);
-            //if the function has no input, the result is considered undefined, and this is returned
+            // if the function has no input, the result is considered undefined, and this is returned
             if (expanded === undefined) {
                 return undefined;
             }
