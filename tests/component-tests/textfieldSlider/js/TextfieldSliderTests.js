@@ -39,93 +39,67 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The ARIA min should be 0", 0, thumb.attr("aria-valuemin"));
         });
 
-        var testSetting = function (valToTest, expected) {
+        var testInputField = function (valToTest, expected) {
             var slider = $(".flc-textfieldSlider-slider");
             var textfield = $(".flc-textfieldSlider-field");
             var thumb = $(".ui-slider-handle");
 
-            slider.slider("value", valToTest);
-            jqUnit.assertEquals("Slider value should be " + expected, expected, slider.slider("value"));
             textfield.val(valToTest);
             textfield.change();
             jqUnit.assertEquals("Textfield value should be the " + expected, expected, textfield.val());
             jqUnit.assertEquals("The ARIA value now should be " + expected, expected, thumb.attr("aria-valuenow"));
+            jqUnit.assertEquals("Slider value should be " + expected, expected, slider.slider("value"));
+        };
+
+        var testSlider = function (valToTest, expected, that) {
+            var slider = $(".flc-textfieldSlider-slider");
+
+            slider.slider("value", valToTest);
+            jqUnit.assertEquals("Slider value should be " + expected, expected, slider.slider("value"));
+        };
+
+        var testAll = function (valToTest, expected, that) {
+            testSlider(valToTest, expected, that);
+            testInputField(valToTest, expected, that);
         };
 
         jqUnit.test("Test Min/Max Size", function () {
-            jqUnit.expect(18);
+            jqUnit.expect(24);
 
-            createTextfieldSlider({range: {min: 5, max: 55}});
-            testSetting(56, 55);
-            testSetting(55, 55);
-            testSetting(4, 5);
-            testSetting(25, 25);
-            testSetting(-5, 5);
-            testSetting(5, 5);
+            var that = createTextfieldSlider({range: {min: 5, max: 55}});
+            testAll(56, 55, that);
+            testAll(55, 55, that);
+            testAll(4, 5, that);
+            testAll(25, 25, that);
+            testAll(-5, 5, that);
+            testAll(5, 5, that);
         });
 
         jqUnit.test("Test Negative Scale", function () {
-            jqUnit.expect(15);
+            jqUnit.expect(20);
 
             createTextfieldSlider({range: {min: -15, max: -5}});
-            testSetting(56, -5);
-            testSetting(-10, -10);
-            testSetting(-16, -15);
-            testSetting(-15, -15);
-            testSetting(-5, -5);
+            testAll(56, -5);
+            testAll(-10, -10);
+            testAll(-16, -15);
+            testAll(-15, -15);
+            testAll(-5, -5);
         });
 
-        var checkValidatedValue = function (changeRequestValue, expectedValue) {
-            var model = {
-                value: 5
-            };
-            var range = {
-                min: 2,
-                max: 10
-            };
-            var changeRequest = {
-                value: changeRequestValue
-            };
+        jqUnit.test("Test Invalid Values", function () {
+            jqUnit.expect(6);
 
-            fluid.textfieldSlider.validateValue(model, range, changeRequest);
-            jqUnit.assertEquals("Validating value", expectedValue, changeRequest.value);
-        };
-
-        jqUnit.test("validateValue() tests", function () {
-            checkValidatedValue(11, 10);
-            checkValidatedValue(1, 2);
-            checkValidatedValue(5, 5);
-            checkValidatedValue(-1, 2);
-            checkValidatedValue(undefined, 5);
-            checkValidatedValue(null, 5);
-            checkValidatedValue("", 5);
-        });
-
-        jqUnit.asyncTest("afterRender event - init", function () {
-            jqUnit.expect(1);
             createTextfieldSlider({
-                listeners: {
-                    afterRender: function () {
-                        jqUnit.assert("The afterRender event fired");
-                        jqUnit.start();
-                    }
+                range: {
+                    min: -5,
+                    max: 5
+                },
+                model: {
+                    value: 1
                 }
             });
-        });
-
-        jqUnit.asyncTest("afterRender event", function () {
-            jqUnit.expect(1);
-            var that = createTextfieldSlider({
-                listeners: {
-                    afterRender: function () {
-                        jqUnit.assert("The afterRender event fired");
-                        jqUnit.start();
-                    }
-                },
-                renderOnInit: false
-            });
-
-            that.refreshView();
+            testInputField("aaa", 1);
+            testInputField(null, 0);
         });
     });
 })(jQuery);
