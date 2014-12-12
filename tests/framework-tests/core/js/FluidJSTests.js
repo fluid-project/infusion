@@ -395,20 +395,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("FLUID-4285 test - prevent 'double options'", function () {
-        try {
-            jqUnit.expect(1);
-            fluid.pushSoftFailure(true);
+        jqUnit.expectFrameworkDiagnostic("Registering double options component", function () {
             fluid.defaults("news.parent", {
                 gradeNames: ["fluid.littleComponent", "autoInit"],
                 options: {
                     test: "test"
                 }
             });
-        } catch (e) {
-            jqUnit.assert("Caught exception in constructing double options component");
-        } finally {
-            fluid.pushSoftFailure(-1);
-        }
+        }, "error in options structure");
     });
 
     jqUnit.test("fluid.get and fluid.set", function () {
@@ -647,26 +641,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.gradeUsingComponent();
     });
 
-
     /** FLUID-5288: Improved diagnostic for incomplete grade hierarchy **/
 
     jqUnit.test("FLUID-5288: Improved diagnostic for component with incomplete grade hierarchy", function () {
-        fluid.pushSoftFailure(true);
-        jqUnit.expect(3);
-        try {
-            // TODO: shouldn't we be able to instantiate grades which involve a forward reference!
+        jqUnit.expectFrameworkDiagnostic("Framework diagnostic on incomplete grade hierarchy", function () {
+            // TODO: in future, there will be no error thrown on definition, but only on use - since it should be possible
+            // to declare grade hierarchies through forward reference
             fluid.defaults("fluid.tests.missingGradeComponent", {
                 gradeNames: ["fluid.tests.nonexistentGrade", "autoInit"]
             });
             fluid.tests.missingGradeComponent();
-        } catch (e) {
-            jqUnit.assertTrue("Should receive framework error", e instanceof fluid.FluidError);
-            var message = e.toString();
-            jqUnit.assertTrue("Error text should be correct", message.indexOf("is incomplete") !== -1);
-            jqUnit.assertTrue("Error text should mention blank grade", message.indexOf("fluid.tests.nonexistentGrade") !== -1);
-        } finally {
-            fluid.pushSoftFailure(-1);
-        }
+        }, ["is incomplete", "fluid.tests.nonexistentGrade"]);
     });
 
     fluid.registerNamespace("fluid.tests.initSubcomponentTest");
@@ -797,22 +782,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.testInvalidGradedFunction = function (name, spec) {
-        jqUnit.test("fluid.invokeGradedFunction - failure case", function () {
-            jqUnit.expect(1);
-            fluid.pushSoftFailure(true);
-            try {
-                fluid.invokeGradedFunction(name, spec);
-            } catch (e) {
-                jqUnit.assertTrue("Expected framework error from bad fluid.invokeGlobalFunction call", e instanceof fluid.FluidError);
-            } finally {
-                fluid.pushSoftFailure(-1);
-            }
-        });
+        jqUnit.expectFrameworkDiagnostic("fluid.invokeGradedFunction - failure case - " + name, function () {
+            fluid.invokeGradedFunction(name, spec);
+        }, "Cannot look up name");
     };
     
-    fluid.tests.testInvalidGradedFunction("fluid.tests.nonexistentName");
-    fluid.tests.testInvalidGradedFunction("fluid.tests.functionWithoutArgMap");
-    fluid.tests.testInvalidGradedFunction("fluid.tests.gradeComponent");
+    jqUnit.test("fluid.invokeGradedFunction - diagnostics from bad invocations", function () {
+        fluid.tests.testInvalidGradedFunction("fluid.tests.nonexistentName");
+        fluid.tests.testInvalidGradedFunction("fluid.tests.functionWithoutArgMap");
+        fluid.tests.testInvalidGradedFunction("fluid.tests.gradeComponent");
+    });
     
     fluid.defaults("fluid.tests.functionWithArgMap", {
         gradeNames: "fluid.function",

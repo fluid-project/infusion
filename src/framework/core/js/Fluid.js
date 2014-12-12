@@ -1568,7 +1568,7 @@ var fluid = fluid || fluid_2_0;
             } else {
                 fluid.fail("The grade hierarchy of component with typeName " + componentName + " is incomplete - it inherits from the following grade(s): " +
                  blankGrades.join(", ") + " for which the grade definitions are corrupt or missing. Please check the files which might include these " +
-                 " grades and ensure they are readable and have been loaded by this instance of Infusion");
+                 "grades and ensure they are readable and have been loaded by this instance of Infusion");
             }
         }
         var creator = function () {

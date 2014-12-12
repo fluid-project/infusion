@@ -318,7 +318,12 @@
         }]
     });
     
-    fluid.defaults("fluid.tests.fluid5559Tree", {
+    // FLUID-5559 double firing of onTestCaseStart
+    
+    // in presence of the bug, we will get two firings of onTestCaseStart and hence an extra onCreate of the component,
+    // and hence one extra assertion
+    
+    fluid.defaults("fluid.tests.onTestCaseStart.tree", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             targetTree: {
@@ -326,7 +331,15 @@
                 createOnEvent: "{testCases}.events.onTestCaseStart"
             },
             testCases: {
-                type: "fluid.test.testCaseHolder",
+                type: "fluid.test.testCaseHolder"
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.fluid5559Tree", {
+        gradeNames: ["fluid.tests.onTestCaseStart.tree", "autoInit"],
+        components: {
+            testCases: {
                 options: {
                     modules: [ {
                         name: "FLUID-5559 Double firing of onTestCaseStart",
@@ -336,9 +349,9 @@
                             sequence: [ {
                                 // Must use IoCSS here - see discussion on FLUID-4929 - must avoid triggering construction
                                 event: "{fluid5559Tree targetTree}.events.onCreate",
-                                listener: "fluid.tests.fluid5559Tree.assertOnce"
+                                listener: "fluid.tests.onTestCaseStart.assertOnce"
                             }, {
-                                func: "fluid.tests.fluid5559Tree.assertOnce",
+                                func: "fluid.tests.onTestCaseStart.assertOnce",
                                 args: "{targetTree}"
                             }]
                         }]
@@ -348,9 +361,97 @@
         }
     });
     
-    fluid.tests.fluid5559Tree.assertOnce = function (arg) {
+    fluid.tests.onTestCaseStart.assertOnce = function (arg) {
         jqUnit.assertValue("Received value", arg);
     };
+    
+    // FLUID-5575 late firing of onTestCaseStart
+    
+    // In this variant, we attach the onCreate listener directly, and refer to the
+    // component eagerly - with the FLUID-5266 fix, this will now trigger an error if the event is late
+    
+    fluid.tests.onTestCaseStart.moduleSource = function (name) {
+        var modules = [{
+            name: "FLUID-5575 Late firing of onTestCaseStart - " + name,
+            tests: [{
+                name: "FLUID-5575 sequence"
+            }]
+        }];
+        var sequence = fluid.getGlobalValue(name);
+        modules[0].tests[0] = $.extend(true, modules[0].tests[0], sequence);
+        return modules;
+    };
+    
+    fluid.defaults("fluid.tests.fluid5575Tree", {
+        gradeNames: ["fluid.tests.onTestCaseStart.tree", "autoInit"],
+        components: {
+            targetTree: {
+                options: {
+                    events: {
+                        triggerable: null // used in "activePassive" case
+                    },
+                    listeners: {
+                        onCreate: "fluid.tests.onTestCaseStart.assertOnce"
+                    }
+                }
+            },
+            testCases: {
+                options: {
+                    moduleSource: {
+                        func: "fluid.tests.onTestCaseStart.moduleSource",
+                        args: "{testEnvironment}.options.sequenceName"
+                    }
+                }
+            }
+        }
+    });
+        
+    fluid.tests.onTestCaseStart.singleActive = {
+        expect: 2,
+        sequence: [{
+            func: "fluid.tests.onTestCaseStart.assertOnce",
+            args: "{targetTree}"
+        }]
+    };
+    
+    fluid.defaults("fluid.tests.fluid5575Tree.singleActive", {
+        gradeNames: ["fluid.tests.fluid5575Tree", "autoInit"],
+        sequenceName: "fluid.tests.onTestCaseStart.singleActive"
+    });
+    
+    fluid.tests.onTestCaseStart.doubleActive = {
+        expect: 3,
+        sequence: [{
+            func: "fluid.tests.onTestCaseStart.assertOnce",
+            args: "{targetTree}"
+        }, {
+            func: "fluid.tests.onTestCaseStart.assertOnce",
+            args: "{targetTree}"
+        }]
+    };
+
+    fluid.defaults("fluid.tests.fluid5575Tree.doubleActive", {
+        gradeNames: ["fluid.tests.fluid5575Tree", "autoInit"],
+        sequenceName: "fluid.tests.onTestCaseStart.doubleActive"
+    });
+    
+    // This case occurs in metadata feedback tests - "decodeEvent" for the upcoming passive fixture
+    // would itself trigger creation before active starts
+    fluid.tests.onTestCaseStart.activePassive = {
+        expect: 2,
+        sequence: [{
+            func: "{targetTree}.events.triggerable.fire",
+            args: "{targetTree}"
+        }, {
+            event: "{targetTree}.events.triggerable",
+            listener: "fluid.tests.onTestCaseStart.assertOnce"
+        }]
+    };
+    
+    fluid.defaults("fluid.tests.fluid5575Tree.activePassive", {
+        gradeNames: ["fluid.tests.fluid5575Tree", "autoInit"],
+        sequenceName: "fluid.tests.onTestCaseStart.activePassive"
+    });
     
     /**** VIEW-AWARE TESTS FROM HERE ONWARDS ****/
 
@@ -527,7 +628,10 @@
                 "fluid.tests.hangTester",
                 "fluid.tests.listenerArg",
                 "fluid.tests.modelTestTree",
-                "fluid.tests.fluid5559Tree"
+                "fluid.tests.fluid5559Tree",
+                "fluid.tests.fluid5575Tree.singleActive",
+                "fluid.tests.fluid5575Tree.doubleActive",
+                "fluid.tests.fluid5575Tree.activePassive"
             ]);
         });
     };

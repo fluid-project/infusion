@@ -243,5 +243,30 @@ var jqUnit = jqUnit || {};
     jqUnit.assertRightHand = function (message, expected, actual) {
         jqUnit.assertDeepEq(message, fluid.filterKeys(expected, fluid.keys(actual)), actual);
     };
+    
+    /** Assert that the supplied callback will produce a framework diagnostic, containing the supplied text
+     * somewhere in its error message - that is, the framework will invoke fluid.fail with a message containing
+     * <code>errorText</code>.
+     * @param message {String} The message prefix to be supplied for all the assertions this function issues
+     * @param toInvoke {Function} A no-arg function holding the code to be tested for emission of the diagnostic
+     * @param errorTexts {String} or {Array of String} Either a single string or array of strings which the <code>message</code> field
+     * of the thrown exception will be tested against - each string must appear as a substring in the text
+     */
+     
+    jqUnit.expectFrameworkDiagnostic = function (message, toInvoke, errorTexts) {
+        errorTexts = fluid.makeArray(errorTexts);
+        try {
+            fluid.pushSoftFailure(true);
+            jqUnit.expect(1 + errorTexts.length);
+            toInvoke();
+        } catch (e) {
+            jqUnit.assertTrue(message, e instanceof fluid.FluidError);
+            fluid.each(errorTexts, function (errorText) {
+                jqUnit.assertTrue(message + " - message text", e.message.indexOf(errorText) >= 0);
+            });
+        } finally {
+            fluid.pushSoftFailure(-1);
+        }
+    };
 
 })(jQuery);
