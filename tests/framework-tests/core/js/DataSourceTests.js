@@ -114,7 +114,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     // s = short delay
     // l = long delay
-    fluid.tests.requestRuns = {
+    fluid.tests.queuedDataSource.requestRuns = {
         ss: [0, 50, 55],
         sl: [0, 50, 200],
         ls: [0, 150, 200],
@@ -127,7 +127,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         sssl: [0, 50, 60, 75, 200]
     };
 
-    fluid.tests.expected100ms = {
+    fluid.tests.queuedDataSource.expected100ms = {
         ss: [1, 3],
         sl: [1, 2, 3],
         ls: [1, 2, 3],
@@ -140,7 +140,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         sssl: [1, 4, 5]
     };
 
-    fluid.tests.assertRequest = function (requestType, setName, delays, expected, delayBuffer) {
+    fluid.tests.queuedDataSource.assertRequest = function (requestType, setName, delays, expected, delayBuffer) {
         // Time in milliseconds to add to the assertion delay, to buffer against setTimeout impressions.
         // Because multiple instances run simultaneously this number may need to be increased to take into
         // account extra delays related to the thread blocking.
@@ -158,12 +158,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return promise;
     };
 
-    fluid.tests.assertDelayedRequests = function (requestType, delaySet, expectedSet, delayBuffer) {
+    fluid.tests.queuedDataSource.assertDelayedRequests = function (requestType, delaySet, expectedSet, delayBuffer) {
         var count = 0;
         var promise = fluid.promise();
         var numSets = fluid.keys(delaySet).length;
         fluid.each(delaySet, function (delay, set) {
-            var response = fluid.tests.assertRequest(requestType, set, delay, expectedSet[set], delayBuffer);
+            var response = fluid.tests.queuedDataSource.assertRequest(requestType, set, delay, expectedSet[set], delayBuffer);
             response.then(function () {
                 count++;
                 if (count >= numSets) {
@@ -175,17 +175,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     jqUnit.asyncTest("Queued DataSource - get", function () {
-        var response = fluid.tests.assertDelayedRequests("get", fluid.tests.requestRuns, fluid.tests.expected100ms);
+        var response = fluid.tests.queuedDataSource.assertDelayedRequests("get", fluid.tests.queuedDataSource.requestRuns, fluid.tests.queuedDataSource.expected100ms);
         response.then(jqUnit.start);
     });
 
     jqUnit.asyncTest("Queued DataSource - set", function () {
-        var response = fluid.tests.assertDelayedRequests("set", fluid.tests.requestRuns, fluid.tests.expected100ms);
+        var response = fluid.tests.queuedDataSource.assertDelayedRequests("set", fluid.tests.queuedDataSource.requestRuns, fluid.tests.queuedDataSource.expected100ms);
         response.then(jqUnit.start);
     });
 
     jqUnit.asyncTest("Queued DataSource - delete", function () {
-        var response = fluid.tests.assertDelayedRequests("delete", fluid.tests.requestRuns, fluid.tests.expected100ms);
+        var response = fluid.tests.queuedDataSource.assertDelayedRequests("delete", fluid.tests.queuedDataSource.requestRuns, fluid.tests.queuedDataSource.expected100ms);
         response.then(jqUnit.start);
     });
 })();
