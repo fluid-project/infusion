@@ -51,16 +51,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Slider value should be " + expected, expected, slider.slider("value"));
         };
 
-        var testSlider = function (valToTest, expected, that) {
+        var testSlider = function (valToTest, expected) {
             var slider = $(".flc-textfieldSlider-slider");
 
             slider.slider("value", valToTest);
             jqUnit.assertEquals("Slider value should be " + expected, expected, slider.slider("value"));
         };
 
-        var testAll = function (valToTest, expected, that) {
-            testSlider(valToTest, expected, that);
-            testInputField(valToTest, expected, that);
+        var testAll = function (valToTest, expected) {
+            testSlider(valToTest, expected);
+            testInputField(valToTest, expected);
         };
 
         jqUnit.test("Test Min/Max Size", function () {

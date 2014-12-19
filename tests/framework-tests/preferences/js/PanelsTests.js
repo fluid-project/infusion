@@ -55,9 +55,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Functions shared by panel tests
      *******************************************************************************/
     fluid.tests.checkModel = function (path, expectedValue) {
-        return function (newModel) {
-            var newval = fluid.get(newModel, path);
-            jqUnit.assertEquals("Expected model value " + expectedValue + " at path " + path, expectedValue, newval);
+        return function (newValue) {
+            jqUnit.assertEquals("Expected model value " + expectedValue + " at path " + path, expectedValue, newValue);
         };
     };
 
@@ -856,6 +855,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             largeIcon: ".flc-prefsEditor-min-val-largeIcon",
             multiplier: ".flc-prefsEditor-multiplier"
         },
+        selectorsToIgnore: ["textSize"],
+        components: {
+            textSize: {
+                type: "fluid.textfieldSlider",
+                container: "{fluid.tests.panel.slider1}.dom.textSize",
+                createOnEvent: "afterRender",
+                options: {
+                    model: {
+                        value: "{fluid.tests.panel.slider1}.model.slider1"
+                    },
+                    range: "{fluid.tests.panel.slider1}.options.range",
+                    sliderOptions: "{fluid.tests.panel.slider1}.options.sliderOptions"
+                }
+            }
+        },
         range: {
             min: 1,
             max: 10
@@ -864,22 +878,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             label: {messagekey: "textSizeLabel"},
             smallIcon: {messagekey: "textSizeSmallIcon"},
             largeIcon: {messagekey: "textSizeLargeIcon"},
-            multiplier: {messagekey: "multiplier"},
-            textSize: {
-                decorators: {
-                    type: "fluid",
-                    func: "fluid.textfieldSlider",
-                    options: {
-                        rules: {
-                            "slider1": "value"
-                        },
-                        model: "{fluid.tests.panel.slider1}.model",
-                        sourceApplier: "{fluid.tests.panel.slider1}.applier",
-                        range: "{fluid.tests.panel.slider1}.options.range",
-                        sliderOptions: "{fluid.tests.panel.slider1}.options.sliderOptions"
-                    }
-                }
-            }
+            multiplier: {messagekey: "multiplier"}
         }
     });
 
@@ -892,6 +891,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             largeIcon: ".flc-prefsEditor-min-val-largeIcon",
             multiplier: ".flc-prefsEditor-multiplier"
         },
+        selectorsToIgnore: ["textSize"],
+        components: {
+            textSize: {
+                type: "fluid.textfieldSlider",
+                container: "{fluid.tests.panel.slider2}.dom.textSize",
+                createOnEvent: "afterRender",
+                options: {
+                    model: {
+                        value: "{fluid.tests.panel.slider2}.model.slider2"
+                    },
+                    range: "{fluid.tests.panel.slider2}.options.range",
+                    sliderOptions: "{fluid.tests.panel.slider2}.options.sliderOptions"
+                }
+            }
+        },
         range: {
             min: 0,
             max: 20
@@ -900,22 +914,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             label: {messagekey: "textSizeLabel"},
             smallIcon: {messagekey: "textSizeSmallIcon"},
             largeIcon: {messagekey: "textSizeLargeIcon"},
-            multiplier: {messagekey: "multiplier"},
-            textSize: {
-                decorators: {
-                    type: "fluid",
-                    func: "fluid.textfieldSlider",
-                    options: {
-                        rules: {
-                            "slider2": "value"
-                        },
-                        model: "{fluid.tests.panel.slider2}.model",
-                        sourceApplier: "{fluid.tests.panel.slider2}.applier",
-                        range: "{fluid.tests.panel.slider2}.options.range",
-                        sliderOptions: "{fluid.tests.panel.slider2}.options.sliderOptions"
-                    }
-                }
-            }
+            multiplier: {messagekey: "multiplier"}
         }
     });
 
@@ -1082,18 +1081,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.textFontPanel.testDefault = function (that, expectedNumOfOptions, expectedFont) {
-        return function () {
-            var options = that.container.find("option");
-            jqUnit.assertEquals("There are " + expectedNumOfOptions + " text fonts in the control", expectedNumOfOptions, options.length);
-            jqUnit.assertEquals("The first text font is " + expectedFont, expectedFont, options.filter(":selected").val());
+        var options = that.container.find("option");
+        jqUnit.assertEquals("There are " + expectedNumOfOptions + " text fonts in the control", expectedNumOfOptions, options.length);
+        jqUnit.assertEquals("The first text font is " + expectedFont, expectedFont, options.filter(":selected").val());
 
-            fluid.each(options, function (option) {
-                var css = that.options.classnameMap.textFont[option.value];
-                if (css) {
-                    jqUnit.assertTrue("The option has appropriate css applied", $(option).hasClass(css));
-                }
-            });
-        };
+        fluid.each(options, function (option) {
+            var css = that.options.classnameMap.textFont[option.value];
+            if (css) {
+                jqUnit.assertTrue("The option has appropriate css applied", $(option).hasClass(css));
+            }
+        });
     };
 
     fluid.tests.textFontPanel.changeSelection = function (element, newValue) {
@@ -1115,8 +1112,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sequence: [{
                     func: "{textFont}.refreshView"
                 }, {
-                    listenerMaker: "fluid.tests.textFontPanel.testDefault",
-                    makerArgs: ["{textFont}", "{that}.options.testOptions.expectedNumOfOptions", "{that}.options.testOptions.defaultValue"],
+                    listener: "fluid.tests.textFontPanel.testDefault",
+                    args: ["{textFont}", "{that}.options.testOptions.expectedNumOfOptions", "{that}.options.testOptions.defaultValue"],
                     event: "{textFont}.events.afterRender"
                 }, {
                     func: "fluid.tests.textFontPanel.changeSelection",
@@ -1155,22 +1152,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.contrastPanel.testDefault = function (that, expectedNumOfOptions, expectedContrast) {
-        return function () {
-            var inputs = that.locate("themeInput");
-            var labels = that.locate("themeLabel");
+        var inputs = that.locate("themeInput");
+        var labels = that.locate("themeLabel");
 
-            jqUnit.assertEquals("There are " + expectedNumOfOptions + " contrast selections in the control", expectedNumOfOptions, inputs.length);
-            jqUnit.assertEquals("The first contrast is " + expectedContrast, expectedContrast, inputs.filter(":checked").val());
+        jqUnit.assertEquals("There are " + expectedNumOfOptions + " contrast selections in the control", expectedNumOfOptions, inputs.length);
+        jqUnit.assertEquals("The first contrast is " + expectedContrast, expectedContrast, inputs.filter(":checked").val());
 
-            var inputValue, label;
-            fluid.each(inputs, function (input, index) {
-                inputValue = input.value;
-                label = labels.eq(index);
-                jqUnit.assertTrue("The contrast label has appropriate css applied", label.hasClass(that.options.classnameMap.theme[inputValue]));
-            });
+        var inputValue, label;
+        fluid.each(inputs, function (input, index) {
+            inputValue = input.value;
+            label = labels.eq(index);
+            jqUnit.assertTrue("The contrast label has appropriate css applied", label.hasClass(that.options.classnameMap.theme[inputValue]));
+        });
 
-            jqUnit.assertTrue("The default contrast label has the default label css applied", labels.eq(0).hasClass(that.options.styles.defaultThemeLabel));
-        };
+        jqUnit.assertTrue("The default contrast label has the default label css applied", labels.eq(0).hasClass(that.options.styles.defaultThemeLabel));
     };
 
     fluid.tests.contrastPanel.changeChecked = function (inputs, newValue) {
@@ -1194,8 +1189,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sequence: [{
                     func: "{contrast}.refreshView"
                 }, {
-                    listenerMaker: "fluid.tests.contrastPanel.testDefault",
-                    makerArgs: ["{contrast}", "{that}.options.testOptions.expectedNumOfOptions", "{that}.options.testOptions.defaultValue"],
+                    listener: "fluid.tests.contrastPanel.testDefault",
+                    args: ["{contrast}", "{that}.options.testOptions.expectedNumOfOptions", "{that}.options.testOptions.defaultValue"],
                     spec: {priority: "last"},
                     event: "{contrast}.events.afterRender"
                 }, {
@@ -1215,10 +1210,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Test functions shared by text field slider unit tests
      *******************************************************************************/
     fluid.tests.testDefault = function (that) {
-        return function () {
-            var inputValue = that.container.find("input").val();
-            jqUnit.assertEquals("The default input value has been set to the min value", that.options.range.min, inputValue);
-        };
+        var inputValue = that.container.find("input").val();
+        jqUnit.assertEquals("The default input value has been set to the min value", that.options.range.min, inputValue);
     };
 
     fluid.tests.changeInput = function (textSlider, newValue) {
@@ -1260,8 +1253,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sequence: [{
                     func: "{textSize}.refreshView"
                 }, {
-                    listenerMaker: "fluid.tests.testDefault",
-                    makerArgs: ["{textSize}"],
+                    listener: "fluid.tests.testDefault",
+                    args: ["{textSize}"],
                     event: "{textSize}.events.afterRender"
                 }, {
                     func: "fluid.tests.changeInput",
@@ -1311,8 +1304,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sequence: [{
                     func: "{lineSpace}.refreshView"
                 }, {
-                    listenerMaker: "fluid.tests.testDefault",
-                    makerArgs: ["{lineSpace}"],
+                    listener: "fluid.tests.testDefault",
+                    args: ["{lineSpace}"],
                     event: "{lineSpace}.events.afterRender"
                 }, {
                     func: "fluid.tests.changeInput",
@@ -1335,9 +1328,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.checkboxListenerTester = function (message, expectedState, checkbox) {
-        return function () {
-            jqUnit[expectedState ? "assertTrue" : "assertFalse"](message, checkbox.is(":checked"));
-        };
+        jqUnit[expectedState ? "assertTrue" : "assertFalse"](message, checkbox.is(":checked"));
     };
 
     /*******************************************************************************
@@ -1377,8 +1368,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sequence: [{
                     func: "{layout}.refreshView"
                 }, {
-                    listenerMaker: "fluid.tests.checkboxListenerTester",
-                    makerArgs: ["The toc option is not checked by default", "{that}.options.testOptions.defaultInputStatus", "{layout}.dom.toc"],
+                    listener: "fluid.tests.checkboxListenerTester",
+                    args: ["The toc option is not checked by default", "{that}.options.testOptions.defaultInputStatus", "{layout}.dom.toc"],
                     event: "{layout}.events.afterRender"
                 }, {
                     func: "fluid.tests.changeCheckboxSelection",
@@ -1429,8 +1420,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sequence: [{
                     func: "{emphasizeLinks}.refreshView"
                 }, {
-                    listenerMaker: "fluid.tests.checkboxListenerTester",
-                    makerArgs: ["The inputs should be unchecked by default", "{that}.options.testOptions.defaultInputStatus", "{emphasizeLinks}.dom.links"],
+                    listener: "fluid.tests.checkboxListenerTester",
+                    args: ["The inputs should be unchecked by default", "{that}.options.testOptions.defaultInputStatus", "{emphasizeLinks}.dom.links"],
                     event: "{emphasizeLinks}.events.afterRender"
                 }, {
                     func: "fluid.tests.changeCheckboxSelection",
@@ -1481,8 +1472,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sequence: [{
                     func: "{inputsLarger}.refreshView"
                 }, {
-                    listenerMaker: "fluid.tests.checkboxListenerTester",
-                    makerArgs: ["The inputs should be unchecked by default", "{that}.options.testOptions.defaultInputStatus", "{inputsLarger}.dom.inputsLarger"],
+                    listener: "fluid.tests.checkboxListenerTester",
+                    args: ["The inputs should be unchecked by default", "{that}.options.testOptions.defaultInputStatus", "{inputsLarger}.dom.inputsLarger"],
                     event: "{inputsLarger}.events.afterRender"
                 }, {
                     func: "fluid.tests.changeCheckboxSelection",
@@ -1552,14 +1543,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.linksControlsPanel.testDefault = function (linksControlsPanel, expectedValue, expectedLabel) {
-        return function () {
-            var linksLabel = linksControlsPanel.locate("label").text();
-            jqUnit.assertEquals("The links control label is rendered correctly", expectedLabel, linksLabel);
-            var linksValue = linksControlsPanel.emphasizeLinks.locate("links").attr("checked");
-            jqUnit.assertEquals("The emphasizeLinks option is not checked by default", expectedValue, linksValue);
-            var inputsLargerValue = linksControlsPanel.inputsLarger.locate("inputsLarger").attr("checked");
-            jqUnit.assertEquals("The inputsLarger option is not checked by default", expectedValue, inputsLargerValue);
-        };
+        var linksLabel = linksControlsPanel.locate("label").text();
+        jqUnit.assertEquals("The links control label is rendered correctly", expectedLabel, linksLabel);
+        var linksValue = linksControlsPanel.emphasizeLinks.locate("links").attr("checked");
+        jqUnit.assertEquals("The emphasizeLinks option is not checked by default", expectedValue, linksValue);
+        var inputsLargerValue = linksControlsPanel.inputsLarger.locate("inputsLarger").attr("checked");
+        jqUnit.assertEquals("The inputsLarger option is not checked by default", expectedValue, inputsLargerValue);
     };
 
 
@@ -1577,8 +1566,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sequence: [{
                     func: "{linksControls}.refreshView"
                 }, {
-                    listenerMaker: "fluid.tests.linksControlsPanel.testDefault",
-                    makerArgs: ["{linksControls}", "{that}.options.testOptions.defaultInputStatus", "{linksControls}.options.strings.linksControlsLabel"],
+                    listener: "fluid.tests.linksControlsPanel.testDefault",
+                    args: ["{linksControls}", "{that}.options.testOptions.defaultInputStatus", "{linksControls}.options.strings.linksControlsLabel"],
                     event: "{linksControls}.events.afterRender"
                 }, {
                     func: "fluid.tests.changeCheckboxSelection",

@@ -57,7 +57,7 @@ var fluid_2_0 = fluid_2_0 || {};
      ***********************************************/
 
     fluid.defaults("fluid.prefs.panel", {
-        gradeNames: ["fluid.rendererComponent", "fluid.prefs.msgLookup", "fluid.prefs.modelRelay", "autoInit"],
+        gradeNames: ["fluid.rendererRelayComponent", "fluid.prefs.msgLookup", "autoInit"],
         events: {
             onDomBind: null
         },
@@ -75,10 +75,6 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.defaults("fluid.prefs.subPanel", {
         gradeNames: ["fluid.prefs.panel", "{that}.getDomBindGrade", "autoInit"],
-        mergePolicy: {
-            sourceApplier: "nomerge"
-        },
-        sourceApplier: "{compositePanel}.applier",
         listeners: {
             "{compositePanel}.events.afterRender": {
                 listener: "{that}.events.afterRender",
@@ -209,7 +205,6 @@ var fluid_2_0 = fluid_2_0 || {};
         selectorsToIgnore: [], // should match the selectors that are used to identify the containers for the subpanels
         repeatingSelectors: [],
         events: {
-            onRefreshView: null,
             initSubPanels: null
         },
         listeners: {
@@ -259,7 +254,7 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             handleRenderOnPreference: {
                 funcName: "fluid.prefs.compositePanel.handleRenderOnPreference",
-                args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+                args: ["{that}", "{that}.refreshView", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
             },
             conditionalCreateEvent: {
                 funcName: "fluid.prefs.compositePanel.conditionalCreateEvent"
@@ -334,7 +329,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
 
-    fluid.prefs.compositePanel.handleRenderOnPreference = function (that, value, createEvent, componentNames) {
+    fluid.prefs.compositePanel.handleRenderOnPreference = function (that, refreshViewFunc, value, createEvent, componentNames) {
         componentNames = fluid.makeArray(componentNames);
         that.conditionalCreateEvent(value, createEvent);
         fluid.each(componentNames, function (componentName) {
@@ -343,7 +338,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 comp.destroy();
             }
         });
-        that.refreshView();
+        refreshViewFunc();
     };
 
     fluid.prefs.compositePanel.creationEventName = function (pref) {
@@ -595,10 +590,6 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.defaults("fluid.prefs.prefsEditorConnections", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
-        mergePolicy: {
-            sourceApplier: "nomerge"
-        },
-        sourceApplier: "{fluid.prefs.prefsEditor}.applier",
         listeners: {
             "{fluid.prefs.prefsEditor}.events.onPrefsEditorRefresh": "{fluid.prefs.panel}.refreshView"
         },
@@ -636,28 +627,26 @@ var fluid_2_0 = fluid_2_0 || {};
             largeIcon: ".flc-prefsEditor-min-text-size-largeIcon",
             multiplier: ".flc-prefsEditor-multiplier"
         },
+        selectorsToIgnore: ["textSize"],
+        components: {
+            textSize: {
+                type: "fluid.textfieldSlider",
+                container: "{that}.dom.textSize",
+                createOnEvent: "afterRender",
+                options: {
+                    model: {
+                        value: "{fluid.prefs.panel.textSize}.model.textSize"
+                    },
+                    range: "{fluid.prefs.panel.textSize}.options.range",
+                    sliderOptions: "{fluid.prefs.panel.textSize}.options.sliderOptions"
+                }
+            }
+        },
         protoTree: {
             label: {messagekey: "textSizeLabel"},
             smallIcon: {messagekey: "textSizeSmallIcon"},
             largeIcon: {messagekey: "textSizeLargeIcon"},
-            multiplier: {messagekey: "multiplier"},
-            textSize: {
-                decorators: {
-                    type: "fluid",
-                    func: "fluid.textfieldSlider",
-                    options: {
-                        rules: {
-                            "textSize": "value"
-                        },
-                        model: {
-                            value: "{that}.model.textSize"
-                        },
-                        sourceApplier: "{that}.applier",
-                        range: "{that}.options.range",
-                        sliderOptions: "{that}.options.sliderOptions"
-                    }
-                }
-            }
+            multiplier: {messagekey: "multiplier"}
         },
         sliderOptions: {
             orientation: "horizontal",
@@ -739,28 +728,26 @@ var fluid_2_0 = fluid_2_0 || {};
             wideIcon: ".flc-prefsEditor-line-space-wideIcon",
             multiplier: ".flc-prefsEditor-multiplier"
         },
+        selectorsToIgnore: ["lineSpace"],
+        components: {
+            lineSpace: {
+                type: "fluid.textfieldSlider",
+                container: "{that}.dom.lineSpace",
+                createOnEvent: "afterRender",
+                options: {
+                    model: {
+                        value: "{fluid.prefs.panel.lineSpace}.model.lineSpace"
+                    },
+                    range: "{fluid.prefs.panel.lineSpace}.options.range",
+                    sliderOptions: "{fluid.prefs.panel.lineSpace}.options.sliderOptions"
+                }
+            }
+        },
         protoTree: {
             label: {messagekey: "lineSpaceLabel"},
             narrowIcon: {messagekey: "lineSpaceNarrowIcon"},
             wideIcon: {messagekey: "lineSpaceWideIcon"},
-            multiplier: {messagekey: "multiplier"},
-            lineSpace: {
-                decorators: {
-                    type: "fluid",
-                    func: "fluid.textfieldSlider",
-                    options: {
-                        rules: {
-                            "lineSpace": "value"
-                        },
-                        model: {
-                            value: "{that}.model.lineSpace"
-                        },
-                        sourceApplier: "{that}.applier",
-                        range: "{that}.options.range",
-                        sliderOptions: "{that}.options.sliderOptions"
-                    }
-                }
-            }
+            multiplier: {messagekey: "multiplier"}
         },
         sliderOptions: {
             orientation: "horizontal",
@@ -949,7 +936,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * A sub-component that decorates the options on the select dropdown list box with the css style
      */
     fluid.defaults("fluid.prefs.selectDecorator", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         listeners: {
             onCreate: "fluid.prefs.selectDecorator.decorateOptions"
         },

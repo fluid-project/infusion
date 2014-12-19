@@ -26,7 +26,7 @@ var fluid_2_0 = fluid_2_0 || {};
             expander: {
                 func: "fluid.prefs.builder.generateGrade",
                 args: ["prefsEditor", "{that}.options.auxSchema.namespace", {
-                    gradeNames: ["fluid.viewComponent", "autoInit", "fluid.prefs.assembler.prefsEd"],
+                    gradeNames: ["fluid.viewRelayComponent", "autoInit", "fluid.prefs.assembler.prefsEd"],
                     componentGrades: "{that}.options.constructedGrades"
                 }]
             }
@@ -35,7 +35,7 @@ var fluid_2_0 = fluid_2_0 || {};
             expander: {
                 func: "fluid.prefs.builder.generateGrade",
                 args: ["uie", "{that}.options.auxSchema.namespace", {
-                    gradeNames: ["fluid.viewComponent", "autoInit", "fluid.prefs.assembler.uie"],
+                    gradeNames: ["fluid.viewRelayComponent", "autoInit", "fluid.prefs.assembler.uie"],
                     componentGrades: "{that}.options.constructedGrades"
                 }]
             }
@@ -112,10 +112,10 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.defaults("fluid.prefs.assembler.prefsEd", {
-        gradeNames: ["autoInit", "fluid.viewComponent", "fluid.prefs.assembler.uie"],
+        gradeNames: ["autoInit", "fluid.viewRelayComponent", "fluid.prefs.assembler.uie"],
         components: {
             prefsEditorLoader: {
-                type: "fluid.viewComponent",
+                type: "fluid.viewRelayComponent",
                 container: "{fluid.prefs.assembler.prefsEd}.container",
                 priority: "last",
                 options: {

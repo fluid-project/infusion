@@ -25,7 +25,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("demo.prefsEditor.speakEnactor", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
             "demo.prefs.speak": {
                 "model.value": "default"
@@ -33,6 +33,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         model: {
             value: false
+        },
+        modelListeners: {
+            value: "{that}.handleSelfVoicing"
         },
         listeners: {
             "afterAnnounce.next": "{that}.announceNext",
@@ -76,14 +79,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         lang: "en"
     });
-
-    demo.prefsEditor.speakEnactor.finalInit = function (that) {
-        that.applier.modelChanged.addListener("value", function (newModel, oldModel) {
-            if (newModel.value !== oldModel.value) {
-                that.handleSelfVoicing();
-            }
-        });
-    };
 
     demo.prefsEditor.speakEnactor.handleSelfVoicing = function (that) {
         if (that.model.value) {

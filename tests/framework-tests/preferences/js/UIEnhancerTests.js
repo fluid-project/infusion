@@ -26,19 +26,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var emphasizeLinksClass = "fl-emphasize-links";
 
     fluid.defaults("fluid.uiEnhancer.customizedEnactors", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         components: {
             emphasizeLinks: {
                 type: "fluid.prefs.enactor.emphasizeLinks",
                 container: "{uiEnhancer}.container",
                 options: {
-                    gradeNames: "fluid.prefs.uiEnhancerConnections",
                     cssClass: emphasizeLinksClass,
-                    rules: {
-                        "emphasizeLinks": "value"
-                    },
                     model: {
-                        links: false
+                        value: "{uiEnhancer}.model.emphasizeLinks"
                     }
                 }
             }
@@ -80,13 +76,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "fluid.tests.testCustomizedEnactors",
                     args: ["{uiEnhancer}.container", "{that}.options.testOpts.cssClass", false]
                 }, {
-                    func: "{uiEnhancer}.applier.requestChange",
+                    func: "{uiEnhancer}.applier.change",
                     args: ["emphasizeLinks", true]
                 }, {
                     func: "fluid.tests.testCustomizedEnactors",
                     args: ["{uiEnhancer}.container", "{that}.options.testOpts.cssClass", true]
                 }, {
-                    func: "{uiEnhancer}.applier.requestChange",
+                    func: "{uiEnhancer}.applier.change",
                     args: ["emphasizeLinks", false]
                 }, {
                     func: "fluid.tests.testCustomizedEnactors",

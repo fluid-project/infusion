@@ -39,18 +39,14 @@ var fluid_2_0 = fluid_2_0 || {};
      ***********************************************/
 
     fluid.defaults("fluid.uiEnhancer", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         invokers: {
             updateModel: {
-                funcName: "fluid.uiEnhancer.updateModel",
-                args: ["{arguments}.0", "{uiEnhancer}.applier"]
+                func: "{that}.applier.change",
+                args: ["", "{arguments}.0"]
             }
         }
     });
-
-    fluid.uiEnhancer.updateModel = function (newModel, applier) {
-        applier.requestChange("", newModel);
-    };
 
     /********************************************************************************
      * PageEnhancer                                                                 *

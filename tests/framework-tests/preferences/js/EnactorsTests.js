@@ -24,10 +24,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Default css class: " + expectedCssClass, expectedCssClass, that.options.cssClass);
         jqUnit.assertEquals("Default - css class is not applied", undefined, elements.attr("class"));
 
-        that.applier.requestChange("value", true);
+        that.applier.change("value", true);
         jqUnit.assertEquals("True value - Css class has been applied", expectedCssClass, elements.attr("class"));
 
-        that.applier.requestChange("value", false);
+        that.applier.change("value", false);
         jqUnit.assertEquals("False value - Css class has been removed", "", elements.attr("class"));
     };
 
@@ -429,17 +429,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.makeTocVisibilityChecker = function (that, expectedTocLevels, tocContainer, isShown) {
-        return function () {
-            jqUnit.assertEquals("Table of contents has " + expectedTocLevels + " levels", expectedTocLevels, $(".flc-toc-tocContainer").children("ul").length);
-            jqUnit.assertEquals("The visibility of the table of contents is " + isShown, isShown, $(tocContainer).is(":visible"));
-        };
+        jqUnit.assertEquals("Table of contents has " + expectedTocLevels + " levels", expectedTocLevels, $(".flc-toc-tocContainer").children("ul").length);
+        jqUnit.assertEquals("The visibility of the table of contents is " + isShown, isShown, $(tocContainer).is(":visible"));
     };
 
     fluid.defaults("fluid.tests.tableOfContentsTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
-            trueValue: true,
-            falseValue: false,
             tocContainer: ".flc-toc-tocContainer",
             expectedNoTocLevels: 0,
             expectedTocLevelsAtTrue: 1
@@ -453,18 +449,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "fluid.tests.checkTocLevels",
                     args: ["{toc}", "{that}.options.testOptions.expectedNoTocLevels"]
                 }, {
-                    func: "{toc}.applier.requestChange",
-                    args: ["value", "{that}.options.testOptions.trueValue"]
+                    func: "{toc}.applier.change",
+                    args: ["toc", true]
                 }, {
-                    listenerMaker: "fluid.tests.makeTocVisibilityChecker",
-                    makerArgs: ["{toc}", "{that}.options.testOptions.expectedTocLevelsAtTrue", "{that}.options.testOptions.tocContainer", true],
+                    listener: "fluid.tests.makeTocVisibilityChecker",
+                    args: ["{toc}", "{that}.options.testOptions.expectedTocLevelsAtTrue", "{that}.options.testOptions.tocContainer", true],
                     event: "{toc}.events.afterTocRender"
                 }, {
-                    func: "{toc}.applier.requestChange",
-                    args: ["value", "{that}.options.testOptions.falseValue"]
+                    func: "{toc}.applier.change",
+                    args: ["toc", false]
                 }, {
-                    listenerMaker: "fluid.tests.makeTocVisibilityChecker",
-                    makerArgs: ["{toc}", "{that}.options.testOptions.expectedTocLevelsAtTrue", "{that}.options.testOptions.tocContainer", false],
+                    listener: "fluid.tests.makeTocVisibilityChecker",
+                    args: ["{toc}", "{that}.options.testOptions.expectedTocLevelsAtTrue", "{that}.options.testOptions.tocContainer", false],
                     event: "{toc}.events.onLateRefreshRelay"
                 }]
             }]

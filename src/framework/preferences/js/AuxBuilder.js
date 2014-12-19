@@ -120,7 +120,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.prefs.containerNeeded = function (root, path) {
         var componentType = fluid.get(root, [path, "type"]);
         var componentOptions = fluid.defaults(componentType);
-        return (fluid.hasGrade(componentOptions, "fluid.viewComponent") || fluid.hasGrade(componentOptions, "fluid.rendererComponent"));
+        return (fluid.hasGrade(componentOptions, "fluid.viewRelayComponent") || fluid.hasGrade(componentOptions, "fluid.rendererRelayComponent"));
     };
 
     fluid.prefs.checkPrimarySchema = function (primarySchema, prefKey) {
@@ -130,7 +130,7 @@ var fluid_2_0 = fluid_2_0 || {};
         return !!primarySchema;
     };
 
-    fluid.prefs.expandSchemaComponents = function (auxSchema, type, prefKey, componentConfig, index, commonOptions, mappedDefaults) {
+    fluid.prefs.expandSchemaComponents = function (auxSchema, type, prefKey, componentConfig, index, commonOptions, modelCommonOptions, mappedDefaults) {
         var componentOptions = fluid.copy(componentConfig) || {};
         var components = {};
         var rootModel = {};
@@ -162,8 +162,11 @@ var fluid_2_0 = fluid_2_0 || {};
                     if (internalPath.indexOf("model.") === 0) {
                         var internalModelName = internalPath.slice(6);
                         // Set up the binding in "rules" accepted by the modelRelay base grade of every panel
-                        fluid.set(opts, ["rules", flattenedPrefKey], internalModelName);
-                        fluid.set(opts, ["model", internalModelName], prefSchema[primaryPath]);
+                        fluid.set(opts, "model", fluid.get(opts, "model") || {});
+                        fluid.prefs.addCommonOptions(opts, "model", modelCommonOptions, {
+                            internalModelName: internalModelName,
+                            externalModelName: flattenedPrefKey
+                        });
                         fluid.set(rootModel, ["members", "rootModel", flattenedPrefKey], prefSchema[primaryPath]);
                     } else {
                         fluid.set(opts, internalPath, prefSchema[primaryPath]);
@@ -222,7 +225,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.prefs.expandCompositePanels = function (auxSchema, compositePanelList, panelIndex, panelCommonOptions, subPanelCommonOptions,
-        compositePanelBasedOnSubCommonOptions, mappedDefaults) {
+        compositePanelBasedOnSubCommonOptions, panelModelCommonOptions, mappedDefaults) {
         var panelsToIgnore = [];
 
         fluid.each(compositePanelList, function (compositeDetail, compositeKey) {
@@ -285,8 +288,11 @@ var fluid_2_0 = fluid_2_0 || {};
                         var opts;
                         if (internalPath.indexOf("model.") === 0) {
                             // Set up the binding in "rules" accepted by the modelRelay base grade of every panel
-                            fluid.set(compositePanelOptions, ["options", "rules", safeSubPanelPrefsKey], safeSubPanelPrefsKey);
-                            fluid.set(compositePanelOptions, ["options", "model", safeSubPanelPrefsKey], prefSchema[primaryPath]);
+                            fluid.set(compositePanelOptions, ["options", "model"], fluid.get(compositePanelOptions, ["options", "model"]) || {});
+                            fluid.prefs.addCommonOptions(compositePanelOptions, ["options", "model"], panelModelCommonOptions, {
+                                internalModelName: safeSubPanelPrefsKey,
+                                externalModelName: safeSubPanelPrefsKey
+                            });
                             fluid.set(rootModel, ["members", "rootModel", safeSubPanelPrefsKey], prefSchema[primaryPath]);
                         } else {
                             opts = opts || {options: {}};
@@ -351,7 +357,8 @@ var fluid_2_0 = fluid_2_0 || {};
         if (compositePanelList) {
             fluid.prefs.expandCompositePanels(auxSchema, compositePanelList, fluid.get(indexes, "panel"),
                 fluid.get(elementCommonOptions, "panel"), fluid.get(elementCommonOptions, "subPanel"),
-                fluid.get(elementCommonOptions, "compositePanelBasedOnSub"), mappedDefaults);
+                fluid.get(elementCommonOptions, "compositePanelBasedOnSub"), fluid.get(elementCommonOptions, "panelModel"),
+                mappedDefaults);
         }
 
         fluid.each(auxSchema, function (category, prefName) {
@@ -359,11 +366,13 @@ var fluid_2_0 = fluid_2_0 || {};
             var type = "panel";
             // Ignore the subpanels that are only for composing composite panels
             if (category[type] && $.inArray(prefName, auxSchema.panelsToIgnore) === -1) {
-                fluid.prefs.expandSchemaComponents(auxSchema, "panels", category.type, category[type], fluid.get(indexes, type), fluid.get(elementCommonOptions, type), mappedDefaults);
+                fluid.prefs.expandSchemaComponents(auxSchema, "panels", category.type, category[type], fluid.get(indexes, type),
+                    fluid.get(elementCommonOptions, type), fluid.get(elementCommonOptions, type + "Model"), mappedDefaults);
             }
             type = "enactor";
             if (category[type]) {
-                fluid.prefs.expandSchemaComponents(auxSchema, "enactors", category.type, category[type], fluid.get(indexes, type), fluid.get(elementCommonOptions, type), mappedDefaults);
+                fluid.prefs.expandSchemaComponents(auxSchema, "enactors", category.type, category[type], fluid.get(indexes, type),
+                    fluid.get(elementCommonOptions, type), fluid.get(elementCommonOptions, type + "Model"), mappedDefaults);
             }
 
             type = "template";
@@ -437,6 +446,9 @@ var fluid_2_0 = fluid_2_0 || {};
                 "options.gradeNames": "fluid.prefs.prefsEditorConnections",
                 "options.resources.template": "{templateLoader}.resources.%prefKey"
             },
+            panelModel: {
+                "%internalModelName": "{prefsEditor}.model.%externalModelName"
+            },
             compositePanelBasedOnSub: {
                 "%subPrefKey": "{templateLoader}.resources.%subPrefKey"
             },
@@ -444,8 +456,10 @@ var fluid_2_0 = fluid_2_0 || {};
                 "container": "{%compositePanel}.dom.%prefKey"
             },
             enactor: {
-                "options.gradeNames": "fluid.prefs.uiEnhancerConnections",
                 "container": "{uiEnhancer}.container"
+            },
+            enactorModel: {
+                "%internalModelName": "{uiEnhancer}.model.%externalModelName"
             }
         },
         indexes: {

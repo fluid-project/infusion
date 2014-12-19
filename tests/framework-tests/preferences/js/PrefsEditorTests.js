@@ -231,7 +231,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.expect(13);
 
             testPrefsEditor(function (prefsEditor) {
-                prefsEditor.updateModel(bwSkin);
+                prefsEditor.applier.change("", bwSkin);
 
                 jqUnit.assertFalse("Save hasn't been called", saveCalled);
                 prefsEditor.saveAndApply();
@@ -250,8 +250,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertNotEquals("Reset model text font", bwSkin.textFont, prefsEditor.options.textFont);
                 jqUnit.assertNotEquals("Reset model theme", bwSkin.theme, prefsEditor.options.theme);
 
-                prefsEditor.updateModel(bwSkin);
-                prefsEditor.updateModel(bwSkin2);
+                prefsEditor.applier.change("", bwSkin);
+                prefsEditor.applier.change("", bwSkin2);
 
                 prefsEditor.cancel();
                 jqUnit.assertEquals("Cancel text size change", bwSkin.textSize, prefsEditor.model.textSize);
@@ -266,12 +266,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.expect(5);
 
             testPrefsEditor(function (prefsEditor) {
-                prefsEditor.updateModel(bwSkin);
+                prefsEditor.applier.change("", bwSkin);
 
                 jqUnit.assertEquals("bw setting was set in the model", bwSkin.theme, prefsEditor.model.theme);
 
                 var uiEnhancerSettings = prefsEditor.getSettings();
-                jqUnit.assertUndefined("bw setting was not saved", uiEnhancerSettings.theme);
+                jqUnit.assertUndefined("bw setting was not saved", uiEnhancerSettings);
 
                 prefsEditor.events.onPrefsEditorRefresh.fire();
                 var fontSizeCtrl = $(".flc-prefsEditor-min-text-size");
@@ -397,10 +397,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             container: "{prefsEditor}.dom.textSize",
                             createOnEvent: "onPrefsEditorMarkupReady",
                             options: {
-                                sourceApplier: "{prefsEditor}.applier",
-                                rules: {
-                                    "textSize": "value"
-                                },
                                 listeners: {
                                     "{prefsEditor}.events.onPrefsEditorRefresh": "{that}.refreshView"
                                 },
@@ -419,11 +415,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                         type: "fluid.prefs.enactor.textSize",
                                         container: "{uiEnhancer}.container",
                                         options: {
-                                            gradeNames: "fluid.prefs.uiEnhancerConnections",
                                             fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
-                                            rules: {
-                                                "textSize": "value"
-                                            }
+                                            value: "{uiEnhancer}.model.textSize"
                                         }
                                     }
                                 }
@@ -524,7 +517,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             testPrefsEditor(function (prefsEditor) {
                 resetSaveCalled();
-                prefsEditor.updateModel(bwSkin);
+                prefsEditor.applier.change("", bwSkin);
                 jqUnit.assertTrue("Model has changed, auto-save changes", saveCalled);
 
                 var uiEnhancerSettings = prefsEditor.getSettings();
