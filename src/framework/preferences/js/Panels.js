@@ -92,12 +92,6 @@ var fluid_2_0 = fluid_2_0 || {};
                 args: ["{that}.options.preferenceMap"]
             }
         },
-        model: {
-            expander: {
-                func: "fluid.prefs.subPanel.getInitialModel",
-                args: ["{compositePanel}.model", "{that}.options.preferenceMap"]
-            }
-        },
         invokers: {
             refreshView: "{compositePanel}.refreshView",
             // resetDomBinder must fire the onDomBind event
@@ -164,18 +158,6 @@ var fluid_2_0 = fluid_2_0 || {};
             });
         });
         return rules;
-    };
-
-    fluid.prefs.subPanel.getInitialModel = function (parentModel, preferenceMap) {
-        var initialModel = {};
-        fluid.each(preferenceMap, function (prefObj, prefKey) {
-            $.each(prefObj, function (prefRule) {
-                if (prefRule.indexOf("model.") === 0) {
-                    fluid.set(initialModel, prefRule.slice(6), fluid.get(parentModel, fluid.prefs.subPanel.safePrefKey(prefKey)));
-                }
-            });
-        });
-        return initialModel;
     };
 
     /**********************************
@@ -305,6 +287,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.prefs.compositePanel.assembleDistributeOptions = function (components) {
         var gradeName = "fluid.prefs.compositePanel.distributeOptions_" + fluid.allocateGuid();
         var distributeRules = [];
+        var relayOption = {};
         $.each(components, function (componentName, componentOptions) {
             if (fluid.prefs.compositePanel.isPanel(componentOptions.type, componentOptions.options)) {
                 distributeRules.push({
@@ -312,13 +295,28 @@ var fluid_2_0 = fluid_2_0 || {};
                     target: "{that > " + componentName + "}.options"
                 });
             }
-        });
 
+            // Construct the model relay btw the composite panel and its subpanels
+            var componentRelayRules = {};
+            var preferenceMap = fluid.get(fluid.prefs.compositePanel.prefetchComponentOptions(componentOptions.type, componentOptions.options), ["preferenceMap"]);
+            fluid.each(preferenceMap, function (prefObj, prefKey) {
+                $.each(prefObj, function (prefRule) {
+                    if (prefRule.indexOf("model.") === 0) {
+                        fluid.set(componentRelayRules, prefRule.slice(6), "{compositePanel}.model." + fluid.prefs.subPanel.safePrefKey(prefKey));
+                    }
+                });
+            });
+            fluid.set(relayOption, [componentName], componentRelayRules);
+            distributeRules.push({
+                source: "{that}.options.relayOption." + componentName,
+                target: "{that > " + componentName + "}.options.model"
+            });
+        });
         fluid.defaults(gradeName, {
             gradeNames: ["fluid.littleComponent", "autoInit"],
+            relayOption: relayOption,
             distributeOptions: distributeRules
         });
-
         return gradeName;
     };
 
