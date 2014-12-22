@@ -236,7 +236,7 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             handleRenderOnPreference: {
                 funcName: "fluid.prefs.compositePanel.handleRenderOnPreference",
-                args: ["{that}", "{that}.refreshView", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+                args: ["{that}", "{that}.refreshView", "{that}.conditionalCreateEvent", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
             },
             conditionalCreateEvent: {
                 funcName: "fluid.prefs.compositePanel.conditionalCreateEvent"
@@ -327,9 +327,9 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
 
-    fluid.prefs.compositePanel.handleRenderOnPreference = function (that, refreshViewFunc, value, createEvent, componentNames) {
+    fluid.prefs.compositePanel.handleRenderOnPreference = function (that, refreshViewFunc, conditionalCreateEventFunc, value, createEvent, componentNames) {
         componentNames = fluid.makeArray(componentNames);
-        that.conditionalCreateEvent(value, createEvent);
+        conditionalCreateEventFunc(value, createEvent);
         fluid.each(componentNames, function (componentName) {
             var comp = that[componentName];
             if (!value && comp) {

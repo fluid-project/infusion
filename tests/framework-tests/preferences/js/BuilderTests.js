@@ -52,8 +52,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      ************************************************/
 
     fluid.tests.testparseAuxSchema = function (expected, funcArgs) {
-        var actualFitler = fluid.invokeGlobalFunction("fluid.prefs.builder.parseAuxSchema", funcArgs);
-        jqUnit.assertDeepEq("The schema should have been parsed correctly", expected, actualFitler);
+        var actualFilter = fluid.invokeGlobalFunction("fluid.prefs.builder.parseAuxSchema", funcArgs);
+        jqUnit.assertDeepEq("The schema should have been parsed correctly", expected, actualFilter);
     };
 
     fluid.defaults("fluid.tests.parseAuxSchema", {
@@ -675,7 +675,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /**************************
      * Composite Panels Tests *
      **************************/
-     
+
     fluid.setLogging(fluid.logLevel.TRACE);
 
     fluid.registerNamespace("fluid.tests.composite");
