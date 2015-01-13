@@ -359,8 +359,11 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.transformToAdapter = function (transform, targetPath) {
         var basedTransform = {};
-        basedTransform[targetPath] = transform;
-        return function (trans, newValue /*, sourceSegs, targetSegs */) {
+        basedTransform[targetPath] = transform; // TODO: Faulty with respect to escaping rules
+        return function (trans, newValue, sourceSegs, targetSegs, changeRequest) {
+            if (changeRequest && changeRequest.type === "DELETE") {
+                trans.fireChangeRequest({type: "DELETE", path: targetPath}); // avoid mouse droppings in target document for FLUID-5585
+            }
             // TODO: More efficient model that can only run invalidated portion of transform (need to access changeMap of source transaction)
             fluid.model.transformWithRules(newValue, basedTransform, {finalApplier: trans});
         };
@@ -474,9 +477,14 @@ var fluid_2_0 = fluid_2_0 || {};
                     // TODO: This is just for safety but is still unusual and now abused. The transducer doesn't need the "newValue" since all the transform information
                     // has been baked into the transform document itself. However, we now rely on this special signalling value to make sure we regenerate transforms in 
                     // the "forwardAdapter"
-                    transducer(existing.transaction, options.sourceApplier ? undefined : newValue, sourceSegs, targetSegs);
-                } else if (newValue !== undefined) {
-                    existing.transaction.fireChangeRequest({type: "ADD", segs: targetSegs, value: newValue});
+                    transducer(existing.transaction, options.sourceApplier ? undefined : newValue, sourceSegs, targetSegs, changeRequest);
+                } else {
+                    if (!options.noRelayDeletesDirect && newValue === undefined && changeRequest && changeRequest.type === "DELETE") {
+                        existing.transaction.fireChangeRequest({type: "DELETE", segs: targetSegs});
+                    }
+                    if (newValue !== undefined) {
+                        existing.transaction.fireChangeRequest({type: "ADD", segs: targetSegs, value: newValue});
+                    }
                 }
             }
         };
@@ -628,12 +636,13 @@ var fluid_2_0 = fluid_2_0 || {};
         }
         var forwardCond = fluid.model.parseRelayCondition(mrrec.forward), backwardCond = fluid.model.parseRelayCondition(mrrec.backward);
         var transformPackage = fluid.makeTransformPackage(that, transform, parsedSource.path, parsedTarget.path, forwardCond, backwardCond);
-        if (transformPackage.refCount === 0) {
+        var noRelayDeletes = {noRelayDeletesDirect : true}; // DELETE relay is handled in the transducer itself
+        if (transformPackage.refCount === 0) { // TODO: Why on earth is this a useful criterion - presumably related to "implicitOptions" above
             // This first call binds changes emitted from the relay ends to each other, synchronously
             fluid.connectModelRelay(parsedSource.that || that, parsedSource.modelSegs, parsedTarget.that, parsedTarget.modelSegs, {
                 forwardAdapter: transformPackage.forwardAdapter,
                 backwardAdapter: transformPackage.backwardAdapter
-            });
+            }, noRelayDeletes);
         } else {
             // This second call binds changes emitted from the relay document itself onto the relay ends (using the "half-transactional system")
             fluid.connectModelRelay(parsedSource.that || that, parsedSource.modelSegs, parsedTarget.that, parsedTarget.modelSegs, transformPackage);
@@ -648,6 +657,7 @@ var fluid_2_0 = fluid_2_0 || {};
             if (parsed.segs[0] === "model") {
                 var modelSegs = parsed.segs.slice(1);
                 ++options.refCount;
+                options.relayDeletesDirect = true;
                 fluid.connectModelRelay(that, segs, target, modelSegs, options);
             } else {
                 value = fluid.getForComponent(target, parsed.segs);
@@ -912,11 +922,12 @@ var fluid_2_0 = fluid_2_0 || {};
     /** Convenience method to fire a change event to a specified applier, including
      * a supplied "source" identified (perhaps for use with addSourceGuardedListener)
      */
-    fluid.fireSourcedChange = function (applier, path, value, source) {
+    fluid.fireSourcedChange = function (applier, path, value, source, type) {
         applier.fireChangeRequest({
             path: path,
             value: value,
-            source: source
+            source: source,
+            type: type
         });
     };
 

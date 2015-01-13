@@ -1534,7 +1534,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             apply: function (noThis, args) {
                 var parsed = fluid.parseValidModelReference(that, "changePath listener record", record.changePath);
                 var value = fluid.expandOptions(record.value, that, {}, {"arguments": args});
-                fluid.fireSourcedChange(parsed.applier, parsed.path, value, record.source);
+                fluid.fireSourcedChange(parsed.applier, parsed.path, value, record.source, record.type);
             }
         };
     };
@@ -1542,7 +1542,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     // Convert "exotic records" into an applicable form ("this/method" for FLUID-4878 or "changePath" for FLUID-3674)
     // unsupported, non-API function
     fluid.recordToApplicable = function (record, that) {
-        if (record.changePath) {
+        if (record.changePath !== undefined) {
             return fluid.changeToApplicable(record, that);
         }
         var recthis = record["this"];

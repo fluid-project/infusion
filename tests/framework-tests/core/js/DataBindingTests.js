@@ -1959,15 +1959,56 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.applier.change("value", 42);
         jqUnit.assertEquals("Relay must be established", 42, that.sub.model.root.value);
     });
+    
+    fluid.registerNamespace("fluid.tests.fluid5585");
+    
+    fluid.tests.fluid5585fixtures = {
+        case0: undefined,
+        case1: {
+            a: true,
+            b: true,
+            c: {
+                d: true
+            }
+        },
+        case2: {
+            a: true,
+            b: true,
+            c: {}
+        },
+        case3: {
+            a: true
+        }
+    };
+    
+    fluid.defaults("fluid.tests.fluid5585.explicitRelay", {
+        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        modelRelay: {
+            source: "{that}.model",
+            target: "{root}.model.subModel",
+            singleTransform: {
+                type: "fluid.identity"
+            }
+        }
+    });
 
-    /* FLUID-5585:  Removal from the model is not relayed when using "fluid.transforms.free" */
-    fluid.defaults("fluid.tests.fluid5585root", {
+    fluid.defaults("fluid.tests.fluid5585.implicitRelay", {
+        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        model: "{root}.model.subModel"
+    });
+
+    /* FLUID-5585:  Removal from the model is not relayed in any case*/
+    fluid.defaults("fluid.tests.fluid5585.root", {
         gradeNames: ["fluid.standardRelayComponent", "autoInit"],
         members: {
-            relayedModelValue: null
+            relayedModelValue: null,
+            initialModelValue: {
+                a: true,
+                b: true
+            }
         },
         model: {
-            subModel: null
+            subModel: "{that}.initialModelValue"
         },
         modelListeners: {
             "subModel": {
@@ -1979,20 +2020,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             sub: {
                 type: "fluid.standardRelayComponent",
                 options: {
-                    members: {
-                        initialModelValue: {
-                            a: true,
-                            b: true
-                        }
-                    },
-                    model: "{that}.initialModelValue",
-                    modelRelay: {
-                        source: "{that}.model",
-                        target: "{fluid5585root}.model.subModel",
-                        singleTransform: {
-                            type: "fluid.transforms.free",
-                            func: "fluid.identity",
-                            args: ["{that}.model"]
+                    listeners: {
+                        onCreate: { // Do this in onCreate so we can test implicit relay separately
+                            changePath: "",
+                            value: "{root}.initialModelValue"
                         }
                     }
                 }
@@ -2000,37 +2031,68 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.fluid5585VerifyRelay = function (that, testCases) {
+    fluid.tests.fluid5585.verifyRelay = function (gradeName, that, testCases) {
         fluid.each(testCases, function (newModel, caseName) {
+            that.sub.applier.fireChangeRequest({path: "", type: "DELETE"});
             that.sub.applier.change("", newModel);
-            jqUnit.assertDeepEq("The new model value has been relayed properly for " + caseName, newModel, that.relayedModelValue);
+            jqUnit.assertDeepEq(gradeName + ": the new model value has been relayed properly for " + caseName, newModel, that.relayedModelValue);
+        });
+    };
+    
+    fluid.tests.fluid5585.runOneConfiguration = function (gradeName) {
+        jqUnit.test("FLUID-5585 - " + gradeName + ": model relay for removing all or part of source value nodes", function () {
+            jqUnit.expect(6);
+    
+            var that = fluid.tests.fluid5585.root({
+                components: {
+                    sub: {
+                        options: {
+                            gradeNames: gradeName
+                        }
+                    }
+                }
+            });
+            jqUnit.assertDeepEq(gradeName + ": the initial model value on the source component is set correctly", that.initialModelValue, that.sub.model);
+            jqUnit.assertDeepEq(gradeName + ": the initial model value on the target component is set correctly", that.initialModelValue, that.model.subModel);
+            fluid.tests.fluid5585.verifyRelay(gradeName, that, fluid.tests.fluid5585fixtures);
         });
     };
 
-    jqUnit.test("FLUID-5585: model relay for removing all or part of source value nodes", function () {
-        jqUnit.expect(3);
 
-        var testCases = {
-            case1: {
-                a: true,
-                b: true,
-                c: {
-                    d: true
-                }
-            },
-            case2: {
-                a: true,
-                b: true,
-                c: {}
-            },
-            case3: {
-                a: true
+    fluid.tests.fluid5585.runOneConfiguration("fluid.tests.fluid5585.explicitRelay");
+    fluid.tests.fluid5585.runOneConfiguration("fluid.tests.fluid5585.implicitRelay");
+
+    /* FLUID-5586: change records of type DELETE and root path */
+    fluid.defaults("fluid.tests.fluid5586root", {
+        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        model: 973,
+        listeners: {
+            onCreate: {
+                changePath: "",
+                type: "DELETE"
             }
         }
-        var that = fluid.tests.fluid5585root();
-        jqUnit.assertDeepEq("The initial model value on the source component is set correctly", that.sub.initialModelValue, that.sub.model);
-        jqUnit.assertDeepEq("The initial model value on the target component is set correctly", that.sub.initialModelValue, that.model.subModel);
-        fluid.tests.fluid5585VerifyRelay(that, testCases);
+    });
+    
+    /* FLUID-5586: change records of type DELETE */
+    fluid.defaults("fluid.tests.fluid5586root2", {
+        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        model: {
+            initialValue: "CRATON CHATON"
+        },
+        listeners: {
+            onCreate: {
+                changePath: "initialValue",
+                type: "DELETE"
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-5586 - Support for all kinds of changes as change records", function () {
+        var that = fluid.tests.fluid5586root();
+        jqUnit.assertDeepEq("Model should have been deleted on startup", undefined, that.model); // We can't achieve utter deletion of model due to copying model
+        var that2 = fluid.tests.fluid5586root2();
+        jqUnit.assertFalse("Property should have been deleted on startup", "initialValue" in that2.model);
     });
 
 })(jQuery);
