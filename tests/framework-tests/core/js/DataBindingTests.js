@@ -1040,20 +1040,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         fluid.tests.assertTransactionsConcluded(that);
     });
-    
+
     /** FLUID-5361 listener order notification test **/
-    
+
     fluid.tests.priorityRecorder = function (that, priority) {
         that.priorityLog.push(priority);
     };
-    
+
     fluid.tests.recordAndDestroy = function (head, priority, that) {
         head.priorityLog.push(priority);
         if (head.destroyNow) {
             that.applier.modelChanged.removeListener("priority2");
         }
     };
-    
+
     fluid.defaults("fluid.tests.fluid5361head", {
         gradeNames: ["fluid.tests.fluid5024head", "autoInit"],
         members: {
@@ -1111,7 +1111,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-    
+
     fluid.defaults("fluid.tests.fluid5361destroyingHead", {
         gradeNames: ["fluid.tests.fluid5361head", "autoInit"],
         invokers: {
@@ -1125,7 +1125,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.child1.applier.change("celsius", 25);
         var expected = [2, 2, 1, 1, "last", "last"];
         jqUnit.assertDeepEq("Model notifications globally sorted by priority", expected, that.priorityLog);
-        
+
         var that2 = fluid.tests.fluid5361destroyingHead();
         that2.priorityLog = [];
         that2.destroyNow = true;
@@ -1312,15 +1312,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var expected = {pageIndex: 0, pageSize: 10, totalRange: 75, pageCount: 8};
         jqUnit.assertDeepEq("pageCount computed correctly on init", expected, that.model);
         fluid.tests.assertTransactionsConcluded(that);
-        
+
         that.applier.change("pageIndex", -1);
         jqUnit.assertDeepEq("pageIndex clamped to 0", expected, that.model);
         fluid.tests.assertTransactionsConcluded(that);
-        
+
         that.applier.change("pageIndex", -1);
         jqUnit.assertDeepEq("pageIndex clamped to 0 second time", expected, that.model);
         fluid.tests.assertTransactionsConcluded(that);
-        
+
         that.applier.change("pageIndex", 8);
         var expected2 = {pageIndex: 7, pageSize: 10, totalRange: 75, pageCount: 8};
         jqUnit.assertDeepEq("pageIndex clamped to pageCount - 1", expected2, that.model);
@@ -1516,11 +1516,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /** FLUID-5358 - Use of arbitrary functions and fluid.transforms.identity **/
-    
+
     fluid.tests.fluid5358Multiply = function (a) {
         return a * 2;
     };
-    
+
     fluid.defaults("fluid.tests.fluid5358root", {
         gradeNames: ["fluid.standardRelayComponent", "autoInit"],
         model: {
@@ -1547,7 +1547,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-    
+
     jqUnit.test("FLUID-5358: Use of arbitrary functions for relay and fluid.transforms.identity", function () {
         var that = fluid.tests.fluid5358root();
         jqUnit.assertEquals("Transformed using free multiply", 2, that.sub.model.multipliedValue);
@@ -1599,9 +1599,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.assertDeepEq("The input model is merged with the default model", expectedModel, that.model);
     });
-    
+
     // FLUID-5371: Model relay directive "forward" and "backward"
-    
+
     fluid.defaults("fluid.tests.fluid5371root", {
         gradeNames: ["fluid.standardRelayComponent", "autoInit"],
         model: {
@@ -1634,32 +1634,32 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }]
     });
-    
+
     jqUnit.test("FLUID-5371: Model relay directives \"forward\" and \"backward\"", function () {
         var that = fluid.tests.fluid5371root();
         jqUnit.assertEquals("Forward init relay with backward never", 3, that.model.forwardOnlyTarget);
         that.applier.change("forwardOnly", 4);
         jqUnit.assertEquals("Forward live relay with backward never", 4, that.model.forwardOnlyTarget);
-        
+
         that.applier.change("forwardOnlyTarget", 4.5);
         jqUnit.assert("No backward live relay with backward never", 4, that.model.forwardOnly);
 
         jqUnit.assertEquals("Backward init relay with forward never", 5, that.model.backwardOnlySource);
         that.applier.change("backwardOnly", 6);
         jqUnit.assert("Backward live relay with forward never", 6, that.model.backwardOnlySource);
-        
+
         that.applier.change("backwardOnlySource", 6.5);
         jqUnit.assert("No forward live relay with forward never", 6, that.model.backwardOnly);
-        
+
         jqUnit.assertEquals("No init relay with liveOnly forward", undefined, that.model.liveOnlyTarget);
         that.applier.change("liveOnly", 8);
         jqUnit.assertEquals("Forward relay with liveOnly forward", 8, that.model.liveOnlyTarget);
         that.applier.change("liveOnlyTarget", 9);
         jqUnit.assertEquals("Backward relay with liveOnly forward", 9, that.model.liveOnly);
     });
-    
+
     // FLUID-5489: Avoid all cases of notifying listeners of changes which are null from their point of view
-    
+
     fluid.tests.fluid5489diff = [ {
         modela: undefined,
         modelb: "thing",
@@ -1770,7 +1770,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     }
     ];
-    
+
     jqUnit.test("FLUID-5489: Test fluid.model.diff", function () {
         fluid.each(fluid.tests.fluid5489diff, function (fixture, index) {
             var options = {
@@ -1787,7 +1787,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.recordFire = function (that, value) {
         that.fireRecord.push(value);
     };
-    
+
     fluid.defaults("fluid.tests.fluid5489root", {
         gradeNames: ["fluid.standardRelayComponent", "autoInit"],
         model: {},
@@ -1802,14 +1802,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    
+
     jqUnit.test("FLUID-5489: Do not notify null changes for listeners to overbroad", function () {
         var that = fluid.tests.fluid5489root();
         jqUnit.assertDeepEq("No firings for no change of member during init", [], that.fireRecord);
     });
-    
+
     // FLUID-5490: New source guarding for changes
-    
+
     fluid.defaults("fluid.tests.fluid5490root", {
         gradeNames: ["fluid.standardRelayComponent", "autoInit"],
         model: {},
@@ -1852,7 +1852,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-    
+
     jqUnit.test("FLUID-5490: Inclusion and exclusion of sources for model listeners", function () {
         var that = fluid.tests.fluid5490root();
         var expected = ["includeInit", "excludeRelay", "excludeLocal"];
@@ -1866,9 +1866,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.child.applier.change("innerPath2", "value2");
         jqUnit.assertDeepEq("Correct firing record after relay change", expected3, that.fireRecord);
     });
-    
+
     // FLUID-5479: Compound values for valueMapper transform - example from metadata editor
-    
+
     fluid.defaults("fluid.tests.fluid5479root", {
         gradeNames: ["fluid.standardRelayComponent", "autoInit"],
         model: {
@@ -1913,7 +1913,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }]
     });
-    
+
     jqUnit.test("FLUID-5479: Model relay with compound valueMapper values - metadata editor example", function () {
         var that = fluid.tests.fluid5479root();
         var expectedInitial = {
@@ -1932,7 +1932,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.applier.change("flashingRender", "unknown");
         jqUnit.assertDeepEq("Propagated unknown to upstream model", [], that.model.accessibilityHazard);
     });
-    
+
     fluid.defaults("fluid.tests.fluid5504root", {
         gradeNames: ["fluid.standardRelayComponent", "autoInit"],
         listeners: {
@@ -1959,5 +1959,78 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.applier.change("value", 42);
         jqUnit.assertEquals("Relay must be established", 42, that.sub.model.root.value);
     });
-    
+
+    /* FLUID-5585:  Removal from the model is not relayed when using "fluid.transforms.free" */
+    fluid.defaults("fluid.tests.fluid5585root", {
+        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        members: {
+            relayedModelValue: null
+        },
+        model: {
+            subModel: null
+        },
+        modelListeners: {
+            "subModel": {
+                listener: "fluid.set",
+                args: ["{that}", "relayedModelValue", "{change}.value"]
+            }
+        },
+        components: {
+            sub: {
+                type: "fluid.standardRelayComponent",
+                options: {
+                    members: {
+                        initialModelValue: {
+                            a: true,
+                            b: true
+                        }
+                    },
+                    model: "{that}.initialModelValue",
+                    modelRelay: {
+                        source: "{that}.model",
+                        target: "{fluid5585root}.model.subModel",
+                        singleTransform: {
+                            type: "fluid.transforms.free",
+                            func: "fluid.identity",
+                            args: ["{that}.model"]
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid5585VerifyRelay = function (that, testCases) {
+        fluid.each(testCases, function (newModel, caseName) {
+            that.sub.applier.change("", newModel);
+            jqUnit.assertDeepEq("The new model value has been relayed properly for " + caseName, newModel, that.relayedModelValue);
+        });
+    };
+
+    jqUnit.test("FLUID-5585: model relay for removing all or part of source value nodes", function () {
+        jqUnit.expect(3);
+
+        var testCases = {
+            case1: {
+                a: true,
+                b: true,
+                c: {
+                    d: true
+                }
+            },
+            case2: {
+                a: true,
+                b: true,
+                c: {}
+            },
+            case3: {
+                a: true
+            }
+        }
+        var that = fluid.tests.fluid5585root();
+        jqUnit.assertDeepEq("The initial model value on the source component is set correctly", that.sub.initialModelValue, that.sub.model);
+        jqUnit.assertDeepEq("The initial model value on the target component is set correctly", that.sub.initialModelValue, that.model.subModel);
+        fluid.tests.fluid5585VerifyRelay(that, testCases);
+    });
+
 })(jQuery);
