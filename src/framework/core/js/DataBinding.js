@@ -657,7 +657,6 @@ var fluid_2_0 = fluid_2_0 || {};
             if (parsed.segs[0] === "model") {
                 var modelSegs = parsed.segs.slice(1);
                 ++options.refCount;
-                options.relayDeletesDirect = true;
                 fluid.connectModelRelay(that, segs, target, modelSegs, options);
             } else {
                 value = fluid.getForComponent(target, parsed.segs);
