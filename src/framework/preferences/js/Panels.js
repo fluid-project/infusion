@@ -133,7 +133,8 @@ var fluid_2_0 = fluid_2_0 || {};
      * this is all done, the onDomBind event is fired.
      */
     fluid.prefs.subPanel.resetDomBinder = function (that) {
-        that.container = $(that.container.selector);
+        var userJQuery = that.container.constructor;
+        that.container = userJQuery(that.container.selector);
         fluid.initDomBinder(that, that.options.selectors);
         that.events.onDomBind.fire(that);
     };
