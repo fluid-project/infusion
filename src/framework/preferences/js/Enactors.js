@@ -27,6 +27,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.defaults("fluid.prefs.enactor.styleElements", {
         gradeNames: ["fluid.prefs.enactor", "autoInit"],
         cssClass: null,  // Must be supplied by implementors
+        elementsToStyle: null,  // Must be supplied by implementors
         invokers: {
             applyStyle: {
                 funcName: "fluid.prefs.enactor.styleElements.applyStyle",
@@ -38,12 +39,9 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             handleStyle: {
                 funcName: "fluid.prefs.enactor.styleElements.handleStyle",
-                args: ["{arguments}.0", {expander: {func: "{that}.getElements"}}, "{that}.options.cssClass", "{that}.applyStyle", "{that}.resetStyle"],
+                args: ["{arguments}.0", "{that}.options.elementsToStyle", "{that}.options.cssClass", "{that}.applyStyle", "{that}.resetStyle"],
                 dynamic: true
-            },
-
-            // Must be supplied by implementors
-            getElements: "fluid.prefs.enactor.getElements"
+            }
         },
         modelListeners: {
             value: {
@@ -138,17 +136,8 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         },
         cssClass: null,  // Must be supplied by implementors
-        invokers: {
-            getElements: {
-                funcName: "fluid.prefs.enactor.emphasizeLinks.getLinks",
-                args: "{that}.container"
-            }
-        }
+        elementsToStyle: "{that}.container"
     });
-
-    fluid.prefs.enactor.emphasizeLinks.getLinks = function (container) {
-        return $("a", container);
-    };
 
     /*******************************************************************************
      * inputsLarger
@@ -165,17 +154,8 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         },
         cssClass: null,  // Must be supplied by implementors
-        invokers: {
-            getElements: {
-                funcName: "fluid.prefs.enactor.inputsLarger.getInputs",
-                args: "{that}.container"
-            }
-        }
+        elementsToStyle: "{that}.container"
     });
-
-    fluid.prefs.enactor.inputsLarger.getInputs = function (container) {
-        return $("input, button", container);
-    };
 
     /*******************************************************************************
      * textFont
@@ -434,67 +414,15 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.prefs.enactor.tableOfContents.applyToc = function (value, that) {
-        var async = false;
         if (value) {
             if (that.tableOfContents) {
                 that.tableOfContents.show();
             } else {
                 that.events.onCreateTOCReady.fire();
-                async = true;
             }
-        } else {
-            if (that.tableOfContents) {
-                that.tableOfContents.hide();
-            }
-        }
-        if (!async) {
-            that.events.onLateRefreshRelay.fire(that);
+        } else if (that.tableOfContents) {
+            that.tableOfContents.hide();
         }
     };
-
-    /*******************************************************************************
-     * The demands blocks that hook up tableOfContents enactor with other enactors
-     * which need to re-apply their actions on the links inside table of contents
-     *******************************************************************************/
-
-    fluid.defaults("fluid.prefs.tocWithEmphasizeLinks", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
-        listeners: {
-            afterTocRender: {
-                listener: "{uiEnhancer}.emphasizeLinks.handleStyle",
-                args: "{uiEnhancer}.model.links"
-            },
-            onLateRefreshRelay: {
-                listener: "{uiEnhancer}.emphasizeLinks.handleStyle",
-                args: "{uiEnhancer}.model.links"
-            }
-        }
-    });
-
-    fluid.defaults("fluid.prefs.tocWithInputsLarger", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
-        listeners: {
-            afterTocRender: {
-                listener: "{uiEnhancer}.inputsLarger.handleStyle",
-                args: "{uiEnhancer}.model.inputsLarger"
-            },
-            onLateRefreshRelay: {
-                listener: "{uiEnhancer}.inputsLarger.handleStyle",
-                args: "{uiEnhancer}.model.inputsLarger"
-            }
-        }
-    });
-
-    fluid.demands("fluid.prefs.enactor.tableOfContents", "fluid.prefs.enactor.emphasizeLinks", {
-        options: {
-            gradeNames: "fluid.prefs.tocWithEmphasizeLinks"
-        }
-    });
-
-    fluid.demands("fluid.prefs.enactor.tableOfContents", "fluid.prefs.enactor.inputsLarger", {
-        options: {
-            gradeNames: "fluid.prefs.tocWithInputsLarger"
-        }
-    });
 
 })(jQuery, fluid_2_0);

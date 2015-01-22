@@ -17,18 +17,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests");
 
-    fluid.tests.testStyle = function (that, container, expectedDefaultFlag, expectedCssClass) {
-        var elements = that.getElements();
+    fluid.tests.containSubstring = function (string, subString) {
+        if (!string || string.indexOf(subString) === -1) {
+            return false;
+        } else {
+            return true;
+        }
+    };
+
+    fluid.tests.testStyle = function (that, expectedDefaultFlag, expectedCssClass) {
+        var elements = that.options.elementsToStyle;
 
         jqUnit.assertEquals("Default value: " + expectedDefaultFlag, expectedDefaultFlag, that.model.value);
-        jqUnit.assertEquals("Default css class: " + expectedCssClass, expectedCssClass, that.options.cssClass);
-        jqUnit.assertEquals("Default - css class is not applied", undefined, elements.attr("class"));
+        jqUnit.assertEquals("Css class to be applied or removed: " + expectedCssClass, expectedCssClass, that.options.cssClass);
+
+        jqUnit.assertFalse("Default - css class is not applied", fluid.tests.containSubstring(elements.attr("class"), expectedCssClass));
 
         that.applier.change("value", true);
-        jqUnit.assertEquals("True value - Css class has been applied", expectedCssClass, elements.attr("class"));
+        jqUnit.assertTrue("True value - Css class has been applied", fluid.tests.containSubstring(elements.attr("class"), expectedCssClass));
 
         that.applier.change("value", false);
-        jqUnit.assertEquals("False value - Css class has been removed", "", elements.attr("class"));
+        jqUnit.assertFalse("False value - Css class has been removed", fluid.tests.containSubstring(elements.attr("class"), expectedCssClass));
     };
 
     /*******************************************************************************
@@ -45,10 +54,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.prefs.enactor.styleElements",
                 options: {
                     cssClass: "fl-style-test",
-                    invokers: {
-                        getElements: {
+                    elementsToStyle: {
+                        expander: {
                             funcName: "fluid.tests.getElements",
-                            args: ".flc-styleElements"
+                            args: "{styleElementsTests}.options.container"
                         }
                     },
                     model: {
@@ -75,7 +84,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Apply and reset the style",
                 type: "test",
                 func: "fluid.tests.testStyle",
-                args: ["{styleElements}", "{fluid.tests.styleElementsTests}.options.container", "{fluid.tests.styleElementsTests}.options.expectedDefaultFlag", "{fluid.tests.styleElementsTests}.options.expectedCssClass"]
+                args: ["{styleElements}", "{fluid.tests.styleElementsTests}.options.expectedDefaultFlag", "{fluid.tests.styleElementsTests}.options.expectedCssClass"]
             }]
         }]
     });
@@ -115,7 +124,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Apply and reset emphasized links",
                 type: "test",
                 func: "fluid.tests.testStyle",
-                args: ["{emphasizeLinks}", "{fluid.tests.emphasizeLinksTests}.options.container", "{fluid.tests.emphasizeLinksTests}.options.expectedDefaultFlag", "{fluid.tests.emphasizeLinksTests}.options.expectedEmphasizeLinksClass"]
+                args: ["{emphasizeLinks}", "{fluid.tests.emphasizeLinksTests}.options.expectedDefaultFlag", "{fluid.tests.emphasizeLinksTests}.options.expectedEmphasizeLinksClass"]
             }]
         }]
     });
@@ -155,7 +164,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Apply and reset larger inputs",
                 type: "test",
                 func: "fluid.tests.testStyle",
-                args: ["{inputsLarger}", "{fluid.tests.inputsLargerTests}.options.container", "{fluid.tests.inputsLargerTests}.options.expectedDefaultFlag", "{fluid.tests.inputsLargerTests}.options.expectedInputsLargerClass"]
+                args: ["{inputsLarger}", "{fluid.tests.inputsLargerTests}.options.expectedDefaultFlag", "{fluid.tests.inputsLargerTests}.options.expectedInputsLargerClass"]
             }]
         }]
     });
@@ -459,9 +468,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "{toc}.applier.change",
                     args: ["toc", false]
                 }, {
-                    listener: "fluid.tests.makeTocVisibilityChecker",
-                    args: ["{toc}", "{that}.options.testOptions.expectedTocLevelsAtTrue", "{that}.options.testOptions.tocContainer", false],
-                    event: "{toc}.events.onLateRefreshRelay"
+                    func: "fluid.tests.makeTocVisibilityChecker",
+                    args: ["{toc}", "{that}.options.testOptions.expectedTocLevelsAtTrue", "{that}.options.testOptions.tocContainer", false]
                 }]
             }]
         }]
