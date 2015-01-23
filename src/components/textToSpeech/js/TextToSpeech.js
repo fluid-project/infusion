@@ -48,7 +48,10 @@ var fluid_2_0 = fluid_2_0 || {};
             onboundary: "{that}.events.boundary.fire"
         },
         invokers: {
-            speak: "fluid.textToSpeech.speak",
+            speak: {
+                funcName: "fluid.textToSpeech.speak",
+                args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+            },
             cancel: {
                 "this": "speechSynthesis",
                 "method": "cancel"
