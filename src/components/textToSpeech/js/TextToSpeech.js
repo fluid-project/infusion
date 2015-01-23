@@ -87,8 +87,8 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-    fluid.textToSpeech.speak = function (that, text, interupt, options) {
-        if (interupt) {
+    fluid.textToSpeech.speak = function (that, text, interrupt, options) {
+        if (interrupt) {
             that.cancel();
         }
 
