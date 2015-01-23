@@ -19,6 +19,10 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.registerNamespace("fluid.textToSpeech");
 
+    fluid.textToSpeech.isSupported = function () {
+        return !!(window && window.speechSynthesis);
+    };
+
     fluid.defaults("fluid.textToSpeech", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         events: {
