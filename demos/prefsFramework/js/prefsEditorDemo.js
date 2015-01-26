@@ -22,22 +22,8 @@ var demo = demo || {};
 
     fluid.registerNamespace("demo.prefsEditor");
 
-    // Progressive Enhancement checks
-    demo.isChrome = function () {
-        return !!window.chrome;
-    };
-
-    demo.isFirefox = function () {
-        return navigator.userAgent.toLowerCase().indexOf("firefox") >= 0;
-    };
-
-    demo.supportsTTS = function () {
-        // currenlty due to lack of implementation or bugs, TTS is only supported in Chrome and Firefox
-        return demo.isChrome() || demo.isFirefox();
-    };
-
     fluid.enhance.check({
-        "fluid.supportsTTS": "demo.supportsTTS"
+        "fluid.supportsTTS": "fluid.textToSpeech.isSupported"
     });
 
     // add extra prefs to the starter primary schemas

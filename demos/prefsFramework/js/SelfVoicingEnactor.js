@@ -1,5 +1,5 @@
 /*
-Copyright 2013 OCAD University
+Copyright 2013-2015 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -10,10 +10,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/*global fluid, jQuery, window*/
+/* global fluid */
 
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+var demo = demo || {};
 
 (function ($, fluid) {
     "use strict";
@@ -34,16 +33,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         model: {
             value: false
         },
-        listeners: {
-            "afterAnnounce.next": "{that}.announceNext",
-            "onError.alert": {
-                listener: "alert",
-                args: ["{that}.options.strings.errorMsg"]
-            }
+        modelListeners: {
+            "value": "{that}.handleSelfVoicing"
         },
         events: {
             afterAnnounce: null,
             onError: null
+        },
+        components: {
+            tts: {
+                type: "fluid.textToSpeech",
+                options: {
+                    utteranceOpts: {
+                        lang: "{speakEnactor}.options.lang"
+                    },
+                    listeners: {
+                        "onCreate.clear": "{that}.cancel"
+                    }
+                }
+            }
         },
         invokers: {
             handleSelfVoicing: {
@@ -54,14 +62,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 funcName: "demo.prefsEditor.speakEnactor.announce",
                 args: ["{that}", "{arguments}.0"]
             },
-            announceNext: {
-                funcName: "demo.prefsEditor.speakEnactor.announceNext",
-                args: "{that}"
+            readFromDOM: {
+                funcName: "demo.prefsEditor.speakEnactor.readFromDOM",
+                args: ["{that}", "{that}.container"]
+            },
+            stop: {
+                func: "{tts}.cancel"
+            },
+            speak: {
+                func: "{tts}.speak"
             }
-        },
-        members: {
-            seen: [],
-            speaking: false
         },
         strings: {
             loaded: "text to speech enabled",
@@ -70,101 +80,57 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         styles: {
             current: "fl-selfVoicing-current"
         },
-
-        // Fireworks Server
-        ttsUrl: "http://tts.idrc.ocadu.ca?q=%text",
-
         lang: "en"
     });
-
-    demo.prefsEditor.speakEnactor.finalInit = function (that) {
-        that.applier.modelChanged.addListener("value", function (newModel, oldModel) {
-            if (newModel.value !== oldModel.value) {
-                that.handleSelfVoicing();
-            }
-        });
-    };
 
     demo.prefsEditor.speakEnactor.handleSelfVoicing = function (that) {
         if (that.model.value) {
             that.announce(that.options.strings.loaded);
+            that.readFromDOM();
         } else {
-            delete that.currentElement;
-            that.seen = [];
+            that.stop();
         }
     };
 
     demo.prefsEditor.speakEnactor.announce = function (that, text) {
-        if (!that.model.value) {return;}
-        var audioURL = fluid.stringTemplate(that.options.ttsUrl, {
-            lang: that.options.lang,
-            text: text
-        });
-        that.currentAnnouncement = new buzz.sound(audioURL);
-        that.currentAnnouncement.bind("ended", function () {
-            that.speaking = false;
-            that.events.afterAnnounce.fire();
-        });
-        that.currentAnnouncement.bind("error", function () {
-            that.speaking = false;
-            that.events.onError.fire();
-        });
-        that.speaking = true;
-        that.currentAnnouncement.play();
+        // force a string value
+        var str = text.toString();
+
+        // remove extra whitespace
+        str = str.trim();
+        str.replace(/\s{2,}/gi, " ");
+
+        if (that.model.value && str) {
+            that.speak(str);
+        }
     };
 
-    var fullTrim = function (string) {
-        string = string.trim();
-        return string.replace(/\s{2,}/gi, " ");
+    // Constants representing DOM node types.
+    demo.prefsEditor.speakEnactor.nodeType = {
+        ELEMENT_NODE: 1,
+        TEXT_NODE: 3
     };
 
-    demo.prefsEditor.speakEnactor.announceNext = function (that) {
-        var announcement = "";
-        that.currentElement = that.currentElement ||
-            document.activeElement;
-        var nodes = $(that.currentElement).contents();
-        var next = fluid.find(nodes, function (node) {
-            if (that.seen.indexOf(node) > -1) {return;}
-
-            if (node.nodeType === 8 || node.nodeName === "SCRIPT" || node.nodeName === "IFRAME") {
-                that.seen.push(node);
-                return;
+    demo.prefsEditor.speakEnactor.readFromDOM = function (that, elm) {
+        elm = $(elm);
+        var nodes = elm.contents();
+        fluid.each(nodes, function (node) {
+            if (node.nodeType === demo.prefsEditor.speakEnactor.nodeType.TEXT_NODE && node.nodeValue) {
+                that.announce(node.nodeValue);
             }
 
-            if (node.nodeType === 3) {
-                announcement = fullTrim(node.nodeValue);
-                that.seen.push(node);
-                if (announcement) {
-                    return node;
-                }
-                return;
-            }
 
-            if (node.nodeType === 1) {
-                if (window.getComputedStyle(node).display === "none") {
-                    that.seen.push(node);
-                    return;
-                }
+            if (node.nodeType === demo.prefsEditor.speakEnactor.nodeType.ELEMENT_NODE && window.getComputedStyle(node).display !== "none") {
                 if (node.nodeName === "IMG") {
-                    announcement = fluid.find(node.attributes, function (attr) {
-                        if (attr.name === "alt") {
-                            return fullTrim(attr.value);
-                        }
-                    });
+                    var altText = node.getAttribute("alt");
+                    if (altText) {
+                        that.announce(altText);
+                    }
+                } else {
+                    demo.prefsEditor.speakEnactor.readFromDOM(that, node);
                 }
-                return node;
             }
         });
-        if (!next && that.currentElement.parentNode.nodeName !== "HTML") {
-            that.seen.push(that.currentElement);
-            next = that.currentElement.parentNode;
-        }
-        that.currentElement = next;
-        if (announcement) {
-            that.announce(announcement);
-        } else {
-            that.announceNext();
-        }
     };
 
 })(jQuery, fluid);
