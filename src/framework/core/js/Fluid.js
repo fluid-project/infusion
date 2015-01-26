@@ -41,11 +41,11 @@ var fluid = fluid || fluid_2_0;
     fluid.environment = {
         fluid: fluid
     };
-    
+
     fluid.global = fluid.global || window || {};
-    
+
     // A standard utility to schedule the invocation of a function after the current
-    // stack returns. On browsers this defaults to setTimeout(func, 1) but in 
+    // stack returns. On browsers this defaults to setTimeout(func, 1) but in
     // other environments can be customised - e.g. to process.nextTick in node.js
     // In future, this could be optimised in the browser to not dispatch into the event queue
     fluid.invokeLater = function (func) {
@@ -456,7 +456,7 @@ var fluid = fluid || fluid_2_0;
      * the right way round.
      * @param source {Arrayable or Object} The container to be iterated over
      * @param func {Function} A function accepting (value, key) for each iterated
-     * object. This function may return a value to terminate the iteration
+     * object.
      */
     fluid.each = function (source, func) {
         if (fluid.isArrayable(source)) {
@@ -1132,10 +1132,10 @@ var fluid = fluid || fluid_2_0;
                     softNamespace: softNamespace,
                     priority: fluid.event.mapPriority(priority, that.sortedListeners.length)};
                 that.byId[id] = record;
-                
+
                 var thisListeners = (that.listeners[namespace] = fluid.makeArray(that.listeners[namespace]));
                 thisListeners[softNamespace ? "push" : "unshift"] (record);
-                
+
                 that.sortedListeners = fluid.event.sortListeners(that.listeners);
             };
             that.addListener.apply(null, arguments);
@@ -2045,17 +2045,17 @@ var fluid = fluid || fluid_2_0;
     // The base system grade definitions
 
     fluid.defaults("fluid.function", {});
-    
+
     /** Invoke a global function by name and named arguments. A courtesy to allow declaratively encoded function calls
      * to use named arguments rather than bare arrays.
      * @param name {String} A global name which can be resolved to a Function. The defaults for this name must
-     * resolve onto a grade including "fluid.function". The defaults record should also contain an entry 
+     * resolve onto a grade including "fluid.function". The defaults record should also contain an entry
      * <code>argumentMap</code>, a hash of argument names onto indexes.
      * @param spec {Object} A named hash holding the argument values to be sent to the function. These will be looked
      * up in the <code>argumentMap</code> and resolved into a flat list of arguments.
      * @return {Any} The return value from the function
      */
-    
+
     fluid.invokeGradedFunction = function (name, spec) {
         var defaults = fluid.defaults(name);
         if (!defaults || !defaults.argumentMap || !fluid.hasGrade(defaults, "fluid.function")) {
