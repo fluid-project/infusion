@@ -1243,7 +1243,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expected: {
                 "soundHazard": "unknown"
             }
-        } 
+        }
         // TODO: It was probably expected that there was particular behaviour with respect to partial matches of the
         // compund input value here - we would need to write further test cases using the new "partialMatches" option
     };
