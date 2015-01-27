@@ -20,7 +20,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.defaults("fluid.prefs.panel.speak", {
         gradeNames: ["fluid.prefs.panel", "autoInit"],
         preferenceMap: {
-            "demo.prefs.speak": {
+            "fluid.prefs.speak": {
                 "model.speak": "default"
             }
         },

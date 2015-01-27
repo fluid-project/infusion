@@ -25,7 +25,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.defaults("fluid.prefs.enactor.speakEnactor", {
         gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
-            "demo.prefs.speak": {
+            "fluid.prefs.speak": {
                 "model.value": "default"
             }
         },
