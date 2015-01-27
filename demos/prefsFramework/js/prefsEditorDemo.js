@@ -99,7 +99,7 @@ var demo = demo || {};
             speak: {
                 type: "demo.prefs.speak",
                 enactor: {
-                    type: "demo.prefsEditor.speakEnactor",
+                    type: "fluid.prefs.enactor.selfVoicing",
                     container: "body"
                 },
                 panel: {
