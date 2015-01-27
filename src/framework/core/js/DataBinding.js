@@ -677,7 +677,10 @@ var fluid_2_0 = fluid_2_0 || {};
         allChanges.sort(fluid.priorityComparator);
         for (var i = 0; i < allChanges.length; ++ i) {
             var change = allChanges[i];
-            change.listener.apply(null, change.args);
+            var targetApplier = change.args[5]; // NOTE: This argument gets here via fluid.model.storeExternalChange from fluid.notifyModelChanges
+            if (!targetApplier.destroyed) { // 3rd point of guarding for FLUID-5592
+                change.listener.apply(null, change.args);
+            }
         }
         fluid.clearLinkCounts(transRec, true); // "options" structures for relayCount are aliased
     };
@@ -820,6 +823,9 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.resolveModelListener = function (that, record, isNewApplier) {
         var togo = function () {
+            if (fluid.isDestroyed(that)) { // first guarding point to resolve FLUID-5592
+                return;
+            }
             var change = fluid.modelChangedToChange(isNewApplier, arguments);
             var args = [change];
             var localRecord = {change: change, "arguments": args};
@@ -1197,6 +1203,9 @@ var fluid_2_0 = fluid_2_0 || {};
             var spec = listeners[i];
             var invalidPaths = fluid.matchChanges(changeMap, spec.segs, newHolder);
             for (var j = 0; j < invalidPaths.length; ++ j) {
+                if (applier.destroyed) { // 2nd guarding point for FLUID-5592
+                    return;
+                }
                 var invalidPath = invalidPaths[j];
                 spec.listener = fluid.event.resolveListener(spec.listener);
                 // TODO: process namespace and softNamespace rules, and propagate "sources" in 4th argument
@@ -1261,6 +1270,11 @@ var fluid_2_0 = fluid_2_0 || {};
             }
             changeRequest.segs = changeRequest.segs || that.parseEL(changeRequest.path);
         }
+        that.destroy = function () {
+            that.preCommit.destroy();
+            that.postCommit.destroy();
+            that.destroyed = true;
+        };
         that.modelChanged.addListener = function (spec, listener, namespace, softNamespace) {
             if (typeof(spec) === "string") {
                 spec = {path: spec};
@@ -1538,7 +1552,8 @@ var fluid_2_0 = fluid_2_0 || {};
         // a simple algorithm looking for that field
             applierId: fluid.allocateGuid(),
             holder: holder,
-            options: options
+            options: options,
+            destroy: fluid.identity // dummy function to avoid confusing FLUID-5592 code - we don't support this subtlety for old appliers
         };
 
         function makeGuardWrapper(cullUnchanged) {

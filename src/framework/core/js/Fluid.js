@@ -2267,6 +2267,9 @@ var fluid = fluid || fluid_2_0;
                 that.events[key].destroy();
             }
         }
+        if (that.applier) { // TODO: Break this out into the grade's destroyer
+            that.applier.destroy();
+        }
     };
 
     fluid.resolveReturnedPath = fluid.identity;
