@@ -103,10 +103,10 @@ var demo = demo || {};
                     container: "body"
                 },
                 panel: {
-                    type: "demo.prefsEditor.speakPanel",
+                    type: "fluid.prefs.panel.speak",
                     container: ".demo-prefsEditor-speak",
-                    template: "html/SpeakPanelTemplate.html",
-                    message: "messages/speak.json"
+                    template: "%prefix/PrefsEditorTemplate-speak.html",
+                    message: "%prefix/speak.json"
                 }
             }
         }
@@ -132,28 +132,6 @@ var demo = demo || {};
             label: {messagekey: "simplifyLabel"},
             choiceLabel: {messagekey: "simplifyChoiceLabel"},
             simplify: "${simplify}"
-        }
-    });
-
-    /**********************************************************************************
-     * speakPanel
-     **********************************************************************************/
-    fluid.defaults("demo.prefsEditor.speakPanel", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
-        preferenceMap: {
-            "demo.prefs.speak": {
-                "model.speak": "default"
-            }
-        },
-        selectors: {
-            speak: ".demo-prefsEditor-speak",
-            label: ".demo-prefsEditor-speak-label",
-            choiceLabel: ".demo-prefsEditor-speak-choice-label"
-        },
-        protoTree: {
-            label: {messagekey: "speakLabel"},
-            choiceLabel: {messagekey: "speakChoiceLabel"},
-            speak: "${speak}"
         }
     });
 
