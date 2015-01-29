@@ -23,7 +23,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.enactor.speakEnactor", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
             "fluid.prefs.speak": {
                 "model.value": "default"
@@ -32,15 +32,13 @@ var fluid_2_0 = fluid_2_0 || {};
         model: {
             value: false
         },
-        modelListeners: {
-            "value": "{that}.handleSelfVoicing"
-        },
         events: {
             onStart: null,
             onStop: null,
             onPause: null,
             onResume: null,
-            onError: null
+            onError: null,
+            onTextQueued: null
         },
         components: {
             tts: {
@@ -66,9 +64,6 @@ var fluid_2_0 = fluid_2_0 || {};
             pause: "{tts}.pause",
             resume: "{tts}.resume"
         },
-        strings: {
-            loaded: "text to speech enabled"
-        },
         voiceOpts: {},
         distributeOptions: {
             source: "{that}.options.voiceOpts",
@@ -86,6 +81,7 @@ var fluid_2_0 = fluid_2_0 || {};
         str.replace(/\s{2,}/gi, " ");
 
         if (that.model.value && str) {
+            that.events.onTextQueued.fire(str);
             speakFn(str);
         }
     };
@@ -96,18 +92,18 @@ var fluid_2_0 = fluid_2_0 || {};
      * The enactor that enables self voicing of an entire page
      *******************************************************************************/
 
-    fluid.defaults("fluid.prefs.enactor.selfVoicing", {
-        gradeNames: ["fluid.prefs.enactor.speakEnactor", "autoInit"],
+    fluid.defaults("fluid.prefs.enactor.selfVoicingEnactor", {
+        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor.speakEnactor", "autoInit"],
         modelListeners: {
             "value": "{that}.handleSelfVoicing"
         },
         invokers: {
             handleSelfVoicing: {
-                funcName: "fluid.prefs.enactor.selfVoicing.handleSelfVoicing",
+                funcName: "fluid.prefs.enactor.selfVoicingEnactor.handleSelfVoicing",
                 args: "{that}"
             },
             readFromDOM: {
-                funcName: "fluid.prefs.enactor.selfVoicing.readFromDOM",
+                funcName: "fluid.prefs.enactor.selfVoicingEnactor.readFromDOM",
                 args: ["{that}", "{that}.container"]
             }
         },
@@ -116,7 +112,7 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-    fluid.prefs.enactor.selfVoicing.handleSelfVoicing = function (that) {
+    fluid.prefs.enactor.selfVoicingEnactor.handleSelfVoicing = function (that) {
         if (that.model.value) {
             that.announce(that.options.strings.welcomeMsg);
             that.readFromDOM();
@@ -126,27 +122,27 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     // Constants representing DOM node types.
-    fluid.prefs.enactor.selfVoicing.nodeType = {
+    fluid.prefs.enactor.selfVoicingEnactor.nodeType = {
         ELEMENT_NODE: 1,
         TEXT_NODE: 3
     };
 
-    fluid.prefs.enactor.selfVoicing.readFromDOM = function (that, elm) {
+    fluid.prefs.enactor.selfVoicingEnactor.readFromDOM = function (that, elm) {
         elm = $(elm);
         var nodes = elm.contents();
         fluid.each(nodes, function (node) {
-            if (node.nodeType === fluid.prefs.enactor.selfVoicing.nodeType.TEXT_NODE && node.nodeValue) {
+            if (node.nodeType === fluid.prefs.enactor.selfVoicingEnactor.nodeType.TEXT_NODE && node.nodeValue) {
                 that.announce(node.nodeValue);
             }
 
-            if (node.nodeType === fluid.prefs.enactor.selfVoicing.nodeType.ELEMENT_NODE && window.getComputedStyle(node).display !== "none") {
+            if (node.nodeType === fluid.prefs.enactor.selfVoicingEnactor.nodeType.ELEMENT_NODE && window.getComputedStyle(node).display !== "none") {
                 if (node.nodeName === "IMG") {
                     var altText = node.getAttribute("alt");
                     if (altText) {
                         that.announce(altText);
                     }
                 } else {
-                    fluid.prefs.enactor.selfVoicing.readFromDOM(that, node);
+                    fluid.prefs.enactor.selfVoicingEnactor.readFromDOM(that, node);
                 }
             }
         });

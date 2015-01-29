@@ -34,7 +34,7 @@ var fluid_2_0 = fluid_2_0 || {};
             speak: {
                 type: "fluid.prefs.speak",
                 enactor: {
-                    type: "fluid.prefs.enactor.selfVoicing",
+                    type: "fluid.prefs.enactor.selfVoicingEnactor",
                     container: "body"
                 },
                 panel: {
