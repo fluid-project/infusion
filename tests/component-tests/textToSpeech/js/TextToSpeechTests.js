@@ -27,7 +27,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     // only run the tests in browsers that support the Web Speech API for speech synthesis
-    if (fluid.textToSpeech.isSupported()) {
+    if (!fluid.textToSpeech.isSupported()) {
+        jqUnit.test("No Tests Run", function () {
+            jqUnit.assert("Does not support the SpeechSynthesis");
+        });
+
+    } else {
         jqUnit.test("Initialization", function () {
             var that = fluid.tests.textToSpeech();
 
