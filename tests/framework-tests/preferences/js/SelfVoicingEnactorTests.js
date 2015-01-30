@@ -106,7 +106,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "Start-Stop flow",
                 sequence: [{
-                    func: "{speak}.announce",
+                    func: "{speak}.queueSpeech",
                     args: ["{that}.options.testOptions.sampleText"]
                 }, {
                     listener: "fluid.tests.speakTester.verifyRecords",
@@ -120,7 +120,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.speakTester.verifyRecords = function (that, expectedEvents, expectedText) {
         jqUnit.assertDeepEq("The events should have fired correctly", expectedEvents, that.eventRecord);
-        jqUnit.assertDeepEq("The text to announce should have been queued correctly", expectedText, that.speakQueue);
+        jqUnit.assertDeepEq("The text to be spoken should have been queued correctly", expectedText, that.speakQueue);
         that.clearRecords();
     };
 
@@ -187,7 +187,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.selfVoicingTester.verifySpeakQueue = function (that, expectedText) {
-        jqUnit.assertDeepEq("The text to announce should have been queued correctly", expectedText, that.speakQueue);
+        jqUnit.assertDeepEq("The text to be spoken should have been queued correctly", expectedText, that.speakQueue);
         that.clearRecords();
     };
 

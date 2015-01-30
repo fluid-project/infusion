@@ -35,7 +35,6 @@ var fluid_2_0 = fluid_2_0 || {};
         // TODO: replace events with the model relay system
         // Because this is intended to be used with the Preferences Framework
         // FLUID-5552 needs to be addressed first.
-        //
         events: {
             onStart: null,
             onStop: null,
@@ -60,9 +59,9 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         },
         invokers: {
-            announce: {
-                funcName: "fluid.prefs.enactor.speakEnactor.announce",
-                args: ["{that}", "{arguments}.0", "{tts}.speak"]
+            queueSpeech: {
+                funcName: "fluid.prefs.enactor.speakEnactor.queueSpeech",
+                args: ["{that}", "{arguments}.0", "{tts}.queueSpeech"]
             },
             stop: "{tts}.cancel",
             pause: "{tts}.pause",
@@ -76,7 +75,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
 
-    fluid.prefs.enactor.speakEnactor.announce = function (that, text, speakFn) {
+    fluid.prefs.enactor.speakEnactor.queueSpeech = function (that, text, speakFn) {
         // force a string value
         var str = text.toString();
 
@@ -118,7 +117,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.prefs.enactor.selfVoicingEnactor.handleSelfVoicing = function (that) {
         if (that.model.value) {
-            that.announce(that.options.strings.welcomeMsg);
+            that.queueSpeech(that.options.strings.welcomeMsg);
             that.readFromDOM();
         } else {
             that.stop();
@@ -136,14 +135,14 @@ var fluid_2_0 = fluid_2_0 || {};
         var nodes = elm.contents();
         fluid.each(nodes, function (node) {
             if (node.nodeType === fluid.prefs.enactor.selfVoicingEnactor.nodeType.TEXT_NODE && node.nodeValue) {
-                that.announce(node.nodeValue);
+                that.queueSpeech(node.nodeValue);
             }
 
             if (node.nodeType === fluid.prefs.enactor.selfVoicingEnactor.nodeType.ELEMENT_NODE && window.getComputedStyle(node).display !== "none") {
                 if (node.nodeName === "IMG") {
                     var altText = node.getAttribute("alt");
                     if (altText) {
-                        that.announce(altText);
+                        that.queueSpeech(altText);
                     }
                 } else {
                     fluid.prefs.enactor.selfVoicingEnactor.readFromDOM(that, node);

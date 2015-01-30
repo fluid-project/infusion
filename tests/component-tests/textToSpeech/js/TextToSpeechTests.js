@@ -68,7 +68,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
 
-            that.speak("Testing start and end events");
+            that.queueSpeech("Testing start and end events");
         });
 
         // Chrome doesn't properly support pause which causes this test to break.
@@ -111,7 +111,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 });
 
-                that.speak("Testing pause and resume events");
+                that.queueSpeech("Testing pause and resume events");
             });
         }
     }

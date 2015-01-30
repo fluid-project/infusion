@@ -57,8 +57,8 @@ var fluid_2_0 = fluid_2_0 || {};
             onboundary: "{that}.events.boundary.fire"
         },
         invokers: {
-            speak: {
-                funcName: "fluid.textToSpeech.speak",
+            queueSpeech: {
+                funcName: "fluid.textToSpeech.queueSpeech",
                 args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
             },
             cancel: {
@@ -92,7 +92,7 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-    fluid.textToSpeech.speak = function (that, text, interrupt, options) {
+    fluid.textToSpeech.queueSpeech = function (that, text, interrupt, options) {
         if (interrupt) {
             that.cancel();
         }
