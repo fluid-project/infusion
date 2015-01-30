@@ -39,7 +39,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.panels.utils.verifyCheckboxState = function (message, expectedState, checkbox) {
-        jqUnit[expectedState ? "assertTrue" : "assertFalse"](message, checkbox.is(":checked"));
+        jqUnit.assertEquals(message, expectedState, checkbox.is(":checked"));
     };
 
 })();
