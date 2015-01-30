@@ -32,6 +32,10 @@ var fluid_2_0 = fluid_2_0 || {};
         model: {
             value: false
         },
+        // TODO: replace events with the model relay system
+        // Because this is intended to be used with the Preferences Framework
+        // FLUID-5552 needs to be addressed first.
+        //
         events: {
             onStart: null,
             onStop: null,
