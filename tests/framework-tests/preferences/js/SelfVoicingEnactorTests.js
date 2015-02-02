@@ -132,9 +132,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         model: {
             enabled: false
         },
-        strings: {
-            welcomeMsg: ""
-        },
         invokers: {
             toggle: {
                 changePath: "enabled",
@@ -159,12 +156,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.selfVoicingTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
-            // Because events are fired for each utterance
-            // we can only test a single item being read
-            // as multiple stop events are fired and we don't
-            // know which is the last.
             expectedText: [
-                "Reading text from DOM"
+                "{selfVoicing}.options.strings.welcomeMsg",
+                "Reading text from DOM",
+                "no image"
             ]
         },
         modules: [{
@@ -194,7 +189,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // only run the tests in browsers that support the Web Speech API for speech synthesis
         if (!fluid.textToSpeech.isSupported()) {
             jqUnit.test("No Tests Run", function () {
-                jqUnit.assert("Does not support the SpeechSynthesis");
+                jqUnit.assert("Does not support the SpeechSynthesis Interface");
             });
 
         } else {
