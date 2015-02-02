@@ -28,9 +28,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             speakQueue: []
         },
         model: {
-            value: true
+            enabled: true
         },
-        voiceOpts: {
+        utteranceOpts: {
             volume: 0
         },
         listeners: {
@@ -42,11 +42,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 listener: "{that}.record",
                 args: ["onStop"]
             },
-            "onTextQueued.record": {
+            "onSpeechQueued.record": {
                 listener: "{that}.record",
-                args: ["onTextQueued"]
+                args: ["onSpeechQueued"]
             },
-            "onTextQueued.recordText": "{that}.recordText"
+            "onSpeechQueued.recordText": "{that}.recordText"
         },
         invokers: {
             record: {
@@ -69,7 +69,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.prefs.enactor.speakEnactor.recordText = function (that, text) {
-        console.log("text:", text);
         that.speakQueue.push(text);
     };
 
@@ -97,7 +96,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             startStopFireRecord: {
                 onStart: 1,
                 onStop: 1,
-                onTextQueued: 1
+                onSpeechQueued: 1
             }
         },
         modules: [{
@@ -131,14 +130,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.prefs.enactor.selfVoicingEnactor", {
         gradeNames: ["fluid.prefs.enactor.selfVoicingEnactor", "fluid.tests.prefs.enactor.speakEnactor", "autoInit"],
         model: {
-            value: false
+            enabled: false
         },
         strings: {
             welcomeMsg: ""
         },
         invokers: {
             toggle: {
-                changePath: "value",
+                changePath: "enabled",
                 value: "{arguments}.0"
             }
         }

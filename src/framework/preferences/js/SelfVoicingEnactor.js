@@ -23,59 +23,21 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.enactor.speakEnactor", {
-        gradeNames: ["fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.textToSpeech", "fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
             "fluid.prefs.speak": {
-                "model.value": "default"
-            }
-        },
-        model: {
-            value: false
-        },
-        // TODO: replace events with the model relay system
-        // Because this is intended to be used with the Preferences Framework
-        // FLUID-5552 needs to be addressed first.
-        events: {
-            onStart: null,
-            onStop: null,
-            onPause: null,
-            onResume: null,
-            onError: null,
-            onTextQueued: null
-        },
-        components: {
-            tts: {
-                type: "fluid.textToSpeech",
-                options: {
-                    listeners: {
-                        "onCreate.clear": "{that}.cancel",
-                        "start.hoist": "{speakEnactor}.events.onStart",
-                        "end.hoist": "{speakEnactor}.events.onStop",
-                        "pause.hoist": "{speakEnactor}.events.onPause",
-                        "resume.hoist": "{speakEnactor}.events.onResume",
-                        "error.hoist": "{speakEnactor}.events.onError"
-                    }
-                }
+                "model.enabled": "default"
             }
         },
         invokers: {
             queueSpeech: {
-                funcName: "fluid.prefs.enactor.speakEnactor.queueSpeech",
-                args: ["{that}", "{arguments}.0", "{tts}.queueSpeech"]
-            },
-            stop: "{tts}.cancel",
-            pause: "{tts}.pause",
-            resume: "{tts}.resume"
-        },
-        voiceOpts: {},
-        distributeOptions: {
-            source: "{that}.options.voiceOpts",
-            target: "{that > fluid.textToSpeech}.options.utteranceOpts"
+                funcName: "fluid.prefs.enactor.speakEnactor.queueSpeech"
+            }
         }
     });
 
 
-    fluid.prefs.enactor.speakEnactor.queueSpeech = function (that, text, speakFn) {
+    fluid.prefs.enactor.speakEnactor.queueSpeech = function (that, text, interrupt, options) {
         // force a string value
         var str = text.toString();
 
@@ -83,9 +45,8 @@ var fluid_2_0 = fluid_2_0 || {};
         str = str.trim();
         str.replace(/\s{2,}/gi, " ");
 
-        if (that.model.value && str) {
-            that.events.onTextQueued.fire(str);
-            speakFn(str);
+        if (that.model.enabled && str) {
+            fluid.textToSpeech.queueSpeech(that, str, interrupt, options);
         }
     };
 
@@ -98,7 +59,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.defaults("fluid.prefs.enactor.selfVoicingEnactor", {
         gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor.speakEnactor", "autoInit"],
         modelListeners: {
-            "value": "{that}.handleSelfVoicing"
+            "enabled": "{that}.handleSelfVoicing"
         },
         invokers: {
             handleSelfVoicing: {
@@ -116,11 +77,11 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.prefs.enactor.selfVoicingEnactor.handleSelfVoicing = function (that) {
-        if (that.model.value) {
-            that.queueSpeech(that.options.strings.welcomeMsg);
+        if (that.model.enabled) {
+            that.queueSpeech(that.options.strings.welcomeMsg, true);
             that.readFromDOM();
         } else {
-            that.stop();
+            that.cancel();
         }
     };
 
@@ -130,6 +91,8 @@ var fluid_2_0 = fluid_2_0 || {};
         TEXT_NODE: 3
     };
 
+    // TODO: Currently only reads text nodes and alt text.
+    // This should be expanded to read other text descriptors as well.
     fluid.prefs.enactor.selfVoicingEnactor.readFromDOM = function (that, elm) {
         elm = $(elm);
         var nodes = elm.contents();

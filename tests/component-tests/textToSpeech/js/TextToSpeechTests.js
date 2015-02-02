@@ -31,35 +31,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.test("No Tests Run", function () {
             jqUnit.assert("Does not support the SpeechSynthesis");
         });
-
     } else {
         jqUnit.test("Initialization", function () {
             var that = fluid.tests.textToSpeech();
 
             jqUnit.assertTrue("The Text to Speech component should have initialized", that);
-            jqUnit.assertFalse("Nothing should be speaking", that.isSpeaking());
-            jqUnit.assertFalse("Nothing should be pending", that.isPending());
-            jqUnit.assertFalse("Shouldn't be paused", that.isPaused());
+            jqUnit.assertFalse("Nothing should be speaking", that.model.speaking);
+            jqUnit.assertFalse("Nothing should be pending", that.model.pending);
+            jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
         });
 
         fluid.defaults("fluid.tests.textToSpeech.startStop", {
             gradeNames: ["fluid.tests.textToSpeech", "autoInit"],
             listeners: {
-                start: {
+                "onStart.test": {
                     listener: function (that) {
-                        jqUnit.assert("The start event should have fired");
-                        jqUnit.assertTrue("Should be speaking", that.isSpeaking());
-                        jqUnit.assertFalse("Nothing should be pending", that.isPending());
-                        jqUnit.assertFalse("Shouldn't be paused", that.isPaused());
+                        jqUnit.assert("The onStart event should have fired");
+                        jqUnit.assertTrue("Should be speaking", that.model.speaking);
+                        jqUnit.assertFalse("Nothing should be pending", that.model.pending);
+                        jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
+                        jqUnit.assertDeepEq("The queue should be empty", [], that.queue);
                     },
                     args: ["{that}"]
                 },
-                end: {
+                "onStop.test": {
                     listener: function (that) {
-                        jqUnit.assert("The end event should have fired");
-                        jqUnit.assertFalse("Nothing should be speaking", that.isSpeaking());
-                        jqUnit.assertFalse("Nothing should be pending", that.isPending());
-                        jqUnit.assertFalse("Shouldn't be paused", that.isPaused());
+                        jqUnit.assert("The onStop event should have fired");
+                        jqUnit.assertFalse("Should not be speaking", that.model.speaking);
+                        jqUnit.assertFalse("Nothing should be pending", that.model.pending);
+                        jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
+                        jqUnit.assertDeepEq("The queue should be empty", [], that.queue);
                         jqUnit.start();
                     },
                     args: ["{that}"]
@@ -68,7 +69,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.asyncTest("Start and Stop Events", function () {
-            jqUnit.expect(8);
+            jqUnit.expect(10);
             var that = fluid.tests.textToSpeech.startStop();
             that.queueSpeech("Testing start and end events");
         });
@@ -79,39 +80,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             fluid.defaults("fluid.tests.textToSpeech.pauseResume", {
                 gradeNames: ["fluid.tests.textToSpeech", "autoInit"],
-                members: {
-                    wasPaused: false
-                },
                 listeners: {
-                    start: {
-                        listener: function (that) {
-                            if (!that.wasPaused) {
-                                that.pause();
-                            }
-                        },
-                        args: ["{that}"]
+                    "onStart.pause": {
+                        listener: "{that}.pause"
                     },
-                    pause: {
+                    "onPause.test": {
                         listener: function (that) {
                             that.wasPaused = true;
                             jqUnit.assert("The pause event should have fired");
-                            jqUnit.assertTrue("Should be speaking", that.isSpeaking());
-                            jqUnit.assertFalse("Nothing should be pending", that.isPending());
-                            jqUnit.assertTrue("Should be paused", that.isPaused());
+                            jqUnit.assertTrue("Should be speaking", that.model.speaking);
+                            jqUnit.assertFalse("Nothing should be pending", that.model.pending);
+                            jqUnit.assertTrue("Should be paused", that.model.paused);
                             that.resume();
                         },
                         args: ["{that}"]
                     },
-                    resume: {
+                    "onResume.test": {
                         listener: function (that) {
                             jqUnit.assert("The resume event should have fired");
-                            jqUnit.assertTrue("Should be speaking", that.isSpeaking());
-                            jqUnit.assertFalse("Nothing should be pending", that.isPending());
-                            jqUnit.assertFalse("Shouldn't be paused", that.isPaused());
+                            jqUnit.assertTrue("Should be speaking", that.model.speaking);
+                            jqUnit.assertFalse("Nothing should be pending", that.model.pending);
+                            jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
                         },
                         args: ["{that}"]
                     },
-                    end: jqUnit.start
+                    "onStop.end": "jqUnit.start"
                 }
             });
 
