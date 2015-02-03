@@ -1,5 +1,5 @@
 /*
-Copyright 2014 OCAD University
+Copyright 2014-2015 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -22,31 +22,13 @@ var demo = demo || {};
 
     fluid.registerNamespace("demo.prefsEditor");
 
-    // Progressive Enhancement checks
-    demo.isChrome = function () {
-        return !!window.chrome;
-    };
-
-    demo.isFirefox = function () {
-        return navigator.userAgent.toLowerCase().indexOf("firefox") >= 0;
-    };
-
-    demo.supportsTTS = function () {
-        // currenlty due to lack of implementation or bugs, TTS is only supported in Chrome and Firefox
-        return demo.isChrome() || demo.isFirefox();
-    };
-
     fluid.enhance.check({
-        "fluid.supportsTTS": "demo.supportsTTS"
+        "fluid.supportsTTS": "fluid.textToSpeech.isSupported"
     });
 
     // add extra prefs to the starter primary schemas
     demo.prefsEditor.primarySchema = {
         "demo.prefs.simplify": {
-            "type": "boolean",
-            "default": false
-        },
-        "demo.prefs.speak": {
             "type": "boolean",
             "default": false
         }
@@ -97,6 +79,7 @@ var demo = demo || {};
 
     // Fine-tune the starter aux schema and add speak panel
     fluid.defaults("demo.prefsEditor.auxSchema.speak", {
+        gradeNames: ["fluid.prefs.auxSchema.speak"],
         auxiliarySchema: {
             // adjust paths
             templatePrefix: "../../src/framework/preferences/html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
@@ -108,21 +91,7 @@ var demo = demo || {};
             },
 
             // sepcify augmented container template for panels
-            template: "html/SeparatedPanelPrefsEditorWithTTS.html",
-
-            speak: {
-                type: "demo.prefs.speak",
-                enactor: {
-                    type: "demo.prefsEditor.speakEnactor",
-                    container: "body"
-                },
-                panel: {
-                    type: "demo.prefsEditor.speakPanel",
-                    container: ".demo-prefsEditor-speak",
-                    template: "html/SpeakPanelTemplate.html",
-                    message: "messages/speak.json"
-                }
-            }
+            template: "html/SeparatedPanelPrefsEditorWithTTS.html"
         }
     });
 
@@ -146,28 +115,6 @@ var demo = demo || {};
             label: {messagekey: "simplifyLabel"},
             choiceLabel: {messagekey: "simplifyChoiceLabel"},
             simplify: "${simplify}"
-        }
-    });
-
-    /**********************************************************************************
-     * speakPanel
-     **********************************************************************************/
-    fluid.defaults("demo.prefsEditor.speakPanel", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
-        preferenceMap: {
-            "demo.prefs.speak": {
-                "model.speak": "default"
-            }
-        },
-        selectors: {
-            speak: ".demo-prefsEditor-speak",
-            label: ".demo-prefsEditor-speak-label",
-            choiceLabel: ".demo-prefsEditor-speak-choice-label"
-        },
-        protoTree: {
-            label: {messagekey: "speakLabel"},
-            choiceLabel: {messagekey: "speakChoiceLabel"},
-            speak: "${speak}"
         }
     });
 
