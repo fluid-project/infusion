@@ -54,12 +54,12 @@ var fluid_2_0 = fluid_2_0 || {};
             // rate: 1, // a value from 0.1 to 10 although different synthesizers may have a smaller range
             // pitch: 1, // a value from 0 to 2
         },
-        // TODO: When this is updated to model relay component
-        // remove this manual realying of modelListeners to listeners
+        // TODO: When this is updated to be a model relay component,
+        // remove this manual relaying of modelListeners to listeners
         // in favour of having integrators use the modelListeners directly.
-        // This system is currently setup because when a the entire model
+        // This system is currently setup because when the entire model
         // is changed in a single operation, the change value is the entire
-        // model instead of just the value of the path registered.
+        // model instead of just the value of the registered path.
         modelListeners: {
             "speaking": {
                 listener: "fluid.textToSpeech.relaySpeaking",
