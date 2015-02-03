@@ -1,5 +1,5 @@
 {
-    "textfieldSlider": {
+    "textToSpeech": {
         "name": "Text To Speech",
         "description": "A wrapper around the Web Speech API for Speech Synthesis",
         "cssFiles": [],
