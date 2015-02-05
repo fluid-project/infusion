@@ -30,64 +30,56 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     /*
-     * An object to hold the results of the progressive enhancement checks.
-     * Keys represent the key into the static environment
+     * An object to hold the results of the progressive enhancement checks, in order to avoid re-evaluating them unnecessarily
+     * Keys represent the typeName corresponding to the check
      * Values represent the result of the check
      */
     // unsupported, NON-API value
     fluid.enhance.checked = {};
 
     /*
-     * The segment separator used by fluid.enhance.typeToKey
-     */
-    // unsupported, NON-API value
-    fluid.enhance.sep = "--";
-
-    /*
-     * Converts a type tag name to one that is safe to use as a key in an object, by replacing all of the "."
-     * with the separator specified at fluid.enhance.sep
-     */
-    // unsupported, NON-API function
-    fluid.enhance.typeToKey = function (typeName) {
-        return typeName.replace(/[.]/gi, fluid.enhance.sep);
-    };
-
-    /*
-     * Takes an object of key/value pairs where the key will be the key in the static environment and the value is a function or function name to run.
-     * {staticEnvKey: "progressiveCheckFunc"}
+     * Takes an object of key/value pairs where the key will be the typeName of a component which will be registered
+     * at the global root component if the check passes. The value is either a boolean representing a pre-resolved
+     * result, a global function name to be called with zero arguments, or a literal function to be called with zero arguments.
+     * {typeName: boolean/"funcName"/func}
      * Note that the function will not be run if its result is already recorded.
      */
-    fluid.enhance.check = function (stuffToCheck) {
-        fluid.each(stuffToCheck, function (val, key) {
-            var staticKey = fluid.enhance.typeToKey(key);
+    fluid.enhance.check = function (checkList) {
+        fluid.each(checkList, function (val, key) {
 
-            if (fluid.enhance.checked[staticKey] === undefined) {
+            if (fluid.enhance.checked[key] === undefined) {
                 var results = typeof(val) === "boolean" ? val :
                     (typeof(val) === "string" ? fluid.invokeGlobalFunction(val) : val());
 
-                fluid.enhance.checked[staticKey] = !!results;
+                fluid.enhance.checked[key] = !!results;
 
                 if (results) {
-                    fluid.staticEnvironment[staticKey] = fluid.typeTag(key);
+                    fluid.littleComponent({
+                        gradeNames: ["fluid.resolveRoot", key]
+                    });
                 }
             }
         });
     };
 
     /*
-     * forgets a single item based on the typeName
+     * Forgets a single item or array of items based on the typeName
+     * @param typeName {String|Array} Either a full typename or array of names which should be removed from the global context
+     * (the components holding them will be destroyed and they will no longer be resolvable)
      */
     fluid.enhance.forget = function (typeName) {
-        var key = fluid.enhance.typeToKey(typeName);
-
-        if (fluid.enhance.checked[key] !== undefined) {
-            delete fluid.staticEnvironment[key];
-            delete fluid.enhance.checked[key];
-        }
+        var typeNames = fluid.makeArray(typeName);
+        fluid.each(typeNames, function (oneTypeName) {
+            var tags = fluid.queryIoCSelector(fluid.rootComponent, oneTypeName, true);
+            fluid.each(tags, function (tag) {
+                tag.destroy();
+            });
+            delete fluid.enhance.checked[oneTypeName];
+        });
     };
 
     /*
-     * forgets all of the keys added by fluid.enhance.check
+     * Forgets all of the keys added by fluid.enhance.check
      */
     fluid.enhance.forgetAll = function () {
         fluid.each(fluid.enhance.checked, function (val, key) {

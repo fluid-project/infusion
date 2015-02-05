@@ -20,8 +20,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.module("Fluid IoC Tests");
 
-    fluid.staticEnvironment.isTest = fluid.typeTag("fluid.test");
-
     fluid.setLogging(fluid.logLevel.TRACE);
     fluid.activityTracing = true;
 
@@ -238,8 +236,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var that = fluid.tests.multiResolution();
         jqUnit.assertValue("Constructed", that);
         jqUnit.assertEquals("Standard subcomponent", "fluid.tests.multiResSub", that.resSub.typeName);
+        var localFiles, localTest;
         try {
-            fluid.staticEnvironment.localEnvironment = fluid.typeTag("fluid.tests.localFiles");
+            localFiles = fluid.littleComponent({gradeNames: ["fluid.resolveRoot", "fluid.tests.localFiles"]});
             var that2 = fluid.tests.multiResolution();
             jqUnit.assertValue("Constructed", that2);
             var type2 = "fluid.tests.multiResSub2";
@@ -248,7 +247,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 ["fluid.tests.multiResolution", "fluid.tests.localFiles"]).args, {targetTypeName: type2});
             jqUnit.assertLeftHand("\"Local\" subcomponent options", localDemandOptions, that2.resSub.options);
 
-            fluid.staticEnvironment.testEnvironment = fluid.typeTag("fluid.tests.localTest");
+            localTest = fluid.littleComponent({gradeNames: ["fluid.resolveRoot", "fluid.tests.localTest"]});
             var that3 = fluid.tests.multiResolution();
             jqUnit.assertValue("Constructed", that3);
             var type3 = "fluid.tests.multiResSub3";
@@ -260,24 +259,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertLeftHand("\"Test\" subcomponent merged options", expectedOptions, that3.resSub.options);
 
         } finally {
-            delete fluid.staticEnvironment.testEnvironment;
-            delete fluid.staticEnvironment.localEnvironment;
-        }
-    });
-
-    fluid.demands("fluid.tests.staticResolution", [], {
-        funcName: "fluid.identity",
-        args: "{fluid.tests.localFiles}"
-    });
-
-    jqUnit.test("Static resolution test", function () {
-        try {
-            fluid.staticEnvironment.localEnvironment = fluid.typeTag("fluid.tests.localFiles");
-
-            var staticRes = fluid.invoke("fluid.tests.staticResolution");
-            jqUnit.assertNotUndefined("Resolved value from static environment", staticRes);
-        } finally {
-            delete fluid.staticEnvironment.localEnvironment;
+            localFiles.destroy();
+            localTest.destroy();
         }
     });
 
@@ -344,7 +327,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.demands("testDemandedEvent", ["fluid.tests.testContext", "fluid.tests.demandedEvent2"], ["demanded"]);
 
     jqUnit.test("FLUID-4634: multiple components with the same boiled event name", function () {
-        fluid.staticEnvironment.currentTestEnvironment = fluid.typeTag("fluid.tests.testContext");
+        var testContext = fluid.littleComponent({gradeNames: ["fluid.resolveRoot", "fluid.tests.testContext"]});
         var orig = "original";
         var e1 = fluid.tests.demandedEvent1({
             events: {
@@ -362,15 +345,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         e1.events.testDemandedEvent.addListener(function (arg) {
-            jqUnit.assertEquals("The original argument should be passeed in.", orig, arg);
+            jqUnit.assertEquals("The original argument should be passeed in", orig, arg);
         });
         e2.events.testDemandedEvent.addListener(function (arg) {
-            jqUnit.assertEquals("The demanded argument should be passed in.", "demanded", arg);
+            jqUnit.assertEquals("The demanded argument should be passed in", "demanded", arg);
         });
 
         e1.events.event1.fire(orig);
         e2.events.event2.fire(orig);
-        delete fluid.staticEnvironment.currentTestEnvironment;
+        testContext.destroy();
     });
 
     /** FLUID-4631 argument transmission test **/
@@ -719,16 +702,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         delete standardDefaults.mergePolicy;
         fluid.clearLifecycleFunctions(standardDefaults);
         jqUnit.assertDeepEq("Default options", standardDefaults, that.popup.options);
+        var localTest;
 
         try {
-            fluid.staticEnvironment.localEnvironment = fluid.typeTag("fluid.tests.localTest");
+            localTest = fluid.littleComponent({gradeNames: ["fluid.resolveRoot", "fluid.tests.localTest"]});
             var demands = fluid.demands("fluid.tests.popup", "fluid.tests.localTest");
             var that2 = fluid.tests.defaultInteraction();
             standardDefaults.targetTypeName = "fluid.tests.popup"; // TODO: this floats about a bit
             var mergedDefaults = $.extend(true, standardDefaults, demands.args);
             jqUnit.assertDeepEq("Merged options", mergedDefaults, that2.popup.options);
         } finally {
-            delete fluid.staticEnvironment.localEnvironment;
+            localTest.destroy();
         }
     });
 
@@ -783,6 +767,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         fluid.pushSoftFailure(-1);
     });
+    
+    fluid.setDemandLogging(true);
+    
+    fluid.enhance.check({"fluid.test": true});
+    
 
     fluid.defaults("fluid.tests.uploader", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
@@ -1068,6 +1057,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("Environmental Tests II - FLUID-3818", function () {
+        // Note: In future we won't be able to resolve random junk from the environment, only components registered in the instantiator
         var component = fluid.withEnvironment({
             environmentalValue: $.extend(fluid.typeTag("environmentalValue"), {
                 derived: "derivedValue"
@@ -1155,53 +1145,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.deferredInvoke", {
         gradeNames: ["fluid.littleComponent", "autoInit"]
-    });
-
-    // This is an incredibly perverse test that attempts to invoke a component's creator function
-    // as part of an expander during options, which results in an unreasonable structure holding
-    // a component within the options structure. However, there's no good reason this should be
-    // forbidden outright, and we expect some kind of sensible results from the process
-
-    fluid.defaults("fluid.tests.deferredInvokeParent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        child: {
-            expander: {
-                type: "fluid.deferredInvokeCall",
-                func: "fluid.tests.deferredInvoke",
-                args: {
-                    test: "test option"
-                }
-            }
-        }
-    });
-
-    fluid.demands("fluid.tests.deferredInvoke", "fluid.tests.testContext", {
-        mergeOptions: {
-            test: "test option from demands"
-        }
-    });
-
-    jqUnit.test("Deferred invoked creator function", function () {
-        var parent = fluid.tests.deferredInvokeParent();
-        jqUnit.assertEquals("Child options are correctly applied", "test option", parent.options.child.options.test);
-    });
-
-    jqUnit.test("Deferred invoked creator function with demands", function () {
-        fluid.staticEnvironment.currentTestEnvironment = fluid.typeTag("fluid.tests.testContext");
-        var parent = fluid.tests.deferredInvokeParent();
-        jqUnit.assertEquals("Child options are correctly applied", "test option from demands", parent.options.child.options.test);
-    });
-
-
-    fluid.demands("fluid.tests.freeTarget1", [], {
-        funcName: "fluid.identity",
-        args: ["@0", "@1"]
-    });
-
-    jqUnit.test("Test Invoke Preservation", function () {
-        var model = {};
-        var returned = fluid.invoke("fluid.tests.freeTarget1", model);
-        jqUnit.assertEquals("Identical model reference", model, returned);
     });
 
     /** FLUID-4330 - ginger expansion tests **/
@@ -1983,9 +1926,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("FLUID-4987 double listener from demands block", function () {
-        var that = fluid.invoke("fluid.tests.demandListeners"); // TODO: Allow components to be "self-reactive"
-        that.events.demandEvent.fire(that);
-        jqUnit.assertEquals("Just one listener notified", 1, that.listenerCount);
+        var that = fluid.littleComponent({ // TODO: make all root component construction polymorphic after removal of fluid.invoke
+            components: {
+                demandListeners: {
+                    type: "fluid.tests.demandListeners"
+                }
+            }
+        });
+        var demandListeners = that.demandListeners;
+        demandListeners.events.demandEvent.fire(demandListeners);
+        jqUnit.assertEquals("Just one listener notified", 1, demandListeners.listenerCount);
     });
 
     /** Component lifecycle functions and merging test - includes FLUID-4257 **/
@@ -2953,45 +2903,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("The three children should be registered in order", localChild, parent.idRecord);
     });
 
-    /** FLUID-5023 - Corruption of model material in shared grades **/
-
-    fluid.defaults("fluid.tests.fluid5023comp2", {
-        gradeNames: ["fluid.modelComponent", "autoInit"],
-        model: {}
-    });
-
-    fluid.tests.fluid5023comp2.finalInit = function (that) {
-        // adds a unique ID to the model through the applier, so that we can check it later
-        that.applier.requestChange("tempId", fluid.allocateGuid());
-    };
-
-    // define a simple grade
-    fluid.defaults("fluid.tests.fluid5023testGrade", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
-    });
-
-    // add the grade to the test component using demands
-
-    fluid.demands("fluid.tests.fluid5023comp2", ["fluid.testSharedGrade"], {
-        options: {
-            gradeNames: ["fluid.tests.fluid5023testGrade", "autoInit"]
-        }
-    });
-
-    jqUnit.test("FLUID-5023: Test creation of two instances of the same component with a shared grade added through demands", function () {
-        fluid.staticEnvironment.testSharedGrade = fluid.typeTag("fluid.testSharedGrade");
-        // Instantiate two copies of the same test component
-        // Use fluid.invoke to ensure demands honoured
-        var c1 = fluid.invoke("fluid.tests.fluid5023comp2");
-        var c2 = fluid.invoke("fluid.tests.fluid5023comp2");
-        var defs = fluid.defaults("fluid.tests.fluid5023comp2");
-
-        jqUnit.assertUndefined("The defaults should not have the tempId", defs.model.tempId);
-        jqUnit.assertNotEquals("The ids in the models are not equal", c1.model.tempId, c2.model.tempId);
-
-        delete fluid.staticEnvironment.testSharedGrade;
-    });
-
     /** FLUID-5022 - Designation of dynamic components **/
 
     fluid.tests.fluid5022add = function (that) {
@@ -3298,13 +3209,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("FLUID-5036, Case 1 - An IoCSS source that is fetched from the static environment is not resolved correctly", function () {
         var userOption = 10;
 
-        fluid.staticEnvironment.fluid5036_1UserOption = fluid.littleComponent({
-            gradeNames: "fluid5036_1UserOption",
+        var optionHolder = fluid.littleComponent({
+            gradeNames: ["fluid5036_1UserOption", "fluid.resolveRoot"],
             userOption: userOption
         });
         var root = fluid.tests.fluid5036_1Root();
 
         jqUnit.assertEquals("The user option fetched from the static environment is passed down the target", userOption, root.subComponent.options.targetOption);
+        optionHolder.destroy();
     });
 
     /** FLUID-5036, Case 2 - An IoCSS source that is fetched from the static environment is not resolved correctly **/
@@ -3332,13 +3244,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("FLUID-5036, Case 2 - An IoCSS source that is fetched from the static environment is not resolved correctly", function () {
         var targetOption = 10;
 
-        fluid.staticEnvironment.fluid5036_2UserOption = fluid.littleComponent({
-            gradeNames: "fluid5036_2UserOption",
+        var optionHolder = fluid.littleComponent({
+            gradeNames: ["fluid5036_2UserOption", "fluid.resolveRoot"],
             targetOption: targetOption
         });
         var root = fluid.tests.fluid5036_2Root();
 
         jqUnit.assertEquals("The user option fetched from the static environment is passed down the target", targetOption, root.subComponent.options.options.targetOption);
+        optionHolder.destroy();
     });
 
     fluid.defaults("fluid.tests.baseGradeComponent", {

@@ -98,11 +98,15 @@ var fluid = fluid || fluid_2_0;
     // Return an array of objects describing the current activity
     // unsupported, non-API function
     fluid.getActivityStack = function () {
-        var root = fluid.globalThreadLocal();
-        if (!root.activityStack) {
-            root.activityStack = [];
+        if (fluid.globalThreadLocal) {
+            var root = fluid.globalThreadLocal();
+            if (!root.activityStack) {
+                root.activityStack = [];
+            }
+            return root.activityStack;
+        } else { // not enough of the component system may have booted up to allocate the root component
+            return [];
         }
-        return root.activityStack;
     };
 
     // Return an array of objects describing the current activity
@@ -1322,21 +1326,22 @@ var fluid = fluid || fluid_2_0;
 
     /*** DEFAULTS AND OPTIONS MERGING SYSTEM ***/
 
+
     /** Create a "type tag" component with no state but simply a type name and id. The most
      *  minimal form of Fluid component */
-
+    // No longer a publically supported function - we don't abolish this because it is too annoying to prevent 
+    // circularity during the bootup of the IoC system if we try to construct full components before it is complete
+    // unsupported, non-API function
     fluid.typeTag = function (name) {
         return name ? {
             typeName: name,
             id: fluid.allocateGuid()
         } : null;
     };
-
+    
     // Definitions for ThreadLocals, the static and dynamic environment - lifted here from
     // FluidIoC.js so that we can issue calls to fluid.describeActivity for debugging purposes
     // in the core framework
-
-    fluid.staticEnvironment = fluid.typeTag("fluid.staticEnvironment");
 
     // unsupported, non-API function
     fluid.singleThreadLocal = function (initFunc) {
@@ -1350,10 +1355,11 @@ var fluid = fluid || fluid_2_0;
     // is not used on startup so it can be successfully monkey-patched
     // unsupported, non-API function
     fluid.threadLocal = fluid.singleThreadLocal;
+    fluid.dynamicEnvironment = fluid.typeTag("fluid.dynamicEnvironment");
 
     // unsupported, non-API function
     fluid.globalThreadLocal = fluid.threadLocal(function () {
-        return fluid.typeTag("fluid.dynamicEnvironment");
+        return fluid.dynamicEnvironment;
     });
 
     var gradeTick = 1; // tick counter for managing grade cache invalidation
@@ -2117,22 +2123,6 @@ var fluid = fluid || fluid_2_0;
      */
     fluid.COMPONENT_OPTIONS = {type: "fluid.marker", value: "COMPONENT_OPTIONS"};
 
-    /** Construct a dummy or "placeholder" subcomponent, that optionally provides empty
-     * implementations for a set of methods.
-     */
-    // TODO: this method is inefficient and inappropriate, should simply discard options entirely pending review
-    fluid.emptySubcomponent = function (options) {
-        var that = fluid.typeTag("fluid.emptySubcomponent");
-        that.options = options || {};
-        that.options.gradeNames = [that.typeName];
-
-        options = fluid.makeArray(options);
-        for (var i = 0; i < options.length; ++i) {
-            that[options[i]] = fluid.identity;
-        }
-        return that;
-    };
-
     /** Compute a "nickname" given a fully qualified typename, by returning the last path
      * segment.
      */
@@ -2142,14 +2132,13 @@ var fluid = fluid || fluid_2_0;
         return segs[segs.length - 1];
     };
 
-    /** A combined "component and grade name" which allows type tags to be declaratively constructed
-     * from options material. Any component found bearing this grade will be instantiated first amongst
-     * its set of siblings, since it is likely to bear a context-forming type name */
+    /** A specially recognised grade tag which directs the IoC framework to instantiate this component first amongst
+     * its set of siblings, since it is likely to bear a context-forming type name. This will be removed from the framework
+     * once we have implemented FLUID-4925 "wave of explosions" */
 
-    fluid.typeFount = function (options) {
-        var that = fluid.initLittleComponent("fluid.typeFount", options);
-        return fluid.typeTag(that.options.targetTypeName);
-    };
+    fluid.defaults("fluid.typeFount", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
 
     /**
      * Creates a new "little component": a that-ist object with options merged into it by the framework.
@@ -2303,8 +2292,7 @@ var fluid = fluid || fluid_2_0;
         if (typeof (entry) !== "function") {
             var entryType = typeof (entry) === "string" ? entry : entry.type;
             togo = entryType === "fluid.emptySubcomponent" ?
-                fluid.emptySubcomponent(entry.options) :
-                fluid.invokeGlobalFunction(entryType, args);
+                null : fluid.invokeGlobalFunction(entryType, args);
         } else {
             togo = entry.apply(null, args);
         }
@@ -2364,7 +2352,7 @@ var fluid = fluid || fluid_2_0;
     // ******* SELECTOR ENGINE *********
 
     // selector regexps copied from jQuery - recent versions correct the range to start C0
-    // The initial portion of the main character selector "just add water" to add on extra
+    // The initial portion of the main character selector: "just add water" to add on extra
     // accepted characters, as well as the "\\\\." -> "\." portion necessary for matching
     // period characters escaped in selectors
     var charStart = "(?:[\\w\\u00c0-\\uFFFF*_-";

@@ -675,8 +675,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.expect(2);
         var child = parent[subcomponentName];
         jqUnit.assertNotUndefined("The parent component has a child component", child);
-        jqUnit.assertTrue("The child component has the correct grade.",
-            fluid.hasGrade(child.options, expectedGrade));
+        if (expectedGrade) {
+            jqUnit.assertTrue("The child component has the correct grade.",
+                fluid.hasGrade(child.options, expectedGrade));
+        } else {
+            jqUnit.assertEquals("The child component was not instantiated", child, expectedGrade);
+        }
     };
 
     var testSubcomponents = function (tests) {
@@ -701,7 +705,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 subcomponentName: "child",
-                expectedGrade: "fluid.emptySubcomponent"
+                expectedGrade: null
             }
         ]);
     });

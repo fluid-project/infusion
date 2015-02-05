@@ -27,7 +27,7 @@ fluid_2_0 = fluid_2_0 || {};
             if (name.indexOf(fluid.renderer.decoratorComponentPrefix) === 0) {
                 visitor(component, name);
             }
-        }, {flat: true});
+        }, {flat: true}, []);
     };
 
     fluid.renderer.clearDecorators = function(that) {
@@ -366,7 +366,7 @@ fluid_2_0 = fluid_2_0 || {};
         var condition;
         if (options.condition.funcName) {
             var args = config.expandLight(options.condition.args);
-            condition = fluid.invoke(options.condition.funcName, args);
+            condition = fluid.invokeGlobalFunction(options.condition.funcName, args);
         } else if (options.condition.expander) {
             condition = config.expander(options.condition);
         } else {

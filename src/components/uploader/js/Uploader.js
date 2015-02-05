@@ -469,7 +469,7 @@ var fluid_2_0 = fluid_2_0 || {};
             demoTag: {
                 type: "fluid.typeFount",
                 options: {
-                    targetTypeName: {
+                    gradeNames: {
                         expander: {
                             funcName: "fluid.uploader.demoTypeTag",
                             args: "{uploader}.options.demo"
