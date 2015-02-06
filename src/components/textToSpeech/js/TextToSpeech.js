@@ -99,7 +99,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 funcName: "fluid.textToSpeech.handleEnd",
                 args: ["{that}"]
             },
-            handleError: "{that}.events.error.fire",
+            handleError: "{that}.events.onError.fire",
             handlePause: {
                 changePath: "paused",
                 value: true

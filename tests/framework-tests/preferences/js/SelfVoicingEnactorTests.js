@@ -18,11 +18,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests");
 
     /*******************************************************************************
-     * Unit tests for fluid.prefs.enactor.speakEnactor
+     * Unit tests for fluid.prefs.enactor.speak
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.prefs.enactor.speakEnactor", {
-        gradeNames: ["fluid.prefs.enactor.speakEnactor", "autoInit"],
+        gradeNames: ["fluid.prefs.enactor.speak", "autoInit"],
         members: {
             eventRecord: {},
             speakQueue: []
@@ -106,7 +106,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         modules: [{
-            name: "fluid.prefs.enactor.speakEnactor",
+            name: "fluid.prefs.enactor.speak",
             tests: [{
                 expect: 3,
                 name: "Start-Stop flow",
@@ -136,11 +136,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     /*******************************************************************************
-     * Unit tests for fluid.prefs.enactor.selfVoicingEnactor
+     * Unit tests for fluid.prefs.enactor.selfVoicing
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.prefs.enactor.selfVoicingEnactor", {
-        gradeNames: ["fluid.prefs.enactor.selfVoicingEnactor", "fluid.tests.prefs.enactor.speakEnactor", "autoInit"],
+        gradeNames: ["fluid.prefs.enactor.selfVoicing", "fluid.tests.prefs.enactor.speakEnactor", "autoInit"],
         model: {
             enabled: false
         },
@@ -175,7 +175,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             ]
         },
         modules: [{
-            name: "fluid.prefs.enactor.selfVoicingEnactor",
+            name: "fluid.prefs.enactor.selfVoicing",
             tests: [{
                 expect: 1,
                 name: "Dom Reading",
