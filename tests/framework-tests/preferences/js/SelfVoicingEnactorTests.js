@@ -97,19 +97,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 onStart: 1,
                 onStop: 1,
                 onSpeechQueued: 1
+            },
+            stoppedModel: {
+                enabled: true,
+                speaking: false,
+                pending: false,
+                paused: false
             }
         },
         modules: [{
             name: "fluid.prefs.enactor.speakEnactor",
             tests: [{
-                expect: 2,
+                expect: 3,
                 name: "Start-Stop flow",
                 sequence: [{
                     func: "{speak}.queueSpeech",
                     args: ["{that}.options.testOptions.sampleText"]
                 }, {
                     listener: "fluid.tests.speakTester.verifyRecords",
-                    args: ["{speak}", "{that}.options.testOptions.startStopFireRecord", ["{that}.options.testOptions.sampleText"]],
+                    args: [
+                        "{speak}",
+                        "{that}.options.testOptions.startStopFireRecord",
+                        ["{that}.options.testOptions.sampleText"],
+                        "{that}.options.testOptions.stoppedModel"
+                    ],
                     spec: {priority: "last"},
                     event: "{speak}.events.onStop"
                 }]
@@ -117,9 +128,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
-    fluid.tests.speakTester.verifyRecords = function (that, expectedEvents, expectedText) {
+    fluid.tests.speakTester.verifyRecords = function (that, expectedEvents, expectedText, expectedModel) {
         jqUnit.assertDeepEq("The events should have fired correctly", expectedEvents, that.eventRecord);
         jqUnit.assertDeepEq("The text to be spoken should have been queued correctly", expectedText, that.speakQueue);
+        jqUnit.assertDeepEq("The model should be reset correctly", expectedModel, that.model);
         that.clearRecords();
     };
 

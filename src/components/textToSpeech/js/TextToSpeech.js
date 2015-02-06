@@ -137,12 +137,15 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.textToSpeech.handleEnd = function (that) {
+        var resetValues = {
+            speaking: false,
+            pending: false,
+            paused: false
+        };
+
         if (!that.queue.length) {
-            that.applier.change("", {
-                speaking: false,
-                pending: false,
-                paused: false
-            });
+            var newModel = $.extend({}, that.model, resetValues);
+            that.applier.change("", newModel);
         }
     };
 
