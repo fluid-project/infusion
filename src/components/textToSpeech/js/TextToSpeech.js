@@ -168,7 +168,7 @@ var fluid_2_0 = fluid_2_0 || {};
         };
         $.extend(toSpeak, that.options.utteranceOpts, options, eventBinding);
 
-        that.queue.push(toSpeak);
+        that.queue.push(text);
         that.events.onSpeechQueued.fire(text);
         speechSynthesis.speak(toSpeak);
     };
