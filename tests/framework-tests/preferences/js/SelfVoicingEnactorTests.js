@@ -10,7 +10,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/* global fluid, jqUnit */
+/* global fluid, jqUnit, speechSynthesis */
 
 (function ($) {
     "use strict";
@@ -34,6 +34,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             volume: 0
         },
         listeners: {
+            "onCreate.cleanUp": "fluid.tests.prefs.enactor.speakEnactor.cleanUp",
             "onStart.record": {
                 listener: "{that}.record",
                 args: ["onStart"]
@@ -63,6 +64,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
+
+    fluid.tests.prefs.enactor.speakEnactor.cleanUp = function () {
+        speechSynthesis.cancel();
+    };
 
     fluid.tests.prefs.enactor.speakEnactor.record = function (that, name) {
         that.eventRecord[name] = (that.record[name] || 0) + 1;

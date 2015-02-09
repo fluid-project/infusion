@@ -11,7 +11,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/* global fluid, jqUnit */
+/* global fluid, jqUnit, speechSynthesis */
 
 (function () {
     "use strict";
@@ -23,8 +23,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         utteranceOpts: {
             // not all speech synthesizers will respect this setting
             volume: 0
+        },
+        listeners: {
+            "onCreate.cleanUp": "fluid.tests.textToSpeech.cleanUp"
         }
     });
+
+    fluid.tests.textToSpeech.cleanUp = function () {
+        speechSynthesis.cancel();
+    };
 
     fluid.defaults("fluid.tests.textToSpeech.startStop", {
         gradeNames: ["fluid.tests.textToSpeech", "autoInit"],
