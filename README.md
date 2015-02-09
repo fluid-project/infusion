@@ -10,7 +10,7 @@ Infusion includes:
 
 ##Where Can I See Infusion Components?##
 
-<http://fluidproject.org/products/infusion/infusion-demos/>
+<http://fluidproject.org/infusion.html>
 
 
 ##How Do I Get Infusion?##
