@@ -99,7 +99,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 funcName: "fluid.textToSpeech.handleEnd",
                 args: ["{that}"]
             },
-            handleError: "{that}.events.error.fire",
+            handleError: "{that}.events.onError.fire",
             handlePause: {
                 changePath: "paused",
                 value: true
@@ -137,12 +137,15 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.textToSpeech.handleEnd = function (that) {
+        var resetValues = {
+            speaking: false,
+            pending: false,
+            paused: false
+        };
+
         if (!that.queue.length) {
-            that.applier.change("", {
-                speaking: false,
-                pending: false,
-                paused: false
-            });
+            var newModel = $.extend({}, that.model, resetValues);
+            that.applier.change("", newModel);
         }
     };
 
@@ -165,7 +168,7 @@ var fluid_2_0 = fluid_2_0 || {};
         };
         $.extend(toSpeak, that.options.utteranceOpts, options, eventBinding);
 
-        that.queue.push(toSpeak);
+        that.queue.push(text);
         that.events.onSpeechQueued.fire(text);
         speechSynthesis.speak(toSpeak);
     };

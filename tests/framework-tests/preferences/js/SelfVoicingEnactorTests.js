@@ -10,7 +10,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/* global fluid, jqUnit */
+/* global fluid, jqUnit, speechSynthesis */
 
 (function ($) {
     "use strict";
@@ -18,11 +18,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests");
 
     /*******************************************************************************
-     * Unit tests for fluid.prefs.enactor.speakEnactor
+     * Unit tests for fluid.prefs.enactor.speak
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.prefs.enactor.speakEnactor", {
-        gradeNames: ["fluid.prefs.enactor.speakEnactor", "autoInit"],
+        gradeNames: ["fluid.prefs.enactor.speak", "autoInit"],
         members: {
             eventRecord: {},
             speakQueue: []
@@ -34,6 +34,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             volume: 0
         },
         listeners: {
+            "onCreate.cleanUp": "fluid.tests.prefs.enactor.speakEnactor.cleanUp",
             "onStart.record": {
                 listener: "{that}.record",
                 args: ["onStart"]
@@ -63,6 +64,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
+
+    fluid.tests.prefs.enactor.speakEnactor.cleanUp = function () {
+        speechSynthesis.cancel();
+    };
 
     fluid.tests.prefs.enactor.speakEnactor.record = function (that, name) {
         that.eventRecord[name] = (that.record[name] || 0) + 1;
@@ -97,19 +102,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 onStart: 1,
                 onStop: 1,
                 onSpeechQueued: 1
+            },
+            stoppedModel: {
+                enabled: true,
+                speaking: false,
+                pending: false,
+                paused: false
             }
         },
         modules: [{
-            name: "fluid.prefs.enactor.speakEnactor",
+            name: "fluid.prefs.enactor.speak",
             tests: [{
-                expect: 2,
+                expect: 3,
                 name: "Start-Stop flow",
                 sequence: [{
                     func: "{speak}.queueSpeech",
                     args: ["{that}.options.testOptions.sampleText"]
                 }, {
                     listener: "fluid.tests.speakTester.verifyRecords",
-                    args: ["{speak}", "{that}.options.testOptions.startStopFireRecord", ["{that}.options.testOptions.sampleText"]],
+                    args: [
+                        "{speak}",
+                        "{that}.options.testOptions.startStopFireRecord",
+                        ["{that}.options.testOptions.sampleText"],
+                        "{that}.options.testOptions.stoppedModel"
+                    ],
                     spec: {priority: "last"},
                     event: "{speak}.events.onStop"
                 }]
@@ -117,18 +133,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
-    fluid.tests.speakTester.verifyRecords = function (that, expectedEvents, expectedText) {
+    fluid.tests.speakTester.verifyRecords = function (that, expectedEvents, expectedText, expectedModel) {
         jqUnit.assertDeepEq("The events should have fired correctly", expectedEvents, that.eventRecord);
         jqUnit.assertDeepEq("The text to be spoken should have been queued correctly", expectedText, that.speakQueue);
+        jqUnit.assertDeepEq("The model should be reset correctly", expectedModel, that.model);
         that.clearRecords();
     };
 
     /*******************************************************************************
-     * Unit tests for fluid.prefs.enactor.selfVoicingEnactor
+     * Unit tests for fluid.prefs.enactor.selfVoicing
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.prefs.enactor.selfVoicingEnactor", {
-        gradeNames: ["fluid.prefs.enactor.selfVoicingEnactor", "fluid.tests.prefs.enactor.speakEnactor", "autoInit"],
+        gradeNames: ["fluid.prefs.enactor.selfVoicing", "fluid.tests.prefs.enactor.speakEnactor", "autoInit"],
         model: {
             enabled: false
         },
@@ -163,7 +180,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             ]
         },
         modules: [{
-            name: "fluid.prefs.enactor.selfVoicingEnactor",
+            name: "fluid.prefs.enactor.selfVoicing",
             tests: [{
                 expect: 1,
                 name: "Dom Reading",
