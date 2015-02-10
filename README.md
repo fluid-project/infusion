@@ -27,6 +27,10 @@ The Fluid community is an international group of designers, developers, and test
 
 The best way to join the Fluid Community is to jump into any of our community activities. Visit our [website](http://fluidproject.org/) for links to our mailing lists, chat room, wiki, etc.
 
+##Where is Infusion Used?##
+
+The Infusion library is the cornerstone of a number of projects. You can see some of them featured on our [Projects page](http://fluidproject.org/projects.html).
+
 ##How Do I Create an Infusion Package?##
 
 Strictly speaking, Infusion can be used directly from source (i.e. by including each individual required file). However, for simplicity and performance reasons, you may wish to create a concatenated, minified file. The Grunt build options described below will also allow you to remove any unneeded features or libraries that you may already have in your project.
