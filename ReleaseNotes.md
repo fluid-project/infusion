@@ -17,7 +17,7 @@ You can create your own custom build of Infusion using the [grunt build script](
 ## Demos ##
 
 Infusion ships with a demos for seeing all of the components in action. You can
-find them in the _**demos**_ folder in the release bundle or on our [web site](http://fluidproject.org/products/infusion/infusion-demos/).
+find them in the _**demos**_ folder in the release bundle or on our [build site](http://build.fluidproject.org/).
 
 When run from a local file system, several of these demos require you to enable local file AJAX
 if you're using Firefox 3 and higher. Here's more information:
