@@ -10,17 +10,18 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
     "use strict";
-
-    fluid.staticEnvironment.prefsEditorTest = fluid.typeTag("fluid.tests.prefs");
+    
+    fluid.littleComponent({
+        gradeNames: ["fluid.tests.prefs", "fluid.resolveRoot"]
+    });
 
     // Use temp store rather than the cookie store for setting save
-    fluid.demands("fluid.prefs.store", ["fluid.globalSettingsStore", "fluid.tests.prefs"], {
-        funcName: "fluid.tempStore"
+    fluid.demands("fluid.prefs.store", ["fluid.prefs.globalSettingsStore", "fluid.tests.prefs"], {
+        funcName: "fluid.prefs.tempStore"
     });
 
     // Supply the table of contents' template URL
@@ -94,7 +95,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.prefs.integrationTest = function (componentName, resetShouldSave) {
         jqUnit.asyncTest(componentName + " Integration tests", function () {
-            fluid.globalSettingsStore();
+            fluid.prefs.globalSettingsStore();
             fluid.pageEnhancer({
                 uiEnhancer: {
                     gradeNames: ["fluid.uiEnhancer.starterEnactors"],
@@ -113,6 +114,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             function testComponent(prefsEditorLoader) {
                 var prefsEditor = prefsEditorLoader.prefsEditor;
                 var rootModel = prefsEditor.rootModel;
+                var globalUIEnhancer = fluid.queryIoCSelector(fluid.rootComponent, "fluid.pageEnhancer", true)[0].uiEnhancer;
 
                 fluid.tests.prefs.assertPresent(prefsEditor, fluid.tests.prefs.expectedComponents[componentName]);
                 fluid.tests.prefs.applierRequestChanges(prefsEditor, fluid.tests.prefs.bwSkin);
@@ -133,7 +135,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 fluid.tests.prefs.checkModelSelections("model from original", rootModel, prefsEditor.model);
                 fluid.tests.prefs.applierRequestChanges(prefsEditor, fluid.tests.prefs.bwSkin);
                 fluid.tests.prefs.checkModelSelections("model from original (correct state after reset)",
-                    (resetShouldSave ? rootModel : fluid.tests.prefs.bwSkin), fluid.staticEnvironment.uiEnhancer.model);
+                    (resetShouldSave ? rootModel : fluid.tests.prefs.bwSkin), globalUIEnhancer.model);
 
                 cancelButton.click();
                 fluid.tests.prefs.checkModelSelections("model from original (correct state after reset and cancel)",
@@ -235,7 +237,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         extraListener = extraListener || function () { jqUnit.start(); };
 
         jqUnit.asyncTest(componentName + " Munging Integration tests", function () {
-            fluid.globalSettingsStore();
+            fluid.prefs.globalSettingsStore();
             fluid.pageEnhancer(fluid.tests.prefs.enhancerOptions);
             var options = fluid.merge(null, fluid.tests.prefs.mungingIntegrationOptions, {
                 prefsEditor: {

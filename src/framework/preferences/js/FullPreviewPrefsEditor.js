@@ -21,7 +21,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.defaults("fluid.prefs.fullPreview", {
         gradeNames: ["fluid.prefs.prefsEditorLoader", "autoInit"],
-        outerPreviewEnhancerOptions: "{originalEnhancerOptions}.options.originalUserOptions",
+        outerPreviewEnhancerOptions: "{originalEnhancerOptions}.originalUserOptions",
         components: {
             prefsEditor: {
                 container: "{that}.container",

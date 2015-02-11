@@ -71,8 +71,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         });
 
-        fluid.demands("fluid.prefs.store", ["fluid.globalSettingsStore", "fluid.prefs.tests"], {
-            funcName: "fluid.tempStore"
+        fluid.demands("fluid.prefs.store", ["fluid.prefs.globalSettingsStore", "fluid.prefs.tests"], {
+            funcName: "fluid.prefs.tempStore"
         });
 
         var bwSkin = {
@@ -100,7 +100,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var testPrefsEditor = function (testFn, prefsEditor) {
             prefsEditor = prefsEditor || fluid.prefsTests;
             prefsEditor.testFn = testFn;
-            fluid.globalSettingsStore();
+            fluid.prefs.globalSettingsStore();
             prefsEditor("#ui-options");
         };
 
@@ -507,7 +507,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         // The following two tests (auto-save and preview) need to run at the end of the test file because they cause failures
         // on the subsequent unit tests when they were placed before other tests, due to the possibility that the demands blocks
-        // issued specifically within their own staticEnvironment are still in effect on the subsequent tests.
+        // issued will leak over into polluting the instantiation in those of other
+        // TODO: naturally all these demands blocks should be removed, and this horrifyingly buggy effect should be no more
         /*******************
          * Auto-save tests *
          *******************/

@@ -108,6 +108,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.progressiveChecker.forComponent = function (that, componentName) {
+        // TODO: This is faulty, as per FLUID-5264
         var defaults = fluid.defaults(componentName);
         var expanded = fluid.expandOptions(fluid.copy(defaults.progressiveCheckerOptions), that);
         var checkTag = fluid.progressiveChecker.check(expanded.checks, expanded.defaultContextName);

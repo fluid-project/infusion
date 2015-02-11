@@ -24,12 +24,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         components: {
             settingsStore: {
-                type: "fluid.tempStore"
+                type: "fluid.prefs.tempStore"
             },
             pageEnhancer: {
                 type: "fluid.pageEnhancer",
                 options: {
-                    creatOnEvent: "createPageEnhancer",
+                    creatOnEvent: "createPageEnhancer", // TODO: HORRIBLE typo here
                     uiEnhancer: {
                         options: {
                             gradeNames: ["fluid.uiEnhancer.starterEnactors"],

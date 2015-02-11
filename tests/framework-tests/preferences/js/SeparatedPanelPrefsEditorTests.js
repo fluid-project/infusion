@@ -66,10 +66,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
+    
+    fluid.tests.fetchGlobalSettingsStore = function () {
+        return fluid.queryIoCSelector("fluid.rootComponent", "fluid.prefs.globalSettingsStore", true)[0];
+    };
 
     // Cleanup listener that restores a global settings store model to default.
     fluid.tests.clearStore = function () {
-        fluid.staticEnvironment.settingsStore.set();
+        var settingsStore = fluid.tests.fetchGlobalSettingsStore();
+        settingsStore.set();
     };
 
     fluid.tests.testSeparatedPanel = function (separatedPanel) {
@@ -91,8 +96,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.afterHideFunc1 = function () {
         return function () {
+            var settingsStore = fluid.tests.fetchGlobalSettingsStore();
             jqUnit.assertEquals("Reset button is invisible", false, $(".flc-prefsEditor-reset").is(":visible"));
-            jqUnit.assertDeepEq("Only the changed preferences are saved", fluid.tests.prefs.bwSkin, fluid.staticEnvironment.settingsStore.get());
+            jqUnit.assertDeepEq("Only the changed preferences are saved", fluid.tests.prefs.bwSkin, settingsStore.get());
         };
     };
     fluid.tests.afterShowFunc2 = function (separatedPanel) {
@@ -244,7 +250,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     $(document).ready(function () {
 
-        fluid.globalSettingsStore();
+        fluid.prefs.globalSettingsStore();
         fluid.pageEnhancer(fluid.tests.prefs.enhancerOptions);
 
         fluid.test.runTests([

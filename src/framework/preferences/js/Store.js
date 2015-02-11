@@ -35,7 +35,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * SettingsStore Subcomponent that uses a cookie for persistence.
      * @param {Object} options
      */
-    fluid.defaults("fluid.cookieStore", {
+    fluid.defaults("fluid.prefs.cookieStore", {
         gradeNames: ["fluid.prefs.dataSource", "autoInit"],
         cookie: {
             name: "fluid-ui-settings",
@@ -44,20 +44,20 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-    fluid.demands("fluid.prefs.dataSource.get", "fluid.cookieStore", {
-        funcName: "fluid.cookieStore.get",
+    fluid.demands("fluid.prefs.dataSource.get", "fluid.prefs.cookieStore", {
+        funcName: "fluid.prefs.cookieStore.get",
         args: "{that}.options.cookie.name"
     });
 
-    fluid.demands("fluid.prefs.dataSource.set", "fluid.cookieStore", {
-        funcName: "fluid.cookieStore.set",
+    fluid.demands("fluid.prefs.dataSource.set", "fluid.prefs.cookieStore", {
+        funcName: "fluid.prefs.cookieStore.set",
         args: ["{arguments}.0", "{that}.options.cookie"]
     });
 
     /**
      * Retrieve and return the value of the cookie
      */
-    fluid.cookieStore.get = function (cookieName) {
+    fluid.prefs.cookieStore.get = function (cookieName) {
         var cookie = document.cookie;
         if (cookie.length <= 0) {
             return;
@@ -83,7 +83,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * Assembles the cookie string
      * @param {Object} cookie settings
      */
-    fluid.cookieStore.assembleCookie = function (cookieOptions) {
+    fluid.prefs.cookieStore.assembleCookie = function (cookieOptions) {
         var cookieStr = cookieOptions.name + "=" + cookieOptions.data;
 
         if (cookieOptions.expires) {
@@ -102,9 +102,9 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {Object} settings
      * @param {Object} cookieOptions
      */
-    fluid.cookieStore.set = function (settings, cookieOptions) {
+    fluid.prefs.cookieStore.set = function (settings, cookieOptions) {
         cookieOptions.data = encodeURIComponent(JSON.stringify(settings));
-        document.cookie = fluid.cookieStore.assembleCookie(cookieOptions);
+        document.cookie = fluid.prefs.cookieStore.assembleCookie(cookieOptions);
     };
 
 
@@ -116,39 +116,31 @@ var fluid_2_0 = fluid_2_0 || {};
      * SettingsStore Subcomponent that doesn't do persistence.
      * @param {Object} options
      */
-    fluid.defaults("fluid.tempStore", {
+    fluid.defaults("fluid.prefs.tempStore", {
         gradeNames: ["fluid.prefs.dataSource", "fluid.modelComponent", "autoInit"]
     });
 
-    fluid.demands("fluid.prefs.dataSource.get", "fluid.tempStore", {
+    fluid.demands("fluid.prefs.dataSource.get", "fluid.prefs.tempStore", {
         funcName: "fluid.identity",
         args: "{that}.model"
     });
 
-    fluid.demands("fluid.prefs.dataSource.set", "fluid.tempStore", {
-        funcName: "fluid.tempStore.set",
+    fluid.demands("fluid.prefs.dataSource.set", "fluid.prefs.tempStore", {
+        funcName: "fluid.prefs.tempStore.set",
         args: ["{arguments}.0", "{that}.applier"]
     });
 
-    fluid.tempStore.set = function (settings, applier) {
+    fluid.prefs.tempStore.set = function (settings, applier) {
         applier.requestChange("", settings);
     };
 
-    fluid.defaults("fluid.globalSettingsStore", {
-        gradeNames: ["autoInit", "fluid.littleComponent"],
+    fluid.defaults("fluid.prefs.globalSettingsStore", {
+        gradeNames: ["fluid.littleComponent", "fluid.resolveRoot", "autoInit"],
         components: {
             settingsStore: {
-                type: "fluid.prefs.store"
+                type: "fluid.prefs.cookieStore"
             }
         }
-    });
-
-    fluid.globalSettingsStore.finalInit = function (that) {
-        fluid.staticEnvironment.settingsStore = that.settingsStore;
-    };
-
-    fluid.demands("fluid.prefs.store", ["fluid.globalSettingsStore"], {
-        funcName: "fluid.cookieStore"
     });
 
 })(jQuery, fluid_2_0);

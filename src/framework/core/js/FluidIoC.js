@@ -91,24 +91,16 @@ var fluid_2_0 = fluid_2_0 || {};
             instantiator: instantiator
         };
         var memberNames = fluid.getMemberNames(instantiator, thatStack);
-        var visitorWrapper = function (component, name, segs, i, adjust) {
-            // "adjust" ensures that we find components on path to root independent of depth criterion
-            var contextHash = fluid.getContextHash(instantiator, component);
-            // Odd accounting in order to discover non-root components - first 2 elements are "" and "" representing the root component and dynamic environment
-            if ((i + (adjust | 0)) >= 2 || contextHash && contextHash["fluid.resolveRoot"]) { // those two components have no shadows
-                return visitor(component, name, segs, i);
-            }
-        };
         for (var i = thatStack.length - 1; i >= 0; --i) {
             var that = thatStack[i];
 
             // explicitly visit the direct parent first
             options.visited[that.id] = true;
-            if (visitorWrapper(that, memberNames[i], memberNames, i, 1)) {
+            if (visitor(that, memberNames[i], memberNames, i)) {
                 return;
             }
             
-            if (fluid.visitComponentChildren(that, visitorWrapper, options, memberNames)) {
+            if (fluid.visitComponentChildren(that, visitor, options, memberNames)) {
                 return;
             }
             memberNames.pop();
@@ -250,6 +242,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.receiveDistributions = function (parentThat, gradeNames, memberName, that) {
         var instantiator = fluid.getInstantiator(parentThat || that);
         var thatStack = instantiator.getThatStack(parentThat || that); // most specific is at end
+        thatStack.unshift(fluid.rootComponent);
         var memberNames = fluid.getMemberNames(instantiator, thatStack);
         var distributedBlocks = [];
         var shadows = fluid.transform(thatStack, function (thisThat) {
@@ -651,10 +644,26 @@ var fluid_2_0 = fluid_2_0 || {};
 
         fluid.computeDynamicGrades(that, shadow, strategy, shadow.mergeOptions.mergeBlocks);
         fluid.distributeOptions(that, strategy);
+        if (shadow.contextHash["fluid.resolveRoot"]) {
+            var memberName = fluid.computeGlobalMemberName(that);
+            fluid.globalInstantiator.recordKnownComponent(fluid.resolveRootComponent, that, memberName, false);
+        }
 
         return shadow.getConfig;
     };
 
+    // About the SHADOW:
+    // Allocated at: instantiator's "recordComponent"
+    // Contents:
+    //     path {String} Principal allocated path (point of construction) in tree
+    //     that {Component} The component itself
+    //     contextHash {String to Boolean} Map of context names which this component matches
+    //     mergePolicy, mergeOptions: Machinery for last phase of options merging
+    //     invokerStrategy, eventStrategyBlock, memberStrategy, getConfig: Junk required to operate the accessor
+    //     listeners: Listeners registered during this component's construction, to be cleared during clearListeners
+    //     distributions, collectedClearer: Managing options distributions
+    //     subcomponentLocal: Signalling local record from computeDynamicComponents to embodyDemands
+    
     fluid.shadowForComponent = function (component) {
         var instantiator = fluid.getInstantiator(component);
         return instantiator && component ? instantiator.idToShadow[component.id] : null;
@@ -823,40 +832,48 @@ var fluid_2_0 = fluid_2_0 || {};
             modelTransactions: {init: {}}, // a map of transaction id to map of component id to records of components enlisted in a current model initialisation transaction
             composePath: fluid.model.composePath, // For speed, we declare that no component's name may contain a period
             composeSegments: fluid.model.composeSegments,
-            parseEL: fluid.model.parseEL
+            parseEL: fluid.model.parseEL,
+            events: {
+                onComponentAttach: fluid.makeEventFirer({name: "instantiator's onComponentAttach event"}),
+                onComponentClear: fluid.makeEventFirer({name: "instantiator's onComponentClear event"})
+            }
         };
         // We frequently get requests for components not in this instantiator - e.g. from the dynamicEnvironment or manually created ones
         that.idToPath = function (id) {
             var shadow = that.idToShadow[id];
             return shadow ? shadow.path : "";
         };
-        that.getThatStack = function (component) { // Note - the returned stack is assumed writeable
+        // Note - the returned stack is assumed writeable and does not include the root
+        that.getThatStack = function (component) { 
             var shadow = that.idToShadow[component.id];
             if (shadow) {
                 var path = shadow.path;
                 var parsed = fluid.model.parseEL(path);
-                var togo = fluid.transform(parsed, function (value, i) {
-                    var parentPath = that.composeSegments.apply(null, parsed.slice(0, i + 1));
-                    return that.pathToComponent[parentPath];
-                });
-                var root = that.pathToComponent[""];
-                if (root) {
-                    togo.unshift(root);
+                var root = that.pathToComponent[""], togo = [];
+                for (var i = 0; i < parsed.length; ++ i) {
+                    root = root[parsed[i]];
+                    togo.push(root);
                 }
                 return togo;
             }
-            else { return [component];}
+            else { return [];}
         };
         that.getFullStack = function (component) {
             var thatStack = component? that.getThatStack(component) : [];
-            thatStack.splice(1, 0, fluid.globalThreadLocal());
+            thatStack.unshift(fluid.globalThreadLocal());
+            thatStack.unshift(fluid.resolveRootComponent);
             return thatStack;
         };
         function recordComponent(component, path, created) {
+            var shadow;
             if (created) {
-                var shadow = that.idToShadow[component.id] = {};
+                shadow = that.idToShadow[component.id] = {};
                 shadow.that = component;
                 shadow.path = path;
+            } else {
+                shadow = that.idToShadow[component.id];
+                shadow.injectedPaths = shadow.injectedPaths || [];
+                shadow.injectedPaths.push(path);
             }
             if (that.pathToComponent[path]) {
                 fluid.fail("Error during instantiation - path " + path + " which has just created component " + fluid.dumpThat(component) +
@@ -869,11 +886,16 @@ var fluid_2_0 = fluid_2_0 || {};
             recordComponent(component, "", true);
         };
         that.recordKnownComponent = function (parent, component, name, created) {
-            var parentPath = that.idToShadow[parent.id].path;
-            var path = that.composePath(parentPath, name);
-            recordComponent(component, path, created);
+            parent[name] = component;
+            if (fluid.isComponent(component)) {
+                var parentPath = that.idToShadow[parent.id].path;
+                var path = that.composePath(parentPath, name);
+                recordComponent(component, path, created);
+                that.events.onComponentAttach.fire(component, path, that, created);
+            }
         };
         that.clearComponent = function (component, name, child, options, noModTree, path) {
+            // options are visitor options for recursive driving
             var record = that.idToShadow[component.id].path;
             // use flat recursion since we want to use our own recursion rather than rely on "visited" records
             options = options || {flat: true, instantiator: that};
@@ -883,17 +905,25 @@ var fluid_2_0 = fluid_2_0 || {};
                 fluid.fail("Cannot clear component " + name + " from component ", component,
                     " which was not created by this instantiator");
             }
-            fluid.fireEvent(child, "events.onClear", [child, name, component]);
 
             var childPath = that.composePath(path, name);
-            var childRecord = that.idToShadow[child.id];
+            var childShadow = that.idToShadow[child.id];
+            var created = childShadow.path === childPath;
+            that.events.onComponentClear.fire(child, childPath, component, created);
 
             // only recurse on components which were created in place - if the id record disagrees with the
             // recurse path, it must have been injected
-            if (childRecord && childRecord.path === childPath) {
+            if (created) {
+                // Clear injected instance of this component from all other paths - historically we didn't bother
+                // to do this since injecting into a shorter scope is an error - but now we have resolveRoot area
+                fluid.each(childShadow.injectedPaths, function (injectedPath) {
+                    var parentPath = fluid.pathUtil.getToTailPath(injectedPath);
+                    var otherParent = that.pathToComponent[parentPath];
+                    that.clearComponent(otherParent, fluid.pathUtil.getTailPath(injectedPath), child);
+                });
                 fluid.doDestroy(child, name, component);
                 // TODO: There needs to be a call to fluid.clearDistributions here
-                fluid.clearListeners(childRecord);
+                fluid.clearListeners(childShadow);
                 fluid.visitComponentChildren(child, function(gchild, gchildname, segs, i) {
                     var parentPath = that.composeSegments.apply(null, segs.slice(0, i));
                     that.clearComponent(child, gchildname, null, options, true, parentPath);
@@ -912,9 +942,11 @@ var fluid_2_0 = fluid_2_0 || {};
     // The global instantiator, holding all components instantiated in this context (instance of Infusion)
     fluid.globalInstantiator = fluid.instantiator();
     
-    fluid.mountComponent = function (instantiator, parent, child, name) {
-        parent[name] = child;
-        instantiator.recordKnownComponent(parent, child, name, true);
+    // Look up the globally registered instantiator for a particular component - we now only really support a
+    // single, global instantiator, but this method is left as a notation point in case this ever reverts
+    fluid.getInstantiator = function (component) {
+        var instantiator = fluid.globalInstantiator;
+        return component && instantiator.idToShadow[component.id] ? instantiator : null;
     };
     
     fluid.rootComponent = fluid.typeTag("fluid.rootComponent");
@@ -922,14 +954,11 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.globalInstantiator.recordRoot(fluid.rootComponent);
     
     // if we ever support more than one thread, fix this
-    fluid.mountComponent(fluid.globalInstantiator, fluid.rootComponent, fluid.dynamicEnvironment, "dynamicEnvironment");
-    
-    // Look up the globally registered instantiator for a particular component - we now only really support a
-    // single, global instantiator, but this method is left as a notation point in case this ever reverts
-    fluid.getInstantiator = function (component) {
-        var instantiator = fluid.globalInstantiator;
-        return component && instantiator.idToShadow[component.id] ? instantiator : null;
-    };
+    fluid.globalInstantiator.recordKnownComponent(fluid.rootComponent, fluid.dynamicEnvironment, "dynamicEnvironment", true);
+    // The component which for convenience holds injected instances of all components with fluid.resolveRoot grade
+    fluid.resolveRootComponent = fluid.typeTag("fluid.resolveRootComponent");
+    fluid.globalInstantiator.recordKnownComponent(fluid.rootComponent, fluid.resolveRootComponent, "resolveRootComponent", true);
+    fluid.globalInstantiator.recordKnownComponent(fluid.resolveRootComponent, fluid.globalInstantiator, "instantiator", false);
 
     /** Expand a set of component options either immediately, or with deferred effect.
      *  The current policy is to expand immediately function arguments within fluid.embodyDemands which are not the main options of a
@@ -1064,6 +1093,11 @@ var fluid_2_0 = fluid_2_0 || {};
             instantiator.clearComponent(that, name, child);
         };
     };
+    
+    fluid.computeGlobalMemberName = function (that) {
+        var nickName = fluid.computeNickName(that.typeName);
+        return nickName + "-" + that.id;      
+    };
 
     // This is the initial entry point from the non-IoC side reporting the first presence of a new component - called from fluid.mergeComponentOptions
     fluid.expandComponentOptions = function (mergePolicy, defaults, userOptions, that) {
@@ -1071,15 +1105,12 @@ var fluid_2_0 = fluid_2_0 || {};
         var instantiator = userOptions && userOptions.marker === fluid.EXPAND ? userOptions.instantiator : null;
         if (!instantiator) { // it is a top-level component which needs to be attached to the global root
             instantiator = fluid.globalInstantiator;
-            var nickName = fluid.computeNickName(that.typeName);
-            var memberName = nickName + "-" + that.id;
             initRecord = { // upgrade "userOptions" to the same format produced by fluid.embodyDemands via the subcomponent route
                 mergeRecords: {user: {options: fluid.expandCompact(userOptions, true)}},
-                memberName: memberName,
+                memberName: fluid.computeGlobalMemberName(that),
                 instantiator: instantiator,
                 parentThat: fluid.rootComponent
             };
-            fluid.rootComponent[memberName] = that; // ordinarily this is the last action of fluid.initDependent
         }
         that.destroy = fluid.fabricateDestroyMethod(initRecord.parentThat, initRecord.memberName, instantiator, that);
         fluid.pushActivity("expandComponentOptions", "expanding component options %options with record %record for component %that",
@@ -1087,6 +1118,7 @@ var fluid_2_0 = fluid_2_0 || {};
             
         instantiator.recordKnownComponent(initRecord.parentThat, that, initRecord.memberName, true);
         var togo = expandComponentOptionsImpl(mergePolicy, defaults, initRecord, that);
+        
         fluid.popActivity();
         return togo;
     };
@@ -1304,7 +1336,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 {componentRecord: component, memberName: name});
             instance = fluid.initSubcomponentImpl(that, {type: invokeSpec.funcName}, invokeSpec.args);
             // The existing instantiator record will be provisional, adjust it to take account of the true return
-            // TODO: Instantiator contents are generally extremely incomplete
+            // TODO: This entire workflow will shortly be removed - we can't tolerate components constructed out of place
             var path = instantiator.composePath(instantiator.idToPath(that.id), name);
             var existing = instantiator.pathToComponent[path];
             // This branch deals with the case where the component creator registered a component into "pathToComponent"
@@ -1320,8 +1352,6 @@ var fluid_2_0 = fluid_2_0 || {};
         else {
             fluid.fail("Unrecognised material in place of subcomponent " + name + " - no \"type\" field found");
         }
-        that[name] = instance;
-        fluid.fireEvent(instance, "events.onAttach", [instance, name, that]);
         fluid.popActivity();
         return instance;
     };

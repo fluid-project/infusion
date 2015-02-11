@@ -1960,7 +1960,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             pushRecord(that.options.parent, name, extra, that, childName, parent);
         };
     };
+    
+    fluid.tests.timedGlobalListener = function (that, name, args) {
+        var fromRootPath = fluid.model.parseEL(args[1]).slice(1).join(".");
+        that.listenerRecord.push({
+            key: fromRootPath + "." + name,
+            created: args[3] 
+        });
+    };
 
+    // Still in a preInit because we need to beat preInit!
     fluid.tests.createRecordingMembers = function (that) {
         that.mainEventListener = function () {
             that.listenerRecord.push("root.mainEventListener");
@@ -1984,10 +1993,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         postInitFunction: fluid.tests.makeTimedChildListener("postInitFunction"),
         listeners: {
             onCreate: fluid.tests.makeTimedChildListener("onCreate"),
-            onAttach: fluid.tests.makeTimedChildListener("onAttach", true),
             onDestroy: fluid.tests.makeTimedChildListener("onDestroy", true),
-            afterDestroy: fluid.tests.makeTimedChildListener("afterDestroy", true),
-            onClear: fluid.tests.makeTimedChildListener("onClear", true)
+            afterDestroy: fluid.tests.makeTimedChildListener("afterDestroy", true)
         }
     });
 
@@ -1999,19 +2006,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         events: {
             mainEvent: null
         },
+        invokers: {
+            mainEventListener: "fluid.tests.pushMainEventListener"
+        },
+        members: {
+            listenerRecord: []
+        },
         name: "root",
         listeners: {
             mainEvent: "{lifecycle}.mainEventListener",
             onCreate: fluid.tests.makeTimedListener("onCreate"),
-            onAttach: fluid.tests.makeTimedListener("onAttach", true), // these two listeners track attachment and detachment round the tree
-            onClear: fluid.tests.makeTimedListener("onClear", true),
-            onDestroy: fluid.tests.makeTimedListener("onDestroy", true) // must never fire - root component must have manual destruction
+            onDestroy: fluid.tests.makeTimedListener("onDestroy", true), // must never fire - root component must have manual destruction
+            "{instantiator}.events.onComponentAttach": {
+                funcName: "fluid.tests.timedGlobalListener",
+                args: ["{that}", "onComponentAttach", "{arguments}"]
+            },
+            "{instantiator}.events.onComponentClear": {
+                funcName: "fluid.tests.timedGlobalListener",
+                args: ["{that}", "onComponentClear", "{arguments}"]
+            },
         },
         components: {
             initTimeComponent: {
                 type: "fluid.tests.lifecycle.recordingComponent",
                 options: {
-                    parent: "{lifecycle}", // NB: This is strictly abuse - injection of component which has not finished construction
+                    parent: "{lifecycle}",
                     name: "initTimeComponent"
                 }
             },
@@ -2043,7 +2062,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.lifecycle.demandsInitComponent.finalInitFunction = function (that) {
-        that.parent.listenerRecord.push("finalInitFunctionSubcomponent");
+        that.parent.listenerRecord.push("demandsInitComponent.finalInitFunction");
     };
     fluid.demands("demandsInitComponent", "fluid.tests.lifecycle", {
         options: {
@@ -2053,32 +2072,34 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.test("Component lifecycle test - with FLUID-4257", function () {
         var testComp = fluid.tests.lifecycle();
-        testComp.events.mainEvent.fire();
-        testComp.events.mainEvent.fire();
+        testComp.events.mainEvent.fire(testComp);
+        testComp.events.mainEvent.fire(testComp);
         var expected = [
+            // Note: we don't get onComponentAttach for root because it occurs before we can register root listeners
             "root.preInitFunction",
             "root.postInitFunction",
+            {key: "initTimeComponent.onComponentAttach", created: true},
             "initTimeComponent.postInitFunction",
             "initTimeComponent.onCreate",
-            {key: "initTimeComponent.onAttach", name: "initTimeComponent", parent: "lifecycle"},
-            {key: "root.onAttach", name: "parent", parent: "demandsInitComponent"},
-            "finalInitFunctionSubcomponent",
+            {key: "demandsInitComponent.onComponentAttach", created: true},
+            {key: "demandsInitComponent.parent.onComponentAttach", created: false},
+            "demandsInitComponent.finalInitFunction",
             "root.finalInitFunction",
             "root.onCreate",
             "root.mainEventListener",
+            {key: "eventTimeComponent.onComponentAttach", created: true},
             "eventTimeComponent.postInitFunction",
-            {key: "root.onAttach", name: "injected", parent: "recordingComponent"}, // eventTimeComponent's injected root
+            {key: "eventTimeComponent.injected.onComponentAttach", created: false},
             "eventTimeComponent.onCreate",
-            {key: "eventTimeComponent.onAttach", name: "eventTimeComponent", parent: "lifecycle"},
             "root.mainEventListener",
-            {key: "eventTimeComponent.onClear", name: "eventTimeComponent", parent: "lifecycle"},
+            {key: "eventTimeComponent.onComponentClear", created: true},
             {key: "eventTimeComponent.onDestroy", name: "eventTimeComponent", parent: "lifecycle"},
-            {key: "root.onClear", name: "injected", parent: "recordingComponent"}, // NO destroy here!
+            {key: "eventTimeComponent.injected.onComponentClear", created: false},
             {key: "eventTimeComponent.afterDestroy", name: "eventTimeComponent", parent: "lifecycle"},
+            {key: "eventTimeComponent.onComponentAttach", created: true},
             "eventTimeComponent.postInitFunction",
-            {key: "root.onAttach", name: "injected", parent: "recordingComponent"}, // re-inject 2nd time
-            "eventTimeComponent.onCreate",
-            {key: "eventTimeComponent.onAttach", name: "eventTimeComponent", parent: "lifecycle"}
+            {key: "eventTimeComponent.injected.onComponentAttach", created: false},
+            "eventTimeComponent.onCreate"
         ];
         jqUnit.assertDeepEq("Expected initialisation sequence", expected, testComp.listenerRecord);
     });
@@ -3846,6 +3867,40 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("FLUID-5226 - ginger reference to createOnEvent component should fail", function () {
         jqUnit.expectFrameworkDiagnostic("Bad ginger reference to createOnEvent via context", fluid.tests.fluid5266context, "createOnEvent");
         jqUnit.expectFrameworkDiagnostic("Bad ginger reference to createOnEvent via direct member", fluid.tests.fluid5266direct, "createOnEvent");
+    });
+    
+    /** FLUID-5249 tests - globalInstantiator, fluid.resolveRoot and its effects **/
+    
+    fluid.defaults("fluid.tests.fluid5249root", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            nonRootRoot: {
+                type: "fluid.littleComponent",
+                options: {
+                    gradeNames: ["fluid.resolveRoot", "fluid.tests.fluid5249nonroot"]
+                }
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.fluid5249finder", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            nonRoot: "{fluid.tests.fluid5249nonroot}"
+        }
+    });
+    
+    jqUnit.test("FLUID-5249 - root resolution of non-root component", function () {
+        var rootAdvertiser = fluid.tests.fluid5249root();
+        var rootFinder = fluid.tests.fluid5249finder();
+        
+        jqUnit.assertValue("Expected to resolve non-root value of resolveRoot as root", rootFinder.nonRoot);
+        
+        rootAdvertiser.destroy();
+        var rootFinder2 = fluid.tests.fluid5249finder();
+        
+        jqUnit.assertNoValue("Expected to find non-root value cleared after parent is cleared", rootFinder2.nonRoot);
+        jqUnit.assertNoValue("Expected to find injected component cleared from injection point after parent is destroyed", rootFinder.nonRoot);
     });
 
 })(jQuery);

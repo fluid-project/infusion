@@ -36,7 +36,7 @@ var example = example || {};
      * Initialize a settings store for the page.
      */
     example.initSettingsStore = function () {
-        fluid.globalSettingsStore();
+        fluid.prefs.globalSettingsStore();
     };
 
     /**

@@ -2102,8 +2102,6 @@ var fluid = fluid || fluid_2_0;
         gradeNames: ["fluid.littleComponent", "autoInit"],
         events: { // Five standard lifecycle points common to all components
             onCreate:     null,
-            onAttach:     null, // onAttach, onClear are only fired for IoC-configured components
-            onClear:      null,
             onDestroy:    null,
             afterDestroy: null
         },
@@ -2235,7 +2233,6 @@ var fluid = fluid || fluid_2_0;
     // unsupported, NON-API function
     fluid.makeRootDestroy = function (that) {
         return function () {
-            fluid.fireEvent(that, "events.onClear", [that, "", null]);
             fluid.doDestroy(that);
             fluid.fireEvent(that, "events.afterDestroy", [that, "", null]);
         };

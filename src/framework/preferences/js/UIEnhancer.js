@@ -60,36 +60,39 @@ var fluid_2_0 = fluid_2_0 || {};
      * "originalEnhancerOptions" is a grade component to keep track of the original *
      * uiEnhancer user options                                                      *
      ********************************************************************************/
+     
     fluid.defaults("fluid.pageEnhancer", {
-        gradeNames: ["fluid.eventedComponent", "fluid.originalEnhancerOptions", "fluid.prefs.rootModel", "fluid.prefs.settingsGetter", "autoInit"],
-        components: {
-            uiEnhancer: {
-                type: "fluid.uiEnhancer",
-                container: "body"
-            }
-        },
+        gradeNames: ["fluid.eventedComponent", "fluid.originalEnhancerOptions", 
+            "fluid.prefs.rootModel", "fluid.prefs.settingsGetter", 
+            "fluid.resolveRoot", "autoInit"],
         distributeOptions: {
             source: "{that}.options.uiEnhancer",
             target: "{that > uiEnhancer}.options"
         },
-        invokers: {
-            init: {
-                funcName: "fluid.pageEnhancer.init",
-                args: "{that}"
+        components: {
+            uiEnhancer: {
+                type: "fluid.uiEnhancer",
+                options: {
+                    gradeNames: "fluid.resolveRoot"
+                },
+                container: "body"
             }
         },
+        members: {
+            originalUserOptions: "{uiEnhancer}.options"
+        },
         listeners: {
-            onCreate: [{
-                listener: "{that}.init"
-            }]
+            "onCreate.initModel": "fluid.pageEnhancer.init"
         }
     });
+    
+    // TODO: It is likely that "originalUserOptions" is now unnecessary - since
+    // "distributeOptions" already takes care not to redistribute default options
+    // Note that the original implementation in fact never succeeded in avoiding 
+    // to distribute defaults in any case
 
     fluid.pageEnhancer.init = function (that) {
-        that.options.originalUserOptions = $.extend(true, that.uiEnhancer.options, fluid.copy(that.options.uiEnhancer));
-        fluid.staticEnvironment.originalEnhancerOptions = that;
         that.uiEnhancer.updateModel(that.getSettings());
-        fluid.staticEnvironment.uiEnhancer = that.uiEnhancer;
     };
 
 })(jQuery, fluid_2_0);

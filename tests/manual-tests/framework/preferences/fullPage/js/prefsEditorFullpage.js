@@ -41,7 +41,7 @@ var demo = demo || {};
      * Initialize PrefsEditor global settings store.
      */
     demo.initSettingsStore = function () {
-        fluid.globalSettingsStore();
+        fluid.prefs.globalSettingsStore();
     };
 
     /**

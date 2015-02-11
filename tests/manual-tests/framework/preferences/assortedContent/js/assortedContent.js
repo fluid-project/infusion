@@ -19,7 +19,7 @@ var assortedContent = assortedContent || {};
     /* Our demo script */
     assortedContent.slidingPrefsEditor = function () {
         // First, start up Settings Store and Page Enhancer
-        fluid.globalSettingsStore();
+        fluid.prefs.globalSettingsStore();
         fluid.pageEnhancer({
             uiEnhancer: {
                 gradeNames: ["fluid.uiEnhancer.starterEnactors"],

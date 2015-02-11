@@ -74,7 +74,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 type: "fluid.littleComponent",
                 options: {
                     gradeNames: ["{that}.options.storeType"],
-                    storeType: "fluid.globalSettingsStore"
+                    storeType: "fluid.prefs.globalSettingsStore"
                 }
             },
             enhancer: {

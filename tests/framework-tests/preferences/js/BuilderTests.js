@@ -579,7 +579,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var prefsEdReady = false;
 
     fluid.defaults("fluid.tests.store", {
-        gradeNames: ["fluid.globalSettingsStore", "autoInit"]
+        gradeNames: ["fluid.prefs.globalSettingsStore", "autoInit"]
     });
 
     fluid.defaults("fluid.tests.enhancer", {

@@ -9,13 +9,15 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
     "use strict";
+    
+    fluid.littleComponent({
+        gradeNames: ["fluid.resolveRoot", "fluid.tableOfContentsTest"]
+    }); // TODO: test this
 
-    fluid.staticEnvironment.demo = fluid.typeTag("fluid.tableOfContentsTest");
     fluid.demands("fluid.tableOfContents.levels", ["fluid.tableOfContents", "fluid.tableOfContentsTest"], {
         options: {
             resources: {
