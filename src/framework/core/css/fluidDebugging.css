@@ -1,0 +1,67 @@
+.fl-debug-holder {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 0px;
+    background-color: #dff;
+}
+
+.fl-debug-holder-open {
+    height: 20em;
+}
+
+.fl-debug-holder-closed {
+    height: 0px;
+ }
+
+.fl-debug-tab {
+    width: 32px;
+    height: 32px;
+    position: absolute;
+    top: -37px;
+    right: 5px;
+    background: url("../images/debug_tab.png");
+}
+
+.fl-debug-tab:hover {
+    background-color: #bbb;
+}
+
+.fl-debug-pane {
+    width: 100%;
+    height: 100%;
+    font-family: OpenSans, 'Helvetica Neue', Helvetica, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    color: black;
+}
+
+.fl-debug-highlightElement {
+    z-index: 999999;
+    opacity: 0.5;
+    -moz-opacity: 0.5;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.fl-debug-inspect {
+    width: 32px;
+    height: 32px;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background: url("../images/magnifying_glass.png");
+}
+
+.fl-debug-inspect:hover {
+    background-color: #ddd;
+}
+
+.fl-debug-inspect-active {
+    background-color: #888;
+}
+
+.fl-debug-inspect-active:hover {
+    background-color: #888;
+}

@@ -70,6 +70,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.defaults("fluid.prefs.assembler.uie", {
         gradeNames: ["autoInit", "fluid.viewComponent"],
         components: {
+            // These two components become global
             store: {
                 type: "fluid.littleComponent",
                 options: {

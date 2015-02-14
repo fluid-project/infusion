@@ -62,8 +62,8 @@ var fluid_2_0 = fluid_2_0 || {};
      ********************************************************************************/
      
     fluid.defaults("fluid.pageEnhancer", {
-        gradeNames: ["fluid.eventedComponent", "fluid.originalEnhancerOptions", 
-            "fluid.prefs.rootModel", "fluid.prefs.settingsGetter", 
+        gradeNames: ["fluid.eventedComponent", "fluid.originalEnhancerOptions",
+            "fluid.prefs.rootModel", "fluid.prefs.settingsGetter",
             "fluid.resolveRoot", "autoInit"],
         distributeOptions: {
             source: "{that}.options.uiEnhancer",
@@ -86,8 +86,7 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
     
-    // TODO: It is likely that "originalUserOptions" is now unnecessary - since
-    // "distributeOptions" already takes care not to redistribute default options
+    // TODO: It is likely that "originalUserOptions" is now unnecessary
     // Note that the original implementation in fact never succeeded in avoiding 
     // to distribute defaults in any case
 

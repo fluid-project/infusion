@@ -1965,7 +1965,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var fromRootPath = fluid.model.parseEL(args[1]).slice(1).join(".");
         that.listenerRecord.push({
             key: fromRootPath + "." + name,
-            created: args[3] 
+            created: args[3]
         });
     };
 
@@ -2024,7 +2024,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "{instantiator}.events.onComponentClear": {
                 funcName: "fluid.tests.timedGlobalListener",
                 args: ["{that}", "onComponentClear", "{arguments}"]
-            },
+            }
         },
         components: {
             initTimeComponent: {
@@ -3902,5 +3902,85 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertNoValue("Expected to find non-root value cleared after parent is cleared", rootFinder2.nonRoot);
         jqUnit.assertNoValue("Expected to find injected component cleared from injection point after parent is destroyed", rootFinder.nonRoot);
     });
+    
+    /** FLUID-5495 tests - distribute upwards, use of "/" context, global instantiator, and proper deregistration - "new demands blocks" **/
+    
+    fluid.defaults("fluid.tests.fluid5495rootDistributor", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        distributeOptions: {
+            record: "distributedValue",
+            target: "{/ fluid.tests.fluid5495target}.options.targetValue"
+        }
+    });
+    
+    fluid.defaults("fluid.tests.fluid5495target", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    jqUnit.test("FLUID-5495 - use of global, time-scoped distributions to root - \"new demands blocks\"", function () {
+        var distributor = fluid.tests.fluid5495rootDistributor();
+        var target1 = fluid.tests.fluid5495target();
+        jqUnit.assertEquals("Standalone component received distribution", "distributedValue", target1.options.targetValue);
+        distributor.destroy(); // fun! destruction of standalone component
+        var target2 = fluid.tests.fluid5495target();
+        jqUnit.assertUndefined("Standalone component received no distribution after destruction of distributor", target2.options.targetValue);
+    });
+    
+    fluid.defaults("fluid.tests.fluid5495midDistributor", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        events: {
+            creationEvent: null
+        },
+        components: {
+            distributor: {
+                type: "fluid.littleComponent",
+                options: {
+                    distributeOptions: {
+                        record: "fluid.tests.fluid5495outputGrade",
+                        target: "{fluid5495midDistributor fluid5495requiredGrade1&fluid5495requiredGrade2}.options.gradeNames"
+                    }
+                }
+            },
+            target1: {
+                type: "fluid.eventedComponent",
+                createOnEvent: "creationEvent",
+                options: {
+                    gradeNames: "fluid.tests.fluid5495requiredGrade1"
+                }
+            },
+            target2: {
+                type: "fluid.eventedComponent",
+                createOnEvent: "creationEvent",
+                options: {
+                    gradeNames: "fluid.tests.fluid5495requiredGrade2"
+                }
+            },
+            target3: {
+                type: "fluid.eventedComponent",
+                createOnEvent: "creationEvent",
+                options: {
+                    gradeNames: ["fluid.tests.fluid5495requiredGrade1", "fluid.tests.fluid5495requiredGrade2"]
+                }
+            }
+        }
+    });
 
+    fluid.tests.fluid5495checkOutputGrades = function (subnames, parent, requiredGrade) {
+        return fluid.transform(subnames, function (subname) {
+            return fluid.componentHasGrade(parent[subname], requiredGrade);
+        });
+    };
+    
+    jqUnit.test("FLUID-5495 - distribution upwards to mid-level of tree, matching on multiple gradeNames to output another - \"new demands blocks II\"", function () {
+        var distributorRoot = fluid.tests.fluid5495midDistributor();
+        distributorRoot.events.creationEvent.fire();
+        var subnames = ["target1", "target2", "target3"];
+        var hasGrade1 = fluid.tests.fluid5495checkOutputGrades(subnames, distributorRoot, "fluid.tests.fluid5495outputGrade");
+        jqUnit.assertDeepEq("Subcomponent with joint grades should have been decorated", [false, false, true], hasGrade1);
+        distributorRoot.distributor.destroy();
+        distributorRoot.events.creationEvent.fire();
+        var hasGrade2 = fluid.tests.fluid5495checkOutputGrades(subnames, distributorRoot, "fluid.tests.fluid5495outputGrade");
+        jqUnit.assertDeepEq("Subcomponent with joint grades should not have been decorated after destruction of distributor", [false, false, false], hasGrade2);
+    });
+    
 })(jQuery);

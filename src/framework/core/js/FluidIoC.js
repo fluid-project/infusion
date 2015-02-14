@@ -49,6 +49,11 @@ var fluid_2_0 = fluid_2_0 || {};
         return shadow && shadow.contextHash;
     };
     
+    fluid.componentHasGrade = function (that, gradeName) {
+        var contextHash = fluid.getContextHash(fluid.globalInstantiator, that);
+        return !!(contextHash && contextHash[gradeName]);
+    };
+    
     // A variant of fluid.visitComponentChildren that supplies the signature expected for fluid.matchIoCSelector
     // this is: thatStack, contextHashes, memberNames, i - note, the supplied arrays are NOT writeable and shared through the iteration
     fluid.visitComponentsForMatching = function (that, options, visitor) {
@@ -361,17 +366,23 @@ var fluid_2_0 = fluid_2_0 || {};
         var id = fluid.allocateGuid();
         var distributions = (targetShadow.distributions = targetShadow.distributions || []);
         distributions.push({
-            id: id, // This id is used in clearDistributions - which itself currently only seems to appear in IoCTestUtils
+            id: id, // This id is used in clearDistributions
             selector: selector,
             blocks: blocks
         });
         return id;
     };
 
-    fluid.clearDistributions = function (targetHead, id) {
+    fluid.clearDistribution = function (targetHead, id) {
         var targetShadow = fluid.shadowForComponent(targetHead);
         fluid.remove_if(targetShadow.distributions, function (distribution) {
             return distribution.id === id;
+        });
+    };
+    
+    fluid.clearDistributions = function (shadow) {
+        fluid.each(shadow.outDistributions, function (outDist) {
+            fluid.clearDistribution(outDist.targetComponent, outDist.distributionId);
         });
     };
 
@@ -386,23 +397,26 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.undistributableOptions = ["gradeNames", "distributeOptions", "returnedPath", "argumentMap", "initFunction", "mergePolicy", "progressiveCheckerOptions"]; // automatically added to "exclusions" of every distribution
 
     fluid.distributeOptions = function (that, optionsStrategy) {
+        var thatShadow = fluid.shadowForComponent(that);
         var records = fluid.makeArray(fluid.driveStrategy(that.options, "distributeOptions", optionsStrategy));
         fluid.each(records, function (record) {
             var targetRef = fluid.parseContextReference(record.target);
-            var targetComp, selector;
+            var targetComp, selector, context;
             if (fluid.isIoCSSSelector(targetRef.context)) {
                 selector = fluid.parseSelector(targetRef.context, fluid.IoCSSMatcher);
                 var headContext = fluid.extractSelectorHead(selector);
-                if (headContext !== "that") {
-                    fluid.fail("Downwards options distribution not supported from component other than \"that\"");
+                if (headContext === "/") {
+                    targetComp = fluid.rootComponent;
+                } else {
+                    context = headContext;
                 }
-                targetComp = that;
             }
             else {
-                targetComp = fluid.resolveContext(targetRef.context, that);
-                if (!targetComp) {
-                    fluid.fail("Error in options distribution record ", record, " - could not resolve context selector {"+targetRef.context+"} to a root component");
-                }
+                context = targetRef.context;
+            }
+            targetComp = targetComp || fluid.resolveContext(context, that);
+            if (!targetComp) {
+                fluid.fail("Error in options distribution record ", record, " - could not resolve context {"+context+"} to a root component");
             }
             var targetSegs = fluid.model.parseEL(targetRef.path);
             var preBlocks;
@@ -410,7 +424,6 @@ var fluid_2_0 = fluid_2_0 || {};
                 preBlocks = [(fluid.makeDistributionRecord(that, record.record, [], targetSegs, [], 0))];
             }
             else {
-                var thatShadow = fluid.shadowForComponent(that);
                 var source = fluid.parseContextReference(record.source || "{that}.options"); // TODO: This is probably not a sensible default
                 if (source.context !== "that") {
                     fluid.fail("Error in options distribution record ", record, " only a context of {that} is supported");
@@ -428,7 +441,12 @@ var fluid_2_0 = fluid_2_0 || {};
             // TODO: inline material has to be expanded in its original context!
 
             if (selector) {
-                fluid.pushDistributions(targetComp, selector, preBlocks);
+                var distributionId = fluid.pushDistributions(targetComp, selector, preBlocks);
+                thatShadow.outDistributions = thatShadow.outDistributions || [];
+                thatShadow.outDistributions.push({
+                    targetComponent: targetComp,
+                    distributionId: distributionId
+                });
             }
             else { // The component exists now, we must rebalance it
                 var targetShadow = fluid.shadowForComponent(targetComp);
@@ -844,7 +862,7 @@ var fluid_2_0 = fluid_2_0 || {};
             return shadow ? shadow.path : "";
         };
         // Note - the returned stack is assumed writeable and does not include the root
-        that.getThatStack = function (component) { 
+        that.getThatStack = function (component) {
             var shadow = that.idToShadow[component.id];
             if (shadow) {
                 var path = shadow.path;
@@ -922,7 +940,7 @@ var fluid_2_0 = fluid_2_0 || {};
                     that.clearComponent(otherParent, fluid.pathUtil.getTailPath(injectedPath), child);
                 });
                 fluid.doDestroy(child, name, component);
-                // TODO: There needs to be a call to fluid.clearDistributions here
+                fluid.clearDistributions(childShadow);
                 fluid.clearListeners(childShadow);
                 fluid.visitComponentChildren(child, function(gchild, gchildname, segs, i) {
                     var parentPath = that.composeSegments.apply(null, segs.slice(0, i));
@@ -1096,7 +1114,7 @@ var fluid_2_0 = fluid_2_0 || {};
     
     fluid.computeGlobalMemberName = function (that) {
         var nickName = fluid.computeNickName(that.typeName);
-        return nickName + "-" + that.id;      
+        return nickName + "-" + that.id;
     };
 
     // This is the initial entry point from the non-IoC side reporting the first presence of a new component - called from fluid.mergeComponentOptions

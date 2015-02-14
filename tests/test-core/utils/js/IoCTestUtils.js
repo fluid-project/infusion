@@ -369,7 +369,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 );
             };
             unbind = function () {
-                fluid.clearDistributions(analysed.head, id);
+                fluid.clearDistribution(analysed.head, id);
             };
         } else {
             fluid.fail("Error decoding event fixture ", fixture, ": must be able to look up member \"event\" to one or more events");

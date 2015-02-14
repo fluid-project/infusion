@@ -2364,7 +2364,7 @@ var fluid = fluid || fluid_2_0;
     };
 
     fluid.IoCSSMatcher = {
-        regexp: new RegExp("([&#]?)(" + charStart + "]|\\.)+)", "g"),
+        regexp: new RegExp("([&#]?)(" + charStart + "]|\\.|\\/)+)", "g"),
         charToTag: {
             "": "context",
             "&": "context",

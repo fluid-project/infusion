@@ -135,10 +135,13 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.prefs.globalSettingsStore", {
-        gradeNames: ["fluid.littleComponent", "fluid.resolveRoot", "autoInit"],
+        gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
             settingsStore: {
-                type: "fluid.prefs.cookieStore"
+                type: "fluid.prefs.cookieStore",
+                options: {
+                    gradeNames: ["fluid.resolveRoot", "fluid.settingsStore"]
+                }
             }
         }
     });

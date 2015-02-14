@@ -99,7 +99,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {jQuery} obj the jQuery instance to unwrap into a pure DOM element
      */
     fluid.unwrap = function (obj) {
-        return obj && obj.jquery && obj.length === 1 ? obj[0] : obj;
+        return obj && obj.jquery ? obj[0] : obj;
     };
 
     /**
@@ -464,12 +464,13 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.allocateSimpleId = function (element) {
-        var simpleId = "fluid-id-" + fluid.allocateGuid();
-        if (!element || fluid.isPrimitive(element)) {
-            return simpleId;
-        }
         element = fluid.unwrap(element);
+        if (!element || fluid.isPrimitive(element)) {
+            return null;
+        }
+        
         if (!element.id) {
+            var simpleId = "fluid-id-" + fluid.allocateGuid();
             element.id = simpleId;
         }
         return element.id;

@@ -66,7 +66,7 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         },
         components: {
-            pageEnhancer: "{uiEnhancer}", // TODO: Shouldn't this more safely be able to refer to a {pageEnhancer} ?
+            pageEnhancer: "{pageEnhancer}.uiEnhancer", // TODO: Shouldn't this more safely be able to refer to a {pageEnhancer} ?
             slidingPanel: {
                 type: "fluid.slidingPanel",
                 container: "{separatedPanel}.container",
