@@ -57,16 +57,17 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.enactor.selfVoicing", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor.speak", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.enactor.speak", "autoInit"],
         modelListeners: {
             "enabled": {
                 listener: "{that}.handleSelfVoicing",
-                args: ["{that}", "{change}.value", "{change}.oldValue"]
+                args: ["{change}.value"]
             }
         },
         invokers: {
             handleSelfVoicing: {
-                funcName: "fluid.prefs.enactor.selfVoicing.handleSelfVoicing"
+                funcName: "fluid.prefs.enactor.selfVoicing.handleSelfVoicing",
+                args: ["{that}", "{arguments}.0"]
             },
             readFromDOM: {
                 funcName: "fluid.prefs.enactor.selfVoicing.readFromDOM",
@@ -78,17 +79,12 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-    fluid.prefs.enactor.selfVoicing.handleSelfVoicing = function (that, newVal, oldVal) {
-        // The isChanged check is needed when the entire model is changed. When this is
-        // switched to a model relay component, it may be that this outer conditional is no longer needed.
-        var isChanged = typeof(newVal) === "object" ? newVal.enabled !== oldVal.enabled : true;
-        if (isChanged) {
-            if (that.model.enabled) {
-                that.queueSpeech(that.options.strings.welcomeMsg, true);
-                that.readFromDOM();
-            } else {
-                that.cancel();
-            }
+    fluid.prefs.enactor.selfVoicing.handleSelfVoicing = function (that, enabled) {
+        if (that.model.enabled) {
+            that.queueSpeech(that.options.strings.welcomeMsg, true);
+            that.readFromDOM();
+        } else {
+            that.cancel();
         }
     };
 
