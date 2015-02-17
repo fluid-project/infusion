@@ -17,60 +17,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests");
 
-    /*******************************************************************************
-     * Unit tests for fluid.prefs.textFont
-     *******************************************************************************/
-    var classnameMap = {
-            "textFont": {
-                "default": "",
-                "times": "fl-font-times",
-                "comic": "fl-font-comic-sans",
-                "arial": "fl-font-arial",
-                "verdana": "fl-font-verdana"
-            },
-            "theme": {
-                "default": "fl-prefsEditor-default-theme",
-                "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
-                "wb": "fl-theme-prefsEditor-wb fl-theme-wb",
-                "by": "fl-theme-prefsEditor-by fl-theme-by",
-                "yb": "fl-theme-prefsEditor-yb fl-theme-yb",
-                "lgdg": "fl-theme-prefsEditor-lgdg fl-theme-lgdg"
-            }
-        };
-
-    var messages = {
-        "textFont-default": "default",
-        "textFont-times": "Times New Roman",
-        "textFont-comic": "Comic Sans",
-        "textFont-arial": "Arial",
-        "textFont-verdana": "Verdana",
-        "textFontLabel": "Text Style",
-        "contrast": ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black"],
-        "contrastLabel": "Colour & Contrast"
-    };
-
-    var parentResolver = fluid.messageResolver({messageBase: messages});
-
-    /*******************************************************************************
-     * Functions shared by panel tests
-     *******************************************************************************/
-    fluid.tests.checkModel = function (path, expectedValue) {
-        return function (newValue) {
-            jqUnit.assertEquals("Expected model value " + expectedValue + " at path " + path, expectedValue, newValue);
-        };
-    };
-
-    fluid.defaults("fluid.prefs.defaultTestPanel", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
-        strings: {},
-        parentBundle: {
-            expander: {
-                funcName: "fluid.messageResolver",
-                args: [{messageBase: {}, parents: [parentResolver]}]
-            }
-        }
-    });
-
     /*************************
      * composite panel tests *
      *************************/
@@ -1060,19 +1006,37 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /*******************************************************************************
      * textFontPanel
      *******************************************************************************/
+
+    fluid.defaults("fluid.tests.prefs.panel.textFont", {
+        gradeNames: ["fluid.prefs.panel.textFont", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
+        testMessages: {
+            "textFont-default": "default",
+            "textFont-times": "Times New Roman",
+            "textFont-comic": "Comic Sans",
+            "textFont-arial": "Arial",
+            "textFont-verdana": "Verdana",
+            "textFontLabel": "Text Style"
+        },
+        model: {
+            value: 1
+        },
+        classnameMap: {
+            "textFont": {
+                "default": "",
+                "times": "fl-font-times",
+                "comic": "fl-font-comic-sans",
+                "arial": "fl-font-arial",
+                "verdana": "fl-font-verdana"
+            }
+        }
+    });
+
     fluid.defaults("fluid.tests.textFontPanel", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             textFont: {
-                type: "fluid.prefs.panel.textFont",
-                container: ".flc-textFont",
-                options: {
-                    gradeNames: "fluid.prefs.defaultTestPanel",
-                    model: {
-                        value: 1
-                    },
-                    classnameMap: classnameMap
-                }
+                type: "fluid.tests.prefs.panel.textFont",
+                container: ".flc-textFont"
             },
             textFontTester: {
                 type: "fluid.tests.textFontTester"
@@ -1119,8 +1083,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "fluid.tests.textFontPanel.changeSelection",
                     args: ["{textFont}.dom.textFont", "{that}.options.testOptions.newValue"]
                 }, {
-                    listenerMaker: "fluid.tests.checkModel",
-                    makerArgs: ["value", "{that}.options.testOptions.newValue"],
+                    listener: "fluid.tests.panels.utils.checkModel",
+                    args: ["value", "{textFont}.model", "{that}.options.testOptions.newValue"],
                     spec: {path: "value", priority: "last"},
                     changeEvent: "{textFont}.applier.modelChanged"
                 }]
@@ -1131,19 +1095,34 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /*******************************************************************************
      * Contrast
      *******************************************************************************/
+
+    fluid.defaults("fluid.tests.prefs.panel.contrast", {
+        gradeNames: ["fluid.prefs.panel.contrast", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
+        testMessages: {
+            "contrast": ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black"],
+            "contrastLabel": "Colour & Contrast"
+        },
+        model: {
+            value: "default"
+        },
+        classnameMap: {
+            "theme": {
+                "default": "fl-prefsEditor-default-theme",
+                "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
+                "wb": "fl-theme-prefsEditor-wb fl-theme-wb",
+                "by": "fl-theme-prefsEditor-by fl-theme-by",
+                "yb": "fl-theme-prefsEditor-yb fl-theme-yb",
+                "lgdg": "fl-theme-prefsEditor-lgdg fl-theme-lgdg"
+            }
+        }
+    });
+
     fluid.defaults("fluid.tests.contrastPanel", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             contrast: {
-                type: "fluid.prefs.panel.contrast",
-                container: ".flc-contrast",
-                options: {
-                    gradeNames: "fluid.prefs.defaultTestPanel",
-                    model: {
-                        value: "default"
-                    },
-                    classnameMap: classnameMap
-                }
+                type: "fluid.tests.prefs.panel.contrast",
+                container: ".flc-contrast"
             },
             contrastTester: {
                 type: "fluid.tests.contrastTester"
@@ -1197,8 +1176,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "fluid.tests.contrastPanel.changeChecked",
                     args: ["{contrast}.dom.themeInput", "{that}.options.testOptions.newValue"]
                 }, {
-                    listenerMaker: "fluid.tests.checkModel",
-                    makerArgs: ["value", "{that}.options.testOptions.newValue"],
+                    listener: "fluid.tests.panels.utils.checkModel",
+                    args: ["value", "{contrast}.model", "{that}.options.testOptions.newValue"],
                     spec: {path: "value", priority: "last"},
                     changeEvent: "{contrast}.applier.modelChanged"
                 }]
@@ -1221,18 +1200,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /*******************************************************************************
      * textSize
      *******************************************************************************/
+
+    fluid.defaults("fluid.tests.prefs.panel.textSize", {
+        gradeNames: ["fluid.prefs.panel.textSize", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
+        model: {
+            textSize: 1
+        }
+    });
+
     fluid.defaults("fluid.tests.textSizePanel", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             textSize: {
-                type: "fluid.prefs.panel.textSize",
-                container: ".flc-textSize",
-                options: {
-                    gradeNames: "fluid.prefs.defaultTestPanel",
-                    model: {
-                        textSize: 1
-                    }
-                }
+                type: "fluid.tests.prefs.panel.textSize",
+                container: ".flc-textSize"
             },
             textSizeTester: {
                 type: "fluid.tests.textSizeTester"
@@ -1254,14 +1235,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "{textSize}.refreshView"
                 }, {
                     listener: "fluid.tests.testDefault",
-                    args: ["{textSize}"],
                     event: "{textSize}.events.afterRender"
                 }, {
                     func: "fluid.tests.changeInput",
                     args: ["{textSize}.dom.textSize", "{that}.options.testOptions.newValue"]
                 }, {
-                    listenerMaker: "fluid.tests.checkModel",
-                    makerArgs: ["textSize", "{that}.options.testOptions.newValue"],
+                    listener: "fluid.tests.panels.utils.checkModel",
+                    args: ["textSize", "{textSize}.model", "{that}.options.testOptions.newValue"],
                     spec: {path: "textSize", priority: "last"},
                     changeEvent: "{textSize}.applier.modelChanged"
                 }]
@@ -1272,18 +1252,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /*******************************************************************************
      * lineSpace
      *******************************************************************************/
+
+    fluid.defaults("fluid.tests.prefs.panel.lineSpace", {
+        gradeNames: ["fluid.prefs.panel.lineSpace", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
+        model: {
+            lineSpace: 1
+        }
+    });
+
     fluid.defaults("fluid.tests.lineSpacePanel", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             lineSpace: {
-                type: "fluid.prefs.panel.lineSpace",
-                container: ".flc-lineSpace",
-                options: {
-                    gradeNames: "fluid.prefs.defaultTestPanel",
-                    model: {
-                        lineSpace: 1
-                    }
-                }
+                type: "fluid.tests.prefs.panel.lineSpace",
+                container: ".flc-lineSpace"
             },
             lineSpaceTester: {
                 type: "fluid.tests.lineSpaceTester"
@@ -1305,14 +1287,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "{lineSpace}.refreshView"
                 }, {
                     listener: "fluid.tests.testDefault",
-                    args: ["{lineSpace}"],
                     event: "{lineSpace}.events.afterRender"
                 }, {
                     func: "fluid.tests.changeInput",
                     args: ["{lineSpace}.dom.textSize", "{that}.options.testOptions.newValue"]
                 }, {
-                    listenerMaker: "fluid.tests.checkModel",
-                    makerArgs: ["lineSpace", "{that}.options.testOptions.newValue"],
+                    listener: "fluid.tests.panels.utils.checkModel",
+                    args: ["lineSpace", "{lineSpace}.model", "{that}.options.testOptions.newValue"],
                     spec: {path: "lineSpace", priority: "last"},
                     changeEvent: "{lineSpace}.applier.modelChanged"
                 }]
@@ -1321,32 +1302,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
-     * Test functions shared by checkbox panels: layoutPanel & linkPanel
-     *******************************************************************************/
-    fluid.tests.changeCheckboxSelection = function (element) {
-        element.attr("checked", "checked").change();
-    };
-
-    fluid.tests.checkboxListenerTester = function (message, expectedState, checkbox) {
-        jqUnit[expectedState ? "assertTrue" : "assertFalse"](message, checkbox.is(":checked"));
-    };
-
-    /*******************************************************************************
      * layoutPanel
      *******************************************************************************/
+
+    fluid.defaults("fluid.tests.prefs.panel.layoutControls", {
+        gradeNames: ["fluid.prefs.panel.layoutControls", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
+        model: {
+            toc: false,
+            layout: false
+        }
+    });
+
     fluid.defaults("fluid.tests.layoutPanel", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             layout: {
-                type: "fluid.prefs.panel.layoutControls",
-                container: ".flc-layout",
-                options: {
-                    gradeNames: "fluid.prefs.defaultTestPanel",
-                    model: {
-                        toc: false,
-                        layout: false
-                    }
-                }
+                type: "fluid.tests.prefs.panel.layoutControls",
+                container: ".flc-layout"
             },
             layoutTester: {
                 type: "fluid.tests.layoutTester"
@@ -1357,7 +1329,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.layoutTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
-            defaultInputStatus: undefined,
+            defaultInputStatus: false,
             newValue: true
         },
         modules: [{
@@ -1368,15 +1340,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sequence: [{
                     func: "{layout}.refreshView"
                 }, {
-                    listener: "fluid.tests.checkboxListenerTester",
+                    listener: "fluid.tests.panels.utils.verifyCheckboxState",
                     args: ["The toc option is not checked by default", "{that}.options.testOptions.defaultInputStatus", "{layout}.dom.toc"],
                     event: "{layout}.events.afterRender"
                 }, {
-                    func: "fluid.tests.changeCheckboxSelection",
-                    args: ["{layout}.dom.toc"]
+                    func: "fluid.tests.panels.utils.setCheckboxState",
+                    args: ["{layout}.dom.toc", "{that}.options.testOptions.newValue"]
                 }, {
-                    listenerMaker: "fluid.tests.checkModel",
-                    makerArgs: ["toc", "{that}.options.testOptions.newValue"],
+                    listener: "fluid.tests.panels.utils.checkModel",
+                    args: ["toc", "{that}.options.testOptions.newValue"],
                     spec: {path: "toc", priority: "last"},
                     changeEvent: "{layout}.applier.modelChanged"
                 }]
@@ -1387,18 +1359,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /*******************************************************************************
      * emphasize links
      *******************************************************************************/
+
+    fluid.defaults("fluid.tests.prefs.panel.emphasizeLinks", {
+        gradeNames: ["fluid.prefs.panel.emphasizeLinks", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
+        model: {
+            links: false
+        }
+    });
+
     fluid.defaults("fluid.tests.emphasizeLinksPanel", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
-            layout: {
-                type: "fluid.prefs.panel.emphasizeLinks",
-                container: ".flc-links",
-                options: {
-                    gradeNames: "fluid.prefs.defaultTestPanel",
-                    model: {
-                        links: false
-                    }
-                }
+            emphasizeLinks: {
+                type: "fluid.tests.prefs.panel.emphasizeLinks",
+                container: ".flc-links"
             },
             emphasizeLinksTester: {
                 type: "fluid.tests.emphasizeLinksTester"
@@ -1420,15 +1394,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sequence: [{
                     func: "{emphasizeLinks}.refreshView"
                 }, {
-                    listener: "fluid.tests.checkboxListenerTester",
+                    listener: "fluid.tests.panels.utils.verifyCheckboxState",
                     args: ["The inputs should be unchecked by default", "{that}.options.testOptions.defaultInputStatus", "{emphasizeLinks}.dom.links"],
                     event: "{emphasizeLinks}.events.afterRender"
                 }, {
-                    func: "fluid.tests.changeCheckboxSelection",
-                    args: ["{emphasizeLinks}.dom.links"]
+                    func: "fluid.tests.panels.utils.setCheckboxState",
+                    args: ["{emphasizeLinks}.dom.links", "{that}.options.testOptions.newValue"]
                 }, {
-                    listenerMaker: "fluid.tests.checkModel",
-                    makerArgs: ["links", "{that}.options.testOptions.newValue"],
+                    listener: "fluid.tests.panels.utils.checkModel",
+                    args: ["links", "{emphasizeLinks}.model", "{that}.options.testOptions.newValue"],
                     spec: {path: "links", priority: "last"},
                     changeEvent: "{emphasizeLinks}.applier.modelChanged"
                 }]
@@ -1439,18 +1413,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /*******************************************************************************
      * inputs larger
      *******************************************************************************/
+
+    fluid.defaults("fluid.tests.prefs.panel.inputsLarger", {
+        gradeNames: ["fluid.prefs.panel.inputsLarger", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
+        model: {
+            inputsLarger: false
+        }
+    });
+
     fluid.defaults("fluid.tests.inputsLargerPanel", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
-            layout: {
-                type: "fluid.prefs.panel.inputsLarger",
-                container: ".flc-links",
-                options: {
-                    gradeNames: "fluid.prefs.defaultTestPanel",
-                    model: {
-                        inputsLarger: false
-                    }
-                }
+            inputsLarger: {
+                type: "fluid.tests.prefs.panel.inputsLarger",
+                container: ".flc-links"
             },
             inputsLargerTester: {
                 type: "fluid.tests.inputsLargerTester"
@@ -1472,15 +1448,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sequence: [{
                     func: "{inputsLarger}.refreshView"
                 }, {
-                    listener: "fluid.tests.checkboxListenerTester",
+                    listener: "fluid.tests.panels.utils.verifyCheckboxState",
                     args: ["The inputs should be unchecked by default", "{that}.options.testOptions.defaultInputStatus", "{inputsLarger}.dom.inputsLarger"],
                     event: "{inputsLarger}.events.afterRender"
                 }, {
-                    func: "fluid.tests.changeCheckboxSelection",
-                    args: ["{inputsLarger}.dom.inputsLarger"]
+                    func: "fluid.tests.panels.utils.setCheckboxState",
+                    args: ["{inputsLarger}.dom.inputsLarger", "{that}.options.testOptions.newValue"]
                 }, {
-                    listenerMaker: "fluid.tests.checkModel",
-                    makerArgs: ["inputsLarger", "{that}.options.testOptions.newValue"],
+                    listener: "fluid.tests.panels.utils.checkModel",
+                    args: ["inputsLarger", "{inputsLarger}.model", "{that}.options.testOptions.newValue"],
                     spec: {path: "inputsLarger", priority: "last"},
                     changeEvent: "{inputsLarger}.applier.modelChanged"
                 }]
@@ -1491,50 +1467,52 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /*******************************************************************************
      * linksControlsPanel
      *******************************************************************************/
+
+    fluid.defaults("fluid.tests.prefs.panel.linksControls", {
+        gradeNames: ["fluid.prefs.panel.linksControls", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
+        model: {
+            fluid_prefs_emphasizeLinks: false,
+            fluid_prefs_inputsLarger: false
+        },
+        strings: {
+            linksControlsLabel: "Links & buttons"
+        },
+        selectors: {
+            emphasizeLinks: ".flc-prefsEditor-emphasizeLinks",
+            inputsLarger: ".flc-prefsEditor-inputsLarger"
+        },
+        selectorsToIgnore: ["emphasizeLinks", "inputsLarger"],
+        components: {
+            emphasizeLinks: {
+                type: "fluid.prefs.panel.emphasizeLinks",
+                container: "{that}.dom.emphasizeLinks",
+                createOnEvent: "initSubPanels"
+            },
+            inputsLarger: {
+                type: "fluid.prefs.panel.inputsLarger",
+                container: "{that}.dom.inputsLarger",
+                createOnEvent: "initSubPanels"
+            }
+        },
+        resources: {
+            template: {
+                resourceText: "<h2 class=\"flc-prefsEditor-linksControls-label\"></h2><li class=\"flc-prefsEditor-emphasizeLinks\"></li><li class=\"flc-prefsEditor-inputsLarger\"></li>"
+            },
+            emphasizeLinks: {
+                resourceText: "<input type=\"checkbox\" id=\"links-choice\" class=\"flc-prefsEditor-links fl-force-left\" />"
+            },
+            inputsLarger: {
+                resourceText: "<input type=\"checkbox\" id=\"inputs-choice\" class=\"flc-prefsEditor-inputs-larger fl-force-left\" />"
+            }
+        }
+    });
+
     fluid.defaults("fluid.tests.linksControlsPanel", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             linksControls: {
-                type: "fluid.prefs.panel.linksControls",
-                container: ".flc-links",
-                options: {
-                    gradeNames: "fluid.prefs.defaultTestPanel",
-                    model: {
-                        fluid_prefs_emphasizeLinks: false,
-                        fluid_prefs_inputsLarger: false
-                    },
-                    strings: {
-                        linksControlsLabel: "Links & buttons"
-                    },
-                    selectors: {
-                        emphasizeLinks: ".flc-prefsEditor-emphasizeLinks",
-                        inputsLarger: ".flc-prefsEditor-inputsLarger"
-                    },
-                    selectorsToIgnore: ["emphasizeLinks", "inputsLarger"],
-                    components: {
-                        emphasizeLinks: {
-                            type: "fluid.prefs.panel.emphasizeLinks",
-                            container: "{that}.dom.emphasizeLinks",
-                            createOnEvent: "initSubPanels"
-                        },
-                        inputsLarger: {
-                            type: "fluid.prefs.panel.inputsLarger",
-                            container: "{that}.dom.inputsLarger",
-                            createOnEvent: "initSubPanels"
-                        }
-                    },
-                    resources: {
-                        template: {
-                            resourceText: "<h2 class=\"flc-prefsEditor-linksControls-label\"></h2><li class=\"flc-prefsEditor-emphasizeLinks\"></li><li class=\"flc-prefsEditor-inputsLarger\"></li>"
-                        },
-                        emphasizeLinks: {
-                            resourceText: "<input type=\"checkbox\" id=\"links-choice\" class=\"flc-prefsEditor-links fl-force-left\" />"
-                        },
-                        inputsLarger: {
-                            resourceText: "<input type=\"checkbox\" id=\"inputs-choice\" class=\"flc-prefsEditor-inputs-larger fl-force-left\" />"
-                        }
-                    }
-                }
+                type: "fluid.tests.prefs.panel.linksControls",
+                container: ".flc-links"
             },
             linksTester: {
                 type: "fluid.tests.linksTester"
@@ -1570,19 +1548,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["{linksControls}", "{that}.options.testOptions.defaultInputStatus", "{linksControls}.options.strings.linksControlsLabel"],
                     event: "{linksControls}.events.afterRender"
                 }, {
-                    func: "fluid.tests.changeCheckboxSelection",
-                    args: ["{linksControls}.emphasizeLinks.dom.links"]
+                    func: "fluid.tests.panels.utils.setCheckboxState",
+                    args: ["{linksControls}.emphasizeLinks.dom.links", "{that}.options.testOptions.newValue"]
                 }, {
-                    listenerMaker: "fluid.tests.checkModel",
-                    makerArgs: ["fluid_prefs_emphasizeLinks", "{that}.options.testOptions.newValue"],
+                    listener: "fluid.tests.panels.utils.checkModel",
+                    args: ["fluid_prefs_emphasizeLinks", "{linksControls}.model", "{that}.options.testOptions.newValue"],
                     spec: {path: "fluid_prefs_emphasizeLinks", priority: "last"},
                     changeEvent: "{linksControls}.applier.modelChanged"
                 }, {
-                    func: "fluid.tests.changeCheckboxSelection",
-                    args: ["{linksControls}.inputsLarger.dom.inputsLarger"]
+                    func: "fluid.tests.panels.utils.setCheckboxState",
+                    args: ["{linksControls}.inputsLarger.dom.inputsLarger", "{that}.options.testOptions.newValue"]
                 }, {
-                    listenerMaker: "fluid.tests.checkModel",
-                    makerArgs: ["fluid_prefs_inputsLarger", "{that}.options.testOptions.newValue"],
+                    listener: "fluid.tests.panels.utils.checkModel",
+                    args: ["fluid_prefs_inputsLarger", "{linksControls}.model", "{that}.options.testOptions.newValue"],
                     spec: {path: "fluid_prefs_inputsLarger", priority: "last"},
                     changeEvent: "{linksControls}.applier.modelChanged"
                 }]
