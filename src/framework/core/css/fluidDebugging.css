@@ -34,18 +34,32 @@
     font-family: OpenSans, 'Helvetica Neue', Helvetica, Helvetica, Arial, sans-serif;
     font-size: 16px;
     color: black;
+    padding-top: 40px;
 }
 
 .fl-debug-highlightElement {
     z-index: 999999;
-    opacity: 0.5;
-    -moz-opacity: 0.5;
     position: absolute;
     width: 100%;
     height: 100%;
+    pointer-events: none;
 }
 
-.fl-debug-inspect {
+.fl-debug-highlightRoot {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.flc-debug-pane-indexel {
+    width: 2em;
+    height: 1em;
+    margin: 0.2em;
+    border: 2px solid black
+}
+
+.fl-debug-inspect-trigger {
     width: 32px;
     height: 32px;
     position: absolute;

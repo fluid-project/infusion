@@ -31,77 +31,122 @@ var fluid_2_0 = fluid_2_0 || {};
             applier.change(path, !state);
         });
     };
-    
-    fluid.debug.renderMarkup = function (element, markup) {
-        element.append(markup);
-    };
-    
+   
     
     fluid.defaults("fluid.debug.highlighter", {
         gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        selectors: {
+            highlightRoot: "#fluid-debug-highlightRoot"
+        },
         markup: {
+            highlightRoot: "<div id=\"fluid-debug-highlightRoot\" class=\"fluid-debug-highlightRoot\"></div>",
             highlightElement: "<div class=\"fl-debug-highlightElement\"></div>"
         },
         listeners: {
             onCreate: "fluid.debug.highlighter.renderRoot"
         },
         invokers: {
-            clear: "fluid.debug.highlighter.clear({that})",
-            highlight: "fluid.debug.highlighter.highlight({that}, {arguments}.0)"
+            clear: "fluid.debug.highlighter.clear({that}.dom.highlightRoot)",
+            highlight: "fluid.debug.highlighter.highlight({that}, {that}.dom.highlightRoot, {arguments}.0)" // dispositions
         }
     });
     
     fluid.debug.highlighter.renderRoot = function (that) {
-        that.highlights = $([]);
+        var highlightRoot = $(that.options.markup.highlightRoot);
+        that.container.append(highlightRoot);
     };
     
-    fluid.debug.highlighter.clear = function (that) {
-        that.highlights.remove();
-        that.highlights = $([]);
+    fluid.debug.highlighter.clear = function (highlightRoot) {
+        highlightRoot.empty();
     };
     
-    fluid.debug.highlighter.positionProps = ["width","height","left","top","marginLeft","marginTop","paddingLeft","paddingTop"];
+    fluid.debug.highlighter.positionProps = ["width","height","marginLeft","marginTop","paddingLeft","paddingTop"];
     
+    fluid.debug.highlighter.colours = [
+        [0, 0, 0],    // black
+        [255, 0, 0],  // red
+        [255, 255, 0] // yellow
+    ];
     
-    fluid.debug.highlighter.highlight = function (that, components) {
-        var p = fluid.debug.highlighter.positionProps;
-        var highlights = that.highlights;
-        for (var i = 0; i < components.length; ++ i) {
-            var component = components[i];
+    fluid.debug.arrayToRGBA = function (array) {
+        return "rgba(" + array.join(", ") + ")";
+    };
+    
+    fluid.debug.highlighter.indexToColour = function (i, length) {
+        var j = length - i;
+        var c = fluid.debug.highlighter.colours;
+        var base = fluid.makeArray(c[j % c.length]);
+        base[3] = j > c.length ? 0.2 : 0.5;
+        return fluid.debug.arrayToRGBA(base); 
+    };
+    
+    fluid.debug.highlighter.dispose = function (components) {
+        return fluid.transform(components, function (component, i) {
             var container = component.container;
-            var parent = container[0].parentElement;
-            if (parent) {
-                var highlight = $(that.options.markup.highlightElement);
-                $(parent).append(highlight);
-                highlight.css("background-color", "black");
-                for (var j = 0; j < p.length; ++ j) {
-                    highlight.css(p[j], container.css(p[j] || ""));
-                }
-                highlights = highlights.add(highlight);
-                console.log("highlights now contains ", highlights);
+            var noHighlight = container.is("body");
+            return {
+                component: component,
+                container: container,
+                noHighlight: noHighlight,
+                colour: fluid.debug.highlighter.indexToColour(i, components.length)
             }
-        }
-        that.highlights = highlights;
+        });
     };
     
-    fluid.debug.renderInspecting = function (that, pane, inspecting) {
-        if (!pane || !that.highlighter) { // stupid ginger world failure
+    
+    fluid.debug.highlighter.highlight = function (that, highlightRoot, dispositions) {
+        var p = fluid.debug.highlighter.positionProps;
+        for (var i = 0; i < dispositions.length; ++ i) {
+            var disp = dispositions[i];
+            var container = disp.container;
+            if (disp.noHighlight) {
+                continue;
+            }
+ 
+            var highlight = $(that.options.markup.highlightElement);
+            highlightRoot.append(highlight);
+                
+            highlight.css("background-color", disp.colour);
+            for (var j = 0; j < p.length; ++ j) {
+                highlight.css(p[j], container.css(p[j] || ""));
+            }
+            var offset = container.offset();
+            var containerBody = container[0].ownerDocument.body;
+            if (containerBody !== document.body) { // TODO: This primitive algorithm will not account for nested iframes
+                offset.left -= $(containerBody).scrollLeft();
+                offset.top -= $(containerBody).scrollTop();
+            }
+            highlight.offset(offset);
+            
+        }
+    };
+    
+    
+    fluid.debug.renderInspecting = function (that, paneBody, paneRowTemplate, inspecting) {
+        if (!paneBody || !that.highlighter) { // stupid ginger world failure
             return;
         }
-        pane.empty();
+        paneBody.empty();
         that.highlighter.clear();
         var ids = fluid.keys(inspecting);
-        var fulltext = [], components = [];
-        for (var i = 0; i < ids.length; ++ i) {
-            var inspectingId = ids[i];
-            var component = that.viewMapper.domIdToEntry[inspectingId].component;
-            var text = "Container id " + component.container.prop("id") + ": " + fluid.dumpThat(component);
-            fulltext[i] = text;
-            components[i] = component;
-        }
-        pane.html(fulltext.join("<br/>"));
-        that.highlighter.highlight(components);
+        var fulltext = [], components = fluid.transform(ids, function (inspectingId) {
+            return that.viewMapper.domIdToEntry[inspectingId].component;
+        });
+        var dispositions = fluid.debug.highlighter.dispose(components);
+        var rows = fluid.transform(dispositions, function (disp) {
+            return {
+                style: "background-color: " + disp.colour,
+                grades: "Container id " + disp.component.container.prop("id") + ": " + fluid.dumpThat(disp.component),
+                lines: "" 
+            };
+        });
+        var contents = fluid.transform(rows, function (row) {
+            return fluid.stringTemplate(paneRowTemplate, row);
+        });
+        paneBody.html(contents.join(""));
+        that.highlighter.highlight(dispositions);
     };
+    
     
     fluid.defaults("fluid.debug.browser", {
         gradeNames: ["fluid.viewRelayComponent", "autoInit"],
@@ -121,7 +166,7 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             inspecting: {
                 funcName: "fluid.debug.renderInspecting",
-                args: ["{that}", "{that}.dom.pane", "{change}.value"]
+                args: ["{that}", "{that}.dom.paneBody", "{that}.options.markup.paneRow", "{change}.value"]
             }
         },
         styles: {
@@ -129,12 +174,17 @@ var fluid_2_0 = fluid_2_0 || {};
             holderClosed: "fl-debug-holder-closed",
             inspecting: "fl-debug-inspect-active"
         },
-        markup: "<div class=\"flc-debug-holder fl-debug-holder\"><div class=\"flc-debug-tab fl-debug-tab\"></div><div class=\"flc-debug-pane fl-debug-pane\"><div class=\"flc-debug-inspect fl-debug-inspect\"></div></div></div>",
+        markup: {
+            holder: "<div class=\"flc-debug-holder fl-debug-holder\"><div class=\"flc-debug-tab fl-debug-tab\"></div><div class=\"flc-debug-pane fl-debug-pane\"><div class=\"flc-debug-inspect-trigger fl-debug-inspect-trigger\"></div></div></div>",
+            pane: "<table><tbody class=\"flc-debug-pane-body\"></tbody></table>",
+            paneRow: "<tr><td class=\"flc-debug-pane-index\"><div class=\"flc-debug-pane-indexel\" style=\"%style\"></div></td><td class=\"flc-debug-pane-grades\">%grades</td><td class=\"flc-debug-pane-lines\">%lines</td></tr>"
+        },
         selectors: {
             tab: ".fl-debug-tab",
             inspect: ".fl-debug-inspect",
             holder: ".fl-debug-holder",
-            pane: ".fl-debug-pane"
+            pane: ".fl-debug-pane",
+            paneBody: ".flc-debug-pane-body"
         },
         events: {
             onNewDocument: null
@@ -142,8 +192,8 @@ var fluid_2_0 = fluid_2_0 || {};
         listeners: {
             "onCreate.render": {
                 priority: "first",
-                funcName: "fluid.debug.renderMarkup",
-                args: ["{that}.container", "{that}.options.markup"]
+                funcName: "fluid.debug.browser.renderMarkup",
+                args: ["{that}", "{that}.options.markup.holder", "{that}.options.markup.pane"]
             },
             "onCreate.toggleTabClick": {
                 funcName: "fluid.debug.bindToggleClick",
@@ -154,7 +204,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 args: ["{that}.dom.inspect", "{that}.applier", "isInspecting"]
             },
             onNewDocument: {
-                funcName: "fluid.debug.bindHover",
+                funcName: "fluid.debug.browser.bindHover",
                 args: ["{that}", "{arguments}.0"]
             }
         },
@@ -174,7 +224,14 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
     
-    fluid.debug.bindHover = function (that, dokkument) {
+            
+    fluid.debug.browser.renderMarkup = function (that, holderMarkup, paneMarkup) {
+        that.container.append(holderMarkup);
+        var debugPane = that.locate("pane");
+        debugPane.append(paneMarkup);
+    };
+    
+    fluid.debug.browser.bindHover = function (that, dokkument) {
         console.log("Binding to document " + dokkument.prop("id"));
         var listener = function (event) {
             var allParents = $(event.target).parents().addBack().get();

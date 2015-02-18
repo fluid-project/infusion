@@ -2438,6 +2438,7 @@ var fluid = fluid || fluid_2_0;
     * @param {String} a string that has to be turned into a regular expression
     * @param {String} the flags to provide to the reg exp
     */
+    // TODO: this is an abominably inefficient technique for something that could simply be done by means of indexOf and slice
     fluid.stringToRegExp = function (str, flags) {
         return new RegExp(str.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&"), flags);
     };

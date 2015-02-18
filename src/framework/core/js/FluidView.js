@@ -141,7 +141,10 @@ var fluid_2_0 = fluid_2_0 || {};
      */
     fluid.createDomBinder = function (container, selectors) {
         // don't put on a typename to avoid confusing primitive visitComponentChildren
-        var cache = {}, that = {id: fluid.allocateGuid()};
+        var that = {
+            id: fluid.allocateGuid(),
+            cache: {}
+        };
         var userJQuery = container.constructor;
 
         function cacheKey(name, thisContainer) {
@@ -149,7 +152,7 @@ var fluid_2_0 = fluid_2_0 || {};
         }
 
         function record(name, thisContainer, result) {
-            cache[cacheKey(name, thisContainer)] = result;
+            that.cache[cacheKey(name, thisContainer)] = result;
         }
 
         that.locate = function (name, localContainer) {
@@ -184,11 +187,11 @@ var fluid_2_0 = fluid_2_0 || {};
         that.fastLocate = function (name, localContainer) {
             var thisContainer = localContainer ? localContainer : container;
             var key = cacheKey(name, thisContainer);
-            var togo = cache[key];
+            var togo = that.cache[key];
             return togo ? togo : that.locate(name, localContainer);
         };
         that.clear = function () {
-            cache = {};
+            that.cache = {};
         };
         that.refresh = function (names, localContainer) {
             var thisContainer = localContainer ? localContainer : container;
