@@ -370,9 +370,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         "fluid_prefs_panel_contrast": "messages/contrast"
                     }
                 },
-                rootModel: {
+                initialModel: {
                     members: {
-                        rootModel: {
+                        initialModel: {
                             "fluid_prefs_contrast": "default"
                         }
                     }
@@ -515,7 +515,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.prefs.panel.otherTextSize", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         preferenceMap: {
             "fluid.prefs.textSize": {
                 "model.value": "default",
@@ -620,10 +620,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         },
-        rootModel: {
-            gradeNames: ["fluid.prefs.rootModel", "autoInit"],
+        initialModel: {
+            gradeNames: ["fluid.prefs.initialModel", "autoInit"],
             members: {
-                rootModel: {
+                initialModel: {
                     fluid_prefs_textSize: 1
                 }
             }
@@ -687,10 +687,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "fluid_prefs_panel_textSize": "%prefix/PrefsEditorTemplate-textSize.json"
             }
         },
-        rootModel: {
-            gradeNames: ["fluid.prefs.rootModel", "autoInit"],
+        initialModel: {
+            gradeNames: ["fluid.prefs.initialModel", "autoInit"],
             members: {
-                rootModel: {
+                initialModel: {
                     fluid_prefs_textSize: 1
                 }
             }
@@ -838,10 +838,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         "fluid_prefs_panel_otherTextSize": "%prefix/PrefsEditorTemplate-otherTextSize.json"
                     }
                 },
-                rootModel: {
-                    gradeNames: ["fluid.prefs.rootModel", "autoInit"],
+                initialModel: {
+                    gradeNames: ["fluid.prefs.initialModel", "autoInit"],
                     members: {
-                        rootModel: {
+                        initialModel: {
                             fluid_prefs_textSize: 1
                         }
                     }
@@ -899,10 +899,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         "fluid_prefs_panel_oneForManyPrefs": "%prefix/PrefsEditorTemplate-linksControls.json"
                     }
                 },
-                rootModel: {
-                    gradeNames: ["fluid.prefs.rootModel", "autoInit"],
+                initialModel: {
+                    gradeNames: ["fluid.prefs.initialModel", "autoInit"],
                     members: {
-                        rootModel: {
+                        initialModel: {
                             fluid_prefs_emphasizeLinks: false,
                             fluid_prefs_inputsLarger: false
                         }
@@ -978,10 +978,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     "selectors": {}
                 },
-                rootModel: {
-                    gradeNames: ["fluid.prefs.rootModel", "autoInit"],
+                initialModel: {
+                    gradeNames: ["fluid.prefs.initialModel", "autoInit"],
                     members: {
-                        rootModel: {
+                        initialModel: {
                             fluid_prefs_textSize: 1
                         }
                     }
@@ -1108,7 +1108,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.prefs.enactor.subPanel2", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
             "fluid.prefs.subPanel2": {
                 "model.value": "default"
@@ -1284,9 +1284,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "fluid_prefs_subPanel2": "%prefix/subPanel2.json"
             }
         },
-        rootModel: {
+        initialModel: {
             members: {
-                rootModel: {
+                initialModel: {
                     fluid_prefs_subPanel1: false,
                     fluid_prefs_subPanel2: false
                 }
@@ -1361,7 +1361,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.prefs.enactor.subPanel4", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
             "fluid.prefs.subPanel4": {
                 "model.value": "default"
@@ -1524,9 +1524,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "fluid_prefs_subPanel4": "%prefix/subPanel4.json"
             }
         },
-        rootModel: {
+        initialModel: {
             members: {
-                rootModel: {
+                initialModel: {
                     fluid_prefs_subPanel3: false,
                     fluid_prefs_subPanel4: false
                 }
@@ -1839,9 +1839,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "fluid_prefs_subPanel8": "%prefix/subPanel8.json"
             }
         },
-        rootModel: {
+        initialModel: {
             members: {
-                rootModel: {
+                initialModel: {
                     fluid_prefs_subPanel5: false,
                     fluid_prefs_subPanel6: false,
                     fluid_prefs_subPanel7: false,
@@ -1902,8 +1902,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "prefsEditor": "%prefix/prefs.json"
             }
         },
-        rootModel: {
-            gradeNames: ["fluid.prefs.rootModel", "autoInit"]
+        initialModel: {
+            gradeNames: ["fluid.prefs.initialModel", "autoInit"]
         },
         templatePrefix: {
             gradeNames: ["fluid.littleComponent", "autoInit"],

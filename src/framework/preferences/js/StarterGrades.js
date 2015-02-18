@@ -20,13 +20,13 @@ var fluid_2_0 = fluid_2_0 || {};
      * Provides the default values for the starter enhancer/panels models
      *******************************************************************************/
 
-    fluid.defaults("fluid.prefs.rootModel.starter", {
-        gradeNames: ["fluid.prefs.rootModel", "autoInit"],
+    fluid.defaults("fluid.prefs.initialModel.starter", {
+        gradeNames: ["fluid.prefs.initialModel", "autoInit"],
         members: {
             // TODO: This information is supposed to be generated from the JSON
             // schema describing various preferences. For now it's kept in top
             // level prefsEditor to avoid further duplication.
-            rootModel: {
+            initialModel: {
                 textFont: "default",          // key from classname map
                 theme: "default",             // key from classname map
                 textSize: 1,                  // in points
@@ -97,7 +97,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.defaults("fluid.uiEnhancer.starterEnactors", {
         gradeNames: ["fluid.uiEnhancer", "fluid.uiEnhancer.cssClassEnhancerBase", "fluid.uiEnhancer.browserTextEnhancerBase", "autoInit"],
-        model: "{fluid.prefs.rootModel}.rootModel",
+        model: "{fluid.prefs.initialModel}.initialModel",
         components: {
             textSize: {
                 type: "fluid.prefs.enactor.textSize",

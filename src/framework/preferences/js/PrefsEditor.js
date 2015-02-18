@@ -281,7 +281,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.prefs.prefsEditor", {
-        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.settingsGetter", "fluid.prefs.settingsSetter", "fluid.prefs.rootModel", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.settingsGetter", "fluid.prefs.settingsSetter", "fluid.prefs.initialModel", "autoInit"],
         invokers: {
             /**
              * Updates the change applier and fires modelChanged on subcomponent fluid.prefs.controls
@@ -359,7 +359,16 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.prefs.prefsEditor.fetch = function (that) {
         var completeModel = that.getSettings();
-        completeModel = $.extend(true, {}, that.rootModel, completeModel);
+        completeModel = $.extend(true, {}, that.initialModel, completeModel);
+        // TODO: This may not be completely effective if the root model is smaller than
+        // the current one. Given our previous discoveries re "model shrinkage"
+        // (http://issues.fluidproject.org/browse/FLUID-5585 ), the proper thing to do here
+        // is to apply a DELETE to the root before putting in the new model. And this should
+        // be done within a transaction in order to avoid notifying the tree more than necessary.
+        // However, the transactional model of the changeApplier is going to change radically
+        // soon (http://wiki.fluidproject.org/display/fluid/New+New+Notes+on+the+ChangeApplier)
+        // and this implementation doesn't seem to be causing a problem at present so we had
+        // just better leave it the way it is for now.
         that.applier.change("", completeModel);
         that.events.onPrefsEditorRefresh.fire();
         that.applyChanges();
@@ -372,7 +381,7 @@ var fluid_2_0 = fluid_2_0 || {};
         var savedSelections = fluid.copy(that.model);
 
         fluid.each(savedSelections, function (value, key) {
-            if (fluid.get(that.rootModel, key) === value) {
+            if (fluid.get(that.initialModel, key) === value) {
                 delete savedSelections[key];
             }
         });
@@ -390,7 +399,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * Resets the selections to the integrator's defaults and fires onReset
      */
     fluid.prefs.prefsEditor.reset = function (that) {
-        that.applier.change("", fluid.copy(that.rootModel));
+        that.applier.change("", fluid.copy(that.initialModel));
         that.events.onPrefsEditorRefresh.fire();
         that.events.onReset.fire(that);
     };

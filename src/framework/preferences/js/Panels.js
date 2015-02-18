@@ -133,6 +133,10 @@ var fluid_2_0 = fluid_2_0 || {};
      * this is all done, the onDomBind event is fired.
      */
     fluid.prefs.subPanel.resetDomBinder = function (that) {
+        // TODO: The line below to find the container jQuery instance was copied from the framework code -
+        // https://github.com/fluid-project/infusion/blob/master/src/framework/core/js/FluidView.js#L145
+        // in order to reset the dom binder when panels are in an iframe.
+        // It can be be eliminated once we have the new renderer.
         var userJQuery = that.container.constructor;
         that.container = userJQuery(that.container.selector);
         fluid.initDomBinder(that, that.options.selectors);
@@ -152,9 +156,9 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.prefs.subPanel.generateRules = function (preferenceMap) {
         var rules = {};
         fluid.each(preferenceMap, function (prefObj, prefKey) {
-            $.each(prefObj, function (prefRule) {
+            fluid.each(prefObj, function (value, prefRule) {
                 if (prefRule.indexOf("model.") === 0) {
-                    rules[fluid.prefs.subPanel.safePrefKey(prefKey)] = prefRule.slice(6);
+                    rules[fluid.prefs.subPanel.safePrefKey(prefKey)] = prefRule.slice("model.".length);
                 }
             });
         });
@@ -287,11 +291,11 @@ var fluid_2_0 = fluid_2_0 || {};
      */
     fluid.prefs.compositePanel.assembleDistributeOptions = function (components) {
         var gradeName = "fluid.prefs.compositePanel.distributeOptions_" + fluid.allocateGuid();
-        var distributeRules = [];
+        var distributeOptions = [];
         var relayOption = {};
-        $.each(components, function (componentName, componentOptions) {
+        fluid.each(components, function (componentOptions, componentName) {
             if (fluid.prefs.compositePanel.isPanel(componentOptions.type, componentOptions.options)) {
-                distributeRules.push({
+                distributeOptions.push({
                     source: "{that}.options.subPanelOverrides",
                     target: "{that > " + componentName + "}.options"
                 });
@@ -299,16 +303,17 @@ var fluid_2_0 = fluid_2_0 || {};
 
             // Construct the model relay btw the composite panel and its subpanels
             var componentRelayRules = {};
-            var preferenceMap = fluid.get(fluid.prefs.compositePanel.prefetchComponentOptions(componentOptions.type, componentOptions.options), ["preferenceMap"]);
+            var definedOptions = fluid.prefs.compositePanel.prefetchComponentOptions(componentOptions.type, componentOptions.options);
+            var preferenceMap = fluid.get(definedOptions, ["preferenceMap"]);
             fluid.each(preferenceMap, function (prefObj, prefKey) {
-                $.each(prefObj, function (prefRule) {
+                fluid.each(prefObj, function (value, prefRule) {
                     if (prefRule.indexOf("model.") === 0) {
-                        fluid.set(componentRelayRules, prefRule.slice(6), "{compositePanel}.model." + fluid.prefs.subPanel.safePrefKey(prefKey));
+                        fluid.set(componentRelayRules, prefRule.slice("model.".length), "{compositePanel}.model." + fluid.prefs.subPanel.safePrefKey(prefKey));
                     }
                 });
             });
-            fluid.set(relayOption, [componentName], componentRelayRules);
-            distributeRules.push({
+            relayOption[componentName] = componentRelayRules;
+            distributeOptions.push({
                 source: "{that}.options.relayOption." + componentName,
                 target: "{that > " + componentName + "}.options.model"
             });
@@ -316,7 +321,7 @@ var fluid_2_0 = fluid_2_0 || {};
         fluid.defaults(gradeName, {
             gradeNames: ["fluid.littleComponent", "autoInit"],
             relayOption: relayOption,
-            distributeOptions: distributeRules
+            distributeOptions: distributeOptions
         });
         return gradeName;
     };
@@ -371,7 +376,7 @@ var fluid_2_0 = fluid_2_0 || {};
         var conditionals = {};
         var listeners = {};
         var events = {};
-        $.each(components, function (componentName, componentOptions) {
+        fluid.each(components, function (componentOptions, componentName) {
             if (fluid.prefs.compositePanel.isPanel(componentOptions.type, componentOptions.options)) {
                 var creationEventOpt = "default";
                 // would have had renderOnPreference directly sourced from the componentOptions

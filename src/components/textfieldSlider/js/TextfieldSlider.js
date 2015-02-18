@@ -30,7 +30,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 }
             },
             slider: {
-                type: "fluid.textfieldSlider.slider",
+                type: "fluid.slider",
                 container: "{textfieldSlider}.dom.slider",
                 options: {
                     model: "{fluid.textfieldSlider}.model",
@@ -103,26 +103,28 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-    fluid.defaults("fluid.textfieldSlider.slider", {
+    fluid.defaults("fluid.slider", {
         gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         range: {}, // should be used to specify the min, max range e.g. {min: 0, max: 100}
         selectors: {
             thumb: ".ui-slider-handle"
         },
         members: {
+            combinedSliderOptions: {
+                expander: {
+                    funcName: "fluid.slider.combineSliderOptions",
+                    args: ["{that}"]
+                }
+            },
             slider: {
                 expander: {
-                    // pass in {that}.initSliderAria as one argument since invokers are resolved at a later time
-                    funcName: "fluid.textfieldSlider.slider.initSlider",
-                    args: ["{that}", "{that}.initSliderAria"]
+                    "this": "{that}.container",
+                    method: "slider",
+                    args: ["{that}.combinedSliderOptions"]
                 }
             }
         },
         invokers: {
-            initSliderAria: {
-                funcName: "fluid.textfieldSlider.slider.initSliderAria",
-                args: ["{that}.dom.thumb", "{arguments}.0"]
-            },
             setSliderValue: {
                 "this": "{that}.slider",
                 "method": "slider",
@@ -139,6 +141,17 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         },
         listeners: {
+            // This can be removed once the jQuery UI slider has built in ARIA
+            "onCreate.initSliderAria": {
+                "this": "{that}.dom.thumb",
+                method: "attr",
+                args: [{
+                    role: "slider",
+                    "aria-valuenow": "{that}.combinedSliderOptions.value",
+                    "aria-valuemin": "{that}.combinedSliderOptions.min",
+                    "aria-valuemax": "{that}.combinedSliderOptions.max"
+                }]
+            },
             "onCreate.bindSlideEvt": {
                 "this": "{that}.slider",
                 "method": "bind",
@@ -156,23 +169,8 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-    // This will be removed once the jQuery UI slider has built in ARIA
-    fluid.textfieldSlider.slider.initSliderAria = function (thumb, options) {
-        var ariaDefaults = {
-            role: "slider",
-            "aria-valuenow": options.value,
-            "aria-valuemin": options.min,
-            "aria-valuemax": options.max
-        };
-        thumb.attr(ariaDefaults);
-    };
-
-    fluid.textfieldSlider.slider.initSlider = function (that, initSliderAriaFunc) {
-        var sliderOptions = $.extend(true, {}, that.options.sliderOptions, that.model, that.options.range);
-        var slider = that.container.slider(sliderOptions);
-        initSliderAriaFunc(sliderOptions);
-
-        return slider;
+    fluid.slider.combineSliderOptions = function (that) {
+        return $.extend(true, {}, that.options.sliderOptions, that.model, that.options.range);
     };
 
 })(jQuery, fluid_2_0);

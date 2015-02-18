@@ -22,13 +22,13 @@ var fluid_2_0 = fluid_2_0 || {};
      * Holds the default values for enactors and panel model values                *
      *******************************************************************************/
 
-    fluid.defaults("fluid.prefs.rootModel", {
+    fluid.defaults("fluid.prefs.initialModel", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         members: {
             // TODO: This information is supposed to be generated from the JSON
             // schema describing various preferences. For now it's kept in top
             // level prefsEditor to avoid further duplication.
-            rootModel: {}
+            initialModel: {}
         }
     });
 
@@ -57,7 +57,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * uiEnhancer user options                                                      *
      ********************************************************************************/
     fluid.defaults("fluid.pageEnhancer", {
-        gradeNames: ["fluid.eventedComponent", "fluid.originalEnhancerOptions", "fluid.prefs.rootModel", "fluid.prefs.settingsGetter", "autoInit"],
+        gradeNames: ["fluid.eventedComponent", "fluid.originalEnhancerOptions", "fluid.prefs.initialModel", "fluid.prefs.settingsGetter", "autoInit"],
         components: {
             uiEnhancer: {
                 type: "fluid.uiEnhancer",

@@ -131,11 +131,8 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.tempStore.set = function (settings, applier) {
-        if ($.isEmptyObject(settings)) {
-            applier.fireChangeRequest({path: "", type: "DELETE"});
-        } else {
-            applier.change("", settings);
-        }
+        applier.fireChangeRequest({path: "", type: "DELETE"});
+        applier.change("", settings);
     };
 
     fluid.defaults("fluid.globalSettingsStore", {

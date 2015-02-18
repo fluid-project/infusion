@@ -17,27 +17,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests");
 
-    fluid.tests.containSubstring = function (string, subString) {
-        if (!string || string.indexOf(subString) === -1) {
-            return false;
-        } else {
-            return true;
-        }
-    };
-
     fluid.tests.testStyle = function (that, expectedDefaultFlag, expectedCssClass) {
         var elements = that.options.elementsToStyle;
 
         jqUnit.assertEquals("Default value: " + expectedDefaultFlag, expectedDefaultFlag, that.model.value);
         jqUnit.assertEquals("Css class to be applied or removed: " + expectedCssClass, expectedCssClass, that.options.cssClass);
 
-        jqUnit.assertFalse("Default - css class is not applied", fluid.tests.containSubstring(elements.attr("class"), expectedCssClass));
+        jqUnit.assertFalse("Default - css class is not applied", elements.hasClass(expectedCssClass));
 
         that.applier.change("value", true);
-        jqUnit.assertTrue("True value - Css class has been applied", fluid.tests.containSubstring(elements.attr("class"), expectedCssClass));
+        jqUnit.assertTrue("True value - Css class has been applied", elements.hasClass(expectedCssClass));
 
         that.applier.change("value", false);
-        jqUnit.assertFalse("False value - Css class has been removed", fluid.tests.containSubstring(elements.attr("class"), expectedCssClass));
+        jqUnit.assertFalse("False value - Css class has been removed", elements.hasClass(expectedCssClass));
     };
 
     /*******************************************************************************

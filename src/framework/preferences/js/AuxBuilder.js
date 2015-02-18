@@ -133,7 +133,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.prefs.expandSchemaComponents = function (auxSchema, type, prefKey, componentConfig, index, commonOptions, modelCommonOptions, mappedDefaults) {
         var componentOptions = fluid.copy(componentConfig) || {};
         var components = {};
-        var rootModel = {};
+        var initialModel = {};
 
         var componentName = fluid.prefs.removeKey(componentOptions, "type");
         var regexp = new RegExp("\\.", "g");
@@ -167,7 +167,7 @@ var fluid_2_0 = fluid_2_0 || {};
                             internalModelName: internalModelName,
                             externalModelName: flattenedPrefKey
                         });
-                        fluid.set(rootModel, ["members", "rootModel", flattenedPrefKey], prefSchema[primaryPath]);
+                        fluid.set(initialModel, ["members", "initialModel", flattenedPrefKey], prefSchema[primaryPath]);
                     } else {
                         fluid.set(opts, internalPath, prefSchema[primaryPath]);
                     }
@@ -183,7 +183,7 @@ var fluid_2_0 = fluid_2_0 || {};
             fluid.prefs.addAtPath(auxSchema, [type, "selectors"], selectors);
             fluid.prefs.addAtPath(auxSchema, ["templateLoader", "templates"], templates);
             fluid.prefs.addAtPath(auxSchema, ["messageLoader", "templates"], messages);
-            fluid.prefs.addAtPath(auxSchema, "rootModel", rootModel);
+            fluid.prefs.addAtPath(auxSchema, "initialModel", initialModel);
         }
 
         return auxSchema;
@@ -231,7 +231,7 @@ var fluid_2_0 = fluid_2_0 || {};
         fluid.each(compositePanelList, function (compositeDetail, compositeKey) {
             var compositePanelOptions = {};
             var components = {};
-            var rootModel = {};
+            var initialModel = {};
             var selectors = {};
             var templates = {};
             var messages = {};
@@ -293,7 +293,7 @@ var fluid_2_0 = fluid_2_0 || {};
                                 internalModelName: safeSubPanelPrefsKey,
                                 externalModelName: safeSubPanelPrefsKey
                             });
-                            fluid.set(rootModel, ["members", "rootModel", safeSubPanelPrefsKey], prefSchema[primaryPath]);
+                            fluid.set(initialModel, ["members", "initialModel", safeSubPanelPrefsKey], prefSchema[primaryPath]);
                         } else {
                             opts = opts || {options: {}};
                             fluid.set(opts, "options." + internalPath, prefSchema[primaryPath]);
@@ -342,7 +342,7 @@ var fluid_2_0 = fluid_2_0 || {};
             fluid.prefs.addAtPath(auxSchema, ["panels", "selectors"], selectors);
             fluid.prefs.addAtPath(auxSchema, ["templateLoader", "templates"], templates);
             fluid.prefs.addAtPath(auxSchema, ["messageLoader", "templates"], messages);
-            fluid.prefs.addAtPath(auxSchema, "rootModel", rootModel);
+            fluid.prefs.addAtPath(auxSchema, "initialModel", initialModel);
             $.extend(true, auxSchema, {panelsToIgnore: panelsToIgnore});
         });
 
@@ -429,8 +429,8 @@ var fluid_2_0 = fluid_2_0 || {};
             messageLoader: {
                 gradeNames: ["fluid.prefs.resourceLoader", "autoInit"]
             },
-            rootModel: {
-                gradeNames: ["fluid.prefs.rootModel", "autoInit"]
+            initialModel: {
+                gradeNames: ["fluid.prefs.initialModel", "autoInit"]
             },
             templatePrefix: {
                 gradeNames: ["fluid.littleComponent", "autoInit"]

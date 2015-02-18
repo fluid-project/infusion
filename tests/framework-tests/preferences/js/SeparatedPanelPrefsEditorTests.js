@@ -57,7 +57,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         gradeNames: ["fluid.prefs.starterMessageLoader"]
                     },
                     prefsEditor: {
-                        gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"]
+                        gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.initialModel.starter", "fluid.prefs.uiEnhancerRelay"]
                     }
                 }
             },
@@ -109,13 +109,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return function () {
             separatedPanel.locate("reset").click();
 
-            var rootModel = separatedPanel.prefsEditor.rootModel;
+            var initialModel = separatedPanel.prefsEditor.initialModel;
             var enhancerModel = separatedPanel.pageEnhancer.model;
             var iframeEnhancerModel = separatedPanel.iframeRenderer.iframeEnhancer.model;
 
-            fluid.tests.prefs.checkModelSelections("enhancerModel from defaults", rootModel, enhancerModel);
+            fluid.tests.prefs.checkModelSelections("enhancerModel from defaults", initialModel, enhancerModel);
             separatedPanel.slidingPanel.hidePanel();
-            fluid.tests.prefs.checkModelSelections("iframeEnhancerModel from defaults", rootModel, iframeEnhancerModel);
+            fluid.tests.prefs.checkModelSelections("iframeEnhancerModel from defaults", initialModel, iframeEnhancerModel);
             fluid.tests.prefs.checkModelSelections("enhancerModel from iframeEnhancerModel", enhancerModel, iframeEnhancerModel);
         };
     };
@@ -193,7 +193,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     iframe: expectedIframeSelector,
                     prefsEditor: {
                         members: {
-                            rootModel: {
+                            initialModel: {
                                 theme: "yb"
                             }
                         }
