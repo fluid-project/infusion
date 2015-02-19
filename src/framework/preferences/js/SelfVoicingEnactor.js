@@ -67,7 +67,8 @@ var fluid_2_0 = fluid_2_0 || {};
         invokers: {
             handleSelfVoicing: {
                 funcName: "fluid.prefs.enactor.selfVoicing.handleSelfVoicing",
-                args: ["{that}", "{arguments}.0"]
+                // Pass in invokers to force them to be resolved
+                args: ["{that}.options.strings.welcomeMsg", "{that}.queueSpeech", "{that}.readFromDOM", "{that}.cancel", "{arguments}.0"]
             },
             readFromDOM: {
                 funcName: "fluid.prefs.enactor.selfVoicing.readFromDOM",
@@ -79,12 +80,12 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-    fluid.prefs.enactor.selfVoicing.handleSelfVoicing = function (that, enabled) {
-        if (that.model.enabled) {
-            that.queueSpeech(that.options.strings.welcomeMsg, true);
-            that.readFromDOM();
+    fluid.prefs.enactor.selfVoicing.handleSelfVoicing = function (welcomeMsg, queueSpeech, readFromDOM, cancel, enabled) {
+        if (enabled) {
+            queueSpeech(welcomeMsg, true);
+            readFromDOM();
         } else {
-            that.cancel();
+            cancel();
         }
     };
 
