@@ -4,7 +4,6 @@
         "description": "A synchronized slider and textfield",
         "cssFiles": [],
         "files": [
-            "./js/StringToNumberTransform.js",
             "./js/TextfieldSlider.js"
         ],
         "dependencies": [
