@@ -81,7 +81,14 @@ var fluid_2_0 = fluid_2_0 || {};
                 "method": "val",
                 args: ["{change}.value"]
             },
-            // When the input field receives a invalid input such as a string value, ignore it and populate the field with the previous value
+            // TODO: This listener is to deal with the issue that, when the input field receives a invalid input such as a string value,
+            // ignore it and populate the field with the previous value.
+            // This is an area in which UX has spilled over into our model configuration, which to some extent we should try to prevent.
+            // Whenever we receive a "change" event or some other similar checkpoint, if these updates occurred any faster, the user would
+            // be infuriated by being unable to type into the field. This situation doesn't occur at the moment because the change event is
+            // only fired when users leave the input feild. At the very least, we need to give a namespace to this listener - unfortunately
+            // the current dataBinding implementation will ignore it. Having this listener here represents an interaction decision rather
+            // than an implementation decision. This issue needs to be revisited.
             stringValue: {
                 "this": "{that}.container",
                 "method": "val",
