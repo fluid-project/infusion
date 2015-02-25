@@ -178,8 +178,8 @@ var fluid_2_0 = fluid_2_0 || {};
 
             fluid.prefs.addAtPath(auxSchema, [type, "components"], components);
             fluid.prefs.addAtPath(auxSchema, [type, "selectors"], selectors);
-            fluid.prefs.addAtPath(auxSchema, ["templateLoader", "templates"], templates);
-            fluid.prefs.addAtPath(auxSchema, ["messageLoader", "templates"], messages);
+            fluid.prefs.addAtPath(auxSchema, ["templateLoader", "resources"], templates);
+            fluid.prefs.addAtPath(auxSchema, ["messageLoader", "resources"], messages);
             fluid.prefs.addAtPath(auxSchema, "rootModel", rootModel);
         }
 
@@ -334,8 +334,8 @@ var fluid_2_0 = fluid_2_0 || {};
             // Add onto auxSchema
             fluid.prefs.addAtPath(auxSchema, ["panels", "components"], components);
             fluid.prefs.addAtPath(auxSchema, ["panels", "selectors"], selectors);
-            fluid.prefs.addAtPath(auxSchema, ["templateLoader", "templates"], templates);
-            fluid.prefs.addAtPath(auxSchema, ["messageLoader", "templates"], messages);
+            fluid.prefs.addAtPath(auxSchema, ["templateLoader", "resources"], templates);
+            fluid.prefs.addAtPath(auxSchema, ["messageLoader", "resources"], messages);
             fluid.prefs.addAtPath(auxSchema, "rootModel", rootModel);
             $.extend(true, auxSchema, {panelsToIgnore: panelsToIgnore});
         });
@@ -368,7 +368,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
             type = "template";
             if (prefName === type) {
-                fluid.set(auxSchema, ["templateLoader", "templates", "prefsEditor"], auxSchema[type]);
+                fluid.set(auxSchema, ["templateLoader", "resources", "prefsEditor"], auxSchema[type]);
                 delete auxSchema[type];
             }
 
@@ -379,7 +379,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
             type = "message";
             if (prefName === type) {
-                fluid.set(auxSchema, ["messageLoader", "templates", "prefsEditor"], auxSchema[type]);
+                fluid.set(auxSchema, ["messageLoader", "resources", "prefsEditor"], auxSchema[type]);
                 delete auxSchema[type];
             }
 

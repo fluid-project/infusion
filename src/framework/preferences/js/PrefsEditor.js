@@ -135,27 +135,18 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     /**************************************
-     * Preferences Editor Template Loader *
+     * Preferences Editor Resource Loader *
      **************************************/
-
-    /**
-     * A configurable component that works in conjunction with or without the Preferences Editor template
-     * path component (fluid.prefsResourcePath) to allow users to set either the location of their own
-     * templates or the templates that are relative to the path defined in the Preferences Editor template
-     * path component.
-     *
-     * @param {Object} options
-     */
 
     fluid.defaults("fluid.prefs.resourceLoader", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         listeners: {
             "onCreate": {
-                listener: "fluid.prefs.resourceLoader.loadTemplates",
-                args: ["{that}", {expander: {func: "{that}.resolveTemplates"}}]
+                listener: "fluid.prefs.resourceLoader.loadResources",
+                args: ["{that}", {expander: {func: "{that}.resolveResources"}}]
             }
         },
-        templates: {},
+        resources: {},
         // Unsupported, non-API option
         components: {
             resourcePath: {
@@ -167,8 +158,8 @@ var fluid_2_0 = fluid_2_0 || {};
                 funcName: "fluid.stringTemplate",
                 args: [ "{arguments}.0", {"prefix/" : "{that}.resourcePath.options.value"} ]
             },
-            resolveTemplates: {
-                funcName: "fluid.prefs.resourceLoader.resolveTemplates",
+            resolveResources: {
+                funcName: "fluid.prefs.resourceLoader.resolveResources",
                 args: "{that}"
             }
         },
@@ -177,16 +168,15 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-    fluid.prefs.resourceLoader.resolveTemplates = function (that) {
-        var mapped = fluid.transform(that.options.templates, that.transformURL);
+    fluid.prefs.resourceLoader.resolveResources = function (that) {
+        var mapped = fluid.transform(that.options.resources, that.transformURL);
 
         return fluid.transform(mapped, function (url) {
             return {url: url, forceCache: true};
         });
     };
 
-    fluid.prefs.resourceLoader.loadTemplates = function (that, resources) {
-        delete resources.expander;   // A work-around for FLUID-5117
+    fluid.prefs.resourceLoader.loadResources = function (that, resources) {
         fluid.fetchResources(resources, function () {
             that.resources = resources;
             that.events.onResourcesLoaded.fire(resources);

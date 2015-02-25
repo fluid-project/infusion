@@ -288,7 +288,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 templateLoader: {
-                    templates: {
+                    resources: {
                         prefsEditor: "%prefix/SeparatedPanelPrefsEditor.html"
                     }
                 }
@@ -675,7 +675,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /**************************
      * Composite Panels Tests *
      **************************/
-     
+
     fluid.setLogging(fluid.logLevel.TRACE);
 
     fluid.registerNamespace("fluid.tests.composite");

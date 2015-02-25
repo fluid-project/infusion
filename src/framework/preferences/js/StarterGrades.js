@@ -348,14 +348,14 @@ var fluid_2_0 = fluid_2_0 || {};
      ******************************/
 
     /**
-     * A template loader component that expands the resources blocks for loading templates used by starterPanels
+     * A template loader component that expands the resources blocks for loading resources used by starterPanels
      *
      * @param {Object} options
      */
 
     fluid.defaults("fluid.prefs.starterTemplateLoader", {
         gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
-        templates: {
+        resources: {
             textSize: "%prefix/PrefsEditorTemplate-textSize.html",
             textFont: "%prefix/PrefsEditorTemplate-textFont.html",
             lineSpace: "%prefix/PrefsEditorTemplate-lineSpace.html",
@@ -369,21 +369,21 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.defaults("fluid.prefs.starterSeparatedPanelTemplateLoader", {
         gradeNames: ["fluid.prefs.starterTemplateLoader", "autoInit"],
-        templates: {
+        resources: {
             prefsEditor: "%prefix/SeparatedPanelPrefsEditor.html"
         }
     });
 
     fluid.defaults("fluid.prefs.starterFullPreviewTemplateLoader", {
         gradeNames: ["fluid.prefs.starterTemplateLoader", "autoInit"],
-        templates: {
+        resources: {
             prefsEditor: "%prefix/FullPreviewPrefsEditor.html"
         }
     });
 
     fluid.defaults("fluid.prefs.starterFullNoPreviewTemplateLoader", {
         gradeNames: ["fluid.prefs.starterTemplateLoader", "autoInit"],
-        templates: {
+        resources: {
             prefsEditor: "%prefix/FullNoPreviewPrefsEditor.html"
         }
     });
@@ -400,7 +400,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.defaults("fluid.prefs.starterMessageLoader", {
         gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
-        templates: {
+        resources: {
             prefsEditor: "%prefix/prefsEditor.json",
             textSize: "%prefix/textSize.json",
             textFont: "%prefix/textFont.json",
