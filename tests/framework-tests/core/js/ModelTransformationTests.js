@@ -65,7 +65,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             transform = fluid.tests.transforms.wrapTransform(transform);
         }
         var transformed = fluid.model.transform(model, transform);
-        console.log("expected: ", expected, "result: ", (transformWrap ? transformed.value : transformed), "value: ", transformed.value, "transformed: ", transformed);
         jqUnit[method].apply(null, [message, expected, (transformWrap ? transformed.value : transformed) ]);
     };
 
