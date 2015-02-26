@@ -129,7 +129,6 @@ var fluid_2_0 = fluid_2_0 || {};
                     gradeNames: ["fluid.prefs.uiEnhancerRelay"],
                     // ensure that model and applier are available to users at top level
                     model: "{separatedPanel}.model",
-                    applier: "{separatedPanel}.applier",
                     events: {
                         onSignificantDOMChange: null,
                         updateEnhancerModel: "{that}.events.modelChanged"
@@ -180,7 +179,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *****************************************/
 
     fluid.defaults("fluid.prefs.separatedPanel.renderIframe", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         events: {
             afterRender: null
         },

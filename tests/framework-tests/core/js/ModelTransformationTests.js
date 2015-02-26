@@ -44,7 +44,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         catsAreDecent: true,
         floatyLowy: 12.3910,
         floatyHighy: 12.52,
-        floaty2: -9876.789
+        floaty2: -9876.789,
+        hundredInString: "100",
+        floatInString: "12.52",
+        floaty2InString: "-9876.789"
     };
 
     jqUnit.module("Model Transformation");
@@ -767,6 +770,57 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.transforms.testOneStructure(arrayValueTests, {
             method: "assertDeepEq"
         });
+    });
+
+    var stringToNumberTests = [{
+        message: "stringToNumber() converts integers.",
+        transformWrap: true,
+        transform: {
+            type: "fluid.transforms.stringToNumber",
+            inputPath: "hundredInString"
+        },
+        method: "assertValue",
+        expected: fluid.tests.transforms.source.hundred
+    }, {
+        message: "stringToNumber() converts float values.",
+        transformWrap: true,
+        transform: {
+            type: "fluid.transforms.stringToNumber",
+            inputPath: "floatInString"
+        },
+        method: "assertValue",
+        expected: fluid.tests.transforms.source.floatyHighy
+    }, {
+        message: "stringToNumber() converts negative float values.",
+        transformWrap: true,
+        transform: {
+            type: "fluid.transforms.stringToNumber",
+            inputPath: "floaty2InString"
+        },
+        method: "assertValue",
+        expected: fluid.tests.transforms.source.floaty2
+    }, {
+        message: "stringToNumber() converts integers.",
+        transformWrap: true,
+        transform: {
+            type: "fluid.transforms.stringToNumber",
+            inputPath: "cat"
+        },
+        method: "assertEquals",
+        expected: undefined
+    }, {
+        message: "stringToNumber() converts integers.",
+        transformWrap: true,
+        transform: {
+            type: "fluid.transforms.stringToNumber",
+            inputPath: "gerbil"
+        },
+        method: "assertEquals",
+        expected: undefined
+    }];
+
+    jqUnit.test("fluid.transforms.stringToNumber()", function () {
+        fluid.tests.transforms.testOneStructure(stringToNumberTests);
     });
 
     var countTests = [{

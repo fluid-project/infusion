@@ -27,7 +27,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.prefs.prefsEditorLoader", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         components: {
             prefsEditor: {
                 priority: "last",
@@ -106,7 +106,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.defaults("fluid.prefs.transformDefaultPanelsOptions", {
         // Do not supply "fluid.prefs.inline" here, since when this is used as a mixin for separatedPanel, it ends up displacing the
         // more refined type of the prefsEditorLoader
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         distributeOptions: [{
             source: "{that}.options.textSize",
             removeSource: true,
@@ -235,7 +235,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.prefs.uiEnhancerRelay", {
-        gradeNames: ["autoInit", "fluid.eventedComponent"],
+        gradeNames: ["autoInit", "fluid.modelRelayComponent"],
         listeners: {
             onCreate: "{that}.addListener",
             onDestroy: "{that}.removeListener"
@@ -281,7 +281,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.prefs.prefsEditor", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.settingsGetter", "fluid.prefs.settingsSetter", "fluid.prefs.rootModel", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.settingsGetter", "fluid.prefs.settingsSetter", "fluid.prefs.initialModel", "autoInit"],
         invokers: {
             /**
              * Updates the change applier and fires modelChanged on subcomponent fluid.prefs.controls
@@ -289,10 +289,6 @@ var fluid_2_0 = fluid_2_0 || {};
              * @param {Object} newModel
              * @param {Object} source
              */
-            updateModel: {
-                funcName: "fluid.fireSourcedChange",
-                args: ["{that}.applier", "", "{arguments}.0", "{arguments}.1"]
-            },
             fetch: {
                 funcName: "fluid.prefs.prefsEditor.fetch",
                 args: ["{that}"]
@@ -339,6 +335,15 @@ var fluid_2_0 = fluid_2_0 || {};
             onCreate: "fluid.prefs.prefsEditor.init",
             onAutoSave: "{that}.save"
         },
+        modelListeners: {
+            "": [{
+                listener: "fluid.prefs.prefsEditor.handleAutoSave",
+                args: ["{that}"]
+            }, {
+                listener: "{that}.events.modelChanged.fire",
+                args: ["{change}.value"]
+            }]
+        },
         resources: {
             template: "{templateLoader}.resources.prefsEditor"
         },
@@ -354,8 +359,17 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.prefs.prefsEditor.fetch = function (that) {
         var completeModel = that.getSettings();
-        completeModel = $.extend(true, {}, that.rootModel, completeModel);
-        that.updateModel(completeModel, "settingsStore");
+        completeModel = $.extend(true, {}, that.initialModel, completeModel);
+        // TODO: This may not be completely effective if the root model is smaller than
+        // the current one. Given our previous discoveries re "model shrinkage"
+        // (http://issues.fluidproject.org/browse/FLUID-5585 ), the proper thing to do here
+        // is to apply a DELETE to the root before putting in the new model. And this should
+        // be done within a transaction in order to avoid notifying the tree more than necessary.
+        // However, the transactional model of the changeApplier is going to change radically
+        // soon (http://wiki.fluidproject.org/display/fluid/New+New+Notes+on+the+ChangeApplier)
+        // and this implementation doesn't seem to be causing a problem at present so we had
+        // just better leave it the way it is for now.
+        that.applier.change("", completeModel);
         that.events.onPrefsEditorRefresh.fire();
         that.applyChanges();
     };
@@ -367,7 +381,7 @@ var fluid_2_0 = fluid_2_0 || {};
         var savedSelections = fluid.copy(that.model);
 
         fluid.each(savedSelections, function (value, key) {
-            if (fluid.get(that.rootModel, key) === value) {
+            if (fluid.get(that.initialModel, key) === value) {
                 delete savedSelections[key];
             }
         });
@@ -385,7 +399,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * Resets the selections to the integrator's defaults and fires onReset
      */
     fluid.prefs.prefsEditor.reset = function (that) {
-        that.updateModel(fluid.copy(that.rootModel));
+        that.applier.change("", fluid.copy(that.initialModel));
         that.events.onPrefsEditorRefresh.fire();
         that.events.onReset.fire(that);
     };
@@ -422,14 +436,13 @@ var fluid_2_0 = fluid_2_0 || {};
         that.events.onReady.fire(that);
     };
 
-    fluid.prefs.prefsEditor.init = function (that) {
-        that.applier.modelChanged.addListener("", function (newModel, oldModel, changeRequest) {
-            that.events.modelChanged.fire(newModel, oldModel, changeRequest[0].source);
-            if (that.options.autoSave) {
-                that.events.onAutoSave.fire();
-            }
-        });
+    fluid.prefs.prefsEditor.handleAutoSave = function (that) {
+        if (that.options.autoSave) {
+            that.events.onAutoSave.fire();
+        }
+    };
 
+    fluid.prefs.prefsEditor.init = function (that) {
         // This setTimeout is to ensure that fetching of resources is asynchronous,
         // and so that component construction does not run ahead of subcomponents for SeparatedPanel
         // (FLUID-4453 - this may be a replacement for a branch removed for a FLUID-2248 fix)
@@ -445,7 +458,7 @@ var fluid_2_0 = fluid_2_0 || {};
      ******************************/
 
     fluid.defaults("fluid.prefs.preview", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         components: {
             enhancer: {
                 type: "fluid.uiEnhancer",

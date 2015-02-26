@@ -62,6 +62,15 @@ var fluid = fluid || fluid_2_0;
     fluid.transforms.arrayValue = fluid.makeArray;
 
 
+    fluid.defaults("fluid.transforms.stringToNumber", {
+        gradeNames: ["fluid.standardTransformFunction"]
+    });
+
+    fluid.transforms.stringToNumber = function (value) {
+        var newValue = Number(value);
+        return isNaN(newValue) ? undefined : newValue;
+    };
+
     fluid.defaults("fluid.transforms.count", {
         gradeNames: "fluid.standardTransformFunction"
     });

@@ -16,7 +16,6 @@
             "./js/PrefsEditor.js",
             "./js/Panels.js",
             "./js/SelfVoicingPanel.js",
-            "./js/ModelRelay.js",
             "./js/Enactors.js",
             "./js/SelfVoicingEnactor.js",
             "./js/StarterGrades.js",

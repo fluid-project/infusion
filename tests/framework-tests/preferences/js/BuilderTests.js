@@ -51,9 +51,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * fluid.prefs.builder.parseAuxSchema tests *
      ************************************************/
 
-    fluid.tests.testparseAuxSchema = function (expected, funcArgs) {
-        var actualFitler = fluid.invokeGlobalFunction("fluid.prefs.builder.parseAuxSchema", funcArgs);
-        jqUnit.assertDeepEq("The schema should have been parsed correctly", expected, actualFitler);
+    fluid.tests.testParseAuxSchema = function (expected, funcArgs) {
+        var actualFilter = fluid.invokeGlobalFunction("fluid.prefs.builder.parseAuxSchema", funcArgs);
+        jqUnit.assertDeepEq("The schema should have been parsed correctly", expected, actualFilter);
     };
 
     fluid.defaults("fluid.tests.parseAuxSchema", {
@@ -111,7 +111,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             tests: [{
                 expect: 1,
                 name: "grade creation",
-                func: "fluid.tests.testparseAuxSchema",
+                func: "fluid.tests.testParseAuxSchema",
                 args: ["{that}.options.testOpts.expectedTypeFilter", ["{that}.options.testOpts.auxSchema"]]
             }]
         }]
@@ -355,7 +355,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 16,
                 name: "not created",
                 func: "fluid.tests.testNotCreated",
-                args: ["{builderEmpty}", ["enactors", "messages", "panels", "rootModel", "templateLoader", "templatePrefix", "messageLoader", "messagePrefix"]]
+                args: ["{builderEmpty}", ["enactors", "messages", "panels", "initialModel", "templateLoader", "templatePrefix", "messageLoader", "messagePrefix"]]
             }, {
                 expect: 2,
                 name: "assembledUIEGrade",
@@ -376,9 +376,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: ["{builderEnactors}.options.constructedGrades.enactors", "{builderEnactors}.options.auxSchema.enactors"]
             }, {
                 expect: 4,
-                name: "rootModel",
+                name: "initialModel",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderEnactors}.options.constructedGrades.rootModel", "{builderEnactors}.options.auxSchema.rootModel"]
+                args: ["{builderEnactors}.options.constructedGrades.initialModel", "{builderEnactors}.options.auxSchema.initialModel"]
             }, {
                 expect: 8,
                 name: "not created",
@@ -404,9 +404,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: ["{builderPanels}.options.constructedGrades.panels", "{builderPanels}.options.auxSchema.panels"]
             }, {
                 expect: 4,
-                name: "rootModel",
+                name: "initialModel",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanels}.options.constructedGrades.rootModel", "{builderPanels}.options.auxSchema.rootModel"]
+                args: ["{builderPanels}.options.constructedGrades.initialModel", "{builderPanels}.options.auxSchema.initialModel"]
             }, {
                 expect: 4,
                 name: "templateLoader",
@@ -452,9 +452,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: ["{builderPanelsAndMessages}.options.constructedGrades.messagePrefix", "{builderPanelsAndMessages}.options.auxSchema.messagePrefix"]
             }, {
                 expect: 4,
-                name: "rootModel",
+                name: "initialModel",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndMessages}.options.constructedGrades.rootModel", "{builderPanelsAndMessages}.options.auxSchema.rootModel"]
+                args: ["{builderPanelsAndMessages}.options.constructedGrades.initialModel", "{builderPanelsAndMessages}.options.auxSchema.initialModel"]
             }, {
                 expect: 4,
                 name: "templateLoader",
@@ -490,9 +490,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: ["{builderPanelsAndTemplates}.options.constructedGrades.templatePrefix", "{builderPanelsAndTemplates}.options.auxSchema.templatePrefix"]
             }, {
                 expect: 4,
-                name: "rootModel",
+                name: "initialModel",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndTemplates}.options.constructedGrades.rootModel", "{builderPanelsAndTemplates}.options.auxSchema.rootModel"]
+                args: ["{builderPanelsAndTemplates}.options.constructedGrades.initialModel", "{builderPanelsAndTemplates}.options.auxSchema.initialModel"]
             }, {
                 expect: 4,
                 name: "templateLoader",
@@ -543,9 +543,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: ["{builderAll}.options.constructedGrades.enactors", "{builderAll}.options.auxSchema.enactors"]
             }, {
                 expect: 4,
-                name: "rootModel",
+                name: "initialModel",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderAll}.options.constructedGrades.rootModel", "{builderAll}.options.auxSchema.rootModel"]
+                args: ["{builderAll}.options.constructedGrades.initialModel", "{builderAll}.options.auxSchema.initialModel"]
             }, {
                 expect: 4,
                 name: "templateLoader",
@@ -607,7 +607,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             prefsEd: {
-                type: "fluid.viewComponent",
+                type: "fluid.viewRelayComponent",
                 container: "#flc-prefsEditor",
                 createOnEvent: "{builderMungingTester}.events.onTestCaseStart",
                 options: {
@@ -675,7 +675,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /**************************
      * Composite Panels Tests *
      **************************/
-     
+
     fluid.setLogging(fluid.logLevel.TRACE);
 
     fluid.registerNamespace("fluid.tests.composite");

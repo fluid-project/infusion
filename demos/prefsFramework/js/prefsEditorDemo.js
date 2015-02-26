@@ -124,7 +124,7 @@ var demo = demo || {};
      * Simplify content based upon the model value.
      **********************************************************************************/
     fluid.defaults("demo.prefsEditor.simplifyEnactor", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
             "demo.prefs.simplify": {
                 "model.simplify": "default"
@@ -139,6 +139,12 @@ var demo = demo || {};
         model: {
             simplify: false
         },
+        modelListeners: {
+            simplify: {
+                listener: "{that}.set",
+                args: ["{change}.value"]
+            }
+        },
         events: {
             settingChanged: null
         },
@@ -146,12 +152,6 @@ var demo = demo || {};
             set: {
                 funcName: "demo.prefsEditor.simplifyEnactor.set",
                 args: ["{arguments}.0", "{that}"]
-            }
-        },
-        listeners: {
-            onCreate: {
-                listener: "{that}.set",
-                args: ["{that}.model.simplify"]
             }
         }
     });
@@ -186,12 +186,6 @@ var demo = demo || {};
                 that.events.settingChanged.fire();
             }
         }
-    };
-
-    demo.prefsEditor.simplifyEnactor.finalInit = function (that) {
-        that.applier.modelChanged.addListener("simplify", function (newModel) {
-            that.set(newModel.simplify);
-        });
     };
 
 })(jQuery, fluid);
