@@ -11,7 +11,7 @@
 Copyright 2007-2010 University of Cambridge
 Copyright 2007-2009 University of Toronto
 Copyright 2007-2009 University of California, Berkeley
-Copyright 2010-2011 Lucendo Development Ltd.
+Copyright 2010-2015 Lucendo Development Ltd.
 Copyright 2010 OCAD University
 Copyright 2011 Charly Molter
 
@@ -23,7 +23,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global console, opera, YAHOO*/
 
 var fluid_2_0 = fluid_2_0 || {};
@@ -1365,7 +1364,7 @@ var fluid = fluid || fluid_2_0;
     var gradeTick = 1; // tick counter for managing grade cache invalidation
     var gradeTickStore = {};
 
-    var defaultsStore = {};
+    fluid.defaultsStore = {};
 
     var resolveGradesImpl = function (gs, gradeNames, base) {
         var raw = true;
@@ -1491,13 +1490,18 @@ var fluid = fluid || fluid_2_0;
     // unsupported, NON-API function
     fluid.rawDefaults = function (componentName, options) {
         if (options === undefined) {
-            return defaultsStore[componentName];
+            var entry = fluid.defaultsStore[componentName];
+            return entry && entry.options;
         } else {
             fluid.pushActivity("registerDefaults", "registering defaults for grade %componentName with options %options",
                 {componentName: componentName, options: options});
             var optionsCopy = fluid.expandCompact ? fluid.expandCompact(options) : fluid.copy(options);
             fluid.annotateListeners(componentName, optionsCopy);
-            defaultsStore[componentName] = optionsCopy;
+            var callerInfo = fluid.getCallerInfo && fluid.getCallerInfo(6);
+            fluid.defaultsStore[componentName] = {
+                options: optionsCopy,
+                callerInfo: callerInfo
+            };
             gradeTickStore[componentName] = gradeTick++;
             fluid.popActivity();
         }
@@ -1528,7 +1532,7 @@ var fluid = fluid || fluid_2_0;
     // supplied in case a future implementation chooses to implement caching
     fluid.indexDefaults = function (indexName, indexSpec) {
         var index = {};
-        for (var defaultName in defaultsStore) {
+        for (var defaultName in fluid.defaultsStore) {
             var defaults = fluid.getGradedDefaults(defaultName);
             fluid.doIndexDefaults(defaultName, defaults, index, indexSpec);
         }

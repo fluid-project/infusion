@@ -144,7 +144,6 @@ var fluid_2_0 = fluid_2_0 || {};
      */
     fluid.prefs.subPanel.resetDomBinder = function (that) {
         that.container = $(that.container.selector);
-        console.log("Container of ", that, " set to ", that.container);
         fluid.initDomBinder(that, that.options.selectors);
         that.events.onDomBind.fire(that);
     };
