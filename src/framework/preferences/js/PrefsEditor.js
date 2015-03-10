@@ -77,11 +77,11 @@ var fluid_2_0 = fluid_2_0 || {};
             removeSource: true,
             target: "{that > messageLoader}.options"
         }, {
-            source: "{that}.options.templatePrefix",
-            target: "{that > templateLoader > resourcePath}.options.value"
+            source: "{that}.options.terms",
+            target: "{that > templateLoader}.options.terms"
         }, {
-            source: "{that}.options.messagePrefix",
-            target: "{that > messageLoader > resourcePath}.options.value"
+            source: "{that}.options.terms",
+            target: "{that > messageLoader}.options.terms"
         }, {
             source: "{that}.options.prefsEditor",
             removeSource: true,
@@ -139,9 +139,8 @@ var fluid_2_0 = fluid_2_0 || {};
      **************************************/
 
     /**
-     * A configurable component that works in conjunction with or without the Preferences Editor template
-     * path component (fluid.prefsResourcePath) to allow users to set either the location of their own
-     * templates or the templates that are relative to the path defined in the Preferences Editor template
+     * A configurable component to allow users to set either the location of their own templates
+     * or the templates that are relative to the path defined in the Preferences Editor template
      * path component.
      *
      * @param {Object} options
@@ -155,17 +154,13 @@ var fluid_2_0 = fluid_2_0 || {};
                 args: ["{that}", {expander: {func: "{that}.resolveTemplates"}}]
             }
         },
-        templates: {},
+        templates: {},  // Must be supplied by integrators
+        terms: {},  // Must be supplied by integrators
         // Unsupported, non-API option
-        components: {
-            resourcePath: {
-                type: "fluid.prefs.resourcePath"
-            }
-        },
         invokers: {
             transformURL: {
                 funcName: "fluid.stringTemplate",
-                args: [ "{arguments}.0", {"prefix/" : "{that}.resourcePath.options.value"} ]
+                args: ["{arguments}.0", "{that}.options.terms"]
             },
             resolveTemplates: {
                 funcName: "fluid.prefs.resourceLoader.resolveTemplates",
@@ -192,21 +187,6 @@ var fluid_2_0 = fluid_2_0 || {};
             that.events.onResourcesLoaded.fire(resources);
         });
     };
-
-    /**********************************************
-     * Preferences Editor Template Path Specifier *
-     **********************************************/
-
-    /**
-     * A configurable component that defines the relative path from the html to Preferences Editor templates.
-     *
-     * @param {Object} options
-     */
-
-    fluid.defaults("fluid.prefs.resourcePath", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        value: "../html/"
-    });
 
     /**********************
      * Preferences Editor *

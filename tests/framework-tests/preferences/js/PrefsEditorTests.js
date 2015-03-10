@@ -20,14 +20,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     $(document).ready(function () {
         fluid.enhance.check({"fluid.prefs.tests": true});
 
-        var templatePrefix = "../../../../src/framework/preferences/html/";
-        var messagePrefix = "../../../../src/framework/preferences/messages/";
+        var templatePrefix = "../../../../src/framework/preferences/html";
+        var messagePrefix = "../../../../src/framework/preferences/messages";
 
         // Define a default configuration but will specify different demands to test the full config with settings
         fluid.defaults("fluid.prefsTests", {
             gradeNames: ["fluid.prefs.prefsEditorLoader", "autoInit"],
-            templatePrefix: templatePrefix,
-            messagePrefix: messagePrefix,
+            terms: {
+                templatePrefix: templatePrefix,
+                messagePrefix: messagePrefix
+            },
             messageLoader: {
                 gradeNames: ["fluid.prefs.starterMessageLoader"]
             },
@@ -113,17 +115,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Template Loader", function () {
             jqUnit.expect(4);
 
-            var testTemplatePrefix = "../../../../src/framework/preferences/html/";
-            var textControlsFullResourcePath = "../../../../src/framework/preferences/html/PrefsEditorTemplate-textSize.html";
+            var testTemplatePrefix = "../../../../src/framework/preferences/html";
+            var textControlsFullPath = "../../../../src/framework/preferences/html/PrefsEditorTemplate-textSize.html";
             var linksControlsTemplateName = "PrefsEditorTemplate-linksControls.html";
 
             function testTemplateLoader(resources) {
                 // The template with a customized full url
-                jqUnit.assertEquals("textControls template url is set correctly", textControlsFullResourcePath, resources.textControls.url);
+                jqUnit.assertEquals("textControls template url is set correctly", textControlsFullPath, resources.textControls.url);
                 jqUnit.assertTrue("textControls forceCache is set", resources.textControls.forceCache);
 
                 // The template with prefix + customized name
-                jqUnit.assertEquals("linksControls template url is set correctly", testTemplatePrefix + linksControlsTemplateName, resources.linksControls.url);
+                jqUnit.assertEquals("linksControls template url is set correctly", testTemplatePrefix + "/" + linksControlsTemplateName, resources.linksControls.url);
                 jqUnit.assertTrue("linksControls forceCache is set", resources.linksControls.forceCache);
 
                 jqUnit.start();
@@ -133,17 +135,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
                 templates: {
                     linksControls: "%prefix/" + linksControlsTemplateName,
-                    textControls: textControlsFullResourcePath
+                    textControls: textControlsFullPath
                 },
                 listeners: {
                     onResourcesLoaded: testTemplateLoader
                 },
-                components: {
-                    resourcePath: {
-                        options: {
-                            value: testTemplatePrefix
-                        }
-                    }
+                terms: {
+                    prefix: testTemplatePrefix
                 }
             });
 
@@ -153,11 +151,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Customized Template Loader", function () {
             jqUnit.expect(2);
 
-            var testTemplatePrefix = "../../../../src/framework/preferences/html/";
+            var testTemplatePrefix = "../../../../src/framework/preferences/html";
             var lineSpaceTemplateName = "PrefsEditorTemplate-lineSpace.html";
 
             function testCustomizedResourceLoader(resources) {
-                jqUnit.assertEquals("lineSpace template url is set correctly", testTemplatePrefix + lineSpaceTemplateName, resources.lineSpace.url);
+                jqUnit.assertEquals("lineSpace template url is set correctly", testTemplatePrefix + "/" + lineSpaceTemplateName, resources.lineSpace.url);
                 jqUnit.assertTrue("lineSpace forceCache is set", resources.lineSpace.forceCache);
 
                 jqUnit.start();
@@ -171,12 +169,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 listeners: {
                     onResourcesLoaded: testCustomizedResourceLoader
                 },
-                components: {
-                    resourcePath: {
-                        options: {
-                            value: testTemplatePrefix
-                        }
-                    }
+                terms: {
+                    prefix: testTemplatePrefix
                 }
             });
 
@@ -542,7 +536,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.demands("templateLoader", ["fluid.prefsTests", "fluid.prefs.tests", "fluid.prefs.testsPreview"], {
                 options: {
                     templates: {
-                        prefsEditor: templatePrefix + "FullPreviewPrefsEditor.html"
+                        prefsEditor: templatePrefix + "/FullPreviewPrefsEditor.html"
                     }
                 }
             });

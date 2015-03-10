@@ -23,12 +23,12 @@ var example = example || {};
         gradeNames: ["fluid.prefs.auxSchema", "autoInit"],
         auxiliarySchema: {
             template: "html/prefsEditor.html",
-            message: "%prefix/prefsEditor.json",
+            message: "%messagePrefix/prefsEditor.json",
             groups: {
                 speakIncrease: {
                     "container": ".mpe-speakIncrease",
-                    "template": "%prefix/speakIncrease.html",
-                    "message": "%prefix/speakIncrease.json",
+                    "template": "%templatePrefix/speakIncrease.html",
+                    "message": "%messagePrefix/speakIncrease.json",
                     "type": "example.panels.speakIncrease",
                     "panels": {
                         "always": ["speak", "incSize"],
@@ -45,7 +45,7 @@ var example = example || {};
                 panel: {
                     type: "example.panels.speak",
                     container: ".mpe-speaking-onOff",
-                    template: "%prefix/speak-template.html"
+                    template: "%templatePrefix/speak-template.html"
                 }
             },
             vol: {
@@ -56,7 +56,7 @@ var example = example || {};
                 panel: {
                     type: "example.panels.vol",
                     container: ".mpe-speaking-vol",
-                    template: "%prefix/slider-template.html"
+                    template: "%templatePrefix/slider-template.html"
                 }
             },
             wpm: {
@@ -67,7 +67,7 @@ var example = example || {};
                 panel: {
                     type: "example.panels.wpm",
                     container: ".mpe-speaking-wpm",
-                    template: "%prefix/slider-template.html"
+                    template: "%templatePrefix/slider-template.html"
                 }
             },
             incSize: {
@@ -78,7 +78,7 @@ var example = example || {};
                 panel: {
                     type: "example.panels.incSize",
                     container: ".mpe-increasing-onOff",
-                    template: "%prefix/incSize-template.html"
+                    template: "%templatePrefix/incSize-template.html"
                 }
             },
             cursor: {
@@ -89,7 +89,7 @@ var example = example || {};
                 panel: {
                     type: "example.panels.cursor",
                     container: ".mpe-increasing-cursor",
-                    template: "%prefix/slider-template.html"
+                    template: "%templatePrefix/slider-template.html"
                 }
             },
             magFactor: {
@@ -100,7 +100,7 @@ var example = example || {};
                 panel: {
                     type: "example.panels.magFactor",
                     container: ".mpe-increasing-magFactor",
-                    template: "%prefix/slider-template.html"
+                    template: "%templatePrefix/slider-template.html"
                 }
             },
             magPos: {
@@ -111,7 +111,7 @@ var example = example || {};
                 panel: {
                     type: "example.panels.magPos",
                     container: ".mpe-increasing-magPos",
-                    template: "%prefix/radioButton-template.html"
+                    template: "%templatePrefix/radioButton-template.html"
                 }
             }
         }

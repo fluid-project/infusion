@@ -78,8 +78,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "panel": {
                         "type": "fluid.prefs.panel.textSize",
                         "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
-                        "template": "%prefix/PrefsEditorTemplate-textSize.html",
-                        "message": "%prefix/textSize.json"
+                        "template": "%templatePrefix/PrefsEditorTemplate-textSize.html",
+                        "message": "%messagePrefix/textSize.json"
                     }
                 },
                 "lineSpace": {
@@ -99,8 +99,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "panel": {
                         "type": "fluid.prefs.panel.lineSpace",
                         "container": ".flc-prefsEditor-line-space",  // the css selector in the template where the panel is rendered
-                        "template": "%prefix/PrefsEditorTemplate-lineSpace.html",
-                        "message": "%prefix/lineSpace.json"
+                        "template": "%templatePrefix/PrefsEditorTemplate-lineSpace.html",
+                        "message": "%messagePrefix/lineSpace.json"
                     }
                 }
             },
@@ -241,19 +241,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.template = {
-        "template": "%prefix/SeparatedPanelPrefsEditor.html"
+        "template": "%templatePrefix/SeparatedPanelPrefsEditor.html"
     };
 
     fluid.tests.templatePrefix = {
-        "templatePrefix": "templatePrefix"
+        "terms": {
+            "templatePrefix": "templatePrefix"
+        }
     };
 
     fluid.tests.message = {
-        "message": "%prefix/PrefsEditorTemplate-prefsEditor.json"
+        "message": "%messagePrefix/PrefsEditorTemplate-prefsEditor.json"
     };
 
     fluid.tests.messagePrefix = {
-        "messagePrefix": "messagePrefix"
+        "terms": {
+            "messagePrefix": "messagePrefix"
+        }
     };
 
     fluid.tests.panels = {
@@ -574,8 +578,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Builder munging tests          *
      **********************************/
     var prefsEditorType = "fluid.prefs.fullNoPreview", storeType = "fluid.tests.store", enhancerType = "fluid.tests.enhancer";
-    var templatePrefix = "../../../../src/framework/preferences/html/";
-    var messagePrefix = "../../../../src/framework/preferences/messages/";
+    var terms = {
+        templatePrefix: "../../../../src/framework/preferences/html/",
+        messagePrefix: "../../../../src/framework/preferences/messages/"
+    };
     var prefsEdReady = false;
 
     fluid.defaults("fluid.tests.store", {
@@ -597,7 +603,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     gradeNames: ["fluid.prefs.auxSchema.starter"],
                     auxiliarySchema: {
-                        "template": "%prefix/FullNoPreviewPrefsEditor.html",
+                        "template": "%templatePrefix/FullNoPreviewPrefsEditor.html",
                         "tableOfContents": {
                             "enactor": {
                                 "tocTemplate": "../../../../src/components/tableOfContents/html/TableOfContents.html"
@@ -615,8 +621,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     prefsEditorType: prefsEditorType,
                     storeType: storeType,
                     enhancerType: enhancerType,
-                    templatePrefix: templatePrefix,
-                    messagePrefix: messagePrefix,
+                    terms: terms,
                     enhancer: {
                         classnameMap: {
                             "textFont.default": "fl-aria"
@@ -645,8 +650,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Munging options for prefsEditor should be passed down to the prefsEditor", 1, prefsEditor.prefsEditorLoader.prefsEditor.options.userOption);
         jqUnit.assertEquals("Munging options for store should be passed down to the prefsEditor", 2, prefsEditor.store.settingsStore.options.storeOption);
 
-        jqUnit.assertEquals("Munging options for templatePrefix should be passed down to the template loader", templatePrefix, prefsEditor.prefsEditorLoader.templateLoader.resourcePath.options.value);
-        jqUnit.assertEquals("Munging options for messagePrefix should be passed down to the message loader", messagePrefix, prefsEditor.prefsEditorLoader.messageLoader.resourcePath.options.value);
+        jqUnit.assertDeepEq("Munging options for terms should be passed down to the template loader", terms, prefsEditor.prefsEditorLoader.templateLoader.options.terms);
+        jqUnit.assertDeepEq("Munging options for terms should be passed down to the message loader", terms, prefsEditor.prefsEditorLoader.messageLoader.options.terms);
         jqUnit.assertTrue("Munging options for onReady event should be passed down to the constructed pref editor", prefsEdReady);
 
         jqUnit.assertTrue(prefsEditorType + " should be in the base prefsEditor grades", fluid.hasGrade(prefsEditor.prefsEditorLoader.options, prefsEditorType));
@@ -702,11 +707,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.composite.auxSchema", {
         gradeNames: ["fluid.prefs.auxSchema", "autoInit"],
         auxiliarySchema: {
-            template: "%prefix/compositePrefsEditorTemplate.html",
+            template: "%templatePrefix/compositePrefsEditorTemplate.html",
             groups: {
                 increasing: {
                     "container": ".fluid-tests-composite-increasing",
-                    "template": "%prefix/increaseTemplate.html",
+                    "template": "%templatePrefix/increaseTemplate.html",
                     "type": "fluid.tests.composite.increase",
                     "panels": {
                         "always": ["incSize"],
@@ -719,7 +724,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 panel: {
                     type: "fluid.tests.cmpPanel.speak",
                     container: ".fluid-tests-composite-speaking-onOff",
-                    template: "%prefix/checkboxTemplate.html"
+                    template: "%templatePrefix/checkboxTemplate.html"
                 }
             },
             incSize: {
@@ -727,7 +732,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 panel: {
                     type: "fluid.tests.cmpPanel.incSize",
                     container: ".fluid-tests-composite-increasing-onOff",
-                    template: "%prefix/checkboxTemplate.html"
+                    template: "%templatePrefix/checkboxTemplate.html"
                 }
             },
             magnify: {
@@ -735,7 +740,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 panel: {
                     type: "fluid.tests.cmpPanel.magFactor",
                     container: ".fluid-tests-composite-increasing-magFactor",
-                    template: "%prefix/checkboxTemplate.html"
+                    template: "%templatePrefix/checkboxTemplate.html"
                 }
             },
             lineSpace: {
@@ -743,7 +748,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 panel: {
                     type: "fluid.tests.cmpPanel.lineSpace",
                     container: ".fluid-tests-composite-increasing-lineSpace",
-                    template: "%prefix/checkboxTemplate.html"
+                    template: "%templatePrefix/checkboxTemplate.html"
                 }
             }
         }
@@ -818,7 +823,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.tests.composite.auxSchema"],
         primarySchema: fluid.tests.composite.primarySchema,
         auxiliarySchema: {
-            "templatePrefix": "../testResources/html/"
+            "terms": {
+                "templatePrefix": "../testResources/html/"
+            }
         }
     });
 
@@ -901,8 +908,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 gradeNames: ["fluid.prefs.auxSchema.starter"],
                 auxiliarySchema: {
                     "namespace": "",
-                    "templatePrefix": "../../../../src/framework/preferences/html/",
-                    "messagePrefix": "../../../../src/framework/preferences/messages/"
+                    "terms": {
+                        "templatePrefix": "../../../../src/framework/preferences/html/",
+                        "messagePrefix": "../../../../src/framework/preferences/messages/"
+                    }
                 }
             },
             prefsEditor: {
@@ -918,8 +927,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 gradeNames: ["fluid.prefs.auxSchema.starter"],
                 auxiliarySchema: {
                     "namespace": namespace,
-                    "templatePrefix": "../../../../src/framework/preferences/html/",
-                    "messagePrefix": "../../../../src/framework/preferences/messages/"
+                    "terms": {
+                        "templatePrefix": "../../../../src/framework/preferences/html/",
+                        "messagePrefix": "../../../../src/framework/preferences/messages/"
+                    }
                 }
             },
             prefsEditor: {

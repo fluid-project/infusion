@@ -189,14 +189,6 @@ var fluid_2_0 = fluid_2_0 || {};
         return auxSchema;
     };
 
-    fluid.prefs.expandSchemaDirectOption = function (auxSchema, type, targetPath) {
-        var value = auxSchema[type];
-        if (value) {
-            delete auxSchema[type];
-            fluid.set(auxSchema, targetPath, value);
-        }
-    };
-
     /**
      * Expands a all "@" path references from an auxiliary schema.
      * Note that you cannot chain "@" paths.
@@ -349,9 +341,16 @@ var fluid_2_0 = fluid_2_0 || {};
         return auxSchema;
     };
 
+    // Go over the aux schema to replace terms with their given values.
     fluid.prefs.expandSchema = function (schemaToExpand, indexes, topCommonOptions, elementCommonOptions, mappedDefaults) {
         var auxSchema = fluid.prefs.expandSchemaImpl(schemaToExpand);
         auxSchema.namespace = auxSchema.namespace || "fluid.prefs.created_" + fluid.allocateGuid();
+
+        var terms = fluid.get(auxSchema, "terms") || {};
+        if (terms) {
+            delete auxSchema.terms;
+            fluid.set(auxSchema, ["terms", "terms"], terms);
+        }
 
         var compositePanelList = fluid.get(auxSchema, "groups");
         if (compositePanelList) {
@@ -369,33 +368,19 @@ var fluid_2_0 = fluid_2_0 || {};
                 fluid.prefs.expandSchemaComponents(auxSchema, "panels", category.type, category[type], fluid.get(indexes, type),
                     fluid.get(elementCommonOptions, type), fluid.get(elementCommonOptions, type + "Model"), mappedDefaults);
             }
+
             type = "enactor";
             if (category[type]) {
                 fluid.prefs.expandSchemaComponents(auxSchema, "enactors", category.type, category[type], fluid.get(indexes, type),
                     fluid.get(elementCommonOptions, type), fluid.get(elementCommonOptions, type + "Model"), mappedDefaults);
             }
 
-            type = "template";
-            if (prefName === type) {
-                fluid.set(auxSchema, ["templateLoader", "templates", "prefsEditor"], auxSchema[type]);
-                delete auxSchema[type];
-            }
-
-            type = "templatePrefix";
-            if (prefName === type) {
-                fluid.prefs.expandSchemaDirectOption(auxSchema, type, "templatePrefix.templatePrefix");
-            }
-
-            type = "message";
-            if (prefName === type) {
-                fluid.set(auxSchema, ["messageLoader", "templates", "prefsEditor"], auxSchema[type]);
-                delete auxSchema[type];
-            }
-
-            type = "messagePrefix";
-            if (prefName === type) {
-                fluid.prefs.expandSchemaDirectOption(auxSchema, type, "messagePrefix.messagePrefix");
-            }
+            fluid.each(["template", "message"], function (type) {
+                if (prefName === type) {
+                    fluid.set(auxSchema, [type + "Loader", "templates", "prefsEditor"], auxSchema[type]);
+                    delete auxSchema[type];
+                }
+            });
         });
 
         // Remove subPanels array. It is to keep track of the panels that are only used as sub-components of composite panels.
@@ -432,10 +417,7 @@ var fluid_2_0 = fluid_2_0 || {};
             initialModel: {
                 gradeNames: ["fluid.prefs.initialModel", "autoInit"]
             },
-            templatePrefix: {
-                gradeNames: ["fluid.littleComponent", "autoInit"]
-            },
-            messagePrefix: {
+            terms: {
                 gradeNames: ["fluid.littleComponent", "autoInit"]
             }
         },
