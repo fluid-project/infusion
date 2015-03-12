@@ -41,7 +41,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 "panel": {
                     "type": "fluid.prefs.panel.textSize",
                     "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
-                    "template": "%templatePrefix/%templateName",
+                    "template": "%templatePrefix/PrefsEditorTemplate-textSize.html",
                     "message": "%messagePrefix/textSize.json"
                 }
             },

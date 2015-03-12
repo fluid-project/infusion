@@ -23,8 +23,8 @@ var demo = demo || {};
                 gradeNames: ["fluid.prefs.auxSchema.starter"],
                 auxiliarySchema: {
                     "terms": {
-                        "templatePrefix": "../../../../../src/framework/preferences/html/",
-                        "messagePrefix": "../../../../../src/framework/preferences/messages/"
+                        "templatePrefix": "../../../../../src/framework/preferences/html",
+                        "messagePrefix": "../../../../../src/framework/preferences/messages"
                     },
                     "template": "%templatePrefix/FullPreviewPrefsEditor.html",
                     "tableOfContents": {

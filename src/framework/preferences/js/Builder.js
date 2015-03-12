@@ -43,7 +43,7 @@ var fluid_2_0 = fluid_2_0 || {};
         constructedGrades: {
             expander: {
                 func: "fluid.prefs.builder.constructGrades",
-                args: ["{that}.options.auxSchema", ["enactors", "messages", "panels", "initialModel", "templateLoader", "messageLoader", "templatePrefix", "messagePrefix"]]
+                args: ["{that}.options.auxSchema", ["enactors", "messages", "panels", "initialModel", "templateLoader", "messageLoader", "terms"]]
             }
         },
         mappedDefaults: "{primaryBuilder}.options.schema.properties",
@@ -119,7 +119,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 container: "{fluid.prefs.assembler.prefsEd}.container",
                 priority: "last",
                 options: {
-                    gradeNames: ["{fluid.prefs.assembler.prefsEd}.options.componentGrades.templatePrefix", "{fluid.prefs.assembler.prefsEd}.options.componentGrades.messagePrefix", "{fluid.prefs.assembler.prefsEd}.options.componentGrades.messages", "{that}.options.prefsEditorType"],
+                    gradeNames: ["{fluid.prefs.assembler.prefsEd}.options.componentGrades.terms", "{fluid.prefs.assembler.prefsEd}.options.componentGrades.messages", "{that}.options.prefsEditorType"],
                     prefsEditorType: "fluid.prefs.separatedPanel",
                     templateLoader: {
                         gradeNames: ["{fluid.prefs.assembler.prefsEd}.options.componentGrades.templateLoader"]
@@ -155,13 +155,9 @@ var fluid_2_0 = fluid_2_0 || {};
             removeSource: true,
             target: "{that prefsEditor}.options"
         }, {
-            source: "{that}.options.templatePrefix",
+            source: "{that}.options.terms",
             removeSource: true,
-            target: "{that prefsEditorLoader}.options.templatePrefix"
-        }, {
-            source: "{that}.options.messagePrefix",
-            removeSource: true,
-            target: "{that prefsEditorLoader}.options.messagePrefix"
+            target: "{that prefsEditorLoader}.options.terms"
         }]
     });
 

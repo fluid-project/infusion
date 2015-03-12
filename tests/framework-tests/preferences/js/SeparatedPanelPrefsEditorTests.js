@@ -43,8 +43,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 createOnEvent: "{separatedPanelIntegrationTester}.events.onTestCaseStart",
                 options: {
                     gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
-                    templatePrefix: "../../../../src/framework/preferences/html/",
-                    messagePrefix: "../../../../src/framework/preferences/messages/",
+                    terms: {
+                        templatePrefix: "../../../../src/framework/preferences/html",
+                        messagePrefix: "../../../../src/framework/preferences/messages"
+                    },
                     iframeRenderer: {
                         markupProps: {
                             src: "./SeparatedPanelPrefsEditorFrame.html"

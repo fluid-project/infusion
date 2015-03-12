@@ -346,7 +346,7 @@ var fluid_2_0 = fluid_2_0 || {};
         var auxSchema = fluid.prefs.expandSchemaImpl(schemaToExpand);
         auxSchema.namespace = auxSchema.namespace || "fluid.prefs.created_" + fluid.allocateGuid();
 
-        var terms = fluid.get(auxSchema, "terms") || {};
+        var terms = fluid.get(auxSchema, "terms");
         if (terms) {
             delete auxSchema.terms;
             fluid.set(auxSchema, ["terms", "terms"], terms);

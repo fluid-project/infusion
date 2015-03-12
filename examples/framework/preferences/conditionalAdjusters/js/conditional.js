@@ -26,8 +26,8 @@ var example = example || {};
                 primarySchema: example.primarySchema,
                 auxiliarySchema: {
                     "terms": {
-                        "templatePrefix": "../shared/html/",
-                        "messagePrefix": "../shared/messages/"
+                        "templatePrefix": "../shared/html",
+                        "messagePrefix": "../shared/messages"
                     }
                 }
             }

@@ -507,7 +507,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.auxSchema.terms = {
-        terms: {
+        "terms": {
             templatePrefix: "../html",
             messagePrefix: "../messages"
         }
@@ -627,8 +627,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         terms: {
             gradeNames: ["fluid.littleComponent", "autoInit"],
-            templatePrefix: "../html",
-            messagePrefix: "../messages"
+            terms: {
+                templatePrefix: "../html",
+                messagePrefix: "../messages"
+            }
         },
         initialModel: {
             gradeNames: ["fluid.prefs.initialModel", "autoInit"],
@@ -783,8 +785,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 terms: {
                     gradeNames: ["fluid.littleComponent", "autoInit"],
-                    templatePrefix: "../html",
-                    messagePrefix: "../messages"
+                    terms: {
+                        templatePrefix: "../html",
+                        messagePrefix: "../messages"
+                    }
                 },
                 initialModel: {
                     gradeNames: ["fluid.prefs.initialModel", "autoInit"],
@@ -849,8 +853,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 terms: {
                     gradeNames: ["fluid.littleComponent", "autoInit"],
-                    templatePrefix: "../html",
-                    messagePrefix: "../messages"
+                    terms: {
+                        templatePrefix: "../html",
+                        messagePrefix: "../messages"
+                    }
                 },
                 initialModel: {
                     gradeNames: ["fluid.prefs.initialModel", "autoInit"],
@@ -941,8 +947,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 terms: {
                     gradeNames: ["fluid.littleComponent", "autoInit"],
-                    templatePrefix: "../html",
-                    messagePrefix: "../messages"
+                    terms: {
+                        templatePrefix: "../html",
+                        messagePrefix: "../messages"
+                    }
                 }
             }
         },
@@ -1087,8 +1095,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.auxSchema.compositePanelSchema = {
         "namespace": fluid.tests.auxSchema.customizedNamespace, // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed UIO.
         "terms": {
-            "templatePrefix": "../html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
-            "messagePrefix": "../messages/"  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
+            "templatePrefix": "../html",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
+            "messagePrefix": "../messages"  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
         },
         "template": "%templatePrefix/prefs.html",
         "message": "%messagePrefix/prefs.json",
@@ -1134,8 +1142,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.auxSchema.expandedComposite = {
         "namespace": fluid.tests.auxSchema.customizedNamespace, // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed UIO.
         "terms": {
-            "templatePrefix": "../html/",
-            "messagePrefix": "../messages/"
+            "templatePrefix": "../html",
+            "messagePrefix": "../messages"
         },
         "template": "%templatePrefix/prefs.html",
         "message": "%messagePrefix/prefs.json",
@@ -1861,8 +1869,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         terms: {
             gradeNames: ["fluid.littleComponent", "autoInit"],
-            templatePrefix: "../html/",
-            messagePrefix: "../messages/"
+            terms: {
+                templatePrefix: "../html",
+                messagePrefix: "../messages"
+            }
         }
     };
 
@@ -1871,7 +1881,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         delete expandedFull.panelsToIgnore;
         delete expandedFull.message;
         delete expandedFull.template;
-        delete expandedFull.terms;
+        delete expandedFull.terms.templatePrefix;
+        delete expandedFull.terms.messagePrefix;
 
         var auxBuilder = fluid.prefs.auxBuilder({
             auxiliarySchema: $.extend(true, {}, fluid.tests.auxSchema.compositePanelSchema, fluid.tests.auxSchema.enactors, fluid.tests.auxSchema.panels),
