@@ -801,6 +801,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             largeIcon: ".flc-prefsEditor-min-val-largeIcon",
             multiplier: ".flc-prefsEditor-multiplier"
         },
+        selectorsToIgnore: ["textSize"],
+        components: {
+            textSize: {
+                type: "fluid.textfieldSlider",
+                container: "{fluid.tests.panel.slider1}.dom.textSize",
+                createOnEvent: "afterRender",
+                options: {
+                    model: {
+                        value: "{fluid.tests.panel.slider1}.model.slider1"
+                    },
+                    range: "{fluid.tests.panel.slider1}.options.range",
+                    sliderOptions: "{fluid.tests.panel.slider1}.options.sliderOptions"
+                }
+            }
+        },
         range: {
             min: 1,
             max: 10
@@ -809,22 +824,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             label: {messagekey: "textSizeLabel"},
             smallIcon: {messagekey: "textSizeSmallIcon"},
             largeIcon: {messagekey: "textSizeLargeIcon"},
-            multiplier: {messagekey: "multiplier"},
-            textSize: {
-                decorators: {
-                    type: "fluid",
-                    func: "fluid.textfieldSlider",
-                    options: {
-                        rules: {
-                            "slider1": "value"
-                        },
-                        model: "{fluid.tests.panel.slider1}.model",
-                        sourceApplier: "{fluid.tests.panel.slider1}.applier",
-                        range: "{fluid.tests.panel.slider1}.options.range",
-                        sliderOptions: "{fluid.tests.panel.slider1}.options.sliderOptions"
-                    }
-                }
-            }
+            multiplier: {messagekey: "multiplier"}
         }
     });
 
@@ -837,6 +837,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             largeIcon: ".flc-prefsEditor-min-val-largeIcon",
             multiplier: ".flc-prefsEditor-multiplier"
         },
+        selectorsToIgnore: ["textSize"],
+        components: {
+            textSize: {
+                type: "fluid.textfieldSlider",
+                container: "{fluid.tests.panel.slider2}.dom.textSize",
+                createOnEvent: "afterRender",
+                options: {
+                    model: {
+                        value: "{fluid.tests.panel.slider2}.model.slider2"
+                    },
+                    range: "{fluid.tests.panel.slider2}.options.range",
+                    sliderOptions: "{fluid.tests.panel.slider2}.options.sliderOptions"
+                }
+            }
+        },
         range: {
             min: 0,
             max: 20
@@ -845,22 +860,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             label: {messagekey: "textSizeLabel"},
             smallIcon: {messagekey: "textSizeSmallIcon"},
             largeIcon: {messagekey: "textSizeLargeIcon"},
-            multiplier: {messagekey: "multiplier"},
-            textSize: {
-                decorators: {
-                    type: "fluid",
-                    func: "fluid.textfieldSlider",
-                    options: {
-                        rules: {
-                            "slider2": "value"
-                        },
-                        model: "{fluid.tests.panel.slider2}.model",
-                        sourceApplier: "{fluid.tests.panel.slider2}.applier",
-                        range: "{fluid.tests.panel.slider2}.options.range",
-                        sliderOptions: "{fluid.tests.panel.slider2}.options.sliderOptions"
-                    }
-                }
-            }
+            multiplier: {messagekey: "multiplier"}
         }
     });
 

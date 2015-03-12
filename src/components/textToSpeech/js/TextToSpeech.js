@@ -29,7 +29,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.textToSpeech", {
-        gradeNames: ["fluid.standardComponent", "autoInit"],
+        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
         events: {
             onStart: null,
             onStop: null,
@@ -41,11 +41,8 @@ var fluid_2_0 = fluid_2_0 || {};
         members: {
             queue: []
         },
-        model: {
-            speaking: false,
-            pending: false,
-            paused: false
-        },
+        // Model paths: speaking, pending, paused
+        model: {},
         utteranceOpts: {
             // text: "", // text to synthesize. avoid as it will override any other text passed in
             // lang: "", // the language of the synthesized text
@@ -54,20 +51,14 @@ var fluid_2_0 = fluid_2_0 || {};
             // rate: 1, // a value from 0.1 to 10 although different synthesizers may have a smaller range
             // pitch: 1, // a value from 0 to 2
         },
-        // TODO: When this is updated to be a model relay component,
-        // remove this manual relaying of modelListeners to listeners
-        // in favour of having integrators use the modelListeners directly.
-        // This system is currently setup because when the entire model
-        // is changed in a single operation, the change value is the entire
-        // model instead of just the value of the registered path.
         modelListeners: {
             "speaking": {
-                listener: "fluid.textToSpeech.relaySpeaking",
-                args: ["{that}"]
+                listener: "fluid.textToSpeech.speak",
+                args: ["{that}", "{change}.value"]
             },
             "paused": {
-                listener: "fluid.textToSpeech.relayPaused",
-                args: ["{that}"]
+                listener: "fluid.textToSpeech.pause",
+                args: ["{that}", "{change}.value"]
             }
         },
         invokers: {
@@ -111,16 +102,12 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-    fluid.textToSpeech.relaySpeaking = function (that) {
-        if (that.model.speaking) {
-            that.events.onStart.fire();
-        } else {
-            that.events.onStop.fire();
-        }
+    fluid.textToSpeech.speak = function (that, speaking) {
+        that.events[speaking ? "onStart" : "onStop"].fire();
     };
 
-    fluid.textToSpeech.relayPaused = function (that) {
-        if (that.model.paused) {
+    fluid.textToSpeech.pause = function (that, paused) {
+        if (paused) {
             that.events.onPause.fire();
         } else if (that.model.speaking) {
             that.events.onResume.fire();
