@@ -1,5 +1,5 @@
 /*
-Copyright 2013 OCAD University
+Copyright 2013-2015 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -459,11 +459,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests.auxSchema");
 
+    fluid.tests.isEmptyExpandedAuxSchema = function (expandedAuxSchema) {
+        var schemaKeys = fluid.keys(expandedAuxSchema);
+
+        return expandedAuxSchema.namespace && expandedAuxSchema.loaderGrades && schemaKeys.length === 2;
+    };
+
     fluid.tests.testEmpty = function (expandedAuxSchema) {
         var namespace = fluid.get(expandedAuxSchema, "namespace");
 
         jqUnit.assertTrue("The prefsEditor grade should use the custom namespace", namespace.indexOf("fluid.prefs.created_") === 0);
-        jqUnit.assertEquals("Only namespace is in the expanded aux schema", 1, fluid.keys(expandedAuxSchema).length);
+        jqUnit.assertTrue("Only namespace and loaderGrades are in the expanded aux schema", fluid.tests.isEmptyExpandedAuxSchema(expandedAuxSchema));
     };
 
     fluid.tests.testAuxBuilder = function (expandedSchema, expectedExpandedSchema) {
@@ -599,6 +605,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.auxSchema.expectedEnactors = {
         "namespace": fluid.tests.auxSchema.customizedNamespace,
+        "loaderGrades": ["fluid.prefs.separatedPanel"],
         "textSize": {
             "type": "fluid.prefs.textSize",
             "enactor": {
@@ -640,6 +647,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.auxSchema.expectedPanels = {
         "namespace": fluid.tests.auxSchema.customizedNamespace,
+        "loaderGrades": ["fluid.prefs.separatedPanel"],
         "textSize": {
             "type": "fluid.prefs.textSize",
             "panel": {
@@ -761,6 +769,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expectedEnactors: fluid.tests.auxSchema.expectedEnactors,
             expectedManyPanelsOnePref: {
                 "namespace": fluid.tests.auxSchema.customizedNamespace,
+                "loaderGrades": ["fluid.prefs.separatedPanel"],
                 "textSize": {
                     "type": "fluid.prefs.textSize",
                     "panel": {
@@ -849,6 +858,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             expectedManyPrefsOnePanel: {
                 "namespace": fluid.tests.auxSchema.customizedNamespace,
+                "loaderGrades": ["fluid.prefs.separatedPanel"],
                 "emphasizeLinks": {
                     "type": "fluid.prefs.emphasizeLinks",
                     "panel": {
@@ -911,6 +921,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             expectedAll: {
                 "namespace": fluid.tests.auxSchema.customizedNamespace,
+                "loaderGrades": ["fluid.prefs.separatedPanel"],
                 "textSize": {
                     "type": "fluid.prefs.textSize",
                     "panel": {
@@ -1135,10 +1146,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.auxSchema.compositePanelSchema = {
-        "namespace": fluid.tests.auxSchema.customizedNamespace, // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed UIO.
-        "templatePrefix": "../html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
+        "namespace": fluid.tests.auxSchema.customizedNamespace,
+        "loaderGrades": ["fluid.prefs.separatedPanel"],
+        "templatePrefix": "../html/",
         "template": "%prefix/prefs.html",
-        "messagePrefix": "../messages/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
+        "messagePrefix": "../messages/",
         "message": "%prefix/prefs.json",
         "groups": {
             "combinedBoth": {
@@ -1180,10 +1192,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.auxSchema.expandedComposite = {
-        "namespace": fluid.tests.auxSchema.customizedNamespace, // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed UIO.
-        "templatePrefix": "../html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
+        "namespace": fluid.tests.auxSchema.customizedNamespace,
+        "loaderGrades": ["fluid.prefs.separatedPanel"],
+        "templatePrefix": "../html/",
         "template": "%prefix/prefs.html",
-        "messagePrefix": "../messages/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
+        "messagePrefix": "../messages/",
         "message": "%prefix/prefs.json",
         "groups": {
             "combinedBoth": {
