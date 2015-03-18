@@ -668,6 +668,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             min: 1,
                             max: 2
                         },
+                        messageBase: "{messageLoader}.resources.fluid_prefs_panel_textSize",
                         resources: {
                             template: "templateLoader.resources.fluid_prefs_panel_textSize"
                         }
@@ -756,6 +757,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.auxBuilderTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        mergePolicy: {
+            testOptions: {
+                noexpand: true
+            }
+        },
         testOptions: {
             expectedPanels: fluid.tests.auxSchema.expectedPanels,
             expectedEnactors: fluid.tests.auxSchema.expectedEnactors,
@@ -799,6 +805,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     min: 1,
                                     max: 2
                                 },
+                                messageBase: "{messageLoader}.resources.fluid_prefs_panel_textSize",
                                 resources: {
                                     template: "templateLoader.resources.fluid_prefs_panel_textSize"
                                 }
@@ -817,6 +824,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     min: 1,
                                     max: 2
                                 },
+                                messageBase: "{messageLoader}.resources.fluid_prefs_panel_otherTextSize",
                                 resources: {
                                     template: "templateLoader.resources.fluid_prefs_panel_otherTextSize"
                                 }
@@ -880,6 +888,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     links: "prefsEditor.model.fluid_prefs_emphasizeLinks",
                                     inputsLarger: "prefsEditor.model.fluid_prefs_inputsLarger"
                                 },
+                                messageBase: "{messageLoader}.resources.fluid_prefs_panel_oneForManyPrefs",
                                 resources: {
                                     template: "templateLoader.resources.fluid_prefs_panel_oneForManyPrefs"
                                 }
@@ -942,6 +951,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     min: 1,
                                     max: 2
                                 },
+                                messageBase: "{messageLoader}.resources.fluid_prefs_panel_textSize",
                                 resources: {
                                     template: "templateLoader.resources.fluid_prefs_panel_textSize"
                                 }
@@ -1294,6 +1304,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         panelsToIgnore: ["subPanel1", "subPanel2"]
     };
+
+    fluid.tests.auxSchema.expandedCompositeFull = $.extend(true, {}, fluid.tests.auxSchema.expandedComposite, {
+        panels: {
+            "components": {
+                "combinedBoth": {
+                    options: {
+                        messageBase: "{messageLoader}.resources.combinedBoth",
+                        components: {
+                            "fluid_prefs_subPanel1": {
+                                "options": {
+                                    messageBase: "{messageLoader}.resources.fluid_prefs_subPanel1"
+                                }
+                            },
+                            "fluid_prefs_subPanel2": {
+                                options: {
+                                    messageBase: "{messageLoader}.resources.fluid_prefs_subPanel2"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+    });
 
     jqUnit.test("Test expanding composite panel groups fluid.prefs.expandCompositePanels()", function () {
         var expandedCompositePanel = fluid.prefs.expandCompositePanels(fluid.tests.auxSchema.compositePanelSchema, fluid.tests.auxSchema.compositePanelSchema.groups, fluid.tests.auxSchema.panelIndex,
@@ -1916,7 +1950,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     jqUnit.test("Full schema with a composite panel", function () {
-        var expandedFull = $.extend(true, {}, fluid.tests.auxSchema.expectedEnactors, fluid.tests.auxSchema.expectedPanels, fluid.tests.auxSchema.expandedComposite, fluid.tests.auxSchema.expandedRestForAll);
+        var expandedFull = $.extend(true, {}, fluid.tests.auxSchema.expectedEnactors, fluid.tests.auxSchema.expectedPanels, fluid.tests.auxSchema.expandedCompositeFull, fluid.tests.auxSchema.expandedRestForAll);
         delete expandedFull.panelsToIgnore;
         delete expandedFull.message;
         delete expandedFull.template;
