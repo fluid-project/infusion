@@ -444,7 +444,8 @@ var fluid_2_0 = fluid_2_0 || {};
                 "createOnEvent": "onPrefsEditorMarkupReady",
                 "container": "{prefsEditor}.dom.%prefKey",
                 "options.gradeNames": "fluid.prefs.prefsEditorConnections",
-                "options.resources.template": "{templateLoader}.resources.%prefKey"
+                "options.resources.template": "{templateLoader}.resources.%prefKey",
+                "options.messageBase": "{messageLoader}.resources.%prefKey"
             },
             panelModel: {
                 "%internalModelName": "{prefsEditor}.model.%externalModelName"
@@ -453,7 +454,8 @@ var fluid_2_0 = fluid_2_0 || {};
                 "%subPrefKey": "{templateLoader}.resources.%subPrefKey"
             },
             subPanel: {
-                "container": "{%compositePanel}.dom.%prefKey"
+                "container": "{%compositePanel}.dom.%prefKey",
+                "options.messageBase": "{messageLoader}.resources.%prefKey"
             },
             enactor: {
                 "container": "{uiEnhancer}.container"
