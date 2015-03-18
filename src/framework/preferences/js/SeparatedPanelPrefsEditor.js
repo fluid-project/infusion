@@ -1,5 +1,5 @@
 /*
-Copyright 2011 OCAD University
+Copyright 2011-2015 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -34,7 +34,7 @@ var fluid_2_0 = fluid_2_0 || {};
             onCreateSlidingPanelReady: {
                 events: {
                     iframeRendered: "afterRender",
-                    onMsgResolverReady: "onMsgResolverReady"
+                    onPrefsEditorMessagesLoaded: "onPrefsEditorMessagesLoaded"
                 }
             },
             templatesAndIframeReady: {
@@ -65,6 +65,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 args: ["{separatedPanel}.dom.reset", "click", "{arguments}.0"]
             }
         },
+        messageBase: "{messageLoader}.resources.prefsEditor",
         components: {
             pageEnhancer: "{uiEnhancer}",
             slidingPanel: {
@@ -73,9 +74,6 @@ var fluid_2_0 = fluid_2_0 || {};
                 createOnEvent: "onCreateSlidingPanelReady",
                 options: {
                     gradeNames: ["fluid.prefs.msgLookup"],
-                    members: {
-                        messageResolver: "{separatedPanel}.msgResolver"
-                    },
                     strings: {
                         showText: "{that}.msgLookup.slidingPanelShowText",
                         hideText: "{that}.msgLookup.slidingPanelHideText"
@@ -94,6 +92,11 @@ var fluid_2_0 = fluid_2_0 || {};
                             // override default implementation
                             "this": null,
                             "method": null
+                        }
+                    },
+                    components: {
+                        msgResolver: {
+                            type: "fluid.messageResolver"
                         }
                     }
                 }
@@ -168,6 +171,9 @@ var fluid_2_0 = fluid_2_0 || {};
         }, {
             source: "{that}.options.templatePrefix",
             target: "{that > iframeRenderer}.options.templatePrefix"
+        }, {
+            source: "{that}.options.messageBase",
+            target: "{that > slidingPanel > msgResolver}.options.messageBase"
         }]
     });
 

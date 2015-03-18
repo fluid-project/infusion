@@ -1,6 +1,6 @@
 /*
 Copyright 2009 University of Toronto
-Copyright 2010-2011 OCAD University
+Copyright 2010-2015 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -47,6 +47,9 @@ var fluid_2_0 = fluid_2_0 || {};
                 options: {
                     events: {
                         onResourcesLoaded: "{prefsEditorLoader}.events.onPrefsEditorMessagesLoaded"
+                    },
+                    invokers: {
+                        transformResources: "fluid.prefs.resourceLoader.parseMessages"
                     }
                 }
             }
@@ -54,18 +57,11 @@ var fluid_2_0 = fluid_2_0 || {};
         events: {
             onPrefsEditorTemplatesLoaded: null,
             onPrefsEditorMessagesLoaded: null,
-            onMsgResolverReady: null,
             onCreatePrefsEditorReady: {
                 events: {
                     templateLoaded: "onPrefsEditorTemplatesLoaded",
-                    msgResolverReady: "onMsgResolverReady"
+                    prefsEditorMessagesLoaded: "onPrefsEditorMessagesLoaded"
                 }
-            }
-        },
-        listeners: {
-            onPrefsEditorMessagesLoaded: {
-                funcName: "fluid.prefs.prefsEditorLoader.createMsgResolver",
-                args: ["{arguments}.0", "{that}"]
             }
         },
         distributeOptions: [{
@@ -88,17 +84,6 @@ var fluid_2_0 = fluid_2_0 || {};
             target: "{that > prefsEditor}.options"
         }]
     });
-
-    fluid.prefs.prefsEditorLoader.createMsgResolver = function (messageResources, that) {
-        var completeMessage;
-        fluid.each(messageResources, function (oneResource) {
-            var message = JSON.parse(oneResource.resourceText);
-            completeMessage = $.extend({}, completeMessage, message);
-        });
-        var parentResolver = fluid.messageResolver({messageBase: completeMessage});
-        that.msgResolver = fluid.messageResolver({messageBase: {}, parents: [parentResolver]});
-        that.events.onMsgResolverReady.fire();
-    };
 
     // TODO: This mixin grade appears to be supplied manually by various test cases but no longer appears in
     // the main configuration. We should remove the need for users to supply this - also the use of "defaultPanels" in fact
@@ -141,9 +126,9 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.defaults("fluid.prefs.resourceLoader", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         listeners: {
-            "onCreate": {
+            "onCreate.loadResources": {
                 listener: "fluid.prefs.resourceLoader.loadResources",
-                args: ["{that}", {expander: {func: "{that}.resolveResources"}}]
+                args: ["{that}", {expander: {func: "{that}.resolveResources"}}, "{that}.transformResources"]
             }
         },
         resources: {},
@@ -158,6 +143,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 funcName: "fluid.stringTemplate",
                 args: [ "{arguments}.0", {"prefix/" : "{that}.resourcePath.options.value"} ]
             },
+            transformResources: "fluid.identity",
             resolveResources: {
                 funcName: "fluid.prefs.resourceLoader.resolveResources",
                 args: "{that}"
@@ -176,10 +162,16 @@ var fluid_2_0 = fluid_2_0 || {};
         });
     };
 
-    fluid.prefs.resourceLoader.loadResources = function (that, resources) {
+    fluid.prefs.resourceLoader.loadResources = function (that, resources, transformFn) {
         fluid.fetchResources(resources, function () {
-            that.resources = resources;
+            that.resources = transformFn(resources);
             that.events.onResourcesLoaded.fire(resources);
+        });
+    };
+
+    fluid.prefs.resourceLoader.parseMessages = function (resources) {
+        return fluid.transform(resources, function (resource) {
+            return JSON.parse(resource.resourceText);
         });
     };
 
