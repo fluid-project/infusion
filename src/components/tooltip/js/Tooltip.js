@@ -1,5 +1,5 @@
 /*
-Copyright 2010 OCAD University
+Copyright 2010-2015 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -130,7 +130,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.tooltip", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         widgetOptions: {
             tooltipClass: "{that}.options.styles.tooltip",
             position: "{that}.options.position",
@@ -201,6 +201,7 @@ var fluid_2_0 = fluid_2_0 || {};
         modelListeners: {
             "": {
                 funcName: "fluid.tooltip.updateContentImpl", // TODO: better scheme when FLUID-3674 is merged
+                excludeSource: "init",
                 args: "{that}"
             }
         },
