@@ -27,12 +27,6 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     };
 
-    fluid.tooltip.updateContent = function (that, content) {
-        if (that.model.content !== content) { // TODO: Remove with FLUID-3674 branch
-            that.applier.requestChange("content", content);
-        }
-    };
-
     fluid.tooltip.idSearchFunc = function (idToContentFunc) {
         return function (/* callback*/) {
             var target = this;
@@ -160,14 +154,9 @@ var fluid_2_0 = fluid_2_0 || {};
                 funcName: "fluid.tooltip.closeAll",
                 args: "{that}"
             },
-          /**
-           * Updates the contents displayed in the tooltip. Deprecated - use the
-           * ChangeApplier API for this component instead.
-           * @param {Object} content, the content to be displayed in the tooltip
-           */
             updateContent: {
-                funcName: "fluid.tooltip.updateContent",
-                args: ["{that}", "{arguments}.0"]
+                changePath: "content",
+                value: "{arguments}.0"
             },
             computeContentFunc: {
                 funcName: "fluid.tooltip.computeContentFunc",
@@ -199,8 +188,10 @@ var fluid_2_0 = fluid_2_0 || {};
             onDestroy: "fluid.tooltip.doDestroy"
         },
         modelListeners: {
+            // TODO: We could consider a more fine-grained scheme for this,
+            // listening to content and idToContent separately
             "": {
-                funcName: "fluid.tooltip.updateContentImpl", // TODO: better scheme when FLUID-3674 is merged
+                funcName: "fluid.tooltip.updateContentImpl",
                 excludeSource: "init",
                 args: "{that}"
             }
