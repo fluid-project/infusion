@@ -184,8 +184,8 @@ var fluid_2_0 = fluid_2_0 || {};
             afterClose: null  // arguments: that, event.target, tooltip, event
         },
         listeners: {
-            onCreate: "fluid.tooltip.setup",
-            onDestroy: "fluid.tooltip.doDestroy"
+            "onCreate.setup": "fluid.tooltip.setup",
+            "onDestroy.doDestroy": "fluid.tooltip.doDestroy"
         },
         modelListeners: {
             // TODO: We could consider a more fine-grained scheme for this,
