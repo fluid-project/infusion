@@ -198,7 +198,7 @@ var fluid_2_0 = fluid_2_0 || {};
                     model: {
                         textSize: "{prefsEditor}.model.textSize"
                     },
-                    messageBase: "{messageLoader}.resources.textSize",
+                    messageBase: "{messageLoader}.resources.textSize.resourceText",
                     resources: {
                         template: "{templateLoader}.resources.textSize"
                     }
@@ -213,7 +213,7 @@ var fluid_2_0 = fluid_2_0 || {};
                     model: {
                         lineSpace: "{prefsEditor}.model.lineSpace"
                     },
-                    messageBase: "{messageLoader}.resources.lineSpace",
+                    messageBase: "{messageLoader}.resources.lineSpace.resourceText",
                     resources: {
                         template: "{templateLoader}.resources.lineSpace"
                     }
@@ -229,7 +229,7 @@ var fluid_2_0 = fluid_2_0 || {};
                     model: {
                         value: "{prefsEditor}.model.textFont"
                     },
-                    messageBase: "{messageLoader}.resources.textFont",
+                    messageBase: "{messageLoader}.resources.textFont.resourceText",
                     resources: {
                         template: "{templateLoader}.resources.textFont"
                     }
@@ -245,7 +245,7 @@ var fluid_2_0 = fluid_2_0 || {};
                     model: {
                         value: "{prefsEditor}.model.theme"
                     },
-                    messageBase: "{messageLoader}.resources.contrast",
+                    messageBase: "{messageLoader}.resources.contrast.resourceText",
                     resources: {
                         template: "{templateLoader}.resources.contrast"
                     }
@@ -260,7 +260,7 @@ var fluid_2_0 = fluid_2_0 || {};
                     model: {
                         toc: "{prefsEditor}.model.toc"
                     },
-                    messageBase: "{messageLoader}.resources.layoutControls",
+                    messageBase: "{messageLoader}.resources.layoutControls.resourceText",
                     resources: {
                         template: "{templateLoader}.resources.layoutControls"
                     }
@@ -287,7 +287,7 @@ var fluid_2_0 = fluid_2_0 || {};
                             container: "{that}.dom.emphasizeLinks",
                             createOnEvent: "initSubPanels",
                             options: {
-                                messageBase: "{messageLoader}.resources.emphasizeLinks"
+                                messageBase: "{messageLoader}.resources.emphasizeLinks.resourceText"
                             }
                         },
                         inputsLarger: {
@@ -295,11 +295,11 @@ var fluid_2_0 = fluid_2_0 || {};
                             container: "{that}.dom.inputsLarger",
                             createOnEvent: "initSubPanels",
                             options: {
-                                messageBase: "{messageLoader}.resources.inputsLarger"
+                                messageBase: "{messageLoader}.resources.inputsLarger.resourceText"
                             }
                         }
                     },
-                    messageBase: "{messageLoader}.resources.linksControls",
+                    messageBase: "{messageLoader}.resources.linksControls.resourceText",
                     resources: {
                         template: "{templateLoader}.resources.linksControls",
                         emphasizeLinks: "{templateLoader}.resources.emphasizeLinks",

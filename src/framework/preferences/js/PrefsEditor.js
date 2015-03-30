@@ -45,11 +45,11 @@ var fluid_2_0 = fluid_2_0 || {};
             messageLoader: {
                 type: "fluid.prefs.resourceLoader",
                 options: {
+                    resourceOptions: {
+                        dataType: "json"
+                    },
                     events: {
                         onResourcesLoaded: "{prefsEditorLoader}.events.onPrefsEditorMessagesLoaded"
-                    },
-                    invokers: {
-                        transformResources: "fluid.prefs.resourceLoader.parseMessages"
                     }
                 }
             }
@@ -128,10 +128,11 @@ var fluid_2_0 = fluid_2_0 || {};
         listeners: {
             "onCreate.loadResources": {
                 listener: "fluid.prefs.resourceLoader.loadResources",
-                args: ["{that}", {expander: {func: "{that}.resolveResources"}}, "{that}.transformResources"]
+                args: ["{that}", {expander: {func: "{that}.resolveResources"}}]
             }
         },
         resources: {},
+        resourceOptions: {},
         // Unsupported, non-API option
         components: {
             resourcePath: {
@@ -143,7 +144,6 @@ var fluid_2_0 = fluid_2_0 || {};
                 funcName: "fluid.stringTemplate",
                 args: [ "{arguments}.0", {"prefix/" : "{that}.resourcePath.options.value"} ]
             },
-            transformResources: "fluid.identity",
             resolveResources: {
                 funcName: "fluid.prefs.resourceLoader.resolveResources",
                 args: "{that}"
@@ -158,20 +158,14 @@ var fluid_2_0 = fluid_2_0 || {};
         var mapped = fluid.transform(that.options.resources, that.transformURL);
 
         return fluid.transform(mapped, function (url) {
-            return {url: url, forceCache: true};
+            return {url: url, forceCache: true, options: that.options.resourceOptions};
         });
     };
 
-    fluid.prefs.resourceLoader.loadResources = function (that, resources, transformFn) {
+    fluid.prefs.resourceLoader.loadResources = function (that, resources) {
         fluid.fetchResources(resources, function () {
-            that.resources = transformFn(resources);
+            that.resources = resources;
             that.events.onResourcesLoaded.fire(resources);
-        });
-    };
-
-    fluid.prefs.resourceLoader.parseMessages = function (resources) {
-        return fluid.transform(resources, function (resource) {
-            return JSON.parse(resource.resourceText);
         });
     };
 
