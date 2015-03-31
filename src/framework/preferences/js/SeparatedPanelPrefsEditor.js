@@ -65,7 +65,6 @@ var fluid_2_0 = fluid_2_0 || {};
                 args: ["{separatedPanel}.dom.reset", "click", "{arguments}.0"]
             }
         },
-        messageBase: "{messageLoader}.resources.prefsEditor",
         components: {
             pageEnhancer: "{uiEnhancer}",
             slidingPanel: {
@@ -96,7 +95,10 @@ var fluid_2_0 = fluid_2_0 || {};
                     },
                     components: {
                         msgResolver: {
-                            type: "fluid.messageResolver"
+                            type: "fluid.messageResolver",
+                            options: {
+                                messageBase: "{messageLoader}.resources.prefsEditor.resourceText"
+                            }
                         }
                     }
                 }
@@ -171,9 +173,6 @@ var fluid_2_0 = fluid_2_0 || {};
         }, {
             source: "{that}.options.templatePrefix",
             target: "{that > iframeRenderer}.options.templatePrefix"
-        }, {
-            source: "{that}.options.messageBase",
-            target: "{that > slidingPanel > msgResolver}.options.messageBase"
         }]
     });
 
