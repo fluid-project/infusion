@@ -276,9 +276,10 @@ var fluid_2_0 = fluid_2_0 || {};
     // DOM Utilities.
 
     /**
-     * Finds the nearest ancestor of the element that passes the test
+     * Finds the nearest ancestor of the element that matches a predicate
      * @param {Element} element DOM element
-     * @param {Function} test A function which takes an element as a parameter and return true or false for some test
+     * @param {Function} test A function (predicate) accepting a DOM element, returning a truthy value representing a match
+     * @return The first element parent for which the predicate returns truthy - or undefined if no parent matches
      */
     fluid.findAncestor = function (element, test) {
         element = fluid.unwrap(element);

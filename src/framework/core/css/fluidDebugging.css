@@ -15,7 +15,7 @@
     height: 0px;
  }
 
-.fl-debug-tab {
+.fl-debug-open-pane-trigger {
     width: 32px;
     height: 32px;
     position: absolute;
@@ -24,7 +24,7 @@
     background: url("../images/debug_tab.png");
 }
 
-.fl-debug-tab:hover {
+.fl-debug-open-pane-trigger:hover {
     background-color: #bbb;
 }
 
@@ -35,6 +35,17 @@
     font-size: 16px;
     color: black;
     padding-top: 40px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.fl-debug-pane thead {
+    padding-bottom: 2px;
+    font-weight: bold;
+}
+
+.fl-debug-pointer-events-none {
+    pointer-events: none;
 }
 
 .fl-debug-highlightElement {
@@ -68,14 +79,54 @@
     background: url("../images/magnifying_glass.png");
 }
 
-.fl-debug-inspect:hover {
+.fl-debug-inspect-trigger:hover {
     background-color: #ddd;
 }
 
 .fl-debug-inspect-active {
-    background-color: #888;
+    background-color: #aaa;
 }
 
 .fl-debug-inspect-active:hover {
     background-color: #888;
+}
+
+.fl-debug-selector-cell {
+    text-align: right;
+    padding-right: 1em;
+}
+
+/* See http://stackoverflow.com/questions/14765817/why-does-css-td-width-not-work */
+
+.fl-debug-pane-index {
+    min-width: 3em; 
+}
+
+.fl-debug-pane-dom-id {
+    min-width: 11em;
+}
+
+.fl-debug-pane-component-id {
+    min-width: 11em;
+}
+
+.fl-debug-pane-grades {
+    min-width: 40em;
+}
+
+.fl-debug-line {
+    min-width: 18em;
+}
+
+.fl-debug-tooltip {
+    width: 40em;
+    font-size: 10px;
+    position: absolute;
+    background-color: #FFC;
+    border: 2px solid #444;
+    padding: 0.5em;
+}
+
+.flc-debug-tooltip-trigger:hover {
+    background-color: rgba(128, 128, 128, 0.3);
 }

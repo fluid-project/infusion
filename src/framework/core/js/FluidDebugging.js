@@ -128,19 +128,34 @@ var fluid = fluid || fluid_2_0;
     };
 
     fluid.exceptionDecoders.firefox = function (e) {
+        var delimiter = "at ";
         var lines = e.stack.replace(/(?:\n@:0)?\s+$/m, "").replace(/^\(/gm, "{anonymous}(").split("\n");
         return fluid.transform(lines, function (line) {
-            var atind = line.indexOf("@");
-            return atind === -1? [line] : [line.substring(atind + 1), line.substring(0, atind)];
+            line = line.replace(/\)/g, "");
+            var atind = line.indexOf(delimiter);
+            return atind === -1? [line] : [line.substring(atind + delimiter.length), line.substring(0, atind)];
         });
     };
 
     // Main entry point for callers. 
-    // TODO: This infrastructure is several years old and probably still only works on Firefox if there
     fluid.getCallerInfo = function (atDepth) {
         atDepth = (atDepth || 3) - stackStyle.offset;
         var stack = fluid.decodeStack();
-        return stack? stack[atDepth][0] : null;
+        var element = stack && stack[atDepth][0];
+        if (element) {
+            var lastslash = element.lastIndexOf("/");
+            if (lastslash === -1) {
+                lastslash = 0;
+            }
+            var nextColon = element.indexOf(":", lastslash);
+            return {
+                path: element.substring(0, lastslash),
+                filename: element.substring(lastslash + 1, nextColon),
+                index: element.substring(nextColon + 1)
+            };
+        } else {
+            return null;
+        }
     };
 
     /** Generates a string for padding purposes by replicating a character a given number of times

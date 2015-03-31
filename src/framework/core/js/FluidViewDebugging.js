@@ -9,6 +9,8 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
+/* global console */
+
 var fluid_2_0 = fluid_2_0 || {};
 
 (function ($, fluid) {
@@ -42,6 +44,9 @@ var fluid_2_0 = fluid_2_0 || {};
             highlightRoot: "<div id=\"fluid-debug-highlightRoot\" class=\"fluid-debug-highlightRoot\"></div>",
             highlightElement: "<div class=\"fl-debug-highlightElement\"></div>"
         },
+        events: {
+            highlightClick: null
+        },
         listeners: {
             onCreate: "fluid.debug.highlighter.renderRoot"
         },
@@ -54,6 +59,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.debug.highlighter.renderRoot = function (that) {
         var highlightRoot = $(that.options.markup.highlightRoot);
         that.container.append(highlightRoot);
+        highlightRoot.click(that.events.highlightClick.fire);
     };
     
     fluid.debug.highlighter.clear = function (highlightRoot) {
@@ -62,37 +68,65 @@ var fluid_2_0 = fluid_2_0 || {};
     
     fluid.debug.highlighter.positionProps = ["width","height","marginLeft","marginTop","paddingLeft","paddingTop"];
     
-    fluid.debug.highlighter.colours = [
-        [0, 0, 0],    // black
-        [255, 0, 0],  // red
-        [255, 255, 0] // yellow
-    ];
+    fluid.debug.highlighter.colours = {
+        components: [
+            [0, 0, 0],    // black
+            [255, 0, 0],  // red
+            [255, 255, 0] // yellow
+        ],
+        domBinder: [0, 255, 0],  // green
+        renderer:  [0, 255, 255] // cyan
+    };
     
     fluid.debug.arrayToRGBA = function (array) {
         return "rgba(" + array.join(", ") + ")";
     };
     
-    fluid.debug.highlighter.indexToColour = function (i, length) {
-        var j = length - i;
-        var c = fluid.debug.highlighter.colours;
-        var base = fluid.makeArray(c[j % c.length]);
-        base[3] = j > c.length ? 0.2 : 0.5;
-        return fluid.debug.arrayToRGBA(base);
+    fluid.debug.assignColour = function (colour, alpha) {
+        return [colour[0], colour[1], colour[2], alpha];
     };
     
-    fluid.debug.highlighter.dispose = function (components) {
-        return fluid.transform(components, function (component, i) {
+    fluid.debug.highlighter.indexToColour = function (i, isDomBind, isRenderer) {
+        var a = fluid.debug.assignColour, c = fluid.debug.highlighter.colours.components;
+        var base;
+        if (isRenderer) {
+            base = a(fluid.debug.highlighter.colours.renderer, 0.5);
+        } else if (isDomBind) {
+            base = a(fluid.debug.highlighter.colours.domBinder, 0.5);
+        } else {
+            base = a(c[i % c.length], i > c.length ? 0.2 : 0.5);
+        }
+        return base;
+    };
+    
+    fluid.debug.isRendererSelector = function (component, selectorName) {
+        var isRendererComponent = fluid.componentHasGrade(component, "fluid.commonRendererComponent");
+        var ignoreContains = fluid.contains(component.options.selectorsToIgnore, selectorName);
+
+        return isRendererComponent ? (!selectorName || ignoreContains ? false : true) : false;
+    };
+    
+    fluid.debug.highlighter.disposeEntries = function (entries, domIds) {
+        return fluid.transform(entries, function (entry, i) {
+            var component = entry.component;
             var container = component.container;
+            var element = fluid.jById(domIds[i], container[0].ownerDocument);
+            var selectorName = entry.selectorName;
+            var isRendererSelector = fluid.debug.isRendererSelector(component, selectorName);
             var noHighlight = container.is("body");
             return {
                 component: component,
-                container: container,
+                container: element,
                 noHighlight: noHighlight,
-                colour: fluid.debug.highlighter.indexToColour(i, components.length)
+                selectorName: selectorName,
+                colour: fluid.debug.highlighter.indexToColour(i, selectorName, isRendererSelector)
             };
         });
     };
-    
+
+    fluid.debug.domIdtoHighlightId = function (domId) {
+        return "highlight-for:" + domId;
+    };
     
     fluid.debug.highlighter.highlight = function (that, highlightRoot, dispositions) {
         var p = fluid.debug.highlighter.positionProps;
@@ -104,9 +138,10 @@ var fluid_2_0 = fluid_2_0 || {};
             }
  
             var highlight = $(that.options.markup.highlightElement);
+            highlight.prop("id", fluid.debug.domIdtoHighlightId(container.prop("id")));
             highlightRoot.append(highlight);
                 
-            highlight.css("background-color", disp.colour);
+            highlight.css("background-color", fluid.debug.arrayToRGBA(disp.colour));
             for (var j = 0; j < p.length; ++ j) {
                 highlight.css(p[j], container.css(p[j] || ""));
             }
@@ -121,30 +156,150 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     };
     
+    fluid.debug.ignorableGrades = ["autoInit", "fluid.debug.listeningView", "fluid.debug.listeningPanel", "fluid.debug.listeningRenderer"];
     
-    fluid.debug.renderInspecting = function (that, paneBody, paneRowTemplate, inspecting) {
+    fluid.debug.frameworkGrades = ["fluid.littleComponent", "fluid.eventedComponent",
+        "fluid.commonModelComponent", "fluid.commonViewComponent", "fluid.commonRendererComponent",
+        "fluid.modelComponent", "fluid.viewComponent", "fluid.standardComponent", "fluid.rendererComponent",
+        "fluid.modelRelayComponent", "fluid.viewRelayComponent", "fluid.standardRelayComponent", "fluid.rendererRelayComponent"];
+    
+    fluid.debug.filterGrades = function (gradeNames) {
+        var highestFrameworkIndex = -1;
+        var output = [];
+        fluid.each(gradeNames, function (gradeName) { // TODO: remove fluid.indexOf
+            var findex = fluid.debug.frameworkGrades.indexOf(gradeName);
+            if (findex > highestFrameworkIndex) {
+                highestFrameworkIndex = findex;
+            } else if (findex === -1 && fluid.debug.ignorableGrades.indexOf(gradeName) === -1 && gradeName.indexOf("{") === -1) {
+                output.push(gradeName);
+            }
+        });
+        output.push(fluid.debug.frameworkGrades[highestFrameworkIndex]);
+        return output;
+    };
+    
+    fluid.debug.renderDefaults = function (typeName, options) {
+        var string = "fluid.defaults(\"" + typeName + "\", " + JSON.stringify(options, null, 4) + ");\n";
+        var markup = "<pre>" + string + "</pre>";
+
+        return markup;
+    };
+    
+    fluid.debug.renderSelectorUsageRecurse = function (source, segs, options) {
+        if (fluid.isPrimitive(source)) {
+            if (typeof(source) === "string" && source.indexOf(options.findString) !== -1) {
+                var path = segs.slice(0, 2);
+                fluid.set(options.target, path, fluid.copy(fluid.get(options.fullSource, path)));
+            }
+        } else {
+            fluid.each(source, function (value, key) {
+                segs.push(key);
+                fluid.debug.renderSelectorUsageRecurse(source[key], segs, options);
+                segs.pop(key);
+            });
+        }
+    };
+    
+    fluid.debug.renderSelectorUsage = function (selectorName, options) {
+        var target = {}, segs = [], findString = "}.dom." + selectorName;
+        fluid.debug.renderSelectorUsageRecurse(options, segs, {
+            findString: findString,
+            target: target,
+            fullSource: options
+        });
+        var markup = "<pre>" + JSON.stringify(target, null, 4) + "</pre>";
+        return markup;
+    };
+    
+    fluid.debug.renderIndexElement = function (indexElTemplate, colour) {
+        return fluid.stringTemplate(indexElTemplate, {colour: fluid.debug.arrayToRGBA(colour)});
+    };
+    
+    fluid.debug.domIdtoRowId = function (domId) {
+        return "row-for:" + domId;
+    };
+    
+    fluid.debug.rowForDomId = function (row, indexElTemplate, disp, rowIdToDomId) {
+        row.indexEl = fluid.debug.renderIndexElement(indexElTemplate, disp.colour);
+        row.domId = disp.container.prop("id");
+        row.rowId = fluid.debug.domIdtoRowId(row.domId);
+        rowIdToDomId[row.rowId] = row.domId;
+    };
+    
+    fluid.debug.renderOneDisposition = function (disp, indexElTemplate, defaultsIdToContent, rowIdToDomId) {
+        var applyTooltipClass = "flc-debug-tooltip-trigger";
+        var rows;
+        if (disp.selectorName) {
+            var tooltipTriggerId = fluid.allocateGuid();
+            var options = disp.component.options;
+            defaultsIdToContent[tooltipTriggerId] = fluid.debug.renderSelectorUsage(disp.selectorName, options);
+            rows = [{
+                componentId: "",
+                extraTooltipClass: applyTooltipClass,
+                extraGradesClass: "fl-debug-selector-cell",
+                grade: options.selectors[disp.selectorName],
+                line: disp.selectorName,
+                tooltipTriggerId: tooltipTriggerId
+            }];
+        } else {
+            var filtered = fluid.debug.filterGrades(disp.component.options.gradeNames);
+            rows = fluid.transform(filtered, function (oneGrade) {
+                var defaults = fluid.defaultsStore[oneGrade];
+                var line = defaults && defaults.callerInfo ? defaults.callerInfo.filename + ":" + defaults.callerInfo.index : "";
+                // horrible mixture of semantic levels in this rendering function - don't we need a new renderer!
+                var extraTooltipClass = "";
+                var tooltipTriggerId = fluid.allocateGuid();
+                if (line) {
+                    extraTooltipClass = applyTooltipClass;
+                    defaultsIdToContent[tooltipTriggerId] = fluid.debug.renderDefaults(oneGrade, defaults.options);
+                }
+                return {
+                    rowId: fluid.allocateGuid(),
+                    indexEl: "",
+                    domId: "",
+                    componentId: "",
+                    grade: oneGrade,
+                    line: line,
+                    extraGradesClass: "",
+                    extraTooltipClass: extraTooltipClass,
+                    tooltipTriggerId: tooltipTriggerId
+                };
+            });
+            rows[0].componentId = disp.component.id;
+        }
+        fluid.debug.rowForDomId(rows[0], indexElTemplate, disp, rowIdToDomId);
+        return rows;
+    };
+    
+    fluid.debug.renderInspecting = function (that, paneBody, indexElTemplate, paneRowTemplate, inspecting) {
         if (!paneBody || !that.highlighter) { // stupid ginger world failure
             return;
         }
+        var defaultsIdToContent = {}; // driver for tooltips showing defaults source
         paneBody.empty();
         that.highlighter.clear();
-        var ids = fluid.keys(inspecting);
-        var components = fluid.transform(ids, function (inspectingId) {
-            return that.viewMapper.domIdToEntry[inspectingId].component;
+
+        var ids = fluid.keys(inspecting).reverse(); // TODO: more principled ordering
+        var entries = fluid.transform(ids, function (inspectingId) {
+            return that.viewMapper.domIdToEntry[inspectingId];
         });
-        var dispositions = fluid.debug.highlighter.dispose(components);
-        var rows = fluid.transform(dispositions, function (disp) {
-            return {
-                style: "background-color: " + disp.colour,
-                grades: "Container id " + disp.component.container.prop("id") + ": " + fluid.dumpThat(disp.component),
-                lines: ""
-            };
+        var dispositions = fluid.debug.highlighter.disposeEntries(entries, ids);
+        var allRows = [], rowIdToDomId = {};
+        fluid.each(dispositions, function (disp) {
+            var rows = fluid.debug.renderOneDisposition(disp, indexElTemplate, defaultsIdToContent, rowIdToDomId);
+            allRows = allRows.concat(rows); // yeah yeah we dun't have no mapcat
         });
-        var contents = fluid.transform(rows, function (row) {
+        
+        var contents = fluid.transform(allRows, function (row) {
             return fluid.stringTemplate(paneRowTemplate, row);
         });
         paneBody.html(contents.join(""));
         that.highlighter.highlight(dispositions);
+        that.tooltips.applier.change("idToContent", defaultsIdToContent);
+        that.rowIdToDomId = rowIdToDomId;
+        that.dispositions = dispositions; // currently for looking up colour
+        var initSelection = fluid.arrayToHash(fluid.values(rowIdToDomId));
+        that.applier.change("highlightSelected", initSelection);
     };
     
     
@@ -153,20 +308,32 @@ var fluid_2_0 = fluid_2_0 || {};
         model: {
             isOpen: false,
             isInspecting: false,
-            inspecting: {}
+            isFrozen: false,
+            inspecting: {},
+            highlightSelected: {}
+        },
+        members: {
+            rowIdToDomId: {}
         },
         modelListeners: {
             isOpen: {
                 funcName: "fluid.debug.toggleClass",
                 args: ["{that}.options.styles", "{that}.dom.holder", "holderOpen", "holderClosed", "{change}.value"]
             },
-            isInspecting: {
+            isInspecting: [{
                 funcName: "fluid.debug.toggleClass",
-                args: ["{that}.options.styles", "{that}.dom.inspect", "inspecting", null, "{change}.value"]
-            },
+                args: ["{that}.options.styles", "{that}.dom.inspectTrigger", "inspecting", null, "{change}.value"]
+            }, {
+                funcName: "fluid.debug.browser.finishInspecting",
+                args: ["{that}", "{change}.value"]
+            }],
             inspecting: {
                 funcName: "fluid.debug.renderInspecting",
-                args: ["{that}", "{that}.dom.paneBody", "{that}.options.markup.paneRow", "{change}.value"]
+                args: ["{that}", "{that}.dom.paneBody", "{that}.options.markup.indexElement", "{that}.options.markup.paneRow", "{change}.value"]
+            },
+            "highlightSelected.*": {
+                funcName: "fluid.debug.renderHighlightSelection",
+                args: ["{that}", "{change}.value", "{change}.path"]
             }
         },
         styles: {
@@ -175,19 +342,24 @@ var fluid_2_0 = fluid_2_0 || {};
             inspecting: "fl-debug-inspect-active"
         },
         markup: {
-            holder: "<div class=\"flc-debug-holder fl-debug-holder\"><div class=\"flc-debug-tab fl-debug-tab\"></div><div class=\"flc-debug-pane fl-debug-pane\"><div class=\"flc-debug-inspect-trigger fl-debug-inspect-trigger\"></div></div></div>",
-            pane: "<table><tbody class=\"flc-debug-pane-body\"></tbody></table>",
-            paneRow: "<tr><td class=\"flc-debug-pane-index\"><div class=\"flc-debug-pane-indexel\" style=\"%style\"></div></td><td class=\"flc-debug-pane-grades\">%grades</td><td class=\"flc-debug-pane-lines\">%lines</td></tr>"
+            holder: "<div class=\"flc-debug-holder fl-debug-holder\"><div class=\"flc-debug-open-pane-trigger fl-debug-open-pane-trigger\"></div><div class=\"flc-debug-pane fl-debug-pane\"><div class=\"flc-debug-inspect-trigger fl-debug-inspect-trigger\"></div></div></div>",
+            pane: "<table><thead><tr><td class=\"fl-debug-pane-index\"></td><td class=\"fl-debug-pane-dom-id\">DOM ID</td><td class=\"fl-debug-pane-component-id\">Component ID</td><td class=\"fl-debug-pane-grades\">Grades / Selector</td><td class=\"fl-debug-pane-line\">Line / Selector name</td></tr></thead><tbody class=\"flc-debug-pane-body\"></tbody></table>",
+            paneRow: "<tr class=\"flc-debug-pane-row\" id=\"%rowId\"><td class=\"fl-debug-pane-index\">%indexEl</td><td class=\"flc-debug-dom-id\">%domId</td><td class=\"flc-debug-component-id\">%componentId</td><td class=\"flc-debug-pane-grades %extraGradesClass\">%grade</td><td class=\"flc-debug-pane-line %extraTooltipClass\" id=\"%tooltipTriggerId\">%line</td></tr>",
+            indexElement: "<div class=\"flc-debug-pane-indexel\" style=\"background-color: %colour\"></div>"
         },
         selectors: {
-            tab: ".fl-debug-tab",
-            inspect: ".fl-debug-inspect",
+            openPaneTrigger: ".flc-debug-open-pane-trigger",
+            inspectTrigger: ".flc-debug-inspect-trigger",
             holder: ".fl-debug-holder",
             pane: ".fl-debug-pane",
-            paneBody: ".flc-debug-pane-body"
+            paneBody: ".flc-debug-pane-body",
+            indexEl: ".flc-debug-pane-indexel",
+            row: ".flc-debug-pane-row"
         },
         events: {
-            onNewDocument: null
+            onNewDocument: null,
+            onMarkupReady: null,
+            highlightClick: null
         },
         listeners: {
             "onCreate.render": {
@@ -197,18 +369,47 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             "onCreate.toggleTabClick": {
                 funcName: "fluid.debug.bindToggleClick",
-                args: ["{that}.dom.tab", "{that}.applier", "isOpen"]
+                args: ["{that}.dom.openPaneTrigger", "{that}.applier", "isOpen"]
             },
             "onCreate.toggleInspectClick": {
                 funcName: "fluid.debug.bindToggleClick",
-                args: ["{that}.dom.inspect", "{that}.applier", "isInspecting"]
+                args: ["{that}.dom.inspectTrigger", "{that}.applier", "isInspecting"]
             },
-            onNewDocument: {
+            "onCreate.bindHighlightSelection": {
+                funcName: "fluid.debug.browser.bindHighlightSelection",
+                args: ["{that}", "{that}.dom.pane"]
+            },
+            "onNewDocument.bindHover": {
                 funcName: "fluid.debug.browser.bindHover",
                 args: ["{that}", "{arguments}.0"]
+            },
+            "onNewDocument.bindHighlightClick": {
+                funcName: "fluid.debug.browser.bindHighlightClick",
+                args: ["{that}", "{arguments}.0"]
+            },
+            highlightClick: {
+                funcName: "fluid.debug.browser.highlightClick",
+                args: "{that}"
             }
         },
         components: {
+            tooltips: {
+                createOnEvent: "onMarkupReady",
+                type: "fluid.tooltip",
+                container: "{browser}.dom.pane",
+                options: {
+                    items: ".flc-debug-tooltip-trigger",
+                    styles: {
+                        tooltip: "fl-debug-tooltip"
+                    },
+                    position: {
+                        my: "right centre",
+                        at: "left centre"
+                    },
+                    duration: 0,
+                    delay: 0
+                }
+            },
             viewMapper: {
                 type: "fluid.debug.viewMapper",
                 options: {
@@ -219,21 +420,96 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             highlighter: {
                 type: "fluid.debug.highlighter",
-                container: "{fluid.debug.browser}.container"
+                container: "{fluid.debug.browser}.container",
+                options: {
+                    events: {
+                        highlightClick: "{browser}.events.highlightClick"
+                    }
+                }
             }
         }
     });
     
+    fluid.debug.browser.finishInspecting = function (that, isInspecting) {
+        if (!isInspecting) {
+            var ation = that.applier.initiate();
+            ation.change("inspecting", null, "DELETE"); // TODO - reform this terrible API through FLUID-5373
+            ation.change("", {
+                "inspecting": {}
+            });
+            ation.change("isFrozen", false);
+            ation.commit();
+        }
+    };
+    
+    // go into frozen state if we are not in it and are inspecting.
+    // if we are already frozen, finish inspecting (which will also finish frozen)
+    fluid.debug.browser.highlightClick = function (that) {
+        if (that.model.isFrozen) {
+            that.applier.change("isInspecting", false);
+        } else if (that.model.isInspecting) {
+            that.applier.change("isFrozen", true);
+        }
+    };
             
     fluid.debug.browser.renderMarkup = function (that, holderMarkup, paneMarkup) {
         that.container.append(holderMarkup);
         var debugPane = that.locate("pane");
         debugPane.append(paneMarkup);
+        that.events.onMarkupReady.fire();
+    };
+    
+    fluid.debug.browser.domIdForElement = function (rowIdToDomId, rowSelector, element) {
+        var row = $(element).closest(rowSelector);
+        if (row.length > 0) {
+            var rowId = row[0].id;
+            return rowIdToDomId[rowId];
+        }
+    };
+    
+    fluid.debug.browser.bindHighlightSelection = function (that, pane) {
+        pane.on("click", that.options.selectors.indexEl, function (evt) {
+            var domId = fluid.debug.browser.domIdForElement(that.rowIdToDomId, that.options.selectors.row, evt.target);
+            var path = ["highlightSelected", domId];
+            that.applier.change(path, !fluid.get(that.model, path));
+        });
+    };
+    
+    fluid.debug.renderHighlightSelection = function (that, newState, path) {
+        var domId = path[1];
+        var disposition = fluid.find_if(that.dispositions, function (disp) {
+            return disp.container.prop("id") === domId;
+        });
+        var outColour = fluid.copy(disposition.colour);
+        outColour[3] = outColour[3] * (newState ? 1.0 : 0.1);
+        var colourString = fluid.debug.arrayToRGBA(outColour);
+        var row = fluid.jById(fluid.debug.domIdtoRowId(domId));
+        $(that.options.selectors.indexEl, row).css("background-color", colourString);
+        fluid.jById(fluid.debug.domIdtoHighlightId(domId)).css("background-color", colourString);
+    };
+    
+    fluid.debug.browser.bindHighlightClick = function (that, dokkument) {
+        // We have a global problem in that we can't accept pointer events on the highlight elements
+        // themselves since this will cause their own mouseenter/mouseleave events to self-block.
+        dokkument.on("mousedown", "*", function (evt) {
+            var target = $(evt.target);
+            var holderParents = target.parents(that.options.selectors.holder);
+            if (holderParents.length > 0) {
+                return;
+            }
+            if (that.model.isInspecting) {
+                that.events.highlightClick.fire();
+                return false;
+            }
+        });
     };
     
     fluid.debug.browser.bindHover = function (that, dokkument) {
         console.log("Binding to document " + dokkument.prop("id"));
         var listener = function (event) {
+            if (!that.model.isInspecting || that.model.isFrozen) {
+                return;
+            }
             var allParents = $(event.target).parents().addBack().get();
             for (var i = 0; i < allParents.length; ++ i) {
                 var id = allParents[i].id;
@@ -272,6 +548,15 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
     
+    fluid.defaults("fluid.debug.listeningRenderer", {
+        listeners: {
+            afterRender: {
+                funcName: "fluid.debug.viewMapper.registerView",
+                args: ["{fluid.debug.viewMapper}", "{that}", "rebind"]
+            }
+        }
+    });
+    
     fluid.defaults("fluid.debug.viewMapper", {
         gradeNames: ["fluid.eventedComponent", "fluid.resolveRoot", "autoInit"],
         members: {
@@ -285,6 +570,9 @@ var fluid_2_0 = fluid_2_0 || {};
         }, {
             record: "fluid.debug.listeningPanel",
             target: "{/ fluid.prefs.panel}.options.gradeNames"
+        }, {
+            record: "fluid.debug.listeningRenderer",
+            target: "{/ fluid.commonRendererComponent}.options.gradeNames"
         }],
         events: {
             onNewDocument: null
@@ -295,6 +583,36 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         }
     });
+    
+    fluid.debug.viewMapper.registerComponent = function (that, component, containerId) {
+        var domBound = fluid.transform(component.options.selectors, function (selector, selectorName) {
+            return fluid.allocateSimpleId(component.locate(selectorName));
+        });
+        var entry = {
+            component: component,
+            containerId: containerId,
+            domBound: domBound
+        };
+        that.idToEntry[component.id] = entry;
+        if (containerId) {
+            that.domIdToEntry[containerId] = entry;
+            
+            fluid.each(domBound, function (subId, selectorName) {
+                var subEntry = $.extend({}, entry);
+                subEntry.selectorName = selectorName;
+                that.domIdToEntry[subId] = subEntry;
+            });
+        }
+    };
+    
+    fluid.debug.viewMapper.deregisterComponent = function (that, id) {
+        var entry = that.idToEntry[id];
+        delete that.idToEntry[id];
+        delete that.domIdToEntry[entry.containerId];
+        fluid.each(entry.domBound, function (subId) {
+            delete that.domIdToEntry[subId];
+        });
+    };
     
     fluid.debug.viewMapper.registerView = function (that, component, action) {
         var id = component.id;
@@ -307,23 +625,13 @@ var fluid_2_0 = fluid_2_0 || {};
                 that.events.onNewDocument.fire(dokkument);
             }
         }
-        console.log("***" + action + " of container ", component.container, " for component ", component);
         if (action === "add") {
-            var entry = {
-                component: component,
-                containerId: containerId
-            };
-            that.idToEntry[id] = entry;
-            that.domIdToEntry[containerId] = entry;
+            fluid.debug.viewMapper.registerComponent(that, component, containerId);
         } else if (action === "remove") {
-            delete that.idToEntry[id];
+            fluid.debug.viewMapper.deregisterComponent(that, id);
         } else if (action === "rebind") {
-            var oldRecord = that.idToEntry[id];
-            delete that.domIdToEntry[oldRecord.containerId];
-            oldRecord.containerId = containerId;
-            if (containerId) {
-                that.domIdToEntry[containerId] = oldRecord;
-            }
+            fluid.debug.viewMapper.deregisterComponent(that, id);
+            fluid.debug.viewMapper.registerComponent(that, component, containerId);
         }
     };
         
