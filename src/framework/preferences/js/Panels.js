@@ -540,37 +540,57 @@ var fluid_2_0 = fluid_2_0 || {};
         }) || value;
     };
 
-    fluid.prefs.compositePanel.rebaseTree = function (msgResolver, model, tree, memberName, modelRelayRules) {
-        var rebasedMessagekey = {};
-        var rebased = fluid.transform(tree, function (val, key) {
-            if (key === "children") {
-                return fluid.transform(val, function (v) {
-                    return fluid.prefs.compositePanel.rebaseTree(msgResolver, model, v, memberName, modelRelayRules);
-                });
-            } else if (key === "selection") {
-                return fluid.prefs.compositePanel.rebaseTree(msgResolver, model, val, memberName, modelRelayRules);
-            } else if (key === "ID") {
-                return fluid.prefs.compositePanel.rebaseID(val, memberName);
-            } else if (key === "parentRelativeID") {
-                return fluid.prefs.compositePanel.rebaseParentRelativeID(val, memberName);
-            } else if (key === "valuebinding") {
-                return fluid.prefs.compositePanel.rebaseValueBinding(val, modelRelayRules);
-            } else if (key === "value" && tree.valuebinding) {
-                var valuebinding = tree.valuebinding;
-                var modelValue = fluid.get(model, fluid.prefs.compositePanel.rebaseValueBinding(valuebinding, modelRelayRules));
-                return modelValue !== undefined ? modelValue : val;
-            } else if (key === "messagekey") {
-                // converts the "UIMessage" renderer component into a "UIBound"
-                // and passes in the resolved message as the value.
-                rebasedMessagekey.componentType = "UIBound";
-                rebasedMessagekey.value = msgResolver.resolve(val.value, val.args);
-                return undefined;
-            } else {
-                return val;
-            }
-        });
+    fluid.prefs.compositePanel.rebaseTreeComp = function (msgResolver, model, treeComp, memberName, modelRelayRules) {
+        var rebased = fluid.copy(treeComp);
 
-        return $.extend(true, {}, rebased, rebasedMessagekey);
+        if (rebased.children) {
+            rebased.children = fluid.prefs.compositePanel.rebaseTree(msgResolver, model, rebased.children, memberName, modelRelayRules);
+        }
+
+        if (rebased.selection) {
+            rebased.selection = fluid.prefs.compositePanel.rebaseTreeComp(msgResolver, model, rebased.selection, memberName, modelRelayRules);
+        }
+
+        if (rebased.ID) {
+            rebased.ID = fluid.prefs.compositePanel.rebaseID(rebased.ID, memberName);
+        }
+
+        if (rebased.parentRelativeID) {
+            rebased.parentRelativeID = fluid.prefs.compositePanel.rebaseParentRelativeID(rebased.parentRelativeID, memberName);
+        }
+
+        if (rebased.valuebinding) {
+            rebased.valuebinding = fluid.prefs.compositePanel.rebaseValueBinding(rebased.valuebinding, modelRelayRules);
+        }
+
+        if (rebased.value && rebased.valuebinding) {
+            var modelValue = fluid.get(model, fluid.prefs.compositePanel.rebaseValueBinding(rebased.valuebinding, modelRelayRules));
+            rebased.value = modelValue !== undefined ? modelValue : rebased.value;
+        }
+
+        if (rebased.messagekey) {
+            // converts the "UIMessage" renderer component into a "UIBound"
+            // and passes in the resolved message as the value.
+            rebased.componentType = "UIBound";
+            rebased.value = msgResolver.resolve(rebased.messagekey.value, rebased.messagekey.args);
+            delete rebased.messagekey;
+        }
+
+        return rebased;
+    };
+
+    fluid.prefs.compositePanel.rebaseTree = function (msgResolver, model, tree, memberName, modelRelayRules) {
+        var rebased;
+
+        if (fluid.isArrayable(tree)) {
+            rebased = fluid.transform(tree, function (treeComp) {
+                return fluid.prefs.compositePanel.rebaseTreeComp(msgResolver, model, treeComp, memberName, modelRelayRules);
+            });
+        } else {
+            rebased = fluid.prefs.compositePanel.rebaseTreeComp(msgResolver, model, tree, memberName, modelRelayRules);
+        }
+
+        return rebased;
     };
 
     fluid.prefs.compositePanel.produceTree = function (that) {
