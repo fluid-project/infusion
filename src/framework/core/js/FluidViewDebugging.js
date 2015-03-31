@@ -77,7 +77,7 @@ var fluid_2_0 = fluid_2_0 || {};
         var c = fluid.debug.highlighter.colours;
         var base = fluid.makeArray(c[j % c.length]);
         base[3] = j > c.length ? 0.2 : 0.5;
-        return fluid.debug.arrayToRGBA(base); 
+        return fluid.debug.arrayToRGBA(base);
     };
     
     fluid.debug.highlighter.dispose = function (components) {
@@ -89,7 +89,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 container: container,
                 noHighlight: noHighlight,
                 colour: fluid.debug.highlighter.indexToColour(i, components.length)
-            }
+            };
         });
     };
     
@@ -129,7 +129,7 @@ var fluid_2_0 = fluid_2_0 || {};
         paneBody.empty();
         that.highlighter.clear();
         var ids = fluid.keys(inspecting);
-        var fulltext = [], components = fluid.transform(ids, function (inspectingId) {
+        var components = fluid.transform(ids, function (inspectingId) {
             return that.viewMapper.domIdToEntry[inspectingId].component;
         });
         var dispositions = fluid.debug.highlighter.dispose(components);
@@ -137,7 +137,7 @@ var fluid_2_0 = fluid_2_0 || {};
             return {
                 style: "background-color: " + disp.colour,
                 grades: "Container id " + disp.component.container.prop("id") + ": " + fluid.dumpThat(disp.component),
-                lines: "" 
+                lines: ""
             };
         });
         var contents = fluid.transform(rows, function (row) {

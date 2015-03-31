@@ -17,7 +17,11 @@ var fluid_2_0 = fluid_2_0 || {};
 (function ($, fluid) {
     "use strict";
 
-    fluid.registerNamespace("fluid.uploader.demo");
+    fluid.defaults("fluid.uploader.demo", {
+        strategy: {
+            remote: "fluid.uploader.demo.remote"
+        }
+    });
 
     fluid.uploader.demo.uploadNextFile = function (that) {
         // Reset our upload stats for each new file.
@@ -95,16 +99,6 @@ var fluid_2_0 = fluid_2_0 || {};
         that.events.onUploadStop.fire();
     };
 
-    fluid.demands("fluid.uploader.uploadNextFile", "fluid.uploader.demo.remote", {
-        funcName: "fluid.uploader.demo.uploadNextFile",
-        args: "{that}"
-    });
-
-    fluid.demands("fluid.uploader.stop", "fluid.uploader.demo.remote", {
-        funcName: "fluid.uploader.demo.stop",
-        args: "{that}"
-    });
-
     /**
      * Invokes a function after a random delay by using setTimeout.
      * @param {Function} fn the function to invoke
@@ -128,11 +122,17 @@ var fluid_2_0 = fluid_2_0 || {};
                 fileIdx: 0,
                 chunkSize: 200000
             }
+        },
+        invokers: {
+            uploadNextFile: {
+                funcName: "fluid.uploader.demo.uploadNextFile",
+                args: "{that}"              
+            },
+            stop: {
+                funcName: "fluid.uploader.demo.stop",
+                args: "{that}"
+            }
         }
-    });
-
-    fluid.demands("fluid.uploader.remote", ["fluid.uploader.multiFileUploader", "fluid.uploader.demo"], {
-        funcName: "fluid.uploader.demo.remote"
     });
 
 })(jQuery, fluid_2_0);

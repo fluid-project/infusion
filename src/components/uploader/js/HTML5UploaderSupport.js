@@ -14,22 +14,17 @@ var fluid_2_0 = fluid_2_0 || {};
 
 (function ($, fluid) {
     "use strict";
-
-    fluid.demands("fluid.uploaderImpl", "fluid.uploader.html5", {
-        horizon: "fluid.uploader.progressiveCheck",
-        funcName: "fluid.uploader.multiFileUploader"
-    });
-
-    fluid.demands("fluid.uploader.strategy", "fluid.uploader.html5", {
-        horizon: "fluid.uploader.progressiveCheck",
-        funcName: "fluid.uploader.html5Strategy"
-    });
-
-    fluid.defaults("fluid.uploader.html5Strategy", {
-        gradeNames: ["fluid.uploader.strategy", "autoInit"],
+    
+    fluid.defaults("fluid.uploader.html5", {
+        gradeNames: "fluid.uploader.multiFileUploader",
         components: {
-            local: { // TODO: Would be nice to have some way to express that this is a "natural covariant refinement"
-                type: "fluid.uploader.html5Strategy.local"
+            strategy: {
+                local: { // TODO: Would be nice to have some way to express that this is a "natural covariant refinement"
+                    type: "fluid.uploader.html5Strategy.local"
+                },
+                remote: {
+                    type: "fluid.uploader.remote"
+                }
             }
         }
     });
@@ -121,10 +116,6 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-    fluid.demands("fluid.uploader.remote", ["fluid.uploader.html5Strategy", "fluid.uploader.live"], {
-        funcName: "fluid.uploader.html5Strategy.remote"
-    });
-
 
     fluid.uploader.html5Strategy.createXHR = function () {
         return new XMLHttpRequest();
@@ -140,14 +131,29 @@ var fluid_2_0 = fluid_2_0 || {};
             formData.append(key, value);
         });
     };
+    
+    fluid.defaults("fluid.uploader.html5Strategy.fileSender", {
+        gradeNames: ["fluid.eventedComponent", "fluid.contextAware", "autoInit"],
+        invokers: {
+            send: {
+                funcName: "fluid.fail",
+                args: "Error instantiating HTML5 Uploader - browser does not support FormData feature. Please try version 1.4 or earlier of Uploader which has Firefox 3.x support" 
+            }
+        },
+        contextAwareness: {
+            technology: {
+                 checks: {
+                     contextValue: "{fluid.browser.supportsFormData}",
+                     gradeNames: "fluid.uploader.html5Strategy.formDataSender"
+                 }
+            }
+        }
+    });
 
     /*******************************************************
      * HTML5 FormData Sender, used by most modern browsers *
      *******************************************************/
 
-    fluid.uploader.html5Strategy.fileSender = function () {
-        fluid.fail("Error instantiating HTML5 Uploader - browser does not support FormData feature. Please try version 1.4 or earlier of Uploader which has Firefox 3.x support");
-    };
 
     fluid.defaults("fluid.uploader.html5Strategy.formDataSender", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
@@ -172,13 +178,6 @@ var fluid_2_0 = fluid_2_0 || {};
         return formData;
     };
 
-    fluid.demands("fluid.uploader.html5Strategy.fileSender", [
-        "fluid.uploader.html5Strategy.remote",
-        "fluid.browser.supportsFormData"
-    ], {
-        funcName: "fluid.uploader.html5Strategy.formDataSender"
-    });
-
     /************************************
      * HTML5 Strategy's Local Behaviour *
      ************************************/
@@ -197,11 +196,15 @@ var fluid_2_0 = fluid_2_0 || {};
         components: {
             browseButtonView: {
                 type: "fluid.uploader.html5Strategy.browseButtonView",
+                container: "{uploader}.container",
                 options: {
                     strings: "{uploader}.options.strings.buttons",
                     queueSettings: "{uploader}.options.queueSettings",
                     selectors: {
                         browseButton: "{uploader}.options.selectors.browseButton"
+                    },
+                    events: {
+                        onBrowse: "{local}.events.onFileDialog",
                     },
                     listeners: {
                         onFilesQueued: "{local}.addFiles"
@@ -210,6 +213,7 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         }
     });
+    
 
     fluid.uploader.html5Strategy.local.addFiles = function (that, files) {
         // Add files to the file queue without exceeding the fileUploadLimit and the fileSizeLimit
@@ -346,15 +350,6 @@ var fluid_2_0 = fluid_2_0 || {};
             onCreate: {
                 funcName: "fluid.uploader.setupBrowseButtonView",
                 args: "{that}"
-            }
-        }
-    });
-
-    fluid.demands("fluid.uploader.html5Strategy.browseButtonView", "fluid.uploader.html5Strategy.local", {
-        container: "{multiFileUploader}.container",
-        mergeOptions: {
-            events: {
-                onBrowse: "{local}.events.onFileDialog"
             }
         }
     });

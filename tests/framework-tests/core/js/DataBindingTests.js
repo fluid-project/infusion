@@ -26,8 +26,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("PathUtil", function () {
         var path = "path1.path2.path3";
         jqUnit.assertEquals("getHeadPath", "path1", fluid.pathUtil.getHeadPath(path));
-        jqUnit.assertEquals("getTailPath", "path3", fluid.pathUtil.getTailPath(path));
-        jqUnit.assertEquals("getToTailPath", "path1.path2", fluid.pathUtil.getToTailPath(path));
         jqUnit.assertEquals("getFromHeadPath", "path2.path3", fluid.pathUtil.getFromHeadPath(path));
 
         jqUnit.assertDeepEq("Match empty", [], fluid.pathUtil.matchPath("", "thing"));
@@ -35,6 +33,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Match thing", ["thing"], fluid.pathUtil.matchPath("thing", "thing"));
         jqUnit.assertDeepEq("Match thing", ["thing"], fluid.pathUtil.matchPath("thing", "thing.otherThing"));
         jqUnit.assertDeepEq("Match thing.*", ["thing", "otherThing"], fluid.pathUtil.matchPath("thing.*", "thing.otherThing"));
+        
+        // TODO: Only these will survive as the unescaped, high-performance utilities used in IoC
+        jqUnit.assertEquals("getTailPath", "path3", fluid.model.getTailPath(path));
+        jqUnit.assertEquals("getToTailPath", "path1.path2", fluid.model.getToTailPath(path));
     });
 
 

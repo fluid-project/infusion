@@ -21,7 +21,14 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.registerNamespace("fluid.compat.fluid_1_3.uploader");
 
-    fluid.enhance.check({"fluid.uploader.fluid_1_3" : true});
+    fluid.contextAwareness.makeChecks({"fluid.uploader.requiredApi": {
+        value: "fluid_1_3"}
+    });
+    
+    // fluid.contextAware.makeContext({"fluid.uploader.requiredApi": {
+    //     contextName: "fluid.uploader.requiredApi.fluid_1_3" // check: true is assumed
+    // });
+    // fluid.contextAware.forgetContext("fluid.uploader.requiredApi");
 
     fluid.compat.fluid_1_3.uploader.fileTypeTransformer = function (val) {
         var mimeTypeMap = fluid.uploader.mimeTypeRegistry;
@@ -48,18 +55,18 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.compat.fluid_1_3.uploader.optionsRules = {
         // TODO: Remove these when model transformation can handle additive transformations.
-        "gradeNames": "gradeNames",
-        "components": "components",
-        "invokers": "invokers",
-        "queueSettings": "queueSettings",
-        "demo": "demo",
-        "selectors": "selectors",
-        "focusWithEvent": "focusWithEvent",
-        "styles": "styles",
-        "events": "events",
-        "listeners": "listeners",
-        "strings": "strings",
-        "mergePolicy": "mergePolicy",
+        gradeNames: "gradeNames",
+        components: "components",
+        invokers: "invokers",
+        queueSettings: "queueSettings",
+        demo: "demo",
+        selectors: "selectors",
+        focusWithEvent: "focusWithEvent",
+        styles: "styles",
+        events: "events",
+        listeners: "listeners",
+        strings: "strings",
+        mergePolicy: "mergePolicy",
 
         "queueSettings.fileTypes": {
             transform: {
@@ -68,15 +75,41 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         }
     };
-
-    fluid.demands("fluid.uploader", "fluid.uploader.fluid_1_3", {
-        options: fluid.transformOne(fluid.compat.fluid_1_3.uploader.optionsRules)
+    
+    // This grade, applied to a fluid.uploader, will adapt its accepted API from the Infusion 1.2 form to the Infusion 1.4-2.0 form 
+    fluid.defaults("fluid.uploader.compatibility.1_2-1_3", {
+        transformOptions: {
+            transformer: "fluid.model.transform.sequence",
+            config: [fluid.compat.fluid_1_2.uploader.optionsRules, fluid.compat.fluid_1_3.uploader.optionsRules]
+        }
     });
 
-    // TODO: In theory, this could be done with a mergePolicy on "transformOptions", if only we could ensure a scheme
-    // for ordering fluid_1_2.uploader before fluid_1_3.uploader in the sequence
-    fluid.demands("fluid.uploader", ["fluid.uploader.fluid_1_2", "fluid.uploader.fluid_1_3"], {
-        options: fluid.transformMany([fluid.compat.fluid_1_2.uploader.optionsRules, fluid.compat.fluid_1_3.uploader.optionsRules])
+    fluid.defaults("fluid.uploader.compatibility.1_3", {
+        transformOptions: {
+            transformer: "fluid.model.transformWithRules",
+            config: fluid.compat.fluid_1_3.uploader.optionsRules
+        }
     });
+    
+    
+    fluid.defaults("fluid.uploader.compatibility.distributor", {
+        distributeOptions: {
+            record: {
+                "1_2": {
+                    contextValue: "{fluid.uploader.requiredApi}.options.value",
+                    equals: "fluid_1_2",
+                    gradeNames: "fluid.uploader.compatibility.1_2-1_3"
+                }, 
+                "1_3": {
+                    contextValue: "{fluid.uploader.requiredApi}.options.value",
+                    equals: "fluid_1_3",
+                    gradeNames: "fluid.uploader.compatibility.1_3"
+                }
+            },
+            target: "{/ fluid.uploader}.options.contextAwareness.apiCompatibility.checks"
+        }
+    });
+    
+    fluid.constructSingle([], "fluid.uploader.compatibility.distributor");
 
 })(fluid_2_0);

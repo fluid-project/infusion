@@ -282,14 +282,6 @@ var fluid_2_0 = fluid_2_0 || {};
         mergeOptions.updateBlocks();
         return distributedBlocks;
     };
-
-    fluid.parseExpectedOptionsPath = function (path, role) {
-        var segs = fluid.model.parseEL(path);
-        if (segs.length > 1 && segs[0] !== "options") {
-            fluid.fail("Error in options distribution path ", path, " - only " + role + " paths beginning with \"options\" are supported");
-        }
-        return segs.slice(1);
-    };
     
     // TODO: This implementation is obviously poor and has numerous flaws - in particular it does no backtracking as well as matching backwards through the selector
     fluid.matchIoCSelector = function (selector, thatStack, contextHashes, memberNames, i) {
@@ -393,12 +385,20 @@ var fluid_2_0 = fluid_2_0 || {};
         predList.length = 0;
         return context;
     };
+    
+    fluid.parseExpectedOptionsPath = function (path, role) {
+        var segs = fluid.model.parseEL(path);
+        if (segs.length > 1 && segs[0] !== "options") {
+            fluid.fail("Error in options distribution path ", path, " - only " + role + " paths beginning with \"options\" are supported");
+        }
+        return segs.slice(1);
+    };
 
     fluid.undistributableOptions = ["gradeNames", "distributeOptions", "returnedPath", "argumentMap", "initFunction", "mergePolicy", "progressiveCheckerOptions"]; // automatically added to "exclusions" of every distribution
 
     fluid.distributeOptions = function (that, optionsStrategy) {
         var thatShadow = fluid.shadowForComponent(that);
-        var records = fluid.makeArray(fluid.driveStrategy(that.options, "distributeOptions", optionsStrategy));
+        var records = fluid.driveStrategy(that.options, "distributeOptions", optionsStrategy);
         fluid.each(records, function (record) {
             var targetRef = fluid.parseContextReference(record.target);
             var targetComp, selector, context;
@@ -935,9 +935,9 @@ var fluid_2_0 = fluid_2_0 || {};
                 // Clear injected instance of this component from all other paths - historically we didn't bother
                 // to do this since injecting into a shorter scope is an error - but now we have resolveRoot area
                 fluid.each(childShadow.injectedPaths, function (injectedPath) {
-                    var parentPath = fluid.pathUtil.getToTailPath(injectedPath);
+                    var parentPath = fluid.model.getToTailPath(injectedPath);
                     var otherParent = that.pathToComponent[parentPath];
-                    that.clearComponent(otherParent, fluid.pathUtil.getTailPath(injectedPath), child);
+                    that.clearComponent(otherParent, fluid.model.getTailPath(injectedPath), child);
                 });
                 fluid.doDestroy(child, name, component);
                 fluid.clearDistributions(childShadow);
@@ -966,6 +966,7 @@ var fluid_2_0 = fluid_2_0 || {};
         var instantiator = fluid.globalInstantiator;
         return component && instantiator.idToShadow[component.id] ? instantiator : null;
     };
+    // Instantiate the primordial components at the root of each context tree
     
     fluid.rootComponent = fluid.typeTag("fluid.rootComponent");
    
@@ -987,6 +988,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *  of the IoC API structure especially with respect to the first arguments.
      */
 
+// TODO: Can we move outerExpandOptions to 2nd place? only user of 3 and 4 is fluid.makeExpandBlock
     fluid.expandOptions = function (args, that, mergePolicy, localRecord, outerExpandOptions) {
         if (!args) {
             return args;
@@ -994,6 +996,7 @@ var fluid_2_0 = fluid_2_0 || {};
         fluid.pushActivity("expandOptions", "expanding options %args for component %that ", {that: that, args: args});
         var expandOptions = fluid.makeStackResolverOptions(that, localRecord);
         expandOptions.mergePolicy = mergePolicy;
+        // TODO: "freeRoot" used only in fluid.memberFromRecord - purpose has been forgotten
         expandOptions.freeRoot = outerExpandOptions && outerExpandOptions.freeRoot;
         var expanded = outerExpandOptions && outerExpandOptions.defer ?
             fluid.makeExpandOptions(args, expandOptions) : fluid.expand(args, expandOptions);
@@ -1221,7 +1224,7 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         }
         var shadow = fluid.shadowForComponent(parentThat);
-        var localDynamic = shadow && options.memberName ? shadow.subcomponentLocal[options.memberName] : null;
+        var localDynamic = shadow && shadow.subcomponentLocal && options.memberName ? shadow.subcomponentLocal[options.memberName] : null;
 
         // confusion remains with "localRecord" - it is a random mishmash of user arguments and the component record
         // this should itself be absorbed into "mergeRecords" and let stackFetcher sort it out
@@ -1407,25 +1410,70 @@ var fluid_2_0 = fluid_2_0 || {};
 
         var options = that.options;
         var components = options.components || {};
-        var componentSort = {};
+        var componentSort = [];
 
         fluid.each(components, function (component, name) {
             if (!component.createOnEvent) {
                 var priority = fluid.priorityForComponent(component);
-                componentSort[name] = [{key: name, priority: fluid.event.mapPriority(priority, 0)}];
+                componentSort.push({namespace: name, priority: fluid.parsePriority(priority)});
             }
             else {
                 fluid.bindDeferredComponent(that, name, component);
             }
         });
-        var componentList = fluid.event.sortListeners(componentSort);
-        fluid.each(componentList, function (entry) {
-            fluid.initDependent(that, entry.key);
+        fluid.sortByPriority(componentSort);
+        fluid.each(componentSort, function (entry) {
+            fluid.initDependent(that, entry.namespace);
         });
 
         shadow.invokerStrategy.initter();
         fluid.popActivity();
     };
+
+    
+    /** BEGIN NEXUS METHODS **/
+    
+    /** Construct a component with the supplied options at the specified path in the component tree. The parent path of the location must already be a component.
+     * @param path {String|Array of String} Path where the new component is to be constructed, represented as a string or array of segments
+     * @param typeName {String} The principal type of the component (name of its creator function)
+     * @param options {Object} [optional] Options supplied to the component
+     * @param instantiator {Instantiator} [optional] The instantiator holding the component to be created - if blank, the global instantiator will be used
+     */
+    fluid.construct = function (path, options, instantiator) {
+        var record = fluid.destroy(path, instantiator);
+        // TODO: We must construct a more principled scheme for designating child components than this - especially once options become immutable
+        fluid.set(record.parent, ["options", "components", record.memberName], {
+            type: options.type,
+            options: options
+        });
+        return fluid.initDependent(record.parent, record.memberName);
+    };
+
+    /** Destroys a component held at the specified path. The parent path must represent a component, although the component itself may be nonexistent
+     * @param path {String|Array of String} Path where the new component is to be destroyed, represented as a string or array of segments
+     * @param instantiator {Instantiator} [optional] The instantiator holding the component to be destroyed - if blank, the global instantiator will be used
+     */
+    fluid.destroy = function (path, instantiator) {
+        instantiator = instantiator || fluid.globalInstantiator;
+        var segs = fluid.model.parseToSegments(path, instantiator.parseEL, true);
+        if (segs.length === 0) {
+            fluid.fail("Cannot destroy the root component");
+        }
+        var memberName = segs.pop(), parentPath = instantiator.composeSegments(segs);
+        var parent = instantiator.pathToComponent[parentPath];
+        if (!parent) {
+            fluid.fail("Cannot modify component with nonexistent parent at path ", path);
+        }
+        if (parent[memberName]) {
+            parent[memberName].destroy();
+        }
+        return {
+            parent: parent,
+            memberName: memberName
+        };
+    };
+    
+    /** END NEXUS METHODS **/
 
     var dependentStore = {};
 

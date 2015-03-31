@@ -343,7 +343,6 @@ var fluid = fluid || fluid_2_0;
 
     // Framework and instantiation functions.
 
-
     /** Returns true if the argument is a value other than null or undefined **/
     fluid.isValue = function (value) {
         return value !== undefined && value !== null;
@@ -372,6 +371,14 @@ var fluid = fluid || fluid_2_0;
         }
         var string = Object.prototype.toString.call(totest);
         return string === "[object Array]" || string === "[object Object]";
+    };
+    
+    /** Returns <code>primitive</code>, <code>array</code> or <code>object</code> depending on whether the supplied object has
+     * one of those types, by use of the <code>fluid.isPrimitive</code>, <code>fluid.isPlainObject</code> and <code>fluid.isArrayable</code> utilities
+     */
+    fluid.typeCode = function (totest) {
+        return fluid.isPrimitive(totest) || !fluid.isPlainObject(totest) ? "primitive" :
+            fluid.isArrayable(totest) ? "array" : "object";
     };
 
     fluid.isDOMNode = function (obj) {
@@ -672,12 +679,6 @@ var fluid = fluid || fluid_2_0;
         });
     };
 
-    /**
-     * This method is now deprecated and will be removed in a future release of Infusion.
-     * See fluid.keyForValue instead.
-     */
-    fluid.findKeyInObject = fluid.keyForValue;
-
     /** Converts an array into an object whose keys are the elements of the array, each with the value "true"
      */
 
@@ -685,6 +686,41 @@ var fluid = fluid || fluid_2_0;
         var togo = {};
         fluid.each(array, function (el) {
             togo[el] = true;
+        });
+        return togo;
+    };
+    
+    /** Applies a stable sorting algorithm to the supplied array and comparator (note that Array.sort in JavaScript is not specified
+     * to be stable). The algorithm used will be an insertion sort, which whilst quadratic in time, will perform well
+     * on small array sizes.
+     */
+    
+    fluid.stableSort = function (array, func) {
+        for (var i = 0; i < array.length; i++) {
+            var k = array[i];
+            for (var j = i; j > 0 && func(k, array[j - 1]) < 0; j--) {
+                array[j] = array[j - 1];
+            }
+            array[j] = k;
+        }
+    };
+    
+    /** Converts a hash into an object by hoisting out the object's keys into an array element via the supplied String "key", and then transforming via an optional further function, which receives the signature
+     * (newElement, oldElement, key) where newElement is the freshly cloned element, oldElement is the original hash's element, and key is the key of the element.
+     * If the function is not supplied, the old element is simply deep-cloned onto the new element (same effect
+     * as transform fluid.transforms.objectToArray) 
+     */ 
+    fluid.hashToArray = function (hash, keyName, func) {
+        var togo = [];
+        fluid.each(hash, function (el, key) {
+            var newEl = {};
+            newEl[keyName] = key;
+            if (func) {
+                newEl = func(newEl, el, key) || newEl;
+            } else {
+                $.extend(true, newEl, el);
+            }
+            togo.push(newEl);
         });
         return togo;
     };
@@ -799,6 +835,24 @@ var fluid = fluid || fluid_2_0;
     fluid.model.composeSegments = function () {
         return fluid.makeArray(arguments).join(".");
     };
+    
+    function lastDotIndex(path) {
+        return path.lastIndexOf(".");
+    }
+    
+    /** Returns all of an EL path minus its final segment - if the path consists of just one segment, returns "" -
+     * WARNING - this method does not follow escaping rules */
+    fluid.model.getToTailPath = function (path) {
+        var lastdot = lastDotIndex(path);
+        return lastdot === -1 ? "" : path.substring(0, lastdot);
+    };
+
+    /** Returns the very last path component of an EL path
+     * WARNING - this method does not follow escaping rules */
+    fluid.model.getTailPath = function (path) {
+        var lastdot = lastDotIndex(path);
+        return path.substring(lastdot + 1);
+    };
 
     /** Helpful alias for old-style API **/
     fluid.path = fluid.model.composeSegments;
@@ -825,10 +879,14 @@ var fluid = fluid || fluid_2_0;
     };
 
     // unsupported, NON-API function
+    fluid.model.parseToSegments = function (EL, parseEL, copy) {
+        return typeof(EL) === "number" || typeof(EL) === "string" ? parseEL(EL) : (copy ? fluid.makeArray(EL) : EL);
+    };
+
+    // unsupported, NON-API function
     fluid.model.pathToSegments = function (EL, config) {
         var parser = config && config.parser ? config.parser.parse : fluid.model.parseEL;
-        var segs = typeof(EL) === "number" || typeof(EL) === "string" ? parser(EL) : EL;
-        return segs;
+        return fluid.model.parseToSegments(EL, parser);
     };
 
     // Overall strategy skeleton for all implementations of fluid.get/set
@@ -918,10 +976,6 @@ var fluid = fluid || fluid_2_0;
             : fluid.model.accessImpl(root, EL, fluid.NO_VALUE, env, null, false, fluid.model.traverseSimple);
     };
 
-    // This backward compatibility will be maintained for a number of releases, probably until Fluid 2.0
-    fluid.model.setBeanValue = fluid.set;
-    fluid.model.getBeanValue = fluid.get;
-
     fluid.getGlobalValue = function (path, env) {
         if (path) {
             env = env || fluid.environment;
@@ -986,6 +1040,7 @@ var fluid = fluid || fluid_2_0;
 
     fluid.registerNamespace("fluid.event");
 
+    // unsupported, NON-API function
     fluid.generateUniquePrefix = function () {
         return (Math.floor(Math.random() * 1e12)).toString(36) + "-";
     };
@@ -996,10 +1051,133 @@ var fluid = fluid || fluid_2_0;
 
     var fluid_guid = 1;
 
-    /** Allocate an string value that will be very likely unique within this Fluid scope (frame or process) **/
+    /** Allocate an string value that will be very likely unique within this Infusion instance (frame or process) **/
 
     fluid.allocateGuid = function () {
         return fluid_prefix + (fluid_guid++);
+    };
+    
+    // Fluid priority system for encoding relative positions of, e.g. listeners, transforms, options, in lists
+    
+    fluid.extremePriority = 4294967296; // 2^32 - allows headroom of 21 fractional bits for sub-priorities
+    fluid.priorityTypes = {
+        first: -1,
+        last: 1,
+        before: 0,
+        after: 0
+    };
+    // TODO: This should be properly done with defaults blocks and a much more performant fluid.indexDefaults
+    fluid.extremalPriorities = {
+        // a built-in definition to allow test infrastructure "last" listeners to sort after all impl listeners, and authoring/debugging listeners to sort after those
+        // these are "priority intensities", and will be flipped for "first" listeners
+        none: 0,
+        testing: 10,
+        authoring: 20
+    };
+    
+    // unsupported, NON-API function    
+    fluid.parsePriorityConstraint = function (constraint, fixedOnly, site) {
+        var segs = constraint.split(":");
+        var type = segs[0];
+        var lookup = fluid.priorityTypes[type];
+        if (lookup === undefined) {
+            fluid.fail("Invalid priority constraint type in constraint " + constraint + ": the only supported values are " + fluid.keys(fluid.priorityType).join(", "));
+        }
+        if (fixedOnly && lookup === 0) {
+            fluid.fail("Constraint-based priority in constraint " + constraint + " is not supported in a " + site + " record - you must use either a numeric value or first, last");
+        }
+        return {
+            type: segs[0],
+            target: segs[1]
+        };
+    };
+    
+    // unsupported, NON-API function
+    fluid.parsePriority = function (priority, count, fixedOnly, site) {
+        priority = priority || 0;
+        var togo = {
+            count: count || 0,
+            fixed: null,
+            constraint: null,
+            site: site
+        };
+        if (typeof(priority) === "number") {
+            togo.fixed = -priority;
+        } else {
+            togo.constraint = fluid.parsePriorityConstraint(priority, fixedOnly, site);
+        }
+        var multiplier = togo.constraint ? fluid.priorityTypes[togo.constraint.type] : 0;
+        if (multiplier !== 0) {
+            var target = togo.constraint.target || "none";
+            var extremal = fluid.extremalPriorities[target];
+            if (extremal === undefined) {
+                fluid.fail("Unrecognised extremal priority target " + target + ": the currently supported values are " + fluid.keys(fluid.extremalPriorities).join(", ") + ": register your value in fluid.extremalPriorities");
+            }
+            togo.fixed = multiplier * (fluid.extremePriority + extremal);
+        }
+        if (togo.fixed !== null) {
+            togo.fixed += togo.count / 1024; // use some fractional bits to encode count bias
+        }
+        
+        return togo;
+    };
+
+    // unsupported, NON-API function
+    fluid.compareByPriority = function (recA, recB) {
+        if (recA.priority.fixed !== null && recB.priority.fixed !== null) {
+            return recA.priority.fixed - recB.priority.fixed;
+        } else { // sort constraint records to the end
+            return (recA.priority.fixed === null) - (recB.priority.fixed === null);
+        }
+    };
+    
+    fluid.honourConstraint = function (array, firstConstraint, c) {
+        var constraint = array[c].priority.constraint;
+        for (var search = 0; search < firstConstraint; ++ search) {
+            if (array[search].namespace === constraint.target) {
+                break;
+            }
+        }
+        if (search === firstConstraint) {
+            return false;
+        } else {
+            var offset = constraint.type === "after" ? 1 : 0;
+            var target = search + offset;
+            var temp = array[c];
+            for (var shift = c; shift >= target; -- shift) {
+                array[shift] = array[shift - 1];
+            }
+            array[target] = temp;
+            return true;
+        }
+    };
+
+    // unsupported, NON-API function
+    // Priorities accepted from users have higher numbers representing high priority (sort first) - 
+    fluid.sortByPriority = function (array) {
+        fluid.stableSort(array, fluid.compareByPriority);
+
+        var firstConstraint = fluid.find(array, function (element, index) {
+            return element.priority.constraint && fluid.priorityTypes[element.priority.constraint.type] === 0 ? index : undefined;
+        }, array.length);
+        
+        while (true) {
+            if (firstConstraint === array.length) {
+                return array;
+            }
+            var oldFirstConstraint = firstConstraint;
+            for (var c = firstConstraint; c < array.length; ++ c) {
+                var applied = fluid.honourConstraint(array, firstConstraint, c);
+                if (applied) {
+                    ++firstConstraint;
+                }
+            }
+            if (firstConstraint === oldFirstConstraint) {
+                var holders = array.slice(firstConstraint);
+                fluid.fail("Could not find targets for any constraints in " + holders[0].priority.site + " ", holders, ": none of the targets (" + fluid.getMembers(holders, "priority.constraint.target").join(", ")
+                    + ") matched any namespaces of the elements in (", array.slice(0, firstConstraint) + ") - this is caused by either an invalid or circular reference");
+            }
+        }
     };
 
     fluid.event.identifyListener = function (listener, soft) {
@@ -1015,18 +1193,6 @@ var fluid = fluid || fluid_2_0;
         newListener.$$fluid_guid = origListener.$$fluid_guid;
     };
 
-    // unsupported, NON-API function
-    fluid.event.mapPriority = function (priority, count) {
-        // TODO: This should respect both priority and count by a bit-partitioning scheme
-        return (priority === null || priority === undefined ? count :
-           (priority === "last" ? Number.MAX_VALUE :
-              (priority === "first" ? -Number.MAX_VALUE : -priority)));
-    };
-
-    // unsupported, NON-API function
-    fluid.priorityComparator = function (recA, recB) {
-        return recA.priority - recB.priority;
-    };
 
     // unsupported, NON-API function
     fluid.event.sortListeners = function (listeners) {
@@ -1045,7 +1211,7 @@ var fluid = fluid || fluid_2_0;
                 togo = togo.concat(oneNamespace);
             }
         });
-        return togo.sort(fluid.priorityComparator);
+        return fluid.sortByPriority(togo);
     };
 
     // unsupported, non-API function
@@ -1134,7 +1300,7 @@ var fluid = fluid || fluid_2_0;
                 var record = {listener: listener, predicate: predicate,
                     namespace: namespace,
                     softNamespace: softNamespace,
-                    priority: fluid.event.mapPriority(priority, that.sortedListeners.length)};
+                    priority: fluid.parsePriority(priority, that.sortedListeners.length, false, "listeners")};
                 that.byId[id] = record;
 
                 var thisListeners = (that.listeners[namespace] = fluid.makeArray(that.listeners[namespace]));
@@ -1940,12 +2106,18 @@ var fluid = fluid || fluid_2_0;
      * @param target {Object} The object holding the value to be deleted (possibly empty)
      * @param path {String/Array of String} the path of the value to be deleted
      */
-
+    // unsupported, NON-API function
     fluid.destroyValue = function (target, path) {
         if (target) {
             fluid.model.applyChangeRequest(target, {type: "DELETE", path: path});
         }
     };
+    
+    // suitable for sending to Array.sort - sorts higher priority values to the end (the default polarity, in fact)
+    fluid.priorityComparator = function (recA, recB) {
+        return recA.priority - recB.priority;
+    };
+    
     /**
      * Merges the component's declared defaults, as obtained from fluid.defaults(),
      * with the user's specified overrides.
@@ -2080,10 +2252,34 @@ var fluid = fluid || fluid_2_0;
         postInitFunction: true,
         finalInitFunction: true
     };
+    
+    fluid.noNamespaceDistributionPrefix = "no-namespace-distribution-";
+    
+    fluid.mergeOneDistribution = function (target, source, key) {
+        var namespace = source.namespace || key || fluid.noNamespaceDistributionPrefix + fluid.allocateGuid();
+        source.namespace = namespace;
+        target[namespace] = source;
+    };
+    
+    fluid.distributeOptionsPolicy = function (target, source) {
+        target = target || {};
+        if (fluid.isArrayable(source)) {
+            for (var i = 0; i < source.length; ++ i) {
+                fluid.mergeOneDistribution(target, source[i]);
+            }
+        } else if (typeof(source.target) === "string") {
+            fluid.mergeOneDistribution(target, source);
+        } else {
+            fluid.each(source, function (oneSource, key) {
+                fluid.mergeOneDistribution(target, oneSource, key);
+            });
+        }
+        return target;
+    };
 
     fluid.rootMergePolicy = $.extend({
         gradeNames: fluid.arrayConcatPolicy,
-        distributeOptions: fluid.arrayConcatPolicy,
+        distributeOptions: fluid.distributeOptionsPolicy,
         transformOptions: "replace"
     }, fluid.transform(fluid.lifecycleFunctions, function () {
         return fluid.mergeListenerPolicy;

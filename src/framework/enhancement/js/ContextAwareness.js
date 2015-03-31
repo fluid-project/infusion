@@ -1,0 +1,224 @@
+/*
+Copyright 2008-2009 University of Toronto
+Copyright 2010-2011 OCAD University
+Copyright 2015 Lucendo Development Ltd.
+
+Licensed under the Educational Community License (ECL), Version 2.0 or the New
+BSD license. You may not use this file except in compliance with one these
+Licenses.
+
+You may obtain a copy of the ECL 2.0 License and BSD License at
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+*/
+
+var fluid_2_0 = fluid_2_0 || {};
+
+(function ($, fluid) {
+    "use strict";
+
+    fluid.registerNamespace("fluid.contextAware");
+    
+    /** Two functions for managing singleton components **/
+    
+    // Maps a type name to the member name to be used for it at a particular path level where it is intended to be unique
+    // Note that "." is still not supported as a member name
+    // unsupported, NON-API function
+    fluid.typeNameToMemberName = function (contextName) {
+        return contextName.replace(/\./g, "_");
+    };
+    
+    /** Construct an instance of a component as a child of the specified parent, with a well-known, unique name derived from its typeName
+    * @param parentPath {String|Array of String} Parent of path where the new component is to be constructed, represented as a string or array of segments
+    * @param options {String|Object} Options encoding the component to be constructed. If this is of type String, it is assumed to represent the component's typeName with no options
+    * @param instantiator {Instantiator} [optional] The instantiator holding the component to be created - if blank, the global instantiator will be used
+    */
+    fluid.constructSingle = function (parentPath, options, instantiator) {
+        instantiator = instantiator || fluid.globalInstantiator;
+        parentPath = parentPath || "";
+        var segs = fluid.model.parseToSegments(parentPath, instantiator.parseEL, true);
+        if (typeof(options) === "string") {
+            options = {type: options};
+        }
+        var type = options.type;
+        if (!type) {
+            fluid.fail("Cannot construct singleton object without a type entry");
+        }
+        options = $.extend({}, options);
+        var gradeNames = options.gradeNames = fluid.makeArray(options.gradeNames);
+        gradeNames.unshift(type);
+        options.type = "fluid.littleComponent"; // principal type may be noninstantiable
+        var root = segs.length === 0;
+        if (root) {
+            gradeNames.push("fluid.resolveRoot");
+        }
+        segs.push(fluid.typeNameToMemberName(type));
+        fluid.construct(segs, options, instantiator);
+    };
+    
+    
+    
+    fluid.defaults("fluid.contextAware.marker", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    
+    // unsupported, NON-API function
+    fluid.contextAware.makeCheckMarkers = function (checks, path, instantiator) {
+        fluid.each(checks, function (value, markerTypeName) {
+            fluid.constructSingle(path, {
+                type: markerTypeName,
+                gradeNames: "fluid.contextAware.marker",
+                value: value
+            }, instantiator);
+        });
+        
+    };
+    /** Peforms the computation for `fluid.contextAware.makeChecks` and returns a hash suitable for being sent to `fluid.contextAware.makeCheckMarkers` - 
+     *
+     * @return A hash of horizon names to grade names - this can be sent to fluid.contextAware.makeCheckMarkers
+     */
+    // unsupported, NON-API function
+    fluid.contextAware.performChecks = function (checkHash) {
+        return fluid.transform(checkHash, function (checkRecord) {
+            if (fluid.isPrimitive(checkRecord)) {
+                return checkRecord;
+            } else if ("value" in checkRecord) {
+                return checkRecord.value;
+            } else if ("func" in checkRecord) {
+                return checkRecord.func();
+            } else if ("funcName" in checkRecord) {
+                return fluid.invokeGlobalFunction(checkRecord.funcName);
+            } else {
+                fluid.fail("Error in contextAwareness check record ", checkRecord, " - must contain an entry with name value, func, or funcName");
+            }
+        });
+    };
+
+    /**
+     * Takes an hash of check context names to check records, designating a collection of context markers which might be registered at a location
+     * in the component tree.
+      
+     * @param checkHash {Object} Hash of check names to check records. The keys in this structure are the context names to be supplied if the check passes.
+     * A check record contains: 
+     *    ONE OF:
+     *    value {Any} [optional] A literal value name to be attached to the context
+     *    func {Function} [optional] A zero-arg function to be called to compute the value
+     *    funcName {String} [optional] The name of a zero-arg global function which will compute the value
+     * If the check record consists of a primitive value, it is assumed to be the value given to "value". 
+     * @param path {String|Array} [optional] The path in the component tree at which the check markers are to be registered. If omitted, "" is assumed
+     * @param instantiator {Instantiator} [optional] The instantiator holding the component tree which will receive the markers. If omitted, use `fluid.globalInstantiator`.
+     */
+    fluid.contextAware.makeChecks = function (checkHash, path, instantiator) {
+        var checkOptions = fluid.contextAware.performChecks(checkHash);
+        fluid.contextAware.makeCheckMarkers(checkOptions, path, instantiator);
+    };
+    
+    /**
+     * Forgets a check made at a particular level of the component tree.
+     * @param markerNames {Array of String} The marker typeNames whose check values are to be forgotten
+     * @param path {String|Array} [optional] The path in the component tree at which the check markers are to be removed. If omitted, "" is assumed
+     * @param instantiator {Instantiator} [optional] The instantiator holding the component tree the markers are to be removed from. If omitted, use `fluid.globalInstantiator`.
+     */
+    fluid.contextAware.forgetChecks = function (markerNames, path, instantiator) {
+        instantiator = instantiator || fluid.globalInstantiator;
+        path = path || [];
+        var markerArray = fluid.makeArray(markerNames);
+        fluid.each(markerArray, function (markerName) {
+            var memberName = fluid.typeNameToMemberName(markerName);
+            var segs = fluid.model.parseToSegments(path, instantiator.parseEL, true);
+            segs.push(memberName);
+            fluid.destroy(segs, instantiator);
+        });
+    };
+
+    /** A grade to be given to a component which requires context-aware adaptation.
+     * This grade consumes configuration held in the block named "contextAwareness", organised as a hash of names to records holding 
+     * sequences of "checks" to be made in the component tree above the component. The value searched by
+     * each check is encoded as the element named `contextValue` - this either represents an IoC reference to a component
+     * or a particular value held at the component. If this reference has no path component, the path ".options.value" will be assumed.
+     * These checks seek contexts which
+     * have been previously registered using fluid.contextAware.makeChecks. The first context which matches
+     * with a value of `true` terminates the search, and returns by applying the grade names held in `gradeNames` to the current component.
+     * If no check matches, the grades held in `defaultGradeNames` will be applied.
+     */
+    fluid.defaults("fluid.contextAware", {
+        gradeNames: ["{that}.check"],
+        mergePolicy: {
+            contextAwareness: "noexpand"
+        },
+        contextAwareness: {
+            // Hash of names (check namespaces) to records: {
+            //     checks: {}, // Hash of check namespace to: {
+            //         contextValue: IoCExpression testing value in environment, 
+            //         gradeNames: gradeNames which will be output, 
+            //         priority: String/Number for priority of check [optional]
+            //         equals: Value to be compared to contextValue [optional - default is `true`]
+            //     defaultGradeNames: // String or Array of String holding default gradeNames which will be output if no check matches [optional]
+            //     priority: // Number or String encoding priority relative to other records (same format as with event listeners) [optional]
+            // }
+        },
+        invokers: {
+            check: {
+                funcName: "fluid.contextAware.check",
+                args: ["{that}", "{that}.options.contextAwareness"]
+            }
+        }
+    });
+    
+    fluid.contextAware.getCheckValue = function (that, reference) {
+        // cf. core of distributeOptions!
+        var targetRef = fluid.parseContextReference(reference);
+        var targetComponent = fluid.resolveContext(targetRef.context, that);
+        var path = targetRef.path || ["options", "value"];
+        var value = fluid.getForComponent(targetComponent, path);
+        return value;
+    };
+
+    // unsupported, NON-API function    
+    fluid.contextAware.checkOne = function (that, contextAwareRecord) {
+        var checkList = fluid.hashToArray(contextAwareRecord.checks, "namespace", function (newElement, oldElement, index) {
+            $.extend(newElement, oldElement);
+            newElement.priority = fluid.parsePriority(oldElement.priority, index);
+        });
+        fluid.sortByPriority(checkList);
+        return fluid.find(checkList, function (check) {
+             if (!check.contextValue) {
+                 fluid.fail("Cannot perform check for contextAwareness record ", check, " without a valid field named \"contextValue\"");
+             }
+             var value = fluid.contextAware.getCheckValue(that, check.contextValue);
+             if (check.equals === undefined ? value : value === check.equals) {
+                 return check.gradeNames;
+             }
+        }, contextAwareRecord.defaultGradeNames);
+    };
+    
+    // unsupported, NON-API function
+    fluid.contextAware.check = function (that, contextAwarenessOptions) {
+        var gradeNames = [];
+        var contextAwareList = fluid.hashToArray(contextAwarenessOptions, "namespace", function (newElement, oldElement, index) {
+            $.extend(newElement, oldElement);
+            newElement.priority = fluid.parsePriority(oldElement.priority, index, false, "context awareness records"); 
+        });
+        fluid.sortByPriority(contextAwareList);
+        fluid.each(contextAwareList, function (record) {
+            var matched = fluid.contextAware.checkOne(that, record);
+            gradeNames = gradeNames.concat(fluid.makeArray(matched));
+        });
+        return gradeNames;
+    };
+
+
+    // Context awareness for the browser environment
+    
+    fluid.contextAware.isBrowser = function () {
+        return typeof(window) !== "undefined" && window.document;
+    };
+    
+    fluid.contextAware.makeChecks({
+        "fluid.browser": {
+            funcName: "fluid.contextAware.isBrowser"
+        }
+    });
+
+})(jQuery, fluid_2_0);
+

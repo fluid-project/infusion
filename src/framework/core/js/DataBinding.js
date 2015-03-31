@@ -111,21 +111,22 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     };
 
-    // Implementation notes: The EL path manipulation utilities here are somewhat more thorough
-    // and expensive versions of those provided in Fluid.js - there is some duplication of
-    // functionality. This is a tradeoff between stability and performance - the versions in
-    // Fluid.js are the most frequently used and do not implement escaping of characters .
-    // as \. and \ as \\ as the versions here. The implementations here are not
-    // performant and are left here partially as an implementation note. Problems will
-    // arise if clients manipulate JSON structures containing "." characters in keys as if they
-    // are models. The basic utilities fluid.path(), fluid.parseEL and fluid.composePath are
-    // the ones recommended for general users and the following implementations will
-    // be upgraded to use regexes in future to make them better alternatives
+    // Implementation notes: The EL path manipulation utilities here are equivalents of the simpler ones
+    // that are provided in Fluid.js and elsewhere - they apply escaping rules to parse characters .
+    // as \. and \ as \\ - allowing us to process member names containing periods. These versions are mostly 
+    // in use within model machinery, whereas the cheaper versions based on String.split(".") are mostly used
+    // within the IoC machinery.
+    // Performance testing in early 2015 suggests that modern browsers now allow these to execute slightly fater
+    // than the equivalent machinery written using complex regexps - therefore they will continue to be maintained
+    // here. However, there is still a significant performance gap with respect to the performance of String.split(".")
+    // especially on Chrome, so we will continue to insist that component member names do not contain a "." character
+    // for the time being.
+    // See http://jsperf.com/parsing-escaped-el for some experiments
 
     fluid.registerNamespace("fluid.pathUtil");
 
     var getPathSegmentImpl = function (accept, path, i) {
-        var segment = null; // TODO: rewrite this with regexes and replaces
+        var segment = null;
         if (accept) {
             segment = "";
         }
@@ -157,7 +158,7 @@ var fluid_2_0 = fluid_2_0 || {};
         return i;
     };
 
-    var globalAccept = []; // TODO: serious reentrancy risk here, why is this impl like this?
+    var globalAccept = []; // TODO: reentrancy risk here. This holder is here to allow parseEL to make two returns without an allocation.
 
     /** A version of fluid.model.parseEL that apples escaping rules - this allows path segments
      * to contain period characters . - characters "\" and "}" will also be escaped. WARNING -
@@ -674,7 +675,7 @@ var fluid_2_0 = fluid_2_0 || {};
     // Conclude the transaction by firing to all external listeners in priority order
     fluid.model.notifyExternal = function (transRec) {
         var allChanges = transRec ? fluid.values(transRec.externalChanges) : [];
-        allChanges.sort(fluid.priorityComparator);
+        fluid.sortByPriority(allChanges);
         for (var i = 0; i < allChanges.length; ++ i) {
             var change = allChanges[i];
             var targetApplier = change.args[5]; // NOTE: This argument gets here via fluid.model.storeExternalChange from fluid.notifyModelChanges
@@ -954,11 +955,6 @@ var fluid_2_0 = fluid_2_0 || {};
 
     /** NEW CHANGEAPPLIER IMPLEMENTATION (Will be default in Infusion 2.0 onwards **/
 
-    fluid.typeCode = function (totest) {
-        return fluid.isPrimitive(totest) || !fluid.isPlainObject(totest) ? "primitive" :
-            fluid.isArrayable(totest) ? "array" : "object";
-    };
-
     fluid.model.isChangedPath = function (changeMap, segs) {
         for (var i = 0; i <= segs.length; ++ i) {
             if (typeof(changeMap) === "string") {
@@ -1197,7 +1193,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.notifyModelChanges = function (listeners, changeMap, newHolder, oldHolder, changeRequest, transaction, applier, that) {
-        var instantiator = fluid.getInstantiator(that);
+        var instantiator = fluid.getInstantiator(that) || fluid.globalInstantiator; // "that" may be a non-component "holder", at least in test cases
         var transRec = transaction && fluid.getModelTransactionRec(instantiator, transaction.id);
         for (var i = 0; i < listeners.length; ++ i) {
             var spec = listeners[i];
@@ -1295,7 +1291,7 @@ var fluid_2_0 = fluid_2_0 || {};
             var collection = that.changeListeners[spec.transactional ? "transListeners" : "listeners"];
             spec.excludeSource = fluid.arrayToHash(fluid.makeArray(spec.excludeSource || (spec.includeSource ? "*" : undefined)));
             spec.includeSource = fluid.arrayToHash(fluid.makeArray(spec.includeSource));
-            spec.priority = fluid.event.mapPriority(spec.priority, collection.length);
+            spec.priority = fluid.parsePriority(spec.priority, collection.length, true, "model listener");
             collection.push(spec);
         };
         that.modelChanged.removeListener = function (listener) {
@@ -1384,24 +1380,7 @@ var fluid_2_0 = fluid_2_0 || {};
         return firstdot === path.length ? "" : path.substring(firstdot + 1);
     };
 
-    function lastDotIndex(path) {
-        // TODO: proper escaping rules
-        return path.lastIndexOf(".");
-    }
 
-    /** Returns all of an EL path minus its final segment - if the path consists of just one segment, returns "" -
-     * WARNING - this method does not follow escaping rules */
-    fluid.pathUtil.getToTailPath = function (path) {
-        var lastdot = lastDotIndex(path);
-        return lastdot === -1 ? "" : path.substring(0, lastdot);
-    };
-
-    /** Returns the very last path component of an EL path
-     * WARNING - this method does not follow escaping rules */
-    fluid.pathUtil.getTailPath = function (path) {
-        var lastdot = lastDotIndex(path);
-        return fluid.pathUtil.getPathSegment(path, lastdot + 1);
-    };
 
     /** Helpful utility for use in resolvers - matches a path which has already been
       * parsed into segments **/

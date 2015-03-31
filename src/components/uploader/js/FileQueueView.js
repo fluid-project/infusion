@@ -356,7 +356,8 @@ var fluid_2_0 = fluid_2_0 || {};
         },
         components: {
             scroller: {
-                type: "fluid.scrollableTable"
+                type: "fluid.scrollableTable",
+                container: "{fileQueueView}.container"
             },
             eventBinder: {
                 type: "fluid.uploader.fileQueueView.eventBinder"
@@ -416,22 +417,28 @@ var fluid_2_0 = fluid_2_0 || {};
             onFileRemoved: null
         },
         listeners: {
-            onCreate: [ { // TODO: Create a better syntax than anonymous onCreate listeners
-                listener: "fluid.uploader.fileQueueView.prepareTemplateElements",
-                args: "{that}"
-            }, {
-                listener: "fluid.uploader.fileQueueView.addKeyboardNavigation",
-                args: "{that}"
-            }
-            ]
+            "onCreate.prepareTemplateElement": "fluid.uploader.fileQueueView.prepareTemplateElements",
+            "onCreate.addKeyboardNavigation":   "fluid.uploader.fileQueueView.addKeyboardNavigation",
         }
     });
-
+    
     /**
-     * EventBinder declaratively binds FileQueueView's methods as listeners to Uploader events using IoC.
+     * An interactional mixin for binding a fileQueueView to an Uploader
      */
-    fluid.defaults("fluid.uploader.fileQueueView.eventBinder", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"]
+    fluid.defaults("fluid.uploader.fileQueueView.bindUploader", {
+        events: {
+            onFileRemoved: "{uploader}.events.onFileRemoved"
+        },
+        listeners: {
+            "{uploader}.events.afterFileQueued": "{fileQueueView}.addFile",
+            "{uploader}.events.onUploadStart": "{fileQueueView}.prepareForUpload",
+            "{uploader}.events.onFileStart": "{fileQueueView}.showFileProgress",
+            "{uploader}.events.onFileProgress": "{fileQueueView}.updateFileProgress",
+            "{uploader}.events.onFileSuccess": "{fileQueueView}.markFileComplete",
+            "{uploader}.events.onFileError": "{fileQueueView}.showErrorForFile",
+            "{uploader}.events.afterFileComplete": "{fileQueueView}.hideFileProgress",
+            "{uploader}.events.afterUploadComplete": "{fileQueueView}.refreshAfterUpload"
+        }
     });
 
     /**************
@@ -525,8 +532,5 @@ var fluid_2_0 = fluid_2_0 || {};
         wrapperMarkup: "<div class='fl-scrollable-scroller'><div class='fl-scrollable-inner'></div></div>"
     });
 
-    fluid.demands("fluid.scrollableTable", "fluid.uploader.fileQueueView", {
-        container: "{fileQueueView}.container"
-    });
 
 })(jQuery, fluid_2_0);

@@ -535,6 +535,101 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         firer.fire(); // listener 1 is now top of stack
         jqUnit.assertDeepEq("Listener removed by namespace reveals earlier", [2, 1], record);
     });
+    
+    fluid.tests.constraintTests = [{
+        name: "one before",
+        listeners: {
+            "a": "",
+            "b": "before:a"  
+        },
+        expected: "ba"
+    }, {
+        name: "one after, two last, one standard",
+        listeners: {
+            "a": "after:b",
+            "d": "",
+            "b": "last:testing",
+            "c": "last"
+        },
+        expected: "dcba"
+    }, {
+        name: "one before, one after, two first",
+        listeners: {
+            "a": "before:d",
+            "b": "first",
+            "c": "first:authoring",
+            "d": "after:b"
+        },
+        expected: "cbad"
+    }, {
+        name: "two fixed, three after",
+        listeners: {
+          "a": "after:b",
+          "b": 10,
+          "c": 20,
+          "d": "after:e",
+          "e": "after:c"
+        },
+        expected: "cedba"
+    }];
+    
+    fluid.tests.upgradeListeners = function (listeners) {
+        return fluid.hashToArray(listeners, "namespace", function (newElement, oldElement, key) {
+            newElement.priority = fluid.parsePriority(oldElement, false, "listeners");
+        });
+    };
+    
+    jqUnit.test("FLUID-5506 constraint-based listeners", function () {
+        fluid.each(fluid.tests.constraintTests, function (fixture) {
+            var listeners = fluid.tests.upgradeListeners(fixture.listeners);
+            fluid.sortByPriority(listeners);
+            var flattened = fluid.transform(listeners, function (listener) {
+                return listener.namespace;
+            }).join("");
+            jqUnit.assertEquals("Expected sort order for test " + fixture.name, fixture.expected, flattened);
+        });
+    });
+    
+    fluid.tests.failedConstraintTests = [{
+        name: "nonexistent reference",
+        listeners: {
+            "a": "before:b"
+        }
+    }, {
+        name: "self-reference",
+        listeners: {
+            "a": "before:a"
+        }
+    }, {
+        name: "cyclic reference (2)",
+        listeners: {
+            "a": "before:b",
+            "b": "before:a"
+        }
+    }, {
+        name: "cyclic reference (3)",
+        listeners: {
+            "a": "before:b",
+            "b": "before:c",
+            "c": "before:a"
+        }
+    }, {
+        name: "cyclic reference (2) + fixed",
+        listeners: {
+            "a": 10,
+            "b": "before:c",
+            "c": "before:b"
+        }
+    }];
+    
+    jqUnit.test("FLUID-5506: constraint-based listeners - failure cases", function () {
+        fluid.each(fluid.tests.failedConstraintTests, function (fixture) {
+            jqUnit.expectFrameworkDiagnostic("Expected failure for test " + fixture.name, function () {
+                var listeners = fluid.tests.upgradeListeners(fixture.listeners);
+                fluid.sortByPriority(listeners);
+            });
+        });
+    });
 
     fluid.defaults("fluid.tests.eventMerge", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],

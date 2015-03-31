@@ -14,13 +14,11 @@ var fluid_2_0 = fluid_2_0 || {};
 (function ($, fluid) {
     "use strict";
 
-    fluid.uploader = fluid.uploader || {};
-
     fluid.defaults("fluid.uploader.errorPanel", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
-        preInitFunction: "fluid.uploader.errorPanel.preInit",
-        postInitFunction: "fluid.uploader.errorPanel.renderSectionTemplates",
-        finalInitFunction: "fluid.uploader.errorPanel.finalInit",
+        gradeNames: ["fluid.viewComponent", "fluid.contextAware", "autoInit"],
+        invokers: {
+            refreshView: "fluid.uploader.errorPanel.refreshView({that})"
+        },
 
         components: {
             // TODO: This won't scale nicely with more types of errors.
@@ -63,46 +61,63 @@ var fluid_2_0 = fluid_2_0 || {};
             exceedsNumFilesLimit: "Too many files were selected. %numFiles were not added to the queue.",
             exceedsFileSize: "%numFiles files were too large and were not added to the queue."
         },
+        listeners: {
+            "onCreate.renderSectionTemplates": {
+                funcName: "fluid.uploader.errorPanel.renderSectionTemplates",
+                args: "{that}",
+                priority: "before:domComplete"
+            },
+            "onCreate.domComplete": {
+                funcName: "fluid.uploader.errorPanel.domComplete",
+                args: "{that}"
+            }
+        },
 
         styles: {
             hiddenTemplate: "fl-hidden-templates"
         }
     });
 
-    fluid.uploader.errorPanel.preInit = function (that) {
-        that.refreshView = function () {
-            for (var i = 0; i < that.sections.length; i++) {
-                if (that.sections[i].model.files.length > 0) {
-                    // One of the sections has errors. Show them and bail immediately.
-                    that.container.show();
-                    return;
-                }
+    fluid.uploader.errorPanel.refreshView = function (that) {
+        for (var i = 0; i < that.sections.length; i++) {
+            if (that.sections[i].model.files.length > 0) {
+                // One of the sections has errors. Show them and bail immediately.
+                that.container.show();
+                return;
             }
-            that.container.hide();
-        };
+        }
+        that.container.hide();
     };
 
     fluid.uploader.errorPanel.renderSectionTemplates = function (that) {
         var sectionTmpl = that.locate("sectionTemplate").remove().removeClass(that.options.styles.hiddenTemplate);
         that.locate("fileSizeErrorSection").append(sectionTmpl.clone());
         that.locate("numFilesErrorSection").append(sectionTmpl.clone());
+        that.sections = [that.fileSizeErrorSection, that.numFilesErrorSection];
     };
 
-    fluid.uploader.errorPanel.finalInit = function (that) {
-        that.sections = [that.fileSizeErrorSection, that.numFilesErrorSection];
+    fluid.uploader.errorPanel.domComplete = function (that) {
         that.locate("header").text(that.options.strings.headerText);
         that.container.hide();
     };
-
-    fluid.demands("fluid.uploader.errorPanel", "fluid.uploader.multiFileUploader", {
-        container: "{multiFileUploader}.dom.errorsPanel",
-        options: {
-            listeners: {
-                "{multiFileUploader}.events.afterFileDialog": "{errorPanel}.refreshView"
+      
+    // An "interactional mixin" - a courtesy to dream of a possibility that an "errorPanel" could conceivably be deployed separately
+    // from an "uploader"  
+    fluid.defaults("fluid.uploader.errorPanel.bindUploader", {
+        listeners: {
+            "{uploader}.events.afterFileDialog": "{errorPanel}.refreshView"
+        },
+        distributeOptions: {
+            target: "{that fluid.uploader.errorPanel.section}.options.listeners",
+            record: {
+                "{uploader}.events.onQueueError": "{section}.addFile",
+                "{uploader}.events.onFilesSelected": "{section}.clear",
+                "{uploader}.events.onUploadStart": "{section}.clear",
+                "{section}.events.afterErrorsCleared": "{errorPanel}.refreshView"
             }
         }
     });
-
+    
     fluid.defaults("fluid.uploader.errorPanel.section", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         preInitFunction: "fluid.uploader.errorPanel.section.preInit",
@@ -201,17 +216,5 @@ var fluid_2_0 = fluid_2_0 || {};
         that.locate("erroredFiles").text(filesList);
     };
 
-    fluid.demands("fluid.uploader.errorPanel.section", [
-        "fluid.uploader.errorPanel",
-        "fluid.uploader.multiFileUploader"
-    ], {
-        options: {
-            listeners: {
-                "{multiFileUploader}.events.onQueueError": "{section}.addFile",
-                "{multiFileUploader}.events.onFilesSelected": "{section}.clear",
-                "{multiFileUploader}.events.onUploadStart": "{section}.clear",
-                "{section}.events.afterErrorsCleared": "{errorPanel}.refreshView"
-            }
-        }
-    });
+
 })(jQuery, fluid_2_0);

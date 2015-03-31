@@ -91,8 +91,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "fluid.tests.multiResSub2":       "fluid.littleComponent",
         "fluid.tests.multiResSub3":       "fluid.littleComponent",
         "fluid.tests.fluid3818child":     "fluid.littleComponent",
-        "fluid.tests.thatStackTail":      "fluid.littleComponent",
-        "fluid.tests.reinsChild":         "fluid.littleComponent" // standard blank "littleComponent" used throughout tests
+        "fluid.tests.thatStackTail":      "fluid.littleComponent"
     });
 
     fluid.defaults("fluid.tests.invokerComponent", {
@@ -770,15 +769,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     fluid.setDemandLogging(true);
     
-    fluid.enhance.check({"fluid.test": true});
+    fluid.contextAware.makeChecks({"fluid.test": true});
     
-
+    fluid.makeComponents ({
+        "fluid.tests.uploader.html5": "fluid.littleComponent",
+        "fluid.tests.uploaderImpl": "fluid.littleComponent"
+    });
+    
+    // Simplified example derived from parts of the old uploader initialisation strategy
+    // which we still support.
     fluid.defaults("fluid.tests.uploader", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
             uploaderContext: {
-                type: "fluid.progressiveCheckerForComponent",
-                options: {componentName: "fluid.tests.uploader"}
+                type: "fluid.tests.uploader.html5"
             },
             uploaderImpl: {
                 type: "fluid.tests.uploaderImpl"
@@ -788,20 +792,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             source: "{that}.options",
             exclusions: ["components.uploaderContext", "components.uploaderImpl"],
             target: "{that > uploaderImpl}.options"
-        },
-        progressiveCheckerOptions: {
-            checks: [
-                {
-                    feature: "{fluid.test}",
-                    contextName: "fluid.uploader.html5"
-                }
-            ]
         }
     });
 
-    fluid.demands("fluid.tests.uploaderImpl", "fluid.uploader.html5", {
-        funcName: "fluid.tests.uploader.multiFileUploader"
-    });
 
     fluid.defaults("fluid.tests.uploader.multiFileUploader", {
         gradeNames: ["fluid.littleComponent", "autoInit"]
@@ -1715,10 +1708,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         headValue: "headValue",
         components: {
             headChild: {
-                type: "fluid.tests.reinsChild"
+                type: "fluid.littleComponent"
             },
             child1: {
-                type: "fluid.tests.reinsChild",
+                type: "fluid.littleComponent",
                 options: {
                     components: {
                         instantiator: "{instantiator}",
@@ -1766,6 +1759,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "{reinstantiation}.options.headValue"
     ]);
 
+    // TODO: This will now be immediately deprecated
     fluid.tests.reinsChild2 = function (options, otherValue) {
         var that = fluid.initLittleComponent("fluid.tests.reinsChild2", options);
         fluid.initDependents(that);
@@ -2466,18 +2460,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
             refChild3: { // put at top level so that "blank instantiator guess" is definitively wrong
-                type: "fluid.tests.reinsChild",
+                type: "fluid.littleComponent",
                 options: {
                     refOption: 3
                 }
             },
             instantiator: "{instantiator}",
             refChild: {
-                type: "fluid.tests.reinsChild",
+                type: "fluid.littleComponent",
                 options: {
                     components: {
                         refChild2: { // this component gets cleared and gingerly reinstantiated
-                            type: "fluid.tests.reinsChild",
+                            type: "fluid.littleComponent",
                             options: {
                                 components: {
                                     // resolution of this parent will fail if invoker loses context (broken "that stack")
@@ -3983,4 +3977,64 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Subcomponent with joint grades should not have been decorated after destruction of distributor", [false, false, false], hasGrade2);
     });
     
+    fluid.defaults("fluid.tests.fluid5587root", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        distributeOptions: {
+            distributionName: {
+                record: "rootDistribution",
+                target: "{that subComponent}.options.distributed"
+            }
+        },
+        components: {
+            subComponent: {
+                type: "fluid.littleComponent"
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.fluid5587grade", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        distributeOptions: {
+            namespace: "distributionName", // alternative style for registering namespace
+            record: "gradeDistribution",
+            target: "{that subComponent}.options.distributed"
+        }
+    });
+    
+    jqUnit.test("FLUID-5587 - namespaces for options distributions", function () {
+        var that = fluid.tests.fluid5587root({
+            gradeNames: "fluid.tests.fluid5587grade"
+        });
+        jqUnit.assertEquals("Options distribution should have been overwritten by namespaced grade definition", "gradeDistribution", that.subComponent.options.distributed);
+    });
+    
+    /** Test nexus methods and global instantiator machinery **/
+    
+    fluid.defaults("fluid.tests.nexusComponent", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    jqUnit.test("Test nexus methods fluid.construct and fluid.destroy", function () {
+        fluid.construct("fluid_tests_nexusRoot", {
+            type: "fluid.tests.nexusComponent",
+            value: 53
+        });
+
+        jqUnit.assertEquals("Constructed nexus component with options", 53, fluid.rootComponent.fluid_tests_nexusRoot.options.value);
+        fluid.construct("fluid_tests_nexusRoot.child", {
+            type: "fluid.tests.nexusComponent",
+            value: 64
+        });
+        fluid.construct("fluid_tests_nexusRoot.child", {
+            type: "fluid.tests.nexusComponent",
+            value: 75
+        });
+        var globalChild = fluid.rootComponent.fluid_tests_nexusRoot.child;
+        jqUnit.assertEquals("Constructed nexus component child with options", 75, globalChild.options.value);
+        var child = fluid.globalInstantiator.pathToComponent["fluid_tests_nexusRoot.child"];
+        jqUnit.assertEquals("Constructed a valid global instantiator component at child path", child, globalChild);
+        fluid.destroy(["fluid_tests_nexusRoot", "child"]);
+        jqUnit.assertNoValue("Destroyed nexus component via array path", fluid.rootComponent.fluid_tests_nexusRoot.child);
+        fluid.destroy("fluid_tests_nexusRoot");
+    });
 })(jQuery);

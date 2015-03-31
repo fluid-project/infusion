@@ -313,16 +313,6 @@ var fluid_2_0 = fluid_2_0 || {};
         fluid.uploader.updateStateAfterCompletion(that);
     };
 
-    fluid.uploaderImpl = function () {
-        fluid.fail("Error creating uploader component - please make sure that a " +
-            "progressiveCheckerForComponent for \"fluid.uploader\" is registered either in the " +
-            "static environment or else is visible in the current component tree");
-    };
-
-    fluid.enhance.check({
-        "fluid.browser.supportsBinaryXHR": "fluid.enhance.supportsBinaryXHR",
-        "fluid.browser.supportsFormData": "fluid.enhance.supportsFormData"
-    });
 
     /**
      * Instantiates a new Uploader component.
@@ -332,39 +322,33 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.uploader", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
-        components: {
-            uploaderContext: {
-                type: "fluid.progressiveCheckerForComponent",
-                options: {componentName: "fluid.uploader"}
+        gradeNames: ["fluid.viewComponent", "fluid.contextAware", "autoInit"],
+        contextAwareness: {
+            technology: {
+                defaultGradeNames: "fluid.uploader.singleFile"
             },
-            uploaderImpl: {
-                type: "fluid.uploaderImpl",
-                container: "{uploader}.container"
+            liveness: {
+                priority: "before:technology",
+                checks: {
+                    localDemoOption: {
+                        contextValue: "{uploader}.options.demo",
+                        gradeNames: "fluid.uploader.demo"
+                    }
+                },
+                defaultGradeNames: "fluid.uploader.live"
             }
-        },
-        returnedPath: "uploaderImpl", // compatibility courtesy for manual construction
-        distributeOptions: {
-            // Allow the uploader implementation component to impersonate the exterior exposed "fluid.uploader" by broadcasting all options to it
-            source: "{that}.options",
-            removeSource: true,
-            exclusions: ["components.uploaderContext", "components.uploaderImpl"],
-            target: "{that > uploaderImpl}.options"
-        },
-        progressiveCheckerOptions: {
-            checks: [
-                {
-                    feature: "{fluid.browser.supportsBinaryXHR}",
-                    contextName: "fluid.uploader.html5"
-                }
-            ],
-            defaultContextName: "fluid.uploader.singleFile"
         }
     });
-
-    fluid.uploader.demoTypeTag = function (demo) {
-        return demo ? "fluid.uploader.demo" : "fluid.uploader.live";
-    };
+    
+    fluid.defaults("fluid.uploader.builtinStrategyDistributor", {
+        record: {
+            contextValue: "{fluid.browser.supportsBinaryXHR}",
+            gradeNames: "fluid.uploader.html5"
+        },
+        target: "{/ fluid.uploader}.options.contextAwareness.uploaderStrategy.checks.supportsBinaryXHR"
+    });
+    
+    fluid.constructSingle([], "fluid.uploader.builtinStrategyDistributor");
 
     // Implementation of standard public invoker methods
 
@@ -413,15 +397,12 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     /**
-     * Multiple file Uploader implementation. Use fluid.uploader() for IoC-resolved, progressively
-     * enhanceable Uploader, or call this directly if you don't want support for old-style single uploads
-     *
-     * @param {jQueryable} container the component's container
-     * @param {Object} options configuration options
+     * Multiple file Uploader implementation. Encapsulates logic which is common across all configurations supporing multiple
+     * file uploads - HTML5 (and historically Flash)
      */
+     
     fluid.defaults("fluid.uploader.multiFileUploader", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
-        nickName: "uploader",
         members: {
             totalFileStatusTextId: {
                 expander: {
@@ -466,17 +447,6 @@ var fluid_2_0 = fluid_2_0 || {};
         },
 
         components: {
-            demoTag: {
-                type: "fluid.typeFount",
-                options: {
-                    gradeNames: {
-                        expander: {
-                            funcName: "fluid.uploader.demoTypeTag",
-                            args: "{uploader}.options.demo"
-                        }
-                    }
-                }
-            },
             queue: {
                 type: "fluid.uploader.fileQueue"
             },
@@ -484,11 +454,16 @@ var fluid_2_0 = fluid_2_0 || {};
                 type: "fluid.uploader.strategy"
             },
             errorPanel: {
-                type: "fluid.uploader.errorPanel"
+                type: "fluid.uploader.errorPanel",
+                container: "{uploader}.dom.errorsPanel",
+                options: {
+                    gradeNames: "fluid.uploader.errorPanel.bindUploader"
+                }
             },
             fileQueueView: {
                 type: "fluid.uploader.fileQueueView",
                 options: {
+                    gradeNames: "fluid.uploader.fileQueueView.bindUploader",
                     model: "{uploader}.queue.files",
                     uploaderContainer: "{uploader}.container",
                     strings: {
@@ -743,39 +718,8 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-
-    /** Demands blocks for binding to fileQueueView **/
-
-    fluid.demands("fluid.uploader.fileQueueView", "fluid.uploader.multiFileUploader", {
-        container: "{uploader}.dom.fileQueue",
-        options: {
-            events: {
-                onFileRemoved: "{uploader}.events.onFileRemoved"
-            }
-        }
-    });
-
-    fluid.demands("fluid.uploader.fileQueueView.eventBinder", [
-        "fluid.uploader.multiFileUploader",
-        "fluid.uploader.fileQueueView"
-    ], {
-        options: {
-            listeners: {
-                "{uploader}.events.afterFileQueued": "{fileQueueView}.addFile",
-                "{uploader}.events.onUploadStart": "{fileQueueView}.prepareForUpload",
-                "{uploader}.events.onFileStart": "{fileQueueView}.showFileProgress",
-                "{uploader}.events.onFileProgress": "{fileQueueView}.updateFileProgress",
-                "{uploader}.events.onFileSuccess": "{fileQueueView}.markFileComplete",
-                "{uploader}.events.onFileError": "{fileQueueView}.showErrorForFile",
-                "{uploader}.events.afterFileComplete": "{fileQueueView}.hideFileProgress",
-                "{uploader}.events.afterUploadComplete": "{fileQueueView}.refreshAfterUpload"
-            }
-        }
-    });
-
     /**************************************************
      * Error constants for the Uploader               *
-     *
      **************************************************/
      // Partial TODO: The values of these keys are now our own - however, the key
      // values themselves still align with those from SWFUpload
@@ -807,7 +751,7 @@ var fluid_2_0 = fluid_2_0 || {};
         CANCELLED:   "cancelled"
     };
 
-    var toggleVisibility = function (toShow, toHide) {
+    fluid.uploader.singleFile.toggleVisibility = function (toShow, toHide) {
         // For FLUID-2789: hide() doesn't work in Opera
         if (window.opera) {
             toShow.show().removeClass("hideUploaderForOpera");
@@ -827,20 +771,19 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {Object} options configuration options
      */
 
-    fluid.defaults("fluid.uploader.singleFileUploader", {
+    fluid.defaults("fluid.uploader.singleFile", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         selectors: {
             basicUpload: ".fl-progEnhance-basic"
+        },
+        listeners: {
+            "onCreate.showMarkup": "fluid.uploader.singleFile.showMarkup"
         }
     });
 
-    fluid.uploader.singleFileUploader.finalInit = function (that) {
+    fluid.uploader.singleFile.showMarkup = function (that) {
         // TODO: direct DOM fascism that will fail with multiple uploaders on a single page.
-        toggleVisibility($(that.options.selectors.basicUpload), that.container);
+        fluid.uploader.singleFile.toggleVisibility($(that.options.selectors.basicUpload), that.container);
     };
-
-    fluid.demands("fluid.uploaderImpl", "fluid.uploader.singleFile", {
-        funcName: "fluid.uploader.singleFileUploader"
-    });
 
 })(jQuery, fluid_2_0);
