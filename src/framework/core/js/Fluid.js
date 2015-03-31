@@ -1003,8 +1003,7 @@ var fluid = fluid || fluid_2_0;
         if (!func) {
             fluid.fail("Error invoking global function: " + functionPath + " could not be located");
         } else {
-            // FLUID-4915: Fixes an issue for IE8 by defaulting to an empty array when args are falsey.
-            return func.apply(null, args || []);
+            return func.apply(null, fluid.isArrayable(args) ? args : fluid.makeArray(args));
         }
     };
 
@@ -2458,8 +2457,6 @@ var fluid = fluid || fluid_2_0;
         }
     };
 
-    fluid.resolveReturnedPath = fluid.identity;
-
     // unsupported, NON-API function
     fluid.initComponent = function (componentName, initArgs) {
         var options = fluid.defaults(componentName);
@@ -2480,7 +2477,7 @@ var fluid = fluid || fluid_2_0;
         fluid.clearLifecycleFunctions(that.options);
         fluid.fireEvent(that, "events.onCreate", that);
         fluid.popActivity();
-        return fluid.resolveReturnedPath(that.options.returnedPath, that) ? fluid.get(that, that.options.returnedPath) : that;
+        return that;
     };
 
     // unsupported, NON-API function

@@ -949,7 +949,7 @@ var fluid_2_0 = fluid_2_0 || {};
         });
     };
 
-    fluid.defaults("fluid.inlineEdits", {
+    fluid.defaults("fluid.inlineEditsComponent", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
         distributeOptions: {
             source: "{that}.options",
@@ -970,4 +970,9 @@ var fluid_2_0 = fluid_2_0 || {};
             editables: ".flc-inlineEditable"
         }
     });
+    
+    fluid.inlineEdits = function (container, options) {
+        var that = fluid.inlineEditsComponent(container, options);
+        return that.inlineEdits;
+    }
 })(jQuery, fluid_2_0);

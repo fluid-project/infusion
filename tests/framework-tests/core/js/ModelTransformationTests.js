@@ -2056,13 +2056,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.transforms.checkTransformedOptions(that);
     });
 
-    fluid.demands("fluid.tests.testTransformableIoC", ["fluid.tests.transforms.version.old"], {
-        transformOptions: {
-            transformer: "fluid.model.transform",
-            config: fluid.tests.transforms.transformRules
-        }
-    });
-
     fluid.defaults("fluid.tests.transforms.strategy", {
         gradeNames: ["fluid.littleComponent", "autoInit"]
     });
@@ -2078,13 +2071,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.transforms.tip", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
-        components: {
-            versionTag: {
-                type: "fluid.typeFount",
-                options: {
-                    targetTypeName: "fluid.tests.transforms.version.old"
-                }
+        distributeOptions: {
+            record: {
+                transformer: "fluid.model.transform",
+                config: fluid.tests.transforms.transformRules
             },
+            target: "{that transformable}.options.transformOptions"
+        },
+        components: {
             transformable: {
                 type: "fluid.tests.testTransformableIoC",
                 options: fluid.tests.transforms.oldOptions

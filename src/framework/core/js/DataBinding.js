@@ -328,7 +328,7 @@ var fluid_2_0 = fluid_2_0 || {};
             var that = recel.that;
             var transac = transacs[that.id];
             if (recel.completeOnInit) {
-                fluid.initModelEvent(that, transac, that.applier.changeListeners.listeners);
+                fluid.initModelEvent(that, that.applier, transac, that.applier.changeListeners.listeners);
             } else {
                 fluid.each(recel.initModels, function (initModel) {
                     transac.fireChangeRequest({type: "ADD", segs: [], value: initModel});
@@ -418,8 +418,8 @@ var fluid_2_0 = fluid_2_0 || {};
         if (!transId) {
             fluid.fail("Cannot get transaction record without transaction id");
         }
-        var transRec = instantiator.modelTransactions[transId];
-        if (!transRec && !instantiator.free) {
+        var transRec = instantiator && instantiator.modelTransactions[transId];
+        if (!transRec && instantiator) {
             transRec = instantiator.modelTransactions[transId] = {};
             transRec.externalChanges = {}; // index by applierId to changePath to listener record
         }
@@ -865,17 +865,17 @@ var fluid_2_0 = fluid_2_0 || {};
                     transactional: true
                 };
                 ++listenerCount;
-                if (record.guardSource) {
-                    fluid.addSourceGuardedListener(parsed.applier, spec, record.guardSource, func, "modelChanged", record.namespace, record.softNamespace);
+                if (record.guardSource) { // update "spec" so that we parse priority information just once
+                    spec = fluid.addSourceGuardedListener(parsed.applier, spec, record.guardSource, func, "modelChanged", record.namespace, record.softNamespace);
                 } else {
-                    parsed.applier.modelChanged.addListener(spec, func, record.namespace, record.softNamespace);
+                    spec = parsed.applier.modelChanged.addListener(spec, func, record.namespace, record.softNamespace);
                 }
 
                 fluid.recordChangeListener(that, parsed.applier, func);
                 function initModelEvent() {
                     if (isNewApplier && fluid.isModelComplete(parsed.that)) {
                         var trans = parsed.applier.initiate("init");
-                        fluid.initModelEvent(that, trans, [spec]);
+                        fluid.initModelEvent(that, parsed.applier, trans, [spec]);
                         trans.commit();
                     }
                 }
@@ -913,7 +913,7 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         };
         fluid.event.impersonateListener(func, wrapped);
-        applier[eventName].addListener(path, wrapped, namespace, softNamespace);
+        return applier[eventName].addListener(path, wrapped, namespace, softNamespace);
     };
 
     /** Convenience method to fire a change event to a specified applier, including
@@ -1193,7 +1193,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.notifyModelChanges = function (listeners, changeMap, newHolder, oldHolder, changeRequest, transaction, applier, that) {
-        var instantiator = fluid.getInstantiator(that) || fluid.globalInstantiator; // "that" may be a non-component "holder", at least in test cases
+        var instantiator = fluid.getInstantiator(that); // may return nothing for non-component holder
         var transRec = transaction && fluid.getModelTransactionRec(instantiator, transaction.id);
         for (var i = 0; i < listeners.length; ++ i) {
             var spec = listeners[i];
@@ -1239,8 +1239,8 @@ var fluid_2_0 = fluid_2_0 || {};
         };
     };
 
-    fluid.initModelEvent = function (that, trans, listeners) {
-        fluid.notifyModelChanges(listeners, "ADD", trans.oldHolder, fluid.emptyHolder, null, trans, that);
+    fluid.initModelEvent = function (that, applier, trans, listeners) {
+        fluid.notifyModelChanges(listeners, "ADD", trans.oldHolder, fluid.emptyHolder, null, trans, applier, that);
     };
 
     fluid.emptyHolder = { model: undefined };
@@ -1293,6 +1293,7 @@ var fluid_2_0 = fluid_2_0 || {};
             spec.includeSource = fluid.arrayToHash(fluid.makeArray(spec.includeSource));
             spec.priority = fluid.parsePriority(spec.priority, collection.length, true, "model listener");
             collection.push(spec);
+            return spec;
         };
         that.modelChanged.removeListener = function (listener) {
             var id = fluid.event.identifyListener(listener);

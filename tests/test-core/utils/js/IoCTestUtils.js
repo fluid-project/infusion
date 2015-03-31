@@ -157,7 +157,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 that.testCaseHolders.push(component);
             }
         };
-        fluid.visitComponentChildren(that, visitor, visitOptions, "");
+        fluid.visitComponentChildren(that, visitor, visitOptions);
         // This structure is constructed here, reused for each "TestCaseHolder" but is given a shallow
         // clone in "sequenceExecutor".
         var testCaseState = {

@@ -1242,7 +1242,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]);
     });
 
-    jqUnit.test("FLUID-5151: One single listener function hooked up for multiple model paths only have the last call registered succesfully", function () {
+    jqUnit.test("FLUID-5151: One single listener function hooked up for multiple model paths only has the last call registered succesfully", function () {
         var holder = {
             model:  {
                 path1: null,

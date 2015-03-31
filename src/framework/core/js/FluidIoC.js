@@ -24,6 +24,7 @@ var fluid_2_0 = fluid_2_0 || {};
     // Currently still uses manual traversal - once we ban manually instantiated components,
     // it will use the instantiator's records instead.
     fluid.visitComponentChildren = function (that, visitor, options, segs) {
+        segs = segs || [];
         for (var name in that) {
             var component = that[name];
             // This entire algorithm is primitive and expensive and will be removed once we can abolish manual init components
@@ -394,7 +395,7 @@ var fluid_2_0 = fluid_2_0 || {};
         return segs.slice(1);
     };
 
-    fluid.undistributableOptions = ["gradeNames", "distributeOptions", "returnedPath", "argumentMap", "initFunction", "mergePolicy", "progressiveCheckerOptions"]; // automatically added to "exclusions" of every distribution
+    fluid.undistributableOptions = ["gradeNames", "distributeOptions", "argumentMap", "initFunction", "mergePolicy", "progressiveCheckerOptions"]; // automatically added to "exclusions" of every distribution
 
     fluid.distributeOptions = function (that, optionsStrategy) {
         var thatShadow = fluid.shadowForComponent(that);
@@ -476,12 +477,6 @@ var fluid_2_0 = fluid_2_0 || {};
         var shadow = fluid.shadowForComponent(that, shadow);
         fluid.cacheShadowGrades(that, shadow);
         shadow.mergeOptions = mergeOptions;
-    };
-
-    fluid.resolveReturnedPath = function (returnedPath, that) {
-        var shadow = fluid.shadowForComponent(that);
-        // This prevents corruption of instantiator records by defeating effect of "returnedPath" for non-roots
-        return shadow && shadow.path !== "" ? null : returnedPath;
     };
 
     fluid.defaults("fluid.gradeLinkageRecord", {

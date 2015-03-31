@@ -17,7 +17,7 @@ var fluid_2_0 = fluid_2_0 || {};
 (function ($, fluid) {
     "use strict";
 
-    fluid.reorderer = fluid.registerNamespace("fluid.reorderer");
+    fluid.registerNamespace("fluid.reorderer");
 
     fluid.reorderer.defaultAvatarCreator = function (item, cssClass, dropWarning) {
         fluid.dom.cleanseScripts(fluid.unwrap(item));
@@ -190,6 +190,7 @@ var fluid_2_0 = fluid_2_0 || {};
         layoutHandler: "fluid.listLayoutHandler",
 
         members: {
+            dropManager: "@expand:fluid.dropManager()", // TODO: this is an old-style "that" which can no longer be supported as a component
             activeItem: null,
             kbDropWarning: "{that}.dom.dropWarning"
         },
@@ -294,9 +295,6 @@ var fluid_2_0 = fluid_2_0 || {};
             layoutHandler: {
                 type: "{that}.options.layoutHandler",
                 container: "{reorderer}.container"
-            },
-            dropManager: {
-                type: "fluid.dropManager"
             },
             labeller: {
                 type: "fluid.reorderer.labeller",

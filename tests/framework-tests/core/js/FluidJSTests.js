@@ -575,7 +575,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     fluid.tests.upgradeListeners = function (listeners) {
         return fluid.hashToArray(listeners, "namespace", function (newElement, oldElement, key) {
-            newElement.priority = fluid.parsePriority(oldElement, false, "listeners");
+            newElement.priority = fluid.parsePriority(oldElement, 0, false, "listeners");
         });
     };
     
