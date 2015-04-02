@@ -543,6 +543,9 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.prefs.compositePanel.rebaseTreeComp = function (msgResolver, model, treeComp, memberName, modelRelayRules) {
         var rebased = fluid.copy(treeComp);
 
+        // The set of if statements is required to handle the various properties that may
+        // be present in a block of component tree. It is also important to note that
+        // more than one of the if statements may execute per component tree block (e.g. ID, value, valuebinding)
         if (rebased.children) {
             rebased.children = fluid.prefs.compositePanel.rebaseTree(msgResolver, model, rebased.children, memberName, modelRelayRules);
         }
