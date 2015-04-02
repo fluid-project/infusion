@@ -108,7 +108,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             subPanel2: ".subPanel2",
             heading: ".heading"
         },
-        strings: {
+        messageBase: {
             heading: "Heading"
         },
         selectorsToIgnore: ["subPanel1", "subPanel2"],
@@ -228,7 +228,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("subPanel2's selectors should be surfaced to the compositePanel correctly", expectedSupanel2Selector, that.options.selectors.subPanel2_header);
         jqUnit.assertDeepEq("The repeatingSelectors should have been surfaced correctly", expectedRepeatingSelectors, that.options.rendererFnOptions.subPanelRepeatingSelectors);
         jqUnit.assertDeepEq("The produceTree should have combined the subPanel protoTrees together correctly", expectedTree, that.produceTree());
-        jqUnit.assertEquals("The markup for the compositePanel should have rendered correctly", that.options.strings.heading, that.locate("heading").text());
+        jqUnit.assertEquals("The markup for the compositePanel should have rendered correctly", that.options.messageBase.heading, that.locate("heading").text());
         that.subPanel1.locate("header").each(function (idx, elm) {
             var actual = $(elm).text();
             jqUnit.assertEquals("The markup for subPanel1 should have rendered correctly", that.subPanel1.model.value[idx], actual);
@@ -285,7 +285,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 some_pref_3: false,
                 some_pref_4: false
             },
-            strings: {
+            messageBase: {
                 text1: "conditionalPanel1",
                 text2: "conditionalPanel2"
             },
@@ -299,7 +299,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 "model.value": "default"
                             }
                         },
-                        strings: {
+                        messageBase: {
                             text: "alwaysPanel1"
                         },
                         selectors: {
@@ -319,7 +319,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 "model.value": "default"
                             }
                         },
-                        strings: {
+                        messageBase: {
                             text: "alwaysPanel2"
                         },
                         selectors: {
@@ -340,7 +340,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 "model.value": "default"
                             }
                         },
-                        strings: {
+                        messageBase: {
                             text1: "conditionalPanel1"
                         },
                         selectors: {
@@ -363,7 +363,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 "model.value": "default"
                             }
                         },
-                        strings: {
+                        messageBase: {
                             text2: "conditionalPanel2"
                         },
                         selectors: {
@@ -546,7 +546,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "controlValues.ddStrings": "enum"
             }
         },
-        strings: {
+        messageBase: {
             "dropdownTest-en": "English",
             "dropdownTest-kl": "Klingon",
             "dropdownTest-bj": "Bajoran",
@@ -646,11 +646,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             frequencyInput: ".flc-prefsEditor-frequencyInput",
             label: ".flc-prefsEditor-contrast-label"
         },
-        strings: {
+        messageBase: {
             "radioTestKey-yes": "Yes",
             "radioTestKey-no": "No",
             "radioTestKey-maybe": "Maybe",
-            "radioTestKey-sometimes": "Sometimes"
+            "radioTestKey-sometimes": "Sometimes",
+            "radioTestLabelKey": "Radio Button Label"
         },
         stringArrayIndex: {
             radioTestStrings: ["radioTestKey-yes", "radioTestKey-no", "radioTestKey-maybe", "radioTestKey-sometimes"]
@@ -704,10 +705,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var expectedTree = {
             "children": [{
                 "ID": "radioTest1_label",
-                "componentType": "UIMessage",
-                "messagekey": {
-                    "value": "radioTestLabelKey"
-                }
+                "componentType": "UIBound",
+                "value": "Radio Button Label"
             }, {
                 "ID": "radioTest1_frequency-radio",
                 "componentType": "UISelect",
@@ -1009,7 +1008,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.prefs.panel.textFont", {
         gradeNames: ["fluid.prefs.panel.textFont", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
-        testMessages: {
+        messageBase: {
             "textFont-default": "default",
             "textFont-times": "Times New Roman",
             "textFont-comic": "Comic Sans",
@@ -1098,7 +1097,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.prefs.panel.contrast", {
         gradeNames: ["fluid.prefs.panel.contrast", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
-        testMessages: {
+        messageBase: {
             "contrast": ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black"],
             "contrastLabel": "Colour & Contrast"
         },
@@ -1474,7 +1473,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid_prefs_emphasizeLinks: false,
             fluid_prefs_inputsLarger: false
         },
-        strings: {
+        messageBase: {
             linksControlsLabel: "Links & buttons"
         },
         selectors: {
@@ -1545,7 +1544,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "{linksControls}.refreshView"
                 }, {
                     listener: "fluid.tests.linksControlsPanel.testDefault",
-                    args: ["{linksControls}", "{that}.options.testOptions.defaultInputStatus", "{linksControls}.options.strings.linksControlsLabel"],
+                    args: ["{linksControls}", "{that}.options.testOptions.defaultInputStatus", "{linksControls}.options.messageBase.linksControlsLabel"],
                     event: "{linksControls}.events.afterRender"
                 }, {
                     func: "fluid.tests.panels.utils.setCheckboxState",

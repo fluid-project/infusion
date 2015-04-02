@@ -131,7 +131,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             fluid.defaults("fluid.prefsTestResourceLoader", {
                 gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
-                templates: {
+                resources: {
                     linksControls: "%prefix/" + linksControlsTemplateName,
                     textControls: textControlsFullResourcePath
                 },
@@ -165,7 +165,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             fluid.defaults("fluid.prefs.customizedResourceLoader", {
                 gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
-                templates: {
+                resources: {
                     lineSpace: "%prefix/" + lineSpaceTemplateName
                 },
                 listeners: {
@@ -541,7 +541,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             fluid.demands("templateLoader", ["fluid.prefsTests", "fluid.prefs.tests", "fluid.prefs.testsPreview"], {
                 options: {
-                    templates: {
+                    resources: {
                         prefsEditor: templatePrefix + "FullPreviewPrefsEditor.html"
                     }
                 }

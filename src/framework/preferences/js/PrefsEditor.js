@@ -1,6 +1,6 @@
 /*
 Copyright 2009 University of Toronto
-Copyright 2010-2011 OCAD University
+Copyright 2010-2015 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -45,6 +45,9 @@ var fluid_2_0 = fluid_2_0 || {};
             messageLoader: {
                 type: "fluid.prefs.resourceLoader",
                 options: {
+                    resourceOptions: {
+                        dataType: "json"
+                    },
                     events: {
                         onResourcesLoaded: "{prefsEditorLoader}.events.onPrefsEditorMessagesLoaded"
                     }
@@ -54,18 +57,11 @@ var fluid_2_0 = fluid_2_0 || {};
         events: {
             onPrefsEditorTemplatesLoaded: null,
             onPrefsEditorMessagesLoaded: null,
-            onMsgResolverReady: null,
             onCreatePrefsEditorReady: {
                 events: {
                     templateLoaded: "onPrefsEditorTemplatesLoaded",
-                    msgResolverReady: "onMsgResolverReady"
+                    prefsEditorMessagesLoaded: "onPrefsEditorMessagesLoaded"
                 }
-            }
-        },
-        listeners: {
-            onPrefsEditorMessagesLoaded: {
-                funcName: "fluid.prefs.prefsEditorLoader.createMsgResolver",
-                args: ["{arguments}.0", "{that}"]
             }
         },
         distributeOptions: [{
@@ -88,17 +84,6 @@ var fluid_2_0 = fluid_2_0 || {};
             target: "{that > prefsEditor}.options"
         }]
     });
-
-    fluid.prefs.prefsEditorLoader.createMsgResolver = function (messageResources, that) {
-        var completeMessage;
-        fluid.each(messageResources, function (oneResource) {
-            var message = JSON.parse(oneResource.resourceText);
-            completeMessage = $.extend({}, completeMessage, message);
-        });
-        var parentResolver = fluid.messageResolver({messageBase: completeMessage});
-        that.msgResolver = fluid.messageResolver({messageBase: {}, parents: [parentResolver]});
-        that.events.onMsgResolverReady.fire();
-    };
 
     // TODO: This mixin grade appears to be supplied manually by various test cases but no longer appears in
     // the main configuration. We should remove the need for users to supply this - also the use of "defaultPanels" in fact
@@ -135,27 +120,19 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     /**************************************
-     * Preferences Editor Template Loader *
+     * Preferences Editor Resource Loader *
      **************************************/
-
-    /**
-     * A configurable component that works in conjunction with or without the Preferences Editor template
-     * path component (fluid.prefsResourcePath) to allow users to set either the location of their own
-     * templates or the templates that are relative to the path defined in the Preferences Editor template
-     * path component.
-     *
-     * @param {Object} options
-     */
 
     fluid.defaults("fluid.prefs.resourceLoader", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         listeners: {
-            "onCreate": {
-                listener: "fluid.prefs.resourceLoader.loadTemplates",
-                args: ["{that}", {expander: {func: "{that}.resolveTemplates"}}]
+            "onCreate.loadResources": {
+                listener: "fluid.prefs.resourceLoader.loadResources",
+                args: ["{that}", {expander: {func: "{that}.resolveResources"}}]
             }
         },
-        templates: {},
+        resources: {},
+        resourceOptions: {},
         // Unsupported, non-API option
         components: {
             resourcePath: {
@@ -167,8 +144,8 @@ var fluid_2_0 = fluid_2_0 || {};
                 funcName: "fluid.stringTemplate",
                 args: [ "{arguments}.0", {"prefix/" : "{that}.resourcePath.options.value"} ]
             },
-            resolveTemplates: {
-                funcName: "fluid.prefs.resourceLoader.resolveTemplates",
+            resolveResources: {
+                funcName: "fluid.prefs.resourceLoader.resolveResources",
                 args: "{that}"
             }
         },
@@ -177,16 +154,15 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-    fluid.prefs.resourceLoader.resolveTemplates = function (that) {
-        var mapped = fluid.transform(that.options.templates, that.transformURL);
+    fluid.prefs.resourceLoader.resolveResources = function (that) {
+        var mapped = fluid.transform(that.options.resources, that.transformURL);
 
         return fluid.transform(mapped, function (url) {
-            return {url: url, forceCache: true};
+            return {url: url, forceCache: true, options: that.options.resourceOptions};
         });
     };
 
-    fluid.prefs.resourceLoader.loadTemplates = function (that, resources) {
-        delete resources.expander;   // A work-around for FLUID-5117
+    fluid.prefs.resourceLoader.loadResources = function (that, resources) {
         fluid.fetchResources(resources, function () {
             that.resources = resources;
             that.events.onResourcesLoaded.fire(resources);
