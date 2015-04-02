@@ -543,40 +543,32 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.prefs.compositePanel.rebaseTreeComp = function (msgResolver, model, treeComp, memberName, modelRelayRules) {
         var rebased = fluid.copy(treeComp);
 
-        // The set of if statements is required to handle the various properties that may
-        // be present in a block of component tree. It is also important to note that
-        // more than one of the if statements may execute per component tree block (e.g. ID, value, valuebinding)
-        if (rebased.children) {
-            rebased.children = fluid.prefs.compositePanel.rebaseTree(msgResolver, model, rebased.children, memberName, modelRelayRules);
-        }
-
-        if (rebased.selection) {
-            rebased.selection = fluid.prefs.compositePanel.rebaseTreeComp(msgResolver, model, rebased.selection, memberName, modelRelayRules);
-        }
-
         if (rebased.ID) {
             rebased.ID = fluid.prefs.compositePanel.rebaseID(rebased.ID, memberName);
         }
 
-        if (rebased.parentRelativeID) {
-            rebased.parentRelativeID = fluid.prefs.compositePanel.rebaseParentRelativeID(rebased.parentRelativeID, memberName);
-        }
-
-        if (rebased.valuebinding) {
-            rebased.valuebinding = fluid.prefs.compositePanel.rebaseValueBinding(rebased.valuebinding, modelRelayRules);
-        }
-
-        if (rebased.value && rebased.valuebinding) {
-            var modelValue = fluid.get(model, fluid.prefs.compositePanel.rebaseValueBinding(rebased.valuebinding, modelRelayRules));
-            rebased.value = modelValue !== undefined ? modelValue : rebased.value;
-        }
-
-        if (rebased.messagekey) {
+        if (rebased.children) {
+            rebased.children = fluid.prefs.compositePanel.rebaseTree(msgResolver, model, rebased.children, memberName, modelRelayRules);
+        } else if (rebased.selection) {
+            rebased.selection = fluid.prefs.compositePanel.rebaseTreeComp(msgResolver, model, rebased.selection, memberName, modelRelayRules);
+        } else if (rebased.messagekey) {
             // converts the "UIMessage" renderer component into a "UIBound"
             // and passes in the resolved message as the value.
             rebased.componentType = "UIBound";
             rebased.value = msgResolver.resolve(rebased.messagekey.value, rebased.messagekey.args);
             delete rebased.messagekey;
+        } else if (rebased.parentRelativeID) {
+            rebased.parentRelativeID = fluid.prefs.compositePanel.rebaseParentRelativeID(rebased.parentRelativeID, memberName);
+        } else {
+
+            if (rebased.valuebinding) {
+                rebased.valuebinding = fluid.prefs.compositePanel.rebaseValueBinding(rebased.valuebinding, modelRelayRules);
+            }
+
+            if (rebased.value && rebased.valuebinding) {
+                var modelValue = fluid.get(model, fluid.prefs.compositePanel.rebaseValueBinding(rebased.valuebinding, modelRelayRules));
+                rebased.value = modelValue !== undefined ? modelValue : rebased.value;
+            }
         }
 
         return rebased;
