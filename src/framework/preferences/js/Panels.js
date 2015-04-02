@@ -559,14 +559,11 @@ var fluid_2_0 = fluid_2_0 || {};
             delete rebased.messagekey;
         } else if (rebased.parentRelativeID) {
             rebased.parentRelativeID = fluid.prefs.compositePanel.rebaseParentRelativeID(rebased.parentRelativeID, memberName);
-        } else {
+        } else if (rebased.valuebinding) {
+            rebased.valuebinding = fluid.prefs.compositePanel.rebaseValueBinding(rebased.valuebinding, modelRelayRules);
 
-            if (rebased.valuebinding) {
-                rebased.valuebinding = fluid.prefs.compositePanel.rebaseValueBinding(rebased.valuebinding, modelRelayRules);
-            }
-
-            if (rebased.value && rebased.valuebinding) {
-                var modelValue = fluid.get(model, fluid.prefs.compositePanel.rebaseValueBinding(rebased.valuebinding, modelRelayRules));
+            if (rebased.value) {
+                var modelValue = fluid.get(model, rebased.valuebinding);
                 rebased.value = modelValue !== undefined ? modelValue : rebased.value;
             }
         }
