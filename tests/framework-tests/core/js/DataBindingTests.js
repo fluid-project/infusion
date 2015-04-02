@@ -2095,4 +2095,58 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertFalse("Property should have been deleted on startup", "initialValue" in that2.model);
     });
 
+    // FLUID-5592: Error received using model relay to destroyed component
+    
+    fluid.tests.fluid5592destruct = function (that, value) {
+        if (value === 2) { // do not destroy on init relay, but only on manual change
+            that.child.destroy();
+        }
+    };
+    
+    fluid.defaults("fluid.tests.fluid5592root", {
+        gradeNames: ["fluid.modelRelayComponent", "autoInit"],
+        model: {
+            value: 1
+        },
+        modelListeners: {
+            value: {
+                funcName: "fluid.tests.fluid5592destruct",
+                priority: "first",
+                args: ["{that}", "{change}.value"]
+            }
+        },
+        components: {
+            child: {
+                type: "fluid.tests.fluid5592child"
+            }
+        }
+    });
+    
+
+    fluid.defaults("fluid.tests.fluid5592child", {
+        gradeNames: ["fluid.modelRelayComponent", "autoInit"],
+        model: {
+            renderValue: "{fluid5592root}.model.value"
+        },
+        modelListeners: {
+            renderValue: { // this listener will explode on resolution due to destruction of subcomponent by first listener
+                funcName: "fluid.identity",
+                args: ["{change}.value"]
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5592: Error received using model relay to destroyed component", function () {
+        var that = fluid.tests.fluid5592root();
+        jqUnit.assertValue("The initial model relay has set the target model value", 1, that.child.renderValue);
+        
+        // manual registration of changeListeners exercises notification via different pathways that avoid fluid.resolveModelListener
+        that.child.applier.modelChanged.addListener("renderValue", function () {
+            jqUnit.fail("This listener should not be notified if the component is destroyed");
+        });
+
+        that.applier.change("value", 2);
+        jqUnit.assertNoValue("The change request has destroyed the child component", that.child);
+    });
+    
 })(jQuery);

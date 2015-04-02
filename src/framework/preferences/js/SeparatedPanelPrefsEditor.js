@@ -1,5 +1,5 @@
 /*
-Copyright 2011 OCAD University
+Copyright 2011-2015 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -34,7 +34,7 @@ var fluid_2_0 = fluid_2_0 || {};
             onCreateSlidingPanelReady: {
                 events: {
                     iframeRendered: "afterRender",
-                    onMsgResolverReady: "onMsgResolverReady"
+                    onPrefsEditorMessagesLoaded: "onPrefsEditorMessagesLoaded"
                 }
             },
             templatesAndIframeReady: {
@@ -73,9 +73,6 @@ var fluid_2_0 = fluid_2_0 || {};
                 createOnEvent: "onCreateSlidingPanelReady",
                 options: {
                     gradeNames: ["fluid.prefs.msgLookup"],
-                    members: {
-                        messageResolver: "{separatedPanel}.msgResolver"
-                    },
                     strings: {
                         showText: "{that}.msgLookup.slidingPanelShowText",
                         hideText: "{that}.msgLookup.slidingPanelHideText"
@@ -94,6 +91,14 @@ var fluid_2_0 = fluid_2_0 || {};
                             // override default implementation
                             "this": null,
                             "method": null
+                        }
+                    },
+                    components: {
+                        msgResolver: {
+                            type: "fluid.messageResolver",
+                            options: {
+                                messageBase: "{messageLoader}.resources.prefsEditor.resourceText"
+                            }
                         }
                     }
                 }
@@ -129,7 +134,6 @@ var fluid_2_0 = fluid_2_0 || {};
                     gradeNames: ["fluid.prefs.uiEnhancerRelay"],
                     // ensure that model and applier are available to users at top level
                     model: "{separatedPanel}.model",
-                    applier: "{separatedPanel}.applier",
                     events: {
                         onSignificantDOMChange: null,
                         updateEnhancerModel: "{that}.events.modelChanged"
@@ -180,7 +184,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *****************************************/
 
     fluid.defaults("fluid.prefs.separatedPanel.renderIframe", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         events: {
             afterRender: null
         },

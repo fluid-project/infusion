@@ -57,7 +57,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         gradeNames: ["fluid.prefs.starterMessageLoader"]
                     },
                     prefsEditor: {
-                        gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"]
+                        gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.initialModel.starter", "fluid.prefs.uiEnhancerRelay"]
                     }
                 }
             },
@@ -84,7 +84,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.afterShowFunc1 = function (separatedPanel) {
         return function () {
             fluid.tests.prefs.applierRequestChanges(separatedPanel.prefsEditor, fluid.tests.prefs.bwSkin);
-            fluid.tests.prefs.checkModelSelections("pageModel from bwSkin", fluid.tests.prefs.bwSkin, separatedPanel.pageEnhancer.model);
+            fluid.tests.prefs.checkModelSelections("enhancerModel from bwSkin", fluid.tests.prefs.bwSkin, separatedPanel.pageEnhancer.model);
             jqUnit.assertEquals("Reset button is visible", true, $(".flc-prefsEditor-reset").is(":visible"));
         };
     };
@@ -97,25 +97,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     fluid.tests.afterShowFunc2 = function (separatedPanel) {
         return function () {
-            var pageModel = separatedPanel.pageEnhancer.model;
-            var panelModel = separatedPanel.iframeRenderer.iframeEnhancer.model;
+            var enhancerModel = separatedPanel.pageEnhancer.model;
+            var iframeEnhancerModel = separatedPanel.iframeRenderer.iframeEnhancer.model;
 
-            fluid.tests.prefs.checkModelSelections("panelModel from bwSkin", fluid.tests.prefs.bwSkin, panelModel);
-            fluid.tests.prefs.checkModelSelections("panelModel from pageModel", pageModel, panelModel);
+            fluid.tests.prefs.checkModelSelections("iframeEnhancerModel from bwSkin", fluid.tests.prefs.bwSkin, iframeEnhancerModel);
+            fluid.tests.prefs.checkModelSelections("iframeEnhancerModel from enhancerModel", enhancerModel, iframeEnhancerModel);
         };
     };
 
     fluid.tests.afterShowFunc3 = function (separatedPanel) {
         return function () {
-            var rootModel = separatedPanel.prefsEditor.rootModel;
-            var pageModel = separatedPanel.pageEnhancer.model;
-            var panelModel = separatedPanel.iframeRenderer.iframeEnhancer.model;
-
             separatedPanel.locate("reset").click();
-            fluid.tests.prefs.checkModelSelections("pageModel from defaults", rootModel, pageModel);
+
+            var initialModel = separatedPanel.prefsEditor.initialModel;
+            var enhancerModel = separatedPanel.pageEnhancer.model;
+            var iframeEnhancerModel = separatedPanel.iframeRenderer.iframeEnhancer.model;
+
+            fluid.tests.prefs.checkModelSelections("enhancerModel from defaults", initialModel, enhancerModel);
             separatedPanel.slidingPanel.hidePanel();
-            fluid.tests.prefs.checkModelSelections("panelModel from defaults", rootModel, panelModel);
-            fluid.tests.prefs.checkModelSelections("pageModel from panelModel", pageModel, panelModel);
+            fluid.tests.prefs.checkModelSelections("iframeEnhancerModel from defaults", initialModel, iframeEnhancerModel);
+            fluid.tests.prefs.checkModelSelections("enhancerModel from iframeEnhancerModel", enhancerModel, iframeEnhancerModel);
         };
     };
 
@@ -192,7 +193,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     iframe: expectedIframeSelector,
                     prefsEditor: {
                         members: {
-                            rootModel: {
+                            initialModel: {
                                 theme: "yb"
                             }
                         }
