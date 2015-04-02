@@ -288,7 +288,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 templateLoader: {
-                    templates: {
+                    resources: {
                         prefsEditor: "%prefix/SeparatedPanelPrefsEditor.html"
                     }
                 }
@@ -751,7 +751,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.composite.increase", {
         gradeNames: ["fluid.prefs.compositePanel", "autoInit"],
-        strings: {
+        messageBase: {
             increaseHeader: "increase"
         },
         selectors: {
