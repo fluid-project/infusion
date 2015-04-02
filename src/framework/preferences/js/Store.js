@@ -74,9 +74,15 @@ var fluid_2_0 = fluid_2_0 || {};
         if (endIndex < startIndex) {
             endIndex = cookie.length;
         }
-
-        var retObj = JSON.parse(decodeURIComponent(cookie.substring(startIndex, endIndex)));
-        return retObj;
+        var cookieSection = cookie.substring(startIndex, endIndex);
+        var togo;
+        try {
+            togo = JSON.parse(decodeURIComponent(cookieSection));
+        } catch (e) {
+            fluid.log("Error parsing cookie " + cookieSection + " as JSON - clearing");
+            document.cookie = "";
+        }
+        return togo;
     };
 
     /**
@@ -117,7 +123,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.prefs.tempStore", {
-        gradeNames: ["fluid.prefs.dataSource", "fluid.modelComponent", "autoInit"]
+        gradeNames: ["fluid.prefs.dataSource", "fluid.modelRelayComponent", "autoInit"]
     });
 
     fluid.demands("fluid.prefs.dataSource.get", "fluid.prefs.tempStore", {
@@ -131,7 +137,8 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.prefs.tempStore.set = function (settings, applier) {
-        applier.requestChange("", settings);
+        applier.fireChangeRequest({path: "", type: "DELETE"});
+        applier.change("", settings);
     };
 
     fluid.defaults("fluid.prefs.globalSettingsStore", {

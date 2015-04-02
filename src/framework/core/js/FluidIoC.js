@@ -643,6 +643,7 @@ var fluid_2_0 = fluid_2_0 || {};
     // Second sequence point for mergeOptions from Fluid.js - here we construct all further
     // strategies required on the IoC side and mount them into the shadow's getConfig for universal use
     fluid.computeComponentAccessor = function (that) {
+        var instantiator = fluid.globalInstantiator;
         var shadow = fluid.shadowForComponent(that);
         var options = that.options;
         var strategy = shadow.mergeOptions.strategy;
@@ -658,8 +659,12 @@ var fluid_2_0 = fluid_2_0 || {};
         fluid.computeDynamicGrades(that, shadow, strategy, shadow.mergeOptions.mergeBlocks);
         fluid.distributeOptions(that, strategy);
         if (shadow.contextHash["fluid.resolveRoot"]) {
-            var memberName = fluid.computeGlobalMemberName(that);
-            fluid.globalInstantiator.recordKnownComponent(fluid.resolveRootComponent, that, memberName, false);
+            var memberName = shadow.contextHash["fluid.resolveRootSingle"] ? fluid.typeNameToMemberName(that.typeName) : fluid.computeGlobalMemberName(that);
+            var parent = fluid.resolveRootComponent;
+            if (parent[memberName]) {
+                instantiator.clearComponent(parent, memberName);
+            }
+            instantiator.recordKnownComponent(parent, that, memberName, false);
         }
 
         return shadow.getConfig;
@@ -961,6 +966,15 @@ var fluid_2_0 = fluid_2_0 || {};
         var instantiator = fluid.globalInstantiator;
         return component && instantiator.idToShadow[component.id] ? instantiator : null;
     };
+    
+    // The grade supplied to components which will be resolvable from all parts of the component tree
+    fluid.defaults("fluid.resolveRoot");
+    // In addition to being resolvable at the root, "resolveRootSingle" component will have just a single instance available. Fresh
+    // instances will displace older ones.
+    fluid.defaults("fluid.resolveRootSingle", {
+        gradeNames: "fluid.resolveRoot"
+    });
+    
     // Instantiate the primordial components at the root of each context tree
     
     fluid.rootComponent = fluid.typeTag("fluid.rootComponent");
@@ -1110,9 +1124,17 @@ var fluid_2_0 = fluid_2_0 || {};
         };
     };
     
+    // Computes a name for a component appearing at the global root which is globally unique, from its nickName and id
     fluid.computeGlobalMemberName = function (that) {
         var nickName = fluid.computeNickName(that.typeName);
         return nickName + "-" + that.id;
+    };
+    
+    // Maps a type name to the member name to be used for it at a particular path level where it is intended to be unique
+    // Note that "." is still not supported within a member name
+    // unsupported, NON-API function
+    fluid.typeNameToMemberName = function (typeName) {
+        return typeName.replace(/\./g, "_");
     };
 
     // This is the initial entry point from the non-IoC side reporting the first presence of a new component - called from fluid.mergeComponentOptions
@@ -1454,7 +1476,7 @@ var fluid_2_0 = fluid_2_0 || {};
         if (segs.length === 0) {
             fluid.fail("Cannot destroy the root component");
         }
-        var memberName = segs.pop(), parentPath = instantiator.composeSegments(segs);
+        var memberName = segs.pop(), parentPath = instantiator.composeSegments.apply(null, segs);
         var parent = instantiator.pathToComponent[parentPath];
         if (!parent) {
             fluid.fail("Cannot modify component with nonexistent parent at path ", path);
@@ -1469,6 +1491,59 @@ var fluid_2_0 = fluid_2_0 || {};
     };
     
     /** END NEXUS METHODS **/
+    
+    /** BEGIN IOC DEBUGGING METHODS **/
+    fluid["debugger"] = function () {
+        /* jshint ignore:start */
+        debugger;
+        /* jshint ignore:end */
+    };
+    
+    fluid.defaults("fluid.debuggingProbe", {
+        gradeNames: ["fluid.littleComponent", "autoInit"]
+    });
+    
+    // probe looks like:
+    // target: {preview other}.listeners.eventName
+    // priority: first/last
+    // func: console.log/fluid.log/fluid.debugger
+    fluid.probeToDistribution = function (probe) {
+        var instantiator = fluid.globalInstantiator;
+        var parsed = fluid.parseContextReference(probe.target);
+        var segs = fluid.model.parseToSegments(parsed.path, instantiator.parseEL, true);
+        if (segs[0] !== "options") {
+            segs.unshift("options"); // compensate for this insanity until we have the great options flattening
+        }
+        var parsedPriority = fluid.parsePriority(probe.priority);
+        if (parsedPriority.constraint && !parsedPriority.constraint.target) {
+            parsedPriority.constraint.target = "authoring";
+        }
+        return {
+            target: "{/ " + parsed.context + "}." + instantiator.composeSegments.apply(null, segs),
+            record: {
+                func: probe.func,
+                funcName: probe.funcName,
+                args: probe.args,
+                priority: fluid.renderPriority(parsedPriority)
+            }
+        };
+    };
+    
+    fluid.registerProbes = function (probes) {
+        var probeDistribution = fluid.transform(probes, fluid.probeToDistribution);
+        var memberName = "fluid_debuggingProbe_" + fluid.allocateGuid();
+        fluid.construct([memberName], {
+            type: "fluid.debuggingProbe",
+            distributeOptions: probeDistribution
+        });
+        return memberName;
+    };
+    
+    fluid.deregisterProbes = function (probeName) {
+        fluid.destroy([probeName]);
+    };
+    
+    /** END IOC DEBUGGING METHODS **/
 
     var dependentStore = {};
 
@@ -1965,6 +2040,8 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     };
 
     /** END of unofficial IoC material **/
+    
+    /* Compact expansion machinery - for short form invoker and expander references such as @expand:func(arg) and func(arg) */
 
     fluid.coerceToPrimitive = function (string) {
         return string === "false" ? false : (string === "true" ? true :
@@ -2049,6 +2126,8 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         fluid.expandCompactRec([], togo, options, userOptions);
         return togo;
     };
+    
+    /** End compact record expansion machinery **/
 
     fluid.extractEL = function (string, options) {
         if (options.ELstyle === "ALL") {
@@ -2307,19 +2386,10 @@ outer:  for (var i = 0; i < exist.length; ++i) {
 
     fluid.registerNamespace("fluid.expander");
 
-    /** "light" expanders, starting with support functions for the so-called "deferredCall" expanders,
-         which make an arbitrary function call (after expanding arguments) and are then replaced in
+    /** "light" expanders, starting with the default expander deferredInvokeCall,
+         which makes an arbitrary function call (after expanding arguments) and are then replaced in
          the configuration with the call results. These will probably be abolished and replaced with
          equivalent model transformation machinery **/
-
-    fluid.expander.deferredCall = function (deliverer, source, options) {
-        var expander = source.expander;
-        var args = (!expander.args || fluid.isArrayable(expander.args))? expander.args : fluid.makeArray(expander.args);
-        args = options.recurse([], args);
-        return fluid.invokeGlobalFunction(expander.func, args);
-    };
-
-    fluid.deferredCall = fluid.expander.deferredCall; // put in top namespace for convenience
 
     // This one is now positioned as the "universal expander" - default if no type supplied
     fluid.deferredInvokeCall = function (deliverer, source, options) {

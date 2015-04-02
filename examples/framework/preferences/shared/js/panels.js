@@ -79,28 +79,24 @@ var example = example || {};
             vol: ".mpe-slider",
             multiplier: ".mpe-slider-multiplier"
         },
-        protoTree: {
-            label: {messagekey: "volLabel"},
-            multiplier: {messagekey: "volMultiplier"},
+        selectorsToIgnore: ["vol"],
+        components: {
             vol: {
-                decorators: {
-                    type: "fluid",
-                    func: "fluid.textfieldSlider",
-                    options: {
-                        rules: {
-                            // the textfieldSlider uses an internal model path of 'value',
-                            // so we must relate that to our model path
-                            "volume": "value"
-                        },
-                        model: {
-                            value: "{example.panels.vol}.model.volume"
-                        },
-                        sourceApplier: "{example.panels.vol}.applier",
-                        range: "{example.panels.vol}.options.range",
-                        sliderOptions: "{example.panels.vol}.options.sliderOptions"
-                    }
+                type: "fluid.textfieldSlider",
+                container: "{that}.dom.vol",
+                createOnEvent: "onDomBind",
+                options: {
+                    model: {
+                        value: "{example.panels.vol}.model.volume"
+                    },
+                    range: "{example.panels.vol}.options.range",
+                    sliderOptions: "{example.panels.vol}.options.sliderOptions"
                 }
             }
+        },
+        protoTree: {
+            label: {messagekey: "volLabel"},
+            multiplier: {messagekey: "volMultiplier"}
         }
     });
 
@@ -121,28 +117,24 @@ var example = example || {};
             wpm: ".mpe-slider",
             multiplier: ".mpe-slider-multiplier"
         },
-        protoTree: {
-            label: {messagekey: "wpmLabel"},
-            multiplier: {messagekey: "wpmMultiplier"},
+        selectorsToIgnore: ["wpm"],
+        components: {
             wpm: {
-                decorators: {
-                    type: "fluid",
-                    func: "fluid.textfieldSlider",
-                    options: {
-                        rules: {
-                            // the textfieldSlider uses an internal model path of 'value',
-                            // so we must relate that to our model path
-                            "wordsPerMin": "value"
-                        },
-                        model: {
-                            value: "{example.panels.wpm}.model.wordsPerMin"
-                        },
-                        sourceApplier: "{example.panels.wpm}.applier",
-                        range: "{example.panels.wpm}.options.range",
-                        sliderOptions: "{example.panels.wpm}.options.sliderOptions"
-                    }
+                type: "fluid.textfieldSlider",
+                container: "{that}.dom.wpm",
+                createOnEvent: "afterRender",
+                options: {
+                    model: {
+                        value: "{example.panels.wpm}.model.wordsPerMin"
+                    },
+                    range: "{example.panels.wpm}.options.range",
+                    sliderOptions: "{example.panels.wpm}.options.sliderOptions"
                 }
             }
+        },
+        protoTree: {
+            label: {messagekey: "wpmLabel"},
+            multiplier: {messagekey: "wpmMultiplier"}
         }
     });
 
@@ -163,28 +155,24 @@ var example = example || {};
             cursor: ".mpe-slider",
             multiplier: ".mpe-slider-multiplier"
         },
-        protoTree: {
-            label: {messagekey: "cursorLabel"},
-            multiplier: {messagekey: "cursorMultiplier"},
+        selectorsToIgnore: ["cursor"],
+        components: {
             cursor: {
-                decorators: {
-                    type: "fluid",
-                    func: "fluid.textfieldSlider",
-                    options: {
-                        rules: {
-                            // the textfieldSlider uses an internal model path of 'value',
-                            // so we must relate that to our model path
-                            "cursorMult": "value"
-                        },
-                        model: {
-                            value: "{example.panels.cursor}.model.cursorMult"
-                        },
-                        sourceApplier: "{example.panels.cursor}.applier",
-                        range: "{example.panels.cursor}.options.range",
-                        sliderOptions: "{example.panels.cursor}.options.sliderOptions"
-                    }
+                type: "fluid.textfieldSlider",
+                container: "{that}.dom.cursor",
+                createOnEvent: "onDomBind",
+                options: {
+                    model: {
+                        value: "{example.panels.cursor}.model.cursorMult"
+                    },
+                    range: "{example.panels.cursor}.options.range",
+                    sliderOptions: "{example.panels.cursor}.options.sliderOptions"
                 }
             }
+        },
+        protoTree: {
+            label: {messagekey: "cursorLabel"},
+            multiplier: {messagekey: "cursorMultiplier"}
         }
     });
 
@@ -205,28 +193,24 @@ var example = example || {};
             magFactor: ".mpe-slider",
             multiplier: ".mpe-slider-multiplier"
         },
-        protoTree: {
-            label: {messagekey: "magFactorLabel"},
-            multiplier: {messagekey: "magFactorMultiplier"},
+        selectorsToIgnore: ["magFactor"],
+        components: {
             magFactor: {
-                decorators: {
-                    type: "fluid",
-                    func: "fluid.textfieldSlider",
-                    options: {
-                        rules: {
-                            // the textfieldSlider uses an internal model path of 'value',
-                            // so we must relate that to our model path
-                            "mag": "value"
-                        },
-                        model: {
-                            value: "{example.panels.magFactor}.model.mag"
-                        },
-                        sourceApplier: "{example.panels.magFactor}.applier",
-                        range: "{example.panels.magFactor}.options.range",
-                        sliderOptions: "{example.panels.magFactor}.options.sliderOptions"
-                    }
+                type: "fluid.textfieldSlider",
+                container: "{that}.dom.magFactor",
+                createOnEvent: "onDomBind",
+                options: {
+                    model: {
+                        value: "{example.panels.magFactor}.model.mag"
+                    },
+                    range: "{example.panels.magFactor}.options.range",
+                    sliderOptions: "{example.panels.magFactor}.options.sliderOptions"
                 }
             }
+        },
+        protoTree: {
+            label: {messagekey: "magFactorLabel"},
+            multiplier: {messagekey: "magFactorMultiplier"}
         }
     });
 

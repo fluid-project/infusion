@@ -22,8 +22,8 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.registerNamespace("fluid.compat.fluid_1_3.uploader");
 
     fluid.contextAwareness.makeChecks({"fluid.uploader.requiredApi": {
-        value: "fluid_1_3"}
-    });
+        value: "fluid_1_3"
+    }});
     
     // fluid.contextAware.makeContext({"fluid.uploader.requiredApi": {
     //     contextName: "fluid.uploader.requiredApi.fluid_1_3" // check: true is assumed
@@ -99,7 +99,7 @@ var fluid_2_0 = fluid_2_0 || {};
                     contextValue: "{fluid.uploader.requiredApi}.options.value",
                     equals: "fluid_1_2",
                     gradeNames: "fluid.uploader.compatibility.1_2-1_3"
-                }, 
+                },
                 "1_3": {
                     contextValue: "{fluid.uploader.requiredApi}.options.value",
                     equals: "fluid_1_3",

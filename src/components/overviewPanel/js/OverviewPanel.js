@@ -159,7 +159,7 @@ var fluid_2_0 = fluid_2_0 || {};
             instructions: "<p>Do this to do this. Do that to do that.</p>"
         },
         links: {
-            titleLink: "http://fluidproject.org/products/infusion/",
+            titleLink: "http://fluidproject.org/infusion.html",
             demoCodeLink: "#",
             infusionCodeLink: "https://github.com/fluid-project/infusion/",
             apiLink: "#",

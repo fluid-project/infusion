@@ -44,7 +44,7 @@ var assortedContent = assortedContent || {};
                 gradeNames: ["fluid.prefs.starterSeparatedPanelTemplateLoader"]
             },
             prefsEditor: {
-                gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"]
+                gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.initialModel.starter", "fluid.prefs.uiEnhancerRelay"]
             },
             iframeRenderer: {
                 markupProps: {

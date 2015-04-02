@@ -18,15 +18,6 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.registerNamespace("fluid.contextAware");
     
-    /** Two functions for managing singleton components **/
-    
-    // Maps a type name to the member name to be used for it at a particular path level where it is intended to be unique
-    // Note that "." is still not supported as a member name
-    // unsupported, NON-API function
-    fluid.typeNameToMemberName = function (contextName) {
-        return contextName.replace(/\./g, "_");
-    };
-    
     /** Construct an instance of a component as a child of the specified parent, with a well-known, unique name derived from its typeName
     * @param parentPath {String|Array of String} Parent of path where the new component is to be constructed, represented as a string or array of segments
     * @param options {String|Object} Options encoding the component to be constructed. If this is of type String, it is assumed to represent the component's typeName with no options
@@ -182,13 +173,13 @@ var fluid_2_0 = fluid_2_0 || {};
         });
         fluid.sortByPriority(checkList);
         return fluid.find(checkList, function (check) {
-             if (!check.contextValue) {
-                 fluid.fail("Cannot perform check for contextAwareness record ", check, " without a valid field named \"contextValue\"");
-             }
-             var value = fluid.contextAware.getCheckValue(that, check.contextValue);
-             if (check.equals === undefined ? value : value === check.equals) {
-                 return check.gradeNames;
-             }
+            if (!check.contextValue) {
+                fluid.fail("Cannot perform check for contextAwareness record ", check, " without a valid field named \"contextValue\"");
+            }
+            var value = fluid.contextAware.getCheckValue(that, check.contextValue);
+            if (check.equals === undefined ? value : value === check.equals) {
+                return check.gradeNames;
+            }
         }, contextAwareRecord.defaultGradeNames);
     };
     
@@ -197,7 +188,7 @@ var fluid_2_0 = fluid_2_0 || {};
         var gradeNames = [];
         var contextAwareList = fluid.hashToArray(contextAwarenessOptions, "namespace", function (newElement, oldElement, index) {
             $.extend(newElement, oldElement);
-            newElement.priority = fluid.parsePriority(oldElement.priority, index, false, "context awareness records"); 
+            newElement.priority = fluid.parsePriority(oldElement.priority, index, false, "context awareness records");
         });
         fluid.sortByPriority(contextAwareList);
         fluid.each(contextAwareList, function (record) {

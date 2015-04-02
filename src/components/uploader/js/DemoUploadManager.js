@@ -126,7 +126,7 @@ var fluid_2_0 = fluid_2_0 || {};
         invokers: {
             uploadNextFile: {
                 funcName: "fluid.uploader.demo.uploadNextFile",
-                args: "{that}"              
+                args: "{that}"
             },
             stop: {
                 funcName: "fluid.uploader.demo.stop",

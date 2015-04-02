@@ -17,15 +17,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     "use strict";
 
     $(document).ready(function () {
+
+        fluid.registerNamespace("fluid.tests.textfieldSlider");
+
         jqUnit.module("TextfieldSlider Tests");
 
-        var createTextfieldSlider = function (options) {
+        fluid.tests.textfieldSlider.createTextfieldSlider = function (options) {
             return fluid.textfieldSlider(".fl-textfield-slider", options);
         };
 
         jqUnit.test("Test Init", function () {
             jqUnit.expect(8);
-            var textfieldSlider = createTextfieldSlider({model: {value: 15}});
+            var textfieldSlider = fluid.tests.textfieldSlider.createTextfieldSlider({model: {value: 15}});
             jqUnit.assertEquals("Slider value is set to input value", 15, $(".flc-textfieldSlider-slider").slider("value"));
             jqUnit.assertEquals("Textfield value is set", 15, $(".flc-textfieldSlider-field").val());
             jqUnit.assertEquals("The model should be set", 15, textfieldSlider.model.value);
@@ -39,93 +42,67 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The ARIA min should be 0", 0, thumb.attr("aria-valuemin"));
         });
 
-        var testSetting = function (valToTest, expected) {
+        fluid.tests.textfieldSlider.testInputField = function (valToTest, expected) {
             var slider = $(".flc-textfieldSlider-slider");
             var textfield = $(".flc-textfieldSlider-field");
             var thumb = $(".ui-slider-handle");
 
-            slider.slider("value", valToTest);
-            jqUnit.assertEquals("Slider value should be " + expected, expected, slider.slider("value"));
             textfield.val(valToTest);
             textfield.change();
             jqUnit.assertEquals("Textfield value should be the " + expected, expected, textfield.val());
             jqUnit.assertEquals("The ARIA value now should be " + expected, expected, thumb.attr("aria-valuenow"));
+            jqUnit.assertEquals("Slider value should be " + expected, expected, slider.slider("value"));
+        };
+
+        fluid.tests.textfieldSlider.testSlider = function (valToTest, expected) {
+            var slider = $(".flc-textfieldSlider-slider");
+
+            slider.slider("value", valToTest);
+            jqUnit.assertEquals("Slider value should be " + expected, expected, slider.slider("value"));
+        };
+
+        fluid.tests.textfieldSlider.testAll = function (valToTest, expected) {
+            fluid.tests.textfieldSlider.testSlider(valToTest, expected);
+            fluid.tests.textfieldSlider.testInputField(valToTest, expected);
         };
 
         jqUnit.test("Test Min/Max Size", function () {
-            jqUnit.expect(18);
+            jqUnit.expect(24);
 
-            createTextfieldSlider({range: {min: 5, max: 55}});
-            testSetting(56, 55);
-            testSetting(55, 55);
-            testSetting(4, 5);
-            testSetting(25, 25);
-            testSetting(-5, 5);
-            testSetting(5, 5);
+            var that = fluid.tests.textfieldSlider.createTextfieldSlider({range: {min: 5, max: 55}});
+            fluid.tests.textfieldSlider.testAll(56, 55, that);
+            fluid.tests.textfieldSlider.testAll(55, 55, that);
+            fluid.tests.textfieldSlider.testAll(4, 5, that);
+            fluid.tests.textfieldSlider.testAll(25, 25, that);
+            fluid.tests.textfieldSlider.testAll(-5, 5, that);
+            fluid.tests.textfieldSlider.testAll(5, 5, that);
         });
 
         jqUnit.test("Test Negative Scale", function () {
-            jqUnit.expect(15);
+            jqUnit.expect(20);
 
-            createTextfieldSlider({range: {min: -15, max: -5}});
-            testSetting(56, -5);
-            testSetting(-10, -10);
-            testSetting(-16, -15);
-            testSetting(-15, -15);
-            testSetting(-5, -5);
+            fluid.tests.textfieldSlider.createTextfieldSlider({range: {min: -15, max: -5}});
+            fluid.tests.textfieldSlider.testAll(56, -5);
+            fluid.tests.textfieldSlider.testAll(-10, -10);
+            fluid.tests.textfieldSlider.testAll(-16, -15);
+            fluid.tests.textfieldSlider.testAll(-15, -15);
+            fluid.tests.textfieldSlider.testAll(-5, -5);
         });
 
-        var checkValidatedValue = function (changeRequestValue, expectedValue) {
-            var model = {
-                value: 5
-            };
-            var range = {
-                min: 2,
-                max: 10
-            };
-            var changeRequest = {
-                value: changeRequestValue
-            };
+        jqUnit.test("Test Invalid Values", function () {
+            jqUnit.expect(6);
 
-            fluid.textfieldSlider.validateValue(model, range, changeRequest);
-            jqUnit.assertEquals("Validating value", expectedValue, changeRequest.value);
-        };
-
-        jqUnit.test("validateValue() tests", function () {
-            checkValidatedValue(11, 10);
-            checkValidatedValue(1, 2);
-            checkValidatedValue(5, 5);
-            checkValidatedValue(-1, 2);
-            checkValidatedValue(undefined, 5);
-            checkValidatedValue(null, 5);
-            checkValidatedValue("", 5);
-        });
-
-        jqUnit.asyncTest("afterRender event - init", function () {
-            jqUnit.expect(1);
-            createTextfieldSlider({
-                listeners: {
-                    afterRender: function () {
-                        jqUnit.assert("The afterRender event fired");
-                        jqUnit.start();
-                    }
+            fluid.tests.textfieldSlider.createTextfieldSlider({
+                range: {
+                    min: -5,
+                    max: 5
+                },
+                model: {
+                    value: 1
                 }
             });
-        });
-
-        jqUnit.asyncTest("afterRender event", function () {
-            jqUnit.expect(1);
-            var that = createTextfieldSlider({
-                listeners: {
-                    afterRender: function () {
-                        jqUnit.assert("The afterRender event fired");
-                        jqUnit.start();
-                    }
-                },
-                renderOnInit: false
-            });
-
-            that.refreshView();
+            fluid.tests.textfieldSlider.testInputField("aaa", 1);
+            fluid.tests.textfieldSlider.testInputField(null, 0);
         });
     });
 })(jQuery);

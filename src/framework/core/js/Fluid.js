@@ -708,7 +708,7 @@ var fluid = fluid || fluid_2_0;
      * (newElement, oldElement, key) where newElement is the freshly cloned element, oldElement is the original hash's element, and key is the key of the element.
      * If the function is not supplied, the old element is simply deep-cloned onto the new element (same effect
      * as transform fluid.transforms.objectToArray) 
-     */ 
+     */
     fluid.hashToArray = function (hash, keyName, func) {
         var togo = [];
         fluid.each(hash, function (el, key) {
@@ -1119,6 +1119,10 @@ var fluid = fluid || fluid_2_0;
         
         return togo;
     };
+    
+    fluid.renderPriority = function (parsed) {
+        return parsed.constraint ? (parsed.constraint.target ? parsed.constraint.type + ":" + parsed.constraint.target : parsed.constraint.type ) : Math.floor(parsed.fixed);
+    };
 
     // unsupported, NON-API function
     fluid.compareByPriority = function (recA, recB) {
@@ -1172,8 +1176,8 @@ var fluid = fluid || fluid_2_0;
             }
             if (firstConstraint === oldFirstConstraint) {
                 var holders = array.slice(firstConstraint);
-                fluid.fail("Could not find targets for any constraints in " + holders[0].priority.site + " ", holders, ": none of the targets (" + fluid.getMembers(holders, "priority.constraint.target").join(", ")
-                    + ") matched any namespaces of the elements in (", array.slice(0, firstConstraint) + ") - this is caused by either an invalid or circular reference");
+                fluid.fail("Could not find targets for any constraints in " + holders[0].priority.site + " ", holders, ": none of the targets (" + fluid.getMembers(holders, "priority.constraint.target").join(", ") +
+                    ") matched any namespaces of the elements in (", array.slice(0, firstConstraint) + ") - this is caused by either an invalid or circular reference");
             }
         }
     };

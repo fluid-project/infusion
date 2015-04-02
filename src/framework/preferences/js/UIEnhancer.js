@@ -22,13 +22,13 @@ var fluid_2_0 = fluid_2_0 || {};
      * Holds the default values for enactors and panel model values                *
      *******************************************************************************/
 
-    fluid.defaults("fluid.prefs.rootModel", {
+    fluid.defaults("fluid.prefs.initialModel", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         members: {
             // TODO: This information is supposed to be generated from the JSON
             // schema describing various preferences. For now it's kept in top
             // level prefsEditor to avoid further duplication.
-            rootModel: {}
+            initialModel: {}
         }
     });
 
@@ -39,18 +39,14 @@ var fluid_2_0 = fluid_2_0 || {};
      ***********************************************/
 
     fluid.defaults("fluid.uiEnhancer", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         invokers: {
             updateModel: {
-                funcName: "fluid.uiEnhancer.updateModel",
-                args: ["{arguments}.0", "{uiEnhancer}.applier"]
+                func: "{that}.applier.change",
+                args: ["", "{arguments}.0"]
             }
         }
     });
-
-    fluid.uiEnhancer.updateModel = function (newModel, applier) {
-        applier.requestChange("", newModel);
-    };
 
     /********************************************************************************
      * PageEnhancer                                                                 *
@@ -60,11 +56,16 @@ var fluid_2_0 = fluid_2_0 || {};
      * "originalEnhancerOptions" is a grade component to keep track of the original *
      * uiEnhancer user options                                                      *
      ********************************************************************************/
-     
+    
+    // TODO: Both the pageEnhancer and the uiEnhancer need to be available separately - some
+    // references to "{uiEnhancer}" are present in prefsEditorConnections, whilst other
+    // sites refer to "{pageEnhancer}". The fact that uiEnhancer requires "body" prevents it
+    // being top-level until we have the options flattening revolution. Also one day we want
+    // to make good of advertising an unmerged instance of the "originalEnhancerOptions"
     fluid.defaults("fluid.pageEnhancer", {
         gradeNames: ["fluid.eventedComponent", "fluid.originalEnhancerOptions",
-            "fluid.prefs.rootModel", "fluid.prefs.settingsGetter",
-            "fluid.resolveRoot", "autoInit"],
+            "fluid.prefs.initialModel", "fluid.prefs.settingsGetter",
+            "fluid.resolveRootSingle", "autoInit"],
         distributeOptions: {
             source: "{that}.options.uiEnhancer",
             target: "{that > uiEnhancer}.options"
@@ -73,7 +74,7 @@ var fluid_2_0 = fluid_2_0 || {};
             uiEnhancer: {
                 type: "fluid.uiEnhancer",
                 options: {
-                    gradeNames: "fluid.resolveRoot"
+                    gradeNames: "fluid.resolveRootSingle"
                 },
                 container: "body"
             }

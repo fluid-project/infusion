@@ -61,7 +61,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             message: "Both contexts match, so the first gradeName should be returned",
             markers: ["animal.cat", "animal.dog"],
             checks: {
-                cat: { 
+                cat: {
                     contextValue: "{animal.cat}",
                     gradeNames: "food.fancyFeast",
                     priority: "before:dog"
@@ -80,7 +80,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     contextValue: "{animal.hamster}",
                     gradeNames: "food.fancyFeast",
                     priority: "before:dog"
-                }, 
+                },
                 dog: {
                     contextValue: "{animal.dog}",
                     gradeNames: "food.iams"
@@ -104,7 +104,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }, {
             message: "Comparison with specific context values",
             markers: {
-                 "api.version" : "1_3"
+                "api.version" : "1_3"
             },
             checks: {
                 is_1_3: {

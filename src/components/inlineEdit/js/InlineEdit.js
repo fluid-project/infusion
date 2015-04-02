@@ -965,7 +965,6 @@ var fluid_2_0 = fluid_2_0 || {};
                 }
             }
         },
-        returnedPath: "inlineEdits", // courtesy for manual creation
         selectors: {
             editables: ".flc-inlineEditable"
         }
@@ -974,5 +973,6 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.inlineEdits = function (container, options) {
         var that = fluid.inlineEditsComponent(container, options);
         return that.inlineEdits;
-    }
+    };
+    
 })(jQuery, fluid_2_0);

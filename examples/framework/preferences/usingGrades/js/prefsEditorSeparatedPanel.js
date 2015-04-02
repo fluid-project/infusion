@@ -74,7 +74,7 @@ var example = example || {};
                 gradeNames: ["fluid.prefs.starterMessageLoader"]
             },
             prefsEditor: {
-                gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"]
+                gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.initialModel.starter", "fluid.prefs.uiEnhancerRelay"]
             }
         });
     };

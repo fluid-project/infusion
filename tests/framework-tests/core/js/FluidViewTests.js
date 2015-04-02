@@ -114,7 +114,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.test("allocateSimpleId", function () {
             var elementWithId = $("#element-with-id");
             var returnWithId = fluid.allocateSimpleId(elementWithId);
-            jqUnit.assertDeepEq("Calling allocateSimpleId on element with id leaves id unchanged", ["element-with-id", "element-with-id"], [returnWithId, elementWithId.prop("id")]);  
+            jqUnit.assertDeepEq("Calling allocateSimpleId on element with id leaves id unchanged", ["element-with-id", "element-with-id"], [returnWithId, elementWithId.prop("id")]);
             
             var elementWithoutId = $(".element-without-id");
             var fluidId = fluid.allocateSimpleId(elementWithoutId);

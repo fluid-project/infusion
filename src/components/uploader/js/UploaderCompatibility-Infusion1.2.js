@@ -24,8 +24,8 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.registerNamespace("fluid.compat.fluid_1_2.uploader");
 
     fluid.contextAwareness.makeChecks({"fluid.uploader.requiredApi": {
-        value: "fluid_1_2"}
-    });
+        value: "fluid_1_2"
+    }});
 
     fluid.compat.fluid_1_2.uploader.optionsRules = {
         components: {

@@ -41,7 +41,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         // TODO: we need MUCH better event boiling support in order to avoid rubbish like this
-        var that, prefsEditor;
+        var prefsEditor;
         function testToCEnhancement(innerPrefsEditor) {
             prefsEditor = innerPrefsEditor;
         }
@@ -57,7 +57,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.start();
         }
 
-        that = fluid.tests.prefs.mungingIntegrationTest("fluid.prefs.fullPreview", "#myPrefsEditor", {
+        var that = fluid.tests.prefs.mungingIntegrationTest("fluid.prefs.fullPreview", "#myPrefsEditor", {
             previewEnhancer: {
                 components: {
                     tableOfContents: {

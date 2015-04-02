@@ -62,6 +62,15 @@ var fluid = fluid || fluid_2_0;
     fluid.transforms.arrayValue = fluid.makeArray;
 
 
+    fluid.defaults("fluid.transforms.stringToNumber", {
+        gradeNames: ["fluid.standardTransformFunction"]
+    });
+
+    fluid.transforms.stringToNumber = function (value) {
+        var newValue = Number(value);
+        return isNaN(newValue) ? undefined : newValue;
+    };
+
     fluid.defaults("fluid.transforms.count", {
         gradeNames: "fluid.standardTransformFunction"
     });
@@ -488,7 +497,7 @@ var fluid = fluid || fluid_2_0;
     * <code>{e1: {b: 1, c: 2}, e2: {b: 2: c, 3}</code>
     * Note: This transform frequently arises in the context of data which arose in XML form, which often represents "morally indexed" data in repeating array-like
     * constructs where the indexing key is held, for example, in an attribute.
-    */ 
+    */
 
     fluid.transforms.arrayToObject = function (arr, transformSpec, transformer) {
         if (transformSpec.key === undefined) {

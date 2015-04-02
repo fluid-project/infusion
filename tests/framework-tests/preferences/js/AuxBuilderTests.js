@@ -228,6 +228,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "options.gradeNames": "fluid.prefs.prefsEditorConnections",
             "options.resources.template": "templateLoader.resources.%prefKey"
         },
+        panelModel: {
+            "%internalModelName": "prefsEditor.model.%externalModelName"
+        },
         compositePanelBasedOnSub: {
             "%subPrefKey": "templateLoader.resources.%subPrefKey"
         },
@@ -235,8 +238,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "container": "%compositePanel.dom.%prefKey"
         },
         enactor: {
-            "options.gradeNames": "fluid.prefs.uiEnhancerConnections",
             "container": "uiEnhancer.container"
+        },
+        enactorModel: {
+            "%internalModelName": "uiEnhancer.model.%externalModelName"
         }
     };
 
@@ -246,7 +251,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.testExpandSchemaComponents = function (auxSchema, type, prefKey, componentConfig, index, primarySchema, expectedOutput) {
         var panelsCommonOptions = fluid.get(fluid.tests.elementCommonOptions, "panel");
-        var output = fluid.prefs.expandSchemaComponents(auxSchema, type, prefKey, componentConfig, index, panelsCommonOptions, primarySchema);
+        var panelModelOptions = fluid.get(fluid.tests.elementCommonOptions, "panelModel");
+        var output = fluid.prefs.expandSchemaComponents(auxSchema, type, prefKey, componentConfig, index, panelsCommonOptions, panelModelOptions, primarySchema);
         jqUnit.assertDeepEq("The components and templates blocks are constructed correctly", expectedOutput, output);
     };
 
@@ -341,11 +347,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     "by": "fl-theme-prefsEditor-by fl-theme-by",
                                     "yb": "fl-theme-prefsEditor-yb fl-theme-yb"
                                 },
-                                rules: {
-                                    "fluid_prefs_contrast": "value"
-                                },
                                 model: {
-                                    value: "default"
+                                    value: "prefsEditor.model.fluid_prefs_contrast"
                                 },
                                 controlValues: {
                                     theme: ["default", "bw", "wb", "by", "yb"]
@@ -367,9 +370,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         "fluid_prefs_panel_contrast": "messages/contrast"
                     }
                 },
-                rootModel: {
+                initialModel: {
                     members: {
-                        rootModel: {
+                        initialModel: {
                             "fluid_prefs_contrast": "default"
                         }
                     }
@@ -512,7 +515,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.prefs.panel.otherTextSize", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         preferenceMap: {
             "fluid.prefs.textSize": {
                 "model.value": "default",
@@ -610,21 +613,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     type: "fluid.prefs.enactor.textSize",
                     container: "uiEnhancer.container",
                     options: {
-                        gradeNames: ["fluid.prefs.uiEnhancerConnections"],
                         model: {
-                            value: 1
-                        },
-                        rules: {
-                            fluid_prefs_textSize: "value"
+                            value: "uiEnhancer.model.fluid_prefs_textSize"
                         }
                     }
                 }
             }
         },
-        rootModel: {
-            gradeNames: ["fluid.prefs.rootModel", "autoInit"],
+        initialModel: {
+            gradeNames: ["fluid.prefs.initialModel", "autoInit"],
             members: {
-                rootModel: {
+                initialModel: {
                     fluid_prefs_textSize: 1
                 }
             }
@@ -663,10 +662,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     options: {
                         gradeNames: ["fluid.prefs.prefsEditorConnections"],
                         model: {
-                            textSize: 1
-                        },
-                        rules: {
-                            fluid_prefs_textSize: "textSize"
+                            textSize: "prefsEditor.model.fluid_prefs_textSize"
                         },
                         range: {
                             min: 1,
@@ -691,10 +687,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "fluid_prefs_panel_textSize": "%prefix/PrefsEditorTemplate-textSize.json"
             }
         },
-        rootModel: {
-            gradeNames: ["fluid.prefs.rootModel", "autoInit"],
+        initialModel: {
+            gradeNames: ["fluid.prefs.initialModel", "autoInit"],
             members: {
-                rootModel: {
+                initialModel: {
                     fluid_prefs_textSize: 1
                 }
             }
@@ -797,10 +793,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             options: {
                                 gradeNames: ["fluid.prefs.prefsEditorConnections"],
                                 model: {
-                                    textSize: 1
-                                },
-                                rules: {
-                                    fluid_prefs_textSize: "textSize"
+                                    textSize: "prefsEditor.model.fluid_prefs_textSize"
                                 },
                                 range: {
                                     min: 1,
@@ -818,10 +811,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             options: {
                                 gradeNames: ["fluid.prefs.prefsEditorConnections"],
                                 model: {
-                                    value: 1
-                                },
-                                rules: {
-                                    fluid_prefs_textSize: "value"
+                                    value: "prefsEditor.model.fluid_prefs_textSize"
                                 },
                                 range: {
                                     min: 1,
@@ -848,10 +838,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         "fluid_prefs_panel_otherTextSize": "%prefix/PrefsEditorTemplate-otherTextSize.json"
                     }
                 },
-                rootModel: {
-                    gradeNames: ["fluid.prefs.rootModel", "autoInit"],
+                initialModel: {
+                    gradeNames: ["fluid.prefs.initialModel", "autoInit"],
                     members: {
-                        rootModel: {
+                        initialModel: {
                             fluid_prefs_textSize: 1
                         }
                     }
@@ -887,12 +877,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             options: {
                                 gradeNames: ["fluid.prefs.prefsEditorConnections"],
                                 model: {
-                                    links: false,
-                                    inputsLarger: false
-                                },
-                                rules: {
-                                    fluid_prefs_emphasizeLinks: "links",
-                                    fluid_prefs_inputsLarger: "inputsLarger"
+                                    links: "prefsEditor.model.fluid_prefs_emphasizeLinks",
+                                    inputsLarger: "prefsEditor.model.fluid_prefs_inputsLarger"
                                 },
                                 resources: {
                                     template: "templateLoader.resources.fluid_prefs_panel_oneForManyPrefs"
@@ -913,10 +899,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         "fluid_prefs_panel_oneForManyPrefs": "%prefix/PrefsEditorTemplate-linksControls.json"
                     }
                 },
-                rootModel: {
-                    gradeNames: ["fluid.prefs.rootModel", "autoInit"],
+                initialModel: {
+                    gradeNames: ["fluid.prefs.initialModel", "autoInit"],
                     members: {
-                        rootModel: {
+                        initialModel: {
                             fluid_prefs_emphasizeLinks: false,
                             fluid_prefs_inputsLarger: false
                         }
@@ -950,10 +936,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             options: {
                                 gradeNames: ["fluid.prefs.prefsEditorConnections"],
                                 model: {
-                                    textSize: 1
-                                },
-                                rules: {
-                                    fluid_prefs_textSize: "textSize"
+                                    textSize: "prefsEditor.model.fluid_prefs_textSize"
                                 },
                                 range: {
                                     min: 1,
@@ -987,22 +970,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             type: "fluid.prefs.enactor.textSize",
                             container: "uiEnhancer.container",
                             options: {
-                                gradeNames: ["fluid.prefs.uiEnhancerConnections"],
                                 model: {
-                                    value: 1
-                                },
-                                rules: {
-                                    fluid_prefs_textSize: "value"
+                                    value: "uiEnhancer.model.fluid_prefs_textSize"
                                 }
                             }
                         }
                     },
                     "selectors": {}
                 },
-                rootModel: {
-                    gradeNames: ["fluid.prefs.rootModel", "autoInit"],
+                initialModel: {
+                    gradeNames: ["fluid.prefs.initialModel", "autoInit"],
                     members: {
-                        rootModel: {
+                        initialModel: {
                             fluid_prefs_textSize: 1
                         }
                     }
@@ -1129,7 +1108,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.prefs.enactor.subPanel2", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
             "fluid.prefs.subPanel2": {
                 "model.value": "default"
@@ -1266,12 +1245,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         },
                         "selectorsToIgnore": ["fluid_prefs_subPanel1", "fluid_prefs_subPanel2"],
                         model: {
-                            "fluid_prefs_subPanel1": false,
-                            "fluid_prefs_subPanel2": false
-                        },
-                        rules: {
-                            "fluid_prefs_subPanel1": "fluid_prefs_subPanel1",
-                            "fluid_prefs_subPanel2": "fluid_prefs_subPanel2"
+                            "fluid_prefs_subPanel1": "prefsEditor.model.fluid_prefs_subPanel1",
+                            "fluid_prefs_subPanel2": "prefsEditor.model.fluid_prefs_subPanel2"
                         },
                         components: {
                             "fluid_prefs_subPanel1": {
@@ -1309,9 +1284,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "fluid_prefs_subPanel2": "%prefix/subPanel2.json"
             }
         },
-        rootModel: {
+        initialModel: {
             members: {
-                rootModel: {
+                initialModel: {
                     fluid_prefs_subPanel1: false,
                     fluid_prefs_subPanel2: false
                 }
@@ -1323,7 +1298,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("Test expanding composite panel groups fluid.prefs.expandCompositePanels()", function () {
         var expandedCompositePanel = fluid.prefs.expandCompositePanels(fluid.tests.auxSchema.compositePanelSchema, fluid.tests.auxSchema.compositePanelSchema.groups, fluid.tests.auxSchema.panelIndex,
                 fluid.get(fluid.tests.elementCommonOptions, "panel"), fluid.get(fluid.tests.elementCommonOptions, "subPanel"), fluid.get(fluid.tests.elementCommonOptions, "compositePanelBasedOnSub"),
-                fluid.tests.auxSchema.compositePanelMappedDefaults);
+                fluid.get(fluid.tests.elementCommonOptions, "panelModel"), fluid.tests.auxSchema.compositePanelMappedDefaults);
 
         jqUnit.assertDeepEq("The auxiliary schema for a composite panel has been parsed correctly", fluid.tests.auxSchema.expandedComposite, expandedCompositePanel);
     });
@@ -1386,7 +1361,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.prefs.enactor.subPanel4", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
             "fluid.prefs.subPanel4": {
                 "model.value": "default"
@@ -1511,12 +1486,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         },
                         "selectorsToIgnore": ["fluid_prefs_subPanel3", "fluid_prefs_subPanel4"],
                         model: {
-                            "fluid_prefs_subPanel3": false,
-                            "fluid_prefs_subPanel4": false
-                        },
-                        rules: {
-                            "fluid_prefs_subPanel3": "fluid_prefs_subPanel3",
-                            "fluid_prefs_subPanel4": "fluid_prefs_subPanel4"
+                            "fluid_prefs_subPanel3": "prefsEditor.model.fluid_prefs_subPanel3",
+                            "fluid_prefs_subPanel4": "prefsEditor.model.fluid_prefs_subPanel4"
                         },
                         components: {
                             "fluid_prefs_subPanel3": {
@@ -1553,9 +1524,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "fluid_prefs_subPanel4": "%prefix/subPanel4.json"
             }
         },
-        rootModel: {
+        initialModel: {
             members: {
-                rootModel: {
+                initialModel: {
                     fluid_prefs_subPanel3: false,
                     fluid_prefs_subPanel4: false
                 }
@@ -1570,7 +1541,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("Test expanding multiple composite panel groups with fluid.prefs.expandCompositePanels()", function () {
         var expandedCompositePanel = fluid.prefs.expandCompositePanels(fluid.tests.auxSchema.multiCompositePanelSchema, fluid.tests.auxSchema.multiCompositePanelSchema.groups,
                 fluid.tests.auxSchema.multiPanelIndex, fluid.get(fluid.tests.elementCommonOptions, "panel"), fluid.get(fluid.tests.elementCommonOptions, "subPanel"),
-                fluid.get(fluid.tests.elementCommonOptions, "compositePanelBasedOnSub"), fluid.tests.auxSchema.multiCompositePanelMappedDefaults);
+                fluid.get(fluid.tests.elementCommonOptions, "compositePanelBasedOnSub"), fluid.get(fluid.tests.elementCommonOptions, "panelModel"),
+                fluid.tests.auxSchema.multiCompositePanelMappedDefaults);
 
         jqUnit.assertDeepEq("The auxiliary schema for multiple composite panels has been parsed correctly", fluid.tests.auxSchema.expandedMultiComposite, expandedCompositePanel);
     });
@@ -1812,16 +1784,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         },
                         "selectorsToIgnore": ["fluid_prefs_subPanel5", "fluid_prefs_subPanel6", "fluid_prefs_subPanel7", "fluid_prefs_subPanel8"],
                         model: {
-                            "fluid_prefs_subPanel5": false,
-                            "fluid_prefs_subPanel6": false,
-                            "fluid_prefs_subPanel7": false,
-                            "fluid_prefs_subPanel8": false
-                        },
-                        rules: {
-                            "fluid_prefs_subPanel5": "fluid_prefs_subPanel5",
-                            "fluid_prefs_subPanel6": "fluid_prefs_subPanel6",
-                            "fluid_prefs_subPanel7": "fluid_prefs_subPanel7",
-                            "fluid_prefs_subPanel8": "fluid_prefs_subPanel8"
+                            "fluid_prefs_subPanel5": "prefsEditor.model.fluid_prefs_subPanel5",
+                            "fluid_prefs_subPanel6": "prefsEditor.model.fluid_prefs_subPanel6",
+                            "fluid_prefs_subPanel7": "prefsEditor.model.fluid_prefs_subPanel7",
+                            "fluid_prefs_subPanel8": "prefsEditor.model.fluid_prefs_subPanel8"
                         },
                         components: {
                             "fluid_prefs_subPanel5": {
@@ -1873,9 +1839,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "fluid_prefs_subPanel8": "%prefix/subPanel8.json"
             }
         },
-        rootModel: {
+        initialModel: {
             members: {
-                rootModel: {
+                initialModel: {
                     fluid_prefs_subPanel5: false,
                     fluid_prefs_subPanel6: false,
                     fluid_prefs_subPanel7: false,
@@ -1889,7 +1855,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("Test expanding composite panel group having subpanels rendered on particular pref key with fluid.prefs.expandCompositePanels()", function () {
         var expandedCompositePanel = fluid.prefs.expandCompositePanels(fluid.tests.auxSchema.renderOnPrefSchema, fluid.tests.auxSchema.renderOnPrefSchema.groups,
                 fluid.tests.auxSchema.renderOnPrefIndex, fluid.get(fluid.tests.elementCommonOptions, "panel"), fluid.get(fluid.tests.elementCommonOptions, "subPanel"),
-                fluid.get(fluid.tests.elementCommonOptions, "compositePanelBasedOnSub"), fluid.tests.auxSchema.renderOnPrefMappedDefaults);
+                fluid.get(fluid.tests.elementCommonOptions, "compositePanelBasedOnSub"), fluid.get(fluid.tests.elementCommonOptions, "panelModel"),
+                fluid.tests.auxSchema.renderOnPrefMappedDefaults);
 
         jqUnit.assertDeepEq("The auxiliary schema for multiple composite panels has been parsed correctly", fluid.tests.auxSchema.renderOnPrefExpandedComposite, expandedCompositePanel);
     });
@@ -1904,13 +1871,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "fluid_prefs_enactor_subPanel1": {
                     type: "fluid.prefs.enactor.subPanel1",
                     options: {
-                        gradeNames: ["fluid.prefs.uiEnhancerConnections"],
                         "cssClass": "fl-link-enhanced",
                         model: {
-                            value: false
-                        },
-                        rules: {
-                            fluid_prefs_subPanel1: "value"
+                            value: "uiEnhancer.model.fluid_prefs_subPanel1"
                         }
                     }
                 },
@@ -1918,13 +1881,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     type: "fluid.prefs.enactor.subPanel2",
                     container: "uiEnhancer.container",
                     options: {
-                        gradeNames: ["fluid.prefs.uiEnhancerConnections"],
                         "cssClass": "fl-text-larger",
                         model: {
-                            value: false
-                        },
-                        rules: {
-                            fluid_prefs_subPanel2: "value"
+                            value: "uiEnhancer.model.fluid_prefs_subPanel2"
                         }
                     }
                 }
@@ -1943,8 +1902,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "prefsEditor": "%prefix/prefs.json"
             }
         },
-        rootModel: {
-            gradeNames: ["fluid.prefs.rootModel", "autoInit"]
+        initialModel: {
+            gradeNames: ["fluid.prefs.initialModel", "autoInit"]
         },
         templatePrefix: {
             gradeNames: ["fluid.littleComponent", "autoInit"],

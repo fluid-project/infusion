@@ -1163,7 +1163,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         expanderValue: {
             expander: {
-                type: "fluid.deferredCall",
                 func: "fluid.identity",
                 args: "{self}.forwardValue"
             }
@@ -3256,17 +3255,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("FLUID-5036, Case 2 - An IoCSS source that is fetched from the static environment is not resolved correctly", function () {
-        var targetOption = 10;
-
-        var optionHolder = fluid.littleComponent({
-            gradeNames: ["fluid5036_2UserOption", "fluid.resolveRoot"],
-            targetOption: targetOption
-        });
-        var root = fluid.tests.fluid5036_2Root();
-
-        jqUnit.assertEquals("The user option fetched from the static environment is passed down the target", targetOption, root.subComponent.options.options.targetOption);
-        optionHolder.destroy();
+    jqUnit.test("FLUID-5036, Case 2 - An IoCSS source that is fetched from the static environment is not resolved correctly - and displacement using fluid.resolveRootSingle", function () {
+        function issueRootAndReference (targetOption) {
+            var optionHolder = fluid.littleComponent({
+                gradeNames: ["fluid5036_2UserOption", "fluid.resolveRootSingle"],
+                targetOption: targetOption
+            });
+            var root = fluid.tests.fluid5036_2Root();
+    
+            jqUnit.assertEquals("The user option fetched from the static environment is passed down the target", targetOption, root.subComponent.options.options.targetOption);
+            return [optionHolder, root];
+        }
+        issueRootAndReference(10);
+        issueRootAndReference(20);
     });
 
     fluid.defaults("fluid.tests.baseGradeComponent", {

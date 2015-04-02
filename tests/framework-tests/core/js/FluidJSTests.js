@@ -540,7 +540,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         name: "one before",
         listeners: {
             "a": "",
-            "b": "before:a"  
+            "b": "before:a"
         },
         expected: "ba"
     }, {
@@ -564,17 +564,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     }, {
         name: "two fixed, three after",
         listeners: {
-          "a": "after:b",
-          "b": 10,
-          "c": 20,
-          "d": "after:e",
-          "e": "after:c"
+            "a": "after:b",
+            "b": 10,
+            "c": 20,
+            "d": "after:e",
+            "e": "after:c"
         },
         expected: "cedba"
     }];
     
     fluid.tests.upgradeListeners = function (listeners) {
-        return fluid.hashToArray(listeners, "namespace", function (newElement, oldElement, key) {
+        return fluid.hashToArray(listeners, "namespace", function (newElement, oldElement) {
             newElement.priority = fluid.parsePriority(oldElement, 0, false, "listeners");
         });
     };

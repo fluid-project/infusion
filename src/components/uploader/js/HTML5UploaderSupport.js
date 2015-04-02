@@ -137,15 +137,15 @@ var fluid_2_0 = fluid_2_0 || {};
         invokers: {
             send: {
                 funcName: "fluid.fail",
-                args: "Error instantiating HTML5 Uploader - browser does not support FormData feature. Please try version 1.4 or earlier of Uploader which has Firefox 3.x support" 
+                args: "Error instantiating HTML5 Uploader - browser does not support FormData feature. Please try version 1.4 or earlier of Uploader which has Firefox 3.x support"
             }
         },
         contextAwareness: {
             technology: {
-                 checks: {
-                     contextValue: "{fluid.browser.supportsFormData}",
-                     gradeNames: "fluid.uploader.html5Strategy.formDataSender"
-                 }
+                checks: {
+                    contextValue: "{fluid.browser.supportsFormData}",
+                    gradeNames: "fluid.uploader.html5Strategy.formDataSender"
+                }
             }
         }
     });
@@ -204,7 +204,7 @@ var fluid_2_0 = fluid_2_0 || {};
                         browseButton: "{uploader}.options.selectors.browseButton"
                     },
                     events: {
-                        onBrowse: "{local}.events.onFileDialog",
+                        onBrowse: "{local}.events.onFileDialog"
                     },
                     listeners: {
                         onFilesQueued: "{local}.addFiles"

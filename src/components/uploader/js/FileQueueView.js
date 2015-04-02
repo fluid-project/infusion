@@ -418,7 +418,7 @@ var fluid_2_0 = fluid_2_0 || {};
         },
         listeners: {
             "onCreate.prepareTemplateElement": "fluid.uploader.fileQueueView.prepareTemplateElements",
-            "onCreate.addKeyboardNavigation":   "fluid.uploader.fileQueueView.addKeyboardNavigation",
+            "onCreate.addKeyboardNavigation":   "fluid.uploader.fileQueueView.addKeyboardNavigation"
         }
     });
     
