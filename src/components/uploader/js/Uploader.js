@@ -341,11 +341,14 @@ var fluid_2_0 = fluid_2_0 || {};
     });
     
     fluid.defaults("fluid.uploader.builtinStrategyDistributor", {
-        record: {
-            contextValue: "{fluid.browser.supportsBinaryXHR}",
-            gradeNames: "fluid.uploader.html5"
-        },
-        target: "{/ fluid.uploader}.options.contextAwareness.uploaderStrategy.checks.supportsBinaryXHR"
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        distributeOptions: {
+            record: {
+                contextValue: "{fluid.browser.supportsBinaryXHR}",
+                gradeNames: "fluid.uploader.html5"
+            },
+            target: "{/ fluid.uploader}.options.contextAwareness.technology.checks.supportsBinaryXHR"
+        }
     });
     
     fluid.constructSingle([], "fluid.uploader.builtinStrategyDistributor");
@@ -462,6 +465,7 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             fileQueueView: {
                 type: "fluid.uploader.fileQueueView",
+                container: "{uploader}.dom.fileQueue",
                 options: {
                     gradeNames: "fluid.uploader.fileQueueView.bindUploader",
                     model: "{uploader}.queue.files",
@@ -751,17 +755,6 @@ var fluid_2_0 = fluid_2_0 || {};
         CANCELLED:   "cancelled"
     };
 
-    fluid.uploader.singleFile.toggleVisibility = function (toShow, toHide) {
-        // For FLUID-2789: hide() doesn't work in Opera
-        if (window.opera) {
-            toShow.show().removeClass("hideUploaderForOpera");
-            toHide.show().addClass("hideUploaderForOpera");
-        } else {
-            toShow.show();
-            toHide.hide();
-        }
-    };
-
     /**
      * Single file Uploader implementation. Use fluid.uploader() for IoC-resolved, progressively
      * enhanceable Uploader, or call this directly if you only want a standard single file uploader.
@@ -780,6 +773,17 @@ var fluid_2_0 = fluid_2_0 || {};
             "onCreate.showMarkup": "fluid.uploader.singleFile.showMarkup"
         }
     });
+    
+    fluid.uploader.singleFile.toggleVisibility = function (toShow, toHide) {
+        // For FLUID-2789: hide() doesn't work in Opera
+        if (window.opera) {
+            toShow.show().removeClass("hideUploaderForOpera");
+            toHide.show().addClass("hideUploaderForOpera");
+        } else {
+            toShow.show();
+            toHide.hide();
+        }
+    };
 
     fluid.uploader.singleFile.showMarkup = function (that) {
         // TODO: direct DOM fascism that will fail with multiple uploaders on a single page.

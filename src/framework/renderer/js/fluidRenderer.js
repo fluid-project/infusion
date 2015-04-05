@@ -649,9 +649,7 @@ fluid_2_0 = fluid_2_0 || {};
 
         function isSelectedValue(torender, value) {
             var selection = torender.selection;
-            return selection.value && typeof(selection.value) !== "string" && typeof(selection.value.length) === "number" ?
-                $.inArray(value, selection.value) !== -1 :
-                selection.value === value;
+            return fluid.isArrayable(selection.value) ? selection.value.indexOf(value) !== -1 : selection.value === value;
         }
 
         function getRelativeComponent(component, relativeID) {

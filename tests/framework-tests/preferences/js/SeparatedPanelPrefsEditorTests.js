@@ -257,7 +257,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     $(document).ready(function () {
 
-        fluid.prefs.globalSettingsStore();
+        fluid.tests.prefs.globalSettingsStore();
         fluid.pageEnhancer(fluid.tests.prefs.enhancerOptions);
 
         fluid.test.runTests([

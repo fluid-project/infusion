@@ -21,7 +21,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.registerNamespace("fluid.compat.fluid_1_3.uploader");
 
-    fluid.contextAwareness.makeChecks({"fluid.uploader.requiredApi": {
+    fluid.contextAware.makeChecks({"fluid.uploader.requiredApi": {
         value: "fluid_1_3"
     }});
     
@@ -92,7 +92,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
     
     
-    fluid.defaults("fluid.uploader.compatibility.distributor", {
+    fluid.defaults("fluid.uploader.compatibility.distributor.1_4", {
         distributeOptions: {
             record: {
                 "1_2": {
@@ -110,6 +110,9 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
     
-    fluid.constructSingle([], "fluid.uploader.compatibility.distributor");
+    fluid.constructSingle([], {
+        singleRootType: "fluid.uploader.compatibility.distributor",
+        type: "fluid.uploader.compatibility.distributor.1_4"
+    });
 
 })(fluid_2_0);

@@ -19,12 +19,19 @@ var fluid_2_0 = fluid_2_0 || {};
         gradeNames: "fluid.uploader.multiFileUploader",
         components: {
             strategy: {
-                local: { // TODO: Would be nice to have some way to express that this is a "natural covariant refinement"
-                    type: "fluid.uploader.html5Strategy.local"
-                },
-                remote: {
-                    type: "fluid.uploader.remote"
-                }
+                type: "fluid.uploader.html5Strategy"
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.uploader.html5Strategy", {
+        gradeNames: ["fluid.uploader.strategy", "autoInit"],
+        components: {
+            local: { // TODO: Would be nice to have some way to express that this is a "natural covariant refinement"
+                type: "fluid.uploader.html5Strategy.local"
+            },
+            remote: {
+                type: "fluid.uploader.html5Strategy.remote"
             }
         }
     });
@@ -143,8 +150,10 @@ var fluid_2_0 = fluid_2_0 || {};
         contextAwareness: {
             technology: {
                 checks: {
-                    contextValue: "{fluid.browser.supportsFormData}",
-                    gradeNames: "fluid.uploader.html5Strategy.formDataSender"
+                    formData: {
+                        contextValue: "{fluid.browser.supportsFormData}",
+                        gradeNames: "fluid.uploader.html5Strategy.formDataSender"
+                    }
                 }
             }
         }

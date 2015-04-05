@@ -2,7 +2,7 @@
 Copyright 2008-2009 University of Toronto
 Copyright 2008-2009 University of California, Berkeley
 Copyright 2010-2011 OCAD University
-Copyright 2011 Lucendo Development Ltd.
+Copyright 2011-2015 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -12,7 +12,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -21,14 +20,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     $(document).ready(function () {
         jqUnit.module("Uploader Basic Tests");
 
-        fluid.enhance.forgetAll();
+        fluid.contextAware.forgetChecks(["fluid.browser.supportsFormData", "fluid.browser.supportsBinaryXHR"]);
 
-        fluid.enhance.check({
-            "fluid.uploader.tests": true,
+        fluid.contextAware.makeChecks({
+            "fluid.tests.uploader": true,
             "fluid.browser.supportsFormData": true
         });
-
-        var container = ".flc-uploader";
 
         /**************************
          * formatFileSize() tests *
@@ -66,7 +63,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             testFileSize(-1024, "");
             testFileSize("string", "");
             testFileSize(Math.pow(2, 52), "4294967296.0 MB");
-            testFileSize(Math.pow(2, 1024), "Infinity MB"); //test "infinity"
         });
 
         /*************************
@@ -88,7 +84,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             testPercentage("1", 20);
             testPercentage("0.2", 4);
 
-            //change total to odd number to test rounding
+            // change total to odd number to test rounding
             total = 7;
             testPercentage(0, 0);
             testPercentage(3.5, 50);
@@ -139,9 +135,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         fluid.registerNamespace("fluid.tests.uploader");
+        
+        fluid.tests.uploader.container = ".flc-uploader";
 
         fluid.tests.uploader.noIoC = function (options) {
-            var that = fluid.uploader(".flc-uploader", options);
+            var that = fluid.uploader(fluid.tests.uploader.container, options);
             return that;
         };
 
@@ -149,74 +147,44 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * Instantiate an uploader as a subcomponent
          */
         fluid.tests.uploader.parent = function (options) {
-            var that = fluid.initLittleComponent("fluid.tests.uploader.parent", options);
-            fluid.initDependents(that);
-            // TODO: this should really use an event, or IoCSS query
-            return that.uploader.uploaderImpl;
+            var that = fluid.tests.uploader.parentWrapper(options);
+            return that.uploader;
         };
 
-        /*
-         * Instantiate an uploader as a subcomponent with external demands
-         */
-        fluid.tests.uploader.parent.loadDemands = function (options) {
-            var that = fluid.initLittleComponent("fluid.tests.uploader.parent.loadDemands", options);
-            fluid.initDependents(that);
-            // TODO: this should really use an event, or IoCSS query
-            return that.uploader.uploaderImpl;
-        };
-
-        fluid.defaults("fluid.tests.uploader.parent", {
-            gradeNames: ["fluid.littleComponent"],
+        fluid.defaults("fluid.tests.uploader.parentWrapper", {
+            gradeNames: ["fluid.littleComponent", "autoInit"],
             components: {
                 uploader: {
                     type: "fluid.uploader",
-                    container: ".flc-uploader"
+                    container: fluid.tests.uploader.container
                 }
             }
         });
-
-        fluid.defaults("fluid.tests.uploader.parent.loadDemands", {
-            gradeNames: ["fluid.littleComponent"],
-            components: {
-                uploader: {
-                    type: "fluid.uploader"
+        
+        fluid.defaults("fluid.tests.uploader.mockHtml5", {
+            distributeOptions: [{
+                target: "{that fluid.uploader.remote}.options.invokers.createXHR",
+                record: {
+                    funcName: "fluid.tests.uploader.createMockXHR",
+                    args: ["{uploader}.uploaderTestSet"]
                 }
+            }, {
+                target: "{that fluid.uploader.html5Strategy.formDataSender}.options.invokers.createFormData",
+                record: {
+                    funcName: "fluid.tests.uploader.mockFormData"
+                }
+            }]
+        });
+        
+        fluid.contextAware.makeAdaptation({
+            distributionName: "fluid.tests.uploader.mockHtml5Distribution",
+            targetName: "fluid.uploader",
+            adaptationName: "test",
+            checkName: "test",
+            record: {
+                contextValue: "{fluid.tests.uploader}",
+                gradeNames: "fluid.tests.uploader.mockHtml5"
             }
-        });
-
-        fluid.demands("fluid.uploader", ["fluid.tests.uploader.parent", "fluid.tests.demoRemote"], {
-            options: {
-                demo: true
-            }
-        });
-
-        fluid.demands("fluid.uploader", "fluid.tests.uploader.parent.loadDemands", {
-            container: ".flc-uploader"
-        });
-
-        fluid.demands("fluid.uploader", ["fluid.tests.uploader.parent.loadDemands", "fluid.tests.demoRemote"], {
-            container: ".flc-uploader",
-            options: {
-                demo: true
-            }
-        });
-
-        fluid.demands("fluid.uploader.html5Strategy.createXHR", ["fluid.uploader.html5Strategy.remote", "fluid.uploader.tests"], {
-            funcName: "fluid.tests.uploader.createMockXHR",
-            args: ["{multiFileUploader}.uploaderTestSet"]
-        });
-
-
-        /*
-         * Override the HTML5 FormData creators with mocks so we can verify the correct behaviour.
-         * FF4 restricts passing JSON objects as the value in the FormData append() function.
-         */
-        fluid.demands("fluid.uploader.html5Strategy.createFormData", [
-            "fluid.uploader.html5Strategy.remote",
-            "fluid.browser.supportsFormData",
-            "fluid.uploader.tests"
-        ], {
-            funcName: "fluid.tests.uploader.mockFormData"
         });
 
         var addFiles = function (uploader, fileset) {
@@ -251,7 +219,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return xhr;
         };
 
-        var checkRemoteFileHandler = function (uploader, fileset) {
+        fluid.tests.uploader.checkRemoteFileHandler = function (uploader, fileset) {
             var status = {
                 200: fluid.uploader.fileStatusConstants.COMPLETE,
                 201: fluid.uploader.fileStatusConstants.COMPLETE,
@@ -278,22 +246,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         };
 
-        var checkSingleFileUploader = function (uploader) {
+        fluid.tests.uploader.checkSingleFileUploader = function (uploader) {
             // TODO: probably not possible to test error behaviour for single-file?
-            jqUnit.assertEquals("The single-file uploader is in fact the single-file version",
-                                "fluid.uploader.singleFileUploader", uploader.typeName);
+            jqUnit.assertTrue("The single-file uploader is in fact the single-file version",
+                                fluid.componentHasGrade(uploader, "fluid.uploader.singleFile"));
             jqUnit.start();
         };
 
-        var checkMultiFileUploaderOptions = function (uploader, expectedStrategy) {
+        fluid.tests.uploader.checkMultiFileUploaderOptions = function (uploader, expectedStrategy) {
             jqUnit.assertEquals("The uploader is configured with the correct strategy", expectedStrategy, uploader.strategy.typeName);
             jqUnit.assertTrue("The uploader strategy contains a local component", uploader.strategy.local);
             jqUnit.assertTrue("The uploader contains a remote component", uploader.strategy.remote);
             jqUnit.assertTrue("The uploader has a container", uploader.container);
-            jqUnit.assertEquals("The uploader container has the correct selector", container, uploader.container.selector);
+            jqUnit.assertEquals("The uploader container has the correct selector", fluid.tests.uploader.container, uploader.container.selector);
             jqUnit.assertTrue("The uploader has a fileQueueView", uploader.fileQueueView);
             jqUnit.assertTrue("The fileQueueView has a scroller component", uploader.fileQueueView.scroller);
-            jqUnit.assertTrue("The fileQueueView has an eventBinder component", uploader.fileQueueView.eventBinder);
             jqUnit.assertTrue("The fileQueueView's container is the file queue", uploader.fileQueueView.container.hasClass("fl-uploader-queue"));
             jqUnit.assertTrue("The uploader has a total progress component", uploader.totalProgress);
             jqUnit.assertTrue("The total progress component has a progressBar", uploader.totalProgress.progressBar);
@@ -316,7 +283,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         };
 
-        var checkUploaderButton = function (uploader, buttonName, state) {
+        fluid.tests.uploader.checkUploaderButton = function (uploader, buttonName, state) {
             var button = uploader.locate(buttonName);
             jqUnit.assertEquals("The " + buttonName + " is " + (state ? "enabled" : "disabled"), state, !button.prop("disabled"));
         };
@@ -335,12 +302,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             // upload files
             uploader.locate("uploadButton").click();
-            checkUploaderButton(uploader, "browseButton", false);
+            fluid.tests.uploader.checkUploaderButton(uploader, "browseButton", false);
             jqUnit.assertTrue("Uploading has started", uploader.queue.isUploading);
 
             // stop uploading files
             uploader.locate("pauseButton").click();
-            checkUploaderButton(uploader, "uploadButton", true);
+            fluid.tests.uploader.checkUploaderButton(uploader, "uploadButton", true);
             jqUnit.assertFalse("Uploading has stopped", uploader.queue.isUploading);
 
             if (testset.integrationKey === "HTML5") {
@@ -348,14 +315,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // although it does so in a way exercising impossible logic and doing some violence to the
             // component's consistency. We need more realistic test sequences that actually exercise
             // possible histories of the component - this is an integration test after all
-                checkRemoteFileHandler(uploader, testset.files);
+                fluid.tests.uploader.checkRemoteFileHandler(uploader, testset.files);
             }
         };
 
         fluid.tests.uploader.uploadError = function (uploader, statusRegion, testset) {
                         // upload files
             uploader.locate("uploadButton").click();
-            checkUploaderButton(uploader, "browseButton", false);
+            fluid.tests.uploader.checkUploaderButton(uploader, "browseButton", false);
             jqUnit.assertTrue("Uploading has started", uploader.queue.isUploading);
             var uploadComplete = false;
             var uploadCompleteListener = function () {
@@ -373,17 +340,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         };
 
-        var checkUploaderIntegration = function (uploader, addFilesFn, testset) {
+        fluid.tests.uploader.checkUploaderIntegration = function (uploader, addFilesFn, testset) {
             var statusRegion = $(".flc-uploader-total-progress-text");
             var initialStatusRegionText = statusRegion.text();
 
-            checkUploaderButton(uploader, "browseButton", true);
-            checkUploaderButton(uploader, "uploadButton", false);
+            fluid.tests.uploader.checkUploaderButton(uploader, "browseButton", true);
+            fluid.tests.uploader.checkUploaderButton(uploader, "uploadButton", false);
 
             // add files, check status region update
             addFilesFn(uploader, testset.files);
 
-            checkUploaderButton(uploader, "uploadButton", true);
+            fluid.tests.uploader.checkUploaderButton(uploader, "uploadButton", true);
             jqUnit.assertEquals("Files are added after the file dialog",
                                 testset.files.length, uploader.queue.files.length);
             jqUnit.assertNotEquals("Add files: update status region text",
@@ -392,26 +359,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             testset.testLoad(uploader, statusRegion, testset);
         };
 
-        var checkHTML5Integration = function (uploader, testset) {
-            checkMultiFileUploaderOptions(uploader, "fluid.uploader.html5Strategy");
-            checkUploaderIntegration(uploader, addFiles, testset);
+        fluid.tests.uploader.checkHTML5Integration = function (uploader, testset) {
+            fluid.tests.uploader.checkMultiFileUploaderOptions(uploader, "fluid.uploader.html5Strategy");
+            fluid.tests.uploader.checkUploaderIntegration(uploader, addFiles, testset);
             jqUnit.start();
         };
 
-        var configurations = [
+        fluid.tests.uploader.configurations = [
             {
                 label: "Uploader with direct creator function",
                 type: fluid.tests.uploader.noIoC
             }, {
                 label: "Uploader in an IoC tree",
                 type: fluid.tests.uploader.parent
-            },  {
-                label: "Uploader in an IoC tree with demands",
-                type: fluid.tests.uploader.parent.loadDemands
             }
         ];
 
-        var testsets = {
+        fluid.tests.uploader.testsets = {
             standard: {
                 files: [file1, file2],
                 testLoad: fluid.tests.uploader.removeUploadPause
@@ -422,88 +386,61 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         };
 
-        var integrations = [
+        fluid.tests.uploader.integrations = [
             {
                 key: "single",
                 label: "Single-file integration tests",
-                contextTag: {
-                    type: "typeTag",
-                    typeName: "fluid.uploader.singleFile"
-                },
-                test: checkSingleFileUploader,
+                test: fluid.tests.uploader.checkSingleFileUploader,
                 demo: false
             },
             {
                 key: "HTML5",
                 label: "HTML5 integration tests",
-                contextTag: {
-                    type: "typeTag",
-                    typeName: "fluid.browser.supportsBinaryXHR"
-                },
-                uploaderConfig: {
-                    type: "progressiveCheckerForComponent",
-                    componentName: "fluid.uploader"
-                },
-                test: checkHTML5Integration,
+                contextTag: "fluid.browser.supportsBinaryXHR",
+                test: fluid.tests.uploader.checkHTML5Integration,
                 demo: false
             }
-        ];
+        ]; // TODO: We seem to have lost all the configurations which check with demoRemote
 
-        var setStaticEnvironment = function (integration) {
+        fluid.tests.uploader.setContext = function (integration) {
             var contexts = fluid.makeArray(integration.contextTag);
-            fluid.each(contexts, function (context, index) {
-                fluid.staticEnvironment["contextTag"+index] = fluid.typeTag(context.typeName);
-            });
-
-            if (integration.uploaderConfig) {
-                fluid.staticEnvironment.uploaderConfig = fluid.progressiveCheckerForComponent({
-                    componentName: integration.uploaderConfig.componentName
-                });
-            }
-            if (integration.demoRemote) {
-                fluid.staticEnvironment.demo = fluid.typeTag(integration.demoRemote.typeName);
-            }
+            fluid.contextAware.makeChecks(fluid.arrayToHash(contexts));
         };
 
-        var constructUploader = function (configuration, integration) {
+        fluid.tests.uploader.constructUploader = function (configuration, integration) {
             var that = configuration.type({
                 demo: integration.demo
             });
             return that;
         };
 
-        var cleanupEnvironment = function (integration) {
-            var contexts = fluid.makeArray(integration.contextTag);
-            fluid.each(contexts, function (context, index) {
-                delete fluid.staticEnvironment["contextTag"+index];
-            });
-            delete fluid.staticEnvironment.uploaderConfig;
-            delete fluid.staticEnvironment.demo;
+        fluid.tests.uploader.cleanupContext = function (integration) {
+            fluid.contextAware.forgetChecks(fluid.makeArray(integration.contextTag));
         };
 
         // Set up and run the integration tests for a specified configuration
-        var setupIntegration = function (configuration, integration, testset) {
+        fluid.tests.uploader.setupIntegration = function (configuration, integration, testset) {
             try {
-                setStaticEnvironment(integration);
-                var that = constructUploader(configuration, integration);
+                fluid.tests.uploader.setContext(integration);
+                var that = fluid.tests.uploader.constructUploader(configuration, integration);
                 // We stash this here on the uploader so that it is easier to access via IoC and other parts of
                 // the infrastructure - a better design would have "IoC test cases" (now FLUID-4850)
                 that.uploaderTestSet = testset;
                 integration.test(that, testset);
             } finally {
-                cleanupEnvironment(integration);
+                fluid.tests.uploader.cleanupContext(integration);
             }
         };
 
         // Run the integration tests individually to reset the markup
-        fluid.each(testsets, function (testset, testsetkey) {
-            fluid.each(configurations, function (config) {
-                fluid.each(integrations, function (integration) {
+        fluid.each(fluid.tests.uploader.testsets, function (testset, testsetkey) {
+            fluid.each(fluid.tests.uploader.configurations, function (config) {
+                fluid.each(fluid.tests.uploader.integrations, function (integration) {
                     var testsetLive = fluid.copy(testset);
                     testsetLive.integrationKey = integration.key;
                     jqUnit.asyncTest(config.label + " - " + integration.label +
                         " - " + testsetkey + " testset", function () {
-                        setupIntegration(config, integration, testsetLive);
+                        fluid.tests.uploader.setupIntegration(config, integration, testsetLive);
                     });
                 });
             });

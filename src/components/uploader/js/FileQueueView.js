@@ -358,9 +358,6 @@ var fluid_2_0 = fluid_2_0 || {};
             scroller: {
                 type: "fluid.scrollableTable",
                 container: "{fileQueueView}.container"
-            },
-            eventBinder: {
-                type: "fluid.uploader.fileQueueView.eventBinder"
             }
         },
 

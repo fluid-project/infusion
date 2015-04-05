@@ -113,7 +113,7 @@ var fluid_2_0 = fluid_2_0 || {};
                             container: "{iframeRenderer}.renderPrefsEditorContainer",
                             createOnEvent: "afterRender",
                             options: {
-                                gradeNames: ["{pageEnhancer}.uiEnhancer.options.gradeNames"],
+                                gradeNames: ["{pageEnhancer}.uiEnhancer.options.userGrades"],
                                 jQuery: "{iframeRenderer}.jQuery",
                                 tocTemplate: "{pageEnhancer}.uiEnhancer.options.tocTemplate"
                             }
@@ -147,7 +147,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 }
             }
         },
-        outerEnhancerOptions: "{originalEnhancerOptions}.originalUserOptions",
+        outerEnhancerOptions: "{originalEnhancerOptions}.options.originalUserOptions",
         distributeOptions: [{
             source: "{that}.options.slidingPanel",
             removeSource: true,

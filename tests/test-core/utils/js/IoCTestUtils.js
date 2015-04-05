@@ -81,12 +81,23 @@ var fluid_2_0 = fluid_2_0 || {};
         fluid.log(fluid.logLevel.IMPORTANT, "Test case listener has not responded after " + testEnvironment.options.hangWait + "ms - at sequence pos " +
             sequenceState.sequenceText() + " sequence element ", sequenceState.fixture.sequence[sequenceState.sequencePos - 1], " of fixture " + sequenceState.fixture.name);
     };
-
-    fluid.demands("fluid.test.sequenceListener", [], {funcName: "fluid.emptySubcomponent"});
+    
+    fluid.defaults("fluid.test.sequenceListener", { // TODO: this used to be "fluid.emptySubcomponent" in the fluid.demands era - review and improve support for this
+        gradeNames: ["fluid.eventedComponent", "fluid.contextAware", "autoInit"]
+    });
 
     /** In the browser only, hijack a piece of the QUnit UI in order to show the running sequence number **/
-
-    fluid.demands("fluid.test.sequenceListener", "fluid.browser", {funcName: "fluid.test.browserSequenceListener"});
+    
+    fluid.contextAware.makeAdaptation({
+        distributionName: "fluid.test.browserSequenceDistribution",
+        targetName: "fluid.test.sequenceListener",
+        adaptationName: "browserSequence",
+        checkName: "browserSequence",
+        record: {
+            contextValue: "{fluid.browser}",
+            gradeNames: "fluid.test.browserSequenceListener"
+        }
+    });
 
     fluid.defaults("fluid.test.browserSequenceListener", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],

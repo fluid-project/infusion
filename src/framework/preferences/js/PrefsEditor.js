@@ -215,7 +215,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.defaults("fluid.prefs.settingsGetter", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         members: {
-            getSettings: "{settingsStore}.get"
+            getSettings: "{fluid.prefs.store}.get"
         }
     });
 
@@ -224,7 +224,7 @@ var fluid_2_0 = fluid_2_0 || {};
         invokers: {
             setSettings: {
                 funcName: "fluid.prefs.settingsSetter.setSettings",
-                args: ["{arguments}.0", "{settingsStore}.set"]
+                args: ["{arguments}.0", "{fluid.prefs.store}.set"]
             }
         }
     });
@@ -370,7 +370,6 @@ var fluid_2_0 = fluid_2_0 || {};
         // and this implementation doesn't seem to be causing a problem at present so we had
         // just better leave it the way it is for now.
         that.applier.change("", completeModel);
-        console.log("prefsEditor FETCH called with completeModel of " + JSON.stringify(completeModel, null, 2));
         that.events.onPrefsEditorRefresh.fire();
         that.applyChanges();
     };

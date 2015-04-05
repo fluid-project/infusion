@@ -102,16 +102,12 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.prefs.enactor.classSwapper.clearClasses = function (container, classStr) {
-        console.log("CLASS SWAPPER REMOVING CLASS " + classStr + " on ", container, ": classes " + container.prop("className"));
         container.removeClass(classStr);
-        console.log("Final classes REMOVED " + container.prop("className"));
     };
 
     fluid.prefs.enactor.classSwapper.swap = function (value, that, clearClassesFunc) {
-        console.log("CLASS SWAPPER ACTIVATING CLASS " + value + " on ", that.container);
         clearClassesFunc();
         that.container.addClass(that.options.classes[value]);
-        console.log("Final classes ACTIVATED " + that.container.prop("className"));
     };
 
     fluid.prefs.enactor.classSwapper.joinClassStr = function (classes) {

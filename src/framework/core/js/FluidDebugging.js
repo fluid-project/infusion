@@ -193,7 +193,7 @@ var fluid = fluid || fluid_2_0;
             togo = JSON.stringify(obj);
         }
         else {
-            if ($.inArray(obj, options.stack) !== -1) {
+            if (options.stack.indexOf(obj) !== -1) {
                 return "(CIRCULAR)"; // NB - object invalid for JSON interchange
             }
             options.stack.push(obj);

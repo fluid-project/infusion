@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -35,13 +34,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             gradeNames: ["fluid.viewComponent", "autoInit"],
             components: {
                 reorderer: {
-                    type: "fluid.reorderList"
+                    type: "fluid.reorderList",
+                    container: "{labellerTester}.container"
                 }
             }
         });
-
-        fluid.demands("fluid.reorderList", "fluid.tests.labellerTester",
-            ["{labellerTester}.container", "{options}"]);
 
         jqUnit.test("IoC instantiation", function () {
 

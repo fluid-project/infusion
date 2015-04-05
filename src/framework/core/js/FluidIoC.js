@@ -518,6 +518,17 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.expandDynamicGrades = function (that, shadow, gradeNames, dynamicGrades) {
         var resolved = [];
+        // Receive distributions first since these may cause arrival of more contextAwareness blocks.
+        // TODO: this closure algorithm is not reliable since we only get one shot at a "function" grade source when
+        // really we should perform complete closure over all other sources of options before we try it at the very end - particularly important for contextAwareness
+        var distributedBlocks = fluid.receiveDistributions(null, null, null, that);
+        if (distributedBlocks.length > 0) {
+            var readyBlocks = fluid.applyDistributions(that, distributedBlocks, shadow);
+            // rely on the fact that "dirty tricks are not permitted" wrt. resolving gradeNames - each element must be a literal entry or array
+            // holding primitive or EL values - otherwise we would have to go all round the houses and reenter the top of fluid.computeDynamicGrades
+            var gradeNamesList = fluid.transform(fluid.getMembers(readyBlocks, ["source", "gradeNames"]), fluid.makeArray);
+            resolved = resolved.concat.apply(resolved, gradeNamesList);
+        }
         fluid.each(dynamicGrades, function (dynamicGrade) {
             var expanded = fluid.expandOptions(dynamicGrade, that);
             if (typeof(expanded) === "function") {
@@ -534,14 +545,6 @@ var fluid_2_0 = fluid_2_0 || {};
                 return fluid.contains(allGrades, gradeName);
             });
             resolved = resolved.concat(linkedGrades);
-        }
-        var distributedBlocks = fluid.receiveDistributions(null, null, null, that);
-        if (distributedBlocks.length > 0) {
-            var readyBlocks = fluid.applyDistributions(that, distributedBlocks, shadow);
-            // rely on the fact that "dirty tricks are not permitted" wrt. resolving gradeNames - each element must be a literal entry or array
-            // holding primitive or EL values - otherwise we would have to go all round the houses and reenter the top of fluid.computeDynamicGrades
-            var gradeNamesList = fluid.transform(fluid.getMembers(readyBlocks, ["source", "gradeNames"]), fluid.makeArray);
-            resolved = resolved.concat.apply(resolved, gradeNamesList);
         }
         return resolved;
     };
@@ -659,7 +662,16 @@ var fluid_2_0 = fluid_2_0 || {};
         fluid.computeDynamicGrades(that, shadow, strategy, shadow.mergeOptions.mergeBlocks);
         fluid.distributeOptions(that, strategy);
         if (shadow.contextHash["fluid.resolveRoot"]) {
-            var memberName = shadow.contextHash["fluid.resolveRootSingle"] ? fluid.typeNameToMemberName(that.typeName) : fluid.computeGlobalMemberName(that);
+            var memberName;
+            if (shadow.contextHash["fluid.resolveRootSingle"]) {
+                var singleRootType = fluid.getForComponent(that, ["options", "singleRootType"]);
+                if (!singleRootType) {
+                    fluid.fail("Cannot register object with grades " + Object.keys(shadow.contextHash).join(", ") + " as fluid.resolveRootSingle since it has not defined option singleRootType");
+                }
+                memberName = fluid.typeNameToMemberName(singleRootType);
+            } else {
+                memberName = fluid.computeGlobalMemberName(that);
+            }
             var parent = fluid.resolveRootComponent;
             if (parent[memberName]) {
                 instantiator.clearComponent(parent, memberName);
@@ -734,10 +746,17 @@ var fluid_2_0 = fluid_2_0 || {};
             return atval;
         };
     };
-
+    
+    // Listed in dependence order
+    fluid.frameworkGrades = ["fluid.littleComponent", "fluid.eventedComponent",
+        "fluid.commonModelComponent", "fluid.commonViewComponent", "fluid.commonRendererComponent",
+        "fluid.modelComponent", "fluid.viewComponent", "fluid.standardComponent", "fluid.rendererComponent",
+        "fluid.modelRelayComponent", "fluid.viewRelayComponent", "fluid.standardRelayComponent", "fluid.rendererRelayComponent"];
+    
+        
     fluid.filterBuiltinGrades = function (gradeNames) {
         return fluid.remove_if(fluid.makeArray(gradeNames), function (gradeName) {
-            return (/^(autoInit|fluid.littleComponent|fluid.modelComponent|fluid.eventedComponent|fluid.viewComponent|fluid.typeFount)$/).test(gradeName);
+            return fluid.frameworkGrades.indexOf(gradeName) !== -1;
         });
     };
 
@@ -1022,7 +1041,7 @@ var fluid_2_0 = fluid_2_0 || {};
         });
         fluid.each(localRecord, function (value, key) {
             if (!expected[key]) {
-                fluid.fail("Probable error in subcomponent record - key \"" + key +
+                fluid.fail("Probable error in subcomponent record ", localRecord, " - key \"" + key +
                     "\" found, where the only legal options are " +
                     fluid.keys(expected).join(", "));
             }
@@ -1224,7 +1243,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 argMap = fluid.rawDefaults("fluid.littleComponent").argumentMap;
             }
             else {
-                var optionpos = $.inArray("{options}", demands);
+                var optionpos = demands.indexOf("{options}");
                 if (optionpos === -1) {
                     optionpos = demands.length - 1; // wild guess in the old style
                 }

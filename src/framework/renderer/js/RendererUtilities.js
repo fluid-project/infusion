@@ -305,7 +305,7 @@ fluid_2_0 = fluid_2_0 || {};
     /** Definition of expanders - firstly, "heavy" expanders **/
 
     fluid.renderer.selection.inputs = function (options, container, key, config) {
-        fluid.expect("Selection to inputs expander", ["selectID", "inputID", "labelID", "rowID"], options);
+        fluid.expect("Selection to inputs expander", options, ["selectID", "inputID", "labelID", "rowID"]);
         var selection = config.expander(options.tree);
         var rows = fluid.transform(selection.optionlist.value, function (option, index) {
             var togo = {};
@@ -322,7 +322,7 @@ fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.renderer.repeat = function (options, container, key, config) {
-        fluid.expect("Repetition expander", ["controlledBy", "tree"], options);
+        fluid.expect("Repetition expander", options, ["controlledBy", "tree"]);
         var env = config.threadLocal();
         var path = fluid.extractContextualPath(options.controlledBy, {ELstyle: "ALL"}, env);
         var list = fluid.get(config.model, path, config.resolverGetConfig);
@@ -362,7 +362,7 @@ fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.renderer.condition = function (options, container, key, config) {
-        fluid.expect("Selection to condition expander", ["condition"], options);
+        fluid.expect("Selection to condition expander", options, ["condition"]);
         var condition;
         if (options.condition.funcName) {
             var args = config.expandLight(options.condition.args);

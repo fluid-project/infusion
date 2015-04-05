@@ -1,6 +1,6 @@
 /*
 Copyright 2011 OCAD University
-Copyright 2011 Lucendo Development Ltd.
+Copyright 2011-2015 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -14,22 +14,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($) {
     "use strict";
-    
-    fluid.littleComponent({
-        gradeNames: ["fluid.tests.prefs", "fluid.resolveRoot"]
-    });
-
-    // Use temp store rather than the cookie store for setting save
-    fluid.demands("fluid.prefs.store", ["fluid.prefs.globalSettingsStore", "fluid.tests.prefs"], {
-        funcName: "fluid.prefs.tempStore"
-    });
-
-    // Supply the table of contents' template URL
-    fluid.demands("fluid.prefs.enactor.tableOfContents", ["fluid.uiEnhancer"], {
-        options: {
-            templateUrl: "../../../../src/components/tableOfContents/html/TableOfContents.html"
-        }
-    });
 
     fluid.registerNamespace("fluid.tests.prefs");
 
@@ -92,10 +76,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             prefsEditor.applier.requestChange("" + key, value);
         });
     };
+    
+    fluid.defaults("fluid.tests.prefs.globalSettingsStore", {
+        gradeNames: ["fluid.prefs.globalSettingsStore", "autoInit"],
+        distributeOptions: {
+            target: "{that fluid.prefs.store}.options.gradeNames",
+            record: "fluid.prefs.tempStore"
+        }
+    });
 
     fluid.tests.prefs.integrationTest = function (componentName, resetShouldSave) {
+        // TODO: Rewrite this test case as a proper grade rather than a bunch of functions and state in a closure
         jqUnit.asyncTest(componentName + " Integration tests", function () {
-            fluid.prefs.globalSettingsStore();
+            fluid.tests.prefs.globalSettingsStore();
+                
             fluid.pageEnhancer({
                 uiEnhancer: {
                     gradeNames: ["fluid.uiEnhancer.starterEnactors"],
@@ -111,8 +105,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 savedSelections2 = selections;
             }
 
-            function testComponent(prefsEditor) {
-                // var prefsEditor = prefsEditorLoader.prefsEditor;
+            function testComponent(prefsEditorLoader) {
+                var prefsEditor = prefsEditorLoader.prefsEditor;
                 var initialModel = prefsEditor.initialModel;
                 
                 var globalUIEnhancer = fluid.queryIoCSelector(fluid.rootComponent, "fluid.pageEnhancer", true)[0].uiEnhancer;
@@ -192,9 +186,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.prefs.testControlValues = ["a", "b", "c", "d", "e"];
 
     fluid.tests.prefs.testComponentIntegration = function (prefsEditor) {
-        //var prefsEditor = prefsEditorLoader.prefsEditor;
         var body = $("body");
-        console.log("INTEGRATIONTESTSCOMMON testComponentIntegration ", body);
         var testStrings = fluid.tests.prefs.testStrings;
         var testControlValues = fluid.tests.prefs.testControlValues;
 
@@ -235,52 +227,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.initialModel.starter", "fluid.prefs.uiEnhancerRelay"]
         }
     };
-    
-    fluid.setLogging(true);
-    
-    fluid.registerProbes({
-        previewCreate: {
-            target: "{fluid.prefs.preview}.listeners.onCreate",
-            func: "fluid.log",
-            args: ["CREATED PREVIEW COMPONENT", "{that}"] 
-        },
-        previewCreateEnd: {
-            target: "{fluid.prefs.preview}.listeners.onCreate",
-            func: "fluid.log",
-            priority: "last",
-            args: ["END OF ONCREATE for PREVIEW COMPONENT", "{that}"] 
-        },
-        prefsReadyStart: {
-            target: "{fluid.prefs.prefsEditor}.listeners.onReady",
-            func: "fluid.log",
-            priority: "first",
-            args: ["START of ONREADY for PREFSEDITOR", "{that}"] 
-        },
-        prefsReadyEnd: {
-            target: "{fluid.prefs.prefsEditor}.listeners.onReady",
-            func: "fluid.log",
-            priority: "last",
-            args: ["END of ONREADY for PREFSEDITOR", "{that}"] 
-        },
-        previewReady: {
-            target: "{fluid.prefs.preview}.listeners.onReady",
-            func: "fluid.log",
-            args: ["START of ONREADY for PREVIEW", "{that}"] 
-        },
-        previewReadyEnd: {
-            target: "{fluid.prefs.preview}.listeners.onReady",
-            func: "fluid.log",
-            priority: "last",
-            args: ["END OF ONREADY for PREVIEW COMPONENT", "{that}"] 
-        },
-    });
 
     fluid.tests.prefs.mungingIntegrationTest = function (componentName, container, extraOpts, extraListener) {
         extraListener = extraListener || function () { jqUnit.start(); };
 
         jqUnit.asyncTest(componentName + " Munging Integration tests", function () {
-            fluid.prefs.globalSettingsStore();
+            fluid.tests.prefs.globalSettingsStore();
             fluid.pageEnhancer(fluid.tests.prefs.enhancerOptions);
+            // TODO: rewrite this invocation as a standard grade constructor rather than an ad-hoc invocation of fluid.merge
             var options = fluid.merge(null, fluid.tests.prefs.mungingIntegrationOptions, {
                 prefsEditor: {
                     members: {
@@ -291,7 +245,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     listeners: {
                         onReady: [{
                             funcName: "fluid.tests.prefs.testComponentIntegration",
-                            priority: "last:testing" 
+                            priority: "last:testing"
                         }, {
                             func: extraListener,
                             priority: "last:testing"

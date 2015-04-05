@@ -158,10 +158,7 @@ var fluid_2_0 = fluid_2_0 || {};
     
     fluid.debug.ignorableGrades = ["autoInit", "fluid.debug.listeningView", "fluid.debug.listeningPanel", "fluid.debug.listeningRenderer"];
     
-    fluid.debug.frameworkGrades = ["fluid.littleComponent", "fluid.eventedComponent",
-        "fluid.commonModelComponent", "fluid.commonViewComponent", "fluid.commonRendererComponent",
-        "fluid.modelComponent", "fluid.viewComponent", "fluid.standardComponent", "fluid.rendererComponent",
-        "fluid.modelRelayComponent", "fluid.viewRelayComponent", "fluid.standardRelayComponent", "fluid.rendererRelayComponent"];
+    fluid.debug.frameworkGrades = fluid.frameworkGrades;
     
     fluid.debug.filterGrades = function (gradeNames) {
         var highestFrameworkIndex = -1;

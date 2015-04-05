@@ -97,10 +97,10 @@ var fluid_2_0 = fluid_2_0 || {};
             source: "{that}.options.enhancer",
             removeSource: true,
             target: "{that uiEnhancer}.options"
-        }, {
+        }, { // TODO: not clear that this hits anything since settings store is not a subcomponent
             source: "{that}.options.store",
             removeSource: true,
-            target: "{that settingsStore}.options"
+            target: "{that fluid.prefs.store}.options"
         }, {
             source: "{that}.options.storeType",
             removeSource: true,

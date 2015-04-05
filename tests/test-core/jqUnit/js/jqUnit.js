@@ -255,16 +255,21 @@ var jqUnit = jqUnit || {};
      
     jqUnit.expectFrameworkDiagnostic = function (message, toInvoke, errorTexts) {
         errorTexts = fluid.makeArray(errorTexts);
+        var gotFailure;
         try {
             fluid.pushSoftFailure(true);
             jqUnit.expect(1 + errorTexts.length);
             toInvoke();
         } catch (e) {
+            gotFailure = true;
             jqUnit.assertTrue(message, e instanceof fluid.FluidError);
             fluid.each(errorTexts, function (errorText) {
                 jqUnit.assertTrue(message + " - message text", e.message.indexOf(errorText) >= 0);
             });
         } finally {
+            if (!gotFailure) {
+                jqUnit.fail("No failure received for test " + message);
+            }
             fluid.pushSoftFailure(-1);
         }
     };

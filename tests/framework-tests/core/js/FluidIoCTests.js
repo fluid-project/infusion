@@ -3259,6 +3259,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         function issueRootAndReference (targetOption) {
             var optionHolder = fluid.littleComponent({
                 gradeNames: ["fluid5036_2UserOption", "fluid.resolveRootSingle"],
+                singleRootType: "fluid5036_2UserOption",
                 targetOption: targetOption
             });
             var root = fluid.tests.fluid5036_2Root();

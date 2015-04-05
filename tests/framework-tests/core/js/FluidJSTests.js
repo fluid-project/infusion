@@ -571,6 +571,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "e": "after:c"
         },
         expected: "cedba"
+    }, {
+        name: "nonexistent reference", // in theory this should be a failure but we can't arrange to add listeners atomically
+        listeners: {
+            "a": "before:b"
+        },
+        expected: "a"
     }];
     
     fluid.tests.upgradeListeners = function (listeners) {
@@ -591,11 +597,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
     
     fluid.tests.failedConstraintTests = [{
-        name: "nonexistent reference",
-        listeners: {
-            "a": "before:b"
-        }
-    }, {
         name: "self-reference",
         listeners: {
             "a": "before:a"

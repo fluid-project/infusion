@@ -19,11 +19,21 @@ var fluid_2_0 = fluid_2_0 || {};
      * A Generic data source grade that defines an API for getting and setting
      * data.
      */
+     // TODO: unify with Kettle's and ultimately Infusion's dataSource
     fluid.defaults("fluid.prefs.dataSource", {
-        gradeNames: ["fluid.littleComponent"],
+        gradeNames: ["fluid.eventedComponent"],
         invokers: {
-            get: "fluid.prefs.dataSource.get",
+            get: "fluid.prefs.dataSource.get", // nonexistent functions which will be advised by concrete implementation
             set: "fluid.prefs.dataSource.set"
+        }
+    });
+
+    fluid.defaults("fluid.prefs.store", {
+        gradeNames: ["fluid.prefs.dataSource", "fluid.contextAware", "autoInit"],
+        contextAwareness: {
+            strategy: {
+                defaultGradeNames: "fluid.prefs.cookieStore"
+            }
         }
     });
 
@@ -36,22 +46,22 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.prefs.cookieStore", {
-        gradeNames: ["fluid.prefs.dataSource", "autoInit"],
+        gradeNames: ["fluid.prefs.store", "autoInit"],
         cookie: {
             name: "fluid-ui-settings",
             path: "/",
             expires: ""
+        },
+        invokers: {
+            get: {
+                funcName: "fluid.prefs.cookieStore.get",
+                args: "{that}.options.cookie.name"
+            },
+            set: {
+                funcName: "fluid.prefs.cookieStore.set",
+                args: ["{arguments}.0", "{that}.options.cookie"]
+            }
         }
-    });
-
-    fluid.demands("fluid.prefs.dataSource.get", "fluid.prefs.cookieStore", {
-        funcName: "fluid.prefs.cookieStore.get",
-        args: "{that}.options.cookie.name"
-    });
-
-    fluid.demands("fluid.prefs.dataSource.set", "fluid.prefs.cookieStore", {
-        funcName: "fluid.prefs.cookieStore.set",
-        args: ["{arguments}.0", "{that}.options.cookie"]
     });
 
     /**
@@ -119,21 +129,21 @@ var fluid_2_0 = fluid_2_0 || {};
      **************/
 
     /**
-     * SettingsStore Subcomponent that doesn't do persistence.
+     * SettingsStore mock that doesn't do persistence.
      * @param {Object} options
      */
     fluid.defaults("fluid.prefs.tempStore", {
-        gradeNames: ["fluid.prefs.dataSource", "fluid.modelRelayComponent", "autoInit"]
-    });
-
-    fluid.demands("fluid.prefs.dataSource.get", "fluid.prefs.tempStore", {
-        funcName: "fluid.identity",
-        args: "{that}.model"
-    });
-
-    fluid.demands("fluid.prefs.dataSource.set", "fluid.prefs.tempStore", {
-        funcName: "fluid.prefs.tempStore.set",
-        args: ["{arguments}.0", "{that}.applier"]
+        gradeNames: ["fluid.prefs.store", "fluid.modelRelayComponent", "autoInit"],
+        invokers: {
+            get: {
+                funcName: "fluid.identity",
+                args: "{that}.model"
+            },
+            set: {
+                funcName: "fluid.prefs.tempStore.set",
+                args: ["{arguments}.0", "{that}.applier"]
+            }
+        }
     });
 
     fluid.prefs.tempStore.set = function (settings, applier) {
@@ -145,9 +155,10 @@ var fluid_2_0 = fluid_2_0 || {};
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
             settingsStore: {
-                type: "fluid.prefs.cookieStore",
+                type: "fluid.prefs.store",
                 options: {
-                    gradeNames: ["fluid.resolveRoot", "fluid.settingsStore"]
+                    gradeNames: ["fluid.resolveRootSingle"],
+                    singleRootType: "fluid.prefs.store"
                 }
             }
         }

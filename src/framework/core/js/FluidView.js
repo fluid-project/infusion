@@ -349,7 +349,7 @@ var fluid_2_0 = fluid_2_0 || {};
           // of the corresponding control.
             $.each(elements, function () {
                 this.checked = (newValue instanceof Array ?
-                    $.inArray(this.value, newValue) !== -1 : newValue === this.value);
+                    newValue.indexOf(this.value) !== -1 : newValue === this.value);
             });
         } else { // this part jQuery will not do - extracting value from <input> array
             var checked = $.map(elements, function (element) {

@@ -74,6 +74,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // plain function call: 20ns
     // full invoker: 170us/call when warm (progressively improves)
     // "fast invoker": 1.4us
+    
+    // on Chrome 41 "old framework" 5/4/15:
+    // full invoker: 220us/call when warm (progressively deteriorates)
+    // "fast invoker": 1.7us
 
     var results = [];
     var root = fluid.tests.perfRoot();

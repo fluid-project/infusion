@@ -14,29 +14,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     "use strict";
     
-    fluid.littleComponent({
-        gradeNames: ["fluid.resolveRoot", "fluid.tableOfContentsTest"]
-    }); // TODO: test this
-
-    fluid.demands("fluid.tableOfContents.levels", ["fluid.tableOfContents", "fluid.tableOfContentsTest"], {
-        options: {
-            resources: {
-                template: {
-                    forceCache: true,
-                    url: "../../../../src/components/tableOfContents/html/TableOfContents.html"
-                }
+    fluid.defaults("fluid.tests.tableOfContents.templateDistributor", {
+        distributeOptions: {
+            target: "{/ fluid.tableOfContents.levels}.options.resources.template",
+            record: {
+                forceCache: true,
+                url: "../../../../src/components/tableOfContents/html/TableOfContents.html"
             }
         }
     });
-
-    fluid.tableOfContents.generateGUIDMock = function () {
-        return "test";
-    };
-
-    // Use our custom GUID for testing purposes.
-    fluid.demands("fluid.allocateSimpleId", "fluid.tableOfContents", {
-        funcName: "fluid.tableOfContents.generateGUIDMock"
-    });
+    
+    fluid.constructSingle([], "fluid.tests.tableOfContents.templateDistributor");
 
     /* For testing a page with no headings */
     var emptyHeadings = {
@@ -265,7 +253,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
       * @param  Array   Array of selector names
       */
     var locateSet = function (that, selectorNames) {
-        var set = $();  //Creates an empty jQuery object.
+        var set = $();  // Creates an empty jQuery object.
         fluid.each(selectorNames, function (selectorName) {
             set = set.add(that.locate(selectorName));
         });
@@ -288,7 +276,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // To address IE7 problem, http://bugs.jquery.com/ticket/7117
             // To fix, strip it URI if the windows.location is in href. Otherwise, do nothing.
             var eleHref = elm.attr("href").replace($(location).attr("href"), "");
-            jqUnit.assertEquals("ToC anchor set correctly", fluid.get(hInfo, "url"), eleHref);
+            jqUnit.assertTrue("ToC anchor set correctly", hInfo.url ? eleHref === hInfo.url : eleHref.indexOf(fluid.fluidInstance) === 1);
         });
     };
 
@@ -494,16 +482,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     headingInfo : []
                 };
             var headings = $("#flc-toc").children(":header");
-            var serializeHeading = function (level, text, url) {
-                // macro to serialize heading elements, level, text, url into Object form.
-                return {"level": level, "text": text, "url" : url};
+            var serializeHeading = function (level, text) {
+                // macro to serialize heading elements, level, text
+                return {"level": level, "text": text};
             };
             headings.each(function (headingsIndex) {
                 var currLink = headings.eq(headingsIndex);
                 testHeadings.headingInfo.push(serializeHeading(
                     currLink.prop("tagName").substr(currLink.prop("tagName").length - 1),
-                    currLink.text(),
-                    "#test"
+                    currLink.text()
                 ));
             });
             renderTOCComponent("#flc-toc", {
@@ -562,6 +549,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         });
 
+        // TODO: This test and the component is faulty - if the template loads asynchronously, rendering will fail
         /**
          * #FLUID-5110: refreshView updates headings
          */
@@ -570,17 +558,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var testHeadingRefreshed = {
                 headingInfo: [{
                     level: "2",
-                    text: "H2",
-                    url: "#test"
+                    text: "H2"
                 }, {
                     level: "2",
-                    text: "test",
-                    url: "#test"
+                    text: "test"
                 }]
             };
             renderTOCComponent("#flc-toc-refreshHeadings", {
                 listeners: {
-                    //FLUID-5112: have to use the onCreate event instead of onReady to prevent infinite recursion.
+                    // FLUID-5112: have to use the onCreate event instead of onReady to prevent infinite recursion.
                     "onCreate.intialState": {
                         listener: function (levels, that) {
                             that.events.onRefresh.addListener(function () {

@@ -93,7 +93,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 args: ["{arguments}.0", "{that}.generateGUID"]
             },
             insertAnchor: "fluid.tableOfContents.insertAnchor",
-            generateGUID: "fluid.allocateSimpleId",
+            generateGUID: "fluid.allocateGuid",
             refreshView: {
                 funcName: "fluid.tableOfContents.refreshView",
                 args: ["{that}"]

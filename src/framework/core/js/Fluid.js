@@ -154,17 +154,13 @@ var fluid = fluid || fluid_2_0;
     };
     fluid.FluidError.prototype = new Error();
 
-    // The framework's built-in "fail" policy, in case a user-defined handler would like to
-    // defer to it
+    // The framework's built-in "fail" policy, in case a user-defined handler would like to defer to it
     fluid.builtinFail = function (soft, args, activity) {
         fluid.log.apply(null, [fluid.logLevel.FAIL, "ASSERTION FAILED: "].concat(args));
         fluid.logActivity(activity);
         var message = args.join("");
-        if (soft) {
-            throw new fluid.FluidError(message);
-        } else {
-            message["Assertion failure - check console for details"](); // Intentionally cause a browser error by invoking a nonexistent function.
-        }
+        // We're now insensitive to the "soft" argument since the most portable approach now (2015) is to throw a standard exception
+        throw new fluid.FluidError("Assertion failure - check console for more details: " + message);
     };
 
     var softFailure = [false];
@@ -238,7 +234,7 @@ var fluid = fluid || fluid_2_0;
     };
 
     // TODO: rescued from kettleCouchDB.js - clean up in time
-    fluid.expect = function (name, members, target) {
+    fluid.expect = function (name, target, members) {
         fluid.transform(fluid.makeArray(members), function (key) {
             if (typeof target[key] === "undefined") {
                 fluid.fail(name + " missing required parameter " + key);
@@ -622,7 +618,7 @@ var fluid = fluid || fluid_2_0;
 
     fluid.filterKeys = function (toFilter, keys, exclude) {
         return fluid.remove_if($.extend({}, toFilter), function (value, key) {
-            return exclude ^ ($.inArray(key, keys) === -1);
+            return exclude ^ (keys.indexOf(key) === -1);
         });
     };
 
@@ -655,7 +651,7 @@ var fluid = fluid || fluid_2_0;
      * can be found
      */
     fluid.contains = function (obj, value) {
-        return obj ? (fluid.isArrayable(obj) ? $.inArray(value, obj) !== -1 : fluid.find(obj, function (thisValue) {
+        return obj ? (fluid.isArrayable(obj) ? obj.indexOf(value) !== -1 : fluid.find(obj, function (thisValue) {
             if (value === thisValue) {
                 return true;
             }
@@ -1057,7 +1053,7 @@ var fluid = fluid || fluid_2_0;
     
     // Fluid priority system for encoding relative positions of, e.g. listeners, transforms, options, in lists
     
-    fluid.extremePriority = 4294967296; // 2^32 - allows headroom of 21 fractional bits for sub-priorities
+    fluid.extremePriority = 4e9; // around 2^32 - allows headroom of 21 fractional bits for sub-priorities
     fluid.priorityTypes = {
         first: -1,
         last: 1,
@@ -1135,16 +1131,16 @@ var fluid = fluid || fluid_2_0;
     
     fluid.honourConstraint = function (array, firstConstraint, c) {
         var constraint = array[c].priority.constraint;
-        for (var search = 0; search < firstConstraint; ++ search) {
-            if (array[search].namespace === constraint.target) {
-                break;
-            }
-        }
-        if (search === firstConstraint) {
+        var matchIndex = fluid.find(array, function (element, index) {
+            return element.namespace === constraint.target ? index : undefined;
+        }, -1);
+        if (matchIndex === -1) { // TODO: We should report an error during firing if this condition persists until then
+            return true;
+        } else if (matchIndex >= firstConstraint) {
             return false;
         } else {
             var offset = constraint.type === "after" ? 1 : 0;
-            var target = search + offset;
+            var target = matchIndex + offset;
             var temp = array[c];
             for (var shift = c; shift >= target; -- shift) {
                 array[shift] = array[shift - 1];
@@ -2072,7 +2068,7 @@ var fluid = fluid || fluid_2_0;
 
     // unsupported, NON-API function
     fluid.transformOptions = function (options, transRec) {
-        fluid.expect("Options transformation record", ["transformer", "config"], transRec);
+        fluid.expect("Options transformation record", transRec, ["transformer", "config"]);
         var transFunc = fluid.getGlobalValue(transRec.transformer);
         return transFunc.call(null, options, transRec.config);
     };
@@ -2087,7 +2083,8 @@ var fluid = fluid || fluid_2_0;
         fluid.each(recordTypes, function (recordType) {
             var blocks = fluid.findMergeBlocks(mergeBlocks, recordType);
             fluid.each(blocks, function (block) {
-                block[block.simple? "target": "source"] = fluid.transformOptions(block.source, transformOptions);
+                var source = block.source ? "source" : "target"; // TODO: Problem here with irregular presentation of options which consist of a reference in their entirety
+                block[block.simple || source === "target" ? "target": "source"] = fluid.transformOptions(block[source], transformOptions);
             });
         });
     };
@@ -2211,13 +2208,14 @@ var fluid = fluid || fluid_2_0;
 
         fluid.deliverOptionsStrategy(that, options, mergeOptions); // do this early to broadcast and receive "distributeOptions"
 
+        fluid.computeComponentAccessor(that);
+        
         var transformOptions = fluid.driveStrategy(options, "transformOptions", mergeOptions.strategy);
         if (transformOptions) {
             fluid.transformOptionsBlocks(mergeBlocks, transformOptions, ["user", "subcomponentRecord"]);
             updateBlocks(); // because the possibly simple blocks may have changed target
         }
-
-        fluid.computeComponentAccessor(that);
+        
         if (!baseMergeOptions.target.mergePolicy) {
             computeMergePolicy();
         }

@@ -45,8 +45,33 @@ var fluid_2_0 = fluid_2_0 || {};
                 func: "{that}.applier.change",
                 args: ["", "{arguments}.0"]
             }
-        }
+        },
+        userGrades: "@expand:fluid.prefs.filterEnhancerGrades({that}.options.gradeNames)"
     });
+
+    // Make this a standalone grade since options merging can't see 2 levels deep into merging
+    // trees and will currently trash "gradeNames" for 2nd level nested components!
+    fluid.defaults("fluid.uiEnhancer.root", {
+        gradeNames: ["fluid.uiEnhancer", "fluid.resolveRootSingle", "autoInit"],
+        singleRootType: "fluid.uiEnhancer"
+    });
+    
+    fluid.uiEnhancer.ignorableGrades = ["autoInit", "fluid.uiEnhancer", "fluid.uiEnhancer.root", "fluid.resolveRoot", "fluid.resolveRootSingle"];
+    
+    // These function is necessary so that we can "clone" a UIEnhancer (e.g. one in an iframe) from another.
+    // This reflects a long-standing mistake in UIEnhancer design - we should separate the logic in an enhancer
+    // from a particular binding onto a container. 
+    fluid.prefs.filterEnhancerGrades = function (gradeNames) {
+        return fluid.remove_if(fluid.makeArray(gradeNames), function (gradeName) {
+            return fluid.frameworkGrades.indexOf(gradeName) !== -1 || fluid.uiEnhancer.ignorableGrades.indexOf(gradeName) !== -1;
+        });
+    };
+    
+    // This just the options that we are clear safely represent user options - naturally this all has
+    // to go when we refactor UIEnhancer
+    fluid.prefs.filterEnhancerOptions = function (options) {
+        return fluid.filterKeys(options, ["classnameMap", "fontSizeMap", "tocTemplate", "components"]);
+    };
 
     /********************************************************************************
      * PageEnhancer                                                                 *
@@ -70,18 +95,14 @@ var fluid_2_0 = fluid_2_0 || {};
             source: "{that}.options.uiEnhancer",
             target: "{that > uiEnhancer}.options"
         },
+        singleRootType: "fluid.pageEnhancer",
         components: {
             uiEnhancer: {
-                type: "fluid.uiEnhancer",
-                options: {
-                    gradeNames: "fluid.resolveRootSingle"
-                },
+                type: "fluid.uiEnhancer.root",
                 container: "body"
             }
         },
-        members: {
-            originalUserOptions: "{uiEnhancer}.options"
-        },
+        originalUserOptions: "@expand:fluid.prefs.filterEnhancerOptions({uiEnhancer}.options)",
         listeners: {
             "onCreate.initModel": "fluid.pageEnhancer.init"
         }

@@ -36,17 +36,29 @@ var fluid_2_0 = fluid_2_0 || {};
         }
         options = $.extend({}, options);
         var gradeNames = options.gradeNames = fluid.makeArray(options.gradeNames);
-        gradeNames.unshift(type);
-        options.type = "fluid.littleComponent"; // principal type may be noninstantiable
+        gradeNames.unshift(type); // principal type may be noninstantiable
+        options.type = "fluid.littleComponent";
         var root = segs.length === 0;
         if (root) {
             gradeNames.push("fluid.resolveRoot");
         }
-        segs.push(fluid.typeNameToMemberName(type));
+        var memberName = fluid.typeNameToMemberName(options.singleRootType || type);
+        segs.push(memberName);
         fluid.construct(segs, options, instantiator);
     };
     
-    
+    /** Destroy an instance created by `fluid.constructSingle`
+     * @param parentPath {String|Array of String} Parent of path where the new component is to be constructed, represented as a string or array of segments
+     * @param typeName {String} The type name used to construct the component (either `type` or `singleRootType` of the `options` argument to `fluid.constructSingle`
+     * @param instantiator {Instantiator} [optional] The instantiator holding the component to be created - if blank, the global instantiator will be used
+    */
+    fluid.destroySingle = function (parentPath, typeName, instantiator) {
+        instantiator = instantiator || fluid.globalInstantiator;
+        var segs = fluid.model.parseToSegments(parentPath, instantiator.parseEL, true);
+        var memberName = fluid.typeNameToMemberName(typeName);
+        segs.push(memberName);
+        fluid.destroy(segs, instantiator);
+    };
     
     fluid.defaults("fluid.contextAware.marker", {
         gradeNames: ["fluid.littleComponent", "autoInit"]
@@ -167,6 +179,9 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // unsupported, NON-API function    
     fluid.contextAware.checkOne = function (that, contextAwareRecord) {
+        if (contextAwareRecord.checks && contextAwareRecord.checks.contextValue) {
+            fluid.fail("Nesting error in contextAwareness record ", contextAwareRecord, " - the \"checks\" entry must contain a hash and not a contextValue/gradeNames record at top level");
+        }
         var checkList = fluid.hashToArray(contextAwareRecord.checks, "namespace", function (newElement, oldElement, index) {
             $.extend(newElement, oldElement);
             newElement.priority = fluid.parsePriority(oldElement.priority, index);
@@ -198,6 +213,29 @@ var fluid_2_0 = fluid_2_0 || {};
         return gradeNames;
     };
 
+    /** Given a set of options, broadcast an adaptation to all instances of a particular component in a particular context. ("new demands blocks").
+     * This has the effect of fabricating a grade with a particular name with an options distribution to `{/ typeName}` for the required component,
+     * and then constructing a single well-known instance of it.
+     * Options layout:
+     *  distributionName {String} A grade name - the name to be given to the fabricated grade
+     *  targetName {String} A grade name - the name of the grade to receive the adaptation
+     *  adaptationName {String} the name of the contextAwareness record to receive the record - this will be a simple string
+     *  checkName {String} the name of the check within the contextAwareness record to receive the record - this will be a simple string
+     *  record {Object} the record to be broadcast into contextAwareness - should contain entries 
+     *      contextValue {IoC expression} the context value to be checked to activate the adaptation
+     *      gradeNames {String/Array of String} the grade names to be supplied to the adapting target (matching advisedName)
+     */
+    fluid.contextAware.makeAdaptation = function (options) {
+        fluid.expect("fluid.contextAware.makeAdaptation", options, ["distributionName", "targetName", "adaptationName", "checkName", "record"]);
+        fluid.defaults(options.distributionName, {
+            gradeNames: ["fluid.littleComponent", "autoInit"],
+            distributeOptions: {
+                target: "{/ " + options.targetName + "}.options.contextAwareness." + options.adaptationName + ".checks." + options.checkName,
+                record: options.record
+            }
+        });
+        fluid.constructSingle([], options.distributionName);
+    };
 
     // Context awareness for the browser environment
     
