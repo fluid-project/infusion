@@ -19,7 +19,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.prefs.panel.speak", {
         gradeNames: ["fluid.prefs.panel.speak", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
-        testMessages: {
+        messageBase: {
             "speakLabel": "Test speakLabel",
             "speakChoiceLabel": "Test speakChoiceLabel"
         },
@@ -43,8 +43,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.speakPanel.verifyRendering = function (that) {
         fluid.tests.panels.utils.verifyCheckboxState("The text-to-speech option is not checked by default", false, that.locate("speak"));
-        jqUnit.assertEquals("The text for speakLabel should be rendered", that.options.testMessages.speakLabel, that.locate("label").text());
-        jqUnit.assertEquals("The text for speakChoiceLabel should be rendered", that.options.testMessages.speakChoiceLabel, that.locate("choiceLabel").text());
+        jqUnit.assertEquals("The text for speakLabel should be rendered", that.options.messageBase.speakLabel, that.locate("label").text());
+        jqUnit.assertEquals("The text for speakChoiceLabel should be rendered", that.options.messageBase.speakChoiceLabel, that.locate("choiceLabel").text());
     };
 
     fluid.defaults("fluid.tests.speakTester", {
