@@ -77,7 +77,7 @@ var demo = demo || {};
      */
 
     fluid.defaults("demo.fiveStar", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         members: {
             stars: "{that}.dom.stars"
         },

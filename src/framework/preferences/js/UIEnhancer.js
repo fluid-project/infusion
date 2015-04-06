@@ -39,7 +39,7 @@ var fluid_2_0 = fluid_2_0 || {};
      ***********************************************/
 
     fluid.defaults("fluid.uiEnhancer", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         invokers: {
             updateModel: {
                 func: "{that}.applier.change",

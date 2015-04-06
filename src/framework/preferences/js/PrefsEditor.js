@@ -27,7 +27,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.prefs.prefsEditorLoader", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
             prefsEditor: {
                 priority: "last",
@@ -91,7 +91,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.defaults("fluid.prefs.transformDefaultPanelsOptions", {
         // Do not supply "fluid.prefs.inline" here, since when this is used as a mixin for separatedPanel, it ends up displacing the
         // more refined type of the prefsEditorLoader
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         distributeOptions: [{
             source: "{that}.options.textSize",
             removeSource: true,
@@ -211,7 +211,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.prefs.uiEnhancerRelay", {
-        gradeNames: ["autoInit", "fluid.modelRelayComponent"],
+        gradeNames: ["autoInit", "fluid.modelComponent"],
         listeners: {
             onCreate: "{that}.addListener",
             onDestroy: "{that}.removeListener"
@@ -257,7 +257,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.prefs.prefsEditor", {
-        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.settingsGetter", "fluid.prefs.settingsSetter", "fluid.prefs.initialModel", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.prefs.settingsGetter", "fluid.prefs.settingsSetter", "fluid.prefs.initialModel", "autoInit"],
         invokers: {
             /**
              * Updates the change applier and fires modelChanged on subcomponent fluid.prefs.controls
@@ -434,7 +434,7 @@ var fluid_2_0 = fluid_2_0 || {};
      ******************************/
 
     fluid.defaults("fluid.prefs.preview", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
             enhancer: {
                 type: "fluid.uiEnhancer",

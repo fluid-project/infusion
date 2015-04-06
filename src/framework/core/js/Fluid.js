@@ -2106,14 +2106,38 @@ var fluid = fluid || fluid_2_0;
         demands:            600 // and above
     };
 
+    // Utility used elsewhere in the framework, unconnected with new ChangeApplier
+    // unsupported, NON-API function
+    fluid.model.applyChangeRequest = function (model, request) {
+        var segs = request.segs;
+        if (segs.length === 0) {
+            if (request.type === "ADD") {
+                $.extend(true, model, request.value);
+            } else {
+                fluid.clear(model);
+            }
+        } else if (request.type === "ADD") {
+            fluid.model.setSimple(model, request.segs, request.value);
+        } else {
+            for (var i = 0; i < segs.length - 1; ++ i) {
+                model = model[segs[i]];
+                if (!model) {
+                    return;
+                }
+            }
+            var last = segs[segs.length - 1];
+            delete model[last];
+        }
+    };
+
     /** Delete the value in the supplied object held at the specified path
      * @param target {Object} The object holding the value to be deleted (possibly empty)
-     * @param path {String/Array of String} the path of the value to be deleted
+     * @param segs {Array of String} the path of the value to be deleted
      */
     // unsupported, NON-API function
-    fluid.destroyValue = function (target, path) {
+    fluid.destroyValue = function (target, segs) {
         if (target) {
-            fluid.model.applyChangeRequest(target, {type: "DELETE", path: path});
+            fluid.model.applyChangeRequest(target, {type: "DELETE", segs: segs});
         }
     };
     
@@ -2168,11 +2192,11 @@ var fluid = fluid || fluid_2_0;
         var mergeOptions = fluid.makeMergeOptions(sharedMergePolicy, sources, baseMergeOptions);
         mergeOptions.mergeBlocks = mergeBlocks;
         mergeOptions.updateBlocks = updateBlocks;
-        mergeOptions.destroyValue = function (path) { // This method is a temporary hack to assist FLUID-5091
+        mergeOptions.destroyValue = function (segs) { // This method is a temporary hack to assist FLUID-5091
             for (var i = 0; i < mergeBlocks.length; ++ i) {
-                fluid.destroyValue(mergeBlocks[i].target, path);
+                fluid.destroyValue(mergeBlocks[i].target, segs);
             }
-            fluid.destroyValue(baseMergeOptions.target, path);
+            fluid.destroyValue(baseMergeOptions.target, segs);
         };
 
         var compiledPolicy;

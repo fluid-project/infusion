@@ -398,11 +398,9 @@ var fluid_2_0 = fluid_2_0 || {};
                 fluid.fail("Error in changeEvent fixture ", fixture,
                    ": could not find path specification named \"path\" or \"spec\"");
             }
-            if (event.isRelayEvent) { // special support for new-style change listeners
-                spec.transactional = true;
-                if (spec.priority === undefined) {
-                    spec.priority = "last";
-                }
+            spec.transactional = true;
+            if (spec.priority === undefined) {
+                spec.priority = "last";
             }
             event.addListener(spec, wrapped, fixture.namespace);
         }, function (wrapped) {

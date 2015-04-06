@@ -140,8 +140,8 @@ fluid_2_0 = fluid_2_0 || {};
         gradeNames: ["fluid.commonRendererComponent", "fluid.viewComponent", "autoInit"]
     });
 
-    fluid.defaults("fluid.rendererRelayComponent", {
-        gradeNames: ["fluid.commonRendererComponent", "fluid.viewRelayComponent", "autoInit"]
+    fluid.defaults("fluid.rendererComponent", {
+        gradeNames: ["fluid.commonRendererComponent", "fluid.viewComponent", "autoInit"]
     });
 
     fluid.rendererComponent.renderOnInit = function (renderOnInit, that) {

@@ -26,7 +26,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var emphasizeLinksClass = "fl-emphasize-links";
 
     fluid.defaults("fluid.uiEnhancer.customizedEnactors", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
             emphasizeLinks: {
                 type: "fluid.prefs.enactor.emphasizeLinks",

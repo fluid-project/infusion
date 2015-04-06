@@ -180,31 +180,30 @@ var fluid_2_0 = fluid_2_0 || {};
 
         var source = fluid.copy(fluid.get(sourceRecord, sourcePath));
         fluid.each(exclusions, function (exclusion) {
-            fluid.model.applyChangeRequest(source, {path: exclusion, type: "DELETE"});
+            fluid.model.applyChangeRequest(source, {segs: exclusion, type: "DELETE"});
         });
 
         var record = {options: {}};
-        var primitiveSource = fluid.isPrimitive(source);
-        fluid.model.applyChangeRequest(record, {path: targetSegs, type: primitiveSource? "ADD": "MERGE", value: source});
+        fluid.model.applyChangeRequest(record, {segs: targetSegs, type: "ADD", value: source});
         return $.extend(record, {contextThat: contextThat, recordType: sourceType, priority: fluid.mergeRecordTypes.distribution + offset});
     };
 
     // Part of the early "distributeOptions" workflow. Given the description of the blocks to be distributed, assembles "canned" records
     // suitable to be either registered into the shadow record for later or directly pushed to an existing component, as well as honouring
     // any "removeSource" annotations by removing these options from the source block.
-    fluid.filterBlocks = function (contextThat, sourceBlocks, sourcePath, targetSegs, exclusions, removeSource) {
+    fluid.filterBlocks = function (contextThat, sourceBlocks, sourceSegs, targetSegs, exclusions, removeSource) {
         var togo = [], offset = 0;
         fluid.each(sourceBlocks, function (block) {
-            var source = fluid.get(block.source, sourcePath);
+            var source = fluid.get(block.source, sourceSegs);
             if (source) {
-                togo.push(fluid.makeDistributionRecord(contextThat, block.source, sourcePath, targetSegs, exclusions, offset++, block.recordType));
+                togo.push(fluid.makeDistributionRecord(contextThat, block.source, sourceSegs, targetSegs, exclusions, offset++, block.recordType));
                 var rescued = $.extend({}, source);
                 if (removeSource) {
-                    fluid.model.applyChangeRequest(block.source, {path: sourcePath, type: "DELETE"});
+                    fluid.model.applyChangeRequest(block.source, {segs: sourceSegs, type: "DELETE"});
                 }
                 fluid.each(exclusions, function (exclusion) {
                     var orig = fluid.get(rescued, exclusion);
-                    fluid.set(block.source, sourcePath.concat(exclusion), orig);
+                    fluid.set(block.source, sourceSegs.concat(exclusion), orig);
                 });
             }
         });
@@ -221,7 +220,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.clearCollectedDistributions = function (parentShadow, memberName) {
-        fluid.model.applyChangeRequest(parentShadow, {path: ["collectedDistributions", memberName], type: "DELETE"});
+        fluid.model.applyChangeRequest(parentShadow, {segs: ["collectedDistributions", memberName], type: "DELETE"});
     };
 
     fluid.collectDistributions = function (distributedBlocks, parentShadow, distribution, thatStack, contextHashes, memberNames, i) {
@@ -429,14 +428,14 @@ var fluid_2_0 = fluid_2_0 || {};
                 if (source.context !== "that") {
                     fluid.fail("Error in options distribution record ", record, " only a context of {that} is supported");
                 }
-                var sourcePath = fluid.parseExpectedOptionsPath(source.path, "source");
-                var fullExclusions = fluid.makeArray(record.exclusions).concat(sourcePath.length === 0 ? fluid.undistributableOptions : []);
+                var sourceSegs = fluid.parseExpectedOptionsPath(source.path, "source");
+                var fullExclusions = fluid.makeArray(record.exclusions).concat(sourceSegs.length === 0 ? fluid.undistributableOptions : []);
 
                 var exclusions = fluid.transform(fullExclusions, function (exclusion) {
                     return fluid.model.parseEL(exclusion);
                 });
 
-                preBlocks = fluid.filterBlocks(that, thatShadow.mergeOptions.mergeBlocks, sourcePath, targetSegs, exclusions, record.removeSource);
+                preBlocks = fluid.filterBlocks(that, thatShadow.mergeOptions.mergeBlocks, sourceSegs, targetSegs, exclusions, record.removeSource);
                 thatShadow.mergeOptions.updateBlocks(); // perhaps unnecessary
             }
             // TODO: inline material has to be expanded in its original context!
@@ -516,9 +515,9 @@ var fluid_2_0 = fluid_2_0 || {};
         fluid.cacheShadowGrades(that, shadow);
         // This cheap strategy patches FLUID-5091 for now - some more sophisticated activity will take place
         // at this site when we have a full fix for FLUID-5028
-        shadow.mergeOptions.destroyValue("mergePolicy");
-        shadow.mergeOptions.destroyValue("components");
-        shadow.mergeOptions.destroyValue("invokers");
+        shadow.mergeOptions.destroyValue(["mergePolicy"]);
+        shadow.mergeOptions.destroyValue(["components"]);
+        shadow.mergeOptions.destroyValue(["invokers"]);
 
         defaultsBlock.source = newDefaults;
         shadow.mergeOptions.updateBlocks();
@@ -706,7 +705,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.frameworkGrades = ["fluid.littleComponent", "fluid.eventedComponent",
         "fluid.commonModelComponent", "fluid.commonViewComponent", "fluid.commonRendererComponent",
         "fluid.modelComponent", "fluid.viewComponent", "fluid.standardComponent", "fluid.rendererComponent",
-        "fluid.modelRelayComponent", "fluid.viewRelayComponent", "fluid.standardRelayComponent", "fluid.rendererRelayComponent"];
+        "fluid.modelComponent", "fluid.viewComponent", "fluid.standardComponent", "fluid.rendererComponent"];
     
         
     fluid.filterBuiltinGrades = function (gradeNames) {
@@ -1118,9 +1117,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * and argument list which is suitable to be executed directly by fluid.invokeGlobalFunction.
      */
     // options is just a disposition record containing memberName, componentRecord
-    // i) note that it makes no effort to actually propagate direct
-    // options from "initArgs", assuming that they will be seen again in expandComponentOptions
-    fluid.assembleCreatorArguments = function (parentThat, typeName, initArgs, options) {
+    fluid.assembleCreatorArguments = function (parentThat, typeName, options) {
         var upDefaults = fluid.defaults(typeName);
         if (!upDefaults || !upDefaults.argumentMap) {
             fluid.fail("Error in assembleCreatorArguments: cannot look up component type name " + typeName + " to a component creator grade with an argumentMap");
@@ -1135,14 +1132,9 @@ var fluid_2_0 = fluid_2_0 || {};
         var shadow = fluid.shadowForComponent(parentThat);
         var localDynamic = shadow && shadow.subcomponentLocal && options.memberName ? shadow.subcomponentLocal[options.memberName] : null;
 
-        var localRecord = $.extend({"arguments": initArgs}, fluid.censorKeys(options.componentRecord, ["type"]), localDynamic);
+        var localRecord = $.extend({}, fluid.censorKeys(options.componentRecord, ["type"]), localDynamic);
 
         fluid.each(argMap, function (index, name) {
-            // this is incorrect anyway! What if the supplied arguments were not in the same order as the target argmap,
-            // which was obtained from the target defaults
-            if (initArgs) {
-                localRecord[name] = localRecord["arguments"][index];
-            }
             if (name !== "options") {
                 for (var i = 0; i < distributions.length; ++ i) { // Apply non-options material from distributions (FLUID-5013)
                     if (distributions[i][name] !== undefined) {
@@ -1174,9 +1166,6 @@ var fluid_2_0 = fluid_2_0 || {};
                 args[i] = fluid.expand(arg, expandOptions);
             }
             else { // It is the component options
-                if (initArgs) {
-                    mergeRecords.user = {options: localRecord.options};
-                }
                 args[i] = {marker: fluid.EXPAND,
                            localRecord: localDynamic,
                            mergeRecords: mergeRecords,
@@ -1204,8 +1193,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param name {String} the name of the component - the index of the options block which configures it as part of the
      * <code>components</code> section of its parent's options
      */
-    // initArgs is now only used via renderer.invokeFluidDecorator
-    fluid.initDependent = function (that, name, initArgs) {
+    fluid.initDependent = function (that, name) {
         if (that[name]) { return; } // TODO: move this into strategy
         var component = that.options.components[name];
         fluid.pushActivity("initDependent", "instantiating dependent component with name \"%name\" with record %record as child of %parent",
@@ -1223,7 +1211,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 fluid.fail("Error in subcomponent record: ", component.type, " could not be resolved to a type for component ", name,
                     " of parent ", that);
             }
-            var invokeSpec = fluid.assembleCreatorArguments(that, type, initArgs, {componentRecord: component, memberName: name});
+            var invokeSpec = fluid.assembleCreatorArguments(that, type, {componentRecord: component, memberName: name});
             instance = fluid.initSubcomponentImpl(that, {type: invokeSpec.funcName}, invokeSpec.args);
             // The existing instantiator record will be provisional, adjust it to take account of the true return
             // TODO: This entire workflow will shortly be removed - we can't tolerate components constructed out of place
@@ -2132,11 +2120,8 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     // The "noexpand" expander which simply unwraps one level of expansion and ceases.
-    fluid.expander.noexpand = function (deliverer, source) {
+    fluid.noexpand = function (deliverer, source) {
         return source.expander.value ? source.expander.value : source.expander.tree;
     };
-
-    fluid.noexpand = fluid.expander.noexpand; // TODO: check naming and namespacing
-
 
 })(jQuery, fluid_2_0);

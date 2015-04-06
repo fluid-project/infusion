@@ -515,7 +515,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.prefs.panel.otherTextSize", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         preferenceMap: {
             "fluid.prefs.textSize": {
                 "model.value": "default",
@@ -1118,7 +1118,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.prefs.enactor.subPanel2", {
-        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
             "fluid.prefs.subPanel2": {
                 "model.value": "default"
@@ -1395,7 +1395,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.prefs.enactor.subPanel4", {
-        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
             "fluid.prefs.subPanel4": {
                 "model.value": "default"

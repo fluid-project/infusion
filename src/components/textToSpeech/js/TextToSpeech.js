@@ -29,7 +29,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.textToSpeech", {
-        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        gradeNames: ["fluid.standardComponent", "autoInit"],
         events: {
             onStart: null,
             onStop: null,

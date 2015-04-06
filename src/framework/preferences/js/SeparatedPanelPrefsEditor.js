@@ -183,7 +183,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *****************************************/
 
     fluid.defaults("fluid.prefs.separatedPanel.renderIframe", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         events: {
             afterRender: null
         },

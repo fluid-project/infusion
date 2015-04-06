@@ -120,7 +120,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.prefs.containerNeeded = function (root, path) {
         var componentType = fluid.get(root, [path, "type"]);
         var componentOptions = fluid.defaults(componentType);
-        return (fluid.hasGrade(componentOptions, "fluid.viewRelayComponent") || fluid.hasGrade(componentOptions, "fluid.rendererRelayComponent"));
+        return (fluid.hasGrade(componentOptions, "fluid.viewComponent") || fluid.hasGrade(componentOptions, "fluid.rendererComponent"));
     };
 
     fluid.prefs.checkPrimarySchema = function (primarySchema, prefKey) {

@@ -57,7 +57,7 @@ var fluid_2_0 = fluid_2_0 || {};
      ***********************************************/
 
     fluid.defaults("fluid.prefs.panel", {
-        gradeNames: ["fluid.rendererRelayComponent", "fluid.prefs.msgLookup", "autoInit"],
+        gradeNames: ["fluid.rendererComponent", "fluid.prefs.msgLookup", "autoInit"],
         events: {
             onDomBind: null
         },
@@ -971,7 +971,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * A sub-component that decorates the options on the select dropdown list box with the css style
      */
     fluid.defaults("fluid.prefs.selectDecorator", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         listeners: {
             onCreate: "fluid.prefs.selectDecorator.decorateOptions"
         },

@@ -18,7 +18,7 @@ var fluid_2_0 = fluid_2_0 || {};
 (function ($, fluid) {
     "use strict";
 
-    // The base grade for fluid.viewComponent and fluid.viewRelayComponent - will be removed again once the old ChangeApplier is eliminated
+    // The base grade for fluid.viewComponent and fluid.viewComponent - will be removed again once the old ChangeApplier is eliminated
     fluid.defaults("fluid.commonViewComponent", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         initFunction: "fluid.initView",
@@ -37,8 +37,8 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // a version of the standard grade fluid.viewComponent that uses the new FLUID-5024 ChangeApplier and model relay system - this will be the default
     // in Fluid 2.0 and be renamed back to fluid.viewComponent
-    fluid.defaults("fluid.viewRelayComponent", {
-        gradeNames: ["fluid.commonViewComponent", "fluid.standardRelayComponent", "autoInit"]
+    fluid.defaults("fluid.viewComponent", {
+        gradeNames: ["fluid.commonViewComponent", "fluid.standardComponent", "autoInit"]
     });
 
     // unsupported, NON-API function
@@ -53,7 +53,7 @@ var fluid_2_0 = fluid_2_0 || {};
     // diagnostic - in fact, it is perfectly acceptable for a component's creator to return no value and
     // the failure is really in assumptions in fluid.initComponent. Revisit this issue for 1.5
     fluid.diagnoseFailedView = function (componentName, that, options, args) {
-        if (!that && (fluid.hasGrade(options, "fluid.viewComponent") || fluid.hasGrade(options, "fluid.viewRelayComponent"))) {
+        if (!that && (fluid.hasGrade(options, "fluid.viewComponent") || fluid.hasGrade(options, "fluid.viewComponent"))) {
             var container = fluid.wrap(args[1]);
             var message1 = "Instantiation of autoInit component with type " + componentName + " failed, since ";
             if (!container) {

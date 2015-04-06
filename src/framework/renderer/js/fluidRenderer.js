@@ -273,13 +273,12 @@ fluid_2_0 = fluid_2_0 || {};
         if (options.parentComponent) {
             var parent = options.parentComponent;
             var name = renderer.IDtoComponentName(ID, num);
-            // TODO: The best we can do here without GRADES is to wildly guess
-            // that it is a view component with options in the 2nd place and container in first place
-            fluid.set(parent, fluid.path("options", "components", name), {type: func});
-            // This MIGHT really be a variant of fluid.invoke... only we often probably DO want the component
-            // itself to be inserted into the that stack. This *ALSO* requires GRADES to resolve. A
-            // "function" is that which has no grade. The gradeless grade.
-            that = fluid.initDependent(options.parentComponent, name, args);
+            fluid.set(parent, ["options", "components", name], {
+                type: func,
+                container: args[0],
+                options: args[1]
+            });
+            that = fluid.initDependent(options.parentComponent, name);
         }
         else {
             that = fluid.invokeGlobalFunction(func, args);

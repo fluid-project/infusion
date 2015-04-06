@@ -421,67 +421,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         });
 
-        fluid.defaults("fluid.tests.decoratorParent", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
-            model: {
-                submodel: [{
-                    val: "TEST"
-                }]
-            },
-            selectors: {
-                row: ".flc-row",
-                val: ".flc-val"
-            },
-            repeatingSelectors: ["row"],
-            protoTree: {
-                expander: {
-                    repeatID: "row",
-                    type: "fluid.renderer.repeat",
-                    pathAs: "row",
-                    valueAs: "rowVal",
-                    controlledBy: "submodel",
-                    tree: {
-                        val: {
-                            decorators: {
-                                func: "fluid.tests.decoratorWithSubModel",
-                                type: "fluid",
-                                options: {
-                                    model: "{rowVal}"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
-        fluid.defaults("fluid.tests.decoratorWithSubModel", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
-            protoTree: {
-                val: "${val}"
-            },
-            selectors: {
-                val: ".flc-val-val"
-            },
-            finalInitFunction: "fluid.tests.decoratorWithSubModel.finalInitFunction"
-        });
-
-        fluid.tests.decoratorWithSubModel.finalInitFunction = function (that) {
-            that.refreshView();
-        };
-
-        jqUnit.test("Decorator with sub model", function () {
-            var that = fluid.tests.decoratorParent("#decorator-container");
-            that.refreshView();
-            var decorator = that["**-renderer-row::val-0"];
-            jqUnit.assertEquals("Original value should be", "TEST", decorator.locate("val").val());
-            jqUnit.assertEquals("Original value in the model should be", "TEST", decorator.model.val);
-            decorator.locate("val").val("NEW VAL").change();
-            jqUnit.assertEquals("Original value should be", "NEW VAL", decorator.locate("val").val());
-            jqUnit.assertEquals("Original value in the model should be", "NEW VAL", decorator.model.val);
-            jqUnit.assertEquals("Original value in the model should be", "NEW VAL", that.model.submodel[0].val);
-        });
-
         jqUnit.test("FLUID-4165 - ensure automatic creation of applier if none supplied", function () {
             var model = {value: "Initial Value"};
             var that = fluid.tests.FLUID4165Component(".FLUID-4165-test", {model: model});
@@ -490,7 +429,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Initial value rendered", model.value, input.val());
             input.val("New Value");
             input.change();
-            jqUnit.assertEquals("Updated value read", "New Value", model.value);
+            jqUnit.assertEquals("Updated value read", "New Value", that.model.value);
         });
 
         fluid.defaults("fluid.tests.FLUID4189Component", {
@@ -570,10 +509,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // FLUID-5279: "that.produceTree is not a function" when refreshView() is called as a
         // model (relayed) listener on a renderer relay component
         fluid.defaults("fluid.tests.fluid5279", {
-            gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
             components: {
                 attributes: {
-                    type: "fluid.rendererRelayComponent",
+                    type: "fluid.rendererComponent",
                     createOnEvent: "afterRender",
                     container: ".flc-sub",
                     options: {
@@ -628,7 +567,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         // FLUID-5280: During initial transaction, give priority to recently modified values
         fluid.defaults("fluid.tests.fluid5280", {
-            gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
             components: {
                 attributes: {
                     type: "fluid.tests.fluid5280sub",
@@ -658,7 +597,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.fluid5280sub", {
-            gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
             protoTree: {
                 expander: {
                     "type": "fluid.renderer.condition",
@@ -688,7 +627,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // FLUID-5281: protoComponent expansion should respect new ChangeApplier idiom of "floating base model reference"
 
         fluid.defaults("fluid.tests.fluid5282root", {
-            gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent", "autoInit"],
             protoTree: {
                 expander: {
                     "type": "fluid.renderer.condition",
@@ -1054,7 +993,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             vocabUrl: "${vocabUrl}",
                             componentTree: {
                                 expander: {
-                                    type: "fluid.expander.noexpand",
+                                    type: "fluid.noexpand",
                                     tree: {
                                         component1: "${path1}"
                                     }
@@ -1342,7 +1281,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     ]
                 }
             };
-            var applier = fluid.makeChangeApplier(model);
+            var holder = {model: model};
+            var applier = fluid.makeHolderChangeApplier(holder);
             var expopts = {ELstyle: "${}", model: model, applier: applier};
             var expander = fluid.renderer.makeProtoExpander(expopts);
             var protoTree = {
@@ -1362,7 +1302,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             };
             var expanded = expander(protoTree);
-            jqUnit.assertCanoniseEqual("Message key resolved", model.tabs.here.name,
+            jqUnit.assertCanoniseEqual("Message key resolved", holder.model.tabs.here.name,
                 expanded.children[0].children[0].linktext.messagekey.value, jqUnit.sortTree);
         });
 
@@ -1744,13 +1684,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.test("FLUID-5099: source name collision", function () {
-            jqUnit.expect(3);
+            jqUnit.expect(2);
             var that = fluid.tests.fluid5099("#FLUID-5099");
             var test = that.locate("test");
             jqUnit.assertEquals("Original value is correct", "TEST", test.val());
-            fluid.addSourceGuardedListener(that.applier, "test", "test", function (model, oldModel, changeRequest) {
+            // TODO: Source tracking is not supported in current applier
+            fluid.addSourceGuardedListener(that.applier, "test", "test", function () {
                 jqUnit.assert("Listener is applied correctly.");
-                jqUnit.assertEquals("Source is set correctly", "DOM:test", changeRequest[0].source);
             });
             test.val("NEW VALUE").change();
         });

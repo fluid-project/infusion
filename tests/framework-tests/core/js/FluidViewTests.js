@@ -124,12 +124,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
 
-        // FLUID-5277: Improve the error message when an nonexistent container is provided for fluid.viewRelayComponent and fluid.rendererRelayComponent
+        // FLUID-5277: Improve the error message when an nonexistent container is provided for fluid.viewComponent and fluid.rendererComponent
         fluid.defaults("fluid.tests.fluid5277", {
-            gradeNames: ["fluid.viewRelayComponent", "autoInit"]
+            gradeNames: ["fluid.viewComponent", "autoInit"]
         });
 
-        jqUnit.test("FLUID-5277: Improve the error message when an nonexistent container is provided for fluid.viewRelayComponent and fluid.rendererRelayComponent", function () {
+        jqUnit.test("FLUID-5277: Improve the error message when an nonexistent container is provided for fluid.viewComponent and fluid.rendererComponent", function () {
             jqUnit.expectFrameworkDiagnostic("Nonexist container for relay component", function () {
                 fluid.tests.fluid5277("#nonexistent-container");
             }, "did not match any markup");
@@ -148,7 +148,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertValue("Constructed component", that);
             jqUnit.assertEquals("Constructed functioning DOM binder", 3, that.locate("page-link").length);
             // Distinguish between the behaviour of the "old" and "new" modelComponents
-            if (fluid.hasGrade(that.options, "fluid.modelRelayComponent")) {
+            if (fluid.hasGrade(that.options, "fluid.modelComponent")) {
                 jqUnit.assertDeepEq("View component acquired model", model, that.model);
             } else {
                 jqUnit.assertEquals("View component correctly preserved model", model, that.model);

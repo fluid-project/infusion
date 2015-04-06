@@ -124,7 +124,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.tooltip", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         widgetOptions: {
             tooltipClass: "{that}.options.styles.tooltip",
             position: "{that}.options.position",

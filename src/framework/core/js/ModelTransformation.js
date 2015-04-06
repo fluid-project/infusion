@@ -245,6 +245,61 @@ var fluid = fluid || fluid_2_0;
         }
         return transformed;
     };
+    
+    // OLD PATHUTIL utilities: Rescued from old DataBinding implementation to support obsolete "schema" scheme for transforms - all of this needs to be rethought
+    var globalAccept = [];
+    
+    fluid.registerNamespace("fluid.pathUtil");
+
+    /** Parses a path segment, following escaping rules, starting from character index i in the supplied path */
+    fluid.pathUtil.getPathSegment = function (path, i) {
+        fluid.pathUtil.getPathSegmentImpl(globalAccept, path, i);
+        return globalAccept[0];
+    };
+    /** Returns just the head segment of an EL path */
+    fluid.pathUtil.getHeadPath = function (path) {
+        return fluid.pathUtil.getPathSegment(path, 0);
+    };
+
+    /** Returns all of an EL path minus its first segment - if the path consists of just one segment, returns "" */
+    fluid.pathUtil.getFromHeadPath = function (path) {
+        var firstdot = fluid.pathUtil.getPathSegmentImpl(null, path, 0);
+        return firstdot === path.length ? "" : path.substring(firstdot + 1);
+    };
+    /** Determines whether a particular EL path matches a given path specification.
+     * The specification consists of a path with optional wildcard segments represented by "*".
+     * @param spec (string) The specification to be matched
+     * @param path (string) The path to be tested
+     * @param exact (boolean) Whether the path must exactly match the length of the specification in
+     * terms of path segments in order to count as match. If exact is falsy, short specifications will
+     * match all longer paths as if they were padded out with "*" segments
+     * @return (array of string) The path segments which matched the specification, or <code>null</code> if there was no match
+     */
+
+    fluid.pathUtil.matchPath = function (spec, path, exact) {
+        var togo = [];
+        while (true) {
+            if (((path === "") ^ (spec === "")) && exact) {
+                return null;
+            }
+            // FLUID-4625 - symmetry on spec and path is actually undesirable, but this
+            // quickly avoids at least missed notifications - improved (but slower)
+            // implementation should explode composite changes
+            if (!spec || !path) {
+                break;
+            }
+            var spechead = fluid.pathUtil.getHeadPath(spec);
+            var pathhead = fluid.pathUtil.getHeadPath(path);
+            // if we fail to match on a specific component, fail.
+            if (spechead !== "*" && spechead !== pathhead) {
+                return null;
+            }
+            togo.push(pathhead);
+            spec = fluid.pathUtil.getFromHeadPath(spec);
+            path = fluid.pathUtil.getFromHeadPath(path);
+        }
+        return togo;
+    };
 
     // unsupported, NON-API function
     fluid.model.transform.expandWildcards = function (transform, source) {
@@ -573,7 +628,7 @@ var fluid = fluid || fluid_2_0;
         }
         setConfig.strategies = [fluid.model.defaultFetchStrategy, schemaStrategy ? fluid.model.transform.schemaToCreatorStrategy(schemaStrategy)
                 : fluid.model.defaultCreatorStrategy];
-        transform.finalApplier = options.finalApplier || fluid.makeNewChangeApplier(transform.target, {resolverSetConfig: setConfig});
+        transform.finalApplier = options.finalApplier || fluid.makeHolderChangeApplier(transform.target, {resolverSetConfig: setConfig});
 
         if (transform.queuedTransforms.length > 0) {
             transform.typeStack = [];

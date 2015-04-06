@@ -204,7 +204,7 @@ var demo = demo || {};
      * and update the demo's model display.
      */
     var setupDataModel = function () {
-        var applier = fluid.makeChangeApplier(demo.data);
+        var applier = fluid.makeHolderChangeApplier({model: demo.data});
         applier.modelChanged.addListener("*", function () {
             displayDataModel();
         });

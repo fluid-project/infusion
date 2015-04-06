@@ -124,7 +124,7 @@ var demo = demo || {};
      * Simplify content based upon the model value.
      **********************************************************************************/
     fluid.defaults("demo.prefsEditor.simplifyEnactor", {
-        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
             "demo.prefs.simplify": {
                 "model.simplify": "default"

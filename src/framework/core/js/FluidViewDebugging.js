@@ -36,7 +36,7 @@ var fluid_2_0 = fluid_2_0 || {};
    
     
     fluid.defaults("fluid.debug.highlighter", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         selectors: {
             highlightRoot: "#fluid-debug-highlightRoot"
         },
@@ -301,7 +301,7 @@ var fluid_2_0 = fluid_2_0 || {};
     
     
     fluid.defaults("fluid.debug.browser", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         model: {
             isOpen: false,
             isInspecting: false,

@@ -133,7 +133,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.prefs.tempStore", {
-        gradeNames: ["fluid.prefs.store", "fluid.modelRelayComponent", "autoInit"],
+        gradeNames: ["fluid.prefs.store", "fluid.modelComponent", "autoInit"],
         invokers: {
             get: {
                 funcName: "fluid.identity",

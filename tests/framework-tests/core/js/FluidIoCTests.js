@@ -117,38 +117,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
 
-    /** Correct transmission of model references */
-
-    fluid.defaults("fluid.tests.modelComponent", {
-        gradeNames: ["fluid.modelComponent", "autoInit"]
-    });
-
-
-    fluid.defaults("fluid.tests.dependentModel", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        mergePolicy: {
-            model: "preserve"
-        },
-        components: {
-            modelComponent: {
-                type: "fluid.tests.modelComponent",
-                options: {
-                    model: "{dependentModel}.options.model"
-                }
-            }
-        }
-    });
-
-    jqUnit.test("Model reference aliasing test", function () {
-        jqUnit.expect(3);
-        var model = {unpollute: 1};
-        var that = fluid.tests.dependentModel({model: model});
-        jqUnit.assertValue("Constructed", that);
-        model.pollute = 3;
-        jqUnit.assertEquals("Transit 1", 3, that.options.model.pollute);
-        jqUnit.assertEquals("Transit 1", 3, that.modelComponent.options.model.pollute);
-    });
-
 
     fluid.defaults("fluid.tests.multiResolution", {
         gradeNames: ["fluid.littleComponent", "autoInit"],

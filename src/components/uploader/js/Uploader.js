@@ -468,7 +468,9 @@ var fluid_2_0 = fluid_2_0 || {};
                 container: "{uploader}.dom.fileQueue",
                 options: {
                     gradeNames: "fluid.uploader.fileQueueView.bindUploader",
-                    model: "{uploader}.queue.files",
+                    members: { // TODO: This amounts to the entire model idiom for fileQueueView
+                        queueFiles: "{uploader}.queue.files"
+                    },
                     uploaderContainer: "{uploader}.container",
                     strings: {
                         buttons: {

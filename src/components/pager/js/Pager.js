@@ -57,7 +57,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // Abstract grade representing all pageLists
     fluid.defaults("fluid.pager.pageList", {
-        gradeNames: ["fluid.viewRelayComponent"]
+        gradeNames: ["fluid.viewComponent"]
     });
 
     fluid.defaults("fluid.pager.directPageList", {
@@ -215,7 +215,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.pager.renderedPageList", {
-        gradeNames: ["fluid.rendererRelayComponent", "fluid.pager.pageList", "autoInit"],
+        gradeNames: ["fluid.rendererComponent", "fluid.pager.pageList", "autoInit"],
         rendererOptions: {
             idMap: {},
             cutpoints: [
@@ -271,7 +271,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
 
     fluid.defaults("fluid.pager.previousNext", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         members: {
             previous: "{that}.dom.previous",
             next: "{that}.dom.next"
@@ -301,7 +301,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.pager.pagerBar", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         components: {
             pageList: {
                 type: "fluid.pager.pageList",
@@ -358,7 +358,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
 
     fluid.defaults("fluid.pager.summary", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         listeners: {
             onCreate: {
                 funcName: "fluid.pager.summaryAria",
@@ -384,7 +384,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.pager.directPageSize", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         listeners: {
             onCreate: {
                 "this": "{that}.container",
@@ -432,7 +432,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************/
 
     fluid.defaults("fluid.pager", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         events: {
             initiatePageChange: null,
             initiatePageSizeChange: null,

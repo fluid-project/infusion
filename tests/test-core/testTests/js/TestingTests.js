@@ -271,7 +271,7 @@
     };
 
     fluid.defaults("fluid.tests.modelTestTree", {
-        gradeNames: ["fluid.test.testEnvironment", "fluid.standardRelayComponent", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment", "fluid.standardComponent", "autoInit"],
         model: 0,
         members: {
             listenedValue: 0
@@ -511,7 +511,7 @@
         components: {
             asyncTest: {
                 options: {
-                    gradeNames: "fluid.modelRelayComponent"
+                    gradeNames: "fluid.modelComponent"
                 }
             },
             asyncTester: {

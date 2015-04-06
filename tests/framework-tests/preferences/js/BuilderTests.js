@@ -607,7 +607,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             prefsEd: {
-                type: "fluid.viewRelayComponent",
+                type: "fluid.viewComponent",
                 container: "#flc-prefsEditor",
                 createOnEvent: "{builderMungingTester}.events.onTestCaseStart",
                 options: {

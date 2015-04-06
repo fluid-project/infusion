@@ -33,8 +33,9 @@ var fluid_2_0 = fluid_2_0 || {};
         return $("#" + file.id + "_error", that.container);
     };
 
+    // TODO: None of this hierarchy operates a proper model idiom since it just shares an array instance with fileQueue
     fluid.uploader.fileQueueView.fileForRow = function (that, row) {
-        return fluid.find_if(that.model, function (file) {
+        return fluid.find_if(that.queueFiles, function (file) {
             return file.id.toString() === row.prop("id");
         });
     };

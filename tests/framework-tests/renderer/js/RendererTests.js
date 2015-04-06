@@ -1298,13 +1298,17 @@
 
         jqUnit.test("Id uniquification and autobind test (FLUID-3656)", function () {
             var node = $(".FLUID-3656-test");
-            var model1 = {
-                value1: "Cat",
-                value2: "Dog"
+            var holder1 = {
+                model: {
+                    value1: "Cat",
+                    value2: "Dog"
+                }
             };
-            var model2 = {
-                value1: "Chat",
-                value2: "Chien"
+            var holder2 = {
+                model: {
+                    value1: "Chat",
+                    value2: "Chien"
+                }
             };
             var tree = {
                 children: [{
@@ -1322,41 +1326,43 @@
                 id: "input-2",
                 selector: ".my-input-2"
             }];
-            var applier1 = fluid.makeChangeApplier(model1);
-            var applier2 = fluid.makeChangeApplier(model2);
+            var applier1 = fluid.makeHolderChangeApplier(holder1);
+            var applier2 = fluid.makeHolderChangeApplier(holder2);
             fluid.selfRender($(".first-block", node), fluid.copy(tree), {
                 autoBind: true,
-                model: model1,
+                model: holder1.model,
                 applier: applier1,
                 cutpoints: cutpoints
             });
             fluid.selfRender($(".second-block", node), fluid.copy(tree), {
                 autoBind: true,
-                model: model2,
+                model: holder2.model,
                 applier: applier2,
                 cutpoints: cutpoints
             });
-            var orig1 = fluid.copy(model1);
+            var orig1 = fluid.copy(holder1.model);
             var CATT2 = $(".my-input-1", $(".second-block", node));
             CATT2.val("CHATT");
             CATT2.change();
-            jqUnit.assertDeepEq("Unchanged model 1", model1, orig1);
-            jqUnit.assertDeepEq("Changed model 2", model2, {
+            jqUnit.assertDeepEq("Unchanged model 1", orig1, holder1.model);
+            jqUnit.assertDeepEq("Changed model 2", {
                 value1: "CHATT",
                 value2: "Chien"
-            });
+            }, holder2.model);
         });
 
         jqUnit.test("Id uniquification and autobind test II (fossils for multipass rendering) (FLUID-3755)", function () {
-            var model = {
-                value1: "value1",
-                value2: "value2"
+            var holder = {
+                model: {
+                    value1: "value1",
+                    value2: "value2"
+                }
             };
-            var applier = fluid.makeChangeApplier(model);
+            var applier = fluid.makeHolderChangeApplier(model);
             var fossils = {};
             var renderOptions = {
                 autoBind: true,
-                model: model,
+                model: holder.model,
                 applier: applier,
                 fossils: fossils
             };
