@@ -750,62 +750,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }, ["is incomplete", "fluid.tests.nonexistentGrade"]);
     });
 
-    fluid.registerNamespace("fluid.tests.initSubcomponentTest");
-
-    fluid.defaults("fluid.tests.initSubcomponentTest.parent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        child: {
-            type: "fluid.tests.initSubcomponentTest.child"
-        }
-    });
-
-    fluid.tests.initSubcomponentTest.parent.finalInit = function (that) {
-        that.child = fluid.initSubcomponent(that, "child", [fluid.COMPONENT_OPTIONS]);
-    };
-
-    fluid.defaults("fluid.tests.initSubcomponentTest.child", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
-    });
-
-    var checkSubcomponentGrade = function (parent, subcomponentName, expectedGrade) {
-        jqUnit.expect(2);
-        var child = parent[subcomponentName];
-        jqUnit.assertNotUndefined("The parent component has a child component", child);
-        if (expectedGrade) {
-            jqUnit.assertTrue("The child component has the correct grade.",
-                fluid.hasGrade(child.options, expectedGrade));
-        } else {
-            jqUnit.assertEquals("The child component was not instantiated", child, expectedGrade);
-        }
-    };
-
-    var testSubcomponents = function (tests) {
-        fluid.each(tests, function (test) {
-            var parent = fluid.invokeGlobalFunction(test.funcName, [test.options]);
-            checkSubcomponentGrade(parent, test.subcomponentName, test.expectedGrade);
-        });
-    };
-
-    jqUnit.test("initSubcomponent", function () {
-        testSubcomponents([
-            {
-                funcName: "fluid.tests.initSubcomponentTest.parent",
-                subcomponentName: "child",
-                expectedGrade: "fluid.tests.initSubcomponentTest.child"
-            },
-            {
-                funcName: "fluid.tests.initSubcomponentTest.parent",
-                options: {
-                    child: {
-                        type: "fluid.emptySubcomponent"
-                    }
-                },
-                subcomponentName: "child",
-                expectedGrade: null
-            }
-        ]);
-    });
-
     fluid.defaults("fluid.tests.schema.textSizer", {
         gradeNames: ["fluid.tests.schema", "fluid.littleComponent", "autoInit"],
         schema: {

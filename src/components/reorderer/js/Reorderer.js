@@ -689,20 +689,15 @@ var fluid_2_0 = fluid_2_0 || {};
         REGIONS: { container: "main", item: "article" }
     };
 
-    // Simplified API for reordering lists and grids.
-    var simpleInit = function (container, layoutHandler, options) {
-        options = options || {};
-        options.layoutHandler = layoutHandler;
-        return fluid.reorderer(container, options);
-    };
+    fluid.defaults("fluid.reorderList", {
+        gradeNames: ["fluid.reorderer", "autoInit"],
+        layoutHandler: "fluid.listLayoutHandler"
+    });
 
-    fluid.reorderList = function (container, options) {
-        return simpleInit(container, "fluid.listLayoutHandler", options);
-    };
-
-    fluid.reorderGrid = function (container, options) {
-        return simpleInit(container, "fluid.gridLayoutHandler", options);
-    };
+    fluid.defaults("fluid.reorderGrid", {
+        gradeNames: ["fluid.reorderer", "autoInit"],
+        layoutHandler: "fluid.gridLayoutHandler"
+    });
 
     fluid.reorderer.SHUFFLE_GEOMETRIC_STRATEGY = "shuffleProjectFrom";
     fluid.reorderer.GEOMETRIC_STRATEGY         = "projectFrom";

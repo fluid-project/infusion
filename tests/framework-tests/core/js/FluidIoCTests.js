@@ -100,7 +100,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         invokers: {
             render: {
                 funcName: "fluid.formatMessage",
-                args: ["{invokerComponent}.options.template", "@0"]
+                args: ["{invokerComponent}.options.template", "{arguments}.0"]
             }
         },
         events: {
@@ -114,30 +114,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertValue("Constructed", that);
         jqUnit.assertEquals("Rendered", "Every CATT has 4 Leg(s)",
             that.render(["CATT", "4", "Leg"]));
-    });
-
-    fluid.defaults("fluid.tests.invokerComponent2", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        template: "Every {0} has {1} {2}(s)",
-        invokers: {
-            render: "stringRenderer"
-        },
-        events: {
-            testEvent: null
-        }
-    });
-
-    jqUnit.test("invokers with demands", function () {
-        jqUnit.expect(2);
-        var that = fluid.tests.invokerComponent2();
-        jqUnit.assertValue("Constructed", that);
-        jqUnit.assertEquals("Rendered", "Every CATT has 4 Leg(s)",
-            that.render(["CATT", "4", "Leg"]));
-    });
-
-    fluid.demands("stringRenderer", "fluid.tests.invokerComponent2", {
-        funcName: "fluid.formatMessage",
-        args: ["{invokerComponent2}.options.template", "@0"]
     });
 
 
@@ -213,56 +189,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             comp.cat3 instanceof Date);
     });
 
-    /** Resolution based on increasingly specific context combinations **/
-
-    fluid.demands("fluid.tests.multiResSub", ["fluid.tests.multiResolution", "fluid.tests.localFiles"], {
-        funcName: "fluid.tests.multiResSub2",
-        args: {
-            localKey1: "localValue1",
-            localKey2: "localValue2"
-        }
-    });
-
-    fluid.demands("fluid.tests.multiResSub", ["fluid.tests.multiResolution", "fluid.tests.localFiles", "fluid.tests.localTest"], {
-        funcName: "fluid.tests.multiResSub3",
-        args: [{
-            localKey1: "testValue1"
-        }, null]
-    });
-
-
-    jqUnit.test("Multi-resolution test", function () {
-        var that = fluid.tests.multiResolution();
-        jqUnit.assertValue("Constructed", that);
-        jqUnit.assertEquals("Standard subcomponent", "fluid.tests.multiResSub", that.resSub.typeName);
-        var localFiles, localTest;
-        try {
-            localFiles = fluid.littleComponent({gradeNames: ["fluid.resolveRoot", "fluid.tests.localFiles"]});
-            var that2 = fluid.tests.multiResolution();
-            jqUnit.assertValue("Constructed", that2);
-            var type2 = "fluid.tests.multiResSub2";
-            jqUnit.assertEquals("\"Local\" subcomponent", type2, that2.resSub.typeName);
-            var localDemandOptions = $.extend({}, fluid.demands("fluid.tests.multiResSub",
-                ["fluid.tests.multiResolution", "fluid.tests.localFiles"]).args, {targetTypeName: type2});
-            jqUnit.assertLeftHand("\"Local\" subcomponent options", localDemandOptions, that2.resSub.options);
-
-            localTest = fluid.littleComponent({gradeNames: ["fluid.resolveRoot", "fluid.tests.localTest"]});
-            var that3 = fluid.tests.multiResolution();
-            jqUnit.assertValue("Constructed", that3);
-            var type3 = "fluid.tests.multiResSub3";
-            jqUnit.assertEquals("\"Test\" subcomponent", type3, that3.resSub.typeName);
-            var expectedOptions = {
-                localKey1: "testValue1"
-            // targetTypeName: type3 // This floats about a bit as we change policy on "typeName"
-            };
-            jqUnit.assertLeftHand("\"Test\" subcomponent merged options", expectedOptions, that3.resSub.options);
-
-        } finally {
-            localFiles.destroy();
-            localTest.destroy();
-        }
-    });
-
     // This is identical to a test in Fluid.js, but exposed a bug in the alternative workflow that was triggered by FLUID-4930 work - "evaluateFully"
     fluid.defaults("fluid.tests.eventMerge", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
@@ -306,113 +232,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /** end FLUID-5239 **/
-
-    /** FLUID-4634 demands exclusion test **/
-
-    fluid.defaults("fluid.tests.demandedEvent1", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
-        events: {
-            event1: null
-        }
-    });
-
-    fluid.defaults("fluid.tests.demandedEvent2", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
-        events: {
-            event2: null
-        }
-    });
-
-    fluid.demands("testDemandedEvent", ["fluid.tests.testContext", "fluid.tests.demandedEvent2"], ["demanded"]);
-
-    jqUnit.test("FLUID-4634: multiple components with the same boiled event name", function () {
-        var testContext = fluid.littleComponent({gradeNames: ["fluid.resolveRoot", "fluid.tests.testContext"]});
-        var orig = "original";
-        var e1 = fluid.tests.demandedEvent1({
-            events: {
-                testDemandedEvent: {
-                    event: "event1"
-                }
-            }
-        });
-        var e2 = fluid.tests.demandedEvent2({
-            events: {
-                testDemandedEvent: {
-                    event: "event2"
-                }
-            }
-        });
-
-        e1.events.testDemandedEvent.addListener(function (arg) {
-            jqUnit.assertEquals("The original argument should be passeed in", orig, arg);
-        });
-        e2.events.testDemandedEvent.addListener(function (arg) {
-            jqUnit.assertEquals("The demanded argument should be passed in", "demanded", arg);
-        });
-
-        e1.events.event1.fire(orig);
-        e2.events.event2.fire(orig);
-        testContext.destroy();
-    });
-
-    /** FLUID-4631 argument transmission test **/
-
-    fluid.defaults("fluid.tests.demandsEvents", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
-        events: {
-            someEvent: null
-        }
-    });
-
-    fluid.demands("testEvent", ["fluid.tests.demandsEvents"], [
-        "newArg",
-        "{arguments}.0"
-    ]);
-
-    jqUnit.test("FLUID-4631: double event dispatch issue", function () {
-        jqUnit.expect(3);
-        var origArg0 = "origArg";
-        var assertEvent = function (arg0, arg1) {
-            jqUnit.assertNotEquals("The two arguments should be different", arg0, arg1);
-            jqUnit.assertEquals("Injection of new first argument", "newArg", arg0);
-            jqUnit.assertEquals("Transmission of the original first arguement", origArg0, arg1);
-        };
-        var that = fluid.tests.demandsEvents({
-            events: {
-                testEvent: {
-                    event: "someEvent"
-                }
-            },
-            listeners: {
-                testEvent: assertEvent
-            }
-        });
-        that.events.someEvent.fire(origArg0);
-    });
-
-    fluid.demands("testEvent2", ["fluid.tests.demandsEvents"], [
-        "{arguments}.1"
-    ]);
-
-    jqUnit.test("FLUID-4631: multiple to single argument", function () {
-        jqUnit.expect(1);
-        var origArg0 = "origArg0";
-        var origArg1 = "origArg1";
-        var assertEvent = function (arg0) {
-            jqUnit.assertEquals("Transmission of the original second argument", origArg1, arg0);
-        };
-        var that = fluid.tests.demandsEvents({
-            events: {
-                testEvent2: {
-                    event: "someEvent"
-                }
-            },
-            listeners: {
-                testEvent2: assertEvent
-            }
-        });
-        that.events.someEvent.fire(origArg0, origArg1);
-    });
 
     /** FLUID-4637 component proximity resolution test **/
 
@@ -463,7 +282,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.dataSource", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         invokers: {
-            get: "fluid.tests.dataSource.get"
+            get: {
+                funcName: "fluid.identity",
+                args: {value: 4}
+            }
         }
     });
 
@@ -471,18 +293,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.tests.dataSource", "autoInit"],
         url: "http://jsforcats.com",
         invokers: {
-            resolve: "fluid.tests.dataSource.urlResolver.resolve"
+            resolve: {
+                funcName: "fluid.identity",
+                args: "{dataSource}.options.url"
+            }
         }
-    });
-
-    fluid.demands("fluid.tests.dataSource.urlResolver.resolve", "fluid.tests.URLDataSource", {
-        funcName: "fluid.identity",
-        args: "{dataSource}.options.url"
-    });
-
-    fluid.demands("fluid.tests.dataSource.get", "fluid.tests.dataSource", {
-        funcName: "fluid.identity",
-        args: {value: 4}
     });
 
     jqUnit.test("FLUID-4914: resolve grade as context name", function () {
@@ -491,65 +306,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Resolved grade context name via invoker", dataSource.options.url, url);
         var data = dataSource.get();
         jqUnit.assertDeepEq("Resolved grade context name as demands context", {value: 4}, data);
-    });
-
-
-    /** FLUID-4392 demands block merging tests **/
-
-    fluid.demands("fluid.tests.demandMerge", ["fluid.tests.context1"], {
-        funcName: "fluid.tests.demandMerge1",
-        options: {
-            mergeKey1: "topValue1",
-            mergeKey2: "topValue2",
-            mergeKey3: "topValue3"
-        }
-    });
-
-    fluid.demands("fluid.tests.demandMerge", ["fluid.tests.context1", "fluid.tests.context2"], {
-        funcName: "fluid.tests.demandMerge2",
-        options: {
-            mergeKey1: "middleValue1",
-            mergeKey2: "middleValue2"
-        }
-    });
-
-    fluid.demands("fluid.tests.demandMerge", ["fluid.tests.context1", "fluid.tests.context2", "fluid.tests.context3"], {
-        funcName: "fluid.tests.demandMerge3",
-        options: {
-            mergeKey1: "bottomValue1"
-        }
-    });
-
-    // We only create the most specific component since the most specific demands block will win on funcName
-    fluid.defaults("fluid.tests.demandMerge3", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
-    });
-
-    fluid.defaults("fluid.tests.demandHolder", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        components: {
-            context1: {
-                type: "fluid.typeFount",
-                options: {
-                    targetTypeName: "fluid.tests.context1"
-                }
-            },
-            context2: {
-                type: "fluid.typeFount",
-                options: {
-                    targetTypeName: "fluid.tests.context2"
-                }
-            },
-            context3: {
-                type: "fluid.typeFount",
-                options: {
-                    targetTypeName: "fluid.tests.context3"
-                }
-            },
-            demandMerge: {
-                type: "fluid.tests.demandMerge"
-            }
-        }
     });
 
     /** FLUID-4916 dynamic grade support tests **/
@@ -563,18 +319,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.littleComponent", "autoInit", "{that}.computeGrade"],
         invokers: {
             computeGrade: "fluid.tests.computeDynamicParent",
-            respondParent: "fluid.tests.respondParent"
+            respondParent: {
+                funcName: "fluid.tests.respondParentImpl",
+                args: "{dynamicParent}.options.parentOption"
+            }
         }
     });
 
     fluid.tests.computeDynamicParent = function () {
         return "fluid.tests.dynamicParent";
     };
-
-    fluid.demands("fluid.tests.respondParent", "fluid.tests.dynamicParent", {
-        funcName: "fluid.tests.respondParentImpl",
-        args: "{dynamicParent}.options.parentOption"
-    });
 
     fluid.tests.respondParentImpl = fluid.identity;
 
@@ -583,42 +337,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertTrue("Correctly resolved parent grade", fluid.hasGrade(that.options, "fluid.tests.dynamicParent"));
         jqUnit.assertEquals("Correctly resolved options from parent grade", 1, that.options.parentOption);
         jqUnit.assertEquals("Correctly resolved parent-contextualised invoker", 1, that.respondParent());
-    });
-
-    /** FLUID-4917 demands block horizon support **/
-
-    fluid.defaults("fluid.tests.horizonParent", {
-        gradeNames: ["fluid.littleComponent", "fluid.tests.horizonExtraParent", "autoInit"],
-        components: {
-            horizonMiddle: {
-                type: "fluid.tests.horizonMiddle"
-            }
-        }
-    });
-
-    fluid.defaults("fluid.tests.horizonMiddle", {
-        gradeNames: ["fluid.littleComponent", "fluid.tests.horizonExtra", "autoInit"],
-        invokers: {
-            horizonOp: "fluid.tests.horizonOp"
-        }
-    });
-
-    // This demands block would have force 3 and win if it were not horizoned
-    fluid.demands("fluid.tests.horizonOp", ["fluid.tests.horizonMiddle", "fluid.tests.horizonParent", "fluid.tests.horizonExtraParent"], {
-        horizon: "fluid.tests.horizonMiddle",
-        funcName: "fluid.tests.horizonByParent"
-    });
-
-    // As a result of the prior block eliminating itself down to force one through horizon, this one will win
-    fluid.demands("fluid.tests.horizonOp", ["fluid.tests.horizonMiddle", "fluid.tests.horizonExtra"], {
-        funcName: "fluid.tests.horizonByExtra"
-    });
-
-    fluid.tests.horizonByExtra = fluid.identity;
-
-    jqUnit.test("FLUID-4917 Demands block horizon support", function () {
-        var that = fluid.tests.horizonParent();
-        jqUnit.assertTrue("Correctly resolved horizoned demands block", that.horizonMiddle.horizonOp(true));
     });
 
     // NOTE! This test must be left COMPLETELY undisturbed - as well as testing support for "members" itself, it exposed
@@ -661,58 +379,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         member1.emptyArray.push("corruption");
         var member2 = fluid.tests.memberTest(); // Ensure that expanded material in "members" has not become aliased
         testEmptyArray(member2);
-    });
-
-    /** Basic IoC Tests **/
-
-    fluid.defaults("fluid.tests.defaultInteraction", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        components: {
-            popup: {
-                type: "fluid.tests.popup"
-            }
-        }
-    });
-
-    fluid.defaults("fluid.tests.popup", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        resources: {
-            template: {
-                forceCache: true,
-                url: "../html/AutocompleteAddPopup.html"
-            }
-        }
-    });
-
-    fluid.demands("fluid.tests.popup", "fluid.tests.localTest", {
-        args: {
-            resources: {
-                template: {
-                    url: "../../html/AutocompleteAddPopup.html"
-                }
-            }
-        }
-    });
-
-    jqUnit.test("Basic interaction between defaults and demands", function () {
-        var that = fluid.tests.defaultInteraction();
-        jqUnit.assertValue("Constructed", that);
-        var standardDefaults = fluid.copy(fluid.defaults("fluid.tests.popup"));
-        delete standardDefaults.mergePolicy;
-        fluid.clearLifecycleFunctions(standardDefaults);
-        jqUnit.assertDeepEq("Default options", standardDefaults, that.popup.options);
-        var localTest;
-
-        try {
-            localTest = fluid.littleComponent({gradeNames: ["fluid.resolveRoot", "fluid.tests.localTest"]});
-            var demands = fluid.demands("fluid.tests.popup", "fluid.tests.localTest");
-            var that2 = fluid.tests.defaultInteraction();
-            standardDefaults.targetTypeName = "fluid.tests.popup"; // TODO: this floats about a bit
-            var mergedDefaults = $.extend(true, standardDefaults, demands.args);
-            jqUnit.assertDeepEq("Merged options", mergedDefaults, that2.popup.options);
-        } finally {
-            localTest.destroy();
-        }
     });
 
     /** FLUID-4873 distributeOptions tests **/
@@ -766,9 +432,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         fluid.pushSoftFailure(-1);
     });
-    
-    fluid.setDemandLogging(true);
-    
+        
     fluid.contextAware.makeChecks({"fluid.test": true});
     
     fluid.makeComponents ({
@@ -1356,14 +1020,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     /** FLUID-4135 - event injection and boiling test **/
 
-    // This manual init function tests framework support for (to be deprecated) components
-    // with unhelpful manual workflows (this one discards its options entirely)
-    fluid.tests.listenerHolder = function () {
-        var that = fluid.initLittleComponent("fluid.tests.listenerHolder");
-        that.listener = function (value) {
-            that.value = value;
-        };
-        return that;
+    fluid.defaults("fluid.tests.listenerHolder", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        invokers: {
+            listener: "fluid.tests.listenerHolder.listener({that}, {arguments}.0)"
+        }
+    });
+    
+    fluid.tests.listenerHolder.listener = function (that, value) {
+        that.value = value;
     };
 
     fluid.defaults("fluid.tests.eventParent", {
@@ -1391,7 +1056,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: ["{eventParent}", "{eventChild}", "{arguments}.0"]
             },
             boiledLocal: {
-                event: "localEvent"
+                event: "localEvent",
+                args: ["{arguments}.0", "{eventChild}"]
             },
             localEvent: null
         },
@@ -1399,11 +1065,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "{eventParent}.events.parentEvent": "{eventParent}.listenerHolder.listener"
         }
     });
-
-    fluid.demands("boiledLocal", "fluid.tests.eventChild", [
-        "{arguments}.0",
-        "{eventChild}"
-    ]);
 
     jqUnit.test("FLUID-4135 event injection and boiling", function () {
         var that = fluid.tests.eventParent();
@@ -1435,7 +1096,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         child.events.boiledLocal.addListener(function (arg0, argChild) {
             jqUnit.assertEquals("Transmission of original arg0", origArg0, arg0);
-            jqUnit.assertEquals("Injection of self via demands block", child, argChild);
+            jqUnit.assertEquals("Injection of self via boiling", child, argChild);
         });
         child.events.localEvent.fire(origArg0);
     });
@@ -1613,15 +1274,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.eventChild2", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         events: {
-            parentEvent: null
-        }
-    });
-
-    fluid.demands("fluid.tests.eventChild2", "fluid.tests.eventParent2", {
-        mergeOptions: {
-            events: {
-                parentEvent: "{eventParent2}.events.parentEvent"
-            }
+            parentEvent: "{eventParent2}.events.parentEvent"
         }
     });
 
@@ -1681,23 +1334,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     /** FLUID-4055 - reinstantiation test **/
 
-    fluid.tests.reinsNonComponent = function () {
-        return {
-            key: "Non-component material"
-        };
-    };
-
-    fluid.defaults("fluid.tests.unexpectedReturn", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        components: {
-            gchild: {
-                type: "fluid.tests.reinsChild2"
-            }
-        },
-        // TODO: This cannot be supported and will cause bugs in clearing shadow record when the improper return is processed
-        returnedPath: "gchild"
-    });
-
     fluid.defaults("fluid.tests.refChild", {
         gradeNames: ["fluid.littleComponent", "autoInit"]
     });
@@ -1725,15 +1361,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                             value: "{reinstantiation}.options.headValue"
                                         }
                                     },
-                                    child4: {
-                                        type: "fluid.tests.reinsNonComponent"
-                                    },
                                     // This duplication tests FLUID-4166
                                     child5: "{reinstantiation}.headChild",
                                     child6: "{reinstantiation}.headChild",
-                                    child7: {
-                                        type: "fluid.tests.unexpectedReturn"
-                                    },
                                     child8: {
                                         type: "fluid.tests.reinsChild2",
                                         options: {
@@ -1752,19 +1382,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-
-    fluid.demands("fluid.tests.reinsChild2", "fluid.tests.reinstantiation", [
-        fluid.COMPONENT_OPTIONS,
-        "{reinstantiation}.options.headValue"
-    ]);
-
-    // TODO: This will now be immediately deprecated
-    fluid.tests.reinsChild2 = function (options, otherValue) {
-        var that = fluid.initLittleComponent("fluid.tests.reinsChild2", options);
-        fluid.initDependents(that);
-        that.otherValue = otherValue;
-        return that;
-    };
+    
+    fluid.defaults("fluid.tests.reinsChild2", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        members: {
+            otherValue: "{reinstantiation}.options.headValue"
+        }
+    });
 
     function checkValue(message, root, value, paths) {
         fluid.each(paths, function (path) {
@@ -1894,43 +1518,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "{mergeComponent}.nothingUseful", options.dangerousParamsII);
     });
 
-    /** FLUID-4987 - double listeners added by demands block **/
-
-    fluid.defaults("fluid.tests.demandListeners", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
-        members: {
-            listenerCount: 0
-        },
-        events: {
-            demandEvent: null
-        }
-    });
-
-    fluid.tests.demandRecording = function (that) {
-        that.listenerCount ++;
-    };
-
-    fluid.demands("fluid.tests.demandListeners", [], {
-        options: {
-            listeners: {
-                demandEvent: "fluid.tests.demandRecording"
-            }
-        }
-    });
-
-    jqUnit.test("FLUID-4987 double listener from demands block", function () {
-        var that = fluid.littleComponent({ // TODO: make all root component construction polymorphic after removal of fluid.invoke
-            components: {
-                demandListeners: {
-                    type: "fluid.tests.demandListeners"
-                }
-            }
-        });
-        var demandListeners = that.demandListeners;
-        demandListeners.events.demandEvent.fire(demandListeners);
-        jqUnit.assertEquals("Just one listener notified", 1, demandListeners.listenerCount);
-    });
-
     /** Component lifecycle functions and merging test - includes FLUID-4257 **/
 
     function pushRecord(target, name, extra, that, childName, parent) {
@@ -2037,16 +1624,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         injected: "{lifecycle}"
                     }
                 }
-            },
-            demandsInitComponent: {
-                type: "fluid.tests.lifecycle.demandsInitComponent",
-                options: {
-                    components: {
-                        parent: "{lifecycle}"
-                    }
-                }
             }
-
         }
     });
 
@@ -2057,11 +1635,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.lifecycle.demandsInitComponent.finalInitFunction = function (that) {
         that.parent.listenerRecord.push("demandsInitComponent.finalInitFunction");
     };
-    fluid.demands("demandsInitComponent", "fluid.tests.lifecycle", {
-        options: {
-            finalInitFunction: fluid.tests.lifecycle.demandsInitComponent.finalInitFunction
-        }
-    });
+
 
     jqUnit.test("Component lifecycle test - with FLUID-4257", function () {
         var testComp = fluid.tests.lifecycle();
@@ -2074,9 +1648,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             {key: "initTimeComponent.onComponentAttach", created: true},
             "initTimeComponent.postInitFunction",
             "initTimeComponent.onCreate",
-            {key: "demandsInitComponent.onComponentAttach", created: true},
-            {key: "demandsInitComponent.parent.onComponentAttach", created: false},
-            "demandsInitComponent.finalInitFunction",
             "root.finalInitFunction",
             "root.onCreate",
             "root.mainEventListener",
@@ -2216,11 +1787,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         mergePolicy: {
             parent: "nomerge"
         },
+        parent: "{guidedParent}",
         finalInitFunction: "fluid.tests.guidedChildInit"
-    });
-
-    fluid.demands("fluid.tests.guidedChild", "fluid.tests.guidedParent", {
-        mergeOptions:  {parent: "{guidedParent}"}
     });
 
     fluid.tests.guidedParentInit = function (that) {
@@ -2309,13 +1877,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.littleComponent", "autoInit"],
         mergePolicy: {
             instantiator: "nomerge"
-        }
+        },
+        instantiator: "{circularity}.instantiator"
     });
-
-    fluid.demands("fluid.tests.circChild", "fluid.tests.circularity",
-        [{
-            instantiator: "{circularity}.instantiator"
-        }]);
 
     jqUnit.test("Tree circularity test", function () {
         try {
@@ -2349,8 +1913,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *  implementation of the uploader, which the framework did not properly detect. In the
      *  FLUID-4330 framework, this is no longer an error */
 
-    fluid.registerNamespace("fluid.tests.circular");
-
     fluid.defaults("fluid.tests.circular.strategy", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
@@ -2364,7 +1926,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.circular.initEngine = function (that) {
-        // This line, use of an invoker before construction is complete would once trigger failure
         that.bindEvents();
     };
 
@@ -2372,7 +1933,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.littleComponent", "autoInit"],
         finalInitFunction: "fluid.tests.circular.initEngine",
         invokers: {
-            bindEvents: "fluid.tests.circular.eventBinder"
+            bindEvents: {
+                funcName: "fluid.tests.circular.engine",
+                args: "{strategy}.local"
+            }
         },
         components: {
             swfUpload: {
@@ -2381,28 +1945,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.circular.eventBinder = fluid.identity;
-
-    fluid.demands("fluid.tests.circular.eventBinder", [
-        "fluid.tests.circular.engine"
-    ], {
-        args: [
-            "{strategy}.local"
-        ]
-    });
-
-    // NB - this is an old-style "non-merging" demands block, use is deprecated
-    fluid.demands("fluid.tests.circular.local", "fluid.tests.circular.strategy", {
-        args: [
-            "{engine}.swfUpload",
-            fluid.COMPONENT_OPTIONS
-        ]
-    });
-
     jqUnit.test("Advanced circularity test I", function () {
-        jqUnit.expect(1);
-        var comp = fluid.tests.circular.strategy();
-        jqUnit.assertValue("Component constructed", comp);
+        jqUnit.expectFrameworkDiagnostic("Attempt to invoke creator via invoker", fluid.tests.circular.strategy, "invoker");
     });
 
     /** Correct resolution of invoker arguments through the tree **/
@@ -2425,7 +1969,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             testValue: 1
         },
         invokers: {
-            checkTestValue: "checkTestValue"
+            checkTestValue: {
+                funcName: "fluid.tests.checkTestValue",
+                args: "{invokerParent}.model"
+            }
         }
     });
 
@@ -2437,10 +1984,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-    fluid.demands("checkTestValue", "fluid.tests.invokerParent", {
-        funcName: "fluid.tests.checkTestValue",
-        args: "{invokerParent}.model"
-    });
+    
     fluid.tests.checkTestValue = function (model) {
         return model.testValue;
     };
@@ -2482,7 +2026,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     invokers: {
                         invoker: {
                             funcName: "fluid.identity",
-                            args: "{refChild2}.ref3.options.refOption"
+                            args: "{refChild2}.ref3.options.refOption",
+                            dynamic: true
                         }
                     }
                 }
@@ -2848,73 +2393,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var root = fluid.tests.own();
 
         jqUnit.assertEquals("The to-be-resolved option is passed down to the target", 10, root.ownSub.options.resolvedOption);
-    });
-
-    /** FLUID-5126 - Corruption of listener material held in demands blocks **/
-
-    fluid.defaults("fluid.tests.fluid5126parent", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
-        events: {
-            createEvent: null
-        },
-        members: {
-            idRecord: []
-        },
-        components: {
-            child: {
-                createOnEvent: "createEvent",
-                type: "fluid.eventedComponent",
-                options: {
-                    invokers: {
-                        childListener: {
-                            funcName: "fluid.tests.fluid5126listener",
-                            args: ["{that}", "{fluid5126parent}"]
-                        }
-                    },
-                    events: {
-                        "childEvent": null
-                    }
-                }
-
-            }
-        }
-    });
-
-    fluid.tests.fluid5126register = function () {
-        fluid.demands("fluid.eventedComponent", "fluid.tests.fluid5126parent", {
-            options: {
-                listeners: {
-                    childEvent: {
-                        func: "{that}.childListener"
-                    }
-                }
-            }
-        });
-    };
-
-    fluid.tests.fluid5126listener = function (that, parent) {
-        parent.idRecord.push(that.id);
-    };
-
-    jqUnit.test("FLUID-5126: Corruption of listener records in demands blocks", function () {
-        var parent = fluid.tests.fluid5126parent();
-        function cycle() {
-            fluid.tests.fluid5126register();
-            parent.events.createEvent.fire();
-        }
-        cycle();
-        var localChild = [parent.child.id];
-        parent.child.events.childEvent.fire();
-        cycle();
-        localChild.push(parent.child.id);
-        localChild.push(parent.child.id); // two listeners for duplicate from demands block
-        parent.child.events.childEvent.fire();
-        cycle();
-        localChild.push(parent.child.id);
-        localChild.push(parent.child.id);
-        localChild.push(parent.child.id); // two listeners for duplicate from demands block
-        parent.child.events.childEvent.fire();
-        jqUnit.assertDeepEq("The three children should be registered in order", localChild, parent.idRecord);
     });
 
     /** FLUID-5022 - Designation of dynamic components **/
@@ -3636,94 +3114,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.assertEquals("Noncorruption of reentrant options references", ".title",
             that.options.selectors.grabHandle);
-    });
-
-
-    /** FLUID-5212 dynamic grade linkage aka "new demands blocks" **/
-
-    fluid.defaults("fluid.tests.gradeLinkageComponent", {
-        gradeNames: ["autoInit", "fluid.littleComponent", "fluid.applyGradeLinkage"],
-        invokers: {
-            handle: {
-                funcName: "fluid.tests.gradeLinkageComponent.handle"
-            }
-        }
-    });
-
-    fluid.defaults("fluid.tests.gradeLinkageRecord", {
-        gradeNames: ["autoInit", "fluid.gradeLinkageRecord"],
-        contextGrades: ["fluid.tests.contributedGrade1", "fluid.tests.gradeLinkageComponent"],
-        resultGrades: "fluid.tests.contributedGrade2"
-    });
-
-    fluid.defaults("fluid.tests.fluid5212root", {
-        gradeNames: ["autoInit", "fluid.littleComponent"],
-        distributeOptions: {
-            source: "{that}.options.contributedGradeNames",
-            target: "{that subcomponent}.options.gradeNames"
-        },
-        components: {
-            subcomponent: {
-                type: "fluid.tests.gradeLinkageComponent"
-            }
-        },
-        contributedGradeNames: ["fluid.tests.contributedGrade1"]
-    });
-
-    fluid.defaults("fluid.tests.contributedGrade1", {
-        gradeNames: ["autoInit", "fluid.littleComponent"],
-        invokers: {
-            handle: {
-                funcName: "fluid.tests.gradeLinkageComponent.handle1"
-            }
-        }
-    });
-
-    fluid.tests.gradeLinkageComponent.handle1 = function () {
-        return false;
-    };
-
-    fluid.defaults("fluid.tests.contributedGrade2", {
-        gradeNames: ["autoInit", "fluid.littleComponent"],
-        invokers: {
-            handle: {
-                funcName: "fluid.tests.gradeLinkageComponent.handle2"
-            }
-        }
-    });
-
-    fluid.tests.gradeLinkageComponent.handle2 = function () {
-        return true;
-    };
-
-    jqUnit.test("Test dynamic grade linkage", function () {
-        jqUnit.expect(3);
-        var component = fluid.tests.fluid5212root();
-        fluid.each(["fluid.tests.contributedGrade1", "fluid.tests.contributedGrade2"], function (gradeName) {
-            jqUnit.assertTrue("Grade is correctly applied", fluid.contains(component.subcomponent.options.gradeNames, gradeName));
-        });
-        jqUnit.assertTrue("Subcomponent invoker is overriden correctly", component.subcomponent.handle());
-    });
-
-    /** FLUID-5246 - dynamic grade linkage without initial dynamic grades **/
-
-    fluid.defaults("fluid.tests.staticGradeLinkageRecord", {
-        gradeNames: ["autoInit", "fluid.gradeLinkageRecord"],
-        contextGrades: ["fluid.tests.fluid5246Root"],
-        resultGrades: ["fluid.tests.fluid5246Result"]
-    });
-
-    fluid.defaults("fluid.tests.fluid5246Root", {
-        gradeNames: ["autoInit", "fluid.littleComponent", "fluid.applyGradeLinkage"]
-    });
-
-    fluid.defaults("fluid.tests.fluid5246Result", {
-        gradeNames: ["autoInit", "fluid.littleComponent"]
-    });
-
-    jqUnit.test("FLUID-5246 - static use of grade linkage", function () {
-        var that = fluid.tests.fluid5246Root();
-        jqUnit.assertTrue("Resolved statically linked grade is present", fluid.hasGrade(that.options, "fluid.tests.fluid5246Result"));
     });
 
     /** FLUID-5254 - failure of impersonateListener in dispatchListener **/

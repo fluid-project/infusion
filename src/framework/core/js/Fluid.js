@@ -2298,6 +2298,10 @@ var fluid = fluid || fluid_2_0;
             options: 0
         }
     });
+    
+    fluid.defaults("fluid.emptySubcomponent", {
+        gradeNames: ["fluid.littleComponent"]
+    });
 
     fluid.defaults("fluid.eventedComponent", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
@@ -2310,17 +2314,6 @@ var fluid = fluid || fluid_2_0;
             listeners: fluid.makeMergeListenersPolicy(fluid.mergeListenerPolicy)
         }
     });
-
-    /** A special "marker object" which is recognised as one of the arguments to
-     * fluid.initSubcomponents. This object is recognised by reference equality -
-     * where it is found, it is replaced in the actual argument position supplied
-     * to the specific subcomponent instance, with the particular options block
-     * for that instance attached to the overall "that" object.
-     * NOTE: The use of this marker has been deprecated as of the Fluid 1.4 release in
-     * favour of the contextual EL path "{options}" - it will be removed in a future
-     * release of the framework.
-     */
-    fluid.COMPONENT_OPTIONS = {type: "fluid.marker", value: "COMPONENT_OPTIONS"};
 
     /** Compute a "nickname" given a fully qualified typename, by returning the last path
      * segment.
@@ -2493,56 +2486,6 @@ var fluid = fluid || fluid_2_0;
             togo = entry.apply(null, args);
         }
         return togo;
-    };
-
-    /** Initialise all the "subcomponents" which are configured to be attached to
-     * the supplied top-level component, which share a particular "class name". This method
-     * of instantiating components is deprecated and will be removed in favour of the automated
-     * IoC system in the Fluid 2.0 release.
-     * @param {Component} that The top-level component for which sub-components are
-     * to be instantiated. It contains specifications for these subcomponents in its
-     * <code>options</code> structure.
-     * @param {String} className The "class name" or "category" for the subcomponents to
-     * be instantiated. A class name specifies an overall "function" for a class of
-     * subcomponents and represents a category which accept the same signature of
-     * instantiation arguments.
-     * @param {Array of Object} args The instantiation arguments to be passed to each
-     * constructed subcomponent. These will typically be members derived from the
-     * top-level <code>that</code> or perhaps globally discovered from elsewhere. One
-     * of these arguments may be <code>fluid.COMPONENT_OPTIONS</code> in which case this
-     * placeholder argument will be replaced by instance-specific options configured
-     * into the member of the top-level <code>options</code> structure named for the
-     * <code>className</code>
-     * @return {Array of Object} The instantiated subcomponents, one for each member
-     * of <code>that.options[className]</code>.
-     */
-
-    fluid.initSubcomponents = function (that, className, args) {
-        var entry = that.options[className];
-        if (!entry) {
-            return;
-        }
-        var entries = fluid.makeArray(entry);
-        var optindex = -1;
-        var togo = [];
-        args = fluid.makeArray(args);
-        for (var i = 0; i < args.length; ++i) {
-            if (args[i] === fluid.COMPONENT_OPTIONS) {
-                optindex = i;
-            }
-        }
-        for (i = 0; i < entries.length; ++i) {
-            entry = entries[i];
-            if (optindex !== -1) {
-                args[optindex] = entry.options;
-            }
-            togo[i] = fluid.initSubcomponentImpl(that, entry, args);
-        }
-        return togo;
-    };
-
-    fluid.initSubcomponent = function (that, className, args) {
-        return fluid.initSubcomponents(that, className, args)[0];
     };
 
     // ******* SELECTOR ENGINE *********

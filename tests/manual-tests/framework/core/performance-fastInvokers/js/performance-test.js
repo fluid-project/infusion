@@ -51,7 +51,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 invokers: {
                                     addit: {
                                         funcName: "fluid.tests.addFunc",
-                                        // dynamic: true,
+                                        dynamic: true,
                                         args: ["{arguments}.0", "{child1}.value", "{child2}.value", "{child3}.value", "{arguments}.1"]
                                     }
                                 }
@@ -78,33 +78,38 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // on Chrome 41 "old framework" 5/4/15:
     // full invoker: 220us/call when warm (progressively deteriorates)
     // "fast invoker": 1.7us
+    
+    function runTests() {
 
-    var results = [];
-    var root = fluid.tests.perfRoot();
-    var acc;
-    for (var j = 0; j < 5; ++ j) {
-
-        var now = Date.now();
-        var its = 100000;
-        acc = 0;
-
-        for (var i = 0; i < its; ++ i) {
-            // acc = fluid.tests.addFunc(acc, 1, 2, 3, 4);
-            acc = root.child2.child3.addit(acc, 4);
+        var results = [];
+        var root = fluid.tests.perfRoot();
+        var acc;
+        for (var j = 0; j < 5; ++ j) {
+    
+            var now = Date.now();
+            var its = 100;
+            acc = 0;
+    
+            for (var i = 0; i < its; ++ i) {
+                // acc = fluid.tests.addFunc(acc, 1, 2, 3, 4);
+                acc = root.child2.child3.addit(acc, 4);
+            }
+    
+            var delay = (Date.now() - now);
+    
+            results.push(its + " iterations concluded in " + delay + " ms: " + 1000*(delay/its) + " us/it");
         }
-
-        var delay = (Date.now() - now);
-
-        results.push(its + " iterations concluded in " + delay + " ms: " + 1000*(delay/its) + " us/it");
-    }
-
-    results.push("Accumulates: " + acc);
-
-    $(document).ready(function () {
+    
+        results.push("Accumulates: " + acc);
+    
         fluid.each(results, function (result) {
             var resultElm = $("<li>").text(result);
             $(".results").append(resultElm);
         });
+    }
+
+    $(document).ready(function () {
+        $("#run-tests").click(runTests);
     });
 
 })(jQuery, fluid);

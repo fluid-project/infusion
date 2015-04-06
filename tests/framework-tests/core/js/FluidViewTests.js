@@ -135,52 +135,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }, "did not match any markup");
         });
 
-
-        fluid.tests.testComponent = function (container, options) {
-            var that = fluid.initView("fluid.tests.testComponent", container, options);
-            that.subcomponent = fluid.initSubcomponent(that, "subcomponent", [that.container, fluid.COMPONENT_OPTIONS]);
-            return that;
-        };
-
-        fluid.tests.subcomponent = function (container, options) {
-            var that = fluid.initView("fluid.tests.subcomponent", container, options);
-            that.greeting = that.options.greeting;
-            return that;
-        };
-
-        fluid.defaults("fluid.tests.testComponent", {
-            subcomponent: {
-                type: "fluid.tests.subcomponent"
-            }
-        });
-
-        fluid.defaults("fluid.tests.subcomponent", {
-            greeting: "hello"
-        });
-
-        var componentWithOverridenSubcomponentOptions = function (greeting) {
-            return fluid.tests.testComponent("#main-container", {
-                subcomponent: {
-                    options: {
-                        greeting: greeting
-                    }
-                }
-            });
-        };
-
-        jqUnit.test("initSubcomponents", function () {
-            // First, let's check that the defaults are used if no other options are specified.
-            var myComponent = fluid.tests.testComponent("#main-container");
-            jqUnit.assertEquals("The subcomponent should have its default options.",
-                                "hello", myComponent.subcomponent.greeting);
-
-            // Now try overriding the subcomponent options with specific options.
-            myComponent = componentWithOverridenSubcomponentOptions("bonjour");
-            jqUnit.assertEquals("The subcomponent's options should have been overridden correctly.",
-                                "bonjour", myComponent.subcomponent.greeting);
-
-        });
-
         fluid.defaults("fluid.tests.testGradedView", {
             gradeNames: ["fluid.viewComponent", "autoInit"],
             selectors: {

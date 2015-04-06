@@ -53,185 +53,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertNotUndefined("selectorsToCutpoints should not eat other people's selectors", selectors.selector2);
         });
 
-        jqUnit.module("IoC Renderer tests");
-
-        fluid.defaults("fluid.tests.identicalComponentParent", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
-            selectors: {
-                identicalComponent1: ".identicalComponent1",
-                identicalComponent2: ".identicalComponent2"
-            },
-            finalInitFunction: "fluid.tests.identicalComponentParent.finalInitFunction",
-            produceTree: "fluid.tests.identicalComponentParent.produceTree"
-        });
-
-        fluid.tests.identicalComponentParent.produceTree = function () {
-            return {
-                identicalComponent1: {
-                    decorators: {
-                        type: "fluid",
-                        func: "fluid.tests.identicalComponent",
-                        options: {
-                            option: "OPTION1"
-                        }
-                    }
-                },
-                identicalComponent2: {
-                    decorators: {
-                        type: "fluid",
-                        func: "fluid.tests.identicalComponent",
-                        options: {
-                            option: "OPTION2"
-                        }
-                    }
-                }
-            };
-        };
-        fluid.tests.identicalComponentParent.finalInitFunction = function (that) {
-            that.renderer.refreshView();
-        };
-
-        fluid.defaults("fluid.tests.identicalComponent", {
-            gradeNames: ["fluid.viewComponent", "autoInit"],
-            components: {
-                subcomponent: {
-                    type: "fluid.tests.identicalSubComponent"
-                }
-            }
-        });
-
-        fluid.defaults("fluid.tests.identicalSubComponent", {
-            gradeNames: ["fluid.littleComponent", "autoInit"]
-        });
-
-        fluid.demands("fluid.tests.identicalSubComponent", "fluid.tests.identicalComponent", {
-            args: {
-                option: "{identicalComponent}.options.option"
-            }
-        });
-        fluid.demands("fluid.tests.identicalComponent", "fluid.tests.identicalComponentParent", {
-            container: "{arguments}.0"
-        });
-        jqUnit.test("Same level identical components with different options", function () {
-            var that = fluid.tests.identicalComponentParent(".identicalComponentParent");
-            jqUnit.assertEquals("First component's subcomponent option is", "OPTION1", that["**-renderer-identicalComponent1-0"].subcomponent.options.option);
-            jqUnit.assertEquals("Second component's subcomponent option is", "OPTION2", that["**-renderer-identicalComponent2-1"].subcomponent.options.option);
-        });
-
-        fluid.defaults("fluid.tests.mergeRenderParent", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
-            selectors: {
-                mergeComponent: ".mergeComponent"
-            },
-            model: {
-                test: "TEST"
-            },
-            finalInitFunction: "fluid.tests.mergeRenderParent.finalInitFunction",
-            produceTree: "fluid.tests.mergeRenderParent.produceTree"
-        });
-        fluid.tests.mergeRenderParent.produceTree = function () {
-            return {
-                mergeComponent: {
-                    decorators: {
-                        type: "fluid",
-                        func: "fluid.tests.mergeComponent",
-                        options: {
-                            option: "OPTION1"
-                        }
-                    }
-                }
-            };
-        };
-        fluid.tests.mergeRenderParent.finalInitFunction = function (that) {
-            that.renderer.refreshView();
-        };
-        fluid.defaults("fluid.tests.mergeComponent", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"]
-        });
-        fluid.demands("fluid.tests.mergeComponent", "fluid.tests.mergeRenderParent", {
-            container: "{arguments}.0",
-            mergeOptions: {
-                model: "{mergeRenderParent}.model"
-            }
-        });
-
-        jqUnit.test("Merging args and options", function () {
-            var that = fluid.tests.mergeRenderParent(".mergeRenderParent");
-            jqUnit.assertEquals("Subcomponent arg option is", "OPTION1", that["**-renderer-mergeComponent-0"].options.option);
-            jqUnit.assertEquals("Subcomponent option is", that.model, that["**-renderer-mergeComponent-0"].options.model);
-        });
-
-
-
+        jqUnit.module("Renderer component tests");
+        
         function assertRenderedText(els, array) {
             fluid.each(els, function (el, index) {
                 jqUnit.assertEquals("Element " + index + " text", array[index], $(el).text());
             });
         }
-
-        fluid.defaults("fluid.tests.rendererParent", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
-            components: {
-                middle: {
-                    type: "fluid.tests.rendererMiddle"
-                }
-            },
-            selectors: {
-                middle: ".middle-component"
-            }
-        });
-
-        fluid.demands("fluid.tests.rendererMiddle", "fluid.tests.rendererParent",
-            ["{rendererParent}.dom.middle", fluid.COMPONENT_OPTIONS]);
-
-        fluid.defaults("fluid.tests.rendererMiddle", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
-            selectors: {
-                decorated: ".decorated-component"
-            },
-            protoTree: {
-                decorated: {
-                    decorators: {
-                        type: "fluid",
-                        func: "fluid.tests.rendererChild",
-                        options: { decoratorValue: "{rendererParent}.options.parentValue" // with FLUID-4986 we can support this reference properly
-                        }
-                    }
-                }
-            }
-        });
-
-        fluid.defaults("fluid.tests.rendererChild", {
-            value: "{rendererParent}.options.parentValue"
-        });
-
-        fluid.demands("fluid.tests.rendererChild", "fluid.tests.rendererMiddle",
-            ["@0", fluid.COMPONENT_OPTIONS]);
-
-        fluid.tests.rendererChild = function (container, options) {
-            var that = fluid.initView("fluid.tests.rendererChild", container, options);
-            $(container).text(that.options.value);
-            return that;
-        };
-
-
-        jqUnit.test("initDependent upgrade test", function () {
-            var parentValue = "parentValue";
-            var component = fluid.tests.rendererParent(".renderer-ioc-test", {parentValue: parentValue});
-            var middleNode = component.middle.container;
-            jqUnit.assertValue("Middle component constructed", middleNode);
-            component.middle.refreshView();
-            var decorated = component.middle.locate("decorated");
-            jqUnit.assertEquals("Decorated text resolved from top level", parentValue, decorated.text());
-            var child = component.middle[fluid.renderer.IDtoComponentName("decorated", 0)];
-            jqUnit.assertEquals("Located decorator with IoC-resolved value", "parentValue", child.options.decoratorValue);
-            component.middle.refreshView();
-            var child2 = component.middle[fluid.renderer.IDtoComponentName("decorated", 0)];
-            jqUnit.assertNotEquals("Rendering has produced new component", child, child2);
-        });
-
-
-        jqUnit.module("Renderer component tests");
 
         fluid.tests.censoringStrategy = function (listCensor) {
             var matchPath = ["recordlist", "deffolt"];
@@ -641,10 +469,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.decoratorWithSubModel.finalInitFunction = function (that) {
             that.refreshView();
         };
-
-        fluid.demands("fluid.tests.decoratorWithSubModel", "fluid.tests.decoratorParent", {
-            container: "{arguments}.0"
-        });
 
         jqUnit.test("Decorator with sub model", function () {
             var that = fluid.tests.decoratorParent("#decorator-container");
