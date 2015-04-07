@@ -120,9 +120,6 @@ var fluid_2_0 = fluid_2_0 || {};
     
     fluid.defaults("fluid.uploader.errorPanel.section", {
         gradeNames: ["fluid.viewComponent", "autoInit"],
-        preInitFunction: "fluid.uploader.errorPanel.section.preInit",
-        finalInitFunction: "fluid.uploader.errorPanel.section.finalInit",
-
         model: {
             errorCode: undefined,
             files: [],
@@ -145,61 +142,72 @@ var fluid_2_0 = fluid_2_0 || {};
             hideFiles: "Hide files",
             showFiles: "Show files",
             fileListDelimiter: ", "
+        },
+        invokers: {
+            toggleDetails: "fluid.uploader.errorPanel.section.toggleDetails({that})",
+            showDetails: "fluid.uploader.errorPanel.section.showDetails({that})",
+            hideDetails: "fluid.uploader.errorPanel.section.hideDetails({that})",
+            addFile: "fluid.uploader.errorPanel.section.addFile({that}, {arguments}.0, {arguments}.1)", // file, errorCode
+            clear: "fluid.uploader.errorPanel.section.clear({that})",
+            refreshView: "fluid.uploader.errorPanel.section.refreshView({that})"
+        },
+        listeners: {
+            "onCreate.bindHandlers": {
+                funcName: "fluid.uploader.errorPanel.section.bindHandlers",
+                priority: "before:refreshView"
+            },
+            "onCreate.refreshView": "{that}.refreshView"
         }
     });
 
-    fluid.uploader.errorPanel.section.preInit = function (that) {
-        that.toggleDetails = function () {
-            var detailsAction = that.model.showingDetails ? that.hideDetails : that.showDetails;
-            detailsAction();
-        };
-
-        that.showDetails = function () {
-            that.locate("errorDetails").show();
-            that.locate("showHideFilesToggle").text(that.options.strings.hideFiles);
-            that.model.showingDetails = true;
-        };
-
-        that.hideDetails = function () {
-            that.locate("errorDetails").hide();
-            that.locate("showHideFilesToggle").text(that.options.strings.showFiles);
-            that.model.showingDetails = false;
-        };
-
-        that.addFile = function (file, errorCode) {
-            if (errorCode === that.model.errorCode) {
-                that.model.files.push(file.name);
-                that.refreshView();
-            }
-        };
-
-        that.clear = function () {
-            that.model.files = [];
-            that.refreshView();
-            that.events.afterErrorsCleared.fire();
-        };
-
-        that.refreshView = function () {
-            fluid.uploader.errorPanel.section.renderHeader(that);
-            fluid.uploader.errorPanel.section.renderErrorDetails(that);
-            that.hideDetails();
-
-            if (that.model.files.length <= 0) {
-                that.container.hide();
-            } else {
-                that.container.show();
-            }
-        };
+    fluid.uploader.errorPanel.section.toggleDetails = function (that) {
+        var detailsAction = that.model.showingDetails ? that.hideDetails : that.showDetails;
+        detailsAction();
     };
 
-    fluid.uploader.errorPanel.section.finalInit = function (that) {
+    fluid.uploader.errorPanel.section.showDetails = function (that) {
+        that.locate("errorDetails").show();
+        that.locate("showHideFilesToggle").text(that.options.strings.hideFiles);
+        that.model.showingDetails = true; // TODO: model abuse
+    };
+
+    fluid.uploader.errorPanel.section.hideDetails = function (that) {
+        that.locate("errorDetails").hide();
+        that.locate("showHideFilesToggle").text(that.options.strings.showFiles);
+        that.model.showingDetails = false;
+    };
+
+    fluid.uploader.errorPanel.section.addFile = function (that, file, errorCode) {
+        if (errorCode === that.model.errorCode) {
+            that.model.files.push(file.name);
+            that.refreshView();
+        }
+    };
+
+    fluid.uploader.errorPanel.section.clear = function (that) {
+        that.model.files = [];
+        that.refreshView();
+        that.events.afterErrorsCleared.fire();
+    };
+
+    fluid.uploader.errorPanel.section.refreshView = function (that) {
+        fluid.uploader.errorPanel.section.renderHeader(that);
+        fluid.uploader.errorPanel.section.renderErrorDetails(that);
+        that.hideDetails();
+
+        if (that.model.files.length <= 0) { // TODO: use model relay and "visibility model"
+            that.container.hide();
+        } else {
+            that.container.show();
+        }
+    };
+
+    fluid.uploader.errorPanel.section.bindHandlers = function (that) {
         // Bind delete button
         that.locate("deleteErrorButton").click(that.clear);
 
         // Bind hide/show error details link
         that.locate("showHideFilesToggle").click(that.toggleDetails);
-
-        that.refreshView();
     };
 
     fluid.uploader.errorPanel.section.renderHeader = function (that) {

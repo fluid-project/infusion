@@ -165,6 +165,13 @@ var fluid_2_0 = fluid_2_0 || {};
                 expander: {
                     func: "{that}.computeLayout"
                 }
+            },
+            getRelativePosition: { // an old-fashioned function member
+                expander: {
+                    funcName: "fluid.reorderer.relativeInfoGetter",
+                    args: [ "{that}.options.orientation", fluid.reorderer.WRAP_LOCKED_STRATEGY, fluid.reorderer.GEOMETRIC_STRATEGY,
+                        "{that}.dropManager", "{that}.options.disableWrap"]
+                }
             }
         },
         invokers: { // Use very specific arguments for selectors to avoid circularity
@@ -188,7 +195,9 @@ var fluid_2_0 = fluid_2_0 || {};
             isLocked: {
                 funcName: "fluid.moduleLayout.isLocked",
                 args: ["{arguments}.0", "{reorderer}.options.selectors.lockedModules", "{that}.reordererDom"]
-            }
+            },
+            getGeometricInfo: "fluid.moduleLayout.getGeometricInfo({that})",
+            getModel: "fluid.moduleLayout.getModel({that})"
         },
         selectors: {
             modules: "{reorderer}.options.selectors.modules",
@@ -220,6 +229,41 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         }
     });
+    
+    fluid.moduleLayout.getGeometricInfo = function (that) {
+        var options = that.options;
+        var extents = [];
+        var togo = {extents: extents,
+                    sentinelize: options.sentinelize};
+        togo.elementMapper = function (element) {
+            return that.isLocked(element) ? "locked" : null;
+        };
+        togo.elementIndexer = function (element) {
+            var indices = fluid.moduleLayout.findColumnAndItemIndices(element, that.layout);
+            return {
+                index:        indices.itemIndex,
+                length:       that.layout.columns[indices.columnIndex].elements.length,
+                moduleIndex:  indices.columnIndex,
+                moduleLength: that.layout.columns.length
+            };
+        };
+        for (var col = 0; col < that.layout.columns.length; col++) {
+            var column = that.layout.columns[col];
+            var thisEls = {
+                orientation: options.orientation,
+                elements: fluid.makeArray(column.elements),
+                parentElement: column.container
+            };
+          //  fluid.log("Geometry col " + col + " elements " + fluid.dumpEl(thisEls.elements) + " isLocked [" +
+          //       fluid.transform(thisEls.elements, togo.elementMapper).join(", ") + "]");
+            extents.push(thisEls);
+        }
+        return togo;
+    };
+
+    fluid.moduleLayout.getModel = function (that) {
+        return fluid.moduleLayout.layoutToIds(that.layout); // note that that.layout is a "volatile member"
+    };
 
     fluid.moduleLayout.computeLayout = function (that, modulesSelector, dom) {
         var togo;
@@ -259,46 +303,5 @@ var fluid_2_0 = fluid_2_0 || {};
         fluid.moduleLayout.updateLayout(item, requestedPosition.element, requestedPosition.position, layout);
     };
 
-    fluid.moduleLayoutHandler.finalInit = function (that) {
-        var options = that.options;
 
-        that.getRelativePosition  =
-            fluid.reorderer.relativeInfoGetter(options.orientation,
-                 fluid.reorderer.WRAP_LOCKED_STRATEGY, fluid.reorderer.GEOMETRIC_STRATEGY,
-                 that.dropManager, options.disableWrap);
-
-        that.getGeometricInfo = function () {
-            var extents = [];
-            var togo = {extents: extents,
-                        sentinelize: options.sentinelize};
-            togo.elementMapper = function (element) {
-                return that.isLocked(element) ? "locked" : null;
-            };
-            togo.elementIndexer = function (element) {
-                var indices = fluid.moduleLayout.findColumnAndItemIndices(element, that.layout);
-                return {
-                    index:        indices.itemIndex,
-                    length:       that.layout.columns[indices.columnIndex].elements.length,
-                    moduleIndex:  indices.columnIndex,
-                    moduleLength: that.layout.columns.length
-                };
-            };
-            for (var col = 0; col < that.layout.columns.length; col++) {
-                var column = that.layout.columns[col];
-                var thisEls = {
-                    orientation: options.orientation,
-                    elements: fluid.makeArray(column.elements),
-                    parentElement: column.container
-                };
-              //  fluid.log("Geometry col " + col + " elements " + fluid.dumpEl(thisEls.elements) + " isLocked [" +
-              //       fluid.transform(thisEls.elements, togo.elementMapper).join(", ") + "]");
-                extents.push(thisEls);
-            }
-            return togo;
-        };
-
-        that.getModel = function () {
-            return fluid.moduleLayout.layoutToIds(that.layout);
-        };
-    };
 })(jQuery, fluid_2_0);

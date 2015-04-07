@@ -10,7 +10,6 @@
  https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
  */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -18,69 +17,99 @@
 
     fluid.registerNamespace("fluid.tests");
 
+    jqUnit.module("Deep Equivalence Tests");
+
+    jqUnit.test("Test", function () {
+        jqUnit.assertDeepEq("eq1", {
+            p1: "thing1"
+        }, {
+            p1: "thing1"
+        });
+        jqUnit.assertDeepNeq("eq2", {
+            p1: "thing1"
+        }, {
+            p2: "thing1"
+        });
+        jqUnit.assertDeepNeq("eq3", {
+            p1: "thing1"
+        }, null);
+        jqUnit.assertDeepNeq("eq4", null, {
+            p1: "thing1"
+        });
+        jqUnit.assertDeepEq("eq5", null, null);
+        jqUnit.assertDeepEq("eq6", undefined, undefined);
+        jqUnit.assertDeepNeq("eq7", {
+            p1: "thing1",
+            p2: "thing"
+        }, {
+            p1: "thing1"
+        });
+        jqUnit.assertDeepNeq("eq8", {
+            p1: "thing1"
+        }, {
+            p1: "thing1",
+            p2: "thing"
+        });
+        jqUnit.assertDeepEq("eq9", [1, 2], [1, 2]);
+        jqUnit.assertDeepNeq("eq10", [1, 2], [1, 2, 3]);
+        jqUnit.assertDeepNeq("eq11", [1, [2, 3, 4]], [1, [2, 3, 4, 5]]);
+        jqUnit.assertDeepEq("eq12", [1, 2, 3, 4, 5], [1, 2, 3, 4, 5]);
+    });
+    
+    jqUnit.module("messageResolver");
+    
+    jqUnit.test("messageResolver", function () {
+        var bundlea = {
+            key1: "value1a",
+            key2: "value2a"
+        };
+        var bundleb = {
+            key1: "value1b",
+            key3: "value3b"
+        };
+        var resolverParent = fluid.messageResolver({messageBase: bundlea});
+        var resolver = fluid.messageResolver({messageBase: bundleb, parents: [resolverParent]});
+
+        var requiredLook = {
+            key1: "value1b",
+            key2: "value2a",
+            key3: "value3b",
+            key4: undefined
+        };
+        fluid.each(requiredLook, function (value, key) {
+            var looked = resolver.lookup([key]);
+            jqUnit.assertEquals("Resolve key " + key, value, looked ? looked.template : looked);
+        });
+        jqUnit.assertEquals("Local fallback",  bundleb.key1, resolver.resolve(["key2", "key1"]));
+        jqUnit.assertEquals("Global fallback", bundlea.key2, resolver.resolve(["key4", "key2"]));
+    });
+
+    jqUnit.module("Selector Parser Test");
+
+    jqUnit.test("Test", function () {
+        var tree = fluid.parseSelector("  div span#id  > .class", fluid.simpleCSSMatcher);
+        jqUnit.assertEquals("treeLength", 3, tree.length);
+        var expected = [{
+            predList: [{
+                tag: "div"
+            }]
+        }, {
+            predList: [{
+                tag: "span"
+            }, {
+                id: "id"
+            }],
+            child: true
+        }, {
+            predList: [{
+                clazz: "class"
+            }]
+        }];
+        jqUnit.assertDeepEq("Parsed compound CSS selector", expected, tree);
+    });
+    
+
     fluid.tests.testRenderer = function () {
-        jqUnit.module("Deep Equivalence Tests");
-
-        jqUnit.test("Test", function () {
-            jqUnit.assertDeepEq("eq1", {
-                p1: "thing1"
-            }, {
-                p1: "thing1"
-            });
-            jqUnit.assertDeepNeq("eq2", {
-                p1: "thing1"
-            }, {
-                p2: "thing1"
-            });
-            jqUnit.assertDeepNeq("eq3", {
-                p1: "thing1"
-            }, null);
-            jqUnit.assertDeepNeq("eq4", null, {
-                p1: "thing1"
-            });
-            jqUnit.assertDeepEq("eq5", null, null);
-            jqUnit.assertDeepEq("eq6", undefined, undefined);
-            jqUnit.assertDeepNeq("eq7", {
-                p1: "thing1",
-                p2: "thing"
-            }, {
-                p1: "thing1"
-            });
-            jqUnit.assertDeepNeq("eq8", {
-                p1: "thing1"
-            }, {
-                p1: "thing1",
-                p2: "thing"
-            });
-            jqUnit.assertDeepEq("eq9", [1, 2], [1, 2]);
-            jqUnit.assertDeepNeq("eq10", [1, 2], [1, 2, 3]);
-            jqUnit.assertDeepNeq("eq11", [1, [2, 3, 4]], [1, [2, 3, 4, 5]]);
-            jqUnit.assertDeepEq("eq12", [1, 2, 3, 4, 5], [1, 2, 3, 4, 5]);
-        });
-
-        jqUnit.module("Selector Parser Test");
-
-        jqUnit.test("Test", function () {
-            var tree = fluid.parseSelector("  div span#id  > .class", fluid.simpleCSSMatcher);
-            jqUnit.assertEquals("treeLength", 3, tree.length);
-            var expected = [{
-                predList: [{
-                    tag: "div"
-                }]
-            }, {
-                predList: [{
-                    tag: "span"
-                }, {
-                    id: "id"
-                }],
-                child: true
-            }, {
-                predList: [{
-                    clazz: "class"
-                }]
-            }];
-            jqUnit.assertDeepEq("Parsed compound CSS selector", expected, tree);
-        });
 
         jqUnit.module("Parser Tests");
 

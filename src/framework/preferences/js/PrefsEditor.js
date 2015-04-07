@@ -441,8 +441,6 @@ var fluid_2_0 = fluid_2_0 || {};
                 container: "{preview}.enhancerContainer",
                 createOnEvent: "onReady"
             },
-            // TODO: This is a violation of containment, but we can't use up our allowance of demands
-            // blocks as a result of FLUID-4392
             templateLoader: "{templateLoader}"
         },
         invokers: {
@@ -454,11 +452,11 @@ var fluid_2_0 = fluid_2_0 || {};
                 ]
             }
         },
-        finalInitFunction: "fluid.prefs.preview.finalInit",
         events: {
             onReady: null
         },
         listeners: {
+            "onCreate.startLoadingContainer": "fluid.prefs.preview.startLoadingContainer",
             "{prefsEditor}.events.modelChanged": "{that}.updateModel",
             onReady: "{that}.updateModel"
         },
@@ -476,7 +474,7 @@ var fluid_2_0 = fluid_2_0 || {};
         }, 0);
     };
 
-    fluid.prefs.preview.finalInit = function (that) {
+    fluid.prefs.preview.startLoadingContainer = function (that) {
         var templateUrl = that.templateLoader.transformURL(that.options.templateUrl);
         that.container.load(function () {
             that.enhancerContainer = $("body", that.container.contents());

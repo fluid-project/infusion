@@ -38,7 +38,7 @@ var demo = demo || {};
          */
         fluid.inlineEdit(".demoSelector-inlineEdit-container-title", {
             componentDecorators: {
-                type: "fluid.undoDecorator",
+                type: "fluid.undo",
                 options: {
                     selectors: demo.initInlineEdit.selectors,
                     renderer: demo.undoRenderer
@@ -55,7 +55,7 @@ var demo = demo || {};
 
         fluid.inlineEdit(".demoSelector-inlineEdit-container-caption", {
             componentDecorators: {
-                type: "fluid.undoDecorator",
+                type: "fluid.undo",
                 options: {
                     selectors: demo.initInlineEdit.selectors,
                     renderer: demo.undoRenderer

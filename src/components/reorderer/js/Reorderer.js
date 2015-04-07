@@ -141,6 +141,15 @@ var fluid_2_0 = fluid_2_0 || {};
             left : fluid.reorderer.keys.j
         }
     ];
+    
+    fluid.reorderer.keysetsPolicy = function (target, source) {
+        var value = source ? source : target;
+        return fluid.makeArray(value);
+    };
+    
+    fluid.reorderer.copyDropWarning = function (dropWarning) {
+        return dropWarning ? dropWarning.clone() : dropWarning;
+    };
 
     /**
      * @param container - A jQueryable designator for the root node of the reorderer (a selector, a DOM node, or a jQuery instance)
@@ -192,7 +201,8 @@ var fluid_2_0 = fluid_2_0 || {};
         members: {
             dropManager: "@expand:fluid.dropManager()", // TODO: this is an old-style "that" which can no longer be supported as a component
             activeItem: null,
-            kbDropWarning: "{that}.dom.dropWarning"
+            kbDropWarning: "{that}.dom.dropWarning",
+            mouseDropWarning: "@expand:fluid.reorderer.copyDropWarning({that}.kbDropWarning)"
         },
         events: {
             onShowKeyboardDropWarning: null,
@@ -205,15 +215,19 @@ var fluid_2_0 = fluid_2_0 || {};
         },
         listeners: {
             onCreate: [ {
+                namespace: "bindKeyHandlers",
                 funcName: "fluid.reorderer.bindHandlersToContainer",
                 args: ["{that}.container", "{that}.handleKeyDown", "{that}.handleKeyUp"]
             }, {
+                namespace: "addContainerRoles",
                 funcName: "fluid.reorderer.addRolesToContainer",
                 args: "{that}"
             }, {
+                namespace: "makeTabbable",
                 funcName: "fluid.tabbable",
                 args: "{that}.container"
             }, {
+                namespace: "processAfterMoveCallback",
                 funcName: "fluid.reorderer.processAfterMoveCallbackUrl",
                 args: "{that}"
             },
@@ -286,7 +300,7 @@ var fluid_2_0 = fluid_2_0 || {};
         },
 
         mergePolicy: {
-            keysets: "replace",
+            keysets: fluid.reorderer.keysetsPolicy,
             "selectors.labelSource": "selectors.grabHandle",
             "selectors.selectables": "selectors.movables",
             "selectors.dropTargets": "selectors.movables"
@@ -466,13 +480,6 @@ var fluid_2_0 = fluid_2_0 || {};
                 $.post(options.afterMoveCallbackUrl, JSON.stringify(model));
             }, "postModel");
         }
-    };
-
-    fluid.reorderer.postInit = function (that) {
-        if (that.kbDropWarning) {
-            that.mouseDropWarning = that.kbDropWarning.clone();
-        }
-        that.options.keysets = fluid.makeArray(that.options.keysets); // TODO: mergePolicy or other strategy?
     };
 
     fluid.reorderer.setDropEffects = function (dom, value) {
@@ -722,27 +729,25 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // unsupported, NON-API function
     fluid.reorderer.makeGeometricInfoGetter = function (orientation, sentinelize, dom) {
-        return function () {
-            var that = {
-                sentinelize: sentinelize,
-                extents: [{
-                    orientation: orientation,
-                    elements: dom.fastLocate("dropTargets")
-                }],
-                elementMapper: function (element) {
-                    return $.inArray(element, dom.fastLocate("movables")) === -1 ? "locked" : null;
-                },
-                elementIndexer: function (element) {
-                    var selectables = dom.fastLocate("selectables");
-                    return {
-                        elementClass: that.elementMapper(element),
-                        index: $.inArray(element, selectables),
-                        length: selectables.length
-                    };
-                }
-            };
-            return that;
+        var that = {
+            sentinelize: sentinelize,
+            extents: [{
+                orientation: orientation,
+                elements: dom.fastLocate("dropTargets")
+            }],
+            elementMapper: function (element) {
+                return $.inArray(element, dom.fastLocate("movables")) === -1 ? "locked" : null;
+            },
+            elementIndexer: function (element) {
+                var selectables = dom.fastLocate("selectables");
+                return {
+                    elementClass: that.elementMapper(element),
+                    index: $.inArray(element, selectables),
+                    length: selectables.length
+                };
+            }
         };
+        return that;
     };
 
     fluid.defaults("fluid.layoutHandler", {
@@ -753,35 +758,30 @@ var fluid_2_0 = fluid_2_0 || {};
         },
         components: {
             dropManager: "{reorderer}.dropManager"
+        },
+        invokers: { // overridden in moduleLayoutHandler
+            getGeometricInfo: "fluid.reorderer.makeGeometricInfoGetter({that}.options.orientation, {that}.options.sentinelize, {that}.reordererDom)"
         }
-
     });
 
+    // Public layout handlers.
     fluid.defaults("fluid.listLayoutHandler", {
         gradeNames: ["fluid.layoutHandler", "autoInit"],
         orientation:         fluid.orientation.VERTICAL,
         containerRole:       fluid.reorderer.roles.LIST,
         selectablesTabindex: -1,
-        sentinelize:         true
+        sentinelize:         true,
+        members: {
+            getRelativePosition: { // TODO: an old-fashioned function member - convert to invoker
+                expander: {
+                    funcName: "fluid.reorderer.relativeInfoGetter",
+                    args: [ "{that}.options.orientation", fluid.reorderer.LOGICAL_STRATEGY, null,
+                        "{that}.dropManager", "{that}.options.disableWrap"]
+                }
+            }
+        }
     });
 
-    // Public layout handlers.
-    fluid.listLayoutHandler.finalInit = function (that) {
-        var options = that.options;
-        that.getRelativePosition =
-            fluid.reorderer.relativeInfoGetter(options.orientation,
-                    fluid.reorderer.LOGICAL_STRATEGY, null, that.dropManager, options.disableWrap);
-
-        that.getGeometricInfo = fluid.reorderer.makeGeometricInfoGetter(options.orientation, options.sentinelize, that.reordererDom);
-    };
-
-    fluid.defaults("fluid.gridLayoutHandler", {
-        gradeNames: ["fluid.layoutHandler", "autoInit"],
-        orientation:         fluid.orientation.HORIZONTAL,
-        containerRole:       fluid.reorderer.roles.GRID,
-        selectablesTabindex: -1,
-        sentinelize:         false
-    });
     /*
      * Items in the Lightbox are stored in a list, but they are visually presented as a grid that
      * changes dimensions when the window changes size. As a result, when the user presses the up or
@@ -790,14 +790,27 @@ var fluid_2_0 = fluid_2_0 || {};
      * The GridLayoutHandler is responsible for handling changes to this virtual 'grid' of items
      * in the window, and of informing the Lightbox of which items surround a given item.
      */
-    fluid.gridLayoutHandler.finalInit = function (that) {
-        var options = that.options;
-        that.getRelativePosition =
-            fluid.reorderer.relativeInfoGetter(options.orientation,
-                 options.disableWrap ? fluid.reorderer.SHUFFLE_GEOMETRIC_STRATEGY : fluid.reorderer.LOGICAL_STRATEGY, fluid.reorderer.SHUFFLE_GEOMETRIC_STRATEGY,
-                 that.dropManager, options.disableWrap);
-
-        that.getGeometricInfo = fluid.reorderer.makeGeometricInfoGetter(options.orientation, options.sentinelize, that.reordererDom);
+     
+    fluid.defaults("fluid.gridLayoutHandler", {
+        gradeNames: ["fluid.layoutHandler", "autoInit"],
+        orientation:         fluid.orientation.HORIZONTAL,
+        containerRole:       fluid.reorderer.roles.GRID,
+        selectablesTabindex: -1,
+        sentinelize:         false,
+        coStrategy: "@expand:fluid.gridLayoutHandler.computeCoStrategy({that}.options.disableWrap)",
+        members: {
+            getRelativePosition: { // TODO: an old-fashioned function member - convert to invoker
+                expander: {
+                    funcName: "fluid.reorderer.relativeInfoGetter",
+                    args: [ "{that}.options.orientation", "{that}.options.coStrategy", fluid.reorderer.SHUFFLE_GEOMETRIC_STRATEGY,
+                        "{that}.dropManager", "{that}.options.disableWrap"]
+                }
+            }
+        }
+    });
+    
+    fluid.gridLayoutHandler.computeCoStrategy = function (disableWrap) {
+        return disableWrap ? fluid.reorderer.SHUFFLE_GEOMETRIC_STRATEGY : fluid.reorderer.LOGICAL_STRATEGY;
     };
 
     /*************

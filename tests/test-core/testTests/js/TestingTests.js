@@ -482,10 +482,13 @@
         gradeNames: ["fluid.viewComponent", "autoInit"],
         events: {
             buttonClicked: "{asyncTest}.events.buttonClicked"
+        },
+        listeners: {
+            onCreate: "fluid.tests.buttonChild.bindClick"
         }
     });
 
-    fluid.tests.buttonChild.postInit = function (that) {
+    fluid.tests.buttonChild.bindClick = function (that) {
         that.container.click(function () {
             setTimeout(that.events.buttonClicked.fire, 1);
         });

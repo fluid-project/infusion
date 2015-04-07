@@ -179,28 +179,24 @@ var fluid_2_0 = fluid_2_0 || {};
         return modelLevel;
     };
 
-    fluid.tableOfContents.modelBuilder.finalInit = function (that) {
-
-        that.convertToHeadingObjects = function (headings, anchorInfo) {
-            headings = $(headings);
-            return fluid.transform(headings, function (heading, index) {
-                return {
-                    level: that.headingCalculator.getHeadingLevel(heading),
-                    text: $(heading).text(),
-                    url: anchorInfo[index].url
-                };
-            });
-        };
-
-        that.assembleModel = function (headings, anchorInfo) {
-            var headingInfo = that.convertToHeadingObjects(headings, anchorInfo);
-            return that.toModel(headingInfo);
-        };
+    fluid.tableOfContents.modelBuilder.convertToHeadingObjects = function (that, headings, anchorInfo) {
+        headings = $(headings);
+        return fluid.transform(headings, function (heading, index) {
+            return {
+                level: that.headingCalculator.getHeadingLevel(heading),
+                text: $(heading).text(),
+                url: anchorInfo[index].url
+            };
+        });
+    };
+            
+    fluid.tableOfContents.modelBuilder.assembleModel = function (that, headings, anchorInfo) {
+        var headingInfo = that.convertToHeadingObjects(headings, anchorInfo);
+        return that.toModel(headingInfo);
     };
 
     fluid.defaults("fluid.tableOfContents.modelBuilder", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
-        finalInitFunction: "fluid.tableOfContents.modelBuilder.finalInit",
         components: {
             headingCalculator: {
                 type: "fluid.tableOfContents.modelBuilder.headingCalculator"
@@ -211,7 +207,9 @@ var fluid_2_0 = fluid_2_0 || {};
                 funcName: "fluid.tableOfContents.modelBuilder.toModel",
                 args: ["{arguments}.0", "{modelBuilder}.modelLevelFn"]
             },
-            modelLevelFn: "fluid.tableOfContents.modelBuilder.gradualModelLevelFn"
+            modelLevelFn: "fluid.tableOfContents.modelBuilder.gradualModelLevelFn",
+            convertToHeadingObjects: "fluid.tableOfContents.modelBuilder.convertToHeadingObjects({that}, {arguments}.0, {arguments}.1)", // headings, anchorInfo
+            assembleModel: "fluid.tableOfContents.modelBuilder.assembleModel({that}, {arguments}.0, {arguments}.1)" // headings, anchorInfo
         }
     });
 
@@ -220,15 +218,15 @@ var fluid_2_0 = fluid_2_0 || {};
     **************************************/
     fluid.registerNamespace("fluid.tableOfContents.modelBuilder.headingCalculator");
 
-    fluid.tableOfContents.modelBuilder.headingCalculator.finalInit = function (that) {
-        that.getHeadingLevel = function (heading) {
-            return $.inArray(heading.tagName, that.options.levels) + 1;
-        };
+    fluid.tableOfContents.modelBuilder.headingCalculator.getHeadingLevel = function (that, heading) {
+        return $.inArray(heading.tagName, that.options.levels) + 1;
     };
 
     fluid.defaults("fluid.tableOfContents.modelBuilder.headingCalculator", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
-        finalInitFunction: "fluid.tableOfContents.modelBuilder.headingCalculator.finalInit",
+        invokers: {
+            getHeadingLevel: "fluid.tableOfContents.modelBuilder.headingCalculator.getHeadingLevel({that}, {arguments}.0)" // heading
+        },
         levels: ["H1", "H2", "H3", "H4", "H5", "H6"]
     });
 
@@ -236,13 +234,6 @@ var fluid_2_0 = fluid_2_0 || {};
     * ToC Levels *
     **************/
     fluid.registerNamespace("fluid.tableOfContents.levels");
-
-    fluid.tableOfContents.levels.finalInit = function (that) {
-        fluid.fetchResources(that.options.resources, function () {
-            that.container.append(that.options.resources.template.resourceText);
-            that.refreshView();
-        });
-    };
 
     /**
      * Create an object model based on the type and ID.  The object should contain an
@@ -331,10 +322,17 @@ var fluid_2_0 = fluid_2_0 || {};
         });
         return tree;
     };
+    
+    fluid.tableOfContents.levels.fetchResources = function (that) {
+        fluid.fetchResources(that.options.resources, function () {
+            that.container.append(that.options.resources.template.resourceText);
+            that.refreshView();
+        });
+    };
+    
 
     fluid.defaults("fluid.tableOfContents.levels", {
         gradeNames: ["fluid.rendererComponent", "autoInit"],
-        finalInitFunction: "fluid.tableOfContents.levels.finalInit",
         produceTree: "fluid.tableOfContents.levels.produceTree",
         strings: {
             tocHeader: "Table of Contents"
@@ -363,6 +361,9 @@ var fluid_2_0 = fluid_2_0 || {};
         repeatingSelectors: ["level1", "level2", "level3", "level4", "level5", "level6", "items1", "items2", "items3", "items4", "items5", "items6"],
         model: {
             headings: [] // [text: heading, url: linkURL, headings: [ an array of subheadings in the same format]
+        },
+        listeners: {
+            "onCreate.fetchResources": "fluid.tableOfContents.levels.fetchResources"
         },
         resources: {
             template: {

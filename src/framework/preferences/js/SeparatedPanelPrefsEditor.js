@@ -194,10 +194,13 @@ var fluid_2_0 = fluid_2_0 || {};
         markupProps: {
             "class": "flc-iframe",
             src: "%templatePrefix/prefsEditorIframe.html"
+        },
+        listeners: {
+            "onCreate.startLoadingIframe": "fluid.prefs.separatedPanel.renderIframe.startLoadingIframe"
         }
     });
 
-    fluid.prefs.separatedPanel.renderIframe.finalInit = function (that) {
+    fluid.prefs.separatedPanel.renderIframe.startLoadingIframe = function (that) {
         var styles = that.options.styles;
         // TODO: get earlier access to templateLoader,
         that.options.markupProps.src = fluid.stringTemplate(that.options.markupProps.src, {"templatePrefix/": that.options.templatePrefix});

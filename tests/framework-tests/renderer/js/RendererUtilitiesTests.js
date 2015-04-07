@@ -1,6 +1,6 @@
 /*
 Copyright 2011 OCAD University
-Copyright 2010-2011 Lucendo Development Ltd.
+Copyright 2010-2015 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -10,13 +10,13 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
     "use strict";
 
     fluid.registerNamespace("fluid.tests");
+    
     fluid.setLogging(true);
 
     fluid.tests.testRendererUtilities = function () {
@@ -317,12 +317,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 currentRelease: "Release %version",
                 about: "About CollectionSpace",
                 feedback: "Leave Feedback"
+            },
+            listeners: {
+                onCreate: "{that}.refreshView"
             }
         });
-
-        fluid.tests.rendererComponentWithNoInstantiator.finalInit = function (that) {
-            that.renderer.refreshView();
-        };
 
         fluid.tests.rendererComponentWithNoInstantiator.produceTree = function () {
             return {
@@ -1442,10 +1441,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             events: {
                 iframeLoad: null
             },
-            finalInitFunction: "fluid.tests.FLUID4536.finalInit"
+            listeners: {
+                onCreate: "fluid.tests.FLUID4536.tryLoad"
+            }
         });
 
-        fluid.tests.FLUID4536.finalInit = function(that) {
+        fluid.tests.FLUID4536.tryLoad = function(that) {
             that.iframe = that.dom.locate("iframe");
             function tryLoad() {
                 var iframeWindow = that.iframe[0].contentWindow;
@@ -1610,14 +1611,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             protoTree: {
                 show: "${show}"
+            },
+            listeners: {
+                onCreate: "fluid.tests.fluid5048.mediaSettings.fetchResources"
             }
         });
 
-        fluid.tests.fluid5048.mediaSettings.finalInit = function (that) {
+        fluid.tests.fluid5048.mediaSettings.fetchResources = function (that) {
             fluid.fetchResources(that.options.resources, function () {
                 that.refreshView();
             });
         };
+        
         fluid.defaults("fluid.tests.fluid5048.captionsSettings", {
             gradeNames: ["fluid.tests.fluid5048.mediaSettings", "autoInit"]
         });

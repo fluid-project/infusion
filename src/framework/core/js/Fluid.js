@@ -277,13 +277,16 @@ var fluid = fluid || fluid_2_0;
             fluid.fail("Unrecognised fluid logging level ", enabled);
         }
         logLevelStack.unshift(logLevel);
+        fluid.defeatLogging = !fluid.isLogging();
     };
 
     fluid.setLogLevel = fluid.setLogging;
 
     /** Undo the effect of the most recent "setLogging", returning the logging system to its previous state **/
     fluid.popLogging = function () {
-        return logLevelStack.length === 1? logLevelStack[0] : logLevelStack.shift();
+        var togo = logLevelStack.length === 1? logLevelStack[0] : logLevelStack.shift();
+        fluid.defeatLogging = !fluid.isLogging();
+        return togo;
     };
 
     /** Actually do the work of logging <code>args</code> to the environment's console. If the standard "console"
@@ -2275,12 +2278,6 @@ var fluid = fluid || fluid_2_0;
         });
         return fluid.invokeGlobalFunction(name, args);
     };
-
-    fluid.lifecycleFunctions = {
-        preInitFunction: true,
-        postInitFunction: true,
-        finalInitFunction: true
-    };
     
     fluid.noNamespaceDistributionPrefix = "no-namespace-distribution-";
     
@@ -2306,13 +2303,12 @@ var fluid = fluid || fluid_2_0;
         return target;
     };
 
-    fluid.rootMergePolicy = $.extend({
+    fluid.rootMergePolicy = {
         gradeNames: fluid.arrayConcatPolicy,
         distributeOptions: fluid.distributeOptionsPolicy,
-        transformOptions: "replace"
-    }, fluid.transform(fluid.lifecycleFunctions, function () {
-        return fluid.mergeListenerPolicy;
-    }));
+        transformOptions: "replace",
+        listeners: fluid.makeMergeListenersPolicy(fluid.mergeListenerPolicy)
+    };
 
     fluid.defaults("fluid.littleComponent", {
         gradeNames: ["autoInit"],
@@ -2320,6 +2316,11 @@ var fluid = fluid || fluid_2_0;
         mergePolicy: fluid.rootMergePolicy,
         argumentMap: {
             options: 0
+        },
+        events: { // Three standard lifecycle points common to all components
+            onCreate:     null,
+            onDestroy:    null,
+            afterDestroy: null
         }
     });
     
@@ -2327,16 +2328,8 @@ var fluid = fluid || fluid_2_0;
         gradeNames: ["fluid.littleComponent"]
     });
 
-    fluid.defaults("fluid.eventedComponent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        events: { // Five standard lifecycle points common to all components
-            onCreate:     null,
-            onDestroy:    null,
-            afterDestroy: null
-        },
-        mergePolicy: {
-            listeners: fluid.makeMergeListenersPolicy(fluid.mergeListenerPolicy)
-        }
+    fluid.defaults("fluid.eventedComponent", { // eventedComponent grade is now identical with littleComponent - we will remove shortly
+        gradeNames: ["fluid.littleComponent", "autoInit"]
     });
 
     /** Compute a "nickname" given a fully qualified typename, by returning the last path
@@ -2373,10 +2366,7 @@ var fluid = fluid || fluid_2_0;
         that.destroy = fluid.makeRootDestroy(that); // overwritten by FluidIoC for constructed subcomponents
         var mergeOptions = fluid.mergeComponentOptions(that, name, userOptions, localOptions);
         var options = that.options;
-        var evented = fluid.hasGrade(options, "fluid.eventedComponent");
-        if (evented) {
-            that.events = {};
-        }
+        that.events = {};
         // deliver to a non-IoC side early receiver of the component (currently only initView)
         (receiver || fluid.identity)(that, options, mergeOptions.strategy);
         fluid.computeDynamicComponents(that, mergeOptions);
@@ -2389,61 +2379,10 @@ var fluid = fluid || fluid_2_0;
         mergeOptions.initter();
         delete options.mergePolicy;
 
-        fluid.initLifecycleFunctions(that);
-        fluid.fireEvent(options, "preInitFunction", that);
-
-        if (evented) {
-            fluid.instantiateFirers(that, options);
-            fluid.mergeListeners(that, that.events, options.listeners);
-        }
-        if (!fluid.hasGrade(options, "autoInit")) {
-            fluid.clearLifecycleFunctions(options);
-        }
+        fluid.instantiateFirers(that, options);
+        fluid.mergeListeners(that, that.events, options.listeners);
+        
         return that;
-    };
-
-    // unsupported, NON-API function
-    fluid.updateWithDefaultLifecycle = function (key, value, typeName) {
-        var funcName = typeName + "." + key.substring(0, key.length - "function".length);
-        var funcVal = fluid.getGlobalValue(funcName);
-        if (typeof (funcVal) === "function") {
-            value = fluid.makeArray(value);
-            var existing = fluid.find(value, function (el) {
-                var listener = el.listener || el;
-                if (listener === funcVal || listener === funcName) {
-                    return true;
-                }
-            });
-            if (!existing) {
-                value.push(funcVal);
-            }
-        }
-        return value;
-    };
-
-    // unsupported, NON-API function
-    fluid.initLifecycleFunctions = function (that) {
-        var gradeNames = that.options.gradeNames || [];
-        fluid.each(fluid.lifecycleFunctions, function (func, key) {
-            var value = that.options[key];
-            for (var i = gradeNames.length - 1; i >= 0; -- i) { // most specific grades are at front
-                if (gradeNames[i] !== "autoInit") {
-                    value = fluid.updateWithDefaultLifecycle(key, value, gradeNames[i]);
-                }
-            }
-            if (value) {
-                that.options[key] = fluid.makeEventFirer({name: key, ownerId: that.id});
-                fluid.event.addListenerToFirer(that.options[key], value);
-            }
-        });
-    };
-
-    // unsupported, NON-API function
-    fluid.clearLifecycleFunctions = function (options) {
-        fluid.each(fluid.lifecycleFunctions, function (value, key) {
-            delete options[key];
-        });
-        delete options.initFunction;
     };
 
     fluid.diagnoseFailedView = fluid.identity;
@@ -2488,12 +2427,9 @@ var fluid = fluid || fluid_2_0;
             {componentName: componentName, initArgs: initArgs});
         that = fluid.invokeGlobalFunction(options.initFunction, args);
         fluid.diagnoseFailedView(componentName, that, options, args);
-        fluid.fireEvent(that.options, "postInitFunction", that);
         if (fluid.initDependents) {
             fluid.initDependents(that);
         }
-        fluid.fireEvent(that.options, "finalInitFunction", that);
-        fluid.clearLifecycleFunctions(that.options);
         fluid.fireEvent(that, "events.onCreate", that);
         fluid.popActivity();
         return that;
@@ -2627,65 +2563,6 @@ var fluid = fluid || fluid_2_0;
             template = template.replace(re, values[key]);
         }
         return template;
-    };
-
-    fluid.defaults("fluid.messageResolver", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        mergePolicy: {
-            messageBase: "nomerge",
-            parents: "nomerge"
-        },
-        resolveFunc: fluid.stringTemplate,
-        parseFunc: fluid.identity,
-        messageBase: {},
-        parents: []
-    });
-
-    fluid.messageResolver.preInit = function (that) {
-        that.messageBase = that.options.parseFunc(that.options.messageBase);
-
-        that.lookup = function (messagecodes) {
-            var resolved = fluid.messageResolver.resolveOne(that.messageBase, messagecodes);
-            if (resolved === undefined) {
-                return fluid.find(that.options.parents, function (parent) {
-                    return parent ? parent.lookup(messagecodes) : undefined;
-                });
-            } else {
-                return {template: resolved, resolveFunc: that.options.resolveFunc};
-            }
-        };
-        that.resolve = function (messagecodes, args) {
-            if (!messagecodes) {
-                return "[No messagecodes provided]";
-            }
-            messagecodes = fluid.makeArray(messagecodes);
-            var looked = that.lookup(messagecodes);
-            return looked ? looked.resolveFunc(looked.template, args) :
-                "[Message string for key " + messagecodes[0] + " not found]";
-        };
-    };
-
-    // unsupported, NON-API function
-    fluid.messageResolver.resolveOne = function (messageBase, messagecodes) {
-        for (var i = 0; i < messagecodes.length; ++i) {
-            var code = messagecodes[i];
-            var message = messageBase[code];
-            if (message !== undefined) {
-                return message;
-            }
-        }
-    };
-
-    /** Converts a data structure consisting of a mapping of keys to message strings,
-     * into a "messageLocator" function which maps an array of message codes, to be
-     * tried in sequence until a key is found, and an array of substitution arguments,
-     * into a substituted message string.
-     */
-    fluid.messageLocator = function (messageBase, resolveFunc) {
-        var resolver = fluid.messageResolver({messageBase: messageBase, resolveFunc: resolveFunc});
-        return function (messagecodes, args) {
-            return resolver.resolve(messagecodes, args);
-        };
     };
 
 })(jQuery, fluid_2_0);

@@ -439,8 +439,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("ToC insert anchor correctly: name", tocTestAnchorName, tocInsertAnchorWrapperFirstChild.attr("name"));
         });
 
-        jqUnit.test("finalInit public function: headingTextToAnchorInfo", function () {
-            // setup and init the ToC component
+        jqUnit.test("public function: headingTextToAnchorInfo", function () {
+            // set up and init the ToC component
             var toc = renderTOCComponent();
             var tocBodyHeading = $("#amphibians");
             var anchorInfo = toc.headingTextToAnchorInfo(tocBodyHeading);
@@ -449,15 +449,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("anchor url is the same as id except url has a '#' in front", anchorInfo.url.substr(1), anchorInfo.id);
         });
 
-        jqUnit.test("finalInit public function: show/hide component", function () {
-            //setup and init the ToC component
+        jqUnit.test("public function: show/hide component", function () {
+            // set up and init the ToC component
             var tocContainer = renderTOCComponent().locate("tocContainer");
             jqUnit.isVisible("Initially the component is visible.", tocContainer);
             tocContainer.hide();
-            //verify toc is hidden.
+            // verify toc is hidden.
             jqUnit.notVisible("After calling hide, the component is invisible.", tocContainer);
             tocContainer.show();
-            //verify toc is visible again
+            // verify toc is visible again
             jqUnit.isVisible("After calling show, the component is visible.", tocContainer);
         });
 

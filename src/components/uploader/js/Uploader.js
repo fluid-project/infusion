@@ -556,6 +556,9 @@ var fluid_2_0 = fluid_2_0 || {};
             "onCreate": [{
                 listener: "fluid.uploader.bindFocus",
                 args: ["{that}.options.focusWithEvent", "{that}.options.noAutoFocus", "{that}.events", "{that}.dom"]
+            }, {
+                funcName: "fluid.uploader.multiFileUploader.setupMarkup",
+                namespace: "setupMarkup"
             },
             { // TODO: These two part of the "new renderer" as "new decorators"
                 "this": "{that}.dom.uploadButton",
@@ -653,7 +656,7 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-    fluid.uploader.multiFileUploader.finalInit = function (that) {
+    fluid.uploader.multiFileUploader.setupMarkup = function (that) {
         // Upload button should not be enabled until there are files to upload
         fluid.uploader.disableElement(that, that.locate("uploadButton"));
 

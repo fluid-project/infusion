@@ -79,13 +79,15 @@ var fluid_2_0 = fluid_2_0 || {};
             fluid.undo.refreshView(that);
         }
     };
-
-    fluid.undo.finalInit = function (that) {
-        fluid.tabindex(that.locate("undoControl"), 0);
-        fluid.tabindex(that.locate("redoControl"), 0);
-
+    
+    fluid.undo.copyInitialModel = function (that) {
         fluid.model.copyModel(that.initialModel, that.component.model);
         fluid.model.copyModel(that.extremalModel, that.component.model);
+    };
+
+    fluid.undo.setTabindex = function (that) {
+        fluid.tabindex(that.locate("undoControl"), 0);
+        fluid.tabindex(that.locate("redoControl"), 0);
     };
 
     /**
@@ -127,18 +129,22 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         },
         listeners: {
-            onCreate: [{
-                funcName: "fluid.undo.refreshView",
-                args: "{that}"
-            }, {
+            "onCreate.copyInitialModel": {
+                funcName: "fluid.undo.copyInitialModel",
+                priority: "before:refreshView"
+            },
+            "onCreate.setTabindex": "fluid.undo.setTabindex",
+            "onCreate.refreshView": "fluid.undo.refreshView",
+            "onCreate.bindUndoClick": {
                 "this": "{that}.dom.undoControl",
                 method: "click",
                 args: "{that}.undoControlClick"
-            }, {
+            },
+            "onCreate.bindRedoClick": {
                 "this": "{that}.dom.redoControl",
                 method: "click",
                 args: "{that}.redoControlClick"
-            }],
+            },
             "{fluid.undoable}.events.modelChanged": {
                 funcName: "fluid.undo.modelChanged",
                 args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
@@ -169,7 +175,7 @@ var fluid_2_0 = fluid_2_0 || {};
             modelChanged: null
         }
     });
-
+    
     // Backward compatibility for users of Infusion 1.4.x API
     fluid.defaults("fluid.undoDecorator", {
         gradeNames: ["fluid.undo", "autoInit"]

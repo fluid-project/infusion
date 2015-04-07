@@ -209,16 +209,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         events: {
             childEvent: null
         },
+        invokers: {
+            testRealName: "fluid.tests.twinSubComponent.testRealName({that}, {arguments}.0)" // expectedName
+        },
         listeners: {
             childEvent: "{twinSubComponent}.testRealName"
         },
         realName: ""
     });
 
-    fluid.tests.twinSubComponent.preInit = function (that) {
-        that.testRealName = function (expectedName) {
-            jqUnit.assertEquals("The correct component should be triggered", expectedName, that.options.realName);
-        };
+    fluid.tests.twinSubComponent.testRealName = function (that, expectedName) {
+        jqUnit.assertEquals("The correct component should be triggered", expectedName, that.options.realName);
     };
 
     fluid.defaults("fluid.tests.twinParent", {
@@ -494,15 +495,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     /** Listener merging tests **/
 
-    fluid.tests.listenerMergingPreInit = function (that) {
-        that.eventFired = function (eventName) {
-            that[eventName] = true;
-        };
-    };
-
     fluid.defaults("fluid.tests.listenerMerging", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
-        preInitFunction: "fluid.tests.listenerMergingPreInit",
+        invokers: {
+            eventFired: "fluid.tests.listenerMerging.eventFired({that}, {arguments}.0)" // eventName
+        },
         listeners: {
             eventOne: "{fluid.tests.listenerMerging}.eventFired",
             eventTwo: "{fluid.tests.listenerMerging}.eventFired"
@@ -513,6 +510,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             eventThree: null
         }
     });
+
+    fluid.tests.listenerMerging.eventFired = function (that, eventName) {
+        that[eventName] = true;
+    };
 
     jqUnit.test("Listener Merging Tests: FLUID-4196", function () {
         var threeFired = false;
@@ -1516,13 +1517,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             created: args[3]
         });
     };
-
-    // Still in a preInit because we need to beat preInit!
-    fluid.tests.createRecordingMembers = function (that) {
-        that.mainEventListener = function () {
-            that.listenerRecord.push("root.mainEventListener");
-        };
-        that.listenerRecord = [];
+    
+    fluid.tests.pushMainEventListener = function (that) {
+        that.listenerRecord.push("root.mainEventListener");
     };
 
     // Test FLUID-4162 by creating namespace before component of the same name
@@ -1538,7 +1535,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         mergePolicy: {
             parent: "nomerge"
         },
-        postInitFunction: fluid.tests.makeTimedChildListener("postInitFunction"),
         listeners: {
             onCreate: fluid.tests.makeTimedChildListener("onCreate"),
             onDestroy: fluid.tests.makeTimedChildListener("onDestroy", true),
@@ -1548,14 +1544,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.lifecycle", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
-        preInitFunction: ["fluid.tests.createRecordingMembers", fluid.tests.makeTimedListener("preInitFunction")],
-        postInitFunction: fluid.tests.makeTimedListener("postInitFunction"),
-        finalInitFunction: fluid.tests.makeTimedListener("finalInitFunction"),
         events: {
             mainEvent: null
         },
         invokers: {
-            mainEventListener: "fluid.tests.pushMainEventListener"
+            mainEventListener: "fluid.tests.pushMainEventListener({that})"
         },
         members: {
             listenerRecord: []
@@ -1596,31 +1589,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.defaults("fluid.tests.lifecycle.demandsInitComponent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
-    });
-
-    fluid.tests.lifecycle.demandsInitComponent.finalInitFunction = function (that) {
-        that.parent.listenerRecord.push("demandsInitComponent.finalInitFunction");
-    };
-
-
     jqUnit.test("Component lifecycle test - with FLUID-4257", function () {
         var testComp = fluid.tests.lifecycle();
         testComp.events.mainEvent.fire(testComp);
         testComp.events.mainEvent.fire(testComp);
         var expected = [
             // Note: we don't get onComponentAttach for root because it occurs before we can register root listeners
-            "root.preInitFunction",
-            "root.postInitFunction",
             {key: "initTimeComponent.onComponentAttach", created: true},
-            "initTimeComponent.postInitFunction",
             "initTimeComponent.onCreate",
-            "root.finalInitFunction",
             "root.onCreate",
             "root.mainEventListener",
             {key: "eventTimeComponent.onComponentAttach", created: true},
-            "eventTimeComponent.postInitFunction",
             {key: "eventTimeComponent.injected.onComponentAttach", created: false},
             "eventTimeComponent.onCreate",
             "root.mainEventListener",
@@ -1629,7 +1608,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             {key: "eventTimeComponent.injected.onComponentClear", created: false},
             {key: "eventTimeComponent.afterDestroy", name: "eventTimeComponent", parent: "lifecycle"},
             {key: "eventTimeComponent.onComponentAttach", created: true},
-            "eventTimeComponent.postInitFunction",
             {key: "eventTimeComponent.injected.onComponentAttach", created: false},
             "eventTimeComponent.onCreate"
         ];
@@ -1685,15 +1663,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.child4257", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"]
-        // implicitly registered init function tests FLUID-4776
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        invokers: {
+            listener: "fluid.tests.child4257.listener({that}, {arguments}.0, {arguments}.1)" // parentThat, arg
+        }
     });
 
-    fluid.tests.child4257.preInit = function (that) {
-        that.listener = function (parentThat, arg) {
-            parentThat.records = parentThat.records || [];
-            parentThat.records.push(arg);
-        };
+    fluid.tests.child4257.listener = function (that, parentThat, arg) {
+        parentThat.records = parentThat.records || [];
+        parentThat.records.push(arg);
     };
 
     jqUnit.test("FLUID-4257 test: removal of injected listeners", function() {
@@ -1730,12 +1708,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.createOnEvent.iframe", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
-        finalInitFunction: "fluid.tests.createOnEvent.iframe.finalInit"
+        listeners: {
+            onCreate: "{that}.events.afterRender.fire"
+        }
     });
-
-    fluid.tests.createOnEvent.iframe.finalInit = function (that) {
-        that.events.afterRender.fire();
-    };
 
     jqUnit.test("FLUID-4290 test: createOnEvent sequence corruption", function () {
         jqUnit.expect(1);
@@ -1745,26 +1721,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     /** Guided component sequence (priority field without createOnEvent **/
 
-    fluid.tests.guidedChildInit = function (that) {
-       // awful, illegal, side-effect-laden init function :P
-        that.options.parent.constructRecord.push(that.options.index);
-    };
-
     fluid.defaults("fluid.tests.guidedChild", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         mergePolicy: {
             parent: "nomerge"
         },
         parent: "{guidedParent}",
-        finalInitFunction: "fluid.tests.guidedChildInit"
+        listeners: {
+            onCreate: "fluid.tests.guidedChild.pushIndex"
+        }
     });
-
-    fluid.tests.guidedParentInit = function (that) {
-        that.constructRecord = [];
+    
+    fluid.tests.guidedChild.pushIndex = function (that) {
+        // awful, illegal, side-effect-laden init function :P
+        that.options.parent.constructRecord.push(that.options.index);
     };
 
     fluid.defaults("fluid.tests.guidedParent", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
+        members: {
+            constructRecord: []
+        },
         components: {
             compn: {
                 type: "fluid.tests.guidedChild",
@@ -1793,8 +1770,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 priority: "first"
             }
-        },
-        preInitFunction: "fluid.tests.guidedParentInit"
+        }
     });
 
     jqUnit.test("Guided instantiation test", function () {
@@ -1899,7 +1875,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.circular.engine", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
-        finalInitFunction: "fluid.tests.circular.initEngine",
         invokers: {
             bindEvents: {
                 funcName: "fluid.tests.circular.engine",
@@ -1910,6 +1885,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             swfUpload: {
                 type: "fluid.littleComponent"
             }
+        },
+        listeners: {
+            onCreate: "fluid.tests.circular.initEngine"
         }
     });
 
@@ -2107,36 +2085,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertTrue("The merged grade option should exist", fluid.get(that, "options.gradeOpt.gradeOpt"));
     });
 
-    fluid.registerNamespace("fluid.tests.initFuncs");
-
-    fluid.defaults("fluid.tests.initFuncs", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        preInitFunction: "fluid.tests.initFuncs.preInit",
-        postInitFunction: "fluid.tests.initFuncs.postInit",
-        finalInitFunction: "fluid.tests.initFuncs.finalInit"
-    });
-
-    fluid.each(["preInit", "postInit", "finalInit"], function (init) {
-        fluid.tests.initFuncs[init] = function () {
-            jqUnit.assert("The " + init + " function fired");
-        };
-    });
-
-    jqUnit.test("FLUID-4939: init functions with gradeName modification", function () {
-        jqUnit.expect(3);
-        fluid.tests.initFuncs({
-            gradeNames: ["fluid.tests.grade"]
-        });
-    });
-
     fluid.defaults("fluid.tests.circularGrade", {
-        gradeNames: ["fluid.tests.initFuncs", "autoInit"],
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
         extraOpt: "extraOpt"
     });
 
-    jqUnit.test("FLUID-4939: init functions with gradeName modification - circular grades", function () {
-        jqUnit.expect(4);
-        var that = fluid.tests.initFuncs({
+    jqUnit.test("FLUID-4939: Component with gradeName modification - circular grades", function () {
+        jqUnit.expect(1);
+        var that = fluid.eventedComponent({
             gradeNames: ["fluid.tests.circularGrade"]
         });
         jqUnit.assertEquals("Extra option added", "extraOpt", that.options.extraOpt);

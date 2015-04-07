@@ -1665,12 +1665,12 @@ var fluid_2_0 = fluid_2_0 || {};
         if (typeof(eventSpec) === "string") {
             eventSpec = {event: eventSpec};
         }
-        var event = eventSpec.event || eventSpec.events;
+        var event = eventSpec.typeName === "fluid.event.firer" ? eventSpec : eventSpec.event || eventSpec.events;
         if (!event) {
             fluid.fail("Event specification for event with name " + eventName + " does not include a base event specification: ", eventSpec);
         }
 
-        var origin = fluid.event.expandEvents(that, event);
+        var origin = event.typeName === "fluid.event.firer" ? event : fluid.event.expandEvents(that, event);
 
         var isMultiple = origin.typeName !== "fluid.event.firer";
         var isComposite = eventSpec.args || isMultiple;

@@ -458,32 +458,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Nested resolver", "resolved", fluid.get(model2, ["nested", "resolver"]));
     });
 
-    jqUnit.test("messageResolver", function () {
-        var bundlea = {
-            key1: "value1a",
-            key2: "value2a"
-        };
-        var bundleb = {
-            key1: "value1b",
-            key3: "value3b"
-        };
-        var resolverParent = fluid.messageResolver({messageBase: bundlea});
-        var resolver = fluid.messageResolver({messageBase: bundleb, parents: [resolverParent]});
-
-        var requiredLook = {
-            key1: "value1b",
-            key2: "value2a",
-            key3: "value3b",
-            key4: undefined
-        };
-        fluid.each(requiredLook, function (value, key) {
-            var looked = resolver.lookup([key]);
-            jqUnit.assertEquals("Resolve key " + key, value, looked ? looked.template : looked);
-        });
-        jqUnit.assertEquals("Local fallback",  bundleb.key1, resolver.resolve(["key2", "key1"]));
-        jqUnit.assertEquals("Global fallback", bundlea.key2, resolver.resolve(["key4", "key2"]));
-    });
-
     jqUnit.test("Sorting listeners", function () {
         var accumulate = [];
         var makeListener = function (i) {
@@ -668,12 +642,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             event: fluid.tests.makeNotingListener("noNamespace"),
             "event.namespace": fluid.tests.makeNotingListener("namespace"),
             onCreate: fluid.tests.makeNotingListener("onCreate"),
-            "onCreate.namespace": fluid.tests.makeNotingListener("onCreate.namespace")
-        },
-        finalInitFunction: "fluid.tests.listenerTest.finalInit"
+            "onCreate.namespace": fluid.tests.makeNotingListener("onCreate.namespace"),
+            "onCreate.makeValues": {
+                listener: "fluid.tests.listenerTest.makeValues",
+                priority: "first"
+            }
+        }
     });
 
-    fluid.tests.listenerTest.finalInit = function (that) {
+    fluid.tests.listenerTest.makeValues = function (that) {
         that.values = {};
     };
 
@@ -698,43 +675,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             namespace2: 1
         };
         jqUnit.assertDeepEq("Listeners correctly merged", $.extend(expected2, expected1), that.values);
-    });
-
-
-    /** Test FLUID-4776 - only one instance of preinit function registered **/
-
-    fluid.defaults("fluid.tests.lifecycleTest3", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        preInitFunction: "fluid.tests.lifecycleTest3.preInit"
-    });
-
-    fluid.tests.lifecycleTest3.preInit = function (that) {
-        if (!that.count) {
-            that.count = 0;
-        }
-        ++that.count;
-    };
-
-    jqUnit.test("Registration of lifecycle functions by convention", function () {
-        var that = fluid.tests.lifecycleTest3();
-        jqUnit.assertEquals("Only one call to preInitFunction", 1, that.count);
-    });
-
-    /** Test FLUID-4788 - acquiring default initFunctions through the hierarchy **/
-
-    fluid.defaults("fluid.tests.gradeComponent", {
-        gradeNames: ["autoInit", "fluid.littleComponent"]
-    });
-    fluid.tests.gradeComponent.preInit = function () {
-        jqUnit.assert("Pre init function is called by a component of fluid.tests.gradeComponent grade.");
-    };
-    fluid.defaults("fluid.tests.gradeUsingComponent", {
-        gradeNames: ["autoInit", "fluid.tests.gradeComponent"]
-    });
-
-    jqUnit.test("FLUID-4788 test - default lifecycle functions inherited from a grade", function () {
-        jqUnit.expect(1);
-        fluid.tests.gradeUsingComponent();
     });
 
     /** FLUID-5288: Improved diagnostic for incomplete grade hierarchy **/

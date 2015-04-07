@@ -1,6 +1,6 @@
 /*
 Copyright 2011 OCAD University
-Copyright 2011 Lucendo Development Ltd.
+Copyright 2011-2015 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -34,13 +34,15 @@ var fluid_2_0 = fluid_2_0 || {};
                 "this": "{that}.container",
                 "method": "tabs",
                 "args": "{that}.options.tabOptions"
+            },
+            "onCreate.bindEvents": {
+                priority: "after:initTabs",
+                funcName: "fluid.tabs.bindEvents"
             }
-        },
-        finalInitFunction: "fluid.tabs.finalInit"
+        }
     });
-
-    fluid.tabs.finalInit = function (that) {
-        that.container.tabs(that.options.tabOptions);  //jQuery UI Tabs
+    
+    fluid.tabs.bindEvents = function (that) { // TODO: The test cases for this component do not exercise any of these events
         fluid.each(that.options.events, function(value, eventName) {
             that.container.bind(eventName, function(event, ui) {
                 return that.events[eventName].fire(that, event, ui);
