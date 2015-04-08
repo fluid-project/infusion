@@ -100,7 +100,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
     
     fluid.debug.isRendererSelector = function (component, selectorName) {
-        var isRendererComponent = fluid.componentHasGrade(component, "fluid.commonRendererComponent");
+        var isRendererComponent = fluid.componentHasGrade(component, "fluid.rendererComponent");
         var ignoreContains = fluid.contains(component.options.selectorsToIgnore, selectorName);
 
         return isRendererComponent ? (!selectorName || ignoreContains ? false : true) : false;
@@ -477,6 +477,9 @@ var fluid_2_0 = fluid_2_0 || {};
         var disposition = fluid.find_if(that.dispositions, function (disp) {
             return disp.container.prop("id") === domId;
         });
+        if (disposition.noHighlight) {
+            return;
+        }
         var outColour = fluid.copy(disposition.colour);
         outColour[3] = outColour[3] * (newState ? 1.0 : 0.1);
         var colourString = fluid.debug.arrayToRGBA(outColour);
@@ -563,13 +566,13 @@ var fluid_2_0 = fluid_2_0 || {};
         },
         distributeOptions: [{
             record: "fluid.debug.listeningView",
-            target: "{/ fluid.commonViewComponent}.options.gradeNames"
+            target: "{/ fluid.viewComponent}.options.gradeNames"
         }, {
             record: "fluid.debug.listeningPanel",
             target: "{/ fluid.prefs.panel}.options.gradeNames"
         }, {
             record: "fluid.debug.listeningRenderer",
-            target: "{/ fluid.commonRendererComponent}.options.gradeNames"
+            target: "{/ fluid.rendererComponent}.options.gradeNames"
         }],
         events: {
             onNewDocument: null

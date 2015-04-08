@@ -784,8 +784,6 @@ var fluid = fluid || fluid_2_0;
 
     /** A marker indicating that a value requires to be expanded after component construction begins **/
     fluid.EXPAND = {type: "fluid.marker", value: "EXPAND"};
-    /** A marker indicating that a value requires to be expanded immediately **/
-    fluid.EXPAND_NOW = {type: "fluid.marker", value: "EXPAND_NOW"};
 
     /** Determine whether an object is any marker, or a particular marker - omit the
      * 2nd argument to detect any marker

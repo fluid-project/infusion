@@ -99,8 +99,8 @@ fluid_2_0 = fluid_2_0 || {};
         return that;
     };
 
-    fluid.defaults("fluid.commonRendererComponent", {
-        gradeNames: [],
+    fluid.defaults("fluid.rendererComponent", {
+        gradeNames: ["fluid.viewComponent", "autoInit"],
         initFunction: "fluid.initRendererComponent",
         mergePolicy: {
             "rendererOptions.idMap": "nomerge",
@@ -134,14 +134,6 @@ fluid_2_0 = fluid_2_0 || {};
                 priority: "last"
             }
         }
-    });
-
-    fluid.defaults("fluid.rendererComponent", {
-        gradeNames: ["fluid.commonRendererComponent", "fluid.viewComponent", "autoInit"]
-    });
-
-    fluid.defaults("fluid.rendererComponent", {
-        gradeNames: ["fluid.commonRendererComponent", "fluid.viewComponent", "autoInit"]
     });
 
     fluid.rendererComponent.renderOnInit = function (renderOnInit, that) {

@@ -137,7 +137,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.memberFromRecord = function (memberrec, name, that) {
-        // TODO: Try to understand why we supply this "freeRoot" option
+        // TODO: Presumably "freeRoot" is here to allow us not to trash exotic values that arose through expansion into members
         var value = fluid.expandOptions(memberrec, that, null, null, {freeRoot: true});
         return value;
     };
@@ -702,11 +702,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
     
     // Listed in dependence order
-    fluid.frameworkGrades = ["fluid.littleComponent", "fluid.eventedComponent",
-        "fluid.commonModelComponent", "fluid.commonViewComponent", "fluid.commonRendererComponent",
-        "fluid.modelComponent", "fluid.viewComponent", "fluid.standardComponent", "fluid.rendererComponent",
-        "fluid.modelComponent", "fluid.viewComponent", "fluid.standardComponent", "fluid.rendererComponent"];
-    
+    fluid.frameworkGrades = ["fluid.littleComponent", "fluid.eventedComponent", "fluid.modelComponent", "fluid.standardComponent", "fluid.viewComponent", "fluid.rendererComponent"];    
         
     fluid.filterBuiltinGrades = function (gradeNames) {
         return fluid.remove_if(fluid.makeArray(gradeNames), function (gradeName) {
@@ -759,21 +755,15 @@ var fluid_2_0 = fluid_2_0 || {};
         });
         return foundComponent;
     };
-
-    var localRecordExpected = /^(arguments|options|container|source|sourcePath|change)$/;
-
+    
     fluid.makeStackFetcher = function (parentThat, localRecord) {
         var fetcher = function (parsed) {
             if (parentThat && parentThat.destroy === fluid.destroyedMarker) {
                 fluid.fail("Cannot resolve reference " + fluid.renderContextReference(parsed) + " from component " + fluid.dumpThat(parentThat) + " which has been destroyed");
             }
             var context = parsed.context;
-            if (localRecord && localRecordExpected.test(context)) {
-                var fetched = fluid.get(localRecord[context], parsed.path);
-                return context === "arguments" || context === "source" || context === "sourcePath" || context === "change" ? fetched : {
-                    marker: context === "options" ? fluid.EXPAND : fluid.EXPAND_NOW,
-                    value: fetched
-                };
+            if (localRecord && context in localRecord) {
+                return fluid.get(localRecord[context], parsed.path);
             }
             var foundComponent = fluid.resolveContext(context, parentThat);
             if (!foundComponent && parsed.path !== "") {
@@ -986,7 +976,7 @@ var fluid_2_0 = fluid_2_0 || {};
         return expanded;
     };
 
-    fluid.localRecordExpected = ["type", "options", "args", "mergeOptions", "createOnEvent", "priority", "recordType"]; // last element unavoidably polluting
+    fluid.localRecordExpected = ["type", "options", "args", "createOnEvent", "priority", "recordType"]; // last element unavoidably polluting
 
     fluid.checkComponentRecord = function (defaults, localRecord) {
         var expected = fluid.arrayToHash(fluid.localRecordExpected);
@@ -1104,21 +1094,13 @@ var fluid_2_0 = fluid_2_0 || {};
         return togo;
     };
 
-    fluid.argMapToSpec = function (argMap) {
-        var togo = [];
-        fluid.each(argMap, function (value, key) {
-            togo[value] = "{" + key + "}";
-        });
-        return togo;
-    };
-
     /** Given a typeName, determine the final concrete
      * "invocation specification" consisting of a concrete global function name
      * and argument list which is suitable to be executed directly by fluid.invokeGlobalFunction.
      */
     // options is just a disposition record containing memberName, componentRecord
     fluid.assembleCreatorArguments = function (parentThat, typeName, options) {
-        var upDefaults = fluid.defaults(typeName);
+        var upDefaults = fluid.defaults(typeName); // we're not responsive to dynamic changes in argMap, but we don't believe in these anyway
         if (!upDefaults || !upDefaults.argumentMap) {
             fluid.fail("Error in assembleCreatorArguments: cannot look up component type name " + typeName + " to a component creator grade with an argumentMap");
         }
@@ -1126,29 +1108,25 @@ var fluid_2_0 = fluid_2_0 || {};
         var fakeThat = {}; // fake "that" for receiveDistributions since we try to match selectors before creation for FLUID-5013
         var distributions = parentThat ? fluid.receiveDistributions(parentThat, upDefaults.gradeNames, options.memberName, fakeThat) : [];
 
-        var argMap = upDefaults.argumentMap;
-        var argSpec = fluid.argMapToSpec(argMap);
-        
         var shadow = fluid.shadowForComponent(parentThat);
         var localDynamic = shadow && shadow.subcomponentLocal && options.memberName ? shadow.subcomponentLocal[options.memberName] : null;
 
         var localRecord = $.extend({}, fluid.censorKeys(options.componentRecord, ["type"]), localDynamic);
+ 
+        var argMap = upDefaults.argumentMap;       
+        var findKeys = Object.keys(argMap).concat(["type"]);
 
-        fluid.each(argMap, function (index, name) {
-            if (name !== "options") {
-                for (var i = 0; i < distributions.length; ++ i) { // Apply non-options material from distributions (FLUID-5013)
-                    if (distributions[i][name] !== undefined) {
-                        localRecord[name] = distributions[i][name];
-                    }
+        fluid.each(findKeys, function (name) {
+            for (var i = 0; i < distributions.length; ++ i) { // Apply non-options material from distributions (FLUID-5013)
+                if (distributions[i][name] !== undefined) {
+                    localRecord[name] = distributions[i][name];
                 }
             }
         });
-        var i;
-        for (i = 0; i < distributions.length; ++ i) {
-            if (distributions[i].type !== undefined) {
-                typeName = distributions[i].type;
-            }
-        }
+        typeName = localRecord.type || typeName;
+        
+        delete localRecord.type;
+        delete localRecord.options;
 
         var mergeRecords = {distributions: distributions};
 
@@ -1158,25 +1136,22 @@ var fluid_2_0 = fluid_2_0 || {};
         }
         var expandOptions = fluid.makeStackResolverOptions(parentThat, localRecord);
 
-        var args = [];
-        for (i = 0; i < argSpec.length; ++i) {
-            var arg = argSpec[i];
-            if (argMap.options !== i) {
-                // expand immediately if this is not the options
-                args[i] = fluid.expand(arg, expandOptions);
-            }
-            else { // It is the component options
-                args[i] = {marker: fluid.EXPAND,
+        var args = [];        
+        fluid.each(argMap, function (index, name) {
+            var arg;
+            if (name === "options") {
+                arg = {marker: fluid.EXPAND,
                            localRecord: localDynamic,
                            mergeRecords: mergeRecords,
                            instantiator: fluid.getInstantiator(parentThat),
                            parentThat: parentThat,
-                           memberName: options.memberName};
+                           memberName: options.memberName};              
+            } else {
+                var value = localRecord[name];
+                arg = fluid.expand(value, expandOptions);
             }
-            if (args[i] && fluid.isMarker(args[i].marker, fluid.EXPAND_NOW)) {
-                args[i] = fluid.expand(args[i].value, expandOptions);
-            }
-        }
+            args[index] = arg;
+        });
 
         var togo = {
             args: args,
@@ -1473,7 +1448,7 @@ var fluid_2_0 = fluid_2_0 || {};
         };
     };
     
-    fluid.getGlobalValueNonComponent = function (funcName, context) {
+    fluid.getGlobalValueNonComponent = function (funcName, context) { // TODO: Guard this in listeners as well
         var defaults = fluid.defaults(funcName);
         if (defaults && fluid.hasGrade(defaults, "fluid.littleComponent")) {
             fluid.fail("Error in function specification - cannot invoke function " + funcName + " in the context of " + context + ": component creator functions can only be used as subcomponents");
