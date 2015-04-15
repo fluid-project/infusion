@@ -3304,6 +3304,66 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Options distribution should have been overwritten by namespaced grade definition", "gradeDistribution", that.subComponent.options.distributed);
     });
     
+    fluid.defaults("fluid.tests.fluid5621root", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        distributeOptions: {
+            target: "{that fluid5621advised}.options.target",
+            record: "root"
+        },
+        components: {
+            child1: {
+                type: "fluid.littleComponent",
+                options: {
+                    distributeOptions: {
+                        target: "{/ fluid.tests.fluid5621advised}.options.target", // variant form to show insensitive to this detail
+                        record: "middle",
+                        namespace: "fluid5621middle"
+                    },
+                    components: {
+                        child2: {
+                            type: "fluid.littleComponent",
+                            options: {
+                                distributeOptions: {
+                                    target: "{that fluid5621advised}.options.target",
+                                    record: "closest"
+                                },
+                                components: {
+                                    child3: {
+                                        type: "fluid.littleComponent",
+                                        options: {
+                                            mergePolicy: {
+                                                target: fluid.arrayConcatPolicy
+                                            },
+                                            gradeNames: "fluid.tests.fluid5621advised"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } 
+    });
+    
+    fluid.defaults("fluid.tests.fluid5621global", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        distributeOptions: {
+            target: "{/ fluid.tests.fluid5621advised}.options.target",
+            record: "global",
+            priority: "before:fluid5621middle"
+        }
+    });
+    
+    jqUnit.test("Test FLUID-5621 distributeOptions priority arbitration", function () {
+        var advisor = fluid.tests.fluid5621global();
+        var that = fluid.tests.fluid5621root();
+        var expected = ["root", "middle", "global", "closest"];
+        var options = that.child1.child2.child3.options.target;
+        jqUnit.assertDeepEq("Distributed options resolved in required priority order", expected, options);
+        advisor.destroy();
+    });
+    
     /** Test nexus methods and global instantiator machinery **/
     
     fluid.defaults("fluid.tests.nexusComponent", {

@@ -1669,12 +1669,8 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     /** BEGIN unofficial IoC material **/
-    // Although the following three functions are unsupported and not part of the IoC
-    // implementation proper, they are still used in the renderer
-    // expander and Kettle as well as in some old-style tests and various places in CSpace.
-    // Note that this implementation is a major impediment to removing manual component detection in the tree - we
-    // need to move Kettle over to another system and/or improve our register of "cross-injected" components - as
-    // well as adding code to add/remove them from this register as they come and go from the threadLocal.
+    // The following three functions are unsupported ane only used in the renderer expander.
+    // The material they produce is no longer recognised for component resolution.
 
     fluid.withEnvironment = function (envAdd, func, root) {
         root = root || fluid.globalThreadLocal();
