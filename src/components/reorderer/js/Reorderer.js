@@ -257,8 +257,7 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             refresh: {
                 funcName: "fluid.reorderer.refresh",
-                args: ["{that}.dom", "{that}.events", "{that}.selectableContext", "{that}.activeItem"],
-                dynamic: true
+                args: ["{that}.dom", "{that}.events", "{that}.selectableContext", "{that}.activeItem"]
             },
             selectItem: {
                 funcName: "fluid.reorderer.selectItem",
@@ -278,8 +277,7 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             isActiveItemMovable: { // unsupported, NON-API function
                 funcName: "fluid.reorderer.isActiveItemMovable",
-                args: ["{that}.activeItem", "{that}.dom"],
-                dynamic: true
+                args: ["{that}.activeItem", "{that}.dom"]
             },
             handleKeyDown: { // unsupported, NON-API function
                 funcName: "fluid.reorderer.handleKeyDown",
@@ -754,9 +752,7 @@ var fluid_2_0 = fluid_2_0 || {};
         gradeNames: ["fluid.viewComponent"],
         disableWrap: "{reorderer}.options.disableWrap",
         members: {
-            reordererDom: "{reorderer}.dom"
-        },
-        components: {
+            reordererDom: "{reorderer}.dom",
             dropManager: "{reorderer}.dropManager"
         },
         invokers: { // overridden in moduleLayoutHandler

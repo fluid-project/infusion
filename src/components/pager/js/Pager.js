@@ -249,8 +249,7 @@ var fluid_2_0 = fluid_2_0 || {};
         invokers: {
             produceTree: {
                 funcName: "fluid.identity",
-                args: "{that}.pageTree",
-                dynamic: true
+                args: "{that}.pageTree"
             },
             assembleComponent: {
                 funcName: "fluid.pager.renderedPageList.assembleComponent",

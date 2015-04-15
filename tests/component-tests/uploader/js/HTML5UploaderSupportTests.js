@@ -115,6 +115,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                         options: {}
                                     }
                                 },
+                                invokers: {
+                                    enableBrowseButton: null,
+                                    disableBrowseButton: null
+                                },
                                 queueSettings: {
                                     fileUploadLimit: fileUploadLimit,
                                     fileSizeLimit: fileSizeLimit

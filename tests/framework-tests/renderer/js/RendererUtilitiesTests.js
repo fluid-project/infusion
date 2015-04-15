@@ -112,10 +112,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.test("Renderer component without resolver", function () {
             var globalMessages = {deffolt: "A globbal messuage"};
-            var globalBundle = fluid.messageResolver({messageBase: globalMessages});
-            var that = fluid.withEnvironment({globalBundle: globalBundle}, function () {
-                return fluid.tests.rendererComponentTest(".renderer-component-test");
+            var globalBundle = fluid.messageResolver({
+                gradeNames: ["fluid.resolveRoot", "fluid.tests.globalBundle"],
+                messageBase: globalMessages
             });
+            var that = fluid.tests.rendererComponentTest(".renderer-component-test");
+            
             that.refreshView();
             var renderMess = that.locate("message").text();
             jqUnit.assertEquals("Rendered message from bundle", that.options.strings.message, renderMess);
@@ -132,6 +134,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("Bound path at " + index, "recordlist.deffolt." + index, key);
             });
             assertRenderedText(renderRecs, array);
+            globalBundle.destroy();
         });
 
 

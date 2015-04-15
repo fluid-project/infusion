@@ -147,8 +147,7 @@ var demo = demo || {};
             },
             renderStarState: {
                 funcName: "demo.fiveStar.renderStarState",
-                args: ["{that}.stars", "{arguments}.0", "{that}.model.rank", "{that}.options.starImages"],
-                dynamic: true
+                args: ["{that}.stars", "{arguments}.0", "{that}.model.rank", "{that}.options.starImages"]
             },
            /**
             * Highlight the stars up to the given star with the hover colour

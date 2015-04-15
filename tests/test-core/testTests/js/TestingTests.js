@@ -101,8 +101,7 @@
             onCreate: "{that}.initialSetup"
         },
         invokers: {
-            initialSetup: "fluid.tests.setup",
-            args: ["{that}"]
+            initialSetup: "fluid.tests.setup"
         }
     });
 

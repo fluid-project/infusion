@@ -180,13 +180,11 @@ var fluid_2_0 = fluid_2_0 || {};
             // the modified selectors for upward injection
             computeLayout: {
                 funcName: "fluid.moduleLayout.computeLayout",
-                args: ["{that}", "{reorderer}.options.selectors.modules", "{that}.dom"],
-                dynamic: true
+                args: ["{that}", "{reorderer}.options.selectors.modules", "{that}.dom"]
             },
             computeModules: { // guarantees to read "layout" on every call
                 funcName: "fluid.moduleLayout.computeModules",
-                args: ["{that}.layout", "{that}.isLocked", "{arguments}.0"],
-                dynamic: true
+                args: ["{that}.layout", "{that}.isLocked", "{arguments}.0"]
             },
             makeComputeModules: { // expander function to create DOM locators
                 funcName: "fluid.moduleLayout.makeComputeModules",

@@ -854,8 +854,7 @@ var fluid_2_0 = fluid_2_0 || {};
                     "default",
                     "{that}.options.classnameMap.theme",
                     "{that}.options.styles.defaultThemeLabel"
-                ],
-                dynamic: true
+                ]
             }
         }
     });

@@ -443,12 +443,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.invokerFunc", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
+        members: {
+            value: 3
+        },
         invokers: {
             targetInvoker: "fluid.identity",
             sourceInvoker: {
                 func: "{that}.targetInvoker",
                 args: false
-            }
+            },
+            structuralInvoker: {
+                funcName: "fluid.identity",
+                args: {
+                    arg1: "{arguments}.1",
+                    key: {
+                        value: "{that}.value",
+                        arg0: "{arguments}.0"
+                    }
+                }
+            },
+            nullInvoker: null // FLUID-4861
         }
     });
 
@@ -456,6 +470,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var that = fluid.tests.invokerFunc();
         var result = that.sourceInvoker();
         jqUnit.assertEquals("Invoker relay of false argument", false, result);
+        jqUnit.assertUndefined("No invoker constructed from empty record", that.nullInvoker);
+        var result2 = that.structuralInvoker(1, 2);
+        jqUnit.assertDeepEq("Structural boiling of invoker argument", {arg1: 2, key: {value: 3, arg0: 1} }, result2);
     });
 
     /** Expansion order test **/
@@ -670,31 +687,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     /** withEnvironment tests - eventually to be deprecated **/
 
-    fluid.defaults("fluid.tests.fluid3818head", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        components: {
-            child: {
-                type: "fluid.tests.fluid3818child",
-                options: {
-                    value: "{environmentalValue}.derived"
-                }
-            }
-        }
-    });
-
-    jqUnit.test("Environmental Tests II - FLUID-3818", function () {
-        // Note: In future we won't be able to resolve random junk from the environment, only components registered in the instantiator
-        var component = fluid.withEnvironment({
-            environmentalValue: $.extend(fluid.typeTag("environmentalValue"), {
-                derived: "derivedValue"
-            })
-        }, function () {
-            return fluid.tests.fluid3818head();
-        });
-        jqUnit.assertValue("child component constructed", component.child);
-        jqUnit.assertEquals("Resolved environmental value", "derivedValue", component.child.options.value);
-    });
-
     fluid.registerNamespace("fluid.tests.envTests");
 
     fluid.tests.envTests.config = {
@@ -753,7 +745,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     headValue: {
                         expander: {
-                            type: "fluid.deferredInvokeCall",
+                            type: "fluid.invokeFunc",
                             func: "fluid.identity",
                             args: "{thatStackHead}.options.headValue"
                         }
@@ -1318,7 +1310,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.littleComponent",
                 options: {
                     components: {
-                        instantiator: "{instantiator}",
                         child2: {
                             type: "fluid.tests.reinsChild2",
                             options: {
@@ -1368,7 +1359,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("FLUID-4055 reinstantiation test", function () {
         var reins = fluid.tests.reinstantiation();
         var origID = reins.child1.child2.id;
-        var instantiator = reins.child1.instantiator;
+        var instantiator = fluid.getInstantiator(reins.child1);
         var expectedPaths = [
             "child1.child2.options.value",
             "child1.child2.otherValue",
@@ -1494,7 +1485,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         target.listenerRecord.push(extra ? {
             key: key,
             name: childName,
-            parent: parent.nickName
+            parent: fluid.computeNickName(parent.typeName)
         } : key);
     }
 
@@ -1604,8 +1595,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "eventTimeComponent.onCreate",
             "root.mainEventListener",
             {key: "eventTimeComponent.onComponentClear", created: true},
-            {key: "eventTimeComponent.onDestroy", name: "eventTimeComponent", parent: "lifecycle"},
             {key: "eventTimeComponent.injected.onComponentClear", created: false},
+            {key: "eventTimeComponent.onDestroy", name: "eventTimeComponent", parent: "lifecycle"},
             {key: "eventTimeComponent.afterDestroy", name: "eventTimeComponent", parent: "lifecycle"},
             {key: "eventTimeComponent.onComponentAttach", created: true},
             {key: "eventTimeComponent.injected.onComponentAttach", created: false},
@@ -1954,12 +1945,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     refOption: 3
                 }
             },
-            instantiator: "{instantiator}",
             refChild: {
                 type: "fluid.littleComponent",
                 options: {
                     components: {
-                        refChild2: { // this component gets cleared and gingerly reinstantiated
+                        refChild2: {
                             type: "fluid.littleComponent",
                             options: {
                                 components: {
@@ -1972,8 +1962,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     invokers: {
                         invoker: {
                             funcName: "fluid.identity",
-                            args: "{refChild2}.ref3.options.refOption",
-                            dynamic: true
+                            args: "{refChild2}.ref3.options.refOption"
                         }
                     }
                 }
@@ -1986,9 +1975,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var that = fluid.tests.test4712parent();
         jqUnit.assertEquals("Child component should be properly instantiated", 3, that.refChild.refChild2.ref3.options.refOption);
         jqUnit.assertEquals("Invoker should resolve on startup", 3, that.refChild.invoker());
-        that.instantiator.clearComponent(that.refChild, "refChild2");
+        that.refChild.refChild2.destroy();
         var resolved = that.refChild.invoker();
-        jqUnit.assertEquals("Component reconstruction and resolution", 3, resolved);
+        jqUnit.assertEquals("No ginger construction outside fit", undefined, resolved); // Change in behaviour for 2.0 framework - old framework would reconstruct this
     });
 
     /** FLUID-4285 - prevent attempts to refer to options outside options block **/
@@ -2484,7 +2473,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Original graded value", 2, root2.options.gradeValue);
     });
 
-    /** FLUID-4922 - Fast invokers and their caching characteristics **/
+    /** Was FLUID-4922 - Fast invokers and their caching characteristics - now just tests standard invokers **/
 
     fluid.tests.add = function (a, b) {
         return a + b;
@@ -2500,18 +2489,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             value: 1
         },
         invokers: {
-            slowInvoker: {
-                funcName: "fluid.tests.add",
-                args: ["{that}.value", "{arguments}.0"],
-                dynamic: true
-            },
-            argsInvoker: { // This will be fast
-                funcName: "fluid.tests.addArray",
-                args: ["{that}.value", "{arguments}"]
-            },
-            fastInvoker: {
+            invoker: {
                 funcName: "fluid.tests.add",
                 args: ["{that}.value", "{arguments}.0"]
+            },
+            argsInvoker: {
+                funcName: "fluid.tests.addArray",
+                args: ["{that}.value", "{arguments}"]
             },
             throughInvoker: {
                 funcName: "fluid.tests.add"
@@ -2521,14 +2505,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.test("FLUID-4922 - fast and slow invokers", function () {
         var that = fluid.tests.fluid4922();
-        jqUnit.assertEquals("Slow init", 2, that.slowInvoker(1));
-        jqUnit.assertEquals("Fast init", 2, that.fastInvoker(1));
+        jqUnit.assertEquals("Slow init", 2, that.invoker(1));
         jqUnit.assertEquals("Through init", 2, that.throughInvoker(1, 1));
         jqUnit.assertEquals("Args init", 3, that.argsInvoker(1, 1));
         that.value = 2;
-        jqUnit.assertEquals("Slow changed", 4, that.slowInvoker(2));
-        jqUnit.assertEquals("Fast changed", 3, that.fastInvoker(2));
-        jqUnit.assertEquals("Args changed", 5, that.argsInvoker(2, 2));
+        jqUnit.assertEquals("Slow changed", 4, that.invoker(2));
+        jqUnit.assertEquals("Args changed", 6, that.argsInvoker(2, 2));
     });
 
     /** FLUID-5127 - Test cases for compact invokers, listeners and expandesr **/
@@ -2557,8 +2539,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         invokers: {
             addOne: "fluid.tests.add({that}.one, {arguments}.0)",
-            bindRecord: "fluid.tests.fluid5127listener({arguments}.0, {arguments}.1, {that})",
-            addOneDynamic: "fluid.tests.add!({that}.one, {arguments}0)"
+            bindRecord: "fluid.tests.fluid5127listener({arguments}.0, {arguments}.1, {that})"
         },
         events: {
             addEvent: null,
@@ -2598,8 +2579,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.events.addEvent3.fire(); // listener modifies the value of "one" to 2
         jqUnit.assertEquals("Multiple compact listeners", 4, that.fireValue);
 
-        jqUnit.assertEquals("Static invoker", 2, that.addOne(1));
-        jqUnit.assertEquals("Dynamic invoker", 3, that.addOneDynamic(1));
+        jqUnit.assertEquals("Invoker", 3, that.addOne(1));
     });
 
     /** FLUID-5036, Case 1 - An IoCSS source that is fetched from the static environment is not resolved correctly **/
@@ -3204,7 +3184,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var rootAdvertiser = fluid.tests.fluid5249root();
         var rootFinder = fluid.tests.fluid5249finder();
         
-        jqUnit.assertValue("Expected to resolve non-root value of resolveRoot as root", rootFinder.nonRoot);
+        jqUnit.assertEquals("Expected to resolve non-root value of resolveRoot as root", rootAdvertiser.nonRootRoot.id, rootFinder.nonRoot.id);
         
         rootAdvertiser.destroy();
         var rootFinder2 = fluid.tests.fluid5249finder();

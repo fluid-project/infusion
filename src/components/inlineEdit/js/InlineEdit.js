@@ -748,8 +748,7 @@ var fluid_2_0 = fluid_2_0 || {};
               */
             isEditing: {
                 funcName: "fluid.identity",
-                args: "{that}.isEditingState",
-                dynamic: true
+                args: "{that}.isEditingState"
             },
             /** Finishes editing, switching back to view mode. */
             finish: {

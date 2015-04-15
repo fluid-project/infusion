@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid */
 
 (function ($, fluid) {
@@ -41,9 +40,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     members: {
                         value: 2
                     },
+                    events: {
+                        createIt: null
+                    },
                     components: {
                         child3: {
                             type: "fluid.littleComponent",
+                            createOnEvent: "createIt",
                             options: {
                                 members: {
                                     value: 3
@@ -51,7 +54,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 invokers: {
                                     addit: {
                                         funcName: "fluid.tests.addFunc",
-                                        dynamic: true,
                                         args: ["{arguments}.0", "{child1}.value", "{child2}.value", "{child3}.value", "{arguments}.1"]
                                     }
                                 }
@@ -78,21 +80,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // on Chrome 41 "old framework" 5/4/15:
     // full invoker: 220us/call when warm (progressively deteriorates)
     // "fast invoker": 1.7us
+    // full invoker with old expandImmediate: 95us/call
+    // full invoker with "fast" resolveContext: 40us/call
+    // full invoker with fast resolve plus preExpand: 20us/call
+    // full invoker with cached segs: 11us/call
+    // full invoker with "monomorphic expanders": 4us/call -> 3us/call after irrelevant-seeming refactoring
     
     function runTests() {
 
         var results = [];
         var root = fluid.tests.perfRoot();
+        root.child2.events.createIt.fire();
         var acc;
         for (var j = 0; j < 5; ++ j) {
     
             var now = Date.now();
-            var its = 100;
+            var its = 50000;
             acc = 0;
     
             for (var i = 0; i < its; ++ i) {
                 // acc = fluid.tests.addFunc(acc, 1, 2, 3, 4);
                 acc = root.child2.child3.addit(acc, 4);
+                // root.child2.events.createIt.fire();
             }
     
             var delay = (Date.now() - now);
@@ -100,7 +109,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             results.push(its + " iterations concluded in " + delay + " ms: " + 1000*(delay/its) + " us/it");
         }
     
-        results.push("Accumulates: " + acc);
+        results.push("Accumulated: " + acc);
     
         fluid.each(results, function (result) {
             var resultElm = $("<li>").text(result);

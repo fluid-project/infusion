@@ -93,19 +93,38 @@ var fluid = fluid || fluid_2_0;
         renderer = renderer || fluid.renderOneActivity;
         return fluid.transform(activityStack, renderer);
     };
+    
+    // Definitions for ThreadLocals, the static and dynamic environment - lifted here from
+    // FluidIoC.js so that we can issue calls to fluid.describeActivity for debugging purposes
+    // in the core framework
+
+    // unsupported, non-API function
+    fluid.singleThreadLocal = function (initFunc) {
+        var value = initFunc();
+        return function (newValue) {
+            return newValue === undefined ? value : value = newValue;
+        };
+    };
+
+    // Currently we only support single-threaded environments - ensure that this function
+    // is not used on startup so it can be successfully monkey-patched
+    // only remaining uses of threadLocals are for activity reporting and in the renderer utilities
+    // unsupported, non-API function
+    fluid.threadLocal = fluid.singleThreadLocal;
+
+    // unsupported, non-API function
+    fluid.globalThreadLocal = fluid.threadLocal(function () {
+        return {};
+    });
 
     // Return an array of objects describing the current activity
     // unsupported, non-API function
     fluid.getActivityStack = function () {
-        if (fluid.globalThreadLocal) {
-            var root = fluid.globalThreadLocal();
-            if (!root.activityStack) {
-                root.activityStack = [];
-            }
-            return root.activityStack;
-        } else { // not enough of the component system may have booted up to allocate the root component
-            return [];
+        var root = fluid.globalThreadLocal();
+        if (!root.activityStack) {
+            root.activityStack = [];
         }
+        return root.activityStack;
     };
 
     // Return an array of objects describing the current activity
@@ -1399,8 +1418,8 @@ var fluid = fluid || fluid_2_0;
         return { records: records };
     };
 
-    fluid.expandOptions = function (material) {
-        fluid.fail("fluid.expandOptions could not be loaded - please include FluidIoC.js in order to operate IoC-driven event with descriptor " + material);
+    fluid.expandImmediate = function (material) {
+        fluid.fail("fluid.expandImmediate could not be loaded - please include FluidIoC.js in order to operate IoC-driven event with descriptor " + material);
     };
 
     // unsupported, NON-API function
@@ -1408,7 +1427,7 @@ var fluid = fluid || fluid_2_0;
         fluid.each(listeners, function (value, key) {
             var firer, namespace;
             if (key.charAt(0) === "{") {
-                firer = fluid.expandOptions(key, that);
+                firer = fluid.expandImmediate(key, that);
                 if (!firer) {
                     fluid.fail("Error in listener record: key " + key + " could not be looked up to an event firer - did you miss out \"events.\" when referring to an event firer?");
                 }
@@ -1504,28 +1523,7 @@ var fluid = fluid || fluid_2_0;
         } : null;
     };
     
-    // Definitions for ThreadLocals, the static and dynamic environment - lifted here from
-    // FluidIoC.js so that we can issue calls to fluid.describeActivity for debugging purposes
-    // in the core framework
 
-    // unsupported, non-API function
-    fluid.singleThreadLocal = function (initFunc) {
-        var value = initFunc();
-        return function (newValue) {
-            return newValue === undefined ? value : value = newValue;
-        };
-    };
-
-    // Currently we only support single-threaded environments - ensure that this function
-    // is not used on startup so it can be successfully monkey-patched
-    // unsupported, non-API function
-    fluid.threadLocal = fluid.singleThreadLocal;
-    fluid.dynamicEnvironment = fluid.typeTag("fluid.dynamicEnvironment");
-
-    // unsupported, non-API function
-    fluid.globalThreadLocal = fluid.threadLocal(function () {
-        return fluid.dynamicEnvironment;
-    });
 
     var gradeTick = 1; // tick counter for managing grade cache invalidation
     var gradeTickStore = {};
@@ -1906,7 +1904,6 @@ var fluid = fluid || fluid_2_0;
     // A special marker object which will be placed at a current evaluation point in the tree in order
     // to protect against circular evaluation
     fluid.inEvaluationMarker = {"__CURRENTLY_IN_EVALUATION__": true};
-    fluid.destroyedMarker = {"__COMPONENT_DESTROYED__": true};
 
     // A path depth above which the core "process strategies" will bail out, assuming that the
     // structure has become circularly linked. Helpful in environments such as Firebug which will
@@ -2227,8 +2224,6 @@ var fluid = fluid || fluid_2_0;
             }
         }
         that.options = options;
-        var optionsNickName = fluid.driveStrategy(options, "nickName", mergeOptions.strategy);
-        that.nickName = optionsNickName || fluid.computeNickName(that.typeName);
         fluid.driveStrategy(options, "gradeNames", mergeOptions.strategy);
 
         fluid.deliverOptionsStrategy(that, options, mergeOptions); // do this early to broadcast and receive "distributeOptions"
@@ -2359,6 +2354,7 @@ var fluid = fluid || fluid_2_0;
     // just to allow backward compatibility whilst grade specifications are not mandatory - similarly for 4th arg "receiver"
     fluid.initLittleComponent = function (name, userOptions, localOptions, receiver) {
         var that = fluid.typeTag(name);
+        that.lifecycleStatus = "constructing";
         localOptions = localOptions || {gradeNames: "fluid.littleComponent"};
 
         that.destroy = fluid.makeRootDestroy(that); // overwritten by FluidIoC for constructed subcomponents
@@ -2396,13 +2392,13 @@ var fluid = fluid || fluid_2_0;
     /** Returns <code>true</code> if the supplied reference holds a component which has been destroyed **/
 
     fluid.isDestroyed = function (that) {
-        return that.destroy === fluid.destroyedMarker;
+        return that.lifecycleStatus === "destroyed";
     };
 
     // unsupported, NON-API function
     fluid.doDestroy = function (that, name, parent) {
         fluid.fireEvent(that, "events.onDestroy", [that, name || "", parent]);
-        that.destroy = fluid.destroyedMarker;
+        that.lifecycleStatus = "destroyed";
         for (var key in that.events) {
             if (key !== "afterDestroy" && typeof(that.events[key].destroy) === "function") {
                 that.events[key].destroy();
@@ -2419,7 +2415,7 @@ var fluid = fluid || fluid_2_0;
         if (!options.gradeNames) {
             fluid.fail("Cannot initialise component " + componentName + " which has no gradeName registered");
         }
-        var args = [componentName].concat(fluid.makeArray(initArgs)); // TODO: support different initFunction variants
+        var args = [componentName].concat(fluid.makeArray(initArgs));
         var that;
         fluid.pushActivity("initComponent", "constructing component of type %componentName with arguments %initArgs",
             {componentName: componentName, initArgs: initArgs});
@@ -2428,6 +2424,7 @@ var fluid = fluid || fluid_2_0;
         if (fluid.initDependents) {
             fluid.initDependents(that);
         }
+        that.lifecycleStatus = "constructed";
         fluid.fireEvent(that, "events.onCreate", that);
         fluid.popActivity();
         return that;

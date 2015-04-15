@@ -39,8 +39,7 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             handleStyle: {
                 funcName: "fluid.prefs.enactor.styleElements.handleStyle",
-                args: ["{arguments}.0", "{that}.options.elementsToStyle", "{that}.options.cssClass", "{that}.applyStyle", "{that}.resetStyle"],
-                dynamic: true
+                args: ["{arguments}.0", "{that}.options.elementsToStyle", "{that}.options.cssClass", "{that}.applyStyle", "{that}.resetStyle"]
             }
         },
         modelListeners: {
@@ -295,8 +294,7 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             getLineHeightMultiplier: {
                 funcName: "fluid.prefs.enactor.lineSpace.getLineHeightMultiplier",
-                args: [{expander: {func: "{that}.getLineHeight"}}, {expander: {func: "{that}.getTextSizeInPx"}}],
-                dynamic: true
+                args: [{expander: {func: "{that}.getLineHeight"}}, {expander: {func: "{that}.getTextSizeInPx"}}]
             }
         },
         modelListeners: {
