@@ -9,7 +9,7 @@
     },
     "links": {
         "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/reorderer/layoutReorderer",
-        "apiLink": "http://wiki.fluidproject.org/display/docs/Layout+Reorderer+API",
+        "apiLink": "http://docs.fluidproject.org/infusion/development/to-do/LayoutReordererAPI.html",
         "designLink": "http://wiki.fluidproject.org/display/Infusion13/Layout+Reorderer+Design+Overview",
         "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Layout Reorderer feedback"
     }

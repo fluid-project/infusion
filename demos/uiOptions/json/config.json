@@ -8,7 +8,7 @@
     },
     "links": {
         "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/uiOptions",
-        "apiLink": "http://wiki.fluidproject.org/display/docs/User+Interface+Options+API",
+        "apiLink": "http://docs.fluidproject.org/infusion/development/UserInterfaceOptionsAPI.html",
         "designLink": "http://wiki.fluidproject.org/pages/viewpage.action?pageId=29959408",
         "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=UI Options feedback"
     }

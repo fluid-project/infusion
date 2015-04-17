@@ -9,7 +9,7 @@
     },
     "links": {
         "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/tableOfContents",
-        "apiLink": "http://wiki.fluidproject.org/display/docs/Table+of+Contents+API",
+        "apiLink": "http://docs.fluidproject.org/infusion/development/to-do/TableOfContentsAPI.html",
         "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Table of Contents feedback"
     }
 }

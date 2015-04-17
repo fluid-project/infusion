@@ -9,7 +9,7 @@
     },
     "links": {
         "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/reorderer/imageReorderer",
-        "apiLink": "http://wiki.fluidproject.org/display/docs/Image+Reorderer+API",
+        "apiLink": "http://docs.fluidproject.org/infusion/development/to-do/ImageReordererAPI.html",
         "designLink": "http://wiki.fluidproject.org/display/Infusion13/Image+Reorderer+Design+Overview",
         "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Image Reorderer feedback"
     }
