@@ -2092,19 +2092,16 @@ var fluid = fluid || fluid_2_0;
     fluid.computeComponentAccessor = fluid.identity;
     fluid.computeDynamicComponents = fluid.identity;
 
-    // The (extensible) types of merge record the system supports, with the weakest records first
+    // The types of merge record the system supports, with the weakest records first
     fluid.mergeRecordTypes = {
-        defaults:             0,
-        localOptions:        50, // provisional
-        defaultValueMerge:  100,
-        subcomponentRecord: 200,
-        distribution:       300,
-        // rendererDecorator:  400, // TODO, these are probably honoured already as "user"
-        user:               500,
-        demands:            600 // and above
+        defaults:           1000,
+        defaultValueMerge:  900,
+        subcomponentRecord: 800,
+        user:               700,
+        distribution:       100 // and above
     };
 
-    // Utility used elsewhere in the framework, unconnected with new ChangeApplier
+    // Utility used in the framework (primarily with distribution assembly), unconnected with new ChangeApplier
     // unsupported, NON-API function
     fluid.model.applyChangeRequest = function (model, request) {
         var segs = request.segs;
@@ -2137,11 +2134,6 @@ var fluid = fluid || fluid_2_0;
         if (target) {
             fluid.model.applyChangeRequest(target, {type: "DELETE", segs: segs});
         }
-    };
-    
-    // suitable for sending to Array.sort - sorts higher priority values to the end (the default polarity, in fact)
-    fluid.priorityComparator = function (recA, recB) {
-        return recA.priority - recB.priority;
     };
     
     /**
@@ -2178,7 +2170,12 @@ var fluid = fluid || fluid_2_0;
         // Called both from here and from IoC whenever there is a change of block content or arguments which
         // requires them to be resorted and rebound
         var updateBlocks = function () {
-            mergeBlocks.sort(fluid.priorityComparator);
+            fluid.each(mergeBlocks, function (block) {
+                if (fluid.isPrimitive(block.priority)) {
+                    block.priority = fluid.parsePriority(block.priority, 0, false, "options distribution");
+                }
+            });
+            fluid.sortByPriority(mergeBlocks);
             sourceStrategies.length = 0;
             sources.length = 0;
             fluid.each(mergeBlocks, function (block) {

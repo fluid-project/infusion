@@ -3343,7 +3343,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 }
             }
-        } 
+        }
     });
     
     fluid.defaults("fluid.tests.fluid5621global", {
@@ -3358,7 +3358,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("Test FLUID-5621 distributeOptions priority arbitration", function () {
         var advisor = fluid.tests.fluid5621global();
         var that = fluid.tests.fluid5621root();
-        var expected = ["root", "middle", "global", "closest"];
+        var expected = ["root", "global", "middle", "closest"];
         var options = that.child1.child2.child3.options.target;
         jqUnit.assertDeepEq("Distributed options resolved in required priority order", expected, options);
         advisor.destroy();

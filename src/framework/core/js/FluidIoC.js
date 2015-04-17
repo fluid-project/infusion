@@ -174,8 +174,7 @@ var fluid_2_0 = fluid_2_0 || {};
         initter();
     };
 
-    fluid.makeDistributionRecord = function (contextThat, sourceRecord, sourcePath, targetSegs, exclusions, offset, sourceType) {
-        offset = offset || 0;
+    fluid.makeDistributionRecord = function (contextThat, sourceRecord, sourcePath, targetSegs, exclusions, sourceType) {
         sourceType = sourceType || "distribution";
 
         var source = fluid.copy(fluid.get(sourceRecord, sourcePath));
@@ -185,18 +184,18 @@ var fluid_2_0 = fluid_2_0 || {};
 
         var record = {options: {}};
         fluid.model.applyChangeRequest(record, {segs: targetSegs, type: "ADD", value: source});
-        return $.extend(record, {contextThat: contextThat, recordType: sourceType, priority: fluid.mergeRecordTypes.distribution + offset});
+        return $.extend(record, {contextThat: contextThat, recordType: sourceType});
     };
 
     // Part of the early "distributeOptions" workflow. Given the description of the blocks to be distributed, assembles "canned" records
     // suitable to be either registered into the shadow record for later or directly pushed to an existing component, as well as honouring
     // any "removeSource" annotations by removing these options from the source block.
     fluid.filterBlocks = function (contextThat, sourceBlocks, sourceSegs, targetSegs, exclusions, removeSource) {
-        var togo = [], offset = 0;
+        var togo = [];
         fluid.each(sourceBlocks, function (block) {
             var source = fluid.get(block.source, sourceSegs);
             if (source) {
-                togo.push(fluid.makeDistributionRecord(contextThat, block.source, sourceSegs, targetSegs, exclusions, offset++, block.recordType));
+                togo.push(fluid.makeDistributionRecord(contextThat, block.source, sourceSegs, targetSegs, exclusions, block.recordType));
                 var rescued = $.extend({}, source);
                 if (removeSource) {
                     fluid.model.applyChangeRequest(block.source, {segs: sourceSegs, type: "DELETE"});
@@ -249,7 +248,6 @@ var fluid_2_0 = fluid_2_0 || {};
         var thatStack = instantiator.getThatStack(parentThat || that); // most specific is at end
         thatStack.unshift(fluid.rootComponent);
         var memberNames = fluid.getMemberNames(instantiator, thatStack);
-        var distributedBlocks = [];
         var shadows = fluid.transform(thatStack, function (thisThat) {
             return instantiator.idToShadow[thisThat.id];
         });
@@ -262,8 +260,7 @@ var fluid_2_0 = fluid_2_0 || {};
         } else {
             fluid.registerCollectedClearer(shadows[shadows.length - 1], parentShadow, memberNames[memberNames.length - 1]);
         }
-        // This use of function creation within a loop is acceptable since
-        // the function does not attempt to close directly over the loop counter
+        var distributedBlocks = [];
         for (var i = 0; i < thatStack.length - 1; ++ i) {
             fluid.each(shadows[i].distributions, function (distribution) {
                 fluid.collectDistributions(distributedBlocks, parentShadow, distribution, thatStack, contextHashes, memberNames, i);
@@ -271,11 +268,35 @@ var fluid_2_0 = fluid_2_0 || {};
         }
         return distributedBlocks;
     };
+    
+    fluid.computeTreeDistance = function (path1, path2) {
+        var i = 0;
+        while (i < path1.length && i < path2.length && path1[i] === path2[i]) {
+            ++i;
+        }
+        return path1.length + path2.length - 2*i;
+    };
+    
+    // Called from applyDistributions (immediate application route) as well as mergeRecordsToList (pre-instantiation route)
+    fluid.computeDistributionPriority = function (targetThat, distributedBlock) {
+        if (!distributedBlock.priority) {
+            var instantiator = fluid.getInstantiator(targetThat);
+            var targetStack = instantiator.getThatStack(targetThat);
+            var targetPath = fluid.getMemberNames(instantiator, targetStack);
+            var sourceStack = instantiator.getThatStack(distributedBlock.contextThat);
+            var sourcePath = fluid.getMemberNames(instantiator, sourceStack);
+            var distance = fluid.computeTreeDistance(targetPath, sourcePath);
+            distributedBlock.priority = fluid.mergeRecordTypes.distribution + distance;
+        }
+        return distributedBlock;
+    };
 
     // convert "preBlocks" as produced from fluid.filterBlocks into "real blocks" suitable to be used by the expansion machinery.
     fluid.applyDistributions = function (that, preBlocks, targetShadow) {
         var distributedBlocks = fluid.transform(preBlocks, function (preBlock) {
             return fluid.generateExpandBlock(preBlock, that, targetShadow.mergePolicy);
+        }, function (distributedBlock) {
+            return fluid.computeDistributionPriority(that, distributedBlock);
         });
         var mergeOptions = targetShadow.mergeOptions;
         mergeOptions.mergeBlocks.push.apply(mergeOptions.mergeBlocks, distributedBlocks);
@@ -393,6 +414,14 @@ var fluid_2_0 = fluid_2_0 || {};
         }
         return segs.slice(1);
     };
+    
+    fluid.replicateProperty = function (source, property, targets) {
+        if (source[property] !== undefined) {
+            fluid.each(targets, function (target) {
+                target[property] = source[property];
+            });
+        }
+    };
 
     fluid.undistributableOptions = ["gradeNames", "distributeOptions", "argumentMap", "initFunction", "mergePolicy", "progressiveCheckerOptions"]; // automatically added to "exclusions" of every distribution
 
@@ -421,7 +450,7 @@ var fluid_2_0 = fluid_2_0 || {};
             var targetSegs = fluid.model.parseEL(targetRef.path);
             var preBlocks;
             if (record.record !== undefined) {
-                preBlocks = [(fluid.makeDistributionRecord(that, record.record, [], targetSegs, [], 0))];
+                preBlocks = [(fluid.makeDistributionRecord(that, record.record, [], targetSegs, []))];
             }
             else {
                 var source = fluid.parseContextReference(record.source || "{that}.options"); // TODO: This is probably not a sensible default
@@ -438,6 +467,8 @@ var fluid_2_0 = fluid_2_0 || {};
                 preBlocks = fluid.filterBlocks(that, thatShadow.mergeOptions.mergeBlocks, sourceSegs, targetSegs, exclusions, record.removeSource);
                 thatShadow.mergeOptions.updateBlocks(); // perhaps unnecessary
             }
+            fluid.replicateProperty(record, "priority", preBlocks);
+            fluid.replicateProperty(record, "namespace", preBlocks);
             // TODO: inline material has to be expanded in its original context!
 
             if (selector) {
@@ -1035,12 +1066,14 @@ var fluid_2_0 = fluid_2_0 || {};
         });
     };
 
-    fluid.mergeRecordsToList = function (mergeRecords) {
+    fluid.mergeRecordsToList = function (that, mergeRecords) {
         var list = [];
         fluid.each(mergeRecords, function (value, key) {
             value.recordType = key;
             if (key === "distributions") {
-                list.push.apply(list, value);
+                list.push.apply(list, fluid.transform(value, function (distributedBlock) {
+                    return fluid.computeDistributionPriority(that, distributedBlock);
+                }));
             }
             else {
                 if (!value.options) { return; }
@@ -1067,6 +1100,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.generateExpandBlock = function (record, that, mergePolicy, localRecord) {
         var expanded = fluid.expandOptions(record.options, record.contextThat || that, mergePolicy, localRecord, {defer: true});
         expanded.priority = record.priority;
+        expanded.namespace = record.namespace;
         expanded.recordType = record.recordType;
         return expanded;
     };
@@ -1086,7 +1120,7 @@ var fluid_2_0 = fluid_2_0 || {};
             fluid.checkComponentRecord(defaults, mergeRecords.subcomponentRecord);
         }
         
-        var expandList = fluid.mergeRecordsToList(mergeRecords);
+        var expandList = fluid.mergeRecordsToList(that, mergeRecords);
 
         var togo = fluid.transform(expandList, function (value) {
             return fluid.generateExpandBlock(value, that, mergePolicy, initRecord.localRecord);
