@@ -108,15 +108,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("invokers", function () {
+    jqUnit.test("Invokers", function () {
         jqUnit.expect(2);
         var that = fluid.tests.invokerComponent();
         jqUnit.assertValue("Constructed", that);
         jqUnit.assertEquals("Rendered", "Every CATT has 4 Leg(s)",
             that.render(["CATT", "4", "Leg"]));
     });
+    
+    // Example taken from Enactors.js to verify action of expanders within invoker args - a non-recommended but permitted idiom
+    
+    fluid.tests.getLineHeightMultiplier = function (lineHeight, fontSize) {
+        return lineHeight / fontSize;
+    };
+    
+    fluid.defaults("fluid.tests.invokerExpander", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        invokers: {
+            getLineHeightMultiplier: {
+                funcName: "fluid.tests.getLineHeightMultiplier",
+                args: [{expander: {func: "{that}.getLineHeight"}}, "@expand:{that}.getTextSizeInPx()"]
+            },
+            getLineHeight: "fluid.identity(16)",
+            getTextSizeInPx: "fluid.identity(8)"
+        }
+    });
 
-
+    jqUnit.test("Expanders within invoker args", function () {
+        var that = fluid.tests.invokerExpander();
+        jqUnit.assertEquals("Resolved expanders via invoker argument list", 2, that.getLineHeightMultiplier());
+    });
 
     fluid.defaults("fluid.tests.multiResolution", {
         gradeNames: ["fluid.littleComponent", "autoInit"],

@@ -116,7 +116,7 @@ var fluid_2_0 = fluid_2_0 || {};
     // as \. and \ as \\ - allowing us to process member names containing periods. These versions are mostly 
     // in use within model machinery, whereas the cheaper versions based on String.split(".") are mostly used
     // within the IoC machinery.
-    // Performance testing in early 2015 suggests that modern browsers now allow these to execute slightly fater
+    // Performance testing in early 2015 suggests that modern browsers now allow these to execute slightly faster
     // than the equivalent machinery written using complex regexps - therefore they will continue to be maintained
     // here. However, there is still a significant performance gap with respect to the performance of String.split(".")
     // especially on Chrome, so we will continue to insist that component member names do not contain a "." character
@@ -439,6 +439,9 @@ var fluid_2_0 = fluid_2_0 || {};
         var shadow = fluid.shadowForComponent(component);
         fluid.recordListener(applier.modelChanged, sourceListener, shadow);
     };
+    
+    // Configure this parameter to tweak the number of relays the model will attempt per transaction before bailing out with an error
+    fluid.relayRecursionBailout = 100;
 
     // Used with various arg combinations from different sources. For standard "implicit relay" or fully lensed relay,
     // the first 4 args will be set, and "options" will be empty
@@ -476,6 +479,9 @@ var fluid_2_0 = fluid_2_0 || {};
             var relay = true; // TODO: See FLUID-5303 - we currently disable this check entirely to solve FLUID-5293 - perhaps we might remove link counts entirely
             if (relay) {
                 ++transRec[linkId];
+                if (transRec[linkId] > fluid.relayRecursionBailout) {
+                    fluid.fail("Error in model relay specification at component ", target, " - operated more than " + fluid.relayRecursionBailout + " relays without model value settling - current model contents are ", trans.newHolder.model);
+                }
                 if (!existing) {
                     var newTrans = targetApplier.initiate("relay", transId); // non-top-level transaction will defeat postCommit
                     existing = transRec[applierId] = {transaction: newTrans, options: options};
@@ -969,7 +975,7 @@ var fluid_2_0 = fluid_2_0 || {};
         if (typeof(a) !== "number" || typeof(b) !== "number") {
             return a === b;
         } else {
-            if (a === b) {
+            if (a === b || a !== a && b !== b) { // Either the same concrete number or both NaN
                 return true;
             } else {
                 var relError = Math.abs((a - b) / b);

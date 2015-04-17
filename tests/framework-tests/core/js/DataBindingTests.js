@@ -1671,4 +1671,46 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertNoValue("The change request has destroyed the child component", that.child);
     });
     
+    fluid.defaults("fluid.tests.fluid5632root1", {
+        gradeNames: ["fluid.modelComponent", "autoInit"],
+        model: {
+            value1: NaN,
+            value2: "{that}.model.value1"
+        }
+    });
+    
+    fluid.tests.isNaN = function (value) { // replicate for Number.isNaN which is not supported on IE
+        return typeof(value) === "number" && value !== value;
+    };
+    
+    jqUnit.test("FLUID-5632: Model value of NaN causes infinite recursion", function () {
+        var that = fluid.tests.fluid5632root1();
+        jqUnit.assertTrue("Model successfully initialised with NaN value", fluid.tests.isNaN(that.model.value1));
+        jqUnit.assertTrue("Model successfully relays NaN value", fluid.tests.isNaN(that.model.value2));
+    });
+    
+    fluid.defaults("fluid.tests.fluid5632root2", {
+        gradeNames: ["fluid.modelComponent", "autoInit"],
+        model: {
+            value: 1
+        },
+        modelRelay: {
+            source: "value",
+            target: "value",
+            singleTransform: {
+                type: "fluid.tests.badRelayRule"
+            }
+        }
+    });
+    
+    fluid.tests.badRelayRule = function (value) { // A bad relay rule which causes a non-stabilising model
+        return value + 1;
+    }
+    
+    jqUnit.test("FLUID-5632: Bad relay rule triggers framework diagnostic", function () {
+        jqUnit.expectFrameworkDiagnostic("Diagnostic from infinite relay rule", function () {
+            fluid.tests.fluid5632root2();
+        }, "settling");
+    });
+    
 })(jQuery);
