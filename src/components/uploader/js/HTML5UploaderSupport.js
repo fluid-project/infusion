@@ -140,7 +140,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
     
     fluid.defaults("fluid.uploader.html5Strategy.fileSender", {
-        gradeNames: ["fluid.eventedComponent", "fluid.contextAware", "autoInit"],
+        gradeNames: ["fluid.component", "fluid.contextAware", "autoInit"],
         invokers: {
             send: {
                 funcName: "fluid.fail",
@@ -165,7 +165,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
 
     fluid.defaults("fluid.uploader.html5Strategy.formDataSender", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         invokers: {
             createFormData: "fluid.uploader.html5Strategy.createFormData",
             send: {

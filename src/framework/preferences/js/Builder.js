@@ -18,7 +18,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.registerNamespace("fluid.prefs");
 
     fluid.defaults("fluid.prefs.builder", {
-        gradeNames: ["fluid.eventedComponent", "fluid.prefs.auxBuilder", "autoInit"],
+        gradeNames: ["fluid.component", "fluid.prefs.auxBuilder", "autoInit"],
         mergePolicy: {
             auxSchema: "expandedAuxSchema"
         },
@@ -72,14 +72,14 @@ var fluid_2_0 = fluid_2_0 || {};
         components: {
             // These two components become global
             store: {
-                type: "fluid.littleComponent",
+                type: "fluid.component",
                 options: {
                     gradeNames: ["{that}.options.storeType"],
                     storeType: "fluid.prefs.globalSettingsStore"
                 }
             },
             enhancer: {
-                type: "fluid.littleComponent",
+                type: "fluid.component",
                 options: {
                     gradeNames: "{that}.options.enhancerType",
                     enhancerType: "fluid.pageEnhancer",

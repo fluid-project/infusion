@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -997,11 +996,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 templatePrefix: {
-                    gradeNames: ["fluid.littleComponent", "autoInit"],
+                    gradeNames: ["fluid.component", "autoInit"],
                     templatePrefix: "../html"
                 },
                 messagePrefix: {
-                    gradeNames: ["fluid.littleComponent", "autoInit"],
+                    gradeNames: ["fluid.component", "autoInit"],
                     messagePrefix: "../messages"
                 }
             }
@@ -1940,11 +1939,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             gradeNames: ["fluid.prefs.initialModel", "autoInit"]
         },
         templatePrefix: {
-            gradeNames: ["fluid.littleComponent", "autoInit"],
+            gradeNames: ["fluid.component", "autoInit"],
             templatePrefix: "../html/"
         },
         messagePrefix: {
-            gradeNames: ["fluid.littleComponent", "autoInit"],
+            gradeNames: ["fluid.component", "autoInit"],
             messagePrefix: "../messages/"
         }
     };

@@ -22,7 +22,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.auxSchema", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         auxiliarySchema: {}
     });
 
@@ -433,10 +433,10 @@ var fluid_2_0 = fluid_2_0 || {};
                 gradeNames: ["fluid.prefs.initialModel", "autoInit"]
             },
             templatePrefix: {
-                gradeNames: ["fluid.littleComponent", "autoInit"]
+                gradeNames: ["fluid.component", "autoInit"]
             },
             messagePrefix: {
-                gradeNames: ["fluid.littleComponent", "autoInit"]
+                gradeNames: ["fluid.component", "autoInit"]
             }
         },
         elementCommonOptions: {

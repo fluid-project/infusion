@@ -1376,10 +1376,6 @@ var fluid = fluid || fluid_2_0;
                 }
                 that.sortedListeners = fluid.event.sortListeners(that.listeners);
             },
-            // NB - this method exists only to support the old ChangeApplier. It will be removed along with it.
-            fireToListeners: function (listeners, args, wrapper) {
-                return fireToListeners(listeners, args, wrapper);
-            },
             fire: function () {
                 return fireToListeners(that.sortedListeners, arguments);
             }
@@ -2300,7 +2296,7 @@ var fluid = fluid || fluid_2_0;
         listeners: fluid.makeMergeListenersPolicy(fluid.mergeListenerPolicy)
     };
 
-    fluid.defaults("fluid.littleComponent", {
+    fluid.defaults("fluid.component", {
         gradeNames: ["autoInit"],
         initFunction: "fluid.initLittleComponent",
         mergePolicy: fluid.rootMergePolicy,
@@ -2315,11 +2311,7 @@ var fluid = fluid || fluid_2_0;
     });
     
     fluid.defaults("fluid.emptySubcomponent", {
-        gradeNames: ["fluid.littleComponent"]
-    });
-
-    fluid.defaults("fluid.eventedComponent", { // eventedComponent grade is now identical with littleComponent - we will remove shortly
-        gradeNames: ["fluid.littleComponent", "autoInit"]
+        gradeNames: ["fluid.component"]
     });
 
     /** Compute a "nickname" given a fully qualified typename, by returning the last path
@@ -2336,7 +2328,7 @@ var fluid = fluid || fluid_2_0;
      * once we have implemented FLUID-4925 "wave of explosions" */
 
     fluid.defaults("fluid.typeFount", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
+        gradeNames: ["fluid.component", "autoInit"]
     });
 
     /**
@@ -2349,10 +2341,11 @@ var fluid = fluid || fluid_2_0;
      */
     // NOTE: the 3rd argument localOptions is NOT to be advertised as part of the stable API, it is present
     // just to allow backward compatibility whilst grade specifications are not mandatory - similarly for 4th arg "receiver"
+    // NOTE historical name to avoid confusion with fluid.initComponent below - this will all be refactored with FLUID-4925
     fluid.initLittleComponent = function (name, userOptions, localOptions, receiver) {
         var that = fluid.typeTag(name);
         that.lifecycleStatus = "constructing";
-        localOptions = localOptions || {gradeNames: "fluid.littleComponent"};
+        localOptions = localOptions || {gradeNames: "fluid.component"};
 
         that.destroy = fluid.makeRootDestroy(that); // overwritten by FluidIoC for constructed subcomponents
         var mergeOptions = fluid.mergeComponentOptions(that, name, userOptions, localOptions);

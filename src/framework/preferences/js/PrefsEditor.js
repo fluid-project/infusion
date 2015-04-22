@@ -124,7 +124,7 @@ var fluid_2_0 = fluid_2_0 || {};
      **************************************/
 
     fluid.defaults("fluid.prefs.resourceLoader", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         listeners: {
             "onCreate.loadResources": {
                 listener: "fluid.prefs.resourceLoader.loadResources",
@@ -180,7 +180,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.prefs.resourcePath", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         value: "../html/"
     });
 
@@ -189,14 +189,14 @@ var fluid_2_0 = fluid_2_0 || {};
      **********************/
 
     fluid.defaults("fluid.prefs.settingsGetter", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         members: {
             getSettings: "{fluid.prefs.store}.get"
         }
     });
 
     fluid.defaults("fluid.prefs.settingsSetter", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         invokers: {
             setSettings: {
                 funcName: "fluid.prefs.settingsSetter.setSettings",

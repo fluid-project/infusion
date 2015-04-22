@@ -23,7 +23,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.initialModel", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         members: {
             // TODO: This information is supposed to be generated from the JSON
             // schema describing various preferences. For now it's kept in top
@@ -88,7 +88,7 @@ var fluid_2_0 = fluid_2_0 || {};
     // being top-level until we have the options flattening revolution. Also one day we want
     // to make good of advertising an unmerged instance of the "originalEnhancerOptions"
     fluid.defaults("fluid.pageEnhancer", {
-        gradeNames: ["fluid.eventedComponent", "fluid.originalEnhancerOptions",
+        gradeNames: ["fluid.component", "fluid.originalEnhancerOptions",
             "fluid.prefs.initialModel", "fluid.prefs.settingsGetter",
             "fluid.resolveRootSingle", "autoInit"],
         distributeOptions: {

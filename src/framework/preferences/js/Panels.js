@@ -20,7 +20,7 @@ var fluid_2_0 = fluid_2_0 || {};
      **********************/
 
     fluid.defaults("fluid.prefs.msgLookup", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         members: {
             msgLookup: {
                 expander: {
@@ -122,7 +122,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.defaults("fluid.prefs.subPanel.domBind", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         listeners: {
             "onDomBind.domChange": {
                 listener: "{prefsEditor}.events.onSignificantDOMChange"
@@ -331,7 +331,7 @@ var fluid_2_0 = fluid_2_0 || {};
             });
         });
         fluid.defaults(gradeName, {
-            gradeNames: ["fluid.littleComponent", "autoInit"],
+            gradeNames: ["fluid.component", "autoInit"],
             relayOption: relayOption,
             distributeOptions: distributeOptions
         });
@@ -415,7 +415,7 @@ var fluid_2_0 = fluid_2_0 || {};
         });
 
         fluid.defaults(gradeName, {
-            gradeNames: ["fluid.eventedComponent", "autoInit"],
+            gradeNames: ["fluid.component", "autoInit"],
             events: events,
             listeners: listeners,
             modelListeners: fluid.prefs.compositePanel.generateModelListeners(conditionals),
@@ -624,7 +624,7 @@ var fluid_2_0 = fluid_2_0 || {};
      ********************************************************************************/
 
     fluid.defaults("fluid.prefs.prefsEditorConnections", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         listeners: {
             "{fluid.prefs.prefsEditor}.events.onPrefsEditorRefresh": "{fluid.prefs.panel}.refreshView"
         },

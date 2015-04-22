@@ -10,7 +10,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -2085,13 +2084,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.testTransformable", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         food: "tofu"
     });
 
     fluid.makeComponents({
-        "farm.cat": "fluid.littleComponent",
-        "bowl.fish": "fluid.littleComponent"
+        "farm.cat": "fluid.component",
+        "bowl.fish": "fluid.component"
     });
 
     fluid.tests.transforms.checkTransformedOptions = function (that) {
@@ -2111,11 +2110,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.transforms.strategy", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
+        gradeNames: ["fluid.component", "autoInit"]
     });
 
     fluid.defaults("fluid.tests.testTransformableIoC", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             strategy: {
                 type: "fluid.tests.transforms.strategy"
@@ -2124,7 +2123,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.transforms.tip", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         distributeOptions: {
             record: {
                 transformer: "fluid.model.transform",

@@ -43,7 +43,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.primaryBuilder", {
-        gradeNames: ["fluid.littleComponent", "autoInit", "{that}.buildPrimary"],
+        gradeNames: ["fluid.component", "autoInit", "{that}.buildPrimary"],
         // An index of all schema grades registered with the framework.
         schemaIndex: {
             expander: {
@@ -120,7 +120,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * Base primary schema grade
      *******************************************************************************/
     fluid.defaults("fluid.prefs.schemas", {
-        gradeNames: ["autoInit", "fluid.littleComponent"],
+        gradeNames: ["autoInit", "fluid.component"],
         mergePolicy: {
             schema: fluid.prefs.schemas.merge
         }

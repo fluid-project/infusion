@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -34,7 +33,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.customTextSize", {
-        gradeNames: ["autoInit", "fluid.littleComponent"],
+        gradeNames: ["autoInit", "fluid.component"],
         schema: {
             "type": "object",
             "properties": {
@@ -53,13 +52,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             schema: {
-                type: "fluid.littleComponent",
+                type: "fluid.component",
                 options: {
                     gradeNames: ["fluid.prefs.schemas.textSize", "fluid.prefs.schemas.lineSpace"]
                 }
             },
             properSchema: {
-                type: "fluid.littleComponent",
+                type: "fluid.component",
                 options: {
                     gradeNames: ["fluid.tests.sampleSchemaGrade"]
                 }
@@ -71,7 +70,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             primaryBuilderSchema: {
-                type: "fluid.littleComponent",
+                type: "fluid.component",
                 options: {
                     gradeNames: ["{primaryBuilder}.buildPrimary"]
                 }
@@ -94,7 +93,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             primaryBuilderWithSuppliedPrimarySchemaSchema: {
-                type: "fluid.littleComponent",
+                type: "fluid.component",
                 options: {
                     gradeNames: ["{primaryBuilderWithSuppliedPrimarySchema}.buildPrimary"]
                 }

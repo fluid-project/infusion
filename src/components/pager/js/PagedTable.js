@@ -22,7 +22,7 @@ var fluid_2_0 = fluid_2_0 || {};
     // cf. ancient SVN-era version in bitbucket at https://bitbucket.org/fluid/infusion/src/adf319d9b279/branches/FLUID-2881/src/webapp/components/pager/js/PagedTable.js
 
     fluid.defaults("fluid.pagedTable.rangeAnnotator", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"]
+        gradeNames: ["fluid.component", "autoInit"]
     });
 
     // TODO: Get rid of this old-style kind of architecture - we should just react to model changes directly and not inject this

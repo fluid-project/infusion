@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global jqUnit, QUnit */
 
 var fluid_2_0 = fluid_2_0 || {};
@@ -20,7 +19,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.registerNamespace("fluid.test");
 
     fluid.defaults("fluid.test.testEnvironment", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             sequenceListener: {
                 type: "fluid.test.sequenceListener"
@@ -83,7 +82,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
     
     fluid.defaults("fluid.test.sequenceListener", { // TODO: this used to be "fluid.emptySubcomponent" in the fluid.demands era - review and improve support for this
-        gradeNames: ["fluid.eventedComponent", "fluid.contextAware", "autoInit"]
+        gradeNames: ["fluid.component", "fluid.contextAware", "autoInit"]
     });
 
     /** In the browser only, hijack a piece of the QUnit UI in order to show the running sequence number **/
@@ -100,7 +99,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.defaults("fluid.test.browserSequenceListener", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         listeners: {
             "{testEnvironment}.events.onBeginSequence": {
                 listener: "fluid.test.browserSequenceListener.onBeginSequence",
@@ -197,7 +196,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.test.testCaseHolder", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         mergePolicy: {
             modules: "noexpand",
             moduleSource: "noexpand"
@@ -354,11 +353,12 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.test.decoders.event = function (testCaseState, fixture) {
         var analysed = fluid.analyseTarget(testCaseState, fixture.event, "events");
         var listener = fluid.test.decodeListener(testCaseState, fixture);
+        var priority = fixture.priority === undefined ? "last:testing" : fixture.priority;
         var bind, unbind;
         if (analysed.resolved) {
             var event = analysed.resolved;
             bind = function (wrapped) {
-                event.addListener(wrapped, fixture.namespace, null, fixture.priority);
+                event.addListener(wrapped, fixture.namespace, null, priority);
             };
             unbind = function (wrapped) {
                 event.removeListener(wrapped);
@@ -400,7 +400,7 @@ var fluid_2_0 = fluid_2_0 || {};
             }
             spec.transactional = true;
             if (spec.priority === undefined) {
-                spec.priority = "last";
+                spec.priority = "last:testing";
             }
             event.addListener(spec, wrapped, fixture.namespace);
         }, function (wrapped) {

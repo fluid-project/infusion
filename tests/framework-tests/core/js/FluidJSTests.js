@@ -14,7 +14,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -397,7 +396,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("FLUID-4285 test - prevent 'double options'", function () {
         jqUnit.expectFrameworkDiagnostic("Registering double options component", function () {
             fluid.defaults("news.parent", {
-                gradeNames: ["fluid.littleComponent", "autoInit"],
+                gradeNames: ["fluid.component", "autoInit"],
                 options: {
                     test: "test"
                 }
@@ -607,7 +606,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.eventMerge", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         events: {
             event: "preventable"
         }
@@ -634,7 +633,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.listenerTest", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         events: {
             event: null
         },
@@ -691,7 +690,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.schema.textSizer", {
-        gradeNames: ["fluid.tests.schema", "fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.tests.schema", "fluid.component", "autoInit"],
         schema: {
             "fluid.prefs.textSizer": { // common grade name
                 "type": "number",
@@ -704,14 +703,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.nonPanel", { // A dummy grade to ensure that grade filtration is working in the indexer
-        gradeNames: ["fluid.littleComponent"],
+        gradeNames: ["fluid.component"],
         preferenceMap: {
             thing: "fluid.prefs.nonThing"
         }
     });
 
     fluid.defaults("fluid.tests.panels.linksControls", {
-        gradeNames: ["fluid.tests.settingsPanel", "fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.tests.settingsPanel", "fluid.component", "autoInit"],
         preferenceMap: {
             links: "fluid.prefs.emphasizeLinks",
             inputsLarger: "fluid.prefs.inputsLarger"

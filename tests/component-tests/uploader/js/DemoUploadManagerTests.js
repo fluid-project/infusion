@@ -78,7 +78,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         fluid.defaults("fluid.tests.uploader.demoShell", {
-            gradeNames: ["fluid.littleComponent", "fluid.tests.uploader", "autoInit"],
+            gradeNames: ["fluid.component", "fluid.tests.uploader", "autoInit"],
             components: {
                 queue: {
                     type: "fluid.uploader.fileQueue"

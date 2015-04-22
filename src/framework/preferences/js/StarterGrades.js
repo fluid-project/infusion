@@ -46,7 +46,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.uiEnhancer.cssClassEnhancerBase", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         classnameMap: {
             "textFont": {
                 "default": "",
@@ -76,7 +76,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.uiEnhancer.browserTextEnhancerBase", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         fontSizeMap: {
             "xx-small": "9px",
             "x-small":  "11px",

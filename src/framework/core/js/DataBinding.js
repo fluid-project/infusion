@@ -771,7 +771,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // supported, PUBLIC API grade
     fluid.defaults("fluid.modelComponent", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         changeApplierOptions: {
             relayStyle: true,
             cullUnchanged: true
@@ -792,11 +792,6 @@ var fluid_2_0 = fluid_2_0 || {};
                 func: fluid.arrayConcatPolicy
             }
         }
-    });
-
-    // supported, PUBLIC API record
-    fluid.defaults("fluid.standardComponent", {
-        gradeNames: ["fluid.modelComponent", "fluid.eventedComponent", "autoInit"]
     });
 
     fluid.modelChangedToChange = function (args) {
@@ -1023,8 +1018,8 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.model.defaultAccessorConfig = function (options) {
         options = options || {};
-        options.resolverSetConfig = options.resolverSetConfig || fluid.model.defaultSetConfig;
-        options.resolverGetConfig = options.resolverGetConfig || fluid.model.defaultGetConfig;
+        options.resolverSetConfig = options.resolverSetConfig || fluid.model.escapedSetConfig;
+        options.resolverGetConfig = options.resolverGetConfig || fluid.model.escapedGetConfig;
         return options;
     };
 

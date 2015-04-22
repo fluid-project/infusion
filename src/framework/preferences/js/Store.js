@@ -21,7 +21,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
      // TODO: unify with Kettle's and ultimately Infusion's dataSource
     fluid.defaults("fluid.prefs.dataSource", {
-        gradeNames: ["fluid.eventedComponent"],
+        gradeNames: ["fluid.component"],
         invokers: {
             get: "fluid.prefs.dataSource.get", // nonexistent functions which will be advised by concrete implementation
             set: "fluid.prefs.dataSource.set"
@@ -152,7 +152,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.prefs.globalSettingsStore", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             settingsStore: {
                 type: "fluid.prefs.store",

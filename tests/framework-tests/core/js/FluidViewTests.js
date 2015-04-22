@@ -10,7 +10,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -147,12 +146,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var that = fluid.tests.testGradedView("#pager-top", {model: model});
             jqUnit.assertValue("Constructed component", that);
             jqUnit.assertEquals("Constructed functioning DOM binder", 3, that.locate("page-link").length);
-            // Distinguish between the behaviour of the "old" and "new" modelComponents
-            if (fluid.hasGrade(that.options, "fluid.modelComponent")) {
-                jqUnit.assertDeepEq("View component acquired model", model, that.model);
-            } else {
-                jqUnit.assertEquals("View component correctly preserved model", model, that.model);
-            }
+            jqUnit.assertDeepEq("View component acquired model", model, that.model);
         });
 
         fluid.tests.blurTester = function (container, options) {

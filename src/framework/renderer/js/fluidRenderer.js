@@ -18,7 +18,7 @@ fluid_2_0 = fluid_2_0 || {};
     
     
     fluid.defaults("fluid.messageResolver", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         mergePolicy: {
             messageBase: "nomerge",
             parents: "nomerge"

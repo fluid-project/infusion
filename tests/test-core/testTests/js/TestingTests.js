@@ -9,7 +9,6 @@
  https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
  */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function () {
@@ -34,7 +33,7 @@
     /** Component under test **/
 
     fluid.defaults("fluid.tests.cat", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         invokers: {
             makeSound: "fluid.tests.cat.makeSound"
         }
@@ -93,7 +92,7 @@
     };
 
     fluid.defaults("fluid.tests.initTest", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         events: {
             onReady: null
         },
@@ -270,7 +269,7 @@
     };
 
     fluid.defaults("fluid.tests.modelTestTree", {
-        gradeNames: ["fluid.test.testEnvironment", "fluid.standardComponent", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment", "fluid.modelComponent", "autoInit"],
         model: 0,
         members: {
             listenedValue: 0
@@ -326,7 +325,7 @@
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             targetTree: {
-                type: "fluid.eventedComponent",
+                type: "fluid.component",
                 createOnEvent: "{testCases}.events.onTestCaseStart"
             },
             testCases: {

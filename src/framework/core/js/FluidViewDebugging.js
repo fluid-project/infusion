@@ -558,7 +558,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
     
     fluid.defaults("fluid.debug.viewMapper", {
-        gradeNames: ["fluid.eventedComponent", "fluid.resolveRoot", "autoInit"],
+        gradeNames: ["fluid.component", "fluid.resolveRoot", "autoInit"],
         members: {
             seenDocuments: {},
             idToEntry: {},

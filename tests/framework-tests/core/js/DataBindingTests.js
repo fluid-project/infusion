@@ -11,7 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -141,20 +140,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 
     function testPreservingMerge(name, preserve, defaultModel) {
-        var defaults = { lala: "blalalha"};
+        var defaults = {
+            gradeNames: ["fluid.component", "autoInit"],
+            lala: "blalalha"
+        };
         if (preserve) {
             defaults.mergePolicy = {model: "preserve"};
         }
         if (defaultModel !== undefined) {
             defaults.model = defaultModel;
         }
-        fluid.defaults(name, defaults);
-        fluid.setGlobalValue(name, function (options) {
-            return fluid.initLittleComponent(name, options);
-        });
+        var componentName = "fluid.tests.preservingMerge." + name;
+        
+        fluid.defaults(componentName, defaults);
+        
         var model = { foo: "foo" };
 
-        var comp = fluid.invokeGlobalFunction(name, [{model: model}]);
+        var comp = fluid.invokeGlobalFunction(componentName, [{model: model}]);
 
         var presString = name + (preserve ? " - preserve" : "");
 
@@ -418,7 +420,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.changeRecorder", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         members: {
             fireRecord: []
         },
@@ -428,7 +430,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.fluid4258head", {
-        gradeNames: ["fluid.standardComponent", "fluid.tests.changeRecorder", "autoInit"],
+        gradeNames: ["fluid.modelComponent", "fluid.tests.changeRecorder", "autoInit"],
         model: {
             thing1: {
                 nest1: 2,
@@ -452,7 +454,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         components: {
             child: {
-                type: "fluid.standardComponent",
+                type: "fluid.modelComponent",
                 createOnEvent: "createEvent",
                 options: {
                     modelListeners: {
@@ -505,7 +507,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.changer", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         invokers: {
             change: {
                 changePath: "{arguments}.0",
@@ -516,7 +518,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.setLogging(true);
 
     fluid.defaults("fluid.tests.fluid3674head", {
-        gradeNames: ["fluid.standardComponent", "fluid.tests.changer", "fluid.tests.changeRecorder", "autoInit"],
+        gradeNames: ["fluid.modelComponent", "fluid.tests.changer", "fluid.tests.changeRecorder", "autoInit"],
         model: { // test forward reference as well as transactional initialisation
             innerModel: "{child}.model.nested1"
         },
@@ -527,7 +529,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             child: {
                 type: "fluid.tests.changer",
                 options: {
-                    gradeNames: ["fluid.standardComponent"],
+                    gradeNames: ["fluid.modelComponent"],
                     model: {
                         nested1: {
                             nested2: "thing"
@@ -577,7 +579,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.fluid3674eventHead", {
-        gradeNames: ["fluid.standardComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent", "autoInit"],
         model: {
             outerModel: "outerValue"
         },
@@ -586,14 +588,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         components: {
             child: {
-                type: "fluid.standardComponent",
+                type: "fluid.modelComponent",
                 createOnEvent: "createEvent",
                 options: {
                     model: "{fluid3674eventHead}.model.outerModel"
                 }
             },
             child2: {
-                type: "fluid.standardComponent",
+                type: "fluid.modelComponent",
                 options: {
                     modelListeners: {
                         "{fluid3674eventHead}.model": "fluid.tests.fluid3674childRecord({that}, {change}.value)"
@@ -629,10 +631,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.fluid5024head", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             child1: {
-                type: "fluid.standardComponent",
+                type: "fluid.modelComponent",
                 options: {
                     gradeNames: ["fluid.tests.allChangeRecorder", "autoInit"],
                     model: {
@@ -650,7 +652,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             child2: {
-                type: "fluid.standardComponent",
+                type: "fluid.modelComponent",
                 options: { // no options: model will be initialised via relay
                     gradeNames: ["fluid.tests.allChangeRecorder", "autoInit"]
                 }
@@ -833,10 +835,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * double relay and longer "transform" form of relay specification */
 
     fluid.defaults("fluid.tests.fluid5024cycleHead", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             child1: {
-                type: "fluid.standardComponent",
+                type: "fluid.modelComponent",
                 options : {
                     gradeNames: ["fluid.tests.allChangeRecorder", "autoInit"],
                     model: {
@@ -846,7 +848,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             child2: {
-                type: "fluid.standardComponent",
+                type: "fluid.modelComponent",
                 options : {
                     gradeNames: ["fluid.tests.allChangeRecorder", "autoInit"],
                     model: {
@@ -864,7 +866,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             child3: {
-                type: "fluid.standardComponent",
+                type: "fluid.modelComponent",
                 options : {
                     gradeNames: ["fluid.tests.allChangeRecorder", "autoInit"],
                     model: {
@@ -969,7 +971,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.fluid5045root", {
-        gradeNames: ["fluid.standardComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent", "autoInit"],
         model: {
             pageIndex: 0,
             pageSize: 10,
@@ -1051,7 +1053,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     // FLUID-5270: The model is not transformed when the "modelRelay" option is defined in the target component
     fluid.defaults("fluid.tests.fluid5270OnSource", {
-        gradeNames: ["fluid.standardComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent", "autoInit"],
         model: {
             celsius: 22
         },
@@ -1066,19 +1068,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         components: {
             sub: {
-                type: "fluid.standardComponent"
+                type: "fluid.modelComponent"
             }
         }
     });
 
     fluid.defaults("fluid.tests.fluid5270OnTarget", {
-        gradeNames: ["fluid.standardComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent", "autoInit"],
         model: {
             celsius: 22
         },
         components: {
             sub: {
-                type: "fluid.standardComponent",
+                type: "fluid.modelComponent",
                 options: {
                     modelRelay: {
                         source: "{fluid5270OnTarget}.model.celsius",
@@ -1105,7 +1107,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     // FLUID-5293: The model relay using "fluid.transforms.arrayToSetMembership" isn't transformed properly
     fluid.defaults("fluid.tests.fluid5293", {
-        gradeNames: ["fluid.standardComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent", "autoInit"],
         model: {
             accessibilityHazard: []
         },
@@ -1122,7 +1124,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }],
         components: {
             sub: {
-                type: "fluid.standardComponent",
+                type: "fluid.modelComponent",
                 options: {
                     model: {
                         accessibilityHazard: "{fluid5293}.model.accessibilityHazard",
@@ -1179,7 +1181,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     
     fluid.defaults("fluid.tests.fluid5358root", {
-        gradeNames: ["fluid.standardComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent", "autoInit"],
         model: {
             baseValue: 1,
             identityValue: 2
@@ -1200,7 +1202,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         ],
         components: {
             sub: {
-                type: "fluid.standardComponent"
+                type: "fluid.modelComponent"
             }
         }
     });
@@ -1218,7 +1220,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // FLUID-5368: Using "fluid.transforms.arrayToSetMembership" with any other transforms in modelRelay option causes the source array value to be missing
 
     fluid.defaults("fluid.tests.fluid5368root", {
-        gradeNames: ["fluid.standardComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent", "autoInit"],
         model: {
             forArrayToSetMembership: ["value1"],
             forIdentity: ["value2"]
@@ -1260,7 +1262,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // FLUID-5371: Model relay directive "forward" and "backward"
     
     fluid.defaults("fluid.tests.fluid5371root", {
-        gradeNames: ["fluid.standardComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent", "autoInit"],
         model: {
             forwardOnly: 3,
             forwardOnlyTarget: 3.5,
@@ -1446,7 +1448,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     
     fluid.defaults("fluid.tests.fluid5489root", {
-        gradeNames: ["fluid.standardComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent", "autoInit"],
         model: {},
         members: {
             fireRecord: []
@@ -1468,7 +1470,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // FLUID-5490: New source guarding for changes
     
     fluid.defaults("fluid.tests.fluid5490root", {
-        gradeNames: ["fluid.standardComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent", "autoInit"],
         model: {},
         members: {
             fireRecord: []
@@ -1502,7 +1504,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         components: {
             child: {
-                type: "fluid.standardComponent",
+                type: "fluid.modelComponent",
                 options: {
                     model: "{fluid5490root}.model"
                 }
@@ -1527,7 +1529,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // FLUID-5479: Compound values for valueMapper transform - example from metadata editor
     
     fluid.defaults("fluid.tests.fluid5479root", {
-        gradeNames: ["fluid.standardComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent", "autoInit"],
         model: {
             accessibilityHazard: []
         },
@@ -1591,13 +1593,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
     
     fluid.defaults("fluid.tests.fluid5504root", {
-        gradeNames: ["fluid.standardComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent", "autoInit"],
         listeners: {
             onCreate: "{sub}.subInvoker"
         },
         components: {
             sub: {
-                type: "fluid.standardComponent",
+                type: "fluid.modelComponent",
                 options: {
                     model: {
                         root: "{fluid5504root}.model"
@@ -1705,7 +1707,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     fluid.tests.badRelayRule = function (value) { // A bad relay rule which causes a non-stabilising model
         return value + 1;
-    }
+    };
     
     jqUnit.test("FLUID-5632: Bad relay rule triggers framework diagnostic", function () {
         jqUnit.expectFrameworkDiagnostic("Diagnostic from infinite relay rule", function () {

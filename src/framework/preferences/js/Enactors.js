@@ -15,7 +15,7 @@ var fluid_2_0 = fluid_2_0 || {};
     "use strict";
 
     fluid.defaults("fluid.prefs.enactor", {
-        gradeNames: ["fluid.standardComponent", "autoInit"]
+        gradeNames: ["fluid.modelComponent", "autoInit"]
     });
 
     /**********************************************************************************

@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -143,7 +142,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 4,
                 name: "grade creation",
                 func: "fluid.tests.testGenerateGrade",
-                args: [{gradeNames: ["fluid.littleComponent", "autoInit"], members: {test: "test"}}, ["defaults", "fluid.tests.created", {gradeNames: ["fluid.littleComponent", "autoInit"], members: {test: "test"}}]]
+                args: [{gradeNames: ["fluid.component", "autoInit"], members: {test: "test"}}, ["defaults", "fluid.tests.created", {gradeNames: ["fluid.component", "autoInit"], members: {test: "test"}}]]
             }]
         }]
     });
@@ -185,7 +184,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             mockAuxSchema: {
                 namespace: "fluid.tests.created.constructGrade",
                 sample: {
-                    gradeNames: ["fluid.littleComponent", "autoInit"],
+                    gradeNames: ["fluid.component", "autoInit"],
                     testOpt: "testOpt"
                 }
             },
@@ -193,7 +192,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sample: {
                     gradeName: "fluid.tests.created.constructGrade.sample",
                     options: {
-                        gradeNames: ["fluid.littleComponent", "autoInit"],
+                        gradeNames: ["fluid.component", "autoInit"],
                         testOpt: "testOpt"
                     }
                 },

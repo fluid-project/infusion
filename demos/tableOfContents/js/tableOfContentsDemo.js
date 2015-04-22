@@ -17,7 +17,7 @@ fluid.registerNamespace("fluid.demo");
     "use strict";
     
     fluid.defaults("fluid.demo.tableOfContentsOptions", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         distributeOptions: {
             record: {
                 resources: {

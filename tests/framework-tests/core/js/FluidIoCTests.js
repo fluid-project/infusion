@@ -10,7 +10,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -87,15 +86,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.makeComponents({
-        "fluid.tests.multiResSub":        "fluid.littleComponent",
-        "fluid.tests.multiResSub2":       "fluid.littleComponent",
-        "fluid.tests.multiResSub3":       "fluid.littleComponent",
-        "fluid.tests.fluid3818child":     "fluid.littleComponent",
-        "fluid.tests.thatStackTail":      "fluid.littleComponent"
+        "fluid.tests.multiResSub":        "fluid.component",
+        "fluid.tests.multiResSub2":       "fluid.component",
+        "fluid.tests.multiResSub3":       "fluid.component",
+        "fluid.tests.fluid3818child":     "fluid.component",
+        "fluid.tests.thatStackTail":      "fluid.component"
     });
 
     fluid.defaults("fluid.tests.invokerComponent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         template: "Every {0} has {1} {2}(s)",
         invokers: {
             render: {
@@ -123,7 +122,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     
     fluid.defaults("fluid.tests.invokerExpander", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         invokers: {
             getLineHeightMultiplier: {
                 funcName: "fluid.tests.getLineHeightMultiplier",
@@ -140,7 +139,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.multiResolution", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             resSub: {
                 type: "fluid.tests.multiResSub"
@@ -153,7 +152,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.customType = new Date();
 
     fluid.defaults("fluid.tests.typedMemberComponent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         members: {
             cat: fluid.tests.customType,
             cat3: "@expand:fluid.identity({that}.cat)"
@@ -180,7 +179,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     // This is identical to a test in Fluid.js, but exposed a bug in the alternative workflow that was triggered by FLUID-4930 work - "evaluateFully"
     fluid.defaults("fluid.tests.eventMerge", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         events: {
             event: "preventable"
         }
@@ -205,7 +204,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var name = "source" + fluid.allocateGuid();
 
     fluid.defaults("fluid." + name, {
-        gradeNames: ["fluid.eventedComponent", "autoInit"]
+        gradeNames: ["fluid.component", "autoInit"]
     });
 
     jqUnit.test("FLUID-5239: Component name starting with 'source'", function () {
@@ -225,7 +224,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-4637 component proximity resolution test **/
 
     fluid.defaults("fluid.tests.twinSubComponent", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         preInitFunction: "fluid.tests.twinSubComponent.preInit",
         events: {
             childEvent: null
@@ -244,7 +243,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.twinParent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             twin1: {
                 type: "fluid.tests.twinSubComponent",
@@ -270,7 +269,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-4914 derived grade resolution tests **/
 
     fluid.defaults("fluid.tests.dataSource", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         invokers: {
             get: {
                 funcName: "fluid.identity",
@@ -301,12 +300,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-4916 dynamic grade support tests **/
 
     fluid.defaults("fluid.tests.dynamicParent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         parentOption: 1
     });
 
     fluid.defaults("fluid.tests.dynamicGrade", {
-        gradeNames: ["fluid.littleComponent", "autoInit", "{that}.computeGrade"],
+        gradeNames: ["fluid.component", "autoInit", "{that}.computeGrade"],
         invokers: {
             computeGrade: "fluid.tests.computeDynamicParent",
             respondParent: {
@@ -339,7 +338,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // The idea was also to be able to verify reference equality of "expanded" and "emptyArray" but this seems not to be
     // possible right now as a result of the recursion by the expander copying its arguments at args = options.recurse([], args);
     fluid.defaults("fluid.tests.memberTest", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         members: {
             expanded: {
                 expander: {
@@ -426,14 +425,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.contextAware.makeChecks({"fluid.test": true});
     
     fluid.makeComponents ({
-        "fluid.tests.uploader.html5": "fluid.littleComponent",
-        "fluid.tests.uploaderImpl": "fluid.littleComponent"
+        "fluid.tests.uploader.html5": "fluid.component",
+        "fluid.tests.uploaderImpl": "fluid.component"
     });
     
     // Simplified example derived from parts of the old uploader initialisation strategy
     // which we still support.
     fluid.defaults("fluid.tests.uploader", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             uploaderContext: {
                 type: "fluid.tests.uploader.html5"
@@ -451,7 +450,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 
     fluid.defaults("fluid.tests.uploader.multiFileUploader", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
+        gradeNames: ["fluid.component", "autoInit"]
     });
 
     jqUnit.test("FLUID-4873 Total Skywalker Options Distribution", function () {
@@ -463,7 +462,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-4926 Invoker tests **/
 
     fluid.defaults("fluid.tests.invokerFunc", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         members: {
             value: 3
         },
@@ -504,13 +503,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // cases are intended to be handled by FLUID-4873 "Luke Skywalker Options" ("distributeOptions")
 
     fluid.defaults("fluid.tests.uiEnhancer", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         value: 3,
         outerValue: 4
     });
 
     fluid.defaults("fluid.tests.pageEnhancer", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         uiEnhancerOptions: {
             outerValue: 3
         },
@@ -534,7 +533,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** Listener merging tests **/
 
     fluid.defaults("fluid.tests.listenerMerging", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         invokers: {
             eventFired: "fluid.tests.listenerMerging.eventFired({that}, {arguments}.0)" // eventName
         },
@@ -577,7 +576,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.FLUID5082func2 = fluid.tests.FLUID5082func;
 
     fluid.defaults("fluid.tests.FLUID5082Parent", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         members: {
             fireRecord: [],
             self: "{that}"
@@ -612,7 +611,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.FLUID5082Child", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         listeners: {
             testEvent: [{
                 funcName: "fluid.tests.FLUID5082func",
@@ -666,7 +665,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.fluid5128child", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         listeners: {
             "{fluid5128head}.events.subscrEvent": {
                 funcName: "fluid.tests.fluid5128listener",
@@ -676,7 +675,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.fluid5128head", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         members: {
             fireRecord: []
         },
@@ -747,7 +746,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** Contextualisation of invokers **/
 
     fluid.defaults("fluid.tests.thatStackHead", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         headValue: "headValue",
         components: {
             child1: {
@@ -783,7 +782,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.deferredInvoke", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
+        gradeNames: ["fluid.component", "autoInit"]
     });
 
     /** FLUID-4330 - ginger expansion tests **/
@@ -970,12 +969,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.gingerMiddle", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         lowOption: "lowOption"
     });
 
     fluid.defaults("fluid.tests.gingerTop", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         lowOption: "{that}.gingerMiddle.options.lowOption",
         highOption: "highOption",
         circuitOption: "{that}.gingerMiddle.options.highOption",
@@ -1003,7 +1002,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-4135 - event injection and boiling test **/
 
     fluid.defaults("fluid.tests.listenerHolder", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         invokers: {
             listener: "fluid.tests.listenerHolder.listener({that}, {arguments}.0)"
         }
@@ -1014,7 +1013,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.eventParent", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         childType: "fluid.tests.eventChild", // test resolved type reference
         events: {
             parentEvent: null
@@ -1030,7 +1029,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.eventChild", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         events: {
             parentEvent: "{eventParent}.events.parentEvent",
             boiledParent: {
@@ -1090,7 +1089,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.eventParent3", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         events: {
             parentEvent1: null,
             parentEvent2: null
@@ -1112,7 +1111,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.eventChild3", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         events: {
             boiledDouble: {
                 events: {
@@ -1163,7 +1162,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.eventBoiling2", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         events: {
             baseEvent: null,
             baseEvent2: null,
@@ -1194,7 +1193,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     /** FLUID-5112: Composite event firing test **/
     fluid.defaults("fluid.tests.composite.test", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         events: {
             onReady: {
                 events: {
@@ -1242,7 +1241,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     // Simpler demonstration matching docs, also using "scoped event binding"
     fluid.defaults("fluid.tests.eventParent2", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         events: {
             parentEvent: null
         },
@@ -1254,7 +1253,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.eventChild2", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         events: {
             parentEvent: "{eventParent2}.events.parentEvent"
         }
@@ -1285,7 +1284,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.invokerThis", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         members: {
             "thisistThing": {
                 expander: { funcName: "fluid.tests.makeThisistThing" }
@@ -1317,18 +1316,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-4055 - reinstantiation test **/
 
     fluid.defaults("fluid.tests.refChild", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
+        gradeNames: ["fluid.component", "autoInit"]
     });
 
     fluid.defaults("fluid.tests.reinstantiation", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         headValue: "headValue",
         components: {
             headChild: {
-                type: "fluid.littleComponent"
+                type: "fluid.component"
             },
             child1: {
-                type: "fluid.littleComponent",
+                type: "fluid.component",
                 options: {
                     components: {
                         child2: {
@@ -1365,7 +1364,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
     
     fluid.defaults("fluid.tests.reinsChild2", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         members: {
             otherValue: "{reinstantiation}.options.headValue"
         }
@@ -1400,7 +1399,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-4711 - corruption in clear with injected material of longer scope **/
 
     fluid.defaults("fluid.tests.clearParent", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         events: {
             requestStart: null
         },
@@ -1431,7 +1430,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-4179 unexpected material in clear test **/
 
     fluid.defaults("fluid.tests.misclearTop", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             middle: {
                 type: "fluid.tests.misclearMiddle"
@@ -1440,7 +1439,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.misclearMiddle", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             leaf: {
                 type: "fluid.tests.misclearLeaf"
@@ -1450,7 +1449,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.misclearLeaf", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         preInitFunction: "fluid.tests.misclearLeaf.init"
     });
 
@@ -1467,14 +1466,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-4129 - merge policy for component options test **/
 
     fluid.defaults("fluid.tests.mergeChild", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         mergePolicy: {
             dangerousParams: "noexpand"
         }
     });
 
     fluid.defaults("fluid.tests.mergeComponent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             mergeChild: {
                 type: "fluid.tests.mergeChild",
@@ -1543,7 +1542,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.lifecycle.recordingComponent", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         mergePolicy: {
             parent: "nomerge"
         },
@@ -1555,7 +1554,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.lifecycle", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         events: {
             mainEvent: null
         },
@@ -1629,7 +1628,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-5268 - direct root "afterDestroy" listener **/
 
     fluid.defaults("fluid.tests.fluid5268", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"]
+        gradeNames: ["fluid.component", "autoInit"]
     });
 
     jqUnit.test("Component lifecycle test - FLUID-5268 root afterDestroy", function () {
@@ -1654,7 +1653,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-4257 - automatic listener teardown test **/
 
     fluid.defaults("fluid.tests.head4257", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         events: {
             parentEvent: null
         },
@@ -1675,7 +1674,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.child4257", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         invokers: {
             listener: "fluid.tests.child4257.listener({that}, {arguments}.0, {arguments}.1)" // parentThat, arg
         }
@@ -1698,7 +1697,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-4290 - createOnEvent sequence corruption test **/
 
     fluid.defaults("fluid.tests.createOnEvent", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         events: {
             afterRender: null
         },
@@ -1712,14 +1711,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             prefsEditorBridge: {
-                type: "fluid.littleComponent",
+                type: "fluid.component",
                 createOnEvent: "afterRender"
             }
         }
     });
 
     fluid.defaults("fluid.tests.createOnEvent.iframe", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         listeners: {
             onCreate: "{that}.events.afterRender.fire"
         }
@@ -1734,7 +1733,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** Guided component sequence (priority field without createOnEvent **/
 
     fluid.defaults("fluid.tests.guidedChild", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         mergePolicy: {
             parent: "nomerge"
         },
@@ -1750,7 +1749,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.guidedParent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         members: {
             constructRecord: []
         },
@@ -1793,7 +1792,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** Tree circularity tests (early detection of stack overflow) **/
 
     fluid.defaults("fluid.tests.circularEvent", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         events: {
             circular: {
                 event: "circular"
@@ -1812,7 +1811,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     circularTest("fluid.tests.circularEvent", "event circularity test");
 
     fluid.defaults("fluid.tests.circularOptions", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         circular1: "{that}.options.circular2",
         circular2: "{that}.options.circular1"
     });
@@ -1820,7 +1819,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     circularTest("fluid.tests.circularOptions", "options circularity test");
 
     fluid.defaults("fluid.tests.circularity", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             instantiator: "{instantiator}",
             child1: {
@@ -1830,7 +1829,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.circChild", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         mergePolicy: {
             instantiator: "nomerge"
         },
@@ -1856,7 +1855,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.FLUID5088Circularity", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         option1: "{that}.options.option2",
         option2: "{that}.options.option1"
     });
@@ -1870,10 +1869,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *  FLUID-4330 framework, this is no longer an error */
 
     fluid.defaults("fluid.tests.circular.strategy", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             local: {
-                type: "fluid.littleComponent"
+                type: "fluid.component"
             },
             engine: {
                 type: "fluid.tests.circular.engine"
@@ -1886,7 +1885,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.circular.engine", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         invokers: {
             bindEvents: {
                 funcName: "fluid.tests.circular.engine",
@@ -1895,7 +1894,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         components: {
             swfUpload: {
-                type: "fluid.littleComponent"
+                type: "fluid.component"
             }
         },
         listeners: {
@@ -1910,7 +1909,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** Correct resolution of invoker arguments through the tree **/
 
     fluid.defaults("fluid.tests.invokerGrandParent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             parent1: {
                 type: "fluid.tests.invokerParent"
@@ -1958,20 +1957,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-4712 - contextualisation of calls issued from an invoker **/
 
     fluid.defaults("fluid.tests.test4712parent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             refChild3: { // put at top level so that "blank instantiator guess" is definitively wrong
-                type: "fluid.littleComponent",
+                type: "fluid.component",
                 options: {
                     refOption: 3
                 }
             },
             refChild: {
-                type: "fluid.littleComponent",
+                type: "fluid.component",
                 options: {
                     components: {
                         refChild2: {
-                            type: "fluid.littleComponent",
+                            type: "fluid.component",
                             options: {
                                 components: {
                                     // resolution of this parent will fail if invoker loses context (broken "that stack")
@@ -2023,7 +2022,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.badListener", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         events: {
             haveEvent: null
         },
@@ -2039,7 +2038,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-4626 - references between separated component "islands" (without common instantiator) **/
 
     fluid.defaults("fluid.tests.island1", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         events: {
             outEvent1: null,
             // note inconsistency - only IoC-resolved events get instantiator wrapping!
@@ -2049,7 +2048,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.island2", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         events: {
             inEvent: null
         },
@@ -2073,14 +2072,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.grade", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         gradeOpt: {
             gradeOpt: "gradeOpt"
         }
     });
 
     fluid.defaults("fluid.tests.comp", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         opt: {
             opt: "opt"
         }
@@ -2096,13 +2095,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.circularGrade", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         extraOpt: "extraOpt"
     });
 
     jqUnit.test("FLUID-4939: Component with gradeName modification - circular grades", function () {
         jqUnit.expect(1);
-        var that = fluid.eventedComponent({
+        var that = fluid.component({
             gradeNames: ["fluid.tests.circularGrade"]
         });
         jqUnit.assertEquals("Extra option added", "extraOpt", that.options.extraOpt);
@@ -2110,10 +2109,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     /** FLUID-5012: IoCSS doesn't apply the gradeNames option onto the target component **/
     fluid.defaults("fluid.tests.prefsEditor", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             templateLoader: {
-                type: "fluid.littleComponent"
+                type: "fluid.component"
             }
         },
         distributeOptions: {
@@ -2132,7 +2131,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 gradeNames: ["fluid.tests.defaultTemplateLoader"]
             }
         });
-        var expectedGrades = ["fluid.tests.defaultTemplateLoader", "fluid.littleComponent", "autoInit"];
+        var expectedGrades = ["fluid.tests.defaultTemplateLoader", "fluid.component", "autoInit"];
 
         jqUnit.assertDeepEq("The option grades are merged into the target component", expectedGrades, prefsEditor.templateLoader.options.gradeNames);
         jqUnit.assertEquals("The user option from the grade component is transmitted", 10, prefsEditor.templateLoader.options.userOption);
@@ -2141,7 +2140,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-5013: IoCSS doesn't pass down non-options blocks **/
 
     fluid.defaults("fluid.tests.top", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             subComponent: {
                 type: "fluid.tests.subComponent1"
@@ -2154,11 +2153,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.subComponent1", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
+        gradeNames: ["fluid.component", "autoInit"]
     });
 
     fluid.defaults("fluid.tests.subComponent2", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         userOption: 1
     });
 
@@ -2176,7 +2175,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-5014 Case 1 - IoCSS: one source value gets passed down to several subcomponents **/
 
     fluid.defaults("fluid.tests.fluid5014root", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             sub1: {
                 type: "fluid.tests.fluid5014sub"
@@ -2191,7 +2190,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.fluid5014sub", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
+        gradeNames: ["fluid.component", "autoInit"]
     });
 
     fluid.defaults("fluid.tests.fluid5014distro1", {
@@ -2234,10 +2233,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-5014 Case 2 - IoCSS: one source value gets passed down to its own and its grade component **/
 
     fluid.defaults("fluid.tests.fluid5014gradeComponent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             gradeSubComponent: {
-                type: "fluid.littleComponent"
+                type: "fluid.component"
             }
         },
         distributeOptions: {
@@ -2250,7 +2249,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.tests.fluid5014gradeComponent", "autoInit"],
         components: {
             rootSubComponent: {
-                type: "fluid.littleComponent"
+                type: "fluid.component"
             }
         },
         distributeOptions: {
@@ -2271,10 +2270,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-5017 - IoCSS: Merge "distributeOptions" of the own component and grade components **/
 
     fluid.defaults("fluid.tests.fluid5017Grade", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             myGradeSubComponent: {
-                type: "fluid.littleComponent"
+                type: "fluid.component"
             }
         },
         distributeOptions: {
@@ -2287,7 +2286,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.tests.fluid5017Grade", "autoInit"],
         components: {
             myRootSubComponent: {
-                type: "fluid.littleComponent"
+                type: "fluid.component"
             }
         },
         distributeOptions: {
@@ -2309,10 +2308,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-5018 - IoCSS: Pass to-be-resolved option to a target **/
 
     fluid.defaults("fluid.tests.own", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             ownSub: {
-                type: "fluid.littleComponent"
+                type: "fluid.component"
             }
         },
         distributeOptions: {
@@ -2336,7 +2335,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.fluid5022head", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         values: [2, 3],
         members: {
             count: 0
@@ -2344,7 +2343,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         dynamicComponents: {
             dynamic: {
                 sources: "{that}.options.values",
-                type: "fluid.eventedComponent",
+                type: "fluid.component",
                 options: {
                     source: "{source}",
                     listeners: {
@@ -2366,7 +2365,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.fluid5022eventHead", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         members: {
             count: 0
         },
@@ -2376,7 +2375,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         dynamicComponents: {
             dynamic: {
                 createOnEvent: "createIt",
-                type: "fluid.eventedComponent",
+                type: "fluid.component",
                 options: {
                     source: "{arguments}.0.value",
                     listeners: {
@@ -2402,14 +2401,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-5029 - Child selector ">" in IoCSS selector should not select an indirect child **/
 
     fluid.defaults("fluid.tests.fluid5029root", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             sub: {
-                type: "fluid.littleComponent",
+                type: "fluid.component",
                 options: {
                     components: {
                         subOfSub: {
-                            type: "fluid.littleComponent"
+                            type: "fluid.component"
                         }
                     }
                 }
@@ -2432,16 +2431,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-5032 - Forward reference through grade hierarchy **/
 
     fluid.defaults("fluid.tests.fluid5032Root", {
-        gradeNames: ["fluid.eventedComponent", "fluid.tests.fluid5032Grade", "autoInit"],
+        gradeNames: ["fluid.component", "fluid.tests.fluid5032Grade", "autoInit"],
         components: {
             subComponent: {
-                type: "fluid.eventedComponent"
+                type: "fluid.component"
             }
         }
     });
 
     fluid.defaults("fluid.tests.fluid5032Grade", {
-        gradeNames: ["fluid.eventedComponent"],
+        gradeNames: ["fluid.component"],
         events: {
             creationEvent: null
         },
@@ -2476,7 +2475,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // Note that this technique must not be used within ordinary user code - in general the dynamic redefinition of a grade is an error.
         // This technique is only appropriate for development or "live coding" scenarios
         fluid.defaults("fluid.tests.fluid5033Grade", {
-            gradeNames: ["fluid.littleComponent"],
+            gradeNames: ["fluid.component"],
             gradeValue: value
         });
     }
@@ -2505,7 +2504,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.fluid4922", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         members: {
             value: 1
         },
@@ -2545,7 +2544,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.fluid5127root", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         members: {
             one:         "@expand:fluid.identity(1)",
             two: 2,
@@ -2606,10 +2605,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-5036, Case 1 - An IoCSS source that is fetched from the static environment is not resolved correctly **/
 
     fluid.defaults("fluid.tests.fluid5036_1Root", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             subComponent: {
-                type: "fluid.littleComponent",
+                type: "fluid.component",
                 options: {
                     targetOption: null
                 }
@@ -2626,7 +2625,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("FLUID-5036, Case 1 - An IoCSS source that is fetched from the static environment is not resolved correctly", function () {
         var userOption = 10;
 
-        var optionHolder = fluid.littleComponent({
+        var optionHolder = fluid.component({
             gradeNames: ["fluid5036_1UserOption", "fluid.resolveRoot"],
             userOption: userOption
         });
@@ -2639,7 +2638,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-5036, Case 2 - An IoCSS source that is fetched from the static environment is not resolved correctly **/
 
     fluid.defaults("fluid.tests.fluid5036_2Root", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         // Note: this is not a recommended implementation technique, causing double nesting of options - this test is purely intendend to verify fix to a
         // framework issue which caused a faulty diagnostic "Malformed context reference without }" as well as to verify that at least some sensible effect
         // results from this reference. In general, i) only components are resolvable as context references (including in the static environment) and
@@ -2648,7 +2647,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         source: "{fluid5036_2UserOption}",
         components: {
             subComponent: {
-                type: "fluid.littleComponent"
+                type: "fluid.component"
             }
         },
         distributeOptions: {
@@ -2660,7 +2659,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.test("FLUID-5036, Case 2 - An IoCSS source that is fetched from the static environment is not resolved correctly - and displacement using fluid.resolveRootSingle", function () {
         function issueRootAndReference (targetOption) {
-            var optionHolder = fluid.littleComponent({
+            var optionHolder = fluid.component({
                 gradeNames: ["fluid5036_2UserOption", "fluid.resolveRootSingle"],
                 singleRootType: "fluid5036_2UserOption",
                 targetOption: targetOption
@@ -2675,7 +2674,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.baseGradeComponent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         initialModel: {}
     });
 
@@ -2692,7 +2691,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.implementationComponent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             subcomponent: {
                 type: "fluid.tests.implementationSubcomponent",
@@ -2713,15 +2712,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.builderComponent", {
-        gradeNames: ["autoInit", "fluid.littleComponent"],
+        gradeNames: ["autoInit", "fluid.component"],
         components: {
             actualComponent: {
-                type: "fluid.littleComponent",
+                type: "fluid.component",
                 options: {
                     gradeNames: ["{fluid.tests.builderComponent}.options.gradeName"],
                     components: {
                         originalSub: {
-                            type: "fluid.littleComponent",
+                            type: "fluid.component",
                             options: {
                                 gradeNames: "autoInit"
                             }
@@ -2733,10 +2732,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.contributedGrade", {
-        gradeNames: ["autoInit", "fluid.littleComponent"],
+        gradeNames: ["autoInit", "fluid.component"],
         components: {
             mustExist: {
-                type: "fluid.littleComponent"
+                type: "fluid.component"
             }
         },
         existingOption: true
@@ -2755,10 +2754,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-5094: Dynamic grade merging takes an undefined source passed in from IoCSS into account rather than ignoring it **/
 
     fluid.defaults("fluid.tests.fluid5094", {
-        gradeNames: ["fluid.littleComponent", "fluid.tests.nonExistedGrade", "autoInit"],
+        gradeNames: ["fluid.component", "fluid.tests.nonExistedGrade", "autoInit"],
         components: {
             subComponent: {
-                type: "fluid.littleComponent",
+                type: "fluid.component",
                 options: {
                     gradeNames: ["{fluid.tests.fluid5094}.options.gradeName"]
                 }
@@ -2772,10 +2771,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.fluid5094Grade", {
-        gradeNames: ["autoInit", "fluid.littleComponent"],
+        gradeNames: ["autoInit", "fluid.component"],
         components: {
             mustExist: {
-                type: "fluid.littleComponent"
+                type: "fluid.component"
             }
         }
     });
@@ -2789,7 +2788,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.fluid5117", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         inputObject: {
             "key1": "value1"
         },
@@ -2820,14 +2819,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-5242: Corruption when distributing listener records to multiple components **/
 
     fluid.defaults("fluid.tests.tooltip", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         events: {
             afterOpen: null
         }
     });
 
     fluid.defaults("fluid.tests.trackTooltips", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         mergePolicy: {
             tooltipListeners: "noexpand"
         },
@@ -2870,7 +2869,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-5108: Source and supplied dynamic grades that both have common option(s) are not merged correctly **/
 
     fluid.defaults("fluid.tests.fluid5108", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         source: {
             options: {
                 userOption: "initial"
@@ -2879,7 +2878,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.fluid5108Grade", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         source: {
             options: {
                 userOption: "fromSuppliedGrade"
@@ -2899,12 +2898,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-5155 failure of dynamic grade delivered dynamically **/
 
     fluid.defaults("fluid.tests.fluid5155dynamicParent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         parentOption: 1
     });
 
     fluid.defaults("fluid.tests.fluid5155dynamicGrade", {
-        gradeNames: ["fluid.littleComponent", "autoInit", "{that}.computeGrade"],
+        gradeNames: ["fluid.component", "autoInit", "{that}.computeGrade"],
         invokers: {
             computeGrade: "fluid.tests.computeFluid5155DynamicParent"
         }
@@ -2915,10 +2914,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.fluid5155root", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             subComponent: {
-                type: "fluid.littleComponent"
+                type: "fluid.component"
             }
         },
         distributeOptions: {
@@ -2942,7 +2941,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 
     fluid.defaults("fluid.tests.dynamicInvoker", {
-        gradeNames: ["autoInit", "fluid.littleComponent", "{that}.getDynamicInvoker"],
+        gradeNames: ["autoInit", "fluid.component", "{that}.getDynamicInvoker"],
         invokers: {
             getDynamicInvoker: {
                 funcName: "fluid.tests.dynamicInvoker.getDynamicInvoker"
@@ -2955,7 +2954,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.dynamicInvokerGrade", {
-        gradeNames: ["autoInit", "fluid.littleComponent"],
+        gradeNames: ["autoInit", "fluid.component"],
         invokers: {
             method: "fluid.tests.dynamicInvokerGrade.method"
         }
@@ -2976,7 +2975,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /*** FLUID-5243 re-entrant expansion aliasing test ***/
 
     fluid.defaults("fluid.tests.fluid5243Reorderer", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         layoutHandler: "fluid.tests.fluid5243ModuleLayout",
         mergePolicy: {
             "selectors.labelSource": "selectors.grabHandle",
@@ -2996,7 +2995,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.fluid5243ModuleLayout", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         containerRole: "regions",
         selectors: {
             modules: "{fluid5243Reorderer}.options.selectors.modules",
@@ -3048,7 +3047,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.fluid5254Root", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         events: {
             rootEvent: null,
             creationEvent: null
@@ -3056,7 +3055,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         components: {
             child: {
                 createOnEvent: "creationEvent",
-                type: "fluid.eventedComponent",
+                type: "fluid.component",
                 options: {
                     events: {
                         childEvent: "{fluid5254Root}.events.rootEvent"
@@ -3086,12 +3085,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-5245 - distributeOptions based on grades which are themselves dynamic **/
 
     fluid.makeComponents({
-        "fluid.tests.pageList":               "fluid.littleComponent",
-        "fluid.tests.renderedPageList":       "fluid.littleComponent"
+        "fluid.tests.pageList":               "fluid.component",
+        "fluid.tests.renderedPageList":       "fluid.component"
     });
 
     fluid.defaults("fluid.tests.fluid5245Root", {
-        gradeNames: ["autoInit", "fluid.littleComponent"],
+        gradeNames: ["autoInit", "fluid.component"],
         distributeOptions: [{
             source: "{that}.options.pageList",
             removeSource: true,
@@ -3126,7 +3125,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     
     fluid.defaults("fluid.tests.fluid5333component", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         events: {
             ourEvent: null
         },
@@ -3147,13 +3146,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /*** FLUID-5266 diagnostic when accessing createOnEvent component before construction ***/
     
     fluid.defaults("fluid.tests.fluid5266root", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         events: {
             creationEvent: null
         },
         components: {
             child: {
-                type: "fluid.eventedComponent",
+                type: "fluid.component",
                 createOnEvent: "creationEvent",
                 options: {
                     members: {
@@ -3183,10 +3182,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-5249 tests - globalInstantiator, fluid.resolveRoot and its effects **/
     
     fluid.defaults("fluid.tests.fluid5249root", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             nonRootRoot: {
-                type: "fluid.littleComponent",
+                type: "fluid.component",
                 options: {
                     gradeNames: ["fluid.resolveRoot", "fluid.tests.fluid5249nonroot"]
                 }
@@ -3195,7 +3194,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
     
     fluid.defaults("fluid.tests.fluid5249finder", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             nonRoot: "{fluid.tests.fluid5249nonroot}"
         }
@@ -3217,7 +3216,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-5495 tests - distribute upwards, use of "/" context, global instantiator, and proper deregistration - "new demands blocks" **/
     
     fluid.defaults("fluid.tests.fluid5495rootDistributor", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         distributeOptions: {
             record: "distributedValue",
             target: "{/ fluid.tests.fluid5495target}.options.targetValue"
@@ -3225,7 +3224,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
     
     fluid.defaults("fluid.tests.fluid5495target", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
+        gradeNames: ["fluid.component", "autoInit"]
     });
     
     jqUnit.test("FLUID-5495 - use of global, time-scoped distributions to root - \"new demands blocks\"", function () {
@@ -3238,13 +3237,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
     
     fluid.defaults("fluid.tests.fluid5495midDistributor", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         events: {
             creationEvent: null
         },
         components: {
             distributor: {
-                type: "fluid.littleComponent",
+                type: "fluid.component",
                 options: {
                     distributeOptions: {
                         record: "fluid.tests.fluid5495outputGrade",
@@ -3253,21 +3252,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             target1: {
-                type: "fluid.eventedComponent",
+                type: "fluid.component",
                 createOnEvent: "creationEvent",
                 options: {
                     gradeNames: "fluid.tests.fluid5495requiredGrade1"
                 }
             },
             target2: {
-                type: "fluid.eventedComponent",
+                type: "fluid.component",
                 createOnEvent: "creationEvent",
                 options: {
                     gradeNames: "fluid.tests.fluid5495requiredGrade2"
                 }
             },
             target3: {
-                type: "fluid.eventedComponent",
+                type: "fluid.component",
                 createOnEvent: "creationEvent",
                 options: {
                     gradeNames: ["fluid.tests.fluid5495requiredGrade1", "fluid.tests.fluid5495requiredGrade2"]
@@ -3295,7 +3294,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
     
     fluid.defaults("fluid.tests.fluid5587root", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         distributeOptions: {
             distributionName: {
                 record: "rootDistribution",
@@ -3304,13 +3303,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         components: {
             subComponent: {
-                type: "fluid.littleComponent"
+                type: "fluid.component"
             }
         }
     });
     
     fluid.defaults("fluid.tests.fluid5587grade", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         distributeOptions: {
             namespace: "distributionName", // alternative style for registering namespace
             record: "gradeDistribution",
@@ -3326,14 +3325,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
     
     fluid.defaults("fluid.tests.fluid5621root", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         distributeOptions: {
             target: "{that fluid5621advised}.options.target",
             record: "root"
         },
         components: {
             child1: {
-                type: "fluid.littleComponent",
+                type: "fluid.component",
                 options: {
                     distributeOptions: {
                         target: "{/ fluid.tests.fluid5621advised}.options.target", // variant form to show insensitive to this detail
@@ -3342,7 +3341,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     components: {
                         child2: {
-                            type: "fluid.littleComponent",
+                            type: "fluid.component",
                             options: {
                                 distributeOptions: {
                                     target: "{that fluid5621advised}.options.target",
@@ -3350,7 +3349,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 },
                                 components: {
                                     child3: {
-                                        type: "fluid.littleComponent",
+                                        type: "fluid.component",
                                         options: {
                                             mergePolicy: {
                                                 target: fluid.arrayConcatPolicy
@@ -3368,7 +3367,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
     
     fluid.defaults("fluid.tests.fluid5621global", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         distributeOptions: {
             target: "{/ fluid.tests.fluid5621advised}.options.target",
             record: "global",
@@ -3388,7 +3387,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** Test nexus methods and global instantiator machinery **/
     
     fluid.defaults("fluid.tests.nexusComponent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
+        gradeNames: ["fluid.component", "autoInit"]
     });
     
     jqUnit.test("Test nexus methods fluid.construct and fluid.destroy", function () {

@@ -817,7 +817,7 @@ var fluid_2_0 = fluid_2_0 || {};
       * focused position of the reorderer as well as the coordinates of any requested move */
 
     fluid.defaults("fluid.reorderer.labeller", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         members: {
             movedMap: {},
             moduleCell: {

@@ -13,7 +13,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
  */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {

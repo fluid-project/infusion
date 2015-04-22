@@ -19,7 +19,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.registerNamespace("fluid.uploader");
 
     fluid.defaults("fluid.uploader.fileQueue", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         members: {
             files: [],
             isUploading: false

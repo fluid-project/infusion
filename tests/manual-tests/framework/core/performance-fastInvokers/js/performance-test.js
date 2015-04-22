@@ -24,10 +24,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.perfRoot", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         components: {
             child1: {
-                type: "fluid.littleComponent",
+                type: "fluid.component",
                 options: {
                     members: {
                         value: 1
@@ -35,7 +35,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             child2: {
-                type: "fluid.littleComponent",
+                type: "fluid.component",
                 options: {
                     members: {
                         value: 2
@@ -45,7 +45,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     components: {
                         child3: {
-                            type: "fluid.littleComponent",
+                            type: "fluid.component",
                             createOnEvent: "createIt",
                             options: {
                                 members: {

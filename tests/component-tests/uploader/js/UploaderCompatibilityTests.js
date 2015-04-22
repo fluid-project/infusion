@@ -61,7 +61,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 
         fluid.defaults("fluid.tests.uploader.parentWrapper", {
-            gradeNames: ["fluid.littleComponent", "autoInit"],
+            gradeNames: ["fluid.component", "autoInit"],
             components: {
                 uploader: {
                     type: "fluid.uploader",

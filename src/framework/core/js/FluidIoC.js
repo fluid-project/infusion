@@ -739,7 +739,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
     
     // Listed in dependence order
-    fluid.frameworkGrades = ["fluid.littleComponent", "fluid.eventedComponent", "fluid.modelComponent", "fluid.standardComponent", "fluid.viewComponent", "fluid.rendererComponent"];
+    fluid.frameworkGrades = ["fluid.component", "fluid.modelComponent", "fluid.viewComponent", "fluid.rendererComponent"];
         
     fluid.filterBuiltinGrades = function (gradeNames) {
         return fluid.remove_if(fluid.makeArray(gradeNames), function (gradeName) {
@@ -1379,7 +1379,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
     
     fluid.defaults("fluid.debuggingProbe", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
+        gradeNames: ["fluid.component", "autoInit"]
     });
     
     // probe looks like:
@@ -1470,7 +1470,7 @@ var fluid_2_0 = fluid_2_0 || {};
     
     fluid.getGlobalValueNonComponent = function (funcName, context) { // TODO: Guard this in listeners as well
         var defaults = fluid.defaults(funcName);
-        if (defaults && fluid.hasGrade(defaults, "fluid.littleComponent")) {
+        if (defaults && fluid.hasGrade(defaults, "fluid.component")) {
             fluid.fail("Error in function specification - cannot invoke function " + funcName + " in the context of " + context + ": component creator functions can only be used as subcomponents");
         }
         return fluid.getGlobalValue(funcName);

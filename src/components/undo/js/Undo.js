@@ -99,7 +99,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.undo", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         members: {
             state: fluid.undo.STATE_INITIAL,
             initialModel: {},

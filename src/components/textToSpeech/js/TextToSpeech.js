@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global speechSynthesis, SpeechSynthesisUtterance*/
 
 var fluid_2_0 = fluid_2_0 || {};
@@ -29,7 +28,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.textToSpeech", {
-        gradeNames: ["fluid.standardComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent", "autoInit"],
         events: {
             onStart: null,
             onStop: null,

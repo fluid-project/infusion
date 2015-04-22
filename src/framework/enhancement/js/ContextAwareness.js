@@ -37,7 +37,7 @@ var fluid_2_0 = fluid_2_0 || {};
         options = $.extend({}, options);
         var gradeNames = options.gradeNames = fluid.makeArray(options.gradeNames);
         gradeNames.unshift(type); // principal type may be noninstantiable
-        options.type = "fluid.littleComponent";
+        options.type = "fluid.component";
         var root = segs.length === 0;
         if (root) {
             gradeNames.push("fluid.resolveRoot");
@@ -61,7 +61,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
     
     fluid.defaults("fluid.contextAware.marker", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
+        gradeNames: ["fluid.component", "autoInit"]
     });
     
     
@@ -228,7 +228,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.contextAware.makeAdaptation = function (options) {
         fluid.expect("fluid.contextAware.makeAdaptation", options, ["distributionName", "targetName", "adaptationName", "checkName", "record"]);
         fluid.defaults(options.distributionName, {
-            gradeNames: ["fluid.littleComponent", "autoInit"],
+            gradeNames: ["fluid.component", "autoInit"],
             distributeOptions: {
                 target: "{/ " + options.targetName + "}.options.contextAwareness." + options.adaptationName + ".checks." + options.checkName,
                 record: options.record

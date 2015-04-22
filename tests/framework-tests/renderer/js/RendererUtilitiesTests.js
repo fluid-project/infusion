@@ -288,7 +288,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.littleComponentWithInstantiator", {
-            gradeNames: ["fluid.littleComponent", "autoInit"],
+            gradeNames: ["fluid.component", "autoInit"],
             components: {
                 instantiator: "{instantiator}",
                 rendererComponent: {

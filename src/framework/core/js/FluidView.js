@@ -20,7 +20,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // The base grade for fluid.viewComponent and fluid.viewComponent - will be removed again once the old ChangeApplier is eliminated
     fluid.defaults("fluid.viewComponent", {
-        gradeNames: ["fluid.standardComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent", "autoInit"],
         initFunction: "fluid.initView",
         argumentMap: {
             container: 0,
@@ -41,7 +41,7 @@ var fluid_2_0 = fluid_2_0 || {};
     // NOTE: this function represents a temporary strategy until we have more integrated IoC debugging.
     // It preserves the current framework behaviour for the 1.4 release, but provides a more informative
     // diagnostic - in fact, it is perfectly acceptable for a component's creator to return no value and
-    // the failure is really in assumptions in fluid.initComponent. Revisit this issue for 1.5
+    // the failure is really in assumptions in fluid.initLittleComponent. Revisit this issue for 1.5
     fluid.diagnoseFailedView = function (componentName, that, options, args) {
         if (!that && (fluid.hasGrade(options, "fluid.viewComponent") || fluid.hasGrade(options, "fluid.viewComponent"))) {
             var container = fluid.wrap(args[1]);

@@ -341,7 +341,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
     
     fluid.defaults("fluid.uploader.builtinStrategyDistributor", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component", "autoInit"],
         distributeOptions: {
             record: {
                 contextValue: "{fluid.browser.supportsBinaryXHR}",
@@ -675,7 +675,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
 
     fluid.defaults("fluid.uploader.strategy", {
-        gradeNames: ["fluid.littleComponent"],
+        gradeNames: ["fluid.component"],
         components: {
             local: {
                 type: "fluid.uploader.local"
@@ -687,7 +687,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.defaults("fluid.uploader.local", {
-        gradeNames: ["fluid.eventedComponent"],
+        gradeNames: ["fluid.component"],
         queueSettings: "{uploader}.options.queueSettings",
         members: {
             queue: "{uploader}.queue"
@@ -706,7 +706,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.defaults("fluid.uploader.remote", {
-        gradeNames: ["fluid.eventedComponent"],
+        gradeNames: ["fluid.component"],
         members: {
             queue: "{uploader}.queue", // TODO: explosions, see FLUID-4925
             queueSettings: "{uploader}.options.queueSettings"
