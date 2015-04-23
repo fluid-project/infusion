@@ -29,7 +29,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.defaults("fluid.prefs.store", {
-        gradeNames: ["fluid.prefs.dataSource", "fluid.contextAware", "autoInit"],
+        gradeNames: ["fluid.prefs.dataSource", "fluid.contextAware"],
         contextAwareness: {
             strategy: {
                 defaultGradeNames: "fluid.prefs.cookieStore"
@@ -46,7 +46,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.prefs.cookieStore", {
-        gradeNames: ["fluid.prefs.store", "autoInit"],
+        gradeNames: ["fluid.prefs.store"],
         cookie: {
             name: "fluid-ui-settings",
             path: "/",
@@ -133,7 +133,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.prefs.tempStore", {
-        gradeNames: ["fluid.prefs.store", "fluid.modelComponent", "autoInit"],
+        gradeNames: ["fluid.prefs.store", "fluid.modelComponent"],
         invokers: {
             get: {
                 funcName: "fluid.identity",
@@ -152,7 +152,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.prefs.globalSettingsStore", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         components: {
             settingsStore: {
                 type: "fluid.prefs.store",

@@ -19,7 +19,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.defaults("fluid.uiOptions.prefsEditor", {
-        gradeNames: ["fluid.prefs.constructed.prefsEditor", "autoInit"],
+        gradeNames: ["fluid.prefs.constructed.prefsEditor"],
         distributeOptions: {
             source: "{that}.options.tocTemplate",
             target: "{that uiEnhancer}.options.tocTemplate"

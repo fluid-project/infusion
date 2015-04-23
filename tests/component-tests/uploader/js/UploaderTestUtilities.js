@@ -18,7 +18,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     // Enough of an uploader to test local and remote strategies
     fluid.defaults("fluid.tests.uploader.mockUploader", {
-        gradeNames: ["fluid.component", "fluid.tests.uploader", "autoInit"],
+        gradeNames: ["fluid.component", "fluid.tests.uploader"],
         queueSettings: fluid.uploader.defaultQueueSettings,
         events: {
             onFileStart: null, // for remote strategy

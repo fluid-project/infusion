@@ -36,7 +36,7 @@ var fluid_2_0 = fluid_2_0 || {};
    
     
     fluid.defaults("fluid.debug.highlighter", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         selectors: {
             highlightRoot: "#fluid-debug-highlightRoot"
         },
@@ -156,7 +156,7 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     };
     
-    fluid.debug.ignorableGrades = ["autoInit", "fluid.debug.listeningView", "fluid.debug.listeningPanel", "fluid.debug.listeningRenderer"];
+    fluid.debug.ignorableGrades = ["fluid.debug.listeningView", "fluid.debug.listeningPanel", "fluid.debug.listeningRenderer"];
     
     fluid.debug.frameworkGrades = fluid.frameworkGrades;
     
@@ -301,7 +301,7 @@ var fluid_2_0 = fluid_2_0 || {};
     
     
     fluid.defaults("fluid.debug.browser", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         model: {
             isOpen: false,
             isInspecting: false,
@@ -558,7 +558,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
     
     fluid.defaults("fluid.debug.viewMapper", {
-        gradeNames: ["fluid.component", "fluid.resolveRoot", "autoInit"],
+        gradeNames: ["fluid.component", "fluid.resolveRoot"],
         members: {
             seenDocuments: {},
             idToEntry: {},

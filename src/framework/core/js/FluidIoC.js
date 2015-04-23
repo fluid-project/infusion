@@ -1379,7 +1379,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
     
     fluid.defaults("fluid.debuggingProbe", {
-        gradeNames: ["fluid.component", "autoInit"]
+        gradeNames: ["fluid.component"]
     });
     
     // probe looks like:

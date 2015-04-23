@@ -70,7 +70,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         fluid.defaults("fluid.tests.rendererComponentTest", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             model: {
                 recordlist: {
                     deffolt: ["person", "intake", "loanin", "loanout", "acquisition", "organization", "objects", "movement"]
@@ -288,7 +288,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.littleComponentWithInstantiator", {
-            gradeNames: ["fluid.component", "autoInit"],
+            gradeNames: ["fluid.component"],
             components: {
                 instantiator: "{instantiator}",
                 rendererComponent: {
@@ -299,7 +299,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.rendererComponentWithNoInstantiator", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             produceTree: "fluid.tests.rendererComponentWithNoInstantiator.produceTree",
             selectors: {
                 text1: ".csc-footer-text1",
@@ -382,7 +382,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.paychequeComponent", {
-            gradeNames: ["fluid.viewComponent", "autoInit"],
+            gradeNames: ["fluid.viewComponent"],
             selectors: {
                 child: ".flc-renderUtils-test"
             },
@@ -396,7 +396,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         // For AC
         fluid.defaults("fluid.tests.paychequeRenderer", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             selectors: {
                 message: ".flc-renderUtils-message"
             },
@@ -414,7 +414,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.FLUID4165Component", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             selectors: {
                 input: ".flc-renderUtils-test"
             },
@@ -435,7 +435,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.FLUID4189Component", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             selectors: {
                 input: ".flc-renderUtils-test",
                 input2: ".flc-renderUtils-test2"
@@ -511,7 +511,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // FLUID-5279: "that.produceTree is not a function" when refreshView() is called as a
         // model (relayed) listener on a renderer relay component
         fluid.defaults("fluid.tests.fluid5279", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             components: {
                 attributes: {
                     type: "fluid.rendererComponent",
@@ -569,7 +569,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         // FLUID-5280: During initial transaction, give priority to recently modified values
         fluid.defaults("fluid.tests.fluid5280", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             components: {
                 attributes: {
                     type: "fluid.tests.fluid5280sub",
@@ -599,7 +599,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.fluid5280sub", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             protoTree: {
                 expander: {
                     "type": "fluid.renderer.condition",
@@ -629,7 +629,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // FLUID-5281: protoComponent expansion should respect new ChangeApplier idiom of "floating base model reference"
 
         fluid.defaults("fluid.tests.fluid5282root", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             protoTree: {
                 expander: {
                     "type": "fluid.renderer.condition",
@@ -808,11 +808,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.repeatDecorator", {
-            gradeNames: ["fluid.viewComponent", "autoInit"]
+            gradeNames: ["fluid.viewComponent"]
         });
 
         fluid.defaults("fluid.tests.repeatHead", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             components: {
                 instantiator: "{instantiator}"
             },
@@ -1329,7 +1329,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         fluid.defaults("fluid.tests.FLUID4737", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             produceTree: "fluid.tests.FLUID4737.produceTree",
             selectors: {
                 messages: ".messages",
@@ -1392,7 +1392,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.FLUID4537", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             renderOnInit: true,
             model: {
                 feeds: [
@@ -1430,7 +1430,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.FLUID4536", {
-            gradeNames: ["fluid.viewComponent", "autoInit"],
+            gradeNames: ["fluid.viewComponent"],
             components: {
                 iframeHead: {
                     createOnEvent: "iframeLoad",
@@ -1468,7 +1468,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         fluid.defaults("fluid.tests.FLUID4536IframeHead", {
-            gradeNames: ["fluid.viewComponent", "autoInit"],
+            gradeNames: ["fluid.viewComponent"],
             components: {
                 iframeChild: {
                     type: "fluid.tests.FLUID4536IframeChild",
@@ -1481,7 +1481,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.FLUID4536IframeChild", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             model: {
                 checked: true
             },
@@ -1519,10 +1519,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.pathExpander", {
-            gradeNames: ["autoInit", "fluid.viewComponent"]
+            gradeNames: ["fluid.viewComponent"]
         });
         fluid.defaults("fluid.tests.pathExpanderParent", {
-            gradeNames: ["autoInit", "fluid.rendererComponent"],
+            gradeNames: ["fluid.rendererComponent"],
             components: {
                 instantiator: "{instantiator}"
             },
@@ -1566,7 +1566,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.customSetConfigRendererComponent", {
-            gradeNames: ["autoInit", "fluid.rendererComponent"],
+            gradeNames: ["fluid.rendererComponent"],
             model: {
                 "a.b.c": {
                     val: "OLD"
@@ -1600,7 +1600,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * Test setup for FLUID-5048
          */
         fluid.defaults("fluid.tests.fluid5048.mediaSettings", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             model: {
                 show: false
             },
@@ -1627,14 +1627,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         
         fluid.defaults("fluid.tests.fluid5048.captionsSettings", {
-            gradeNames: ["fluid.tests.fluid5048.mediaSettings", "autoInit"]
+            gradeNames: ["fluid.tests.fluid5048.mediaSettings"]
         });
         fluid.defaults("fluid.tests.fluid5048.transcriptsSettings", {
-            gradeNames: ["fluid.tests.fluid5048.mediaSettings", "autoInit"]
+            gradeNames: ["fluid.tests.fluid5048.mediaSettings"]
         });
 
         fluid.defaults("fluid.tests.fluid5048.parent", {
-            gradeNames: ["fluid.viewComponent", "autoInit"],
+            gradeNames: ["fluid.viewComponent"],
             selectors: {
                 captionsSettings: ".flc-prefsEditor-captions-settings",
                 transcriptsSettings: ".flc-prefsEditor-transcripts-settings"
@@ -1678,7 +1678,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.fluid5099", {
-            gradeNames: ["autoInit", "fluid.rendererComponent"],
+            gradeNames: ["fluid.rendererComponent"],
             model: {
                 test: "TEST"
             },
@@ -1704,7 +1704,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.fluid4986", {
-            gradeNames: ["autoInit", "fluid.rendererComponent"],
+            gradeNames: ["fluid.rendererComponent"],
             selectors: {
                 select: ".flc-fluid4986-select",
                 simpleBound1: ".flc-fluid4986-simpleBound1",

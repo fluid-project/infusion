@@ -125,7 +125,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         // FLUID-5277: Improve the error message when an nonexistent container is provided for fluid.viewComponent and fluid.rendererComponent
         fluid.defaults("fluid.tests.fluid5277", {
-            gradeNames: ["fluid.viewComponent", "autoInit"]
+            gradeNames: ["fluid.viewComponent"]
         });
 
         jqUnit.test("FLUID-5277: Improve the error message when an nonexistent container is provided for fluid.viewComponent and fluid.rendererComponent", function () {
@@ -135,7 +135,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.testGradedView", {
-            gradeNames: ["fluid.viewComponent", "autoInit"],
+            gradeNames: ["fluid.viewComponent"],
             selectors: {
                 "page-link": ".page-link"
             }
@@ -149,12 +149,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertDeepEq("View component acquired model", model, that.model);
         });
 
-        fluid.tests.blurTester = function (container, options) {
-            var that = fluid.initView("fluid.tests.blurTester", container, options);
-            return that;
-        };
-
         fluid.defaults("fluid.tests.blurTester", {
+            gradeNames: "fluid.viewComponent",
             selectors: {
                 select: "select",
                 input: "input",

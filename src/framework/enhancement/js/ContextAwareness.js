@@ -61,7 +61,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
     
     fluid.defaults("fluid.contextAware.marker", {
-        gradeNames: ["fluid.component", "autoInit"]
+        gradeNames: ["fluid.component"]
     });
     
     
@@ -228,7 +228,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.contextAware.makeAdaptation = function (options) {
         fluid.expect("fluid.contextAware.makeAdaptation", options, ["distributionName", "targetName", "adaptationName", "checkName", "record"]);
         fluid.defaults(options.distributionName, {
-            gradeNames: ["fluid.component", "autoInit"],
+            gradeNames: ["fluid.component"],
             distributeOptions: {
                 target: "{/ " + options.targetName + "}.options.contextAwareness." + options.adaptationName + ".checks." + options.checkName,
                 record: options.record

@@ -329,6 +329,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 
     var testDefaults = {
+        gradeNames: "fluid.component",
         foo: "bar"
     };
 
@@ -337,16 +338,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("Defaults: store and retrieve default values", function () {
         // Assign a collection of defaults for the first time.
 
-        jqUnit.assertDeepEq("defaults() should return the specified defaults",
-                            testDefaults, fluid.filterKeys(fluid.defaults("test"), ["foo"]));
+        jqUnit.assertCanoniseEqual("defaults() should return the specified defaults",
+            testDefaults, fluid.defaults("test"), function (options) {
+                return fluid.filterKeys(options, ["foo"]);
+            });
 
         // Re-assign the defaults with a new collection.
         var testDefaults2 = {
+            gradeNames: "fluid.component",
             baz: "foo"
         };
         fluid.defaults("test", testDefaults2);
-        jqUnit.assertDeepEq("defaults() should return the original defaults",
-                            testDefaults2, fluid.filterKeys(fluid.defaults("test"), ["foo", "baz"]));
+        jqUnit.assertCanoniseEqual("defaults() should return the original defaults",
+            testDefaults2, fluid.defaults("test"), function (options) {
+            return fluid.filterKeys(options, ["foo", "baz"])
+            });
 
         // Try to access defaults for a component that doesn't exist.
         jqUnit.assertNoValue("The defaults for a nonexistent component should be null.",
@@ -396,7 +402,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("FLUID-4285 test - prevent 'double options'", function () {
         jqUnit.expectFrameworkDiagnostic("Registering double options component", function () {
             fluid.defaults("news.parent", {
-                gradeNames: ["fluid.component", "autoInit"],
+                gradeNames: ["fluid.component"],
                 options: {
                     test: "test"
                 }
@@ -606,7 +612,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.eventMerge", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         events: {
             event: "preventable"
         }
@@ -633,7 +639,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.listenerTest", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         events: {
             event: null
         },
@@ -683,14 +689,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // TODO: in future, there will be no error thrown on definition, but only on use - since it should be possible
             // to declare grade hierarchies through forward reference
             fluid.defaults("fluid.tests.missingGradeComponent", {
-                gradeNames: ["fluid.tests.nonexistentGrade", "autoInit"]
+                gradeNames: ["fluid.tests.nonexistentGrade"]
             });
             fluid.tests.missingGradeComponent();
-        }, ["is incomplete", "fluid.tests.nonexistentGrade"]);
+        }, ["incomplete", "nonexistentGrade"]);
     });
 
     fluid.defaults("fluid.tests.schema.textSizer", {
-        gradeNames: ["fluid.tests.schema", "fluid.component", "autoInit"],
+        gradeNames: ["fluid.tests.schema", "fluid.component"],
         schema: {
             "fluid.prefs.textSizer": { // common grade name
                 "type": "number",
@@ -710,7 +716,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.panels.linksControls", {
-        gradeNames: ["fluid.tests.settingsPanel", "fluid.component", "autoInit"],
+        gradeNames: ["fluid.tests.settingsPanel", "fluid.component"],
         preferenceMap: {
             links: "fluid.prefs.emphasizeLinks",
             inputsLarger: "fluid.prefs.inputsLarger"

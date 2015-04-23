@@ -20,7 +20,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // The base grade for fluid.viewComponent and fluid.viewComponent - will be removed again once the old ChangeApplier is eliminated
     fluid.defaults("fluid.viewComponent", {
-        gradeNames: ["fluid.modelComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent"],
         initFunction: "fluid.initView",
         argumentMap: {
             container: 0,
@@ -471,7 +471,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.ariaLabeller", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         labelAttribute: "aria-label",
         liveRegionMarkup: "<div class=\"liveRegion fl-hidden-accessible\" aria-live=\"polite\"></div>",
         liveRegionId: "fluid-ariaLabeller-liveRegion",
@@ -656,6 +656,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.deadMansBlur", {
+        gradeNames: "fluid.function",
         delay: 150,
         backDelay: 100
     });

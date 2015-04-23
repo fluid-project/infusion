@@ -23,7 +23,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var removedFile = null;
         
         fluid.defaults("fluid.tests.uploader.multiFileUploader", {
-            gradeNames: ["fluid.component", "autoInit"],
+            gradeNames: ["fluid.component"],
             components: {
                 fileQueueView: {
                     type: "fluid.uploader.fileQueueView",

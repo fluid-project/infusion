@@ -27,7 +27,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************/
 
     fluid.defaults("fluid.prefs.separatedPanel", {
-        gradeNames: ["fluid.prefs.prefsEditorLoader", "autoInit"],
+        gradeNames: ["fluid.prefs.prefsEditorLoader"],
         events: {
             afterRender: null,
             onReady: null,
@@ -183,7 +183,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *****************************************/
 
     fluid.defaults("fluid.prefs.separatedPanel.renderIframe", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         events: {
             afterRender: null
         },

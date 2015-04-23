@@ -2084,7 +2084,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.testTransformable", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         food: "tofu"
     });
 
@@ -2110,11 +2110,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.transforms.strategy", {
-        gradeNames: ["fluid.component", "autoInit"]
+        gradeNames: ["fluid.component"]
     });
 
     fluid.defaults("fluid.tests.testTransformableIoC", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         components: {
             strategy: {
                 type: "fluid.tests.transforms.strategy"
@@ -2123,7 +2123,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.transforms.tip", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         distributeOptions: {
             record: {
                 transformer: "fluid.model.transform",

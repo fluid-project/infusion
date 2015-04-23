@@ -23,7 +23,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // Fine-tune the starter aux schema and add speak panel
     fluid.defaults("fluid.prefs.auxSchema.speak", {
-        gradeNames: ["fluid.prefs.auxSchema", "autoInit"],
+        gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
             "namespace": "fluid.prefs.constructed",
             "templatePrefix": "../../framework/preferences/html/",
@@ -55,7 +55,7 @@ var fluid_2_0 = fluid_2_0 || {};
     // add extra prefs to the starter primary schemas
 
     fluid.defaults("fluid.prefs.schemas.speak", {
-        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        gradeNames: ["fluid.prefs.schemas"],
         schema: {
             "fluid.prefs.speak": {
                 "type": "boolean",

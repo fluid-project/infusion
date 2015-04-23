@@ -25,7 +25,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var emphasizeLinksClass = "fl-emphasize-links";
 
     fluid.defaults("fluid.uiEnhancer.customizedEnactors", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         components: {
             emphasizeLinks: {
                 type: "fluid.prefs.enactor.emphasizeLinks",
@@ -41,7 +41,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.customizedEnactors", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             uiEnhancer: {
                 type: "fluid.uiEnhancer",
@@ -64,7 +64,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.customizedEnactorsTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         testOpts: {
             cssClass: emphasizeLinksClass
         },
@@ -98,7 +98,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.settings", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             prefsEditor: {
                 type: "fluid.prefs.initialModel.starter"
@@ -136,7 +136,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.settingsTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         testOpts: {
             testSettings: {
                 textSize: "1.5",
@@ -175,7 +175,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.optionsMunging", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             prefsEditor: {
                 type: "fluid.prefs.initialModel.starter",
@@ -215,7 +215,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.optionsMungingTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "Test options munging",
             tests: [{
@@ -233,7 +233,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.lineHeightUnit", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             lineHeightUnitTester: {
                 type: "fluid.tests.lineHeightUnitTester"
@@ -251,7 +251,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.lineHeightUnitTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "Test line height unit",
             tests: [{

@@ -1546,15 +1546,13 @@ var fluid = fluid || fluid_2_0;
                 var oGradeNames = fluid.makeArray(options.gradeNames);
                 for (var i = 0; i < oGradeNames.length; ++ i) {
                     var oGradeName = oGradeNames[i];
-                    var isAuto = oGradeName === "autoInit";
-                    if (!raw) {
-                        if (!gs.gradeHash[oGradeName] && !isAuto) {
+                    if (raw) {
+                        resolveGradesImpl(gs, oGradeName);
+                    } else {
+                        if (!gs.gradeHash[oGradeName]) {
                             gs.gradeHash[oGradeName] = true; // these have already been resolved
                             gs.gradeChain.push(oGradeName);
                         }
-                    }
-                    else if (!isAuto) {
-                        resolveGradesImpl(gs, oGradeName);
                     }
                 }
             }
@@ -1598,9 +1596,6 @@ var fluid = fluid || fluid_2_0;
         mergeArgs = [mergePolicy, {}].concat(mergeArgs);
         var mergedDefaults = fluid.merge.apply(null, mergeArgs);
         mergedDefaults.gradeNames = gradeStruct.gradeChain;
-        if (fluid.hasGrade(defaults, "autoInit")) {
-            mergedDefaults.gradeNames.push("autoInit");
-        }
         return {defaults: mergedDefaults, lastTick: gradeStruct && gradeStruct.lastTick};
     };
 
@@ -1698,7 +1693,7 @@ var fluid = fluid || fluid_2_0;
         }
         return index;
     };
-
+    
     /**
      * Retrieves and stores a component's default settings centrally.
      * @param {String} componentName the name of the component
@@ -1715,34 +1710,36 @@ var fluid = fluid || fluid_2_0;
                     " with option named \"options\" - perhaps you meant to write these options at top level in fluid.defaults? - ", options);
             }
             fluid.rawDefaults(componentName, options);
-            if (fluid.hasGrade(options, "autoInit")) {
-                fluid.makeComponent(componentName, fluid.getGradedDefaults(componentName));
-            }
+            var gradedDefaults = fluid.getGradedDefaults(componentName);
+            if (!fluid.hasGrade(gradedDefaults, "fluid.function")) {
+                fluid.makeComponentCreator(componentName, gradedDefaults);
+            } 
         }
     };
 
-    fluid.makeComponent = function (componentName, options) {
-        if (!options.gradeNames || options.gradeNames.length === 0) {
-            fluid.fail("Cannot autoInit component " + componentName + " which does not have any gradeNames defined");
-        } else if (!options.initFunction) {
-            var blankGrades = [];
-            for (var i = 0; i < options.gradeNames.length; ++ i) {
-                var gradeName = options.gradeNames[i];
-                var defaults = fluid.rawDefaults(gradeName);
-                if (!defaults && gradeName !== "autoInit") {
-                    blankGrades.push(gradeName);
-                }
-            }
-            if (blankGrades.length === 0) {
-                fluid.fail("Cannot autoInit component " + componentName + " which does not have an initFunction defined");
-            } else {
-                fluid.fail("The grade hierarchy of component with typeName " + componentName + " is incomplete - it inherits from the following grade(s): " +
-                 blankGrades.join(", ") + " for which the grade definitions are corrupt or missing. Please check the files which might include these " +
-                 "grades and ensure they are readable and have been loaded by this instance of Infusion");
-            }
-        }
+    fluid.makeComponentCreator = function (componentName, options) {
         var creator = function () {
-            return fluid.initComponent(componentName, arguments);
+            if (!options.gradeNames || options.gradeNames.length === 0) {
+                fluid.fail("Cannot make component creator for type " + componentName + " which does not have any gradeNames defined");
+            } else if (!options.initFunction) {
+                var blankGrades = [];
+                for (var i = 0; i < options.gradeNames.length; ++ i) {
+                    var gradeName = options.gradeNames[i];
+                    var defaults = fluid.rawDefaults(gradeName);
+                    if (!defaults) {
+                        blankGrades.push(gradeName);
+                    }
+                }
+                if (blankGrades.length === 0) {
+                    fluid.fail("Cannot make component creator for type " + componentName + " which does not have an initFunction defined");
+                } else {
+                    fluid.fail("The grade hierarchy of component with type " + componentName + " is incomplete - it inherits from the following grade(s): " +
+                     blankGrades.join(", ") + " for which the grade definitions are corrupt or missing. Please check the files which might include these " +
+                     "grades and ensure they are readable and have been loaded by this instance of Infusion");
+                }
+            } else {
+                return fluid.initComponent(componentName, arguments);
+            }
         };
         var existing = fluid.getGlobalValue(componentName);
         if (existing) {
@@ -1754,7 +1751,7 @@ var fluid = fluid || fluid_2_0;
     fluid.makeComponents = function (components) {
         fluid.each(components, function (value, key) {
             var options = {
-                gradeNames: fluid.makeArray(value).concat(["autoInit"])
+                gradeNames: fluid.makeArray(value)
             };
             fluid.defaults(key, options);
         });
@@ -2297,7 +2294,6 @@ var fluid = fluid || fluid_2_0;
     };
 
     fluid.defaults("fluid.component", {
-        gradeNames: ["autoInit"],
         initFunction: "fluid.initLittleComponent",
         mergePolicy: fluid.rootMergePolicy,
         argumentMap: {
@@ -2328,7 +2324,7 @@ var fluid = fluid || fluid_2_0;
      * once we have implemented FLUID-4925 "wave of explosions" */
 
     fluid.defaults("fluid.typeFount", {
-        gradeNames: ["fluid.component", "autoInit"]
+        gradeNames: ["fluid.component"]
     });
 
     /**

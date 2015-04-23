@@ -20,7 +20,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *********************/
 
     fluid.defaults("fluid.tabs", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         tabOptions: {},
         events: {
             // These events are forwarded out of the jQueryUI Tabs' equivalents

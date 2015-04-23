@@ -27,7 +27,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.prefs.resourceLoader.textControlsFullResourcePath = "../../../../src/framework/preferences/html/PrefsEditorTemplate-textSize.html";
 
     fluid.defaults("fluid.tests.prefs.resourceLoader", {
-        gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
+        gradeNames: ["fluid.prefs.resourceLoader"],
         resources: {
             linksControls: "%prefix/" + fluid.tests.prefs.resourceLoader.linksControlsTemplateName,
             textControls: fluid.tests.prefs.resourceLoader.textControlsFullResourcePath
@@ -71,7 +71,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     
     fluid.defaults("fluid.tests.prefs.customizedResourceLoader", {
-        gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
+        gradeNames: ["fluid.prefs.resourceLoader"],
         resources: {
             lineSpace: "%prefix/" + fluid.tests.prefs.resourceLoader.lineSpaceTemplateName
         },
@@ -126,7 +126,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.prefs.messagePrefix = "../../../../src/framework/preferences/messages/";
 
     fluid.defaults("fluid.tests.prefs.commonLoader", {
-        gradeNames: ["fluid.prefs.prefsEditorLoader", "autoInit"],
+        gradeNames: ["fluid.prefs.prefsEditorLoader"],
         templatePrefix: fluid.tests.prefs.templatePrefix,
         messagePrefix: fluid.tests.prefs.messagePrefix,
         messageLoader: {

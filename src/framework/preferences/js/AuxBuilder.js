@@ -22,7 +22,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.auxSchema", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         auxiliarySchema: {}
     });
 
@@ -412,31 +412,31 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.prefs.auxBuilder", {
-        gradeNames: ["fluid.prefs.auxSchema", "autoInit"],
+        gradeNames: ["fluid.prefs.auxSchema"],
         mergePolicy: {
             elementCommonOptions: "noexpand"
         },
         topCommonOptions: {
             panels: {
-                gradeNames: ["fluid.prefs.prefsEditor", "autoInit"]
+                gradeNames: ["fluid.prefs.prefsEditor"]
             },
             enactors: {
-                gradeNames: ["fluid.uiEnhancer", "autoInit"]
+                gradeNames: ["fluid.uiEnhancer"]
             },
             templateLoader: {
-                gradeNames: ["fluid.prefs.resourceLoader", "autoInit"]
+                gradeNames: ["fluid.prefs.resourceLoader"]
             },
             messageLoader: {
-                gradeNames: ["fluid.prefs.resourceLoader", "autoInit"]
+                gradeNames: ["fluid.prefs.resourceLoader"]
             },
             initialModel: {
-                gradeNames: ["fluid.prefs.initialModel", "autoInit"]
+                gradeNames: ["fluid.prefs.initialModel"]
             },
             templatePrefix: {
-                gradeNames: ["fluid.component", "autoInit"]
+                gradeNames: ["fluid.component"]
             },
             messagePrefix: {
-                gradeNames: ["fluid.component", "autoInit"]
+                gradeNames: ["fluid.component"]
             }
         },
         elementCommonOptions: {

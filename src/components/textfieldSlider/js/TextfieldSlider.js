@@ -19,7 +19,7 @@ var fluid_2_0 = fluid_2_0 || {};
      ********************/
 
     fluid.defaults("fluid.textfieldSlider", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         components: {
             textfield: {
                 type: "fluid.textfieldSlider.textfield",
@@ -66,7 +66,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.defaults("fluid.textfieldSlider.textfield", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         range: {}, // should be used to specify the min, max range e.g. {min: 0, max: 100}
         modelRelay: {
             target: "value",
@@ -111,7 +111,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.defaults("fluid.slider", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         range: {}, // should be used to specify the min, max range e.g. {min: 0, max: 100}
         selectors: {
             thumb: ".ui-slider-handle"

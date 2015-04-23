@@ -27,7 +27,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.prefs.prefsEditorLoader", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         components: {
             prefsEditor: {
                 priority: "last",
@@ -91,7 +91,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.defaults("fluid.prefs.transformDefaultPanelsOptions", {
         // Do not supply "fluid.prefs.inline" here, since when this is used as a mixin for separatedPanel, it ends up displacing the
         // more refined type of the prefsEditorLoader
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         distributeOptions: [{
             source: "{that}.options.textSize",
             removeSource: true,
@@ -124,7 +124,7 @@ var fluid_2_0 = fluid_2_0 || {};
      **************************************/
 
     fluid.defaults("fluid.prefs.resourceLoader", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         listeners: {
             "onCreate.loadResources": {
                 listener: "fluid.prefs.resourceLoader.loadResources",
@@ -180,7 +180,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.prefs.resourcePath", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         value: "../html/"
     });
 
@@ -189,14 +189,14 @@ var fluid_2_0 = fluid_2_0 || {};
      **********************/
 
     fluid.defaults("fluid.prefs.settingsGetter", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         members: {
             getSettings: "{fluid.prefs.store}.get"
         }
     });
 
     fluid.defaults("fluid.prefs.settingsSetter", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         invokers: {
             setSettings: {
                 funcName: "fluid.prefs.settingsSetter.setSettings",
@@ -211,7 +211,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.prefs.uiEnhancerRelay", {
-        gradeNames: ["autoInit", "fluid.modelComponent"],
+        gradeNames: ["fluid.modelComponent"],
         listeners: {
             onCreate: "{that}.addListener",
             onDestroy: "{that}.removeListener"
@@ -257,7 +257,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.prefs.prefsEditor", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.settingsGetter", "fluid.prefs.settingsSetter", "fluid.prefs.initialModel", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.prefs.settingsGetter", "fluid.prefs.settingsSetter", "fluid.prefs.initialModel"],
         invokers: {
             /**
              * Updates the change applier and fires modelChanged on subcomponent fluid.prefs.controls
@@ -434,7 +434,7 @@ var fluid_2_0 = fluid_2_0 || {};
      ******************************/
 
     fluid.defaults("fluid.prefs.preview", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         components: {
             enhancer: {
                 type: "fluid.uiEnhancer",

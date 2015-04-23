@@ -309,7 +309,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.uploader.fileQueueView", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         members: {
             fileProgressors: {}
         },
@@ -464,7 +464,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.scrollable", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         makeScrollableFn: fluid.scrollable.makeSimple, // NB - a modern style would configure an invoker
         members: {
             scrollable: {
@@ -525,7 +525,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.scrollableTable", {
-        gradeNames: ["fluid.scrollable", "autoInit"],
+        gradeNames: ["fluid.scrollable"],
         makeScrollableFn: fluid.scrollable.makeTable,
         wrapperMarkup: "<div class='fl-scrollable-scroller'><div class='fl-scrollable-inner'></div></div>"
     });

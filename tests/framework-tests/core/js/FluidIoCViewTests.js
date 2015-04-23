@@ -18,7 +18,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests");
 
     fluid.defaults("fluid.tests.testComponent", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         default1: "testComponent value",
         components: {
             test2: {
@@ -33,7 +33,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.testComponent2", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         components: {
             sub1: {
                 type: "fluid.tests.subComponent",
@@ -78,7 +78,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 
     fluid.defaults("fluid.tests.autoGradedComponent", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         events: {
             anEvent: null
         }
@@ -130,7 +130,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.dynamicContainer", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         members: {
             childCount: 0
         },
@@ -164,7 +164,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      ************************************/
 
     fluid.defaults("fluid.tests.parentView", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         components: {
             defaultedChildView: {
                 type: "fluid.tests.subComponent",

@@ -120,7 +120,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.uploader.demo.remote", {
-        gradeNames: ["fluid.uploader.remote", "autoInit"],
+        gradeNames: ["fluid.uploader.remote"],
         members: {
             demoState: {
                 fileIdx: 0,

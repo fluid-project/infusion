@@ -23,7 +23,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.initialModel", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         members: {
             // TODO: This information is supposed to be generated from the JSON
             // schema describing various preferences. For now it's kept in top
@@ -39,7 +39,7 @@ var fluid_2_0 = fluid_2_0 || {};
      ***********************************************/
 
     fluid.defaults("fluid.uiEnhancer", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         invokers: {
             updateModel: {
                 func: "{that}.applier.change",
@@ -52,11 +52,11 @@ var fluid_2_0 = fluid_2_0 || {};
     // Make this a standalone grade since options merging can't see 2 levels deep into merging
     // trees and will currently trash "gradeNames" for 2nd level nested components!
     fluid.defaults("fluid.uiEnhancer.root", {
-        gradeNames: ["fluid.uiEnhancer", "fluid.resolveRootSingle", "autoInit"],
+        gradeNames: ["fluid.uiEnhancer", "fluid.resolveRootSingle"],
         singleRootType: "fluid.uiEnhancer"
     });
     
-    fluid.uiEnhancer.ignorableGrades = ["autoInit", "fluid.uiEnhancer", "fluid.uiEnhancer.root", "fluid.resolveRoot", "fluid.resolveRootSingle"];
+    fluid.uiEnhancer.ignorableGrades = ["fluid.uiEnhancer", "fluid.uiEnhancer.root", "fluid.resolveRoot", "fluid.resolveRootSingle"];
     
     // These function is necessary so that we can "clone" a UIEnhancer (e.g. one in an iframe) from another.
     // This reflects a long-standing mistake in UIEnhancer design - we should separate the logic in an enhancer
@@ -90,7 +90,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.defaults("fluid.pageEnhancer", {
         gradeNames: ["fluid.component", "fluid.originalEnhancerOptions",
             "fluid.prefs.initialModel", "fluid.prefs.settingsGetter",
-            "fluid.resolveRootSingle", "autoInit"],
+            "fluid.resolveRootSingle"],
         distributeOptions: {
             source: "{that}.options.uiEnhancer",
             target: "{that > uiEnhancer}.options"

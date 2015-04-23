@@ -27,7 +27,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.overviewPanel", {
-        gradeNames: ["fluid.rendererComponent", "autoInit"],
+        gradeNames: ["fluid.rendererComponent"],
         resources: {
             template: {
                 href: "../html/overviewPanelTemplate.html"

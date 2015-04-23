@@ -142,7 +142,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     
     fluid.defaults("fluid.tests.simplePromiseTransform", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         events: {
             forwardTransform: null,
             backwardTransform: null
@@ -252,7 +252,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     
     fluid.defaults("fluid.tests.errorPromiseTransform", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         events: {
             forwardTransform: null
         },
@@ -286,7 +286,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.testErrorPromises("Error promise chain via fluid.promise.follow", true);
     
     fluid.defaults("fluid.tests.optionsTransform", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         events: {
             forwardTransform: null
         },

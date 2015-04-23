@@ -99,7 +99,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.undo", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         members: {
             state: fluid.undo.STATE_INITIAL,
             initialModel: {},
@@ -178,7 +178,7 @@ var fluid_2_0 = fluid_2_0 || {};
     
     // Backward compatibility for users of Infusion 1.4.x API
     fluid.defaults("fluid.undoDecorator", {
-        gradeNames: ["fluid.undo", "autoInit"]
+        gradeNames: ["fluid.undo"]
     });
 
 })(jQuery, fluid_2_0);

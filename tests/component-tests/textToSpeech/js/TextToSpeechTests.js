@@ -18,7 +18,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests");
 
     fluid.defaults("fluid.tests.textToSpeech", {
-        gradeNames: ["fluid.textToSpeech", "autoInit"],
+        gradeNames: ["fluid.textToSpeech"],
         utteranceOpts: {
             // not all speech synthesizers will respect this setting
             volume: 0
@@ -33,7 +33,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.textToSpeech.startStop", {
-        gradeNames: ["fluid.tests.textToSpeech", "autoInit"],
+        gradeNames: ["fluid.tests.textToSpeech"],
         listeners: {
             "onStart.test": {
                 listener: function (that) {
@@ -60,7 +60,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.textToSpeech.pauseResume", {
-        gradeNames: ["fluid.tests.textToSpeech", "autoInit"],
+        gradeNames: ["fluid.tests.textToSpeech"],
         listeners: {
             "onStart.pause": {
                 listener: "{that}.pause"

@@ -15,7 +15,7 @@ var fluid_2_0 = fluid_2_0 || {};
     "use strict";
 
     fluid.defaults("fluid.prefs.enactor", {
-        gradeNames: ["fluid.modelComponent", "autoInit"]
+        gradeNames: ["fluid.modelComponent"]
     });
 
     /**********************************************************************************
@@ -25,7 +25,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * This component is used as a grade by emphasizeLinks & inputsLarger
      **********************************************************************************/
     fluid.defaults("fluid.prefs.enactor.styleElements", {
-        gradeNames: ["fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.prefs.enactor"],
         cssClass: null,  // Must be supplied by implementors
         elementsToStyle: null,  // Must be supplied by implementors
         invokers: {
@@ -72,7 +72,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.enactor.classSwapper", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor"],
         classes: {},  // Must be supplied by implementors
         invokers: {
             clearClasses: {
@@ -128,7 +128,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.prefs.enactor.emphasizeLinks", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor.styleElements", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor.styleElements"],
         preferenceMap: {
             "fluid.prefs.emphasizeLinks": {
                 "model.value": "default"
@@ -146,7 +146,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.prefs.enactor.inputsLarger", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor.styleElements", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor.styleElements"],
         preferenceMap: {
             "fluid.prefs.inputsLarger": {
                 "model.value": "default"
@@ -163,7 +163,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
     // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.prefs.enactor.textFont", {
-        gradeNames: ["fluid.prefs.enactor.classSwapper", "autoInit"],
+        gradeNames: ["fluid.prefs.enactor.classSwapper"],
         preferenceMap: {
             "fluid.prefs.textFont": {
                 "model.value": "default"
@@ -178,7 +178,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
     // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.prefs.enactor.contrast", {
-        gradeNames: ["fluid.prefs.enactor.classSwapper", "autoInit"],
+        gradeNames: ["fluid.prefs.enactor.classSwapper"],
         preferenceMap: {
             "fluid.prefs.contrast": {
                 "model.value": "default"
@@ -216,7 +216,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.prefs.enactor.textSize", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor"],
         preferenceMap: {
             "fluid.prefs.textSize": {
                 "model.value": "default"
@@ -272,7 +272,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.prefs.enactor.lineSpace", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor"],
         preferenceMap: {
             "fluid.prefs.lineSpace": {
                 "model.value": "default"
@@ -360,7 +360,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.prefs.enactor.tableOfContents", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor"],
         preferenceMap: {
             "fluid.prefs.tableOfContents": {
                 "model.toc": "default"

@@ -296,7 +296,7 @@ var fluid_2_0 = fluid_2_0 || {};
     /** A body renderer implementation which uses the Fluid renderer to render a table section **/
 
     fluid.defaults("fluid.table.selfRender", {
-        gradeNames: ["fluid.rendererComponent", "autoInit"],
+        gradeNames: ["fluid.rendererComponent"],
         listeners: {
             onCreate: [{
                 "this": "{that}.root",
@@ -384,7 +384,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.table", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         mergePolicy: {
             dataModel: "preserve",
             columnDefs: "noexpand"

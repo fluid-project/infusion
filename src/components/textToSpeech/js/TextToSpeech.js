@@ -28,7 +28,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.textToSpeech", {
-        gradeNames: ["fluid.modelComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent"],
         events: {
             onStart: null,
             onStop: null,

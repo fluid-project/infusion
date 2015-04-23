@@ -322,7 +322,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.uploader", {
-        gradeNames: ["fluid.viewComponent", "fluid.contextAware", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.contextAware"],
         contextAwareness: {
             technology: {
                 defaultGradeNames: "fluid.uploader.singleFile"
@@ -341,7 +341,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
     
     fluid.defaults("fluid.uploader.builtinStrategyDistributor", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         distributeOptions: {
             record: {
                 contextValue: "{fluid.browser.supportsBinaryXHR}",
@@ -405,7 +405,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
      
     fluid.defaults("fluid.uploader.multiFileUploader", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         members: {
             totalFileStatusTextId: {
                 expander: {
@@ -770,7 +770,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.uploader.singleFile", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         selectors: {
             basicUpload: ".fl-progEnhance-basic"
         },

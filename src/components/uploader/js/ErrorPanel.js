@@ -15,7 +15,7 @@ var fluid_2_0 = fluid_2_0 || {};
     "use strict";
 
     fluid.defaults("fluid.uploader.errorPanel", {
-        gradeNames: ["fluid.viewComponent", "fluid.contextAware", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.contextAware"],
         invokers: {
             refreshView: "fluid.uploader.errorPanel.refreshView({that})"
         },
@@ -119,7 +119,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
     
     fluid.defaults("fluid.uploader.errorPanel.section", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         model: {
             errorCode: undefined,
             files: [],

@@ -16,7 +16,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     "use strict";
     
     fluid.defaults("demo.initGridReorderer", {
-        gradeNames: ["fluid.reorderGrid", "autoInit"],
+        gradeNames: ["fluid.reorderGrid"],
         styles: {
             dragging: "demo-gridReorderer-dragging",
             avatar: "demo-gridReorderer-avatar",

@@ -61,7 +61,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.defaults("fluid.pager.directPageList", {
-        gradeNames: ["fluid.pager.pageList", "autoInit"],
+        gradeNames: ["fluid.pager.pageList"],
         listeners: {
             onCreate: {
                 funcName: "fluid.pager.bindLinkClicks",
@@ -215,7 +215,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.pager.renderedPageList", {
-        gradeNames: ["fluid.rendererComponent", "fluid.pager.pageList", "autoInit"],
+        gradeNames: ["fluid.rendererComponent", "fluid.pager.pageList"],
         rendererOptions: {
             idMap: {},
             cutpoints: [
@@ -270,7 +270,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
 
     fluid.defaults("fluid.pager.previousNext", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         members: {
             previous: "{that}.dom.previous",
             next: "{that}.dom.next"
@@ -300,7 +300,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.pager.pagerBar", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         components: {
             pageList: {
                 type: "fluid.pager.pageList",
@@ -357,7 +357,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
 
     fluid.defaults("fluid.pager.summary", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         listeners: {
             onCreate: {
                 funcName: "fluid.pager.summaryAria",
@@ -383,7 +383,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.pager.directPageSize", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         listeners: {
             onCreate: {
                 "this": "{that}.container",
@@ -431,7 +431,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************/
 
     fluid.defaults("fluid.pager", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         events: {
             initiatePageChange: null,
             initiatePageSizeChange: null,

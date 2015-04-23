@@ -172,7 +172,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.overviewPanel.verifyRendering", {
-        gradeNames: ["fluid.overviewPanel", "autoInit"],
+        gradeNames: ["fluid.overviewPanel"],
         resources: fluid.tests.overviewPanel.resources,
         listeners: {
             "afterRender": {
@@ -187,7 +187,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.overviewPanel.verifyWhenInitiallyHidden", {
-        gradeNames: ["fluid.overviewPanel", "autoInit"],
+        gradeNames: ["fluid.overviewPanel"],
         resources: fluid.tests.overviewPanel.resources,
         listeners: {
             "onCreate": {
@@ -206,7 +206,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.overviewPanel.verifyWhenInitiallyVisible", {
-        gradeNames: ["fluid.overviewPanel", "autoInit"],
+        gradeNames: ["fluid.overviewPanel"],
         resources: fluid.tests.overviewPanel.resources,
         listeners: {
             "afterRender": {
@@ -221,7 +221,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.overviewPanel.verifyCloseControl", {
-        gradeNames: ["fluid.overviewPanel", "autoInit"],
+        gradeNames: ["fluid.overviewPanel"],
         resources: fluid.tests.overviewPanel.resources,
         listeners: {
             "afterRender": {
@@ -236,7 +236,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.overviewPanel.verifyToggleControl", {
-        gradeNames: ["fluid.overviewPanel", "autoInit"],
+        gradeNames: ["fluid.overviewPanel"],
         resources: fluid.tests.overviewPanel.resources,
         listeners: {
             "afterRender": {

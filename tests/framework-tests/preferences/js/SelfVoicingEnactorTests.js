@@ -21,7 +21,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.prefs.enactor.speakEnactor", {
-        gradeNames: ["fluid.prefs.enactor.speak", "autoInit"],
+        gradeNames: ["fluid.prefs.enactor.speak"],
         members: {
             eventRecord: {},
             speakQueue: []
@@ -82,7 +82,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.speakTests", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             speak: {
                 type: "fluid.tests.prefs.enactor.speakEnactor"
@@ -94,7 +94,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.speakTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
             sampleText: "Reading sample text",
             startStopFireRecord: {
@@ -144,7 +144,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.prefs.enactor.selfVoicingEnactor", {
-        gradeNames: ["fluid.prefs.enactor.selfVoicing", "fluid.tests.prefs.enactor.speakEnactor", "autoInit"],
+        gradeNames: ["fluid.prefs.enactor.selfVoicing", "fluid.tests.prefs.enactor.speakEnactor"],
         model: {
             enabled: false
         },
@@ -157,7 +157,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.selfVoicingTests", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             selfVoicing: {
                 type: "fluid.tests.prefs.enactor.selfVoicingEnactor",
@@ -170,7 +170,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.selfVoicingTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
             expectedText: [
                 "{selfVoicing}.options.strings.welcomeMsg",

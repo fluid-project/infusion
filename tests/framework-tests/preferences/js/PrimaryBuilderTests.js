@@ -17,7 +17,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests");
 
     fluid.defaults("fluid.tests.sampleSchemaGrade", {
-        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        gradeNames: ["fluid.prefs.schemas"],
         schema: {
             "type": "object",
             "properties": {
@@ -33,7 +33,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.customTextSize", {
-        gradeNames: ["autoInit", "fluid.component"],
+        gradeNames: ["fluid.component"],
         schema: {
             "type": "object",
             "properties": {
@@ -49,7 +49,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.contributedSchema", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             schema: {
                 type: "fluid.component",
@@ -105,7 +105,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.schemaTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "Contributed Schema",
             tests: [{

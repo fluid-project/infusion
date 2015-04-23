@@ -116,7 +116,7 @@ var demo = demo || {};
     // Demo initialization
 
     fluid.defaults("demo.imageViewer", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         selectors: {
             thumbContainer: ".demo-container-imageThumbnails",
             ranker: ".demo-fiveStar",

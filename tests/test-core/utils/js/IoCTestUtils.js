@@ -19,7 +19,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.registerNamespace("fluid.test");
 
     fluid.defaults("fluid.test.testEnvironment", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         components: {
             sequenceListener: {
                 type: "fluid.test.sequenceListener"
@@ -82,7 +82,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
     
     fluid.defaults("fluid.test.sequenceListener", { // TODO: this used to be "fluid.emptySubcomponent" in the fluid.demands era - review and improve support for this
-        gradeNames: ["fluid.component", "fluid.contextAware", "autoInit"]
+        gradeNames: ["fluid.component", "fluid.contextAware"]
     });
 
     /** In the browser only, hijack a piece of the QUnit UI in order to show the running sequence number **/
@@ -99,7 +99,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.defaults("fluid.test.browserSequenceListener", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         listeners: {
             "{testEnvironment}.events.onBeginSequence": {
                 listener: "fluid.test.browserSequenceListener.onBeginSequence",
@@ -196,7 +196,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.test.testCaseHolder", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         mergePolicy: {
             modules: "noexpand",
             moduleSource: "noexpand"

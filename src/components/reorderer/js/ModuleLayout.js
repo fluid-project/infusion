@@ -138,7 +138,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.moduleLayoutHandler", {
-        gradeNames: ["fluid.layoutHandler", "autoInit"],
+        gradeNames: ["fluid.layoutHandler"],
         orientation:         fluid.orientation.VERTICAL,
         containerRole:       fluid.reorderer.roles.REGIONS,
         selectablesTabindex: -1,

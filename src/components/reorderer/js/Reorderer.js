@@ -173,7 +173,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.reorderer", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         styles: {
             defaultStyle: "fl-reorderer-movable-default",
             selected: "fl-reorderer-movable-selected",
@@ -695,12 +695,12 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.reorderList", {
-        gradeNames: ["fluid.reorderer", "autoInit"],
+        gradeNames: ["fluid.reorderer"],
         layoutHandler: "fluid.listLayoutHandler"
     });
 
     fluid.defaults("fluid.reorderGrid", {
-        gradeNames: ["fluid.reorderer", "autoInit"],
+        gradeNames: ["fluid.reorderer"],
         layoutHandler: "fluid.gridLayoutHandler"
     });
 
@@ -762,7 +762,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // Public layout handlers.
     fluid.defaults("fluid.listLayoutHandler", {
-        gradeNames: ["fluid.layoutHandler", "autoInit"],
+        gradeNames: ["fluid.layoutHandler"],
         orientation:         fluid.orientation.VERTICAL,
         containerRole:       fluid.reorderer.roles.LIST,
         selectablesTabindex: -1,
@@ -788,7 +788,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
      
     fluid.defaults("fluid.gridLayoutHandler", {
-        gradeNames: ["fluid.layoutHandler", "autoInit"],
+        gradeNames: ["fluid.layoutHandler"],
         orientation:         fluid.orientation.HORIZONTAL,
         containerRole:       fluid.reorderer.roles.GRID,
         selectablesTabindex: -1,
@@ -817,7 +817,7 @@ var fluid_2_0 = fluid_2_0 || {};
       * focused position of the reorderer as well as the coordinates of any requested move */
 
     fluid.defaults("fluid.reorderer.labeller", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         members: {
             movedMap: {},
             moduleCell: {

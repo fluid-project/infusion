@@ -56,7 +56,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.parseAuxSchema", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             defaultsTester: {
                 type: "fluid.tests.parseAuxSchemaTester"
@@ -65,7 +65,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.parseAuxSchemaTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         testOpts: {
             auxSchema: {
                 "namespace": "fluid.prefs.constructed", // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed PrefsEditor.
@@ -126,7 +126,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.generateGrade", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             defaultsTester: {
                 type: "fluid.tests.generateGradeTester"
@@ -135,14 +135,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.generateGradeTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "fluid.prefs.builder.generateGrade",
             tests: [{
-                expect: 4,
+                expect: 3,
                 name: "grade creation",
                 func: "fluid.tests.testGenerateGrade",
-                args: [{gradeNames: ["fluid.component", "autoInit"], members: {test: "test"}}, ["defaults", "fluid.tests.created", {gradeNames: ["fluid.component", "autoInit"], members: {test: "test"}}]]
+                args: [{gradeNames: ["fluid.component"], members: {test: "test"}}, ["defaults", "fluid.tests.created", {gradeNames: ["fluid.component"], members: {test: "test"}}]]
             }]
         }]
     });
@@ -170,7 +170,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.constructGrades", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             constructGradesTester: {
                 type: "fluid.tests.constructGradesTester"
@@ -179,12 +179,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.constructGradesTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
             mockAuxSchema: {
                 namespace: "fluid.tests.created.constructGrade",
                 sample: {
-                    gradeNames: ["fluid.component", "autoInit"],
+                    gradeNames: ["fluid.component"],
                     testOpt: "testOpt"
                 }
             },
@@ -192,7 +192,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sample: {
                     gradeName: "fluid.tests.created.constructGrade.sample",
                     options: {
-                        gradeNames: ["fluid.component", "autoInit"],
+                        gradeNames: ["fluid.component"],
                         testOpt: "testOpt"
                     }
                 },
@@ -204,7 +204,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.prefs.builder.constructGrade",
             tests: [{
-                expect: 7,
+                expect: 6,
                 name: "generate grades",
                 func: "fluid.tests.testConstructGrades",
                 args: ["{that}.options.testOptions.expected", ["{that}.options.testOptions.mockAuxSchema", ["sample", "missing"]]]
@@ -275,7 +275,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.builder", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         testOpts: {
             topCommonOptions: {
                 panels: {
@@ -341,7 +341,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.builderTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
             consolidationGrades: {
                 enhancer: "fluid.prefs.builder.uie",
@@ -369,12 +369,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }, {
             name: "fluid.prefs.builder - only enactors",
             tests: [{
-                expect: 5,
+                expect: 4,
                 name: "enactors",
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderEnactors}.options.constructedGrades.enactors", "{builderEnactors}.options.auxSchema.enactors"]
             }, {
-                expect: 4,
+                expect: 3,
                 name: "initialModel",
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderEnactors}.options.constructedGrades.initialModel", "{builderEnactors}.options.auxSchema.initialModel"]
@@ -397,22 +397,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }, {
             name: "fluid.prefs.builder - only panels",
             tests: [{
-                expect: 5,
+                expect: 4,
                 name: "panels",
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderPanels}.options.constructedGrades.panels", "{builderPanels}.options.auxSchema.panels"]
             }, {
-                expect: 4,
+                expect: 3,
                 name: "initialModel",
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderPanels}.options.constructedGrades.initialModel", "{builderPanels}.options.auxSchema.initialModel"]
             }, {
-                expect: 4,
+                expect: 3,
                 name: "templateLoader",
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderPanels}.options.constructedGrades.templateLoader", "{builderPanels}.options.auxSchema.templateLoader"]
             }, {
-                expect: 4,
+                expect: 3,
                 name: "messageLoader",
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderPanels}.options.constructedGrades.messageLoader", "{builderPanels}.options.auxSchema.messageLoader"]
@@ -435,27 +435,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }, {
             name: "fluid.prefs.builder - panels & messages",
             tests: [{
-                expect: 5,
+                expect: 4,
                 name: "panels",
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderPanelsAndMessages}.options.constructedGrades.panels", "{builderPanelsAndMessages}.options.auxSchema.panels"]
             }, {
-                expect: 4,
+                expect: 3,
                 name: "messageLoader",
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderPanelsAndMessages}.options.constructedGrades.messageLoader", "{builderPanelsAndMessages}.options.auxSchema.messageLoader"]
             }, {
-                expect: 4,
+                expect: 3,
                 name: "messagePrefix",
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderPanelsAndMessages}.options.constructedGrades.messagePrefix", "{builderPanelsAndMessages}.options.auxSchema.messagePrefix"]
             }, {
-                expect: 4,
+                expect: 3,
                 name: "initialModel",
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderPanelsAndMessages}.options.constructedGrades.initialModel", "{builderPanelsAndMessages}.options.auxSchema.initialModel"]
             }, {
-                expect: 4,
+                expect: 3,
                 name: "templateLoader",
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderPanelsAndMessages}.options.constructedGrades.templateLoader", "{builderPanelsAndMessages}.options.auxSchema.templateLoader"]
@@ -478,27 +478,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }, {
             name: "fluid.prefs.builder - panels & templates",
             tests: [{
-                expect: 5,
+                expect: 4,
                 name: "panels",
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderPanelsAndTemplates}.options.constructedGrades.panels", "{builderPanelsAndTemplates}.options.auxSchema.panels"]
             }, {
-                expect: 4,
+                expect: 3,
                 name: "templatePrefix",
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderPanelsAndTemplates}.options.constructedGrades.templatePrefix", "{builderPanelsAndTemplates}.options.auxSchema.templatePrefix"]
             }, {
-                expect: 4,
+                expect: 3,
                 name: "initialModel",
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderPanelsAndTemplates}.options.constructedGrades.initialModel", "{builderPanelsAndTemplates}.options.auxSchema.initialModel"]
             }, {
-                expect: 4,
+                expect: 3,
                 name: "templateLoader",
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderPanelsAndTemplates}.options.constructedGrades.templateLoader", "{builderPanelsAndTemplates}.options.auxSchema.templateLoader"]
             }, {
-                expect: 4,
+                expect: 3,
                 name: "messageLoader",
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderPanelsAndTemplates}.options.constructedGrades.messageLoader", "{builderPanelsAndTemplates}.options.auxSchema.messageLoader"]
@@ -521,37 +521,37 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }, {
             name: "fluid.prefs.builder - all",
             tests: [{
-                expect: 5,
+                expect: 4,
                 name: "panels",
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderAll}.options.constructedGrades.panels", "{builderAll}.options.auxSchema.panels"]
             }, {
-                expect: 4,
+                expect: 3,
                 name: "messageLoader",
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderAll}.options.constructedGrades.messageLoader", "{builderAll}.options.auxSchema.messageLoader"]
             }, {
-                expect: 4,
+                expect: 3,
                 name: "messagePrefix",
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderAll}.options.constructedGrades.messagePrefix", "{builderAll}.options.auxSchema.messagePrefix"]
             }, {
-                expect: 5,
+                expect: 4,
                 name: "enactors",
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderAll}.options.constructedGrades.enactors", "{builderAll}.options.auxSchema.enactors"]
             }, {
-                expect: 4,
+                expect: 3,
                 name: "initialModel",
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderAll}.options.constructedGrades.initialModel", "{builderAll}.options.auxSchema.initialModel"]
             }, {
-                expect: 4,
+                expect: 3,
                 name: "templateLoader",
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderAll}.options.constructedGrades.templateLoader", "{builderAll}.options.auxSchema.templateLoader"]
             }, {
-                expect: 4,
+                expect: 3,
                 name: "templatePrefix",
                 func: "fluid.tests.assertDefaults",
                 args: ["{builderAll}.options.constructedGrades.templatePrefix", "{builderAll}.options.auxSchema.templatePrefix"]
@@ -578,15 +578,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var prefsEdReady = false;
 
     fluid.defaults("fluid.tests.store", {
-        gradeNames: ["fluid.prefs.globalSettingsStore", "autoInit"]
+        gradeNames: ["fluid.prefs.globalSettingsStore"]
     });
 
     fluid.defaults("fluid.tests.enhancer", {
-        gradeNames: ["fluid.pageEnhancer", "autoInit"]
+        gradeNames: ["fluid.pageEnhancer"]
     });
 
     fluid.defaults("fluid.tests.builderMunging", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         testOpts: {
             topCommonOptions: fluid.tests.topCommonOptions
         },
@@ -656,7 +656,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.builderMungingTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "Builder munging",
             tests: [{
@@ -699,7 +699,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.composite.auxSchema", {
-        gradeNames: ["fluid.prefs.auxSchema", "autoInit"],
+        gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
             template: "%prefix/compositePrefsEditorTemplate.html",
             groups: {
@@ -749,7 +749,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.composite.increase", {
-        gradeNames: ["fluid.prefs.compositePanel", "autoInit"],
+        gradeNames: ["fluid.prefs.compositePanel"],
         messageBase: {
             increaseHeader: "increase"
         },
@@ -762,7 +762,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.cmpPanel.speak", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.tests.composite.pref.speakText": {
                 "model.speakText": "default"
@@ -777,7 +777,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.cmpPanel.base", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         selectors: {
             bool: ".fluid-tests-composite-input"
         },
@@ -787,7 +787,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.cmpPanel.incSize", {
-        gradeNames: ["fluid.tests.cmpPanel.base", "autoInit"],
+        gradeNames: ["fluid.tests.cmpPanel.base"],
         preferenceMap: {
             "fluid.tests.composite.pref.increaseSize": {
                 "model.value": "default"
@@ -796,7 +796,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.cmpPanel.magFactor", {
-        gradeNames: ["fluid.tests.cmpPanel.base", "autoInit"],
+        gradeNames: ["fluid.tests.cmpPanel.base"],
         preferenceMap: {
             "fluid.tests.composite.pref.magnification": {
                 "model.value": "default"
@@ -805,7 +805,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.cmpPanel.lineSpace", {
-        gradeNames: ["fluid.tests.cmpPanel.base", "autoInit"],
+        gradeNames: ["fluid.tests.cmpPanel.base"],
         preferenceMap: {
             "fluid.tests.composite.pref.lineSpace": {
                 "model.value": "default"
@@ -822,7 +822,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.compositePrefsEditor", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             prefsEditor: {
                 type: builder.options.assembledPrefsEditorGrade,
@@ -839,7 +839,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.composite.tester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "Prefs editor with composite panel",
             tests: [{

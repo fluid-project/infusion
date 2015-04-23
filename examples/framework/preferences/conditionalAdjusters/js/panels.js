@@ -19,7 +19,7 @@ var example = example || {};
      * Composite Panels
      */
     fluid.defaults("example.panels.speaking", {
-        gradeNames: ["fluid.prefs.compositePanel", "autoInit"],
+        gradeNames: ["fluid.prefs.compositePanel"],
         selectors: {
             label: ".mpe-speaking-header"
         },
@@ -28,7 +28,7 @@ var example = example || {};
         }
     });
     fluid.defaults("example.panels.increasing", {
-        gradeNames: ["fluid.prefs.compositePanel", "autoInit"],
+        gradeNames: ["fluid.prefs.compositePanel"],
         selectors: {
             label: ".mpe-increasing-header"
         },

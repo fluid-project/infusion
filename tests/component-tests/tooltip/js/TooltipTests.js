@@ -76,7 +76,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.focusNotifier", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         events: {
             notifyFocusChange: null
         },
@@ -131,7 +131,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.tooltip.tree", {
-        gradeNames: ["fluid.tests.tooltip.trackTooltips", "fluid.tests.focusNotifier", "autoInit"],
+        gradeNames: ["fluid.tests.tooltip.trackTooltips", "fluid.tests.focusNotifier"],
         components: {
             tooltip: {
                 type: "fluid.tooltip",
@@ -148,7 +148,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.tooltip.delegateEnv", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         markupFixture: "#ioc-fixture",
         components: {
             tree: {

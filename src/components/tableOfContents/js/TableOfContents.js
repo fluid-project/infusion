@@ -63,7 +63,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.tableOfContents", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         components: {
             levels: {
                 type: "fluid.tableOfContents.levels",
@@ -196,7 +196,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.tableOfContents.modelBuilder", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         components: {
             headingCalculator: {
                 type: "fluid.tableOfContents.modelBuilder.headingCalculator"
@@ -223,7 +223,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.tableOfContents.modelBuilder.headingCalculator", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         invokers: {
             getHeadingLevel: "fluid.tableOfContents.modelBuilder.headingCalculator.getHeadingLevel({that}, {arguments}.0)" // heading
         },
@@ -332,7 +332,7 @@ var fluid_2_0 = fluid_2_0 || {};
     
 
     fluid.defaults("fluid.tableOfContents.levels", {
-        gradeNames: ["fluid.rendererComponent", "autoInit"],
+        gradeNames: ["fluid.rendererComponent"],
         produceTree: "fluid.tableOfContents.levels.produceTree",
         strings: {
             tocHeader: "Table of Contents"

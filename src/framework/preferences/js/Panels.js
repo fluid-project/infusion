@@ -20,7 +20,7 @@ var fluid_2_0 = fluid_2_0 || {};
      **********************/
 
     fluid.defaults("fluid.prefs.msgLookup", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         members: {
             msgLookup: {
                 expander: {
@@ -57,7 +57,7 @@ var fluid_2_0 = fluid_2_0 || {};
      ***********************************************/
 
     fluid.defaults("fluid.prefs.panel", {
-        gradeNames: ["fluid.rendererComponent", "fluid.prefs.msgLookup", "autoInit"],
+        gradeNames: ["fluid.rendererComponent", "fluid.prefs.msgLookup"],
         events: {
             onDomBind: null
         },
@@ -86,7 +86,7 @@ var fluid_2_0 = fluid_2_0 || {};
      ***************************/
 
     fluid.defaults("fluid.prefs.subPanel", {
-        gradeNames: ["fluid.prefs.panel", "{that}.getDomBindGrade", "autoInit"],
+        gradeNames: ["fluid.prefs.panel", "{that}.getDomBindGrade"],
         listeners: {
             "{compositePanel}.events.afterRender": {
                 listener: "{that}.events.afterRender",
@@ -122,7 +122,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.defaults("fluid.prefs.subPanel.domBind", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         listeners: {
             "onDomBind.domChange": {
                 listener: "{prefsEditor}.events.onSignificantDOMChange"
@@ -195,7 +195,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.prefs.compositePanel", {
-        gradeNames: ["fluid.prefs.panel", "autoInit", "{that}.getDistributeOptionsGrade", "{that}.getSubPanelLifecycleBindings"],
+        gradeNames: ["fluid.prefs.panel", "{that}.getDistributeOptionsGrade", "{that}.getSubPanelLifecycleBindings"],
         mergePolicy: {
             subPanelOverrides: "noexpand",
             selectorsToIgnore: fluid.prefs.compositePanel.arrayMergePolicy
@@ -331,7 +331,7 @@ var fluid_2_0 = fluid_2_0 || {};
             });
         });
         fluid.defaults(gradeName, {
-            gradeNames: ["fluid.component", "autoInit"],
+            gradeNames: ["fluid.component"],
             relayOption: relayOption,
             distributeOptions: distributeOptions
         });
@@ -415,7 +415,7 @@ var fluid_2_0 = fluid_2_0 || {};
         });
 
         fluid.defaults(gradeName, {
-            gradeNames: ["fluid.component", "autoInit"],
+            gradeNames: ["fluid.component"],
             events: events,
             listeners: listeners,
             modelListeners: fluid.prefs.compositePanel.generateModelListeners(conditionals),
@@ -624,7 +624,7 @@ var fluid_2_0 = fluid_2_0 || {};
      ********************************************************************************/
 
     fluid.defaults("fluid.prefs.prefsEditorConnections", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         listeners: {
             "{fluid.prefs.prefsEditor}.events.onPrefsEditorRefresh": "{fluid.prefs.panel}.refreshView"
         },
@@ -640,7 +640,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * A sub-component of fluid.prefs that renders the "text size" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.textSize", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.textSize": {
                 "model.textSize": "default",
@@ -698,7 +698,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * A sub-component of fluid.prefs that renders the "text font" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.textFont", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.textFont": {
                 "model.value": "default",
@@ -741,7 +741,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * A sub-component of fluid.prefs that renders the "line space" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.lineSpace", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.lineSpace": {
                 "model.lineSpace": "default",
@@ -799,7 +799,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * A sub-component of fluid.prefs that renders the "contrast" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.contrast", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.contrast": {
                 "model.value": "default",
@@ -882,7 +882,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * A sub-component of fluid.prefs that renders the "layout and navigation" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.layoutControls", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.tableOfContents": {
                 "model.toc": "default"
@@ -907,7 +907,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * A sub-component of fluid.prefs that renders the "links and buttons" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.emphasizeLinks", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.emphasizeLinks": {
                 "model.links": "default"
@@ -930,7 +930,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * A sub-component of fluid.prefs that renders the "links and buttons" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.inputsLarger", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.inputsLarger": {
                 "model.inputsLarger": "default"
@@ -953,7 +953,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * A sub-component of fluid.prefs that renders the "links and buttons" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.linksControls", {
-        gradeNames: ["fluid.prefs.compositePanel", "autoInit"],
+        gradeNames: ["fluid.prefs.compositePanel"],
         selectors: {
             label: ".flc-prefsEditor-linksControls-label"
         },
@@ -970,7 +970,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * A sub-component that decorates the options on the select dropdown list box with the css style
      */
     fluid.defaults("fluid.prefs.selectDecorator", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         listeners: {
             onCreate: "fluid.prefs.selectDecorator.decorateOptions"
         },

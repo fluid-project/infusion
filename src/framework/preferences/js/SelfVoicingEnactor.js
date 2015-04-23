@@ -23,7 +23,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.enactor.speak", {
-        gradeNames: ["fluid.textToSpeech", "fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.textToSpeech", "fluid.prefs.enactor"],
         preferenceMap: {
             "fluid.prefs.speak": {
                 "model.enabled": "default"
@@ -57,7 +57,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.enactor.selfVoicing", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor.speak", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor.speak"],
         modelListeners: {
             "enabled": {
                 listener: "{that}.handleSelfVoicing",

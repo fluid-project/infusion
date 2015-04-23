@@ -17,7 +17,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     "use strict";
 
     fluid.defaults("fluid.tests.pageEnhancerTest", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         events: {
             createPageEnhancer: null
         },
@@ -44,7 +44,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.pageEnhancerTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "Page Enhancer Tests",
             tests: [{

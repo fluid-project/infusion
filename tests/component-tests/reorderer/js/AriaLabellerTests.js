@@ -31,7 +31,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
 
         fluid.defaults("fluid.tests.labellerTester", {
-            gradeNames: ["fluid.viewComponent", "autoInit"],
+            gradeNames: ["fluid.viewComponent"],
             components: {
                 reorderer: {
                     type: "fluid.reorderList",

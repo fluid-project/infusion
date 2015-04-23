@@ -771,7 +771,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // supported, PUBLIC API grade
     fluid.defaults("fluid.modelComponent", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         changeApplierOptions: {
             relayStyle: true,
             cullUnchanged: true

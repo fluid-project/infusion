@@ -22,7 +22,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.auxSchema.starter", {
-        gradeNames: ["fluid.prefs.auxSchema", "autoInit"],
+        gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
             "namespace": "fluid.prefs.constructed", // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed PrefsEditor.
             "templatePrefix": "../../framework/preferences/html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
@@ -165,7 +165,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.schemas.textSize", {
-        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        gradeNames: ["fluid.prefs.schemas"],
         schema: {
             "fluid.prefs.textSize": {
                 "type": "number",
@@ -178,7 +178,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.defaults("fluid.prefs.schemas.lineSpace", {
-        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        gradeNames: ["fluid.prefs.schemas"],
         schema: {
             "fluid.prefs.lineSpace": {
                 "type": "number",
@@ -191,7 +191,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.defaults("fluid.prefs.schemas.textFont", {
-        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        gradeNames: ["fluid.prefs.schemas"],
         schema: {
             "fluid.prefs.textFont": {
                 "type": "string",
@@ -202,7 +202,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.defaults("fluid.prefs.schemas.contrast", {
-        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        gradeNames: ["fluid.prefs.schemas"],
         schema: {
             "fluid.prefs.contrast": {
                 "type": "string",
@@ -213,7 +213,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.defaults("fluid.prefs.schemas.tableOfContents", {
-        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        gradeNames: ["fluid.prefs.schemas"],
         schema: {
             "fluid.prefs.tableOfContents": {
                 "type": "boolean",
@@ -223,7 +223,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.defaults("fluid.prefs.schemas.emphasizeLinks", {
-        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        gradeNames: ["fluid.prefs.schemas"],
         schema: {
             "fluid.prefs.emphasizeLinks": {
                 "type": "boolean",
@@ -233,7 +233,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.defaults("fluid.prefs.schemas.inputsLarger", {
-        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        gradeNames: ["fluid.prefs.schemas"],
         schema: {
             "fluid.prefs.inputsLarger": {
                 "type": "boolean",

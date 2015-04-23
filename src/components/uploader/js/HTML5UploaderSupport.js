@@ -25,7 +25,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
     
     fluid.defaults("fluid.uploader.html5Strategy", {
-        gradeNames: ["fluid.uploader.strategy", "autoInit"],
+        gradeNames: ["fluid.uploader.strategy"],
         components: {
             local: { // TODO: Would be nice to have some way to express that this is a "natural covariant refinement"
                 type: "fluid.uploader.html5Strategy.local"
@@ -99,7 +99,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.uploader.html5Strategy.remote", {
-        gradeNames: ["fluid.uploader.remote", "autoInit"],
+        gradeNames: ["fluid.uploader.remote"],
         components: {
             fileSender: {
                 type: "fluid.uploader.html5Strategy.fileSender"
@@ -140,7 +140,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
     
     fluid.defaults("fluid.uploader.html5Strategy.fileSender", {
-        gradeNames: ["fluid.component", "fluid.contextAware", "autoInit"],
+        gradeNames: ["fluid.component", "fluid.contextAware"],
         invokers: {
             send: {
                 funcName: "fluid.fail",
@@ -165,7 +165,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
 
     fluid.defaults("fluid.uploader.html5Strategy.formDataSender", {
-        gradeNames: ["fluid.component", "autoInit"],
+        gradeNames: ["fluid.component"],
         invokers: {
             createFormData: "fluid.uploader.html5Strategy.createFormData",
             send: {
@@ -192,7 +192,7 @@ var fluid_2_0 = fluid_2_0 || {};
      ************************************/
 
     fluid.defaults("fluid.uploader.html5Strategy.local", {
-        gradeNames: ["fluid.uploader.local", "autoInit"],
+        gradeNames: ["fluid.uploader.local"],
         invokers: {
             addFiles: {
                 funcName: "fluid.uploader.html5Strategy.local.addFiles",
@@ -316,7 +316,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.uploader.html5Strategy.browseButtonView", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         strings: {
             browse: "Browse files",
             addMore: "Add more"

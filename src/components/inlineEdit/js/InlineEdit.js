@@ -601,7 +601,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.inlineEdit.standardAccessor", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         members: {
             nodeName: {
                 expander: {
@@ -623,7 +623,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.inlineEdit.standardDisplayView", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         invokers: {
             refreshView: {
                 funcName: "fluid.inlineEdit.standardDisplayView.refreshView",
@@ -651,7 +651,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.inlineEdit.standardEditView", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         invokers: {
             refreshView: {
                 funcName: "fluid.inlineEdit.standardEditView.refreshView",
@@ -712,7 +712,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.inlineEdit", {
-        gradeNames: ["fluid.viewComponent", "fluid.undoable", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.undoable"],
         mergePolicy: {
             "strings.defaultViewText": "defaultViewText"
         },
@@ -949,7 +949,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.inlineEditsComponent", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         distributeOptions: {
             source: "{that}.options",
             exclusions: ["members.inlineEdits", "selectors.editables"],

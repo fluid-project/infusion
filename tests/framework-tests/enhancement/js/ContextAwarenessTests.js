@@ -20,7 +20,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.module("Context Awareness");
     
     fluid.defaults("fluid.tests.contextAware.base", {
-        gradeNames: ["fluid.contextAware", "fluid.component", "autoInit"],
+        gradeNames: ["fluid.contextAware", "fluid.component"],
         contextAwareness: {
             food: {
                 defaultGradeNames: "food.carrots"
@@ -133,7 +133,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
     
     fluid.defaults("fluid.tests.contextAware.multiple", {
-        gradeNames: ["fluid.contextAware", "fluid.component", "autoInit"],
+        gradeNames: ["fluid.contextAware", "fluid.component"],
         contextAwareness: {
             food: {
                 defaultGradeNames: "food.carrots"

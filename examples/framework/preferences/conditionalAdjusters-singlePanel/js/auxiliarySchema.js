@@ -19,7 +19,7 @@ var example = example || {};
      * Auxiliary Schema
      */
     fluid.defaults("example.auxSchema", {
-        gradeNames: ["fluid.prefs.auxSchema", "autoInit"],
+        gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
             template: "html/prefsEditor.html",
             message: "%prefix/prefsEditor.json",

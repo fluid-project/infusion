@@ -96,7 +96,7 @@ var demo = demo || {};
      * simplifyPanel
      **********************************************************************************/
     fluid.defaults("demo.prefsEditor.simplifyPanel", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "demo.prefs.simplify": {
                 "model.simplify": "default"
@@ -120,7 +120,7 @@ var demo = demo || {};
      * Simplify content based upon the model value.
      **********************************************************************************/
     fluid.defaults("demo.prefsEditor.simplifyEnactor", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor"],
         preferenceMap: {
             "demo.prefs.simplify": {
                 "model.simplify": "default"

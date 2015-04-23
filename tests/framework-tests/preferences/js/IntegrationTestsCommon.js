@@ -78,7 +78,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     
     fluid.defaults("fluid.tests.prefs.globalSettingsStore", {
-        gradeNames: ["fluid.prefs.globalSettingsStore", "autoInit"],
+        gradeNames: ["fluid.prefs.globalSettingsStore"],
         distributeOptions: {
             target: "{that fluid.prefs.store}.options.gradeNames",
             record: "fluid.prefs.tempStore"

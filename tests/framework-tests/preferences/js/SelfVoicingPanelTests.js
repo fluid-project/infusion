@@ -17,7 +17,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests");
 
     fluid.defaults("fluid.tests.prefs.panel.speak", {
-        gradeNames: ["fluid.prefs.panel.speak", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel.speak", "fluid.tests.panels.utils.defaultTestPanel"],
         messageBase: {
             "speakLabel": "Test speakLabel",
             "speakChoiceLabel": "Test speakChoiceLabel"
@@ -28,7 +28,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.speakPanel", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             speak: {
                 type: "fluid.tests.prefs.panel.speak",
@@ -47,7 +47,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.speakTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
             newValue: true
         },

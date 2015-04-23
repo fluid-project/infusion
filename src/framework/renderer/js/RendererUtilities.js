@@ -100,7 +100,7 @@ fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.rendererComponent", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         initFunction: "fluid.initRendererComponent",
         mergePolicy: {
             "rendererOptions.idMap": "nomerge",

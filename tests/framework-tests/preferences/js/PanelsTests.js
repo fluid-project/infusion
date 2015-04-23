@@ -33,7 +33,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.subPanel", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         renderOnInit: true,
         selectors: {
             header: "h2"
@@ -41,7 +41,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.subPanel1", {
-        gradeNames: ["fluid.tests.subPanel", "autoInit"],
+        gradeNames: ["fluid.tests.subPanel"],
         preferenceMap: {
             "fluid.prefs.sub1": {
                 "model.value": "default",
@@ -70,7 +70,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.subPanel2", {
-        gradeNames: ["fluid.tests.subPanel", "autoInit"],
+        gradeNames: ["fluid.tests.subPanel"],
         preferenceMap: {
             "fluid.prefs.sub2": {
                 "model.value": "default",
@@ -101,7 +101,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.compositePanel", {
-        gradeNames: ["fluid.prefs.compositePanel", "autoInit"],
+        gradeNames: ["fluid.prefs.compositePanel"],
         selectors: {
             subPanel1: ".subPanel1",
             subPanel2: ".subPanel2",
@@ -478,7 +478,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /* FLUID-5201: renderer fluid decorator */
 
     fluid.defaults("fluid.tests.panel.sliderTest1", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         selectors: {
             textSize: ".flc-prefsEditor-min-val",
             label: ".flc-prefsEditor-min-val-label",
@@ -538,7 +538,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /* FLUID-5202: rebase valuebinding in a renderer selection object */
 
     fluid.defaults("fluid.tests.panel.dropdownTest1", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "learning.dropdownTest1": {
                 "model.ddVal": "default",
@@ -632,7 +632,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /* FLUID-5200: rebase parentRelativeID */
 
     fluid.defaults("fluid.tests.panel.radioTest1", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "learning.radioTest1": {
                 "model.radioVal": "default",
@@ -791,7 +791,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /* FLUID-5203: support multiple text field sliders in one composite panel */
 
     fluid.defaults("fluid.tests.panel.slider1", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         selectors: {
             textSize: ".flc-prefsEditor-min-val",
             label: ".flc-prefsEditor-min-val-label",
@@ -827,7 +827,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.panel.slider2", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         selectors: {
             textSize: ".flc-prefsEditor-min-val",
             label: ".flc-prefsEditor-min-val-label",
@@ -918,7 +918,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /* start FLUID-5210 */
 
     fluid.defaults("fluid.tests.fluid_5210.compositePanel", {
-        gradeNames: ["fluid.prefs.compositePanel", "autoInit"],
+        gradeNames: ["fluid.prefs.compositePanel"],
         selectors: {
             originalSelector: ""
         },
@@ -948,7 +948,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /* start FLUID-5220 */
 
     fluid.defaults("fluid.tests.fluid_5220.subPanel", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"]
+        gradeNames: ["fluid.prefs.panel"]
     });
 
     jqUnit.test("FLUID-5220: onDomBind", function () {
@@ -1006,7 +1006,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.prefs.panel.textFont", {
-        gradeNames: ["fluid.prefs.panel.textFont", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel.textFont", "fluid.tests.panels.utils.defaultTestPanel"],
         messageBase: {
             "textFont-default": "default",
             "textFont-times": "Times New Roman",
@@ -1030,7 +1030,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.textFontPanel", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             textFont: {
                 type: "fluid.tests.prefs.panel.textFont",
@@ -1060,7 +1060,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.textFontTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
             expectedNumOfOptions: 5,
             defaultValue: "default",
@@ -1095,7 +1095,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.prefs.panel.contrast", {
-        gradeNames: ["fluid.prefs.panel.contrast", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel.contrast", "fluid.tests.panels.utils.defaultTestPanel"],
         messageBase: {
             "contrast": ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black"],
             "contrastLabel": "Colour & Contrast"
@@ -1116,7 +1116,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.contrastPanel", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             contrast: {
                 type: "fluid.tests.prefs.panel.contrast",
@@ -1152,7 +1152,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.contrastTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
             expectedNumOfOptions: 6,
             defaultValue: "default",
@@ -1200,14 +1200,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.prefs.panel.textSize", {
-        gradeNames: ["fluid.prefs.panel.textSize", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel.textSize", "fluid.tests.panels.utils.defaultTestPanel"],
         model: {
             textSize: 1
         }
     });
 
     fluid.defaults("fluid.tests.textSizePanel", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             textSize: {
                 type: "fluid.tests.prefs.panel.textSize",
@@ -1220,7 +1220,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.textSizeTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
             newValue: 1.2
         },
@@ -1252,14 +1252,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.prefs.panel.lineSpace", {
-        gradeNames: ["fluid.prefs.panel.lineSpace", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel.lineSpace", "fluid.tests.panels.utils.defaultTestPanel"],
         model: {
             lineSpace: 1
         }
     });
 
     fluid.defaults("fluid.tests.lineSpacePanel", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             lineSpace: {
                 type: "fluid.tests.prefs.panel.lineSpace",
@@ -1272,7 +1272,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.lineSpaceTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
             newValue: 1.2
         },
@@ -1304,7 +1304,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.prefs.panel.layoutControls", {
-        gradeNames: ["fluid.prefs.panel.layoutControls", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel.layoutControls", "fluid.tests.panels.utils.defaultTestPanel"],
         model: {
             toc: false,
             layout: false
@@ -1312,7 +1312,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.layoutPanel", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             layout: {
                 type: "fluid.tests.prefs.panel.layoutControls",
@@ -1325,7 +1325,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.layoutTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
             defaultInputStatus: false,
             newValue: true
@@ -1359,14 +1359,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.prefs.panel.emphasizeLinks", {
-        gradeNames: ["fluid.prefs.panel.emphasizeLinks", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel.emphasizeLinks", "fluid.tests.panels.utils.defaultTestPanel"],
         model: {
             links: false
         }
     });
 
     fluid.defaults("fluid.tests.emphasizeLinksPanel", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             emphasizeLinks: {
                 type: "fluid.tests.prefs.panel.emphasizeLinks",
@@ -1379,7 +1379,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.emphasizeLinksTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
             defaultInputStatus: false,
             newValue: true
@@ -1413,14 +1413,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.prefs.panel.inputsLarger", {
-        gradeNames: ["fluid.prefs.panel.inputsLarger", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel.inputsLarger", "fluid.tests.panels.utils.defaultTestPanel"],
         model: {
             inputsLarger: false
         }
     });
 
     fluid.defaults("fluid.tests.inputsLargerPanel", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             inputsLarger: {
                 type: "fluid.tests.prefs.panel.inputsLarger",
@@ -1433,7 +1433,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.inputsLargerTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
             defaultInputStatus: false,
             newValue: true
@@ -1467,7 +1467,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.prefs.panel.linksControls", {
-        gradeNames: ["fluid.prefs.panel.linksControls", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel.linksControls", "fluid.tests.panels.utils.defaultTestPanel"],
         model: {
             fluid_prefs_emphasizeLinks: false,
             fluid_prefs_inputsLarger: false
@@ -1506,7 +1506,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.linksControlsPanel", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             linksControls: {
                 type: "fluid.tests.prefs.panel.linksControls",
@@ -1529,7 +1529,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 
     fluid.defaults("fluid.tests.linksTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
             defaultInputStatus: undefined,
             newValue: true

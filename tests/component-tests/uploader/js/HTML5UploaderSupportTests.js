@@ -288,7 +288,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             fluid.defaults("fluid.tests.uploader.HTML5.browseTree", {
                 //markupFixture: "#iocBrowseButtonContainer",
-                gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+                gradeNames: ["fluid.test.testEnvironment"],
                 components: {
                     browseButtonView: {
                         type: "fluid.uploader.html5Strategy.browseButtonView",
@@ -306,7 +306,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
 
             fluid.defaults("fluid.tests.uploader.HTML5.browseTreeFixtures", {
-                gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+                gradeNames: ["fluid.test.testCaseHolder"],
                 modules: [ {
                     name: "Browse button tests",
                     tests: [{

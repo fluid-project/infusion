@@ -20,7 +20,7 @@ var fluid_2_0 = fluid_2_0 || {};
      ***********************************/
 
     fluid.defaults("fluid.prefs.fullPreview", {
-        gradeNames: ["fluid.prefs.prefsEditorLoader", "autoInit"],
+        gradeNames: ["fluid.prefs.prefsEditorLoader"],
         outerPreviewEnhancerOptions: "{originalEnhancerOptions}.options.originalUserOptions",
         components: {
             prefsEditor: {

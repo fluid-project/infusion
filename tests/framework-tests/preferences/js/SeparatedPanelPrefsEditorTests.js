@@ -30,7 +30,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     ];
 
     fluid.defaults("fluid.tests.separatedPanelIntegration", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         listeners: {
             onDestroy: "fluid.tests.clearStore"
         },
@@ -131,7 +131,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.separatedPanelIntegrationTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "Separated panel integration tests",
             tests: [{
@@ -181,7 +181,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var isSlidingPanelShown = false;
 
     fluid.defaults("fluid.tests.separatedPanelMungingIntegration", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             separatedPanel: {
                 type: "fluid.prefs.separatedPanel",
@@ -236,7 +236,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.mungingIntegrationTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         expectedIframeSelector: expectedIframeSelector,
         modules: [{
             name: "Separated panel munging integration tests",
