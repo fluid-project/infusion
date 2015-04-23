@@ -1713,7 +1713,7 @@ var fluid = fluid || fluid_2_0;
             var gradedDefaults = fluid.getGradedDefaults(componentName);
             if (!fluid.hasGrade(gradedDefaults, "fluid.function")) {
                 fluid.makeComponentCreator(componentName, gradedDefaults);
-            } 
+            }
         }
     };
 

@@ -351,7 +351,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.defaults("test", testDefaults2);
         jqUnit.assertCanoniseEqual("defaults() should return the original defaults",
             testDefaults2, fluid.defaults("test"), function (options) {
-            return fluid.filterKeys(options, ["foo", "baz"])
+                return fluid.filterKeys(options, ["foo", "baz"]);
             });
 
         // Try to access defaults for a component that doesn't exist.
