@@ -2613,15 +2613,121 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     /* --------------- fluid.transforms.indexOf tests -------------------- */
 
-    var indexOfTests = [{
+    fluid.tests.transforms.indexOfTests = [{
         message: "indexOf() should return the index of the value on the array.",
         transform: {
-            type: "fluid.transforms.indexOf",
-            array: ["sheep", "dog"],
-            value: "dog"
+            value: {
+                transform: {
+                    type: "fluid.transforms.indexOf",
+                    array: ["sheep", "dog"],
+                    inputPath: "element"
+                }
+            }
         },
-        expected: 1
+        invertedRules: {
+            transform: [{
+                type: "fluid.transforms.dereference",
+                array: ["sheep", "dog"],
+                outputPath: "element",
+                inputPath: "value"
+            }]
+        },
+        method: "assertDeepEq",
+        model: {
+            element: "dog"
+        },
+        expected: {
+            value: 1
+        },
+        fullyinvertible: true
     }, {
+        message: "indexOf() should return the index of the value when the value of the \"array\" argument is arrayable and match.",
+        transform: {
+            value: {
+                transform: {
+                    type: "fluid.transforms.indexOf",
+                    array: "sheep",
+                    inputPath: "element"
+                }
+            }
+        },
+        invertedRules: {
+            transform: [{
+                type: "fluid.transforms.dereference",
+                array: "sheep",
+                outputPath: "element",
+                inputPath: "value"
+            }]
+        },
+        method: "assertDeepEq",
+        model: {
+            element: "sheep"
+        },
+        expected: {
+            value: 0
+        },
+        fullyinvertible: true
+    }, {
+        message: "indexOf() should add offset value to the return.",
+        transform: {
+            value: {
+                transform: {
+                    type: "fluid.transforms.indexOf",
+                    array: ["sheep", "dog"],
+                    inputPath: "element",
+                    offset: 3
+                }
+            }
+        },
+        invertedRules: {
+            transform: [{
+                type: "fluid.transforms.dereference",
+                array: ["sheep", "dog"],
+                offset: 3,
+                outputPath: "element",
+                inputPath: "value"
+            }]
+        },
+        method: "assertDeepEq",
+        model: {
+            element: "dog"
+        },
+        expected: {
+            value: 4
+        },
+        fullyinvertible: true
+    }, {
+        message: "indexOf() should add offset value to the return even when the offset value can be converted to a number.",
+        transform: {
+            value: {
+                transform: {
+                    type: "fluid.transforms.indexOf",
+                    array: ["sheep", "dog"],
+                    inputPath: "element",
+                    offset: "1"
+                }
+            }
+        },
+        invertedRules: {
+            transform: [{
+                type: "fluid.transforms.dereference",
+                array: ["sheep", "dog"],
+                offset: "1",
+                outputPath: "element",
+                inputPath: "value"
+            }]
+        },
+        method: "assertDeepEq",
+        model: {
+            element: "dog"
+        },
+        expected: {
+            value: 2
+        },
+        fullyinvertible: true
+    }];
+
+    fluid.tests.transforms.indexOfBoundaryTests = [, {
         message: "indexOf() should return -1 when the value is not found in the array.",
         transform: {
             type: "fluid.transforms.indexOf",
@@ -2629,14 +2735,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             value: "cat"
         },
         expected: -1
-    }, {
-        message: "indexOf() should return the index of the value when the value of the \"array\" argument is arrayable and match.",
-        transform: {
-            type: "fluid.transforms.indexOf",
-            array: "sheep",
-            value: "sheep"
-        },
-        expected: 0
     }, {
         message: "indexOf() should return -1 when the value of the \"array\" argument is arrayable and mismatch.",
         transform: {
@@ -2652,10 +2750,274 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             array: ["sheep", "dog"]
         },
         expected: undefined
+    }, {
+        message: "indexOf() should add offset value to the return even when the return is -1.",
+        transform: {
+            type: "fluid.transforms.indexOf",
+            array: ["sheep", "dog"],
+            value: "a",
+            offset: 3
+        },
+        expected: 2
+    }, {
+        message: "indexOf() should return ignore offset when the offset value cannot be converted a number.",
+        transform: {
+            type: "fluid.transforms.indexOf",
+            array: ["sheep", "dog"],
+            value: "dog",
+            offset: "a"
+        },
+        expected: 1
+    }, {
+        message: "indexOf() should return what's defined in the notFound when the value is not found in the array.",
+        transform: {
+            type: "fluid.transforms.indexOf",
+            array: ["sheep", "dog"],
+            value: "cat",
+            notFound: "notFound"
+        },
+        expected: "notFound"
+    }, {
+        message: "indexOf() should return the proper index when notFound is defined but the value is found in the array.",
+        transform: {
+            type: "fluid.transforms.indexOf",
+            array: ["sheep", "dog"],
+            value: "sheep",
+            notFound: "notFound"
+        },
+        expected: 0
     }];
 
     jqUnit.test("fluid.transforms.indexOf()", function () {
-        fluid.tests.transforms.testOneStructure(indexOfTests, {
+        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.indexOfTests);
+
+        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.indexOfBoundaryTests, {
+            transformWrap: true,
+            method: "assertEquals"
+        });
+    });
+
+    /* --------------- fluid.transforms.dereference tests -------------------- */
+
+    fluid.tests.transforms.deferenceTests = [{
+        message: "dereference() should return the value in an array based on the given index.",
+        transform: {
+            value: {
+                transform: {
+                    type: "fluid.transforms.dereference",
+                    array: ["sheep", "dog"],
+                    inputPath: "element"
+                }
+            }
+        },
+        invertedRules: {
+            transform: [{
+                type: "fluid.transforms.indexOf",
+                array: ["sheep", "dog"],
+                outputPath: "element",
+                inputPath: "value"
+            }]
+        },
+        method: "assertDeepEq",
+        model: {
+            element: 1
+        },
+        expected: {
+            value: "dog"
+        },
+        fullyinvertible: true
+    }, {
+        message: "dereference() should return the value when the \"array\" is arrayable and match the given index.",
+        transform: {
+            value: {
+                transform: {
+                    type: "fluid.transforms.dereference",
+                    array: "sheep",
+                    inputPath: "element"
+                }
+            }
+        },
+        invertedRules: {
+            transform: [{
+                type: "fluid.transforms.indexOf",
+                array: "sheep",
+                outputPath: "element",
+                inputPath: "value"
+            }]
+        },
+        method: "assertDeepEq",
+        model: {
+            element: 0
+        },
+        expected: {
+            value: "sheep"
+        },
+        fullyinvertible: true
+    }, {
+        message: "dereference() should take the offset value into consideration.",
+        transform: {
+            value: {
+                transform: {
+                    type: "fluid.transforms.dereference",
+                    array: ["sheep", "dog"],
+                    offset: 3,
+                    inputPath: "element"
+                }
+            }
+        },
+        invertedRules: {
+            transform: [{
+                type: "fluid.transforms.indexOf",
+                array: ["sheep", "dog"],
+                offset: 3,
+                outputPath: "element",
+                inputPath: "value"
+            }]
+        },
+        method: "assertDeepEq",
+        model: {
+            element: 4
+        },
+        expected: {
+            value: "dog"
+        },
+        fullyinvertible: true
+    }, {
+        message: "dereference() should take the offset value into consideration if the offset value can be converted to a number.",
+        transform: {
+            value: {
+                transform: {
+                    type: "fluid.transforms.dereference",
+                    array: ["sheep", "dog"],
+                    offset: "1",
+                    inputPath: "element"
+                }
+            }
+        },
+        invertedRules: {
+            transform: [{
+                type: "fluid.transforms.indexOf",
+                array: ["sheep", "dog"],
+                offset: "1",
+                outputPath: "element",
+                inputPath: "value"
+            }]
+        },
+        method: "assertDeepEq",
+        model: {
+            element: 2
+        },
+        expected: {
+            value: "dog"
+        },
+        fullyinvertible: true
+    }, {
+        message: "dereference() should ignore the offset when the offset value cannot be converted a number.",
+        transform: {
+            value: {
+                transform: {
+                    type: "fluid.transforms.dereference",
+                    array: ["sheep", "dog"],
+                    offset: "a",
+                    inputPath: "element"
+                }
+            }
+        },
+        invertedRules: {
+            transform: [{
+                type: "fluid.transforms.indexOf",
+                array: ["sheep", "dog"],
+                offset: "a",
+                outputPath: "element",
+                inputPath: "value"
+            }]
+        },
+        method: "assertDeepEq",
+        model: {
+            element: 1
+        },
+        expected: {
+            value: "dog"
+        },
+        fullyinvertible: true
+    }, {
+        message: "dereference() should ignore notFound when the value is found in the array.",
+        transform: {
+            value: {
+                transform: {
+                    type: "fluid.transforms.dereference",
+                    array: ["sheep", "dog"],
+                    notFound: "notFound",
+                    inputPath: "element"
+                }
+            }
+        },
+        invertedRules: {
+            transform: [{
+                type: "fluid.transforms.indexOf",
+                array: ["sheep", "dog"],
+                notFound: "notFound",
+                outputPath: "element",
+                inputPath: "value"
+            }]
+        },
+        method: "assertDeepEq",
+        model: {
+            element: 0
+        },
+        expected: {
+            value: "sheep"
+        },
+        fullyinvertible: true
+    }];
+
+    fluid.tests.transforms.dereferenceBoundaryTests = [{
+        message: "dereference() should return undefined when the given index is -1.",
+        transform: {
+            type: "fluid.transforms.dereference",
+            array: ["sheep", "dog"],
+            value: -1
+        },
+        expected: undefined
+    }, {
+        message: "dereference() should return undefined when the \"array\" is arrayable but the given index is -1.",
+        transform: {
+            type: "fluid.transforms.dereference",
+            array: "dog",
+            value: -1
+        },
+        expected: undefined
+    }, {
+        message: "dereference() should return undefined when the index is not provided.",
+        transform: {
+            type: "fluid.transforms.dereference",
+            array: ["sheep", "dog"]
+        },
+        expected: undefined
+    }, {
+        message: "dereference() should return undefined when the calculated index is -1.",
+        transform: {
+            type: "fluid.transforms.dereference",
+            array: ["sheep", "dog"],
+            value: 2,
+            offset: 3
+        },
+        expected: undefined
+    }, {
+        message: "dereference() should return what's defined in the notFound when the value is not found in the array.",
+        transform: {
+            type: "fluid.transforms.dereference",
+            array: ["sheep", "dog"],
+            value: -1,
+            notFound: "notFound"
+        },
+        expected: "notFound"
+    }];
+
+    jqUnit.test("fluid.transforms.dereference()", function () {
+        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.deferenceTests);
+
+        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.dereferenceBoundaryTests, {
             transformWrap: true,
             method: "assertEquals"
         });

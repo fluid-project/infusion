@@ -591,12 +591,46 @@ var fluid = fluid || fluid_2_0;
     };
 
     fluid.defaults("fluid.transforms.indexOf", {
-        gradeNames: "fluid.standardTransformFunction"
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
+        invertConfiguration: "fluid.transforms.indexOf.invert"
     });
 
     fluid.transforms.indexOf = function (value, transformSpec) {
         var array = fluid.makeArray(transformSpec.array);
-        return array.indexOf(value);
+        var offset = isNaN(Number(transformSpec.offset)) ? 0 : Number(transformSpec.offset);
+        var originalIndex = array.indexOf(value);
+        return originalIndex === -1 && transformSpec.notFound ? transformSpec.notFound : originalIndex + offset;
+    };
+
+    fluid.transforms.indexOf.invert = function (transformSpec, transformer) {
+        var togo = fluid.copy(transformSpec);
+        togo.type = "fluid.transforms.dereference";
+        togo.inputPath = fluid.model.composePaths(transformer.outputPrefix, transformSpec.outputPath);
+        togo.outputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.inputPath);
+        return togo;
+    };
+
+    fluid.defaults("fluid.transforms.dereference", {
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
+        invertConfiguration: "fluid.transforms.dereference.invert"
+    });
+
+    fluid.transforms.dereference = function (value, transformSpec) {
+        if (typeof (value) !== "number") {
+            return undefined;
+        }
+        var array = fluid.makeArray(transformSpec.array);
+        var offset = isNaN(Number(transformSpec.offset)) ? 0 : Number(transformSpec.offset);
+        var index = value - offset;
+        return index === -1 && transformSpec.notFound ? transformSpec.notFound : array[index];
+    };
+
+    fluid.transforms.dereference.invert = function (transformSpec, transformer) {
+        var togo = fluid.copy(transformSpec);
+        togo.type = "fluid.transforms.indexOf";
+        togo.inputPath = fluid.model.composePaths(transformer.outputPrefix, transformSpec.outputPath);
+        togo.outputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.inputPath);
+        return togo;
     };
 
     fluid.defaults("fluid.transforms.free", {
