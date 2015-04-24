@@ -596,7 +596,6 @@ var fluid = fluid || fluid_2_0;
 
     fluid.transforms.indexOf = function (value, transformSpec) {
         var array = fluid.makeArray(transformSpec.array);
-        console.log(array);
         return array.indexOf(value);
     };
 
