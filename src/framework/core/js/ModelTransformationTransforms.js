@@ -215,8 +215,8 @@ var fluid = fluid || fluid_2_0;
         invertConfiguration: "fluid.transforms.valueMapper.invert",
         collectInputPaths: "fluid.transforms.valueMapper.collect"
     });
-    
-    
+
+
     // unsupported, NON-API function
     fluid.model.transform.compareMatches = function (speca, specb) {
         return specb.matchValue - speca.matchValue;
@@ -588,6 +588,15 @@ var fluid = fluid || fluid_2_0;
             }
         }
         return value;
+    };
+
+    fluid.defaults("fluid.transforms.indexOf", {
+        gradeNames: "fluid.standardTransformFunction"
+    });
+
+    fluid.transforms.indexOf = function (value, transformSpec) {
+        var array = fluid.makeArray(transformSpec.array);
+        return array.indexOf(value);
     };
 
     fluid.defaults("fluid.transforms.free", {

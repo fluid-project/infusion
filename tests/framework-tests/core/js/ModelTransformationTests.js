@@ -2611,6 +2611,56 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
+    /* --------------- fluid.transforms.indexOf tests -------------------- */
+
+    var indexOfTests = [{
+        message: "indexOf() should return the index of the value on the array.",
+        transform: {
+            type: "fluid.transforms.indexOf",
+            array: ["sheep", "dog"],
+            value: "dog"
+        },
+        expected: 1
+    }, {
+        message: "indexOf() should return -1 when the value is not found in the array.",
+        transform: {
+            type: "fluid.transforms.indexOf",
+            array: ["sheep", "dog"],
+            value: "cat"
+        },
+        expected: -1
+    }, {
+        message: "indexOf() should return the index of the value when the value of the \"array\" argument is arrayable and match.",
+        transform: {
+            type: "fluid.transforms.indexOf",
+            array: "sheep",
+            value: "sheep"
+        },
+        expected: 0
+    }, {
+        message: "indexOf() should return -1 when the value of the \"array\" argument is arrayable and mismatch.",
+        transform: {
+            type: "fluid.transforms.indexOf",
+            array: "dog",
+            value: "sheep"
+        },
+        expected: -1
+    }, {
+        message: "indexOf() should return undefined when the value is not provided.",
+        transform: {
+            type: "fluid.transforms.indexOf",
+            array: ["sheep", "dog"]
+        },
+        expected: undefined
+    }];
+
+    jqUnit.test("fluid.transforms.indexOf()", function () {
+        fluid.tests.transforms.testOneStructure(indexOfTests, {
+            transformWrap: true,
+            method: "assertEquals"
+        });
+    });
+
     /* --------------- fluid.transforms.free tests -------------------- */
 
     fluid.tests.addThree = function (a, b, c) {
