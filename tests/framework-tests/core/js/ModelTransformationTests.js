@@ -2683,7 +2683,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             transform: [{
                 type: "fluid.transforms.dereference",
                 array: ["sheep", "dog"],
-                offset: 3,
+                offset: -3,
                 outputPath: "element",
                 inputPath: "value"
             }]
@@ -2712,7 +2712,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             transform: [{
                 type: "fluid.transforms.dereference",
                 array: ["sheep", "dog"],
-                offset: "1",
+                offset: -1,
                 outputPath: "element",
                 inputPath: "value"
             }]
@@ -2759,15 +2759,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             offset: 3
         },
         expected: 2
-    }, {
-        message: "indexOf() should return ignore offset when the offset value cannot be converted a number.",
-        transform: {
-            type: "fluid.transforms.indexOf",
-            array: ["sheep", "dog"],
-            value: "dog",
-            offset: "a"
-        },
-        expected: 1
     }, {
         message: "indexOf() should return what's defined in the notFound when the value is not found in the array.",
         transform: {
@@ -2860,7 +2851,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 transform: {
                     type: "fluid.transforms.dereference",
                     array: ["sheep", "dog"],
-                    offset: 3,
+                    offset: -3,
                     inputPath: "element"
                 }
             }
@@ -2889,7 +2880,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 transform: {
                     type: "fluid.transforms.dereference",
                     array: ["sheep", "dog"],
-                    offset: "1",
+                    offset: "-1",
                     inputPath: "element"
                 }
             }
@@ -2898,7 +2889,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             transform: [{
                 type: "fluid.transforms.indexOf",
                 array: ["sheep", "dog"],
-                offset: "1",
+                offset: 1,
                 outputPath: "element",
                 inputPath: "value"
             }]
@@ -2906,35 +2897,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         method: "assertDeepEq",
         model: {
             element: 2
-        },
-        expected: {
-            value: "dog"
-        },
-        fullyinvertible: true
-    }, {
-        message: "dereference() should ignore the offset when the offset value cannot be converted a number.",
-        transform: {
-            value: {
-                transform: {
-                    type: "fluid.transforms.dereference",
-                    array: ["sheep", "dog"],
-                    offset: "a",
-                    inputPath: "element"
-                }
-            }
-        },
-        invertedRules: {
-            transform: [{
-                type: "fluid.transforms.indexOf",
-                array: ["sheep", "dog"],
-                offset: "a",
-                outputPath: "element",
-                inputPath: "value"
-            }]
-        },
-        method: "assertDeepEq",
-        model: {
-            element: 1
         },
         expected: {
             value: "dog"

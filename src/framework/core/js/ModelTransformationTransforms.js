@@ -209,13 +209,11 @@ var fluid = fluid || fluid_2_0;
         return inputs[condition ? "true" : "false"]();
     };
 
-
     fluid.defaults("fluid.transforms.valueMapper", {
         gradeNames: ["fluid.transformFunction", "fluid.lens"],
         invertConfiguration: "fluid.transforms.valueMapper.invert",
         collectInputPaths: "fluid.transforms.valueMapper.collect"
     });
-
 
     // unsupported, NON-API function
     fluid.model.transform.compareMatches = function (speca, specb) {
@@ -596,10 +594,16 @@ var fluid = fluid || fluid_2_0;
     });
 
     fluid.transforms.indexOf = function (value, transformSpec) {
+        var offset;
+        if (transformSpec.offset !== undefined) {
+            offset = Number(transformSpec.offset);
+            if (isNaN(offset) || offset !== parseInt(offset, 10)) {
+                fluid.fail("indexOf requires the value of \"offset\" to be an integer or a string that can be converted to an integer. " + transformSpec.offset + " is invalid.");
+            }
+        }
         var array = fluid.makeArray(transformSpec.array);
-        var offset = isNaN(Number(transformSpec.offset)) ? 0 : Number(transformSpec.offset);
         var originalIndex = array.indexOf(value);
-        return originalIndex === -1 && transformSpec.notFound ? transformSpec.notFound : originalIndex + offset;
+        return originalIndex === -1 && transformSpec.notFound ? transformSpec.notFound : (typeof (offset) === "number" ? originalIndex + offset : originalIndex);
     };
 
     fluid.transforms.indexOf.invert = function (transformSpec, transformer) {
@@ -607,6 +611,9 @@ var fluid = fluid || fluid_2_0;
         togo.type = "fluid.transforms.dereference";
         togo.inputPath = fluid.model.composePaths(transformer.outputPrefix, transformSpec.outputPath);
         togo.outputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.inputPath);
+        if (!isNaN(Number(togo.offset))) {
+            togo.offset = Number(togo.offset) * (-1);
+        }
         return togo;
     };
 
@@ -617,11 +624,16 @@ var fluid = fluid || fluid_2_0;
 
     fluid.transforms.dereference = function (value, transformSpec) {
         if (typeof (value) !== "number") {
-            return undefined;
+            fluid.fail("dereference requires \"value\" to be a number. " + value + " is invalid.");
+        }
+        if (transformSpec.offset !== undefined) {
+            var offset = Number(transformSpec.offset);
+            if (isNaN(offset) || offset !== parseInt(offset, 10)) {
+                fluid.fail("dereference requires the value of \"offset\" to be an integer or a string that can be converted to an integer. " + transformSpec.offset + " is invalid.");
+            }
         }
         var array = fluid.makeArray(transformSpec.array);
-        var offset = isNaN(Number(transformSpec.offset)) ? 0 : Number(transformSpec.offset);
-        var index = value - offset;
+        var index = typeof (offset) === "number" ? value + offset : value;
         return index === -1 && transformSpec.notFound ? transformSpec.notFound : array[index];
     };
 
@@ -630,6 +642,9 @@ var fluid = fluid || fluid_2_0;
         togo.type = "fluid.transforms.indexOf";
         togo.inputPath = fluid.model.composePaths(transformer.outputPrefix, transformSpec.outputPath);
         togo.outputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.inputPath);
+        if (!isNaN(Number(togo.offset))) {
+            togo.offset = Number(togo.offset) * (-1);
+        }
         return togo;
     };
 
