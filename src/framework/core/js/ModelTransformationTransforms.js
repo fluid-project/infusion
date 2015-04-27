@@ -646,7 +646,7 @@ var fluid = fluid || fluid_2_0;
             togo.offset = Number(togo.offset) * (-1);
         }
         return togo;
-    }
+    };
 
     fluid.defaults("fluid.transforms.free", {
         gradeNames: "fluid.transformFunction"

@@ -2727,7 +2727,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fullyinvertible: true
     }];
 
-    fluid.tests.transforms.indexOfBoundaryTests = [, {
+    fluid.tests.transforms.indexOfBoundaryTests = [{
         message: "indexOf() should return -1 when the value is not found in the array.",
         transform: {
             type: "fluid.transforms.indexOf",
