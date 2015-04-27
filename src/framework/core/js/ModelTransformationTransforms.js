@@ -607,13 +607,8 @@ var fluid = fluid || fluid_2_0;
     };
 
     fluid.transforms.indexOf.invert = function (transformSpec, transformer) {
-        var togo = fluid.copy(transformSpec);
+        var togo = fluid.transforms.getCommonInvertedSpec(transformSpec, transformer);
         togo.type = "fluid.transforms.dereference";
-        togo.inputPath = fluid.model.composePaths(transformer.outputPrefix, transformSpec.outputPath);
-        togo.outputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.inputPath);
-        if (!isNaN(Number(togo.offset))) {
-            togo.offset = Number(togo.offset) * (-1);
-        }
         return togo;
     };
 
@@ -638,15 +633,20 @@ var fluid = fluid || fluid_2_0;
     };
 
     fluid.transforms.dereference.invert = function (transformSpec, transformer) {
-        var togo = fluid.copy(transformSpec);
+        var togo = fluid.transforms.getCommonInvertedSpec(transformSpec, transformer);
         togo.type = "fluid.transforms.indexOf";
+        return togo;
+    };
+
+    fluid.transforms.getCommonInvertedSpec = function (transformSpec, transformer) {
+        var togo = fluid.copy(transformSpec);
         togo.inputPath = fluid.model.composePaths(transformer.outputPrefix, transformSpec.outputPath);
         togo.outputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.inputPath);
         if (!isNaN(Number(togo.offset))) {
             togo.offset = Number(togo.offset) * (-1);
         }
         return togo;
-    };
+    }
 
     fluid.defaults("fluid.transforms.free", {
         gradeNames: "fluid.transformFunction"
