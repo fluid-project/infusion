@@ -597,7 +597,7 @@ var fluid = fluid || fluid_2_0;
         var offset = fluid.transforms.parseIndexationOffset(transformSpec.offset, "indexOf");
         var array = fluid.makeArray(transformSpec.array);
         var originalIndex = array.indexOf(value);
-        return originalIndex === -1 && transformSpec.notFound ? transformSpec.notFound : (typeof (offset) === "number" ? originalIndex + offset : originalIndex);
+        return originalIndex === -1 && transformSpec.notFound ? transformSpec.notFound : originalIndex + offset;
     };
 
     fluid.transforms.indexOf.invert = function (transformSpec, transformer) {
@@ -617,7 +617,7 @@ var fluid = fluid || fluid_2_0;
         }
         var offset = fluid.transforms.parseIndexationOffset(transformSpec.offset, "dereference");
         var array = fluid.makeArray(transformSpec.array);
-        var index = typeof (offset) === "number" ? value + offset : value;
+        var index = value + offset;
         return index === -1 && transformSpec.notFound ? transformSpec.notFound : array[index];
     };
 
