@@ -742,6 +742,21 @@ var fluid = fluid || fluid_2_0;
         return togo;
     };
 
+    /** Converts an array consisting of a mixture of arrays and non-arrays into the concatenation of any inner arrays 
+     * with the non-array elements
+     */
+    fluid.flatten = function (array) {
+        var togo = [];
+        fluid.each(array, function (element) {
+            if (fluid.isArrayable(element)) {
+                togo = togo.concat(element);
+            } else {
+                togo.push(element);
+            }
+        });
+        return togo;
+    };
+
     /**
      * Clears an object or array of its contents. For objects, each property is deleted.
      *
