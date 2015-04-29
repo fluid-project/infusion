@@ -74,7 +74,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Transform hash chain", {a: true, b: false}, fluid.transform({a: 0, b: 1}, addOne, isOdd));
     });
 
-    jqUnit.test("keyForValue, fluid.find, fluid.each, fluid.keys and fluid.values", function () {
+    jqUnit.test("fluid.keyForValue, fluid.find, fluid.each, fluid.keys and fluid.values", function () {
         jqUnit.expect(18);
         var seekIt = function (seek) {
             fluid.each(seek, function (value, key) {
@@ -106,6 +106,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.assertTrue("a null each and a null transform don't crash the framework", true);
+    });
+    
+    fluid.tests.flattenFixtures = [ {
+            message: "standard mixture",
+            arg: [1, [{a: 1}, 13], false, [{b: 2}]],
+            expected: [1, {a: 1}, 13, false, {b: 2}]
+        }, {
+            message: "null",
+            arg: null,
+            expected: []
+        }, {
+            message: "null element",
+            arg: [null],
+            expected: [null]
+        }, {
+            message: "null nested element",
+            arg: [[null]],
+            expected: [null]
+        }
+    ];
+    
+    jqUnit.test("fluid.flatten", function () {
+        fluid.each(fluid.tests.flattenFixtures, function (fixture) {
+            jqUnit.assertDeepEq(fixture.message, fixture.expected, fluid.flatten(fixture.arg));
+        });
     });
 
     jqUnit.test("merge", function () {
