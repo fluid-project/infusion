@@ -1127,7 +1127,7 @@ var fluid_2_0 = fluid_2_0 || {};
         });
         return togo;
     };
-    
+
     fluid.fabricateDestroyMethod = function (that, name, instantiator, child) {
         return function () {
             instantiator.clearComponent(that, name, child);

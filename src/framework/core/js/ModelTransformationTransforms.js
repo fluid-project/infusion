@@ -209,14 +209,12 @@ var fluid = fluid || fluid_2_0;
         return inputs[condition ? "true" : "false"]();
     };
 
-
     fluid.defaults("fluid.transforms.valueMapper", {
         gradeNames: ["fluid.transformFunction", "fluid.lens"],
         invertConfiguration: "fluid.transforms.valueMapper.invert",
         collectInputPaths: "fluid.transforms.valueMapper.collect"
     });
-    
-    
+
     // unsupported, NON-API function
     fluid.model.transform.compareMatches = function (speca, specb) {
         return specb.matchValue - speca.matchValue;
@@ -604,6 +602,66 @@ var fluid = fluid || fluid_2_0;
             }
         }
         return value;
+    };
+
+    fluid.defaults("fluid.transforms.indexOf", {
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
+        invertConfiguration: "fluid.transforms.indexOf.invert"
+    });
+
+    fluid.transforms.indexOf = function (value, transformSpec) {
+        var offset = fluid.transforms.parseIndexationOffset(transformSpec.offset, "indexOf");
+        var array = fluid.makeArray(transformSpec.array);
+        var originalIndex = array.indexOf(value);
+        return originalIndex === -1 && transformSpec.notFound ? transformSpec.notFound : originalIndex + offset;
+    };
+
+    fluid.transforms.indexOf.invert = function (transformSpec, transformer) {
+        var togo = fluid.transforms.invertArrayIndexation(transformSpec, transformer);
+        togo.type = "fluid.transforms.dereference";
+        return togo;
+    };
+
+    fluid.defaults("fluid.transforms.dereference", {
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
+        invertConfiguration: "fluid.transforms.dereference.invert"
+    });
+
+    fluid.transforms.dereference = function (value, transformSpec) {
+        if (typeof (value) !== "number") {
+            fluid.fail("dereference requires \"value\" to be a number. " + value + " is invalid.");
+        }
+        var offset = fluid.transforms.parseIndexationOffset(transformSpec.offset, "dereference");
+        var array = fluid.makeArray(transformSpec.array);
+        var index = value + offset;
+        return index === -1 && transformSpec.notFound ? transformSpec.notFound : array[index];
+    };
+
+    fluid.transforms.dereference.invert = function (transformSpec, transformer) {
+        var togo = fluid.transforms.invertArrayIndexation(transformSpec, transformer);
+        togo.type = "fluid.transforms.indexOf";
+        return togo;
+    };
+
+    fluid.transforms.parseIndexationOffset = function (offset, transformName) {
+        var parsedOffset = 0;
+        if (offset !== undefined) {
+            parsedOffset = fluid.parseInteger(offset);
+            if (isNaN(parsedOffset)) {
+                fluid.fail(transformName + " requires the value of \"offset\" to be an integer or a string that can be converted to an integer. " + offset + " is invalid.");
+            }
+        }
+        return parsedOffset;
+    };
+
+    fluid.transforms.invertArrayIndexation = function (transformSpec, transformer) {
+        var togo = fluid.copy(transformSpec);
+        togo.inputPath = fluid.model.composePaths(transformer.outputPrefix, transformSpec.outputPath);
+        togo.outputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.inputPath);
+        if (!isNaN(Number(togo.offset))) {
+            togo.offset = Number(togo.offset) * (-1);
+        }
+        return togo;
     };
 
     fluid.defaults("fluid.transforms.free", {

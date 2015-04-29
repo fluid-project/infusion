@@ -769,6 +769,14 @@ var fluid = fluid || fluid_2_0;
         };
     };
 
+    /**
+     * Returns the converted integer if the input string can be converted to an integer. Otherwise, return NaN.
+     * @param {String} a string to be returned in integer
+     */
+    fluid.parseInteger = function (string) {
+        return isFinite(string) && ((string % 1) === 0) ? Number(string) : NaN;
+    };
+
     fluid.logLevelsSpec = {
         "FATAL":      0,
         "FAIL":       5,
