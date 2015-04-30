@@ -1,5 +1,5 @@
 /*
-Copyright 2013 OCAD University
+Copyright 2013-2015 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -27,7 +27,8 @@ var fluid_2_0 = fluid_2_0 || {};
                 func: "fluid.prefs.builder.generateGrade",
                 args: ["prefsEditor", "{that}.options.auxSchema.namespace", {
                     gradeNames: ["fluid.viewRelayComponent", "autoInit", "fluid.prefs.assembler.prefsEd"],
-                    componentGrades: "{that}.options.constructedGrades"
+                    componentGrades: "{that}.options.constructedGrades",
+                    loaderGrades: "{that}.options.auxSchema.loaderGrades"
                 }]
             }
         },
@@ -119,8 +120,12 @@ var fluid_2_0 = fluid_2_0 || {};
                 container: "{fluid.prefs.assembler.prefsEd}.container",
                 priority: "last",
                 options: {
-                    gradeNames: ["{fluid.prefs.assembler.prefsEd}.options.componentGrades.templatePrefix", "{fluid.prefs.assembler.prefsEd}.options.componentGrades.messagePrefix", "{fluid.prefs.assembler.prefsEd}.options.componentGrades.messages", "{that}.options.prefsEditorType"],
-                    prefsEditorType: "fluid.prefs.separatedPanel",
+                    gradeNames: [
+                        "{fluid.prefs.assembler.prefsEd}.options.componentGrades.templatePrefix",
+                        "{fluid.prefs.assembler.prefsEd}.options.componentGrades.messagePrefix",
+                        "{fluid.prefs.assembler.prefsEd}.options.componentGrades.messages",
+                        "{that}.options.loaderGrades"
+                    ],
                     templateLoader: {
                         gradeNames: ["{fluid.prefs.assembler.prefsEd}.options.componentGrades.templateLoader"]
                     },
@@ -147,9 +152,9 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         },
         distributeOptions: [{
-            source: "{that}.options.prefsEditorType",
+            source: "{that}.options.loaderGrades",
             removeSource: true,
-            target: "{that > prefsEditorLoader}.options.prefsEditorType"
+            target: "{that > prefsEditorLoader}.options.loaderGrades"
         }, {
             source: "{that}.options.prefsEditor",
             removeSource: true,

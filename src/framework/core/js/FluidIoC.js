@@ -1037,7 +1037,7 @@ var fluid_2_0 = fluid_2_0 || {};
             instantiator.clearComponent(that, "", that, null, true);
         };
     };
-    
+
     // NON-API function
     fluid.fabricateDestroyMethod = function (that, name, instantiator, child) {
         return function () {
@@ -1577,10 +1577,6 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     };
 
     var argPrefix = "{arguments}.";
-
-    fluid.parseInteger = function (string) {
-        return isFinite(string) && ((string % 1) === 0) ? Number(string) : NaN;
-    };
 
     fluid.makeFastInvoker = function (invokeSpec, func) {
         var argMap;
