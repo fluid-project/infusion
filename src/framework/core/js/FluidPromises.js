@@ -75,6 +75,20 @@ var fluid_2_0 = fluid_2_0 || {};
         return totest && typeof(totest.then) === "function";
     };
     
+    /** Coerces any value to a promise
+     * @param promiseOrValue The value to be coerced
+     * @return If the supplied value is already a promise, it is returned unchanged. Otherwise a fresh promise is created with the value as resolution and returned
+     */
+    fluid.toPromise = function (promiseOrValue) {
+        if (fluid.isPromise(promiseOrValue)) {
+            return promiseOrValue;
+        } else {
+            var togo = fluid.promise();
+            togo.resolve(promiseOrValue);
+            return togo;
+        }
+    };
+    
     /** Chains the resolution methods of one promise (target) so that they follow those of another (source).
       * That is, whenever source resolves, target will resolve, or when source rejects, target will reject, with the
       * same payloads in each case.
@@ -89,17 +103,14 @@ var fluid_2_0 = fluid_2_0 || {};
      * @return {Promise} A promise for the resolved mapped value.
      */
     fluid.promise.map = function (source, func) {
+        var promise = fluid.toPromise(source);
         var togo = fluid.promise();
-        if (fluid.isPromise(source)) {
-            source.then(function (value) {
-                var mapped = func(value);
-                togo.resolve(mapped);
-            }, function (error) {
-                togo.reject(error);
-            });
-        } else {
-            togo.resolve(func(source));
-        }
+        promise.then(function (value) {
+            var mapped = func(value);
+            togo.resolve(mapped);
+        }, function (error) {
+            togo.reject(error);
+        });
         return togo;
     };
     
@@ -113,6 +124,7 @@ var fluid_2_0 = fluid_2_0 || {};
         }
         return {
             sources: sources,
+            resolvedSources: [], // the values of "sources" only with functions invoked (an array of promises or values)
             index: 0,
             strategy: strategy,
             options: options, // available to be supplied to each listener
@@ -128,16 +140,26 @@ var fluid_2_0 = fluid_2_0 || {};
         fluid.promise.resumeSequence(that);
     };
     
+    fluid.promise.processSequenceReject = function (that, error) { // Allow earlier promises in the sequence to wrap the rejection supplied by later ones (FLUID-5584)
+        for (var i = that.index - 1; i >= 0; -- i) {
+            var resolved = that.resolvedSources[i];
+            var accumulator = fluid.isPromise(resolved) && typeof(resolved.accumulateRejectionReason) === "function" ? resolved.accumulateRejectionReason : fluid.identity;
+            error = accumulator(error);
+        }
+        that.promise.reject(error);
+    };
+    
     fluid.promise.resumeSequence = function (that) {
         if (that.index === that.sources.length) {
             that.promise.resolve(that.strategy.resolveResult(that));
         } else {
             var value = that.strategy.invokeNext(that);
+            that.resolvedSources[that.index] = value;
             if (fluid.isPromise(value)) {
                 value.then(function (retValue) {
                     fluid.promise.progressSequence(that, retValue);
                 }, function (error) {
-                    that.promise.reject(error);
+                    fluid.promise.processSequenceReject(that, error);
                 });
             } else {
                 fluid.promise.progressSequence(that, value);
