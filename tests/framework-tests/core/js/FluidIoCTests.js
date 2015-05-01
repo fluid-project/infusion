@@ -123,13 +123,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     fluid.defaults("fluid.tests.invokerExpander", {
         gradeNames: ["fluid.component"],
+        textSizeInPx: 8,
         invokers: {
             getLineHeightMultiplier: {
                 funcName: "fluid.tests.getLineHeightMultiplier",
-                args: [{expander: {func: "{that}.getLineHeight"}}, "@expand:{that}.getTextSizeInPx()"]
+                args: [{expander: {func: "{that}.getLineHeight"}}, "@expand:{that}.getTextSizeInPx({that}.options.textSizeInPx)"]
             },
             getLineHeight: "fluid.identity(16)",
-            getTextSizeInPx: "fluid.identity(8)"
+            getTextSizeInPx: "fluid.identity"
         }
     });
 

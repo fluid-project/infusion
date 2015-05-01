@@ -2178,6 +2178,7 @@ var fluid_2_0 = fluid_2_0 || {};
             args = options.recurse([], args);
         } else {
             expander = fluid.expandImmediate(expander, options.contextThat);
+            args = expander.args;
         }
         var funcEntry = expander.func || expander.funcName;
         var func = (options.expandSource ? options.expandSource(funcEntry) : funcEntry) || fluid.recordToApplicable(expander, options.contextThat);
