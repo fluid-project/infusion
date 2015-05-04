@@ -300,8 +300,8 @@ var fluid_2_0 = fluid_2_0 || {};
         fluid.each(transRec, function (value, key) {
             if (typeof(value) === "number") {
                 transRec[key] = 0;
-            } else if (relaysAlso && value.options && typeof(value.options.relayCount) === "number") {
-                value.options.relayCount = 0;
+            } else if (relaysAlso && value.options && typeof(value.relayCount) === "number") {
+                value.relayCount = 0;
             }
         });
     };
@@ -468,7 +468,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 ++transRec[linkId];
                 if (!existing) {
                     var newTrans = targetApplier.initiate("relay", transId); // non-top-level transaction will defeat postCommit
-                    existing = transRec[applierId] = {transaction: newTrans, options: options};
+                    existing = transRec[applierId] = {transaction: newTrans, relayCount: 0, options: options};
                 }
                 if (transducer && !options.targetApplier) {
                     // TODO: This is just for safety but is still unusual and now abused. The transducer doesn't need the "newValue" since all the transform information
@@ -521,7 +521,6 @@ var fluid_2_0 = fluid_2_0 || {};
                 fluid.registerDirectChangeRelay(source, sourceSegs, target, targetSegs, linkId, null, {
                     transactional: false,
                     targetApplier: options.targetApplier,
-                    relayCount: options.relayCount,
                     update: options.update
                 });
             } else {
@@ -584,7 +583,6 @@ var fluid_2_0 = fluid_2_0 || {};
         }
         that.update = that.invalidator.fire; // necessary so that both routes to fluid.connectModelRelay from here hit the first branch
         var implicitOptions = {
-            relayCount: 0, // this count is updated in fluid.model.updateRelays
             targetApplier: that.forwardApplier, // this special field identifies us to fluid.connectModelRelay
             update: that.update,
             refCount: 0
@@ -702,8 +700,8 @@ var fluid_2_0 = fluid_2_0 || {};
         fluid.each(transRec, function (transEl) {
             // TODO: integrate the "source" if any into this computation, and fire the relay if it has changed - perhaps by adding a listener
             // to it that updates changeRecord.changes (assuming we can find it)
-            if (transEl.options && transEl.transaction && transEl.transaction.changeRecord.changes > 0 && transEl.options.relayCount < 2 && transEl.options.update) {
-                transEl.options.relayCount++;
+            if (transEl.options && transEl.transaction && transEl.transaction.changeRecord.changes > 0 && transEl.relayCount < 2 && transEl.options.update) {
+                transEl.relayCount++;
                 fluid.clearLinkCounts(transRec);
                 transEl.options.update(transEl.transaction, transRec);
                 ++updates;
