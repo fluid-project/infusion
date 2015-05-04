@@ -27,12 +27,29 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.prefs.prefsEditorLoader", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.settingsGetter", "fluid.prefs.initialModel", "autoInit"],
+        defaultLocale: null,
+        members: {
+            settings: {
+                expander: {
+                    funcName: "fluid.prefs.prefsEditorLoader.getCompleteSettings",
+                    args: ["{that}.initialModel", "{that}.getSettings"]
+                }
+            }
+        },
         components: {
             prefsEditor: {
                 priority: "last",
                 type: "fluid.prefs.prefsEditor",
-                createOnEvent: "onCreatePrefsEditorReady"
+                createOnEvent: "onCreatePrefsEditorReady",
+                options: {
+                    members: {
+                        initialModel: "{prefsEditorLoader}.initialModel"
+                    },
+                    invokers: {
+                        getSettings: "{prefsEditorLoader}.getSettings"
+                    }
+                }
             },
             templateLoader: {
                 type: "fluid.prefs.resourceLoader",
@@ -45,6 +62,8 @@ var fluid_2_0 = fluid_2_0 || {};
             messageLoader: {
                 type: "fluid.prefs.resourceLoader",
                 options: {
+                    defaultLocale: "{prefsEditorLoader}.options.defaultLocale",
+                    locale: "{prefsEditorLoader}.settings.locale",
                     resourceOptions: {
                         dataType: "json"
                     },
@@ -84,6 +103,11 @@ var fluid_2_0 = fluid_2_0 || {};
             target: "{that > prefsEditor}.options"
         }]
     });
+
+    fluid.prefs.prefsEditorLoader.getCompleteSettings = function (initialModel, getSettingsFunc) {
+        var savedSettings = getSettingsFunc();
+        return $.extend(true, {}, initialModel, savedSettings);
+    };
 
     // TODO: This mixin grade appears to be supplied manually by various test cases but no longer appears in
     // the main configuration. We should remove the need for users to supply this - also the use of "defaultPanels" in fact
@@ -131,6 +155,8 @@ var fluid_2_0 = fluid_2_0 || {};
                 args: ["{that}", {expander: {func: "{that}.resolveResources"}}]
             }
         },
+        defaultLocale: null,
+        locale: null,
         resources: {},
         resourceOptions: {},
         // Unsupported, non-API option
@@ -158,7 +184,16 @@ var fluid_2_0 = fluid_2_0 || {};
         var mapped = fluid.transform(that.options.resources, that.transformURL);
 
         return fluid.transform(mapped, function (url) {
-            return {url: url, forceCache: true, options: that.options.resourceOptions};
+            var resourceSpec = {url: url, forceCache: true, options: that.options.resourceOptions};
+            fluid.each(["defaultLocale", "locale"], function (localeName) {
+                var value = that.options[localeName];
+                if (value) {
+                    var localeOption = {};
+                    localeOption[localeName] = value;
+                    $.extend(resourceSpec, localeOption);
+                }
+            });
+            return resourceSpec;
         });
     };
 
@@ -257,7 +292,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.prefs.prefsEditor", {
-        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.settingsGetter", "fluid.prefs.settingsSetter", "fluid.prefs.initialModel", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.settingsSetter", "autoInit"],
         invokers: {
             /**
              * Updates the change applier and fires modelChanged on subcomponent fluid.prefs.controls

@@ -42,7 +42,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 container: ".flc-prefsEditor-separatedPanel",
                 createOnEvent: "{separatedPanelIntegrationTester}.events.onTestCaseStart",
                 options: {
-                    gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
+                    gradeNames: ["fluid.prefs.transformDefaultPanelsOptions", "fluid.prefs.initialModel.starter"],
                     templatePrefix: "../../../../src/framework/preferences/html/",
                     messagePrefix: "../../../../src/framework/preferences/messages/",
                     iframeRenderer: {
@@ -57,7 +57,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         gradeNames: ["fluid.prefs.starterMessageLoader"]
                     },
                     prefsEditor: {
-                        gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.initialModel.starter", "fluid.prefs.uiEnhancerRelay"]
+                        gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.uiEnhancerRelay"]
                     }
                 }
             },
@@ -109,7 +109,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return function () {
             separatedPanel.locate("reset").click();
 
-            var initialModel = separatedPanel.prefsEditor.initialModel;
+            var initialModel = separatedPanel.initialModel;
             var enhancerModel = separatedPanel.pageEnhancer.model;
             var iframeEnhancerModel = separatedPanel.iframeRenderer.iframeEnhancer.model;
 

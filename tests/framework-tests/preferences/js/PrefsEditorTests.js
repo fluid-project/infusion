@@ -25,7 +25,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         // Define a default configuration but will specify different demands to test the full config with settings
         fluid.defaults("fluid.prefsTests", {
-            gradeNames: ["fluid.prefs.prefsEditorLoader", "autoInit"],
+            gradeNames: ["fluid.prefs.prefsEditorLoader", "fluid.prefs.initialModel.starter", "autoInit"],
             templatePrefix: templatePrefix,
             messagePrefix: messagePrefix,
             messageLoader: {
@@ -52,7 +52,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.demands("fluid.prefs.prefsEditor", ["fluid.prefsTests", "fluid.prefs.tests"], {
             funcName: "fluid.prefs.starterPanels",
             options: {
-                gradeNames: ["fluid.prefs.initialModel.starter", "fluid.prefs.uiEnhancerRelay"],
+                gradeNames: ["fluid.prefs.uiEnhancerRelay"],
                 components: {
                     uiEnhancer: {
                         type: "fluid.uiEnhancer",
@@ -111,7 +111,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.module("PrefsEditor Tests");
 
         jqUnit.asyncTest("Template Loader", function () {
-            jqUnit.expect(4);
+            jqUnit.expect(8);
 
             var testTemplatePrefix = "../../../../src/framework/preferences/html/";
             var textControlsFullResourcePath = "../../../../src/framework/preferences/html/PrefsEditorTemplate-textSize.html";
@@ -121,16 +121,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 // The template with a customized full url
                 jqUnit.assertEquals("textControls template url is set correctly", textControlsFullResourcePath, resources.textControls.url);
                 jqUnit.assertTrue("textControls forceCache is set", resources.textControls.forceCache);
+                jqUnit.assertEquals("textControls defaultLocale is set correctly in the resource spec", "en", resources.textControls.defaultLocale);
+                jqUnit.assertEquals("textControls ocale is set correctly in the resource spec", "fr", resources.textControls.locale);
 
                 // The template with prefix + customized name
                 jqUnit.assertEquals("linksControls template url is set correctly", testTemplatePrefix + linksControlsTemplateName, resources.linksControls.url);
                 jqUnit.assertTrue("linksControls forceCache is set", resources.linksControls.forceCache);
+                jqUnit.assertEquals("linksControls defaultLocale is set correctly in the resource spec", "en", resources.linksControls.defaultLocale);
+                jqUnit.assertEquals("linksControls ocale is set correctly in the resource spec", "fr", resources.linksControls.locale);
 
                 jqUnit.start();
             }
 
             fluid.defaults("fluid.prefsTestResourceLoader", {
                 gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
+                defaultLocale: "en",
+                locale: "fr",
                 resources: {
                     linksControls: "%prefix/" + linksControlsTemplateName,
                     textControls: textControlsFullResourcePath
@@ -459,7 +465,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.demands("fluid.prefs.prefsEditor", ["fluid.prefs.testsIntegration", "fluid.prefs.tests", "fluid.prefsTests"], {
                 funcName: "fluid.prefs.starterPanels",
                 options: {
-                    gradeNames: ["fluid.prefs.initialModel.starter"],
+                    gradeNames: ["fluid.prefs.initialModel.starter", "fluid.prefs.settingsGetter"],
                     components: {
                         uiEnhancer: {
                             type: "fluid.uiEnhancer",
@@ -579,6 +585,49 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             testPrefsEditor(function (prefsEditorIn) {
                 prefsEditor = prefsEditorIn;
             });
+        });
+
+        /****************
+         * Locale tests *
+         ****************/
+
+        fluid.defaults("fluid.prefs.initialModel.localeStarter", {
+            members: {
+                initialModel: {
+                    locale: "fr"
+                }
+            }
+        });
+
+        fluid.defaults("fluid.prefsLocaleTests", {
+            gradeNames: ["fluid.prefsTests", "fluid.prefs.initialModel.localeStarter", "autoInit"],
+            defaultLocale: "en",
+            messagePrefix: "../data/",
+            components: {
+                prefsEditor: {
+                    options: {
+                        listeners: {
+                            onReady: {
+                                funcName: "fluid.prefsLocaleTests.testFn",
+                                args: ["{prefsLocaleTests}"]
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        jqUnit.asyncTest("Locale Tests", function () {
+            jqUnit.expect(5);
+
+            testPrefsEditor(function (prefsEditorLoader) {
+                jqUnit.assertEquals("The locale value in the initial model has been set properly", "fr", prefsEditorLoader.initialModel.locale);
+                jqUnit.assertEquals("The locale value in the settings has been set properly", "fr", prefsEditorLoader.settings.locale);
+                jqUnit.assertEquals("The locale value in the initial model has been passed to the prefs editor", "fr", prefsEditorLoader.prefsEditor.initialModel.locale);
+                jqUnit.assertEquals("The default locale value in the message loader has been set properly", "en", prefsEditorLoader.messageLoader.options.defaultLocale);
+                jqUnit.assertEquals("The locale value in the message loader has been set properly", "fr", prefsEditorLoader.messageLoader.options.locale);
+                jqUnit.start();
+            }, fluid.prefsLocaleTests);
         });
 
     });
