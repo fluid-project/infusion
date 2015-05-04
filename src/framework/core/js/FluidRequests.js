@@ -14,6 +14,28 @@ var fluid_2_0 = fluid_2_0 || {};
 
 (function ($, fluid) {
     "use strict";
+    
+    /** NOTE: All contents of this file are DEPRECATED and no entry point should be considered a supported API **/
+    
+    fluid.explodeLocalisedName = function (fileName, locale, defaultLocale) {
+        var lastDot = fileName.lastIndexOf(".");
+        if (lastDot === -1 || lastDot === 0) {
+            lastDot = fileName.length;
+        }
+        var baseName = fileName.substring(0, lastDot);
+        var extension = fileName.substring(lastDot);
+        
+        var segs = locale.split("_");
+        
+        var exploded = fluid.transform(segs, function (seg, index) {
+            var shortSegs = segs.slice(0, index + 1);
+            return baseName + "_" + shortSegs.join("_") + extension;
+        });
+        if (defaultLocale) {
+            exploded.unshift(baseName + "_" + defaultLocale + extension);
+        }
+        return exploded;
+    };
 
     /** Framework-global caching state for fluid.fetchResources **/
 
@@ -41,12 +63,65 @@ var fluid_2_0 = fluid_2_0 || {};
             if (resourceSpec.url && !resourceSpec.href) {
                 resourceSpec.href = resourceSpec.url;
             }
+            if (that.options.defaultLocale) {
+                resourceSpec.defaultLocale = that.options.defaultLocale;
+                if (resourceSpec.locale === undefined) {
+                    resourceSpec.locale = that.options.defaultLocale;
+                }
+            }
         });
         if (that.options.amalgamateClasses) {
             fluid.fetchResources.amalgamateClasses(resourceSpecs, that.options.amalgamateClasses, that.operate);
         }
+        fluid.fetchResources.explodeForLocales(resourceSpecs);
         that.operate();
         return that;
+    };
+    
+    fluid.fetchResources.explodeForLocales = function (resourceSpecs) {
+        fluid.each(resourceSpecs, function (resourceSpec, key) {
+            if (resourceSpec.locale) {
+                var exploded = fluid.explodeLocalisedName(resourceSpec.href, resourceSpec.locale, resourceSpec.defaultLocale);
+                for (var i = 0; i < exploded.length; ++ i) {
+                    var newKey = key + "$localised-" + i;
+                    var newRecord = $.extend(true, {}, resourceSpec, {
+                        href: exploded[i],
+                        localeExploded: true
+                    });
+                    resourceSpecs[newKey] = newRecord;
+                }
+                resourceSpec.localeExploded = exploded.length;
+            }
+        });
+        return resourceSpecs;
+    };
+    
+    fluid.fetchResources.condenseOneResource = function (resourceSpecs, resourceSpec, key, localeCount) {
+        var localeSpecs = [resourceSpec];
+        for (var i = 0; i < localeCount; ++ i) {
+            var localKey = key + "$localised-" + i;
+            localeSpecs.unshift(resourceSpecs[localKey]);
+            delete resourceSpecs[localKey];
+        }
+        var lastNonError = fluid.find_if(localeSpecs, function (spec) {
+            return !spec.fetchError;
+        });
+        if (lastNonError) {
+            resourceSpecs[key] = lastNonError;
+        }
+    };
+    
+    fluid.fetchResources.condenseForLocales = function (resourceSpecs) {
+        fluid.each(resourceSpecs, function (resourceSpec, key) {
+            if (typeof(resourceSpec.localeExploded) === "number") {
+                fluid.fetchResources.condenseOneResource(resourceSpecs, resourceSpec, key, resourceSpec.localeExploded);
+            }
+        });
+    };
+        
+    fluid.fetchResources.notifyResources = function (that, resourceSpecs, callback) {
+        fluid.fetchResources.condenseForLocales(resourceSpecs);
+        callback(resourceSpecs);
     };
 
     /*
@@ -239,6 +314,7 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     };
 
+
     fluid.fetchResources.fetchResourcesImpl = function(that) {
         var complete = true;
         var allSync = true;
@@ -269,11 +345,11 @@ var fluid_2_0 = fluid_2_0 || {};
             if ($.browser.mozilla && !allSync) {
                 // Defer this callback to avoid debugging problems on Firefox
                 setTimeout(function() {
-                    that.callback(resourceSpecs);
+                    fluid.fetchResources.notifyResources(that, resourceSpecs, that.callback);
                 }, 1);
             }
             else {
-                that.callback(resourceSpecs);
+                fluid.fetchResources.notifyResources(that, resourceSpecs, that.callback);
             }
         }
     };
