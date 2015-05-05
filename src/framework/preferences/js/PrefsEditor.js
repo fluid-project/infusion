@@ -185,15 +185,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
         return fluid.transform(mapped, function (url) {
             var resourceSpec = {url: url, forceCache: true, options: that.options.resourceOptions};
-            fluid.each(["defaultLocale", "locale"], function (localeName) {
-                var value = that.options[localeName];
-                if (value) {
-                    var localeOption = {};
-                    localeOption[localeName] = value;
-                    $.extend(resourceSpec, localeOption);
-                }
-            });
-            return resourceSpec;
+            return $.extend(resourceSpec, fluid.filterKeys(that.options, ["defaultLocale", "locale"]));
         });
     };
 
