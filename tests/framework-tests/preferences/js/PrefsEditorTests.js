@@ -122,7 +122,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("textControls template url is set correctly", textControlsFullResourcePath, resources.textControls.url);
                 jqUnit.assertTrue("textControls forceCache is set", resources.textControls.forceCache);
                 jqUnit.assertEquals("textControls defaultLocale is set correctly in the resource spec", "en", resources.textControls.defaultLocale);
-                jqUnit.assertEquals("textControls ocale is set correctly in the resource spec", "fr", resources.textControls.locale);
+                jqUnit.assertEquals("textControls locale is set correctly in the resource spec", "fr", resources.textControls.locale);
 
                 // The template with prefix + customized name
                 jqUnit.assertEquals("linksControls template url is set correctly", testTemplatePrefix + linksControlsTemplateName, resources.linksControls.url);
