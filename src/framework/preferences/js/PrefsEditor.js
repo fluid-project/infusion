@@ -28,7 +28,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
     fluid.defaults("fluid.prefs.prefsEditorLoader", {
         gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.settingsGetter", "fluid.prefs.initialModel", "autoInit"],
-        defaultLocale: null,
+        defaultLocale: "en",
         members: {
             settings: {
                 expander: {

@@ -39,7 +39,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     container: "{prefsTests}.container",
                     options: {
                         listeners: {
-                            onReady: "fluid.prefsTests.testFn"
+                            "onReady.runTest": "fluid.prefsTests.testFn"
                         }
                     }
                 }
@@ -128,7 +128,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("linksControls template url is set correctly", testTemplatePrefix + linksControlsTemplateName, resources.linksControls.url);
                 jqUnit.assertTrue("linksControls forceCache is set", resources.linksControls.forceCache);
                 jqUnit.assertEquals("linksControls defaultLocale is set correctly in the resource spec", "en", resources.linksControls.defaultLocale);
-                jqUnit.assertEquals("linksControls ocale is set correctly in the resource spec", "fr", resources.linksControls.locale);
+                jqUnit.assertEquals("linksControls locale is set correctly in the resource spec", "fr", resources.linksControls.locale);
 
                 jqUnit.start();
             }
@@ -603,17 +603,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             gradeNames: ["fluid.prefsTests", "fluid.prefs.initialModel.localeStarter", "autoInit"],
             defaultLocale: "en",
             messagePrefix: "../data/",
-            components: {
-                prefsEditor: {
-                    options: {
-                        listeners: {
-                            onReady: {
-                                funcName: "fluid.prefsLocaleTests.testFn",
-                                args: ["{prefsLocaleTests}"]
-                            }
-                        }
-                    }
+            onReadyListener: {
+                "onReady.runTest": {
+                    funcName: "fluid.prefsLocaleTests.testFn",
+                    args: ["{prefsLocaleTests}"]
                 }
+            },
+            distributeOptions: {
+                source: "{that}.options.onReadyListener",
+                target: "{that > prefsEditor}.options.listeners",
+                removeSource: true
             }
         });
 
