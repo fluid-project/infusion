@@ -862,7 +862,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.instantiator = function () {
         var that = {
             id: fluid.allocateGuid(),
-            type: "instantiator", // TODO: type rather than typeName to avoid confusing vestiges of fluid.isComponent and visitComponentChildren
+            typeName: "instantiator",
             lifecycleStatus: "constructed",
             pathToComponent: {},
             idToShadow: {},
@@ -2146,7 +2146,8 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.expander.fetch = function (deliverer, source, options) {
         var localRecord = options.localRecord, context = source.expander.context, segs = source.expander.segs;
         var inLocal = localRecord[context] !== undefined;
-        var component = inLocal ? localRecord[context] : fluid.resolveContext(context, options.contextThat, true);
+        // somewhat hack to anticipate "fits" for FLUID-4925 - we assume that if THIS component is in construction, its reference target might be too
+        var component = inLocal ? localRecord[context] : fluid.resolveContext(context, options.contextThat, options.contextThat.lifecycleStatus === "constructed");
         if (component) {
             var root = component;
             if (inLocal || component.lifecycleStatus === "constructed") {

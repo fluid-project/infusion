@@ -999,6 +999,39 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.assertLeftHand("Correctly circuited ginger options", expected, gingerTop.options);
     });
+    
+    /** FLUID-4330 - ginger reference during "short expansion" **/
+    // FLUID-5249 and similar work caused degradation in ginger support - the new "expandImmediate" and "fetch expander" don't
+    // trigger ginger instantiation for component references themselves. This should be fixed automatically by FLUID-4925
+
+    fluid.defaults("fluid.tests.gingerEventRoot", {
+        gradeNames: "fluid.component",
+        components: {
+            gingerSource: {
+                type: "fluid.component",
+                options: {
+                    listeners: {
+                        "{gingerTarget}.events.gingerTarget": "fluid.identity({that}.options)"
+                    }
+                }
+            },
+            gingerTarget: {
+                type: "fluid.component",
+                options: {
+                    events: {
+                        gingerTarget: null
+                    }
+                }
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-4330/FLUID-5249 ginger reference from listener key", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.gingerEventRoot();
+        jqUnit.assertValue("Expected component construction", that);
+    });
+
 
     /** FLUID-4135 - event injection and boiling test **/
 
@@ -1846,6 +1879,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertValue("Circular test delivered instantiator", circular.child1.options.instantiator);
             try {
                 delete circular.typeName; // necessary to defeat new framework's detection of components - update as necessary
+                circular.circular = circular;
                 fluid.expandOptions(circular, circular);
             } catch (e2) {
                 jqUnit.assertTrue("Framework exception caught in circular expansion", e2 instanceof fluid.FluidError);
