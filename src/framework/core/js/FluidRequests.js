@@ -172,7 +172,7 @@ var fluid_2_0 = fluid_2_0 || {};
     /*
      * This function is unsupported: It is not really intended for use by implementors.
      */
-    fluid.fetchResources.handleCachedRequest = function(resourceSpec, response) {
+    fluid.fetchResources.handleCachedRequest = function(resourceSpec, response, fetchError) {
         var canon = canonUrl(resourceSpec.href);
         var cached = resourceCache[canon];
         if (cached.$$firer$$) {
@@ -182,8 +182,9 @@ var fluid_2_0 = fluid_2_0 || {};
                 fluid.log("Clearing pendingClass entry for class " + fetchClass);
                 delete pendingClass[fetchClass][canon];
             }
-            resourceCache[canon] = response;
-            cached.fire(response);
+            var result = {response: response, fetchError: fetchError};
+            resourceCache[canon] = result;
+            cached.fire(response, fetchError);
         }
     };
 
@@ -217,6 +218,9 @@ var fluid_2_0 = fluid_2_0 || {};
                     textStatus: response.textStatus,
                     errorThrown: errorThrown
                 };
+                if (thisSpec.forceCache) {
+                    fluid.fetchResources.handleCachedRequest(thisSpec, null, thisSpec.fetchError);
+                }
                 fluid.fetchResources.completeRequest(thisSpec);
             }
 
@@ -247,12 +251,20 @@ var fluid_2_0 = fluid_2_0 || {};
         }
         else {
             if (!cached.$$firer$$) {
-                options.success(cached);
+                if (cached.response) {
+                    options.success(cached.response);
+                } else {
+                    options.error(cached.fetchError);
+                }
             }
             else {
                 fluid.log("Request for cached resource which is in flight: url " + canon);
-                cached.addListener(function(response) {
-                    options.success(response);
+                cached.addListener(function(response, fetchError) {
+                    if (response) {
+                        options.success(response);
+                    } else {
+                        options.error(fetchError);
+                    }
                 });
             }
         }
