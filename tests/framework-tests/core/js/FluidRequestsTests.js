@@ -14,6 +14,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function () {
     "use strict";
     
+    fluid.setLogging(true);
+    
     /**
      * Deferred expander tests (these are in "view" tests since they require a working $.ajax)
      */
@@ -148,13 +150,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             messages4: { // test cross-language default fallback
                 url: "../data/messages1.json",
                 locale: "gr"
+            },
+            messages5: { // test locale and default locale identical - FLUID-5662
+                href: "../data/messages4.json",
+                forceCache: true,
+                locale: "en",
+                defaultLocale: "en"
             }
         };
         var expected = {
             messages1: "marking",
             messages2: "moi",
             messages3: "lower",
-            messages4: "grading"
+            messages4: "grading",
+            messages5: "Sherlock"
         };
         var callback = function (resourceSpecs) {
             fluid.each(resourceSpecs, function (resourceSpec, key) {
