@@ -36,13 +36,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             components: {
                 prefsEditor: {
-                    container: "{prefsTests}.container",
-                    options: {
-                        listeners: {
-                            "onReady.runTest": "fluid.prefsTests.testFn"
-                        }
-                    }
+                    container: "{prefsTests}.container"
                 }
+            },
+            prefsEditorListener: {
+                "onReady.runTest": "fluid.prefsTests.testFn"
+            },
+            distributeOptions: {
+                source: "{that}.options.prefsEditorListener",
+                target: "{that > prefsEditor}.options.listeners",
+                removeSource: true
             }
         });
 
@@ -603,16 +606,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             gradeNames: ["fluid.prefsTests", "fluid.prefs.initialModel.localeStarter", "autoInit"],
             defaultLocale: "en",
             messagePrefix: "../data/",
-            onReadyListener: {
+            prefsEditorListener: {
                 "onReady.runTest": {
                     funcName: "fluid.prefsLocaleTests.testFn",
                     args: ["{prefsLocaleTests}"]
                 }
-            },
-            distributeOptions: {
-                source: "{that}.options.onReadyListener",
-                target: "{that > prefsEditor}.options.listeners",
-                removeSource: true
             }
         });
 
