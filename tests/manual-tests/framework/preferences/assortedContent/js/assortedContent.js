@@ -34,7 +34,7 @@ var assortedContent = assortedContent || {};
 
         // Next, start up Preferences Editor
         fluid.prefs.separatedPanel(".flc-prefsEditor-separatedPanel", {
-            gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
+            gradeNames: ["fluid.prefs.transformDefaultPanelsOptions", "fluid.prefs.initialModel.starter"],
             templatePrefix: "../../../../../src/framework/preferences/html/",
             messagePrefix: "../../../../../src/framework/preferences/messages/",
             messageLoader: {
@@ -44,7 +44,7 @@ var assortedContent = assortedContent || {};
                 gradeNames: ["fluid.prefs.starterSeparatedPanelTemplateLoader"]
             },
             prefsEditor: {
-                gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.initialModel.starter", "fluid.prefs.uiEnhancerRelay"]
+                gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.uiEnhancerRelay"]
             },
             iframeRenderer: {
                 markupProps: {

@@ -124,6 +124,7 @@ var fluid_2_0 = fluid_2_0 || {};
                         "{fluid.prefs.assembler.prefsEd}.options.componentGrades.templatePrefix",
                         "{fluid.prefs.assembler.prefsEd}.options.componentGrades.messagePrefix",
                         "{fluid.prefs.assembler.prefsEd}.options.componentGrades.messages",
+                        "{fluid.prefs.assembler.prefsEd}.options.componentGrades.initialModel",
                         "{that}.options.loaderGrades"
                     ],
                     templateLoader: {
@@ -133,7 +134,7 @@ var fluid_2_0 = fluid_2_0 || {};
                         gradeNames: ["{fluid.prefs.assembler.prefsEd}.options.componentGrades.messageLoader"]
                     },
                     prefsEditor: {
-                        gradeNames: ["{fluid.prefs.assembler.prefsEd}.options.componentGrades.panels", "{fluid.prefs.assembler.prefsEd}.options.componentGrades.initialModel", "fluid.prefs.uiEnhancerRelay"]
+                        gradeNames: ["{fluid.prefs.assembler.prefsEd}.options.componentGrades.panels", "fluid.prefs.uiEnhancerRelay"]
                     },
                     events: {
                         onReady: "{fluid.prefs.assembler.prefsEd}.events.onPrefsEditorReady"
