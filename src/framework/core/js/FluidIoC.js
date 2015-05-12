@@ -762,19 +762,19 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.clearListeners = function (shadow) {
         // TODO: bug here - "afterDestroy" listeners will be unregistered already unless they come from this component
         fluid.each(shadow.listeners, function (rec) {
-            rec.event.removeListener(rec.listener);
+            rec.event.removeListener(rec.listenerId || rec.listener);
         });
         delete shadow.listeners;
     };
 
     // unsupported, non-API function
-    fluid.recordListener = function (event, listener, shadow) {
+    fluid.recordListener = function (event, listener, shadow, listenerId) {
         if (event.ownerId !== shadow.that.id) { // don't bother recording listeners registered from this component itself
             var listeners = shadow.listeners;
             if (!listeners) {
                 listeners = shadow.listeners = [];
             }
-            listeners.push({event: event, listener: listener});
+            listeners.push({event: event, listener: listener, listenerId: listenerId});
         }
     };
 
@@ -1662,8 +1662,8 @@ outer:  for (var i = 0; i < exist.length; ++i) {
     fluid.event.makeTrackedListenerAdder = function (source) {
         var shadow = fluid.shadowForComponent(source);
         return function (event) {
-            return {addListener: function (listener) {
-                    fluid.recordListener(event, listener, shadow);
+            return {addListener: function (listener, namespace, predicate, priority, softNamespace, listenerId) {
+                    fluid.recordListener(event, listener, shadow, listenerId);
                     event.addListener.apply(null, arguments);
                 }
             };
@@ -1710,7 +1710,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             fluid.popActivity();
             return togo;
         };
-        fluid.event.impersonateListener(listener, togo);
+        fluid.event.impersonateListener(listener, togo); // still necessary for FLUID-5254 even though framework's listeners now get explicit guids
         return togo;
     };
 
@@ -1764,6 +1764,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 firer = true;
             }
             expanded.listener = (standard && (expanded.args || firer)) ? fluid.event.dispatchListener(that, listener, eventName, expanded) : listener;
+            expanded.listenerId = fluid.allocateGuid();
             return expanded;
         });
         var togo = {
@@ -1839,9 +1840,9 @@ outer:  for (var i = 0; i < exist.length; ++i) {
                 fluid.popActivity();
                 return togo;
             };
-            firer.addListener = function (listener, namespace, predicate, priority, softNamespace) {
+            firer.addListener = function (listener, namespace, predicate, priority, softNamespace, listenerId) {
                 var dispatcher = fluid.event.dispatchListener(that, listener, eventName, eventSpec);
-                adder(origin).addListener(dispatcher, namespace, predicate, priority, softNamespace);
+                adder(origin).addListener(dispatcher, namespace, predicate, priority, softNamespace, listenerId);
             };
             firer.removeListener = function (listener) {
                 origin.removeListener(listener);
