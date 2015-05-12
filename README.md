@@ -1,3 +1,4 @@
+[![Code Climate](https://codeclimate.com/github/fluid-project/infusion/badges/gpa.svg)](https://codeclimate.com/github/fluid-project/infusion)
 
 ##What Is Infusion?##
 
