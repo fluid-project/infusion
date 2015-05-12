@@ -1912,16 +1912,16 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             fluid.fail("Badly-formed compact " + type + " record without matching parentheses: ", string);
         }
         if (openPos !== -1 && closePos !== -1) {
+            var trail = string.substring(closePos + 1);
+            if ($.trim(trail) !== "") {
+                fluid.fail("Badly-formed compact " + type + " - unexpected material following close parenthesis: " + trail);
+            }
             var prefix = string.substring(0, openPos);
             var body = string.substring(openPos + 1, closePos);
             var args = fluid.transform(body.split(","), $.trim, fluid.coerceToPrimitive);
             var togo = {
                 args: args
             };
-            if (type === "invoker" && prefix.charAt(openPos - 1) === "!") {
-                prefix = string.substring(0, openPos - 1);
-                togo.dynamic = true;
-            }
             togo[prefix.charAt(0) === "{" ? "func" : "funcName"] = prefix;
             return togo;
         }
