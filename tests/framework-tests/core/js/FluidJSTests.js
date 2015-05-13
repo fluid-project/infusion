@@ -719,6 +719,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.tests.missingGradeComponent();
         }, ["incomplete", "nonexistentGrade"]);
     });
+    
+        
+    fluid.defaults("fluid.tests.forwardRefComponent", {
+        gradeNames: "fluid.tests.forwardBaseComponent"
+    });
+    
+    fluid.defaults("fluid.tests.forwardBaseComponent", {
+        gradeNames: "fluid.component"
+    });
+    
+    jqUnit.test("Forward reference through grade hierarchy", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.forwardRefComponent();
+        jqUnit.assertValue("Should have received component with forward grade reference", that);
+    });
 
     fluid.defaults("fluid.tests.schema.textSizer", {
         gradeNames: ["fluid.tests.schema", "fluid.component"],

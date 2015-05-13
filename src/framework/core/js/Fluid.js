@@ -1735,21 +1735,22 @@ var fluid = fluid || fluid_2_0;
             fluid.rawDefaults(componentName, options);
             var gradedDefaults = fluid.getGradedDefaults(componentName);
             if (!fluid.hasGrade(gradedDefaults, "fluid.function")) {
-                fluid.makeComponentCreator(componentName, gradedDefaults);
+                fluid.makeComponentCreator(componentName);
             }
         }
     };
 
-    fluid.makeComponentCreator = function (componentName, options) {
+    fluid.makeComponentCreator = function (componentName) {
         var creator = function () {
-            if (!options.gradeNames || options.gradeNames.length === 0) {
+            var defaults = fluid.getGradedDefaults(componentName);
+            if (!defaults.gradeNames || defaults.gradeNames.length === 0) {
                 fluid.fail("Cannot make component creator for type " + componentName + " which does not have any gradeNames defined");
-            } else if (!options.initFunction) {
+            } else if (!defaults.initFunction) {
                 var blankGrades = [];
-                for (var i = 0; i < options.gradeNames.length; ++ i) {
-                    var gradeName = options.gradeNames[i];
-                    var defaults = fluid.rawDefaults(gradeName);
-                    if (!defaults) {
+                for (var i = 0; i < defaults.gradeNames.length; ++ i) {
+                    var gradeName = defaults.gradeNames[i];
+                    var rawDefaults = fluid.rawDefaults(gradeName);
+                    if (!rawDefaults) {
                         blankGrades.push(gradeName);
                     }
                 }
