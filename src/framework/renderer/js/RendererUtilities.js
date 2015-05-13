@@ -66,6 +66,7 @@ fluid_2_0 = fluid_2_0 || {};
     fluid.renderer.createRendererSubcomponent = function (container, selectors, options, parentThat, fossils) {
         options = options || {};
         var source = options.templateSource ? options.templateSource : {node: $(container)};
+        var nativeModel = options.rendererOptions.model === undefined;
         var rendererOptions = fluid.renderer.modeliseOptions(options.rendererOptions, null, parentThat);
         rendererOptions.fossils = fossils || {};
         rendererOptions.parentComponent = parentThat;
@@ -83,6 +84,10 @@ fluid_2_0 = fluid_2_0 || {};
         that.render = function (tree) {
             var cutpointFn = options.cutpointGenerator || "fluid.renderer.selectorsToCutpoints";
             rendererOptions.cutpoints = rendererOptions.cutpoints || fluid.invokeGlobalFunction(cutpointFn, [selectors, options]);
+            if (nativeModel) { // check necessary since the component insanely supports the possibility the model is not the component's model!
+                               // and the pagedTable uses this.
+                rendererOptions.model = parentThat.model; // fix FLUID-5664
+            }
             var renderTarget = $(options.renderTarget ? options.renderTarget : container);
 
             if (templates) {
