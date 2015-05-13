@@ -861,7 +861,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             that.refreshView();
         });
 
-        // FLUID-5281: protoComponent expansion should respect new ChangeApplier idiom of "floating base model reference"
+        // FLUID-5282: protoComponent expansion should respect new ChangeApplier idiom of "floating base model reference"
 
         fluid.defaults("fluid.tests.fluid5282root", {
             gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
@@ -892,7 +892,37 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Updated model value evaluated", "unavailable", that.lastAudioValue);
         });
 
-
+        // FLUID-5664: rendererComponent as a whole should respect model rebinding
+        
+        fluid.defaults("fluid.tests.fluid5664root", {
+            gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
+            selectors: {
+                "input": ".flc-fluid5664-input"
+            },
+            rendererFnOptions: {
+                noexpand: true
+            },
+            invokers: {
+                produceTree: {
+                    funcName: "fluid.copy",
+                    args: {
+                        ID: "input",
+                        valuebinding: ""
+                    }
+                }
+            },
+            renderOnInit: true
+        });
+        
+        jqUnit.test("FLUID-5664: Rebind model root in renderer component", function () {
+            var that = fluid.tests.fluid5664root("#FLUID-5664");
+            jqUnit.assertEquals("Successfully rendered with undefined model", "", that.dom.locate("input").val());
+            that.applier.change("", "inputValue");
+            that.refreshView();
+            jqUnit.assertEquals("Markup updated for root change", "inputValue", that.dom.locate("input").val());
+        });
+        
+        
         jqUnit.module("Protocomponent Expander Tests");
 
         jqUnit.test("makeProtoExpander Basic Tests", function () {

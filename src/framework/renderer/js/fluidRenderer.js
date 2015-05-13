@@ -99,10 +99,6 @@ fluid_2_0 = fluid_2_0 || {};
 
     function fixupValue(uibound, model, resolverGetConfig) {
         if (uibound.value === undefined && uibound.valuebinding !== undefined) {
-            if (!model) {
-                fluid.fail("Cannot perform value fixup for valuebinding " +
-                    uibound.valuebinding + " since no model was supplied to rendering");
-            }
             uibound.value = fluid.get(model, uibound.valuebinding, resolverGetConfig);
         }
     }
@@ -618,7 +614,7 @@ fluid_2_0 = fluid_2_0 || {};
         function dumpBoundFields(/** UIBound**/ torender, parent) { // jslint:ok - whitespace
             if (torender) {
                 var holder = parent? parent : torender;
-                if (renderOptions.fossils && holder.valuebinding) {
+                if (renderOptions.fossils && holder.valuebinding !== undefined) {
                     var fossilKey = holder.submittingname || torender.finalID;
                   // TODO: this will store multiple times for each member of a UISelect
                     renderOptions.fossils[fossilKey] = {
