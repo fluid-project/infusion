@@ -2370,6 +2370,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.pushSoftFailure(-1);
         }
     });
+    
+    jqUnit.test("FLUID-5667: Circularity in options precursors", function () {
+        var circular = {};
+        circular.property = circular;
+        jqUnit.expectFrameworkDiagnostic("Framework exception caught in circular expansion", function () {
+            fluid.littleComponent({
+                circular: circular
+            });
+        }, "circular");
+    });
 
     fluid.defaults("fluid.tests.FLUID5088Circularity", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
@@ -2377,7 +2387,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         option2: "{that}.options.option1"
     });
 
-    jqUnit.test("Direct circularity test", function () {
+    jqUnit.test("FLUID-5088: Direct circularity test", function () {
         jqUnit.expectFrameworkDiagnostic("Framework exception caught in circular expansion", fluid.tests.FLUID5088Circularity, "circular");
     });
 

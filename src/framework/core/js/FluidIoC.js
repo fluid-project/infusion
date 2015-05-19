@@ -1958,6 +1958,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
 
     // unsupported, non-API function
     fluid.expandCompactRec = function (segs, target, source, userOptions) {
+        fluid.guardCircularExpansion(segs, segs.length);
         var pen = segs.length > 0 ? segs[segs.length - 1] : "";
         var active = singularRecord[pen];
         if (!active && segs.length > 1) {
@@ -2175,6 +2176,12 @@ outer:  for (var i = 0; i < exist.length; ++i) {
         }
         return expanded;
     };
+    
+    fluid.guardCircularExpansion = function (segs, i) {
+        if (i > fluid.strategyRecursionBailout) {
+            fluid.fail("Overflow/circularity in options expansion, current path is ", segs, " at depth " , i, " - please ensure options are not circularly connected, or protect from expansion using the \"noexpand\" policy or expander");
+        }
+    };
 
     // unsupported, NON-API function
     fluid.makeExpandStrategy = function (options) {
@@ -2182,9 +2189,7 @@ outer:  for (var i = 0; i < exist.length; ++i) {
             return fluid.fetchExpandChildren(target, i || 0, segs || [], source, policy, miniWorld, options);
         };
         var strategy = function (target, name, i, segs, source, policy, miniWorld) {
-            if (i > fluid.strategyRecursionBailout) {
-                fluid.fail("Overflow/circularity in options expansion, current path is ", segs, " at depth " , i, " - please ensure options are not circularly connected, or protect from expansion using the \"noexpand\" policy or expander");
-            }
+            fluid.guardCircularExpansion(segs, i);
             if (!target) {
                 return;
             }
