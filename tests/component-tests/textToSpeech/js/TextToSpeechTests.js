@@ -20,9 +20,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.textToSpeech", {
         gradeNames: ["fluid.textToSpeech", "autoInit"],
-        utteranceOpts: {
-            // not all speech synthesizers will respect this setting
-            volume: 0
+        model: {
+            utteranceOpts: {
+                // not all speech synthesizers will respect this setting
+                volume: 0
+            }
         },
         listeners: {
             "onCreate.cleanUp": "fluid.tests.textToSpeech.cleanUp"

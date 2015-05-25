@@ -28,10 +28,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             speakQueue: []
         },
         model: {
-            enabled: true
-        },
-        utteranceOpts: {
-            volume: 0
+            enabled: true,
+            utteranceOpts: {
+                volume: 0
+            }
         },
         listeners: {
             "onCreate.cleanUp": "fluid.tests.prefs.enactor.speakEnactor.cleanUp",
@@ -107,7 +107,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 enabled: true,
                 speaking: false,
                 pending: false,
-                paused: false
+                paused: false,
+                utteranceOpts: {
+                    volume: 0
+                }
             }
         },
         modules: [{
