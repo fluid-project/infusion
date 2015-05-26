@@ -310,8 +310,12 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.defaults("fluid.uploader.fileQueueView", {
         gradeNames: ["fluid.viewComponent"],
+        mergePolicy: {
+            //"members.queueFiles": "nomerge"
+        },
         members: {
             fileProgressors: {}
+            // queueFiles: applied in uploader options - TODO: no model idiom
         },
         invokers: {
             addFile: {
@@ -449,8 +453,8 @@ var fluid_2_0 = fluid_2_0 || {};
         return fluid.container(element);
     };
 
-    fluid.scrollable.makeTable =  function (table, options) {
-        table.wrap(options.wrapperMarkup);
+    fluid.scrollable.makeTable =  function (table, wrapperMarkup) {
+        table.wrap(wrapperMarkup);
         return table.closest(".fl-scrollable-scroller");
     };
 
@@ -470,7 +474,7 @@ var fluid_2_0 = fluid_2_0 || {};
             scrollable: {
                 expander: {
                     func: "{that}.options.makeScrollableFn",
-                    args: ["{that}.container", "{that}.options"]
+                    args: ["{that}.container", "{that}.options.wrapperMarkup"] // TODO: we need to make sure that expander arguments are evaluated fully
                 }
             },
             maxHeight: {

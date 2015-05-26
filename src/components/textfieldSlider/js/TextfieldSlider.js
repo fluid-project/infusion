@@ -120,7 +120,7 @@ var fluid_2_0 = fluid_2_0 || {};
             combinedSliderOptions: {
                 expander: {
                     funcName: "fluid.slider.combineSliderOptions",
-                    args: ["{that}"]
+                    args: ["{that}.options.sliderOptions", "{that}.options.range"]
                 }
             },
             slider: {
@@ -176,8 +176,8 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-    fluid.slider.combineSliderOptions = function (that) {
-        return $.extend(true, {}, that.options.sliderOptions, that.model, that.options.range);
+    fluid.slider.combineSliderOptions = function (sliderOptions, model, range) {
+        return $.extend(true, {}, sliderOptions, model, range);
     };
 
 })(jQuery, fluid_2_0);

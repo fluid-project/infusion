@@ -312,6 +312,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.invokeLater(function () {
             promise.resolve(options.optionValue);
         });
+        if (options.accumulateReject) {
+            promise.accumulateRejectionReason = function (originalReject) { // test FLUID-5584 reject wrapper
+                return {
+                    isError: true,
+                    originalReject: originalReject,
+                    message: "Option value resolver for " + options.optionValue + " received upstream reject of " + originalReject
+                };
+            };
+        }
         return promise;
     };
     
@@ -329,18 +338,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
     
-    jqUnit.asyncTest("fluid.promise.sequence reject", function () {
-        var sources = [fluid.tests.optionValueViaPromise, 6, fluid.promise(), fluid.promise()];
-        var response = fluid.promise.sequence(sources, {
-            optionValue: 9
+    fluid.tests.testSequenceRejection = function (accumulateReject, expectedRejection) {
+        jqUnit.asyncTest("fluid.promise.sequence reject with accumulateReject " + accumulateReject, function () {
+            var sources = [fluid.tests.optionValueViaPromise, 6, fluid.promise(), fluid.promise()];
+            var response = fluid.promise.sequence(sources, {
+                optionValue: 9,
+                accumulateReject: accumulateReject
+            });
+            sources[2].reject(97);
+            response.then(function () {
+                jqUnit.fail("Error - resolved result from rejected sequence");
+            }, function (reason) {
+                jqUnit.assertDeepEq("Overall sequence rejected with individual reason", expectedRejection, reason);
+                jqUnit.start();
+            });
         });
-        sources[2].reject(97);
-        response.then(function () {
-            jqUnit.fail("Error - resolved result from rejected sequence");
-        }, function (reason) {
-            jqUnit.assertEquals("Overall sequence rejected with individual reason", 97, reason);
-            jqUnit.start();
-        });
+    };
+    
+    fluid.tests.testSequenceRejection(false, 97);
+    fluid.tests.testSequenceRejection(true, {
+        isError: true,
+        originalReject: 97,
+        message: "Option value resolver for 9 received upstream reject of 97"
     });
     
     jqUnit.asyncTest("fluid.promise.sequence sequencing", function () {
@@ -369,14 +388,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
     
     jqUnit.test("fluid.promise.sequence error on non-array", function () {
-        fluid.pushSoftFailure(true);
-        try {
+        jqUnit.expectFrameworkDiagnostic("Diagnostic on non-array", function () {
             fluid.promise.sequence({unearthly: "object"});
-        } catch (e) {
-            jqUnit.assertTrue("Receive framework error on non-array sequence", e instanceof fluid.FluidError);
-        } finally {
-            fluid.pushSoftFailure(-1);
-        }
+        }, "array");
     });
     
     jqUnit.test("fluid.promise.map tests", function () {
@@ -397,10 +411,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var fail = fluid.promise();
         fail.reject("Error");
         var p3 = fluid.promise.map(fail, mapper);
+        p3 = fluid.toPromise(p3); // test idempotency of toPromise on promises
         p3.then(function () {
             jqUnit.fail("Should not resolve from mapping failed promise");
         }, function (error) {
             jqUnit.assertEquals("Should receive failure from mapped failed promise", "Error", error);
+        });
+    });
+    
+    jqUnit.test("fluid.toPromise tests", function () {
+        jqUnit.expect(1);
+        var promise = fluid.toPromise(3);
+        promise.then(function (resolved) {
+            jqUnit.assertEquals("Converted constant to promise", 3, resolved);
         });
     });
     

@@ -275,8 +275,9 @@ var fluid_2_0 = fluid_2_0 || {};
 
     /** MODEL COMPONENT HIERARCHY AND RELAY SYSTEM **/
 
-    fluid.initRelayModel = function (that, modelRelayModel) {
-        return modelRelayModel;
+    fluid.initRelayModel = function (that) {
+        fluid.deenlistModelComponent(that);
+        return that.model;
     };
 
     // TODO: This utility compensates for our lack of control over "wave of explosions" initialisation - we may
@@ -284,7 +285,7 @@ var fluid_2_0 = fluid_2_0 || {};
     // missed its own initial transaction
 
     fluid.isModelComplete = function (that) {
-        return that.model !== fluid.inEvaluationMarker;
+        return "model" in that && that.model !== fluid.inEvaluationMarker;
     };
 
     // Enlist this model component as part of the "initial transaction" wave - note that "special transaction" init
@@ -302,6 +303,14 @@ var fluid_2_0 = fluid_2_0 || {};
         }
         return enlist;
     };
+    
+    fluid.clearTransactions = function () {
+        var instantiator = fluid.globalInstantiator;
+        fluid.clear(instantiator.modelTransactions);
+        instantiator.modelTransactions.init = {};
+    };
+    
+    fluid.failureEvent.addListener(fluid.clearTransactions, "clearTransactions", "before:fail");
 
     // Utility to coordinate with our crude "oscillation prevention system" which limits each link to 2 updates (presumably
     // in opposite directions). In the case of the initial transaction, we need to reset the count given that genuine
@@ -356,6 +365,9 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.deenlistModelComponent = function (that) {
         var instantiator = fluid.getInstantiator(that);
         var mrec = instantiator.modelTransactions.init;
+        if (!mrec[that.id]) { // avoid double evaluation through currently hacked "members" implementation
+            return;
+        }
         that.model = undefined; // Abuse of the ginger system - in fact it is "currently in evaluation" - we need to return a proper initial model value even if no init occurred yet
         mrec[that.id].complete = true; // flag means - "complete as in ready to participate in this transaction"
         var incomplete = fluid.find_if(mrec, function (recel) {
@@ -496,7 +508,10 @@ var fluid_2_0 = fluid_2_0 || {};
                 }
             }
         };
+        sourceListener.relayListenerId = fluid.allocateGuid();
         if (sourceSegs) {
+            fluid.log(fluid.logLevel.TRACE, "Adding relay listener with id " + sourceListener.relayListenerId + " to source applier with id " +
+                sourceApplier.applierId + " from target applier with id " + applierId + " for target component with id " + target.id);
             sourceApplier.modelChanged.addListener({
                 isRelay: true,
                 segs: sourceSegs,
@@ -554,8 +569,9 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.model.guardedAdapter = function (componentThat, cond, func, args) {
         // TODO: We can't use fluid.isModelComplete here because of the broken half-transactional system - it may appear that model has arrived halfway through init transaction
-        var isInit = componentThat.modelRelay === fluid.inEvaluationMarker;
-        var condValue = cond[isInit ? "init" : "live"];
+        var instantiator = fluid.getInstantiator(componentThat);
+        var enlist = instantiator.modelTransactions.init[componentThat.id];
+        var condValue = cond[enlist ? "init" : "live"];
         if (condValue) {
             func.apply(null, args);
         }
@@ -761,10 +777,8 @@ var fluid_2_0 = fluid_2_0 || {};
         applier.preCommit.addListener(updateRelays);
         applier.preCommit.addListener(commitRelays);
         applier.postCommit.addListener(concludeTransaction);
-
-        fluid.deenlistModelComponent(that);
-
-        return applier.holder.model;
+        
+        return null;
     };
 
     // supported, PUBLIC API grade
@@ -782,7 +796,7 @@ var fluid_2_0 = fluid_2_0 || {};
         mergePolicy: {
             model: {
                 noexpand: true,
-                func: fluid.arrayConcatPolicy
+                func: fluid.arrayConcatPolicy // TODO: bug here in case a model consists of an array
             },
             modelListeners: fluid.makeMergeListenersPolicy(fluid.arrayConcatPolicy),
             modelRelay: {
@@ -858,7 +872,8 @@ var fluid_2_0 = fluid_2_0 || {};
                     // of the initial transaction wave, but if it is, it will get a double notification - we really need "wave of explosions"
                     // since we are currently too early in initialisation of THIS component in order to tell if other will be found
                     // independently.
-                    that.events.onCreate.addListener(initModelEvent);
+                    var onCreate = fluid.getForComponent(that, ["events", "onCreate"]);
+                    onCreate.addListener(initModelEvent);
                 }
             });
         });
@@ -1220,11 +1235,14 @@ var fluid_2_0 = fluid_2_0 || {};
         }
         changeRequest.segs = changeRequest.segs || applier.parseEL(changeRequest.path);
     };
+    
+    fluid.ChangeApplier = function () {};
 
     fluid.makeHolderChangeApplier = function (holder, options) {
         options = fluid.model.defaultAccessorConfig(options);
         var applierId = fluid.allocateGuid();
-        var that = {
+        var that = new fluid.ChangeApplier();
+        $.extend(that, {
             applierId: applierId,
             holder: holder,
             changeListeners: {
@@ -1235,7 +1253,7 @@ var fluid_2_0 = fluid_2_0 || {};
             modelChanged: {},
             preCommit: fluid.makeEventFirer({name: "preCommit event for ChangeApplier " }),
             postCommit: fluid.makeEventFirer({name: "postCommit event for ChangeApplier "})
-        };
+        });
         that.destroy = function () {
             that.preCommit.destroy();
             that.postCommit.destroy();

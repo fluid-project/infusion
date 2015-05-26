@@ -1565,13 +1565,12 @@
             var callbackCalled = 0;
             function callback() {
                 ++callbackCalled;
+                fluid.failureEvent.removeListener("jqUnit"); // restore the original jqUnit test failing listener
             }
-            try {
-                fluid.pushSoftFailure(true);
-                fluid.fetchResources(resourceSpec2, callback);
-            } finally {
-                fluid.pushSoftFailure(-1);
-            }
+            jqUnit.expect(2);
+            fluid.failureEvent.addListener(fluid.identity, "jqUnit"); // temporarily displace jqUnit's test failing listener
+            fluid.fetchResources(resourceSpec2, callback);
+            
             jqUnit.assertEquals("Two calls to destructive callback", 2, destructiveCalls);
             jqUnit.assertEquals("Call to overall callback", 1, callbackCalled);
         });

@@ -660,7 +660,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // FLUID-5664: rendererComponent as a whole should respect model rebinding
         
         fluid.defaults("fluid.tests.fluid5664root", {
-            gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             selectors: {
                 "input": ".flc-fluid5664-input"
             },

@@ -567,7 +567,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             renderTOCComponent("#flc-toc-refreshHeadings", {
                 listeners: {
                     // FLUID-5112: have to use the onCreate event instead of onReady to prevent infinite recursion.
-                    "onCreate.intialState": {
+                    "onCreate.initialState": {
                         listener: function (levels, that) {
                             that.events.onRefresh.addListener(function () {
                                 jqUnit.assert("The onRefresh event should have fired");
@@ -577,7 +577,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
                                 jqUnit.assertEquals("The correct number of anchors should be present", numHeadings, that.locate("tocAnchors").length);
                                 jqUnit.start();
-                            }, "inTestCase", null, "last");
+                            }, "inTestCase", "last");
 
                             that.container.append("<h2>test</h2>");
                             that.refreshView();

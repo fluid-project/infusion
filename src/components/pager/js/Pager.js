@@ -513,6 +513,8 @@ var fluid_2_0 = fluid_2_0 || {};
         },
         invokers: {
             acquireDefaultRange: {
+                // TODO: problem here - these are dynamic components and so cannot be constructed gingerly
+                // This is why current (old) framework must construct components before invokers
                 funcName: "fluid.identity",
                 args: "{that}.pagerBar.pageList.defaultModel.totalRange"
             }

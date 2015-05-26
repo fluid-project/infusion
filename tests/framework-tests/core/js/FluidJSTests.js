@@ -388,10 +388,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var testArgs = [1, "thingit"];
         function failHandle(args) {
             jqUnit.assertDeepEq("Received arguments in error handler", testArgs, args);
+            fluid.builtinFail(args); // throw exception to keep expectFrameworkDiagnostic happy
         }
         jqUnit.expect(1);
         fluid.pushSoftFailure(failHandle);
-        fluid.fail.apply(null, testArgs);
+        jqUnit.expectFrameworkDiagnostic("Configurable failure handler", function () {
+            fluid.fail.apply(null, testArgs);
+        }, "thingit");
         fluid.pushSoftFailure(-1);
     });
 
@@ -496,10 +499,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
         };
         var firer = fluid.makeEventFirer();
-        firer.addListener(makeListener(4), null, null, "last");
+        firer.addListener(makeListener(4), null, "last");
         firer.addListener(makeListener(3));
-        firer.addListener(makeListener(2), null, null, 10);
-        firer.addListener(makeListener(1), null, null, "first");
+        firer.addListener(makeListener(2), null, 10);
+        firer.addListener(makeListener(1), null, "first");
         firer.fire();
         jqUnit.assertDeepEq("Listeners fire in priority order", [1, 2, 3, 4], accumulate);
     });

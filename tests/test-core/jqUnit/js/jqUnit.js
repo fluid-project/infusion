@@ -27,15 +27,14 @@ var jqUnit = jqUnit || {};
         jqUnit[method] = QUnit[method];
         window[method] = undefined; // work around IE8 bug http://stackoverflow.com/questions/1073414/deleting-a-window-property-in-ie
     }
-    
-    jqUnit.failureHandler = function (args, activity) {
+      
+    jqUnit.failureHandler = function (args/*, activity*/) {
         if (QUnit.config.current) {
             QUnit.ok(false, "Assertion failure (see console.log for expanded message): ".concat(args));
         }
-        fluid.builtinFail(false, args, activity);
     };
 
-    fluid.pushSoftFailure(jqUnit.failureHandler);
+    fluid.failureEvent.addListener(jqUnit.failureHandler, "jqUnit", "before:fail");
 
     /**
      * Keeps track of the order of function invocations. The transcript contains information about
@@ -256,7 +255,7 @@ var jqUnit = jqUnit || {};
         errorTexts = fluid.makeArray(errorTexts);
         var gotFailure;
         try {
-            fluid.pushSoftFailure(true);
+            fluid.failureEvent.addListener(fluid.identity, "jqUnit");
             jqUnit.expect(1 + errorTexts.length);
             toInvoke();
         } catch (e) {
@@ -269,7 +268,7 @@ var jqUnit = jqUnit || {};
             if (!gotFailure) {
                 jqUnit.fail("No failure received for test " + message);
             }
-            fluid.pushSoftFailure(-1);
+            fluid.failureEvent.removeListener("jqUnit");
         }
     };
 

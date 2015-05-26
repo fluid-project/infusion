@@ -358,7 +358,7 @@ var fluid_2_0 = fluid_2_0 || {};
         if (analysed.resolved) {
             var event = analysed.resolved;
             bind = function (wrapped) {
-                event.addListener(wrapped, fixture.namespace, null, priority);
+                event.addListener(wrapped, fixture.namespace, priority);
             };
             unbind = function (wrapped) {
                 event.removeListener(wrapped);

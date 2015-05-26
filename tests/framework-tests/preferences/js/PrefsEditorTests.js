@@ -99,7 +99,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     
     fluid.defaults("fluid.tests.prefs.standardEditor", { // a mixin grade for fluid.prefs.prefsEditor
-        gradeNames: ["fluid.prefs.initialModel.starter", "fluid.prefs.uiEnhancerRelay"],
+        gradeNames: ["fluid.prefs.uiEnhancerRelay"],
         components: {
             uiEnhancer: {
                 type: "fluid.uiEnhancer",
@@ -126,7 +126,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.prefs.messagePrefix = "../../../../src/framework/preferences/messages/";
 
     fluid.defaults("fluid.tests.prefs.commonLoader", {
-        gradeNames: ["fluid.prefs.prefsEditorLoader"],
+        gradeNames: ["fluid.prefs.prefsEditorLoader", "fluid.prefs.initialModel.starter"],
         templatePrefix: fluid.tests.prefs.templatePrefix,
         messagePrefix: fluid.tests.prefs.messagePrefix,
         messageLoader: {
@@ -177,7 +177,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             distributeOptions: [{
                 record: {
                     funcName: onReady,
-                    args: "{prefsEditor}"
+                    args: ["{prefsEditor}", "{prefsEditorLoader}"]
                 },
                 target: "{that prefsEditor}.options.listeners.onReady"
             }, {
@@ -191,7 +191,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.expect(3);
         jqUnit.assertNotNull("Model is not null", model);
         jqUnit.assertNotUndefined("Model is not undefined", model);
-        jqUnit.assertDeepEq("Initial model is the starter initialModel", fluid.defaults("fluid.prefs.initialModel.starter").members.initialModel, model);
+        var initialModel = fluid.tests.mergeMembers(fluid.defaults("fluid.prefs.initialModel.starter").members.initialModel);
+        jqUnit.assertDeepEq("Initial model is the starter initialModel", initialModel, model);
     };
 
     jqUnit.asyncTest("Init Model and Controls", function () {
@@ -275,11 +276,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
     
     fluid.defaults("fluid.tests.prefs.diffInit", {
-        members: {
-            initialModel: {
+        distributeOptions: {
+            record: {
                 theme: "wb",
                 textFont: "times"
-            }
+            },
+            target: "{fluid.prefs.prefsEditor}.options.members.initialModel"
         }
     });
 
@@ -527,5 +529,40 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.expect(1);
         fluid.tests.prefs.testPrefsEditor(fluid.identity, "fluid.prefs.tests.preview", "fluid.prefs.tests.preview.loader");
     });
+    
+    
+    /****************
+     * Locale tests *
+     ****************/
+
+    fluid.defaults("fluid.prefs.initialModel.localeStarter", {
+        members: {
+            initialModel: {
+                locale: "fr"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.prefs.locale", {
+        gradeNames: ["fluid.prefs.initialModel.localeStarter"],
+        defaultLocale: "en",
+        messagePrefix: "../data/"
+    });
+    
+    fluid.tests.prefs.testLocale = function (prefsEditor, prefsEditorLoader) {
+        jqUnit.assertEquals("The locale value in the initial model has been set properly", "fr", prefsEditorLoader.initialModel.locale);
+        jqUnit.assertEquals("The locale value in the settings has been set properly", "fr", prefsEditorLoader.settings.locale);
+        jqUnit.assertEquals("The locale value in the initial model has been passed to the prefs editor", "fr", prefsEditorLoader.prefsEditor.initialModel.locale);
+        jqUnit.assertEquals("The default locale value in the message loader has been set properly", "en", prefsEditorLoader.messageLoader.options.defaultLocale);
+        jqUnit.assertEquals("The locale value in the message loader has been set properly", "fr", prefsEditorLoader.messageLoader.options.locale);
+        jqUnit.start();
+    };
+
+    jqUnit.asyncTest("Locale Tests", function () {
+        jqUnit.expect(5);
+
+        fluid.tests.prefs.testPrefsEditor(fluid.tests.prefs.testLocale, [], "fluid.tests.prefs.locale");
+    });
+    
       
 })(jQuery);

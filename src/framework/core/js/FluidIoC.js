@@ -136,13 +136,20 @@ var fluid_2_0 = fluid_2_0 || {};
         return invoker;
     };
 
-    fluid.memberFromRecord = function (memberrec, name, that) {
-        // TODO: Presumably "freeRoot" is here to allow us not to trash exotic values that arose through expansion into members
-        var value = fluid.expandOptions(memberrec, that, null, null, {freeRoot: true});
-        return value;
+    fluid.memberFromRecord = function (memberrecs, name, that) {
+        var togo;
+        for (var i = 0; i < memberrecs.length; ++ i) { // memberrecs is the special "fluid.mergingArray" type which is not Arrayable
+            var expanded = fluid.expandImmediate(memberrecs[i], that);
+            if (!fluid.isPlainObject(togo)) { // poor man's "merge" algorithm to hack FLUID-5668 for now
+                togo = expanded;
+            } else {
+                togo = $.extend(true, togo, expanded);
+            }
+        }
+        return togo;
     };
 
-    fluid.recordStrategy = function (that, options, optionsStrategy, recordPath, recordMaker, prefix) {
+    fluid.recordStrategy = function (that, options, optionsStrategy, recordPath, recordMaker, prefix, exceptions) {
         prefix = prefix || [];
         return {
             strategy: function (target, name, i) {
@@ -161,7 +168,9 @@ var fluid_2_0 = fluid_2_0 || {};
             initter: function () {
                 var records = fluid.driveStrategy(options, recordPath, optionsStrategy) || {};
                 for (var name in records) {
-                    fluid.getForComponent(that, prefix.concat([name]));
+                    if (!exceptions || !exceptions[name]) {
+                        fluid.getForComponent(that, prefix.concat([name]));
+                    }
                 }
             }
         };
@@ -645,7 +654,7 @@ var fluid_2_0 = fluid_2_0 || {};
         shadow.invokerStrategy = fluid.recordStrategy(that, options, strategy, "invokers", fluid.invokerFromRecord);
         shadow.eventStrategyBlock = fluid.recordStrategy(that, options, strategy, "events", fluid.eventFromRecord, ["events"]);
         var eventStrategy = fluid.mountStrategy(["events"], that, shadow.eventStrategyBlock.strategy, ["events"]);
-        shadow.memberStrategy = fluid.recordStrategy(that, options, strategy, "members", fluid.memberFromRecord);
+        shadow.memberStrategy = fluid.recordStrategy(that, options, strategy, "members", fluid.memberFromRecord, null, {model: true, modelRelay: true});
         // NB - ginger strategy handles concrete, rationalise
         shadow.getConfig = {strategies: [fluid.model.funcResolverStrategy, fluid.makeGingerStrategy(that),
             optionsStrategy, shadow.invokerStrategy.strategy, shadow.memberStrategy.strategy, eventStrategy]};
@@ -819,7 +828,8 @@ var fluid_2_0 = fluid_2_0 || {};
         return $.extend(fluid.copy(fluid.rawDefaults("fluid.makeExpandOptions")), {
             localRecord: localRecord || {},
             fetcher: fluid.makeStackFetcher(parentThat, localRecord, fast),
-            contextThat: parentThat
+            contextThat: parentThat,
+            exceptions: {members: {model: true, modelRelay: true}}
         });
     };
 
@@ -1042,8 +1052,6 @@ var fluid_2_0 = fluid_2_0 || {};
         fluid.pushActivity("expandOptions", "expanding options %args for component %that ", {that: that, args: args});
         var expandOptions = fluid.makeStackResolverOptions(that, localRecord);
         expandOptions.mergePolicy = mergePolicy;
-        // TODO: "freeRoot" used only in fluid.memberFromRecord
-        expandOptions.freeRoot = outerExpandOptions && outerExpandOptions.freeRoot;
         var expanded = outerExpandOptions && outerExpandOptions.defer ?
             fluid.makeExpandOptions(args, expandOptions) : fluid.expand(args, expandOptions);
         fluid.popActivity();
@@ -1090,7 +1098,7 @@ var fluid_2_0 = fluid_2_0 || {};
     // TODO: overall efficiency could huge be improved by resorting to the hated PROTOTYPALISM as an optimisation
     // for this mergePolicy which occurs in every component. Although it is a deep structure, the root keys are all we need
     var addPolicyBuiltins = function (policy) {
-        fluid.each(["gradeNames", "mergePolicy", "argumentMap", "components", "dynamicComponents", "members", "invokers", "events", "listeners", "modelListeners", "distributeOptions", "transformOptions"], function (key) {
+        fluid.each(["gradeNames", "mergePolicy", "argumentMap", "components", "dynamicComponents", "invokers", "events", "listeners", "modelListeners", "distributeOptions", "transformOptions"], function (key) {
             fluid.set(policy, [key, "*", "noexpand"], true);
         });
         return policy;
@@ -1289,7 +1297,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 }
                 fluid.initDependent(that, componentName);
                 fluid.popActivity();
-            }, null, null, component.priority);
+            }, null, component.priority);
         });
     };
 
@@ -1303,6 +1311,10 @@ var fluid_2_0 = fluid_2_0 || {};
         fluid.pushActivity("initDependents", "instantiating dependent components for component %that", {that: that});
         var shadow = fluid.shadowForComponent(that);
         shadow.memberStrategy.initter();
+        shadow.invokerStrategy.initter();
+
+        fluid.getForComponent(that, "modelRelay");
+        fluid.getForComponent(that, "model"); // trigger this as late as possible - but must be before components so that child component has model on its onCreate
 
         var options = that.options;
         var components = options.components || {};
@@ -1322,7 +1334,6 @@ var fluid_2_0 = fluid_2_0 || {};
             fluid.initDependent(that, entry.namespace);
         });
 
-        shadow.invokerStrategy.initter();
         fluid.popActivity();
     };
 
@@ -1690,9 +1701,9 @@ var fluid_2_0 = fluid_2_0 || {};
                 fluid.popActivity();
                 return togo;
             };
-            firer.addListener = function (listener, namespace, predicate, priority, softNamespace) {
+            firer.addListener = function (listener, namespace, priority, predicate, softNamespace) {
                 var dispatcher = fluid.event.dispatchListener(that, listener, eventName, eventSpec);
-                adder(origin).addListener(dispatcher, namespace, predicate, priority, softNamespace);
+                adder(origin).addListener(dispatcher, namespace, priority, predicate, softNamespace);
             };
             firer.removeListener = function (listener) {
                 origin.removeListener(listener);
@@ -1708,17 +1719,17 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.withEnvironment = function (envAdd, func, root) {
         root = root || fluid.globalThreadLocal();
-        return fluid.tryCatch(function() {
+        try {
             for (var key in envAdd) {
                 root[key] = envAdd[key];
             }
             $.extend(root, envAdd);
             return func();
-        }, null, function() {
-            for (var key in envAdd) { // jslint:ok duplicate "value"
+        } finally {
+            for (var key in envAdd) { /* jshint ignore:line */ /* duplicate "key" */
                 delete root[key]; // TODO: users may want a recursive "scoping" model
             }
-        });
+        }
     };
 
     fluid.fetchContextReference = function (parsed, directModel, env, elResolver, externalFetcher) {
@@ -1800,6 +1811,7 @@ var fluid_2_0 = fluid_2_0 || {};
     }, singularPenRecord);
 
     fluid.expandCompactRec = function (segs, target, source, userOptions) {
+        fluid.guardCircularExpansion(segs, segs.length);
         var pen = segs.length > 0 ? segs[segs.length - 1] : "";
         var active = singularRecord[pen];
         if (!active && segs.length > 1) {
@@ -1932,7 +1944,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.fetchExpandChildren = function (target, i, segs, source, mergePolicy, options) {
         if (source.expander) { // possible expander at top level
             var expanded = fluid.expandExpander(target, source, options);
-            if (options.freeRoot || fluid.isPrimitive(expanded) || fluid.isDOMish(expanded) || !fluid.isPlainObject(expanded) || (fluid.isArrayable(expanded) ^ fluid.isArrayable(target))) {
+            if (fluid.isPrimitive(expanded) || fluid.isDOMish(expanded) || !fluid.isPlainObject(expanded) || (fluid.isArrayable(expanded) ^ fluid.isArrayable(target))) {
                 return expanded;
             }
             else { // make an attempt to preserve the root reference if possible
@@ -1950,7 +1962,9 @@ var fluid_2_0 = fluid_2_0 || {};
             }
             else if (key !== "expander") {
                 segs[i] = key;
-                options.strategy(target, key, i + 1, segs, source, mergePolicy);
+                if (fluid.getImmediate(options.exceptions, segs, i) !== true) {
+                    options.strategy(target, key, i + 1, segs, source, mergePolicy);
+                }
             }
         });
         return target;
@@ -1967,12 +1981,12 @@ var fluid_2_0 = fluid_2_0 || {};
         return source;
     }
 
-    fluid.isUnexpandable = function (source) {
+    fluid.isUnexpandable = function (source) { // slightly more efficient compound of fluid.isCopyable and fluid.isComponent - review performance
         return fluid.isPrimitive(source) || fluid.isComponent(source) || source.nodeType !== undefined || source.jquery || !fluid.isPlainObject(source);
     };
 
     fluid.expandSource = function (options, target, i, segs, deliverer, source, policy, recurse) {
-        var expanded, isTrunk, isLate;
+        var expanded, isTrunk;
         var thisPolicy = fluid.derefMergePolicy(policy);
         if (typeof (source) === "string" && !thisPolicy.noexpand) {
             if (!options.defaultEL || source.charAt(0) === "{") { // hard-code this for performance
@@ -1990,25 +2004,22 @@ var fluid_2_0 = fluid_2_0 || {};
             expanded = fluid.expandExpander(deliverer, source, options);
         }
         else {
-            if (thisPolicy.preserve) {
-                expanded = source;
-                isLate = true;
-            }
-            else {
-                expanded = fluid.freshContainer(source);
-            }
+            expanded = fluid.freshContainer(source);
             isTrunk = true;
         }
-        if (!isLate && expanded !== fluid.NO_VALUE) {
+        if (expanded !== fluid.NO_VALUE) {
             deliverer(expanded);
         }
         if (isTrunk) {
             recurse(expanded, source, i, segs, policy);
         }
-        if (isLate && expanded !== fluid.NO_VALUE) {
-            deliverer(expanded);
-        }
         return expanded;
+    };
+    
+    fluid.guardCircularExpansion = function (segs, i) {
+        if (i > fluid.strategyRecursionBailout) {
+            fluid.fail("Overflow/circularity in options expansion, current path is ", segs, " at depth " , i, " - please ensure options are not circularly connected, or protect from expansion using the \"noexpand\" policy or expander");
+        }
     };
 
     fluid.makeExpandStrategy = function (options) {
@@ -2016,9 +2027,7 @@ var fluid_2_0 = fluid_2_0 || {};
             return fluid.fetchExpandChildren(target, i || 0, segs || [], source, policy, options);
         };
         var strategy = function (target, name, i, segs, source, policy) {
-            if (i > fluid.strategyRecursionBailout) {
-                fluid.fail("Overflow/circularity in options expansion, current path is ", segs, " at depth " , i, " - please ensure options are not circularly connected, or protect from expansion using the \"noexpand\" policy or expander");
-            }
+            fluid.guardCircularExpansion(segs, i);
             if (!target) {
                 return;
             }
@@ -2082,7 +2091,8 @@ var fluid_2_0 = fluid_2_0 || {};
         return expandOptions.target;
     };
     
-    fluid.preExpandRecurse = function (root, source, holder, member) { // on entry, holder[member] = source
+    fluid.preExpandRecurse = function (root, source, holder, member, rootSegs) { // on entry, holder[member] = source
+        fluid.guardCircularExpansion(rootSegs, rootSegs.length);
         function pushExpander(expander) {
             root.expanders.push({expander: expander, holder: holder, member: member});
             delete holder[member];
@@ -2101,7 +2111,9 @@ var fluid_2_0 = fluid_2_0 || {};
                 pushExpander(source.expander);
             } else {
                 fluid.each(source, function (value, key) {
-                    fluid.preExpandRecurse(root, value, source, key);
+                    rootSegs.push(key);
+                    fluid.preExpandRecurse(root, value, source, key, rootSegs);
+                    rootSegs.pop();
                 });
             }
         }
@@ -2112,7 +2124,7 @@ var fluid_2_0 = fluid_2_0 || {};
             expanders: [],
             source: fluid.isUnexpandable(source) ? source : fluid.copy(source)
         };
-        fluid.preExpandRecurse(root, root.source, root, "source");
+        fluid.preExpandRecurse(root, root.source, root, "source", []);
         return root;
     };
     
@@ -2133,12 +2145,12 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     };
 
-    fluid.expandExpander = function (target, source, options) {
+    fluid.expandExpander = function (deliverer, source, options) {
         var expander = fluid.getGlobalValue(source.expander.type || "fluid.invokeFunc");
         if (!expander) {
             fluid.fail("Unknown expander with type " + source.expander.type);
         }
-        return expander(target, source, options);
+        return expander(deliverer, source, options);
     };
 
     fluid.registerNamespace("fluid.expander");
@@ -2175,6 +2187,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.invokeFunc = function (deliverer, source, options) {
         var expander = source.expander;
         var args = fluid.makeArray(expander.args);
+        expander.args = args; // head off case where args is an EL reference which resolves to an array
         if (options.recurse) { // only available in the path from fluid.expandOptions - this will be abolished in the end
             args = options.recurse([], args);
         } else {

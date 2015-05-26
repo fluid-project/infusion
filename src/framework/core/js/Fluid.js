@@ -172,83 +172,35 @@ var fluid = fluid || fluid_2_0;
         this.stack = new Error().stack;
     };
     fluid.FluidError.prototype = new Error();
-
-    // The framework's built-in "fail" policy, in case a user-defined handler would like to defer to it
-    fluid.builtinFail = function (soft, args, activity) {
+    
+    // The framework's built-in "log" failure handler - this logs the supplied message as well as any framework activity in progress via fluid.log
+    fluid.logFailure = function (args, activity) {
         fluid.log.apply(null, [fluid.logLevel.FAIL, "ASSERTION FAILED: "].concat(args));
         fluid.logActivity(activity);
+    };
+
+    // The framework's built-in "fail" failure handler - this throws an exception of type <code>fluid.FluidError</code>
+    fluid.builtinFail = function (args /*, activity*/) {
         var message = args.join("");
-        // We're now insensitive to the "soft" argument since the most portable approach now (2015) is to throw a standard exception
         throw new fluid.FluidError("Assertion failure - check console for more details: " + message);
     };
 
-    var softFailure = [false];
-
     /**
-     * Signals an error to the framework. The default behaviour is to log a structured error message and throw a variety of
-     * exception (hard or soft) - see fluid.pushSoftFailure for configuration
+     * Signals an error to the framework. The default behaviour is to log a structured error message and throw an exception. This strategy may be configured using the legacy
+     * API <code>fluid.pushSoftFailure</code> or else by adding and removing suitably namespaced listeners to the special event <code>fluid.failureEvent</code>
      *
      * @param {String} message the error message to log
-     * @param ... Additional arguments, suitable for being sent to native console.log function
+     * @param ... Additional arguments, suitable for being sent to the native console.log function
      */
     fluid.fail = function (/* message, ... */) {
         var args = fluid.makeArray(arguments);
         var activity = fluid.makeArray(fluid.describeActivity()); // Take copy since we will destructively modify
-        fluid.popActivity(activity.length);
-        var topFailure = softFailure[0];
-        if (typeof(topFailure) === "boolean") {
-            fluid.builtinFail(topFailure, args, activity);
-        } else if (typeof(topFailure) === "function") {
-            topFailure(args, activity);
-        }
-    };
-
-    /**
-     * Configure the behaviour of fluid.fail by pushing or popping a disposition record onto a stack.
-     * @param {Boolean|Number|Function} condition
-     & Supply either a boolean flag choosing between built-in framework strategies to be used in fluid.fail
-     * - <code>false</code>, the default causes a "hard failure" by using a nonexistent property on a String, which
-     * will in all known environments trigger an unhandleable exception which aids debugging. The boolean value
-     * <code>true</code> downgrades this behaviour to throw a conventional exception, which is more appropriate in
-     * test cases which need to demonstrate failure, as well as in some production environments.
-     * The argument may also be a function, which will be called with two arguments, args (the complete arguments to
-     * fluid.fail) and activity, an array of strings describing the current framework invocation state.
-     * Finally, the argument may be the number <code>-1</code> indicating that the previously supplied disposition should
-     * be popped off the stack
-     */
-    fluid.pushSoftFailure = function (condition) {
-        if (typeof (condition) === "boolean" || typeof (condition) === "function") {
-            softFailure.unshift(condition);
-        } else if (condition === -1) {
-            softFailure.shift();
-        }
-    };
-
-    fluid.notrycatch = true;
-
-    // A wrapper for the try/catch/finally language feature, to aid debugging on environments
-    // such as IE, where any try will destroy stack information for errors
-    // TODO: The only non-deprecated call to this annoying utility is left in DataBinding.js to deal with
-    // cleanup in source tracking. We should really review whether we mean to abolish all exception handling
-    // code throughout the framework - on several considerations this is desirable.
-    fluid.tryCatch = function (tryfun, catchfun, finallyfun) {
-        finallyfun = finallyfun || fluid.identity;
-        if (fluid.notrycatch) {
-            var togo = tryfun();
-            finallyfun();
-            return togo;
+        fluid.popActivity(activity.length); // clear any current activity - TODO: the framework currently has no exception handlers, although it will in time
+        if (fluid.failureEvent) { // notify any framework failure prior to successfully setting up the failure event below
+            fluid.failureEvent.fire(args, activity);
         } else {
-            try {
-                return tryfun();
-            } catch (e) {
-                if (catchfun) {
-                    catchfun(e);
-                } else {
-                    throw (e);
-                }
-            } finally {
-                finallyfun();
-            }
+            fluid.logFailure(args, activity);
+            fluid.builtinFail(args, activity);
         }
     };
 
@@ -387,7 +339,12 @@ var fluid = fluid || fluid_2_0;
             return false; // FLUID-5172 - on IE8 the line below produces [object Object] rather than [object Null] or [object Undefined]
         }
         var string = Object.prototype.toString.call(totest);
-        return string === "[object Array]" || string === "[object Object]";
+        if (string === "[object Array]") {
+            return true;
+        } else if (string !== "[object Object]") {
+            return false;
+        } // FLUID-5226: This inventive strategy taken from jQuery detects whether the object's prototype is directly Object.prototype by virtue of having an "isPrototypeOf" direct member
+        return Object.prototype.hasOwnProperty.call(totest.constructor.prototype, "isPrototypeOf");
     };
     
     /** Returns <code>primitive</code>, <code>array</code> or <code>object</code> depending on whether the supplied object has
@@ -420,13 +377,33 @@ var fluid = fluid || fluid_2_0;
         return fluid.isArrayable(tocopy) ? [] : {};
     };
 
-    /** Performs a deep copy (clone) of its argument **/
+    fluid.isUncopyable = function (totest) {
+        return fluid.isPrimitive(totest) || fluid.isDOMish(totest) || !fluid.isPlainObject(totest);
+    };
+    
+    fluid.copyRecurse = function (tocopy, segs) {
+        if (segs.length > fluid.strategyRecursionBailout) {
+            fluid.fail("Runaway recursion encountered in fluid.copy - reached path depth of " + fluid.strategyRecursionBailout + " via path of " + segs.join(".") +
+                "this object is probably circularly connected. Either adjust your object structure to remove the circularity or increase fluid.strategyRecursionBailout");
+        }
+        if (fluid.isUncopyable(tocopy)) {
+            return tocopy;
+        } else {
+            return fluid.transform(tocopy, function (value, key) {
+                segs.push(key);
+                var togo = fluid.copyRecurse(value, segs);
+                segs.pop();
+                return togo;
+            });
+        }
+    };
+
+    /** Performs a deep copy (clone) of its argument. This will guard against cloning a circular object by terminating if it reaches a path depth
+     * greater than <code>fluid.strategyRecursionBailout</code>
+     **/
 
     fluid.copy = function (tocopy) {
-        if (fluid.isPrimitive(tocopy)) {
-            return tocopy;
-        }
-        return $.extend(true, fluid.freshContainer(tocopy), tocopy);
+        return fluid.copyRecurse(tocopy, []);
     };
 
     /** Corrected version of jQuery makeArray that returns an empty array on undefined rather than crashing.
@@ -981,6 +958,15 @@ var fluid = fluid || fluid_2_0;
         }
         return fluid.model.accessSimple(root, EL, fluid.NO_VALUE, environment, initSegs, false);
     };
+    
+    /** Even more optimised version which assumes segs are parsed and no configuration **/
+    fluid.getImmediate = function (root, segs, i) {
+        var limit = (i === undefined ? segs.length: i + 1);
+        for (var j = 0; j < limit; ++ j) {
+            root = root ? root[segs[j]] : undefined;
+        }
+        return root;
+    };
 
     // unsupported, NON-API function
     // Returns undefined to signal complex configuration which needs to be farmed out to DataBinding.js
@@ -1073,7 +1059,7 @@ var fluid = fluid || fluid_2_0;
     fluid.renderTimestamp = fluid.identity;
 
 
-    /*** The Model Events system. ***/
+    /*** The Fluid Event system. ***/
 
     fluid.registerNamespace("fluid.event");
 
@@ -1326,7 +1312,7 @@ var fluid = fluid || fluid_2_0;
             that.listeners = {};
             that.byId = {};
             that.sortedListeners = [];
-            that.addListener = function (listener, namespace, predicate, priority, softNamespace) {
+            that.addListener = function (listener, namespace, priority, predicate, softNamespace) {
                 if (that.destroyed) {
                     fluid.fail("Cannot add listener to destroyed event firer " + that.name);
                 }
@@ -1428,7 +1414,7 @@ var fluid = fluid || fluid_2_0;
         } else if (typeof (value) === "function" || typeof (value) === "string") {
             wrapper(firer).addListener(value, namespace);
         } else if (value && typeof (value) === "object") {
-            wrapper(firer).addListener(value.listener, namespace || value.namespace, value.predicate, value.priority, value.softNamespace);
+            wrapper(firer).addListener(value.listener, namespace || value.namespace, value.priority, value.predicate, value.softNamespace);
         }
     };
 
@@ -1525,6 +1511,31 @@ var fluid = fluid || fluid_2_0;
 
     fluid.arrayConcatPolicy = function (target, source) {
         return fluid.makeArray(target).concat(fluid.makeArray(source));
+    };
+    
+    /*** FLUID ERROR SYSTEM ***/
+    
+    fluid.failureEvent = fluid.makeEventFirer({name: "failure event"});
+    
+    fluid.failureEvent.addListener(fluid.builtinFail, "fail");
+    fluid.failureEvent.addListener(fluid.logFailure, "log", "before:fail");
+    
+    /**
+     * Configure the behaviour of fluid.fail by pushing or popping a disposition record onto a stack.
+     * @param {Number|Function} condition
+     & Supply either a function, which will be called with two arguments, args (the complete arguments to
+     * fluid.fail) and activity, an array of strings describing the current framework invocation state.
+     * Or, the argument may be the number <code>-1</code> indicating that the previously supplied disposition should
+     * be popped off the stack
+     */
+    fluid.pushSoftFailure = function (condition) {
+        if (typeof (condition) === "function") {
+            fluid.failureEvent.addListener(condition, "fail");
+        } else if (condition === -1) {
+            fluid.failureEvent.removeListener("fail");
+        } else if (typeof(condition) === "boolean") {
+            fluid.fail("pushSoftFailure with boolean value is no longer supported");
+        }
     };
 
     /*** DEFAULTS AND OPTIONS MERGING SYSTEM ***/
@@ -1837,7 +1848,7 @@ var fluid = fluid || fluid_2_0;
     // unsupported, NON-API function
     fluid.isDefaultValueMergePolicy = function (policy) {
         return typeof(policy) === "string" &&
-            (policy.indexOf(",") === -1 && !/replace|preserve|nomerge|noexpand/.test(policy));
+            (policy.indexOf(",") === -1 && !/replace|nomerge|noexpand/.test(policy));
     };
 
     // unsupported, NON-API function
@@ -1848,8 +1859,7 @@ var fluid = fluid || fluid_2_0;
 
         if (thisSource !== undefined) {
             if (!newPolicy.func && thisSource !== null && fluid.isPlainObject(thisSource) &&
-                    !fluid.isDOMish(thisSource) && thisSource !== fluid.VALUE &&
-                    !newPolicy.preserve && !newPolicy.nomerge) {
+                    !fluid.isDOMish(thisSource) && !fluid.isComponent(thisSource) && thisSource !== fluid.VALUE && !newPolicy.nomerge) {
                 if (primitiveTarget) {
                     togo = thisTarget = fluid.freshContainer(thisSource);
                 }
@@ -1860,7 +1870,7 @@ var fluid = fluid || fluid_2_0;
                 if (newPolicy.func) {
                     togo = newPolicy.func.call(null, thisTarget, thisSource, segs[i - 1], segs, i); // NB - change in this mostly unused argument
                 } else {
-                    togo = fluid.isValue(thisTarget) && newPolicy.preserve ? fluid.model.mergeModel(thisTarget, thisSource) : thisSource;
+                    togo = fluid.isValue(thisTarget) ? fluid.model.mergeModel(thisTarget, thisSource) : thisSource;
                 }
             }
         }
@@ -1902,14 +1912,14 @@ var fluid = fluid || fluid_2_0;
             // will THEN return to "evaluation of arguments" (expander blocks) and only then FINALLY to this "slow"
             // traversal of concrete properties to do the final merge.
             if (source !== undefined) {
-                // This use of function creation within a loop is acceptable since
-                // the function does not attempt to close directly over the loop counter
                 fluid.each(source, function (newSource, name) {
-                    if (!target.hasOwnProperty(name)) { // only request each new target key once -- all sources will be queried per strategy
+                    if (!(name in target)) { // only request each new target key once -- all sources will be queried per strategy
                         segs[i] = name;
-                        options.strategy(target, name, i + 1, segs, sources, mergePolicy);
+                        if (!fluid.getImmediate(options.exceptions, segs, i)) {
+                            options.strategy(target, name, i + 1, segs, sources, mergePolicy);
+                        }
                     }
-                });  /* function in loop */ //jshint ignore:line
+                });  /* function in loop */ // jshint ignore:line
                 if (thisPolicy.replace) { // this branch primarily deals with a policy of replace at the root
                     break;
                 }
@@ -1920,7 +1930,7 @@ var fluid = fluid || fluid_2_0;
 
     // A special marker object which will be placed at a current evaluation point in the tree in order
     // to protect against circular evaluation
-    fluid.inEvaluationMarker = {"__CURRENTLY_IN_EVALUATION__": true};
+    fluid.inEvaluationMarker = Object.freeze({"__CURRENTLY_IN_EVALUATION__": true});
 
     // A path depth above which the core "process strategies" will bail out, assuming that the
     // structure has become circularly linked. Helpful in environments such as Firebug which will
@@ -1942,14 +1952,18 @@ var fluid = fluid || fluid_2_0;
             }
 
             var oldTarget;
-            if (target.hasOwnProperty(name)) { // bail out if our work has already been done
+            if (name in target) { // bail out if our work has already been done
                 oldTarget = target[name];
                 if (!options.evaluateFully) { // see notes on this hack in "initter" - early attempt to deal with FLUID-4930
                     return oldTarget;
                 }
             }
-            else { // This is hardwired here for performance reasons - no need to protect deeper strategies
-                target[name] = fluid.inEvaluationMarker;
+            else {
+                if (target !== fluid.inEvaluationMarker) { // blatant "coding to the test" - this enables the simplest "re-trunking" in
+                    // FluidIoCTests to function. In practice, we need to throw away this implementation entirely in favour of the 
+                    // "iterative deepening" model coming with FLUID-4925
+                    target[name] = fluid.inEvaluationMarker;
+                }
             }
             if (sources === undefined) { // recover our state in case this is an external entry point
                 segs = fluid.makeArray(segs); // avoid trashing caller's segs
@@ -1982,7 +1996,10 @@ var fluid = fluid || fluid_2_0;
                         }
                         else {
                             // write this in early, since early expansions may generate a trunk object which is written in to by later ones
-                            thisTarget = target[name] = fluid.mergeOneImpl(thisTarget, thisSource, j, newSources, newPolicy, i, segs, options);
+                            thisTarget = fluid.mergeOneImpl(thisTarget, thisSource, j, newSources, newPolicy, i, segs, options);
+                            if (target !== fluid.inEvaluationMarker) {
+                                target[name] = thisTarget;
+                            }
                         }
                     }
                 }
@@ -1991,7 +2008,7 @@ var fluid = fluid || fluid_2_0;
                 thisTarget = oldTarget;
             }
             if (newSources.length > 0) {
-                if (!fluid.isPrimitive(thisTarget)) {
+                if (fluid.isPlainObject(thisTarget)) {
                     fluid.fetchMergeChildren(thisTarget, i, segs, newSources, newPolicyHolder, options);
                 }
             }
@@ -2309,10 +2326,33 @@ var fluid = fluid || fluid_2_0;
         }
         return target;
     };
+    
+    fluid.mergingArray = function () {};
+    fluid.mergingArray.prototype = [];
+    
+    // Defer all evaluation of all nested members to resolve FLUID-5668
+    fluid.membersOptionsPolicy = function (target, source) {
+        target = target || {};
+        fluid.each(source, function (oneSource, key) {
+            if (!target[key]) {
+                target[key] = new fluid.mergingArray();
+            }
+            if (oneSource instanceof fluid.mergingArray) {
+                target[key].push.apply(target[key], oneSource);
+            } else if (oneSource !== undefined) {
+                target[key].push(oneSource);
+            }
+        });
+        return target;
+    };
 
     fluid.rootMergePolicy = {
         gradeNames: fluid.arrayConcatPolicy,
         distributeOptions: fluid.distributeOptionsPolicy,
+        members: {
+            noexpand: true,
+            func: fluid.membersOptionsPolicy
+        },
         transformOptions: "replace",
         listeners: fluid.makeMergeListenersPolicy(fluid.mergeListenerPolicy)
     };
@@ -2369,6 +2409,7 @@ var fluid = fluid || fluid_2_0;
 
         that.destroy = fluid.makeRootDestroy(that); // overwritten by FluidIoC for constructed subcomponents
         var mergeOptions = fluid.mergeComponentOptions(that, name, userOptions, localOptions);
+        mergeOptions.exceptions = {members: {model: true, modelRelay: true}}; // don't evaluate these in "early flooding" - they must be fetched explicitly
         var options = that.options;
         that.events = {};
         // deliver to a non-IoC side early receiver of the component (currently only initView)

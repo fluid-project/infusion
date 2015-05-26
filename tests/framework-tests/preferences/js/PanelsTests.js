@@ -405,6 +405,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         assertSubPanelLifecycleBindings(that, "conditionalPanel1", "some.pref.1");
         assertNotInitialized(that, "conditionalPanel2");
         assertSubPanelLifecycleBindings(that, "conditionalPanel2", "some.pref.2");
+        // TODO: rewrite these highly stateful tests using the IoC testing framework
 
         // first rendering
         jqUnit.expect(10);
@@ -416,7 +417,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assertNotInitialized(that, "conditionalPanel1");
             assertNotInitialized(that, "conditionalPanel2");
             that.events.afterRender.removeListener("initial");
-        }, "initial", null, "last");
+        }, "initial", "last");
         that.refreshView();
 
         // set some.pref.1 to true
@@ -430,7 +431,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assertText(that, "conditionalPanel1", "conditionalPanel1");
             assertNotInitialized(that, "conditionalPanel2");
             that.events.afterRender.removeListener("pref1_true");
-        }, "pref1_true", null, "last");
+        }, "pref1_true", "last");
         that.applier.requestChange("some_pref_1", true);
 
         // set some.pref.1 to false
@@ -443,7 +444,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assertNotInitialized(that, "conditionalPanel1");
             assertNotInitialized(that, "conditionalPanel2");
             that.events.afterRender.removeListener("pref1_false");
-        }, "pref1_false", null, "last");
+        }, "pref1_false", "last");
         that.applier.requestChange("some_pref_1", false);
 
         // set some.pref.2 to true
@@ -457,7 +458,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assertInitialized(that, "conditionalPanel2");
             assertText(that, "conditionalPanel2", "conditionalPanel2");
             that.events.afterRender.removeListener("pref2_true");
-        }, "pref2_true", null, "last");
+        }, "pref2_true", "last");
         that.applier.requestChange("some_pref_2", true);
 
         // set some.pref.2 to false
@@ -470,7 +471,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assertNotInitialized(that, "conditionalPanel1");
             assertNotInitialized(that, "conditionalPanel2");
             that.events.afterRender.removeListener("pref2_false");
-        }, "pref2_false", null, "last");
+        }, "pref2_false", "last");
         that.applier.requestChange("some_pref_2", false);
 
     });
@@ -952,6 +953,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("FLUID-5220: onDomBind", function () {
+        // TODO: Rewrite this highly stateful test using the IoC Testing Framework
         var that = fluid.prefs.compositePanel(".fluid-5220", {
             selectors: {
                 subPanel: ".flc-tests-subPanel"
@@ -978,23 +980,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.events.onCreate.addListener(function () {
             jqUnit.assertTrue("Composite panel onDomBind event is triggered at onCreate", true);
             that.events.onCreate.removeListener("onCompositePanelCreateDomBind");
-        }, "onCompositePanelCreateDomBind", null, "last");
+        }, "onCompositePanelCreateDomBind", "last");
 
         that.subPanel.events.onDomBind.addListener(function () {
             jqUnit.assertDeepEq("Wrong! - Composite panel onCreate should not trigger onDomBind in the subpanel", false);
             that.subPanel.events.onDomBind.removeListener("onSubPanelCreateDomBind");
-        }, "onSubPanelCreateDomBind", null, "last");
+        }, "onSubPanelCreateDomBind", "last");
 
         jqUnit.expect(2);
         that.events.afterRender.addListener(function () {
             jqUnit.assertTrue("Composite panel afterRender event is fired", true);
             that.events.afterRender.removeListener("onCompositePanelAfterRender");
-        }, "onCompositePanelAfterRender", null, "last");
+        }, "onCompositePanelAfterRender", "last");
 
         that.subPanel.events.onDomBind.addListener(function () {
             jqUnit.assertTrue("The subpanel onDomBind event is triggered when afterRender event of its composite panel gets fired", true);
             that.subPanel.events.onDomBind.removeListener("onSubPanelAfterRenderDomBind");
-        }, "onSubPanelAfterRenderDomBind", null, "last");
+        }, "onSubPanelAfterRenderDomBind", "last");
 
         that.refreshView();
     });

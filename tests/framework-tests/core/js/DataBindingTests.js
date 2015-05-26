@@ -138,48 +138,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Queried resolved and strategised value", 4, resolved2);
     });
 
-
-    function testPreservingMerge(name, preserve, defaultModel) {
-        var defaults = {
-            gradeNames: ["fluid.component"],
-            lala: "blalalha"
-        };
-        if (preserve) {
-            defaults.mergePolicy = {model: "preserve"};
-        }
-        if (defaultModel !== undefined) {
-            defaults.model = defaultModel;
-        }
-        var componentName = "fluid.tests.preservingMerge." + name;
-        
-        fluid.defaults(componentName, defaults);
-        
-        var model = { foo: "foo" };
-
-        var comp = fluid.invokeGlobalFunction(componentName, [{model: model}]);
-
-        var presString = name + (preserve ? " - preserve" : "");
-
-        jqUnit.assertEquals("Identical model reference " + presString,
-            preserve, comp.options.model === model);
-        var mergedModel = $.extend(true, {}, model, defaultModel);
-
-        jqUnit.assertDeepEq("Merged model contents " + presString, mergedModel, comp.options.model);
-    }
-
-
-    jqUnit.test("Merge model semantics - preserve", function () {
-        testPreservingMerge("undef1", true);
-        testPreservingMerge("undef2", false);
-         // defaultModel of "null" tests FLUID-3768
-        testPreservingMerge("null1", true, null);
-        testPreservingMerge("null2", false, null);
-        // populated defaultModel tests FLUID-3824
-        var defaultModel = { roo: "roo"};
-        testPreservingMerge("model1", true, defaultModel);
-        testPreservingMerge("model2", false, defaultModel);
-    });
-
     // NB - this implementation is in Fluid.js, but test is grouped with the one above
     jqUnit.test("FLUID 4585 test: mergeModel with nested model", function () {
         var defaults = {
@@ -541,6 +499,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("FLUID-3674 basic model relay test", function () {
+        fluid.begun = true;
         var that = fluid.tests.fluid3674head();
         var expected = {
             innerModel: {
@@ -1299,6 +1258,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Forward init relay with backward never", 3, that.model.forwardOnlyTarget);
         that.applier.change("forwardOnly", 4);
         jqUnit.assertEquals("Forward live relay with backward never", 4, that.model.forwardOnlyTarget);
+        jqUnit.assertEquals("No init relay with liveOnly forward", undefined, that.model.liveOnlyTarget);
         
         that.applier.change("forwardOnlyTarget", 4.5);
         jqUnit.assert("No backward live relay with backward never", 4, that.model.forwardOnly);
@@ -1310,7 +1270,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.applier.change("backwardOnlySource", 6.5);
         jqUnit.assert("No forward live relay with forward never", 6, that.model.backwardOnly);
         
-        jqUnit.assertEquals("No init relay with liveOnly forward", undefined, that.model.liveOnlyTarget);
         that.applier.change("liveOnly", 8);
         jqUnit.assertEquals("Forward relay with liveOnly forward", 8, that.model.liveOnlyTarget);
         that.applier.change("liveOnlyTarget", 9);
@@ -1813,6 +1772,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return togo;
     };
     
-    fluid.test.runTests(["fluid.tests.fluid5659root"]);
+    // fluid.test.runTests(["fluid.tests.fluid5659root"]);
     
 })(jQuery);

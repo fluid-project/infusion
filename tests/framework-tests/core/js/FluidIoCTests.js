@@ -147,6 +147,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
+    
+    fluid.defaults("fluid.tests.expanderMemberTiming", {
+        gradeNames: ["fluid.component"],
+        members: {
+            expandMember: "@expand:fluid.tests.expanderTime({that})"
+        },
+        generalOption: 42
+    });
+    
+    fluid.tests.expanderTime = function (that) {
+        jqUnit.assertEquals("Member expanders should at least be able to see standard options", 42, that.options.generalOption);
+    };
+    
+    jqUnit.test("Expander member timing", function () {
+        // This is a very vexed issue until we have FLUID-4925. We experimented with moving "members" to the standard framework options
+        // expansion workflow, but this disturbed many users, most of all, InlineEdit which expects to use expanders to resolve general options
+        // material. Our ultimate goal is for expanders to only block on their immediate arguments, BUT for those to be expanded fully. This is not
+        // possible with the current framework. So we have put back the old-fashioned "members" workflow with a fix for FLUID-5668, so that at least
+        // we don't supply expanders within members (the most common case) with partially evaluated options.
+        jqUnit.expect(1);
+        fluid.tests.expanderMemberTiming();
+    });
 
     /** Preservation of material with "exotic types" (with constructor) for FLUID-5089 **/
 
@@ -409,18 +431,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     }];
 
     jqUnit.test("FLUID-4873 IoCSS selector parsing tests", function () {
-        fluid.pushSoftFailure(true);
         fluid.each(fluid.tests.IoCSSParsing, function (fixture) {
             var parser = function () { return fluid.parseSelector(fixture.selector, fluid.IoCSSMatcher);};
             if (fixture.expected === "fail") {
-                jqUnit["throws"](parser, "Selector " + fixture.selector + " is invalid");
+                jqUnit.expectFrameworkDiagnostic("Invalid selector", parser, "selector");
             }
             else {
                 var parsed = parser();
+                jqUnit.expect(1);
                 jqUnit.assertDeepEq("Parsed selector " + fixture.selector, fixture.expected, parsed);
             }
         });
-        fluid.pushSoftFailure(-1);
     });
         
     fluid.contextAware.makeChecks({"fluid.test": true});
@@ -1871,22 +1892,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("Tree circularity test", function () {
-        try {
-            fluid.pushSoftFailure(true);
-            jqUnit.expect(2);
-            var circular = fluid.tests.circularity();
-            // if this test fails, the browser will bomb with a stack overflow
-            jqUnit.assertValue("Circular test delivered instantiator", circular.child1.options.instantiator);
-            try {
-                delete circular.typeName; // necessary to defeat new framework's detection of components - update as necessary
-                circular.circular = circular;
-                fluid.expandOptions(circular, circular);
-            } catch (e2) {
-                jqUnit.assertTrue("Framework exception caught in circular expansion", e2 instanceof fluid.FluidError);
-            }
-        } finally {
-            fluid.pushSoftFailure(-1);
-        }
+        jqUnit.expect(1);
+        var circular = fluid.tests.circularity();
+        // if this test fails, the browser will bomb with a stack overflow
+        jqUnit.assertValue("Circular test delivered instantiator", circular.child1.options.instantiator);
+        jqUnit.expectFrameworkDiagnostic("Framework exception in circular expansion", function () {
+            delete circular.typeName; // necessary to defeat new framework's detection of components - update as necessary
+            circular.circular = circular;
+            fluid.expandOptions(circular, circular);
+        }, "circular");
+    });
+    
+    jqUnit.test("FLUID-5667: Circularity in options precursors", function () {
+        var circular = {};
+        circular.property = circular;
+        jqUnit.expectFrameworkDiagnostic("Framework exception caught in circular expansion", function () {
+            fluid.component({
+                circular: circular
+            });
+        }, "circular");
     });
 
     fluid.defaults("fluid.tests.FLUID5088Circularity", {
@@ -1895,7 +1919,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         option2: "{that}.options.option1"
     });
 
-    jqUnit.test("Direct circularity test", function () {
+    jqUnit.test("FLUID-5088: Direct circularity test", function () {
         jqUnit.expectFrameworkDiagnostic("Framework exception caught in circular expansion", fluid.tests.FLUID5088Circularity, "circular");
     });
 
@@ -1940,6 +1964,37 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("Advanced circularity test I", function () {
         jqUnit.expectFrameworkDiagnostic("Attempt to invoke creator via invoker", fluid.tests.circular.strategy, "invoker");
     });
+
+    fluid.defaults("fluid.tests.droppingsRoot", {
+        gradeNames: "fluid.component",
+        topRecord: {
+            a: 1,
+            b: 2
+        },
+        distributeOptions: {
+            record: {
+                c: 3
+            },
+            target: "{that child}.options.members.mergingMember"
+        },
+        components: {
+            child: {
+                type: "fluid.component",
+                options: {
+                    members: {
+                        mergingMember: "{droppingsRoot}.options.topRecord"
+                    }
+                }
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-5668: Mouse droppings in compound expansion", function () {
+        var that = fluid.tests.droppingsRoot();
+        var member = that.child.mergingMember;
+        jqUnit.assertNoValue("Absence of string mouse droppings in reference holder", member[0]);
+    });
+
 
     /** Correct resolution of invoker arguments through the tree **/
 
