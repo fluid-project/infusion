@@ -167,57 +167,77 @@ var fluid = fluid || fluid_2_0;
     };
 
     function printImpl (obj, small, options) {
-        var big = small + options.indentChars, togo, isFunction = typeof(obj) === "function";
+        function out(str) {
+            options.output += str;
+        }
+        var big = small + options.indentChars, isFunction = typeof(obj) === "function";
+        if (options.maxRenderChars !== undefined && options.output.length > options.maxRenderChars) {
+            return true;
+        }
         if (obj === null) {
-            togo = "null";
+            out("null");
         } else if (obj === undefined) {
-            togo = "undefined"; // NB - object invalid for JSON interchange
+            out("undefined"); // NB - object invalid for JSON interchange
         } else if (obj === fluid.SYNTHETIC_PROPERTY) {
-            togo = "[Synthetic property]";
+            out("[Synthetic property]");
         } else if (fluid.isPrimitive(obj) && !isFunction) {
-            togo = JSON.stringify(obj);
+            out(JSON.stringify(obj));
         }
         else {
             if ($.inArray(obj, options.stack) !== -1) {
-                return "(CIRCULAR)"; // NB - object invalid for JSON interchange
+                out("(CIRCULAR)"); // NB - object invalid for JSON interchange
+                return;
             }
             options.stack.push(obj);
-            var j = [];
             var i;
             if (fluid.isArrayable(obj)) {
                 if (obj.length === 0) {
-                    togo = "[]";
+                    out("[]");
                 } else {
+                    out("[\n" + big);
                     for (i = 0; i < obj.length; ++ i) {
-                        j[i] = printImpl(obj[i], big, options);
+                        if (printImpl(obj[i], big, options)) {
+                            return true;
+                        }
+                        if (i !== obj.length - 1) {
+                            out(",\n" + big);
+                        }
                     }
-                    togo = "[\n" + big + j.join(",\n" + big) + "\n" + small + "]";
+                    out("\n" + small + "]");
                 }
             }
             else {
-                i = 0;
-                togo = "{" + (isFunction ? " Function" : "") + "\n"; // NB - Function object invalid for JSON interchange
-                for (var key in obj) {
+                out("{" + (isFunction ? " Function" : "") + "\n" + big); // NB - Function object invalid for JSON interchange
+                var keys = fluid.keys(obj);
+                for (i = 0; i < keys.length; ++ i) {
+                    var key = keys[i];
                     var value = fluid.getSafeProperty(obj, key);
-                    j[i++] = JSON.stringify(key) + ": " + printImpl(value, big, options);
+                    out(JSON.stringify(key) + ": ");
+                    if (printImpl(value, big, options)) {
+                        return true;
+                    }
+                    if (i !== keys.length - 1) {
+                        out(",\n" + big);
+                    }
                 }
-                togo += big + j.join(",\n" + big) + "\n" + small + "}";
+                out("\n" + small + "}");
             }
             options.stack.pop();
         }
-        return togo;
+        return;
     }
 
     /** Render a complex JSON object into a nicely indented format suitable for human readability.
      * @param obj {Object} The object to be rendered
-     * @param options {Object} An options structure governing the rendering process. The only option which
-     * is currently supported is <code>indent</code> holding the number of space characters to be used to
-     * indent each level of containment.
+     * @param options {Object} An options structure governing the rendering process. This supports the following options:
+     *     <code>indent</code> {Integer} the number of space characters to be used to indent each level of containment (default value: 4)
+     *     <code>maxRenderChars</code> {Integer} rendering the object will cease once this number of characters has been generated
      */
     fluid.prettyPrintJSON = function (obj, options) {
-        options = $.extend({indent: 4, stack: []}, options);
+        options = $.extend({indent: 4, stack: [], output: ""}, options);
         options.indentChars = fluid.generatePadding(" ", options.indent);
-        return printImpl(obj, "", options);
+        printImpl(obj, "", options);
+        return options.output;
     };
 
     /**

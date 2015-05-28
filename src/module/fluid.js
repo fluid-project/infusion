@@ -106,7 +106,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // Convert an argument intended for console.log in the node environment to a readable form (the
     // default action of util.inspect censors at depth 1)
     fluid.renderLoggingArg = function (arg) {
-        var togo = arg && fluid.isPrimitive(arg) ? arg : fluid.prettyPrintJSON(arg);
+        var togo = arg && fluid.isPrimitive(arg) ? arg : fluid.prettyPrintJSON(arg, {maxRenderChars: fluid.logObjectRenderChars});
         if (typeof(togo) === "string" && togo.length > fluid.logObjectRenderChars) {
             togo = togo.substring(0, fluid.logObjectRenderChars) + " .... [output suppressed at " + fluid.logObjectRenderChars + " chars - for more output, increase fluid.logObjectRenderChars]";
         }

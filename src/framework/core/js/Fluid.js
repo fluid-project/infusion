@@ -634,7 +634,7 @@ var fluid = fluid || fluid_2_0;
         };
     };
 
-    /** Return the keys in the supplied object as an array **/
+    /** Return the keys in the supplied object as an array. Note that this will return keys found in the prototype chain as well as "own properties", unlike Object.keys() **/
     fluid.keys = fluid.makeFlatten(1);
 
     /** Return the values in the supplied object as an array **/
