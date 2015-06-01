@@ -58,9 +58,9 @@ var fluid_2_0 = fluid_2_0 || {};
     
     // Resolve FLUID-5673 by resolving the event target upwards to the nearest match for "items" - this will
     // reproduce the natural effect operated by event bubbling in conjunction with the widget
-    fluid.tooltip.resolveTooltipTarget = function (that, event) {
+    fluid.tooltip.resolveTooltipTarget = function (items, event) {
         var originalTarget = fluid.resolveEventTarget(event);
-        var tooltipTarget = $(originalTarget).closest(that.options.items);
+        var tooltipTarget = $(originalTarget).closest(items);
         return tooltipTarget[0];
     };
 
@@ -73,7 +73,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.tooltip.makeOpenHandler = function (that) {
         return function (event, tooltip) {
             fluid.tooltip.closeAll(that);
-            var originalTarget = fluid.tooltip.resolveTooltipTarget(that, event);
+            var originalTarget = fluid.tooltip.resolveTooltipTarget(that.options.items, event);
             var key = fluid.allocateSimpleId(originalTarget);
             that.openIdMap[key] = true;
             if (that.initialised) {
@@ -85,7 +85,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.tooltip.makeCloseHandler = function (that) {
         return function (event, tooltip) {
             if (that.initialised) { // underlying jQuery UI component will fire various spurious close events after it has been destroyed
-                var originalTarget = fluid.tooltip.resolveTooltipTarget(that, event);
+                var originalTarget = fluid.tooltip.resolveTooltipTarget(that.options.items, event);
                 delete that.openIdMap[originalTarget.id];
                 that.events.afterClose.fire(that, originalTarget, tooltip.tooltip, event);
             }
