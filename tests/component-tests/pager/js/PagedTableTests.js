@@ -37,8 +37,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         ],
         tooltip: {
             type: "fluid.tooltip",
-            options: {
-                delay: 0
+            options: { // These options simplify the test structure by assuring that tooltip changes are synchronous
+                delay: 0,
+                duration: 0
             }
         },
         annotateColumnRange: "animal",
