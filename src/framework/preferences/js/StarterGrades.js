@@ -15,9 +15,9 @@ var fluid_2_0 = fluid_2_0 || {};
     "use strict";
 
     /*******************************************************************************
-     * Starter Root Model
+     * Starter prefsEditor Model
      *
-     * Provides the default values for the starter enhancer/panels models
+     * Provides the default values for the starter prefsEditor model
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.initialModel.starter", {
@@ -32,9 +32,9 @@ var fluid_2_0 = fluid_2_0 || {};
                     theme: "default",             // key from classname map
                     textSize: 1,                  // in points
                     lineSpace: 1,                 // in ems
-                    toc: false,                  // boolean
-                    links: false,                // boolean
-                    inputsLarger: false          // boolean
+                    toc: false,                   // boolean
+                    links: false,                 // boolean
+                    inputsLarger: false           // boolean
                 }
             }
         }
