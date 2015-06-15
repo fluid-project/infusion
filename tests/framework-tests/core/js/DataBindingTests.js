@@ -229,6 +229,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         changes: 0,
         changeMap: {}
     }, {
+        message: "Delete deeper into nothing",
+        model: {a: 1, b: 2},
+        request: {type: "DELETE", path: "c.c.c"},
+        expected: {a: 1, b: 2},
+        changes: 0,
+        changeMap: {}
+    }, {
         message: "Add primitive at empty root",
         model: undefined,
         request: {type: "ADD", path: "", value: false},

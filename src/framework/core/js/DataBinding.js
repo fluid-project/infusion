@@ -1019,6 +1019,9 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.model.stepTargetAccess = function (target, type, segs, startpos, endpos, options) {
         for (var i = startpos; i < endpos; ++ i) {
+            if (!target) {
+                continue;
+            }
             var oldTrunk = target[segs[i]];
             target = fluid.model.traverseWithStrategy(target, segs, i, options[type === "ADD" ? "resolverSetConfig" : "resolverGetConfig"],
                 segs.length - i - 1);
