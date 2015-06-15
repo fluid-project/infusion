@@ -235,7 +235,7 @@ var fluid_2_0 = fluid_2_0 || {};
         });
 
         prefsEditor.events.onPrefsEditorRefresh.addListener(function () {
-            iframeEnhancer.updateModel(prefsEditor.model);
+            iframeEnhancer.updateModel(prefsEditor.model.preferences);
         });
         prefsEditor.events.onReset.addListener(function (prefsEditor) {
             fluid.prefs.separatedPanel.updateView(prefsEditor);

@@ -33,17 +33,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests.prefs");
 
     fluid.tests.prefs.bwSkin = {
-        textSize: "1.8",
-        textFont: "verdana",
-        theme: "bw",
-        lineSpace: 2
+        preferences: {
+            textSize: "1.8",
+            textFont: "verdana",
+            theme: "bw",
+            lineSpace: 2
+        }
     };
 
     fluid.tests.prefs.ybSkin = {
-        textSize: "2",
-        textFont: "comic sans",
-        theme: "yb",
-        lineSpace: 1.5
+        preferences: {
+            textSize: "2",
+            textFont: "comic sans",
+            theme: "yb",
+            lineSpace: 1.5
+        }
     };
 
     fluid.tests.prefs.expectedComponents = {
@@ -83,13 +87,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.prefs.checkModelSelections = function (message, expectedSelections, actualSelections) {
-        jqUnit.assertLeftHand("Model correctly updated: " + message, expectedSelections, actualSelections);
+        jqUnit.assertLeftHand("Model correctly updated: " + message, expectedSelections.preferences, actualSelections.preferences);
     };
 
     fluid.tests.prefs.applierRequestChanges = function (prefsEditor, selectionOptions) {
-        fluid.each(selectionOptions, function (value, key) {
-            prefsEditor.applier.requestChange("" + key, value);
-        });
+        prefsEditor.applier.requestChange("", selectionOptions);
     };
 
     fluid.tests.prefs.integrationTest = function (componentName, resetShouldSave) {
@@ -133,7 +135,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 fluid.tests.prefs.checkModelSelections("model from original", initialModel, prefsEditor.model);
                 fluid.tests.prefs.applierRequestChanges(prefsEditor, fluid.tests.prefs.bwSkin);
                 fluid.tests.prefs.checkModelSelections("model from original (correct state after reset)",
-                    (resetShouldSave ? initialModel : fluid.tests.prefs.bwSkin), fluid.staticEnvironment.uiEnhancer.model);
+                    (resetShouldSave ? initialModel.preferences : fluid.tests.prefs.bwSkin.preferences), fluid.staticEnvironment.uiEnhancer.model);
 
                 cancelButton.click();
                 fluid.tests.prefs.checkModelSelections("model from original (correct state after reset and cancel)",
@@ -240,7 +242,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var options = fluid.merge(null, fluid.tests.prefs.mungingIntegrationOptions, {
                 members: {
                     initialModel: {
-                        theme: "yb"
+                        preferences: {
+                            theme: "yb"
+                        }
                     }
                 },
                 prefsEditor: {

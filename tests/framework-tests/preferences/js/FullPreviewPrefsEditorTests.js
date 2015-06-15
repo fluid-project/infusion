@@ -32,12 +32,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.prefs.integrationTest("fluid.prefs.fullPreview", false);
 
         var testSettings = {
-            textSize: "1.5",
-            textFont: "verdana",
-            theme: "bw",
-            layout: false,
-            toc: true,
-            links: true
+            preferences: {
+                textSize: "1.5",
+                textFont: "verdana",
+                theme: "bw",
+                layout: false,
+                toc: true,
+                links: true
+            }
         };
 
         // TODO: we need MUCH better event boiling support in order to avoid rubbish like this

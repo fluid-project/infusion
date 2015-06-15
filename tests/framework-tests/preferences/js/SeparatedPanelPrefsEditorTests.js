@@ -84,7 +84,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.afterShowFunc1 = function (separatedPanel) {
         return function () {
             fluid.tests.prefs.applierRequestChanges(separatedPanel.prefsEditor, fluid.tests.prefs.bwSkin);
-            fluid.tests.prefs.checkModelSelections("enhancerModel from bwSkin", fluid.tests.prefs.bwSkin, separatedPanel.pageEnhancer.model);
+            fluid.tests.prefs.checkModelSelections("enhancerModel from bwSkin", fluid.tests.prefs.bwSkin.preferences, separatedPanel.pageEnhancer.model);
             jqUnit.assertEquals("Reset button is visible", true, $(".flc-prefsEditor-reset").is(":visible"));
         };
     };
@@ -100,7 +100,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var enhancerModel = separatedPanel.pageEnhancer.model;
             var iframeEnhancerModel = separatedPanel.iframeRenderer.iframeEnhancer.model;
 
-            fluid.tests.prefs.checkModelSelections("iframeEnhancerModel from bwSkin", fluid.tests.prefs.bwSkin, iframeEnhancerModel);
+            fluid.tests.prefs.checkModelSelections("iframeEnhancerModel from bwSkin", fluid.tests.prefs.bwSkin.preferences, iframeEnhancerModel);
             fluid.tests.prefs.checkModelSelections("iframeEnhancerModel from enhancerModel", enhancerModel, iframeEnhancerModel);
         };
     };
@@ -113,9 +113,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var enhancerModel = separatedPanel.pageEnhancer.model;
             var iframeEnhancerModel = separatedPanel.iframeRenderer.iframeEnhancer.model;
 
-            fluid.tests.prefs.checkModelSelections("enhancerModel from defaults", initialModel, enhancerModel);
+            fluid.tests.prefs.checkModelSelections("enhancerModel from defaults", initialModel.preferences, enhancerModel);
             separatedPanel.slidingPanel.hidePanel();
-            fluid.tests.prefs.checkModelSelections("iframeEnhancerModel from defaults", initialModel, iframeEnhancerModel);
+            fluid.tests.prefs.checkModelSelections("iframeEnhancerModel from defaults", initialModel.preferences, iframeEnhancerModel);
             fluid.tests.prefs.checkModelSelections("enhancerModel from iframeEnhancerModel", enhancerModel, iframeEnhancerModel);
         };
     };
@@ -194,7 +194,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     prefsEditor: {
                         members: {
                             initialModel: {
-                                theme: "yb"
+                                preferences: {
+                                    theme: "yb"
+                                }
                             }
                         }
                     }

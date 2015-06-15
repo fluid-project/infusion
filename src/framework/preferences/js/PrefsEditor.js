@@ -257,7 +257,7 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             updateEnhancerModel: {
                 funcName: "fluid.prefs.uiEnhancerRelay.updateEnhancerModel",
-                args: ["{uiEnhancer}", "{fluid.prefs.prefsEditor}.model"]
+                args: ["{uiEnhancer}", "{fluid.prefs.prefsEditor}.model.preferences"]
             }
         }
     });
@@ -379,23 +379,36 @@ var fluid_2_0 = fluid_2_0 || {};
 
     /**
      * Saves the current model and fires onSave
-     */
+ */
     fluid.prefs.prefsEditor.save = function (that) {
-        var savedSelections = fluid.copy(that.model);
+        var initialModel = that.initialModel,
+            userSelections = fluid.copy(that.model);
 
-        fluid.each(savedSelections, function (value, key) {
-            if (fluid.get(that.initialModel, key) === value) {
-                delete savedSelections[key];
-            }
-        });
-        that.events.onSave.fire(savedSelections);
-        that.setSettings(savedSelections);
+        // Only save the changed preferences so the future default value change on preferences can still be correctly merged with changed preferences
+        if (fluid.model.diff(userSelections.preferences, initialModel.preferences)) {
+            delete userSelections.preferences;
+        } else {
+            fluid.each(userSelections.preferences, function (value, path) {
+                if (fluid.model.diff(value, fluid.get(that.initialModel, ["preferences", path]))) {
+                    delete userSelections.preferences[path];
+                }
+            });
+        }
+
+        that.events.onSave.fire(userSelections);
+        that.setSettings(userSelections);
+        return userSelections;
     };
 
     fluid.prefs.prefsEditor.saveAndApply = function (that) {
-        that.save();
-        that.events.onPrefsEditorRefresh.fire();
-        that.applyChanges();
+        var prevSettings = that.getSettings(),
+            newSelections = that.save();
+
+        // Only when preferences are changed, re-render panels and trigger enactors to apply changes
+        if (!fluid.model.diff(fluid.get(newSelections, "preferences"), fluid.get(prevSettings, "preferences"))) {
+            that.events.onPrefsEditorRefresh.fire();
+            that.applyChanges();
+        }
     };
 
     /**
@@ -477,7 +490,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 funcName: "fluid.prefs.preview.updateModel",
                 args: [
                     "{preview}",
-                    "{prefsEditor}.model"
+                    "{prefsEditor}.model.preferences"
                 ]
             }
         },
@@ -492,13 +505,13 @@ var fluid_2_0 = fluid_2_0 || {};
         templateUrl: "%prefix/PrefsEditorPreview.html"
     });
 
-    fluid.prefs.preview.updateModel = function (that, model) {
+    fluid.prefs.preview.updateModel = function (that, preferences) {
         /**
          * SetTimeout is temp fix for http://issues.fluidproject.org/browse/FLUID-2248
          */
         setTimeout(function () {
             if (that.enhancer) {
-                that.enhancer.updateModel(model);
+                that.enhancer.updateModel(preferences);
             }
         }, 0);
     };

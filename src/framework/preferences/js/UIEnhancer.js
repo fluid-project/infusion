@@ -28,7 +28,9 @@ var fluid_2_0 = fluid_2_0 || {};
             // TODO: This information is supposed to be generated from the JSON
             // schema describing various preferences. For now it's kept in top
             // level prefsEditor to avoid further duplication.
-            initialModel: {}
+            initialModel: {
+                preferences: {}  // To keep initial preferences
+            }
         }
     });
 
@@ -84,7 +86,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.pageEnhancer.init = function (that) {
         that.options.originalUserOptions = $.extend(true, that.uiEnhancer.options, fluid.copy(that.options.uiEnhancer));
         fluid.staticEnvironment.originalEnhancerOptions = that;
-        that.uiEnhancer.updateModel(that.getSettings());
+        that.uiEnhancer.updateModel(fluid.get(that.getSettings(), "preferences"));
         fluid.staticEnvironment.uiEnhancer = that.uiEnhancer;
     };
 
