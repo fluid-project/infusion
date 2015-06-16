@@ -240,8 +240,8 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.defaults("fluid.prefs.uiEnhancerRelay", {
         gradeNames: ["autoInit", "fluid.modelRelayComponent"],
         listeners: {
-            onCreate: "{that}.addListener",
-            onDestroy: "{that}.removeListener"
+            "onCreate.addListener": "{that}.addListener",
+            "onDestroy.removeListener": "{that}.removeListener"
         },
         events: {
             updateEnhancerModel: "{fluid.prefs.prefsEditor}.events.onUpdateEnhancerModel"
@@ -335,8 +335,8 @@ var fluid_2_0 = fluid_2_0 || {};
             onReady: null
         },
         listeners: {
-            onCreate: "fluid.prefs.prefsEditor.init",
-            onAutoSave: "{that}.save"
+            "onCreate.init": "fluid.prefs.prefsEditor.init",
+            "onAutoSave.save": "{that}.save"
         },
         modelListeners: {
             "": [{
@@ -500,7 +500,7 @@ var fluid_2_0 = fluid_2_0 || {};
         },
         listeners: {
             "{prefsEditor}.events.modelChanged": "{that}.updateModel",
-            onReady: "{that}.updateModel"
+            "onReady.updateModel": "{that}.updateModel"
         },
         templateUrl: "%prefix/PrefsEditorPreview.html"
     });
