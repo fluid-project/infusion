@@ -1960,4 +1960,158 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Relay must be established", 42, that.sub.model.root.value);
     });
     
+    // FLUID-5592: Error received using model relay to destroyed component
+    
+    fluid.tests.fluid5592destruct = function (that, value) {
+        if (value === 2) { // do not destroy on init relay, but only on manual change
+            that.child.destroy();
+        }
+    };
+    
+    fluid.defaults("fluid.tests.fluid5592root", {
+        gradeNames: ["fluid.modelRelayComponent", "autoInit"],
+        model: {
+            value: 1
+        },
+        modelListeners: {
+            value: {
+                funcName: "fluid.tests.fluid5592destruct",
+                priority: "first",
+                args: ["{that}", "{change}.value"]
+            }
+        },
+        components: {
+            child: {
+                type: "fluid.tests.fluid5592child"
+            }
+        }
+    });
+    
+
+    fluid.defaults("fluid.tests.fluid5592child", {
+        gradeNames: ["fluid.modelRelayComponent", "autoInit"],
+        model: {
+            renderValue: "{fluid5592root}.model.value"
+        },
+        modelListeners: {
+            renderValue: { // this listener will explode on resolution due to destruction of subcomponent by first listener
+                funcName: "fluid.identity",
+                args: ["{change}.value"]
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5592: Error received using model relay to destroyed component", function () {
+        var that = fluid.tests.fluid5592root();
+        jqUnit.assertValue("The initial model relay has set the target model value", 1, that.child.renderValue);
+        
+        // manual registration of changeListeners exercises notification via different pathways that avoid fluid.resolveModelListener
+        that.child.applier.modelChanged.addListener("renderValue", function () {
+            jqUnit.fail("This listener should not be notified if the component is destroyed");
+        });
+
+        that.applier.change("value", 2);
+        jqUnit.assertNoValue("The change request has destroyed the child component", that.child);
+    });
+    
+    // FLUID-5659: Saturating relay counts through back-to-back transactions
+    
+    fluid.defaults("fluid.tests.fluid5659relay", {
+        gradeNames: ["fluid.modelRelayComponent", "autoInit"],
+        model: {
+            lang: "none"
+        },
+        lang: ["en", "fr", "es", "de", "ne", "sv"],
+        modelRelay: [{
+            target: "langIndex",
+            singleTransform: {
+                type: "fluid.transforms.indexOf",
+                array: "{that}.options.lang",
+                value: "{that}.model.lang",
+                offset: 1
+            }
+        }, {
+            target: "firstLangSelected",
+            singleTransform: {
+                type: "fluid.transforms.binaryOp",
+                left: "{that}.model.langIndex",
+                operator: "===",
+                right: 1
+            }
+        }, {
+            target: "lastLangSelected",
+            singleTransform: {
+                type: "fluid.transforms.binaryOp",
+                left: "{that}.model.langIndex",
+                operator: "===",
+                right: "{that}.options.lang.length"
+            }
+        }]
+    });
+    
+    fluid.defaults("fluid.tests.fluid5659root", {
+        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        components: {
+            relayComponent: {
+                type: "fluid.tests.fluid5659relay"
+            },
+            testCaseHolder: {
+                type: "fluid.test.testCaseHolder",
+                options: {
+                    moduleSource: {
+                        funcName: "fluid.tests.fluid5659source",
+                        args: "{fluid5659relay}.options.lang"
+                    }
+                }
+            }
+        }
+    });
+    
+    fluid.tests.fluid5659modules = {
+        name: "FLUID-5659 repeated relay test",
+        tests: {
+            name: "relay test",
+            expect: 1,
+            sequence: []
+        }
+    };
+    
+    fluid.tests.fluid5659verify = function (model, langs, lang) {
+        var index = langs.indexOf(lang) + 1;
+        var firstLangSelected = index === 1;
+        var lastLangSelected = index === langs.length;
+        var expected = {
+            lang: lang,
+            langIndex: index,
+            firstLangSelected: firstLangSelected,
+            lastLangSelected: lastLangSelected
+        };
+        jqUnit.assertDeepEq("Expected model for selected language " + lang, expected, model);
+    };
+    
+    fluid.tests.fluid5659sequence = [{
+        func: "{fluid5659relay}.applier.change",
+        args: ["lang", "fr"]
+    }, {
+        listener: "fluid.tests.fluid5659verify",
+        args: ["{fluid5659relay}.model", "{fluid5659relay}.options.lang", "fr"],
+        spec: {path: "lang", priority: "last"},
+        changeEvent: "{fluid5659relay}.applier.modelChanged"
+    }];
+    
+    fluid.tests.fluid5659source = function (langs) {
+        var togo = fluid.copy(fluid.tests.fluid5659modules);
+        togo.tests.expect = langs.length;
+        var sequence = fluid.transform(langs, function (lang) {
+            var pair = fluid.copy(fluid.tests.fluid5659sequence);
+            pair[0].args[1] = lang;
+            pair[1].args[2] = lang;
+            return pair;
+        });
+        togo.tests.sequence = fluid.flatten(sequence);
+        return togo;
+    };
+    
+    fluid.test.runTests(["fluid.tests.fluid5659root"]);
+    
 })(jQuery);

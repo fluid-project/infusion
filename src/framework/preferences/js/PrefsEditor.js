@@ -1,6 +1,6 @@
 /*
 Copyright 2009 University of Toronto
-Copyright 2010-2011 OCAD University
+Copyright 2010-2015 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -27,12 +27,29 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.prefs.prefsEditorLoader", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.settingsGetter", "fluid.prefs.initialModel", "autoInit"],
+        defaultLocale: "en",
+        members: {
+            settings: {
+                expander: {
+                    funcName: "fluid.prefs.prefsEditorLoader.getCompleteSettings",
+                    args: ["{that}.initialModel", "{that}.getSettings"]
+                }
+            }
+        },
         components: {
             prefsEditor: {
                 priority: "last",
                 type: "fluid.prefs.prefsEditor",
-                createOnEvent: "onCreatePrefsEditorReady"
+                createOnEvent: "onCreatePrefsEditorReady",
+                options: {
+                    members: {
+                        initialModel: "{prefsEditorLoader}.initialModel"
+                    },
+                    invokers: {
+                        getSettings: "{prefsEditorLoader}.getSettings"
+                    }
+                }
             },
             templateLoader: {
                 type: "fluid.prefs.resourceLoader",
@@ -45,6 +62,11 @@ var fluid_2_0 = fluid_2_0 || {};
             messageLoader: {
                 type: "fluid.prefs.resourceLoader",
                 options: {
+                    defaultLocale: "{prefsEditorLoader}.options.defaultLocale",
+                    locale: "{prefsEditorLoader}.settings.locale",
+                    resourceOptions: {
+                        dataType: "json"
+                    },
                     events: {
                         onResourcesLoaded: "{prefsEditorLoader}.events.onPrefsEditorMessagesLoaded"
                     }
@@ -54,18 +76,11 @@ var fluid_2_0 = fluid_2_0 || {};
         events: {
             onPrefsEditorTemplatesLoaded: null,
             onPrefsEditorMessagesLoaded: null,
-            onMsgResolverReady: null,
             onCreatePrefsEditorReady: {
                 events: {
                     templateLoaded: "onPrefsEditorTemplatesLoaded",
-                    msgResolverReady: "onMsgResolverReady"
+                    prefsEditorMessagesLoaded: "onPrefsEditorMessagesLoaded"
                 }
-            }
-        },
-        listeners: {
-            onPrefsEditorMessagesLoaded: {
-                funcName: "fluid.prefs.prefsEditorLoader.createMsgResolver",
-                args: ["{arguments}.0", "{that}"]
             }
         },
         distributeOptions: [{
@@ -89,15 +104,9 @@ var fluid_2_0 = fluid_2_0 || {};
         }]
     });
 
-    fluid.prefs.prefsEditorLoader.createMsgResolver = function (messageResources, that) {
-        var completeMessage;
-        fluid.each(messageResources, function (oneResource) {
-            var message = JSON.parse(oneResource.resourceText);
-            completeMessage = $.extend({}, completeMessage, message);
-        });
-        var parentResolver = fluid.messageResolver({messageBase: completeMessage});
-        that.msgResolver = fluid.messageResolver({messageBase: {}, parents: [parentResolver]});
-        that.events.onMsgResolverReady.fire();
+    fluid.prefs.prefsEditorLoader.getCompleteSettings = function (initialModel, getSettingsFunc) {
+        var savedSettings = getSettingsFunc();
+        return $.extend(true, {}, initialModel, savedSettings);
     };
 
     // TODO: This mixin grade appears to be supplied manually by various test cases but no longer appears in
@@ -106,7 +115,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.defaults("fluid.prefs.transformDefaultPanelsOptions", {
         // Do not supply "fluid.prefs.inline" here, since when this is used as a mixin for separatedPanel, it ends up displacing the
         // more refined type of the prefsEditorLoader
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         distributeOptions: [{
             source: "{that}.options.textSize",
             removeSource: true,
@@ -135,27 +144,21 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     /**************************************
-     * Preferences Editor Template Loader *
+     * Preferences Editor Resource Loader *
      **************************************/
-
-    /**
-     * A configurable component that works in conjunction with or without the Preferences Editor template
-     * path component (fluid.prefsResourcePath) to allow users to set either the location of their own
-     * templates or the templates that are relative to the path defined in the Preferences Editor template
-     * path component.
-     *
-     * @param {Object} options
-     */
 
     fluid.defaults("fluid.prefs.resourceLoader", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         listeners: {
-            "onCreate": {
-                listener: "fluid.prefs.resourceLoader.loadTemplates",
-                args: ["{that}", {expander: {func: "{that}.resolveTemplates"}}]
+            "onCreate.loadResources": {
+                listener: "fluid.prefs.resourceLoader.loadResources",
+                args: ["{that}", {expander: {func: "{that}.resolveResources"}}]
             }
         },
-        templates: {},
+        defaultLocale: null,
+        locale: null,
+        resources: {},
+        resourceOptions: {},
         // Unsupported, non-API option
         components: {
             resourcePath: {
@@ -167,8 +170,8 @@ var fluid_2_0 = fluid_2_0 || {};
                 funcName: "fluid.stringTemplate",
                 args: [ "{arguments}.0", {"prefix/" : "{that}.resourcePath.options.value"} ]
             },
-            resolveTemplates: {
-                funcName: "fluid.prefs.resourceLoader.resolveTemplates",
+            resolveResources: {
+                funcName: "fluid.prefs.resourceLoader.resolveResources",
                 args: "{that}"
             }
         },
@@ -177,16 +180,16 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-    fluid.prefs.resourceLoader.resolveTemplates = function (that) {
-        var mapped = fluid.transform(that.options.templates, that.transformURL);
+    fluid.prefs.resourceLoader.resolveResources = function (that) {
+        var mapped = fluid.transform(that.options.resources, that.transformURL);
 
         return fluid.transform(mapped, function (url) {
-            return {url: url, forceCache: true};
+            var resourceSpec = {url: url, forceCache: true, options: that.options.resourceOptions};
+            return $.extend(resourceSpec, fluid.filterKeys(that.options, ["defaultLocale", "locale"]));
         });
     };
 
-    fluid.prefs.resourceLoader.loadTemplates = function (that, resources) {
-        delete resources.expander;   // A work-around for FLUID-5117
+    fluid.prefs.resourceLoader.loadResources = function (that, resources) {
         fluid.fetchResources(resources, function () {
             that.resources = resources;
             that.events.onResourcesLoaded.fire(resources);
@@ -235,7 +238,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.prefs.uiEnhancerRelay", {
-        gradeNames: ["autoInit", "fluid.eventedComponent"],
+        gradeNames: ["autoInit", "fluid.modelRelayComponent"],
         listeners: {
             onCreate: "{that}.addListener",
             onDestroy: "{that}.removeListener"
@@ -281,7 +284,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.prefs.prefsEditor", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.settingsGetter", "fluid.prefs.settingsSetter", "fluid.prefs.rootModel", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.settingsSetter", "autoInit"],
         invokers: {
             /**
              * Updates the change applier and fires modelChanged on subcomponent fluid.prefs.controls
@@ -289,10 +292,6 @@ var fluid_2_0 = fluid_2_0 || {};
              * @param {Object} newModel
              * @param {Object} source
              */
-            updateModel: {
-                funcName: "fluid.fireSourcedChange",
-                args: ["{that}.applier", "", "{arguments}.0", "{arguments}.1"]
-            },
             fetch: {
                 funcName: "fluid.prefs.prefsEditor.fetch",
                 args: ["{that}"]
@@ -339,6 +338,15 @@ var fluid_2_0 = fluid_2_0 || {};
             onCreate: "fluid.prefs.prefsEditor.init",
             onAutoSave: "{that}.save"
         },
+        modelListeners: {
+            "": [{
+                listener: "fluid.prefs.prefsEditor.handleAutoSave",
+                args: ["{that}"]
+            }, {
+                listener: "{that}.events.modelChanged.fire",
+                args: ["{change}.value"]
+            }]
+        },
         resources: {
             template: "{templateLoader}.resources.prefsEditor"
         },
@@ -354,8 +362,17 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.prefs.prefsEditor.fetch = function (that) {
         var completeModel = that.getSettings();
-        completeModel = $.extend(true, {}, that.rootModel, completeModel);
-        that.updateModel(completeModel, "settingsStore");
+        completeModel = $.extend(true, {}, that.initialModel, completeModel);
+        // TODO: This may not be completely effective if the root model is smaller than
+        // the current one. Given our previous discoveries re "model shrinkage"
+        // (http://issues.fluidproject.org/browse/FLUID-5585 ), the proper thing to do here
+        // is to apply a DELETE to the root before putting in the new model. And this should
+        // be done within a transaction in order to avoid notifying the tree more than necessary.
+        // However, the transactional model of the changeApplier is going to change radically
+        // soon (http://wiki.fluidproject.org/display/fluid/New+New+Notes+on+the+ChangeApplier)
+        // and this implementation doesn't seem to be causing a problem at present so we had
+        // just better leave it the way it is for now.
+        that.applier.change("", completeModel);
         that.events.onPrefsEditorRefresh.fire();
         that.applyChanges();
     };
@@ -367,7 +384,7 @@ var fluid_2_0 = fluid_2_0 || {};
         var savedSelections = fluid.copy(that.model);
 
         fluid.each(savedSelections, function (value, key) {
-            if (fluid.get(that.rootModel, key) === value) {
+            if (fluid.get(that.initialModel, key) === value) {
                 delete savedSelections[key];
             }
         });
@@ -385,7 +402,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * Resets the selections to the integrator's defaults and fires onReset
      */
     fluid.prefs.prefsEditor.reset = function (that) {
-        that.updateModel(fluid.copy(that.rootModel));
+        that.applier.change("", fluid.copy(that.initialModel));
         that.events.onPrefsEditorRefresh.fire();
         that.events.onReset.fire(that);
     };
@@ -422,14 +439,13 @@ var fluid_2_0 = fluid_2_0 || {};
         that.events.onReady.fire(that);
     };
 
-    fluid.prefs.prefsEditor.init = function (that) {
-        that.applier.modelChanged.addListener("", function (newModel, oldModel, changeRequest) {
-            that.events.modelChanged.fire(newModel, oldModel, changeRequest[0].source);
-            if (that.options.autoSave) {
-                that.events.onAutoSave.fire();
-            }
-        });
+    fluid.prefs.prefsEditor.handleAutoSave = function (that) {
+        if (that.options.autoSave) {
+            that.events.onAutoSave.fire();
+        }
+    };
 
+    fluid.prefs.prefsEditor.init = function (that) {
         // This setTimeout is to ensure that fetching of resources is asynchronous,
         // and so that component construction does not run ahead of subcomponents for SeparatedPanel
         // (FLUID-4453 - this may be a replacement for a branch removed for a FLUID-2248 fix)
@@ -445,7 +461,7 @@ var fluid_2_0 = fluid_2_0 || {};
      ******************************/
 
     fluid.defaults("fluid.prefs.preview", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         components: {
             enhancer: {
                 type: "fluid.uiEnhancer",

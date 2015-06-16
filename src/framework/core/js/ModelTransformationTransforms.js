@@ -31,12 +31,12 @@ var fluid = fluid || fluid_2_0;
 
     fluid.transforms.value = fluid.identity;
 
-    fluid.transforms.value.invert = function (transformSpec, transform) {
+    fluid.transforms.value.invert = function (transformSpec, transformer) {
         var togo = fluid.copy(transformSpec);
         // TODO: this will not behave correctly in the face of compound "value" which contains
         // further transforms
-        togo.inputPath = fluid.model.composePaths(transform.outputPrefix, transformSpec.outputPath);
-        togo.outputPath = fluid.model.composePaths(transform.inputPrefix, transformSpec.inputPath);
+        togo.inputPath = fluid.model.composePaths(transformer.outputPrefix, transformSpec.outputPath);
+        togo.outputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.inputPath);
         return togo;
     };
 
@@ -62,6 +62,15 @@ var fluid = fluid || fluid_2_0;
     fluid.transforms.arrayValue = fluid.makeArray;
 
 
+    fluid.defaults("fluid.transforms.stringToNumber", {
+        gradeNames: ["fluid.standardTransformFunction"]
+    });
+
+    fluid.transforms.stringToNumber = function (value) {
+        var newValue = Number(value);
+        return isNaN(newValue) ? undefined : newValue;
+    };
+
     fluid.defaults("fluid.transforms.count", {
         gradeNames: "fluid.standardTransformFunction"
     });
@@ -84,9 +93,9 @@ var fluid = fluid || fluid_2_0;
         gradeNames: "fluid.transformFunction"
     });
 
-    fluid.transforms["delete"] = function (transformSpec, transform) {
-        var outputPath = fluid.model.composePaths(transform.outputPrefix, transformSpec.outputPath);
-        transform.applier.requestChange(outputPath, null, "DELETE");
+    fluid.transforms["delete"] = function (transformSpec, transformer) {
+        var outputPath = fluid.model.composePaths(transformer.outputPrefix, transformSpec.outputPath);
+        transformer.applier.requestChange(outputPath, null, "DELETE");
     };
 
 
@@ -94,14 +103,14 @@ var fluid = fluid || fluid_2_0;
         gradeNames: "fluid.transformFunction"
     });
 
-    fluid.transforms.firstValue = function (transformSpec, transform) {
+    fluid.transforms.firstValue = function (transformSpec, transformer) {
         if (!transformSpec.values || !transformSpec.values.length) {
             fluid.fail("firstValue transformer requires an array of values at path named \"values\", supplied", transformSpec);
         }
         for (var i = 0; i < transformSpec.values.length; i++) {
             var value = transformSpec.values[i];
             // TODO: problem here - all of these transforms will have their side-effects (setValue) even if only one is chosen
-            var expanded = transform.expand(value);
+            var expanded = transformer.expand(value);
             if (expanded !== undefined) {
                 return expanded;
             }
@@ -131,7 +140,7 @@ var fluid = fluid || fluid_2_0;
     };
 
     /* TODO: This inversion doesn't work if the value and factors are given as paths in the source model */
-    fluid.transforms.linearScale.invert = function  (transformSpec, transform) {
+    fluid.transforms.linearScale.invert = function  (transformSpec, transformer) {
         var togo = fluid.copy(transformSpec);
 
         if (togo.factor) {
@@ -142,8 +151,8 @@ var fluid = fluid || fluid_2_0;
         }
         // TODO: This rubbish should be done by the inversion machinery by itself. We shouldn't have to repeat it in every
         // inversion rule
-        togo.valuePath = fluid.model.composePaths(transform.outputPrefix, transformSpec.outputPath);
-        togo.outputPath = fluid.model.composePaths(transform.inputPrefix, transformSpec.valuePath);
+        togo.valuePath = fluid.model.composePaths(transformer.outputPrefix, transformSpec.outputPath);
+        togo.outputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.valuePath);
         return togo;
     };
 
@@ -171,11 +180,11 @@ var fluid = fluid || fluid_2_0;
         "||": function (a, b) { return a || b; }
     };
 
-    fluid.transforms.binaryOp = function (inputs, transformSpec, transform) {
+    fluid.transforms.binaryOp = function (inputs, transformSpec, transformer) {
         var left = inputs.left();
         var right = inputs.right();
 
-        var operator = fluid.model.transform.getValue(undefined, transformSpec.operator, transform);
+        var operator = fluid.model.transform.getValue(undefined, transformSpec.operator, transformer);
 
         var fun = fluid.transforms.binaryLookup[operator];
         return (fun === undefined || left === undefined || right === undefined) ?
@@ -200,7 +209,6 @@ var fluid = fluid || fluid_2_0;
         return inputs[condition ? "true" : "false"]();
     };
 
-
     fluid.defaults("fluid.transforms.valueMapper", {
         gradeNames: ["fluid.transformFunction", "fluid.lens"],
         invertConfiguration: "fluid.transforms.valueMapper.invert",
@@ -208,35 +216,37 @@ var fluid = fluid || fluid_2_0;
     });
 
     // unsupported, NON-API function
-    fluid.model.transform.matchValueMapperFull = function (outerValue, transformSpec, transform) {
+    fluid.model.transform.compareMatches = function (speca, specb) {
+        return specb.matchValue - speca.matchValue;
+    };
+
+    // unsupported, NON-API function
+    fluid.model.transform.matchValueMapperFull = function (outerValue, transformSpec, transformer) {
         var o = transformSpec.options;
         if (o.length === 0) {
             fluid.fail("valueMapper supplied empty list of options: ", transformSpec);
         }
-        if (o.length === 1) {
-            return 0;
-        }
         var matchPower = [];
         for (var i = 0; i < o.length; ++i) {
             var option = o[i];
-            var value = fluid.firstDefined(fluid.model.transform.getValue(option.inputPath, undefined, transform),
+            var value = fluid.firstDefined(fluid.model.transform.getValue(option.inputPath, undefined, transformer),
                 outerValue);
-            var matchCount = fluid.model.transform.matchValue(option.undefinedInputValue ? undefined :
-                (option.inputValue === undefined ? transformSpec.defaultInputValue : option.inputValue), value);
-            matchPower[i] = {index: i, matchCount: matchCount};
+            var matchValue = fluid.model.transform.matchValue(option.undefinedInputValue ? undefined :
+                (option.inputValue === undefined ? transformSpec.defaultInputValue : option.inputValue), value, transformSpec.partialMatches || option.partialMatches);
+            matchPower[i] = {index: i, matchValue: matchValue};
         }
         matchPower.sort(fluid.model.transform.compareMatches);
-        return matchPower[0].matchCount === matchPower[1].matchCount ? -1 : matchPower[0].index;
+        return (matchPower[0].matchValue <= 0 || o.length > 1 && matchPower[0].matchValue === matchPower[1].matchValue) ? -1 : matchPower[0].index;
     };
 
-    fluid.transforms.valueMapper = function (transformSpec, transform) {
+    fluid.transforms.valueMapper = function (transformSpec, transformer) {
         if (!transformSpec.options) {
             fluid.fail("valueMapper requires a list or hash of options at path named \"options\", supplied ", transformSpec);
         }
-        var value = fluid.model.transform.getValue(transformSpec.inputPath, undefined, transform);
+        var value = fluid.model.transform.getValue(transformSpec.inputPath, undefined, transformer);
         var deref = fluid.isArrayable(transformSpec.options) ? // long form with list of records
             function (testVal) {
-                var index = fluid.model.transform.matchValueMapperFull(testVal, transformSpec, transform);
+                var index = fluid.model.transform.matchValueMapperFull(testVal, transformSpec, transformer);
                 return index === -1 ? null : transformSpec.options[index];
             } :
             function (testVal) {
@@ -254,7 +264,7 @@ var fluid = fluid || fluid_2_0;
         }
 
         var outputPath = indexed.outputPath === undefined ? transformSpec.defaultOutputPath : indexed.outputPath;
-        transform.outputPrefixOp.push(outputPath);
+        transformer.outputPrefixOp.push(outputPath);
         var outputValue;
         if (fluid.isPrimitive(indexed)) {
             outputValue = indexed;
@@ -264,20 +274,20 @@ var fluid = fluid || fluid_2_0;
                 outputValue = undefined;
             } else {
                 // get value from outputValue or outputValuePath. If none is found set the outputValue to be that of defaultOutputValue (or undefined)
-                outputValue = fluid.model.transform.resolveParam(indexed, transform, "outputValue", undefined);
+                outputValue = fluid.model.transform.resolveParam(indexed, transformer, "outputValue", undefined);
                 outputValue = (outputValue === undefined) ? transformSpec.defaultOutputValue : outputValue;
             }
         }
         // output if outputPath or defaultOutputPath have been specified and the relevant child hasn't done the outputting
         if (typeof(outputPath) === "string" && outputValue !== undefined) {
-            fluid.model.transform.setValue(undefined, outputValue, transform, transformSpec.merge);
+            fluid.model.transform.setValue(undefined, outputValue, transformer, transformSpec.merge);
             outputValue = undefined;
         }
-        transform.outputPrefixOp.pop();
+        transformer.outputPrefixOp.pop();
         return outputValue;
     };
 
-    fluid.transforms.valueMapper.invert = function (transformSpec, transform) {
+    fluid.transforms.valueMapper.invert = function (transformSpec, transformer) {
         var options = [];
         var togo = {
             type: "fluid.transforms.valueMapper",
@@ -294,10 +304,10 @@ var fluid = fluid || fluid_2_0;
         var anyCustomOutput = findCustom("outputPath");
         var anyCustomInput = findCustom("inputPath");
         if (!anyCustomOutput) {
-            togo.inputPath = fluid.model.composePaths(transform.outputPrefix, transformSpec.defaultOutputPath);
+            togo.inputPath = fluid.model.composePaths(transformer.outputPrefix, transformSpec.defaultOutputPath);
         }
         if (!anyCustomInput) {
-            togo.defaultOutputPath = fluid.model.composePaths(transform.inputPrefix, transformSpec.inputPath);
+            togo.defaultOutputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.inputPath);
         }
         var def = fluid.firstDefined;
         fluid.each(transformSpec.options, function (option, key) {
@@ -308,12 +318,12 @@ var fluid = fluid || fluid_2_0;
             }
             outOption.outputValue = fluid.model.transform.literaliseValue(origInputValue);
             var origOutputValue = def(option.outputValue, transformSpec.defaultOutputValue);
-            outOption.inputValue = fluid.model.transform.getValue(option.outputValuePath, origOutputValue, transform);
+            outOption.inputValue = fluid.model.transform.getValue(option.outputValuePath, origOutputValue, transformer);
             if (anyCustomOutput) {
-                outOption.inputPath = fluid.model.composePaths(transform.outputPrefix, def(option.outputPath, transformSpec.outputPath));
+                outOption.inputPath = fluid.model.composePaths(transformer.outputPrefix, def(option.outputPath, transformSpec.outputPath));
             }
             if (anyCustomInput) {
-                outOption.outputPath = fluid.model.composePaths(transform.inputPrefix, def(option.inputPath, transformSpec.inputPath));
+                outOption.outputPath = fluid.model.composePaths(transformer.inputPrefix, def(option.inputPath, transformSpec.inputPath));
             }
             if (option.outputValuePath) {
                 outOption.inputValuePath = option.outputValuePath;
@@ -323,11 +333,11 @@ var fluid = fluid || fluid_2_0;
         return togo;
     };
 
-    fluid.transforms.valueMapper.collect = function (transformSpec, transform) {
+    fluid.transforms.valueMapper.collect = function (transformSpec, transformer) {
         var togo = [];
-        fluid.model.transform.accumulateInputPath(transformSpec.inputPath, transform, togo);
+        fluid.model.transform.accumulateInputPath(transformSpec.inputPath, transformer, togo);
         fluid.each(transformSpec.options, function (option) {
-            fluid.model.transform.accumulateInputPath(option.inputPath, transform, togo);
+            fluid.model.transform.accumulateInputPath(option.inputPath, transformer, togo);
         });
         return togo;
     };
@@ -340,7 +350,7 @@ var fluid = fluid || fluid_2_0;
     });
 
 
-    fluid.transforms.arrayToSetMembership = function (value, transformSpec, transform) {
+    fluid.transforms.arrayToSetMembership = function (value, transformSpec, transformer) {
         var options = transformSpec.options;
 
         if (!value || !fluid.isArrayable(value)) {
@@ -361,19 +371,19 @@ var fluid = fluid || fluid_2_0;
         fluid.each(options, function (outPath, key) {
             // write to output path given in options the value <presentValue> or <missingValue> depending on whether key is found in user input
             var outVal = ($.inArray(key, value) !== -1) ? transformSpec.presentValue : transformSpec.missingValue;
-            fluid.model.transform.setValue(outPath, outVal, transform);
+            fluid.model.transform.setValue(outPath, outVal, transformer);
         });
         // TODO: Why does this transform make no return?
     };
 
-    fluid.transforms.arrayToSetMembership.invert = function (transformSpec, transform) {
+    fluid.transforms.arrayToSetMembership.invert = function (transformSpec, transformer) {
         var togo = fluid.copy(transformSpec);
         delete togo.inputPath;
         togo.type = "fluid.transforms.setMembershipToArray";
-        togo.outputPath = fluid.model.composePaths(transform.inputPrefix, transformSpec.inputPath);
+        togo.outputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.inputPath);
         var newOptions = {};
         fluid.each(transformSpec.options, function (path, oldKey) {
-            var newKey = fluid.model.composePaths(transform.outputPrefix, path);
+            var newKey = fluid.model.composePaths(transformer.outputPrefix, path);
             newOptions[newKey] = oldKey;
         });
         togo.options = newOptions;
@@ -384,7 +394,7 @@ var fluid = fluid || fluid_2_0;
         gradeNames: ["fluid.standardOutputTransformFunction"]
     });
 
-    fluid.transforms.setMembershipToArray = function (transformSpec, transform) {
+    fluid.transforms.setMembershipToArray = function (transformSpec, transformer) {
         var options = transformSpec.options;
 
         if (!options) {
@@ -401,7 +411,7 @@ var fluid = fluid || fluid_2_0;
 
         var outputArr = [];
         fluid.each(options, function (arrVal, inPath) {
-            var val = fluid.model.transform.getValue(inPath, undefined, transform);
+            var val = fluid.model.transform.getValue(inPath, undefined, transformer);
             if (val === transformSpec.presentValue) {
                 outputArr.push(arrVal);
             }
@@ -448,16 +458,16 @@ var fluid = fluid || fluid_2_0;
         }
     };
 
-    fluid.model.transform.expandInnerValues = function (inputPath, outputPath, transform, innerValues) {
-        var inputPrefixOp = transform.inputPrefixOp;
-        var outputPrefixOp = transform.outputPrefixOp;
+    fluid.model.transform.expandInnerValues = function (inputPath, outputPath, transformer, innerValues) {
+        var inputPrefixOp = transformer.inputPrefixOp;
+        var outputPrefixOp = transformer.outputPrefixOp;
         var apply = fluid.model.transform.applyPaths;
 
         apply("push", inputPrefixOp, inputPath);
         apply("push", outputPrefixOp, outputPath);
         var expanded = {};
         fluid.each(innerValues, function (innerValue) {
-            var expandedInner = transform.expand(innerValue);
+            var expandedInner = transformer.expand(innerValue);
             if (!fluid.isPrimitive(expandedInner)) {
                 $.extend(true, expanded, expandedInner);
             } else {
@@ -476,7 +486,7 @@ var fluid = fluid || fluid_2_0;
         invertConfiguration: "fluid.transforms.arrayToObject.invert"
     });
 
-    fluid.transforms.arrayToObject = function (arr, transformSpec, transform) {
+    fluid.transforms.arrayToObject = function (arr, transformSpec, transformer) {
         if (transformSpec.key === undefined) {
             fluid.fail("arrayToObject requires a 'key' option.", transformSpec);
         }
@@ -498,19 +508,19 @@ var fluid = fluid || fluid_2_0;
             delete content[pivot];
             // fix sub Arrays if needed:
             if (transformSpec.innerValue) {
-                content = fluid.model.transform.expandInnerValues([transform.inputPrefix, transformSpec.inputPath, k.toString()],
-                    [newKey], transform, transformSpec.innerValue);
+                content = fluid.model.transform.expandInnerValues([transformer.inputPrefix, transformSpec.inputPath, k.toString()],
+                    [newKey], transformer, transformSpec.innerValue);
             }
             newHash[newKey] = content;
         });
         return newHash;
     };
 
-    fluid.transforms.arrayToObject.invert = function (transformSpec, transform) {
+    fluid.transforms.arrayToObject.invert = function (transformSpec, transformer) {
         var togo = fluid.copy(transformSpec);
         togo.type = "fluid.transforms.objectToArray";
-        togo.inputPath = fluid.model.composePaths(transform.outputPrefix, transformSpec.outputPath);
-        togo.outputPath = fluid.model.composePaths(transform.inputPrefix, transformSpec.inputPath);
+        togo.inputPath = fluid.model.composePaths(transformer.outputPrefix, transformSpec.outputPath);
+        togo.outputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.inputPath);
         // invert transforms from innerValue as well:
         // TODO: The Model Transformations framework should be capable of this, but right now the
         // issue is that we use a "private contract" to operate the "innerValue" slot. We need to
@@ -533,7 +543,7 @@ var fluid = fluid || fluid_2_0;
      * Transforms an object into array of objects.
      * This performs the inverse transform of fluid.transforms.arrayToObject.
      */
-    fluid.transforms.objectToArray = function (hash, transformSpec, transform) {
+    fluid.transforms.objectToArray = function (hash, transformSpec, transformer) {
         if (transformSpec.key === undefined) {
             fluid.fail("objectToArray requires a 'key' option.", transformSpec);
         }
@@ -546,7 +556,7 @@ var fluid = fluid || fluid_2_0;
             content[pivot] = k;
             if (transformSpec.innerValue) {
                 v = fluid.model.transform.expandInnerValues([transformSpec.inputPath, k], [transformSpec.outputPath, newArray.length.toString()],
-                    transform, transformSpec.innerValue);
+                    transformer, transformSpec.innerValue);
             }
             $.extend(true, content, v);
             newArray.push(content);
@@ -576,6 +586,66 @@ var fluid = fluid || fluid_2_0;
             }
         }
         return value;
+    };
+
+    fluid.defaults("fluid.transforms.indexOf", {
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
+        invertConfiguration: "fluid.transforms.indexOf.invert"
+    });
+
+    fluid.transforms.indexOf = function (value, transformSpec) {
+        var offset = fluid.transforms.parseIndexationOffset(transformSpec.offset, "indexOf");
+        var array = fluid.makeArray(transformSpec.array);
+        var originalIndex = array.indexOf(value);
+        return originalIndex === -1 && transformSpec.notFound ? transformSpec.notFound : originalIndex + offset;
+    };
+
+    fluid.transforms.indexOf.invert = function (transformSpec, transformer) {
+        var togo = fluid.transforms.invertArrayIndexation(transformSpec, transformer);
+        togo.type = "fluid.transforms.dereference";
+        return togo;
+    };
+
+    fluid.defaults("fluid.transforms.dereference", {
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
+        invertConfiguration: "fluid.transforms.dereference.invert"
+    });
+
+    fluid.transforms.dereference = function (value, transformSpec) {
+        if (typeof (value) !== "number") {
+            fluid.fail("dereference requires \"value\" to be a number. " + value + " is invalid.");
+        }
+        var offset = fluid.transforms.parseIndexationOffset(transformSpec.offset, "dereference");
+        var array = fluid.makeArray(transformSpec.array);
+        var index = value + offset;
+        return index === -1 && transformSpec.notFound ? transformSpec.notFound : array[index];
+    };
+
+    fluid.transforms.dereference.invert = function (transformSpec, transformer) {
+        var togo = fluid.transforms.invertArrayIndexation(transformSpec, transformer);
+        togo.type = "fluid.transforms.indexOf";
+        return togo;
+    };
+
+    fluid.transforms.parseIndexationOffset = function (offset, transformName) {
+        var parsedOffset = 0;
+        if (offset !== undefined) {
+            parsedOffset = fluid.parseInteger(offset);
+            if (isNaN(parsedOffset)) {
+                fluid.fail(transformName + " requires the value of \"offset\" to be an integer or a string that can be converted to an integer. " + offset + " is invalid.");
+            }
+        }
+        return parsedOffset;
+    };
+
+    fluid.transforms.invertArrayIndexation = function (transformSpec, transformer) {
+        var togo = fluid.copy(transformSpec);
+        togo.inputPath = fluid.model.composePaths(transformer.outputPrefix, transformSpec.outputPath);
+        togo.outputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.inputPath);
+        if (!isNaN(Number(togo.offset))) {
+            togo.offset = Number(togo.offset) * (-1);
+        }
+        return togo;
     };
 
     fluid.defaults("fluid.transforms.free", {

@@ -117,7 +117,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.tempStore", {
-        gradeNames: ["fluid.prefs.dataSource", "fluid.modelComponent", "autoInit"]
+        gradeNames: ["fluid.prefs.dataSource", "fluid.modelRelayComponent", "autoInit"]
     });
 
     fluid.demands("fluid.prefs.dataSource.get", "fluid.tempStore", {
@@ -131,7 +131,8 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.tempStore.set = function (settings, applier) {
-        applier.requestChange("", settings);
+        applier.fireChangeRequest({path: "", type: "DELETE"});
+        applier.change("", settings);
     };
 
     fluid.defaults("fluid.globalSettingsStore", {

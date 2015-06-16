@@ -1,5 +1,5 @@
 /*
-Copyright 2013 OCAD University
+Copyright 2013-2015 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -25,7 +25,7 @@ var fluid_2_0 = fluid_2_0 || {};
             msgLookup: {
                 expander: {
                     funcName: "fluid.prefs.stringLookup",
-                    args: ["{that}.messageResolver", "{that}.options.stringArrayIndex"]
+                    args: ["{msgResolver}", "{that}.options.stringArrayIndex"]
                 }
             }
         },
@@ -57,7 +57,7 @@ var fluid_2_0 = fluid_2_0 || {};
      ***********************************************/
 
     fluid.defaults("fluid.prefs.panel", {
-        gradeNames: ["fluid.rendererComponent", "fluid.prefs.msgLookup", "fluid.prefs.modelRelay", "autoInit"],
+        gradeNames: ["fluid.rendererRelayComponent", "fluid.prefs.msgLookup", "autoInit"],
         events: {
             onDomBind: null
         },
@@ -66,6 +66,18 @@ var fluid_2_0 = fluid_2_0 || {};
         // when used as a subpanel, it will be triggered by the resetDomBinder invoker.
         listeners: {
             "onCreate.onDomBind": "{that}.events.onDomBind"
+        },
+        components: {
+            msgResolver: {
+                type: "fluid.messageResolver"
+            }
+        },
+        rendererOptions: {
+            messageLocator: "{msgResolver}.resolve"
+        },
+        distributeOptions: {
+            source: "{that}.options.messageBase",
+            target: "{that > msgResolver}.options.messageBase"
         }
     });
 
@@ -75,10 +87,6 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.defaults("fluid.prefs.subPanel", {
         gradeNames: ["fluid.prefs.panel", "{that}.getDomBindGrade", "autoInit"],
-        mergePolicy: {
-            sourceApplier: "nomerge"
-        },
-        sourceApplier: "{compositePanel}.applier",
         listeners: {
             "{compositePanel}.events.afterRender": {
                 listener: "{that}.events.afterRender",
@@ -94,12 +102,6 @@ var fluid_2_0 = fluid_2_0 || {};
             expander: {
                 func: "fluid.prefs.subPanel.generateRules",
                 args: ["{that}.options.preferenceMap"]
-            }
-        },
-        model: {
-            expander: {
-                func: "fluid.prefs.subPanel.getInitialModel",
-                args: ["{compositePanel}.model", "{that}.options.preferenceMap"]
             }
         },
         invokers: {
@@ -143,7 +145,12 @@ var fluid_2_0 = fluid_2_0 || {};
      * this is all done, the onDomBind event is fired.
      */
     fluid.prefs.subPanel.resetDomBinder = function (that) {
-        that.container = $(that.container.selector);
+        // TODO: The line below to find the container jQuery instance was copied from the framework code -
+        // https://github.com/fluid-project/infusion/blob/master/src/framework/core/js/FluidView.js#L145
+        // in order to reset the dom binder when panels are in an iframe.
+        // It can be be eliminated once we have the new renderer.
+        var userJQuery = that.container.constructor;
+        that.container = userJQuery(that.container.selector);
         fluid.initDomBinder(that, that.options.selectors);
         that.events.onDomBind.fire(that);
     };
@@ -161,25 +168,13 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.prefs.subPanel.generateRules = function (preferenceMap) {
         var rules = {};
         fluid.each(preferenceMap, function (prefObj, prefKey) {
-            $.each(prefObj, function (prefRule) {
+            fluid.each(prefObj, function (value, prefRule) {
                 if (prefRule.indexOf("model.") === 0) {
-                    rules[fluid.prefs.subPanel.safePrefKey(prefKey)] = prefRule.slice(6);
+                    rules[fluid.prefs.subPanel.safePrefKey(prefKey)] = prefRule.slice("model.".length);
                 }
             });
         });
         return rules;
-    };
-
-    fluid.prefs.subPanel.getInitialModel = function (parentModel, preferenceMap) {
-        var initialModel = {};
-        fluid.each(preferenceMap, function (prefObj, prefKey) {
-            $.each(prefObj, function (prefRule) {
-                if (prefRule.indexOf("model.") === 0) {
-                    fluid.set(initialModel, prefRule.slice(6), fluid.get(parentModel, fluid.prefs.subPanel.safePrefKey(prefKey)));
-                }
-            });
-        });
-        return initialModel;
     };
 
     /**********************************
@@ -209,7 +204,6 @@ var fluid_2_0 = fluid_2_0 || {};
         selectorsToIgnore: [], // should match the selectors that are used to identify the containers for the subpanels
         repeatingSelectors: [],
         events: {
-            onRefreshView: null,
             initSubPanels: null
         },
         listeners: {
@@ -259,7 +253,7 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             handleRenderOnPreference: {
                 funcName: "fluid.prefs.compositePanel.handleRenderOnPreference",
-                args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+                args: ["{that}", "{that}.refreshView", "{that}.conditionalCreateEvent", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
             },
             conditionalCreateEvent: {
                 funcName: "fluid.prefs.compositePanel.conditionalCreateEvent"
@@ -309,21 +303,38 @@ var fluid_2_0 = fluid_2_0 || {};
      */
     fluid.prefs.compositePanel.assembleDistributeOptions = function (components) {
         var gradeName = "fluid.prefs.compositePanel.distributeOptions_" + fluid.allocateGuid();
-        var distributeRules = [];
-        $.each(components, function (componentName, componentOptions) {
+        var distributeOptions = [];
+        var relayOption = {};
+        fluid.each(components, function (componentOptions, componentName) {
             if (fluid.prefs.compositePanel.isPanel(componentOptions.type, componentOptions.options)) {
-                distributeRules.push({
+                distributeOptions.push({
                     source: "{that}.options.subPanelOverrides",
                     target: "{that > " + componentName + "}.options"
                 });
             }
-        });
 
+            // Construct the model relay btw the composite panel and its subpanels
+            var componentRelayRules = {};
+            var definedOptions = fluid.prefs.compositePanel.prefetchComponentOptions(componentOptions.type, componentOptions.options);
+            var preferenceMap = fluid.get(definedOptions, ["preferenceMap"]);
+            fluid.each(preferenceMap, function (prefObj, prefKey) {
+                fluid.each(prefObj, function (value, prefRule) {
+                    if (prefRule.indexOf("model.") === 0) {
+                        fluid.set(componentRelayRules, prefRule.slice("model.".length), "{compositePanel}.model." + fluid.prefs.subPanel.safePrefKey(prefKey));
+                    }
+                });
+            });
+            relayOption[componentName] = componentRelayRules;
+            distributeOptions.push({
+                source: "{that}.options.relayOption." + componentName,
+                target: "{that > " + componentName + "}.options.model"
+            });
+        });
         fluid.defaults(gradeName, {
             gradeNames: ["fluid.littleComponent", "autoInit"],
-            distributeOptions: distributeRules
+            relayOption: relayOption,
+            distributeOptions: distributeOptions
         });
-
         return gradeName;
     };
 
@@ -334,16 +345,16 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
 
-    fluid.prefs.compositePanel.handleRenderOnPreference = function (that, value, createEvent, componentNames) {
+    fluid.prefs.compositePanel.handleRenderOnPreference = function (that, refreshViewFunc, conditionalCreateEventFunc, value, createEvent, componentNames) {
         componentNames = fluid.makeArray(componentNames);
-        that.conditionalCreateEvent(value, createEvent);
+        conditionalCreateEventFunc(value, createEvent);
         fluid.each(componentNames, function (componentName) {
             var comp = that[componentName];
             if (!value && comp) {
                 comp.destroy();
             }
         });
-        that.refreshView();
+        refreshViewFunc();
     };
 
     fluid.prefs.compositePanel.creationEventName = function (pref) {
@@ -377,7 +388,7 @@ var fluid_2_0 = fluid_2_0 || {};
         var conditionals = {};
         var listeners = {};
         var events = {};
-        $.each(components, function (componentName, componentOptions) {
+        fluid.each(components, function (componentOptions, componentName) {
             if (fluid.prefs.compositePanel.isPanel(componentOptions.type, componentOptions.options)) {
                 var creationEventOpt = "default";
                 // would have had renderOnPreference directly sourced from the componentOptions
@@ -529,28 +540,47 @@ var fluid_2_0 = fluid_2_0 || {};
         }) || value;
     };
 
-    fluid.prefs.compositePanel.rebaseTree = function (model, tree, memberName, modelRelayRules) {
-        var rebased = fluid.transform(tree, function (val, key) {
-            if (key === "children") {
-                return fluid.transform(val, function (v) {
-                    return fluid.prefs.compositePanel.rebaseTree(model, v, memberName, modelRelayRules);
-                });
-            } else if (key === "selection") {
-                return fluid.prefs.compositePanel.rebaseTree(model, val, memberName, modelRelayRules);
-            } else if (key === "ID") {
-                return fluid.prefs.compositePanel.rebaseID(val, memberName);
-            } else if (key === "parentRelativeID") {
-                return fluid.prefs.compositePanel.rebaseParentRelativeID(val, memberName);
-            } else if (key === "valuebinding") {
-                return fluid.prefs.compositePanel.rebaseValueBinding(val, modelRelayRules);
-            } else if (key === "value" && tree.valuebinding) {
-                var valuebinding = tree.valuebinding;
-                var modelValue = fluid.get(model, fluid.prefs.compositePanel.rebaseValueBinding(valuebinding, modelRelayRules));
-                return modelValue !== undefined ? modelValue : val;
-            } else {
-                return val;
+    fluid.prefs.compositePanel.rebaseTreeComp = function (msgResolver, model, treeComp, memberName, modelRelayRules) {
+        var rebased = fluid.copy(treeComp);
+
+        if (rebased.ID) {
+            rebased.ID = fluid.prefs.compositePanel.rebaseID(rebased.ID, memberName);
+        }
+
+        if (rebased.children) {
+            rebased.children = fluid.prefs.compositePanel.rebaseTree(msgResolver, model, rebased.children, memberName, modelRelayRules);
+        } else if (rebased.selection) {
+            rebased.selection = fluid.prefs.compositePanel.rebaseTreeComp(msgResolver, model, rebased.selection, memberName, modelRelayRules);
+        } else if (rebased.messagekey) {
+            // converts the "UIMessage" renderer component into a "UIBound"
+            // and passes in the resolved message as the value.
+            rebased.componentType = "UIBound";
+            rebased.value = msgResolver.resolve(rebased.messagekey.value, rebased.messagekey.args);
+            delete rebased.messagekey;
+        } else if (rebased.parentRelativeID) {
+            rebased.parentRelativeID = fluid.prefs.compositePanel.rebaseParentRelativeID(rebased.parentRelativeID, memberName);
+        } else if (rebased.valuebinding) {
+            rebased.valuebinding = fluid.prefs.compositePanel.rebaseValueBinding(rebased.valuebinding, modelRelayRules);
+
+            if (rebased.value) {
+                var modelValue = fluid.get(model, rebased.valuebinding);
+                rebased.value = modelValue !== undefined ? modelValue : rebased.value;
             }
-        });
+        }
+
+        return rebased;
+    };
+
+    fluid.prefs.compositePanel.rebaseTree = function (msgResolver, model, tree, memberName, modelRelayRules) {
+        var rebased;
+
+        if (fluid.isArrayable(tree)) {
+            rebased = fluid.transform(tree, function (treeComp) {
+                return fluid.prefs.compositePanel.rebaseTreeComp(msgResolver, model, treeComp, memberName, modelRelayRules);
+            });
+        } else {
+            rebased = fluid.prefs.compositePanel.rebaseTreeComp(msgResolver, model, tree, memberName, modelRelayRules);
+        }
 
         return rebased;
     };
@@ -582,7 +612,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 var expander = fluid.renderer.makeProtoExpander(expanderOptions, subPanel);
                 var subTree = subPanel.produceTree();
                 subTree = fluid.get(subPanel.options, "rendererFnOptions.noexpand") ? subTree : expander(subTree);
-                var rebasedTree = fluid.prefs.compositePanel.rebaseTree(that.model, subTree, componentName, subPanel.options.rules);
+                var rebasedTree = fluid.prefs.compositePanel.rebaseTree(subPanel.msgResolver, that.model, subTree, componentName, subPanel.options.rules);
                 tree.children = tree.children.concat(rebasedTree.children);
             }
         });
@@ -595,10 +625,6 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.defaults("fluid.prefs.prefsEditorConnections", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
-        mergePolicy: {
-            sourceApplier: "nomerge"
-        },
-        sourceApplier: "{fluid.prefs.prefsEditor}.applier",
         listeners: {
             "{fluid.prefs.prefsEditor}.events.onPrefsEditorRefresh": "{fluid.prefs.panel}.refreshView"
         },
@@ -636,28 +662,26 @@ var fluid_2_0 = fluid_2_0 || {};
             largeIcon: ".flc-prefsEditor-min-text-size-largeIcon",
             multiplier: ".flc-prefsEditor-multiplier"
         },
+        selectorsToIgnore: ["textSize"],
+        components: {
+            textSize: {
+                type: "fluid.textfieldSlider",
+                container: "{that}.dom.textSize",
+                createOnEvent: "afterRender",
+                options: {
+                    model: {
+                        value: "{fluid.prefs.panel.textSize}.model.textSize"
+                    },
+                    range: "{fluid.prefs.panel.textSize}.options.range",
+                    sliderOptions: "{fluid.prefs.panel.textSize}.options.sliderOptions"
+                }
+            }
+        },
         protoTree: {
             label: {messagekey: "textSizeLabel"},
             smallIcon: {messagekey: "textSizeSmallIcon"},
             largeIcon: {messagekey: "textSizeLargeIcon"},
-            multiplier: {messagekey: "multiplier"},
-            textSize: {
-                decorators: {
-                    type: "fluid",
-                    func: "fluid.textfieldSlider",
-                    options: {
-                        rules: {
-                            "textSize": "value"
-                        },
-                        model: {
-                            value: "{that}.model.textSize"
-                        },
-                        sourceApplier: "{that}.applier",
-                        range: "{that}.options.range",
-                        sliderOptions: "{that}.options.sliderOptions"
-                    }
-                }
-            }
+            multiplier: {messagekey: "multiplier"}
         },
         sliderOptions: {
             orientation: "horizontal",
@@ -739,28 +763,26 @@ var fluid_2_0 = fluid_2_0 || {};
             wideIcon: ".flc-prefsEditor-line-space-wideIcon",
             multiplier: ".flc-prefsEditor-multiplier"
         },
+        selectorsToIgnore: ["lineSpace"],
+        components: {
+            lineSpace: {
+                type: "fluid.textfieldSlider",
+                container: "{that}.dom.lineSpace",
+                createOnEvent: "afterRender",
+                options: {
+                    model: {
+                        value: "{fluid.prefs.panel.lineSpace}.model.lineSpace"
+                    },
+                    range: "{fluid.prefs.panel.lineSpace}.options.range",
+                    sliderOptions: "{fluid.prefs.panel.lineSpace}.options.sliderOptions"
+                }
+            }
+        },
         protoTree: {
             label: {messagekey: "lineSpaceLabel"},
             narrowIcon: {messagekey: "lineSpaceNarrowIcon"},
             wideIcon: {messagekey: "lineSpaceWideIcon"},
-            multiplier: {messagekey: "multiplier"},
-            lineSpace: {
-                decorators: {
-                    type: "fluid",
-                    func: "fluid.textfieldSlider",
-                    options: {
-                        rules: {
-                            "lineSpace": "value"
-                        },
-                        model: {
-                            value: "{that}.model.lineSpace"
-                        },
-                        sourceApplier: "{that}.applier",
-                        range: "{that}.options.range",
-                        sliderOptions: "{that}.options.sliderOptions"
-                    }
-                }
-            }
+            multiplier: {messagekey: "multiplier"}
         },
         sliderOptions: {
             orientation: "horizontal",
@@ -949,7 +971,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * A sub-component that decorates the options on the select dropdown list box with the css style
      */
     fluid.defaults("fluid.prefs.selectDecorator", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         listeners: {
             onCreate: "fluid.prefs.selectDecorator.decorateOptions"
         },

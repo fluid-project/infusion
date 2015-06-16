@@ -9,7 +9,7 @@
     },
     "links": {
         "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/inlineEdit",
-        "apiLink": "http://wiki.fluidproject.org/display/docs/Simple+Text+Inline+Edit+API",
+        "apiLink": "http://docs.fluidproject.org/infusion/development/to-do/InlineEditAPI.html",
         "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Simple Text Inline Edit feedback"
     }
 }

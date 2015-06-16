@@ -1,5 +1,5 @@
 /*
-Copyright 2013 OCAD University
+Copyright 2013-2015 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -51,9 +51,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * fluid.prefs.builder.parseAuxSchema tests *
      ************************************************/
 
-    fluid.tests.testparseAuxSchema = function (expected, funcArgs) {
-        var actualFitler = fluid.invokeGlobalFunction("fluid.prefs.builder.parseAuxSchema", funcArgs);
-        jqUnit.assertDeepEq("The schema should have been parsed correctly", expected, actualFitler);
+    fluid.tests.testParseAuxSchema = function (expected, funcArgs) {
+        var actualFilter = fluid.invokeGlobalFunction("fluid.prefs.builder.parseAuxSchema", funcArgs);
+        jqUnit.assertDeepEq("The schema should have been parsed correctly", expected, actualFilter);
     };
 
     fluid.defaults("fluid.tests.parseAuxSchema", {
@@ -111,7 +111,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             tests: [{
                 expect: 1,
                 name: "grade creation",
-                func: "fluid.tests.testparseAuxSchema",
+                func: "fluid.tests.testParseAuxSchema",
                 args: ["{that}.options.testOpts.expectedTypeFilter", ["{that}.options.testOpts.auxSchema"]]
             }]
         }]
@@ -288,7 +288,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 templateLoader: {
-                    templates: {
+                    resources: {
                         prefsEditor: "%prefix/SeparatedPanelPrefsEditor.html"
                     }
                 }
@@ -355,7 +355,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 16,
                 name: "not created",
                 func: "fluid.tests.testNotCreated",
-                args: ["{builderEmpty}", ["enactors", "messages", "panels", "rootModel", "templateLoader", "templatePrefix", "messageLoader", "messagePrefix"]]
+                args: ["{builderEmpty}", ["enactors", "messages", "panels", "initialModel", "templateLoader", "templatePrefix", "messageLoader", "messagePrefix"]]
             }, {
                 expect: 2,
                 name: "assembledUIEGrade",
@@ -376,9 +376,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: ["{builderEnactors}.options.constructedGrades.enactors", "{builderEnactors}.options.auxSchema.enactors"]
             }, {
                 expect: 4,
-                name: "rootModel",
+                name: "initialModel",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderEnactors}.options.constructedGrades.rootModel", "{builderEnactors}.options.auxSchema.rootModel"]
+                args: ["{builderEnactors}.options.constructedGrades.initialModel", "{builderEnactors}.options.auxSchema.initialModel"]
             }, {
                 expect: 8,
                 name: "not created",
@@ -404,9 +404,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: ["{builderPanels}.options.constructedGrades.panels", "{builderPanels}.options.auxSchema.panels"]
             }, {
                 expect: 4,
-                name: "rootModel",
+                name: "initialModel",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanels}.options.constructedGrades.rootModel", "{builderPanels}.options.auxSchema.rootModel"]
+                args: ["{builderPanels}.options.constructedGrades.initialModel", "{builderPanels}.options.auxSchema.initialModel"]
             }, {
                 expect: 4,
                 name: "templateLoader",
@@ -452,9 +452,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: ["{builderPanelsAndMessages}.options.constructedGrades.messagePrefix", "{builderPanelsAndMessages}.options.auxSchema.messagePrefix"]
             }, {
                 expect: 4,
-                name: "rootModel",
+                name: "initialModel",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndMessages}.options.constructedGrades.rootModel", "{builderPanelsAndMessages}.options.auxSchema.rootModel"]
+                args: ["{builderPanelsAndMessages}.options.constructedGrades.initialModel", "{builderPanelsAndMessages}.options.auxSchema.initialModel"]
             }, {
                 expect: 4,
                 name: "templateLoader",
@@ -490,9 +490,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: ["{builderPanelsAndTemplates}.options.constructedGrades.templatePrefix", "{builderPanelsAndTemplates}.options.auxSchema.templatePrefix"]
             }, {
                 expect: 4,
-                name: "rootModel",
+                name: "initialModel",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderPanelsAndTemplates}.options.constructedGrades.rootModel", "{builderPanelsAndTemplates}.options.auxSchema.rootModel"]
+                args: ["{builderPanelsAndTemplates}.options.constructedGrades.initialModel", "{builderPanelsAndTemplates}.options.auxSchema.initialModel"]
             }, {
                 expect: 4,
                 name: "templateLoader",
@@ -543,9 +543,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: ["{builderAll}.options.constructedGrades.enactors", "{builderAll}.options.auxSchema.enactors"]
             }, {
                 expect: 4,
-                name: "rootModel",
+                name: "initialModel",
                 func: "fluid.tests.assertDefaults",
-                args: ["{builderAll}.options.constructedGrades.rootModel", "{builderAll}.options.auxSchema.rootModel"]
+                args: ["{builderAll}.options.constructedGrades.initialModel", "{builderAll}.options.auxSchema.initialModel"]
             }, {
                 expect: 4,
                 name: "templateLoader",
@@ -573,7 +573,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /**********************************
      * Builder munging tests          *
      **********************************/
-    var prefsEditorType = "fluid.prefs.fullNoPreview", storeType = "fluid.tests.store", enhancerType = "fluid.tests.enhancer";
+    var loaderGrades = ["fluid.prefs.fullNoPreview"];
+    var storeType = "fluid.tests.store";
+    var enhancerType = "fluid.tests.enhancer";
     var templatePrefix = "../../../../src/framework/preferences/html/";
     var messagePrefix = "../../../../src/framework/preferences/messages/";
     var prefsEdReady = false;
@@ -597,6 +599,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     gradeNames: ["fluid.prefs.auxSchema.starter"],
                     auxiliarySchema: {
+                        loaderGrades: loaderGrades,
                         "template": "%prefix/FullNoPreviewPrefsEditor.html",
                         "tableOfContents": {
                             "enactor": {
@@ -607,12 +610,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             prefsEd: {
-                type: "fluid.viewComponent",
+                type: "fluid.viewRelayComponent",
                 container: "#flc-prefsEditor",
                 createOnEvent: "{builderMungingTester}.events.onTestCaseStart",
                 options: {
                     gradeNames: ["{builder}.options.assembledPrefsEditorGrade"],
-                    prefsEditorType: prefsEditorType,
                     storeType: storeType,
                     enhancerType: enhancerType,
                     templatePrefix: templatePrefix,
@@ -649,7 +651,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Munging options for messagePrefix should be passed down to the message loader", messagePrefix, prefsEditor.prefsEditorLoader.messageLoader.resourcePath.options.value);
         jqUnit.assertTrue("Munging options for onReady event should be passed down to the constructed pref editor", prefsEdReady);
 
-        jqUnit.assertTrue(prefsEditorType + " should be in the base prefsEditor grades", fluid.hasGrade(prefsEditor.prefsEditorLoader.options, prefsEditorType));
+        fluid.each(loaderGrades, function (loaderGrade) {
+            jqUnit.assertTrue(loaderGrade + " should be in the base prefsEditor grades", fluid.hasGrade(prefsEditor.prefsEditorLoader.options, loaderGrade));
+        });
+
         jqUnit.assertTrue(enhancerType + " should be in the base enhancer grades", fluid.hasGrade(prefsEditor.enhancer.options, enhancerType));
         jqUnit.assertTrue(storeType + " should be in the base store grades", fluid.hasGrade(prefsEditor.store.options, storeType));
 
@@ -675,7 +680,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /**************************
      * Composite Panels Tests *
      **************************/
-     
+
     fluid.setLogging(fluid.logLevel.TRACE);
 
     fluid.registerNamespace("fluid.tests.composite");
@@ -751,7 +756,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.composite.increase", {
         gradeNames: ["fluid.prefs.compositePanel", "autoInit"],
-        strings: {
+        messageBase: {
             increaseHeader: "increase"
         },
         selectors: {
@@ -818,6 +823,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.tests.composite.auxSchema"],
         primarySchema: fluid.tests.composite.primarySchema,
         auxiliarySchema: {
+            "loaderGrades": ["fluid.prefs.fullNoPreview"],
             "templatePrefix": "../testResources/html/"
         }
     });
@@ -828,10 +834,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             prefsEditor: {
                 type: builder.options.assembledPrefsEditorGrade,
                 container: ".fluid-tests-composite-prefsEditor",
-                createOnEvent: "{prefsTester}.events.onTestCaseStart",
-                options: {
-                    prefsEditorType: "fluid.prefs.fullNoPreview"
-                }
+                createOnEvent: "{prefsTester}.events.onTestCaseStart"
             },
             prefsTester: {
                 type: "fluid.tests.composite.tester"
@@ -901,12 +904,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 gradeNames: ["fluid.prefs.auxSchema.starter"],
                 auxiliarySchema: {
                     "namespace": "",
+                    "loaderGrades": ["fluid.prefs.fullNoPreview"],
                     "templatePrefix": "../../../../src/framework/preferences/html/",
                     "messagePrefix": "../../../../src/framework/preferences/messages/"
                 }
-            },
-            prefsEditor: {
-                prefsEditorType: "fluid.prefs.fullNoPreview"
             }
         });
         jqUnit.assertTrue("The prefs editor should have been returned", fluid.hasGrade(pref_defaultNamespace.options, "fluid.prefs.assembler.prefsEd"));
@@ -918,12 +919,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 gradeNames: ["fluid.prefs.auxSchema.starter"],
                 auxiliarySchema: {
                     "namespace": namespace,
+                    "loaderGrades": ["fluid.prefs.fullNoPreview"],
                     "templatePrefix": "../../../../src/framework/preferences/html/",
                     "messagePrefix": "../../../../src/framework/preferences/messages/"
                 }
-            },
-            prefsEditor: {
-                prefsEditorType: "fluid.prefs.fullNoPreview"
             }
         });
         jqUnit.assertTrue("The prefs editor should have been returned", fluid.hasGrade(pref_customNamespace.options, "fluid.prefs.assembler.prefsEd"));

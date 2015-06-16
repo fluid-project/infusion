@@ -17,18 +17,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests");
 
-    fluid.tests.testStyle = function (that, container, expectedDefaultFlag, expectedCssClass) {
-        var elements = that.getElements();
+    fluid.tests.testStyle = function (that, expectedDefaultFlag, expectedCssClass) {
+        var elements = that.options.elementsToStyle;
 
         jqUnit.assertEquals("Default value: " + expectedDefaultFlag, expectedDefaultFlag, that.model.value);
-        jqUnit.assertEquals("Default css class: " + expectedCssClass, expectedCssClass, that.options.cssClass);
-        jqUnit.assertEquals("Default - css class is not applied", undefined, elements.attr("class"));
+        jqUnit.assertEquals("Css class to be applied or removed: " + expectedCssClass, expectedCssClass, that.options.cssClass);
 
-        that.applier.requestChange("value", true);
-        jqUnit.assertEquals("True value - Css class has been applied", expectedCssClass, elements.attr("class"));
+        jqUnit.assertFalse("Default - css class is not applied", elements.hasClass(expectedCssClass));
 
-        that.applier.requestChange("value", false);
-        jqUnit.assertEquals("False value - Css class has been removed", "", elements.attr("class"));
+        that.applier.change("value", true);
+        jqUnit.assertTrue("True value - Css class has been applied", elements.hasClass(expectedCssClass));
+
+        that.applier.change("value", false);
+        jqUnit.assertFalse("False value - Css class has been removed", elements.hasClass(expectedCssClass));
     };
 
     /*******************************************************************************
@@ -45,10 +46,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.prefs.enactor.styleElements",
                 options: {
                     cssClass: "fl-style-test",
-                    invokers: {
-                        getElements: {
+                    elementsToStyle: {
+                        expander: {
                             funcName: "fluid.tests.getElements",
-                            args: ".flc-styleElements"
+                            args: "{styleElementsTests}.options.container"
                         }
                     },
                     model: {
@@ -75,7 +76,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Apply and reset the style",
                 type: "test",
                 func: "fluid.tests.testStyle",
-                args: ["{styleElements}", "{fluid.tests.styleElementsTests}.options.container", "{fluid.tests.styleElementsTests}.options.expectedDefaultFlag", "{fluid.tests.styleElementsTests}.options.expectedCssClass"]
+                args: ["{styleElements}", "{fluid.tests.styleElementsTests}.options.expectedDefaultFlag", "{fluid.tests.styleElementsTests}.options.expectedCssClass"]
             }]
         }]
     });
@@ -115,7 +116,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Apply and reset emphasized links",
                 type: "test",
                 func: "fluid.tests.testStyle",
-                args: ["{emphasizeLinks}", "{fluid.tests.emphasizeLinksTests}.options.container", "{fluid.tests.emphasizeLinksTests}.options.expectedDefaultFlag", "{fluid.tests.emphasizeLinksTests}.options.expectedEmphasizeLinksClass"]
+                args: ["{emphasizeLinks}", "{fluid.tests.emphasizeLinksTests}.options.expectedDefaultFlag", "{fluid.tests.emphasizeLinksTests}.options.expectedEmphasizeLinksClass"]
             }]
         }]
     });
@@ -155,7 +156,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Apply and reset larger inputs",
                 type: "test",
                 func: "fluid.tests.testStyle",
-                args: ["{inputsLarger}", "{fluid.tests.inputsLargerTests}.options.container", "{fluid.tests.inputsLargerTests}.options.expectedDefaultFlag", "{fluid.tests.inputsLargerTests}.options.expectedInputsLargerClass"]
+                args: ["{inputsLarger}", "{fluid.tests.inputsLargerTests}.options.expectedDefaultFlag", "{fluid.tests.inputsLargerTests}.options.expectedInputsLargerClass"]
             }]
         }]
     });
@@ -429,17 +430,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.makeTocVisibilityChecker = function (that, expectedTocLevels, tocContainer, isShown) {
-        return function () {
-            jqUnit.assertEquals("Table of contents has " + expectedTocLevels + " levels", expectedTocLevels, $(".flc-toc-tocContainer").children("ul").length);
-            jqUnit.assertEquals("The visibility of the table of contents is " + isShown, isShown, $(tocContainer).is(":visible"));
-        };
+        jqUnit.assertEquals("Table of contents has " + expectedTocLevels + " levels", expectedTocLevels, $(".flc-toc-tocContainer").children("ul").length);
+        jqUnit.assertEquals("The visibility of the table of contents is " + isShown, isShown, $(tocContainer).is(":visible"));
     };
 
     fluid.defaults("fluid.tests.tableOfContentsTester", {
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
-            trueValue: true,
-            falseValue: false,
             tocContainer: ".flc-toc-tocContainer",
             expectedNoTocLevels: 0,
             expectedTocLevelsAtTrue: 1
@@ -453,19 +450,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "fluid.tests.checkTocLevels",
                     args: ["{toc}", "{that}.options.testOptions.expectedNoTocLevels"]
                 }, {
-                    func: "{toc}.applier.requestChange",
-                    args: ["value", "{that}.options.testOptions.trueValue"]
+                    func: "{toc}.applier.change",
+                    args: ["toc", true]
                 }, {
-                    listenerMaker: "fluid.tests.makeTocVisibilityChecker",
-                    makerArgs: ["{toc}", "{that}.options.testOptions.expectedTocLevelsAtTrue", "{that}.options.testOptions.tocContainer", true],
+                    listener: "fluid.tests.makeTocVisibilityChecker",
+                    args: ["{toc}", "{that}.options.testOptions.expectedTocLevelsAtTrue", "{that}.options.testOptions.tocContainer", true],
                     event: "{toc}.events.afterTocRender"
                 }, {
-                    func: "{toc}.applier.requestChange",
-                    args: ["value", "{that}.options.testOptions.falseValue"]
+                    func: "{toc}.applier.change",
+                    args: ["toc", false]
                 }, {
-                    listenerMaker: "fluid.tests.makeTocVisibilityChecker",
-                    makerArgs: ["{toc}", "{that}.options.testOptions.expectedTocLevelsAtTrue", "{that}.options.testOptions.tocContainer", false],
-                    event: "{toc}.events.onLateRefreshRelay"
+                    func: "fluid.tests.makeTocVisibilityChecker",
+                    args: ["{toc}", "{that}.options.testOptions.expectedTocLevelsAtTrue", "{that}.options.testOptions.tocContainer", false]
                 }]
             }]
         }]

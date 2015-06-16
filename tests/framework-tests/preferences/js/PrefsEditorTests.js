@@ -25,7 +25,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         // Define a default configuration but will specify different demands to test the full config with settings
         fluid.defaults("fluid.prefsTests", {
-            gradeNames: ["fluid.prefs.prefsEditorLoader", "autoInit"],
+            gradeNames: ["fluid.prefs.prefsEditorLoader", "fluid.prefs.initialModel.starter", "autoInit"],
             templatePrefix: templatePrefix,
             messagePrefix: messagePrefix,
             messageLoader: {
@@ -36,13 +36,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             components: {
                 prefsEditor: {
-                    container: "{prefsTests}.container",
-                    options: {
-                        listeners: {
-                            onReady: "fluid.prefsTests.testFn"
-                        }
-                    }
+                    container: "{prefsTests}.container"
                 }
+            },
+            prefsEditorListener: {
+                "onReady.runTest": "fluid.prefsTests.testFn"
+            },
+            distributeOptions: {
+                source: "{that}.options.prefsEditorListener",
+                target: "{that > prefsEditor}.options.listeners",
+                removeSource: true
             }
         });
 
@@ -52,7 +55,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.demands("fluid.prefs.prefsEditor", ["fluid.prefsTests", "fluid.prefs.tests"], {
             funcName: "fluid.prefs.starterPanels",
             options: {
-                gradeNames: ["fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"],
+                gradeNames: ["fluid.prefs.uiEnhancerRelay"],
                 components: {
                     uiEnhancer: {
                         type: "fluid.uiEnhancer",
@@ -111,7 +114,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.module("PrefsEditor Tests");
 
         jqUnit.asyncTest("Template Loader", function () {
-            jqUnit.expect(4);
+            jqUnit.expect(8);
 
             var testTemplatePrefix = "../../../../src/framework/preferences/html/";
             var textControlsFullResourcePath = "../../../../src/framework/preferences/html/PrefsEditorTemplate-textSize.html";
@@ -121,17 +124,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 // The template with a customized full url
                 jqUnit.assertEquals("textControls template url is set correctly", textControlsFullResourcePath, resources.textControls.url);
                 jqUnit.assertTrue("textControls forceCache is set", resources.textControls.forceCache);
+                jqUnit.assertEquals("textControls defaultLocale is set correctly in the resource spec", "en", resources.textControls.defaultLocale);
+                jqUnit.assertEquals("textControls locale is set correctly in the resource spec", "fr", resources.textControls.locale);
 
                 // The template with prefix + customized name
                 jqUnit.assertEquals("linksControls template url is set correctly", testTemplatePrefix + linksControlsTemplateName, resources.linksControls.url);
                 jqUnit.assertTrue("linksControls forceCache is set", resources.linksControls.forceCache);
+                jqUnit.assertEquals("linksControls defaultLocale is set correctly in the resource spec", "en", resources.linksControls.defaultLocale);
+                jqUnit.assertEquals("linksControls locale is set correctly in the resource spec", "fr", resources.linksControls.locale);
 
                 jqUnit.start();
             }
 
             fluid.defaults("fluid.prefsTestResourceLoader", {
                 gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
-                templates: {
+                defaultLocale: "en",
+                locale: "fr",
+                resources: {
                     linksControls: "%prefix/" + linksControlsTemplateName,
                     textControls: textControlsFullResourcePath
                 },
@@ -165,7 +174,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             fluid.defaults("fluid.prefs.customizedResourceLoader", {
                 gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
-                templates: {
+                resources: {
                     lineSpace: "%prefix/" + lineSpaceTemplateName
                 },
                 listeners: {
@@ -195,16 +204,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.prefsCustomizedResourceLoader(null);
         });
 
-        var assertRootModel = function (model) {
+        var assertinitialModel = function (model) {
             jqUnit.expect(3);
             jqUnit.assertNotNull("Model is not null", model);
             jqUnit.assertNotUndefined("Model is not undefined", model);
-            jqUnit.assertDeepEq("Initial model is the starter rootModel", fluid.defaults("fluid.prefs.rootModel.starter").members.rootModel, model);
+            jqUnit.assertDeepEq("Initial model is the starter initialModel", fluid.defaults("fluid.prefs.initialModel.starter").members.initialModel, model);
         };
 
         jqUnit.asyncTest("Init Model - default", function () {
             testPrefsEditor(function (prefsEditor) {
-                assertRootModel(prefsEditor.model);
+                assertinitialModel(prefsEditor.model);
                 jqUnit.start();
             });
         });
@@ -213,7 +222,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.expect(4);
 
             testPrefsEditor(function (prefsEditor) {
-                assertRootModel(prefsEditor.model);
+                assertinitialModel(prefsEditor.model);
 
                 var themeValues = prefsEditor.contrast.options.controlValues.theme;
                 jqUnit.assertEquals("There are 6 themes in the control", 6, themeValues.length);
@@ -231,7 +240,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.expect(13);
 
             testPrefsEditor(function (prefsEditor) {
-                prefsEditor.updateModel(bwSkin);
+                prefsEditor.applier.change("", bwSkin);
 
                 jqUnit.assertFalse("Save hasn't been called", saveCalled);
                 prefsEditor.saveAndApply();
@@ -250,8 +259,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertNotEquals("Reset model text font", bwSkin.textFont, prefsEditor.options.textFont);
                 jqUnit.assertNotEquals("Reset model theme", bwSkin.theme, prefsEditor.options.theme);
 
-                prefsEditor.updateModel(bwSkin);
-                prefsEditor.updateModel(bwSkin2);
+                prefsEditor.applier.change("", bwSkin);
+                prefsEditor.applier.change("", bwSkin2);
 
                 prefsEditor.cancel();
                 jqUnit.assertEquals("Cancel text size change", bwSkin.textSize, prefsEditor.model.textSize);
@@ -266,12 +275,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.expect(5);
 
             testPrefsEditor(function (prefsEditor) {
-                prefsEditor.updateModel(bwSkin);
+                prefsEditor.applier.change("", bwSkin);
 
                 jqUnit.assertEquals("bw setting was set in the model", bwSkin.theme, prefsEditor.model.theme);
 
                 var uiEnhancerSettings = prefsEditor.getSettings();
-                jqUnit.assertUndefined("bw setting was not saved", uiEnhancerSettings.theme);
+                jqUnit.assertUndefined("bw setting was not saved", uiEnhancerSettings);
 
                 prefsEditor.events.onPrefsEditorRefresh.fire();
                 var fontSizeCtrl = $(".flc-prefsEditor-min-text-size");
@@ -295,7 +304,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.demands("fluid.prefs.prefsEditor", ["fluid.prefsTests", "fluid.prefs.tests", "fluid.prefs.testDiffInit"], {
                 options: {
                     members: {
-                        rootModel: {
+                        initialModel: {
                             theme: "wb",
                             textFont: "times"
                         }
@@ -304,7 +313,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
 
             testPrefsEditor(function (prefsEditor) {
-                var settings = prefsEditor.rootModel;
+                var settings = prefsEditor.initialModel;
 
                 var themeValue = settings.theme;
                 jqUnit.assertEquals("The theme is set to wb", "wb", themeValue);
@@ -357,7 +366,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("Initially, settings store settings are empty",
                 $.isEmptyObject(prefsEditor.getSettings()));
             jqUnit.assertDeepEq("Initially, model should correspond to default model",
-                prefsEditor.rootModel, prefsEditor.model);
+                prefsEditor.initialModel, prefsEditor.model);
 
             var preSaveSelections = fluid.copy(prefsEditor.model);
             applierRequestChanges(prefsEditor, saveModel);
@@ -373,7 +382,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             checkSettingsStore("After applying cancelModel and clicking cancel", saveModel,
                 prefsEditor.getSettings(), preSaveSelections);
             resetButton.click();
-            checkModelSelections("After clicking reset", prefsEditor.rootModel, prefsEditor.model);
+            checkModelSelections("After clicking reset", prefsEditor.initialModel, prefsEditor.model);
             cancelButton.click();
             checkModelSelections("After clicking cancel", saveModel, prefsEditor.getSettings());
             checkSettingsStore("After clicking cancel", saveModel, prefsEditor.getSettings(), preSaveSelections);
@@ -397,10 +406,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             container: "{prefsEditor}.dom.textSize",
                             createOnEvent: "onPrefsEditorMarkupReady",
                             options: {
-                                sourceApplier: "{prefsEditor}.applier",
-                                rules: {
-                                    "textSize": "value"
-                                },
                                 listeners: {
                                     "{prefsEditor}.events.onPrefsEditorRefresh": "{that}.refreshView"
                                 },
@@ -419,11 +424,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                         type: "fluid.prefs.enactor.textSize",
                                         container: "{uiEnhancer}.container",
                                         options: {
-                                            gradeNames: "fluid.prefs.uiEnhancerConnections",
                                             fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
-                                            rules: {
-                                                "textSize": "value"
-                                            }
+                                            value: "{uiEnhancer}.model.textSize"
                                         }
                                     }
                                 }
@@ -466,7 +468,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.demands("fluid.prefs.prefsEditor", ["fluid.prefs.testsIntegration", "fluid.prefs.tests", "fluid.prefsTests"], {
                 funcName: "fluid.prefs.starterPanels",
                 options: {
-                    gradeNames: ["fluid.prefs.rootModel.starter"],
+                    gradeNames: ["fluid.prefs.initialModel.starter", "fluid.prefs.settingsGetter"],
                     components: {
                         uiEnhancer: {
                             type: "fluid.uiEnhancer",
@@ -524,7 +526,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             testPrefsEditor(function (prefsEditor) {
                 resetSaveCalled();
-                prefsEditor.updateModel(bwSkin);
+                prefsEditor.applier.change("", bwSkin);
                 jqUnit.assertTrue("Model has changed, auto-save changes", saveCalled);
 
                 var uiEnhancerSettings = prefsEditor.getSettings();
@@ -548,7 +550,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             fluid.demands("templateLoader", ["fluid.prefsTests", "fluid.prefs.tests", "fluid.prefs.testsPreview"], {
                 options: {
-                    templates: {
+                    resources: {
                         prefsEditor: templatePrefix + "FullPreviewPrefsEditor.html"
                     }
                 }
@@ -586,6 +588,43 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             testPrefsEditor(function (prefsEditorIn) {
                 prefsEditor = prefsEditorIn;
             });
+        });
+
+        /****************
+         * Locale tests *
+         ****************/
+
+        fluid.defaults("fluid.prefs.initialModel.localeStarter", {
+            members: {
+                initialModel: {
+                    locale: "fr"
+                }
+            }
+        });
+
+        fluid.defaults("fluid.prefsLocaleTests", {
+            gradeNames: ["fluid.prefsTests", "fluid.prefs.initialModel.localeStarter", "autoInit"],
+            defaultLocale: "en",
+            messagePrefix: "../data/",
+            prefsEditorListener: {
+                "onReady.runTest": {
+                    funcName: "fluid.prefsLocaleTests.testFn",
+                    args: ["{prefsLocaleTests}"]
+                }
+            }
+        });
+
+        jqUnit.asyncTest("Locale Tests", function () {
+            jqUnit.expect(5);
+
+            testPrefsEditor(function (prefsEditorLoader) {
+                jqUnit.assertEquals("The locale value in the initial model has been set properly", "fr", prefsEditorLoader.initialModel.locale);
+                jqUnit.assertEquals("The locale value in the settings has been set properly", "fr", prefsEditorLoader.settings.locale);
+                jqUnit.assertEquals("The locale value in the initial model has been passed to the prefs editor", "fr", prefsEditorLoader.prefsEditor.initialModel.locale);
+                jqUnit.assertEquals("The default locale value in the message loader has been set properly", "en", prefsEditorLoader.messageLoader.options.defaultLocale);
+                jqUnit.assertEquals("The locale value in the message loader has been set properly", "fr", prefsEditorLoader.messageLoader.options.locale);
+                jqUnit.start();
+            }, fluid.prefsLocaleTests);
         });
 
     });

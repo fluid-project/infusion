@@ -26,19 +26,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var emphasizeLinksClass = "fl-emphasize-links";
 
     fluid.defaults("fluid.uiEnhancer.customizedEnactors", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         components: {
             emphasizeLinks: {
                 type: "fluid.prefs.enactor.emphasizeLinks",
                 container: "{uiEnhancer}.container",
                 options: {
-                    gradeNames: "fluid.prefs.uiEnhancerConnections",
                     cssClass: emphasizeLinksClass,
-                    rules: {
-                        "emphasizeLinks": "value"
-                    },
                     model: {
-                        links: false
+                        value: "{uiEnhancer}.model.emphasizeLinks"
                     }
                 }
             }
@@ -63,7 +59,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.testCustomizedEnactors = function (container, cssClass, expectedValue) {
-        jqUnit.assertEquals("The emphasized links are applied - " + expectedValue, expectedValue, $(container).children("a").hasClass(cssClass));
+        var index = $(container).prop("class").indexOf(cssClass);
+        var assertFunc = expectedValue ? jqUnit.assertNotEquals : jqUnit.assertEquals;
+        assertFunc("The emphasized links css selector has " + expectedValue ? "" : "not " + "been applied - " + expectedValue, -1, index);
     };
 
     fluid.defaults("fluid.tests.customizedEnactorsTester", {
@@ -80,13 +78,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "fluid.tests.testCustomizedEnactors",
                     args: ["{uiEnhancer}.container", "{that}.options.testOpts.cssClass", false]
                 }, {
-                    func: "{uiEnhancer}.applier.requestChange",
+                    func: "{uiEnhancer}.applier.change",
                     args: ["emphasizeLinks", true]
                 }, {
                     func: "fluid.tests.testCustomizedEnactors",
                     args: ["{uiEnhancer}.container", "{that}.options.testOpts.cssClass", true]
                 }, {
-                    func: "{uiEnhancer}.applier.requestChange",
+                    func: "{uiEnhancer}.applier.change",
                     args: ["emphasizeLinks", false]
                 }, {
                     func: "fluid.tests.testCustomizedEnactors",
@@ -104,7 +102,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             prefsEditor: {
-                type: "fluid.prefs.rootModel.starter"
+                type: "fluid.prefs.initialModel.starter"
             },
             uiEnhancer: {
                 type: "fluid.uiEnhancer",
@@ -124,10 +122,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         tester.options.testOpts.initialFontSize = parseFloat(container.css("fontSize"));
     };
 
-    fluid.tests.testTocStyling = function () {
+    fluid.tests.testToc = function () {
         var tocLinks = $(".flc-toc-tocContainer a");
-        var filtered = tocLinks.filter(".fl-link-enhanced");
-        jqUnit.assertEquals("All toc links have been styled", tocLinks.length, filtered.length);
+        jqUnit.assertNotEquals("Toc links have been rendered", 0, tocLinks.length);
         jqUnit.assertNotEquals("Some toc links generated on 2nd pass", 0, tocLinks.length);
     };
 
@@ -163,7 +160,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "{uiEnhancer}.updateModel",
                     args: ["{that}.options.testOpts.testSettings"]
                 }, {
-                    listener: "fluid.tests.testTocStyling",
+                    listener: "fluid.tests.testToc",
                     spec: {priority: "last"},
                     event: "{uiEnhancer}.tableOfContents.events.afterTocRender"
                 }, {
@@ -182,10 +179,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         components: {
             prefsEditor: {
-                type: "fluid.prefs.rootModel.starter",
+                type: "fluid.prefs.initialModel.starter",
                 options: {
                     members: {
-                        rootModel: {
+                        initialModel: {
                             theme: "yb"
                         }
                     }

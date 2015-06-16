@@ -112,7 +112,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             function testComponent(prefsEditorLoader) {
                 var prefsEditor = prefsEditorLoader.prefsEditor;
-                var rootModel = prefsEditor.rootModel;
+                var initialModel = prefsEditorLoader.initialModel;
 
                 fluid.tests.prefs.assertPresent(prefsEditor, fluid.tests.prefs.expectedComponents[componentName]);
                 fluid.tests.prefs.applierRequestChanges(prefsEditor, fluid.tests.prefs.bwSkin);
@@ -130,20 +130,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
                 var resetButton = prefsEditor.locate("reset");
                 resetButton.click();
-                fluid.tests.prefs.checkModelSelections("model from original", rootModel, prefsEditor.model);
+                fluid.tests.prefs.checkModelSelections("model from original", initialModel, prefsEditor.model);
                 fluid.tests.prefs.applierRequestChanges(prefsEditor, fluid.tests.prefs.bwSkin);
                 fluid.tests.prefs.checkModelSelections("model from original (correct state after reset)",
-                    (resetShouldSave ? rootModel : fluid.tests.prefs.bwSkin), fluid.staticEnvironment.uiEnhancer.model);
+                    (resetShouldSave ? initialModel : fluid.tests.prefs.bwSkin), fluid.staticEnvironment.uiEnhancer.model);
 
                 cancelButton.click();
                 fluid.tests.prefs.checkModelSelections("model from original (correct state after reset and cancel)",
-                    (resetShouldSave ? rootModel : fluid.tests.prefs.bwSkin), prefsEditor.model);
+                    (resetShouldSave ? initialModel : fluid.tests.prefs.bwSkin), prefsEditor.model);
 
                 jqUnit.start();
             }
 
             fluid.invokeGlobalFunction(componentName, ["#myPrefsEditor", {
-                gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
+                gradeNames: ["fluid.prefs.transformDefaultPanelsOptions", "fluid.prefs.initialModel.starter"],
                 templatePrefix: "../../../../src/framework/preferences/html/",
                 messagePrefix: "../../../../src/framework/preferences/messages/",
                 templateLoader: {
@@ -153,7 +153,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     gradeNames: ["fluid.prefs.starterMessageLoader"]
                 },
                 prefsEditor: {
-                    gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"],
+                    gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.uiEnhancerRelay"],
                     listeners: {
                         "onSave.direct": testSave2,
                         "onSave.munged": testSave
@@ -172,7 +172,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.prefs.enhancerOptions = {
         uiEnhancer: {
-            gradeNames: ["fluid.uiEnhancer.starterEnactors", "fluid.prefs.rootModel.starter"],
+            gradeNames: ["fluid.uiEnhancer.starterEnactors", "fluid.prefs.initialModel.starter"],
             tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html",
             classnameMap: {
                 "textFont": {
@@ -209,7 +209,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.prefs.mungingIntegrationOptions = {
-        gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
+        gradeNames: ["fluid.prefs.transformDefaultPanelsOptions", "fluid.prefs.initialModel.starter"],
         templatePrefix: "../../../../src/framework/preferences/html/",
         messagePrefix: "../../../../src/framework/preferences/messages/",
         textFont: {
@@ -227,7 +227,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             gradeNames: ["fluid.prefs.starterMessageLoader"]
         },
         prefsEditor: {
-            gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"]
+            gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.uiEnhancerRelay"]
         }
     };
 
@@ -238,12 +238,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.globalSettingsStore();
             fluid.pageEnhancer(fluid.tests.prefs.enhancerOptions);
             var options = fluid.merge(null, fluid.tests.prefs.mungingIntegrationOptions, {
+                members: {
+                    initialModel: {
+                        theme: "yb"
+                    }
+                },
                 prefsEditor: {
-                    members: {
-                        rootModel: {
-                            theme: "yb"
-                        }
-                    },
                     listeners: {
                         onReady: [
                             "fluid.tests.prefs.testComponentIntegration",

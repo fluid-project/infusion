@@ -44,11 +44,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         catsAreDecent: true,
         floatyLowy: 12.3910,
         floatyHighy: 12.52,
-        floaty2: -9876.789
+        floaty2: -9876.789,
+        hundredInString: "100",
+        floatInString: "12.52",
+        floaty2InString: "-9876.789"
     };
 
     jqUnit.module("Model Transformation");
-    
+
     fluid.tests.transforms.wrapTransform = function (transform) {
         return {
             value: {
@@ -769,6 +772,57 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
+    var stringToNumberTests = [{
+        message: "stringToNumber() converts integers.",
+        transformWrap: true,
+        transform: {
+            type: "fluid.transforms.stringToNumber",
+            inputPath: "hundredInString"
+        },
+        method: "assertValue",
+        expected: fluid.tests.transforms.source.hundred
+    }, {
+        message: "stringToNumber() converts float values.",
+        transformWrap: true,
+        transform: {
+            type: "fluid.transforms.stringToNumber",
+            inputPath: "floatInString"
+        },
+        method: "assertValue",
+        expected: fluid.tests.transforms.source.floatyHighy
+    }, {
+        message: "stringToNumber() converts negative float values.",
+        transformWrap: true,
+        transform: {
+            type: "fluid.transforms.stringToNumber",
+            inputPath: "floaty2InString"
+        },
+        method: "assertValue",
+        expected: fluid.tests.transforms.source.floaty2
+    }, {
+        message: "stringToNumber() converts integers.",
+        transformWrap: true,
+        transform: {
+            type: "fluid.transforms.stringToNumber",
+            inputPath: "cat"
+        },
+        method: "assertEquals",
+        expected: undefined
+    }, {
+        message: "stringToNumber() converts integers.",
+        transformWrap: true,
+        transform: {
+            type: "fluid.transforms.stringToNumber",
+            inputPath: "gerbil"
+        },
+        method: "assertEquals",
+        expected: undefined
+    }];
+
+    jqUnit.test("fluid.transforms.stringToNumber()", function () {
+        fluid.tests.transforms.testOneStructure(stringToNumberTests);
+    });
+
     var countTests = [{
         message: "count() should return a length of 1 for a non-array value.",
         transform: {
@@ -959,10 +1013,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         "unmatched-none": {
-            message: "valueMapper with unmatched input value and no defaultInput",
-            model: {
-                condition: true
-            },
+            message: "valueMapper with undefined input value and no defaultInput",
+            model: {},
             transform: {
                 type: "fluid.transforms.valueMapper",
                 inputPath: "uncondition",
@@ -985,7 +1037,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expected: undefined
         },
         "unmatched-definite": {
-            message: "valueMapper with unmatched input value mapped to definite value",
+            message: "valueMapper with undefined input value mapped to definite value",
             model: {},
             transform: {
                 type: "fluid.transforms.valueMapper",
@@ -1003,7 +1055,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         "unmatched-undefined-short": {
-            message: "valueMapper with unmatched input value mapped to undefined value with short form",
+            message: "valueMapper with undefined input value mapped to undefined value with short form",
             model: {},
             transform: {
                 type: "fluid.transforms.valueMapper",
@@ -1018,7 +1070,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expected: undefined
         },
         "unmatched-defaultOutpath": {
-            message: "Valuemapper with defaultOutputPath",
+            message: "valueMapper with defaultOutputPath",
             model: {
                 foo: "bar"
             },
@@ -1037,7 +1089,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         "unmatched-nodefaults": {
-            message: "valueMapper with unmatched input value and no default or undefined values specified.",
+            message: "valueMapper with undefined and unmatched input value",
             model: {
                 display: {
                     screenEnhancement: {
@@ -1057,7 +1109,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expected: undefined
         },
         "nested-mapping": {
-            message: "valueMapper with nested transforms.",
+            message: "valueMapper with nested transforms",
             model: {
                 animals: {
                     mammals: {
@@ -1089,7 +1141,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         "valueMapping-multiout": {
-            message: "valueMapper with multiple outputs.",
+            message: "valueMapper with multiple outputs to different paths",
             model: {
                 screenReaderTTSEnabled: false
             },
@@ -1136,7 +1188,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "transform": {
                 "type": "fluid.transforms.valueMapper",
                 "inputPath": "fontFace.genericFontFace",
-                "_comment": "TODO: For now, this ignores the actual 'fontName' setting",
+                "_comment": "TODO: For now, this ignores the actual \"fontName\" setting",
                 "options": {
                     "serif": "times",
                     "sans serif": "verdana",
@@ -1184,7 +1236,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Rules transformed to expanded form", expectedRules, expandedRules);
         testCompact(" - expanded", expandedRules);
     });
-    
+
     fluid.tests.transforms.metadataRules = {
         type: "fluid.transforms.valueMapper",
         defaultInputValue: true,
@@ -1206,14 +1258,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         ]
     };
-    
+
     fluid.tests.transforms.inverseMetadataRules =
         fluid.model.transform.invertConfiguration({
             "": {
                 transform: fluid.tests.transforms.metadataRules
             }
         });
-    
+
     fluid.tests.transforms.metadataCases = {
         "forward flashing": {
             message: "valueMapper selects primitive option 1",
@@ -1246,8 +1298,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "soundHazard": "unknown"
             }
         }
+        // TODO: It was probably expected that there was particular behaviour with respect to partial matches of the
+        // compund input value here - we would need to write further test cases using the new "partialMatches" option
     };
-    
+
     fluid.tests.transforms.inverseMetadataCases = {
         "backward flashing": {
             message: "valueMapper inverts to primitive 1",
@@ -1281,7 +1335,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     };
-    
+
     jqUnit.test("valueMapper with compound values - FLUID-5479 metadata editing example", function () {
         fluid.tests.transforms.testOneStructure(fluid.tests.transforms.metadataCases, {
             transformWrap: true,
@@ -1348,6 +1402,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Array structure should have been created by transform", expected, result);
     });
 
+    // TODO: wildcards are not used in practice, have bugs and limitations (FLUID-5510, etc)
     jqUnit.test("transform with isomorphic schema and wildcards", function () {
         var gpiiSettingsResponse = [{
             "org.gnome.desktop.a11y.magnifier": {
@@ -1663,6 +1718,83 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "im.nested"
         ];
         jqUnit.assertDeepEq("Collected input paths", expected, paths.sort());
+    });
+
+    // FLUID-5512: valueMapper with a default output value
+    fluid.tests.valueMapperWithDefaultOutputCases = {
+        case1: {
+            model: {
+                isTooltipOpen: true,
+                isDialogOpen: true
+            },
+            expected: {
+                value: true
+            }
+        },
+        case2: {
+            model: {
+                isTooltipOpen: false,
+                isDialogOpen: true
+            },
+            expected: {
+                value: false
+            }
+        },
+        case3: {
+            model: {
+                isTooltipOpen: true,
+                isDialogOpen: false
+            },
+            expected: {
+                value: false
+            }
+        },
+        case4: {
+            model: {
+                isTooltipOpen: false,
+                isDialogOpen: false
+            },
+            expected: {
+                value: false
+            }
+        },
+        case5: {
+            model: {
+                isTooltipOpen: undefined,
+                isDialogOpen: false
+            },
+            expected: {
+                value: false
+            }
+        }
+    };
+
+    jqUnit.test("FLUID-5512: valueMapper with a defaulting output value", function () {
+        var rules = {
+            type: "fluid.transforms.valueMapper",
+            inputPath: "",
+            options: [{
+                inputValue: {
+                    "isTooltipOpen": true,
+                    "isDialogOpen": true
+                },
+                outputValue: true
+            }, { // a "match always" rule
+                undefinedInputValue: true,
+                partialMatches: true,
+                outputValue: false
+            }]
+        };
+
+        var transform = {
+            value: {
+                transform: rules
+            }
+        };
+
+        fluid.each(fluid.tests.valueMapperWithDefaultOutputCases, function (aCase) {
+            jqUnit.assertDeepEq("The transformed result is expected", aCase.expected, fluid.model.transform(aCase.model, transform));
+        });
     });
 
     fluid.tests.transforms.multiInputTransformations = {
@@ -2474,6 +2606,380 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.test("limitRange tests", function () {
         fluid.tests.transforms.testOneStructure(fluid.tests.transforms.limitRangeTests, {
+            transformWrap: true,
+            method: "assertEquals"
+        });
+    });
+
+    /* --------------- fluid.transforms.indexOf tests -------------------- */
+
+    fluid.tests.transforms.indexOfTests = [{
+        message: "indexOf() should return the index of the value on the array.",
+        transform: {
+            value: {
+                transform: {
+                    type: "fluid.transforms.indexOf",
+                    array: ["sheep", "dog"],
+                    inputPath: "element"
+                }
+            }
+        },
+        invertedRules: {
+            transform: [{
+                type: "fluid.transforms.dereference",
+                array: ["sheep", "dog"],
+                outputPath: "element",
+                inputPath: "value"
+            }]
+        },
+        method: "assertDeepEq",
+        model: {
+            element: "dog"
+        },
+        expected: {
+            value: 1
+        },
+        fullyinvertible: true
+    }, {
+        message: "indexOf() should return the index of the value when the value of the \"array\" argument is arrayable and match.",
+        transform: {
+            value: {
+                transform: {
+                    type: "fluid.transforms.indexOf",
+                    array: "sheep",
+                    inputPath: "element"
+                }
+            }
+        },
+        invertedRules: {
+            transform: [{
+                type: "fluid.transforms.dereference",
+                array: "sheep",
+                outputPath: "element",
+                inputPath: "value"
+            }]
+        },
+        method: "assertDeepEq",
+        model: {
+            element: "sheep"
+        },
+        expected: {
+            value: 0
+        },
+        fullyinvertible: true
+    }, {
+        message: "indexOf() should add offset value to the return.",
+        transform: {
+            value: {
+                transform: {
+                    type: "fluid.transforms.indexOf",
+                    array: ["sheep", "dog"],
+                    inputPath: "element",
+                    offset: 3
+                }
+            }
+        },
+        invertedRules: {
+            transform: [{
+                type: "fluid.transforms.dereference",
+                array: ["sheep", "dog"],
+                offset: -3,
+                outputPath: "element",
+                inputPath: "value"
+            }]
+        },
+        method: "assertDeepEq",
+        model: {
+            element: "dog"
+        },
+        expected: {
+            value: 4
+        },
+        fullyinvertible: true
+    }, {
+        message: "indexOf() should add offset value to the return even when the offset value can be converted to a number.",
+        transform: {
+            value: {
+                transform: {
+                    type: "fluid.transforms.indexOf",
+                    array: ["sheep", "dog"],
+                    inputPath: "element",
+                    offset: "1"
+                }
+            }
+        },
+        invertedRules: {
+            transform: [{
+                type: "fluid.transforms.dereference",
+                array: ["sheep", "dog"],
+                offset: -1,
+                outputPath: "element",
+                inputPath: "value"
+            }]
+        },
+        method: "assertDeepEq",
+        model: {
+            element: "dog"
+        },
+        expected: {
+            value: 2
+        },
+        fullyinvertible: true
+    }];
+
+    fluid.tests.transforms.indexOfBoundaryTests = [{
+        message: "indexOf() should return -1 when the value is not found in the array.",
+        transform: {
+            type: "fluid.transforms.indexOf",
+            array: ["sheep", "dog"],
+            value: "cat"
+        },
+        expected: -1
+    }, {
+        message: "indexOf() should return -1 when the value of the \"array\" argument is arrayable and mismatch.",
+        transform: {
+            type: "fluid.transforms.indexOf",
+            array: "dog",
+            value: "sheep"
+        },
+        expected: -1
+    }, {
+        message: "indexOf() should return undefined when the value is not provided.",
+        transform: {
+            type: "fluid.transforms.indexOf",
+            array: ["sheep", "dog"]
+        },
+        expected: undefined
+    }, {
+        message: "indexOf() should add offset value to the return even when the return is -1.",
+        transform: {
+            type: "fluid.transforms.indexOf",
+            array: ["sheep", "dog"],
+            value: "a",
+            offset: 3
+        },
+        expected: 2
+    }, {
+        message: "indexOf() should return what's defined in the notFound when the value is not found in the array.",
+        transform: {
+            type: "fluid.transforms.indexOf",
+            array: ["sheep", "dog"],
+            value: "cat",
+            notFound: "notFound"
+        },
+        expected: "notFound"
+    }, {
+        message: "indexOf() should return the proper index when notFound is defined but the value is found in the array.",
+        transform: {
+            type: "fluid.transforms.indexOf",
+            array: ["sheep", "dog"],
+            value: "sheep",
+            notFound: "notFound"
+        },
+        expected: 0
+    }];
+
+    jqUnit.test("fluid.transforms.indexOf()", function () {
+        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.indexOfTests);
+
+        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.indexOfBoundaryTests, {
+            transformWrap: true,
+            method: "assertEquals"
+        });
+    });
+
+    /* --------------- fluid.transforms.dereference tests -------------------- */
+
+    fluid.tests.transforms.deferenceTests = [{
+        message: "dereference() should return the value in an array based on the given index.",
+        transform: {
+            value: {
+                transform: {
+                    type: "fluid.transforms.dereference",
+                    array: ["sheep", "dog"],
+                    inputPath: "element"
+                }
+            }
+        },
+        invertedRules: {
+            transform: [{
+                type: "fluid.transforms.indexOf",
+                array: ["sheep", "dog"],
+                outputPath: "element",
+                inputPath: "value"
+            }]
+        },
+        method: "assertDeepEq",
+        model: {
+            element: 1
+        },
+        expected: {
+            value: "dog"
+        },
+        fullyinvertible: true
+    }, {
+        message: "dereference() should return the value when the \"array\" is arrayable and match the given index.",
+        transform: {
+            value: {
+                transform: {
+                    type: "fluid.transforms.dereference",
+                    array: "sheep",
+                    inputPath: "element"
+                }
+            }
+        },
+        invertedRules: {
+            transform: [{
+                type: "fluid.transforms.indexOf",
+                array: "sheep",
+                outputPath: "element",
+                inputPath: "value"
+            }]
+        },
+        method: "assertDeepEq",
+        model: {
+            element: 0
+        },
+        expected: {
+            value: "sheep"
+        },
+        fullyinvertible: true
+    }, {
+        message: "dereference() should take the offset value into consideration.",
+        transform: {
+            value: {
+                transform: {
+                    type: "fluid.transforms.dereference",
+                    array: ["sheep", "dog"],
+                    offset: -3,
+                    inputPath: "element"
+                }
+            }
+        },
+        invertedRules: {
+            transform: [{
+                type: "fluid.transforms.indexOf",
+                array: ["sheep", "dog"],
+                offset: 3,
+                outputPath: "element",
+                inputPath: "value"
+            }]
+        },
+        method: "assertDeepEq",
+        model: {
+            element: 4
+        },
+        expected: {
+            value: "dog"
+        },
+        fullyinvertible: true
+    }, {
+        message: "dereference() should take the offset value into consideration if the offset value can be converted to a number.",
+        transform: {
+            value: {
+                transform: {
+                    type: "fluid.transforms.dereference",
+                    array: ["sheep", "dog"],
+                    offset: "-1",
+                    inputPath: "element"
+                }
+            }
+        },
+        invertedRules: {
+            transform: [{
+                type: "fluid.transforms.indexOf",
+                array: ["sheep", "dog"],
+                offset: 1,
+                outputPath: "element",
+                inputPath: "value"
+            }]
+        },
+        method: "assertDeepEq",
+        model: {
+            element: 2
+        },
+        expected: {
+            value: "dog"
+        },
+        fullyinvertible: true
+    }, {
+        message: "dereference() should ignore notFound when the value is found in the array.",
+        transform: {
+            value: {
+                transform: {
+                    type: "fluid.transforms.dereference",
+                    array: ["sheep", "dog"],
+                    notFound: "notFound",
+                    inputPath: "element"
+                }
+            }
+        },
+        invertedRules: {
+            transform: [{
+                type: "fluid.transforms.indexOf",
+                array: ["sheep", "dog"],
+                notFound: "notFound",
+                outputPath: "element",
+                inputPath: "value"
+            }]
+        },
+        method: "assertDeepEq",
+        model: {
+            element: 0
+        },
+        expected: {
+            value: "sheep"
+        },
+        fullyinvertible: true
+    }];
+
+    fluid.tests.transforms.dereferenceBoundaryTests = [{
+        message: "dereference() should return undefined when the given index is -1.",
+        transform: {
+            type: "fluid.transforms.dereference",
+            array: ["sheep", "dog"],
+            value: -1
+        },
+        expected: undefined
+    }, {
+        message: "dereference() should return undefined when the \"array\" is arrayable but the given index is -1.",
+        transform: {
+            type: "fluid.transforms.dereference",
+            array: "dog",
+            value: -1
+        },
+        expected: undefined
+    }, {
+        message: "dereference() should return undefined when the index is not provided.",
+        transform: {
+            type: "fluid.transforms.dereference",
+            array: ["sheep", "dog"]
+        },
+        expected: undefined
+    }, {
+        message: "dereference() should return undefined when the calculated index is -1.",
+        transform: {
+            type: "fluid.transforms.dereference",
+            array: ["sheep", "dog"],
+            value: 2,
+            offset: 3
+        },
+        expected: undefined
+    }, {
+        message: "dereference() should return what's defined in the notFound when the value is not found in the array.",
+        transform: {
+            type: "fluid.transforms.dereference",
+            array: ["sheep", "dog"],
+            value: -1,
+            notFound: "notFound"
+        },
+        expected: "notFound"
+    }];
+
+    jqUnit.test("fluid.transforms.dereference()", function () {
+        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.deferenceTests);
+
+        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.dereferenceBoundaryTests, {
             transformWrap: true,
             method: "assertEquals"
         });
