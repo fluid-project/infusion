@@ -140,6 +140,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         sssl: [1, 4, 5]
     };
 
+    fluid.tests.queuedDataSource.testRequests = [{
+        requestType: "get",
+        source: fluid.tests.queuedDataSource.expected100ms
+    }, {
+        requestType: "set",
+        source: fluid.tests.queuedDataSource.expected100ms
+    }, {
+        requestType: "delete",
+        source: fluid.tests.queuedDataSource.expected100ms
+    }];
+
     fluid.tests.queuedDataSource.assertRequest = function (requestType, setName, delays, expected, delayBuffer) {
         // Time in milliseconds to add to the assertion delay, to buffer against setTimeout impressions.
         // Because multiple instances run simultaneously this number may need to be increased to take into
@@ -158,34 +169,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return promise;
     };
 
-    fluid.tests.queuedDataSource.assertDelayedRequests = function (requestType, delaySet, expectedSet, delayBuffer) {
-        var count = 0;
-        var promise = fluid.promise();
-        var numSets = fluid.keys(delaySet).length;
-        fluid.each(delaySet, function (delay, set) {
-            var response = fluid.tests.queuedDataSource.assertRequest(requestType, set, delay, expectedSet[set], delayBuffer);
-            response.then(function () {
-                count++;
-                if (count >= numSets) {
-                    promise.resolve();
-                }
+    // Note: Due to the timeouts used to simulate actual asynchronous operations, this test
+    // will take a while to execute.
+    jqUnit.asyncTest("Queued DataSource", function () {
+        var sources = [];
+        fluid.each(fluid.tests.queuedDataSource.testRequests, function (testRequest) {
+            fluid.each(fluid.tests.queuedDataSource.requestRuns, function (delays, setName) {
+                sources.push(function () {
+                    return fluid.tests.queuedDataSource.assertRequest(testRequest.requestType, setName, delays, testRequest.source[setName]);
+                });
             });
         });
-        return promise;
-    };
-
-    jqUnit.asyncTest("Queued DataSource - get", function () {
-        var response = fluid.tests.queuedDataSource.assertDelayedRequests("get", fluid.tests.queuedDataSource.requestRuns, fluid.tests.queuedDataSource.expected100ms);
-        response.then(jqUnit.start);
-    });
-
-    jqUnit.asyncTest("Queued DataSource - set", function () {
-        var response = fluid.tests.queuedDataSource.assertDelayedRequests("set", fluid.tests.queuedDataSource.requestRuns, fluid.tests.queuedDataSource.expected100ms);
-        response.then(jqUnit.start);
-    });
-
-    jqUnit.asyncTest("Queued DataSource - delete", function () {
-        var response = fluid.tests.queuedDataSource.assertDelayedRequests("delete", fluid.tests.queuedDataSource.requestRuns, fluid.tests.queuedDataSource.expected100ms);
-        response.then(jqUnit.start);
+        var testSequence = fluid.promise.sequence(sources);
+        testSequence.then(jqUnit.start);
     });
 })();
