@@ -660,7 +660,8 @@ var fluid_2_0 = fluid_2_0 || {};
             label: ".flc-prefsEditor-min-text-size-label",
             smallIcon: ".flc-prefsEditor-min-text-size-smallIcon",
             largeIcon: ".flc-prefsEditor-min-text-size-largeIcon",
-            multiplier: ".flc-prefsEditor-multiplier"
+            multiplier: ".flc-prefsEditor-multiplier",
+            textSizeChoiceLabel: ".flc-prefsEditor-textsize-choice-label"
         },
         selectorsToIgnore: ["textSize"],
         components: {
@@ -681,7 +682,8 @@ var fluid_2_0 = fluid_2_0 || {};
             label: {messagekey: "textSizeLabel"},
             smallIcon: {messagekey: "textSizeSmallIcon"},
             largeIcon: {messagekey: "textSizeLargeIcon"},
-            multiplier: {messagekey: "multiplier"}
+            multiplier: {messagekey: "multiplier"},
+            textSizeChoiceLabel: {messagekey: "tocTextSizeLabel"},
         },
         sliderOptions: {
             orientation: "horizontal",
@@ -707,13 +709,15 @@ var fluid_2_0 = fluid_2_0 || {};
         },
         selectors: {
             textFont: ".flc-prefsEditor-text-font",
-            label: ".flc-prefsEditor-text-font-label"
+            label: ".flc-prefsEditor-text-font-label",
+            textFontChoiceLabel: ".flc-prefsEditor-textfont-choice-label"
         },
         stringArrayIndex: {
             textFont: ["textFont-default", "textFont-times", "textFont-comic", "textFont-arial", "textFont-verdana"]
         },
         protoTree: {
             label: {messagekey: "textFontLabel"},
+            textFontChoiceLabel: {messagekey: "textFontChoiceLabel"},
             textFont: {
                 optionnames: "${{that}.msgLookup.textFont}",
                 optionlist: "${{that}.options.controlValues.textFont}",
@@ -761,7 +765,8 @@ var fluid_2_0 = fluid_2_0 || {};
             label: ".flc-prefsEditor-line-space-label",
             narrowIcon: ".flc-prefsEditor-line-space-narrowIcon",
             wideIcon: ".flc-prefsEditor-line-space-wideIcon",
-            multiplier: ".flc-prefsEditor-multiplier"
+            multiplier: ".flc-prefsEditor-multiplier",
+            lineSpaceChoiceLabel: ".flc-prefsEditor-linespace-choice-label"
         },
         selectorsToIgnore: ["lineSpace"],
         components: {
@@ -782,7 +787,8 @@ var fluid_2_0 = fluid_2_0 || {};
             label: {messagekey: "lineSpaceLabel"},
             narrowIcon: {messagekey: "lineSpaceNarrowIcon"},
             wideIcon: {messagekey: "lineSpaceWideIcon"},
-            multiplier: {messagekey: "multiplier"}
+            multiplier: {messagekey: "multiplier"},
+            lineSpaceChoiceLabel: {messagekey: "lineSpaceChoiceLabel"}
         },
         sliderOptions: {
             orientation: "horizontal",
@@ -813,7 +819,8 @@ var fluid_2_0 = fluid_2_0 || {};
             themeRow: ".flc-prefsEditor-themeRow",
             themeLabel: ".flc-prefsEditor-theme-label",
             themeInput: ".flc-prefsEditor-themeInput",
-            label: ".flc-prefsEditor-contrast-label"
+            label: ".flc-prefsEditor-contrast-label",
+            contrastChoiceLabel: ".flc-prefsEditor-contrast-choice-label"
         },
         styles: {
             defaultThemeLabel: "fl-prefsEditor-contrast-defaultThemeLabel"
@@ -824,6 +831,7 @@ var fluid_2_0 = fluid_2_0 || {};
         repeatingSelectors: ["themeRow"],
         protoTree: {
             label: {messagekey: "contrastLabel"},
+            contrastChoiceLabel: {messagekey: "contrastChoiceLabel"},
             expander: {
                 type: "fluid.renderer.selection.inputs",
                 rowID: "themeRow",
@@ -956,10 +964,12 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.defaults("fluid.prefs.panel.linksControls", {
         gradeNames: ["fluid.prefs.compositePanel", "autoInit"],
         selectors: {
-            label: ".flc-prefsEditor-linksControls-label"
+            label: ".flc-prefsEditor-linksControls-label",
+            emphasisChoiceLabel: ".flc-prefsEditor-emphasis-choice-label"
         },
         protoTree: {
-            label: {messagekey: "linksControlsLabel"}
+            label: {messagekey: "linksControlsLabel"},
+            emphasisChoiceLabel: {messagekey: "emphasisChoiceLabel"}
         }
     });
 
