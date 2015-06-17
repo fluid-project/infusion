@@ -1,5 +1,5 @@
 /*
-Copyright 2013 OCAD University
+Copyright 2013-2015 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -23,7 +23,9 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.defaults("fluid.prefs.auxSchema", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
-        auxiliarySchema: {}
+        auxiliarySchema: {
+            "loaderGrades": ["fluid.prefs.separatedPanel"]
+        }
     });
 
     /**
@@ -181,8 +183,8 @@ var fluid_2_0 = fluid_2_0 || {};
 
             fluid.prefs.addAtPath(auxSchema, [type, "components"], components);
             fluid.prefs.addAtPath(auxSchema, [type, "selectors"], selectors);
-            fluid.prefs.addAtPath(auxSchema, ["templateLoader", "templates"], templates);
-            fluid.prefs.addAtPath(auxSchema, ["messageLoader", "templates"], messages);
+            fluid.prefs.addAtPath(auxSchema, ["templateLoader", "resources"], templates);
+            fluid.prefs.addAtPath(auxSchema, ["messageLoader", "resources"], messages);
             fluid.prefs.addAtPath(auxSchema, "initialModel", initialModel);
         }
 
@@ -332,8 +334,8 @@ var fluid_2_0 = fluid_2_0 || {};
             // Add onto auxSchema
             fluid.prefs.addAtPath(auxSchema, ["panels", "components"], components);
             fluid.prefs.addAtPath(auxSchema, ["panels", "selectors"], selectors);
-            fluid.prefs.addAtPath(auxSchema, ["templateLoader", "templates"], templates);
-            fluid.prefs.addAtPath(auxSchema, ["messageLoader", "templates"], messages);
+            fluid.prefs.addAtPath(auxSchema, ["templateLoader", "resources"], templates);
+            fluid.prefs.addAtPath(auxSchema, ["messageLoader", "resources"], messages);
             fluid.prefs.addAtPath(auxSchema, "initialModel", initialModel);
             $.extend(true, auxSchema, {panelsToIgnore: panelsToIgnore});
         });
@@ -377,10 +379,11 @@ var fluid_2_0 = fluid_2_0 || {};
 
             fluid.each(["template", "message"], function (type) {
                 if (prefName === type) {
-                    fluid.set(auxSchema, [type + "Loader", "templates", "prefsEditor"], auxSchema[type]);
+                    fluid.set(auxSchema, [type + "Loader", "resources", "prefsEditor"], auxSchema[type]);
                     delete auxSchema[type];
                 }
             });
+
         });
 
         // Remove subPanels array. It is to keep track of the panels that are only used as sub-components of composite panels.
@@ -426,7 +429,8 @@ var fluid_2_0 = fluid_2_0 || {};
                 "createOnEvent": "onPrefsEditorMarkupReady",
                 "container": "{prefsEditor}.dom.%prefKey",
                 "options.gradeNames": "fluid.prefs.prefsEditorConnections",
-                "options.resources.template": "{templateLoader}.resources.%prefKey"
+                "options.resources.template": "{templateLoader}.resources.%prefKey",
+                "options.messageBase": "{messageLoader}.resources.%prefKey.resourceText"
             },
             panelModel: {
                 "%internalModelName": "{prefsEditor}.model.%externalModelName"
@@ -435,7 +439,8 @@ var fluid_2_0 = fluid_2_0 || {};
                 "%subPrefKey": "{templateLoader}.resources.%subPrefKey"
             },
             subPanel: {
-                "container": "{%compositePanel}.dom.%prefKey"
+                "container": "{%compositePanel}.dom.%prefKey",
+                "options.messageBase": "{messageLoader}.resources.%prefKey.resourceText"
             },
             enactor: {
                 "container": "{uiEnhancer}.container"

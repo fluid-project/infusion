@@ -1,5 +1,5 @@
 /*
-Copyright 2010 OCAD University
+Copyright 2010-2015 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -24,12 +24,6 @@ var fluid_2_0 = fluid_2_0 || {};
         that.computeContentFunc();
         if (that.initialised) {
             that.container.tooltip("option", "content", that.contentFunc);
-        }
-    };
-
-    fluid.tooltip.updateContent = function (that, content) {
-        if (that.model.content !== content) { // TODO: Remove with FLUID-3674 branch
-            that.applier.requestChange("content", content);
         }
     };
 
@@ -61,6 +55,14 @@ var fluid_2_0 = fluid_2_0 || {};
             };
         }
     };
+    
+    // Resolve FLUID-5673 by resolving the event target upwards to the nearest match for "items" - this will
+    // reproduce the natural effect operated by event bubbling in conjunction with the widget
+    fluid.tooltip.resolveTooltipTarget = function (items, event) {
+        var originalTarget = fluid.resolveEventTarget(event);
+        var tooltipTarget = $(originalTarget).closest(items);
+        return tooltipTarget[0];
+    };
 
     // Note that fluid.resolveEventTarget is required
     // because of strange dispatching within tooltip widget's "_open" method
@@ -71,7 +73,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.tooltip.makeOpenHandler = function (that) {
         return function (event, tooltip) {
             fluid.tooltip.closeAll(that);
-            var originalTarget = fluid.resolveEventTarget(event);
+            var originalTarget = fluid.tooltip.resolveTooltipTarget(that.options.items, event);
             var key = fluid.allocateSimpleId(originalTarget);
             that.openIdMap[key] = true;
             if (that.initialised) {
@@ -83,7 +85,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.tooltip.makeCloseHandler = function (that) {
         return function (event, tooltip) {
             if (that.initialised) { // underlying jQuery UI component will fire various spurious close events after it has been destroyed
-                var originalTarget = fluid.resolveEventTarget(event);
+                var originalTarget = fluid.tooltip.resolveTooltipTarget(that.options.items, event);
                 delete that.openIdMap[originalTarget.id];
                 that.events.afterClose.fire(that, originalTarget, tooltip.tooltip, event);
             }
@@ -130,7 +132,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.tooltip", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
         widgetOptions: {
             tooltipClass: "{that}.options.styles.tooltip",
             position: "{that}.options.position",
@@ -160,14 +162,9 @@ var fluid_2_0 = fluid_2_0 || {};
                 funcName: "fluid.tooltip.closeAll",
                 args: "{that}"
             },
-          /**
-           * Updates the contents displayed in the tooltip. Deprecated - use the
-           * ChangeApplier API for this component instead.
-           * @param {Object} content, the content to be displayed in the tooltip
-           */
             updateContent: {
-                funcName: "fluid.tooltip.updateContent",
-                args: ["{that}", "{arguments}.0"]
+                changePath: "content",
+                value: "{arguments}.0"
             },
             computeContentFunc: {
                 funcName: "fluid.tooltip.computeContentFunc",
@@ -195,12 +192,15 @@ var fluid_2_0 = fluid_2_0 || {};
             afterClose: null  // arguments: that, event.target, tooltip, event
         },
         listeners: {
-            onCreate: "fluid.tooltip.setup",
-            onDestroy: "fluid.tooltip.doDestroy"
+            "onCreate.setup": "fluid.tooltip.setup",
+            "onDestroy.doDestroy": "fluid.tooltip.doDestroy"
         },
         modelListeners: {
+            // TODO: We could consider a more fine-grained scheme for this,
+            // listening to content and idToContent separately
             "": {
-                funcName: "fluid.tooltip.updateContentImpl", // TODO: better scheme when FLUID-3674 is merged
+                funcName: "fluid.tooltip.updateContentImpl",
+                excludeSource: "init",
                 args: "{that}"
             }
         },

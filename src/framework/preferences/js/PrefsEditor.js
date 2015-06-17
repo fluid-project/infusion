@@ -1,6 +1,6 @@
 /*
 Copyright 2009 University of Toronto
-Copyright 2010-2011 OCAD University
+Copyright 2010-2015 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -27,12 +27,29 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.prefs.prefsEditorLoader", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.settingsGetter", "fluid.prefs.initialModel", "autoInit"],
+        defaultLocale: "en",
+        members: {
+            settings: {
+                expander: {
+                    funcName: "fluid.prefs.prefsEditorLoader.getCompleteSettings",
+                    args: ["{that}.initialModel", "{that}.getSettings"]
+                }
+            }
+        },
         components: {
             prefsEditor: {
                 priority: "last",
                 type: "fluid.prefs.prefsEditor",
-                createOnEvent: "onCreatePrefsEditorReady"
+                createOnEvent: "onCreatePrefsEditorReady",
+                options: {
+                    members: {
+                        initialModel: "{prefsEditorLoader}.initialModel"
+                    },
+                    invokers: {
+                        getSettings: "{prefsEditorLoader}.getSettings"
+                    }
+                }
             },
             templateLoader: {
                 type: "fluid.prefs.resourceLoader",
@@ -45,6 +62,11 @@ var fluid_2_0 = fluid_2_0 || {};
             messageLoader: {
                 type: "fluid.prefs.resourceLoader",
                 options: {
+                    defaultLocale: "{prefsEditorLoader}.options.defaultLocale",
+                    locale: "{prefsEditorLoader}.settings.locale",
+                    resourceOptions: {
+                        dataType: "json"
+                    },
                     events: {
                         onResourcesLoaded: "{prefsEditorLoader}.events.onPrefsEditorMessagesLoaded"
                     }
@@ -54,18 +76,11 @@ var fluid_2_0 = fluid_2_0 || {};
         events: {
             onPrefsEditorTemplatesLoaded: null,
             onPrefsEditorMessagesLoaded: null,
-            onMsgResolverReady: null,
             onCreatePrefsEditorReady: {
                 events: {
                     templateLoaded: "onPrefsEditorTemplatesLoaded",
-                    msgResolverReady: "onMsgResolverReady"
+                    prefsEditorMessagesLoaded: "onPrefsEditorMessagesLoaded"
                 }
-            }
-        },
-        listeners: {
-            onPrefsEditorMessagesLoaded: {
-                funcName: "fluid.prefs.prefsEditorLoader.createMsgResolver",
-                args: ["{arguments}.0", "{that}"]
             }
         },
         distributeOptions: [{
@@ -89,15 +104,9 @@ var fluid_2_0 = fluid_2_0 || {};
         }]
     });
 
-    fluid.prefs.prefsEditorLoader.createMsgResolver = function (messageResources, that) {
-        var completeMessage;
-        fluid.each(messageResources, function (oneResource) {
-            var message = JSON.parse(oneResource.resourceText);
-            completeMessage = $.extend({}, completeMessage, message);
-        });
-        var parentResolver = fluid.messageResolver({messageBase: completeMessage});
-        that.msgResolver = fluid.messageResolver({messageBase: {}, parents: [parentResolver]});
-        that.events.onMsgResolverReady.fire();
+    fluid.prefs.prefsEditorLoader.getCompleteSettings = function (initialModel, getSettingsFunc) {
+        var savedSettings = getSettingsFunc();
+        return $.extend(true, {}, initialModel, savedSettings);
     };
 
     // TODO: This mixin grade appears to be supplied manually by various test cases but no longer appears in
@@ -135,7 +144,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     /**************************************
-     * Preferences Editor Template Loader *
+     * Preferences Editor Resource Loader *
      **************************************/
 
     /**
@@ -149,21 +158,24 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.defaults("fluid.prefs.resourceLoader", {
         gradeNames: ["fluid.eventedComponent", "autoInit"],
         listeners: {
-            "onCreate": {
-                listener: "fluid.prefs.resourceLoader.loadTemplates",
-                args: ["{that}", {expander: {func: "{that}.resolveTemplates"}}]
+            "onCreate.loadResources": {
+                listener: "fluid.prefs.resourceLoader.loadResources",
+                args: ["{that}", {expander: {func: "{that}.resolveResources"}}]
             }
         },
-        templates: {},  // Must be supplied by integrators
+        defaultLocale: null,
+        locale: null,
         terms: {},  // Must be supplied by integrators
+        resources: {},  // Must be supplied by integrators
+        resourceOptions: {},
         // Unsupported, non-API option
         invokers: {
             transformURL: {
                 funcName: "fluid.stringTemplate",
                 args: ["{arguments}.0", "{that}.options.terms"]
             },
-            resolveTemplates: {
-                funcName: "fluid.prefs.resourceLoader.resolveTemplates",
+            resolveResources: {
+                funcName: "fluid.prefs.resourceLoader.resolveResources",
                 args: "{that}"
             }
         },
@@ -172,16 +184,16 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-    fluid.prefs.resourceLoader.resolveTemplates = function (that) {
-        var mapped = fluid.transform(that.options.templates, that.transformURL);
+    fluid.prefs.resourceLoader.resolveResources = function (that) {
+        var mapped = fluid.transform(that.options.resources, that.transformURL);
 
         return fluid.transform(mapped, function (url) {
-            return {url: url, forceCache: true};
+            var resourceSpec = {url: url, forceCache: true, options: that.options.resourceOptions};
+            return $.extend(resourceSpec, fluid.filterKeys(that.options, ["defaultLocale", "locale"]));
         });
     };
 
-    fluid.prefs.resourceLoader.loadTemplates = function (that, resources) {
-        delete resources.expander;   // A work-around for FLUID-5117
+    fluid.prefs.resourceLoader.loadResources = function (that, resources) {
         fluid.fetchResources(resources, function () {
             that.resources = resources;
             that.events.onResourcesLoaded.fire(resources);
@@ -261,7 +273,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.prefs.prefsEditor", {
-        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.settingsGetter", "fluid.prefs.settingsSetter", "fluid.prefs.initialModel", "autoInit"],
+        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.settingsSetter", "autoInit"],
         invokers: {
             /**
              * Updates the change applier and fires modelChanged on subcomponent fluid.prefs.controls

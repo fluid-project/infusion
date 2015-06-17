@@ -41,15 +41,20 @@ var fluid_2_0 = fluid_2_0 || {};
         members: {
             queue: []
         },
-        // Model paths: speaking, pending, paused
-        model: {},
-        utteranceOpts: {
-            // text: "", // text to synthesize. avoid as it will override any other text passed in
-            // lang: "", // the language of the synthesized text
-            // voiceURI: "" // a uri pointing at a voice synthesizer to use. If not set, will use the default one provided by the browser
-            // volume: 1, // a value between 0 and 1
-            // rate: 1, // a value from 0.1 to 10 although different synthesizers may have a smaller range
-            // pitch: 1, // a value from 0 to 2
+        // Model paths: speaking, pending, paused, utteranceOpts
+        model: {
+            // Changes to the utteranceOpts will only text that is queued after the change.
+            // All of these options can be overriden in the queueSpeech method by passing in
+            // options directly there. It is useful in cases where a single instance needs to be
+            // spoken with different options (e.g. single text in a different language.)
+            utteranceOpts: {
+                // text: "", // text to synthesize. avoid as it will override any other text passed in
+                // lang: "", // the language of the synthesized text
+                // voiceURI: "" // a uri pointing at a voice synthesizer to use. If not set, will use the default one provided by the browser
+                // volume: 1, // a value between 0 and 1
+                // rate: 1, // a value from 0.1 to 10 although different synthesizers may have a smaller range
+                // pitch: 1, // a value from 0 to 2
+            }
         },
         modelListeners: {
             "speaking": {
@@ -153,7 +158,7 @@ var fluid_2_0 = fluid_2_0 || {};
             onpause: that.handlePause,
             onresume: that.handleResume
         };
-        $.extend(toSpeak, that.options.utteranceOpts, options, eventBinding);
+        $.extend(toSpeak, that.model.utteranceOpts, options, eventBinding);
 
         that.queue.push(text);
         that.events.onSpeechQueued.fire(text);

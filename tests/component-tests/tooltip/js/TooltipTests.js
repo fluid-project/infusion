@@ -43,8 +43,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             } else {
                 contentToNode(tooltip, key);
             }
-
         });
+        var actuallyVisible = $("[id^=ui-tooltip]").filter(":visible");
+        jqUnit.assertEquals("Actually visible tooltips in the document", expectedKeys.length, actuallyVisible.length);
     };
 
     fluid.defaults("fluid.tests.tooltip.trackTooltips", {
@@ -89,7 +90,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.delegateTest = {
         idToContent: {
             "anchor-1": "Tooltip Content 1",
-            "anchor-2": "Tooltip Content 2"
+            "anchor-2": "Tooltip Content 2",
+            "anchor-3": "Tooltip Content 3"
         }
     };
 
@@ -98,14 +100,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 fluid.tests.delegateTest.idToContent, fluid.tests.tooltip.stringToNode);
     };
 
-    fluid.tests.delegateTest.assertVisibleMaker = function (trackTooltips, visibleAnchors) {
-        return function () {
-            fluid.tests.delegateTest.assertVisible(trackTooltips, visibleAnchors);
-        };
+    fluid.tests.tooltip.closer = function (tooltip) {
+        tooltip.close();
     };
 
     fluid.tests.tooltip.markupBlaster = function (tooltip) {
-        tooltip.close();
         var markup = tooltip.container.html();
         tooltip.container.html(markup);
     };
@@ -115,12 +114,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         tests: {
             name: "Tooltip visibility",
             sequence: [{
-                element: "#anchor-1",
-                jQueryTrigger: "focus"
+                funcName: "fluid.focus",
+                args: "{tree}.dom.focusTarget"
             }, {
                 event: "{trackTooltips}.events.notifyFocusChange",
-                listenerMaker: "fluid.tests.delegateTest.assertVisibleMaker",
-                makerArgs: ["{trackTooltips}", "anchor-1"]
+                listener: "fluid.tests.delegateTest.assertVisible",
+                args: ["{trackTooltips}", "{testEnvironment}.options.expectedVisible"]
+            }, {
+                funcName: "fluid.tests.tooltip.closer",
+                args: "{tree}.tooltip"
+            }, {
+                funcName: "fluid.tests.delegateTest.assertVisible",
+                args: ["{trackTooltips}", []]
             }, {
                 funcName: "fluid.tests.tooltip.markupBlaster",
                 args: "{tree}.tooltip"
@@ -133,13 +138,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.tooltip.tree", {
         gradeNames: ["fluid.tests.tooltip.trackTooltips", "fluid.tests.focusNotifier", "autoInit"],
+        selectors: {
+            focusTarget: ".focusTarget"
+        },
         components: {
             tooltip: {
                 type: "fluid.tooltip",
-                container: ".delegating-root",
+                container: "{tree}.container",
                 options: {
                     gradeNames: [],
                     items: ".testDelegateTooltip",
+                    duration: 0,
+                    delay: 0,
                     model: {
                         idToContent: fluid.tests.delegateTest.idToContent
                     }
@@ -147,10 +157,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
+    
+    fluid.tests.tooltip.moduleSource = function (parent) {
+        var modules = fluid.copy(fluid.tests.tooltip.module);
+        modules.name = modules.name + " - " + parent.typeName;
+        return modules;
+    };
 
     fluid.defaults("fluid.tests.tooltip.delegateEnv", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
         markupFixture: "#ioc-fixture",
+        expectedVisible: ["anchor-1"],
         components: {
             tree: {
                 type: "fluid.tests.tooltip.tree",
@@ -159,8 +176,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fixtures: {
                 type: "fluid.test.testCaseHolder",
                 options: {
-                    modules: fluid.tests.tooltip.module
+                    moduleSource: {
+                        funcName: "fluid.tests.tooltip.moduleSource",
+                        args: "{testEnvironment}"
+                    }
                 }
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.tooltip.FLUID5673Env", {
+        gradeNames: ["fluid.tests.tooltip.delegateEnv", "autoInit"],
+        expectedVisible: ["anchor-3"],
+        components: {
+            tree: {
+                container: ".FLUID-5673-root"
             }
         }
     });
@@ -168,6 +198,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.tooltip.runTests = function () {
 
         fluid.test.runTests(["fluid.tests.tooltip.delegateEnv"]);
+        fluid.test.runTests(["fluid.tests.tooltip.FLUID5673Env"]);
 
         jqUnit.module("Standard Tooltip Tests");
 

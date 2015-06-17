@@ -1,5 +1,5 @@
 /*
-Copyright 2013 OCAD University
+Copyright 2013-2015 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -198,6 +198,7 @@ var fluid_2_0 = fluid_2_0 || {};
                     model: {
                         textSize: "{prefsEditor}.model.textSize"
                     },
+                    messageBase: "{messageLoader}.resources.textSize.resourceText",
                     resources: {
                         template: "{templateLoader}.resources.textSize"
                     }
@@ -212,6 +213,7 @@ var fluid_2_0 = fluid_2_0 || {};
                     model: {
                         lineSpace: "{prefsEditor}.model.lineSpace"
                     },
+                    messageBase: "{messageLoader}.resources.lineSpace.resourceText",
                     resources: {
                         template: "{templateLoader}.resources.lineSpace"
                     }
@@ -227,6 +229,7 @@ var fluid_2_0 = fluid_2_0 || {};
                     model: {
                         value: "{prefsEditor}.model.textFont"
                     },
+                    messageBase: "{messageLoader}.resources.textFont.resourceText",
                     resources: {
                         template: "{templateLoader}.resources.textFont"
                     }
@@ -242,6 +245,7 @@ var fluid_2_0 = fluid_2_0 || {};
                     model: {
                         value: "{prefsEditor}.model.theme"
                     },
+                    messageBase: "{messageLoader}.resources.contrast.resourceText",
                     resources: {
                         template: "{templateLoader}.resources.contrast"
                     }
@@ -256,6 +260,7 @@ var fluid_2_0 = fluid_2_0 || {};
                     model: {
                         toc: "{prefsEditor}.model.toc"
                     },
+                    messageBase: "{messageLoader}.resources.layoutControls.resourceText",
                     resources: {
                         template: "{templateLoader}.resources.layoutControls"
                     }
@@ -280,14 +285,21 @@ var fluid_2_0 = fluid_2_0 || {};
                         emphasizeLinks: {
                             type: "fluid.prefs.panel.emphasizeLinks",
                             container: "{that}.dom.emphasizeLinks",
-                            createOnEvent: "initSubPanels"
+                            createOnEvent: "initSubPanels",
+                            options: {
+                                messageBase: "{messageLoader}.resources.emphasizeLinks.resourceText"
+                            }
                         },
                         inputsLarger: {
                             type: "fluid.prefs.panel.inputsLarger",
                             container: "{that}.dom.inputsLarger",
-                            createOnEvent: "initSubPanels"
+                            createOnEvent: "initSubPanels",
+                            options: {
+                                messageBase: "{messageLoader}.resources.inputsLarger.resourceText"
+                            }
                         }
                     },
+                    messageBase: "{messageLoader}.resources.linksControls.resourceText",
                     resources: {
                         template: "{templateLoader}.resources.linksControls",
                         emphasizeLinks: "{templateLoader}.resources.emphasizeLinks",
@@ -303,14 +315,14 @@ var fluid_2_0 = fluid_2_0 || {};
      ******************************/
 
     /**
-     * A template loader component that expands the resources blocks for loading templates used by starterPanels
+     * A template loader component that expands the resources blocks for loading resources used by starterPanels
      *
      * @param {Object} options
      */
 
     fluid.defaults("fluid.prefs.starterTemplateLoader", {
         gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
-        templates: {
+        resources: {
             textSize: "%templatePrefix/PrefsEditorTemplate-textSize.html",
             textFont: "%templatePrefix/PrefsEditorTemplate-textFont.html",
             lineSpace: "%templatePrefix/PrefsEditorTemplate-lineSpace.html",
@@ -324,21 +336,21 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.defaults("fluid.prefs.starterSeparatedPanelTemplateLoader", {
         gradeNames: ["fluid.prefs.starterTemplateLoader", "autoInit"],
-        templates: {
+        resources: {
             prefsEditor: "%templatePrefix/SeparatedPanelPrefsEditor.html"
         }
     });
 
     fluid.defaults("fluid.prefs.starterFullPreviewTemplateLoader", {
         gradeNames: ["fluid.prefs.starterTemplateLoader", "autoInit"],
-        templates: {
+        resources: {
             prefsEditor: "%templatePrefix/FullPreviewPrefsEditor.html"
         }
     });
 
     fluid.defaults("fluid.prefs.starterFullNoPreviewTemplateLoader", {
         gradeNames: ["fluid.prefs.starterTemplateLoader", "autoInit"],
-        templates: {
+        resources: {
             prefsEditor: "%templatePrefix/FullNoPreviewPrefsEditor.html"
         }
     });
@@ -355,7 +367,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.defaults("fluid.prefs.starterMessageLoader", {
         gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
-        templates: {
+        resources: {
             prefsEditor: "%messagePrefix/prefsEditor.json",
             textSize: "%messagePrefix/textSize.json",
             textFont: "%messagePrefix/textFont.json",

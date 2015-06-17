@@ -63,7 +63,7 @@ var example = example || {};
      */
     example.initPrefsEditor = function (container) {
         fluid.prefs.separatedPanel(container, {
-            gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
+            gradeNames: ["fluid.prefs.transformDefaultPanelsOptions", "fluid.prefs.initialModel.starter"],
             // Tell preference editor where to find all the templates, relative to this path
             terms: {
                 templatePrefix: pathToTemplates,
@@ -76,7 +76,7 @@ var example = example || {};
                 gradeNames: ["fluid.prefs.starterMessageLoader"]
             },
             prefsEditor: {
-                gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.initialModel.starter", "fluid.prefs.uiEnhancerRelay"]
+                gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.uiEnhancerRelay"]
             }
         });
     };

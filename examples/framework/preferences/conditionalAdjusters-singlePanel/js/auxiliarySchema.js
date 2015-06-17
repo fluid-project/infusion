@@ -45,7 +45,8 @@ var example = example || {};
                 panel: {
                     type: "example.panels.speak",
                     container: ".mpe-speaking-onOff",
-                    template: "%templatePrefix/speak-template.html"
+                    template: "%templatePrefix/speak-template.html",
+                    message: "%messagePrefix/speakIncrease.json"
                 }
             },
             vol: {
@@ -56,7 +57,8 @@ var example = example || {};
                 panel: {
                     type: "example.panels.vol",
                     container: ".mpe-speaking-vol",
-                    template: "%templatePrefix/slider-template.html"
+                    template: "%templatePrefix/slider-template.html",
+                    message: "%messagePrefix/speakIncrease.json"
                 }
             },
             wpm: {
@@ -67,7 +69,8 @@ var example = example || {};
                 panel: {
                     type: "example.panels.wpm",
                     container: ".mpe-speaking-wpm",
-                    template: "%templatePrefix/slider-template.html"
+                    template: "%templatePrefix/slider-template.html",
+                    message: "%messagePrefix/speakIncrease.json"
                 }
             },
             incSize: {
@@ -78,7 +81,8 @@ var example = example || {};
                 panel: {
                     type: "example.panels.incSize",
                     container: ".mpe-increasing-onOff",
-                    template: "%templatePrefix/incSize-template.html"
+                    template: "%templatePrefix/incSize-template.html",
+                    message: "%messagePrefix/speakIncrease.json"
                 }
             },
             cursor: {
@@ -89,7 +93,8 @@ var example = example || {};
                 panel: {
                     type: "example.panels.cursor",
                     container: ".mpe-increasing-cursor",
-                    template: "%templatePrefix/slider-template.html"
+                    template: "%templatePrefix/slider-template.html",
+                    message: "%messagePrefix/speakIncrease.json"
                 }
             },
             magFactor: {
@@ -100,7 +105,8 @@ var example = example || {};
                 panel: {
                     type: "example.panels.magFactor",
                     container: ".mpe-increasing-magFactor",
-                    template: "%templatePrefix/slider-template.html"
+                    template: "%templatePrefix/slider-template.html",
+                    message: "%messagePrefix/speakIncrease.json"
                 }
             },
             magPos: {
@@ -111,7 +117,8 @@ var example = example || {};
                 panel: {
                     type: "example.panels.magPos",
                     container: ".mpe-increasing-magPos",
-                    template: "%templatePrefix/radioButton-template.html"
+                    template: "%templatePrefix/radioButton-template.html",
+                    message: "%messagePrefix/speakIncrease.json"
                 }
             }
         }

@@ -9,7 +9,7 @@
     },
     "links": {
         "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/pager",
-        "apiLink": "http://wiki.fluidproject.org/display/docs/Pager+API",
+        "apiLink": "http://docs.fluidproject.org/infusion/development/to-do/PagerAPI.html",
         "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Pager feedback"
     }
 }

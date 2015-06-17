@@ -1,5 +1,5 @@
 /*
-Copyright 2013 OCAD University
+Copyright 2013-2015 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -25,7 +25,7 @@ var fluid_2_0 = fluid_2_0 || {};
             msgLookup: {
                 expander: {
                     funcName: "fluid.prefs.stringLookup",
-                    args: ["{that}.messageResolver", "{that}.options.stringArrayIndex"]
+                    args: ["{msgResolver}", "{that}.options.stringArrayIndex"]
                 }
             }
         },
@@ -66,6 +66,18 @@ var fluid_2_0 = fluid_2_0 || {};
         // when used as a subpanel, it will be triggered by the resetDomBinder invoker.
         listeners: {
             "onCreate.onDomBind": "{that}.events.onDomBind"
+        },
+        components: {
+            msgResolver: {
+                type: "fluid.messageResolver"
+            }
+        },
+        rendererOptions: {
+            messageLocator: "{msgResolver}.resolve"
+        },
+        distributeOptions: {
+            source: "{that}.options.messageBase",
+            target: "{that > msgResolver}.options.messageBase"
         }
     });
 
@@ -528,28 +540,47 @@ var fluid_2_0 = fluid_2_0 || {};
         }) || value;
     };
 
-    fluid.prefs.compositePanel.rebaseTree = function (model, tree, memberName, modelRelayRules) {
-        var rebased = fluid.transform(tree, function (val, key) {
-            if (key === "children") {
-                return fluid.transform(val, function (v) {
-                    return fluid.prefs.compositePanel.rebaseTree(model, v, memberName, modelRelayRules);
-                });
-            } else if (key === "selection") {
-                return fluid.prefs.compositePanel.rebaseTree(model, val, memberName, modelRelayRules);
-            } else if (key === "ID") {
-                return fluid.prefs.compositePanel.rebaseID(val, memberName);
-            } else if (key === "parentRelativeID") {
-                return fluid.prefs.compositePanel.rebaseParentRelativeID(val, memberName);
-            } else if (key === "valuebinding") {
-                return fluid.prefs.compositePanel.rebaseValueBinding(val, modelRelayRules);
-            } else if (key === "value" && tree.valuebinding) {
-                var valuebinding = tree.valuebinding;
-                var modelValue = fluid.get(model, fluid.prefs.compositePanel.rebaseValueBinding(valuebinding, modelRelayRules));
-                return modelValue !== undefined ? modelValue : val;
-            } else {
-                return val;
+    fluid.prefs.compositePanel.rebaseTreeComp = function (msgResolver, model, treeComp, memberName, modelRelayRules) {
+        var rebased = fluid.copy(treeComp);
+
+        if (rebased.ID) {
+            rebased.ID = fluid.prefs.compositePanel.rebaseID(rebased.ID, memberName);
+        }
+
+        if (rebased.children) {
+            rebased.children = fluid.prefs.compositePanel.rebaseTree(msgResolver, model, rebased.children, memberName, modelRelayRules);
+        } else if (rebased.selection) {
+            rebased.selection = fluid.prefs.compositePanel.rebaseTreeComp(msgResolver, model, rebased.selection, memberName, modelRelayRules);
+        } else if (rebased.messagekey) {
+            // converts the "UIMessage" renderer component into a "UIBound"
+            // and passes in the resolved message as the value.
+            rebased.componentType = "UIBound";
+            rebased.value = msgResolver.resolve(rebased.messagekey.value, rebased.messagekey.args);
+            delete rebased.messagekey;
+        } else if (rebased.parentRelativeID) {
+            rebased.parentRelativeID = fluid.prefs.compositePanel.rebaseParentRelativeID(rebased.parentRelativeID, memberName);
+        } else if (rebased.valuebinding) {
+            rebased.valuebinding = fluid.prefs.compositePanel.rebaseValueBinding(rebased.valuebinding, modelRelayRules);
+
+            if (rebased.value) {
+                var modelValue = fluid.get(model, rebased.valuebinding);
+                rebased.value = modelValue !== undefined ? modelValue : rebased.value;
             }
-        });
+        }
+
+        return rebased;
+    };
+
+    fluid.prefs.compositePanel.rebaseTree = function (msgResolver, model, tree, memberName, modelRelayRules) {
+        var rebased;
+
+        if (fluid.isArrayable(tree)) {
+            rebased = fluid.transform(tree, function (treeComp) {
+                return fluid.prefs.compositePanel.rebaseTreeComp(msgResolver, model, treeComp, memberName, modelRelayRules);
+            });
+        } else {
+            rebased = fluid.prefs.compositePanel.rebaseTreeComp(msgResolver, model, tree, memberName, modelRelayRules);
+        }
 
         return rebased;
     };
@@ -581,7 +612,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 var expander = fluid.renderer.makeProtoExpander(expanderOptions, subPanel);
                 var subTree = subPanel.produceTree();
                 subTree = fluid.get(subPanel.options, "rendererFnOptions.noexpand") ? subTree : expander(subTree);
-                var rebasedTree = fluid.prefs.compositePanel.rebaseTree(that.model, subTree, componentName, subPanel.options.rules);
+                var rebasedTree = fluid.prefs.compositePanel.rebaseTree(subPanel.msgResolver, that.model, subTree, componentName, subPanel.options.rules);
                 tree.children = tree.children.concat(rebasedTree.children);
             }
         });

@@ -66,7 +66,7 @@ var demo = demo || {};
      */
     demo.initFullWithPreview = function (container, options) {
         var opts = {
-            gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
+            gradeNames: ["fluid.prefs.transformDefaultPanelsOptions", "fluid.prefs.initialModel.starter"],
             // Tell PrefsEditor where to find all the templates, relative to this file
             terms: {
                 templatePrefix: pathToTemplates,
@@ -77,7 +77,7 @@ var demo = demo || {};
             },
             // Tell PrefsEditor where to redirect to if the user cancels the operation
             prefsEditor: {
-                gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.initialModel.starter", "fluid.prefs.uiEnhancerRelay"],
+                gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.uiEnhancerRelay"],
                 listeners: {
                     onCancel: function () {
                         alert("Cancelled - would normally cancel any unsaved changes and return to the previous page.");
