@@ -661,7 +661,7 @@ var fluid_2_0 = fluid_2_0 || {};
             smallIcon: ".flc-prefsEditor-min-text-size-smallIcon",
             largeIcon: ".flc-prefsEditor-min-text-size-largeIcon",
             multiplier: ".flc-prefsEditor-multiplier",
-            textSizeChoiceLabel: ".flc-prefsEditor-textsize-choice-label"
+            textSizeDescr: ".flc-prefsEditor-textsize-descr"
         },
         selectorsToIgnore: ["textSize"],
         components: {
@@ -683,7 +683,7 @@ var fluid_2_0 = fluid_2_0 || {};
             smallIcon: {messagekey: "textSizeSmallIcon"},
             largeIcon: {messagekey: "textSizeLargeIcon"},
             multiplier: {messagekey: "multiplier"},
-            textSizeChoiceLabel: {messagekey: "tocTextSizeLabel"},
+            textSizeDescr: {messagekey: "textSizeDescr"},
         },
         sliderOptions: {
             orientation: "horizontal",
@@ -710,14 +710,14 @@ var fluid_2_0 = fluid_2_0 || {};
         selectors: {
             textFont: ".flc-prefsEditor-text-font",
             label: ".flc-prefsEditor-text-font-label",
-            textFontChoiceLabel: ".flc-prefsEditor-textfont-choice-label"
+            textFontDescr: ".flc-prefsEditor-textfont-descr"
         },
         stringArrayIndex: {
             textFont: ["textFont-default", "textFont-times", "textFont-comic", "textFont-arial", "textFont-verdana"]
         },
         protoTree: {
             label: {messagekey: "textFontLabel"},
-            textFontChoiceLabel: {messagekey: "textFontChoiceLabel"},
+            textFontDescr: {messagekey: "textFontDescr"},
             textFont: {
                 optionnames: "${{that}.msgLookup.textFont}",
                 optionlist: "${{that}.options.controlValues.textFont}",
@@ -766,7 +766,7 @@ var fluid_2_0 = fluid_2_0 || {};
             narrowIcon: ".flc-prefsEditor-line-space-narrowIcon",
             wideIcon: ".flc-prefsEditor-line-space-wideIcon",
             multiplier: ".flc-prefsEditor-multiplier",
-            lineSpaceChoiceLabel: ".flc-prefsEditor-linespace-choice-label"
+            lineSpaceDescr: ".flc-prefsEditor-linespace-descr"
         },
         selectorsToIgnore: ["lineSpace"],
         components: {
@@ -788,7 +788,7 @@ var fluid_2_0 = fluid_2_0 || {};
             narrowIcon: {messagekey: "lineSpaceNarrowIcon"},
             wideIcon: {messagekey: "lineSpaceWideIcon"},
             multiplier: {messagekey: "multiplier"},
-            lineSpaceChoiceLabel: {messagekey: "lineSpaceChoiceLabel"}
+            lineSpaceDescr: {messagekey: "lineSpaceDescr"}
         },
         sliderOptions: {
             orientation: "horizontal",
@@ -820,7 +820,7 @@ var fluid_2_0 = fluid_2_0 || {};
             themeLabel: ".flc-prefsEditor-theme-label",
             themeInput: ".flc-prefsEditor-themeInput",
             label: ".flc-prefsEditor-contrast-label",
-            contrastChoiceLabel: ".flc-prefsEditor-contrast-choice-label"
+            contrastDescr: ".flc-prefsEditor-contrast-descr"
         },
         styles: {
             defaultThemeLabel: "fl-prefsEditor-contrast-defaultThemeLabel"
@@ -831,7 +831,7 @@ var fluid_2_0 = fluid_2_0 || {};
         repeatingSelectors: ["themeRow"],
         protoTree: {
             label: {messagekey: "contrastLabel"},
-            contrastChoiceLabel: {messagekey: "contrastChoiceLabel"},
+            contrastDescr: {messagekey: "contrastDescr"},
             expander: {
                 type: "fluid.renderer.selection.inputs",
                 rowID: "themeRow",
@@ -900,11 +900,11 @@ var fluid_2_0 = fluid_2_0 || {};
         selectors: {
             toc: ".flc-prefsEditor-toc",
             label: ".flc-prefsEditor-toc-label",
-            choiceLabel: ".flc-prefsEditor-toc-choice-label"
+            tocDescr: ".flc-prefsEditor-toc-descr"
         },
         protoTree: {
             label: {messagekey: "tocLabel"},
-            choiceLabel: {messagekey: "tocChoiceLabel"},
+            tocDescr: {messagekey: "tocDescr"},
             toc: "${toc}"
         }
     });
@@ -924,10 +924,10 @@ var fluid_2_0 = fluid_2_0 || {};
         },
         selectors: {
             links: ".flc-prefsEditor-links",
-            linksChoiceLabel: ".flc-prefsEditor-links-choice-label"
+            linkschoiceLabel: ".flc-prefsEditor-links-choice-label"
         },
         protoTree: {
-            linksChoiceLabel: {messagekey: "linksChoiceLabel"},
+            linkschoiceLabel: {messagekey: "linkschoiceLabel"},
             links: "${links}"
         }
     });
@@ -947,10 +947,10 @@ var fluid_2_0 = fluid_2_0 || {};
         },
         selectors: {
             inputsLarger: ".flc-prefsEditor-inputs-larger",
-            inputsChoiceLabel: ".flc-prefsEditor-links-inputs-choice-label"
+            inputschoiceLabel: ".flc-prefsEditor-links-inputs-choice-label"
         },
         protoTree: {
-            inputsChoiceLabel: {messagekey: "inputsChoiceLabel"},
+            inputschoiceLabel: {messagekey: "inputschoiceLabel"},
             inputsLarger: "${inputsLarger}"
         }
     });
@@ -965,11 +965,11 @@ var fluid_2_0 = fluid_2_0 || {};
         gradeNames: ["fluid.prefs.compositePanel", "autoInit"],
         selectors: {
             label: ".flc-prefsEditor-linksControls-label",
-            emphasisChoiceLabel: ".flc-prefsEditor-emphasis-choice-label"
+            emphasisDescr: ".flc-prefsEditor-emphasis-descr"
         },
         protoTree: {
             label: {messagekey: "linksControlsLabel"},
-            emphasisChoiceLabel: {messagekey: "emphasisChoiceLabel"}
+            emphasisDescr: {messagekey: "emphasisDescr"}
         }
     });
 

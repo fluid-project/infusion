@@ -31,7 +31,7 @@ var fluid_2_0 = fluid_2_0 || {};
         },
         protoTree: {
             label: {messagekey: "speakLabel"},
-            choiceLabel: {messagekey: "speakChoiceLabel"},
+            choiceLabel: {messagekey: "speakDescr"},
             speak: "${speak}"
         }
     });

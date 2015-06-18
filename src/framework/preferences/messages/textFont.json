@@ -5,5 +5,5 @@
     "textFont-arial": "Arial",
     "textFont-verdana": "Verdana",
     "textFontLabel": "font family",
-    "textFontChoiceLabel": "Change the font used"
+    "textFontDescr": "Change the font used"
 }

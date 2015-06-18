@@ -113,7 +113,7 @@ var demo = demo || {};
         },
         protoTree: {
             label: {messagekey: "simplifyLabel"},
-            choiceLabel: {messagekey: "simplifyChoiceLabel"},
+            choiceLabel: {messagekey: "simplifyDescr"},
             simplify: "${simplify}"
         }
     });

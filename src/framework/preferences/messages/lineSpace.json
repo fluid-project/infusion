@@ -3,5 +3,5 @@
     "lineSpaceNarrowIcon": "icon of 3 horizontal lines with narrow spacing",
     "lineSpaceWideIcon": "icon of 3 horizontal lines with wide spacing",
     "multiplier": "times",
-    "lineSpaceChoiceLabel": "Adjust the spacing between lines of text"
+    "lineSpaceDescr": "Adjust the spacing between lines of text"
 }
