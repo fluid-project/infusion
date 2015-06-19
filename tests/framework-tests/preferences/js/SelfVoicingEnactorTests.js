@@ -22,7 +22,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.prefs.enactor.speakEnactor", {
-        gradeNames: ["fluid.prefs.enactor.speak", "autoInit"],
+        gradeNames: ["fluid.mock.textToSpeech", "fluid.prefs.enactor.speak", "autoInit"],
         members: {
             eventRecord: {},
             speakQueue: []
@@ -148,7 +148,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.prefs.enactor.selfVoicingEnactor", {
-        gradeNames: ["fluid.prefs.enactor.selfVoicing", "fluid.tests.prefs.enactor.speakEnactor", "autoInit"],
+        gradeNames: ["fluid.mock.textToSpeech", "fluid.prefs.enactor.selfVoicing", "fluid.tests.prefs.enactor.speakEnactor", "autoInit"],
         model: {
             enabled: false
         },
