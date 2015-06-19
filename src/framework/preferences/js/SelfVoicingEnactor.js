@@ -31,13 +31,14 @@ var fluid_2_0 = fluid_2_0 || {};
         },
         invokers: {
             queueSpeech: {
-                funcName: "fluid.prefs.enactor.speak.queueSpeech"
+                funcName: "fluid.prefs.enactor.speak.queueSpeech",
+                args: ["{that}", "fluid.textToSpeech.queueSpeech", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
             }
         }
     });
 
 
-    fluid.prefs.enactor.speak.queueSpeech = function (that, text, interrupt, options) {
+    fluid.prefs.enactor.speak.queueSpeech = function (that, speechFn, text, interrupt, options) {
         // force a string value
         var str = text.toString();
 
@@ -46,7 +47,11 @@ var fluid_2_0 = fluid_2_0 || {};
         str.replace(/\s{2,}/gi, " ");
 
         if (that.model.enabled && str) {
-            fluid.textToSpeech.queueSpeech(that, str, interrupt, options);
+            if (typeof(speechFn) === "string") {
+                fluid.invokeGlobalFunction(speechFn, [that, str, interrupt, options]);
+            } else {
+                speechFn(that, str, interrupt, options);
+            }
         }
     };
 

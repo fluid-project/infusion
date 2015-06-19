@@ -30,7 +30,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         invokers: {
             queueSpeech: {
                 funcName: "fluid.mock.textToSpeech.queueSpeech",
-                args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+                args: ["{that}", "{that}.handleStart", "{that}.handleEnd", "{that}.speechRecord", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
             },
             cancel: {
                 funcName: "fluid.mock.textToSpeech.cancel",
@@ -55,23 +55,29 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.mock.textToSpeech.queueSpeech = function (that, text, interrupt, options) {
+    fluid.mock.textToSpeech.queueSpeech = function (that, handleStart, handleEnd, speechRecord, text, interrupt, options) {
         if (interrupt) {
             that.cancel();
         }
 
-        that.speechRecord.push({
+        var record = {
             text: text,
-            interrupt: interrupt,
-            options: options
-        });
+            interrupt: !!interrupt
+        };
+
+        if (options) {
+            record.options = options;
+        }
+
+        speechRecord.push(record);
 
         that.queue.push(text);
         that.events.onSpeechQueued.fire(text);
 
         // mocking speechSynthesis speak
-        that.handleStart();
-        that.handleEnd();
+        handleStart();
+        // using setTimeout to preserve asynchronous behaviour
+        setTimeout(handleEnd, 0);
 
     };
 
