@@ -2440,6 +2440,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var comp = fluid.tests.circular.strategy();
         jqUnit.assertValue("Component constructed", comp);
     });
+    
+    fluid.defaults("fluid.tests.fluid5694circle", {
+        gradeNames: ["fluid.littleComponent", "autoInit"],
+        components: {
+            child: "{fluid5694circle}.child"
+        }
+    });
+    
+    jqUnit.test("FLUID-5694 circularity test", function () {
+        jqUnit.expectFrameworkDiagnostic("Expect framework diagnostic on self-injection", function () {
+            var that = fluid.tests.fluid5694circle();
+        }, "circular")
+    });
 
     /** Correct resolution of invoker arguments through the tree **/
 

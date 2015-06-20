@@ -1273,6 +1273,7 @@ var fluid_2_0 = fluid_2_0 || {};
         var instantiator = idToInstantiator[that.id];
 
         if (typeof(component) === "string") {
+            that[name] = fluid.inEvaluationMarker;
             instance = fluid.expandOptions(component, that);
             instantiator.recordKnownComponent(that, instance, name, false);
         }
