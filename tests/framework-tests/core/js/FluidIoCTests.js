@@ -1994,6 +1994,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var member = that.child.mergingMember;
         jqUnit.assertNoValue("Absence of string mouse droppings in reference holder", member[0]);
     });
+    
+    fluid.defaults("fluid.tests.fluid5694circle", {
+        gradeNames: "fluid.component",
+        components: {
+            child: "{fluid5694circle}.child"
+        }
+    });
+    
+    jqUnit.test("FLUID-5694 circularity test", function () {
+        jqUnit.expectFrameworkDiagnostic("Expect framework diagnostic on self-injection", function () {
+            var that = fluid.tests.fluid5694circle();
+        }, "circular")
+    });
 
 
     /** Correct resolution of invoker arguments through the tree **/

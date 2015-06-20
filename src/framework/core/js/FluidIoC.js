@@ -1260,9 +1260,12 @@ var fluid_2_0 = fluid_2_0 || {};
         var instantiator = fluid.globalInstantiator;
 
         if (typeof(component) === "string") {
+            that[name] = fluid.inEvaluationMarker;
             instance = fluid.expandImmediate(component, that);
             if (instance) {
                 instantiator.recordKnownComponent(that, instance, name, false);
+            } else {
+                delete that[name];
             }
         }
         else if (component.type) {

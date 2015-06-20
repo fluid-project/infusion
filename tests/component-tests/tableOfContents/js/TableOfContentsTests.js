@@ -538,9 +538,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 listeners: {
                     onReady: {
                         func: function (that) {
-                            var header = $("h1", that.container);
-                            jqUnit.assertEquals("The output should contain exactly one H1", 1, header.length);
-                            jqUnit.assertEquals("The H1 should contain the expected text", "Table of Contents", header.text());
+                            var header = $("h2", that.container);
+                            jqUnit.assertEquals("The output should contain exactly one H2", 1, header.length);
+                            jqUnit.assertEquals("The H2 should contain the expected text", "Table of Contents", header.text());
                             jqUnit.start();
                         },
                         args: ["{that}.levels"]
