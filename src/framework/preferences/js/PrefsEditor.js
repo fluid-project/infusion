@@ -294,7 +294,7 @@ var fluid_2_0 = fluid_2_0 || {};
              */
             fetch: {
                 funcName: "fluid.prefs.prefsEditor.fetch",
-                args: ["{that}"]
+                args: ["{that}", "{arguments}.0"]
             },
             applyChanges: {
                 funcName: "fluid.prefs.prefsEditor.applyChanges",
@@ -360,7 +360,8 @@ var fluid_2_0 = fluid_2_0 || {};
         that.events.onUpdateEnhancerModel.fire();
     };
 
-    fluid.prefs.prefsEditor.fetch = function (that) {
+    fluid.prefs.prefsEditor.fetch = function (that, eventName) {
+        eventName = eventName || "onPrefsEditorRefresh";
         var completeModel = that.getSettings();
         completeModel = $.extend(true, {}, that.initialModel, completeModel);
         // TODO: This may not be completely effective if the root model is smaller than
@@ -373,7 +374,7 @@ var fluid_2_0 = fluid_2_0 || {};
         // and this implementation doesn't seem to be causing a problem at present so we had
         // just better leave it the way it is for now.
         that.applier.change("", completeModel);
-        that.events.onPrefsEditorRefresh.fire();
+        that.events[eventName].fire(that);
         that.applyChanges();
     };
 
@@ -381,6 +382,10 @@ var fluid_2_0 = fluid_2_0 || {};
      * Saves the current model and fires onSave
  */
     fluid.prefs.prefsEditor.save = function (that) {
+        if (!that.model) {  // Don't save a reset model
+            return;
+        }
+
         var initialModel = that.initialModel,
             userSelections = fluid.copy(that.model);
 
@@ -415,6 +420,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * Resets the selections to the integrator's defaults and fires onReset
      */
     fluid.prefs.prefsEditor.reset = function (that) {
+        that.applier.fireChangeRequest({path: "", type: "DELETE"});
         that.applier.change("", fluid.copy(that.initialModel));
         that.events.onPrefsEditorRefresh.fire();
         that.events.onReset.fire(that);
@@ -445,10 +451,8 @@ var fluid_2_0 = fluid_2_0 || {};
 
         that.container.append(that.options.resources.template.resourceText);
         bindHandlers(that);
-        // This creates subcomponents - we can find default model afterwards
-        that.events.onPrefsEditorMarkupReady.fire(that);
 
-        that.fetch();
+        that.fetch("onPrefsEditorMarkupReady");
         that.events.onReady.fire(that);
     };
 
