@@ -91,6 +91,8 @@ var fluid_2_0 = fluid_2_0 || {};
                 funcName: "fluid.textToSpeech.handleStart",
                 args: ["{that}"]
             },
+            // The handleEnd method is assumed to be triggered asynchronously
+            // as it is processed/triggered by the mechanism voicing the utterance.
             handleEnd: {
                 funcName: "fluid.textToSpeech.handleEnd",
                 args: ["{that}"]
