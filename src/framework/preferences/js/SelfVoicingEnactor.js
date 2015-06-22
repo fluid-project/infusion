@@ -37,7 +37,8 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-
+    // Accepts a speechFn (either a function or function name), which will be used to perform the
+    // underlying queuing of the speech. This allows the SpeechSynthesis to be replaced (e.g. for testing)
     fluid.prefs.enactor.speak.queueSpeech = function (that, speechFn, text, interrupt, options) {
         // force a string value
         var str = text.toString();
