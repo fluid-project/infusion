@@ -74,8 +74,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return promise;
     };
 
-    fluid.defaults("fluid.tests.queuedDataSource", {
-        gradeNames: ["fluid.queuedDataSource", "autoInit"],
+    fluid.defaults("fluid.tests.debouncedDataSource", {
+        gradeNames: ["fluid.debouncedDataSource", "autoInit"],
         members: {
             // Each record should contain a list of the directModels from the requests
             // that were sent to the respective events.
@@ -114,7 +114,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     // s = short delay
     // l = long delay
-    fluid.tests.queuedDataSource.requestRuns = {
+    fluid.tests.debouncedDataSource.requestRuns = {
         ss: [0, 50, 55],
         sl: [0, 50, 200],
         ls: [0, 150, 200],
@@ -127,7 +127,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         sssl: [0, 50, 60, 75, 200]
     };
 
-    fluid.tests.queuedDataSource.expected100ms = {
+    fluid.tests.debouncedDataSource.expected100ms = {
         ss: [1, 3],
         sl: [1, 2, 3],
         ls: [1, 2, 3],
@@ -140,24 +140,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         sssl: [1, 4, 5]
     };
 
-    fluid.tests.queuedDataSource.testRequests = [{
+    fluid.tests.debouncedDataSource.testRequests = [{
         requestType: "get",
-        source: fluid.tests.queuedDataSource.expected100ms
+        source: fluid.tests.debouncedDataSource.expected100ms
     }, {
         requestType: "set",
-        source: fluid.tests.queuedDataSource.expected100ms
+        source: fluid.tests.debouncedDataSource.expected100ms
     }, {
         requestType: "delete",
-        source: fluid.tests.queuedDataSource.expected100ms
+        source: fluid.tests.debouncedDataSource.expected100ms
     }];
 
-    fluid.tests.queuedDataSource.assertRequest = function (requestType, setName, delays, expected, delayBuffer) {
+    fluid.tests.debouncedDataSource.assertRequest = function (requestType, setName, delays, expected, delayBuffer) {
         // Time in milliseconds to add to the assertion delay, to buffer against setTimeout impressions.
         // Because multiple instances run simultaneously this number may need to be increased to take into
         // account extra delays related to the thread blocking.
         delayBuffer = delayBuffer || 300;
         var promise = fluid.promise();
-        var that = fluid.tests.queuedDataSource();
+        var that = fluid.tests.debouncedDataSource();
         var assertionDelay = delays[delays.length - 1] + delayBuffer; // time to wait to assert the requests.
 
         fluid.tests.invokeRequestWithDelay(that, requestType, delays, 100, {path: "value"});
@@ -171,12 +171,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     // Note: Due to the timeouts used to simulate actual asynchronous operations, this test
     // will take a while to execute.
-    jqUnit.asyncTest("Queued DataSource", function () {
+    jqUnit.asyncTest("Debounce DataSource", function () {
         var sources = [];
-        fluid.each(fluid.tests.queuedDataSource.testRequests, function (testRequest) {
-            fluid.each(fluid.tests.queuedDataSource.requestRuns, function (delays, setName) {
+        fluid.each(fluid.tests.debouncedDataSource.testRequests, function (testRequest) {
+            fluid.each(fluid.tests.debouncedDataSource.requestRuns, function (delays, setName) {
                 sources.push(function () {
-                    return fluid.tests.queuedDataSource.assertRequest(testRequest.requestType, setName, delays, testRequest.source[setName]);
+                    return fluid.tests.debouncedDataSource.assertRequest(testRequest.requestType, setName, delays, testRequest.source[setName]);
                 });
             });
         });
