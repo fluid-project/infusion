@@ -17,9 +17,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     "use strict";
 
     // Mocks the fluid.textToSpeech component, removing calls to the
-    // Web Speech API. This will, amongst other things, remove asynchrony
-    // and allow for tests to run in browsers that don't support the
-    // Web Speech API.
+    // Web Speech API. This will allow for tests to run in browsers
+    // that don't support the Web Speech API.
     fluid.defaults("fluid.mock.textToSpeech", {
         gradeNames: ["fluid.textToSpeech", "autoInit"],
         members: {
