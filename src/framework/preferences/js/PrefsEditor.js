@@ -361,7 +361,6 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.prefs.prefsEditor.fetch = function (that, eventName) {
-        eventName = eventName || "onPrefsEditorRefresh";
         var completeModel = that.getSettings();
         completeModel = $.extend(true, {}, that.initialModel, completeModel);
         // TODO: This may not be completely effective if the root model is smaller than
@@ -374,7 +373,10 @@ var fluid_2_0 = fluid_2_0 || {};
         // and this implementation doesn't seem to be causing a problem at present so we had
         // just better leave it the way it is for now.
         that.applier.change("", completeModel);
-        that.events[eventName].fire(that);
+        if (eventName) {
+            that.events[eventName].fire(that);
+        }
+        that.events.onPrefsEditorRefresh.fire();
         that.applyChanges();
     };
 
