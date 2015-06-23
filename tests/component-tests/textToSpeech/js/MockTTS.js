@@ -22,9 +22,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.mock.textToSpeech", {
         gradeNames: ["fluid.textToSpeech", "autoInit"],
         members: {
-            // an archive of all the calls to queueSpeech
-            // will contain an ordered set of objects -- {text: String, options: Object}
-            speechRecord: []
+            // An archive of all the calls to queueSpeech.
+            // Will contain an ordered set of objects -- {text: String, options: Object}.
+            speechRecord: [],
+            // An archive of all the events fired
+            // Will contain a key/value pairing where key is the name of the event and the
+            // value is the number of times the event was fired.
+            eventRecord: {}
+        },
+        listeners: {
+            "onStart.recordEvent": {
+                listener: "{that}.recordEvent",
+                args: ["onStart"]
+            },
+            "onStop.recordEvent": {
+                listener: "{that}.recordEvent",
+                args: ["onStop"]
+            },
+            "onSpeechQueued.recordEvent": {
+                listener: "{that}.recordEvent",
+                args: ["onSpeechQueued"]
+            }
         },
         invokers: {
             queueSpeech: {
@@ -50,6 +68,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "method": null,
                 listener: "fluid.identity",
                 args: []
+            },
+            recordEvent: {
+                funcName: "fluid.mock.textToSpeech.recordEvent",
+                args: ["{that}.eventRecord", "{arguments}.0"]
             }
         }
     });
@@ -83,6 +105,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.mock.textToSpeech.cancel = function (that, handleEnd) {
         that.queue = [];
         handleEnd();
+    };
+
+    fluid.mock.textToSpeech.recordEvent = function (eventRecord, name) {
+        eventRecord[name] = (eventRecord[name] || 0) + 1;
     };
 
 })();

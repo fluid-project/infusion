@@ -23,16 +23,24 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.enactor.speak", {
-        gradeNames: ["fluid.textToSpeech", "fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.prefs.enactor", "autoInit"],
         preferenceMap: {
             "fluid.prefs.speak": {
                 "model.enabled": "default"
             }
         },
-        invokers: {
-            queueSpeech: {
-                funcName: "fluid.prefs.enactor.speak.queueSpeech",
-                args: ["{that}", "fluid.textToSpeech.queueSpeech", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+        components: {
+            tts: {
+                type: "fluid.textToSpeech",
+                options: {
+                    model: "{speak}.model",
+                    invokers: {
+                        queueSpeech: {
+                            funcName: "fluid.prefs.enactor.speak.queueSpeech",
+                            args: ["{that}", "fluid.textToSpeech.queueSpeech", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+                        }
+                    }
+                }
             }
         }
     });
@@ -74,7 +82,7 @@ var fluid_2_0 = fluid_2_0 || {};
             handleSelfVoicing: {
                 funcName: "fluid.prefs.enactor.selfVoicing.handleSelfVoicing",
                 // Pass in invokers to force them to be resolved
-                args: ["{that}.options.strings.welcomeMsg", "{that}.queueSpeech", "{that}.readFromDOM", "{that}.cancel", "{arguments}.0"]
+                args: ["{that}.options.strings.welcomeMsg", "{tts}.queueSpeech", "{that}.readFromDOM", "{tts}.cancel", "{arguments}.0"]
             },
             readFromDOM: {
                 funcName: "fluid.prefs.enactor.selfVoicing.readFromDOM",
@@ -108,14 +116,14 @@ var fluid_2_0 = fluid_2_0 || {};
         var nodes = elm.contents();
         fluid.each(nodes, function (node) {
             if (node.nodeType === fluid.prefs.enactor.selfVoicing.nodeType.TEXT_NODE && node.nodeValue) {
-                that.queueSpeech(node.nodeValue);
+                that.tts.queueSpeech(node.nodeValue);
             }
 
             if (node.nodeType === fluid.prefs.enactor.selfVoicing.nodeType.ELEMENT_NODE && window.getComputedStyle(node).display !== "none") {
                 if (node.nodeName === "IMG") {
                     var altText = node.getAttribute("alt");
                     if (altText) {
-                        that.queueSpeech(altText);
+                        that.tts.queueSpeech(altText);
                     }
                 } else {
                     fluid.prefs.enactor.selfVoicing.readFromDOM(that, node);
