@@ -20,8 +20,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.prefs.panel.speak", {
         gradeNames: ["fluid.prefs.panel.speak", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
         messageBase: {
-            "speakLabel": "Test speakLabel",
-            "speakDescr": "Test speakDescr"
+            "speakLabel": "Text-to-Speech",
+            "speakDescr": "Let computer read site content out loud"
         },
         model: {
             speak: false
