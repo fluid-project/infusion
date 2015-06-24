@@ -1,5 +1,5 @@
 /*
-Copyright 2011 OCAD University
+Copyright 2011-2015 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -112,7 +112,7 @@ var fluid_2_0 = fluid_2_0 || {};
             tocHeader: "Table of Contents"
         },
         selectors: {
-            headings: ":header:visible:not(.flc-toc-tocContainer :header)",
+            headings: ":header:visible:not(.flc-toc-tocContainer :header, .flc-toc-exclude :header, .flc-toc-exclude)",
             tocContainer: ".flc-toc-tocContainer",
             tocAnchors: ".flc-toc-anchors"
         },
