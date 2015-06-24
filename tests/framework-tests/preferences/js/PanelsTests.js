@@ -1394,9 +1394,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sequence: [{
                     func: "{layout}.refreshView"
                 }, {
-                    // listener: "fluid.tests.panels.utils.verifyCheckboxState",
                     listener: "fluid.tests.layoutPanel.checkRendering",
-                    // args: ["The toc option is not checked by default", "{that}.options.testOptions.defaultInputStatus", "{layout}.dom.toc"],
                     event: "{layout}.events.afterRender",
                     args: ["{layout}", "{that}.options.testOptions.defaultInputStatus"]
                 }, {
@@ -1556,15 +1554,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         resources: {
             template: {
                 resourceText: "<h2><span class=\"fl-icon-links\"></span><span class=\"flc-prefsEditor-linksControls-label heading-text\"></span></h2><p class=\"flc-prefsEditor-emphasis-descr\"></p><ul class=\"fl-inputs fl-links-buttons-options\"><li class=\"flc-prefsEditor-emphasizeLinks\"></li><li class=\"flc-prefsEditor-inputsLarger\"></li></ul>"
-                // "<h2 class=\"flc-prefsEditor-linksControls-label\"></h2><li class=\"flc-prefsEditor-emphasizeLinks\"></li><li class=\"flc-prefsEditor-inputsLarger\"></li>"
             },
             emphasizeLinks: {
                 resourceText: "<input type=\"checkbox\" id=\"links-choice\" class=\"flc-prefsEditor-links fl-force-left\" /><label class=\"flc-prefsEditor-links-choice-label\" for=\"links-choice\"></label>"
-                // "<input type=\"checkbox\" id=\"links-choice\" class=\"flc-prefsEditor-links fl-force-left\" />"
             },
             inputsLarger: {
                 resourceText:  "<input type=\"checkbox\" id=\"inputs-choice\" class=\"flc-prefsEditor-inputs-larger fl-force-left\" /><label class=\"flc-prefsEditor-links-inputs-choice-label\" for=\"inputs-choice\"></label>"
-                // "<input type=\"checkbox\" id=\"inputs-choice\" class=\"flc-prefsEditor-inputs-larger fl-force-left\" />"
             }
         }
     });
