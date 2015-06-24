@@ -1371,13 +1371,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.layoutPanel.checkRendering = function (that) {
+    fluid.tests.layoutPanel.checkRendering = function (that, defaultInputStatus) {
         var messageBase = that.options.messageBase;
 
         jqUnit.assertEquals("The label text is " + messageBase.tocLabel, messageBase.tocLabel, that.locate("label").text());
         jqUnit.assertEquals("The description text is " + messageBase.tocDescr, messageBase.tocDescr, that.locate("tocDescr").text());
 
-        // fluid.tests.panels.utils.verifyCheckboxState("The toc option is not checked by default", that.options.testOptions.defaultInputStatus, layout.dom.toc);
+        fluid.tests.panels.utils.verifyCheckboxState("The toc option is not checked by default", defaultInputStatus, that.locate("toc"));
     };
 
     fluid.defaults("fluid.tests.layoutTester", {
@@ -1397,10 +1397,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     // listener: "fluid.tests.panels.utils.verifyCheckboxState",
                     listener: "fluid.tests.layoutPanel.checkRendering",
                     // args: ["The toc option is not checked by default", "{that}.options.testOptions.defaultInputStatus", "{layout}.dom.toc"],
-                    event: "{layout}.events.afterRender"
-                }, {
-                    func: "fluid.tests.panels.utils.verifyCheckboxState",
-                    args: ["The toc option is not checked by default", "{that}.options.testOptions.defaultInputStatus", "{layout}.dom.toc"]
+                    event: "{layout}.events.afterRender",
+                    args: ["{layout}", "{that}.options.testOptions.defaultInputStatus"]
                 }, {
                     func: "fluid.tests.panels.utils.setCheckboxState",
                     args: ["{layout}.dom.toc", "{that}.options.testOptions.newValue"]
