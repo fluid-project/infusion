@@ -683,7 +683,7 @@ var fluid_2_0 = fluid_2_0 || {};
             smallIcon: {messagekey: "textSizeSmallIcon"},
             largeIcon: {messagekey: "textSizeLargeIcon"},
             multiplier: {messagekey: "multiplier"},
-            textSizeDescr: {messagekey: "textSizeDescr"},
+            textSizeDescr: {messagekey: "textSizeDescr"}
         },
         sliderOptions: {
             orientation: "horizontal",

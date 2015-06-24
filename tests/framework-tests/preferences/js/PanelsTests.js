@@ -1212,7 +1212,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // jqUnit.assertEquals("The description text is " + messageBase.textSizeDescr, messageBase.textSizeDescr, that.locate("textSizeDescr").text());
         });
 
-   };
+    };
 
     fluid.tests.changeInput = function (textSlider, newValue) {
         textSlider.find("input").val(newValue).change();
@@ -1538,7 +1538,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         selectors: {
             emphasizeLinks: ".flc-prefsEditor-emphasizeLinks",
-            inputsLarger: ".flc-prefsEditor-inputsLarger",
+            inputsLarger: ".flc-prefsEditor-inputsLarger"
         },
         selectorsToIgnore: ["emphasizeLinks", "inputsLarger"],
         components: {
