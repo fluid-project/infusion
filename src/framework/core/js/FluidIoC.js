@@ -506,7 +506,9 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.cacheShadowGrades = function (that, shadow) {
         var contextHash = fluid.gradeNamesToHash(that.options.gradeNames);
-        contextHash[shadow.memberName] = true; // TODO: injected shadows in theory have a different memberName
+        if (!contextHash[shadow.memberName]) {
+            contextHash[shadow.memberName] = "memberName"; // This is filtered out again in recordComponent - TODO: Ensure that ALL resolution uses the scope chain eventually
+        }
         shadow.contextHash = contextHash;
         fluid.each(contextHash, function (troo, context) {
             shadow.ownScope[context] = that;
@@ -791,7 +793,7 @@ var fluid_2_0 = fluid_2_0 || {};
                     foundComponent = component;
                     return true; // YOUR VISIT IS AT AN END!!
                 }
-                if (fluid.getForComponent(component, ["options", "components", context, "type"]) && !component[context]) {
+                if (fluid.getForComponent(component, ["options", "components", context]) && !component[context]) {
       // This is an expensive guess since we make it for every component up the stack - must apply the WAVE OF EXPLOSIONS (FLUID-4925) to discover all components first
       // This line attempts a hopeful construction of components that could be guessed by nickname through finding them unconstructed
       // in options. In the near future we should eagerly BEGIN the process of constructing components, discovering their
@@ -923,7 +925,12 @@ var fluid_2_0 = fluid_2_0 || {};
                 shadow.injectedPaths = shadow.injectedPaths || [];
                 shadow.injectedPaths.push(path);
                 var parentShadow = that.idToShadow[parent.id]; // structural parent shadow - e.g. resolveRootComponent
-                fluid.each(shadow.contextHash, function (troo, context) {
+                var keys = fluid.keys(shadow.contextHash);
+                keys.push(name); // add local name - FLUID-5696
+                fluid.remove_if(keys, function (key) {
+                    return shadow.contextHash && shadow.contextHash[key] === "memberName";
+                });
+                fluid.each(keys, function (context) {
                     if (!parentShadow.childrenScope[context]) {
                         parentShadow.childrenScope[context] = component;
                     }

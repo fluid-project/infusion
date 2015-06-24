@@ -1052,6 +1052,39 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var that = fluid.tests.gingerEventRoot();
         jqUnit.assertValue("Expected component construction", that);
     });
+    
+    fluid.defaults("fluid.tests.FLUID5696root", {
+        gradeNames: ["fluid.modelComponent"],
+        model: {
+            dataRange: "{chaundles}.model.dataRange"
+        },
+        components: {
+            chaundleTileManager: {
+                type: "fluid.modelComponent"
+            },
+            chaundles: {
+                type: "fluid.modelComponent",
+                options: {
+                    modelListeners: {
+                        "{tileManager}.model.dataTicks.mainWindow": "{that}.resolveInject()" // TODO: declarative syntax with FLUID-5695
+                    },
+                    components: {
+                        tileManager: "{FLUID5696root}.chaundleTileManager"
+                    },
+                    invokers: {
+                        resolveInject: "fluid.identity({tileManager})"
+                    }
+                }
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-5696 ginger reference from model system to injected component", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.FLUID5696root();
+        var resolved = that.chaundles.resolveInject();
+        jqUnit.assertEquals("Resolved injected component by member name", that.chaundleTileManager, resolved);
+    });
 
 
     /** FLUID-4135 - event injection and boiling test **/
@@ -2004,8 +2037,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     jqUnit.test("FLUID-5694 circularity test", function () {
         jqUnit.expectFrameworkDiagnostic("Expect framework diagnostic on self-injection", function () {
-            var that = fluid.tests.fluid5694circle();
-        }, "circular")
+            fluid.tests.fluid5694circle();
+        }, "circular");
     });
 
 
