@@ -841,7 +841,7 @@ var fluid_2_0 = fluid_2_0 || {};
             theme: ["default", "bw", "wb", "by", "yb", "lgdg"]
         },
         markup: {
-            label: "<span class=\"fl-preview-A\">A</span><span class=\"fl-hidden-accessible\">%theme</span><div class=\"fl-crossout\"></div>"
+            label: "<span class=\"fl-preview-A\"></span><span class=\"fl-hidden-accessible\">%theme</span><div class=\"fl-crossout\"></div>"
         },
         invokers: {
             style: {
