@@ -629,7 +629,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var testHeadings = {
                 headingInfo: [{
                     level: "2",
-                    text: "Inculded",
+                    text: "Included",
                     url: "#test"
                 }]
             };
