@@ -140,8 +140,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             fluid.invokeGlobalFunction(componentName, ["#myPrefsEditor", {
                 gradeNames: ["fluid.prefs.transformDefaultPanelsOptions", "fluid.prefs.initialModel.starter"],
-                templatePrefix: "../../../../src/framework/preferences/html/",
-                messagePrefix: "../../../../src/framework/preferences/messages/",
+                terms: {
+                    templatePrefix: "../../../../src/framework/preferences/html/",
+                    messagePrefix: "../../../../src/framework/preferences/messages/"
+                },
                 templateLoader: {
                     gradeNames: ["fluid.prefs.starterFullPreviewTemplateLoader"]
                 },
@@ -206,8 +208,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.prefs.mungingIntegrationOptions = {
         gradeNames: ["fluid.prefs.transformDefaultPanelsOptions", "fluid.prefs.initialModel.starter"],
-        templatePrefix: "../../../../src/framework/preferences/html/",
-        messagePrefix: "../../../../src/framework/preferences/messages/",
+        terms: {
+            templatePrefix: "../../../../src/framework/preferences/html",
+            messagePrefix: "../../../../src/framework/preferences/messages"
+        },
         textFont: {
             strings: {
                 textFont: fluid.tests.prefs.testStrings

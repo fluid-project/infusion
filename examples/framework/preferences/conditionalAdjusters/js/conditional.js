@@ -24,8 +24,10 @@ var example = example || {};
                 gradeNames: ["example.auxSchema"],
                 primarySchema: example.primarySchema,
                 auxiliarySchema: {
-                    "templatePrefix": "../shared/html/",
-                    "messagePrefix": "../shared/messages/"
+                    "terms": {
+                        "templatePrefix": "../shared/html",
+                        "messagePrefix": "../shared/messages"
+                    }
                 }
             }
         });
