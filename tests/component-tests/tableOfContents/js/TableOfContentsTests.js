@@ -635,6 +635,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
 
             renderTOCComponent("#fluid-5697", {
+                ignoreForToC: {
+                    "fluid-5697": ".fluid-5697-exclude"
+                },
                 listeners: {
                     onReady: {
                         listener: function (that, levels) {

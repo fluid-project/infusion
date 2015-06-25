@@ -25,10 +25,13 @@ var fluid_2_0 = fluid_2_0 || {};
             target: "{that uiEnhancer}.options.tocTemplate"
         },
         enhancer: {
-            distributeOptions: {
+            distributeOptions: [{
                 source: "{that}.options.tocTemplate",
                 target: "{that > fluid.prefs.enactor.tableOfContents}.options.tocTemplate"
-            }
+            }, {
+                source: "{that}.options.ignoreForToC",
+                target: "{that > fluid.prefs.enactor.tableOfContents}.options.ignoreForToC"
+            }]
         }
     });
 

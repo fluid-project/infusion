@@ -86,7 +86,10 @@ var demo = demo || {};
             messagePrefix: "../../src/framework/preferences/messages/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
             tableOfContents: {
                 enactor: {
-                    tocTemplate: "../../src/components/tableOfContents/html/TableOfContents.html"
+                    tocTemplate: "../../src/components/tableOfContents/html/TableOfContents.html",
+                    ignoreForToC: {
+                        "overviewPanel": ".flc-overviewPanel"
+                    }
                 }
             },
 
