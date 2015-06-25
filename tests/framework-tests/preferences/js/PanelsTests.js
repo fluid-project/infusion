@@ -1014,7 +1014,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "textFont-comic": "Comic Sans",
             "textFont-arial": "Arial",
             "textFont-verdana": "Verdana",
-            "textFontLabel": "font family",
+            "textFontLabel": "text style",
             "textFontDescr": "Change the font used"
         },
         model: {
@@ -1108,7 +1108,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "contrast-by": "Black on yellow",
             "contrast-yb": "Yellow on black",
             "contrast-lgdg": "Low contrast",
-            "contrastLabel": "visual style",
+            "contrastLabel": "colour and contrast",
             "contrastDescr": "Change the colour and contrast"
         },
         model: {
@@ -1529,7 +1529,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid_prefs_inputsLarger: false
         },
         messageBase: {
-            "emphasisDescr": "Emphasize input options",
             "linksControlsLabel": "emphasis",
             "inputschoiceLabel": "Enlarge buttons, menus, text-fields, and other inputs",
             "linkschoiceLabel": "Underline and bold links"
@@ -1581,7 +1580,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var messageBase = linksControlsPanel.options.messageBase;
 
         jqUnit.assertEquals("The label text is " + messageBase.linksControlsLabel, messageBase.linksControlsLabel, linksControlsPanel.locate("label").text());
-        jqUnit.assertEquals("The description text is " + messageBase.emphasisDescr, messageBase.emphasisDescr, linksControlsPanel.locate("emphasisDescr").text());
 
         var linksLabel = linksControlsPanel.locate("label").text();
         jqUnit.assertEquals("The links control label is rendered correctly", expectedLabel, linksLabel);
@@ -1601,7 +1599,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test the linksControls settings panel",
             tests: [{
-                expect: 7,
+                expect: 6,
                 name: "Test the rendering of the linksControls panel",
                 sequence: [{
                     func: "{linksControls}.refreshView"

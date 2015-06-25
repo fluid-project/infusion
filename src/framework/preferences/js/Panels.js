@@ -964,12 +964,10 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.defaults("fluid.prefs.panel.linksControls", {
         gradeNames: ["fluid.prefs.compositePanel", "autoInit"],
         selectors: {
-            label: ".flc-prefsEditor-linksControls-label",
-            emphasisDescr: ".flc-prefsEditor-emphasis-descr"
+            label: ".flc-prefsEditor-linksControls-label"
         },
         protoTree: {
-            label: {messagekey: "linksControlsLabel"},
-            emphasisDescr: {messagekey: "emphasisDescr"}
+            label: {messagekey: "linksControlsLabel"}
         }
     });
 
