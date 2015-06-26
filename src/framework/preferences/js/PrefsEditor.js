@@ -326,7 +326,8 @@ var fluid_2_0 = fluid_2_0 || {};
         events: {
             onSave: null,
             onCancel: null,
-            onReset: null,
+            beforeReset: null,
+            afterReset: null,
             onAutoSave: null,
             modelChanged: null,
             onPrefsEditorRefresh: null,
@@ -419,13 +420,14 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     /**
-     * Resets the selections to the integrator's defaults and fires onReset
+     * Resets the selections to the integrator's defaults and fires afterReset
      */
     fluid.prefs.prefsEditor.reset = function (that) {
+        that.events.beforeReset.fire(that);
         that.applier.fireChangeRequest({path: "", type: "DELETE"});
         that.applier.change("", fluid.copy(that.initialModel));
         that.events.onPrefsEditorRefresh.fire();
-        that.events.onReset.fire(that);
+        that.events.afterReset.fire(that);
     };
 
     /**

@@ -144,7 +144,7 @@ var fluid_2_0 = fluid_2_0 || {};
                             listener: "{separatedPanel}.bindReset",
                             args: ["{that}.reset"]
                         },
-                        onReset: "{that}.applyChanges",
+                        afterReset: "{that}.applyChanges",
                         onReady: {
                             listener: "{separatedPanel}.events.onReady",
                             args: "{separatedPanel}"
@@ -237,7 +237,7 @@ var fluid_2_0 = fluid_2_0 || {};
         prefsEditor.events.onPrefsEditorRefresh.addListener(function () {
             iframeEnhancer.updateModel(prefsEditor.model.preferences);
         });
-        prefsEditor.events.onReset.addListener(function (prefsEditor) {
+        prefsEditor.events.afterReset.addListener(function (prefsEditor) {
             fluid.prefs.separatedPanel.updateView(prefsEditor);
         });
         prefsEditor.events.onSignificantDOMChange.addListener(function () {
