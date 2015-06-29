@@ -606,8 +606,6 @@ var fluid_2_0 = fluid_2_0 || {};
             requestsQueue[key] = queue;
         }
 
-        // queue.requests[0] = request;
-
         if (typeof(addToQueueFn) === "string") {
             fluid.invokeGlobalFunction(addToQueueFn, [queue, request]);
         } else {
