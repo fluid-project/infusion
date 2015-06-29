@@ -44,6 +44,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The multi-level object should be converted properly", expected.nested, fluid.toHashKey(nested));
     });
 
+    jqUnit.test("fluid.toHashKey - order consistency", function () {
+        var order1 = {};
+        order1.a = "1";
+        order1.b = "2";
+
+        var order2 = {};
+        order2.b = "2";
+        order2.a = "1";
+
+        jqUnit.assertEquals("Identical objects created in different orders should produce a consistent output", fluid.toHashKey(order1), fluid.toHashKey(order2));
+    });
+
     fluid.defaults("fluid.tests.dataSource", {
         gradeNames: ["fluid.dataSource", "autoInit"],
         invokers: {
