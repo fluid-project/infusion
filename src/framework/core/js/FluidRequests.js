@@ -587,7 +587,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * The request object contains the request function and arguments.
      * In the form {method: requestFn, directModel: {}, model: {}, callback: callbackFn}
      */
-    fluid.queuedDataSource.enqueueImpl = function (that, addToQueueFn, requestsQueue, request) {
+    fluid.queuedDataSource.enqueueImpl = function (that, requestsQueue, request) {
         var promise = fluid.promise();
         var key = fluid.toHashKey(request.directModel);
         var queue = requestsQueue[key];
@@ -606,12 +606,7 @@ var fluid_2_0 = fluid_2_0 || {};
             requestsQueue[key] = queue;
         }
 
-        if (typeof(addToQueueFn) === "string") {
-            fluid.invokeGlobalFunction(addToQueueFn, [queue, request]);
-        } else {
-            addToQueueFn(queue, request);
-        }
-
+        that.addToQueue(queue, request);
         that.events.enqueued.fire(request, queue);
 
         return promise;
@@ -624,7 +619,7 @@ var fluid_2_0 = fluid_2_0 || {};
             options: options
         };
 
-        return fluid.queuedDataSource.enqueueImpl(that, that.addToQueue, requestsQueue, request);
+        return fluid.queuedDataSource.enqueueImpl(that, requestsQueue, request);
     };
 
     fluid.queuedDataSource.enqueueWithModel = function (that, requestsQueue, method, directModel, model, options) {
@@ -635,7 +630,7 @@ var fluid_2_0 = fluid_2_0 || {};
             options: options
         };
 
-        return fluid.queuedDataSource.enqueueImpl(that, that.addToQueue, requestsQueue, request);
+        return fluid.queuedDataSource.enqueueImpl(that, requestsQueue, request);
     };
 
     fluid.queuedDataSource.replaceRequest = function (queue, request) {
