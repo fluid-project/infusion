@@ -22,9 +22,11 @@ var demo = demo || {};
                 gradeNames: ["fluid.prefs.auxSchema.starter"],
                 auxiliarySchema: {
                     "loaderGrades": ["fluid.prefs.fullPreview"],
-                    "template": "%prefix/FullPreviewPrefsEditor.html",
-                    "templatePrefix": "../../../../../src/framework/preferences/html/",
-                    "messagePrefix": "../../../../../src/framework/preferences/messages/",
+                    "terms": {
+                        "templatePrefix": "../../../../../src/framework/preferences/html/",
+                        "messagePrefix": "../../../../../src/framework/preferences/messages/"
+                    },
+                    "template": "%templatePrefix/FullPreviewPrefsEditor.html",
                     "tableOfContents": {
                         "enactor": {
                             "tocTemplate": "../../../../../src/components/tableOfContents/html/TableOfContents.html"

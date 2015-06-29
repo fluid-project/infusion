@@ -59,8 +59,10 @@
         <script type="text/javascript">
             $(document).ready(function () {
                 fluid.uiOptions.prefsEditor(".flc-prefsEditor-separatedPanel", {
-                    "templatePrefix": "../../src/framework/preferences/html/",
-                    "messagePrefix": "../../src/framework/preferences/messages/",
+                    terms: {
+                        "templatePrefix": "../../src/framework/preferences/html",
+                        "messagePrefix": "../../src/framework/preferences/messages"
+                    },
                     "tocTemplate": "../../src/components/tableOfContents/html/TableOfContents.html"
                 });
             });

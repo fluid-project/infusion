@@ -323,35 +323,35 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.defaults("fluid.prefs.starterTemplateLoader", {
         gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
         resources: {
-            textSize: "%prefix/PrefsEditorTemplate-textSize.html",
-            textFont: "%prefix/PrefsEditorTemplate-textFont.html",
-            lineSpace: "%prefix/PrefsEditorTemplate-lineSpace.html",
-            contrast: "%prefix/PrefsEditorTemplate-contrast.html",
-            layoutControls: "%prefix/PrefsEditorTemplate-layout.html",
-            linksControls: "%prefix/PrefsEditorTemplate-linksControls.html",
-            emphasizeLinks: "%prefix/PrefsEditorTemplate-emphasizeLinks.html",
-            inputsLarger: "%prefix/PrefsEditorTemplate-inputsLarger.html"
+            textSize: "%templatePrefix/PrefsEditorTemplate-textSize.html",
+            textFont: "%templatePrefix/PrefsEditorTemplate-textFont.html",
+            lineSpace: "%templatePrefix/PrefsEditorTemplate-lineSpace.html",
+            contrast: "%templatePrefix/PrefsEditorTemplate-contrast.html",
+            layoutControls: "%templatePrefix/PrefsEditorTemplate-layout.html",
+            linksControls: "%templatePrefix/PrefsEditorTemplate-linksControls.html",
+            emphasizeLinks: "%templatePrefix/PrefsEditorTemplate-emphasizeLinks.html",
+            inputsLarger: "%templatePrefix/PrefsEditorTemplate-inputsLarger.html"
         }
     });
 
     fluid.defaults("fluid.prefs.starterSeparatedPanelTemplateLoader", {
         gradeNames: ["fluid.prefs.starterTemplateLoader", "autoInit"],
         resources: {
-            prefsEditor: "%prefix/SeparatedPanelPrefsEditor.html"
+            prefsEditor: "%templatePrefix/SeparatedPanelPrefsEditor.html"
         }
     });
 
     fluid.defaults("fluid.prefs.starterFullPreviewTemplateLoader", {
         gradeNames: ["fluid.prefs.starterTemplateLoader", "autoInit"],
         resources: {
-            prefsEditor: "%prefix/FullPreviewPrefsEditor.html"
+            prefsEditor: "%templatePrefix/FullPreviewPrefsEditor.html"
         }
     });
 
     fluid.defaults("fluid.prefs.starterFullNoPreviewTemplateLoader", {
         gradeNames: ["fluid.prefs.starterTemplateLoader", "autoInit"],
         resources: {
-            prefsEditor: "%prefix/FullNoPreviewPrefsEditor.html"
+            prefsEditor: "%templatePrefix/FullNoPreviewPrefsEditor.html"
         }
     });
 
@@ -368,15 +368,15 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.defaults("fluid.prefs.starterMessageLoader", {
         gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
         resources: {
-            prefsEditor: "%prefix/prefsEditor.json",
-            textSize: "%prefix/textSize.json",
-            textFont: "%prefix/textFont.json",
-            lineSpace: "%prefix/lineSpace.json",
-            contrast: "%prefix/contrast.json",
-            layoutControls: "%prefix/tableOfContents.json",
-            linksControls: "%prefix/linksControls.json",
-            emphasizeLinks: "%prefix/emphasizeLinks.json",
-            inputsLarger: "%prefix/inputsLarger.json"
+            prefsEditor: "%messagePrefix/prefsEditor.json",
+            textSize: "%messagePrefix/textSize.json",
+            textFont: "%messagePrefix/textFont.json",
+            lineSpace: "%messagePrefix/lineSpace.json",
+            contrast: "%messagePrefix/contrast.json",
+            layoutControls: "%messagePrefix/tableOfContents.json",
+            linksControls: "%messagePrefix/linksControls.json",
+            emphasizeLinks: "%messagePrefix/emphasizeLinks.json",
+            inputsLarger: "%messagePrefix/inputsLarger.json"
         }
     });
 
