@@ -100,7 +100,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         console.log(err.stack);
     };
     
-    fluid.onUncaughtException.addListener(fluid.logUncaughtException, "log", null,
+    fluid.onUncaughtException.addListener(fluid.logUncaughtException, "log",
         fluid.handlerPriorities.uncaughtException.log);
       
     // Convert an argument intended for console.log in the node environment to a readable form (the

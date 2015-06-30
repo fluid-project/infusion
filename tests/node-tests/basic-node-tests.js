@@ -88,7 +88,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.expectFailure = false;
     
     fluid.tests.addLogListener = function (listener) {
-        fluid.onUncaughtException.addListener(listener, "log", null,
+        fluid.onUncaughtException.addListener(listener, "log",
             fluid.handlerPriorities.uncaughtException.log);
     };
     
