@@ -924,10 +924,10 @@ var fluid_2_0 = fluid_2_0 || {};
         },
         selectors: {
             links: ".flc-prefsEditor-links",
-            linkschoiceLabel: ".flc-prefsEditor-links-choice-label"
+            linksChoiceLabel: ".flc-prefsEditor-links-choice-label"
         },
         protoTree: {
-            linkschoiceLabel: {messagekey: "linkschoiceLabel"},
+            linksChoiceLabel: {messagekey: "linksChoiceLabel"},
             links: "${links}"
         }
     });
@@ -947,10 +947,10 @@ var fluid_2_0 = fluid_2_0 || {};
         },
         selectors: {
             inputsLarger: ".flc-prefsEditor-inputs-larger",
-            inputschoiceLabel: ".flc-prefsEditor-links-inputs-choice-label"
+            inputsChoiceLabel: ".flc-prefsEditor-links-inputs-choice-label"
         },
         protoTree: {
-            inputschoiceLabel: {messagekey: "inputschoiceLabel"},
+            inputsChoiceLabel: {messagekey: "inputsChoiceLabel"},
             inputsLarger: "${inputsLarger}"
         }
     });

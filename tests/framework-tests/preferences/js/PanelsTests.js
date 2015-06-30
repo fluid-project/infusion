@@ -1528,8 +1528,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         messageBase: {
             "linksControlsLabel": "emphasis",
-            "inputschoiceLabel": "Enlarge buttons, menus, text-fields, and other inputs",
-            "linkschoiceLabel": "Underline and bold links"
+            "inputsChoiceLabel": "Enlarge buttons, menus, text-fields, and other inputs",
+            "linksChoiceLabel": "Underline and bold links"
         },
         selectors: {
             emphasizeLinks: ".flc-prefsEditor-emphasizeLinks",
