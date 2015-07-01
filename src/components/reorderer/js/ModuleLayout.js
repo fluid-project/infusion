@@ -166,7 +166,7 @@ var fluid_2_0 = fluid_2_0 || {};
                     func: "{that}.computeLayout"
                 }
             },
-            getRelativePosition: { // an old-fashioned function member
+            getRelativePosition: { // TODO: an old-fashioned function member - convert to invoker
                 expander: {
                     funcName: "fluid.reorderer.relativeInfoGetter",
                     args: [ "{that}.options.orientation", fluid.reorderer.WRAP_LOCKED_STRATEGY, fluid.reorderer.GEOMETRIC_STRATEGY,

@@ -35,6 +35,16 @@ var jqUnit = jqUnit || {};
     };
 
     fluid.failureEvent.addListener(jqUnit.failureHandler, "jqUnit", "before:fail");
+    
+    // Helpful utility for creating multiple test target components compactly
+    fluid.makeComponents = function (components) {
+        fluid.each(components, function (value, key) {
+            var options = {
+                gradeNames: fluid.makeArray(value)
+            };
+            fluid.defaults(key, options);
+        });
+    };
 
     /**
      * Keeps track of the order of function invocations. The transcript contains information about

@@ -674,6 +674,8 @@ var fluid = fluid || fluid_2_0;
     };
 
     /** Converts an array into an object whose keys are the elements of the array, each with the value "true"
+     * @param array {Array of String} The array to be converted to a hash
+     * @return hash {Object} An object with value <code>true</code> for each key taken from a member of <code>array</code>
      */
 
     fluid.arrayToHash = function (array) {
@@ -687,6 +689,8 @@ var fluid = fluid || fluid_2_0;
     /** Applies a stable sorting algorithm to the supplied array and comparator (note that Array.sort in JavaScript is not specified
      * to be stable). The algorithm used will be an insertion sort, which whilst quadratic in time, will perform well
      * on small array sizes.
+     * @param array {Array} The array to be sorted. This input array will be modified in place.
+     * @param func {Function} A comparator returning >0, 0, or <0 on pairs of elements representing their sort order (same contract as Array.sort comparator)
      */
     
     fluid.stableSort = function (array, func) {
@@ -850,22 +854,23 @@ var fluid = fluid || fluid_2_0;
     fluid.model.composeSegments = function () {
         return fluid.makeArray(arguments).join(".");
     };
-    
-    function lastDotIndex(path) {
+
+    /** Returns the index of the last occurrence of the period character . in the supplied string */
+    fluid.lastDotIndex = function (path) {
         return path.lastIndexOf(".");
-    }
-    
+    };
+
     /** Returns all of an EL path minus its final segment - if the path consists of just one segment, returns "" -
      * WARNING - this method does not follow escaping rules */
     fluid.model.getToTailPath = function (path) {
-        var lastdot = lastDotIndex(path);
+        var lastdot = fluid.lastDotIndex(path);
         return lastdot === -1 ? "" : path.substring(0, lastdot);
     };
 
     /** Returns the very last path component of an EL path
      * WARNING - this method does not follow escaping rules */
     fluid.model.getTailPath = function (path) {
-        var lastdot = lastDotIndex(path);
+        var lastdot = fluid.lastDotIndex(path);
         return path.substring(lastdot + 1);
     };
 
@@ -1074,7 +1079,8 @@ var fluid = fluid || fluid_2_0;
 
     var fluid_guid = 1;
 
-    /** Allocate an string value that will be very likely unique within this Infusion instance (frame or process) **/
+    /** Allocate a string value that will be unique within this Infusion instance (frame or process), and
+     * globally unique with high probability (50% chance of collision after a million trials) **/
 
     fluid.allocateGuid = function () {
         return fluid_prefix + (fluid_guid++);
@@ -1154,6 +1160,7 @@ var fluid = fluid || fluid_2_0;
         if (recA.priority.fixed !== null && recB.priority.fixed !== null) {
             return recA.priority.fixed - recB.priority.fixed;
         } else { // sort constraint records to the end
+            // relies on JavaScript boolean coercion rules (ECMA 9.3 toNumber)
             return (recA.priority.fixed === null) - (recB.priority.fixed === null);
         }
     };
@@ -1727,7 +1734,7 @@ var fluid = fluid || fluid_2_0;
         }
         return index;
     };
-    
+
     /**
      * Retrieves and stores a component's default settings centrally.
      * @param {String} componentName the name of the component
@@ -1781,15 +1788,6 @@ var fluid = fluid || fluid_2_0;
             $.extend(creator, existing);
         }
         fluid.setGlobalValue(componentName, creator);
-    };
-
-    fluid.makeComponents = function (components) {
-        fluid.each(components, function (value, key) {
-            var options = {
-                gradeNames: fluid.makeArray(value)
-            };
-            fluid.defaults(key, options);
-        });
     };
 
     // Cheapskate implementation which avoids dependency on DataBinding.js
@@ -1959,7 +1957,7 @@ var fluid = fluid || fluid_2_0;
                 }
             }
             else {
-                if (target !== fluid.inEvaluationMarker) { // blatant "coding to the test" - this enables the simplest "re-trunking" in
+                if (target !== fluid.inEvaluationMarker) { // TODO: blatant "coding to the test" - this enables the simplest "re-trunking" in
                     // FluidIoCTests to function. In practice, we need to throw away this implementation entirely in favour of the 
                     // "iterative deepening" model coming with FLUID-4925
                     target[name] = fluid.inEvaluationMarker;

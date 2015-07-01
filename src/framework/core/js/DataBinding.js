@@ -439,10 +439,14 @@ var fluid_2_0 = fluid_2_0 || {};
         if (!transId) {
             fluid.fail("Cannot get transaction record without transaction id");
         }
-        var transRec = instantiator && instantiator.modelTransactions[transId];
-        if (!transRec && instantiator) {
-            transRec = instantiator.modelTransactions[transId] = {};
-            transRec.externalChanges = {}; // index by applierId to changePath to listener record
+        if (!instantiator) {
+            return null;
+        }
+        var transRec = instantiator.modelTransactions[transId];
+        if (!transRec) {
+            transRec = instantiator.modelTransactions[transId] = {
+                externalChanges: {} // index by applierId to changePath to listener record
+            };
         }
         return transRec;
     };

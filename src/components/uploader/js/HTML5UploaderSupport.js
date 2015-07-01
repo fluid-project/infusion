@@ -23,7 +23,7 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         }
     });
-    
+
     fluid.defaults("fluid.uploader.html5Strategy", {
         gradeNames: ["fluid.uploader.strategy"],
         components: {

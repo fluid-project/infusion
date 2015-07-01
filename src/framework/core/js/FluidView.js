@@ -18,7 +18,6 @@ var fluid_2_0 = fluid_2_0 || {};
 (function ($, fluid) {
     "use strict";
 
-    // The base grade for fluid.viewComponent and fluid.viewComponent - will be removed again once the old ChangeApplier is eliminated
     fluid.defaults("fluid.viewComponent", {
         gradeNames: ["fluid.modelComponent"],
         initFunction: "fluid.initView",
@@ -39,9 +38,9 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // unsupported, NON-API function
     // NOTE: this function represents a temporary strategy until we have more integrated IoC debugging.
-    // It preserves the current framework behaviour for the 1.4 release, but provides a more informative
+    // It preserves the 1.3 and previous framework behaviour for the 1.x releases, but provides a more informative
     // diagnostic - in fact, it is perfectly acceptable for a component's creator to return no value and
-    // the failure is really in assumptions in fluid.initLittleComponent. Revisit this issue for 1.5
+    // the failure is really in assumptions in fluid.initLittleComponent. Revisit this issue for 2.0
     fluid.diagnoseFailedView = function (componentName, that, options, args) {
         if (!that && (fluid.hasGrade(options, "fluid.viewComponent") || fluid.hasGrade(options, "fluid.viewComponent"))) {
             var container = fluid.wrap(args[1]);

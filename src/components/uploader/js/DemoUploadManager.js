@@ -16,7 +16,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
 (function ($, fluid) {
     "use strict";
-    
+
     fluid.registerNamespace("fluid.uploader.demo");
 
     fluid.defaults("fluid.uploader.demo", {

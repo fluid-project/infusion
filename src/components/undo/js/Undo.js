@@ -175,7 +175,7 @@ var fluid_2_0 = fluid_2_0 || {};
             modelChanged: null
         }
     });
-    
+
     // Backward compatibility for users of Infusion 1.4.x API
     fluid.defaults("fluid.undoDecorator", {
         gradeNames: ["fluid.undo"]
