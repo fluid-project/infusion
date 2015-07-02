@@ -841,7 +841,7 @@ var fluid_2_0 = fluid_2_0 || {};
             theme: ["default", "bw", "wb", "by", "yb", "lgdg"]
         },
         markup: {
-            label: "<span class=\"fl-preview-A\"></span><span class=\"fl-hidden-accessible\">%theme</span><div class=\"fl-crossout\"></div>"
+            label: "<span class=\"fl-preview-A\" role=\"presentation\" aria-hidden=\"true\"></span><span class=\"fl-hidden-accessible\">%theme</span><div class=\"fl-crossout\"></div>"
         },
         invokers: {
             style: {
@@ -863,9 +863,13 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.prefs.panel.contrast.style = function (labels, strings, markup, theme, defaultThemeName, style, defaultLabelStyle) {
         fluid.each(labels, function (label, index) {
             label = $(label);
+
+            var themeValue = strings[index];
             label.html(fluid.stringTemplate(markup, {
-                theme: strings[index]
+                theme: themeValue
             }));
+
+            label.attr("aria-label", themeValue);
 
             var labelTheme = theme[index];
             if (labelTheme === defaultThemeName) {
