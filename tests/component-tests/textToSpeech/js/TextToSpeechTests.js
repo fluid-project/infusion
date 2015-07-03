@@ -11,12 +11,39 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/* global fluid, jqUnit, speechSynthesis */
+/* global fluid, jqUnit, speechSynthesis, SpeechSynthesisUtterance */
 
 (function () {
     "use strict";
 
     fluid.registerNamespace("fluid.tests");
+
+    // Ensures that TTS is supported in the browser, including cases wehre the
+    // feature is detected, but where the underlying audio engine is missing.
+    // For example VM's on SauceLabs.
+    //
+    // returns a promise
+    fluid.tests.checkTTSSupport = function (delay) {
+        var promise = fluid.promise();
+        if (fluid.textToSpeech.isSupported()) {
+            var toSpeak = new SpeechSynthesisUtterance(" "); // short text to attempt to speak
+            toSpeak.volume = 0; // mutes the Speech Synthesizer
+            var timeout = setTimeout(function () {
+                speechSynthesis.cancel();
+                promise.reject();
+            }, delay);
+            toSpeak.onstart = function () {
+                clearTimeout(timeout);
+                speechSynthesis.cancel();
+                promise.resolve();
+            };
+            speechSynthesis.speak(toSpeak);
+        } else {
+            setTimeout(promise.reject, 0);
+        }
+        return promise;
+    };
+
 
     fluid.defaults("fluid.tests.textToSpeech", {
         gradeNames: ["fluid.textToSpeech", "autoInit"],
@@ -55,6 +82,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     jqUnit.assertFalse("Nothing should be pending", that.model.pending);
                     jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
                     jqUnit.assertDeepEq("The queue should be empty", [], that.queue);
+                    that.cancel();
                     jqUnit.start();
                 },
                 args: ["{that}"]
@@ -88,16 +116,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 args: ["{that}"]
             },
-            "onStop.end": "jqUnit.start"
+            "onStop.end": {
+                listener: function (that) {
+                    that.cancel();
+                    jqUnit.start();
+                },
+                args: ["{that}"]
+            }
         }
     });
 
     // only run the tests in browsers that support the Web Speech API for speech synthesis
-    if (!fluid.textToSpeech.isSupported()) {
-        jqUnit.test("No Tests Run", function () {
-            jqUnit.assert("Does not support the SpeechSynthesis");
+
+    fluid.tests.textToSpeech.runNoTTSTests = function () {
+        jqUnit.test("No Tests Run: No TTS Support", function () {
+            jqUnit.assert("Does not support SpeechSynthesis");
         });
-    } else {
+    };
+
+    fluid.tests.textToSpeech.runTTSTests = function () {
         jqUnit.test("Initialization", function () {
             var that = fluid.tests.textToSpeech();
 
@@ -123,6 +160,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 that.queueSpeech("Testing pause and resume events");
             });
         }
-    }
+    };
 
+    var runTests = fluid.tests.checkTTSSupport(1000);
+    runTests.then(fluid.tests.textToSpeech.runTTSTests, fluid.tests.textToSpeech.runNoTTSTests);
 })();
