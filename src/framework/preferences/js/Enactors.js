@@ -408,6 +408,10 @@ var fluid_2_0 = fluid_2_0 || {};
                 listener: "{that}.applyToc",
                 args: ["{change}.value"]
             }
+        },
+        distributeOptions: {
+            source: "{that}.options.ignoreForToC",
+            target: "{that tableOfContents}.options.ignoreForToC"
         }
     });
 

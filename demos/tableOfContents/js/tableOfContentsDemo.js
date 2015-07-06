@@ -34,6 +34,10 @@ fluid.registerNamespace("fluid.demo");
     fluid.demo.tableOfContentsOptions();
 
     fluid.demo.initTableOfContents = function () {
-        fluid.tableOfContents("body");
+        fluid.tableOfContents("body", {
+            ignoreForToC: {
+                trees: ".demo-toc-trees"
+            }
+        });
     };
 })(jQuery, fluid);

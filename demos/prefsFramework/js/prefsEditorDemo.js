@@ -86,7 +86,10 @@ var demo = demo || {};
             },
             tableOfContents: {
                 enactor: {
-                    tocTemplate: "../../src/components/tableOfContents/html/TableOfContents.html"
+                    tocTemplate: "../../src/components/tableOfContents/html/TableOfContents.html",
+                    ignoreForToC: {
+                        "overviewPanel": ".flc-overviewPanel"
+                    }
                 }
             },
 

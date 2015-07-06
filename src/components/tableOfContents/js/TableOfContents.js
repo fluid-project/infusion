@@ -1,5 +1,5 @@
 /*
-Copyright 2011 OCAD University
+Copyright 2011-2015 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -44,8 +44,18 @@ var fluid_2_0 = fluid_2_0 || {};
         return anchorInfo;
     };
 
-    fluid.tableOfContents.refreshView = function (that) {
+    fluid.tableOfContents.locateHeadings = function (that) {
         var headings = that.locate("headings");
+
+        fluid.each(that.options.ignoreForToC, function (sel) {
+            headings = headings.not(sel).not(sel + " :header");
+        });
+
+        return headings;
+    };
+
+    fluid.tableOfContents.refreshView = function (that) {
+        var headings = that.locateHeadings();
 
         // remove existing toc anchors from the the DOM, before adding any new ones.
         that.locate("tocAnchors").remove();
@@ -94,6 +104,10 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             insertAnchor: "fluid.tableOfContents.insertAnchor",
             generateGUID: "fluid.allocateGuid",
+            locateHeadings: {
+                funcName: "fluid.tableOfContents.locateHeadings",
+                args: ["{that}"]
+            },
             refreshView: {
                 funcName: "fluid.tableOfContents.refreshView",
                 args: ["{that}"]
@@ -112,9 +126,12 @@ var fluid_2_0 = fluid_2_0 || {};
             tocHeader: "Table of Contents"
         },
         selectors: {
-            headings: ":header:visible:not(.flc-toc-tocContainer :header)",
+            headings: ":header:visible",
             tocContainer: ".flc-toc-tocContainer",
             tocAnchors: ".flc-toc-anchors"
+        },
+        ignoreForToC: {
+            tocContainer: "{that}.options.selectors.tocContainer"
         },
         anchorClass: "flc-toc-anchors",
         events: {
