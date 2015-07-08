@@ -18,7 +18,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests.panels.utils");
 
     fluid.defaults("fluid.tests.panels.utils.defaultTestPanel", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        listeners: {"onCreate.getTemplate": "fluid.tests.panels.utils.getTemplate"},
         strings: {},
         testMessages: {},
         parentBundle: {
@@ -40,6 +40,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.panels.utils.verifyCheckboxState = function (message, expectedState, checkbox) {
         jqUnit.assertEquals(message, expectedState, checkbox.is(":checked"));
+    };
+
+    fluid.tests.panels.utils.getTemplate = function (that) {
+        fluid.fetchResources(that.options.resources, function () {
+            // that.refreshView();
+        });
     };
 
 })();

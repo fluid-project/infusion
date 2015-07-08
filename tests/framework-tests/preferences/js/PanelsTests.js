@@ -1199,11 +1199,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /*******************************************************************************
      * textSize
      *******************************************************************************/
+    fluid.tests.prefs.panel.templatePrefix = "../../../../src/framework/preferences/html/";
 
     fluid.defaults("fluid.tests.prefs.panel.textSize", {
         gradeNames: ["fluid.prefs.panel.textSize", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
         model: {
             textSize: 1
+        },
+        resources: {
+            template: {
+                href: fluid.tests.prefs.panel.templatePrefix + "PrefsEditorTemplate-textSize.html"
+            }
         }
     });
 
@@ -1231,6 +1237,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "Test the rendering of the text size panel",
                 sequence: [{
+                    //remove to prevent it being called twice
                     func: "{textSize}.refreshView"
                 }, {
                     listener: "fluid.tests.testDefault",
