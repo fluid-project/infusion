@@ -52,8 +52,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         // Options for PrefsEditor
-        // var prefsEditorRefreshed = 0;
-
         fluid.demands("fluid.prefs.prefsEditor", ["fluid.prefsTests", "fluid.prefs.tests"], {
             funcName: "fluid.prefs.starterPanels",
             options: {
