@@ -1,5 +1,5 @@
 /*
-Copyright 2011 OCAD University
+Copyright 2011-2015 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -616,6 +616,39 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             jqUnit.start();
                         },
                         args: ["{that}.levels"]
+                    }
+                }
+            });
+        });
+
+        /**
+        * #FLUID-5697: Test the exclusion of headers
+        */
+        jqUnit.asyncTest("FLUID-5697: Header exclusion", function () {
+            // craft headingInfo so renderTOCTest() can use it
+            var testHeadings = {
+                headingInfo: [{
+                    level: "2",
+                    text: "Included",
+                    url: "#test"
+                }]
+            };
+
+            renderTOCComponent("#fluid-5697", {
+                ignoreForToC: {
+                    "fluid-5697": ".fluid-5697-exclude"
+                },
+                listeners: {
+                    onReady: {
+                        listener: function (that, levels) {
+                            renderTOCTest(levels, testHeadings);
+                            renderTOCAnchorTest();
+                            var numHeadings = testHeadings.headingInfo.length;
+
+                            jqUnit.assertEquals("The correct number of anchors should be present", numHeadings, that.locate("tocAnchors").length);
+                            jqUnit.start();
+                        },
+                        args: ["{that}", "{that}.levels"]
                     }
                 }
             });

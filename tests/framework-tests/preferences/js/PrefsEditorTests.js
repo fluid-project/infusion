@@ -20,14 +20,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     $(document).ready(function () {
         fluid.enhance.check({"fluid.prefs.tests": true});
 
-        var templatePrefix = "../../../../src/framework/preferences/html/";
-        var messagePrefix = "../../../../src/framework/preferences/messages/";
+        var templatePrefix = "../../../../src/framework/preferences/html";
+        var messagePrefix = "../../../../src/framework/preferences/messages";
 
         // Define a default configuration but will specify different demands to test the full config with settings
         fluid.defaults("fluid.prefsTests", {
             gradeNames: ["fluid.prefs.prefsEditorLoader", "fluid.prefs.initialModel.starter", "autoInit"],
-            templatePrefix: templatePrefix,
-            messagePrefix: messagePrefix,
+            terms: {
+                templatePrefix: templatePrefix,
+                messagePrefix: messagePrefix
+            },
             messageLoader: {
                 gradeNames: ["fluid.prefs.starterMessageLoader"]
             },
@@ -128,19 +130,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Template Loader", function () {
             jqUnit.expect(8);
 
-            var testTemplatePrefix = "../../../../src/framework/preferences/html/";
-            var textControlsFullResourcePath = "../../../../src/framework/preferences/html/PrefsEditorTemplate-textSize.html";
+            var testTemplatePrefix = "../../../../src/framework/preferences/html";
+            var textControlsFullPath = "../../../../src/framework/preferences/html/PrefsEditorTemplate-textSize.html";
             var linksControlsTemplateName = "PrefsEditorTemplate-linksControls.html";
 
             function testTemplateLoader(resources) {
                 // The template with a customized full url
-                jqUnit.assertEquals("textControls template url is set correctly", textControlsFullResourcePath, resources.textControls.url);
+                jqUnit.assertEquals("textControls template url is set correctly", textControlsFullPath, resources.textControls.url);
                 jqUnit.assertTrue("textControls forceCache is set", resources.textControls.forceCache);
                 jqUnit.assertEquals("textControls defaultLocale is set correctly in the resource spec", "en", resources.textControls.defaultLocale);
                 jqUnit.assertEquals("textControls locale is set correctly in the resource spec", "fr", resources.textControls.locale);
 
                 // The template with prefix + customized name
-                jqUnit.assertEquals("linksControls template url is set correctly", testTemplatePrefix + linksControlsTemplateName, resources.linksControls.url);
+                jqUnit.assertEquals("linksControls template url is set correctly", testTemplatePrefix + "/" + linksControlsTemplateName, resources.linksControls.url);
                 jqUnit.assertTrue("linksControls forceCache is set", resources.linksControls.forceCache);
                 jqUnit.assertEquals("linksControls defaultLocale is set correctly in the resource spec", "en", resources.linksControls.defaultLocale);
                 jqUnit.assertEquals("linksControls locale is set correctly in the resource spec", "fr", resources.linksControls.locale);
@@ -154,17 +156,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 locale: "fr",
                 resources: {
                     linksControls: "%prefix/" + linksControlsTemplateName,
-                    textControls: textControlsFullResourcePath
+                    textControls: textControlsFullPath
                 },
                 listeners: {
                     onResourcesLoaded: testTemplateLoader
                 },
-                components: {
-                    resourcePath: {
-                        options: {
-                            value: testTemplatePrefix
-                        }
-                    }
+                terms: {
+                    prefix: testTemplatePrefix
                 }
             });
 
@@ -174,11 +172,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Customized Template Loader", function () {
             jqUnit.expect(2);
 
-            var testTemplatePrefix = "../../../../src/framework/preferences/html/";
+            var testTemplatePrefix = "../../../../src/framework/preferences/html";
             var lineSpaceTemplateName = "PrefsEditorTemplate-lineSpace.html";
 
             function testCustomizedResourceLoader(resources) {
-                jqUnit.assertEquals("lineSpace template url is set correctly", testTemplatePrefix + lineSpaceTemplateName, resources.lineSpace.url);
+                jqUnit.assertEquals("lineSpace template url is set correctly", testTemplatePrefix + "/" + lineSpaceTemplateName, resources.lineSpace.url);
                 jqUnit.assertTrue("lineSpace forceCache is set", resources.lineSpace.forceCache);
 
                 jqUnit.start();
@@ -192,12 +190,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 listeners: {
                     onResourcesLoaded: testCustomizedResourceLoader
                 },
-                components: {
-                    resourcePath: {
-                        options: {
-                            value: testTemplatePrefix
-                        }
-                    }
+                terms: {
+                    prefix: testTemplatePrefix
                 }
             });
 
@@ -571,7 +565,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.demands("templateLoader", ["fluid.prefsTests", "fluid.prefs.tests", "fluid.prefs.testsPreview"], {
                 options: {
                     resources: {
-                        prefsEditor: templatePrefix + "FullPreviewPrefsEditor.html"
+                        prefsEditor: templatePrefix + "/FullPreviewPrefsEditor.html"
                     }
                 }
             });

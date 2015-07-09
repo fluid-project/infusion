@@ -171,8 +171,8 @@ var fluid_2_0 = fluid_2_0 || {};
             removeSource: true,
             target: "{that iframeEnhancer}.options"
         }, {
-            source: "{that}.options.templatePrefix",
-            target: "{that > iframeRenderer}.options.templatePrefix"
+            source: "{that}.options.terms",
+            target: "{that > iframeRenderer}.options.terms"
         }]
     });
 
@@ -191,7 +191,9 @@ var fluid_2_0 = fluid_2_0 || {};
         styles: {
             container: "fl-prefsEditor-separatedPanel-iframe"
         },
-        templatePrefix: "./",
+        terms: {
+            templatePrefix: "."
+        },
         markupProps: {
             "class": "flc-iframe",
             src: "%templatePrefix/prefsEditorIframe.html"
@@ -201,7 +203,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.prefs.separatedPanel.renderIframe.finalInit = function (that) {
         var styles = that.options.styles;
         // TODO: get earlier access to templateLoader,
-        that.options.markupProps.src = fluid.stringTemplate(that.options.markupProps.src, {"templatePrefix/": that.options.templatePrefix});
+        that.options.markupProps.src = fluid.stringTemplate(that.options.markupProps.src, that.options.terms);
         that.iframeSrc = that.options.markupProps.src;
 
         // Create iframe and append to container
