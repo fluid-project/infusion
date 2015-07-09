@@ -1019,6 +1019,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         model: {
             value: 1
         },
+        resources: {
+            template: {
+                href: "../../../../src/framework/preferences/html/PrefsEditorTemplate-textFont.html"
+            }
+        },
         classnameMap: {
             "textFont": {
                 "default": "",
@@ -1042,6 +1047,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
+
+    fluid.tests.prefs.panel.templatePrefix = "../../../../src/framework/preferences/html/";
 
     fluid.tests.textFontPanel.testDefault = function (that, expectedNumOfOptions, expectedFont) {
         var options = that.container.find("option");
@@ -1103,6 +1110,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         model: {
             value: "default"
+        },
+        resources: { 
+                template: {
+                    href: fluid.tests.prefs.panel.templatePrefix + "PrefsEditorTemplate-contrast.html"
+                }
         },
         classnameMap: {
             "theme": {
@@ -1199,7 +1211,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /*******************************************************************************
      * textSize
      *******************************************************************************/
-    fluid.tests.prefs.panel.templatePrefix = "../../../../src/framework/preferences/html/";
 
     fluid.defaults("fluid.tests.prefs.panel.textSize", {
         gradeNames: ["fluid.prefs.panel.textSize", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
@@ -1237,7 +1248,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "Test the rendering of the text size panel",
                 sequence: [{
-                    //remove to prevent it being called twice
                     func: "{textSize}.refreshView"
                 }, {
                     listener: "fluid.tests.testDefault",
@@ -1263,6 +1273,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.panel.lineSpace", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
         model: {
             lineSpace: 1
+        },
+        resources: {
+            template: {
+                href: fluid.tests.prefs.panel.templatePrefix + "PrefsEditorTemplate-lineSpace.html"
+            }
         }
     });
 
@@ -1316,6 +1331,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         model: {
             toc: false,
             layout: false
+        },
+        resources: { 
+                template: {
+                    href: fluid.tests.prefs.panel.templatePrefix + "PrefsEditorTemplate-layout.html"
+                }
         }
     });
 
@@ -1371,6 +1391,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         model: {
             links: false
         }
+        // ,
+        // resources: { 
+        //         template: {
+        //             href: fluid.tests.prefs.panel.templatePrefix + "PrefsEditorTemplate-linksControls.html"
+        //             // ,
+        //             // href: fluid.tests.prefs.panel.templatePrefix+ "PrefsEditorTemplate-emphasizeLinks.html"
+        //         }
+        // }
     });
 
     fluid.defaults("fluid.tests.emphasizeLinksPanel", {
