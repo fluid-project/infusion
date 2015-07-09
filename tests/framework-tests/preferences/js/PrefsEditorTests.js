@@ -52,8 +52,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         // Options for PrefsEditor
-        var saveCalled = false,
-            prefsEditorRefreshed = 0;
+        // var prefsEditorRefreshed = 0;
 
         fluid.demands("fluid.prefs.prefsEditor", ["fluid.prefsTests", "fluid.prefs.tests"], {
             funcName: "fluid.prefs.starterPanels",
@@ -69,12 +68,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         }
                     }
                 },
+                saveCalled: false,
+                prefsEditorRefreshed: 0,
                 listeners: {
-                    onSave: function () {
-                        saveCalled = true;
+                    "onSave.called": {
+                        listener: function (that) {
+                            that.options.saveCalled = true;
+                        },
+                        args: ["{that}"]
                     },
-                    onPrefsEditorRefresh: function () {
-                        ++prefsEditorRefreshed;
+                    "onPrefsEditorRefresh.called": {
+                        listener: function (that) {
+                            ++that.options.prefsEditorRefreshed;
+                        },
+                        args: ["{that}"]
                     }
                 }
             }
@@ -121,8 +128,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             prefsEditor("#ui-options");
         };
 
-        var resetSaveCalled = function () {
-            saveCalled = false;
+        var resetSaveCalled = function (that) {
+            that.options.saveCalled = false;
         };
 
         jqUnit.module("PrefsEditor Tests");
@@ -248,12 +255,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             testPrefsEditor(function (prefsEditor) {
                 prefsEditor.applier.change("", bwSkin);
 
-                var prefsEditorRefreshedBfSave = prefsEditorRefreshed,
-                    expectedPrefsEditorRefreshed = prefsEditorRefreshedBfSave + 1;
-                jqUnit.assertFalse("Save hasn't been called", saveCalled);
+                var expectedPrefsEditorRefreshed = prefsEditor.options.prefsEditorRefreshed + 1;
+                jqUnit.assertFalse("Save hasn't been called", prefsEditor.options.saveCalled);
                 prefsEditor.saveAndApply();
-                jqUnit.assertTrue("Save has been called", saveCalled);
-                jqUnit.assertEquals("PrefsEditor has been refreshed when preferences are changed", expectedPrefsEditorRefreshed, prefsEditorRefreshed);
+                jqUnit.assertTrue("Save has been called", prefsEditor.options.saveCalled);
+                jqUnit.assertEquals("PrefsEditor has been refreshed when preferences are changed", expectedPrefsEditorRefreshed, prefsEditor.options.prefsEditorRefreshed);
 
                 var container = $("body"),
                     savedSettings = prefsEditor.getSettings();
@@ -266,7 +272,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
                 var noPrefsChange = $.extend(true, {}, bwSkin, {userData: true});
                 prefsEditor.applier.change("", noPrefsChange);
-                jqUnit.assertEquals("PrefsEditor hasn't been refreshed when preferences are not changed", expectedPrefsEditorRefreshed, prefsEditorRefreshed);
+                jqUnit.assertEquals("PrefsEditor hasn't been refreshed when preferences are not changed", expectedPrefsEditorRefreshed, prefsEditor.options.prefsEditorRefreshed);
 
                 prefsEditor.reset();
                 jqUnit.assertNotEquals("Reset model text size", bwSkin.preferences.textSize, prefsEditor.options.textSize);
@@ -494,8 +500,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         }
                     },
                     listeners: {
-                        onSave: function () {
-                            saveCalled = true;
+                        "onSave.called": {
+                            listener: function (that) {
+                                that.options.saveCalled = true;
+                            },
+                            args: ["{that}"]
                         }
                     },
                     autoSave: false
@@ -539,9 +548,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
 
             testPrefsEditor(function (prefsEditor) {
-                resetSaveCalled();
+                resetSaveCalled(prefsEditor);
                 prefsEditor.applier.change("", bwSkin);
-                jqUnit.assertEquals("Model has changed, auto-save changes", 1, saveCalled);
+                jqUnit.assertEquals("Model has changed, auto-save changes", 1, prefsEditor.options.saveCalled);
 
                 var savedSettings = prefsEditor.getSettings();
                 jqUnit.assertDeepEq("bw setting was saved", bwSkin.preferences.theme, savedSettings.preferences.theme);
