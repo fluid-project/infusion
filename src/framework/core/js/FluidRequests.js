@@ -14,9 +14,9 @@ var fluid_2_0 = fluid_2_0 || {};
 
 (function ($, fluid) {
     "use strict";
-    
+
     /** NOTE: All contents of this file are DEPRECATED and no entry point should be considered a supported API **/
-    
+
     fluid.explodeLocalisedName = function (fileName, locale, defaultLocale) {
         var lastDot = fileName.lastIndexOf(".");
         if (lastDot === -1 || lastDot === 0) {
@@ -24,9 +24,9 @@ var fluid_2_0 = fluid_2_0 || {};
         }
         var baseName = fileName.substring(0, lastDot);
         var extension = fileName.substring(lastDot);
-        
+
         var segs = locale.split("_");
-        
+
         var exploded = fluid.transform(segs, function (seg, index) {
             var shortSegs = segs.slice(0, index + 1);
             return baseName + "_" + shortSegs.join("_") + extension;
@@ -77,7 +77,7 @@ var fluid_2_0 = fluid_2_0 || {};
         that.operate();
         return that;
     };
-    
+
     fluid.fetchResources.explodeForLocales = function (resourceSpecs) {
         fluid.each(resourceSpecs, function (resourceSpec, key) {
             if (resourceSpec.locale) {
@@ -95,7 +95,7 @@ var fluid_2_0 = fluid_2_0 || {};
         });
         return resourceSpecs;
     };
-    
+
     fluid.fetchResources.condenseOneResource = function (resourceSpecs, resourceSpec, key, localeCount) {
         var localeSpecs = [resourceSpec];
         for (var i = 0; i < localeCount; ++ i) {
@@ -110,7 +110,7 @@ var fluid_2_0 = fluid_2_0 || {};
             resourceSpecs[key] = lastNonError;
         }
     };
-    
+
     fluid.fetchResources.condenseForLocales = function (resourceSpecs) {
         fluid.each(resourceSpecs, function (resourceSpec, key) {
             if (typeof(resourceSpec.localeExploded) === "number") {
@@ -118,7 +118,7 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         });
     };
-        
+
     fluid.fetchResources.notifyResources = function (that, resourceSpecs, callback) {
         fluid.fetchResources.condenseForLocales(resourceSpecs);
         callback(resourceSpecs);
@@ -431,5 +431,229 @@ var fluid_2_0 = fluid_2_0 || {};
         return fluid.NO_VALUE;
     };
 
+    /** Start dataSource **/
+
+    /*
+     * A grade defining a DataSource.
+     * This grade illustrates the expected structure a dataSource, as well as
+     * providing a means for identifying dataSources in a component tree by type.
+     *
+     * The purpose of the "dataSource" abstraction is to express indexed access
+     * to state. A REST/CRUD implementation is an example of a DataSource; however,
+     * it is not limited to this method of interaction.
+     */
+    fluid.defaults("fluid.dataSource", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"]
+        // Invokers should be defined for the typical CRUD functions and return
+        // a promise.
+        //
+        // The "get" and "delete" methods require the signature (directModel).
+        // The "set" method requires the signature (directModel, model)
+        //
+        // directModel: An object expressing an "index" into some set of
+        //              state which can be read or written.
+        //
+        // model: The payload sent to the storage.
+        //
+        // options: An object expressing implementation specific details
+        //          regarding the handling of a request. Note: this does not
+        //          include details for identifying the resource. Those should be
+        //          placed in the directModel.
+        //
+        // invokers: {
+        //     "get": {}, // handles the Read function
+        //     "set": {}, // handles the Create and Update functions
+        //     "delete": {} // handles the Delete function
+        // }
+    });
+
+    /*
+     * Converts an object or array to string for use as a key.
+     * The objects are sorted alphabetically to insure that they
+     * result in the same string across executions.
+     */
+    fluid.objectToHashKey = function (obj) {
+        var str = fluid.isArrayable(obj) ? "array " : "object ";
+        var keys = fluid.keys(obj).sort();
+
+        fluid.each(keys, function (key) {
+            var val = obj[key];
+            str += key + ":" + fluid.toHashKey(val);
+        });
+
+        return str;
+    };
+
+    /*
+     * Generates a string for use as a key.
+     * They typeof of the value passed in will be prepended
+     * to ensure that (strings vs numbers) and (arrays vs objects)
+     * are distinguishable.
+     */
+    fluid.toHashKey = function (val) {
+        var str;
+        if(fluid.isPlainObject(val)){
+            str = "<" + fluid.objectToHashKey(val) + ">";
+        } else {
+            str = "|" + JSON.stringify(val) + "|";
+        }
+        return str;
+    };
+
+    /*
+     * A dataSource wrapper providing a queuing mechanism for requests.
+     * Requests are queued based on type (read/write) and resource (directModel).
+     *
+     * A fully implemented dataSource, following the structure outlined by fluid.dataSource,
+     * must be provided in the wrappedDataSource subcomponent. The get, set, and delete methods
+     * found on the queuedDataSource will call their counterparts in the wrappedDataSource, after
+     * filtering through the appropriate queue.
+     *
+     * TODO: A fully realized implementation should provide a mechanism for working with a local
+     *       cache. For example pending write requests could be used to service get requests directly.
+     */
+    fluid.defaults("fluid.queuedDataSource", {
+        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        members: {
+            requests: {
+                read: {},
+                write: {}
+            }
+        },
+        components: {
+            wrappedDataSource: {
+                // requires a dataSource that implements the standard set, get, and delete methods.
+                type: "fluid.dataSource"
+            }
+        },
+        events: {
+            enqueued: null,
+            afterRequestComplete: null
+        },
+        listeners: {
+            "enqueued.start": {
+                listener: "{that}.start",
+                args: ["{arguments}.1"]
+            },
+            "afterRequestComplete.start": {
+                listener: "{that}.start",
+                args: ["{arguments}.1"]
+            }
+        },
+        invokers: {
+            // The add to queue method needs to be provided by the integrator
+            // addToQueue: "",
+            // addToQueue: {funcName: "fluid.identity"},
+            set: {
+                funcName: "fluid.queuedDataSource.enqueueWithModel",
+                args: ["{that}", "{that}.requests.write", "{wrappedDataSource}.set", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+            },
+            get: {
+                funcName: "fluid.queuedDataSource.enqueue",
+                args: ["{that}", "{that}.requests.read", "{wrappedDataSource}.get", "{arguments}.0", "{arguments}.1"]
+            },
+            "delete": {
+                funcName: "fluid.queuedDataSource.enqueue",
+                args: ["{that}", "{that}.requests.write", "{wrappedDataSource}.delete", "{arguments}.0", "{arguments}.1"]
+            },
+            start: {
+                funcName: "fluid.queuedDataSource.start",
+                args: ["{that}", "{arguments}.0"]
+            }
+        }
+    });
+
+    fluid.queuedDataSource.start = function (that, queue) {
+        if (!queue.isActive && queue.requests.length) {
+            var request = queue.requests.shift();
+
+            var requestComplete = function () {
+                queue.isActive = false;
+                that.events.afterRequestComplete.fire(request, queue);
+            };
+
+            queue.isActive = true;
+            var args = "model" in request ? [request.directModel, request.model, request.options] : [request.directModel, request.options];
+            var response = request.method.apply(null, args);
+
+            response.then(requestComplete, requestComplete);
+            fluid.promise.follow(response, request.promise);
+        }
+    };
+
+    /*
+     * Adds only one item to the queue at a time, new requests replace older ones
+     *
+     * The request object contains the request function and arguments.
+     * In the form {method: requestFn, directModel: {}, model: {}, callback: callbackFn}
+     */
+    fluid.queuedDataSource.enqueueImpl = function (that, requestsQueue, request) {
+        var promise = fluid.promise();
+        var key = fluid.toHashKey(request.directModel);
+        var queue = requestsQueue[key];
+
+        // add promise to the request object
+        // to be resolved in the start method
+        // when the wrapped dataSource's request returns.
+        request.promise = promise;
+
+        // create a queue if one doesn't already exist
+        if (!queue) {
+            queue = {
+                isActive: false,
+                requests: []
+            };
+            requestsQueue[key] = queue;
+        }
+
+        that.addToQueue(queue, request);
+        that.events.enqueued.fire(request, queue);
+
+        return promise;
+    };
+
+    fluid.queuedDataSource.enqueue = function (that, requestsQueue, method, directModel, options) {
+        var request = {
+            method: method,
+            directModel: directModel,
+            options: options
+        };
+
+        return fluid.queuedDataSource.enqueueImpl(that, requestsQueue, request);
+    };
+
+    fluid.queuedDataSource.enqueueWithModel = function (that, requestsQueue, method, directModel, model, options) {
+        var request = {
+            method: method,
+            directModel: directModel,
+            model: model,
+            options: options
+        };
+
+        return fluid.queuedDataSource.enqueueImpl(that, requestsQueue, request);
+    };
+
+    fluid.queuedDataSource.replaceRequest = function (queue, request) {
+        queue.requests[0] = request;
+    };
+
+    /*
+     * A dataSource wrapper providing a debounce queuing mechanism for requests.
+     * Requests are queued based on type (read/write) and resource (directModel).
+     * Only 1 requested is queued at a time. New requests replace older ones.
+     *
+     * A fully implemented dataSource, following the structure outlined by fluid.dataSource,
+     * must be provided in the wrappedDataSource subcomponent. The get, set, and delete methods
+     * found on the queuedDataSource will call their counterparts in the wrappedDataSource, after
+     * filtering through the appropriate queue.
+     */
+    fluid.defaults("fluid.debouncedDataSource", {
+        gradeNames: ["fluid.queuedDataSource", "autoInit"],
+        invokers: {
+            addToQueue: "fluid.queuedDataSource.replaceRequest"
+        }
+    });
+
+    /** End dataSource **/
 
 })(jQuery, fluid_2_0);
