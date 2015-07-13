@@ -392,7 +392,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
-<<<<<<< HEAD
      * Unit tests for fluid.prefs.expandSchemaDirectOption
      *******************************************************************************/
 

@@ -1820,7 +1820,7 @@ var fluid_2_0 = fluid_2_0 || {};
         invokers: "invoker"
     }, singularPenRecord);
 
-    fluid.expandCompactRec = function (segs, target, source, userOptions) {
+    fluid.expandCompactRec = function (segs, target, source) {
         fluid.guardCircularExpansion(segs, segs.length);
         var pen = segs.length > 0 ? segs[segs.length - 1] : "";
         var active = singularRecord[pen];
@@ -1828,8 +1828,7 @@ var fluid_2_0 = fluid_2_0 || {};
             active = singularPenRecord[segs[segs.length - 2]]; // support array of listeners and modelListeners
         }
         fluid.each(source, function (value, key) {
-            // TODO: hack here to avoid corrupting old-style model references which were listed with "preserve" - eliminate this along with that mergePolicy
-            if (fluid.isPlainObject(value) && !fluid.isDOMish(value) && !(userOptions && key === "model" && segs.length === 0)) {
+            if (fluid.isPlainObject(value)) {
                 target[key] = fluid.freshContainer(value);
                 segs.push(key);
                 fluid.expandCompactRec(segs, target[key], value);
@@ -1843,9 +1842,9 @@ var fluid_2_0 = fluid_2_0 || {};
         });
     };
 
-    fluid.expandCompact = function (options, userOptions) {
+    fluid.expandCompact = function (options) {
         var togo = {};
-        fluid.expandCompactRec([], togo, options, userOptions);
+        fluid.expandCompactRec([], togo, options);
         return togo;
     };
     

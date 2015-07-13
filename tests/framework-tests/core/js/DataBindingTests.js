@@ -1647,7 +1647,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
     
-    fluid.tests.isNaN = function (value) { // replicate for Number.isNaN which is not supported on IE
+    fluid.tests.isNaN = function (value) { // replicate for Number.isNaN which is not supported on IE or Safari
         return typeof(value) === "number" && value !== value;
     };
     
@@ -1684,7 +1684,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // FLUID-5659: Saturating relay counts through back-to-back transactions
     
     fluid.defaults("fluid.tests.fluid5659relay", {
-        gradeNames: ["fluid.modelComponent", "autoInit"],
+        gradeNames: "fluid.modelComponent",
         model: {
             lang: "none"
         },
@@ -1779,6 +1779,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return togo;
     };
     
-    // fluid.test.runTests(["fluid.tests.fluid5659root"]);
+    fluid.test.runTests(["fluid.tests.fluid5659root"]);
     
 })(jQuery);
