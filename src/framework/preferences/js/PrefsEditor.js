@@ -379,30 +379,33 @@ var fluid_2_0 = fluid_2_0 || {};
         }
 
         var initialModel = that.initialModel,
-            userSelections = fluid.copy(that.model);
+            userSelections = fluid.copy(that.model),
+            changedSelections = {};
 
         // Only save the changed preferences so the future default value change on preferences can still be correctly merged with changed preferences
         if (fluid.model.diff(userSelections.preferences, initialModel.preferences)) {
             delete userSelections.preferences;
         } else {
-            fluid.each(userSelections.preferences, function (value, path) {
-                if (fluid.model.diff(value, fluid.get(that.initialModel, ["preferences", path]))) {
-                    delete userSelections.preferences[path];
-                }
+            var stats = {changes: 0, unchanged: 0, changeMap: {}};
+
+            fluid.model.diff(userSelections.preferences, fluid.get(that.initialModel, ["preferences"]), stats);
+
+            fluid.each(stats.changeMap, function (state, path) {
+                fluid.set(changedSelections, ["preferences", path], userSelections.preferences[path]);
             });
         }
 
-        that.events.onSave.fire(userSelections);
-        that.setSettings(userSelections);
-        return userSelections;
+        that.events.onSave.fire(changedSelections);
+        that.setSettings(changedSelections);
+        return changedSelections;
     };
 
     fluid.prefs.prefsEditor.saveAndApply = function (that) {
         var prevSettings = that.getSettings(),
-            newSelections = that.save();
+            changedSelections = that.save();
 
         // Only when preferences are changed, re-render panels and trigger enactors to apply changes
-        if (!fluid.model.diff(fluid.get(newSelections, "preferences"), fluid.get(prevSettings, "preferences"))) {
+        if (!fluid.model.diff(fluid.get(changedSelections, "preferences"), fluid.get(prevSettings, "preferences"))) {
             that.events.onPrefsEditorRefresh.fire();
             that.applyChanges();
         }
