@@ -849,7 +849,9 @@ var fluid_2_0 = fluid_2_0 || {};
             theme: ["default", "bw", "wb", "by", "yb", "lgdg"]
         },
         markup: {
-            label: "<span class=\"fl-preview-A\">A</span><span class=\"fl-hidden-accessible\">%theme</span><div class=\"fl-crossout\"></div>"
+            // Aria-hidden needed on fl-preview-A and Display 'a' created as pseudo-content in css to prevent AT from reading out display 'a' on IE, Chrome, and Safari
+            // Aria-hidden needed on fl-crossout to prevent AT from trying to read crossout symbol in Safari
+            label: "<span class=\"fl-preview-A\" aria-hidden=\"true\"></span><span class=\"fl-hidden-accessible\">%theme</span><div class=\"fl-crossout\" aria-hidden=\"true\"></div>"
         },
         invokers: {
             style: {
@@ -871,9 +873,14 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.prefs.panel.contrast.style = function (labels, strings, markup, theme, defaultThemeName, style, defaultLabelStyle) {
         fluid.each(labels, function (label, index) {
             label = $(label);
+
+            var themeValue = strings[index];
             label.html(fluid.stringTemplate(markup, {
-                theme: strings[index]
+                theme: themeValue
             }));
+
+            // Aria-label set to prevent Firefox from reading out the display 'a'
+            label.attr("aria-label", themeValue);
 
             var labelTheme = theme[index];
             if (labelTheme === defaultThemeName) {

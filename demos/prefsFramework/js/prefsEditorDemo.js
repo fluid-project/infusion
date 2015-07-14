@@ -48,9 +48,11 @@ var demo = demo || {};
     // Fine-tune the starter aux schema and add simplify panel
     fluid.defaults("demo.prefsEditor.auxSchema.simplify", {
         auxiliarySchema: {
-            // adjust paths
-            templatePrefix: "../../src/framework/preferences/html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
-            messagePrefix: "../../src/framework/preferences/messages/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
+            terms: {
+                // adjust paths
+                templatePrefix: "../../src/framework/preferences/html",  // Must match the keyword used below to identify the common path to settings panel templates.
+                messagePrefix: "../../src/framework/preferences/messages"  // Must match the keyword used below to identify the common path to message files.
+            },
             tableOfContents: {
                 enactor: {
                     tocTemplate: "../../src/components/tableOfContents/html/TableOfContents.html"
@@ -81,12 +83,17 @@ var demo = demo || {};
     fluid.defaults("demo.prefsEditor.auxSchema.speak", {
         gradeNames: ["fluid.prefs.auxSchema.speak"],
         auxiliarySchema: {
-            // adjust paths
-            templatePrefix: "../../src/framework/preferences/html/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
-            messagePrefix: "../../src/framework/preferences/messages/",  // The common path to settings panel templates. The template defined in "panels" element will take precedence over this definition.
+            terms: {
+                // adjust paths
+                templatePrefix: "../../src/framework/preferences/html",  // Must match the keyword used below to identify the common path to settings panel templates.
+                messagePrefix: "../../src/framework/preferences/messages"  // Must match the keyword used below to identify the common path to message files.
+            },
             tableOfContents: {
                 enactor: {
-                    tocTemplate: "../../src/components/tableOfContents/html/TableOfContents.html"
+                    tocTemplate: "../../src/components/tableOfContents/html/TableOfContents.html",
+                    ignoreForToC: {
+                        "overviewPanel": ".flc-overviewPanel"
+                    }
                 }
             },
 

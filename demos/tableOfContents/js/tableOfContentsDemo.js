@@ -30,6 +30,10 @@ var demo = demo || {};
             }
         });
 
-        fluid.tableOfContents("body");
+        fluid.tableOfContents("body", {
+            ignoreForToC: {
+                trees: ".demo-toc-trees"
+            }
+        });
     };
 })(jQuery, fluid);
