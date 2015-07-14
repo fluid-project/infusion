@@ -1211,7 +1211,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         fluid.each(messageMap, function(messageName, selectorName) {
             jqUnit.assertEquals("The label text is " + messageBase[messageName], messageBase[messageName], that.locate(selectorName).text());
-      });
+        });
 
     };
 
