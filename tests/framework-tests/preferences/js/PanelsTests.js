@@ -1109,7 +1109,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "contrast-yb": "Yellow on black",
             "contrast-lgdg": "Low contrast",
             "contrastLabel": "colour and contrast",
-            "contrastDescr": "Change the colour and contrast"
+            "contrastDescr": "Change the text and background colours"
         },
         model: {
             value: "default"
