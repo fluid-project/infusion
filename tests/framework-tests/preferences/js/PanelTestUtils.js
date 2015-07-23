@@ -18,7 +18,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests.panels.utils");
 
     fluid.defaults("fluid.tests.panels.utils.defaultTestPanel", {
-        listeners: {"onCreate.getTemplate": "fluid.tests.panels.utils.getTemplate"},
         strings: {},
         testMessages: {},
         parentBundle: {
@@ -27,6 +26,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: [{messageBase: "{that}.options.testMessages"}]
             }
         }
+    });
+
+    fluid.defaults("fluid.tests.panels.utils.injectTemplates", {
+        listeners: {"onCreate.getTemplate": "fluid.tests.panels.utils.getTemplate"}
     });
 
     fluid.tests.panels.utils.checkModel = function (path, newModel, expectedValue) {
@@ -44,7 +47,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.panels.utils.getTemplate = function (that) {
         fluid.fetchResources(that.options.resources, function () {
-            // that.refreshView();
+            that.refreshView();
         });
     };
 

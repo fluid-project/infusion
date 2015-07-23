@@ -1007,7 +1007,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.prefs.panel.textFont", {
-        gradeNames: ["fluid.prefs.panel.textFont", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel.textFont", "fluid.tests.panels.utils.defaultTestPanel", "fluid.tests.panels.utils.injectTemplates", "autoInit"],
         messageBase: {
             "textFont-default": "default",
             "textFont-times": "Times New Roman",
@@ -1040,7 +1040,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         components: {
             textFont: {
                 type: "fluid.tests.prefs.panel.textFont",
-                container: ".flc-textFont"
+                container: ".flc-textFont",
+                createOnEvent: "{textFontTester}.events.onTestCaseStart"
             },
             textFontTester: {
                 type: "fluid.tests.textFontTester"
@@ -1080,11 +1081,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 7,
                 name: "Test the rendering of the text font panel",
                 sequence: [{
-                    func: "{textFont}.refreshView"
-                }, {
                     listener: "fluid.tests.textFontPanel.testDefault",
                     args: ["{textFont}", "{that}.options.testOptions.expectedNumOfOptions", "{that}.options.testOptions.defaultValue"],
-                    event: "{textFont}.events.afterRender"
+                    event: "{textFontPanel textFont}.events.afterRender"
                 }, {
                     func: "fluid.tests.textFontPanel.changeSelection",
                     args: ["{textFont}.dom.textFont", "{that}.options.testOptions.newValue"]
@@ -1103,7 +1102,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.prefs.panel.contrast", {
-        gradeNames: ["fluid.prefs.panel.contrast", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel.contrast", "fluid.tests.panels.utils.defaultTestPanel", "fluid.tests.panels.utils.injectTemplates", "autoInit"],
         messageBase: {
             "contrast": ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black", "Low contrast"],
             "contrast-default": "Default",
@@ -1118,9 +1117,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             value: "default"
         },
         resources: { 
-                template: {
-                    href: fluid.tests.prefs.panel.templatePrefix + "PrefsEditorTemplate-contrast.html"
-                }
+            template: {
+                href: fluid.tests.prefs.panel.templatePrefix + "PrefsEditorTemplate-contrast.html"
+            }
         },
         classnameMap: {
             "theme": {
@@ -1139,7 +1138,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         components: {
             contrast: {
                 type: "fluid.tests.prefs.panel.contrast",
-                container: ".flc-contrast"
+                container: ".flc-contrast",
+                createOnEvent: "{contrastTester}.events.onTestCaseStart"
             },
             contrastTester: {
                 type: "fluid.tests.contrastTester"
@@ -1185,12 +1185,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 16,
                 name: "Test the rendering of the contrast panel",
                 sequence: [{
-                    func: "{contrast}.refreshView"
-                }, {
                     listener: "fluid.tests.contrastPanel.testDefault",
                     args: ["{contrast}", "{that}.options.testOptions.expectedNumOfOptions", "{that}.options.testOptions.defaultValue"],
                     spec: {priority: "last"},
-                    event: "{contrast}.events.afterRender"
+                    event: "{contrastPanel contrast}.events.afterRender"
                 }, {
                     func: "fluid.tests.contrastPanel.changeChecked",
                     args: ["{contrast}.dom.themeInput", "{that}.options.testOptions.newValue"]
@@ -1221,7 +1219,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.prefs.panel.textSize", {
-        gradeNames: ["fluid.prefs.panel.textSize", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel.textSize", "fluid.tests.panels.utils.defaultTestPanel", "fluid.tests.panels.utils.injectTemplates", "autoInit"],
         model: {
             textSize: 1
         },
@@ -1237,7 +1235,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         components: {
             textSize: {
                 type: "fluid.tests.prefs.panel.textSize",
-                container: ".flc-textSize"
+                container: ".flc-textSize",
+                createOnEvent: "{textSizeTester}.events.onTestCaseStart"
             },
             textSizeTester: {
                 type: "fluid.tests.textSizeTester"
@@ -1256,11 +1255,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "Test the rendering of the text size panel",
                 sequence: [{
-                    func: "{textSize}.refreshView"
-                }, {
                     listener: "fluid.tests.testDefault",
-                    event: "{textSize}.events.afterRender"
-                }, {
+                    event: "{textSizePanel textfieldSlider}.events.onCreate",
+                }
+                , {
                     func: "fluid.tests.changeInput",
                     args: ["{textSize}.dom.textSize", "{that}.options.testOptions.newValue"]
                 }, {
@@ -1278,7 +1276,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.prefs.panel.lineSpace", {
-        gradeNames: ["fluid.prefs.panel.lineSpace", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel.lineSpace", "fluid.tests.panels.utils.defaultTestPanel", "fluid.tests.panels.utils.injectTemplates", "autoInit"],
         model: {
             lineSpace: 1
         },
@@ -1294,7 +1292,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         components: {
             lineSpace: {
                 type: "fluid.tests.prefs.panel.lineSpace",
-                container: ".flc-lineSpace"
+                container: ".flc-lineSpace",
+                createOnEvent: "{lineSpaceTester}.events.onTestCaseStart"
             },
             lineSpaceTester: {
                 type: "fluid.tests.lineSpaceTester"
@@ -1313,10 +1312,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "Test the rendering of the line space panel",
                 sequence: [{
-                    func: "{lineSpace}.refreshView"
-                }, {
                     listener: "fluid.tests.testDefault",
-                    event: "{lineSpace}.events.afterRender"
+                    event: "{lineSpacePanel textfieldSlider}.events.onCreate"
                 }, {
                     func: "fluid.tests.changeInput",
                     args: ["{lineSpace}.dom.textSize", "{that}.options.testOptions.newValue"]
@@ -1335,7 +1332,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.prefs.panel.layoutControls", {
-        gradeNames: ["fluid.prefs.panel.layoutControls", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel.layoutControls", "fluid.tests.panels.utils.defaultTestPanel", "fluid.tests.panels.utils.injectTemplates", "autoInit"],
         model: {
             toc: false,
             layout: false
@@ -1352,7 +1349,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         components: {
             layout: {
                 type: "fluid.tests.prefs.panel.layoutControls",
-                container: ".flc-layout"
+                container: ".flc-layout",
+                createOnEvent: "{layoutTester}.events.onTestCaseStart"
             },
             layoutTester: {
                 type: "fluid.tests.layoutTester"
@@ -1372,11 +1370,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "Test the rendering of the layout panel",
                 sequence: [{
-                    func: "{layout}.refreshView"
-                }, {
+                //     func: "{layout}.refreshView"
+                // }, {
                     listener: "fluid.tests.panels.utils.verifyCheckboxState",
                     args: ["The toc option is not checked by default", "{that}.options.testOptions.defaultInputStatus", "{layout}.dom.toc"],
-                    event: "{layout}.events.afterRender"
+                    event: "{layoutPanel layout}.events.afterRender"
                 }, {
                     func: "fluid.tests.panels.utils.setCheckboxState",
                     args: ["{layout}.dom.toc", "{that}.options.testOptions.newValue"]
@@ -1395,18 +1393,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.prefs.panel.emphasizeLinks", {
-        gradeNames: ["fluid.prefs.panel.emphasizeLinks", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel.emphasizeLinks", "fluid.tests.panels.utils.defaultTestPanel", "fluid.tests.panels.utils.injectTemplates", "autoInit"],
         model: {
             links: false
+        },
+        resources: {
+            template: {
+                href: fluid.tests.prefs.panel.templatePrefix + "PrefsEditorTemplate-emphasizeLinks.html"
+            }
         }
-        // ,
-        // resources: { 
-        //         template: {
-        //             href: fluid.tests.prefs.panel.templatePrefix + "PrefsEditorTemplate-linksControls.html"
-        //             // ,
-        //             // href: fluid.tests.prefs.panel.templatePrefix+ "PrefsEditorTemplate-emphasizeLinks.html"
-        //         }
-        // }
     });
 
     fluid.defaults("fluid.tests.emphasizeLinksPanel", {
@@ -1414,7 +1409,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         components: {
             emphasizeLinks: {
                 type: "fluid.tests.prefs.panel.emphasizeLinks",
-                container: ".flc-links"
+                container: ".flc-links",
+                createOnEvent: "{emphasizeLinksTester}.events.onTestCaseStart"
             },
             emphasizeLinksTester: {
                 type: "fluid.tests.emphasizeLinksTester"
@@ -1434,11 +1430,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "Test the rendering of the emphasizeLinks panel",
                 sequence: [{
-                    func: "{emphasizeLinks}.refreshView"
-                }, {
+                //     func: "{emphasizeLinks}.refreshView"
+                // }, {
                     listener: "fluid.tests.panels.utils.verifyCheckboxState",
                     args: ["The inputs should be unchecked by default", "{that}.options.testOptions.defaultInputStatus", "{emphasizeLinks}.dom.links"],
-                    event: "{emphasizeLinks}.events.afterRender"
+                    event: "{emphasizeLinksPanel emphasizeLinks}.events.afterRender"
                 }, {
                     func: "fluid.tests.panels.utils.setCheckboxState",
                     args: ["{emphasizeLinks}.dom.links", "{that}.options.testOptions.newValue"]
@@ -1457,9 +1453,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.prefs.panel.inputsLarger", {
-        gradeNames: ["fluid.prefs.panel.inputsLarger", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel.inputsLarger", "fluid.tests.panels.utils.defaultTestPanel", "fluid.tests.panels.utils.injectTemplates", "autoInit"],
         model: {
             inputsLarger: false
+        },
+        resources: {
+            template: {
+                    href: fluid.tests.prefs.panel.templatePrefix + "PrefsEditorTemplate-inputsLarger.html"
+                }
         }
     });
 
@@ -1468,7 +1469,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         components: {
             inputsLarger: {
                 type: "fluid.tests.prefs.panel.inputsLarger",
-                container: ".flc-links"
+                container: ".flc-links",
+                createOnEvent: "{inputsLargerTester}.events.onTestCaseStart"
             },
             inputsLargerTester: {
                 type: "fluid.tests.inputsLargerTester"
@@ -1488,11 +1490,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "Test the rendering of the inputsLarger panel",
                 sequence: [{
-                    func: "{inputsLarger}.refreshView"
-                }, {
+                //     func: "{inputsLarger}.refreshView"
+                // }, {
                     listener: "fluid.tests.panels.utils.verifyCheckboxState",
                     args: ["The inputs should be unchecked by default", "{that}.options.testOptions.defaultInputStatus", "{inputsLarger}.dom.inputsLarger"],
-                    event: "{inputsLarger}.events.afterRender"
+                    event: "{inputsLargerPanel inputsLarger}.events.afterRender"
                 }, {
                     func: "fluid.tests.panels.utils.setCheckboxState",
                     args: ["{inputsLarger}.dom.inputsLarger", "{that}.options.testOptions.newValue"]
@@ -1510,7 +1512,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * linksControlsPanel
      *******************************************************************************/
 
-    fluid.defaults("fluid.tests.prefs.panel.linksControls", {
+     fluid.defaults("fluid.tests.prefs.panel.linksControls", {
         gradeNames: ["fluid.prefs.panel.linksControls", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
         model: {
             fluid_prefs_emphasizeLinks: false,
@@ -1619,7 +1621,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "fluid.tests.layoutPanel",
             "fluid.tests.emphasizeLinksPanel",
             "fluid.tests.inputsLargerPanel",
+
             "fluid.tests.linksControlsPanel"
+
         ]);
     });
 
