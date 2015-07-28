@@ -31,13 +31,14 @@ var fluid_2_0 = fluid_2_0 || {};
     /**
      * Ensures that TTS is supported in the browser, including cases where the
      * feature is detected, but where the underlying audio engine is missing.
-     * For example VMs on SauceLabs.
+     * For example in VMs on SauceLabs, the behaviour for browsers which report that the speechSynthesis
+     * API is implemented is for the `onstart` event of an utterance to never fire. If we don't receive this
+     * event within a timeout, this API's behaviour is to return a promise which rejects.  
      *
      * @param delay {Number} A time in milliseconds to wait for the speechSynthesis to fire its onStart event
      * by default it is 1000ms (1s). This is crux of the test, as it needs time to attempt to run the speechSynthesis.
-     * @returns {fluid.promise} A promise which will resolve if the TTS is supported ( the onstart event is fired within the delay period)
-     * or be rejected if the speechSynthesis API has not been implemented or onstart event fails to be called within the delay period
-     * (possibly as a result of misconfigured audio drives on the OS ). No arguments are passed along.
+     * @return {fluid.promise} A promise which will resolve if the TTS is supported (the onstart event is fired within the delay period)
+     * or be rejected otherwise.
      */
     fluid.textToSpeech.checkTTSSupport = function (delay) {
         var promise = fluid.promise();
