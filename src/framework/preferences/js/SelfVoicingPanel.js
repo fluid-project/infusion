@@ -27,11 +27,11 @@ var fluid_2_0 = fluid_2_0 || {};
         selectors: {
             speak: ".flc-prefsEditor-speak",
             label: ".flc-prefsEditor-speak-label",
-            choiceLabel: ".flc-prefsEditor-speak-choice-label"
+            speakDescr: ".flc-prefsEditor-speak-descr"
         },
         protoTree: {
             label: {messagekey: "speakLabel"},
-            choiceLabel: {messagekey: "speakDescr"},
+            speakDescr: {messagekey: "speakDescr"},
             speak: "${speak}"
         }
     });
