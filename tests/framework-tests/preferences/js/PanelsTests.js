@@ -1,5 +1,5 @@
 /*
-Copyright 2013 OCAD University
+Copyright 2013-2015 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -1098,7 +1098,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.prefs.panel.contrast", {
         gradeNames: ["fluid.prefs.panel.contrast", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
         messageBase: {
-            "contrast": ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black"],
+            "contrast": ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black", "Low contrast"],
+            "contrast-default": "Default",
+            "contrast-bw": "Black on white",
+            "contrast-wb": "White on black",
+            "contrast-by": "Black on yellow",
+            "contrast-yb": "Yellow on black",
+            "contrast-lgdg": "Low contrast",
             "contrastLabel": "Colour & Contrast"
         },
         model: {
@@ -1141,6 +1147,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             inputValue = input.value;
             label = labels.eq(index);
             jqUnit.assertTrue("The contrast label has appropriate css applied", label.hasClass(that.options.classnameMap.theme[inputValue]));
+
+            jqUnit.assertEquals("The aria-label is " + that.options.messageBase.contrast[index], that.options.messageBase.contrast[index], label.attr("aria-label"));
         });
 
         jqUnit.assertTrue("The default contrast label has the default label css applied", labels.eq(0).hasClass(that.options.styles.defaultThemeLabel));
@@ -1162,7 +1170,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test the contrast settings panel",
             tests: [{
-                expect: 10,
+                expect: 16,
                 name: "Test the rendering of the contrast panel",
                 sequence: [{
                     func: "{contrast}.refreshView"
