@@ -42,9 +42,9 @@ var fluid_2_0 = fluid_2_0 || {};
     // diagnostic - in fact, it is perfectly acceptable for a component's creator to return no value and
     // the failure is really in assumptions in fluid.initLittleComponent. Revisit this issue for 2.0
     fluid.diagnoseFailedView = function (componentName, that, options, args) {
-        if (!that && (fluid.hasGrade(options, "fluid.viewComponent") || fluid.hasGrade(options, "fluid.viewComponent"))) {
+        if (!that && fluid.hasGrade(options, "fluid.viewComponent")) {
             var container = fluid.wrap(args[1]);
-            var message1 = "Instantiation of autoInit component with type " + componentName + " failed, since ";
+            var message1 = "Instantiation of view component with type " + componentName + " failed, since ";
             if (!container) {
                 fluid.fail(message1 + " container argument is empty");
             }
