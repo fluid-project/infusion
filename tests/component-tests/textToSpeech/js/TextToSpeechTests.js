@@ -11,7 +11,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/* global fluid, jqUnit, speechSynthesis, SpeechSynthesisUtterance */
+/* global fluid, jqUnit, speechSynthesis */
 
 (function () {
     "use strict";
