@@ -2883,6 +2883,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertNotUndefined("The existing subcomponent exists", builder.actualComponent.originalSub);
         jqUnit.assertValue("Components must be merged correctly", builder.actualComponent.mustExist);
     });
+    
+    /** FLUID-5717: Merge policies contributed via dynamic grade **/
+    
+    fluid.defaults("fluid.tests.fluid5717bare", { // TODO: This will allow testing of FLUID-5615 when we can fix it
+        gradeNames: "fluid.component",
+        mergePolicy: {
+            protect: "noexpand"
+        },
+        invokers: {
+            evaluate: "fluid.tests.fluid5717eval({that}.options.protect)"
+        }
+    });
+    
+    fluid.defaults("fluid.tests.fluid5717", {
+        gradeNames: ["fluid.tests.fluid5717bare", "{that}.evaluate"]
+    });
+    
+    fluid.tests.fluid5717eval = function (protect) {
+        jqUnit.assertEquals("Protected from expansion", "{instantiator}", protect);
+        return "fluid.component";
+    };
+    
+    jqUnit.test("FLUID-5717: Dynamically contributed mergePolicy does not function", function () {
+        jqUnit.expect(2);
+        var that = fluid.component({
+            gradeNames: ["fluid.tests.fluid5717"],
+            protect: "{instantiator}"
+        });
+        jqUnit.assertValue("Constructed dynamic component", that);
+    });
 
     /** FLUID-5094: Dynamic grade merging takes an undefined source passed in from IoCSS into account rather than ignoring it **/
 

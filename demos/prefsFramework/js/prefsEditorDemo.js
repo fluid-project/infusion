@@ -18,10 +18,6 @@ var demo = demo || {};
 
     fluid.registerNamespace("demo.prefsEditor");
 
-    fluid.enhance.check({
-        "fluid.supportsTTS": "fluid.textToSpeech.isSupported"
-    });
-
     // add extra prefs to the starter primary schemas
     demo.prefsEditor.primarySchema = {
         "demo.prefs.simplify": {
@@ -30,14 +26,21 @@ var demo = demo || {};
         }
     };
 
+    fluid.contextAware.makeChecks({
+        "fluid.supportsTTS": "fluid.textToSpeech.isSupported"
+    });
+
     fluid.defaults("demo.prefsEditor.progressiveEnhancement", {
-        gradeNames: ["fluid.progressiveCheckerForComponent"],
-        componentName: "demo.prefsEditor.progressiveEnhancement",
-        progressiveCheckerOptions: {
-            checks: [{
-                feature: "{fluid.supportsTTS}",
-                contextName: "demo.prefsEditor.auxSchema.speak"
-            }]
+        gradeNames: ["fluid.contextAware"],
+        contextAwareness: {
+            textToSpeech: {
+                checks: {
+                    supportsTTS: {
+                        contextValue: "{fluid.supportsTTS}",
+                        gradeNames: "demo.prefsEditor.auxSchema.speak"
+                    }
+                }
+            }
         }
     });
 

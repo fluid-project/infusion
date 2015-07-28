@@ -76,9 +76,9 @@ var fluid_2_0 = fluid_2_0 || {};
         });
         
     };
-    /** Peforms the computation for `fluid.contextAware.makeChecks` and returns a hash suitable for being sent to `fluid.contextAware.makeCheckMarkers` - 
+    /** Peforms the computation for `fluid.contextAware.makeChecks` and returns a structure suitable for being sent to `fluid.contextAware.makeCheckMarkers` - 
      *
-     * @return A hash of horizon names to grade names - this can be sent to fluid.contextAware.makeCheckMarkers
+     * @return A hash of marker type names to grade names - this can be sent to fluid.contextAware.makeCheckMarkers
      */
     // unsupported, NON-API function
     fluid.contextAware.performChecks = function (checkHash) {
@@ -98,10 +98,10 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     /**
-     * Takes an hash of check context names to check records, designating a collection of context markers which might be registered at a location
+     * Takes an object whose keys are check context names and whose values are check records, designating a collection of context markers which might be registered at a location
      * in the component tree.
       
-     * @param checkHash {Object} Hash of check names to check records. The keys in this structure are the context names to be supplied if the check passes.
+     * @param checkHash {Object} The keys in this structure are the context names to be supplied if the check passes, and the values are check records.
      * A check record contains: 
      *    ONE OF:
      *    value {Any} [optional] A literal value name to be attached to the context
@@ -135,7 +135,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     /** A grade to be given to a component which requires context-aware adaptation.
-     * This grade consumes configuration held in the block named "contextAwareness", organised as a hash of names to records holding 
+     * This grade consumes configuration held in the block named "contextAwareness", which is an object whose keys are check namespaces and whose values hold 
      * sequences of "checks" to be made in the component tree above the component. The value searched by
      * each check is encoded as the element named `contextValue` - this either represents an IoC reference to a component
      * or a particular value held at the component. If this reference has no path component, the path ".options.value" will be assumed.

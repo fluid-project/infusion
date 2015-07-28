@@ -27,7 +27,7 @@ fluid.registerNamespace("fluid.demo");
                     }
                 }
             },
-            target: "{/ fluid.tableOfContents}.options"
+            target: "{/ fluid.tableOfContents.levels}.options"
         }
     });
     

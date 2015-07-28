@@ -569,6 +569,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
         defaultsBlock.source = newDefaults;
         shadow.mergeOptions.updateBlocks();
+        shadow.mergeOptions.computeMergePolicy(); // TODO: we should really only do this if its content changed - this implies moving all options evaluation over to some (cheap) variety of the ChangeApplier
 
         var furtherResolved = fluid.remove_if(gradeNames, function (gradeName) {
             return gradeName.charAt(0) === "{" && !fluid.contains(dynamicGrades, gradeName);
@@ -954,7 +955,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 recordComponent(parent, component, path, name, created);
                 that.events.onComponentAttach.fire(component, path, that, created);
             } else {
-                fluid.fail("Cannot record non-component");
+                fluid.fail("Cannot record non-component with value ", component, " at path \"" + name + "\" of parent ", parent);
             }
         };
         that.clearComponent = function (component, name, child, options, noModTree, path) {

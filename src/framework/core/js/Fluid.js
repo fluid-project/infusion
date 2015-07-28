@@ -2079,6 +2079,7 @@ var fluid = fluid || fluid_2_0;
 
     // unsupported, NON-API function
     fluid.makeMergeOptions = function (policy, sources, userOptions) {
+        // note - we close over the supplied policy as a shared object reference - it will be updated during discovery
         var options = {
             mergePolicy: policy,
             sources: sources
@@ -2239,6 +2240,7 @@ var fluid = fluid || fluid_2_0;
             $.extend(true, sharedMergePolicy, compiledPolicy.builtins); // ensure it gets broadcast to all sharers
         }
         computeMergePolicy();
+        mergeOptions.computeMergePolicy = computeMergePolicy;
 
         if (compiledPolicy.hasDefaults) {
             if (fluid.generateExpandBlock) {

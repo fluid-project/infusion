@@ -36,11 +36,13 @@ var demo = demo || {};
          * Simple inline edits example.
          */
         fluid.inlineEdit(".demoSelector-inlineEdit-container-title", {
-            componentDecorators: {
-                type: "fluid.undo",
-                options: {
-                    selectors: demo.initInlineEdit.selectors,
-                    renderer: demo.undoRenderer
+            components: {
+                undo: {
+                    type: "fluid.undo",
+                    options: {
+                        selectors: demo.initInlineEdit.selectors,
+                        renderer: demo.undoRenderer
+                    }
                 }
             },
             styles: {
@@ -53,11 +55,13 @@ var demo = demo || {};
         });
 
         fluid.inlineEdit(".demoSelector-inlineEdit-container-caption", {
-            componentDecorators: {
-                type: "fluid.undo",
-                options: {
-                    selectors: demo.initInlineEdit.selectors,
-                    renderer: demo.undoRenderer
+            components: {
+                undo: {
+                    type: "fluid.undo",
+                    options: {
+                        selectors: demo.initInlineEdit.selectors,
+                        renderer: demo.undoRenderer
+                    }
                 }
             },
             strings: {
