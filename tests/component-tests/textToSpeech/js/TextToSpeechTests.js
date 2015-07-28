@@ -55,6 +55,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     jqUnit.assertFalse("Nothing should be pending", that.model.pending);
                     jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
                     jqUnit.assertDeepEq("The queue should be empty", [], that.queue);
+                    that.cancel();
                     jqUnit.start();
                 },
                 args: ["{that}"]
@@ -88,16 +89,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 args: ["{that}"]
             },
-            "onStop.end": "jqUnit.start"
+            "onStop.end": {
+                listener: function (that) {
+                    that.cancel();
+                    jqUnit.start();
+                },
+                args: ["{that}"]
+            }
         }
     });
 
     // only run the tests in browsers that support the Web Speech API for speech synthesis
-    if (!fluid.textToSpeech.isSupported()) {
-        jqUnit.test("No Tests Run", function () {
-            jqUnit.assert("Does not support the SpeechSynthesis");
+
+    fluid.tests.textToSpeech.runNoTTSTests = function () {
+        jqUnit.test("No Tests Run: No TTS Support", function () {
+            jqUnit.assert("Does not support SpeechSynthesis");
         });
-    } else {
+    };
+
+    fluid.tests.textToSpeech.runTTSTests = function () {
         jqUnit.test("Initialization", function () {
             var that = fluid.tests.textToSpeech();
 
@@ -123,6 +133,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 that.queueSpeech("Testing pause and resume events");
             });
         }
-    }
+    };
 
+    var runTests = fluid.textToSpeech.checkTTSSupport();
+    runTests.then(fluid.tests.textToSpeech.runTTSTests, fluid.tests.textToSpeech.runNoTTSTests);
 })();
