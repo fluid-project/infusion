@@ -18,9 +18,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests");
 
-    // Ensures that TTS is supported in the browser, including cases wehre the
+    // Ensures that TTS is supported in the browser, including cases where the
     // feature is detected, but where the underlying audio engine is missing.
-    // For example VM's on SauceLabs.
+    // For example VMs on SauceLabs.
     //
     // returns a promise
     fluid.tests.checkTTSSupport = function (delay) {
