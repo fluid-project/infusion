@@ -18,11 +18,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests");
 
-    // Ensures that TTS is supported in the browser, including cases where the
-    // feature is detected, but where the underlying audio engine is missing.
-    // For example VMs on SauceLabs.
-    //
-    // returns a promise
+    /**
+    * Ensures that TTS is supported in the browser, including cases where the
+    * feature is detected, but where the underlying audio engine is missing.
+    * For example VMs on SauceLabs.
+    *
+    * @param delay {Number} A time in milliseconds to wait for the speechSynthesis to fire its onStart event
+    * by default it is 1000ms (1s). This is crux of the test, as it needs time to attempt to run the speechSynthesis.
+    * @returns {fluid.promise} A promise which will resolve if the TTS is supported or be rejected if it is not.
+    * No arguments are passed along.
+    */
     fluid.tests.checkTTSSupport = function (delay) {
         var promise = fluid.promise();
         if (fluid.textToSpeech.isSupported()) {
@@ -31,7 +36,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var timeout = setTimeout(function () {
                 speechSynthesis.cancel();
                 promise.reject();
-            }, delay);
+            }, delay || 1000);
             toSpeak.onstart = function () {
                 clearTimeout(timeout);
                 speechSynthesis.cancel();
@@ -162,6 +167,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
-    var runTests = fluid.tests.checkTTSSupport(1000);
+    var runTests = fluid.tests.checkTTSSupport();
     runTests.then(fluid.tests.textToSpeech.runTTSTests, fluid.tests.textToSpeech.runNoTTSTests);
 })();
