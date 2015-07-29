@@ -28,6 +28,40 @@ var fluid_2_0 = fluid_2_0 || {};
         return !!(window && window.speechSynthesis);
     };
 
+    /**
+     * Ensures that TTS is supported in the browser, including cases where the
+     * feature is detected, but where the underlying audio engine is missing.
+     * For example in VMs on SauceLabs, the behaviour for browsers which report that the speechSynthesis
+     * API is implemented is for the `onstart` event of an utterance to never fire. If we don't receive this
+     * event within a timeout, this API's behaviour is to return a promise which rejects.  
+     *
+     * @param delay {Number} A time in milliseconds to wait for the speechSynthesis to fire its onStart event
+     * by default it is 1000ms (1s). This is crux of the test, as it needs time to attempt to run the speechSynthesis.
+     * @return {fluid.promise} A promise which will resolve if the TTS is supported (the onstart event is fired within the delay period)
+     * or be rejected otherwise.
+     */
+    fluid.textToSpeech.checkTTSSupport = function (delay) {
+        var promise = fluid.promise();
+        if (fluid.textToSpeech.isSupported()) {
+            var toSpeak = new SpeechSynthesisUtterance(" "); // short text to attempt to speak
+            toSpeak.volume = 0; // mutes the Speech Synthesizer
+            var timeout = setTimeout(function () {
+                speechSynthesis.cancel();
+                promise.reject();
+            }, delay || 1000);
+            toSpeak.onstart = function () {
+                clearTimeout(timeout);
+                speechSynthesis.cancel();
+                promise.resolve();
+            };
+            speechSynthesis.speak(toSpeak);
+        } else {
+            setTimeout(promise.reject, 0);
+        }
+        return promise;
+    };
+
+
     fluid.defaults("fluid.textToSpeech", {
         gradeNames: ["fluid.standardRelayComponent", "autoInit"],
         events: {
@@ -91,6 +125,8 @@ var fluid_2_0 = fluid_2_0 || {};
                 funcName: "fluid.textToSpeech.handleStart",
                 args: ["{that}"]
             },
+            // The handleEnd method is assumed to be triggered asynchronously
+            // as it is processed/triggered by the mechanism voicing the utterance.
             handleEnd: {
                 funcName: "fluid.textToSpeech.handleEnd",
                 args: ["{that}"]

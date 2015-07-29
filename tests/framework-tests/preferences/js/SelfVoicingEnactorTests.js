@@ -10,7 +10,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 // Declare dependencies
-/* global fluid, jqUnit, speechSynthesis */
+/* global fluid, jqUnit */
 
 (function ($) {
     "use strict";
@@ -23,64 +23,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.prefs.enactor.speakEnactor", {
         gradeNames: ["fluid.prefs.enactor.speak", "autoInit"],
-        members: {
-            eventRecord: {},
-            speakQueue: []
-        },
         model: {
-            enabled: true,
-            utteranceOpts: {
-                volume: 0
-            }
+            enabled: true
         },
-        listeners: {
-            "onCreate.cleanUp": "fluid.tests.prefs.enactor.speakEnactor.cleanUp",
-            "onStart.record": {
-                listener: "{that}.record",
-                args: ["onStart"]
-            },
-            "onStop.record": {
-                listener: "{that}.record",
-                args: ["onStop"]
-            },
-            "onSpeechQueued.record": {
-                listener: "{that}.record",
-                args: ["onSpeechQueued"]
-            },
-            "onSpeechQueued.recordText": "{that}.recordText"
-        },
-        invokers: {
-            record: {
-                funcName: "fluid.tests.prefs.enactor.speakEnactor.record",
-                args: ["{that}", "{arguments}.0"]
-            },
-            recordText: {
-                funcName: "fluid.tests.prefs.enactor.speakEnactor.recordText",
-                args: ["{that}", "{arguments}.0"]
-            },
-            clearRecords: {
-                funcName: "fluid.tests.prefs.enactor.speakEnactor.clearRecords",
-                args: ["{that}"]
+        components: {
+            tts: {
+                type: "fluid.mock.textToSpeech",
+                options: {
+                    invokers: {
+                        queueSpeech: {
+                            funcName: "fluid.mock.textToSpeech.queueSpeech",
+                            args: ["{that}", "{that}.handleStart", "{that}.handleEnd", "{that}.speechRecord", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+                        }
+                    }
+                }
             }
         }
     });
-
-    fluid.tests.prefs.enactor.speakEnactor.cleanUp = function () {
-        speechSynthesis.cancel();
-    };
-
-    fluid.tests.prefs.enactor.speakEnactor.record = function (that, name) {
-        that.eventRecord[name] = (that.record[name] || 0) + 1;
-    };
-
-    fluid.tests.prefs.enactor.speakEnactor.recordText = function (that, text) {
-        that.speakQueue.push(text);
-    };
-
-    fluid.tests.prefs.enactor.speakEnactor.clearRecords = function (that) {
-        that.eventRecord = {};
-        that.speakQueue = {};
-    };
 
     fluid.defaults("fluid.tests.speakTests", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
@@ -108,9 +67,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 speaking: false,
                 pending: false,
                 paused: false,
-                utteranceOpts: {
-                    volume: 0
-                }
+                utteranceOpts: {}
             }
         },
         modules: [{
@@ -119,28 +76,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 3,
                 name: "Start-Stop flow",
                 sequence: [{
-                    func: "{speak}.queueSpeech",
+                    func: "{speak}.tts.queueSpeech",
                     args: ["{that}.options.testOptions.sampleText"]
                 }, {
                     listener: "fluid.tests.speakTester.verifyRecords",
                     args: [
                         "{speak}",
                         "{that}.options.testOptions.startStopFireRecord",
-                        ["{that}.options.testOptions.sampleText"],
+                        [{
+                            text: "{that}.options.testOptions.sampleText",
+                            interrupt: false
+                        }],
                         "{that}.options.testOptions.stoppedModel"
                     ],
                     spec: {priority: "last"},
-                    event: "{speak}.events.onStop"
+                    event: "{speak}.tts.events.onStop"
                 }]
             }]
         }]
     });
 
-    fluid.tests.speakTester.verifyRecords = function (that, expectedEvents, expectedText, expectedModel) {
-        jqUnit.assertDeepEq("The events should have fired correctly", expectedEvents, that.eventRecord);
-        jqUnit.assertDeepEq("The text to be spoken should have been queued correctly", expectedText, that.speakQueue);
+    fluid.tests.speakTester.verifyRecords = function (that, expectedEvents, expectedSpeechRecord, expectedModel) {
+        jqUnit.assertDeepEq("The events should have fired correctly", expectedEvents, that.tts.eventRecord);
+        jqUnit.assertDeepEq("The text to be spoken should have been queued correctly", expectedSpeechRecord, that.tts.speechRecord);
         jqUnit.assertDeepEq("The model should be reset correctly", expectedModel, that.model);
-        that.clearRecords();
     };
 
     /*******************************************************************************
@@ -148,9 +107,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.prefs.enactor.selfVoicingEnactor", {
-        gradeNames: ["fluid.prefs.enactor.selfVoicing", "fluid.tests.prefs.enactor.speakEnactor", "autoInit"],
+        gradeNames: ["fluid.prefs.enactor.selfVoicing", "autoInit"],
         model: {
             enabled: false
+        },
+        components: {
+            tts: {
+                type: "fluid.mock.textToSpeech",
+                options: {
+                    invokers: {
+                        // put back the selfVoicingEnactors own queueSpeech method, but pass in the
+                        // mock queueSpeech function as the speechFn
+                        queueSpeech: {
+                            funcName: "fluid.prefs.enactor.speak.queueSpeech",
+                            args: ["{that}", "{that}.mockQueueSpeech", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+                        },
+                        mockQueueSpeech: {
+                            funcName: "fluid.mock.textToSpeech.queueSpeech",
+                            args: ["{arguments}.0", "{that}.handleStart", "{that}.handleEnd", "{that}.speechRecord", "{arguments}.1", "{arguments}.2", "{arguments}.3"]
+                        }
+                    }
+                }
+            }
         },
         invokers: {
             toggle: {
@@ -177,9 +155,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
         testOptions: {
             expectedText: [
-                "{selfVoicing}.options.strings.welcomeMsg",
-                "Reading text from DOM",
-                "no image"
+                {text: "{selfVoicing}.options.strings.welcomeMsg", interrupt: true},
+                {text: "Reading text from DOM", interrupt: false},
+                {text: "no image", interrupt: false}
             ]
         },
         modules: [{
@@ -194,30 +172,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     listener: "fluid.tests.selfVoicingTester.verifySpeakQueue",
                     args: ["{selfVoicing}", "{that}.options.testOptions.expectedText"],
                     spec: {priority: "last"},
-                    event: "{selfVoicing}.events.onStop"
+                    event: "{selfVoicing}.tts.events.onStop"
                 }]
             }]
         }]
     });
 
     fluid.tests.selfVoicingTester.verifySpeakQueue = function (that, expectedText) {
-        jqUnit.assertDeepEq("The text to be spoken should have been queued correctly", expectedText, that.speakQueue);
-        that.clearRecords();
+        jqUnit.assertDeepEq("The text to be spoken should have been queued correctly", expectedText, that.tts.speechRecord);
     };
 
     $(document).ready(function () {
-        // only run the tests in browsers that support the Web Speech API for speech synthesis
-        if (!fluid.textToSpeech.isSupported()) {
-            jqUnit.test("No Tests Run", function () {
-                jqUnit.assert("Does not support the SpeechSynthesis Interface");
-            });
-
-        } else {
-            fluid.test.runTests([
-                "fluid.tests.speakTests",
-                "fluid.tests.selfVoicingTests"
-            ]);
-        }
+        fluid.test.runTests([
+            "fluid.tests.speakTests",
+            "fluid.tests.selfVoicingTests"
+        ]);
     });
 
 })(jQuery);
