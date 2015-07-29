@@ -128,7 +128,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         fluid.tests.uploader.testUploaderConfigs({
             rules: fluid.compat.fluid_1_2.uploader.optionsRules,
-            tags: {"fluid.uploader.requiredApi": "fluid_1_2"},
+            tags: {"fluid.uploader.requiredApi": {
+                value: "fluid_1_2"
+            }},
             distributor: "fluid.uploader.compatibility.distributor.1_3",
             optionsTypes: [
                 {
@@ -159,7 +161,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         fluid.tests.uploader.testUploaderConfigs({
             rules: fluid.compat.fluid_1_3.uploader.optionsRules,
-            tags: {"fluid.uploader.requiredApi": "fluid_1_3"},
+            tags: {"fluid.uploader.requiredApi": {
+                value: "fluid_1_3"
+            }},
             distributor: "fluid.uploader.compatibility.distributor.1_4",
             optionsTypes: [
                 {
@@ -190,7 +194,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         fluid.tests.uploader.testUploaderConfigs({
             rules: fluid.tests.uploader.rules1_2To1_4,
-            tags: {"fluid.uploader.requiredApi": "fluid_1_2"},
+            tags: {"fluid.uploader.requiredApi": {
+                value: "fluid_1_2"
+            }},
             distributor: "fluid.uploader.compatibility.distributor.1_4",
             optionsTypes: [{
                 label: "1.2-era options",

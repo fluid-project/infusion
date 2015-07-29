@@ -9,8 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/* global console */
-
 var fluid_2_0 = fluid_2_0 || {};
 
 (function ($, fluid) {
@@ -522,7 +520,6 @@ var fluid_2_0 = fluid_2_0 || {};
     };
     
     fluid.debug.browser.bindHover = function (that, dokkument) {
-        console.log("Binding to document " + dokkument.prop("id"));
         var listener = function (event) {
             if (!that.model.isInspecting || that.model.isFrozen) {
                 return;

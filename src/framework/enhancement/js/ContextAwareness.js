@@ -83,6 +83,11 @@ var fluid_2_0 = fluid_2_0 || {};
     // unsupported, NON-API function
     fluid.contextAware.performChecks = function (checkHash) {
         return fluid.transform(checkHash, function (checkRecord) {
+            if (typeof(checkRecord) === "function") {
+                checkRecord = {func: checkRecord};
+            } else if (typeof(checkRecord) === "string") {
+                checkRecord = {funcName: checkRecord};
+            }
             if (fluid.isPrimitive(checkRecord)) {
                 return checkRecord;
             } else if ("value" in checkRecord) {
@@ -107,7 +112,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *    value {Any} [optional] A literal value name to be attached to the context
      *    func {Function} [optional] A zero-arg function to be called to compute the value
      *    funcName {String} [optional] The name of a zero-arg global function which will compute the value
-     * If the check record consists of a primitive value, it is assumed to be the value given to "value". 
+     * If the check record consists of a Number or Boolean, it is assumed to be the value given to "value". 
      * @param path {String|Array} [optional] The path in the component tree at which the check markers are to be registered. If omitted, "" is assumed
      * @param instantiator {Instantiator} [optional] The instantiator holding the component tree which will receive the markers. If omitted, use `fluid.globalInstantiator`.
      */

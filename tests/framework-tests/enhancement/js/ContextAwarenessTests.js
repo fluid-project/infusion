@@ -105,7 +105,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }, {
             message: "Comparison with specific context values",
             markers: {
-                "api.version" : "1_3"
+                "api.version" : {
+                    value: "1_3"
+                }
             },
             checks: {
                 is_1_3: {

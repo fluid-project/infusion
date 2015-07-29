@@ -20,10 +20,9 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.registerNamespace("fluid.uploader.demo");
 
     fluid.defaults("fluid.uploader.demo", {
-        strategy: {
-            remote: {
-                type: "fluid.uploader.demo.remote"
-            }
+        distributeOptions: {
+            record: "fluid.uploader.demo.remote",
+            target: "{that strategy remote}.type"
         }
     });
 
