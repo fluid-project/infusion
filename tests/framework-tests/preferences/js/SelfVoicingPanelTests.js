@@ -26,10 +26,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         model: {
             speak: false
         },
-        resources: { 
-                template: {
-                    href: "../../../../src/framework/preferences/html/PrefsEditorTemplate-speak.html"
-                }
+        resources: {
+            template: {
+                href: "../../../../src/framework/preferences/html/PrefsEditorTemplate-speak.html"
+            }
         }
     });
 

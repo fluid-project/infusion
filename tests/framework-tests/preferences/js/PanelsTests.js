@@ -1116,7 +1116,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         model: {
             value: "default"
         },
-        resources: { 
+        resources: {
             template: {
                 href: fluid.tests.prefs.panel.templatePrefix + "PrefsEditorTemplate-contrast.html"
             }
@@ -1256,9 +1256,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Test the rendering of the text size panel",
                 sequence: [{
                     listener: "fluid.tests.testDefault",
-                    event: "{textSizePanel textfieldSlider}.events.onCreate",
-                }
-                , {
+                    event: "{textSizePanel textfieldSlider}.events.onCreate"
+                }, {
                     func: "fluid.tests.changeInput",
                     args: ["{textSize}.dom.textSize", "{that}.options.testOptions.newValue"]
                 }, {
@@ -1337,10 +1336,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             toc: false,
             layout: false
         },
-        resources: { 
-                template: {
-                    href: fluid.tests.prefs.panel.templatePrefix + "PrefsEditorTemplate-layout.html"
-                }
+        resources: {
+            template: {
+                href: fluid.tests.prefs.panel.templatePrefix + "PrefsEditorTemplate-layout.html"
+            }
         }
     });
 
@@ -1457,8 +1456,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                    href: fluid.tests.prefs.panel.templatePrefix + "PrefsEditorTemplate-inputsLarger.html"
-                }
+                href: fluid.tests.prefs.panel.templatePrefix + "PrefsEditorTemplate-inputsLarger.html"
+            }
         }
     });
 
@@ -1510,7 +1509,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
      //Unable to automate this composite pane successfully. See FLUID-5726 
 
-     fluid.defaults("fluid.tests.prefs.panel.linksControls", {
+    fluid.defaults("fluid.tests.prefs.panel.linksControls", {
         gradeNames: ["fluid.prefs.panel.linksControls", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
         model: {
             fluid_prefs_emphasizeLinks: false,
