@@ -1430,8 +1430,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "Test the rendering of the emphasizeLinks panel",
                 sequence: [{
-                //     func: "{emphasizeLinks}.refreshView"
-                // }, {
                     listener: "fluid.tests.panels.utils.verifyCheckboxState",
                     args: ["The inputs should be unchecked by default", "{that}.options.testOptions.defaultInputStatus", "{emphasizeLinks}.dom.links"],
                     event: "{emphasizeLinksPanel emphasizeLinks}.events.afterRender"
@@ -1490,8 +1488,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "Test the rendering of the inputsLarger panel",
                 sequence: [{
-                //     func: "{inputsLarger}.refreshView"
-                // }, {
                     listener: "fluid.tests.panels.utils.verifyCheckboxState",
                     args: ["The inputs should be unchecked by default", "{that}.options.testOptions.defaultInputStatus", "{inputsLarger}.dom.inputsLarger"],
                     event: "{inputsLargerPanel inputsLarger}.events.afterRender"
@@ -1511,6 +1507,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /*******************************************************************************
      * linksControlsPanel
      *******************************************************************************/
+
+     //Unable to automate this composite pane successfully. See FLUID-5726 
 
      fluid.defaults("fluid.tests.prefs.panel.linksControls", {
         gradeNames: ["fluid.prefs.panel.linksControls", "fluid.tests.panels.utils.defaultTestPanel", "autoInit"],
