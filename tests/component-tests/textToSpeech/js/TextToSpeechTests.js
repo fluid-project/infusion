@@ -97,20 +97,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-
-    // only run the tests in browsers that support the Web Speech API for speech synthesis
-
-    fluid.tests.textToSpeech.runNoTTSTests = function () {
-        jqUnit.test("No Tests Run: No TTS Support", function () {
-            
-        });
-    };
     
     fluid.tests.textToSpeech.bypassTest = function () {
-        jqUnit.assert("Does not support SpeechSynthesis");
+        jqUnit.assert("TEST SKIPPED - browser does not support SpeechSynthesis");
         jqUnit.start();
     };
-    
+
+    // only run the tests in browsers that support the Web Speech API for speech synthesis    
     fluid.tests.textToSpeech.issueTest = function (name, testFunc) {
         jqUnit.asyncTest(name, function () {
             var runTests = fluid.textToSpeech.checkTTSSupport();
@@ -139,7 +132,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // Chrome doesn't properly support pause which causes this test to break.
     // see: https://code.google.com/p/chromium/issues/detail?id=425553&q=SpeechSynthesis&colspec=ID%20Pri%20M%20Week%20ReleaseBlock%20Cr%20Status%20Owner%20Summary%20OS%20Modified
     if (!window.chrome) {
-
         fluid.tests.textToSpeech.issueTest("Pause and Resume Events", function () {
             jqUnit.expect(8);
             var that = fluid.tests.textToSpeech.pauseResume();
