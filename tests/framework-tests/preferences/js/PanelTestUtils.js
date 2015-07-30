@@ -45,7 +45,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals(message, expectedState, checkbox.is(":checked"));
     };
 
-    fluid.tests.panels.utils.getTemplate = function (that) {
+    fluid.tests.panels.utils.injectTemplates.getTemplate = function (that) {
         fluid.fetchResources(that.options.resources, function () {
             that.refreshView();
         });
