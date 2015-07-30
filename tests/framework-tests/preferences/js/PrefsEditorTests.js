@@ -18,7 +18,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     "use strict";
 
     $(document).ready(function () {
-        fluid.enhance.check({"fluid.prefs.tests": true});
+
+        fluid.registerNamespace("fluid.tests.prefs");
+
+        fluid.enhance.check({"fluid.tests.prefs": true});
 
         var templatePrefix = "../../../../src/framework/preferences/html";
         var messagePrefix = "../../../../src/framework/preferences/messages";
@@ -51,8 +54,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         });
 
+        fluid.tests.prefs.noteSaveCalled = function (that) {
+            that.saveCalled = true;
+        };
+
+        fluid.tests.prefs.noteRefreshCalled = function (that) {
+            ++that.numOfRefreshCalled;
+        };
+
         // Options for PrefsEditor
-        fluid.demands("fluid.prefs.prefsEditor", ["fluid.prefsTests", "fluid.prefs.tests"], {
+        fluid.demands("fluid.prefs.prefsEditor", ["fluid.prefsTests", "fluid.tests.prefs"], {
             funcName: "fluid.prefs.starterPanels",
             options: {
                 gradeNames: ["fluid.prefs.uiEnhancerRelay"],
@@ -66,26 +77,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         }
                     }
                 },
-                saveCalled: false,
-                prefsEditorRefreshed: 0,
+                members: {
+                    saveCalled: false,
+                    numOfRefreshCalled: 0
+                },
                 listeners: {
-                    "onSave.called": {
-                        listener: function (that) {
-                            that.options.saveCalled = true;
-                        },
+                    "onSave.noteCalled": {
+                        funcName: "fluid.tests.prefs.noteSaveCalled",
                         args: ["{that}"]
                     },
-                    "onPrefsEditorRefresh.called": {
-                        listener: function (that) {
-                            ++that.options.prefsEditorRefreshed;
-                        },
+                    "onPrefsEditorRefresh.noteCalled": {
+                        funcName: "fluid.tests.prefs.noteRefreshCalled",
                         args: ["{that}"]
                     }
                 }
             }
         });
 
-        fluid.demands("fluid.prefs.store", ["fluid.globalSettingsStore", "fluid.prefs.tests"], {
+        fluid.demands("fluid.prefs.store", ["fluid.globalSettingsStore", "fluid.tests.prefs"], {
             funcName: "fluid.tempStore"
         });
 
@@ -124,10 +133,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             prefsEditor.testFn = testFn;
             fluid.globalSettingsStore();
             prefsEditor("#ui-options");
-        };
-
-        var resetSaveCalled = function (that) {
-            that.options.saveCalled = false;
         };
 
         jqUnit.module("PrefsEditor Tests");
@@ -253,11 +258,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             testPrefsEditor(function (prefsEditor) {
                 prefsEditor.applier.change("", bwSkin);
 
-                var expectedPrefsEditorRefreshed = prefsEditor.options.prefsEditorRefreshed + 1;
-                jqUnit.assertFalse("Save hasn't been called", prefsEditor.options.saveCalled);
+                var expectedNumOfRefreshCalled = prefsEditor.numOfRefreshCalled + 1;
+                jqUnit.assertFalse("Save hasn't been called", prefsEditor.saveCalled);
                 prefsEditor.saveAndApply();
-                jqUnit.assertTrue("Save has been called", prefsEditor.options.saveCalled);
-                jqUnit.assertEquals("PrefsEditor has been refreshed when preferences are changed", expectedPrefsEditorRefreshed, prefsEditor.options.prefsEditorRefreshed);
+                jqUnit.assertTrue("Save has been called", prefsEditor.saveCalled);
+                jqUnit.assertEquals("PrefsEditor has been refreshed when preferences are changed", expectedNumOfRefreshCalled, prefsEditor.numOfRefreshCalled);
 
                 var container = $("body"),
                     savedSettings = prefsEditor.getSettings();
@@ -270,7 +275,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
                 var noPrefsChange = $.extend(true, {}, bwSkin, {userData: true});
                 prefsEditor.applier.change("", noPrefsChange);
-                jqUnit.assertEquals("PrefsEditor hasn't been refreshed when preferences are not changed", expectedPrefsEditorRefreshed, prefsEditor.options.prefsEditorRefreshed);
+                jqUnit.assertEquals("PrefsEditor hasn't been refreshed when preferences are not changed", expectedNumOfRefreshCalled, prefsEditor.numOfRefreshCalled);
 
                 prefsEditor.reset();
                 jqUnit.assertNotEquals("Reset model text size", bwSkin.preferences.textSize, prefsEditor.options.textSize);
@@ -319,7 +324,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             fluid.enhance.check({"fluid.prefs.testDiffInit": true});
 
-            fluid.demands("fluid.prefs.prefsEditor", ["fluid.prefsTests", "fluid.prefs.tests", "fluid.prefs.testDiffInit"], {
+            fluid.demands("fluid.prefs.prefsEditor", ["fluid.prefsTests", "fluid.tests.prefs", "fluid.prefs.testDiffInit"], {
                 options: {
                     members: {
                         initialModel: {
@@ -410,9 +415,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         jqUnit.asyncTest("Non-default PrefsEditor Integration tests", function () {
-            fluid.enhance.check({"fluid.prefs.testsNonDefaultIntegration": true});
+            fluid.enhance.check({"fluid.tests.prefs.testsNonDefaultIntegration": true});
 
-            fluid.demands("fluid.prefs.prefsEditor", ["fluid.prefs.testsNonDefaultIntegration", "fluid.prefs.tests", "fluid.prefsTests"], {
+            fluid.demands("fluid.prefs.prefsEditor", ["fluid.tests.prefs.testsNonDefaultIntegration", "fluid.tests.prefs", "fluid.prefsTests"], {
                 funcName: "fluid.prefs.prefsEditor",
                 options: {
                     selectors: {
@@ -468,7 +473,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
                 checkPaths(prefsEditor, customizedPanelPaths);
                 checkSaveCancel(prefsEditor, maxTextSize, minTextSize);
-                fluid.enhance.forget("fluid.prefs.testsNonDefaultIntegration");
+                fluid.enhance.forget("fluid.tests.prefs.testsNonDefaultIntegration");
                 jqUnit.start();
             });
         });
@@ -481,9 +486,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         jqUnit.asyncTest("PrefsEditor Integration tests", function () {
-            fluid.enhance.check({"fluid.prefs.testsIntegration": true});
+            fluid.enhance.check({"fluid.tests.prefs.testIntegration": true});
 
-            fluid.demands("fluid.prefs.prefsEditor", ["fluid.prefs.testsIntegration", "fluid.prefs.tests", "fluid.prefsTests"], {
+            fluid.demands("fluid.prefs.prefsEditor", ["fluid.tests.prefs.testIntegration", "fluid.tests.prefs", "fluid.prefsTests"], {
                 funcName: "fluid.prefs.starterPanels",
                 options: {
                     gradeNames: ["fluid.prefs.initialModel.starter", "fluid.prefs.settingsGetter"],
@@ -497,11 +502,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             }
                         }
                     },
+                    members: {
+                        saveCalled: false
+                    },
                     listeners: {
-                        "onSave.called": {
-                            listener: function (that) {
-                                that.options.saveCalled = true;
-                            },
+                        "onSave.noteCalled": {
+                            funcName: "fluid.tests.prefs.noteSaveCalled",
                             args: ["{that}"]
                         }
                     },
@@ -523,7 +529,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
                 checkPaths(prefsEditor, defaultPanelsPaths);
                 checkSaveCancel(prefsEditor, bwSkin, bwSkin2);
-                fluid.enhance.forget("fluid.prefs.testsIntegration");
+                fluid.enhance.forget("fluid.tests.prefs.testIntegration");
                 jqUnit.start();
             });
         });
@@ -537,18 +543,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("PrefsEditor Auto-save", function () {
             jqUnit.expect(2);
 
-            fluid.enhance.check({"fluid.prefs.testsAutoSave": true});
+            fluid.enhance.check({"fluid.tests.prefs.testsAutoSave": true});
 
-            fluid.demands("fluid.prefs.prefsEditor", ["fluid.prefs.testsAutoSave", "fluid.prefsTests", "fluid.prefs.tests"], {
+            fluid.demands("fluid.prefs.prefsEditor", ["fluid.tests.prefs.testsAutoSave", "fluid.prefsTests", "fluid.tests.prefs"], {
                 options: {
                     autoSave: true
                 }
             });
 
             testPrefsEditor(function (prefsEditor) {
-                resetSaveCalled(prefsEditor);
+                // clear the trace of save function being called at initilization
+                prefsEditor.saveCalled = false;
                 prefsEditor.applier.change("", bwSkin);
-                jqUnit.assertEquals("Model has changed, auto-save changes", 1, prefsEditor.options.saveCalled);
+                jqUnit.assertEquals("Model has changed, auto-save changes", 1, prefsEditor.saveCalled);
 
                 var savedSettings = prefsEditor.getSettings();
                 jqUnit.assertDeepEq("bw setting was saved", bwSkin.preferences.theme, savedSettings.preferences.theme);
@@ -567,9 +574,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Preview URL", function () {
             jqUnit.expect(1);
 
-            fluid.enhance.check({"fluid.prefs.testsPreview": true});
+            fluid.enhance.check({"fluid.tests.prefs.testsPreview": true});
 
-            fluid.demands("templateLoader", ["fluid.prefsTests", "fluid.prefs.tests", "fluid.prefs.testsPreview"], {
+            fluid.demands("templateLoader", ["fluid.prefsTests", "fluid.tests.prefs", "fluid.tests.prefs.testsPreview"], {
                 options: {
                     resources: {
                         prefsEditor: templatePrefix + "/FullPreviewPrefsEditor.html"
@@ -584,11 +591,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("The preview iFrame is pointing to the specified markup",
                         templateUrl, prefsEditor.preview.container.attr("src"));
 
-                fluid.enhance.forget("fluid.prefs.testsPreview");
+                fluid.enhance.forget("fluid.tests.prefs.testsPreview");
                 jqUnit.start();
             };
 
-            fluid.demands("fluid.prefs.prefsEditor", ["fluid.prefsTests", "fluid.prefs.tests", "fluid.prefs.testsPreview"], {
+            fluid.demands("fluid.prefs.prefsEditor", ["fluid.prefsTests", "fluid.tests.prefs", "fluid.tests.prefs.testsPreview"], {
                 options: {
                     components: {
                         preview: {
