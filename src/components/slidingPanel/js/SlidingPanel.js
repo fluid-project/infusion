@@ -45,6 +45,14 @@ var fluid_2_0 = fluid_2_0 || {};
                 listener: "{that}.applier.modelChanged.addListener",
                 args: ["isShowing", "{that}.refreshView"]
             },
+            "onCreate.setAriaControls":{
+                "this": "{that}.dom.toggleButton",
+                "method": "attr",
+                "args": {
+                    "role": "button",
+                    "aria-controls": "{that}.controlledId"
+                }
+            },
             "onCreate.setInitialState": {
                 listener: "{that}.refreshView"
             },
@@ -65,6 +73,16 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             "onPanelShow.operate": {
                 listener: "{that}.operateShow"
+            }
+        },
+        members: {
+            controlledId: {
+                expander: {
+                    // create an id for iframe container
+                    // and set that.controlledId to the id value
+                    funcName: "fluid.allocateSimpleId",
+                    args: "{iframeRenderer}.container"
+                }
             }
         },
         invokers: {
