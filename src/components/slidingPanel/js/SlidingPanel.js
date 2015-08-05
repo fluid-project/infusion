@@ -25,10 +25,6 @@ var fluid_2_0 = fluid_2_0 || {};
             toggleButton: ".flc-slidingPanel-toggleButton",
             toggleButtonLabel: ".flc-slidingPanel-toggleButton"
         },
-        strings: {
-            showText: "show",
-            hideText: "hide"
-        },
         events: {
             onPanelHide: null,
             onPanelShow: null,
