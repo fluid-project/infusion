@@ -50,7 +50,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 "method": "attr",
                 "args": {
                     "role": "button",
-                    "aria-controls": "{that}.controlledId"
+                    "aria-controls": "{that}.panelId"
                 }
             },
             "onCreate.setInitialState": {
@@ -73,16 +73,25 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             "onPanelShow.operate": {
                 listener: "{that}.operateShow"
-            }
+            },
+            "onCreate.setAriaStates": "{that}.setAriaStates"
         },
         members: {
-            controlledId: {
+            panelId: {
                 expander: {
-                    // create an id for iframe container
-                    // and set that.controlledId to the id value
+                    // create an id for panel
+                    // and set that.panelId to the id value
                     funcName: "fluid.allocateSimpleId",
-                    args: "{iframeRenderer}.container"
+                    args: "{that}.dom.panel"
                 }
+            }
+        },
+        model: {
+            isShowing: false
+        },
+        modelListeners: {
+            "{that}.model.isShowing": {
+                funcName: "{that}.setAriaStates"
             }
         },
         invokers: {
@@ -96,25 +105,18 @@ var fluid_2_0 = fluid_2_0 || {};
                 "method": "slideDown",
                 "args": ["{that}.options.animationDurations.show", "{that}.events.afterPanelShow.fire"]
             },
-            hidePanel: {
-                func: "{that}.applier.requestChange",
-                args: ["isShowing", false]
-            },
-            showPanel: {
-                func: "{that}.applier.requestChange",
-                args: ["isShowing", true]
+            setAriaStates: {
+                funcName: "fluid.slidingPanel.setAriaStates",
+                args: ["{that}", "{that}.model.isShowing"]
             },
             togglePanel: {
                 funcName: "fluid.slidingPanel.togglePanel",
-                args: ["{that}"]
+                args: ["{that}", "{that}.model.isShowing"]
             },
             refreshView: {
                 funcName: "fluid.slidingPanel.refreshView",
                 args: ["{that}"]
             }
-        },
-        model: {
-            isShowing: false
         },
         animationDurations: {
             hide: 400,
@@ -122,12 +124,17 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-    fluid.slidingPanel.togglePanel = function (that) {
-        that.applier.requestChange("isShowing", !that.model.isShowing);
+    fluid.slidingPanel.togglePanel = function (that, isShowing) {
+        that.applier.requestChange("isShowing", !isShowing);
     };
 
     fluid.slidingPanel.refreshView = function (that) {
         that.events[that.model.isShowing ? "onPanelShow" : "onPanelHide"].fire();
+    };
+
+    fluid.slidingPanel.setAriaStates = function (that, isShowing) {
+        that.locate("toggleButton").attr("aria-pressed", isShowing);
+        that.locate("panel").attr("aria-expanded", isShowing);
     };
 
 })(jQuery, fluid_2_0);
