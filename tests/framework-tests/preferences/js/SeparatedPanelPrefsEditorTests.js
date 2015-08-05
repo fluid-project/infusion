@@ -81,6 +81,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var prefsEditor = separatedPanel.prefsEditor;
         jqUnit.assertEquals("Reset button is invisible", false, $(".flc-prefsEditor-reset").is(":visible"));
         fluid.tests.prefs.assertPresent(prefsEditor, fluid.tests.prefs.expectedComponents["fluid.prefs.separatedPanel"]);
+
+        var toggleAriaPressed = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-pressed");
+        var panelAriaExpanded = separatedPanel.locate("iframe").attr("aria-expanded");
+
+        jqUnit.assertEquals("Show/hide button has correct aria-pressed", "false", toggleAriaPressed);
+        jqUnit.assertEquals("Panel has correct aria-expanded", "false", panelAriaExpanded);
     };
 
     fluid.tests.afterShowFunc1 = function (separatedPanel) {
@@ -88,6 +94,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.tests.prefs.applierRequestChanges(separatedPanel.prefsEditor, fluid.tests.prefs.bwSkin);
             fluid.tests.prefs.checkModelSelections("enhancerModel from bwSkin", fluid.tests.prefs.bwSkin, separatedPanel.pageEnhancer.model);
             jqUnit.assertEquals("Reset button is visible", true, $(".flc-prefsEditor-reset").is(":visible"));
+           
+            var resetAriaControls = separatedPanel.locate("reset").attr("aria-controls");
+            var toggleAriaControls = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-controls");
+            var toggleAriaPressed = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-pressed");
+            var panelId = separatedPanel.locate("iframe").attr("id");
+            var panelAriaExpanded = separatedPanel.locate("iframe").attr("aria-expanded");
+            jqUnit.assertEquals("Reset button has correct aria-controls", resetAriaControls, panelId);
+            
+            jqUnit.assertEquals("Show/hide button has correct aria-controls", toggleAriaControls, panelId);
+            jqUnit.assertEquals("Show/hide button has correct aria-pressed", "true", toggleAriaPressed);
+
+            jqUnit.assertEquals("Panel has correct aria-expanded", "true", panelAriaExpanded);
         };
     };
 
@@ -127,7 +145,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Separated panel integration tests",
             tests: [{
-                expect: 23,
+                expect: 29,
                 name: "Separated panel integration tests",
                 sequence: [{
                     listener: "fluid.tests.testSeparatedPanel",

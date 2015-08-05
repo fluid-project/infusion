@@ -105,6 +105,14 @@ var fluid_2_0 = fluid_2_0 || {};
                 "method": "slideDown",
                 "args": ["{that}.options.animationDurations.show", "{that}.events.afterPanelShow.fire"]
             },
+            hidePanel: {
+                func: "{that}.applier.requestChange",
+                args: ["isShowing", false]
+            },
+            showPanel: {
+                func: "{that}.applier.requestChange",
+                args: ["isShowing", true]
+            },
             setAriaStates: {
                 funcName: "fluid.slidingPanel.setAriaStates",
                 args: ["{that}", "{that}.model.isShowing"]
