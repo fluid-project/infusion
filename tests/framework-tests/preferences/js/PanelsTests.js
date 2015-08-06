@@ -1369,8 +1369,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "Test the rendering of the layout panel",
                 sequence: [{
-                //     func: "{layout}.refreshView"
-                // }, {
                     listener: "fluid.tests.panels.utils.verifyCheckboxState",
                     args: ["The toc option is not checked by default", "{that}.options.testOptions.defaultInputStatus", "{layout}.dom.toc"],
                     event: "{layoutPanel layout}.events.afterRender"
