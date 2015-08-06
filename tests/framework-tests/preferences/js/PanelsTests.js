@@ -1006,6 +1006,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * textFontPanel
      *******************************************************************************/
 
+    // prefs panel not instantiated yet, ?
+    fluid.tests.prefsPaneltemplatePrefix = "../../../../src/framework/preferences/html/"; 
+
     fluid.defaults("fluid.tests.prefs.panel.textFont", {
         gradeNames: ["fluid.prefs.panel.textFont", "fluid.tests.panels.utils.defaultTestPanel", "fluid.tests.panels.utils.injectTemplates", "autoInit"],
         messageBase: {
@@ -1021,7 +1024,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                href: "../../../../src/framework/preferences/html/PrefsEditorTemplate-textFont.html"
+                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-textFont.html"
             }
         },
         classnameMap: {
@@ -1049,7 +1052,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.prefs.panel.templatePrefix = "../../../../src/framework/preferences/html/";
+    // fluid.tests.prefsPaneltemplatePrefix = "../../../../src/framework/preferences/html/";
 
     fluid.tests.textFontPanel.testDefault = function (that, expectedNumOfOptions, expectedFont) {
         var options = that.container.find("option");
@@ -1118,7 +1121,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                href: fluid.tests.prefs.panel.templatePrefix + "PrefsEditorTemplate-contrast.html"
+                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-contrast.html"
             }
         },
         classnameMap: {
@@ -1225,7 +1228,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                href: fluid.tests.prefs.panel.templatePrefix + "PrefsEditorTemplate-textSize.html"
+                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-textSize.html"
             }
         }
     });
@@ -1281,7 +1284,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                href: fluid.tests.prefs.panel.templatePrefix + "PrefsEditorTemplate-lineSpace.html"
+                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-lineSpace.html"
             }
         }
     });
@@ -1338,7 +1341,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                href: fluid.tests.prefs.panel.templatePrefix + "PrefsEditorTemplate-layout.html"
+                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-layout.html"
             }
         }
     });
@@ -1396,7 +1399,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                href: fluid.tests.prefs.panel.templatePrefix + "PrefsEditorTemplate-emphasizeLinks.html"
+                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-emphasizeLinks.html"
             }
         }
     });
@@ -1454,7 +1457,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                href: fluid.tests.prefs.panel.templatePrefix + "PrefsEditorTemplate-inputsLarger.html"
+                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-inputsLarger.html"
             }
         }
     });
@@ -1616,7 +1619,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "fluid.tests.layoutPanel",
             "fluid.tests.emphasizeLinksPanel",
             "fluid.tests.inputsLargerPanel",
-
             "fluid.tests.linksControlsPanel"
 
         ]);

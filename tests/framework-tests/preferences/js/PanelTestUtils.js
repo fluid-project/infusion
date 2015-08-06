@@ -28,6 +28,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+        fluid.defaults("fluid.tests.panels.utils.injectTemplates", {
+        listeners: {
+            "onCreate.getTemplate": {
+                funcName: "fluid.fetchResources",
+                args: ["{that}.options.resources", "{that}.refreshView"]
+            }
+        }
+    });
 
     fluid.tests.panels.utils.checkModel = function (path, newModel, expectedValue) {
         var newval = fluid.get(newModel, path);
@@ -42,15 +50,4 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals(message, expectedState, checkbox.is(":checked"));
     };
 
-    fluid.registerNamespace("fluid.tests.panels.utils.injectTemplates");
-    
-    fluid.defaults("fluid.tests.panels.utils.injectTemplates", {
-        listeners: {"onCreate.getTemplate": "fluid.tests.panels.utils.injectTemplates.getTemplate"}
-    });
-
-    fluid.tests.panels.utils.injectTemplates.getTemplate = function (that) {
-            fluid.fetchResources(that.options.resources, function () {
-                that.refreshView();
-            });
-        };
 })();
