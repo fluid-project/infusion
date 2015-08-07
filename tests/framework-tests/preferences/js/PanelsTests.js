@@ -26,12 +26,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
-    fluid.tests.listenerFuncMaker = function (funcName, args, environment) {
-        return function () {
-            fluid.invokeGlobalFunction(funcName, args, environment);
-        };
-    };
-
     fluid.defaults("fluid.tests.subPanel", {
         gradeNames: ["fluid.prefs.panel"],
         renderOnInit: true,

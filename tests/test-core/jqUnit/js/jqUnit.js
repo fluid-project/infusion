@@ -266,13 +266,16 @@ var jqUnit = jqUnit || {};
         var gotFailure;
         try {
             fluid.failureEvent.addListener(fluid.identity, "jqUnit");
-            jqUnit.expect(1 + errorTexts.length);
+            jqUnit.expect(errorTexts.length);
             toInvoke();
         } catch (e) {
             gotFailure = true;
-            jqUnit.assertTrue(message, e instanceof fluid.FluidError);
+            if (!(e instanceof fluid.FluidError)) {
+                jqUnit.fail(message + " - received non-framework exception");
+                throw e;
+            }
             fluid.each(errorTexts, function (errorText) {
-                jqUnit.assertTrue(message + " - message text", e.message.indexOf(errorText) >= 0);
+                jqUnit.assertTrue(message + " - message text must contain " + errorText, e.message.indexOf(errorText) >= 0);
             });
         } finally {
             if (!gotFailure) {

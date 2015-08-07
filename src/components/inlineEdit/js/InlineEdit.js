@@ -952,7 +952,7 @@ var fluid_2_0 = fluid_2_0 || {};
         gradeNames: ["fluid.viewComponent"],
         distributeOptions: {
             source: "{that}.options",
-            exclusions: ["members.inlineEdits", "selectors.editables"],
+            exclusions: ["members.inlineEdits", "selectors.editables", "events"],
             removeSource: true,
             target: "{that > fluid.inlineEdit}.options"
         },
