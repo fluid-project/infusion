@@ -402,14 +402,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         p1.then(function (resolve) {
             jqUnit.assertEquals("Mapped value returned from fluid.promise.map", 2, resolve);
         });
-        var unit = fluid.promise();
-        unit.resolve(1);
+        var unit = fluid.promise().resolve(1);
         var p2 = fluid.promise.map(unit, mapper);
         p2.then(function (resolve) {
             jqUnit.assertEquals("Mapped promise returned from fluid.promise.map", 2, resolve);
         });
-        var fail = fluid.promise();
-        fail.reject("Error");
+        var fail = fluid.promise().reject("Error");
         var p3 = fluid.promise.map(fail, mapper);
         p3 = fluid.toPromise(p3); // test idempotency of toPromise on promises
         p3.then(function () {
