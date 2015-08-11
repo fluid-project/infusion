@@ -75,7 +75,9 @@ var fluid_2_0 = fluid_2_0 || {};
                     gradeNames: ["fluid.prefs.msgLookup"],
                     strings: {
                         showText: "{that}.msgLookup.slidingPanelShowText",
-                        hideText: "{that}.msgLookup.slidingPanelHideText"
+                        hideText: "{that}.msgLookup.slidingPanelHideText",
+                        showTextAriaLabel: "{that}.msgLookup.showTextAriaLabel",
+                        hideTextAriaLabel: "{that}.msgLookup.hideTextAriaLabel",
                     },
                     invokers: {
                         operateShow: {

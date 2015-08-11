@@ -58,11 +58,21 @@ var fluid_2_0 = fluid_2_0 || {};
                 "args": ["{that}.options.strings.showText"],
                 "priority": "first"
             },
+            "onPanelHide.setAriaLabel": {
+                "this": "{that}.dom.toggleButtonLabel",
+                "method": "attr",
+                "args": ["aria-label", "{that}.options.strings.showTextAriaLabel"]
+            },
             "onPanelShow.setText": {
                 "this": "{that}.dom.toggleButtonLabel",
                 "method": "text",
                 "args": ["{that}.options.strings.hideText"],
                 "priority": "first"
+            },
+            "onPanelShow.setAriaLabel": {
+                "this": "{that}.dom.toggleButtonLabel",
+                "method": "attr",
+                "args": ["aria-label", "{that}.options.strings.hideTextAriaLabel"]
             },
             "onPanelHide.operate": {
                 listener: "{that}.operateHide"
