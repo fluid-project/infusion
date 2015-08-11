@@ -82,10 +82,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Reset button is invisible", false, $(".flc-prefsEditor-reset").is(":visible"));
         fluid.tests.prefs.assertPresent(prefsEditor, fluid.tests.prefs.expectedComponents["fluid.prefs.separatedPanel"]);
 
-        var ariaPressedState = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-pressed");
+        var toggleButtonAriaPressedState = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-pressed");
         var ariaExpandedState = separatedPanel.locate("iframe").attr("aria-expanded");
 
-        jqUnit.assertEquals("Show/hide button has correct aria-pressed", "false", ariaPressedState);
+        jqUnit.assertEquals("Show/hide button has correct aria-pressed", "false", toggleButtonAriaPressedState);
         jqUnit.assertEquals("Panel has correct aria-expanded", "false", ariaExpandedState);
     };
 
@@ -97,13 +97,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
            
             var resetButtonAriaControlsState = separatedPanel.locate("reset").attr("aria-controls");
             var toggleButtonAriaControlsState = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-controls");
-            var ariaPressedState = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-pressed");
+            var toggleButtonAriaPressedState = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-pressed");
             var panelId = separatedPanel.locate("iframe").attr("id");
             var ariaExpandedState = separatedPanel.locate("iframe").attr("aria-expanded");
             jqUnit.assertEquals("Reset button has correct aria-controls", resetButtonAriaControlsState, panelId);
             
             jqUnit.assertEquals("Show/hide button has correct aria-controls", toggleButtonAriaControlsState, panelId);
-            jqUnit.assertEquals("Show/hide button has correct aria-pressed", "true", ariaPressedState);
+            jqUnit.assertEquals("Show/hide button has correct aria-pressed", "true", toggleButtonAriaPressedState);
 
             jqUnit.assertEquals("Panel has correct aria-expanded", "true", ariaExpandedState);
         };

@@ -234,8 +234,8 @@ var fluid_2_0 = fluid_2_0 || {};
         // which is a child of this component
 
         // var panelId = separatedPanel.locate("iframe").attr("id");
-        var panelId = separatedPanel.slidingPanel.panelId;
-        separatedPanel.locate("reset").attr("aria-controls", panelId);
+        var separatedPanelId = separatedPanel.slidingPanel.panelId;
+        separatedPanel.locate("reset").attr("aria-controls", separatedPanelId);
 
         separatedPanel.slidingPanel.events.afterPanelShow.addListener(function () {
             fluid.prefs.separatedPanel.updateView(prefsEditor);
