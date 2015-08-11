@@ -98,7 +98,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var resetButtonAriaControlsState = separatedPanel.locate("reset").attr("aria-controls");
             var toggleButtonAriaControlsState = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-controls");
             var toggleButtonAriaPressedState = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-pressed");
-            var panelId = separatedPanel.locate("iframe").attr("id");
+            var panelId = separatedPanel.slidingPanel.panelId;
             var ariaExpandedState = separatedPanel.locate("iframe").attr("aria-expanded");
             jqUnit.assertEquals("Reset button has correct aria-controls", resetButtonAriaControlsState, panelId);
             
