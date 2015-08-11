@@ -14,7 +14,7 @@ var fluid_2_0 = fluid_2_0 || {};
 // https://gist.github.com/unscriptable/814052 for limitations and commentary
 
 // This implementation provides what could be described as "flat promises" with
-// no support for structure programming idioms involving promise chaining or composition.
+// no support for structured programming idioms involving promise composition.
 // It provides what a proponent of mainstream promises would describe as 
 // a "glorified callback aggregator"
 
@@ -40,6 +40,7 @@ var fluid_2_0 = fluid_2_0 || {};
                     that.onReject.push(onReject);
                 }
             }
+            return that;
         };
         that.resolve = function (value) {
             if (that.disposition) {
@@ -48,6 +49,7 @@ var fluid_2_0 = fluid_2_0 || {};
             } else {
                 that.complete("resolve", that.onResolve, value);
             }
+            return that;
         };
         that.reject = function (reason) {
             if (that.disposition) {
@@ -56,6 +58,7 @@ var fluid_2_0 = fluid_2_0 || {};
             } else {
                 that.complete("reject", that.onReject, reason);
             }
+            return that;
         };
         // PRIVATE, NON-API METHOD
         that.complete = function (which, queue, arg) {
