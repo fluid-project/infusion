@@ -1512,7 +1512,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.makeInvoker = function (that, invokerec, name) {
         invokerec = fluid.upgradePrimitiveFunc(invokerec); // shorthand case for direct function invokers (FLUID-4926)
-        if (invokerec.args !== undefined && !fluid.isArrayable(invokerec.args)) {
+        if (invokerec.args !== undefined && invokerec.args !== fluid.NO_VALUE && !fluid.isArrayable(invokerec.args)) {
             invokerec.args = fluid.makeArray(invokerec.args);
         }
         var func = fluid.recordToApplicable(invokerec, that);
@@ -1531,7 +1531,7 @@ var fluid_2_0 = fluid_2_0 || {};
             }
             var togo, finalArgs;
             localRecord["arguments"] = arguments;
-            if (invokerec.args === undefined) {
+            if (invokerec.args === undefined || invokerec.args === fluid.NO_VALUE) {
                 finalArgs = arguments;
             } else {
                 fluid.expandImmediateImpl(invokePre, expandOptions);
@@ -1585,7 +1585,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 {eventName: eventName, that: that});
                 
             var args = indirectArgs ? arguments[0] : fluid.makeArray(arguments);
-            if (eventSpec.args !== undefined) {
+            if (eventSpec.args !== undefined && eventSpec.args !== fluid.NO_VALUE) {
                 if (!fluid.isArrayable(eventSpec.args)) {
                     eventSpec.args = fluid.makeArray(eventSpec.args);
                 }
@@ -1647,7 +1647,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 listener = listener.fire;
                 firer = true;
             }
-            expanded.listener = (standard && (expanded.args || firer)) ? fluid.event.dispatchListener(that, listener, eventName, expanded) : listener;
+            expanded.listener = (standard && (expanded.args && listener !== "fluid.notImplemented" || firer)) ? fluid.event.dispatchListener(that, listener, eventName, expanded) : listener;
             return expanded;
         });
         var togo = {
@@ -1792,7 +1792,7 @@ var fluid_2_0 = fluid_2_0 || {};
             var prefix = string.substring(0, openPos);
             var body = string.substring(openPos + 1, closePos);
             var args = fluid.transform(body.split(","), $.trim, fluid.coerceToPrimitive);
-            var togo = fluid.upgradePrimitiveFunc(prefix);
+            var togo = fluid.upgradePrimitiveFunc(prefix, null);
             togo.args = args;
             return togo;
         }

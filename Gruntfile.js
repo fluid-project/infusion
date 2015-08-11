@@ -212,6 +212,7 @@ module.exports = function(grunt) {
 
     // Task for organizing the build
     grunt.registerTask("build", "Generates a minified or source distribution for the specified build target", function (target) {
+        target = target || "all";
         var tasks = [
             "clean",
             "stylus",

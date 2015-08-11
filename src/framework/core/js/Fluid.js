@@ -24,7 +24,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/* global console, opera, YAHOO*/
+/* global console */
 
 var fluid_2_0 = fluid_2_0 || {};
 var fluid = fluid || fluid_2_0;
@@ -266,25 +266,15 @@ var fluid = fluid || fluid_2_0;
     };
 
     /** Actually do the work of logging <code>args</code> to the environment's console. If the standard "console"
-     * stream is available, the message will be sent there - otherwise either the
-     * YAHOO logger or the Opera "postError" stream will be used. On capable environments (those other than
-     * IE8 or IE9) the entire argument set will be dispatched to the logger - otherwise they will be flattened into
-     * a string first, destroying any information held in non-primitive values.
+     * stream is available, the message will be sent there.
      */
     fluid.doLog = function (args) {
-        var str = args.join("");
         if (typeof (console) !== "undefined") {
             if (console.debug) {
                 console.debug.apply(console, args);
             } else if (typeof (console.log) === "function") {
                 console.log.apply(console, args);
-            } else {
-                console.log(str); // this branch executes on old IE, fully synthetic console.log
             }
-        } else if (typeof (YAHOO) !== "undefined") {
-            YAHOO.log(str);
-        } else if (typeof (opera) !== "undefined") {
-            opera.postError(str);
         }
     };
 
@@ -784,6 +774,46 @@ var fluid = fluid || fluid_2_0;
         return isFinite(string) && ((string % 1) === 0) ? Number(string) : NaN;
     };
 
+    /** A set of special "marker values" used in signalling in function arguments and return values,
+      * to partially compensate for JavaScript's lack of distinguished types. These should never appear
+      * in JSON structures or other kinds of static configuration. An API specifically documents if it
+      * accepts or returns any of these values, and if so, what its semantic is  - most are of private
+      * use internal to the framework **/
+
+    fluid.marker = function () {};
+    
+    fluid.makeMarker = function (value, extra) {
+        var togo = Object.create(fluid.marker.prototype);
+        togo.value = value;
+        $.extend(togo, extra);
+        return Object.freeze(togo);
+    };
+    
+    /** A special "marker object" representing that a distinguished
+     * (probably context-dependent) value should be substituted.
+     */
+    fluid.VALUE = fluid.makeMarker("VALUE");
+
+    /** A special "marker object" representing that no value is present (where
+     * signalling using the value "undefined" is not possible - e.g. the return value from a "strategy") */
+    fluid.NO_VALUE = fluid.makeMarker("NO_VALUE");
+
+    /** A marker indicating that a value requires to be expanded after component construction begins **/
+    fluid.EXPAND = fluid.makeMarker("EXPAND");
+
+    /** Determine whether an object is any marker, or a particular marker - omit the
+     * 2nd argument to detect any marker
+     */
+    fluid.isMarker = function (totest, type) {
+        if (!(totest instanceof fluid.marker)) {
+            return false;
+        }
+        if (!type) {
+            return true;
+        }
+        return totest.value === type.value;
+    };
+    
     fluid.logLevelsSpec = {
         "FATAL":      0,
         "FAIL":       5,
@@ -795,42 +825,12 @@ var fluid = fluid || fluid_2_0;
 
     /** A structure holding all supported log levels as supplied as a possible first argument to fluid.log
      * Members with a higher value of the "priority" field represent lower priority logging levels */
-    // Moved down here since it uses fluid.transform on startup
+    // Moved down here since it uses fluid.transform and fluid.makeMarker on startup
     fluid.logLevel = fluid.transform(fluid.logLevelsSpec, function (value, key) {
-        return {type: "fluid.marker", value: key, priority: value};
+        return fluid.makeMarker(key, {priority: value});
     });
     var logLevelStack = [fluid.logLevel.IMPORTANT]; // The stack of active logging levels, with the current level at index 0
-
-    /** A set of special "marker values" used in signalling in function arguments and return values,
-      * to partially compensate for JavaScript's lack of distinguished types. These should never appear
-      * in JSON structures or other kinds of static configuration. An API specifically documents if it
-      * accepts or returns any of these values, and if so, what its semantic is  - most are of private
-      * use internal to the framework **/
-
-    /** A special "marker object" representing that a distinguished
-     * (probably context-dependent) value should be substituted.
-     */
-    fluid.VALUE = {type: "fluid.marker", value: "VALUE"};
-
-    /** A special "marker object" representing that no value is present (where
-     * signalling using the value "undefined" is not possible - e.g. the return value from a "strategy") */
-    fluid.NO_VALUE = {type: "fluid.marker", value: "NO_VALUE"};
-
-    /** A marker indicating that a value requires to be expanded after component construction begins **/
-    fluid.EXPAND = {type: "fluid.marker", value: "EXPAND"};
-
-    /** Determine whether an object is any marker, or a particular marker - omit the
-     * 2nd argument to detect any marker
-     */
-    fluid.isMarker = function (totest, type) {
-        if (!totest || typeof (totest) !== "object" || totest.type !== "fluid.marker") {
-            return false;
-        }
-        if (!type) {
-            return true;
-        }
-        return totest.value === type.value;
-    };
+    
 
     // Model functions
     fluid.model = {}; // cannot call registerNamespace yet since it depends on fluid.model
@@ -1679,6 +1679,7 @@ var fluid = fluid || fluid_2_0;
         if (rec && fluid.isPrimitive(rec)) {
             var togo = {};
             togo[key || (typeof(rec) === "string" && rec.charAt(0) !== "{" ? "funcName" : "func")] = rec;
+            togo.args = fluid.NO_VALUE;
             return togo;
         } else {
             return rec;

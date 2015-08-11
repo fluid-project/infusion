@@ -522,7 +522,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.FLUID5733invoker", {
         gradeNames: "fluid.component",
         invokers: {
-            abstractInvoker: "fluid.notImplemented"
+            abstractInvoker: "fluid.notImplemented",
+            abstractWithArgs: {
+                funcName: "fluid.notImplemented",
+                args: ["one", "{arguments}.0"]
+            }
         }
     });
     
@@ -531,7 +535,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         invokers: {
             abstractInvoker: { // tests FLUID-5714 also
                 func: fluid.identity
-            }
+            },
+            abstractWithArgs: "fluid.identity"
         }
     });
     
@@ -546,9 +551,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.expectFrameworkDiagnostic("Diagnostic on instantiation mentioning source grade", function () {
             fluid.tests.FLUID5733nonoverride();
         }, ["overridden", "fluid.tests.FLUID5733invoker"]);
-        jqUnit.expect(1);
+        jqUnit.expect(2);
         var that = fluid.tests.FLUID5733override();
         jqUnit.assertEquals("Correct override of invoker with concrete", 3, that.abstractInvoker(3));
+        jqUnit.assertEquals("Correct override of invoker with original args by string style", 3, that.abstractWithArgs(3));
     });
     
     fluid.defaults("fluid.tests.FLUID5733event", {
