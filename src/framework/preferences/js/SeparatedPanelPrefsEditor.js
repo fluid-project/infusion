@@ -77,7 +77,7 @@ var fluid_2_0 = fluid_2_0 || {};
                         showText: "{that}.msgLookup.slidingPanelShowText",
                         hideText: "{that}.msgLookup.slidingPanelHideText",
                         showTextAriaLabel: "{that}.msgLookup.showTextAriaLabel",
-                        hideTextAriaLabel: "{that}.msgLookup.hideTextAriaLabel",
+                        hideTextAriaLabel: "{that}.msgLookup.hideTextAriaLabel"
                     },
                     invokers: {
                         operateShow: {
