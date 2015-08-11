@@ -28,7 +28,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-        fluid.defaults("fluid.tests.panels.utils.injectTemplates", {
+    fluid.defaults("fluid.tests.panels.utils.injectTemplates", {
         listeners: {
             "onCreate.getTemplate": {
                 funcName: "fluid.fetchResources",

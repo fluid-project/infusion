@@ -1006,8 +1006,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * textFontPanel
      *******************************************************************************/
 
-    // prefs panel not instantiated yet, ?
-    fluid.tests.prefsPaneltemplatePrefix = "../../../../src/framework/preferences/html/"; 
+    fluid.tests.prefsPaneltemplatePrefix = "../../../../src/framework/preferences/html/";
 
     fluid.defaults("fluid.tests.prefs.panel.textFont", {
         gradeNames: ["fluid.prefs.panel.textFont", "fluid.tests.panels.utils.defaultTestPanel", "fluid.tests.panels.utils.injectTemplates", "autoInit"],
@@ -1259,7 +1258,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Test the rendering of the text size panel",
                 sequence: [{
                     listener: "fluid.tests.testDefault",
-                    event: "{textSizePanel textfieldSlider}.events.onCreate"
+                    event: "{textSizePanel textSize}.events.afterRender",
+                    priority: "last"
                 }, {
                     func: "fluid.tests.changeInput",
                     args: ["{textSize}.dom.textSize", "{that}.options.testOptions.newValue"]
@@ -1315,7 +1315,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Test the rendering of the line space panel",
                 sequence: [{
                     listener: "fluid.tests.testDefault",
-                    event: "{lineSpacePanel textfieldSlider}.events.onCreate"
+                    event: "{lineSpacePanel lineSpace}.events.afterRender",
+                    priority: "last"
                 }, {
                     func: "fluid.tests.changeInput",
                     args: ["{lineSpace}.dom.textSize", "{that}.options.testOptions.newValue"]

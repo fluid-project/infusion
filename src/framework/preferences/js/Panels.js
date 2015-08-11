@@ -664,7 +664,7 @@ var fluid_2_0 = fluid_2_0 || {};
         },
         selectorsToIgnore: ["textSize"],
         components: {
-            textSize: {
+            textfieldSlider: {
                 type: "fluid.textfieldSlider",
                 container: "{that}.dom.textSize",
                 createOnEvent: "afterRender",
@@ -765,7 +765,7 @@ var fluid_2_0 = fluid_2_0 || {};
         },
         selectorsToIgnore: ["lineSpace"],
         components: {
-            lineSpace: {
+            textfieldSlider: {
                 type: "fluid.textfieldSlider",
                 container: "{that}.dom.lineSpace",
                 createOnEvent: "afterRender",
