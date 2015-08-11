@@ -82,11 +82,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Reset button is invisible", false, $(".flc-prefsEditor-reset").is(":visible"));
         fluid.tests.prefs.assertPresent(prefsEditor, fluid.tests.prefs.expectedComponents["fluid.prefs.separatedPanel"]);
 
-        var toggleAriaPressed = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-pressed");
-        var panelAriaExpanded = separatedPanel.locate("iframe").attr("aria-expanded");
+        var ariaPressedState = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-pressed");
+        var ariaExpandedState = separatedPanel.locate("iframe").attr("aria-expanded");
 
-        jqUnit.assertEquals("Show/hide button has correct aria-pressed", "false", toggleAriaPressed);
-        jqUnit.assertEquals("Panel has correct aria-expanded", "false", panelAriaExpanded);
+        jqUnit.assertEquals("Show/hide button has correct aria-pressed", "false", ariaPressedState);
+        jqUnit.assertEquals("Panel has correct aria-expanded", "false", ariaExpandedState);
     };
 
     fluid.tests.afterShowFunc1 = function (separatedPanel) {
@@ -95,17 +95,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.tests.prefs.checkModelSelections("enhancerModel from bwSkin", fluid.tests.prefs.bwSkin, separatedPanel.pageEnhancer.model);
             jqUnit.assertEquals("Reset button is visible", true, $(".flc-prefsEditor-reset").is(":visible"));
            
-            var resetAriaControls = separatedPanel.locate("reset").attr("aria-controls");
-            var toggleAriaControls = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-controls");
-            var toggleAriaPressed = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-pressed");
+            var resetButtonAriaControlsState = separatedPanel.locate("reset").attr("aria-controls");
+            var toggleButtonAriaControlsState = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-controls");
+            var ariaPressedState = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-pressed");
             var panelId = separatedPanel.locate("iframe").attr("id");
-            var panelAriaExpanded = separatedPanel.locate("iframe").attr("aria-expanded");
-            jqUnit.assertEquals("Reset button has correct aria-controls", resetAriaControls, panelId);
+            var ariaExpandedState = separatedPanel.locate("iframe").attr("aria-expanded");
+            jqUnit.assertEquals("Reset button has correct aria-controls", resetButtonAriaControlsState, panelId);
             
-            jqUnit.assertEquals("Show/hide button has correct aria-controls", toggleAriaControls, panelId);
-            jqUnit.assertEquals("Show/hide button has correct aria-pressed", "true", toggleAriaPressed);
+            jqUnit.assertEquals("Show/hide button has correct aria-controls", toggleButtonAriaControlsState, panelId);
+            jqUnit.assertEquals("Show/hide button has correct aria-pressed", "true", ariaPressedState);
 
-            jqUnit.assertEquals("Panel has correct aria-expanded", "true", panelAriaExpanded);
+            jqUnit.assertEquals("Panel has correct aria-expanded", "true", ariaExpandedState);
         };
     };
 
