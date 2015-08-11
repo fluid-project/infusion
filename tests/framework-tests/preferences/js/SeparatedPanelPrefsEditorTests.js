@@ -83,9 +83,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.prefs.assertPresent(prefsEditor, fluid.tests.prefs.expectedComponents["fluid.prefs.separatedPanel"]);
 
         var toggleButtonAriaPressedState = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-pressed");
+        var toggleButtonAriaLabelState = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-label");
         var ariaExpandedState = separatedPanel.locate("iframe").attr("aria-expanded");
 
         jqUnit.assertEquals("Show/hide button has correct aria-pressed", "false", toggleButtonAriaPressedState);
+        jqUnit.assertEquals("Show/hide button has correct aria-label", "Show Display Preferences", toggleButtonAriaLabelState);
         jqUnit.assertEquals("Panel has correct aria-expanded", "false", ariaExpandedState);
     };
 
@@ -98,13 +100,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var resetButtonAriaControlsState = separatedPanel.locate("reset").attr("aria-controls");
             var toggleButtonAriaControlsState = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-controls");
             var toggleButtonAriaPressedState = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-pressed");
-            var panelId = separatedPanel.locate("iframe").attr("id");
+            var toggleButtonAriaLabelState = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-label");
+            var panelId = separatedPanel.slidingPanel.panelId;
             var ariaExpandedState = separatedPanel.locate("iframe").attr("aria-expanded");
+
             jqUnit.assertEquals("Reset button has correct aria-controls", resetButtonAriaControlsState, panelId);
-            
             jqUnit.assertEquals("Show/hide button has correct aria-controls", toggleButtonAriaControlsState, panelId);
             jqUnit.assertEquals("Show/hide button has correct aria-pressed", "true", toggleButtonAriaPressedState);
-
+            jqUnit.assertEquals("Show/hide button has correct aria-label", "Hide Display Preferences", toggleButtonAriaLabelState);
             jqUnit.assertEquals("Panel has correct aria-expanded", "true", ariaExpandedState);
         };
     };
@@ -145,7 +148,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Separated panel integration tests",
             tests: [{
-                expect: 29,
+                expect: 31,
                 name: "Separated panel integration tests",
                 sequence: [{
                     listener: "fluid.tests.testSeparatedPanel",
