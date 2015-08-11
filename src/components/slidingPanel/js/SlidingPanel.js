@@ -87,7 +87,8 @@ var fluid_2_0 = fluid_2_0 || {};
         },
         modelListeners: {
             "{that}.model.isShowing": {
-                funcName: "{that}.setAriaStates"
+                funcName: "{that}.setAriaStates",
+                excludeSource: "init"
             }
         },
         invokers: {
@@ -115,7 +116,7 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             togglePanel: {
                 funcName: "fluid.slidingPanel.togglePanel",
-                args: ["{that}", "{that}.model.isShowing"]
+                args: ["{that}"]
             },
             refreshView: {
                 funcName: "fluid.slidingPanel.refreshView",
@@ -128,8 +129,8 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-    fluid.slidingPanel.togglePanel = function (that, isShowing) {
-        that.applier.requestChange("isShowing", !isShowing);
+    fluid.slidingPanel.togglePanel = function (that) {
+        that.applier.requestChange("isShowing", !that.model.isShowing);
     };
 
     fluid.slidingPanel.refreshView = function (that) {

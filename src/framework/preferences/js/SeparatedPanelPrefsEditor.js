@@ -233,8 +233,9 @@ var fluid_2_0 = fluid_2_0 || {};
         // TODO: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
         // which is a child of this component
 
-        var panelId = separatedPanel.locate("iframe").attr("id");
-        separatedPanel.locate("reset").attr("aria-controls", panelId);
+        // var panelId = separatedPanel.locate("iframe").attr("id");
+        var separatedPanelId = separatedPanel.slidingPanel.panelId;
+        separatedPanel.locate("reset").attr("aria-controls", separatedPanelId);
 
         separatedPanel.slidingPanel.events.afterPanelShow.addListener(function () {
             fluid.prefs.separatedPanel.updateView(prefsEditor);
