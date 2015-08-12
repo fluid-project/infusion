@@ -1051,8 +1051,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    // fluid.tests.prefsPaneltemplatePrefix = "../../../../src/framework/preferences/html/";
-
     fluid.tests.textFontPanel.testDefault = function (that, expectedNumOfOptions, expectedFont) {
         var options = that.container.find("option");
         jqUnit.assertEquals("There are " + expectedNumOfOptions + " text fonts in the control", expectedNumOfOptions, options.length);
