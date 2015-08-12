@@ -201,7 +201,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.prefs.separatedPanel.bindEvents = function (prefsEditor, iframeEnhancer, separatedPanel) {
-        // TODO: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
+        // FLUID-5470: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
         // which is a child of this component
 
         var separatedPanelId = separatedPanel.slidingPanel.panelId;
