@@ -200,46 +200,15 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-    fluid.prefs.separatedPanel.renderIframe.finalInit = function (that) {
-        var styles = that.options.styles;
-        // TODO: get earlier access to templateLoader,
-        that.options.markupProps.src = fluid.stringTemplate(that.options.markupProps.src, that.options.terms);
-        that.iframeSrc = that.options.markupProps.src;
-
-        // Create iframe and append to container
-        that.iframe = $("<iframe/>");
-        that.iframe.load(function () {
-            var iframeWindow = that.iframe[0].contentWindow;
-            that.iframeDocument = iframeWindow.document;
-
-            that.jQuery = iframeWindow.jQuery;
-            that.renderPrefsEditorContainer = that.jQuery("body", that.iframeDocument);
-            that.jQuery(that.iframeDocument).ready(that.events.afterRender.fire);
-        });
-        that.iframe.attr(that.options.markupProps);
-
-        that.iframe.addClass(styles.container);
-        that.iframe.hide();
-
-        that.iframe.appendTo(that.container);
-    };
-
-    fluid.prefs.separatedPanel.updateView = function (prefsEditor) {
-        prefsEditor.events.onPrefsEditorRefresh.fire();
-        prefsEditor.events.onSignificantDOMChange.fire();
-    };
-
     fluid.prefs.separatedPanel.bindEvents = function (prefsEditor, iframeEnhancer, separatedPanel) {
         // TODO: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
         // which is a child of this component
 
-        // var panelId = separatedPanel.locate("iframe").attr("id");
         var separatedPanelId = separatedPanel.slidingPanel.panelId;
         separatedPanel.locate("reset").attr("aria-controls", separatedPanelId);
 
         separatedPanel.slidingPanel.events.afterPanelShow.addListener(function () {
             fluid.prefs.separatedPanel.updateView(prefsEditor);
-
         });
 
         prefsEditor.events.onPrefsEditorRefresh.addListener(function () {
@@ -271,6 +240,35 @@ var fluid_2_0 = fluid_2_0 || {};
         separatedPanel.slidingPanel.events.onPanelHide.addListener(function () {
             separatedPanel.locate("reset").hide();
         });
+    };
+
+    fluid.prefs.separatedPanel.renderIframe.finalInit = function (that) {
+        var styles = that.options.styles;
+        // TODO: get earlier access to templateLoader,
+        that.options.markupProps.src = fluid.stringTemplate(that.options.markupProps.src, that.options.terms);
+        that.iframeSrc = that.options.markupProps.src;
+
+        // Create iframe and append to container
+        that.iframe = $("<iframe/>");
+        that.iframe.load(function () {
+            var iframeWindow = that.iframe[0].contentWindow;
+            that.iframeDocument = iframeWindow.document;
+
+            that.jQuery = iframeWindow.jQuery;
+            that.renderPrefsEditorContainer = that.jQuery("body", that.iframeDocument);
+            that.jQuery(that.iframeDocument).ready(that.events.afterRender.fire);
+        });
+        that.iframe.attr(that.options.markupProps);
+
+        that.iframe.addClass(styles.container);
+        that.iframe.hide();
+
+        that.iframe.appendTo(that.container);
+    };
+
+    fluid.prefs.separatedPanel.updateView = function (prefsEditor) {
+        prefsEditor.events.onPrefsEditorRefresh.fire();
+        prefsEditor.events.onSignificantDOMChange.fire();
     };
 
     // Replace the standard animator since we don't want the panel to become hidden
