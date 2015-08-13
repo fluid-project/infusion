@@ -20,8 +20,8 @@
 /* global jQuery:true */
 /* exported jQuery */
 
-var fluid_2_0 = fluid_2_0 || {};
-var fluid = fluid || fluid_2_0;
+var fluid_1_9 = fluid_1_9 || {};
+var fluid = fluid || fluid_1_9;
 
 (function (fluid) {
     "use strict";
@@ -168,6 +168,6 @@ var fluid = fluid || fluid_2_0;
         }
     };
 
-})(fluid_2_0);
+})(fluid_1_9);
 
 var jQuery = fluid.jQueryStandalone;
