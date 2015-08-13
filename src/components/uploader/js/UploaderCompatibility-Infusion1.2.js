@@ -15,6 +15,7 @@ var fluid_2_0 = fluid_2_0 || {};
 /**************************************************************************************
  * Note: this file should not be included in the InfusionAll build.                   *
  * Instead, users should add this file manually if backwards compatibility is needed. *
+ * This file must be included before UploaderCompatibility-Infusion1.3.js             *
  **************************************************************************************/
 
 (function (fluid) {
@@ -22,10 +23,12 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.registerNamespace("fluid.compat.fluid_1_2.uploader");
 
-    fluid.enhance.check({"fluid.uploader.fluid_1_2" : true});
+    fluid.contextAware.makeChecks({"fluid.uploader.requiredApi": {
+        value: "fluid_1_2"
+    }});
 
     fluid.compat.fluid_1_2.uploader.optionsRules = {
-        "components": {
+        components: {
             transform: [
                 {
                     type: "fluid.transforms.value",
@@ -38,35 +41,56 @@ var fluid_2_0 = fluid_2_0 || {};
                     outputPath: "",
                     merge: true,
                     value: {
-                        "strategy": {
-                            "options": {
-                                "styles": "decorators.0.options.styles"
+                        strategy: {
+                            options: {
+                                styles: "decorators.0.options.styles"
                             }
                         },
-                        "fileQueueView": "fileQueueView",
-                        "totalProgressBar": "totalProgressBar"
+                        fileQueueView: "fileQueueView",
+                        totalProgressBar: "totalProgressBar"
                     }
                 }
             ]
         },
-        "queueSettings": {
+        queueSettings: {
             transform: {
                 type: "fluid.transforms.firstValue",
                 values: ["queueSettings", "uploadManager.options"]
             }
         },
-        "invokers": "invokers",
-        "demo": "demo",
-        "selectors": "selectors",
-        "focusWithEvent": "focusWithEvent",
-        "styles": "styles",
-        "listeners": "listeners",
-        "strings": "strings",
-        "mergePolicy": "mergePolicy"
+        invokers: "invokers",
+        demo: "demo",
+        selectors: "selectors",
+        focusWithEvent: "focusWithEvent",
+        styles: "styles",
+        listeners: "listeners",
+        strings: "strings",
+        mergePolicy: "mergePolicy"
     };
+    
+    fluid.defaults("fluid.uploader.compatibility.1_2", {
+        transformOptions: {
+            transformer: "fluid.model.transformWithRules",
+            config: fluid.compat.fluid_1_2.uploader.optionsRules
+        }
+    });
 
-    fluid.demands("fluid.uploader", "fluid.uploader.fluid_1_2", {
-        options: fluid.transformOne(fluid.compat.fluid_1_2.uploader.optionsRules)
+    fluid.defaults("fluid.uploader.compatibility.distributor.1_3", {
+        distributeOptions: {
+            record: {
+                "1_2": {
+                    contextValue: "{fluid.uploader.requiredApi}.options.value",
+                    equals: "fluid_1_2",
+                    gradeNames: "fluid.uploader.compatibility.1_2"
+                }
+            },
+            target: "{/ fluid.uploader}.options.contextAwareness.apiCompatibility.checks"
+        }
+    });
+    
+    fluid.constructSingle([], {
+        singleRootType: "fluid.uploader.compatibility.distributor",
+        type: "fluid.uploader.compatibility.distributor.1_3"
     });
 
 })(fluid_2_0);

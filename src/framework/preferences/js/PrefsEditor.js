@@ -27,7 +27,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.prefs.prefsEditorLoader", {
-        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.settingsGetter", "fluid.prefs.initialModel", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.prefs.settingsGetter", "fluid.prefs.initialModel"],
         defaultLocale: "en",
         members: {
             settings: {
@@ -115,7 +115,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.defaults("fluid.prefs.transformDefaultPanelsOptions", {
         // Do not supply "fluid.prefs.inline" here, since when this is used as a mixin for separatedPanel, it ends up displacing the
         // more refined type of the prefsEditorLoader
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         distributeOptions: [{
             source: "{that}.options.textSize",
             removeSource: true,
@@ -156,7 +156,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.prefs.resourceLoader", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         listeners: {
             "onCreate.loadResources": {
                 listener: "fluid.prefs.resourceLoader.loadResources",
@@ -205,18 +205,18 @@ var fluid_2_0 = fluid_2_0 || {};
      **********************/
 
     fluid.defaults("fluid.prefs.settingsGetter", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         members: {
-            getSettings: "{settingsStore}.get"
+            getSettings: "{fluid.prefs.store}.get"
         }
     });
 
     fluid.defaults("fluid.prefs.settingsSetter", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         invokers: {
             setSettings: {
                 funcName: "fluid.prefs.settingsSetter.setSettings",
-                args: ["{arguments}.0", "{settingsStore}.set"]
+                args: ["{arguments}.0", "{fluid.prefs.store}.set"]
             }
         }
     });
@@ -227,7 +227,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.prefs.uiEnhancerRelay", {
-        gradeNames: ["autoInit", "fluid.modelRelayComponent"],
+        gradeNames: ["fluid.modelComponent"],
         listeners: {
             onCreate: "{that}.addListener",
             onDestroy: "{that}.removeListener"
@@ -273,7 +273,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.prefs.prefsEditor", {
-        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.settingsSetter", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.prefs.settingsGetter", "fluid.prefs.settingsSetter", "fluid.prefs.initialModel"],
         invokers: {
             /**
              * Updates the change applier and fires modelChanged on subcomponent fluid.prefs.controls
@@ -450,15 +450,13 @@ var fluid_2_0 = fluid_2_0 || {};
      ******************************/
 
     fluid.defaults("fluid.prefs.preview", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         components: {
             enhancer: {
                 type: "fluid.uiEnhancer",
                 container: "{preview}.enhancerContainer",
                 createOnEvent: "onReady"
             },
-            // TODO: This is a violation of containment, but we can't use up our allowance of demands
-            // blocks as a result of FLUID-4392
             templateLoader: "{templateLoader}"
         },
         invokers: {
@@ -470,11 +468,11 @@ var fluid_2_0 = fluid_2_0 || {};
                 ]
             }
         },
-        finalInitFunction: "fluid.prefs.preview.finalInit",
         events: {
             onReady: null
         },
         listeners: {
+            "onCreate.startLoadingContainer": "fluid.prefs.preview.startLoadingContainer",
             "{prefsEditor}.events.modelChanged": "{that}.updateModel",
             onReady: "{that}.updateModel"
         },
@@ -492,7 +490,7 @@ var fluid_2_0 = fluid_2_0 || {};
         }, 0);
     };
 
-    fluid.prefs.preview.finalInit = function (that) {
+    fluid.prefs.preview.startLoadingContainer = function (that) {
         var templateUrl = that.templateLoader.transformURL(that.options.templateUrl);
         that.container.load(function () {
             that.enhancerContainer = $("body", that.container.contents());

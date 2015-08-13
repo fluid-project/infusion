@@ -10,7 +10,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 
@@ -25,14 +24,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.prefs.expectedSeparatedPanel = [
         "templateLoader",
         "messageLoader",
-        "pageEnhancer",
         "slidingPanel",
         "iframeRenderer",
         "iframeRenderer.iframeEnhancer"
     ];
 
     fluid.defaults("fluid.tests.separatedPanelIntegration", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         listeners: {
             onDestroy: "fluid.tests.clearStore"
         },
@@ -68,10 +66,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
+    
+    fluid.tests.fetchGlobalSettingsStore = function () {
+        return fluid.queryIoCSelector(fluid.rootComponent, "fluid.prefs.globalSettingsStore", true)[0].settingsStore;
+    };
 
     // Cleanup listener that restores a global settings store model to default.
     fluid.tests.clearStore = function () {
-        fluid.staticEnvironment.settingsStore.set();
+        var settingsStore = fluid.tests.fetchGlobalSettingsStore();
+        settingsStore.set();
+    };
+    
+    fluid.tests.getPageEnhancer = function (that) {
+        var pageEnhancer = fluid.resolveContext("pageEnhancer", that);
+        return pageEnhancer.uiEnhancer;
     };
 
     fluid.tests.testSeparatedPanel = function (separatedPanel) {
@@ -86,20 +94,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.afterShowFunc1 = function (separatedPanel) {
         return function () {
             fluid.tests.prefs.applierRequestChanges(separatedPanel.prefsEditor, fluid.tests.prefs.bwSkin);
-            fluid.tests.prefs.checkModelSelections("enhancerModel from bwSkin", fluid.tests.prefs.bwSkin, separatedPanel.pageEnhancer.model);
+            var enhancerModel = fluid.tests.getPageEnhancer(separatedPanel).model;
+            fluid.tests.prefs.checkModelSelections("enhancerModel from bwSkin", fluid.tests.prefs.bwSkin, enhancerModel);
             jqUnit.assertEquals("Reset button is visible", true, $(".flc-prefsEditor-reset").is(":visible"));
         };
     };
 
     fluid.tests.afterHideFunc1 = function () {
         return function () {
+            var settingsStore = fluid.tests.fetchGlobalSettingsStore();
             jqUnit.assertEquals("Reset button is invisible", false, $(".flc-prefsEditor-reset").is(":visible"));
-            jqUnit.assertDeepEq("Only the changed preferences are saved", fluid.tests.prefs.bwSkin, fluid.staticEnvironment.settingsStore.get());
+            jqUnit.assertDeepEq("Only the changed preferences are saved", fluid.tests.prefs.bwSkin, settingsStore.get());
         };
     };
     fluid.tests.afterShowFunc2 = function (separatedPanel) {
         return function () {
-            var enhancerModel = separatedPanel.pageEnhancer.model;
+            var enhancerModel = fluid.tests.getPageEnhancer(separatedPanel).model;
             var iframeEnhancerModel = separatedPanel.iframeRenderer.iframeEnhancer.model;
 
             fluid.tests.prefs.checkModelSelections("iframeEnhancerModel from bwSkin", fluid.tests.prefs.bwSkin, iframeEnhancerModel);
@@ -112,7 +122,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             separatedPanel.locate("reset").click();
 
             var initialModel = separatedPanel.initialModel;
-            var enhancerModel = separatedPanel.pageEnhancer.model;
+            var enhancerModel = fluid.tests.getPageEnhancer(separatedPanel).model;
             var iframeEnhancerModel = separatedPanel.iframeRenderer.iframeEnhancer.model;
 
             fluid.tests.prefs.checkModelSelections("enhancerModel from defaults", initialModel, enhancerModel);
@@ -123,11 +133,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.separatedPanelIntegrationTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "Separated panel integration tests",
             tests: [{
-                expect: 23,
+                expect: 22,
                 name: "Separated panel integration tests",
                 sequence: [{
                     listener: "fluid.tests.testSeparatedPanel",
@@ -173,13 +183,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var isSlidingPanelShown = false;
 
     fluid.defaults("fluid.tests.separatedPanelMungingIntegration", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             separatedPanel: {
                 type: "fluid.prefs.separatedPanel",
                 container: ".flc-prefsEditor-separatedPanel",
                 createOnEvent: "{mungingIntegrationTester}.events.onTestCaseStart",
-                options: fluid.merge(null, fluid.tests.prefs.mungingIntegrationOptions, {
+                options: fluid.merge(null, fluid.tests.prefs.mungingIntegrationOptions, { // TODO: Why on earth does this not use standard grade merging?
                     iframeRenderer: {
                         markupProps: {
                             src: "./SeparatedPanelPrefsEditorFrame.html"
@@ -210,10 +220,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.testEnhancerTransit = function testEnhancerTransit(separatedPanel, expectedIframeSelector) {
         var cMap = fluid.tests.prefs.enhancerOptions.uiEnhancer.classnameMap;
+        var pageEnhancer = fluid.tests.getPageEnhancer(separatedPanel);
 
         // "outerEnhancerOptions" option mapping
         jqUnit.assertEquals("classnameMap transferred to outer UIEnhancer", cMap.textFont["default"],
-             separatedPanel.pageEnhancer.options.classnameMap.textFont["default"]);
+             pageEnhancer.options.classnameMap.textFont["default"]);
         jqUnit.assertEquals("classnameMap transferred to inner UIEnhancer", cMap.textFont["default"],
              separatedPanel.iframeRenderer.iframeEnhancer.options.classnameMap.textFont["default"]);
 
@@ -227,7 +238,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.mungingIntegrationTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         expectedIframeSelector: expectedIframeSelector,
         modules: [{
             name: "Separated panel munging integration tests",
@@ -247,7 +258,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     $(document).ready(function () {
 
-        fluid.globalSettingsStore();
+        fluid.tests.prefs.globalSettingsStore();
         fluid.pageEnhancer(fluid.tests.prefs.enhancerOptions);
 
         fluid.test.runTests([

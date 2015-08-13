@@ -11,7 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($, fluid) {
@@ -24,7 +23,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // NB: ensure to destroy each pager at the end of a test fixture in order to prevent leakage of tooltips
 
     fluid.defaults("fluid.tests.renderedPager", {
-        gradeNames: ["fluid.pagedTable", "autoInit"],
+        gradeNames: ["fluid.pagedTable"],
         mergePolicy: {
             dataModel: "replace"
         },
@@ -208,7 +207,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.pagerTooltipEnv", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         markupFixture: "#rendered-ioc",
         components: {
             pager: {

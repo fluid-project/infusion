@@ -21,7 +21,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.initialModel.starter", {
-        gradeNames: ["fluid.prefs.initialModel", "autoInit"],
+        gradeNames: ["fluid.prefs.initialModel"],
         members: {
             // TODO: This information is supposed to be generated from the JSON
             // schema describing various preferences. For now it's kept in top
@@ -46,7 +46,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.uiEnhancer.cssClassEnhancerBase", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         classnameMap: {
             "textFont": {
                 "default": "",
@@ -76,7 +76,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.uiEnhancer.browserTextEnhancerBase", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         fontSizeMap: {
             "xx-small": "9px",
             "x-small":  "11px",
@@ -96,7 +96,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.uiEnhancer.starterEnactors", {
-        gradeNames: ["fluid.uiEnhancer", "fluid.uiEnhancer.cssClassEnhancerBase", "fluid.uiEnhancer.browserTextEnhancerBase", "autoInit"],
+        gradeNames: ["fluid.uiEnhancer", "fluid.uiEnhancer.cssClassEnhancerBase", "fluid.uiEnhancer.browserTextEnhancerBase"],
         model: "{fluid.prefs.initialModel}.initialModel",
         components: {
             textSize: {
@@ -178,7 +178,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * A collection of all the default Preferences Editorsetting panels.
      *********************************************************************************************************/
     fluid.defaults("fluid.prefs.starterPanels", {
-        gradeNames: ["fluid.prefs.prefsEditor", "autoInit"],
+        gradeNames: ["fluid.prefs.prefsEditor"],
         selectors: {
             textSize: ".flc-prefsEditor-text-size",
             textFont: ".flc-prefsEditor-text-font",
@@ -321,7 +321,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.prefs.starterTemplateLoader", {
-        gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
+        gradeNames: ["fluid.prefs.resourceLoader"],
         resources: {
             textSize: "%templatePrefix/PrefsEditorTemplate-textSize.html",
             textFont: "%templatePrefix/PrefsEditorTemplate-textFont.html",
@@ -335,21 +335,21 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.defaults("fluid.prefs.starterSeparatedPanelTemplateLoader", {
-        gradeNames: ["fluid.prefs.starterTemplateLoader", "autoInit"],
+        gradeNames: ["fluid.prefs.starterTemplateLoader"],
         resources: {
             prefsEditor: "%templatePrefix/SeparatedPanelPrefsEditor.html"
         }
     });
 
     fluid.defaults("fluid.prefs.starterFullPreviewTemplateLoader", {
-        gradeNames: ["fluid.prefs.starterTemplateLoader", "autoInit"],
+        gradeNames: ["fluid.prefs.starterTemplateLoader"],
         resources: {
             prefsEditor: "%templatePrefix/FullPreviewPrefsEditor.html"
         }
     });
 
     fluid.defaults("fluid.prefs.starterFullNoPreviewTemplateLoader", {
-        gradeNames: ["fluid.prefs.starterTemplateLoader", "autoInit"],
+        gradeNames: ["fluid.prefs.starterTemplateLoader"],
         resources: {
             prefsEditor: "%templatePrefix/FullNoPreviewPrefsEditor.html"
         }
@@ -366,7 +366,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.prefs.starterMessageLoader", {
-        gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
+        gradeNames: ["fluid.prefs.resourceLoader"],
         resources: {
             prefsEditor: "%messagePrefix/prefsEditor.json",
             textSize: "%messagePrefix/textSize.json",

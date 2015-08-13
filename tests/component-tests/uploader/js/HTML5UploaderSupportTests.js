@@ -10,7 +10,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -114,6 +113,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                         type: "fluid.emptySubcomponent",
                                         options: {}
                                     }
+                                },
+                                invokers: {
+                                    enableBrowseButton: null,
+                                    disableBrowseButton: null
                                 },
                                 queueSettings: {
                                     fileUploadLimit: fileUploadLimit,
@@ -285,7 +288,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             fluid.defaults("fluid.tests.uploader.HTML5.browseTree", {
                 //markupFixture: "#iocBrowseButtonContainer",
-                gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+                gradeNames: ["fluid.test.testEnvironment"],
                 components: {
                     browseButtonView: {
                         type: "fluid.uploader.html5Strategy.browseButtonView",
@@ -303,7 +306,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
 
             fluid.defaults("fluid.tests.uploader.HTML5.browseTreeFixtures", {
-                gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+                gradeNames: ["fluid.test.testCaseHolder"],
                 modules: [ {
                     name: "Browse button tests",
                     tests: [{

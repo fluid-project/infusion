@@ -9,27 +9,31 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid */
 
-var demo = demo || {};
+fluid.registerNamespace("fluid.demo");
 
 (function ($, fluid) {
     "use strict";
-
-    demo.initTableOfContent = function () {
-        fluid.staticEnvironment.demo = fluid.typeTag("fluid.tableOfContentsDemo");
-        fluid.demands("fluid.tableOfContents.levels", ["fluid.tableOfContents", "fluid.tableOfContentsDemo"], {
-            options: {
+    
+    fluid.defaults("fluid.demo.tableOfContentsOptions", {
+        gradeNames: ["fluid.component"],
+        distributeOptions: {
+            record: {
                 resources: {
                     template: {
                         forceCache: true,
                         url: "../../src/components/tableOfContents/html/TableOfContents.html"
                     }
                 }
-            }
-        });
+            },
+            target: "{/ fluid.tableOfContents.levels}.options"
+        }
+    });
+    
+    fluid.demo.tableOfContentsOptions();
 
+    fluid.demo.initTableOfContents = function () {
         fluid.tableOfContents("body", {
             ignoreForToC: {
                 trees: ".demo-toc-trees"

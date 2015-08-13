@@ -39,8 +39,7 @@
             "slidingPanel",
             "textfieldSlider",
             "tableOfContents",
-            "textToSpeech",
-            "json"
+            "textToSpeech"
         ]
     }
 }

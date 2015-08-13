@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid */
 
 var example = example || {};
@@ -20,7 +19,7 @@ var example = example || {};
      * Composite Panels
      */
     fluid.defaults("example.panels.speaking", {
-        gradeNames: ["fluid.prefs.compositePanel", "autoInit"],
+        gradeNames: ["fluid.prefs.compositePanel"],
         selectors: {
             label: ".mpe-speaking-header"
         },
@@ -29,7 +28,7 @@ var example = example || {};
         }
     });
     fluid.defaults("example.panels.increasing", {
-        gradeNames: ["fluid.prefs.compositePanel", "autoInit"],
+        gradeNames: ["fluid.prefs.compositePanel"],
         selectors: {
             label: ".mpe-increasing-header"
         },

@@ -10,7 +10,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid */
 
 var example = example || {};
@@ -36,7 +35,7 @@ var example = example || {};
      * Initialize a settings store for the page.
      */
     example.initSettingsStore = function () {
-        fluid.globalSettingsStore();
+        fluid.prefs.globalSettingsStore();
     };
 
     /**

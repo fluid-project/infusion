@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -22,7 +21,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.expandSchemaValueTest", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             expandSchemaValueTester: {
                 type: "fluid.tests.expandSchemaValueTester"
@@ -38,7 +37,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.expandSchemaValueTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
             source: {
                 path1: "value1",
@@ -191,7 +190,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.schemaExpanderTest", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             schemaExpanderTester: {
                 type: "fluid.tests.schemaExpanderTester"
@@ -200,7 +199,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.schemaExpanderTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
             schema: fluid.tests.schema,
             expectedSchema: fluid.tests.expectedSchema
@@ -257,7 +256,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.expandSchemaComponentsTest", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             schemaExpanderTester: {
                 type: "fluid.tests.expandSchemaComponentsTester"
@@ -266,7 +265,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.expandSchemaComponentsTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
             auxSchema: {
                 "contrast": {
@@ -393,6 +392,69 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
+     * Unit tests for fluid.prefs.expandSchemaDirectOption
+     *******************************************************************************/
+
+    fluid.tests.testExpandSchemaDirectOption = function (auxSchema, rules, expectedOutput) {
+        fluid.each(rules, function (targetPath, sourcePath) {
+            fluid.prefs.expandSchemaDirectOption(auxSchema, sourcePath, targetPath);
+        });
+        jqUnit.assertDeepEq("The components and templates blocks are constructed correctly", expectedOutput, auxSchema);
+    };
+
+    fluid.defaults("fluid.tests.expandSchemaDirectOptionTest", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        components: {
+            schemaExpanderTester: {
+                type: "fluid.tests.expandSchemaDirectOptionTester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.expandSchemaDirectOptionTester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        testOptions: {
+            auxSchema: {
+                objectValue: {
+                    key1: "value1"
+                },
+                arrayValue: ["string1", "string2"],
+                stringValue: "a test string"
+            },
+            rules: {
+                objectValue: "oPath1.oPath2",
+                arrayValue: "aPath1.aPath2",
+                stringValue: "sPath1.sPath2"
+            },
+            expectedOutput: {
+                oPath1: {
+                    oPath2: {
+                        key1: "value1"
+                    }
+                },
+                aPath1: {
+                    aPath2: ["string1", "string2"]
+                },
+                sPath1: {
+                    sPath2: "a test string"
+                }
+            }
+        },
+        modules: [{
+            name: "Test direct option expander",
+            tests: [{
+                expect: 1,
+                name: "Option expander based on schema and rules",
+                type: "test",
+                func: "fluid.tests.testExpandSchemaDirectOption",
+                args: ["{that}.options.testOptions.auxSchema", "{that}.options.testOptions.rules", "{that}.options.testOptions.expectedOutput"]
+            }]
+        }]
+    });
+
+    /*******************************************************************************
+=======
+>>>>>>> master
      * Unit tests for fluid.prefs.auxbuilder
      *******************************************************************************/
 
@@ -430,7 +492,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.prefs.panel.oneForManyPrefs", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.emphasizeLinks": {
                 "model.links": "default"
@@ -460,7 +522,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.prefs.panel.otherTextSize", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         preferenceMap: {
             "fluid.prefs.textSize": {
                 "model.value": "default",
@@ -551,7 +613,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         enactors: {
-            "gradeNames": ["fluid.uiEnhancer", "autoInit"],
+            "gradeNames": ["fluid.uiEnhancer"],
             "selectors": {},
             "components": {
                 "fluid_prefs_enactor_textSize": {
@@ -566,7 +628,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         initialModel: {
-            gradeNames: ["fluid.prefs.initialModel", "autoInit"],
+            gradeNames: ["fluid.prefs.initialModel"],
             members: {
                 initialModel: {
                     fluid_prefs_textSize: 1
@@ -574,11 +636,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         messageLoader: {
-            gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
+            gradeNames: ["fluid.prefs.resourceLoader"],
             resources: {}
         },
         templateLoader: {
-            gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
+            gradeNames: ["fluid.prefs.resourceLoader"],
             resources: {}
         }
     };
@@ -596,7 +658,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         panels: {
-            "gradeNames": ["fluid.prefs.prefsEditor", "autoInit"],
+            "gradeNames": ["fluid.prefs.prefsEditor"],
             "selectors": {
                 "fluid_prefs_panel_textSize": ".flc-prefsEditor-text-size"
             },
@@ -623,26 +685,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         templateLoader: {
-            gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
+            gradeNames: ["fluid.prefs.resourceLoader"],
             resources: {
                 "fluid_prefs_panel_textSize": "%templatePrefix/PrefsEditorTemplate-textSize.html"
             }
         },
         messageLoader: {
-            gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
+            gradeNames: ["fluid.prefs.resourceLoader"],
             resources: {
                 "fluid_prefs_panel_textSize": "%messagePrefix/PrefsEditorTemplate-textSize.json"
             }
         },
         terms: {
-            gradeNames: ["fluid.littleComponent", "autoInit"],
+            gradeNames: ["fluid.component"],
             terms: {
                 templatePrefix: "../html",
                 messagePrefix: "../messages"
             }
         },
         initialModel: {
-            gradeNames: ["fluid.prefs.initialModel", "autoInit"],
+            gradeNames: ["fluid.prefs.initialModel"],
             members: {
                 initialModel: {
                     fluid_prefs_textSize: 1
@@ -652,7 +714,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.auxBuilderTest", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             auxbuilderEmpty: {
                 type: "fluid.prefs.auxBuilder",
@@ -709,7 +771,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.auxBuilderTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         mergePolicy: {
             testOptions: {
                 noexpand: true
@@ -740,7 +802,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 panels: {
-                    "gradeNames": ["fluid.prefs.prefsEditor", "autoInit"],
+                    "gradeNames": ["fluid.prefs.prefsEditor"],
                     "selectors": {
                         "fluid_prefs_panel_textSize": ".flc-prefsEditor-text-size",
                         "fluid_prefs_panel_otherTextSize": ".flc-prefsEditor-otherTextSize"
@@ -787,28 +849,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 templateLoader: {
-                    gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
+                    gradeNames: ["fluid.prefs.resourceLoader"],
                     resources: {
                         "fluid_prefs_panel_textSize": "%templatePrefix/PrefsEditorTemplate-textSize.html",
                         "fluid_prefs_panel_otherTextSize": "%templatePrefix/PrefsEditorTemplate-otherTextSize.html"
                     }
                 },
                 messageLoader: {
-                    gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
+                    gradeNames: ["fluid.prefs.resourceLoader"],
                     resources: {
                         "fluid_prefs_panel_textSize": "%messagePrefix/PrefsEditorTemplate-textSize.json",
                         "fluid_prefs_panel_otherTextSize": "%messagePrefix/PrefsEditorTemplate-otherTextSize.json"
                     }
                 },
                 terms: {
-                    gradeNames: ["fluid.littleComponent", "autoInit"],
+                    gradeNames: ["fluid.component"],
                     terms: {
                         templatePrefix: "../html",
                         messagePrefix: "../messages"
                     }
                 },
                 initialModel: {
-                    gradeNames: ["fluid.prefs.initialModel", "autoInit"],
+                    gradeNames: ["fluid.prefs.initialModel"],
                     members: {
                         initialModel: {
                             fluid_prefs_textSize: 1
@@ -835,7 +897,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 panels: {
-                    "gradeNames": ["fluid.prefs.prefsEditor", "autoInit"],
+                    "gradeNames": ["fluid.prefs.prefsEditor"],
                     "selectors": {
                         "fluid_prefs_panel_oneForManyPrefs": ".flc-prefsEditor-links-controls"
                     },
@@ -859,26 +921,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 templateLoader: {
-                    gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
+                    gradeNames: ["fluid.prefs.resourceLoader"],
                     resources: {
                         "fluid_prefs_panel_oneForManyPrefs": "%templatePrefix/PrefsEditorTemplate-linksControls.html"
                     }
                 },
                 messageLoader: {
-                    gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
+                    gradeNames: ["fluid.prefs.resourceLoader"],
                     resources: {
                         "fluid_prefs_panel_oneForManyPrefs": "%messagePrefix/PrefsEditorTemplate-linksControls.json"
                     }
                 },
                 terms: {
-                    gradeNames: ["fluid.littleComponent", "autoInit"],
+                    gradeNames: ["fluid.component"],
                     terms: {
                         templatePrefix: "../html",
                         messagePrefix: "../messages"
                     }
                 },
                 initialModel: {
-                    gradeNames: ["fluid.prefs.initialModel", "autoInit"],
+                    gradeNames: ["fluid.prefs.initialModel"],
                     members: {
                         initialModel: {
                             fluid_prefs_emphasizeLinks: false,
@@ -903,7 +965,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 panels: {
-                    "gradeNames": ["fluid.prefs.prefsEditor", "autoInit"],
+                    "gradeNames": ["fluid.prefs.prefsEditor"],
                     "selectors": {
                         "fluid_prefs_panel_textSize": ".flc-prefsEditor-text-size"
                     },
@@ -930,21 +992,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 templateLoader: {
-                    gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
+                    gradeNames: ["fluid.prefs.resourceLoader"],
                     resources: {
                         "prefsEditor": "%templatePrefix/SeparatedPanelPrefsEditor.html",
                         "fluid_prefs_panel_textSize": "%templatePrefix/PrefsEditorTemplate-textSize.html"
                     }
                 },
                 messageLoader: {
-                    gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
+                    gradeNames: ["fluid.prefs.resourceLoader"],
                     resources: {
                         "fluid_prefs_panel_textSize": "%messagePrefix/PrefsEditorTemplate-textSize.json",
                         "prefsEditor": "%messagePrefix/PrefsEditorTemplate-prefsEditor.json"
                     }
                 },
                 enactors: {
-                    "gradeNames": ["fluid.uiEnhancer", "autoInit"],
+                    "gradeNames": ["fluid.uiEnhancer"],
                     "components": {
                         "fluid_prefs_enactor_textSize": {
                             type: "fluid.prefs.enactor.textSize",
@@ -959,7 +1021,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "selectors": {}
                 },
                 initialModel: {
-                    gradeNames: ["fluid.prefs.initialModel", "autoInit"],
+                    gradeNames: ["fluid.prefs.initialModel"],
                     members: {
                         initialModel: {
                             fluid_prefs_textSize: 1
@@ -967,7 +1029,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 terms: {
-                    gradeNames: ["fluid.littleComponent", "autoInit"],
+                    gradeNames: ["fluid.component"],
                     terms: {
                         templatePrefix: "../html",
                         messagePrefix: "../messages"
@@ -1022,7 +1084,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.schemas.subPanel1", {
-        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        gradeNames: ["fluid.prefs.schemas"],
         schema: {
             "fluid.prefs.subPanel1": {
                 "default": "sub1",
@@ -1033,7 +1095,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.prefs.schemas.subPanel2", {
-        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        gradeNames: ["fluid.prefs.schemas"],
         schema: {
             "fluid.prefs.subPanel2": {
                 "default": "sub2"
@@ -1042,11 +1104,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.prefs.panel.combinedBoth", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"]
+        gradeNames: ["fluid.prefs.panel"]
     });
 
     fluid.defaults("fluid.prefs.panel.subPanel1", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.subPanel1": {
                 "model.value": "default",
@@ -1063,7 +1125,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.prefs.panel.subPanel2", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.subPanel2": {
                 "model.value": "default"
@@ -1078,7 +1140,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.prefs.enactor.subPanel1", {
-        gradeNames: ["fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.prefs.enactor"],
         preferenceMap: {
             "fluid.prefs.subPanel1": {
                 "model.value": "default"
@@ -1087,7 +1149,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.prefs.enactor.subPanel2", {
-        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor"],
         preferenceMap: {
             "fluid.prefs.subPanel2": {
                 "model.value": "default"
@@ -1317,7 +1379,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     ******************************************************/
 
     fluid.defaults("fluid.prefs.schemas.subPanel3", {
-        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        gradeNames: ["fluid.prefs.schemas"],
         schema: {
             "fluid.prefs.subPanel3": {
                 "default": "sub3",
@@ -1328,7 +1390,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.prefs.schemas.subPanel4", {
-        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        gradeNames: ["fluid.prefs.schemas"],
         schema: {
             "fluid.prefs.subPanel4": {
                 "default": "sub4"
@@ -1337,11 +1399,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.prefs.panel.combinedBoth2", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"]
+        gradeNames: ["fluid.prefs.panel"]
     });
 
     fluid.defaults("fluid.prefs.panel.subPanel3", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.subPanel3": {
                 "model.value": "default",
@@ -1352,7 +1414,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.prefs.panel.subPanel4", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.subPanel4": {
                 "model.value": "default"
@@ -1361,7 +1423,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.prefs.enactor.subPanel3", {
-        gradeNames: ["fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.prefs.enactor"],
         preferenceMap: {
             "fluid.prefs.subPanel3": {
                 "model.value": "default"
@@ -1370,7 +1432,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.prefs.enactor.subPanel4", {
-        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor"],
         preferenceMap: {
             "fluid.prefs.subPanel4": {
                 "model.value": "default"
@@ -1561,7 +1623,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     ******************************************************/
 
     fluid.defaults("fluid.prefs.schemas.subPanel5", {
-        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        gradeNames: ["fluid.prefs.schemas"],
         schema: {
             "fluid.prefs.subPanel5": {
                 "default": "sub5"
@@ -1570,7 +1632,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.prefs.schemas.subPanel6", {
-        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        gradeNames: ["fluid.prefs.schemas"],
         schema: {
             "fluid.prefs.subPanel6": {
                 "default": "sub6"
@@ -1579,7 +1641,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.prefs.schemas.subPanel7", {
-        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        gradeNames: ["fluid.prefs.schemas"],
         schema: {
             "fluid.prefs.subPanel5": {
                 "default": "sub7"
@@ -1588,7 +1650,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.prefs.schemas.subPanel8", {
-        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        gradeNames: ["fluid.prefs.schemas"],
         schema: {
             "fluid.prefs.subPanel8": {
                 "default": "sub8"
@@ -1597,11 +1659,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.prefs.panel.combinedBoth3", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"]
+        gradeNames: ["fluid.prefs.panel"]
     });
 
     fluid.defaults("fluid.prefs.panel.subPanel5", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.subPanel5": {
                 "model.value": "default"
@@ -1610,7 +1672,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.prefs.panel.subPanel6", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.subPanel6": {
                 "model.value": "default"
@@ -1619,7 +1681,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.prefs.panel.subPanel7", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.subPanel7": {
                 "model.value": "default"
@@ -1628,7 +1690,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.prefs.panel.subPanel8", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.subPanel8": {
                 "model.value": "default"
@@ -1872,10 +1934,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.auxSchema.expandedRestForAll = {
         panels: {
-            "gradeNames": ["fluid.prefs.prefsEditor", "autoInit"]
+            "gradeNames": ["fluid.prefs.prefsEditor"]
         },
         enactors: {
-            "gradeNames": ["fluid.uiEnhancer", "autoInit"],
+            "gradeNames": ["fluid.uiEnhancer"],
             "components": {
                 "fluid_prefs_enactor_subPanel1": {
                     type: "fluid.prefs.enactor.subPanel1",
@@ -1900,22 +1962,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "selectors": {}
         },
         templateLoader: {
-            gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
+            gradeNames: ["fluid.prefs.resourceLoader"],
             resources: {
                 "prefsEditor": "%templatePrefix/prefs.html"
             }
         },
         messageLoader: {
-            gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
+            gradeNames: ["fluid.prefs.resourceLoader"],
             resources: {
                 "prefsEditor": "%messagePrefix/prefs.json"
             }
         },
         initialModel: {
-            gradeNames: ["fluid.prefs.initialModel", "autoInit"]
+            gradeNames: ["fluid.prefs.initialModel"]
         },
         terms: {
-            gradeNames: ["fluid.littleComponent", "autoInit"],
+            gradeNames: ["fluid.component"],
             terms: {
                 templatePrefix: "../html",
                 messagePrefix: "../messages"

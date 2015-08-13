@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid */
 
 var assortedContent = assortedContent || {};
@@ -19,7 +18,7 @@ var assortedContent = assortedContent || {};
     /* Our demo script */
     assortedContent.slidingPrefsEditor = function () {
         // First, start up Settings Store and Page Enhancer
-        fluid.globalSettingsStore();
+        fluid.prefs.globalSettingsStore();
         fluid.pageEnhancer({
             uiEnhancer: {
                 gradeNames: ["fluid.uiEnhancer.starterEnactors"],

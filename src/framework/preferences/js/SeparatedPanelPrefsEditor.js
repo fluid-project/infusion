@@ -27,7 +27,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************/
 
     fluid.defaults("fluid.prefs.separatedPanel", {
-        gradeNames: ["fluid.prefs.prefsEditorLoader", "autoInit"],
+        gradeNames: ["fluid.prefs.prefsEditorLoader"],
         events: {
             afterRender: null,
             onReady: null,
@@ -66,7 +66,6 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         },
         components: {
-            pageEnhancer: "{uiEnhancer}",
             slidingPanel: {
                 type: "fluid.slidingPanel",
                 container: "{separatedPanel}.container",
@@ -119,9 +118,9 @@ var fluid_2_0 = fluid_2_0 || {};
                             container: "{iframeRenderer}.renderPrefsEditorContainer",
                             createOnEvent: "afterRender",
                             options: {
-                                gradeNames: ["{pageEnhancer}.options.gradeNames"],
+                                gradeNames: ["{pageEnhancer}.uiEnhancer.options.userGrades"],
                                 jQuery: "{iframeRenderer}.jQuery",
-                                tocTemplate: "{pageEnhancer}.options.tocTemplate"
+                                tocTemplate: "{pageEnhancer}.uiEnhancer.options.tocTemplate"
                             }
                         }
                     }
@@ -184,7 +183,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *****************************************/
 
     fluid.defaults("fluid.prefs.separatedPanel.renderIframe", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         events: {
             afterRender: null
         },
@@ -197,10 +196,13 @@ var fluid_2_0 = fluid_2_0 || {};
         markupProps: {
             "class": "flc-iframe",
             src: "%templatePrefix/prefsEditorIframe.html"
+        },
+        listeners: {
+            "onCreate.startLoadingIframe": "fluid.prefs.separatedPanel.renderIframe.startLoadingIframe"
         }
     });
 
-    fluid.prefs.separatedPanel.renderIframe.finalInit = function (that) {
+    fluid.prefs.separatedPanel.renderIframe.startLoadingIframe = function (that) {
         var styles = that.options.styles;
         // TODO: get earlier access to templateLoader,
         that.options.markupProps.src = fluid.stringTemplate(that.options.markupProps.src, that.options.terms);

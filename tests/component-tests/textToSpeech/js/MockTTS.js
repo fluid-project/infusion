@@ -10,7 +10,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 */
 
-// Declare dependencies
 /* global fluid */
 
 (function () {
@@ -54,19 +53,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: ["{that}", "{that}.handleEnd"]
             },
             pause: {
-                "this": null,
-                "method": null,
-                listener: "{that}.events.onPause.fire"
+                "this": null, // TODO: This needs to be removed once FLUID-5714 is fixed
+                method: null,
+                func: "{that}.events.onPause.fire"
             },
             resume: {
                 "this": null,
-                "method": null,
-                listener: "{that}.events.onResume.fire"
+                method: null,
+                func: "{that}.events.onResume.fire"
             },
             getVoices: {
                 "this": null,
-                "method": null,
-                listener: "fluid.identity",
+                method: null,
+                funcName: "fluid.identity",
                 args: []
             },
             recordEvent: {

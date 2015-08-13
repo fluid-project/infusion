@@ -100,13 +100,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         console.log(err.stack);
     };
     
-    fluid.onUncaughtException.addListener(fluid.logUncaughtException, "log", null,
+    fluid.onUncaughtException.addListener(fluid.logUncaughtException, "log",
         fluid.handlerPriorities.uncaughtException.log);
       
     // Convert an argument intended for console.log in the node environment to a readable form (the
     // default action of util.inspect censors at depth 1)
     fluid.renderLoggingArg = function (arg) {
-        var togo = arg && fluid.isPrimitive(arg) ? arg : fluid.prettyPrintJSON(arg);
+        var togo = arg && fluid.isPrimitive(arg) ? arg : fluid.prettyPrintJSON(arg, {maxRenderChars: fluid.logObjectRenderChars});
         if (typeof(togo) === "string" && togo.length > fluid.logObjectRenderChars) {
             togo = togo.substring(0, fluid.logObjectRenderChars) + " .... [output suppressed at " + fluid.logObjectRenderChars + " chars - for more output, increase fluid.logObjectRenderChars]";
         }

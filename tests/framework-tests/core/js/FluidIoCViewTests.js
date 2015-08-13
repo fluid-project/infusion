@@ -1,6 +1,7 @@
 /*
 Copyright 2010-2011 Lucendo Development Ltd.
 Copyright 2010-2011 OCAD University
+Copyright 2015 Raising the Floor (International)
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -10,7 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function () {
@@ -19,48 +19,39 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests");
 
     fluid.defaults("fluid.tests.testComponent", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         default1: "testComponent value",
         components: {
             test2: {
                 type: "fluid.tests.testComponent2",
+                container:  "{testComponent}.container",
                 options: {
-                    value: "Original default value"
+                    value: "Original default value",
+                    default1: "{testComponent}.options.default1"
                 }
             }
         }
     });
 
     fluid.defaults("fluid.tests.testComponent2", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         components: {
             sub1: {
-                type: "fluid.tests.subComponent"
+                type: "fluid.tests.subComponent",
+                container: "{testComponent2}.container",
+                options: {
+                    "crossDefault": "{testComponent2}.sub2.options.value"
+                }
             },
             sub2: {
                 type: "fluid.tests.subComponent",
+                container: "{testComponent2}.container",
                 options: {
                     value: "Subcomponent 2 default"
                 }
             }
         }
     });
-
-    fluid.demands("fluid.tests.testComponent2", "fluid.tests.testComponent",
-        [
-            "{testComponent}.container",
-            {"default1": "{testComponent}.options.default1"}
-        ]);
-
-
-    fluid.demands("sub1", "fluid.tests.testComponent2", [
-        "{testComponent2}.container",
-        {"crossDefault": "{testComponent2}.sub2.options.value"}
-    ]);
-
-    fluid.demands("sub2", "fluid.tests.testComponent2",
-        ["{testComponent2}.container", fluid.COMPONENT_OPTIONS]);
-
 
     fluid.makeComponents({
         "fluid.tests.subComponent":       "fluid.viewComponent",
@@ -88,7 +79,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 
     fluid.defaults("fluid.tests.autoGradedComponent", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         events: {
             anEvent: null
         }
@@ -135,75 +126,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
-    fluid.defaults("fluid.tests.mergePaths", {
-        gradeNames: ["fluid.modelComponent", "autoInit"],
-        headOption: "headValue1",
-        components: {
-            child: {
-                type: "fluid.tests.mergePathsChild",
-                options: {
-                    childOption1: "directValue1",
-                    childOption2: "directValue2"
-                }
-            },
-            viewChild: {
-                type: "fluid.tests.mergePathsViewChild",
-                options: {
-                    childOption1: "directValue1",
-                    childOption2: "{mergePaths}.options.headOption"
-                }
-            }
-        }
-    });
-
-    fluid.defaults("fluid.tests.mergePathsChild", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
-    });
-
-    fluid.defaults("fluid.tests.mergePathsViewChild", {
-        gradeNames: ["fluid.viewComponent", "autoInit"]
-    });
-
-    fluid.demands("fluid.tests.mergePathsChild", "fluid.tests.mergePaths", {
-        mergeOptions: [
-            {childOption1: "demandValue1"}, {childOption3: "{mergePaths}.options.headOption"}
-        ]
-    });
-
-    fluid.demands("fluid.tests.mergePathsViewChild", "fluid.tests.mergePaths", {
-        container: "#pager-top",
-        mergeOptions: {
-            model:   "{mergePaths}.model",
-            applier: "{mergePaths}.options.applier"
-        }
-    });
-
-    jqUnit.test("FLUID-4130 mergeOptions for demanded component options", function () {
-        var model = {key: "Head model"};
-        var mergePaths = fluid.tests.mergePaths({model: model});
-        var expected = {
-            childOption1: "demandValue1",
-            childOption2: "directValue2",
-            childOption3: "headValue1"
-        };
-        jqUnit.assertDeepEq("Direct options overriden by demands",
-            expected, fluid.filterKeys(mergePaths.child.options, ["childOption1", "childOption2", "childOption3"]));
-        jqUnit.assertEquals("Model delivered directly through mergePaths in demands block for full args (FLUID-4142)",
-            mergePaths.model, mergePaths.viewChild.model);
-        var expected2 = {
-            childOption1: "directValue1",
-            childOption2: "headValue1"
-        };
-        jqUnit.assertDeepEq("Options delivered from subcomponent defaults through mergePaths",
-            expected2, fluid.filterKeys(mergePaths.viewChild.options, ["childOption1", "childOption2"]));
-    });
-
     fluid.tests.dynamicCounter = function (parent) {
         parent.childCount++;
     };
 
     fluid.defaults("fluid.tests.dynamicContainer", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         members: {
             childCount: 0
         },
@@ -237,26 +165,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      ************************************/
 
     fluid.defaults("fluid.tests.parentView", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         components: {
             defaultedChildView: {
                 type: "fluid.tests.subComponent",
                 container: "{parentView}.dom.defaultedChildContainer"
-            },
-            demandedChildView: {
-                type: "fluid.tests.childView"
             }
         },
         selectors: {
             defaultedChildContainer: ".flc-tests-parentView-defaultedChildContainer",
             demandedChildContainer: ".flc-tests-parentView-demandedChildContainer"
-        }
-    });
-
-    fluid.demands("fluid.tests.childView", "fluid.tests.parentView", {
-        container: "{parentView}.dom.demandedChildContainer",
-        options: {
-            cat: "meow"
         }
     });
 
@@ -268,7 +186,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("Child view's container resolved by IoC from parent's DOM Binder", function () {
         var parent = fluid.tests.parentView(".flc-tests-parentView-container");
         checkChildContainer(parent, parent.defaultedChildView, "defaultedChildContainer", "defaults");
-        checkChildContainer(parent, parent.demandedChildView, "demandedChildContainer", "demands");
     });
 
 

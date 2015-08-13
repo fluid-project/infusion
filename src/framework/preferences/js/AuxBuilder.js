@@ -22,7 +22,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.auxSchema", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         auxiliarySchema: {
             "loaderGrades": ["fluid.prefs.separatedPanel"]
         }
@@ -122,7 +122,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.prefs.containerNeeded = function (root, path) {
         var componentType = fluid.get(root, [path, "type"]);
         var componentOptions = fluid.defaults(componentType);
-        return (fluid.hasGrade(componentOptions, "fluid.viewRelayComponent") || fluid.hasGrade(componentOptions, "fluid.rendererRelayComponent"));
+        return (fluid.hasGrade(componentOptions, "fluid.viewComponent") || fluid.hasGrade(componentOptions, "fluid.rendererComponent"));
     };
 
     fluid.prefs.checkPrimarySchema = function (primarySchema, prefKey) {
@@ -404,28 +404,28 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.prefs.auxBuilder", {
-        gradeNames: ["fluid.prefs.auxSchema", "autoInit"],
+        gradeNames: ["fluid.prefs.auxSchema"],
         mergePolicy: {
             elementCommonOptions: "noexpand"
         },
         topCommonOptions: {
             panels: {
-                gradeNames: ["fluid.prefs.prefsEditor", "autoInit"]
+                gradeNames: ["fluid.prefs.prefsEditor"]
             },
             enactors: {
-                gradeNames: ["fluid.uiEnhancer", "autoInit"]
+                gradeNames: ["fluid.uiEnhancer"]
             },
             templateLoader: {
-                gradeNames: ["fluid.prefs.resourceLoader", "autoInit"]
+                gradeNames: ["fluid.prefs.resourceLoader"]
             },
             messageLoader: {
-                gradeNames: ["fluid.prefs.resourceLoader", "autoInit"]
+                gradeNames: ["fluid.prefs.resourceLoader"]
             },
             initialModel: {
-                gradeNames: ["fluid.prefs.initialModel", "autoInit"]
+                gradeNames: ["fluid.prefs.initialModel"]
             },
             terms: {
-                gradeNames: ["fluid.littleComponent", "autoInit"]
+                gradeNames: ["fluid.component"]
             }
         },
         elementCommonOptions: {

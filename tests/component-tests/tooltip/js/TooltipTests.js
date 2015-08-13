@@ -8,9 +8,8 @@ Licenses.
 You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
- */
+*/
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($, fluid) {
@@ -78,7 +77,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.focusNotifier", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         events: {
             notifyFocusChange: null
         },
@@ -137,7 +136,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.tooltip.tree", {
-        gradeNames: ["fluid.tests.tooltip.trackTooltips", "fluid.tests.focusNotifier", "autoInit"],
+        gradeNames: ["fluid.tests.tooltip.trackTooltips", "fluid.tests.focusNotifier"],
         selectors: {
             focusTarget: ".focusTarget"
         },
@@ -165,7 +164,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.tooltip.delegateEnv", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         markupFixture: "#ioc-fixture",
         expectedVisible: ["anchor-1"],
         components: {
