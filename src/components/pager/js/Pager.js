@@ -215,7 +215,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.pager.renderedPageList", {
-        gradeNames: ["fluid.rendererComponent", "fluid.pager.pageList"],
+        gradeNames: ["fluid.pager.pageList", "fluid.rendererComponent"],
         rendererOptions: {
             idMap: {},
             cutpoints: [

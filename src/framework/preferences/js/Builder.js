@@ -26,7 +26,7 @@ var fluid_2_0 = fluid_2_0 || {};
             expander: {
                 func: "fluid.prefs.builder.generateGrade",
                 args: ["prefsEditor", "{that}.options.auxSchema.namespace", {
-                    gradeNames: ["fluid.viewComponent", "fluid.prefs.assembler.prefsEd"],
+                    gradeNames: ["fluid.prefs.assembler.prefsEd", "fluid.viewComponent"],
                     componentGrades: "{that}.options.constructedGrades",
                     loaderGrades: "{that}.options.auxSchema.loaderGrades"
                 }]

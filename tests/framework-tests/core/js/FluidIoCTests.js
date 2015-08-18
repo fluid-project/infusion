@@ -621,6 +621,38 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         jqUnit.assertLeftHand("Correctly merged options", expected, that.uiEnhancer.options);
     });
+    
+    /** FLUID-5743 - Arabic Grades **/
+    
+    fluid.defaults("fluid.tests.componentOne", {
+        gradeNames: "fluid.component",
+        option1: "TEST1",
+        option3: "TEST1"
+    });
+
+    fluid.defaults("fluid.tests.componentTwo", {
+        gradeNames: "fluid.component",
+        option1: "TEST2",
+        option2: "TEST2"
+    });
+
+    fluid.defaults("fluid.tests.combinedComponent", {
+        gradeNames: ["fluid.tests.componentOne", "fluid.tests.componentTwo"]
+    });
+    
+    jqUnit.test("FLUID-5743 Arabic grade merging", function () {
+        var merged = fluid.tests.combinedComponent();
+        var expected = {
+            option1: "TEST2",
+            option2: "TEST2",
+            option3: "TEST1"
+        };
+        jqUnit.assertLeftHand("Merged grades in correct left-to-right order", expected, merged.options);
+        var merged2 = fluid.tests.componentOne({
+            gradeNames: "fluid.tests.componentTwo"
+        });
+        jqUnit.assertLeftHand("Merged grades in correct left-to-right order with direct grade arguments", expected, merged2.options);
+    });
 
     /** Listener merging tests **/
 
@@ -2371,7 +2403,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 gradeNames: ["fluid.tests.defaultTemplateLoader"]
             }
         });
-        var expectedGrades = ["fluid.tests.defaultTemplateLoader", "fluid.component"];
+        var expectedGrades = ["fluid.component", "fluid.tests.defaultTemplateLoader"];
 
         jqUnit.assertDeepEq("The option grades are merged into the target component", expectedGrades, prefsEditor.templateLoader.options.gradeNames);
         jqUnit.assertEquals("The user option from the grade component is transmitted", 10, prefsEditor.templateLoader.options.userOption);

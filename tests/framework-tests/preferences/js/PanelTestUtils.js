@@ -17,7 +17,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests.panels.utils");
 
     fluid.defaults("fluid.tests.panels.utils.defaultTestPanel", {
-        gradeNames: ["fluid.component"],
         strings: {},
         testMessages: {},
         parentBundle: {

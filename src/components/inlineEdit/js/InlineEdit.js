@@ -712,7 +712,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.inlineEdit", {
-        gradeNames: ["fluid.viewComponent", "fluid.undoable"],
+        gradeNames: ["fluid.undoable", "fluid.viewComponent"],
         mergePolicy: {
             "strings.defaultViewText": "defaultViewText"
         },

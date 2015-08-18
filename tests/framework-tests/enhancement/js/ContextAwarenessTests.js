@@ -152,7 +152,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var that = fluid.tests.contextAware.multiple();
         var indexFood = that.options.gradeNames.indexOf("food.carrots");
         var indexUrgency = that.options.gradeNames.indexOf("urgency.high");
-        jqUnit.assertTrue("Context awareness gradenames must appear in priority order ", indexFood !== -1 && indexUrgency !== -1 && indexUrgency > indexFood);
+        jqUnit.assertTrue("Context awareness gradenames must appear in priority order ", indexFood !== -1 && indexUrgency !== -1 && indexUrgency < indexFood);
     });
     
     fluid.tests.contextAware.isResolvable = function (typeName) {
