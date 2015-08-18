@@ -79,6 +79,10 @@ var fluid = fluid || fluid_2_0;
             for (key in obj) {}
             return key === undefined || hasOwn.call( obj, key );
         },
+        
+        trim: function (str) {
+            return str.trim();
+        },
 
         isEmptyObject: function (obj) {
             var name;

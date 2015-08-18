@@ -2593,7 +2593,7 @@ var fluid = fluid || fluid_2_0;
     // unsupported, non-API function
     fluid.parseSelector = function (selstring, strategy) {
         var togo = [];
-        selstring = $.trim(selstring);
+        selstring = selstring.trim();
         //ws-(ss*)[ws/>]
         var regexp = strategy.regexp;
         regexp.lastIndex = 0;
