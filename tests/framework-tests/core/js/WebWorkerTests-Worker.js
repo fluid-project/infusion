@@ -47,6 +47,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 
     // Runs immediately when the worker is evaluated.
-    var cat = new fluid.test.workerTestComponent();
+    var cat = fluid.test.workerTestComponent();
     self.postMessage(cat.meow());
 }());
