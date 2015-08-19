@@ -5,16 +5,15 @@ demos
 examples
 Gruntfile.js
 products
-project.xml
-project.properties
-pom.xml
 
 src/components
 src/lib/fonts
 src/lib/jquery/plugins
 src/lib/jquery/ui
 src/lib/json
+
 src/framework/core/css
+src/framework/preferences
 
 tests/3rd-party-tests
 tests/component-tests
