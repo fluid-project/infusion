@@ -42,7 +42,8 @@ var fluid = fluid || fluid_2_0;
         fluid: fluid
     };
 
-    fluid.global = fluid.global || window || {};
+    fluid.global = fluid.global || typeof window !== "undefined" ?
+        window : typeof self !== "undefined" ? self : {};
 
     // A standard utility to schedule the invocation of a function after the current
     // stack returns. On browsers this defaults to setTimeout(func, 1) but in
