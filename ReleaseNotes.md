@@ -1,10 +1,10 @@
-# Release Notes for Fluid Infusion 2.0 #
+# Release Notes for Fluid Infusion 1.9 #
 
 [Main Project Site](http://fluidproject.org)
 
 [Documentation](https://github.com/fluid-project/infusion-docs)
 
-## What's New in 2.0? ##
+## What's New in 1.9? ##
 
 *
 
@@ -76,7 +76,7 @@ browser's Back button.
 
 ## Supported Browsers ##
 
-Infusion 2.0 was tested with the following browsers:
+Infusion 1.9 was tested with the following browsers:
 
 *
 
