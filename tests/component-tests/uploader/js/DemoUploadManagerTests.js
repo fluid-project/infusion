@@ -11,18 +11,16 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
     "use strict";
 
     $(function () {
-        fluid.registerNamespace("fluid.uploader.tests");
-        fluid.enhance.forgetAll();
+        fluid.registerNamespace("fluid.tests.uploader");
 
-        fluid.enhance.check({
-            "fluid.uploader.tests": true
+        fluid.contextAware.makeChecks({
+            "fluid.tests.uploader": true
         });
 
         var events;
@@ -79,9 +77,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return tracker;
         };
 
-        fluid.defaults("fluid.uploader.tests.demoShell", {
-            gradeNames: ["fluid.littleComponent", "autoInit"],
-            nickName: "uploader",
+        fluid.defaults("fluid.tests.uploader.demoShell", {
+            gradeNames: ["fluid.component", "fluid.tests.uploader"],
             components: {
                 queue: {
                     type: "fluid.uploader.fileQueue"
@@ -106,7 +103,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var uploadFilesAndTest = function (files, testBody) {
             var tracker = eventTracker(testBody);
 
-            var demo = fluid.uploader.tests.demoShell({
+            var demo = fluid.tests.uploader.demoShell({
                 components: {
                     remote: {
                         options: {

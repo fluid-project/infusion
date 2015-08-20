@@ -121,7 +121,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.reorderImages", {
-        gradeNames: ["fluid.reorderer", "autoInit"],
+        gradeNames: ["fluid.reorderer"],
         layoutHandler: "fluid.gridLayoutHandler",
         listeners: {
             "afterMove.postModel": {

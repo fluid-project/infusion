@@ -23,21 +23,31 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.enactor.speak", {
-        gradeNames: ["fluid.textToSpeech", "fluid.prefs.enactor", "autoInit"],
+        gradeNames: "fluid.prefs.enactor",
         preferenceMap: {
             "fluid.prefs.speak": {
                 "model.enabled": "default"
             }
         },
-        invokers: {
-            queueSpeech: {
-                funcName: "fluid.prefs.enactor.speak.queueSpeech"
+        components: {
+            tts: {
+                type: "fluid.textToSpeech",
+                options: {
+                    model: "{speak}.model",
+                    invokers: {
+                        queueSpeech: {
+                            funcName: "fluid.prefs.enactor.speak.queueSpeech",
+                            args: ["{that}", "fluid.textToSpeech.queueSpeech", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+                        }
+                    }
+                }
             }
         }
     });
 
-
-    fluid.prefs.enactor.speak.queueSpeech = function (that, text, interrupt, options) {
+    // Accepts a speechFn (either a function or function name), which will be used to perform the
+    // underlying queuing of the speech. This allows the SpeechSynthesis to be replaced (e.g. for testing)
+    fluid.prefs.enactor.speak.queueSpeech = function (that, speechFn, text, interrupt, options) {
         // force a string value
         var str = text.toString();
 
@@ -46,7 +56,11 @@ var fluid_2_0 = fluid_2_0 || {};
         str.replace(/\s{2,}/gi, " ");
 
         if (that.model.enabled && str) {
-            fluid.textToSpeech.queueSpeech(that, str, interrupt, options);
+            if (typeof(speechFn) === "string") {
+                fluid.invokeGlobalFunction(speechFn, [that, str, interrupt, options]);
+            } else {
+                speechFn(that, str, interrupt, options);
+            }
         }
     };
 
@@ -57,7 +71,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.enactor.selfVoicing", {
-        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.enactor.speak", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor.speak"],
         modelListeners: {
             "enabled": {
                 listener: "{that}.handleSelfVoicing",
@@ -68,7 +82,7 @@ var fluid_2_0 = fluid_2_0 || {};
             handleSelfVoicing: {
                 funcName: "fluid.prefs.enactor.selfVoicing.handleSelfVoicing",
                 // Pass in invokers to force them to be resolved
-                args: ["{that}.options.strings.welcomeMsg", "{that}.queueSpeech", "{that}.readFromDOM", "{that}.cancel", "{arguments}.0"]
+                args: ["{that}.options.strings.welcomeMsg", "{tts}.queueSpeech", "{that}.readFromDOM", "{tts}.cancel", "{arguments}.0"]
             },
             readFromDOM: {
                 funcName: "fluid.prefs.enactor.selfVoicing.readFromDOM",
@@ -102,14 +116,14 @@ var fluid_2_0 = fluid_2_0 || {};
         var nodes = elm.contents();
         fluid.each(nodes, function (node) {
             if (node.nodeType === fluid.prefs.enactor.selfVoicing.nodeType.TEXT_NODE && node.nodeValue) {
-                that.queueSpeech(node.nodeValue);
+                that.tts.queueSpeech(node.nodeValue);
             }
 
             if (node.nodeType === fluid.prefs.enactor.selfVoicing.nodeType.ELEMENT_NODE && window.getComputedStyle(node).display !== "none") {
                 if (node.nodeName === "IMG") {
                     var altText = node.getAttribute("alt");
                     if (altText) {
-                        that.queueSpeech(altText);
+                        that.tts.queueSpeech(altText);
                     }
                 } else {
                     fluid.prefs.enactor.selfVoicing.readFromDOM(that, node);

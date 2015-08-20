@@ -10,7 +10,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid */
 
 var example = example || {};
@@ -22,8 +21,8 @@ var example = example || {};
      * needs to know where those templates are. This variable will be used by all
      * versions of the component.
      */
-    var pathToTemplates = "../../../../src/framework/preferences/html/";
-    var pathToMessages = "../../../../src/framework/preferences/messages/";
+    var pathToTemplates = "../../../../src/framework/preferences/html";
+    var pathToMessages = "../../../../src/framework/preferences/messages";
 
     /**
      * The UI Enhancer's Table of Contents uses a template. This path variable is used by all
@@ -36,7 +35,7 @@ var example = example || {};
      * Initialize a settings store for the page.
      */
     example.initSettingsStore = function () {
-        fluid.globalSettingsStore();
+        fluid.prefs.globalSettingsStore();
     };
 
     /**
@@ -65,8 +64,10 @@ var example = example || {};
         fluid.prefs.separatedPanel(container, {
             gradeNames: ["fluid.prefs.transformDefaultPanelsOptions", "fluid.prefs.initialModel.starter"],
             // Tell preference editor where to find all the templates, relative to this path
-            templatePrefix: pathToTemplates,
-            messagePrefix: pathToMessages,
+            terms: {
+                templatePrefix: pathToTemplates,
+                messagePrefix: pathToMessages
+            },
             templateLoader: {
                 gradeNames: ["fluid.prefs.starterSeparatedPanelTemplateLoader"]
             },

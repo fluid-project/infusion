@@ -19,7 +19,7 @@ var fluid_2_0 = fluid_2_0 || {};
      ********************/
 
     fluid.defaults("fluid.textfieldSlider", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         components: {
             textfield: {
                 type: "fluid.textfieldSlider.textfield",
@@ -66,7 +66,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.defaults("fluid.textfieldSlider.textfield", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         range: {}, // should be used to specify the min, max range e.g. {min: 0, max: 100}
         modelRelay: {
             target: "value",
@@ -111,7 +111,7 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.defaults("fluid.slider", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         range: {}, // should be used to specify the min, max range e.g. {min: 0, max: 100}
         selectors: {
             thumb: ".ui-slider-handle"
@@ -120,7 +120,7 @@ var fluid_2_0 = fluid_2_0 || {};
             combinedSliderOptions: {
                 expander: {
                     funcName: "fluid.slider.combineSliderOptions",
-                    args: ["{that}"]
+                    args: ["{that}.options.sliderOptions", "{that}.options.range"]
                 }
             },
             slider: {
@@ -176,8 +176,8 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-    fluid.slider.combineSliderOptions = function (that) {
-        return $.extend(true, {}, that.options.sliderOptions, that.model, that.options.range);
+    fluid.slider.combineSliderOptions = function (sliderOptions, model, range) {
+        return $.extend(true, {}, sliderOptions, model, range);
     };
 
 })(jQuery, fluid_2_0);

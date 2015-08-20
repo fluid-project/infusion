@@ -13,7 +13,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
  */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -922,7 +921,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
 
             fluid.defaults("fluid.componentWithInlineEdit", {
-                gradeNames: ["fluid.viewComponent", "autoInit"],
+                gradeNames: ["fluid.viewComponent"],
                 selectors: {
                     inlineEdit: ".flc-ioc-inlineEditable"
                 },

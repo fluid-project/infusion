@@ -1,5 +1,5 @@
 /*
-Copyright 2011 OCAD University
+Copyright 2011-2015 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -9,32 +9,22 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
     "use strict";
-
-    fluid.staticEnvironment.demo = fluid.typeTag("fluid.tableOfContentsTest");
-    fluid.demands("fluid.tableOfContents.levels", ["fluid.tableOfContents", "fluid.tableOfContentsTest"], {
-        options: {
-            resources: {
-                template: {
-                    forceCache: true,
-                    url: "../../../../src/components/tableOfContents/html/TableOfContents.html"
-                }
+    
+    fluid.defaults("fluid.tests.tableOfContents.templateDistributor", {
+        distributeOptions: {
+            target: "{/ fluid.tableOfContents.levels}.options.resources.template",
+            record: {
+                forceCache: true,
+                url: "../../../../src/components/tableOfContents/html/TableOfContents.html"
             }
         }
     });
-
-    fluid.tableOfContents.generateGUIDMock = function () {
-        return "test";
-    };
-
-    // Use our custom GUID for testing purposes.
-    fluid.demands("fluid.allocateSimpleId", "fluid.tableOfContents", {
-        funcName: "fluid.tableOfContents.generateGUIDMock"
-    });
+    
+    fluid.constructSingle([], "fluid.tests.tableOfContents.templateDistributor");
 
     /* For testing a page with no headings */
     var emptyHeadings = {
@@ -263,7 +253,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
       * @param  Array   Array of selector names
       */
     var locateSet = function (that, selectorNames) {
-        var set = $();  //Creates an empty jQuery object.
+        var set = $();  // Creates an empty jQuery object.
         fluid.each(selectorNames, function (selectorName) {
             set = set.add(that.locate(selectorName));
         });
@@ -286,7 +276,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // To address IE7 problem, http://bugs.jquery.com/ticket/7117
             // To fix, strip it URI if the windows.location is in href. Otherwise, do nothing.
             var eleHref = elm.attr("href").replace($(location).attr("href"), "");
-            jqUnit.assertEquals("ToC anchor set correctly", fluid.get(hInfo, "url"), eleHref);
+            jqUnit.assertTrue("ToC anchor set correctly", hInfo.url ? eleHref === hInfo.url : eleHref.indexOf(fluid.fluidInstance) === 1);
         });
     };
 
@@ -449,8 +439,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("ToC insert anchor correctly: name", tocTestAnchorName, tocInsertAnchorWrapperFirstChild.attr("name"));
         });
 
-        jqUnit.test("finalInit public function: headingTextToAnchorInfo", function () {
-            // setup and init the ToC component
+        jqUnit.test("public function: headingTextToAnchorInfo", function () {
+            // set up and init the ToC component
             var toc = renderTOCComponent();
             var tocBodyHeading = $("#amphibians");
             var anchorInfo = toc.headingTextToAnchorInfo(tocBodyHeading);
@@ -459,15 +449,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("anchor url is the same as id except url has a '#' in front", anchorInfo.url.substr(1), anchorInfo.id);
         });
 
-        jqUnit.test("finalInit public function: show/hide component", function () {
-            //setup and init the ToC component
+        jqUnit.test("public function: show/hide component", function () {
+            // set up and init the ToC component
             var tocContainer = renderTOCComponent().locate("tocContainer");
             jqUnit.isVisible("Initially the component is visible.", tocContainer);
             tocContainer.hide();
-            //verify toc is hidden.
+            // verify toc is hidden.
             jqUnit.notVisible("After calling hide, the component is invisible.", tocContainer);
             tocContainer.show();
-            //verify toc is visible again
+            // verify toc is visible again
             jqUnit.isVisible("After calling show, the component is visible.", tocContainer);
         });
 
@@ -492,16 +482,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     headingInfo : []
                 };
             var headings = $("#flc-toc").children(":header");
-            var serializeHeading = function (level, text, url) {
-                // macro to serialize heading elements, level, text, url into Object form.
-                return {"level": level, "text": text, "url" : url};
+            var serializeHeading = function (level, text) {
+                // macro to serialize heading elements, level, text
+                return {"level": level, "text": text};
             };
             headings.each(function (headingsIndex) {
                 var currLink = headings.eq(headingsIndex);
                 testHeadings.headingInfo.push(serializeHeading(
                     currLink.prop("tagName").substr(currLink.prop("tagName").length - 1),
-                    currLink.text(),
-                    "#test"
+                    currLink.text()
                 ));
             });
             renderTOCComponent("#flc-toc", {
@@ -549,9 +538,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 listeners: {
                     onReady: {
                         func: function (that) {
-                            var header = $("h1", that.container);
-                            jqUnit.assertEquals("The output should contain exactly one H1", 1, header.length);
-                            jqUnit.assertEquals("The H1 should contain the expected text", "Table of Contents", header.text());
+                            var header = $("h2", that.container);
+                            jqUnit.assertEquals("The output should contain exactly one H2", 1, header.length);
+                            jqUnit.assertEquals("The H2 should contain the expected text", "Table of Contents", header.text());
                             jqUnit.start();
                         },
                         args: ["{that}.levels"]
@@ -560,6 +549,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         });
 
+        // TODO: This test and the component is faulty - if the template loads asynchronously, rendering will fail
         /**
          * #FLUID-5110: refreshView updates headings
          */
@@ -568,18 +558,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var testHeadingRefreshed = {
                 headingInfo: [{
                     level: "2",
-                    text: "H2",
-                    url: "#test"
+                    text: "H2"
                 }, {
                     level: "2",
-                    text: "test",
-                    url: "#test"
+                    text: "test"
                 }]
             };
             renderTOCComponent("#flc-toc-refreshHeadings", {
                 listeners: {
-                    //FLUID-5112: have to use the onCreate event instead of onReady to prevent infinite recursion.
-                    "onCreate.intialState": {
+                    // FLUID-5112: have to use the onCreate event instead of onReady to prevent infinite recursion.
+                    "onCreate.initialState": {
                         listener: function (levels, that) {
                             that.events.onRefresh.addListener(function () {
                                 jqUnit.assert("The onRefresh event should have fired");
@@ -589,7 +577,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
                                 jqUnit.assertEquals("The correct number of anchors should be present", numHeadings, that.locate("tocAnchors").length);
                                 jqUnit.start();
-                            }, "inTestCase", null, "last");
+                            }, "inTestCase", "last");
 
                             that.container.append("<h2>test</h2>");
                             that.refreshView();
@@ -616,6 +604,38 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             jqUnit.start();
                         },
                         args: ["{that}.levels"]
+                    }
+                }
+            });
+        });
+
+        /**
+        * #FLUID-5697: Test the exclusion of headers
+        */
+        jqUnit.asyncTest("FLUID-5697: Header exclusion", function () {
+            // craft headingInfo so renderTOCTest() can use it
+            var testHeadings = {
+                headingInfo: [{
+                    level: "2",
+                    text: "Included"
+                }]
+            };
+
+            renderTOCComponent("#fluid-5697", {
+                ignoreForToC: {
+                    "fluid-5697": ".fluid-5697-exclude"
+                },
+                listeners: {
+                    onReady: {
+                        listener: function (that, levels) {
+                            renderTOCTest(levels, testHeadings);
+                            renderTOCAnchorTest();
+                            var numHeadings = testHeadings.headingInfo.length;
+
+                            jqUnit.assertEquals("The correct number of anchors should be present", numHeadings, that.locate("tocAnchors").length);
+                            jqUnit.start();
+                        },
+                        args: ["{that}", "{that}.levels"]
                     }
                 }
             });

@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -31,7 +30,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         var assembleCookieTest = function (cookieOptions, expectedAssembledCookie) {
-            var assembledCookie = fluid.cookieStore.assembleCookie(cookieOptions);
+            var assembledCookie = fluid.prefs.cookieStore.assembleCookie(cookieOptions);
             jqUnit.assertEquals("The expected cookie string should have been assembled", expectedAssembledCookie, assembledCookie);
         };
 
@@ -78,7 +77,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.test("Cookie", function () {
-            var store = fluid.cookieStore({
+            var store = fluid.prefs.cookieStore({
                 cookie: {
                     name: cookieName
                 }
@@ -114,7 +113,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.test("Temp store", function () {
-            var store = fluid.tempStore();
+            var store = fluid.prefs.tempStore();
             store.set(testSettings);
 
             // Check that we get back the test settings correctly.

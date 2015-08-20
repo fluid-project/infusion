@@ -57,7 +57,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     jqUnit.test("Rendering truncation test", function () {
         var rendered = fluid.renderLoggingArg(fluid);
-        jqUnit.assertTrue("Large object truncated", rendered.length < fluid.logObjectRenderChars + 100);
+        jqUnit.assertTrue("Large object truncated", rendered.length < fluid.logObjectRenderChars + 100); // small allowance for extra diagnostic
         console.log("Large log rendering object truncated to " + rendered.length + " chars");
     });
     
@@ -88,7 +88,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.expectFailure = false;
     
     fluid.tests.addLogListener = function (listener) {
-        fluid.onUncaughtException.addListener(listener, "log", null,
+        fluid.onUncaughtException.addListener(listener, "log",
             fluid.handlerPriorities.uncaughtException.log);
     };
     

@@ -9,7 +9,6 @@
  https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
  */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function () {
@@ -20,7 +19,7 @@
     /** Testing environment - holds both fixtures as well as components under test, exposes global test driver **/
 
     fluid.defaults("fluid.tests.myTestTree", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             cat: {
                 type: "fluid.tests.cat"
@@ -34,7 +33,7 @@
     /** Component under test **/
 
     fluid.defaults("fluid.tests.cat", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         invokers: {
             makeSound: "fluid.tests.cat.makeSound"
         }
@@ -47,7 +46,7 @@
     /** Test Case Holder - holds declarative representation of test cases **/
 
     fluid.defaults("fluid.tests.catTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         invokers: {
             testMeow: "fluid.tests.globalCatTest"
         },
@@ -74,7 +73,7 @@
     };
 
     fluid.defaults("fluid.tests.initTree", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
     // natural place for this configuration is here - however, moved into driver to test FLUID-5132
     //        initTest: {
@@ -93,7 +92,7 @@
     };
 
     fluid.defaults("fluid.tests.initTest", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         events: {
             onReady: null
         },
@@ -101,13 +100,12 @@
             onCreate: "{that}.initialSetup"
         },
         invokers: {
-            initialSetup: "fluid.tests.setup",
-            args: ["{that}"]
+            initialSetup: "fluid.tests.setup"
         }
     });
 
     fluid.defaults("fluid.tests.initTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         modules: [ {
             name: "Init test case",
             tests: [{
@@ -122,7 +120,7 @@
     });
 
     fluid.defaults("fluid.tests.dynamicCATT", {
-        gradeNames: ["fluid.modelComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent"],
         catts: ["catt1", "catt2"],
         dynamicComponents: {
             catts: {
@@ -133,7 +131,7 @@
     });
 
     fluid.defaults("fluid.tests.sourceTester", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             tree: {
                 type: "fluid.tests.dynamicCATT"
@@ -182,7 +180,7 @@
     };
     
     fluid.defaults("fluid.tests.hangTester", { // tests FLUID-5252
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         hangWait: 1000, // speed up the test run by detecting a hang after only 1000ms
         events: {
             onUnhang: null
@@ -222,7 +220,7 @@
     fluid.tests.expectedListenerArg = ["Direct argument"];
     
     fluid.defaults("fluid.tests.listenerArg", { // tests FLUID-5496
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         events: {
             onPush: null
         },
@@ -271,7 +269,7 @@
     };
 
     fluid.defaults("fluid.tests.modelTestTree", {
-        gradeNames: ["fluid.test.testEnvironment", "fluid.standardRelayComponent", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment", "fluid.modelComponent"],
         model: 0,
         members: {
             listenedValue: 0
@@ -291,7 +289,7 @@
     });
 
     fluid.defaults("fluid.tests.modelPriorityCases", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         modules: [ {
             name: "FLUID-5497 Model listener priority tests",
             tests: [{
@@ -324,10 +322,10 @@
     // and hence one extra assertion
     
     fluid.defaults("fluid.tests.onTestCaseStart.tree", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             targetTree: {
-                type: "fluid.eventedComponent",
+                type: "fluid.component",
                 createOnEvent: "{testCases}.events.onTestCaseStart"
             },
             testCases: {
@@ -337,7 +335,7 @@
     });
     
     fluid.defaults("fluid.tests.fluid5559Tree", {
-        gradeNames: ["fluid.tests.onTestCaseStart.tree", "autoInit"],
+        gradeNames: ["fluid.tests.onTestCaseStart.tree"],
         components: {
             testCases: {
                 options: {
@@ -383,7 +381,7 @@
     };
     
     fluid.defaults("fluid.tests.fluid5575Tree", {
-        gradeNames: ["fluid.tests.onTestCaseStart.tree", "autoInit"],
+        gradeNames: ["fluid.tests.onTestCaseStart.tree"],
         components: {
             targetTree: {
                 options: {
@@ -415,7 +413,7 @@
     };
     
     fluid.defaults("fluid.tests.fluid5575Tree.singleActive", {
-        gradeNames: ["fluid.tests.fluid5575Tree", "autoInit"],
+        gradeNames: ["fluid.tests.fluid5575Tree"],
         sequenceName: "fluid.tests.onTestCaseStart.singleActive"
     });
     
@@ -431,7 +429,7 @@
     };
 
     fluid.defaults("fluid.tests.fluid5575Tree.doubleActive", {
-        gradeNames: ["fluid.tests.fluid5575Tree", "autoInit"],
+        gradeNames: ["fluid.tests.fluid5575Tree"],
         sequenceName: "fluid.tests.onTestCaseStart.doubleActive"
     });
     
@@ -449,14 +447,14 @@
     };
     
     fluid.defaults("fluid.tests.fluid5575Tree.activePassive", {
-        gradeNames: ["fluid.tests.fluid5575Tree", "autoInit"],
+        gradeNames: ["fluid.tests.fluid5575Tree"],
         sequenceName: "fluid.tests.onTestCaseStart.activePassive"
     });
     
     /**** VIEW-AWARE TESTS FROM HERE ONWARDS ****/
 
     fluid.defaults("fluid.tests.asyncTest", {
-        gradeNames: ["fluid.rendererComponent", "autoInit"],
+        gradeNames: ["fluid.rendererComponent"],
         model: {
             textValue: "initialValue"
         },
@@ -479,20 +477,23 @@
     });
 
     fluid.defaults("fluid.tests.buttonChild", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         events: {
             buttonClicked: "{asyncTest}.events.buttonClicked"
+        },
+        listeners: {
+            onCreate: "fluid.tests.buttonChild.bindClick"
         }
     });
 
-    fluid.tests.buttonChild.postInit = function (that) {
+    fluid.tests.buttonChild.bindClick = function (that) {
         that.container.click(function () {
             setTimeout(that.events.buttonClicked.fire, 1);
         });
     };
 
     fluid.defaults("fluid.tests.asyncTestTree", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         markupFixture: ".flc-async-root",
         components: {
             asyncTest: {
@@ -507,11 +508,11 @@
     
     // FLUID-5375: Use of IoC testing framework together with new relay grades
     fluid.defaults("fluid.tests.asyncTestRelayTree", {
-        gradeNames: ["fluid.tests.asyncTestTree", "autoInit"],
+        gradeNames: ["fluid.tests.asyncTestTree"],
         components: {
             asyncTest: {
                 options: {
-                    gradeNames: "fluid.modelRelayComponent"
+                    gradeNames: "fluid.modelComponent"
                 }
             },
             asyncTester: {
@@ -525,7 +526,7 @@
     });
 
     fluid.defaults("fluid.tests.asyncTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         newTextValue:     "newTextValue",
         furtherTextValue: "furtherTextValue",
         modules: [ {

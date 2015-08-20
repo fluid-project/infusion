@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid */
 
 var example = example || {};
@@ -20,15 +19,15 @@ var example = example || {};
      * Auxiliary Schema
      */
     fluid.defaults("example.auxSchema", {
-        gradeNames: ["fluid.prefs.auxSchema", "autoInit"],
+        gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
             template: "html/prefsEditor.html",
-            message: "%prefix/prefsEditor.json",
+            message: "%messagePrefix/prefsEditor.json",
             groups: {
                 speakIncrease: {
                     "container": ".mpe-speakIncrease",
-                    "template": "%prefix/speakIncrease.html",
-                    "message": "%prefix/speakIncrease.json",
+                    "template": "%templatePrefix/speakIncrease.html",
+                    "message": "%messagePrefix/speakIncrease.json",
                     "type": "example.panels.speakIncrease",
                     "panels": {
                         "always": ["speak", "incSize"],
@@ -45,8 +44,8 @@ var example = example || {};
                 panel: {
                     type: "example.panels.speak",
                     container: ".mpe-speaking-onOff",
-                    template: "%prefix/speak-template.html",
-                    message: "%prefix/speakIncrease.json"
+                    template: "%templatePrefix/speak-template.html",
+                    message: "%messagePrefix/speakIncrease.json"
                 }
             },
             vol: {
@@ -57,8 +56,8 @@ var example = example || {};
                 panel: {
                     type: "example.panels.vol",
                     container: ".mpe-speaking-vol",
-                    template: "%prefix/slider-template.html",
-                    message: "%prefix/speakIncrease.json"
+                    template: "%templatePrefix/slider-template.html",
+                    message: "%messagePrefix/speakIncrease.json"
                 }
             },
             wpm: {
@@ -69,8 +68,8 @@ var example = example || {};
                 panel: {
                     type: "example.panels.wpm",
                     container: ".mpe-speaking-wpm",
-                    template: "%prefix/slider-template.html",
-                    message: "%prefix/speakIncrease.json"
+                    template: "%templatePrefix/slider-template.html",
+                    message: "%messagePrefix/speakIncrease.json"
                 }
             },
             incSize: {
@@ -81,8 +80,8 @@ var example = example || {};
                 panel: {
                     type: "example.panels.incSize",
                     container: ".mpe-increasing-onOff",
-                    template: "%prefix/incSize-template.html",
-                    message: "%prefix/speakIncrease.json"
+                    template: "%templatePrefix/incSize-template.html",
+                    message: "%messagePrefix/speakIncrease.json"
                 }
             },
             cursor: {
@@ -93,8 +92,8 @@ var example = example || {};
                 panel: {
                     type: "example.panels.cursor",
                     container: ".mpe-increasing-cursor",
-                    template: "%prefix/slider-template.html",
-                    message: "%prefix/speakIncrease.json"
+                    template: "%templatePrefix/slider-template.html",
+                    message: "%messagePrefix/speakIncrease.json"
                 }
             },
             magFactor: {
@@ -105,8 +104,8 @@ var example = example || {};
                 panel: {
                     type: "example.panels.magFactor",
                     container: ".mpe-increasing-magFactor",
-                    template: "%prefix/slider-template.html",
-                    message: "%prefix/speakIncrease.json"
+                    template: "%templatePrefix/slider-template.html",
+                    message: "%messagePrefix/speakIncrease.json"
                 }
             },
             magPos: {
@@ -117,8 +116,8 @@ var example = example || {};
                 panel: {
                     type: "example.panels.magPos",
                     container: ".mpe-increasing-magPos",
-                    template: "%prefix/radioButton-template.html",
-                    message: "%prefix/speakIncrease.json"
+                    template: "%templatePrefix/radioButton-template.html",
+                    message: "%messagePrefix/speakIncrease.json"
                 }
             }
         }

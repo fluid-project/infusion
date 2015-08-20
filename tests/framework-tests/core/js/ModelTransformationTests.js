@@ -10,7 +10,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -2085,13 +2084,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.testTransformable", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         food: "tofu"
     });
 
     fluid.makeComponents({
-        "farm.cat": "fluid.littleComponent",
-        "bowl.fish": "fluid.littleComponent"
+        "farm.cat": "fluid.component",
+        "bowl.fish": "fluid.component"
     });
 
     fluid.tests.transforms.checkTransformedOptions = function (that) {
@@ -2110,19 +2109,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.transforms.checkTransformedOptions(that);
     });
 
-    fluid.demands("fluid.tests.testTransformableIoC", ["fluid.tests.transforms.version.old"], {
-        transformOptions: {
-            transformer: "fluid.model.transform",
-            config: fluid.tests.transforms.transformRules
-        }
-    });
-
     fluid.defaults("fluid.tests.transforms.strategy", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
+        gradeNames: ["fluid.component"]
     });
 
     fluid.defaults("fluid.tests.testTransformableIoC", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         components: {
             strategy: {
                 type: "fluid.tests.transforms.strategy"
@@ -2131,14 +2123,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.transforms.tip", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        components: {
-            versionTag: {
-                type: "fluid.typeFount",
-                options: {
-                    targetTypeName: "fluid.tests.transforms.version.old"
-                }
+        gradeNames: ["fluid.component"],
+        distributeOptions: {
+            record: {
+                transformer: "fluid.model.transform",
+                config: fluid.tests.transforms.transformRules
             },
+            target: "{that transformable}.options.transformOptions"
+        },
+        components: {
             transformable: {
                 type: "fluid.tests.testTransformableIoC",
                 options: fluid.tests.transforms.oldOptions

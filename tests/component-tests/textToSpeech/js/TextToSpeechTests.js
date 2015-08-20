@@ -10,7 +10,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 */
 
-// Declare dependencies
 /* global fluid, jqUnit, speechSynthesis */
 
 (function () {
@@ -19,10 +18,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests");
 
     fluid.defaults("fluid.tests.textToSpeech", {
-        gradeNames: ["fluid.textToSpeech", "autoInit"],
-        utteranceOpts: {
-            // not all speech synthesizers will respect this setting
-            volume: 0
+        gradeNames: ["fluid.textToSpeech"],
+        model: {
+            utteranceOpts: {
+                // not all speech synthesizers will respect this setting
+                volume: 0
+            }
         },
         listeners: {
             "onCreate.cleanUp": "fluid.tests.textToSpeech.cleanUp"
@@ -34,7 +35,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.textToSpeech.startStop", {
-        gradeNames: ["fluid.tests.textToSpeech", "autoInit"],
+        gradeNames: ["fluid.tests.textToSpeech"],
         listeners: {
             "onStart.test": {
                 listener: function (that) {
@@ -53,6 +54,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     jqUnit.assertFalse("Nothing should be pending", that.model.pending);
                     jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
                     jqUnit.assertDeepEq("The queue should be empty", [], that.queue);
+                    that.cancel();
                     jqUnit.start();
                 },
                 args: ["{that}"]
@@ -61,7 +63,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.textToSpeech.pauseResume", {
-        gradeNames: ["fluid.tests.textToSpeech", "autoInit"],
+        gradeNames: ["fluid.tests.textToSpeech"],
         listeners: {
             "onStart.pause": {
                 listener: "{that}.pause"
@@ -86,41 +88,56 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 args: ["{that}"]
             },
-            "onStop.end": "jqUnit.start"
+            "onStop.end": {
+                listener: function (that) {
+                    that.cancel();
+                    jqUnit.start();
+                },
+                args: ["{that}"]
+            }
         }
     });
+    
+    fluid.tests.textToSpeech.bypassTest = function () {
+        jqUnit.assert("TEST SKIPPED - browser does not support SpeechSynthesis");
+        jqUnit.start();
+    };
 
-    // only run the tests in browsers that support the Web Speech API for speech synthesis
-    if (!fluid.textToSpeech.isSupported()) {
-        jqUnit.test("No Tests Run", function () {
-            jqUnit.assert("Does not support the SpeechSynthesis");
+    // only run the tests in browsers that support the Web Speech API for speech synthesis    
+    fluid.tests.textToSpeech.issueTest = function (name, testFunc) {
+        jqUnit.asyncTest(name, function () {
+            var runTests = fluid.textToSpeech.checkTTSSupport();
+            runTests.then(function () {
+                testFunc();
+            }, fluid.tests.textToSpeech.bypassTest);
         });
-    } else {
-        jqUnit.test("Initialization", function () {
-            var that = fluid.tests.textToSpeech();
+    };
 
-            jqUnit.assertTrue("The Text to Speech component should have initialized", that);
-            jqUnit.assertFalse("Nothing should be speaking", that.model.speaking);
-            jqUnit.assertFalse("Nothing should be pending", that.model.pending);
-            jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
+    fluid.tests.textToSpeech.issueTest("Initialization", function () {
+        var that = fluid.tests.textToSpeech();
+
+        jqUnit.assertTrue("The Text to Speech component should have initialized", that);
+        jqUnit.assertFalse("Nothing should be speaking", that.model.speaking);
+        jqUnit.assertFalse("Nothing should be pending", that.model.pending);
+        jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
+        jqUnit.start();
+    });
+
+    fluid.tests.textToSpeech.issueTest("Start and Stop Events", function () {
+        jqUnit.expect(10);
+        var that = fluid.tests.textToSpeech.startStop();
+        that.queueSpeech("Testing start and end events");
+    });
+
+    // Chrome doesn't properly support pause which causes this test to break.
+    // see: https://code.google.com/p/chromium/issues/detail?id=425553&q=SpeechSynthesis&colspec=ID%20Pri%20M%20Week%20ReleaseBlock%20Cr%20Status%20Owner%20Summary%20OS%20Modified
+    if (!window.chrome) {
+        fluid.tests.textToSpeech.issueTest("Pause and Resume Events", function () {
+            jqUnit.expect(8);
+            var that = fluid.tests.textToSpeech.pauseResume();
+            that.queueSpeech("Testing pause and resume events");
         });
-
-        jqUnit.asyncTest("Start and Stop Events", function () {
-            jqUnit.expect(10);
-            var that = fluid.tests.textToSpeech.startStop();
-            that.queueSpeech("Testing start and end events");
-        });
-
-        // Chrome doesn't properly support pause which causes this test to break.
-        // see: https://code.google.com/p/chromium/issues/detail?id=425553&q=SpeechSynthesis&colspec=ID%20Pri%20M%20Week%20ReleaseBlock%20Cr%20Status%20Owner%20Summary%20OS%20Modified
-        if (!window.chrome) {
-
-            jqUnit.asyncTest("Pause and Resume Events", function () {
-                jqUnit.expect(8);
-                var that = fluid.tests.textToSpeech.pauseResume();
-                that.queueSpeech("Testing pause and resume events");
-            });
-        }
     }
-
+    
+    
 })();

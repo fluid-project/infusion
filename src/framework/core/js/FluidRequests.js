@@ -51,7 +51,9 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.fetchResources = function(resourceSpecs, callback, options) {
-        var that = fluid.initLittleComponent("fluid.fetchResources", options);
+        var that = {
+            options: fluid.copy(options || {})
+        };
         that.resourceSpecs = resourceSpecs;
         that.callback = callback;
         that.operate = function() {

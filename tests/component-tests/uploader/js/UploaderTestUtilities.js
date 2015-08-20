@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid */
 
 (function () {
@@ -19,8 +18,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     // Enough of an uploader to test local and remote strategies
     fluid.defaults("fluid.tests.uploader.mockUploader", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
-        nickName: "uploader",
+        gradeNames: ["fluid.component", "fluid.tests.uploader"],
         queueSettings: fluid.uploader.defaultQueueSettings,
         events: {
             onFileStart: null, // for remote strategy

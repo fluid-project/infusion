@@ -1,5 +1,5 @@
 /*
-Copyright 2011 OCAD University
+Copyright 2011-2015 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -44,8 +44,18 @@ var fluid_2_0 = fluid_2_0 || {};
         return anchorInfo;
     };
 
-    fluid.tableOfContents.refreshView = function (that) {
+    fluid.tableOfContents.locateHeadings = function (that) {
         var headings = that.locate("headings");
+
+        fluid.each(that.options.ignoreForToC, function (sel) {
+            headings = headings.not(sel).not(sel + " :header");
+        });
+
+        return headings;
+    };
+
+    fluid.tableOfContents.refreshView = function (that) {
+        var headings = that.locateHeadings();
 
         // remove existing toc anchors from the the DOM, before adding any new ones.
         that.locate("tocAnchors").remove();
@@ -63,7 +73,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.tableOfContents", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         components: {
             levels: {
                 type: "fluid.tableOfContents.levels",
@@ -93,7 +103,11 @@ var fluid_2_0 = fluid_2_0 || {};
                 args: ["{arguments}.0", "{that}.generateGUID"]
             },
             insertAnchor: "fluid.tableOfContents.insertAnchor",
-            generateGUID: "fluid.allocateSimpleId",
+            generateGUID: "fluid.allocateGuid",
+            locateHeadings: {
+                funcName: "fluid.tableOfContents.locateHeadings",
+                args: ["{that}"]
+            },
             refreshView: {
                 funcName: "fluid.tableOfContents.refreshView",
                 args: ["{that}"]
@@ -112,9 +126,12 @@ var fluid_2_0 = fluid_2_0 || {};
             tocHeader: "Table of Contents"
         },
         selectors: {
-            headings: ":header:visible:not(.flc-toc-tocContainer :header)",
+            headings: ":header:visible",
             tocContainer: ".flc-toc-tocContainer",
             tocAnchors: ".flc-toc-anchors"
+        },
+        ignoreForToC: {
+            tocContainer: "{that}.options.selectors.tocContainer"
         },
         anchorClass: "flc-toc-anchors",
         events: {
@@ -179,28 +196,24 @@ var fluid_2_0 = fluid_2_0 || {};
         return modelLevel;
     };
 
-    fluid.tableOfContents.modelBuilder.finalInit = function (that) {
-
-        that.convertToHeadingObjects = function (headings, anchorInfo) {
-            headings = $(headings);
-            return fluid.transform(headings, function (heading, index) {
-                return {
-                    level: that.headingCalculator.getHeadingLevel(heading),
-                    text: $(heading).text(),
-                    url: anchorInfo[index].url
-                };
-            });
-        };
-
-        that.assembleModel = function (headings, anchorInfo) {
-            var headingInfo = that.convertToHeadingObjects(headings, anchorInfo);
-            return that.toModel(headingInfo);
-        };
+    fluid.tableOfContents.modelBuilder.convertToHeadingObjects = function (that, headings, anchorInfo) {
+        headings = $(headings);
+        return fluid.transform(headings, function (heading, index) {
+            return {
+                level: that.headingCalculator.getHeadingLevel(heading),
+                text: $(heading).text(),
+                url: anchorInfo[index].url
+            };
+        });
+    };
+            
+    fluid.tableOfContents.modelBuilder.assembleModel = function (that, headings, anchorInfo) {
+        var headingInfo = that.convertToHeadingObjects(headings, anchorInfo);
+        return that.toModel(headingInfo);
     };
 
     fluid.defaults("fluid.tableOfContents.modelBuilder", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        finalInitFunction: "fluid.tableOfContents.modelBuilder.finalInit",
+        gradeNames: ["fluid.component"],
         components: {
             headingCalculator: {
                 type: "fluid.tableOfContents.modelBuilder.headingCalculator"
@@ -211,7 +224,9 @@ var fluid_2_0 = fluid_2_0 || {};
                 funcName: "fluid.tableOfContents.modelBuilder.toModel",
                 args: ["{arguments}.0", "{modelBuilder}.modelLevelFn"]
             },
-            modelLevelFn: "fluid.tableOfContents.modelBuilder.gradualModelLevelFn"
+            modelLevelFn: "fluid.tableOfContents.modelBuilder.gradualModelLevelFn",
+            convertToHeadingObjects: "fluid.tableOfContents.modelBuilder.convertToHeadingObjects({that}, {arguments}.0, {arguments}.1)", // headings, anchorInfo
+            assembleModel: "fluid.tableOfContents.modelBuilder.assembleModel({that}, {arguments}.0, {arguments}.1)" // headings, anchorInfo
         }
     });
 
@@ -220,15 +235,15 @@ var fluid_2_0 = fluid_2_0 || {};
     **************************************/
     fluid.registerNamespace("fluid.tableOfContents.modelBuilder.headingCalculator");
 
-    fluid.tableOfContents.modelBuilder.headingCalculator.finalInit = function (that) {
-        that.getHeadingLevel = function (heading) {
-            return $.inArray(heading.tagName, that.options.levels) + 1;
-        };
+    fluid.tableOfContents.modelBuilder.headingCalculator.getHeadingLevel = function (that, heading) {
+        return $.inArray(heading.tagName, that.options.levels) + 1;
     };
 
     fluid.defaults("fluid.tableOfContents.modelBuilder.headingCalculator", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        finalInitFunction: "fluid.tableOfContents.modelBuilder.headingCalculator.finalInit",
+        gradeNames: ["fluid.component"],
+        invokers: {
+            getHeadingLevel: "fluid.tableOfContents.modelBuilder.headingCalculator.getHeadingLevel({that}, {arguments}.0)" // heading
+        },
         levels: ["H1", "H2", "H3", "H4", "H5", "H6"]
     });
 
@@ -236,13 +251,6 @@ var fluid_2_0 = fluid_2_0 || {};
     * ToC Levels *
     **************/
     fluid.registerNamespace("fluid.tableOfContents.levels");
-
-    fluid.tableOfContents.levels.finalInit = function (that) {
-        fluid.fetchResources(that.options.resources, function () {
-            that.container.append(that.options.resources.template.resourceText);
-            that.refreshView();
-        });
-    };
 
     /**
      * Create an object model based on the type and ID.  The object should contain an
@@ -331,10 +339,17 @@ var fluid_2_0 = fluid_2_0 || {};
         });
         return tree;
     };
+    
+    fluid.tableOfContents.levels.fetchResources = function (that) {
+        fluid.fetchResources(that.options.resources, function () {
+            that.container.append(that.options.resources.template.resourceText);
+            that.refreshView();
+        });
+    };
+    
 
     fluid.defaults("fluid.tableOfContents.levels", {
-        gradeNames: ["fluid.rendererComponent", "autoInit"],
-        finalInitFunction: "fluid.tableOfContents.levels.finalInit",
+        gradeNames: ["fluid.rendererComponent"],
         produceTree: "fluid.tableOfContents.levels.produceTree",
         strings: {
             tocHeader: "Table of Contents"
@@ -363,6 +378,9 @@ var fluid_2_0 = fluid_2_0 || {};
         repeatingSelectors: ["level1", "level2", "level3", "level4", "level5", "level6", "items1", "items2", "items3", "items4", "items5", "items6"],
         model: {
             headings: [] // [text: heading, url: linkURL, headings: [ an array of subheadings in the same format]
+        },
+        listeners: {
+            "onCreate.fetchResources": "fluid.tableOfContents.levels.fetchResources"
         },
         resources: {
             template: {
