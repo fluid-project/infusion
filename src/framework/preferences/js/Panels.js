@@ -57,7 +57,7 @@ var fluid_2_0 = fluid_2_0 || {};
      ***********************************************/
 
     fluid.defaults("fluid.prefs.panel", {
-        gradeNames: ["fluid.rendererComponent", "fluid.prefs.msgLookup"],
+        gradeNames: ["fluid.prefs.msgLookup", "fluid.rendererComponent"],
         events: {
             onDomBind: null
         },
@@ -187,7 +187,7 @@ var fluid_2_0 = fluid_2_0 || {};
         target = fluid.makeArray(target);
         source = fluid.makeArray(source);
         fluid.each(source, function (selector) {
-            if ($.inArray(selector, target) < 0) {
+            if (target.indexOf(selector) < 0) {
                 target.push(selector);
             }
         });
@@ -491,7 +491,7 @@ var fluid_2_0 = fluid_2_0 || {};
             if (fluid.prefs.compositePanel.isPanel(compOpts.type, compOpts.options)) {
                 var opts = fluid.prefs.compositePanel.prefetchComponentOptions(compOpts.type, compOpts.options);
                 fluid.each(opts.selectors, function (selector, selName) {
-                    if (!opts.selectorsToIgnore || $.inArray(selName, opts.selectorsToIgnore) < 0) {
+                    if (!opts.selectorsToIgnore || opts.selectorsToIgnore.indexOf(selName) < 0) {
                         fluid.set(selectors,  fluid.prefs.compositePanel.rebaseSelectorName(compName, selName), selectors[compName] + " " + selector);
                     }
                 });

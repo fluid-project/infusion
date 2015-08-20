@@ -119,7 +119,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.prefs.messagePrefix = "../../../../src/framework/preferences/messages";
 
     fluid.defaults("fluid.tests.prefs.commonLoader", {
-        gradeNames: ["fluid.prefs.prefsEditorLoader", "fluid.prefs.initialModel.starter"],
+        gradeNames: ["fluid.prefs.initialModel.starter", "fluid.prefs.prefsEditorLoader"],
         terms: {
             templatePrefix: fluid.tests.prefs.templatePrefix,
             messagePrefix: fluid.tests.prefs.messagePrefix

@@ -71,7 +71,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.enactor.selfVoicing", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor.speak"],
+        gradeNames: ["fluid.prefs.enactor.speak", "fluid.viewComponent"],
         modelListeners: {
             "enabled": {
                 listener: "{that}.handleSelfVoicing",

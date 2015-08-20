@@ -257,6 +257,11 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {Object} that the component instance to attach the new DOM Binder to
      */
     fluid.initDomBinder = function (that, selectors) {
+        if (!that.container) {
+            fluid.fail("fluid.initDomBinder called for component with typeName " + that.typeName +
+                " without an initialised container - this has probably resulted from placing \"fluid.viewComponent\" in incorrect position in grade merging order. " +
+                " Make sure to place it to the right of any non-view grades in the gradeNames list to ensure that it overrides properly: resolved gradeNames is ", that.options.gradeNames, " for component ", that);
+        }
         that.dom = fluid.createDomBinder(that.container, selectors || that.options.selectors || {});
         that.locate = that.dom.locate;
         return that.dom;

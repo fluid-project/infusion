@@ -236,7 +236,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.registerNamespace("fluid.tableOfContents.modelBuilder.headingCalculator");
 
     fluid.tableOfContents.modelBuilder.headingCalculator.getHeadingLevel = function (that, heading) {
-        return $.inArray(heading.tagName, that.options.levels) + 1;
+        return that.options.levels.indexOf(heading.tagName) + 1;
     };
 
     fluid.defaults("fluid.tableOfContents.modelBuilder.headingCalculator", {
