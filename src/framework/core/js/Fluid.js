@@ -1309,7 +1309,7 @@ var fluid = fluid || fluid_2_0;
             that.listeners = {};
             that.byId = {};
             that.sortedListeners = [];
-            that.addListener = function (listener, namespace, priority, predicate, softNamespace, listenerId) {
+            that.addListener = function (listener, namespace, priority, softNamespace, listenerId) {
                 if (that.destroyed) {
                     fluid.fail("Cannot add listener to destroyed event firer " + that.name);
                 }
@@ -1321,7 +1321,7 @@ var fluid = fluid || fluid_2_0;
                 }
                 var id = listenerId || fluid.event.identifyListener(listener);
                 namespace = namespace || id;
-                var record = {listener: listener, predicate: predicate,
+                var record = {listener: listener,
                     namespace: namespace,
                     softNamespace: softNamespace,
                     listenerId: listenerId,
@@ -1392,12 +1392,8 @@ var fluid = fluid || fluid_2_0;
                     var lisrec = listeners[i];
                     lisrec.listener = fluid.event.resolveListener(lisrec.listener);
                     var listener = lisrec.listener;
-    
-                    if (lisrec.predicate && !lisrec.predicate(listener, arguments)) {
-                        continue;
-                    }
-                    var value;
                     var ret = listener.apply(null, arguments);
+                    var value;
                     if (options.preventable && ret === false || that.destroyed) {
                         value = false;
                     }
@@ -1420,7 +1416,7 @@ var fluid = fluid || fluid_2_0;
         } else if (typeof (value) === "function" || typeof (value) === "string") {
             wrapper(firer).addListener(value, namespace);
         } else if (value && typeof (value) === "object") {
-            wrapper(firer).addListener(value.listener, namespace || value.namespace, value.priority, value.predicate, value.softNamespace, value.listenerId);
+            wrapper(firer).addListener(value.listener, namespace || value.namespace, value.priority, value.softNamespace, value.listenerId);
         }
     };
 

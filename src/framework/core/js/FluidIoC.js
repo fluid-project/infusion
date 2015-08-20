@@ -1549,7 +1549,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.event.makeTrackedListenerAdder = function (source) {
         var shadow = fluid.shadowForComponent(source);
         return function (event) {
-            return {addListener: function (listener, namespace, predicate, priority, softNamespace, listenerId) {
+            return {addListener: function (listener, namespace, priority, softNamespace, listenerId) {
                     fluid.recordListener(event, listener, shadow, listenerId);
                     event.addListener.apply(null, arguments);
                 }
@@ -1713,7 +1713,7 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         }
         else {
-            firer = {typeName: "fluid.event.firer"}; // jslint:ok - already defined
+            firer = {typeName: "fluid.event.firer"};
             firer.fire = function () {
                 var outerArgs = fluid.makeArray(arguments);
                 fluid.pushActivity("fireSynthetic", "firing synthetic event %eventName ", {eventName: eventName});
@@ -1721,9 +1721,9 @@ var fluid_2_0 = fluid_2_0 || {};
                 fluid.popActivity();
                 return togo;
             };
-            firer.addListener = function (listener, namespace, priority, predicate, softNamespace, listenerId) {
+            firer.addListener = function (listener, namespace, priority, softNamespace, listenerId) {
                 var dispatcher = fluid.event.dispatchListener(that, listener, eventName, eventSpec);
-                adder(origin).addListener(dispatcher, namespace, priority, predicate, softNamespace, listenerId);
+                adder(origin).addListener(dispatcher, namespace, priority, softNamespace, listenerId);
             };
             firer.removeListener = function (listener) {
                 origin.removeListener(listener);
