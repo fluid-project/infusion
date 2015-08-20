@@ -472,7 +472,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 }
                 if (transducer && !options.targetApplier) {
                     // TODO: This is just for safety but is still unusual and now abused. The transducer doesn't need the "newValue" since all the transform information
-                    // has been baked into the transform document itself. However, we now rely on this special signalling value to make sure we regenerate transforms in 
+                    // has been baked into the transform document itself. However, we now rely on this special signalling value to make sure we regenerate transforms in
                     // the "forwardAdapter"
                     transducer(existing.transaction, options.sourceApplier ? undefined : newValue, sourceSegs, targetSegs);
                 } else if (newValue !== undefined) {
@@ -1088,7 +1088,7 @@ var fluid_2_0 = fluid_2_0 || {};
         }
         return options.deltas ? options.deltaMap : null;
     };
-    
+
     /** Compare two models for equality using a deep algorithm. It is assumed that both models are JSON-equivalent and do
      * not contain circular links.
      * @param modela The first model to be compared
@@ -1177,7 +1177,7 @@ var fluid_2_0 = fluid_2_0 || {};
         // These are unbottled in fluid.concludeTransaction
         transRec.externalChanges[keyString] = {listener: spec.listener, priority: spec.priority, args: args};
     };
-    
+
     fluid.isExcludedChangeSource = function (transaction, spec) {
         if (!spec.excludeSource) { // mergeModelListeners initModelEvent fabricates a fake spec that bypasses processing
             return false;

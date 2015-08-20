@@ -1,12 +1,33 @@
-# Release Notes for Fluid Infusion 2.0 #
+# Release Notes for Fluid Infusion 1.9.0 #
 
 [Main Project Site](http://fluidproject.org)
 
 [Documentation](https://github.com/fluid-project/infusion-docs)
 
-## What's New in 2.0? ##
+## What's New in 1.9.0 ##
 
-*
+**Note** 1.9.0 was never (so far) an official release of Infusion, but was a branching point to record the state of the framework should
+we ever in future require to make a release or backport fixes to a version of Infusion API compatible with the latest 1.x line, most particularly 1.5.x.
+It is stored in github at [Infusion 1.9.x](https://github.com/fluid-project/infusion/tree/1.9.x)
+
+This list of JIRAs is nonexhaustive since work has accumulated in trunk for several years since the 1.5 Infusion release. These are some of the more significant recent fixes,
+currently not including work on the preferences framework:
+
+### New Features
+
+* [FLUID-5513: Implement "micropromises" to ease manipulation of asynchronous code sequences](https://issues.fluidproject.org/browse/FLUID-5513)
+
+### Bug Fixes and Improvements
+
+* [FLUID-5662: fluid.fetchResources stalls if defaultLocale and locale are identical, and forceCache option is supplied](https://issues.fluidproject.org/browse/FLUID-5662)
+* [FLUID-5559: onTestCaseStart event can fire multiple times in IoC Testing fixture](https://issues.fluidproject.org/browse/FLUID-5559)
+* [FLUID-5575: Timing of onTestCaseStart event is incorrect](https://issues.fluidproject.org/browse/FLUID-5575)
+* [FLUID-5268: Newly implemented "afterDestroy" event does not function](https://issues.fluidproject.org/browse/FLUID-5268)
+* [FLUID-5475: Improve diagnostics when framework is used within node.js](https://issues.fluidproject.org/browse/FLUID-5475)
+* [FLUID-5512: Allow valueMapper to handle the defaultOutputValue when the transformation is based upon compound input values](https://issues.fluidproject.org/browse/FLUID-5512)
+* [FLUID-5673: Tooltips are not closed by closeAll and accumulate endlessly if some descendents are not part of "items" option](https://issues.fluidproject.org/browse/FLUID-5673)
+* [FLUID-5659: Failure to notify multiple relay rules](https://issues.fluidproject.org/browse/FLUID-5659)
+* [FLUID-5599: Expand the message bundle system to be able to locate the bundle for a requested language](https://issues.fluidproject.org/browse/FLUID-5599)
 
 ## Downloading Infusion ##
 
@@ -20,8 +41,9 @@ Infusion ships with a demos for seeing all of the components in action. You can
 find them in the _**demos**_ folder in the release bundle or on our [build site](http://build.fluidproject.org/).
 
 When run from a local file system, several of these demos require you to enable local file AJAX
-if you're using Firefox 3 and higher. Here's more information:
+in Firefox and Chrome:
 
+* https://wiki.fluidproject.org/display/fluid/Browser+settings+to+support+local+Ajax+calls
 * http://kb.mozillazine.org/Security.fileuri.strict_origin_policy
 * http://ejohn.org/blog/tightened-local-file-security/
 
@@ -76,9 +98,12 @@ browser's Back button.
 
 ## Supported Browsers ##
 
-Infusion 2.0 was tested with the following browsers:
+Infusion 1.9.0 was tested with the following browsers:
 
-*
+* Chrome 43-44
+* Firefox 39-40
+* Internet Explorer 10-11
+* Safari 8.x
 
 For more information see the [Fluid Infusion browser support](http://wiki.fluidproject.org/display/docs/Browser+Support) wiki page.
 
@@ -123,8 +148,7 @@ The Fluid Project uses a [JIRA](http://issues.fluidproject.org) website to track
 
 ### Framework ###
 
-* [FLUID-3661: in the event system, fire should return true if event is not prevented](http://issues.fluidproject.org/browse/FLUID-3661)
-* [FLUID-4302: Framework usability issues: situation with ambiguously named component and DOM binder was hard to diagnose](http://issues.fluidproject.org/browse/FLUID-4302)
+* [FLUID-5519: Timing of "initial transaction" in new model relay system is problematic](https://issues.fluidproject.org/browse/FLUID-5519)
 
 ### Inline Edit ###
 
