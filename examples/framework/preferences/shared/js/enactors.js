@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid */
 
 var example = example || {};
@@ -25,7 +24,7 @@ var example = example || {};
      */
 
     fluid.defaults("example.enactors.speak", {
-        gradeNames: ["fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.prefs.enactor"],
         preferenceMap: {
             "example.speakText": {
                 "model.speak": "default"
@@ -40,7 +39,7 @@ var example = example || {};
     });
 
     fluid.defaults("example.enactors.incSize", {
-        gradeNames: ["fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.prefs.enactor"],
         preferenceMap: {
             "example.increaseSize": {
                 "model.incSize": "default"
@@ -55,7 +54,7 @@ var example = example || {};
     });
 
     fluid.defaults("example.enactors.vol", {
-        gradeNames: ["fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.prefs.enactor"],
         preferenceMap: {
             "example.volume": {
                 "model.volume": "default"
@@ -70,7 +69,7 @@ var example = example || {};
     });
 
     fluid.defaults("example.enactors.wpm", {
-        gradeNames: ["fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.prefs.enactor"],
         preferenceMap: {
             "example.wordsPerMinute": {
                 "model.wordsPerMin": "default"
@@ -85,7 +84,7 @@ var example = example || {};
     });
 
     fluid.defaults("example.enactors.cursor", {
-        gradeNames: ["fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.prefs.enactor"],
         preferenceMap: {
             "example.cursorSize": {
                 "model.cursorMult": "default"
@@ -100,7 +99,7 @@ var example = example || {};
     });
 
     fluid.defaults("example.enactors.magFactor", {
-        gradeNames: ["fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.prefs.enactor"],
         preferenceMap: {
             "example.magnification": {
                 "model.mag": "default"
@@ -115,7 +114,7 @@ var example = example || {};
     });
 
     fluid.defaults("example.enactors.magPos", {
-        gradeNames: ["fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.prefs.enactor"],
         preferenceMap: {
             "example.magnifierPosition": {
                 "model.magPos": "default"

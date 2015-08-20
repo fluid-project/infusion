@@ -19,7 +19,8 @@
         <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
-            <script type="text/javascript" src="../../../../src/components/tooltip/js/Tooltip.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
+        <script type="text/javascript" src="../../../../src/components/tooltip/js/Tooltip.js"></script>
 
         <!--  These are the jqUnit test framework js files -->
         <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
@@ -42,8 +43,13 @@
         <a class="testTooltip">tooltip anchor</a>
       </div>
       <div id="ioc-fixture">
+         <div class="FLUID-5673-root">
+             <a class="testDelegateTooltip" id="anchor-3">
+                 <input class="focusTarget" />
+             </a>
+         </div>
          <div class="delegating-root">
-             <a class="testDelegateTooltip" id="anchor-1" href="#">tooltip anchor 1</a>
+             <a class="testDelegateTooltip focusTarget" id="anchor-1" href="#">tooltip anchor 1</a>
              <a class="testDelegateTooltip" id="anchor-2" href="#">tooltip anchor 2</a>
          </div>
       </div>

@@ -19,7 +19,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *********************/
 
     fluid.defaults("fluid.slidingPanel", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         selectors: {
             panel: ".flc-slidingPanel-panel",
             toggleButton: ".flc-slidingPanel-toggleButton",

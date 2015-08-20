@@ -63,9 +63,11 @@ function initIframe() {
 
 		iframeWin.QUnit.testStart(function( data ) {
 		    // AMB: Hoisted this up here so it is possible to run tests from link URL in the case they fail
-		    var current = QUnit.id( QUnit.config.current.id );
-        // Update Rerun link to point to the standalone test suite page
-        current.getElementsByTagName( "a" )[ 0 ].href = iframe.src;  
+        if (QUnit.config.current) {
+            var current = QUnit.id( QUnit.config.current.id );
+            // Update Rerun link to point to the standalone test suite page
+            current.getElementsByTagName( "a" )[ 0 ].href = iframe.src;
+        }  
 		  
 			// Capture test name for messages
 			testName = data.name;
@@ -80,8 +82,12 @@ function initIframe() {
 			}
 			// Pass all test details through to the main page
 			var message = ( moduleName ? moduleName + ": " : "" ) + testName + ": " + ( data.message || ( data.result ? "okay" : "failed" ) );
-			expect( ++count );
-			QUnit.push( data.result, data.actual, data.expected, message );
+			if (QUnit.config.current) { // AMB last-ditch to prevent exceptions due to mistiming between composite and base QUnit
+			    expect( ++count );
+			    QUnit.push( data.result, data.actual, data.expected, message );
+			} else {
+			    console.log("Error coordinating QUnit-composite - assertion issued outside test context");
+			}
 		});
 
 		// Continue the outer test when the iframe's test is done

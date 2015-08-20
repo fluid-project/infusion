@@ -23,7 +23,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.initialModel", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         members: {
             // TODO: This information is supposed to be generated from the JSON
             // schema describing various preferences. For now it's kept in top
@@ -39,14 +39,39 @@ var fluid_2_0 = fluid_2_0 || {};
      ***********************************************/
 
     fluid.defaults("fluid.uiEnhancer", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         invokers: {
             updateModel: {
                 func: "{that}.applier.change",
                 args: ["", "{arguments}.0"]
             }
-        }
+        },
+        userGrades: "@expand:fluid.prefs.filterEnhancerGrades({that}.options.gradeNames)"
     });
+
+    // Make this a standalone grade since options merging can't see 2 levels deep into merging
+    // trees and will currently trash "gradeNames" for 2nd level nested components!
+    fluid.defaults("fluid.uiEnhancer.root", {
+        gradeNames: ["fluid.uiEnhancer", "fluid.resolveRootSingle"],
+        singleRootType: "fluid.uiEnhancer"
+    });
+    
+    fluid.uiEnhancer.ignorableGrades = ["fluid.uiEnhancer", "fluid.uiEnhancer.root", "fluid.resolveRoot", "fluid.resolveRootSingle"];
+    
+    // These function is necessary so that we can "clone" a UIEnhancer (e.g. one in an iframe) from another.
+    // This reflects a long-standing mistake in UIEnhancer design - we should separate the logic in an enhancer
+    // from a particular binding onto a container. 
+    fluid.prefs.filterEnhancerGrades = function (gradeNames) {
+        return fluid.remove_if(fluid.makeArray(gradeNames), function (gradeName) {
+            return fluid.frameworkGrades.indexOf(gradeName) !== -1 || fluid.uiEnhancer.ignorableGrades.indexOf(gradeName) !== -1;
+        });
+    };
+    
+    // This just the options that we are clear safely represent user options - naturally this all has
+    // to go when we refactor UIEnhancer
+    fluid.prefs.filterEnhancerOptions = function (options) {
+        return fluid.filterKeys(options, ["classnameMap", "fontSizeMap", "tocTemplate", "components"]);
+    };
 
     /********************************************************************************
      * PageEnhancer                                                                 *
@@ -56,36 +81,39 @@ var fluid_2_0 = fluid_2_0 || {};
      * "originalEnhancerOptions" is a grade component to keep track of the original *
      * uiEnhancer user options                                                      *
      ********************************************************************************/
+    
+    // TODO: Both the pageEnhancer and the uiEnhancer need to be available separately - some
+    // references to "{uiEnhancer}" are present in prefsEditorConnections, whilst other
+    // sites refer to "{pageEnhancer}". The fact that uiEnhancer requires "body" prevents it
+    // being top-level until we have the options flattening revolution. Also one day we want
+    // to make good of advertising an unmerged instance of the "originalEnhancerOptions"
     fluid.defaults("fluid.pageEnhancer", {
-        gradeNames: ["fluid.eventedComponent", "fluid.originalEnhancerOptions", "fluid.prefs.initialModel", "fluid.prefs.settingsGetter", "autoInit"],
-        components: {
-            uiEnhancer: {
-                type: "fluid.uiEnhancer",
-                container: "body"
-            }
-        },
+        gradeNames: ["fluid.component", "fluid.originalEnhancerOptions",
+            "fluid.prefs.initialModel", "fluid.prefs.settingsGetter",
+            "fluid.resolveRootSingle"],
         distributeOptions: {
             source: "{that}.options.uiEnhancer",
             target: "{that > uiEnhancer}.options"
         },
-        invokers: {
-            init: {
-                funcName: "fluid.pageEnhancer.init",
-                args: "{that}"
+        singleRootType: "fluid.pageEnhancer",
+        components: {
+            uiEnhancer: {
+                type: "fluid.uiEnhancer.root",
+                container: "body"
             }
         },
+        originalUserOptions: "@expand:fluid.prefs.filterEnhancerOptions({uiEnhancer}.options)",
         listeners: {
-            onCreate: [{
-                listener: "{that}.init"
-            }]
+            "onCreate.initModel": "fluid.pageEnhancer.init"
         }
     });
+    
+    // TODO: It is likely that "originalUserOptions" is now unnecessary
+    // Note that the original implementation in fact never succeeded in avoiding 
+    // to distribute defaults in any case
 
     fluid.pageEnhancer.init = function (that) {
-        that.options.originalUserOptions = $.extend(true, that.uiEnhancer.options, fluid.copy(that.options.uiEnhancer));
-        fluid.staticEnvironment.originalEnhancerOptions = that;
         that.uiEnhancer.updateModel(that.getSettings());
-        fluid.staticEnvironment.uiEnhancer = that.uiEnhancer;
     };
 
 })(jQuery, fluid_2_0);

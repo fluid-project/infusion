@@ -18,7 +18,7 @@ var fluid_2_0 = fluid_2_0 || {};
     * speakPanel
     **********************************************************************************/
     fluid.defaults("fluid.prefs.panel.speak", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.speak": {
                 "model.speak": "default"

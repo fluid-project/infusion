@@ -10,7 +10,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
  */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -34,8 +33,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         jqUnit.start();
                     }
                 },
-                templatePrefix: "../../../../src/framework/preferences/html/",
-                messagePrefix: "../../../../src/framework/preferences/messages/"
+                terms: {
+                    templatePrefix: "../../../../src/framework/preferences/html",
+                    messagePrefix: "../../../../src/framework/preferences/messages"
+                }
             });
         });
 

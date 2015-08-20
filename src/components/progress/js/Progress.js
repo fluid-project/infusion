@@ -154,7 +154,7 @@ var fluid_2_0 = fluid_2_0 || {};
     */
 
     fluid.defaults("fluid.progress", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         members: {
             displayElement: "{that}.dom.displayElement",
             progressBar: "{that}.dom.progressBar",

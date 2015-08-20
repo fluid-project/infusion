@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -202,13 +201,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         /********************
          * errorPanel Tests *
          ********************/
-
-        fluid.staticEnvironment.uploader = fluid.typeTag("fluid.uploader.tests");
-
-        fluid.demands("fluid.uploader.errorPanel.section", ["fluid.uploader.errorPanel", "fluid.uploader.tests"], {
-            // Empty demands block for tests in isolation from the Uploader.
-            options: {}
-        });
 
         var addFileAndRefresh = function (errorPanel, section, file) {
             section.addFile(file, section.model.errorCode);

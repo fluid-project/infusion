@@ -17,7 +17,7 @@ var fluid_2_0 = fluid_2_0 || {};
 (function ($, fluid) {
     "use strict";
 
-    fluid.reorderer = fluid.registerNamespace("fluid.reorderer");
+    fluid.registerNamespace("fluid.reorderer");
 
     fluid.reorderer.defaultAvatarCreator = function (item, cssClass, dropWarning) {
         fluid.dom.cleanseScripts(fluid.unwrap(item));
@@ -141,6 +141,15 @@ var fluid_2_0 = fluid_2_0 || {};
             left : fluid.reorderer.keys.j
         }
     ];
+    
+    fluid.reorderer.keysetsPolicy = function (target, source) {
+        var value = source ? source : target;
+        return fluid.makeArray(value);
+    };
+    
+    fluid.reorderer.copyDropWarning = function (dropWarning) {
+        return dropWarning ? dropWarning.clone() : dropWarning;
+    };
 
     /**
      * @param container - A jQueryable designator for the root node of the reorderer (a selector, a DOM node, or a jQuery instance)
@@ -164,7 +173,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.reorderer", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         styles: {
             defaultStyle: "fl-reorderer-movable-default",
             selected: "fl-reorderer-movable-selected",
@@ -190,8 +199,10 @@ var fluid_2_0 = fluid_2_0 || {};
         layoutHandler: "fluid.listLayoutHandler",
 
         members: {
+            dropManager: "@expand:fluid.dropManager()", // TODO: this is an old-style "that" which can no longer be supported as a component
             activeItem: null,
-            kbDropWarning: "{that}.dom.dropWarning"
+            kbDropWarning: "{that}.dom.dropWarning",
+            mouseDropWarning: "@expand:fluid.reorderer.copyDropWarning({that}.kbDropWarning)"
         },
         events: {
             onShowKeyboardDropWarning: null,
@@ -204,15 +215,19 @@ var fluid_2_0 = fluid_2_0 || {};
         },
         listeners: {
             onCreate: [ {
+                namespace: "bindKeyHandlers",
                 funcName: "fluid.reorderer.bindHandlersToContainer",
                 args: ["{that}.container", "{that}.handleKeyDown", "{that}.handleKeyUp"]
             }, {
+                namespace: "addContainerRoles",
                 funcName: "fluid.reorderer.addRolesToContainer",
                 args: "{that}"
             }, {
+                namespace: "makeTabbable",
                 funcName: "fluid.tabbable",
                 args: "{that}.container"
             }, {
+                namespace: "processAfterMoveCallback",
                 funcName: "fluid.reorderer.processAfterMoveCallbackUrl",
                 args: "{that}"
             },
@@ -242,8 +257,7 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             refresh: {
                 funcName: "fluid.reorderer.refresh",
-                args: ["{that}.dom", "{that}.events", "{that}.selectableContext", "{that}.activeItem"],
-                dynamic: true
+                args: ["{that}.dom", "{that}.events", "{that}.selectableContext", "{that}.activeItem"]
             },
             selectItem: {
                 funcName: "fluid.reorderer.selectItem",
@@ -263,8 +277,7 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             isActiveItemMovable: { // unsupported, NON-API function
                 funcName: "fluid.reorderer.isActiveItemMovable",
-                args: ["{that}.activeItem", "{that}.dom"],
-                dynamic: true
+                args: ["{that}.activeItem", "{that}.dom"]
             },
             handleKeyDown: { // unsupported, NON-API function
                 funcName: "fluid.reorderer.handleKeyDown",
@@ -285,7 +298,7 @@ var fluid_2_0 = fluid_2_0 || {};
         },
 
         mergePolicy: {
-            keysets: "replace",
+            keysets: fluid.reorderer.keysetsPolicy,
             "selectors.labelSource": "selectors.grabHandle",
             "selectors.selectables": "selectors.movables",
             "selectors.dropTargets": "selectors.movables"
@@ -294,9 +307,6 @@ var fluid_2_0 = fluid_2_0 || {};
             layoutHandler: {
                 type: "{that}.options.layoutHandler",
                 container: "{reorderer}.container"
-            },
-            dropManager: {
-                type: "fluid.dropManager"
             },
             labeller: {
                 type: "fluid.reorderer.labeller",
@@ -468,13 +478,6 @@ var fluid_2_0 = fluid_2_0 || {};
                 $.post(options.afterMoveCallbackUrl, JSON.stringify(model));
             }, "postModel");
         }
-    };
-
-    fluid.reorderer.postInit = function (that) {
-        if (that.kbDropWarning) {
-            that.mouseDropWarning = that.kbDropWarning.clone();
-        }
-        that.options.keysets = fluid.makeArray(that.options.keysets); // TODO: mergePolicy or other strategy?
     };
 
     fluid.reorderer.setDropEffects = function (dom, value) {
@@ -691,20 +694,15 @@ var fluid_2_0 = fluid_2_0 || {};
         REGIONS: { container: "main", item: "article" }
     };
 
-    // Simplified API for reordering lists and grids.
-    var simpleInit = function (container, layoutHandler, options) {
-        options = options || {};
-        options.layoutHandler = layoutHandler;
-        return fluid.reorderer(container, options);
-    };
+    fluid.defaults("fluid.reorderList", {
+        gradeNames: ["fluid.reorderer"],
+        layoutHandler: "fluid.listLayoutHandler"
+    });
 
-    fluid.reorderList = function (container, options) {
-        return simpleInit(container, "fluid.listLayoutHandler", options);
-    };
-
-    fluid.reorderGrid = function (container, options) {
-        return simpleInit(container, "fluid.gridLayoutHandler", options);
-    };
+    fluid.defaults("fluid.reorderGrid", {
+        gradeNames: ["fluid.reorderer"],
+        layoutHandler: "fluid.gridLayoutHandler"
+    });
 
     fluid.reorderer.SHUFFLE_GEOMETRIC_STRATEGY = "shuffleProjectFrom";
     fluid.reorderer.GEOMETRIC_STRATEGY         = "projectFrom";
@@ -729,66 +727,57 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // unsupported, NON-API function
     fluid.reorderer.makeGeometricInfoGetter = function (orientation, sentinelize, dom) {
-        return function () {
-            var that = {
-                sentinelize: sentinelize,
-                extents: [{
-                    orientation: orientation,
-                    elements: dom.fastLocate("dropTargets")
-                }],
-                elementMapper: function (element) {
-                    return $.inArray(element, dom.fastLocate("movables")) === -1 ? "locked" : null;
-                },
-                elementIndexer: function (element) {
-                    var selectables = dom.fastLocate("selectables");
-                    return {
-                        elementClass: that.elementMapper(element),
-                        index: $.inArray(element, selectables),
-                        length: selectables.length
-                    };
-                }
-            };
-            return that;
+        var that = {
+            sentinelize: sentinelize,
+            extents: [{
+                orientation: orientation,
+                elements: dom.fastLocate("dropTargets")
+            }],
+            elementMapper: function (element) {
+                return $.inArray(element, dom.fastLocate("movables")) === -1 ? "locked" : null;
+            },
+            elementIndexer: function (element) {
+                var selectables = dom.fastLocate("selectables");
+                return {
+                    elementClass: that.elementMapper(element),
+                    index: $.inArray(element, selectables),
+                    length: selectables.length
+                };
+            }
         };
+        return that;
     };
 
     fluid.defaults("fluid.layoutHandler", {
         gradeNames: ["fluid.viewComponent"],
         disableWrap: "{reorderer}.options.disableWrap",
         members: {
-            reordererDom: "{reorderer}.dom"
-        },
-        components: {
+            reordererDom: "{reorderer}.dom",
             dropManager: "{reorderer}.dropManager"
+        },
+        invokers: { // overridden in moduleLayoutHandler
+            getGeometricInfo: "fluid.reorderer.makeGeometricInfoGetter({that}.options.orientation, {that}.options.sentinelize, {that}.reordererDom)"
         }
-
-    });
-
-    fluid.defaults("fluid.listLayoutHandler", {
-        gradeNames: ["fluid.layoutHandler", "autoInit"],
-        orientation:         fluid.orientation.VERTICAL,
-        containerRole:       fluid.reorderer.roles.LIST,
-        selectablesTabindex: -1,
-        sentinelize:         true
     });
 
     // Public layout handlers.
-    fluid.listLayoutHandler.finalInit = function (that) {
-        var options = that.options;
-        that.getRelativePosition =
-            fluid.reorderer.relativeInfoGetter(options.orientation,
-                    fluid.reorderer.LOGICAL_STRATEGY, null, that.dropManager, options.disableWrap);
-
-        that.getGeometricInfo = fluid.reorderer.makeGeometricInfoGetter(options.orientation, options.sentinelize, that.reordererDom);
-    };
-
-    fluid.defaults("fluid.gridLayoutHandler", {
-        gradeNames: ["fluid.layoutHandler", "autoInit"],
-        orientation:         fluid.orientation.HORIZONTAL,
-        containerRole:       fluid.reorderer.roles.GRID,
+    fluid.defaults("fluid.listLayoutHandler", {
+        gradeNames: ["fluid.layoutHandler"],
+        orientation:         fluid.orientation.VERTICAL,
+        containerRole:       fluid.reorderer.roles.LIST,
         selectablesTabindex: -1,
-        sentinelize:         false
+        sentinelize:         true,
+        members: {
+            getRelativePosition: { // TODO: an old-fashioned function member - convert to invoker
+                expander: {
+                    funcName: "fluid.reorderer.relativeInfoGetter",
+                    args: [ "{that}.options.orientation", fluid.reorderer.LOGICAL_STRATEGY, null,
+                        "{that}.dropManager", "{that}.options.disableWrap"]
+                }
+            }
+        }
     });
+
     /*
      * Items in the Lightbox are stored in a list, but they are visually presented as a grid that
      * changes dimensions when the window changes size. As a result, when the user presses the up or
@@ -797,14 +786,27 @@ var fluid_2_0 = fluid_2_0 || {};
      * The GridLayoutHandler is responsible for handling changes to this virtual 'grid' of items
      * in the window, and of informing the Lightbox of which items surround a given item.
      */
-    fluid.gridLayoutHandler.finalInit = function (that) {
-        var options = that.options;
-        that.getRelativePosition =
-            fluid.reorderer.relativeInfoGetter(options.orientation,
-                 options.disableWrap ? fluid.reorderer.SHUFFLE_GEOMETRIC_STRATEGY : fluid.reorderer.LOGICAL_STRATEGY, fluid.reorderer.SHUFFLE_GEOMETRIC_STRATEGY,
-                 that.dropManager, options.disableWrap);
-
-        that.getGeometricInfo = fluid.reorderer.makeGeometricInfoGetter(options.orientation, options.sentinelize, that.reordererDom);
+     
+    fluid.defaults("fluid.gridLayoutHandler", {
+        gradeNames: ["fluid.layoutHandler"],
+        orientation:         fluid.orientation.HORIZONTAL,
+        containerRole:       fluid.reorderer.roles.GRID,
+        selectablesTabindex: -1,
+        sentinelize:         false,
+        coStrategy: "@expand:fluid.gridLayoutHandler.computeCoStrategy({that}.options.disableWrap)",
+        members: {
+            getRelativePosition: { // TODO: an old-fashioned function member - convert to invoker
+                expander: {
+                    funcName: "fluid.reorderer.relativeInfoGetter",
+                    args: [ "{that}.options.orientation", "{that}.options.coStrategy", fluid.reorderer.SHUFFLE_GEOMETRIC_STRATEGY,
+                        "{that}.dropManager", "{that}.options.disableWrap"]
+                }
+            }
+        }
+    });
+    
+    fluid.gridLayoutHandler.computeCoStrategy = function (disableWrap) {
+        return disableWrap ? fluid.reorderer.SHUFFLE_GEOMETRIC_STRATEGY : fluid.reorderer.LOGICAL_STRATEGY;
     };
 
     /*************
@@ -815,7 +817,7 @@ var fluid_2_0 = fluid_2_0 || {};
       * focused position of the reorderer as well as the coordinates of any requested move */
 
     fluid.defaults("fluid.reorderer.labeller", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         members: {
             movedMap: {},
             moduleCell: {

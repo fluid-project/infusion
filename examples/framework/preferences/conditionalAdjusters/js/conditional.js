@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid */
 
 var example = example || {};
@@ -25,8 +24,10 @@ var example = example || {};
                 gradeNames: ["example.auxSchema"],
                 primarySchema: example.primarySchema,
                 auxiliarySchema: {
-                    "templatePrefix": "../shared/html/",
-                    "messagePrefix": "../shared/messages/"
+                    "terms": {
+                        "templatePrefix": "../shared/html",
+                        "messagePrefix": "../shared/messages"
+                    }
                 }
             }
         });

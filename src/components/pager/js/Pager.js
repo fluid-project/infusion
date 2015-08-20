@@ -57,11 +57,11 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // Abstract grade representing all pageLists
     fluid.defaults("fluid.pager.pageList", {
-        gradeNames: ["fluid.viewRelayComponent"]
+        gradeNames: ["fluid.viewComponent"]
     });
 
     fluid.defaults("fluid.pager.directPageList", {
-        gradeNames: ["fluid.pager.pageList", "autoInit"],
+        gradeNames: ["fluid.pager.pageList"],
         listeners: {
             onCreate: {
                 funcName: "fluid.pager.bindLinkClicks",
@@ -215,7 +215,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.pager.renderedPageList", {
-        gradeNames: ["fluid.rendererRelayComponent", "fluid.pager.pageList", "autoInit"],
+        gradeNames: ["fluid.rendererComponent", "fluid.pager.pageList"],
         rendererOptions: {
             idMap: {},
             cutpoints: [
@@ -249,8 +249,7 @@ var fluid_2_0 = fluid_2_0 || {};
         invokers: {
             produceTree: {
                 funcName: "fluid.identity",
-                args: "{that}.pageTree",
-                dynamic: true
+                args: "{that}.pageTree"
             },
             assembleComponent: {
                 funcName: "fluid.pager.renderedPageList.assembleComponent",
@@ -271,7 +270,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
 
     fluid.defaults("fluid.pager.previousNext", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         members: {
             previous: "{that}.dom.previous",
             next: "{that}.dom.next"
@@ -301,7 +300,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.pager.pagerBar", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         components: {
             pageList: {
                 type: "fluid.pager.pageList",
@@ -358,7 +357,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
 
     fluid.defaults("fluid.pager.summary", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         listeners: {
             onCreate: {
                 funcName: "fluid.pager.summaryAria",
@@ -384,7 +383,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.pager.directPageSize", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         listeners: {
             onCreate: {
                 "this": "{that}.container",
@@ -432,7 +431,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************/
 
     fluid.defaults("fluid.pager", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         events: {
             initiatePageChange: null,
             initiatePageSizeChange: null,
@@ -514,6 +513,8 @@ var fluid_2_0 = fluid_2_0 || {};
         },
         invokers: {
             acquireDefaultRange: {
+                // TODO: problem here - pagerBar, etc. are dynamic components and so cannot be constructed gingerly
+                // This is why current (pre-FLUID-4925) framework must construct components before invokers
                 funcName: "fluid.identity",
                 args: "{that}.pagerBar.pageList.defaultModel.totalRange"
             }

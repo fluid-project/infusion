@@ -14,7 +14,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -25,6 +24,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests");
 
     jqUnit.module("Fluid JS Tests");
+    
+    fluid.tests.plainObjectTrue = {
+        "object": {},
+        "array": [],
+        "noproto": Object.create(null),
+        "malignNoProto": Object.create(null, {"constructor": {value: "thing"}})
+    };
+    fluid.tests.plainObjectFalse = {
+        "null": null,
+        "undefined": undefined,
+        "document": document,
+        "window": window,
+        "jDocument": $("document"),
+        "component": fluid.component()
+    };
+    
+    jqUnit.test("fluid.isPlainObject tests", function () {
+        fluid.each(fluid.tests.plainObjectTrue, function (totest, key) {
+            jqUnit.assertEquals("Expected plain: " + key, true, fluid.isPlainObject(totest));
+        });
+        fluid.each(fluid.tests.plainObjectFalse, function (totest, key) {
+            jqUnit.assertEquals("Expected nonplain: " + key, false, fluid.isPlainObject(totest));
+        });
+    });
+    
 
     function isOdd(i) {
         return i % 2 === 1;
@@ -96,14 +120,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("null iteration", function () {
-        jqUnit.expect(1);
+        jqUnit.expect(2);
 
         fluid.each(null, function () {
             fluid.fail("This should not run");
         });
-        fluid.transform(null, function () {
+        var transformed = fluid.transform(null, function () {
             fluid.fail("This should not run");
         });
+        jqUnit.assertEquals("Output of null transform should be null", null, transformed);
 
         jqUnit.assertTrue("a null each and a null transform don't crash the framework", true);
     });
@@ -355,6 +380,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 
     var testDefaults = {
+        gradeNames: "fluid.component",
         foo: "bar"
     };
 
@@ -363,16 +389,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("Defaults: store and retrieve default values", function () {
         // Assign a collection of defaults for the first time.
 
-        jqUnit.assertDeepEq("defaults() should return the specified defaults",
-                            testDefaults, fluid.filterKeys(fluid.defaults("test"), ["foo"]));
+        jqUnit.assertCanoniseEqual("defaults() should return the specified defaults",
+            testDefaults, fluid.defaults("test"), function (options) {
+                return fluid.filterKeys(options, ["foo"]);
+            });
 
         // Re-assign the defaults with a new collection.
         var testDefaults2 = {
+            gradeNames: "fluid.component",
             baz: "foo"
         };
         fluid.defaults("test", testDefaults2);
-        jqUnit.assertDeepEq("defaults() should return the original defaults",
-                            testDefaults2, fluid.filterKeys(fluid.defaults("test"), ["foo", "baz"]));
+        jqUnit.assertCanoniseEqual("defaults() should return the original defaults",
+            testDefaults2, fluid.defaults("test"), function (options) {
+                return fluid.filterKeys(options, ["foo", "baz"]);
+            });
 
         // Try to access defaults for a component that doesn't exist.
         jqUnit.assertNoValue("The defaults for a nonexistent component should be null.",
@@ -383,10 +414,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var testArgs = [1, "thingit"];
         function failHandle(args) {
             jqUnit.assertDeepEq("Received arguments in error handler", testArgs, args);
+            fluid.builtinFail(args); // throw exception to keep expectFrameworkDiagnostic happy
         }
         jqUnit.expect(1);
         fluid.pushSoftFailure(failHandle);
-        fluid.fail.apply(null, testArgs);
+        jqUnit.expectFrameworkDiagnostic("Configurable failure handler", function () {
+            fluid.fail.apply(null, testArgs);
+        }, "thingit");
         fluid.pushSoftFailure(-1);
     });
 
@@ -422,7 +456,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("FLUID-4285 test - prevent 'double options'", function () {
         jqUnit.expectFrameworkDiagnostic("Registering double options component", function () {
             fluid.defaults("news.parent", {
-                gradeNames: ["fluid.littleComponent", "autoInit"],
+                gradeNames: ["fluid.component"],
                 options: {
                     test: "test"
                 }
@@ -483,32 +517,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Nested resolver", "resolved", fluid.get(model2, ["nested", "resolver"]));
     });
 
-    jqUnit.test("messageResolver", function () {
-        var bundlea = {
-            key1: "value1a",
-            key2: "value2a"
-        };
-        var bundleb = {
-            key1: "value1b",
-            key3: "value3b"
-        };
-        var resolverParent = fluid.messageResolver({messageBase: bundlea});
-        var resolver = fluid.messageResolver({messageBase: bundleb, parents: [resolverParent]});
-
-        var requiredLook = {
-            key1: "value1b",
-            key2: "value2a",
-            key3: "value3b",
-            key4: undefined
-        };
-        fluid.each(requiredLook, function (value, key) {
-            var looked = resolver.lookup([key]);
-            jqUnit.assertEquals("Resolve key " + key, value, looked ? looked.template : looked);
-        });
-        jqUnit.assertEquals("Local fallback",  bundleb.key1, resolver.resolve(["key2", "key1"]));
-        jqUnit.assertEquals("Global fallback", bundlea.key2, resolver.resolve(["key4", "key2"]));
-    });
-
     jqUnit.test("Sorting listeners", function () {
         var accumulate = [];
         var makeListener = function (i) {
@@ -517,10 +525,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
         };
         var firer = fluid.makeEventFirer();
-        firer.addListener(makeListener(4), null, null, "last");
+        firer.addListener(makeListener(4), null, "last");
         firer.addListener(makeListener(3));
-        firer.addListener(makeListener(2), null, null, 10);
-        firer.addListener(makeListener(1), null, null, "first");
+        firer.addListener(makeListener(2), null, 10);
+        firer.addListener(makeListener(1), null, "first");
         firer.fire();
         jqUnit.assertDeepEq("Listeners fire in priority order", [1, 2, 3, 4], accumulate);
     });
@@ -560,9 +568,105 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         firer.fire(); // listener 1 is now top of stack
         jqUnit.assertDeepEq("Listener removed by namespace reveals earlier", [2, 1], record);
     });
+    
+    fluid.tests.constraintTests = [{
+        name: "one before",
+        listeners: {
+            "a": "",
+            "b": "before:a"
+        },
+        expected: "ba"
+    }, {
+        name: "one after, two last, one standard",
+        listeners: {
+            "a": "after:b",
+            "d": "",
+            "b": "last:testing",
+            "c": "last"
+        },
+        expected: "dcba"
+    }, {
+        name: "one before, one after, two first",
+        listeners: {
+            "a": "before:d",
+            "b": "first",
+            "c": "first:authoring",
+            "d": "after:b"
+        },
+        expected: "cbad"
+    }, {
+        name: "two fixed, three after",
+        listeners: {
+            "a": "after:b",
+            "b": 10,
+            "c": 20,
+            "d": "after:e",
+            "e": "after:c"
+        },
+        expected: "cedba"
+    }, {
+        name: "nonexistent reference", // in theory this should be a failure but we can't arrange to add listeners atomically
+        listeners: {
+            "a": "before:b"
+        },
+        expected: "a"
+    }];
+    
+    fluid.tests.upgradeListeners = function (listeners) {
+        return fluid.hashToArray(listeners, "namespace", function (newElement, oldElement) {
+            newElement.priority = fluid.parsePriority(oldElement, 0, false, "listeners");
+        });
+    };
+    
+    jqUnit.test("FLUID-5506 constraint-based listeners", function () {
+        fluid.each(fluid.tests.constraintTests, function (fixture) {
+            var listeners = fluid.tests.upgradeListeners(fixture.listeners);
+            fluid.sortByPriority(listeners);
+            var flattened = fluid.transform(listeners, function (listener) {
+                return listener.namespace;
+            }).join("");
+            jqUnit.assertEquals("Expected sort order for test " + fixture.name, fixture.expected, flattened);
+        });
+    });
+    
+    fluid.tests.failedConstraintTests = [{
+        name: "self-reference",
+        listeners: {
+            "a": "before:a"
+        }
+    }, {
+        name: "cyclic reference (2)",
+        listeners: {
+            "a": "before:b",
+            "b": "before:a"
+        }
+    }, {
+        name: "cyclic reference (3)",
+        listeners: {
+            "a": "before:b",
+            "b": "before:c",
+            "c": "before:a"
+        }
+    }, {
+        name: "cyclic reference (2) + fixed",
+        listeners: {
+            "a": 10,
+            "b": "before:c",
+            "c": "before:b"
+        }
+    }];
+    
+    jqUnit.test("FLUID-5506: constraint-based listeners - failure cases", function () {
+        fluid.each(fluid.tests.failedConstraintTests, function (fixture) {
+            jqUnit.expectFrameworkDiagnostic("Expected failure for test " + fixture.name, function () {
+                var listeners = fluid.tests.upgradeListeners(fixture.listeners);
+                fluid.sortByPriority(listeners);
+            });
+        });
+    });
 
     fluid.defaults("fluid.tests.eventMerge", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         events: {
             event: "preventable"
         }
@@ -589,7 +693,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.listenerTest", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         events: {
             event: null
         },
@@ -597,12 +701,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             event: fluid.tests.makeNotingListener("noNamespace"),
             "event.namespace": fluid.tests.makeNotingListener("namespace"),
             onCreate: fluid.tests.makeNotingListener("onCreate"),
-            "onCreate.namespace": fluid.tests.makeNotingListener("onCreate.namespace")
-        },
-        finalInitFunction: "fluid.tests.listenerTest.finalInit"
+            "onCreate.namespace": fluid.tests.makeNotingListener("onCreate.namespace"),
+            "onCreate.makeValues": {
+                listener: "fluid.tests.listenerTest.makeValues",
+                priority: "first"
+            }
+        }
     });
 
-    fluid.tests.listenerTest.finalInit = function (that) {
+    fluid.tests.listenerTest.makeValues = function (that) {
         that.values = {};
     };
 
@@ -629,43 +736,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Listeners correctly merged", $.extend(expected2, expected1), that.values);
     });
 
-
-    /** Test FLUID-4776 - only one instance of preinit function registered **/
-
-    fluid.defaults("fluid.tests.lifecycleTest3", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        preInitFunction: "fluid.tests.lifecycleTest3.preInit"
-    });
-
-    fluid.tests.lifecycleTest3.preInit = function (that) {
-        if (!that.count) {
-            that.count = 0;
-        }
-        ++that.count;
-    };
-
-    jqUnit.test("Registration of lifecycle functions by convention", function () {
-        var that = fluid.tests.lifecycleTest3();
-        jqUnit.assertEquals("Only one call to preInitFunction", 1, that.count);
-    });
-
-    /** Test FLUID-4788 - acquiring default initFunctions through the hierarchy **/
-
-    fluid.defaults("fluid.tests.gradeComponent", {
-        gradeNames: ["autoInit", "fluid.littleComponent"]
-    });
-    fluid.tests.gradeComponent.preInit = function () {
-        jqUnit.assert("Pre init function is called by a component of fluid.tests.gradeComponent grade.");
-    };
-    fluid.defaults("fluid.tests.gradeUsingComponent", {
-        gradeNames: ["autoInit", "fluid.tests.gradeComponent"]
-    });
-
-    jqUnit.test("FLUID-4788 test - default lifecycle functions inherited from a grade", function () {
-        jqUnit.expect(1);
-        fluid.tests.gradeUsingComponent();
-    });
-
     /** FLUID-5288: Improved diagnostic for incomplete grade hierarchy **/
 
     jqUnit.test("FLUID-5288: Improved diagnostic for component with incomplete grade hierarchy", function () {
@@ -673,66 +743,29 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // TODO: in future, there will be no error thrown on definition, but only on use - since it should be possible
             // to declare grade hierarchies through forward reference
             fluid.defaults("fluid.tests.missingGradeComponent", {
-                gradeNames: ["fluid.tests.nonexistentGrade", "autoInit"]
+                gradeNames: ["fluid.tests.nonexistentGrade"]
             });
             fluid.tests.missingGradeComponent();
-        }, ["is incomplete", "fluid.tests.nonexistentGrade"]);
+        }, ["incomplete", "nonexistentGrade"]);
     });
-
-    fluid.registerNamespace("fluid.tests.initSubcomponentTest");
-
-    fluid.defaults("fluid.tests.initSubcomponentTest.parent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
-        child: {
-            type: "fluid.tests.initSubcomponentTest.child"
-        }
+    
+        
+    fluid.defaults("fluid.tests.forwardRefComponent", {
+        gradeNames: "fluid.tests.forwardBaseComponent"
     });
-
-    fluid.tests.initSubcomponentTest.parent.finalInit = function (that) {
-        that.child = fluid.initSubcomponent(that, "child", [fluid.COMPONENT_OPTIONS]);
-    };
-
-    fluid.defaults("fluid.tests.initSubcomponentTest.child", {
-        gradeNames: ["fluid.littleComponent", "autoInit"]
+    
+    fluid.defaults("fluid.tests.forwardBaseComponent", {
+        gradeNames: "fluid.component"
     });
-
-    var checkSubcomponentGrade = function (parent, subcomponentName, expectedGrade) {
-        jqUnit.expect(2);
-        var child = parent[subcomponentName];
-        jqUnit.assertNotUndefined("The parent component has a child component", child);
-        jqUnit.assertTrue("The child component has the correct grade.",
-            fluid.hasGrade(child.options, expectedGrade));
-    };
-
-    var testSubcomponents = function (tests) {
-        fluid.each(tests, function (test) {
-            var parent = fluid.invokeGlobalFunction(test.funcName, [test.options]);
-            checkSubcomponentGrade(parent, test.subcomponentName, test.expectedGrade);
-        });
-    };
-
-    jqUnit.test("initSubcomponent", function () {
-        testSubcomponents([
-            {
-                funcName: "fluid.tests.initSubcomponentTest.parent",
-                subcomponentName: "child",
-                expectedGrade: "fluid.tests.initSubcomponentTest.child"
-            },
-            {
-                funcName: "fluid.tests.initSubcomponentTest.parent",
-                options: {
-                    child: {
-                        type: "fluid.emptySubcomponent"
-                    }
-                },
-                subcomponentName: "child",
-                expectedGrade: "fluid.emptySubcomponent"
-            }
-        ]);
+    
+    jqUnit.test("Forward reference through grade hierarchy", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.forwardRefComponent();
+        jqUnit.assertValue("Should have received component with forward grade reference", that);
     });
 
     fluid.defaults("fluid.tests.schema.textSizer", {
-        gradeNames: ["fluid.tests.schema", "fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.tests.schema", "fluid.component"],
         schema: {
             "fluid.prefs.textSizer": { // common grade name
                 "type": "number",
@@ -745,14 +778,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.nonPanel", { // A dummy grade to ensure that grade filtration is working in the indexer
-        gradeNames: ["fluid.littleComponent"],
+        gradeNames: ["fluid.component"],
         preferenceMap: {
             thing: "fluid.prefs.nonThing"
         }
     });
 
     fluid.defaults("fluid.tests.panels.linksControls", {
-        gradeNames: ["fluid.tests.settingsPanel", "fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.tests.settingsPanel", "fluid.component"],
         preferenceMap: {
             links: "fluid.prefs.emphasizeLinks",
             inputsLarger: "fluid.prefs.inputsLarger"

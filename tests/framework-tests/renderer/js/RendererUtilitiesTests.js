@@ -1,6 +1,7 @@
 /*
 Copyright 2011 OCAD University
 Copyright 2010-2011 Lucendo Development Ltd.
+Copyright 2015 Raising the Floor (International)
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -10,13 +11,13 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
     "use strict";
 
     fluid.registerNamespace("fluid.tests");
+    
     fluid.setLogging(true);
 
     fluid.tests.testRendererUtilities = function () {
@@ -53,185 +54,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertNotUndefined("selectorsToCutpoints should not eat other people's selectors", selectors.selector2);
         });
 
-        jqUnit.module("IoC Renderer tests");
-
-        fluid.defaults("fluid.tests.identicalComponentParent", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
-            selectors: {
-                identicalComponent1: ".identicalComponent1",
-                identicalComponent2: ".identicalComponent2"
-            },
-            finalInitFunction: "fluid.tests.identicalComponentParent.finalInitFunction",
-            produceTree: "fluid.tests.identicalComponentParent.produceTree"
-        });
-
-        fluid.tests.identicalComponentParent.produceTree = function () {
-            return {
-                identicalComponent1: {
-                    decorators: {
-                        type: "fluid",
-                        func: "fluid.tests.identicalComponent",
-                        options: {
-                            option: "OPTION1"
-                        }
-                    }
-                },
-                identicalComponent2: {
-                    decorators: {
-                        type: "fluid",
-                        func: "fluid.tests.identicalComponent",
-                        options: {
-                            option: "OPTION2"
-                        }
-                    }
-                }
-            };
-        };
-        fluid.tests.identicalComponentParent.finalInitFunction = function (that) {
-            that.renderer.refreshView();
-        };
-
-        fluid.defaults("fluid.tests.identicalComponent", {
-            gradeNames: ["fluid.viewComponent", "autoInit"],
-            components: {
-                subcomponent: {
-                    type: "fluid.tests.identicalSubComponent"
-                }
-            }
-        });
-
-        fluid.defaults("fluid.tests.identicalSubComponent", {
-            gradeNames: ["fluid.littleComponent", "autoInit"]
-        });
-
-        fluid.demands("fluid.tests.identicalSubComponent", "fluid.tests.identicalComponent", {
-            args: {
-                option: "{identicalComponent}.options.option"
-            }
-        });
-        fluid.demands("fluid.tests.identicalComponent", "fluid.tests.identicalComponentParent", {
-            container: "{arguments}.0"
-        });
-        jqUnit.test("Same level identical components with different options", function () {
-            var that = fluid.tests.identicalComponentParent(".identicalComponentParent");
-            jqUnit.assertEquals("First component's subcomponent option is", "OPTION1", that["**-renderer-identicalComponent1-0"].subcomponent.options.option);
-            jqUnit.assertEquals("Second component's subcomponent option is", "OPTION2", that["**-renderer-identicalComponent2-1"].subcomponent.options.option);
-        });
-
-        fluid.defaults("fluid.tests.mergeRenderParent", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
-            selectors: {
-                mergeComponent: ".mergeComponent"
-            },
-            model: {
-                test: "TEST"
-            },
-            finalInitFunction: "fluid.tests.mergeRenderParent.finalInitFunction",
-            produceTree: "fluid.tests.mergeRenderParent.produceTree"
-        });
-        fluid.tests.mergeRenderParent.produceTree = function () {
-            return {
-                mergeComponent: {
-                    decorators: {
-                        type: "fluid",
-                        func: "fluid.tests.mergeComponent",
-                        options: {
-                            option: "OPTION1"
-                        }
-                    }
-                }
-            };
-        };
-        fluid.tests.mergeRenderParent.finalInitFunction = function (that) {
-            that.renderer.refreshView();
-        };
-        fluid.defaults("fluid.tests.mergeComponent", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"]
-        });
-        fluid.demands("fluid.tests.mergeComponent", "fluid.tests.mergeRenderParent", {
-            container: "{arguments}.0",
-            mergeOptions: {
-                model: "{mergeRenderParent}.model"
-            }
-        });
-
-        jqUnit.test("Merging args and options", function () {
-            var that = fluid.tests.mergeRenderParent(".mergeRenderParent");
-            jqUnit.assertEquals("Subcomponent arg option is", "OPTION1", that["**-renderer-mergeComponent-0"].options.option);
-            jqUnit.assertEquals("Subcomponent option is", that.model, that["**-renderer-mergeComponent-0"].options.model);
-        });
-
-
-
+        jqUnit.module("Renderer component tests");
+        
         function assertRenderedText(els, array) {
             fluid.each(els, function (el, index) {
                 jqUnit.assertEquals("Element " + index + " text", array[index], $(el).text());
             });
         }
-
-        fluid.defaults("fluid.tests.rendererParent", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
-            components: {
-                middle: {
-                    type: "fluid.tests.rendererMiddle"
-                }
-            },
-            selectors: {
-                middle: ".middle-component"
-            }
-        });
-
-        fluid.demands("fluid.tests.rendererMiddle", "fluid.tests.rendererParent",
-            ["{rendererParent}.dom.middle", fluid.COMPONENT_OPTIONS]);
-
-        fluid.defaults("fluid.tests.rendererMiddle", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
-            selectors: {
-                decorated: ".decorated-component"
-            },
-            protoTree: {
-                decorated: {
-                    decorators: {
-                        type: "fluid",
-                        func: "fluid.tests.rendererChild",
-                        options: { decoratorValue: "{rendererParent}.options.parentValue" // with FLUID-4986 we can support this reference properly
-                        }
-                    }
-                }
-            }
-        });
-
-        fluid.defaults("fluid.tests.rendererChild", {
-            value: "{rendererParent}.options.parentValue"
-        });
-
-        fluid.demands("fluid.tests.rendererChild", "fluid.tests.rendererMiddle",
-            ["@0", fluid.COMPONENT_OPTIONS]);
-
-        fluid.tests.rendererChild = function (container, options) {
-            var that = fluid.initView("fluid.tests.rendererChild", container, options);
-            $(container).text(that.options.value);
-            return that;
-        };
-
-
-        jqUnit.test("initDependent upgrade test", function () {
-            var parentValue = "parentValue";
-            var component = fluid.tests.rendererParent(".renderer-ioc-test", {parentValue: parentValue});
-            var middleNode = component.middle.container;
-            jqUnit.assertValue("Middle component constructed", middleNode);
-            component.middle.refreshView();
-            var decorated = component.middle.locate("decorated");
-            jqUnit.assertEquals("Decorated text resolved from top level", parentValue, decorated.text());
-            var child = component.middle[fluid.renderer.IDtoComponentName("decorated", 0)];
-            jqUnit.assertEquals("Located decorator with IoC-resolved value", "parentValue", child.options.decoratorValue);
-            component.middle.refreshView();
-            var child2 = component.middle[fluid.renderer.IDtoComponentName("decorated", 0)];
-            jqUnit.assertNotEquals("Rendering has produced new component", child, child2);
-        });
-
-
-        jqUnit.module("Renderer component tests");
 
         fluid.tests.censoringStrategy = function (listCensor) {
             var matchPath = ["recordlist", "deffolt"];
@@ -242,7 +71,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         fluid.defaults("fluid.tests.rendererComponentTest", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             model: {
                 recordlist: {
                     deffolt: ["person", "intake", "loanin", "loanout", "acquisition", "organization", "objects", "movement"]
@@ -284,10 +113,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.test("Renderer component without resolver", function () {
             var globalMessages = {deffolt: "A globbal messuage"};
-            var globalBundle = fluid.messageResolver({messageBase: globalMessages});
-            var that = fluid.withEnvironment({globalBundle: globalBundle}, function () {
-                return fluid.tests.rendererComponentTest(".renderer-component-test");
+            var globalBundle = fluid.messageResolver({
+                gradeNames: ["fluid.resolveRoot", "fluid.tests.globalBundle"],
+                messageBase: globalMessages
             });
+            var that = fluid.tests.rendererComponentTest(".renderer-component-test");
+            
             that.refreshView();
             var renderMess = that.locate("message").text();
             jqUnit.assertEquals("Rendered message from bundle", that.options.strings.message, renderMess);
@@ -304,6 +135,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertEquals("Bound path at " + index, "recordlist.deffolt." + index, key);
             });
             assertRenderedText(renderRecs, array);
+            globalBundle.destroy();
         });
 
 
@@ -457,7 +289,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.littleComponentWithInstantiator", {
-            gradeNames: ["fluid.littleComponent", "autoInit"],
+            gradeNames: ["fluid.component"],
             components: {
                 instantiator: "{instantiator}",
                 rendererComponent: {
@@ -468,7 +300,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.rendererComponentWithNoInstantiator", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             produceTree: "fluid.tests.rendererComponentWithNoInstantiator.produceTree",
             selectors: {
                 text1: ".csc-footer-text1",
@@ -489,12 +321,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 currentRelease: "Release %version",
                 about: "About CollectionSpace",
                 feedback: "Leave Feedback"
+            },
+            listeners: {
+                onCreate: "{that}.refreshView"
             }
         });
-
-        fluid.tests.rendererComponentWithNoInstantiator.finalInit = function (that) {
-            that.renderer.refreshView();
-        };
 
         fluid.tests.rendererComponentWithNoInstantiator.produceTree = function () {
             return {
@@ -552,7 +383,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.paychequeComponent", {
-            gradeNames: ["fluid.viewComponent", "autoInit"],
+            gradeNames: ["fluid.viewComponent"],
             selectors: {
                 child: ".flc-renderUtils-test"
             },
@@ -566,7 +397,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         // For AC
         fluid.defaults("fluid.tests.paychequeRenderer", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             selectors: {
                 message: ".flc-renderUtils-message"
             },
@@ -584,78 +415,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.FLUID4165Component", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             selectors: {
                 input: ".flc-renderUtils-test"
             },
             protoTree: {
                 input: "${value}"
             }
-        });
-
-        fluid.defaults("fluid.tests.decoratorParent", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
-            model: {
-                submodel: [{
-                    val: "TEST"
-                }]
-            },
-            selectors: {
-                row: ".flc-row",
-                val: ".flc-val"
-            },
-            repeatingSelectors: ["row"],
-            protoTree: {
-                expander: {
-                    repeatID: "row",
-                    type: "fluid.renderer.repeat",
-                    pathAs: "row",
-                    valueAs: "rowVal",
-                    controlledBy: "submodel",
-                    tree: {
-                        val: {
-                            decorators: {
-                                func: "fluid.tests.decoratorWithSubModel",
-                                type: "fluid",
-                                options: {
-                                    model: "{rowVal}"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
-        fluid.defaults("fluid.tests.decoratorWithSubModel", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
-            protoTree: {
-                val: "${val}"
-            },
-            selectors: {
-                val: ".flc-val-val"
-            },
-            finalInitFunction: "fluid.tests.decoratorWithSubModel.finalInitFunction"
-        });
-
-        fluid.tests.decoratorWithSubModel.finalInitFunction = function (that) {
-            that.refreshView();
-        };
-
-        fluid.demands("fluid.tests.decoratorWithSubModel", "fluid.tests.decoratorParent", {
-            container: "{arguments}.0"
-        });
-
-        jqUnit.test("Decorator with sub model", function () {
-            var that = fluid.tests.decoratorParent("#decorator-container");
-            that.refreshView();
-            var decorator = that["**-renderer-row::val-0"];
-            jqUnit.assertEquals("Original value should be", "TEST", decorator.locate("val").val());
-            jqUnit.assertEquals("Original value in the model should be", "TEST", decorator.model.val);
-            decorator.locate("val").val("NEW VAL").change();
-            jqUnit.assertEquals("Original value should be", "NEW VAL", decorator.locate("val").val());
-            jqUnit.assertEquals("Original value in the model should be", "NEW VAL", decorator.model.val);
-            jqUnit.assertEquals("Original value in the model should be", "NEW VAL", that.model.submodel[0].val);
         });
 
         jqUnit.test("FLUID-4165 - ensure automatic creation of applier if none supplied", function () {
@@ -666,11 +432,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Initial value rendered", model.value, input.val());
             input.val("New Value");
             input.change();
-            jqUnit.assertEquals("Updated value read", "New Value", model.value);
+            jqUnit.assertEquals("Updated value read", "New Value", that.model.value);
         });
 
         fluid.defaults("fluid.tests.FLUID4189Component", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             selectors: {
                 input: ".flc-renderUtils-test",
                 input2: ".flc-renderUtils-test2"
@@ -746,10 +512,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // FLUID-5279: "that.produceTree is not a function" when refreshView() is called as a
         // model (relayed) listener on a renderer relay component
         fluid.defaults("fluid.tests.fluid5279", {
-            gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             components: {
                 attributes: {
-                    type: "fluid.rendererRelayComponent",
+                    type: "fluid.rendererComponent",
                     createOnEvent: "afterRender",
                     container: ".flc-sub",
                     options: {
@@ -804,7 +570,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         // FLUID-5280: During initial transaction, give priority to recently modified values
         fluid.defaults("fluid.tests.fluid5280", {
-            gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             components: {
                 attributes: {
                     type: "fluid.tests.fluid5280sub",
@@ -834,7 +600,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.fluid5280sub", {
-            gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             protoTree: {
                 expander: {
                     "type": "fluid.renderer.condition",
@@ -861,10 +627,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             that.refreshView();
         });
 
-        // FLUID-5281: protoComponent expansion should respect new ChangeApplier idiom of "floating base model reference"
+        // FLUID-5282: protoComponent expansion should respect new ChangeApplier idiom of "floating base model reference"
 
         fluid.defaults("fluid.tests.fluid5282root", {
-            gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             protoTree: {
                 expander: {
                     "type": "fluid.renderer.condition",
@@ -892,7 +658,37 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Updated model value evaluated", "unavailable", that.lastAudioValue);
         });
 
-
+        // FLUID-5664: rendererComponent as a whole should respect model rebinding
+        
+        fluid.defaults("fluid.tests.fluid5664root", {
+            gradeNames: ["fluid.rendererComponent"],
+            selectors: {
+                "input": ".flc-fluid5664-input"
+            },
+            rendererFnOptions: {
+                noexpand: true
+            },
+            invokers: {
+                produceTree: {
+                    funcName: "fluid.copy",
+                    args: {
+                        ID: "input",
+                        valuebinding: ""
+                    }
+                }
+            },
+            renderOnInit: true
+        });
+        
+        jqUnit.test("FLUID-5664: Rebind model root in renderer component", function () {
+            var that = fluid.tests.fluid5664root("#FLUID-5664");
+            jqUnit.assertEquals("Successfully rendered with undefined model", "", that.dom.locate("input").val());
+            that.applier.change("", "inputValue");
+            that.refreshView();
+            jqUnit.assertEquals("Markup updated for root change", "inputValue", that.dom.locate("input").val());
+        });
+        
+        
         jqUnit.module("Protocomponent Expander Tests");
 
         jqUnit.test("makeProtoExpander Basic Tests", function () {
@@ -1043,11 +839,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.repeatDecorator", {
-            gradeNames: ["fluid.viewComponent", "autoInit"]
+            gradeNames: ["fluid.viewComponent"]
         });
 
         fluid.defaults("fluid.tests.repeatHead", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             components: {
                 instantiator: "{instantiator}"
             },
@@ -1230,7 +1026,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             vocabUrl: "${vocabUrl}",
                             componentTree: {
                                 expander: {
-                                    type: "fluid.expander.noexpand",
+                                    type: "fluid.noexpand",
                                     tree: {
                                         component1: "${path1}"
                                     }
@@ -1518,7 +1314,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     ]
                 }
             };
-            var applier = fluid.makeChangeApplier(model);
+            var holder = {model: model};
+            var applier = fluid.makeHolderChangeApplier(holder);
             var expopts = {ELstyle: "${}", model: model, applier: applier};
             var expander = fluid.renderer.makeProtoExpander(expopts);
             var protoTree = {
@@ -1538,7 +1335,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             };
             var expanded = expander(protoTree);
-            jqUnit.assertCanoniseEqual("Message key resolved", model.tabs.here.name,
+            jqUnit.assertCanoniseEqual("Message key resolved", holder.model.tabs.here.name,
                 expanded.children[0].children[0].linktext.messagekey.value, jqUnit.sortTree);
         });
 
@@ -1563,7 +1360,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         fluid.defaults("fluid.tests.FLUID4737", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             produceTree: "fluid.tests.FLUID4737.produceTree",
             selectors: {
                 messages: ".messages",
@@ -1626,7 +1423,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.FLUID4537", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             renderOnInit: true,
             model: {
                 feeds: [
@@ -1664,7 +1461,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.FLUID4536", {
-            gradeNames: ["fluid.viewComponent", "autoInit"],
+            gradeNames: ["fluid.viewComponent"],
             components: {
                 iframeHead: {
                     createOnEvent: "iframeLoad",
@@ -1678,10 +1475,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             events: {
                 iframeLoad: null
             },
-            finalInitFunction: "fluid.tests.FLUID4536.finalInit"
+            listeners: {
+                onCreate: "fluid.tests.FLUID4536.tryLoad"
+            }
         });
 
-        fluid.tests.FLUID4536.finalInit = function(that) {
+        fluid.tests.FLUID4536.tryLoad = function(that) {
             that.iframe = that.dom.locate("iframe");
             function tryLoad() {
                 var iframeWindow = that.iframe[0].contentWindow;
@@ -1700,7 +1499,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         fluid.defaults("fluid.tests.FLUID4536IframeHead", {
-            gradeNames: ["fluid.viewComponent", "autoInit"],
+            gradeNames: ["fluid.viewComponent"],
             components: {
                 iframeChild: {
                     type: "fluid.tests.FLUID4536IframeChild",
@@ -1713,7 +1512,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.FLUID4536IframeChild", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             model: {
                 checked: true
             },
@@ -1751,10 +1550,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.pathExpander", {
-            gradeNames: ["autoInit", "fluid.viewComponent"]
+            gradeNames: ["fluid.viewComponent"]
         });
         fluid.defaults("fluid.tests.pathExpanderParent", {
-            gradeNames: ["autoInit", "fluid.rendererComponent"],
+            gradeNames: ["fluid.rendererComponent"],
             components: {
                 instantiator: "{instantiator}"
             },
@@ -1798,7 +1597,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.customSetConfigRendererComponent", {
-            gradeNames: ["autoInit", "fluid.rendererComponent"],
+            gradeNames: ["fluid.rendererComponent"],
             model: {
                 "a.b.c": {
                     val: "OLD"
@@ -1832,7 +1631,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * Test setup for FLUID-5048
          */
         fluid.defaults("fluid.tests.fluid5048.mediaSettings", {
-            gradeNames: ["fluid.rendererComponent", "autoInit"],
+            gradeNames: ["fluid.rendererComponent"],
             model: {
                 show: false
             },
@@ -1846,23 +1645,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             protoTree: {
                 show: "${show}"
+            },
+            listeners: {
+                onCreate: "fluid.tests.fluid5048.mediaSettings.fetchResources"
             }
         });
 
-        fluid.tests.fluid5048.mediaSettings.finalInit = function (that) {
+        fluid.tests.fluid5048.mediaSettings.fetchResources = function (that) {
             fluid.fetchResources(that.options.resources, function () {
                 that.refreshView();
             });
         };
+        
         fluid.defaults("fluid.tests.fluid5048.captionsSettings", {
-            gradeNames: ["fluid.tests.fluid5048.mediaSettings", "autoInit"]
+            gradeNames: ["fluid.tests.fluid5048.mediaSettings"]
         });
         fluid.defaults("fluid.tests.fluid5048.transcriptsSettings", {
-            gradeNames: ["fluid.tests.fluid5048.mediaSettings", "autoInit"]
+            gradeNames: ["fluid.tests.fluid5048.mediaSettings"]
         });
 
         fluid.defaults("fluid.tests.fluid5048.parent", {
-            gradeNames: ["fluid.viewComponent", "autoInit"],
+            gradeNames: ["fluid.viewComponent"],
             selectors: {
                 captionsSettings: ".flc-prefsEditor-captions-settings",
                 transcriptsSettings: ".flc-prefsEditor-transcripts-settings"
@@ -1906,7 +1709,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.defaults("fluid.tests.fluid5099", {
-            gradeNames: ["autoInit", "fluid.rendererComponent"],
+            gradeNames: ["fluid.rendererComponent"],
             model: {
                 test: "TEST"
             },
@@ -1920,19 +1723,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.test("FLUID-5099: source name collision", function () {
-            jqUnit.expect(3);
+            jqUnit.expect(2);
             var that = fluid.tests.fluid5099("#FLUID-5099");
             var test = that.locate("test");
             jqUnit.assertEquals("Original value is correct", "TEST", test.val());
-            fluid.addSourceGuardedListener(that.applier, "test", "test", function (model, oldModel, changeRequest) {
+            // TODO: Source tracking is not supported in current applier
+            fluid.addSourceGuardedListener(that.applier, "test", "test", function () {
                 jqUnit.assert("Listener is applied correctly.");
-                jqUnit.assertEquals("Source is set correctly", "DOM:test", changeRequest[0].source);
             });
             test.val("NEW VALUE").change();
         });
 
         fluid.defaults("fluid.tests.fluid4986", {
-            gradeNames: ["autoInit", "fluid.rendererComponent"],
+            gradeNames: ["fluid.rendererComponent"],
             selectors: {
                 select: ".flc-fluid4986-select",
                 simpleBound1: ".flc-fluid4986-simpleBound1",

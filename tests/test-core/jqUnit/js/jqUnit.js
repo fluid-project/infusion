@@ -12,7 +12,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, QUnit */
 
 var jqUnit = jqUnit || {};
@@ -28,15 +27,24 @@ var jqUnit = jqUnit || {};
         jqUnit[method] = QUnit[method];
         window[method] = undefined; // work around IE8 bug http://stackoverflow.com/questions/1073414/deleting-a-window-property-in-ie
     }
-    
-    jqUnit.failureHandler = function (args, activity) {
+      
+    jqUnit.failureHandler = function (args/*, activity*/) {
         if (QUnit.config.current) {
             QUnit.ok(false, "Assertion failure (see console.log for expanded message): ".concat(args));
         }
-        fluid.builtinFail(false, args, activity);
     };
 
-    fluid.pushSoftFailure(jqUnit.failureHandler);
+    fluid.failureEvent.addListener(jqUnit.failureHandler, "jqUnit", "before:fail");
+    
+    // Helpful utility for creating multiple test target components compactly
+    fluid.makeComponents = function (components) {
+        fluid.each(components, function (value, key) {
+            var options = {
+                gradeNames: fluid.makeArray(value)
+            };
+            fluid.defaults(key, options);
+        });
+    };
 
     /**
      * Keeps track of the order of function invocations. The transcript contains information about
@@ -255,17 +263,25 @@ var jqUnit = jqUnit || {};
      
     jqUnit.expectFrameworkDiagnostic = function (message, toInvoke, errorTexts) {
         errorTexts = fluid.makeArray(errorTexts);
+        var gotFailure;
         try {
-            fluid.pushSoftFailure(true);
-            jqUnit.expect(1 + errorTexts.length);
+            fluid.failureEvent.addListener(fluid.identity, "jqUnit");
+            jqUnit.expect(errorTexts.length);
             toInvoke();
         } catch (e) {
-            jqUnit.assertTrue(message, e instanceof fluid.FluidError);
+            gotFailure = true;
+            if (!(e instanceof fluid.FluidError)) {
+                jqUnit.fail(message + " - received non-framework exception");
+                throw e;
+            }
             fluid.each(errorTexts, function (errorText) {
-                jqUnit.assertTrue(message + " - message text", e.message.indexOf(errorText) >= 0);
+                jqUnit.assertTrue(message + " - message text must contain " + errorText, e.message.indexOf(errorText) >= 0);
             });
         } finally {
-            fluid.pushSoftFailure(-1);
+            if (!gotFailure) {
+                jqUnit.fail("No failure received for test " + message);
+            }
+            fluid.failureEvent.removeListener("jqUnit");
         }
     };
 

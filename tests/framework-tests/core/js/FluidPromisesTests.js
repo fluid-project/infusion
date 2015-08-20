@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -143,7 +142,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     
     fluid.defaults("fluid.tests.simplePromiseTransform", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         events: {
             forwardTransform: null,
             backwardTransform: null
@@ -253,7 +252,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     
     fluid.defaults("fluid.tests.errorPromiseTransform", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         events: {
             forwardTransform: null
         },
@@ -287,7 +286,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.testErrorPromises("Error promise chain via fluid.promise.follow", true);
     
     fluid.defaults("fluid.tests.optionsTransform", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         events: {
             forwardTransform: null
         },
@@ -389,14 +388,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
     
     jqUnit.test("fluid.promise.sequence error on non-array", function () {
-        fluid.pushSoftFailure(true);
-        try {
+        jqUnit.expectFrameworkDiagnostic("Diagnostic on non-array", function () {
             fluid.promise.sequence({unearthly: "object"});
-        } catch (e) {
-            jqUnit.assertTrue("Receive framework error on non-array sequence", e instanceof fluid.FluidError);
-        } finally {
-            fluid.pushSoftFailure(-1);
-        }
+        }, "array");
     });
     
     jqUnit.test("fluid.promise.map tests", function () {
@@ -408,14 +402,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         p1.then(function (resolve) {
             jqUnit.assertEquals("Mapped value returned from fluid.promise.map", 2, resolve);
         });
-        var unit = fluid.promise();
-        unit.resolve(1);
+        var unit = fluid.promise().resolve(1);
         var p2 = fluid.promise.map(unit, mapper);
         p2.then(function (resolve) {
             jqUnit.assertEquals("Mapped promise returned from fluid.promise.map", 2, resolve);
         });
-        var fail = fluid.promise();
-        fail.reject("Error");
+        var fail = fluid.promise().reject("Error");
         var p3 = fluid.promise.map(fail, mapper);
         p3 = fluid.toPromise(p3); // test idempotency of toPromise on promises
         p3.then(function () {
