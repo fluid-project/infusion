@@ -28,7 +28,9 @@ var fluid_2_0 = fluid_2_0 || {};
             // TODO: This information is supposed to be generated from the JSON
             // schema describing various preferences. For now it's kept in top
             // level prefsEditor to avoid further duplication.
-            initialModel: {}
+            initialModel: {
+                preferences: {}  // To keep initial preferences
+            }
         }
     });
 
@@ -108,12 +110,8 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
     
-    // TODO: It is likely that "originalUserOptions" is now unnecessary
-    // Note that the original implementation in fact never succeeded in avoiding 
-    // to distribute defaults in any case
-
     fluid.pageEnhancer.init = function (that) {
-        that.uiEnhancer.updateModel(that.getSettings());
+        that.uiEnhancer.updateModel(fluid.get(that.getSettings(), "preferences"));
     };
 
 })(jQuery, fluid_2_0);

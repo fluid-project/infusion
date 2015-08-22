@@ -228,7 +228,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "options.resources.template": "templateLoader.resources.%prefKey"
         },
         panelModel: {
-            "%internalModelName": "prefsEditor.model.%externalModelName"
+            "%internalModelName": "prefsEditor.model.preferences.%externalModelName"
         },
         compositePanelBasedOnSub: {
             "%subPrefKey": "templateLoader.resources.%subPrefKey"
@@ -240,7 +240,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "container": "uiEnhancer.container"
         },
         enactorModel: {
-            "%internalModelName": "uiEnhancer.model.%externalModelName"
+            "%internalModelName": "uiEnhancer.model.preferences.%externalModelName"
         }
     };
 
@@ -347,7 +347,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     "yb": "fl-theme-prefsEditor-yb fl-theme-yb"
                                 },
                                 model: {
-                                    value: "prefsEditor.model.fluid_prefs_contrast"
+                                    value: "prefsEditor.model.preferences.fluid_prefs_contrast"
                                 },
                                 controlValues: {
                                     theme: ["default", "bw", "wb", "by", "yb"]
@@ -372,7 +372,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 initialModel: {
                     members: {
                         initialModel: {
-                            "fluid_prefs_contrast": "default"
+                            preferences: {
+                                "fluid_prefs_contrast": "default"
+                            }
                         }
                     }
                 }
@@ -621,7 +623,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     container: "uiEnhancer.container",
                     options: {
                         model: {
-                            value: "uiEnhancer.model.fluid_prefs_textSize"
+                            value: "uiEnhancer.model.preferences.fluid_prefs_textSize"
                         }
                     }
                 }
@@ -631,7 +633,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             gradeNames: ["fluid.prefs.initialModel"],
             members: {
                 initialModel: {
-                    fluid_prefs_textSize: 1
+                    preferences: {
+                        fluid_prefs_textSize: 1
+                    }
                 }
             }
         },
@@ -670,7 +674,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     options: {
                         gradeNames: ["fluid.prefs.prefsEditorConnections"],
                         model: {
-                            textSize: "prefsEditor.model.fluid_prefs_textSize"
+                            textSize: "prefsEditor.model.preferences.fluid_prefs_textSize"
                         },
                         range: {
                             min: 1,
@@ -707,7 +711,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             gradeNames: ["fluid.prefs.initialModel"],
             members: {
                 initialModel: {
-                    fluid_prefs_textSize: 1
+                    preferences: {
+                        fluid_prefs_textSize: 1
+                    }
                 }
             }
         }
@@ -815,7 +821,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             options: {
                                 gradeNames: ["fluid.prefs.prefsEditorConnections"],
                                 model: {
-                                    textSize: "prefsEditor.model.fluid_prefs_textSize"
+                                    textSize: "prefsEditor.model.preferences.fluid_prefs_textSize"
                                 },
                                 range: {
                                     min: 1,
@@ -834,7 +840,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             options: {
                                 gradeNames: ["fluid.prefs.prefsEditorConnections"],
                                 model: {
-                                    value: "prefsEditor.model.fluid_prefs_textSize"
+                                    value: "prefsEditor.model.preferences.fluid_prefs_textSize"
                                 },
                                 range: {
                                     min: 1,
@@ -873,7 +879,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     gradeNames: ["fluid.prefs.initialModel"],
                     members: {
                         initialModel: {
-                            fluid_prefs_textSize: 1
+                            preferences: {
+                                fluid_prefs_textSize: 1
+                            }
                         }
                     }
                 }
@@ -909,8 +917,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             options: {
                                 gradeNames: ["fluid.prefs.prefsEditorConnections"],
                                 model: {
-                                    links: "prefsEditor.model.fluid_prefs_emphasizeLinks",
-                                    inputsLarger: "prefsEditor.model.fluid_prefs_inputsLarger"
+                                    links: "prefsEditor.model.preferences.fluid_prefs_emphasizeLinks",
+                                    inputsLarger: "prefsEditor.model.preferences.fluid_prefs_inputsLarger"
                                 },
                                 messageBase: "{messageLoader}.resources.fluid_prefs_panel_oneForManyPrefs.resourceText",
                                 resources: {
@@ -943,8 +951,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     gradeNames: ["fluid.prefs.initialModel"],
                     members: {
                         initialModel: {
-                            fluid_prefs_emphasizeLinks: false,
-                            fluid_prefs_inputsLarger: false
+                            preferences: {
+                                fluid_prefs_emphasizeLinks: false,
+                                fluid_prefs_inputsLarger: false
+                            }
                         }
                     }
                 }
@@ -977,7 +987,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             options: {
                                 gradeNames: ["fluid.prefs.prefsEditorConnections"],
                                 model: {
-                                    textSize: "prefsEditor.model.fluid_prefs_textSize"
+                                    textSize: "prefsEditor.model.preferences.fluid_prefs_textSize"
                                 },
                                 range: {
                                     min: 1,
@@ -1013,7 +1023,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             container: "uiEnhancer.container",
                             options: {
                                 model: {
-                                    value: "uiEnhancer.model.fluid_prefs_textSize"
+                                    value: "uiEnhancer.model.preferences.fluid_prefs_textSize"
                                 }
                             }
                         }
@@ -1024,7 +1034,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     gradeNames: ["fluid.prefs.initialModel"],
                     members: {
                         initialModel: {
-                            fluid_prefs_textSize: 1
+                            preferences: {
+                                fluid_prefs_textSize: 1
+                            }
                         }
                     }
                 },
@@ -1292,8 +1304,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         },
                         "selectorsToIgnore": ["fluid_prefs_subPanel1", "fluid_prefs_subPanel2"],
                         model: {
-                            "fluid_prefs_subPanel1": "prefsEditor.model.fluid_prefs_subPanel1",
-                            "fluid_prefs_subPanel2": "prefsEditor.model.fluid_prefs_subPanel2"
+                            "fluid_prefs_subPanel1": "prefsEditor.model.preferences.fluid_prefs_subPanel1",
+                            "fluid_prefs_subPanel2": "prefsEditor.model.preferences.fluid_prefs_subPanel2"
                         },
                         components: {
                             "fluid_prefs_subPanel1": {
@@ -1334,8 +1346,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         initialModel: {
             members: {
                 initialModel: {
-                    fluid_prefs_subPanel1: false,
-                    fluid_prefs_subPanel2: false
+                    preferences: {
+                        fluid_prefs_subPanel1: false,
+                        fluid_prefs_subPanel2: false
+                    }
                 }
             }
         },
@@ -1557,8 +1571,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         },
                         "selectorsToIgnore": ["fluid_prefs_subPanel3", "fluid_prefs_subPanel4"],
                         model: {
-                            "fluid_prefs_subPanel3": "prefsEditor.model.fluid_prefs_subPanel3",
-                            "fluid_prefs_subPanel4": "prefsEditor.model.fluid_prefs_subPanel4"
+                            "fluid_prefs_subPanel3": "prefsEditor.model.preferences.fluid_prefs_subPanel3",
+                            "fluid_prefs_subPanel4": "prefsEditor.model.preferences.fluid_prefs_subPanel4"
                         },
                         components: {
                             "fluid_prefs_subPanel3": {
@@ -1598,8 +1612,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         initialModel: {
             members: {
                 initialModel: {
-                    fluid_prefs_subPanel3: false,
-                    fluid_prefs_subPanel4: false
+                    preferences: {
+                        fluid_prefs_subPanel3: false,
+                        fluid_prefs_subPanel4: false
+                    }
                 }
             }
         },
@@ -1855,10 +1871,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         },
                         "selectorsToIgnore": ["fluid_prefs_subPanel5", "fluid_prefs_subPanel6", "fluid_prefs_subPanel7", "fluid_prefs_subPanel8"],
                         model: {
-                            "fluid_prefs_subPanel5": "prefsEditor.model.fluid_prefs_subPanel5",
-                            "fluid_prefs_subPanel6": "prefsEditor.model.fluid_prefs_subPanel6",
-                            "fluid_prefs_subPanel7": "prefsEditor.model.fluid_prefs_subPanel7",
-                            "fluid_prefs_subPanel8": "prefsEditor.model.fluid_prefs_subPanel8"
+                            "fluid_prefs_subPanel5": "prefsEditor.model.preferences.fluid_prefs_subPanel5",
+                            "fluid_prefs_subPanel6": "prefsEditor.model.preferences.fluid_prefs_subPanel6",
+                            "fluid_prefs_subPanel7": "prefsEditor.model.preferences.fluid_prefs_subPanel7",
+                            "fluid_prefs_subPanel8": "prefsEditor.model.preferences.fluid_prefs_subPanel8"
                         },
                         components: {
                             "fluid_prefs_subPanel5": {
@@ -1913,10 +1929,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         initialModel: {
             members: {
                 initialModel: {
-                    fluid_prefs_subPanel5: false,
-                    fluid_prefs_subPanel6: false,
-                    fluid_prefs_subPanel7: false,
-                    fluid_prefs_subPanel8: false
+                    preferences: {
+                        fluid_prefs_subPanel5: false,
+                        fluid_prefs_subPanel6: false,
+                        fluid_prefs_subPanel7: false,
+                        fluid_prefs_subPanel8: false
+                    }
                 }
             }
         },
@@ -1944,7 +1962,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     options: {
                         "cssClass": "fl-link-enhanced",
                         model: {
-                            value: "uiEnhancer.model.fluid_prefs_subPanel1"
+                            value: "uiEnhancer.model.preferences.fluid_prefs_subPanel1"
                         }
                     }
                 },
@@ -1954,7 +1972,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     options: {
                         "cssClass": "fl-text-larger",
                         model: {
-                            value: "uiEnhancer.model.fluid_prefs_subPanel2"
+                            value: "uiEnhancer.model.preferences.fluid_prefs_subPanel2"
                         }
                     }
                 }

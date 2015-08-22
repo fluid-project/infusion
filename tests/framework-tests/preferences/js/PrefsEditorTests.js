@@ -90,6 +90,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.prefs.noteSaveCalled = function (that) {
         that.saveCalled = true;
     };
+
+    fluid.tests.prefs.noteRefreshCalled = function (that) {
+        ++ that.refreshCount;
+    };
     
     fluid.defaults("fluid.tests.prefs.standardEditor", { // a mixin grade for fluid.prefs.prefsEditor
         gradeNames: ["fluid.prefs.uiEnhancerRelay"],
@@ -104,13 +108,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         members: {
-            saveCalled: false
+            saveCalled: false,
+            refreshCount: 0
         },
         listeners: {
-            onSave: {
-                funcName: "fluid.tests.prefs.noteSaveCalled",
-                args: "{prefsEditor}"
-            }
+            onSave: "fluid.tests.prefs.noteSaveCalled({prefsEditor})",
+            "onPrefsEditorRefresh.noteCalled": "fluid.tests.prefs.noteRefreshCalled({that})"
         }
     });
     
@@ -144,25 +147,33 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests.prefs.models");
 
     fluid.tests.prefs.models.bwSkin = {
-        textSize: "1.8",
-        textFont: "verdana",
-        theme: "bw",
-        lineSpace: 2
+        preferences: {
+            textSize: "1.8",
+            textFont: "verdana",
+            theme: "bw",
+            lineSpace: 2
+        }
     };
 
     fluid.tests.prefs.models.bwSkin2 = {
-        textSize: "1.1",
-        textFont: "italic",
-        theme: "cw",
-        lineSpace: 1
+        preferences: {
+            textSize: "1.1",
+            textFont: "italic",
+            theme: "cw",
+            lineSpace: 1
+        }
     };
 
     fluid.tests.prefs.models.maxTextSize = {
-        textSize: "2.0"
+        preferences: {
+            textSize: "2.0"
+        }
     };
 
     fluid.tests.prefs.models.minTextSize = {
-        textSize: "1.0"
+        preferences: {
+            textSize: "1.0"
+        }
     };
 
     fluid.tests.prefs.testPrefsEditor = function (onReady, prefsEditorGrades, loaderGrades) {
@@ -207,38 +218,55 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.start();
         }, "fluid.prefs.starterPanels");
     });
+    
+    fluid.tests.prefs.assertPrefs = function (template, prefs, method, expected, model) {
+        var t = function (term) {
+            return fluid.stringTemplate(template, {p: term});
+        };
+        var definedPrefs = 0;
+        prefs.forEach(function (pref) {
+            var expectedPref = expected.preferences[pref];
+            if (expectedPref !== undefined) {
+                ++definedPrefs;
+            }
+            jqUnit[method](t(pref), expectedPref, model.preferences[pref]);
+        });
+        jqUnit.assertTrue(t("some preference") + " must have had a value", definedPrefs > 0); // guard against model misalignment simply comparing undefined with undefined
+    };
 
     jqUnit.asyncTest("PrefsEditor Save, Reset, and Cancel", function () {
-        jqUnit.expect(13);
+        jqUnit.expect(18);
 
         fluid.tests.prefs.testPrefsEditor(function (prefsEditor) {
             var bwSkin = fluid.tests.prefs.models.bwSkin;
+            var ps = ["textSize", "textFont", "theme"];
             prefsEditor.applier.change("", bwSkin);
+            var expectedRefreshCount = prefsEditor.refreshCount + 1;
 
             jqUnit.assertFalse("Save hasn't been called", prefsEditor.saveCalled);
             prefsEditor.saveAndApply();
             jqUnit.assertTrue("Save has been called", prefsEditor.saveCalled);
+            jqUnit.assertEquals("PrefsEditor has been refreshed when preferences are changed", expectedRefreshCount, prefsEditor.refreshCount);
+            
 
-            var uiEnhancerSettings = prefsEditor.getSettings();
+            var savedSettings = prefsEditor.getSettings();
             var container = $("body");
-            jqUnit.assertDeepEq("bw setting was saved", bwSkin.theme, uiEnhancerSettings.theme);
+            jqUnit.assertDeepEq("bw setting was saved", bwSkin.preferences.theme, savedSettings.preferences.theme);
             jqUnit.assertTrue("Body has the high contrast colour scheme", container.hasClass("fl-theme-bw"));
-            jqUnit.assertEquals("Text size has been saved", bwSkin.textSize, prefsEditor.model.textSize);
-            jqUnit.assertEquals("Text font has been saved", bwSkin.textFont, prefsEditor.model.textFont);
-            jqUnit.assertEquals("Theme has been saved", bwSkin.theme, prefsEditor.model.theme);
+            fluid.tests.prefs.assertPrefs("%p has been saved", ps, "assertEquals", bwSkin, prefsEditor.model);
+
+            var noPrefsChange = $.extend(true, {}, bwSkin, {userData: true});
+            prefsEditor.applier.change("", noPrefsChange);
+            jqUnit.assertEquals("PrefsEditor hasn't been refreshed when preferences are not changed", expectedRefreshCount, prefsEditor.refreshCount);
 
             prefsEditor.reset();
-            jqUnit.assertNotEquals("Reset model text size", bwSkin.textSize, prefsEditor.options.textSize);
-            jqUnit.assertNotEquals("Reset model text font", bwSkin.textFont, prefsEditor.options.textFont);
-            jqUnit.assertNotEquals("Reset model theme", bwSkin.theme, prefsEditor.options.theme);
+            fluid.tests.prefs.assertPrefs("Reset model %p", ps, "assertNotEquals", bwSkin, prefsEditor.model);
 
             prefsEditor.applier.change("", bwSkin);
             prefsEditor.applier.change("", fluid.tests.prefs.models.bwSkin2);
 
             prefsEditor.cancel();
-            jqUnit.assertEquals("Cancel text size change", bwSkin.textSize, prefsEditor.model.textSize);
-            jqUnit.assertEquals("Cancel text font change", bwSkin.textFont, prefsEditor.model.textFont);
-            jqUnit.assertEquals("Cancel theme change", bwSkin.theme, prefsEditor.model.theme);
+            fluid.tests.prefs.assertPrefs("cancel %p change", ps, "assertEquals", bwSkin, prefsEditor.model);
 
             jqUnit.start();
         }, "fluid.prefs.starterPanels");
@@ -251,10 +279,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var bwSkin = fluid.tests.prefs.models.bwSkin;
             prefsEditor.applier.change("", bwSkin);
 
-            jqUnit.assertEquals("bw setting was set in the model", bwSkin.theme, prefsEditor.model.theme);
+            jqUnit.assertEquals("bw setting was set in the model", bwSkin.preferences.theme, prefsEditor.model.preferences.theme);
 
-            var uiEnhancerSettings = prefsEditor.getSettings();
-            jqUnit.assertUndefined("bw setting was not saved", uiEnhancerSettings);
+            var savedSettings = prefsEditor.getSettings();
+            jqUnit.assertUndefined("bw setting was not saved", savedSettings);
 
             prefsEditor.events.onPrefsEditorRefresh.fire();
             var fontSizeCtrl = $(".flc-prefsEditor-min-text-size");
@@ -300,23 +328,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * **************************************/
     
     fluid.tests.prefs.applierRequestChanges = function (prefsEditor, selectionOptions) {
-        prefsEditor.applier.requestChange("textFont", selectionOptions.textFont);
-        prefsEditor.applier.requestChange("theme", selectionOptions.theme);
-        prefsEditor.applier.requestChange("textSize", selectionOptions.textSize);
-        prefsEditor.applier.requestChange("lineSpace", selectionOptions.lineSpace);
+        ["textFont", "theme", "textSize", "lineSpace"].forEach(function (pref) {
+            prefsEditor.applier.requestChange(["preferences", pref], selectionOptions.preferences[pref]);
+        });
     };
     
     fluid.tests.prefs.checkPaths = function (prefsEditor, paths) {
         fluid.each(paths, function (exists, path) {
             jqUnit.assertEquals("Check existence of path " + path, exists, !!fluid.get(prefsEditor, path));
         });
-    };
-
-    fluid.tests.prefs.checkModelSelections = function (message, expectedSelections, actualSelections) {
-        jqUnit.assertEquals(message + ": Text font correctly updated", expectedSelections.textFont, actualSelections.textFont);
-        jqUnit.assertEquals(message + ": Theme correctly updated", expectedSelections.theme, actualSelections.theme);
-        jqUnit.assertEquals(message + ": Text size correctly updated", expectedSelections.textSize, actualSelections.textSize);
-        jqUnit.assertEquals(message + ": Line space correctly updated", expectedSelections.lineSpace, actualSelections.lineSpace);
     };
 
     fluid.tests.prefs.checkSettingsStore = function (message, expectedSelections, actualSelections, preSaveSelections) {
@@ -328,6 +348,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.prefs.checkSaveCancel = function (prefsEditor, saveModel, cancelModel) {
+        var ps = ["textFont", "theme", "textSize", "lineSpace"];
         var saveButton = prefsEditor.locate("save");
         var cancelButton = prefsEditor.locate("cancel");
         var resetButton = prefsEditor.locate("reset");
@@ -339,21 +360,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         var preSaveSelections = fluid.copy(prefsEditor.model);
         fluid.tests.prefs.applierRequestChanges(prefsEditor, saveModel);
-        fluid.tests.prefs.checkModelSelections("After apply saveModel", saveModel, prefsEditor.model);
-        fluid.tests.prefs.checkSettingsStore("After apply saveModel", saveModel, prefsEditor.model,
-            preSaveSelections);
+        
+        fluid.tests.prefs.assertPrefs("After apply saveModel: %p correctly updated", ps, "assertEquals", saveModel, prefsEditor.model);
+        fluid.tests.prefs.checkSettingsStore("After apply saveModel", saveModel, prefsEditor.model, preSaveSelections);
         saveButton.click();
-        fluid.tests.prefs.checkModelSelections("After clicking save", saveModel, prefsEditor.getSettings());
+        fluid.tests.prefs.assertPrefs("After clicking save: %p correctly updated", ps, "assertEquals", saveModel, prefsEditor.getSettings());
         fluid.tests.prefs.checkSettingsStore("After clicking save", saveModel, prefsEditor.getSettings(), preSaveSelections);
         fluid.tests.prefs.applierRequestChanges(prefsEditor, cancelModel);
         cancelButton.click();
-        fluid.tests.prefs.checkModelSelections("After applying cancelModel and clicking cancel", saveModel, prefsEditor.getSettings());
+        fluid.tests.prefs.assertPrefs("After applying cancelModel and clicking cancel: %p correctly updated", ps, "assertEquals", saveModel, prefsEditor.getSettings());
         fluid.tests.prefs.checkSettingsStore("After applying cancelModel and clicking cancel", saveModel,
             prefsEditor.getSettings(), preSaveSelections);
         resetButton.click();
-        fluid.tests.prefs.checkModelSelections("After clicking reset", prefsEditor.initialModel, prefsEditor.model);
+        fluid.tests.prefs.assertPrefs("After clicking reset: %p correctly updated", ps, "assertEquals", prefsEditor.initialModel, prefsEditor.model);
         cancelButton.click();
-        fluid.tests.prefs.checkModelSelections("After clicking cancel", saveModel, prefsEditor.getSettings());
+        fluid.tests.prefs.assertPrefs("After clicking cancel 2nd time: %p correctly updated", ps, "assertEquals", saveModel, prefsEditor.getSettings());
         fluid.tests.prefs.checkSettingsStore("After clicking cancel", saveModel, prefsEditor.getSettings(), preSaveSelections);
         // apply the reset settings to make the test result page more readable
         resetButton.click();
@@ -468,8 +489,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             prefsEditor.applier.change("", fluid.tests.prefs.models.bwSkin);
             jqUnit.assertTrue("Model has changed, auto-save changes", prefsEditor.saveCalled);
 
-            var uiEnhancerSettings = prefsEditor.getSettings();
-            jqUnit.assertDeepEq("bw setting was saved", fluid.tests.prefs.models.bwSkin.theme, uiEnhancerSettings.theme);
+            var savedSettings = prefsEditor.getSettings();
+            jqUnit.assertDeepEq("bw setting was saved", fluid.tests.prefs.models.bwSkin.preferences.theme, savedSettings.preferences.theme);
 
             prefsEditor.reset();
             jqUnit.start();

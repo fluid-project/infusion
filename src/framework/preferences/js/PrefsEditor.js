@@ -229,8 +229,8 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.defaults("fluid.prefs.uiEnhancerRelay", {
         gradeNames: ["fluid.modelComponent"],
         listeners: {
-            onCreate: "{that}.addListener",
-            onDestroy: "{that}.removeListener"
+            "onCreate.addListener": "{that}.addListener",
+            "onDestroy.removeListener": "{that}.removeListener"
         },
         events: {
             updateEnhancerModel: "{fluid.prefs.prefsEditor}.events.onUpdateEnhancerModel"
@@ -246,7 +246,7 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             updateEnhancerModel: {
                 funcName: "fluid.prefs.uiEnhancerRelay.updateEnhancerModel",
-                args: ["{uiEnhancer}", "{fluid.prefs.prefsEditor}.model"]
+                args: ["{uiEnhancer}", "{fluid.prefs.prefsEditor}.model.preferences"]
             }
         }
     });
@@ -283,7 +283,7 @@ var fluid_2_0 = fluid_2_0 || {};
              */
             fetch: {
                 funcName: "fluid.prefs.prefsEditor.fetch",
-                args: ["{that}"]
+                args: ["{that}", "{arguments}.0"]
             },
             applyChanges: {
                 funcName: "fluid.prefs.prefsEditor.applyChanges",
@@ -315,7 +315,8 @@ var fluid_2_0 = fluid_2_0 || {};
         events: {
             onSave: null,
             onCancel: null,
-            onReset: null,
+            beforeReset: null,
+            afterReset: null,
             onAutoSave: null,
             modelChanged: null,
             onPrefsEditorRefresh: null,
@@ -324,8 +325,8 @@ var fluid_2_0 = fluid_2_0 || {};
             onReady: null
         },
         listeners: {
-            onCreate: "fluid.prefs.prefsEditor.init",
-            onAutoSave: "{that}.save"
+            "onCreate.init": "fluid.prefs.prefsEditor.init",
+            "onAutoSave.save": "{that}.save"
         },
         modelListeners: {
             "": [{
@@ -349,7 +350,7 @@ var fluid_2_0 = fluid_2_0 || {};
         that.events.onUpdateEnhancerModel.fire();
     };
 
-    fluid.prefs.prefsEditor.fetch = function (that) {
+    fluid.prefs.prefsEditor.fetch = function (that, eventName) {
         var completeModel = that.getSettings();
         completeModel = $.extend(true, {}, that.initialModel, completeModel);
         // TODO: This may not be completely effective if the root model is smaller than
@@ -362,38 +363,63 @@ var fluid_2_0 = fluid_2_0 || {};
         // and this implementation doesn't seem to be causing a problem at present so we had
         // just better leave it the way it is for now.
         that.applier.change("", completeModel);
+        if (eventName) {
+            that.events[eventName].fire(that);
+        }
         that.events.onPrefsEditorRefresh.fire();
         that.applyChanges();
     };
 
     /**
      * Saves the current model and fires onSave
-     */
+ */
     fluid.prefs.prefsEditor.save = function (that) {
-        var savedSelections = fluid.copy(that.model);
+        if (!that.model) {  // Don't save a reset model
+            return;
+        }
 
-        fluid.each(savedSelections, function (value, key) {
-            if (fluid.get(that.initialModel, key) === value) {
-                delete savedSelections[key];
-            }
-        });
-        that.events.onSave.fire(savedSelections);
-        that.setSettings(savedSelections);
+        var initialModel = that.initialModel,
+            userSelections = fluid.copy(that.model),
+            changedSelections = {};
+
+        // Only save the changed preferences so the future default value change on preferences can still be correctly merged with changed preferences
+        if (fluid.model.diff(userSelections.preferences, initialModel.preferences)) {
+            delete userSelections.preferences;
+        } else {
+            var stats = {changes: 0, unchanged: 0, changeMap: {}};
+
+            fluid.model.diff(userSelections.preferences, fluid.get(that.initialModel, ["preferences"]), stats);
+
+            fluid.each(stats.changeMap, function (state, path) {
+                fluid.set(changedSelections, ["preferences", path], userSelections.preferences[path]);
+            });
+        }
+
+        that.events.onSave.fire(changedSelections);
+        that.setSettings(changedSelections);
+        return changedSelections;
     };
 
     fluid.prefs.prefsEditor.saveAndApply = function (that) {
-        that.save();
-        that.events.onPrefsEditorRefresh.fire();
-        that.applyChanges();
+        var prevSettings = that.getSettings(),
+            changedSelections = that.save();
+
+        // Only when preferences are changed, re-render panels and trigger enactors to apply changes
+        if (!fluid.model.diff(fluid.get(changedSelections, "preferences"), fluid.get(prevSettings, "preferences"))) {
+            that.events.onPrefsEditorRefresh.fire();
+            that.applyChanges();
+        }
     };
 
     /**
-     * Resets the selections to the integrator's defaults and fires onReset
+     * Resets the selections to the integrator's defaults and fires afterReset
      */
     fluid.prefs.prefsEditor.reset = function (that) {
+        that.events.beforeReset.fire(that);
+        that.applier.fireChangeRequest({path: "", type: "DELETE"});
         that.applier.change("", fluid.copy(that.initialModel));
         that.events.onPrefsEditorRefresh.fire();
-        that.events.onReset.fire(that);
+        that.events.afterReset.fire(that);
     };
 
     /**
@@ -421,10 +447,8 @@ var fluid_2_0 = fluid_2_0 || {};
 
         that.container.append(that.options.resources.template.resourceText);
         bindHandlers(that);
-        // This creates subcomponents - we can find default model afterwards
-        that.events.onPrefsEditorMarkupReady.fire(that);
 
-        that.fetch();
+        that.fetch("onPrefsEditorMarkupReady");
         that.events.onReady.fire(that);
     };
 
@@ -464,7 +488,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 funcName: "fluid.prefs.preview.updateModel",
                 args: [
                     "{preview}",
-                    "{prefsEditor}.model"
+                    "{prefsEditor}.model.preferences"
                 ]
             }
         },
@@ -474,18 +498,18 @@ var fluid_2_0 = fluid_2_0 || {};
         listeners: {
             "onCreate.startLoadingContainer": "fluid.prefs.preview.startLoadingContainer",
             "{prefsEditor}.events.modelChanged": "{that}.updateModel",
-            onReady: "{that}.updateModel"
+            "onReady.updateModel": "{that}.updateModel"
         },
         templateUrl: "%prefix/PrefsEditorPreview.html"
     });
 
-    fluid.prefs.preview.updateModel = function (that, model) {
+    fluid.prefs.preview.updateModel = function (that, preferences) {
         /**
          * SetTimeout is temp fix for http://issues.fluidproject.org/browse/FLUID-2248
          */
         setTimeout(function () {
             if (that.enhancer) {
-                that.enhancer.updateModel(model);
+                that.enhancer.updateModel(preferences);
             }
         }, 0);
     };
