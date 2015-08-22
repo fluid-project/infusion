@@ -97,7 +97,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             testPercentage("0.1", 1);  //1.42857
 
             //infinity test
-            testPercentage(Math.pow(2, 1024), "Infinity");
+            testPercentage(Math.pow(2, 1024), Infinity);
             total = Math.pow(2, 1024);
             testPercentage(0, 0);
             jqUnit.assertTrue(total + "/" + total + " is not a number",

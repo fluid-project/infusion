@@ -273,11 +273,11 @@
         });
 
         jqUnit.test("Decorator and degradation test", function () {
-            var indexClick = null;
-            var columnClick = null;
-            var clickBack = function (index, column) {
-                indexClick = index;
-                columnClick = column;
+            var indexChange = null;
+            var columnChange = null;
+            var changeBack = function (index, column) {
+                indexChange = index;
+                columnChange = column;
             };
             var contentTree = fluid.transform(enc_table, function (row, i) {
                 return {
@@ -287,7 +287,7 @@
                         value: row.species,
                         decorators: {
                             jQuery: ["click", function () {
-                                clickBack(i, "species");
+                                changeBack(i, "species");
                             }],
                             identify: "species-" + i,
                             addClass: "CATTclick1 CATTclick2",
@@ -300,7 +300,7 @@
                             type: "$",
                             func: "change",
                             args: function () {
-                                clickBack(i, "score");
+                                changeBack(i, "score");
                             }
                         }, {
                             type: "identify",
@@ -322,13 +322,13 @@
             jqUnit.assertTrue("Decorated by addClass", el.hasClass("CATTclick1"));
             jqUnit.assertFalse("Undecorated by removeClass", el.hasClass("CATTclick3"));
             el.click();
-            jqUnit.assertEquals("Decorated by click", 7, indexClick);
-            clickBack(null, null);
+            jqUnit.assertEquals("Decorated by click", 7, indexChange);
+            changeBack(null, null);
             var input = fluid.jById(idMap["score-7"]);
-            jqUnit.assertEquals("Input text", 1.00, input.val());
+            jqUnit.assertEquals("Input text", "1", input.val());
             input.val(100);
             input.change();
-            jqUnit.assertEquals("change-decorate-identify", 7, indexClick);
+            jqUnit.assertEquals("change-decorate-identify", 7, indexChange);
         });
 
         //   rendertests.test("Invalid trees", function () {
@@ -1509,7 +1509,7 @@
 
             jqUnit.assertEquals("Number of Inputs", selectionModel.values.length, $("input", ".nestedDataBinding").length);
             jqUnit.assertEquals("Number of Labels", selectionModel.values.length, $("label", ".nestedDataBinding").length);
-            jqUnit.assertEquals("Selected Value", selectionModel.selection, $("input:checked", ".nestedDataBinding").attr("value"));
+            jqUnit.assertEquals("Selected Value", selectionModel.selection[0], $("input:checked", ".nestedDataBinding").attr("value"));
         });
 
 

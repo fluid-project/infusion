@@ -466,7 +466,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var formData = sender.send(file1, queueSettings, xhr);
                 jqUnit.assertEquals("The correct file is appended", file1.id, formData.data.file.id);
                 jqUnit.assertEquals("postParam is correctly appended to FormData", "HTML5", formData.data.name);
-                jqUnit.assertEquals("postParam is correctly appended to FormData", 8, formData.data.id);
+                jqUnit.assertEquals("postParam is correctly appended to FormData", "8", formData.data.id);
                 jqUnit.assertEquals("XHR receives the proper method", "POST", xhr.method);
                 jqUnit.assertEquals("XHR url is set", "/home/Uploader", xhr.url);
                 jqUnit.assertTrue("XHR to execute asynchronously", xhr.async);

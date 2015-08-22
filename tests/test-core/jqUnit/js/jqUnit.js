@@ -132,11 +132,11 @@ var jqUnit = jqUnit || {};
         },
 
         assertEquals: function (msg, expected, actual) {
-            QUnit.equal(actual, expected, processMessage(msg));
+            QUnit.strictEqual(actual, expected, processMessage(msg));
         },
 
         assertNotEquals: function (msg, value1, value2) {
-            pok(value1 !== value2, msg);
+            QUnit.notStrictEqual(value1 !== value2, msg);
         },
 
         assertTrue: function (msg, value) {
