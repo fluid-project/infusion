@@ -307,11 +307,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         var tabIndexTest = function (container, reordererOptions) {
             var layoutReorderer =  fluid.reorderLayout(container, reordererOptions);
-            jqUnit.assertEquals("Tabindex should be set to 0 for the container ", 0, layoutReorderer.container.attr("tabindex"));
+            jqUnit.assertEquals("Tabindex should be set to 0 for the container ", 0, +layoutReorderer.container.attr("tabindex"));
 
             var modules = layoutReorderer.locate("modules");
             for (var i = 0; i < modules.length; i++) {
-                jqUnit.assertEquals("Tabindex should be set to -1 for item " + i, -1, modules.eq(i).attr("tabindex"));
+                jqUnit.assertEquals("Tabindex should be set to -1 for item " + i, -1, +modules.eq(i).attr("tabindex"));
             }
         };
 

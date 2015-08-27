@@ -330,7 +330,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
         // Continuing the work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
         if (lineHeight.match(/[0-9]$/)) {
-            return lineHeight;
+            return Number(lineHeight);
         }
 
         return Math.round(parseFloat(lineHeight) / fontSize * 100) / 100;
