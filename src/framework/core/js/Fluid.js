@@ -1818,8 +1818,10 @@ var fluid = fluid || fluid_2_0;
     };
 
     // Cheapskate implementation which avoids dependency on DataBinding.js
+    // TODO: This is apparently still used by the core merging algorithm, for reasons we no longer understand, even though
+    // it has long been disused by DataBinding itself
     fluid.model.mergeModel = function (target, source) {
-        if (!fluid.isPrimitive(target)) {
+        if (fluid.isPlainObject(target)) {
             var copySource = fluid.copy(source);
             $.extend(true, source, target);
             $.extend(true, source, copySource);
