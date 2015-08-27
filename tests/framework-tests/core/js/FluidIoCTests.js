@@ -220,6 +220,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var result = that.events.event.fire(false);
         jqUnit.assertUndefined("Event returned to nonpreventable through merge", result);
     });
+    
+    /** FLUID-5755 - another "exotic types" test - this time a native array **/
+    
+    fluid.defaults("fluid.tests.componentWithTypedArrayOption", {
+        gradeNames: "fluid.component",
+        buffer: new Float32Array([1, 1, 1, 1])
+    });
+
+    jqUnit.test("FLUID-5755: Typed Array Component Merging", function () {
+        var c = fluid.tests.componentWithTypedArrayOption();
+        jqUnit.assertDeepEq("The component's typed array should be set to the default value.", new Float32Array([1, 1, 1, 1]),
+            c.options.buffer);
+
+        c = fluid.tests.componentWithTypedArrayOption({
+            buffer: new Float32Array([2, 2, 2, 2])
+        });
+        jqUnit.assertDeepEq("The component's typed array should have been overriden.", new Float32Array([2, 2, 2, 2]), c.options.buffer);
+    });
 
     /** FLUID-5239 **/
 
