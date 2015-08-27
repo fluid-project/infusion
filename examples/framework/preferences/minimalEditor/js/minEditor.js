@@ -21,13 +21,20 @@ var minEditor = minEditor || {};
      * This schema defines the preference(s) edited by this preferences editor:
      * their names, types, default values, etc.
      */
-    minEditor.primarySchema = {
-        // the string "minEditor.autoPilot" is the 'name' of the preference
-        "minEditor.autoPilot": {
-            type: "boolean",
-            "default": false
+    fluid.defaults("minEditor.primarySchema", {
+
+        // the base grade for the schema;
+        // using this grade tells the framework that this is a primary schema
+        gradeNames: ["fluid.prefs.schemas"],
+
+        schema: {
+            // the actual specification of the preference
+            "minEditor.autoPilot": {
+                "type": "boolean",
+                "default": false
+            }
         }
-    };
+    });
 
     /**
      * Panel for the auto-pilot preference
@@ -44,22 +51,16 @@ var minEditor = minEditor || {};
             }
         },
 
-        // selectors identify elements in the DOM that need to be accessed by the code
+        // selectors identify elements in the DOM that need to be accessed by the code;
         // in this case, the Renderer will render data into these particular elements
         selectors: {
-            header: ".mec-autoPilot-header",
-            label: ".mec-autoPilot-label",
             autoPilot: ".mec-autoPilot"
         },
 
         // the ProtoTree is basically instructions to the Renderer
         // the keys in the prototree match the selectors above
         protoTree: {
-            // "messagekey" refers to the keys for strings in the JSON messages file
-            header: {messagekey: "autoPilotHeader"},
-            label: {messagekey: "autoPilotLabel"},
-
-            // this string 'autoPilot' refers to the last part of the model path in the preferenceMap
+            // this value is an IoC reference to the last part of the model path in the preferenceMap
             autoPilot: "${autoPilot}"
         }
     });
@@ -69,7 +70,7 @@ var minEditor = minEditor || {};
      */
     fluid.defaults("minEditor.auxSchema", {
 
-        // the basic grade for the schema
+        // the base grade for the schema
         gradeNames: ["fluid.prefs.auxSchema"],
 
         auxiliarySchema: {
@@ -77,18 +78,13 @@ var minEditor = minEditor || {};
             // the loaderGrade identifies the "base" form of preference editor desired
             loaderGrades: ["fluid.prefs.fullNoPreview"],
 
-            // these are the root paths used to reference templates
-            // and message files in this schema
+            // 'terms' are strings that can be re-used elsewhere in this schema;
             terms: {
-                templatePrefix: "html",
-                messagePrefix: "messages"
+                templatePrefix: "html"
             },
 
             // the main template for the preference editor itself
             template: "%templatePrefix/minEditor.html",
-
-            // the message bundle for the preference editor itself
-            message: "%messagePrefix/prefsEditor.json",
 
             autoPilot: {
                 // this 'type' must match the name of the pref in the primary schema
@@ -101,10 +97,7 @@ var minEditor = minEditor || {};
                     container: ".mec-autoPilot",
 
                     // the template for this panel
-                    template: "%templatePrefix/autoPilot.html",
-
-                    // the message bundle for this panel
-                    message: "%messagePrefix/autoPilot.json"
+                    template: "%templatePrefix/autoPilot.html"
                 }
             }
         }
@@ -116,16 +109,9 @@ var minEditor = minEditor || {};
     minEditor.init = function (container) {
         return fluid.prefs.create(container, {
             build: {
-                gradeNames: ["minEditor.auxSchema"],
-                primarySchema: minEditor.primarySchema
+                gradeNames: ["minEditor.auxSchema"]
             }
         });
     };
 
 })();
-
-
-
-
-
-
