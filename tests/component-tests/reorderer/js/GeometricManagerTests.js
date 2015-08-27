@@ -233,7 +233,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         ];
 
         var elementToIndex = function (element) {
-            return element.id.substring(3); // remove "el-" prefix
+            return +element.id.substring(3); // remove "el-" prefix
         };
 
         var testGeometryComputor = function (rects) {
