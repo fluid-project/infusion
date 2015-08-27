@@ -1,0 +1,9 @@
+.me-panel {
+	padding: 1em;
+	border: 1px solid black;
+	width: 50%;
+}
+
+.me-save {
+    margin: 1em;
+}

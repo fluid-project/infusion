@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
+
+        <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+
+        <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformation.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformationTransforms.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/RendererUtilities.js"></script>
+
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/Store.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/UIEnhancer.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/PrefsEditor.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/Panels.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/FullNoPreviewPrefsEditor.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/PrimaryBuilder.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/AuxBuilder.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/Builder.js"></script>
+
+        <script type="text/javascript" src="js/minEditor.js"></script>
+    </head>
+
+    <body>
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+			    myEditor = minEditor.init("#myMinEditor");
+            });
+        </script>
+
+		<!-- placeholder for the preferences editor -->
+        <div id="myMinEditor"></div>
+
+    </body>
+</html>
