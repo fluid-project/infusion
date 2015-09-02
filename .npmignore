@@ -4,7 +4,6 @@
 .jshintrc
 .npmignore
 .project
-Gruntfile.js
 demos/
 examples/
 tests/
