@@ -1,9 +1,13 @@
 .settings
 .gitignore
-.jshintignore
-.jshintrc
 .npmignore
 .project
+build/
 demos/
 examples/
-tests/
+products/
+tests/component-tests/
+tests/framework-tests/
+tests/manual-tests/
+tests/node-tests/
+tests/node-tests/all-tests.html
