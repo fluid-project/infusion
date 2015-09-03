@@ -10,4 +10,5 @@ tests/component-tests/
 tests/framework-tests/
 tests/manual-tests/
 tests/node-tests/
-tests/node-tests/all-tests.html
+tests/test-core/testTests/
+tests/all-tests.html
