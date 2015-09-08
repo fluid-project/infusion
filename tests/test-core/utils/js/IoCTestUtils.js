@@ -245,7 +245,7 @@ var fluid_2_0 = fluid_2_0 || {};
         if (fixture.args) {
             togo = function () {
                 var expandedArgs = fluid.expandOptions(fixture.args, testCaseState.testCaseHolder, {}, {"arguments": arguments});
-                return listener.apply(null, expandedArgs);
+                return listener.apply(null, fluid.makeArray(expandedArgs));
             };
         } else {
             togo = listener;
