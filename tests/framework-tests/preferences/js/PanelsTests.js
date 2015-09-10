@@ -1191,7 +1191,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Test functions shared by text field slider unit tests
      *******************************************************************************/
     fluid.tests.testDefault = function (that) {
-        var inputValue = that.container.find("input").val();
+        var inputValue = +that.container.find("input").val();
         jqUnit.assertEquals("The default input value has been set to the min value", that.options.range.min, inputValue);
     };
 

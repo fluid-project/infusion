@@ -1309,7 +1309,7 @@ var fluid = fluid || fluid_2_0;
             that.listeners = {};
             that.byId = {};
             that.sortedListeners = [];
-            that.addListener = function (listener, namespace, priority, predicate, softNamespace) {
+            that.addListener = function (listener, namespace, priority, softNamespace, listenerId) {
                 if (that.destroyed) {
                     fluid.fail("Cannot add listener to destroyed event firer " + that.name);
                 }
@@ -1319,12 +1319,14 @@ var fluid = fluid || fluid_2_0;
                 if (typeof(listener) === "string") {
                     listener = {globalName: listener};
                 }
-                var id = fluid.event.identifyListener(listener);
+                var id = listenerId || fluid.event.identifyListener(listener);
                 namespace = namespace || id;
-                var record = {listener: listener, predicate: predicate,
+                var record = {listener: listener,
                     namespace: namespace,
                     softNamespace: softNamespace,
-                    priority: fluid.parsePriority(priority, that.sortedListeners.length, false, "listeners")};
+                    listenerId: listenerId,
+                    priority: fluid.parsePriority(priority, that.sortedListeners.length, false, "listeners")
+                };
                 that.byId[id] = record;
 
                 var thisListeners = (that.listeners[namespace] = fluid.makeArray(that.listeners[namespace]));
@@ -1352,8 +1354,9 @@ var fluid = fluid || fluid_2_0;
                 if (typeof (listener) === "string") {
                     namespace = listener;
                     record = that.listeners[namespace];
-                    if (!record) {
-                        return;
+                    if (!record) { // it was an id and not a namespace - take the namespace from its record later
+                        id = namespace;
+                        namespace = null;
                     }
                 }
                 else if (typeof(listener) === "function") {
@@ -1367,18 +1370,17 @@ var fluid = fluid || fluid_2_0;
                 namespace = namespace || (rec && rec.namespace) || id;
                 delete that.byId[id];
                 record = that.listeners[namespace];
-                if (!record) {
-                    return;
-                }
-                if (softNamespace) {
-                    fluid.remove_if(record, function (thisLis) {
-                        return thisLis.listener.$$fluid_guid === id;
-                    });
-                } else {
-                    record.shift();
-                }
-                if (record.length === 0) {
-                    delete that.listeners[namespace];
+                if (record) {
+                    if (softNamespace) {
+                        fluid.remove_if(record, function (thisLis) {
+                            return thisLis.listener.$$fluid_guid === id || thisLis.listenerId === id;
+                        });
+                    } else {
+                        record.shift();
+                    }
+                    if (record.length === 0) {
+                        delete that.listeners[namespace];
+                    }
                 }
                 that.sortedListeners = fluid.event.sortListeners(that.listeners);
             },
@@ -1390,12 +1392,8 @@ var fluid = fluid || fluid_2_0;
                     var lisrec = listeners[i];
                     lisrec.listener = fluid.event.resolveListener(lisrec.listener);
                     var listener = lisrec.listener;
-    
-                    if (lisrec.predicate && !lisrec.predicate(listener, arguments)) {
-                        continue;
-                    }
-                    var value;
                     var ret = listener.apply(null, arguments);
+                    var value;
                     if (options.preventable && ret === false || that.destroyed) {
                         value = false;
                     }
@@ -1418,7 +1416,7 @@ var fluid = fluid || fluid_2_0;
         } else if (typeof (value) === "function" || typeof (value) === "string") {
             wrapper(firer).addListener(value, namespace);
         } else if (value && typeof (value) === "object") {
-            wrapper(firer).addListener(value.listener, namespace || value.namespace, value.priority, value.predicate, value.softNamespace);
+            wrapper(firer).addListener(value.listener, namespace || value.namespace, value.priority, value.softNamespace, value.listenerId);
         }
     };
 
@@ -1818,8 +1816,10 @@ var fluid = fluid || fluid_2_0;
     };
 
     // Cheapskate implementation which avoids dependency on DataBinding.js
+    // TODO: This is apparently still used by the core merging algorithm, for reasons we no longer understand, even though
+    // it has long been disused by DataBinding itself
     fluid.model.mergeModel = function (target, source) {
-        if (!fluid.isPrimitive(target)) {
+        if (fluid.isPlainObject(target)) {
             var copySource = fluid.copy(source);
             $.extend(true, source, target);
             $.extend(true, source, copySource);

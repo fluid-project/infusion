@@ -220,6 +220,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var result = that.events.event.fire(false);
         jqUnit.assertUndefined("Event returned to nonpreventable through merge", result);
     });
+    
+    /** FLUID-5755 - another "exotic types" test - this time a native array **/
+    
+    fluid.defaults("fluid.tests.componentWithTypedArrayOption", {
+        gradeNames: "fluid.component",
+        buffer: new Float32Array([1, 1, 1, 1])
+    });
+
+    jqUnit.test("FLUID-5755: Typed Array Component Merging", function () {
+        var c = fluid.tests.componentWithTypedArrayOption();
+        jqUnit.assertDeepEq("The component's typed array should be set to the default value.", new Float32Array([1, 1, 1, 1]),
+            c.options.buffer);
+
+        c = fluid.tests.componentWithTypedArrayOption({
+            buffer: new Float32Array([2, 2, 2, 2])
+        });
+        jqUnit.assertDeepEq("The component's typed array should have been overriden.", new Float32Array([2, 2, 2, 2]), c.options.buffer);
+    });
 
     /** FLUID-5239 **/
 
@@ -1879,18 +1897,33 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.head4257", {
         gradeNames: ["fluid.component"],
         events: {
-            parentEvent: null
+            parentEvent: null,
+            parentEvent2: null
         },
         components: {
             child1: {
                 type: "fluid.tests.child4257",
                 options: {
+                    events: {
+                        parentEvent2: "{head4257}.events.parentEvent2"
+                    },
                     listeners: {
-                        "{head4257}.events.parentEvent": {
+                        "{head4257}.events.parentEvent": [{
                             listener: "{child4257}.listener",
                             namespace: "parentSpace", // Attempt to fool identification of event
-                            args: ["{head4257}", "{arguments}.0"]
-                        }
+                            args: ["{head4257}", {code: "{arguments}.0", source: "parentSpace"}]
+                        }, {
+                            listener: "{child4257}.listener",
+                            args: ["{head4257}", {code: "{arguments}.0", source: "direct"}]
+                        }],
+                        parentEvent2: [{
+                            listener: "{child4257}.listener",
+                            namespace: "parentSpace", // Attempt to fool identification of event
+                            args: ["{head4257}", {code: "{arguments}.0", source: "parentSpace"}]
+                        }, {
+                            listener: "{child4257}.listener",
+                            args: ["{head4257}", {code: "{arguments}.0", source: "direct"}]
+                        }]
                     }
                 }
             }
@@ -1912,10 +1945,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("FLUID-4257 test: removal of injected listeners", function() {
         var that = fluid.tests.head4257();
         that.events.parentEvent.fire(3);
-        jqUnit.assertDeepEq("First event fire", [3], that.records);
+        that.events.parentEvent2.fire(4);
+        var expected = [{code: 3, source: "parentSpace"}, {code: 3, source: "direct"}, {code: 4, source: "parentSpace"}, {code: 4, source: "direct"}];
+        jqUnit.assertDeepEq("First event fire", expected, that.records);
         that.child1.destroy();
-        that.events.parentEvent.fire(4);
-        jqUnit.assertDeepEq("Listener no longer registered", [3], that.records);
+        that.events.parentEvent.fire(5);
+        that.events.parentEvent2.fire(6);
+        jqUnit.assertDeepEq("Listener no longer registered", expected, that.records);
     });
 
     /** FLUID-4290 - createOnEvent sequence corruption test **/

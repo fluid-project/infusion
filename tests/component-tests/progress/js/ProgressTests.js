@@ -329,21 +329,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             busyVal = ARIAcontainer.attr("aria-busy");
             jqUnit.assertTrue("Working: busy should be true", busyVal === "true" || busyVal === true);
-            jqUnit.assertEquals("Working: valuenow should be ", updateValue, ARIAcontainer.attr("aria-valuenow"));
+            jqUnit.assertEquals("Working: valuenow should be ", updateValue, +ARIAcontainer.attr("aria-valuenow"));
 
             updateValue = 50;
             progressBar.update(updateValue);
 
             busyVal = ARIAcontainer.attr("aria-busy");
             jqUnit.assertTrue("Working: busy should be true", busyVal === "true" || busyVal === true);
-            jqUnit.assertEquals("Working: valuenow should be ", updateValue, ARIAcontainer.attr("aria-valuenow"));
+            jqUnit.assertEquals("Working: valuenow should be ", updateValue, +ARIAcontainer.attr("aria-valuenow"));
 
             updateValue = 100;
             progressBar.update(updateValue);
 
             busyVal = ARIAcontainer.attr("aria-busy");
             jqUnit.assertTrue("Done: busy should be false", busyVal === "false" || !busyVal);
-            jqUnit.assertEquals("Done: valuenow should be ", updateValue, ARIAcontainer.attr("aria-valuenow"));
+            jqUnit.assertEquals("Done: valuenow should be ", updateValue, +ARIAcontainer.attr("aria-valuenow"));
         });
 
 

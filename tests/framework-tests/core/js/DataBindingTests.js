@@ -918,7 +918,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         var triggerChangeRequest = function (fireOn) {
             applier.requestChange(fireOn, fireOn);
-            jqUnit.assertEquals("The listener registered for model path " + fireOn + " has been fired", fireOn, currentPath);
+            jqUnit.assertDeepEq("The listener registered for model path " + fireOn + " has been fired", [fireOn], currentPath);
         };
 
         triggerChangeRequest("path1");
