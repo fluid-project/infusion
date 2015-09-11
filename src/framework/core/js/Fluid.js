@@ -1122,7 +1122,7 @@ var fluid = fluid || fluid_2_0;
         var type = segs[0];
         var lookup = fluid.priorityTypes[type];
         if (lookup === undefined) {
-            fluid.fail("Invalid priority constraint type in constraint " + constraint + ": the only supported values are " + fluid.keys(fluid.priorityType).join(", "));
+            fluid.fail("Invalid priority constraint type in constraint " + constraint + ": the only supported values are " + fluid.keys(fluid.priorityTypes).join(", ") + " or numeric");
         }
         if (fixedOnly && lookup === 0) {
             fluid.fail("Constraint-based priority in constraint " + constraint + " is not supported in a " + site + " record - you must use either a numeric value or first, last");
