@@ -2049,6 +2049,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Children constructed in sort order", [1, 2, 3, 4], testComp.constructRecord);
     });
 
+    fluid.defaults("fluid.tests.FLUID5762test", {
+        gradeNames: "fluid.component",
+        events: {
+            thing: null
+        },
+        listeners: {
+            thing: {
+                funcName: "fluid.identity",
+                priority: "10"
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-5762: Helpful diagnostic on faulty priority", function () {
+        jqUnit.expectFrameworkDiagnostic("Got framework diagnostic from faulty priority", function () {
+            fluid.tests.FLUID5762test();
+        }, ["last", "numeric"]);
+    });
+
     /** Tree circularity tests (early detection of stack overflow) **/
 
     fluid.defaults("fluid.tests.circularEvent", {
