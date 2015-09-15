@@ -19,7 +19,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // Web Speech API. This will allow for tests to run in browsers
     // that don't support the Web Speech API.
     fluid.defaults("fluid.mock.textToSpeech", {
-        gradeNames: ["fluid.textToSpeech", "autoInit"],
+        gradeNames: ["fluid.textToSpeech"],
         members: {
             // An archive of all the calls to queueSpeech.
             // Will contain an ordered set of objects -- {text: String, options: Object}.
