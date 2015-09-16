@@ -19,7 +19,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests.contextAware");
 
     jqUnit.module("Context Awareness");
-    
+
     fluid.defaults("fluid.tests.contextAware.base", {
         gradeNames: ["fluid.contextAware", "fluid.component"],
         contextAwareness: {
@@ -39,10 +39,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         var names = contextAware.options.gradeNames;
         return fluid.remove_if(fluid.makeArray(names), function (name) {
-            return (/fluid\.contextAware|fluid\.tests\.contextAware\.base|{that}.check|fluid\.component|autoInit/).test(name);
+            return (/fluid\.contextAware|fluid\.tests\.contextAware\.base|{that}.check|fluid\.component/).test(name);
         });
     };
-    
+
     fluid.tests.contextAware.testChecksData = [
         {
             message: "No checks, the default type tag should be returned",
@@ -134,7 +134,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.contextAware.forgetChecks(fluid.keys(markers));
         });
     });
-    
+
     fluid.defaults("fluid.tests.contextAware.multiple", {
         gradeNames: ["fluid.contextAware", "fluid.component"],
         contextAwareness: {
@@ -147,25 +147,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-    
+
     jqUnit.test("contextAware multiple blocks with priority", function () {
         var that = fluid.tests.contextAware.multiple();
         var indexFood = that.options.gradeNames.indexOf("food.carrots");
         var indexUrgency = that.options.gradeNames.indexOf("urgency.high");
         jqUnit.assertTrue("Context awareness gradenames must appear in priority order ", indexFood !== -1 && indexUrgency !== -1 && indexUrgency < indexFood);
     });
-    
+
     fluid.tests.contextAware.isResolvable = function (typeName) {
         var component = fluid.expandOptions("{" + typeName + "}", fluid.rootComponent);
         return !!(component && component.options.value);
     };
-    
+
     fluid.tests.contextAware.assertResolvable = function (typeHash) {
         fluid.each(typeHash, function (value, key) {
             jqUnit.assertEquals("Typename " + key + " should be resolvable: " + value, value, fluid.tests.contextAware.isResolvable(key));
         });
     };
-    
+
     fluid.tests.contextAware.setEnvironment = function () {
         jqUnit.assertTrue("The setEnvironment check was run", true);
         return true;
@@ -203,7 +203,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         fluid.contextAware.forgetChecks(fluid.keys(checkSet));
         fluid.contextAware.forgetChecks(fluid.keys(checksNotSet));
-        
+
         fluid.tests.contextAware.assertResolvable({
             "check.set.one": false,
             "check.set.two": false
