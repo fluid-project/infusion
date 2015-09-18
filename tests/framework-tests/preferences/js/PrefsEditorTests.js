@@ -256,7 +256,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             prefsEditor.save();
             jqUnit.assertDeepEq("Only the state information is saved", stateModel, prefsEditor.savedModel);
 
-            var extendedModel = $.extend({}, true, stateModel, bwSkin);
+            extendedModel = $.extend({}, true, stateModel, bwSkin);
             var expectedSavedModel = {
                 state: 1,
                 preferences: {

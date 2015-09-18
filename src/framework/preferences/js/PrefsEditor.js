@@ -379,29 +379,30 @@ var fluid_2_0 = fluid_2_0 || {};
         }
 
         var initialModel = that.initialModel,
-            userSelections = fluid.copy(that.model),
+            modelToSave = fluid.copy(that.model),
             changedPrefs = {};
 
-        // Only save the changed preferences so the future default value change on preferences can still be correctly merged with changed preferences
-        if (fluid.model.diff(userSelections.preferences, initialModel.preferences)) {
-            delete userSelections.preferences;
+        // Only save the changed preferences so the future initial model value change on unchanged
+        // preferences can still be correctly merged with changed preferences
+        if (fluid.model.diff(modelToSave.preferences, initialModel.preferences)) {
+            delete modelToSave.preferences;
         } else {
             var stats = {changes: 0, unchanged: 0, changeMap: {}};
 
-            fluid.model.diff(userSelections.preferences, fluid.get(that.initialModel, ["preferences"]), stats);
+            fluid.model.diff(modelToSave.preferences, fluid.get(that.initialModel, ["preferences"]), stats);
 
             fluid.each(stats.changeMap, function (state, path) {
-                fluid.set(changedPrefs, path, userSelections.preferences[path]);
+                fluid.set(changedPrefs, path, modelToSave.preferences[path]);
             });
 
             if (stats.changes > 0) {
-                userSelections.preferences = changedPrefs;
+                modelToSave.preferences = changedPrefs;
             }
         }
 
-        that.events.onSave.fire(userSelections);
-        that.setSettings(userSelections);
-        return userSelections;
+        that.events.onSave.fire(modelToSave);
+        that.setSettings(modelToSave);
+        return modelToSave;
     };
 
     fluid.prefs.prefsEditor.saveAndApply = function (that) {
