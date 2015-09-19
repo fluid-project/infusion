@@ -87,7 +87,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.module("PrefsEditor Tests");
 
-    fluid.tests.prefs.noteSaveCalled = function (that, savedModel) {
+    fluid.tests.prefs.trackSave = function (that, savedModel) {
         that.saveCalled = true;
         that.savedModel = savedModel;
     };
@@ -114,7 +114,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             refreshCount: 0
         },
         listeners: {
-            onSave: "fluid.tests.prefs.noteSaveCalled({prefsEditor}, {arguments}.0)",
+            onSave: "fluid.tests.prefs.trackSave({prefsEditor}, {arguments}.0)",
             "onPrefsEditorRefresh.noteCalled": "fluid.tests.prefs.noteRefreshCalled({that})"
         }
     });
@@ -237,7 +237,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     jqUnit.asyncTest("PrefsEditor Save, Reset, and Cancel", function () {
-        jqUnit.expect(20);
+        jqUnit.expect(22);
 
         fluid.tests.prefs.testPrefsEditor(function (prefsEditor) {
             var bwSkin = fluid.tests.prefs.models.bwSkin;
@@ -249,26 +249,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             prefsEditor.saveAndApply();
             jqUnit.assertTrue("Save has been called", prefsEditor.saveCalled);
             jqUnit.assertEquals("PrefsEditor has been refreshed when preferences are changed", expectedRefreshCount, prefsEditor.refreshCount);
-
-            var stateModel = {state: 1};
-            var extendedModel = $.extend({}, true, stateModel, prefsEditor.initialModel);
-            prefsEditor.applier.change("", extendedModel);
-            prefsEditor.save();
-            jqUnit.assertDeepEq("Only the state information is saved", stateModel, prefsEditor.savedModel);
-
-            extendedModel = $.extend({}, true, stateModel, bwSkin);
-            var expectedSavedModel = {
-                state: 1,
-                preferences: {
-                    lineSpace: 2,
-                    textFont: "verdana",
-                    textSize: "1.8",
-                    theme: "bw"
-                }
-            };
-            prefsEditor.applier.change("", extendedModel);
-            prefsEditor.save();
-            jqUnit.assertDeepEq("The state information and changed preferences, comparing to the initial model, are saved", expectedSavedModel, prefsEditor.savedModel);
 
             var savedSettings = prefsEditor.getSettings();
             var container = $("body");
@@ -283,7 +263,85 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             prefsEditor.reset();
             fluid.tests.prefs.assertPrefs("Reset model %p", ps, "assertNotEquals", bwSkin, prefsEditor.model);
 
+            var stateModel = {state: 1};
+            var saveCases = [{
+                msg: "Unchanged preferences are not saved",
+                model: $.extend({}, true, stateModel, prefsEditor.initialModel),
+                expectedSavedModel: stateModel
+            }, {
+                msg: "The state information and changed preferences (compared to the initial model) are saved",
+                model: $.extend({}, true, stateModel, bwSkin),
+                expectedSavedModel: {
+                    state: 1,
+                    preferences: {
+                        lineSpace: 2,
+                        textFont: "verdana",
+                        textSize: "1.8",
+                        theme: "bw"
+                    }
+                }
+            }, {
+                msg: "When a model path is given, only its model value and previouly saved other changes are saved",
+                model: {
+                    state: 2,
+                    userData: {
+                        dataA: "puppy",
+                        dataB: "kitten"
+                    },
+                    preferences: {
+                        lineSpace: 3
+                    }
+                },
+                modelPath: "userData.dataA",
+                expectedSavedModel: {
+                    state: 1,
+                    userData: {
+                        dataA: "puppy"
+                    },
+                    preferences: {
+                        lineSpace: 2,
+                        textFont: "verdana",
+                        textSize: "1.8",
+                        theme: "bw"
+                    }
+                }
+            }, {
+                msg: "When the \"preferences\" path is given, only changed preference values (compared to the initial model) and previously saved changes are saved",
+                model: {
+                    state: 2,
+                    userData: {
+                        dataA: "puppy",
+                        dataB: "kitten"
+                    },
+                    preferences: {
+                        textSize: "1.4",
+                        textFont: "aria",
+                        theme: "wb",
+                        lineSpace: 1
+                    }
+                },
+                modelPath: "preferences",
+                expectedSavedModel: {
+                    state: 1,
+                    userData: {
+                        dataA: "puppy"
+                    },
+                    preferences: {
+                        "textFont": "aria",
+                        "textSize": "1.4",
+                        "theme": "wb"
+                    }
+                }
+            }];
+
+            fluid.each(saveCases, function (aCase) {
+                prefsEditor.applier.change("", aCase.model);
+                prefsEditor.save(aCase.modelPath ? aCase.modelPath : undefined);
+                jqUnit.assertDeepEq(aCase.msg, aCase.expectedSavedModel, prefsEditor.savedModel);
+            });
+
             prefsEditor.applier.change("", bwSkin);
+            prefsEditor.save();
             prefsEditor.applier.change("", fluid.tests.prefs.models.bwSkin2);
 
             prefsEditor.cancel();
@@ -600,6 +658,5 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         fluid.tests.prefs.testPrefsEditor(fluid.tests.prefs.testLocale, [], "fluid.tests.prefs.locale");
     });
-
 
 })(jQuery);

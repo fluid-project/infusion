@@ -29,7 +29,8 @@ var fluid_2_0 = fluid_2_0 || {};
                         afterReset: [{
                             listener: "{that}.applyChanges"
                         }, {
-                            listener: "{that}.save"
+                            listener: "{that}.save",
+                            args: [""]
                         }],
                         onReady: {
                             listener: "{fullNoPreview}.events.onReady",

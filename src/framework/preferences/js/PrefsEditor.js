@@ -291,11 +291,11 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             save: {
                 funcName: "fluid.prefs.prefsEditor.save",
-                args: ["{that}"]
+                args: ["{that}", "{arguments}.0"]
             },
             saveAndApply: {
                 funcName: "fluid.prefs.prefsEditor.saveAndApply",
-                args: ["{that}"]
+                args: ["{that}", "{arguments}.0"]
             },
             reset: {
                 funcName: "fluid.prefs.prefsEditor.reset",
@@ -371,33 +371,39 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     /**
-     * Saves the current model and fires onSave
+     * Saves the value at the specified model path and fires onSave
+     * @param that: An fluid.prefs.prefsEditor instance
+     * @param modelPath: an array with segments of a model path or a string. If it's not given, save the entire model.
+     * @return the saved model
      */
-    fluid.prefs.prefsEditor.save = function (that) {
+    fluid.prefs.prefsEditor.save = function (that, modelPath) {
         if (!that.model) {  // Don't save a reset model
             return;
         }
 
-        var initialModel = that.initialModel,
-            modelToSave = fluid.copy(that.model),
-            changedPrefs = {};
+        var path = fluid.makeArray(modelPath).join("."),
+            currentModel = fluid.copy(that.model),
+            modelToSave = path === "" ? currentModel : that.getSettings();
 
         // Only save the changed preferences so the future initial model value change on unchanged
         // preferences can still be correctly merged with changed preferences
-        if (fluid.model.diff(modelToSave.preferences, initialModel.preferences)) {
-            delete modelToSave.preferences;
-        } else {
-            var stats = {changes: 0, unchanged: 0, changeMap: {}};
+        if (path === "preferences" || path === "") {
+            var initialModel = that.initialModel,
+                stats = {changes: 0, unchanged: 0, changeMap: {}},
+                changedPrefs = {};
 
-            fluid.model.diff(modelToSave.preferences, fluid.get(that.initialModel, ["preferences"]), stats);
+            fluid.model.diff(currentModel.preferences, fluid.get(initialModel, ["preferences"]), stats);
 
-            fluid.each(stats.changeMap, function (state, path) {
-                fluid.set(changedPrefs, path, modelToSave.preferences[path]);
-            });
-
-            if (stats.changes > 0) {
+            if (stats.changes === 0) {
+                delete modelToSave.preferences;
+            } else {
+                fluid.each(stats.changeMap, function (state, pref) {
+                    fluid.set(changedPrefs, pref, currentModel.preferences[pref]);
+                });
                 modelToSave.preferences = changedPrefs;
             }
+        } else {
+            fluid.set(modelToSave, path, fluid.get(currentModel, path));
         }
 
         that.events.onSave.fire(modelToSave);
@@ -405,9 +411,9 @@ var fluid_2_0 = fluid_2_0 || {};
         return modelToSave;
     };
 
-    fluid.prefs.prefsEditor.saveAndApply = function (that) {
+    fluid.prefs.prefsEditor.saveAndApply = function (that, modelPath) {
         var prevSettings = that.getSettings(),
-            changedSelections = that.save();
+            changedSelections = that.save(modelPath);
 
         // Only when preferences are changed, re-render panels and trigger enactors to apply changes
         if (!fluid.model.diff(fluid.get(changedSelections, "preferences"), fluid.get(prevSettings, "preferences"))) {
@@ -440,7 +446,9 @@ var fluid_2_0 = fluid_2_0 || {};
         var bindHandlers = function (that) {
             var saveButton = that.locate("save");
             if (saveButton.length > 0) {
-                saveButton.click(that.saveAndApply);
+                saveButton.click(function () {
+                    that.saveAndApply("");
+                });
                 var form = fluid.findForm(saveButton);
                 $(form).submit(function () {
                     that.saveAndApply();
