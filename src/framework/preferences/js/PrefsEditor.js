@@ -291,11 +291,11 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             save: {
                 funcName: "fluid.prefs.prefsEditor.save",
-                args: ["{that}", "{arguments}.0"]
+                args: ["{that}"]
             },
             saveAndApply: {
                 funcName: "fluid.prefs.prefsEditor.saveAndApply",
-                args: ["{that}", "{arguments}.0"]
+                args: ["{that}"]
             },
             reset: {
                 funcName: "fluid.prefs.prefsEditor.reset",
@@ -376,34 +376,28 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param modelPath: an array with segments of a model path or a string. If it's not given, save the entire model.
      * @return the saved model
      */
-    fluid.prefs.prefsEditor.save = function (that, modelPath) {
+    fluid.prefs.prefsEditor.save = function (that) {
         if (!that.model) {  // Don't save a reset model
             return;
         }
 
-        var path = fluid.makeArray(modelPath).join("."),
-            currentModel = fluid.copy(that.model),
-            modelToSave = path === "" ? currentModel : that.getSettings();
+        var modelToSave = fluid.copy(that.model),
+            initialModel = that.initialModel,
+            stats = {changes: 0, unchanged: 0, changeMap: {}},
+            changedPrefs = {};
 
         // Only save the changed preferences so the future initial model value change on unchanged
         // preferences can still be correctly merged with changed preferences
-        if (path === "preferences" || path === "") {
-            var initialModel = that.initialModel,
-                stats = {changes: 0, unchanged: 0, changeMap: {}},
-                changedPrefs = {};
 
-            fluid.model.diff(currentModel.preferences, fluid.get(initialModel, ["preferences"]), stats);
+        fluid.model.diff(modelToSave.preferences, fluid.get(initialModel, ["preferences"]), stats);
 
-            if (stats.changes === 0) {
-                delete modelToSave.preferences;
-            } else {
-                fluid.each(stats.changeMap, function (state, pref) {
-                    fluid.set(changedPrefs, pref, currentModel.preferences[pref]);
-                });
-                modelToSave.preferences = changedPrefs;
-            }
+        if (stats.changes === 0) {
+            delete modelToSave.preferences;
         } else {
-            fluid.set(modelToSave, path, fluid.get(currentModel, path));
+            fluid.each(stats.changeMap, function (state, pref) {
+                fluid.set(changedPrefs, pref, modelToSave.preferences[pref]);
+            });
+            modelToSave.preferences = changedPrefs;
         }
 
         that.events.onSave.fire(modelToSave);
@@ -411,9 +405,9 @@ var fluid_2_0 = fluid_2_0 || {};
         return modelToSave;
     };
 
-    fluid.prefs.prefsEditor.saveAndApply = function (that, modelPath) {
+    fluid.prefs.prefsEditor.saveAndApply = function (that) {
         var prevSettings = that.getSettings(),
-            changedSelections = that.save(modelPath);
+            changedSelections = that.save();
 
         // Only when preferences are changed, re-render panels and trigger enactors to apply changes
         if (!fluid.model.diff(fluid.get(changedSelections, "preferences"), fluid.get(prevSettings, "preferences"))) {
@@ -446,9 +440,7 @@ var fluid_2_0 = fluid_2_0 || {};
         var bindHandlers = function (that) {
             var saveButton = that.locate("save");
             if (saveButton.length > 0) {
-                saveButton.click(function () {
-                    that.saveAndApply("");
-                });
+                saveButton.click(that.saveAndApply);
                 var form = fluid.findForm(saveButton);
                 $(form).submit(function () {
                     that.saveAndApply();

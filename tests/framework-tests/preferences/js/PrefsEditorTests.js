@@ -237,7 +237,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     jqUnit.asyncTest("PrefsEditor Save, Reset, and Cancel", function () {
-        jqUnit.expect(22);
+        jqUnit.expect(20);
 
         fluid.tests.prefs.testPrefsEditor(function (prefsEditor) {
             var bwSkin = fluid.tests.prefs.models.bwSkin;
@@ -278,58 +278,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         textFont: "verdana",
                         textSize: "1.8",
                         theme: "bw"
-                    }
-                }
-            }, {
-                msg: "When a model path is given, only its model value and previouly saved other changes are saved",
-                model: {
-                    state: 2,
-                    userData: {
-                        dataA: "puppy",
-                        dataB: "kitten"
-                    },
-                    preferences: {
-                        lineSpace: 3
-                    }
-                },
-                modelPath: "userData.dataA",
-                expectedSavedModel: {
-                    state: 1,
-                    userData: {
-                        dataA: "puppy"
-                    },
-                    preferences: {
-                        lineSpace: 2,
-                        textFont: "verdana",
-                        textSize: "1.8",
-                        theme: "bw"
-                    }
-                }
-            }, {
-                msg: "When the \"preferences\" path is given, only changed preference values (compared to the initial model) and previously saved changes are saved",
-                model: {
-                    state: 2,
-                    userData: {
-                        dataA: "puppy",
-                        dataB: "kitten"
-                    },
-                    preferences: {
-                        textSize: "1.4",
-                        textFont: "aria",
-                        theme: "wb",
-                        lineSpace: 1
-                    }
-                },
-                modelPath: "preferences",
-                expectedSavedModel: {
-                    state: 1,
-                    userData: {
-                        dataA: "puppy"
-                    },
-                    preferences: {
-                        "textFont": "aria",
-                        "textSize": "1.4",
-                        "theme": "wb"
                     }
                 }
             }];

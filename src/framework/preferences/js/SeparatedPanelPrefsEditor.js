@@ -139,8 +139,7 @@ var fluid_2_0 = fluid_2_0 || {};
                     },
                     listeners: {
                         modelChanged: {
-                            listener: "{that}.save",
-                            args: [""]
+                            listener: "{that}.save"
                         },
                         onCreate: {
                             listener: "{separatedPanel}.bindReset",
