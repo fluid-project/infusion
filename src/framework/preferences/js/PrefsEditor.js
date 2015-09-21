@@ -371,9 +371,8 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     /**
-     * Saves the value at the specified model path and fires onSave
+     * Sends the prefsEditor.model to the store and fires onSave
      * @param that: An fluid.prefs.prefsEditor instance
-     * @param modelPath: an array with segments of a model path or a string. If it's not given, save the entire model.
      * @return the saved model
      */
     fluid.prefs.prefsEditor.save = function (that) {
@@ -388,7 +387,6 @@ var fluid_2_0 = fluid_2_0 || {};
 
         // Only save the changed preferences so the future initial model value change on unchanged
         // preferences can still be correctly merged with changed preferences
-
         fluid.model.diff(modelToSave.preferences, fluid.get(initialModel, ["preferences"]), stats);
 
         if (stats.changes === 0) {

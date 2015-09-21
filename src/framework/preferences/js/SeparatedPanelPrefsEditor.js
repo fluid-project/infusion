@@ -138,9 +138,7 @@ var fluid_2_0 = fluid_2_0 || {};
                         updateEnhancerModel: "{that}.events.modelChanged"
                     },
                     listeners: {
-                        modelChanged: {
-                            listener: "{that}.save"
-                        },
+                        modelChanged: "{that}.save",
                         onCreate: {
                             listener: "{separatedPanel}.bindReset",
                             args: ["{that}.reset"]
