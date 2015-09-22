@@ -17,26 +17,6 @@ var minEditor = minEditor || {};
     "use strict";
 
     /**
-     * Primary Schema
-     * This schema defines the preference(s) edited by this preferences editor:
-     * their names, types, default values, etc.
-     */
-    fluid.defaults("minEditor.primarySchema", {
-
-        // the base grade for the schema;
-        // using this grade tells the framework that this is a primary schema
-        gradeNames: ["fluid.prefs.schemas"],
-
-        schema: {
-            // the actual specification of the preference
-            "minEditor.autoPilot": {
-                "type": "boolean",
-                "default": false
-            }
-        }
-    });
-
-    /**
      * Panel for the auto-pilot preference
      */
     fluid.defaults("minEditor.panels.autoPilot", {
@@ -62,44 +42,6 @@ var minEditor = minEditor || {};
         protoTree: {
             // this value is an IoC reference to the last part of the model path in the preferenceMap
             autoPilot: "${autoPilot}"
-        }
-    });
-
-    /**
-     * Auxiliary Schema
-     */
-    fluid.defaults("minEditor.auxSchema", {
-
-        // the base grade for the schema
-        gradeNames: ["fluid.prefs.auxSchema"],
-
-        auxiliarySchema: {
-
-            // the loaderGrade identifies the "base" form of preference editor desired
-            loaderGrades: ["fluid.prefs.fullNoPreview"],
-
-            // 'terms' are strings that can be re-used elsewhere in this schema;
-            terms: {
-                templatePrefix: "html"
-            },
-
-            // the main template for the preference editor itself
-            template: "%templatePrefix/minEditor.html",
-
-            autoPilot: {
-                // this 'type' must match the name of the pref in the primary schema
-                type: "minEditor.autoPilot",
-                panel: {
-                    // this 'type' must match the name of the panel grade created for this pref
-                    type: "minEditor.panels.autoPilot",
-
-                    // selector indicating where, in the main template, to place this panel
-                    container: ".mec-autoPilot",
-
-                    // the template for this panel
-                    template: "%templatePrefix/autoPilot.html"
-                }
-            }
         }
     });
 
