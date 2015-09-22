@@ -371,33 +371,35 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     /**
-     * Saves the current model and fires onSave
- */
+     * Sends the prefsEditor.model to the store and fires onSave
+     * @param that: A fluid.prefs.prefsEditor instance
+     * @return the saved model
+     */
     fluid.prefs.prefsEditor.save = function (that) {
         if (!that.model) {  // Don't save a reset model
             return;
         }
 
-        var initialModel = that.initialModel,
-            userSelections = fluid.copy(that.model),
-            changedSelections = {};
+        var modelToSave = fluid.copy(that.model),
+            initialModel = that.initialModel,
+            stats = {changes: 0, unchanged: 0, changeMap: {}},
+            changedPrefs = {};
 
-        // Only save the changed preferences so the future default value change on preferences can still be correctly merged with changed preferences
-        if (fluid.model.diff(userSelections.preferences, initialModel.preferences)) {
-            delete userSelections.preferences;
+        // To address https://issues.fluidproject.org/browse/FLUID-4686
+        fluid.model.diff(modelToSave.preferences, fluid.get(initialModel, ["preferences"]), stats);
+
+        if (stats.changes === 0) {
+            delete modelToSave.preferences;
         } else {
-            var stats = {changes: 0, unchanged: 0, changeMap: {}};
-
-            fluid.model.diff(userSelections.preferences, fluid.get(that.initialModel, ["preferences"]), stats);
-
-            fluid.each(stats.changeMap, function (state, path) {
-                fluid.set(changedSelections, ["preferences", path], userSelections.preferences[path]);
+            fluid.each(stats.changeMap, function (state, pref) {
+                fluid.set(changedPrefs, pref, modelToSave.preferences[pref]);
             });
+            modelToSave.preferences = changedPrefs;
         }
 
-        that.events.onSave.fire(changedSelections);
-        that.setSettings(changedSelections);
-        return changedSelections;
+        that.events.onSave.fire(modelToSave);
+        that.setSettings(modelToSave);
+        return modelToSave;
     };
 
     fluid.prefs.prefsEditor.saveAndApply = function (that) {
