@@ -284,7 +284,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             fluid.each(saveCases, function (aCase) {
                 prefsEditor.applier.change("", aCase.model);
-                prefsEditor.save(aCase.modelPath ? aCase.modelPath : undefined);
+                prefsEditor.save();
                 jqUnit.assertDeepEq(aCase.msg, aCase.expectedSavedModel, prefsEditor.savedModel);
             });
 
