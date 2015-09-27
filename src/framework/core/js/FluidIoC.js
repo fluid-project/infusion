@@ -193,6 +193,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
         var record = {options: {}};
         fluid.model.applyChangeRequest(record, {segs: targetSegs, type: "ADD", value: source});
+        fluid.checkComponentRecord(record);
         return $.extend(record, {contextThat: contextThat, recordType: sourceType});
     };
 
@@ -418,7 +419,7 @@ var fluid_2_0 = fluid_2_0 || {};
     
     fluid.parseExpectedOptionsPath = function (path, role) {
         var segs = fluid.model.parseEL(path);
-        if (segs.length > 1 && segs[0] !== "options") {
+        if (segs[0] !== "options") {
             fluid.fail("Error in options distribution path ", path, " - only " + role + " paths beginning with \"options\" are supported");
         }
         return segs.slice(1);
@@ -1067,18 +1068,14 @@ var fluid_2_0 = fluid_2_0 || {};
         return expanded;
     };
 
-    fluid.localRecordExpected = ["type", "options", "args", "createOnEvent", "priority", "recordType"]; // last element unavoidably polluting
+    fluid.localRecordExpected = fluid.arrayToHash(["type", "options", "container", "createOnEvent", "priority", "recordType"]); // last element unavoidably polluting
 
-    fluid.checkComponentRecord = function (defaults, localRecord) {
-        var expected = fluid.arrayToHash(fluid.localRecordExpected);
-        fluid.each(defaults && defaults.argumentMap, function(value, key) {
-            expected[key] = true;
-        });
+    fluid.checkComponentRecord = function (localRecord) {
         fluid.each(localRecord, function (value, key) {
-            if (!expected[key]) {
+            if (!fluid.localRecordExpected[key]) {
                 fluid.fail("Probable error in subcomponent record ", localRecord, " - key \"" + key +
                     "\" found, where the only legal options are " +
-                    fluid.keys(expected).join(", "));
+                    fluid.keys(fluid.localRecordExpected).join(", "));
             }
         });
     };
@@ -1134,7 +1131,7 @@ var fluid_2_0 = fluid_2_0 || {};
         $.extend(mergeRecords, initRecord.mergeRecords);
         // Do this here for gradeless components that were corrected by "localOptions"
         if (mergeRecords.subcomponentRecord) {
-            fluid.checkComponentRecord(defaults, mergeRecords.subcomponentRecord);
+            fluid.checkComponentRecord(mergeRecords.subcomponentRecord);
         }
         
         var expandList = fluid.mergeRecordsToList(that, mergeRecords);
