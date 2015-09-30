@@ -1,5 +1,5 @@
 /*
-Copyright 2011 OCAD University
+Copyright 2011-2015 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -45,6 +45,14 @@ var fluid_2_0 = fluid_2_0 || {};
                 listener: "{that}.applier.modelChanged.addListener",
                 args: ["isShowing", "{that}.refreshView"]
             },
+            "onCreate.setAriaControls":{
+                "this": "{that}.dom.toggleButton",
+                "method": "attr",
+                "args": {
+                    "role": "button",
+                    "aria-controls": "{that}.panelId"
+                }
+            },
             "onCreate.setInitialState": {
                 listener: "{that}.refreshView"
             },
@@ -65,6 +73,26 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             "onPanelShow.operate": {
                 listener: "{that}.operateShow"
+            },
+            "onCreate.setAriaStates": "{that}.setAriaStates"
+        },
+        members: {
+            panelId: {
+                expander: {
+                    // create an id for panel
+                    // and set that.panelId to the id value
+                    funcName: "fluid.allocateSimpleId",
+                    args: "{that}.dom.panel"
+                }
+            }
+        },
+        model: {
+            isShowing: false
+        },
+        modelListeners: {
+            "{that}.model.isShowing": {
+                funcName: "{that}.setAriaStates",
+                excludeSource: "init"
             }
         },
         invokers: {
@@ -86,6 +114,10 @@ var fluid_2_0 = fluid_2_0 || {};
                 func: "{that}.applier.requestChange",
                 args: ["isShowing", true]
             },
+            setAriaStates: {
+                funcName: "fluid.slidingPanel.setAriaStates",
+                args: ["{that}", "{that}.model.isShowing"]
+            },
             togglePanel: {
                 funcName: "fluid.slidingPanel.togglePanel",
                 args: ["{that}"]
@@ -94,9 +126,6 @@ var fluid_2_0 = fluid_2_0 || {};
                 funcName: "fluid.slidingPanel.refreshView",
                 args: ["{that}"]
             }
-        },
-        model: {
-            isShowing: false
         },
         animationDurations: {
             hide: 400,
@@ -110,6 +139,11 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.slidingPanel.refreshView = function (that) {
         that.events[that.model.isShowing ? "onPanelShow" : "onPanelHide"].fire();
+    };
+
+    fluid.slidingPanel.setAriaStates = function (that, isShowing) {
+        that.locate("toggleButton").attr("aria-pressed", isShowing);
+        that.locate("panel").attr("aria-expanded", isShowing);
     };
 
 })(jQuery, fluid_2_0);

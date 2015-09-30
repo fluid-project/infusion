@@ -1,5 +1,5 @@
 /*
-Copyright 2011 OCAD University
+Copyright 2011-2015 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -66,7 +66,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-    
+
     fluid.tests.fetchGlobalSettingsStore = function () {
         return fluid.queryIoCSelector(fluid.rootComponent, "fluid.prefs.globalSettingsStore", true)[0].settingsStore;
     };
@@ -76,7 +76,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var settingsStore = fluid.tests.fetchGlobalSettingsStore();
         settingsStore.set();
     };
-    
+
     fluid.tests.getPageEnhancer = function (that) {
         var pageEnhancer = fluid.resolveContext("pageEnhancer", that);
         return pageEnhancer.uiEnhancer;
@@ -89,6 +89,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var prefsEditor = separatedPanel.prefsEditor;
         jqUnit.assertEquals("Reset button is invisible", false, $(".flc-prefsEditor-reset").is(":visible"));
         fluid.tests.prefs.assertPresent(prefsEditor, fluid.tests.prefs.expectedComponents["fluid.prefs.separatedPanel"]);
+
+        var toggleButtonAriaPressedState = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-pressed");
+        var ariaExpandedState = separatedPanel.locate("iframe").attr("aria-expanded");
+
+        jqUnit.assertEquals("Show/hide button has correct aria-pressed", "false", toggleButtonAriaPressedState);
+        jqUnit.assertEquals("Panel has correct aria-expanded", "false", ariaExpandedState);
     };
 
     fluid.tests.afterShowFunc1 = function (separatedPanel) {
@@ -97,6 +103,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var enhancerModel = fluid.tests.getPageEnhancer(separatedPanel).model;
             fluid.tests.prefs.checkModelSelections("enhancerModel from bwSkin", fluid.tests.prefs.bwSkin.preferences, enhancerModel);
             jqUnit.assertEquals("Reset button is visible", true, $(".flc-prefsEditor-reset").is(":visible"));
+
+            var resetButtonAriaControlsState = separatedPanel.locate("reset").attr("aria-controls");
+            var toggleButtonAriaControlsState = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-controls");
+            var toggleButtonAriaPressedState = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-pressed");
+            var panelId = separatedPanel.slidingPanel.panelId;
+            var ariaExpandedState = separatedPanel.locate("iframe").attr("aria-expanded");
+
+            jqUnit.assertEquals("Reset button has correct aria-controls", resetButtonAriaControlsState, panelId);
+            jqUnit.assertEquals("Show/hide button has correct aria-controls", toggleButtonAriaControlsState, panelId);
+            jqUnit.assertEquals("Show/hide button has correct aria-pressed", "true", toggleButtonAriaPressedState);
+            jqUnit.assertEquals("Panel has correct aria-expanded", "true", ariaExpandedState);
         };
     };
 
@@ -137,7 +154,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Separated panel integration tests",
             tests: [{
-                expect: 22,
+                expect: 29,
                 name: "Separated panel integration tests",
                 sequence: [{
                     listener: "fluid.tests.testSeparatedPanel",

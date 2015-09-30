@@ -45,6 +45,10 @@ var fluid_2_0 = fluid_2_0 || {};
                 }
             }
         },
+        selectors: {
+            reset: ".flc-prefsEditor-reset",
+            iframe: ".flc-prefsEditor-iframe"
+        },
         listeners: {
             onReady: {
                 listener: "fluid.prefs.separatedPanel.bindEvents",
@@ -54,10 +58,6 @@ var fluid_2_0 = fluid_2_0 || {};
                 listener: "fluid.prefs.separatedPanel.hideReset",
                 args: ["{separatedPanel}"]
             }
-        },
-        selectors: {
-            reset: ".flc-prefsEditor-reset",
-            iframe: ".flc-prefsEditor-iframe"
         },
         invokers: {
             bindReset: {
@@ -231,9 +231,14 @@ var fluid_2_0 = fluid_2_0 || {};
         prefsEditor.events.onSignificantDOMChange.fire();
     };
 
+
     fluid.prefs.separatedPanel.bindEvents = function (prefsEditor, iframeEnhancer, separatedPanel) {
-        // TODO: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
+        // FLUID-5740: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
         // which is a child of this component
+
+        var separatedPanelId = separatedPanel.slidingPanel.panelId;
+        separatedPanel.locate("reset").attr("aria-controls", separatedPanelId);
+
         separatedPanel.slidingPanel.events.afterPanelShow.addListener(function () {
             fluid.prefs.separatedPanel.updateView(prefsEditor);
         });
