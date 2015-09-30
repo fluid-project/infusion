@@ -115,11 +115,11 @@ var demo = demo || {};
         selectors: {
             simplify: ".demo-prefsEditor-simplify",
             label: ".demo-prefsEditor-simplify-label",
-            choiceLabel: ".demo-prefsEditor-simplify-choice-label"
+            simplifyDescr: ".demo-prefsEditor-simplify-descr"
         },
         protoTree: {
             label: {messagekey: "simplifyLabel"},
-            choiceLabel: {messagekey: "simplifyChoiceLabel"},
+            simplifyDescr: {messagekey: "simplifyDescr"},
             simplify: "${simplify}"
         }
     });

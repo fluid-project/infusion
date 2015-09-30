@@ -32,10 +32,10 @@ var example = example || {};
         },
         selectors: {
             bool: ".mpe-speakText",
-            choiceLabel: ".mpe-speakText-choice-label"
+            speakTextDescr: ".mpe-speakText-descr"
         },
         protoTree: {
-            choiceLabel: {messagekey: "speakText"},
+            speakTextDescr: {messagekey: "speakText"},
             bool: "${speakText}"
         }
     });
@@ -53,10 +53,10 @@ var example = example || {};
         selectors: {
             bool: ".mpe-incSize",
             label: ".mpe-incSize-label",
-            choiceLabel: ".mpe-incSize-choice-label"
+            incSizeDescr: ".mpe-incSize-descr"
         },
         protoTree: {
-            choiceLabel: {messagekey: "incSize"},
+            incSizeDescr: {messagekey: "incSize"},
             bool: "${incSize}"
         }
     });
