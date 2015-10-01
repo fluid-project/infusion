@@ -90,7 +90,7 @@ var fluid_2_0 = fluid_2_0 || {};
             isShowing: false
         },
         modelListeners: {
-            "{that}.model.isShowing": {
+            "isShowing": {
                 funcName: "{that}.setAriaStates",
                 excludeSource: "init"
             }
