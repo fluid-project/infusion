@@ -1,4 +1,5 @@
 {
     "slidingPanelShowText": "+ Show Display Preferences",
-    "slidingPanelHideText": "- Hide"
+    "slidingPanelHideText": "- Hide",
+    "slidingPanelPanelLabel": "User Prefrences"
 }

@@ -74,7 +74,8 @@ var fluid_2_0 = fluid_2_0 || {};
                     gradeNames: ["fluid.prefs.msgLookup"],
                     strings: {
                         showText: "{that}.msgLookup.slidingPanelShowText",
-                        hideText: "{that}.msgLookup.slidingPanelHideText"
+                        hideText: "{that}.msgLookup.slidingPanelHideText",
+                        panelLabel: "{that}.msgLookup.slidingPanelPanelLabel"
                     },
                     invokers: {
                         operateShow: {
@@ -237,7 +238,10 @@ var fluid_2_0 = fluid_2_0 || {};
         // which is a child of this component
 
         var separatedPanelId = separatedPanel.slidingPanel.panelId;
-        separatedPanel.locate("reset").attr("aria-controls", separatedPanelId);
+        separatedPanel.locate("reset").attr({
+            "aria-controls": separatedPanelId,
+            "role": "button"
+        });
 
         separatedPanel.slidingPanel.events.afterPanelShow.addListener(function () {
             fluid.prefs.separatedPanel.updateView(prefsEditor);

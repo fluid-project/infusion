@@ -17,7 +17,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     $(document).ready(function () {
         jqUnit.module("SlidingPanel Tests");
 
-        fluid.registerNamespace("fluid.tests");
+        fluid.registerNamespace("fluid.tests.slidingPanel");
 
         fluid.tests.createSlidingPanel = function (options) {
             var commonOptions = {
@@ -38,33 +38,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return fluid.slidingPanel(".flc-slidingPanel", $.extend(true, commonOptions, options));
         };
 
+        fluid.tests.slidingPanel.assertAria = function (that, state) {
+            var button = that.locate("toggleButton");
+            var panel = that.locate("panel");
+
+            jqUnit.assertEquals("Show/hide button has the button role", "button", button.attr("role"));
+            jqUnit.assertEquals("Show/hide button has correct aria-pressed", state, button.attr("aria-pressed"));
+            jqUnit.assertEquals("Show/hide button has correct aria-controls", panel.attr("id"), button.attr("aria-controls"));
+            jqUnit.assertEquals("Panel has the group role", "group", panel.attr("role"));
+            jqUnit.assertEquals("Panel has the correct aria-label", that.options.strings.panelLabel, panel.attr("aria-label"));
+            jqUnit.assertEquals("Panel has correct aria-expanded", state, panel.attr("aria-expanded"));
+        };
+
         jqUnit.test("Test Init", function () {
-            jqUnit.expect(3);
+            jqUnit.expect(7);
             var slidingPanel = fluid.tests.createSlidingPanel();
+
             jqUnit.assertTrue("The sliding panel is initialised", slidingPanel);
-
-            var toggleButtonAriaPressedState = slidingPanel.locate("toggleButton").attr("aria-pressed");
-            var ariaExpandedState = slidingPanel.locate("panel").attr("aria-expanded");
-
-            jqUnit.assertEquals("Show/hide button has correct aria-pressed", "false", toggleButtonAriaPressedState);
-            jqUnit.assertEquals("Panel has correct aria-expanded", "false", ariaExpandedState);
+            fluid.tests.slidingPanel.assertAria(slidingPanel, "false");
         });
 
         jqUnit.asyncTest("Show Panel", function () {
-            jqUnit.expect(5);
+            jqUnit.expect(8);
             var slidingPanel = fluid.tests.createSlidingPanel();
             slidingPanel.events.afterPanelShow.addListener(function () {
-                jqUnit.assertEquals("Show panel", "block", slidingPanel.locate("panel").css("display"));
-                jqUnit.assertEquals("Show panel button text", slidingPanel.options.strings.hideText, slidingPanel.locate("toggleButton").text());
+                var toggleButton = slidingPanel.locate("toggleButton");
+                var panel = slidingPanel.locate("panel");
 
-                var toggleButtonAriaControlsState = slidingPanel.locate("toggleButton").attr("aria-controls");
-                var toggleButtonAriaPressedState = slidingPanel.locate("toggleButton").attr("aria-pressed");
-                var panelId = slidingPanel.panelId;
-                var ariaExpandedState = slidingPanel.locate("panel").attr("aria-expanded");
-
-                jqUnit.assertEquals("Show/hide button has correct aria-controls", toggleButtonAriaControlsState, panelId);
-                jqUnit.assertEquals("Show/hide button has correct aria-pressed", "true", toggleButtonAriaPressedState);
-                jqUnit.assertEquals("Panel has correct aria-expanded", "true", ariaExpandedState);
+                jqUnit.assertEquals("Show panel", "block", panel.css("display"));
+                jqUnit.assertEquals("Show panel button text", slidingPanel.options.strings.hideText, toggleButton.text());
+                fluid.tests.slidingPanel.assertAria(slidingPanel, "true");
 
                 jqUnit.start();
             });
