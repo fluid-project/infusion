@@ -72,7 +72,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.enactor.classSwapper", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor"],
+        gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
         classes: {},  // Must be supplied by implementors
         invokers: {
             clearClasses: {
@@ -128,7 +128,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.prefs.enactor.emphasizeLinks", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor.styleElements"],
+        gradeNames: ["fluid.prefs.enactor.styleElements", "fluid.viewComponent"],
         preferenceMap: {
             "fluid.prefs.emphasizeLinks": {
                 "model.value": "default"
@@ -146,7 +146,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.prefs.enactor.inputsLarger", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor.styleElements"],
+        gradeNames: ["fluid.prefs.enactor.styleElements", "fluid.viewComponent"],
         preferenceMap: {
             "fluid.prefs.inputsLarger": {
                 "model.value": "default"
@@ -216,7 +216,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.prefs.enactor.textSize", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor"],
+        gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
         preferenceMap: {
             "fluid.prefs.textSize": {
                 "model.value": "default"
@@ -272,7 +272,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.prefs.enactor.lineSpace", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor"],
+        gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
         preferenceMap: {
             "fluid.prefs.lineSpace": {
                 "model.value": "default"
@@ -330,7 +330,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
         // Continuing the work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
         if (lineHeight.match(/[0-9]$/)) {
-            return lineHeight;
+            return Number(lineHeight);
         }
 
         return Math.round(parseFloat(lineHeight) / fontSize * 100) / 100;
@@ -360,7 +360,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.prefs.enactor.tableOfContents", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor"],
+        gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
         preferenceMap: {
             "fluid.prefs.tableOfContents": {
                 "model.toc": "default"
@@ -408,6 +408,10 @@ var fluid_2_0 = fluid_2_0 || {};
                 listener: "{that}.applyToc",
                 args: ["{change}.value"]
             }
+        },
+        distributeOptions: {
+            source: "{that}.options.ignoreForToC",
+            target: "{that tableOfContents}.options.ignoreForToC"
         }
     });
 

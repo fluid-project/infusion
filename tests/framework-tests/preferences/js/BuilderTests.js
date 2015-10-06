@@ -21,7 +21,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertNotUndefined("The grade should be created", grade);
 
         fluid.each(grades, function (baseGrade) {
-            jqUnit.assertTrue(gradeName + " should have the base grade '" + baseGrade + "'", $.inArray(baseGrade, grade.gradeNames) >= 0);
+            jqUnit.assertTrue(gradeName + " should have the base grade '" + baseGrade + "'", grade.gradeNames.indexOf(baseGrade) >= 0);
         });
     };
 
@@ -30,7 +30,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertNotUndefined("The grade should be created", grade);
 
         fluid.each(grades, function (baseGrade) {
-            jqUnit.assertFalse(gradeName + " should not have the base grade '" + baseGrade + "'", $.inArray(baseGrade, grade.gradeNames) >= 0);
+            jqUnit.assertFalse(gradeName + " should not have the base grade '" + baseGrade + "'", grade.gradeNames.indexOf(baseGrade) >= 0);
         });
     };
 
@@ -850,14 +850,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     event: "{compositePrefsEditor prefsEditor prefsEditorLoader prefsEditor}.events.onReady"
                 }, {
                     func: "{prefsEditor}.prefsEditorLoader.prefsEditor.applier.requestChange",
-                    args: ["fluid_tests_composite_pref_increaseSize", true]
+                    args: ["preferences.fluid_tests_composite_pref_increaseSize", true]
                 }, {
                     listener: "fluid.tests.composite.tester.conditionalCreation",
                     event: "{prefsEditor}.prefsEditorLoader.prefsEditor.increasing.events.afterRender",
                     priority: "last"
                 }, {
                     func: "{prefsEditor}.prefsEditorLoader.prefsEditor.applier.requestChange",
-                    args: ["fluid_tests_composite_pref_increaseSize", false]
+                    args: ["preferences.fluid_tests_composite_pref_increaseSize", false]
                 }, {
                     listener: "fluid.tests.composite.tester.conditionalDestruction",
                     event: "{prefsEditor}.prefsEditorLoader.prefsEditor.increasing.events.afterRender",

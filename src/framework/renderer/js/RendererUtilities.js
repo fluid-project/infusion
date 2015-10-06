@@ -109,7 +109,6 @@ fluid_2_0 = fluid_2_0 || {};
         initFunction: "fluid.initRendererComponent",
         mergePolicy: {
             "rendererOptions.idMap": "nomerge",
-            //"rendererOptions.model": "preserve",
             protoTree: "noexpand, replace",
             parentBundle: "nomerge",
             "changeApplierOptions.resolverSetConfig": "resolverSetConfig"

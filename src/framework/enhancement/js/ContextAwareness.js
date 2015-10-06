@@ -1,7 +1,7 @@
 /*
 Copyright 2008-2009 University of Toronto
 Copyright 2010-2011 OCAD University
-Copyright 2015 Lucendo Development Ltd.
+Copyright 2015 Raising the Floor (International)
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -76,13 +76,18 @@ var fluid_2_0 = fluid_2_0 || {};
         });
         
     };
-    /** Peforms the computation for `fluid.contextAware.makeChecks` and returns a hash suitable for being sent to `fluid.contextAware.makeCheckMarkers` - 
+    /** Peforms the computation for `fluid.contextAware.makeChecks` and returns a structure suitable for being sent to `fluid.contextAware.makeCheckMarkers` - 
      *
-     * @return A hash of horizon names to grade names - this can be sent to fluid.contextAware.makeCheckMarkers
+     * @return A hash of marker type names to grade names - this can be sent to fluid.contextAware.makeCheckMarkers
      */
     // unsupported, NON-API function
     fluid.contextAware.performChecks = function (checkHash) {
         return fluid.transform(checkHash, function (checkRecord) {
+            if (typeof(checkRecord) === "function") {
+                checkRecord = {func: checkRecord};
+            } else if (typeof(checkRecord) === "string") {
+                checkRecord = {funcName: checkRecord};
+            }
             if (fluid.isPrimitive(checkRecord)) {
                 return checkRecord;
             } else if ("value" in checkRecord) {
@@ -98,16 +103,16 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     /**
-     * Takes an hash of check context names to check records, designating a collection of context markers which might be registered at a location
+     * Takes an object whose keys are check context names and whose values are check records, designating a collection of context markers which might be registered at a location
      * in the component tree.
       
-     * @param checkHash {Object} Hash of check names to check records. The keys in this structure are the context names to be supplied if the check passes.
+     * @param checkHash {Object} The keys in this structure are the context names to be supplied if the check passes, and the values are check records.
      * A check record contains: 
      *    ONE OF:
      *    value {Any} [optional] A literal value name to be attached to the context
      *    func {Function} [optional] A zero-arg function to be called to compute the value
      *    funcName {String} [optional] The name of a zero-arg global function which will compute the value
-     * If the check record consists of a primitive value, it is assumed to be the value given to "value". 
+     * If the check record consists of a Number or Boolean, it is assumed to be the value given to "value". 
      * @param path {String|Array} [optional] The path in the component tree at which the check markers are to be registered. If omitted, "" is assumed
      * @param instantiator {Instantiator} [optional] The instantiator holding the component tree which will receive the markers. If omitted, use `fluid.globalInstantiator`.
      */
@@ -135,7 +140,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     /** A grade to be given to a component which requires context-aware adaptation.
-     * This grade consumes configuration held in the block named "contextAwareness", organised as a hash of names to records holding 
+     * This grade consumes configuration held in the block named "contextAwareness", which is an object whose keys are check namespaces and whose values hold 
      * sequences of "checks" to be made in the component tree above the component. The value searched by
      * each check is encoded as the element named `contextValue` - this either represents an IoC reference to a component
      * or a particular value held at the component. If this reference has no path component, the path ".options.value" will be assumed.

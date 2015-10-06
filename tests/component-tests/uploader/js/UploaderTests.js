@@ -2,7 +2,8 @@
 Copyright 2008-2009 University of Toronto
 Copyright 2008-2009 University of California, Berkeley
 Copyright 2010-2011 OCAD University
-Copyright 2011-2015 Lucendo Development Ltd.
+Copyright 2011 Lucendo Development Ltd.
+Copyright 2015 Raising the Floor (International)
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -96,7 +97,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             testPercentage("0.1", 1);  //1.42857
 
             //infinity test
-            testPercentage(Math.pow(2, 1024), "Infinity");
+            testPercentage(Math.pow(2, 1024), Infinity);
             total = Math.pow(2, 1024);
             testPercentage(0, 0);
             jqUnit.assertTrue(total + "/" + total + " is not a number",

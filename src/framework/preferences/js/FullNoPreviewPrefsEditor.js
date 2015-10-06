@@ -26,7 +26,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 container: "{that}.container",
                 options: {
                     listeners: {
-                        onReset: [{
+                        afterReset: [{
                             listener: "{that}.applyChanges"
                         }, {
                             listener: "{that}.save"

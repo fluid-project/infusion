@@ -987,6 +987,7 @@ var fluid_2_0 = fluid_2_0 || {};
         if (typeof(a) !== "number" || typeof(b) !== "number") {
             return a === b;
         } else {
+            // Don't use isNaN because of https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/isNaN#Confusing_special-case_behavior
             if (a === b || a !== a && b !== b) { // Either the same concrete number or both NaN
                 return true;
             } else {

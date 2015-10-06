@@ -42,9 +42,9 @@ var fluid_2_0 = fluid_2_0 || {};
     // diagnostic - in fact, it is perfectly acceptable for a component's creator to return no value and
     // the failure is really in assumptions in fluid.initLittleComponent. Revisit this issue for 2.0
     fluid.diagnoseFailedView = function (componentName, that, options, args) {
-        if (!that && (fluid.hasGrade(options, "fluid.viewComponent") || fluid.hasGrade(options, "fluid.viewComponent"))) {
+        if (!that && fluid.hasGrade(options, "fluid.viewComponent")) {
             var container = fluid.wrap(args[1]);
-            var message1 = "Instantiation of autoInit component with type " + componentName + " failed, since ";
+            var message1 = "Instantiation of view component with type " + componentName + " failed, since ";
             if (!container) {
                 fluid.fail(message1 + " container argument is empty");
             }
@@ -257,6 +257,11 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {Object} that the component instance to attach the new DOM Binder to
      */
     fluid.initDomBinder = function (that, selectors) {
+        if (!that.container) {
+            fluid.fail("fluid.initDomBinder called for component with typeName " + that.typeName +
+                " without an initialised container - this has probably resulted from placing \"fluid.viewComponent\" in incorrect position in grade merging order. " +
+                " Make sure to place it to the right of any non-view grades in the gradeNames list to ensure that it overrides properly: resolved gradeNames is ", that.options.gradeNames, " for component ", that);
+        }
         that.dom = fluid.createDomBinder(that.container, selectors || that.options.selectors || {});
         that.locate = that.dom.locate;
         return that.dom;

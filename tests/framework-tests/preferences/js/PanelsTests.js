@@ -1,5 +1,5 @@
 /*
-Copyright 2013 OCAD University
+Copyright 2013-2015 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -24,12 +24,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.each(paths, function (path) {
             jqUnit.assertValue("The path '" + path + "' should exist", fluid.get(root, path));
         });
-    };
-
-    fluid.tests.listenerFuncMaker = function (funcName, args, environment) {
-        return function () {
-            fluid.invokeGlobalFunction(funcName, args, environment);
-        };
     };
 
     fluid.defaults("fluid.tests.subPanel", {
@@ -1015,7 +1009,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "textFont-comic": "Comic Sans",
             "textFont-arial": "Arial",
             "textFont-verdana": "Verdana",
-            "textFontLabel": "Text Style"
+            "textFontLabel": "text style",
+            "textFontDescr": "Change the font used"
         },
         model: {
             value: 1
@@ -1046,8 +1041,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.textFontPanel.testDefault = function (that, expectedNumOfOptions, expectedFont) {
         var options = that.container.find("option");
+        var messageBase = that.options.messageBase;
         jqUnit.assertEquals("There are " + expectedNumOfOptions + " text fonts in the control", expectedNumOfOptions, options.length);
         jqUnit.assertEquals("The first text font is " + expectedFont, expectedFont, options.filter(":selected").val());
+        jqUnit.assertEquals("The label text is " + messageBase.textFontLabel, messageBase.textFontLabel, that.locate("label").text());
+        jqUnit.assertEquals("The description text is " + messageBase.textFontDescr, messageBase.textFontDescr, that.locate("textFontDescr").text());
 
         fluid.each(options, function (option) {
             var css = that.options.classnameMap.textFont[option.value];
@@ -1071,7 +1069,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test the text font settings panel",
             tests: [{
-                expect: 7,
+                expect: 9,
                 name: "Test the rendering of the text font panel",
                 sequence: [{
                     func: "{textFont}.refreshView"
@@ -1099,8 +1097,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.prefs.panel.contrast", {
         gradeNames: ["fluid.prefs.panel.contrast", "fluid.tests.panels.utils.defaultTestPanel"],
         messageBase: {
-            "contrast": ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black"],
-            "contrastLabel": "Colour & Contrast"
+            "contrast": ["Default", "Black on white", "White on black", "Black on yellow", "Yellow on black", "Low contrast"],
+            "contrast-default": "Default",
+            "contrast-bw": "Black on white",
+            "contrast-wb": "White on black",
+            "contrast-by": "Black on yellow",
+            "contrast-yb": "Yellow on black",
+            "contrast-lgdg": "Low contrast",
+            "contrastLabel": "colour and contrast",
+            "contrastDescr": "Change the text and background colours"
         },
         model: {
             value: "default"
@@ -1133,6 +1138,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.contrastPanel.testDefault = function (that, expectedNumOfOptions, expectedContrast) {
         var inputs = that.locate("themeInput");
         var labels = that.locate("themeLabel");
+        var messageBase = that.options.messageBase;
+
+        jqUnit.assertEquals("The label text is " + messageBase.contrastLabel, messageBase.contrastLabel, that.locate("label").text());
+        jqUnit.assertEquals("The description text is " + messageBase.contrastDescr, messageBase.contrastDescr, that.locate("contrastDescr").text());
 
         jqUnit.assertEquals("There are " + expectedNumOfOptions + " contrast selections in the control", expectedNumOfOptions, inputs.length);
         jqUnit.assertEquals("The first contrast is " + expectedContrast, expectedContrast, inputs.filter(":checked").val());
@@ -1142,6 +1151,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             inputValue = input.value;
             label = labels.eq(index);
             jqUnit.assertTrue("The contrast label has appropriate css applied", label.hasClass(that.options.classnameMap.theme[inputValue]));
+
+            jqUnit.assertEquals("The aria-label is " + that.options.messageBase.contrast[index], that.options.messageBase.contrast[index], label.attr("aria-label"));
         });
 
         jqUnit.assertTrue("The default contrast label has the default label css applied", labels.eq(0).hasClass(that.options.styles.defaultThemeLabel));
@@ -1163,7 +1174,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test the contrast settings panel",
             tests: [{
-                expect: 10,
+                expect: 18,
                 name: "Test the rendering of the contrast panel",
                 sequence: [{
                     func: "{contrast}.refreshView"
@@ -1188,9 +1199,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /*******************************************************************************
      * Test functions shared by text field slider unit tests
      *******************************************************************************/
-    fluid.tests.testDefault = function (that) {
-        var inputValue = that.container.find("input").val();
+    fluid.tests.testDefault = function (that, messageMap) {
+        var inputValue = parseFloat(that.container.find("input").val(), 10);
+        var messageBase = that.options.messageBase;
         jqUnit.assertEquals("The default input value has been set to the min value", that.options.range.min, inputValue);
+
+        fluid.each(messageMap, function(messageName, selectorName) {
+            jqUnit.assertEquals("The label text is " + messageBase[messageName], messageBase[messageName], that.locate(selectorName).text());
+        });
+
     };
 
     fluid.tests.changeInput = function (textSlider, newValue) {
@@ -1205,6 +1222,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.panel.textSize", "fluid.tests.panels.utils.defaultTestPanel"],
         model: {
             textSize: 1
+        },
+        messageBase: {
+            "textSizeLabel": "Text Size",
+            "multiplier": "times",
+            "textSizeDescr": "Adjust text size"
         }
     });
 
@@ -1229,13 +1251,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test the text sizer settings panel",
             tests: [{
-                expect: 2,
+                expect: 4,
                 name: "Test the rendering of the text size panel",
                 sequence: [{
                     func: "{textSize}.refreshView"
                 }, {
                     listener: "fluid.tests.testDefault",
-                    event: "{textSize}.events.afterRender"
+                    event: "{textSize}.events.afterRender",
+                    args: ["{textSize}", {
+                        label: "textSizeLabel",
+                        textSizeDescr: "textSizeDescr"
+                    }]
                 }, {
                     func: "fluid.tests.changeInput",
                     args: ["{textSize}.dom.textSize", "{that}.options.testOptions.newValue"]
@@ -1257,6 +1283,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.panel.lineSpace", "fluid.tests.panels.utils.defaultTestPanel"],
         model: {
             lineSpace: 1
+        },
+        messageBase: {
+            "lineSpaceLabel": "Line Spacing",
+            "lineSpaceNarrowIcon": "icon of 3 horizontal lines with narrow spacing",
+            "lineSpaceWideIcon": "icon of 3 horizontal lines with wide spacing",
+            "multiplier": "times",
+            "lineSpaceDescr": "Adjust the spacing between lines of text"
         }
     });
 
@@ -1281,13 +1314,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test the line space settings panel",
             tests: [{
-                expect: 2,
+                expect: 4,
                 name: "Test the rendering of the line space panel",
                 sequence: [{
                     func: "{lineSpace}.refreshView"
                 }, {
                     listener: "fluid.tests.testDefault",
-                    event: "{lineSpace}.events.afterRender"
+                    event: "{lineSpace}.events.afterRender",
+                    args: ["{lineSpace}", {
+                        label: "lineSpaceLabel",
+                        lineSpaceDescr: "lineSpaceDescr"
+                    }]
                 }, {
                     func: "fluid.tests.changeInput",
                     args: ["{lineSpace}.dom.textSize", "{that}.options.testOptions.newValue"]
@@ -1310,6 +1347,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         model: {
             toc: false,
             layout: false
+        },
+        messageBase: {
+            "tocLabel": "Table of Contents",
+            "tocDescr": "Create a table of contents"
         }
     });
 
@@ -1326,6 +1367,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    fluid.tests.layoutPanel.checkRendering = function (that, defaultInputStatus) {
+        var messageBase = that.options.messageBase;
+
+        jqUnit.assertEquals("The label text is " + messageBase.tocLabel, messageBase.tocLabel, that.locate("label").text());
+        jqUnit.assertEquals("The description text is " + messageBase.tocDescr, messageBase.tocDescr, that.locate("tocDescr").text());
+
+        fluid.tests.panels.utils.verifyCheckboxState("The toc option is not checked by default", defaultInputStatus, that.locate("toc"));
+    };
+
     fluid.defaults("fluid.tests.layoutTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
@@ -1335,14 +1385,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test the layout settings panel",
             tests: [{
-                expect: 2,
+                expect: 4,
                 name: "Test the rendering of the layout panel",
                 sequence: [{
                     func: "{layout}.refreshView"
                 }, {
-                    listener: "fluid.tests.panels.utils.verifyCheckboxState",
-                    args: ["The toc option is not checked by default", "{that}.options.testOptions.defaultInputStatus", "{layout}.dom.toc"],
-                    event: "{layout}.events.afterRender"
+                    listener: "fluid.tests.layoutPanel.checkRendering",
+                    event: "{layout}.events.afterRender",
+                    args: ["{layout}", "{that}.options.testOptions.defaultInputStatus"]
                 }, {
                     func: "fluid.tests.panels.utils.setCheckboxState",
                     args: ["{layout}.dom.toc", "{that}.options.testOptions.newValue"]
@@ -1475,7 +1525,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid_prefs_inputsLarger: false
         },
         messageBase: {
-            linksControlsLabel: "Links & buttons"
+            "linksControlsLabel": "emphasis",
+            "inputsChoiceLabel": "Enlarge buttons, menus, text-fields, and other inputs",
+            "linksChoiceLabel": "Underline and bold links"
         },
         selectors: {
             emphasizeLinks: ".flc-prefsEditor-emphasizeLinks",
@@ -1496,13 +1548,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                resourceText: "<h2 class=\"flc-prefsEditor-linksControls-label\"></h2><li class=\"flc-prefsEditor-emphasizeLinks\"></li><li class=\"flc-prefsEditor-inputsLarger\"></li>"
+                resourceText: "<h2><span class=\"fl-icon-links\"></span><span class=\"flc-prefsEditor-linksControls-label heading-text\"></span></h2><p class=\"flc-prefsEditor-emphasizeLinks-descr\"></p><ul class=\"fl-inputs fl-links-buttons-options\"><li class=\"flc-prefsEditor-emphasizeLinks\"></li><li class=\"flc-prefsEditor-inputsLarger\"></li></ul>"
             },
             emphasizeLinks: {
-                resourceText: "<input type=\"checkbox\" id=\"links-choice\" class=\"flc-prefsEditor-links fl-force-left\" />"
+                resourceText: "<input type=\"checkbox\" id=\"links-choice\" class=\"flc-prefsEditor-links fl-force-left\" /><label class=\"flc-prefsEditor-links-choice-label\" for=\"links-choice\"></label>"
             },
             inputsLarger: {
-                resourceText: "<input type=\"checkbox\" id=\"inputs-choice\" class=\"flc-prefsEditor-inputs-larger fl-force-left\" />"
+                resourceText:  "<input type=\"checkbox\" id=\"inputs-choice\" class=\"flc-prefsEditor-inputs-larger fl-force-left\" /><label class=\"flc-prefsEditor-links-inputs-choice-label\" for=\"inputs-choice\"></label>"
             }
         }
     });
@@ -1521,6 +1573,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.linksControlsPanel.testDefault = function (linksControlsPanel, expectedValue, expectedLabel) {
+        var messageBase = linksControlsPanel.options.messageBase;
+
+        jqUnit.assertEquals("The label text is " + messageBase.linksControlsLabel, messageBase.linksControlsLabel, linksControlsPanel.locate("label").text());
+
         var linksLabel = linksControlsPanel.locate("label").text();
         jqUnit.assertEquals("The links control label is rendered correctly", expectedLabel, linksLabel);
         var linksValue = linksControlsPanel.emphasizeLinks.locate("links").attr("checked");
@@ -1539,7 +1595,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test the linksControls settings panel",
             tests: [{
-                expect: 5,
+                expect: 6,
                 name: "Test the rendering of the linksControls panel",
                 sequence: [{
                     func: "{linksControls}.refreshView"

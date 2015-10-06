@@ -52,7 +52,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The section instance should have " + expectedNumFiles + " files in its model.",
                 expectedNumFiles, section.model.files.length);
             jqUnit.assertEquals("The newly added file should be at index " + expectedIdx + " in the section's model.",
-                expectedIdx, $.inArray(file.name, section.model.files));
+                expectedIdx, section.model.files.indexOf(file.name));
         };
 
         jqUnit.test("errorPanel.section.addFile()", function () {

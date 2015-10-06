@@ -18,10 +18,6 @@ var demo = demo || {};
 
     fluid.registerNamespace("demo.prefsEditor");
 
-    fluid.enhance.check({
-        "fluid.supportsTTS": "fluid.textToSpeech.isSupported"
-    });
-
     // add extra prefs to the starter primary schemas
     demo.prefsEditor.primarySchema = {
         "demo.prefs.simplify": {
@@ -30,14 +26,21 @@ var demo = demo || {};
         }
     };
 
+    fluid.contextAware.makeChecks({
+        "fluid.supportsTTS": "fluid.textToSpeech.isSupported"
+    });
+
     fluid.defaults("demo.prefsEditor.progressiveEnhancement", {
-        gradeNames: ["fluid.progressiveCheckerForComponent"],
-        componentName: "demo.prefsEditor.progressiveEnhancement",
-        progressiveCheckerOptions: {
-            checks: [{
-                feature: "{fluid.supportsTTS}",
-                contextName: "demo.prefsEditor.auxSchema.speak"
-            }]
+        gradeNames: ["fluid.contextAware"],
+        contextAwareness: {
+            textToSpeech: {
+                checks: {
+                    supportsTTS: {
+                        contextValue: "{fluid.supportsTTS}",
+                        gradeNames: "demo.prefsEditor.auxSchema.speak"
+                    }
+                }
+            }
         }
     });
 
@@ -86,7 +89,10 @@ var demo = demo || {};
             },
             tableOfContents: {
                 enactor: {
-                    tocTemplate: "../../src/components/tableOfContents/html/TableOfContents.html"
+                    tocTemplate: "../../src/components/tableOfContents/html/TableOfContents.html",
+                    ignoreForToC: {
+                        "overviewPanel": ".flc-overviewPanel"
+                    }
                 }
             },
 
@@ -109,11 +115,11 @@ var demo = demo || {};
         selectors: {
             simplify: ".demo-prefsEditor-simplify",
             label: ".demo-prefsEditor-simplify-label",
-            choiceLabel: ".demo-prefsEditor-simplify-choice-label"
+            simplifyDescr: ".demo-prefsEditor-simplify-descr"
         },
         protoTree: {
             label: {messagekey: "simplifyLabel"},
-            choiceLabel: {messagekey: "simplifyChoiceLabel"},
+            simplifyDescr: {messagekey: "simplifyDescr"},
             simplify: "${simplify}"
         }
     });
@@ -124,7 +130,7 @@ var demo = demo || {};
      * Simplify content based upon the model value.
      **********************************************************************************/
     fluid.defaults("demo.prefsEditor.simplifyEnactor", {
-        gradeNames: ["fluid.viewComponent", "fluid.prefs.enactor"],
+        gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
         preferenceMap: {
             "demo.prefs.simplify": {
                 "model.simplify": "default"

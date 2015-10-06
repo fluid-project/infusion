@@ -27,13 +27,17 @@ fluid.registerNamespace("fluid.demo");
                     }
                 }
             },
-            target: "{/ fluid.tableOfContents}.options"
+            target: "{/ fluid.tableOfContents.levels}.options"
         }
     });
     
     fluid.demo.tableOfContentsOptions();
 
     fluid.demo.initTableOfContents = function () {
-        fluid.tableOfContents("body");
+        fluid.tableOfContents("body", {
+            ignoreForToC: {
+                trees: ".demo-toc-trees"
+            }
+        });
     };
 })(jQuery, fluid);

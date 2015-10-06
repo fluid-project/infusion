@@ -57,7 +57,7 @@ var fluid_2_0 = fluid_2_0 || {};
      ***********************************************/
 
     fluid.defaults("fluid.prefs.panel", {
-        gradeNames: ["fluid.rendererComponent", "fluid.prefs.msgLookup"],
+        gradeNames: ["fluid.prefs.msgLookup", "fluid.rendererComponent"],
         events: {
             onDomBind: null
         },
@@ -187,7 +187,7 @@ var fluid_2_0 = fluid_2_0 || {};
         target = fluid.makeArray(target);
         source = fluid.makeArray(source);
         fluid.each(source, function (selector) {
-            if ($.inArray(selector, target) < 0) {
+            if (target.indexOf(selector) < 0) {
                 target.push(selector);
             }
         });
@@ -491,7 +491,7 @@ var fluid_2_0 = fluid_2_0 || {};
             if (fluid.prefs.compositePanel.isPanel(compOpts.type, compOpts.options)) {
                 var opts = fluid.prefs.compositePanel.prefetchComponentOptions(compOpts.type, compOpts.options);
                 fluid.each(opts.selectors, function (selector, selName) {
-                    if (!opts.selectorsToIgnore || $.inArray(selName, opts.selectorsToIgnore) < 0) {
+                    if (!opts.selectorsToIgnore || opts.selectorsToIgnore.indexOf(selName) < 0) {
                         fluid.set(selectors,  fluid.prefs.compositePanel.rebaseSelectorName(compName, selName), selectors[compName] + " " + selector);
                     }
                 });
@@ -660,7 +660,8 @@ var fluid_2_0 = fluid_2_0 || {};
             label: ".flc-prefsEditor-min-text-size-label",
             smallIcon: ".flc-prefsEditor-min-text-size-smallIcon",
             largeIcon: ".flc-prefsEditor-min-text-size-largeIcon",
-            multiplier: ".flc-prefsEditor-multiplier"
+            multiplier: ".flc-prefsEditor-multiplier",
+            textSizeDescr: ".flc-prefsEditor-text-size-descr"
         },
         selectorsToIgnore: ["textSize"],
         components: {
@@ -681,7 +682,8 @@ var fluid_2_0 = fluid_2_0 || {};
             label: {messagekey: "textSizeLabel"},
             smallIcon: {messagekey: "textSizeSmallIcon"},
             largeIcon: {messagekey: "textSizeLargeIcon"},
-            multiplier: {messagekey: "multiplier"}
+            multiplier: {messagekey: "multiplier"},
+            textSizeDescr: {messagekey: "textSizeDescr"}
         },
         sliderOptions: {
             orientation: "horizontal",
@@ -707,13 +709,15 @@ var fluid_2_0 = fluid_2_0 || {};
         },
         selectors: {
             textFont: ".flc-prefsEditor-text-font",
-            label: ".flc-prefsEditor-text-font-label"
+            label: ".flc-prefsEditor-text-font-label",
+            textFontDescr: ".flc-prefsEditor-text-font-descr"
         },
         stringArrayIndex: {
             textFont: ["textFont-default", "textFont-times", "textFont-comic", "textFont-arial", "textFont-verdana"]
         },
         protoTree: {
             label: {messagekey: "textFontLabel"},
+            textFontDescr: {messagekey: "textFontDescr"},
             textFont: {
                 optionnames: "${{that}.msgLookup.textFont}",
                 optionlist: "${{that}.options.controlValues.textFont}",
@@ -761,7 +765,8 @@ var fluid_2_0 = fluid_2_0 || {};
             label: ".flc-prefsEditor-line-space-label",
             narrowIcon: ".flc-prefsEditor-line-space-narrowIcon",
             wideIcon: ".flc-prefsEditor-line-space-wideIcon",
-            multiplier: ".flc-prefsEditor-multiplier"
+            multiplier: ".flc-prefsEditor-multiplier",
+            lineSpaceDescr: ".flc-prefsEditor-line-space-descr"
         },
         selectorsToIgnore: ["lineSpace"],
         components: {
@@ -782,7 +787,8 @@ var fluid_2_0 = fluid_2_0 || {};
             label: {messagekey: "lineSpaceLabel"},
             narrowIcon: {messagekey: "lineSpaceNarrowIcon"},
             wideIcon: {messagekey: "lineSpaceWideIcon"},
-            multiplier: {messagekey: "multiplier"}
+            multiplier: {messagekey: "multiplier"},
+            lineSpaceDescr: {messagekey: "lineSpaceDescr"}
         },
         sliderOptions: {
             orientation: "horizontal",
@@ -813,7 +819,8 @@ var fluid_2_0 = fluid_2_0 || {};
             themeRow: ".flc-prefsEditor-themeRow",
             themeLabel: ".flc-prefsEditor-theme-label",
             themeInput: ".flc-prefsEditor-themeInput",
-            label: ".flc-prefsEditor-contrast-label"
+            label: ".flc-prefsEditor-contrast-label",
+            contrastDescr: ".flc-prefsEditor-contrast-descr"
         },
         styles: {
             defaultThemeLabel: "fl-prefsEditor-contrast-defaultThemeLabel"
@@ -824,6 +831,7 @@ var fluid_2_0 = fluid_2_0 || {};
         repeatingSelectors: ["themeRow"],
         protoTree: {
             label: {messagekey: "contrastLabel"},
+            contrastDescr: {messagekey: "contrastDescr"},
             expander: {
                 type: "fluid.renderer.selection.inputs",
                 rowID: "themeRow",
@@ -841,7 +849,9 @@ var fluid_2_0 = fluid_2_0 || {};
             theme: ["default", "bw", "wb", "by", "yb", "lgdg"]
         },
         markup: {
-            label: "<span class=\"fl-preview-A\">A</span><span class=\"fl-hidden-accessible\">%theme</span><div class=\"fl-crossout\"></div>"
+            // Aria-hidden needed on fl-preview-A and Display 'a' created as pseudo-content in css to prevent AT from reading out display 'a' on IE, Chrome, and Safari
+            // Aria-hidden needed on fl-crossout to prevent AT from trying to read crossout symbol in Safari
+            label: "<span class=\"fl-preview-A\" aria-hidden=\"true\"></span><span class=\"fl-hidden-accessible\">%theme</span><div class=\"fl-crossout\" aria-hidden=\"true\"></div>"
         },
         invokers: {
             style: {
@@ -862,9 +872,14 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.prefs.panel.contrast.style = function (labels, strings, markup, theme, defaultThemeName, style, defaultLabelStyle) {
         fluid.each(labels, function (label, index) {
             label = $(label);
+
+            var themeValue = strings[index];
             label.html(fluid.stringTemplate(markup, {
-                theme: strings[index]
+                theme: themeValue
             }));
+
+            // Aria-label set to prevent Firefox from reading out the display 'a'
+            label.attr("aria-label", themeValue);
 
             var labelTheme = theme[index];
             if (labelTheme === defaultThemeName) {
@@ -891,11 +906,11 @@ var fluid_2_0 = fluid_2_0 || {};
         selectors: {
             toc: ".flc-prefsEditor-toc",
             label: ".flc-prefsEditor-toc-label",
-            choiceLabel: ".flc-prefsEditor-toc-choice-label"
+            tocDescr: ".flc-prefsEditor-toc-descr"
         },
         protoTree: {
             label: {messagekey: "tocLabel"},
-            choiceLabel: {messagekey: "tocChoiceLabel"},
+            tocDescr: {messagekey: "tocDescr"},
             toc: "${toc}"
         }
     });

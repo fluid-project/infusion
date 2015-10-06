@@ -156,7 +156,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-    
+
     fluid.tests.tooltip.moduleSource = function (parent) {
         var modules = fluid.copy(fluid.tests.tooltip.module);
         modules.name = modules.name + " - " + parent.typeName;
@@ -183,9 +183,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-    
+
     fluid.defaults("fluid.tests.tooltip.FLUID5673Env", {
-        gradeNames: ["fluid.tests.tooltip.delegateEnv", "autoInit"],
+        gradeNames: ["fluid.tests.tooltip.delegateEnv"],
         expectedVisible: ["anchor-3"],
         components: {
             tree: {

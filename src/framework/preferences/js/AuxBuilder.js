@@ -169,7 +169,7 @@ var fluid_2_0 = fluid_2_0 || {};
                             internalModelName: internalModelName,
                             externalModelName: flattenedPrefKey
                         });
-                        fluid.set(initialModel, ["members", "initialModel", flattenedPrefKey], prefSchema[primaryPath]);
+                        fluid.set(initialModel, ["members", "initialModel", "preferences", flattenedPrefKey], prefSchema[primaryPath]);
                     } else {
                         fluid.set(opts, internalPath, prefSchema[primaryPath]);
                     }
@@ -287,7 +287,7 @@ var fluid_2_0 = fluid_2_0 || {};
                                 internalModelName: safeSubPanelPrefsKey,
                                 externalModelName: safeSubPanelPrefsKey
                             });
-                            fluid.set(initialModel, ["members", "initialModel", safeSubPanelPrefsKey], prefSchema[primaryPath]);
+                            fluid.set(initialModel, ["members", "initialModel", "preferences", safeSubPanelPrefsKey], prefSchema[primaryPath]);
                         } else {
                             opts = opts || {options: {}};
                             fluid.set(opts, "options." + internalPath, prefSchema[primaryPath]);
@@ -370,7 +370,7 @@ var fluid_2_0 = fluid_2_0 || {};
             // TODO: Replace this cumbersome scheme with one based on an extensible lookup to handlers
             var type = "panel";
             // Ignore the subpanels that are only for composing composite panels
-            if (category[type] && $.inArray(prefName, auxSchema.panelsToIgnore) === -1) {
+            if (category[type] && !fluid.contains(auxSchema.panelsToIgnore, prefName)) {
                 fluid.prefs.expandSchemaComponents(auxSchema, "panels", category.type, category[type], fluid.get(indexes, type),
                     fluid.get(elementCommonOptions, type), fluid.get(elementCommonOptions, type + "Model"), mappedDefaults);
             }
@@ -437,7 +437,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 "options.messageBase": "{messageLoader}.resources.%prefKey.resourceText"
             },
             panelModel: {
-                "%internalModelName": "{prefsEditor}.model.%externalModelName"
+                "%internalModelName": "{prefsEditor}.model.preferences.%externalModelName"
             },
             compositePanelBasedOnSub: {
                 "%subPrefKey": "{templateLoader}.resources.%subPrefKey"

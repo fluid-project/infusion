@@ -132,11 +132,11 @@ var jqUnit = jqUnit || {};
         },
 
         assertEquals: function (msg, expected, actual) {
-            QUnit.equal(actual, expected, processMessage(msg));
+            QUnit.strictEqual(actual, expected, processMessage(msg));
         },
 
         assertNotEquals: function (msg, value1, value2) {
-            pok(value1 !== value2, msg);
+            QUnit.notStrictEqual(value1 !== value2, msg);
         },
 
         assertTrue: function (msg, value) {
@@ -239,14 +239,14 @@ var jqUnit = jqUnit || {};
         jqUnit.assertDeepEq(message, expected2, actual2);
     };
 
-    /** Assert that the actual value object is a subset (considered in terms of shallow key coincidence) of the
-     * expected value object (this method is the one that will be most often used in practice) **/
+    /** Assert that the actual value object is a superset (considered in terms of shallow key coincidence) of the
+     * expected value object (this method is the one that will be most often used in practice). "Left hand" (expected) is a subset of actual. **/
 
     jqUnit.assertLeftHand = function (message, expected, actual) {
         jqUnit.assertDeepEq(message, expected, fluid.filterKeys(actual, fluid.keys(expected)));
     };
 
-    /** Assert that the actual value object is a superset of the expected value object **/
+    /** Assert that the actual value object is a subset of the expected value object **/
 
     jqUnit.assertRightHand = function (message, expected, actual) {
         jqUnit.assertDeepEq(message, fluid.filterKeys(expected, fluid.keys(actual)), actual);
@@ -266,13 +266,16 @@ var jqUnit = jqUnit || {};
         var gotFailure;
         try {
             fluid.failureEvent.addListener(fluid.identity, "jqUnit");
-            jqUnit.expect(1 + errorTexts.length);
+            jqUnit.expect(errorTexts.length);
             toInvoke();
         } catch (e) {
             gotFailure = true;
-            jqUnit.assertTrue(message, e instanceof fluid.FluidError);
+            if (!(e instanceof fluid.FluidError)) {
+                jqUnit.fail(message + " - received non-framework exception");
+                throw e;
+            }
             fluid.each(errorTexts, function (errorText) {
-                jqUnit.assertTrue(message + " - message text", e.message.indexOf(errorText) >= 0);
+                jqUnit.assertTrue(message + " - message text must contain " + errorText, e.message.indexOf(errorText) >= 0);
             });
         } finally {
             if (!gotFailure) {

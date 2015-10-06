@@ -166,7 +166,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             sequence.push({
                 event: "{trackTooltips}.events.notifyFocusChange",
                 listener: function () {
-                    fluid.tests.tooltip.assertVisible("The contents of the tooltip should be set", pager, targetIds, null, function (tooltip) {
+                    fluid.tests.tooltip.assertVisible(message, pager, targetIds, null, function (tooltip) {
                         jqUnit.assertNode("The contents of the tooltip should be set", tooltipContents[0], $("b", tooltip));
                     });
                 }

@@ -24,6 +24,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests");
 
     jqUnit.module("Fluid JS Tests");
+    
+    fluid.tests.plainObjectTrue = {
+        "object": {},
+        "array": [],
+        "noproto": Object.create(null),
+        "malignNoProto": Object.create(null, {"constructor": {value: "thing"}})
+    };
+    fluid.tests.plainObjectFalse = {
+        "null": null,
+        "undefined": undefined,
+        "document": document,
+        "window": window,
+        "jDocument": $("document"),
+        "component": fluid.component()
+    };
+    
+    jqUnit.test("fluid.isPlainObject tests", function () {
+        fluid.each(fluid.tests.plainObjectTrue, function (totest, key) {
+            jqUnit.assertEquals("Expected plain: " + key, true, fluid.isPlainObject(totest));
+        });
+        fluid.each(fluid.tests.plainObjectFalse, function (totest, key) {
+            jqUnit.assertEquals("Expected nonplain: " + key, false, fluid.isPlainObject(totest));
+        });
+    });
+    
 
     function isOdd(i) {
         return i % 2 === 1;
@@ -95,14 +120,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("null iteration", function () {
-        jqUnit.expect(1);
+        jqUnit.expect(2);
 
         fluid.each(null, function () {
             fluid.fail("This should not run");
         });
-        fluid.transform(null, function () {
+        var transformed = fluid.transform(null, function () {
             fluid.fail("This should not run");
         });
+        jqUnit.assertEquals("Output of null transform should be null", null, transformed);
 
         jqUnit.assertTrue("a null each and a null transform don't crash the framework", true);
     });

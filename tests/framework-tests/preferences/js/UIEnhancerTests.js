@@ -182,7 +182,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     members: {
                         initialModel: {
-                            theme: "yb"
+                            preferences: {
+                                theme: "yb"
+                            }
                         }
                     }
                 }

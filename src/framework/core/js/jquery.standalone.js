@@ -17,7 +17,7 @@
  * Date: Thu May 12 15:04:36 2011 -0400
  */
 
-/* global jQuery:true */
+/* global jQuery:true, global */
 /* exported jQuery */
 
 var fluid_2_0 = fluid_2_0 || {};
@@ -29,15 +29,12 @@ var fluid = fluid || fluid_2_0;
     // Save a reference to some core methods
     var toString = Object.prototype.toString;
     var hasOwn = Object.prototype.hasOwnProperty;
-    var indexOf = Array.prototype.indexOf;
+    var globalScope = typeof window !== "undefined" ? window :
+        typeof self !== "undefined" ? self : global;
     // Map over jQuery in case of overwrite
-    var _jQuery = window.jQuery;
+    var _jQuery = globalScope.jQuery;
     // Map over the $ in case of overwrite
-    var _$ = window.$;
-    // Used for trimming whitespace
-    var trimLeft = /^\s+/,
-        trimRight = /\s+$/,
-        trim = String.prototype.trim;
+    var _$ = globalScope.$;
 
     var jQuery = fluid.jQueryStandalone = {
 
@@ -45,26 +42,17 @@ var fluid = fluid || fluid_2_0;
         jquery: "1.6.1-fluidStandalone",
 
         noConflict: function (deep) {
-            if (window.$ === jQuery) {
-                window.$ = _$;
+            if (globalScope.$ === jQuery) {
+                globalScope.$ = _$;
             }
-            if (deep && window.jQuery === jQuery) {
-                window.jQuery = _jQuery;
+            if (deep && globalScope.jQuery === jQuery) {
+                globalScope.jQuery = _jQuery;
             }
             return jQuery;
         },
 
         isArray: Array.isArray || function (obj) {
             return toString.call(obj) === "[object Array]";
-        },
-
-        // Use native String.trim function wherever possible
-        trim: trim ? function( text ) {
-            return text === null ? "" : trim.call( text );
-        } :
-        // Otherwise use our own trimming functionality
-        function( text ) {
-            return text === null ? "" : text.toString().replace( trimLeft, "" ).replace( trimRight, "" );
         },
 
         // A crude way of determining if an object is a window
@@ -94,24 +82,16 @@ var fluid = fluid || fluid_2_0;
             return key === undefined || hasOwn.call( obj, key );
         },
 
+        trim: function (str) {
+            return str.trim();
+        },
+
         isEmptyObject: function (obj) {
             var name;
             for ( name in obj ) {
                 return false;
             }
             return true;
-        },
-
-        inArray: function (elem, array) {
-            if (indexOf) {
-                return indexOf.call( array, elem );
-            }
-            for (var i = 0, length = array.length; i < length; i++) {
-                if (array[i] === elem) {
-                    return i;
-                }
-            }
-            return -1;
         },
 
         extend: function () {

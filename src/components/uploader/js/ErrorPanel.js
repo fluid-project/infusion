@@ -19,11 +19,15 @@ var fluid_2_0 = fluid_2_0 || {};
         invokers: {
             refreshView: "fluid.uploader.errorPanel.refreshView({that})"
         },
+        events: {
+            afterRender: null
+        },
 
         components: {
             // TODO: This won't scale nicely with more types of errors.
             fileSizeErrorSection: {
                 type: "fluid.uploader.errorPanel.section",
+                createOnEvent: "afterRender",
                 container: "{errorPanel}.dom.fileSizeErrorSection",
                 options: {
                     model: {
@@ -37,6 +41,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
             numFilesErrorSection: {
                 type: "fluid.uploader.errorPanel.section",
+                createOnEvent: "afterRender",
                 container: "{errorPanel}.dom.numFilesErrorSection",
                 options: {
                     model: {
@@ -93,10 +98,11 @@ var fluid_2_0 = fluid_2_0 || {};
         var sectionTmpl = that.locate("sectionTemplate").remove().removeClass(that.options.styles.hiddenTemplate);
         that.locate("fileSizeErrorSection").append(sectionTmpl.clone());
         that.locate("numFilesErrorSection").append(sectionTmpl.clone());
-        that.sections = [that.fileSizeErrorSection, that.numFilesErrorSection];
+        that.events.afterRender.fire(that);
     };
 
     fluid.uploader.errorPanel.domComplete = function (that) {
+        that.sections = [that.fileSizeErrorSection, that.numFilesErrorSection];
         that.locate("header").text(that.options.strings.headerText);
         that.container.hide();
     };
@@ -154,7 +160,7 @@ var fluid_2_0 = fluid_2_0 || {};
         listeners: {
             "onCreate.bindHandlers": {
                 funcName: "fluid.uploader.errorPanel.section.bindHandlers",
-                priority: "before:refreshView"
+                priority: "after:refreshView"
             },
             "onCreate.refreshView": "{that}.refreshView"
         }

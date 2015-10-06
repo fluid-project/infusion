@@ -19,8 +19,7 @@
             "jQueryUICore",
             "jQueryUIWidgets",
             "normalize",
-            "framework",
-            "json"
+            "framework"
         ]
     }
 }

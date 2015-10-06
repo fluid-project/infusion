@@ -29,16 +29,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.expect(8);
             var textfieldSlider = fluid.tests.textfieldSlider.createTextfieldSlider({model: {value: 15}});
             jqUnit.assertEquals("Slider value is set to input value", 15, $(".flc-textfieldSlider-slider").slider("value"));
-            jqUnit.assertEquals("Textfield value is set", 15, $(".flc-textfieldSlider-field").val());
+            jqUnit.assertEquals("Textfield value is set", 15, +$(".flc-textfieldSlider-field").val());
             jqUnit.assertEquals("The model should be set", 15, textfieldSlider.model.value);
             jqUnit.assertEquals("Min should be the default", 0, textfieldSlider.options.range.min);
             jqUnit.assertEquals("Max should be the default", 100, textfieldSlider.options.range.max);
 
             // Check ARIA defaults
             var thumb = $(".ui-slider-handle");
-            jqUnit.assertEquals("The ARIA value now should be 15", 15, thumb.attr("aria-valuenow"));
-            jqUnit.assertEquals("The ARIA max should be 100", 100, thumb.attr("aria-valuemax"));
-            jqUnit.assertEquals("The ARIA min should be 0", 0, thumb.attr("aria-valuemin"));
+            jqUnit.assertEquals("The ARIA value now should be 15", 15, +thumb.attr("aria-valuenow"));
+            jqUnit.assertEquals("The ARIA max should be 100", 100, +thumb.attr("aria-valuemax"));
+            jqUnit.assertEquals("The ARIA min should be 0", 0, +thumb.attr("aria-valuemin"));
         });
 
         fluid.tests.textfieldSlider.testInputField = function (valToTest, expected) {
@@ -48,9 +48,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             textfield.val(valToTest);
             textfield.change();
-            jqUnit.assertEquals("Textfield value should be the " + expected, expected, textfield.val());
-            jqUnit.assertEquals("The ARIA value now should be " + expected, expected, thumb.attr("aria-valuenow"));
-            jqUnit.assertEquals("Slider value should be " + expected, expected, slider.slider("value"));
+            jqUnit.assertEquals("Textfield value should be the " + expected, expected, +textfield.val());
+            jqUnit.assertEquals("The ARIA value now should be " + expected, expected, +thumb.attr("aria-valuenow"));
+            jqUnit.assertEquals("Slider value should be " + expected, expected, +slider.slider("value"));
         };
 
         fluid.tests.textfieldSlider.testSlider = function (valToTest, expected) {
