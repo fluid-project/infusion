@@ -32,7 +32,7 @@ var fluid = fluid || fluid_2_0;
 (function ($, fluid) {
     "use strict";
 
-    fluid.version = "Infusion 2.0-dev";
+    fluid.version = "Infusion 2.0.0-dev";
 
     // Export this for use in environments like node.js, where it is useful for
     // configuring stack trace behaviour
@@ -312,7 +312,7 @@ var fluid = fluid || fluid_2_0;
         var valueType = typeof (value);
         return !value || valueType === "string" || valueType === "boolean" || valueType === "number" || valueType === "function";
     };
-    
+
     /** Determines whether the supplied object is an array. The strategy used is an optimised
      * approach taken from an earlier version of jQuery - detecting whether the toString() version
      * of the object agrees with the textual form [object Array], or else whether the object is a
