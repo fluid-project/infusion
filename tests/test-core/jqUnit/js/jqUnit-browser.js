@@ -169,4 +169,4 @@ var jqUnit = jqUnit || {};
         }
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0_beta_1);

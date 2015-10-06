@@ -13,8 +13,8 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
-var fluid = fluid || fluid_2_0;
+var fluid_2_0_0_beta_1 = fluid_2_0_0_beta_1 || {};
+var fluid = fluid || fluid_2_0_0_beta_1;
 
 (function ($, fluid) {
     "use strict";
@@ -295,4 +295,4 @@ var fluid = fluid || fluid_2_0;
         return togo;
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0_beta_1);

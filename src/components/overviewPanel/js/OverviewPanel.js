@@ -10,7 +10,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0_beta_1 = fluid_2_0_0_beta_1 || {};
 
 (function ($, fluid) {
 
@@ -195,4 +195,4 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0_beta_1);
