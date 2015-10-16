@@ -135,8 +135,8 @@ var jqUnit = jqUnit || {};
             QUnit.strictEqual(actual, expected, processMessage(msg));
         },
 
-        assertNotEquals: function (msg, value1, value2) {
-            QUnit.notStrictEqual(value1 !== value2, msg);
+        assertNotEquals: function (msg, unexpected, actual) {
+            QUnit.notStrictEqual(actual, unexpected, msg);
         },
 
         assertTrue: function (msg, value) {
