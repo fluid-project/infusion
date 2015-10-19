@@ -217,7 +217,9 @@
         that.listenerReport = [arg1];
     };
     
-    fluid.tests.expectedListenerArg = ["Direct argument"];
+    fluid.tests.pushFixedListenerReport = function (that) {
+        that.environment.listenerReport.push("Fixed argument");
+    };
     
     fluid.defaults("fluid.tests.listenerArg", { // tests FLUID-5496
         gradeNames: ["fluid.test.testEnvironment"],
@@ -232,7 +234,7 @@
                         name: "Listener arg tester",
                         tests: [{
                             name: "Listener arg sequence",
-                            expect: 1,
+                            expect: 2,
                             sequence: [{
                                 func: "{testEnvironment}.events.onPush.fire",
                                 args: "{testEnvironment}"
@@ -242,7 +244,19 @@
                                 args: ["Direct argument", "{arguments}.0"]
                             }, {
                                 func: "jqUnit.assertDeepEq",
-                                args: ["Reporter should have fired", fluid.tests.expectedListenerArg, "{testEnvironment}.listenerReport"]
+                                args: ["Reporter should have fired", ["Direct argument"], "{testEnvironment}.listenerReport"]
+                            }, {
+                                func: "{testEnvironment}.events.onPush.fire",
+                                args: "{testEnvironment}"
+                            }, {
+                                event: "{testEnvironment}.events.onPush",
+                                listener: "fluid.tests.pushFixedListenerReport",
+                                args: {
+                                    environment: "{arguments}.0" // tests FLUID-5583
+                                }
+                            }, {
+                                func: "jqUnit.assertDeepEq",
+                                args: ["Reporter should have fired", ["Direct argument", "Fixed argument"], "{testEnvironment}.listenerReport"]
                             }]
                         }]
                     }]
