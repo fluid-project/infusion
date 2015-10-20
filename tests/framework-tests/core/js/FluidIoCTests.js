@@ -170,6 +170,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.expanderMemberTiming();
     });
 
+    /** FLUID-5758 - expanders in listener args which refer to {arguments} **/
+    
+    fluid.defaults("fluid.tests.FLUID5758test", {
+        gradeNames: "fluid.component",
+        events: {
+            onDoIt: null
+        },
+        listeners: {
+            onDoIt: {
+                funcName: "fluid.tests.FLUID5758record",
+                args: ["{that}", {
+                    expander: {
+                        funcName: "fluid.identity",
+                        args: ["{arguments}.0"]
+                    }
+                }]
+            }
+        }
+    });
+
+    fluid.tests.FLUID5758record = function (that, value) {
+        that.recorded = value;
+    };
+
+    jqUnit.test("FLUID-5758: Resolution from {arguments} within listener expanders", function () {
+        var comp = fluid.tests.FLUID5758test();
+        comp.events.onDoIt.fire("Hugo");
+        jqUnit.assertEquals("Resolved value from {arguments}", "Hugo", comp.recorded);
+    });
+
     /** Preservation of material with "exotic types" (with constructor) for FLUID-5089 **/
 
     fluid.tests.customType = new Date();
