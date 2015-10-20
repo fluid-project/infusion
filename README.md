@@ -1,7 +1,7 @@
 
 ## What Is Infusion? ##
 
-Infusion is a different kind of JavaScript framework. Our approach is to leave you in control — it's your interface, using your markup, your way. Infusion is accessible and very, very configurable.
+Infusion is a different kind of JavaScript framework. Our approach is to leave you in control—it's your interface, using your markup, your way. Infusion is accessible and very, very configurable.
 
 Infusion includes:
 * an application framework for developing flexible stuff with JavaScript and jQuery
@@ -46,7 +46,7 @@ Strictly speaking, Infusion can be used directly from source (i.e. by including 
 All other development dependencies will be installed by running the following from the project root:
 
     npm install
-    
+
 (Infusion has no external runtime dependencies)
 
 ### Package Types ###
@@ -145,8 +145,8 @@ All of these libraries are already bundled within the Infusion image.
 
 ## Developing with the Preferences Framework ##
 
-Infusion is in the process of switching to use [Stylus](http://learnboost.github.io/stylus/) for CSS pre-processing. 
-CSS files for the Preferences Framework have been re-written in Stylus. Only Stylus files are pushed into the github repository. 
+Infusion is in the process of switching to use [Stylus](http://learnboost.github.io/stylus/) for CSS pre-processing.
+CSS files for the Preferences Framework have been re-written in Stylus. Only Stylus files are pushed into the github repository.
 For developing the Preferences Framework, run the following from the project root to compile Stylus files to CSS:
 
     grunt buildStylus
