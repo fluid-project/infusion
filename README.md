@@ -1,7 +1,7 @@
 
 ## What Is Infusion? ##
 
-Infusion is a different kind of JavaScript framework. Our approach is to leave you in control-- it's your interface, using your markup, your way. Infusion is accessible and very, very configurable.
+Infusion is a different kind of JavaScript framework. Our approach is to leave you in control—it's your interface, using your markup, your way. Infusion is accessible and very, very configurable.
 
 Infusion includes:
 * an application framework for developing flexible stuff with JavaScript and jQuery
@@ -12,7 +12,6 @@ Infusion includes:
 
 <http://fluidproject.org/infusion.html>
 
-
 ## How Do I Get Infusion? ##
 
 You can checkout and fork Infusion on github:
@@ -20,6 +19,10 @@ You can checkout and fork Infusion on github:
 <https://github.com/fluid-project/infusion>
 
 See [How Do I Create an Infusion Package?](#how-do-i-create-an-infusion-package), for details on creating complete or custom packages of Infusion.
+
+## Where is the Infusion Documentation? ##
+
+Infusion has comprehensive documentation at <http://docs.fluidproject.org/infusion/development/>.
 
 ## Who Makes Infusion, and How Can I Help? ##
 
@@ -40,9 +43,11 @@ Strictly speaking, Infusion can be used directly from source (i.e. by including 
 * [node.js](http://nodejs.org/)
 * [grunt-cli](http://gruntjs.com/)
 
-All other dependencies will be installed by running the following from the project root:
+All other development dependencies will be installed by running the following from the project root:
 
     npm install
+
+(Infusion has no external runtime dependencies)
 
 ### Package Types ###
 
@@ -129,17 +134,19 @@ By default, custom packages are given a name with the form _infusion-custom-<ver
 #### External Libraries ####
 
 * fastXmlPull
-* fonts
 * jQuery
 * jQueryScrollToPlugin
 * jQueryTouchPunchPlugin
 * jQueryUICore
 * jQueryUIWidgets
-* json
 * normalize
+
+All of these libraries are already bundled within the Infusion image.
 
 ## Developing with the Preferences Framework ##
 
-Infusion is in the process of switching to use [Stylus](http://learnboost.github.io/stylus/) for CSS pre-processing. CSS files for the Preferences Framework have been re-written in Stylus. Only Stylus files are pushed into the github repository. For developing the Preferences Framework, run the following from the project root to compile Stylus files to CSS:
+Infusion is in the process of switching to use [Stylus](http://learnboost.github.io/stylus/) for CSS pre-processing.
+CSS files for the Preferences Framework have been re-written in Stylus. Only Stylus files are pushed into the github repository.
+For developing the Preferences Framework, run the following from the project root to compile Stylus files to CSS:
 
     grunt buildStylus

@@ -1159,7 +1159,7 @@ var fluid_2_0_0_beta_1 = fluid_2_0_0_beta_1 || {};
     
     // Maps a type name to the member name to be used for it at a particular path level where it is intended to be unique
     // Note that "." is still not supported within a member name
-    // unsupported, NON-API function
+    // supported, PUBLIC API function
     fluid.typeNameToMemberName = function (typeName) {
         return typeName.replace(/\./g, "_");
     };
