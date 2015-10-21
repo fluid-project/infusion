@@ -15,17 +15,29 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     var fluid = require("../../src/module/fluid.js"),
         path = require("path");
-    
+
     fluid.loadTestingSupport();
-    
-    fluid.registerNamespace("fluid.tests");
-    
-    fluid.loadInContext("../../tests/test-core/testTests/js/TestingTests.js");
-    
-    fluid.require("test-module", require, "test-module");
-    
+
     var QUnit = fluid.registerNamespace("QUnit");
     var jqUnit = fluid.registerNamespace("jqUnit");
+
+    fluid.registerNamespace("fluid.tests");
+
+    fluid.loadInContext("../../tests/test-core/testTests/js/TestingTests.js");
+
+    var testModuleBase = __dirname + path.sep + "node_modules" + path.sep + "test-module";
+
+    fluid.module.preInspect(testModuleBase);
+
+    // We must store this NOW since it will be overwritten when the module is genuinely loaded - the test
+    // fixture will run long afterwards
+    var preInspected = fluid.module.modules["test-module"].baseDir;
+
+    jqUnit.test("Test early inspection of test module", function () {
+        jqUnit.assertEquals("Test that base directory of test module has been successfully pre-inspected", fluid.module.canonPath(testModuleBase), preInspected);
+    });
+    
+    fluid.require("test-module", require, "test-module");
     
     fluid.setLogging(true);
     
@@ -33,7 +45,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.log("Test concluded - " + data.name + ": " + data.passed + " passed");
     });
     
-    var expected = 14;
+    var expected = 15;
     
     QUnit.done(function (data) {
         fluid.log("Infusion node.js internal tests " +
