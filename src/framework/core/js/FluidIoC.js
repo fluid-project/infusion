@@ -1787,6 +1787,10 @@ var fluid_2_0_0_beta_1 = fluid_2_0_0_beta_1 || {};
             fluid.fail("Badly-formed compact " + type + " record without matching parentheses: ", string);
         }
         if (openPos !== -1 && closePos !== -1) {
+            var trail = string.substring(closePos + 1);
+            if ($.trim(trail) !== "") {
+                fluid.fail("Badly-formed compact " + type + " - unexpected material following close parenthesis: " + trail);
+            }
             var prefix = string.substring(0, openPos);
             var body = string.substring(openPos + 1, closePos);
             var args = fluid.transform(body.split(","), $.trim, fluid.coerceToPrimitive);

@@ -3007,6 +3007,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.assertEquals("Invoker", 3, that.addOne(1));
     });
+    
+    /** FLUID-5663 - Malformed syntax in compact invokers **/
+    
+    fluid.tests.fluid5663bads = [
+        "fluid.tests.invokeFunc({that",
+        "fluid.tests.invokeFunc({that}), other thing",
+        "fluid.tests.invokeFunc){that}"
+    ];
+    
+    jqUnit.test("FLUID-5663 - malformed compact syntax", function () {
+        fluid.each(fluid.tests.fluid5663bads, function (bad, index) {
+            jqUnit.expectFrameworkDiagnostic("Malformed compact invoker - " + bad, function () {
+                fluid.defaults("fluid.tests.fluid5663-" + index, {
+                    gradeNames: "fluid.component",
+                    invokers: {
+                        testInvoker: bad
+                    }
+                });
+            }, "formed");
+        });
+    });
 
     /** FLUID-5036, Case 1 - An IoCSS source that is fetched from the static environment is not resolved correctly **/
 
