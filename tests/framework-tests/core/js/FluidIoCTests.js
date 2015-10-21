@@ -2684,6 +2684,52 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.assertEquals("The to-be-resolved option is passed down to the target", 10, root.ownSub.options.resolvedOption);
     });
+    
+    /** FLUID-5771 - Framework diagnostic when injecting to unrecognised non-options path **/
+    
+    fluid.defaults("fluid.tests.FLUID5771missRoot", {
+        gradeNames: "fluid.component",
+        distributeOptions: {
+            record: "{that}",
+            target: "{that}.components.child"
+        }
+    });
+
+    jqUnit.test("FLUID-5771: Framework diagnostic distributing to unrecognised non-options path", function () {
+        jqUnit.expectFrameworkDiagnostic("Diagnostic mentioning valid paths",
+            fluid.tests.FLUID5771missRoot, "createOnEvent");
+    });
+    
+    /** FLUID-5771 - Framework diagnostic when trying to distribute non-options material **/
+    
+    fluid.defaults("fluid.tests.FLUID5771nonOptions", {
+        gradeNames: "fluid.component",
+        distributeOptions: {
+            source: "{that}",
+            target: "{that}.options.components.child"
+        }
+    });
+
+    jqUnit.test("FLUID-5771: Framework diagnostic distributing to unrecognised non-options path", function () {
+        jqUnit.expectFrameworkDiagnostic("Diagnostic mentioning that source must be within options",
+            fluid.tests.FLUID5771nonOptions, ["source", "options"]);
+    });
+
+    /** FLUID-5771 - Distribution of injected component **/
+    
+    fluid.defaults("fluid.tests.FLUID5771root", {
+        gradeNames: "fluid.component",
+        distributeOptions: {
+            record: "{that}",
+            target: "{that}.options.components.child"
+        }
+    });
+    
+    jqUnit.test("FLUID-5771: Distribute injected component reference", function () {
+        var that = fluid.tests.FLUID5771root();
+        jqUnit.assertEquals("FLUID-5771: Distributed injected component reference to child component",
+            that, that.child);
+    });
 
     /** FLUID-5022 - Designation of dynamic components **/
 
