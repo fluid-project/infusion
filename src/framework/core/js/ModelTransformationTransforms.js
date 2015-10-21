@@ -663,6 +663,14 @@ var fluid = fluid || fluid_2_0_0_beta_1;
         }
         return togo;
     };
+    
+    fluid.defaults("fluid.transforms.stringTemplate", {
+        gradeNames: "fluid.standardOutputTransformFunction"
+    });
+    
+    fluid.transforms.stringTemplate = function (transformSpec) {
+        return fluid.stringTemplate(transformSpec.template, transformSpec.terms);
+    };
 
     fluid.defaults("fluid.transforms.free", {
         gradeNames: "fluid.transformFunction"

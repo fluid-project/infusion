@@ -24,7 +24,8 @@ var fluid = fluid || fluid_2_0_0_beta_1;
         gradeNames: "fluid.function"
     });
 
-    // uses standard layout and workflow involving inputPath
+    // uses standard layout and workflow involving inputPath - an undefined input value
+    // will short-circuit the evaluation
     fluid.defaults("fluid.standardInputTransformFunction", {
         gradeNames: "fluid.transformFunction"
     });
@@ -33,6 +34,8 @@ var fluid = fluid || fluid_2_0_0_beta_1;
         gradeNames: "fluid.transformFunction"
     });
 
+    // defines a set of options "inputVariables" referring to its inputs, which are converted
+    // to functions that the transform may explicitly use to demand the input value
     fluid.defaults("fluid.multiInputTransformFunction", {
         gradeNames: "fluid.transformFunction"
     });
