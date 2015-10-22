@@ -41,7 +41,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         setTimeout: setTimeout,
         clearTimeout: clearTimeout,
         setInterval: setInterval,
-        clearInterval: clearInterval
+        clearInterval: clearInterval,
+        __dirname: __dirname,
+        path: path,
+        require: require
     });
 
     context.window = context;
@@ -169,7 +172,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "\n - please delete the duplicate copy which is found at \n\t" + path.resolve(__dirname) +
             "\n This can be done automatically by running the task \"grunt dedupe-infusion\"");
     }
-    
+
+    fluid.module.preInspect();
+
     fluid.module.register("infusion", path.resolve(__dirname, "../.."), require);
     
     // Export the fluid object into the pan-module node.js global object
