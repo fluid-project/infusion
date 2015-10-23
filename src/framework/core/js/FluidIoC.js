@@ -780,11 +780,11 @@ var fluid_2_0_0_beta_1 = fluid_2_0_0_beta_1 || {};
     };
 
     fluid.resolveContext = function (context, that, fast) {
-        var instantiator = fluid.getInstantiator(that);
         if (context === "that") {
             return that;
         }
         var foundComponent;
+        var instantiator = fluid.globalInstantiator; // fluid.getInstantiator(that); // this hash lookup takes over 1us!
         if (fast) {
             var shadow = instantiator.idToShadow[that.id];
             return shadow.ownScope[context];
@@ -1577,20 +1577,31 @@ var fluid_2_0_0_beta_1 = fluid_2_0_0_beta_1 || {};
     };
 
     fluid.event.dispatchListener = function (that, listener, eventName, eventSpec, indirectArgs) {
+        if (eventSpec.args !== undefined && eventSpec.args !== fluid.NO_VALUE && !fluid.isArrayable(eventSpec.args)) {
+            eventSpec.args = fluid.makeArray(eventSpec.args);
+        }
+        listener = fluid.event.resolveListener(listener); // In theory this optimisation is too aggressive if global name is not defined yet
+        var dispatchPre = fluid.preExpand(eventSpec.args);
+        var localRecord = {};
+        var expandOptions = fluid.makeStackResolverOptions(that, localRecord, true);
         var togo = function () {
-            fluid.pushActivity("dispatchListener", "firing to listener to event named %eventName of component %that",
-                {eventName: eventName, that: that});
-                
-            var args = indirectArgs ? arguments[0] : fluid.makeArray(arguments);
-            if (eventSpec.args !== undefined && eventSpec.args !== fluid.NO_VALUE) {
-                if (!fluid.isArrayable(eventSpec.args)) {
-                    eventSpec.args = fluid.makeArray(eventSpec.args);
-                }
-                args = fluid.expandImmediate(eventSpec.args, that, {"arguments": args});
+            if (fluid.defeatLogging === false) {
+                fluid.pushActivity("dispatchListener", "firing to listener to event named %eventName of component %that",
+                    {eventName: eventName, that: that});
             }
-            var togo = fluid.event.invokeListener(listener, args);
-            
-            fluid.popActivity();
+
+            var args = indirectArgs ? arguments[0] : arguments, finalArgs;
+            localRecord["arguments"] = args;
+            if (eventSpec.args !== undefined && eventSpec.args !== fluid.NO_VALUE) {
+                fluid.expandImmediateImpl(dispatchPre, expandOptions);
+                finalArgs = dispatchPre.source;
+            } else {
+                finalArgs = args;
+            }
+            var togo = listener.apply(null, finalArgs);
+            if (fluid.defeatLogging === false) {
+                fluid.popActivity();
+            }
             return togo;
         };
         fluid.event.impersonateListener(listener, togo); // still necessary for FLUID-5254 even though framework's listeners now get explicit guids

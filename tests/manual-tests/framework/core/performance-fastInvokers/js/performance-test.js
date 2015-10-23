@@ -22,6 +22,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.addFunc = function (acc, a, b, c, d) {
         return acc + a + b + c + d;
     };
+    
+    fluid.tests.addFuncEnd = function (acc, a, b, c, d, target) {
+        target.total = acc + a + b + c + d;
+    };
 
     fluid.defaults("fluid.tests.perfRoot", {
         gradeNames: ["fluid.component"],
@@ -49,12 +53,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             createOnEvent: "createIt",
                             options: {
                                 members: {
-                                    value: 3
+                                    value: 3,
+                                    total: 0
+                                },
+                                events: {
+                                    fireIt: null
                                 },
                                 invokers: {
                                     addit: {
                                         funcName: "fluid.tests.addFunc",
                                         args: ["{arguments}.0", "{child1}.value", "{child2}.value", "{child3}.value", "{arguments}.1"]
+                                    }
+                                },
+                                listeners: {
+                                    fireIt: {
+                                        funcName: "fluid.tests.addFuncEnd",
+                                        args: ["{child3}.total", "{child1}.value", "{child2}.value", "{child3}.value", "{arguments}.0", "{child3}"]
                                     }
                                 }
                             }
@@ -86,11 +100,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // full invoker with cached segs: 11us/call
     // full invoker with "monomorphic expanders": 4us/call -> 3us/call after irrelevant-seeming refactoring
     
+    // on Chrome 46 "new framework" FLUID-5796 fast listener test
+    // initial: 70us/call
+    // final: 6.5us/call after "monomorphic expanders" etc.
+    
     function runTests() {
 
         var results = [];
         var root = fluid.tests.perfRoot();
-        root.child2.events.createIt.fire();
+        var child2 = root.child2;
+        child2.events.createIt.fire();
         var acc;
         for (var j = 0; j < 5; ++ j) {
     
@@ -100,7 +119,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
             for (var i = 0; i < its; ++ i) {
                 // acc = fluid.tests.addFunc(acc, 1, 2, 3, 4);
-                acc = root.child2.child3.addit(acc, 4);
+                // acc = child2.child3.addit(acc, 4);
+                child2.child3.events.fireIt.fire(4);
                 // root.child2.events.createIt.fire();
             }
     
@@ -109,7 +129,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             results.push(its + " iterations concluded in " + delay + " ms: " + 1000*(delay/its) + " us/it");
         }
     
-        results.push("Accumulated: " + acc);
+        // results.push("Accumulated: " + acc);
+        results.push("Accumulated: " + child2.child3.total);
     
         fluid.each(results, function (result) {
             var resultElm = $("<li>").text(result);

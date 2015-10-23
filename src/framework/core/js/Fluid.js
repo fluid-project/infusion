@@ -1263,17 +1263,18 @@ var fluid = fluid || fluid_2_0_0_beta_1;
     // unsupported, non-API function
     fluid.event.invokeListener = function (listener, args) {
         if (typeof(listener) === "string") {
-            listener = fluid.event.resolveListener({globalName: listener}); // just resolves globals
+            listener = fluid.event.resolveListener(listener); // just resolves globals
         }
         return listener.apply(null, args);
     };
 
     // unsupported, NON-API function
     fluid.event.resolveListener = function (listener) {
-        if (listener.globalName) {
-            var listenerFunc = fluid.getGlobalValue(listener.globalName);
+        var listenerName = listener.globalName || (typeof(listener) === "string" ? listener : null);
+        if (listenerName) {
+            var listenerFunc = fluid.getGlobalValue(listenerName);
             if (!listenerFunc) {
-                fluid.fail("Unable to look up name " + listener.globalName + " as a global function");
+                fluid.fail("Unable to look up name " + listenerName + " as a global function");
             } else {
                 listener = listenerFunc;
             }
