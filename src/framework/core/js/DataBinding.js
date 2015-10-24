@@ -1276,7 +1276,7 @@ var fluid_2_0_0_beta_1 = fluid_2_0_0_beta_1 || {};
             spec.id = fluid.event.identifyListener(listener);
             spec.namespace = namespace;
             spec.softNamespace = softNamespace;
-            if (typeof(listener) === "string") { // TODO: replicate this nonsense from Fluid.js until we remember its purpose
+            if (typeof(listener) === "string") { // The reason for "globalName" is so that listener names can be resolved on first use and not on registration
                 listener = {globalName: listener};
             }
             spec.listener = listener;
