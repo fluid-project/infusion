@@ -32,7 +32,7 @@ var fluid = fluid || fluid_2_0_0_beta_1;
 (function ($, fluid) {
     "use strict";
 
-    fluid.version = "Infusion 2.0.0-dev";
+    fluid.version = "Infusion 2.0.0";
 
     // Export this for use in environments like node.js, where it is useful for
     // configuring stack trace behaviour
