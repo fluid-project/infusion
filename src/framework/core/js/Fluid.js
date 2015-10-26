@@ -26,8 +26,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 /* global console */
 
-var fluid_2_0_0_beta_1 = fluid_2_0_0_beta_1 || {};
-var fluid = fluid || fluid_2_0_0_beta_1;
+var fluid_2_0_0 = fluid_2_0_0 || {};
+var fluid = fluid || fluid_2_0_0;
 
 (function ($, fluid) {
     "use strict";
@@ -2678,4 +2678,4 @@ var fluid = fluid || fluid_2_0_0_beta_1;
         return template;
     };
 
-})(jQuery, fluid_2_0_0_beta_1);
+})(jQuery, fluid_2_0_0);

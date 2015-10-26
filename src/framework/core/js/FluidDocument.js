@@ -16,7 +16,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /** This file contains functions which depend on the presence of a DOM document
  * but which do not depend on the contents of Fluid.js **/
 
-var fluid_2_0_0_beta_1 = fluid_2_0_0_beta_1 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -174,4 +174,4 @@ var fluid_2_0_0_beta_1 = fluid_2_0_0_beta_1 || {};
         };
     });
 
-})(jQuery, fluid_2_0_0_beta_1);
+})(jQuery, fluid_2_0_0);
