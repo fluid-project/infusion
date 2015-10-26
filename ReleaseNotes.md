@@ -4,7 +4,7 @@
 
 [Documentation](https://github.com/fluid-project/infusion-docs)
 
-## What's New in 2.0.0-beta.1? ##
+## What's New in 2.0.0? ##
 
 See [API Changes from 1.5 to 2.0](http://docs.fluidproject.org/infusion/development/APIChangesFrom1_5To2_0.html) on the Infusion docs site, as well as
 [Deprecations in 1.5](http://docs.fluidproject.org/infusion/development/DeprecationsIn1_5.html).
@@ -48,7 +48,7 @@ See [API Changes from 1.5 to 2.0](http://docs.fluidproject.org/infusion/developm
 ## What's New in 1.9 ##
 
 **Note** 1.9 was never (so far) an official release of Infusion, but was a "last ditch" branching point to record the state of the framework should
-we ever in future require to make a release or backport fixes to a version of Infusion API compatible with the latest 1.x line, most particularly 1.5.x. 
+we ever in future require to make a release or backport fixes to a version of Infusion API compatible with the latest 1.x line, most particularly 1.5.x.
 It is stored in github at [Infusion 1.9.x](https://github.com/fluid-project/infusion/tree/1.9.x)
 
 This list of JIRAs is nonexhaustive since work has accumulated in trunk for several years since the 1.5 Infusion release. These are some of the more significant recent fixes,
