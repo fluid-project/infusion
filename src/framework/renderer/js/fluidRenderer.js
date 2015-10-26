@@ -15,8 +15,8 @@ fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
-    
-    
+
+
     fluid.defaults("fluid.messageResolver", {
         gradeNames: ["fluid.component"],
         mergePolicy: {
@@ -46,7 +46,7 @@ fluid_2_0_0 = fluid_2_0_0 || {};
             return {template: resolved, resolveFunc: that.options.resolveFunc};
         }
     };
-    
+
     fluid.messageResolver.resolve = function (that, messagecodes, args) {
         if (!messagecodes) {
             return "[No messagecodes provided]";

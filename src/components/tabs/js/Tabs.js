@@ -42,7 +42,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
         }
     });
-    
+
     fluid.tabs.bindEvents = function (that) { // TODO: The test cases for this component do not exercise any of these events
         fluid.each(that.options.events, function(value, eventName) {
             that.container.bind(eventName, function(event, ui) {

@@ -311,7 +311,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.defaults("fluid.uploader.fileQueueView", {
         gradeNames: ["fluid.viewComponent"],
         mergePolicy: {
-            // TODO: This mergePolicy was required by some attempts at fixing FLUID-5668 
+            // TODO: This mergePolicy was required by some attempts at fixing FLUID-5668
             // and may be required again in future if this component is not modelised
             // "members.queueFiles": "nomerge"
         },
@@ -425,7 +425,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             "onCreate.addKeyboardNavigation":   "fluid.uploader.fileQueueView.addKeyboardNavigation"
         }
     });
-    
+
     /**
      * An interactional mixin for binding a fileQueueView to an Uploader
      */

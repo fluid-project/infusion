@@ -19,7 +19,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests");
 
     jqUnit.module("Fluid Promises Tests");
-    
+
     fluid.tests.makeTrackingPromise = function () {
         var holder = {
             record: [],
@@ -42,7 +42,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         return holder;
     };
-    
+
     fluid.tests.makeStandardTrackingPromise = function () {
         var holder = fluid.tests.makeTrackingPromise();
         holder.addListeners();
@@ -76,7 +76,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             reject: "rejected"
         }], holder2.record);
     });
-    
+
     fluid.tests.testConflictedPromise = function (resolve1, resolve2) {
         jqUnit.expectFrameworkDiagnostic("Double resolution of promises - " + resolve1 + ", " + resolve2,
             function () {
@@ -85,21 +85,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 holder[resolve2]();
             }, "already");
     };
-    
+
     jqUnit.test("Conflicted resolution tests", function () {
         fluid.tests.testConflictedPromise("resolve", "resolve");
         fluid.tests.testConflictedPromise("resolve", "reject");
         fluid.tests.testConflictedPromise("resolve", "resolve");
         fluid.tests.testConflictedPromise("reject", "reject");
     });
-    
+
     fluid.tests.makeMultipleListenerPromise = function () {
         var holder = fluid.tests.makeTrackingPromise();
         holder.addListeners(1);
         holder.addListeners(2);
         return holder;
     };
-    
+
     jqUnit.test("Test multiple listeners", function () {
         var holder = fluid.tests.makeMultipleListenerPromise();
         holder.promise.resolve("resolved");
@@ -116,7 +116,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             reject: "rejected2"
         }], holder2.record);
     });
-    
+
     jqUnit.test("Promise detection", function () {
         var promises = [fluid.promise(), $.Deferred()];
         fluid.each(promises, function (promise) {
@@ -127,9 +127,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertFalse("Detect nonpromises", fluid.isPromise(promise));
         });
     });
-    
+
     // Tests for transform chain algorithm
-    
+
     fluid.tests.linearScale = function (value, options) {
         var transform = $.extend({
             type: "fluid.transforms.linearScale",
@@ -140,7 +140,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var togo = fluid.model.transformWithRules(value, fullTransform);
         return togo;
     };
-    
+
     fluid.defaults("fluid.tests.simplePromiseTransform", {
         gradeNames: ["fluid.component"],
         events: {
@@ -175,7 +175,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }]
         }
     });
-    
+
     fluid.tests.testSyncPromises = function (name, forwardValue, fireOptions) {
         jqUnit.test(name, function () {
             jqUnit.expect(2);
@@ -191,13 +191,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         });
     };
-    
+
     // Operate all transforms
     fluid.tests.testSyncPromises("Simple synchronous transform chain", 4);
-    
+
     // Operate only "add" namespaces transforms
     fluid.tests.testSyncPromises("Chain filtering by namespace", 2, {filterNamespaces: ["add"]});
-    
+
     fluid.tests.linearScaleLater = function (value, options) {
         var promise = fluid.promise();
         fluid.invokeLater(function () {
@@ -205,7 +205,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         return promise;
     };
-    
+
     fluid.tests.testAsyncPromises = function (name, follow) {
         jqUnit.asyncTest(name, function () {
             jqUnit.expect(1);
@@ -230,11 +230,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         });
     };
-    
+
     fluid.tests.testAsyncPromises("Asynchronous transform chain with asynchronous initial value");
-    
+
     fluid.tests.testAsyncPromises("Asynchronous transform chain via follow", true);
-    
+
     fluid.tests.firePromiseError = function (model, options) {
         var togo = fluid.promise();
         fluid.invokeLater(function () {
@@ -250,7 +250,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         return togo;
     };
-    
+
     fluid.defaults("fluid.tests.errorPromiseTransform", {
         gradeNames: ["fluid.component"],
         events: {
@@ -267,7 +267,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }]
         }
     });
-    
+
     fluid.tests.testErrorPromises = function (name, follow) {
         jqUnit.asyncTest(name, function () {
             jqUnit.expect(1);
@@ -281,10 +281,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         });
     };
-    
+
     fluid.tests.testErrorPromises("Error promise chain");
     fluid.tests.testErrorPromises("Error promise chain via fluid.promise.follow", true);
-    
+
     fluid.defaults("fluid.tests.optionsTransform", {
         gradeNames: ["fluid.component"],
         events: {
@@ -297,7 +297,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-    
+
     jqUnit.test("Transforms accepting options", function () {
         jqUnit.expect(1);
         var that = fluid.tests.optionsTransform();
@@ -306,7 +306,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Received forward transformed value", 2, value);
         });
     });
-    
+
     fluid.tests.optionValueViaPromise = function (options) {
         var promise = fluid.promise();
         fluid.invokeLater(function () {
@@ -323,7 +323,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
         return promise;
     };
-    
+
     jqUnit.asyncTest("fluid.promise.sequence", function () {
         var sources = [3, fluid.promise(), fluid.tests.optionValueViaPromise, function () { return 12;}];
         var response = fluid.promise.sequence(sources, {
@@ -337,7 +337,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.start();
         });
     });
-    
+
     fluid.tests.testSequenceRejection = function (accumulateReject, expectedRejection) {
         jqUnit.asyncTest("fluid.promise.sequence reject with accumulateReject " + accumulateReject, function () {
             var sources = [fluid.tests.optionValueViaPromise, 6, fluid.promise(), fluid.promise()];
@@ -354,14 +354,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         });
     };
-    
+
     fluid.tests.testSequenceRejection(false, 97);
     fluid.tests.testSequenceRejection(true, {
         isError: true,
         originalReject: 97,
         message: "Option value resolver for 9 received upstream reject of 97"
     });
-    
+
     jqUnit.asyncTest("fluid.promise.sequence sequencing", function () {
         var record = [];
         var produceTrackingPromise = function (index) {
@@ -386,13 +386,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.start();
         });
     });
-    
+
     jqUnit.test("fluid.promise.sequence error on non-array", function () {
         jqUnit.expectFrameworkDiagnostic("Diagnostic on non-array", function () {
             fluid.promise.sequence({unearthly: "object"});
         }, "array");
     });
-    
+
     jqUnit.test("fluid.promise.map tests", function () {
         jqUnit.expect(3);
         var mapper = function (val) {
@@ -416,7 +416,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Should receive failure from mapped failed promise", "Error", error);
         });
     });
-    
+
     jqUnit.test("fluid.toPromise tests", function () {
         jqUnit.expect(1);
         var promise = fluid.toPromise(3);
@@ -424,5 +424,5 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Converted constant to promise", 3, resolved);
         });
     });
-    
+
 })(jQuery);

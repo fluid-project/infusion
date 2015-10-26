@@ -106,9 +106,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         that.locate("header").text(that.options.strings.headerText);
         that.container.hide();
     };
-      
+
     // An "interactional mixin" - a courtesy to dream of a possibility that an "errorPanel" could conceivably be deployed separately
-    // from an "uploader"  
+    // from an "uploader"
     fluid.defaults("fluid.uploader.errorPanel.bindUploader", {
         listeners: {
             "{uploader}.events.afterFileDialog": "{errorPanel}.refreshView"
@@ -123,7 +123,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
         }
     });
-    
+
     fluid.defaults("fluid.uploader.errorPanel.section", {
         gradeNames: ["fluid.viewComponent"],
         model: {

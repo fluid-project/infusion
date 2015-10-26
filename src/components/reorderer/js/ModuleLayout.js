@@ -227,7 +227,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
         }
     });
-    
+
     fluid.moduleLayout.getGeometricInfo = function (that) {
         var options = that.options;
         var extents = [];

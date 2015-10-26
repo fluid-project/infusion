@@ -79,7 +79,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             fluid.undo.refreshView(that);
         }
     };
-    
+
     fluid.undo.copyInitialModel = function (that) {
         fluid.model.copyModel(that.initialModel, that.component.model);
         fluid.model.copyModel(that.extremalModel, that.component.model);

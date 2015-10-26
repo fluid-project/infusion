@@ -141,12 +141,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             left : fluid.reorderer.keys.j
         }
     ];
-    
+
     fluid.reorderer.keysetsPolicy = function (target, source) {
         var value = source ? source : target;
         return fluid.makeArray(value);
     };
-    
+
     fluid.reorderer.copyDropWarning = function (dropWarning) {
         return dropWarning ? dropWarning.clone() : dropWarning;
     };
@@ -786,7 +786,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * The GridLayoutHandler is responsible for handling changes to this virtual 'grid' of items
      * in the window, and of informing the Lightbox of which items surround a given item.
      */
-     
+
     fluid.defaults("fluid.gridLayoutHandler", {
         gradeNames: ["fluid.layoutHandler"],
         orientation:         fluid.orientation.HORIZONTAL,
@@ -804,7 +804,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
         }
     });
-    
+
     fluid.gridLayoutHandler.computeCoStrategy = function (disableWrap) {
         return disableWrap ? fluid.reorderer.SHUFFLE_GEOMETRIC_STRATEGY : fluid.reorderer.LOGICAL_STRATEGY;
     };

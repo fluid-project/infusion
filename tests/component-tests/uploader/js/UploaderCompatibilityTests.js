@@ -25,7 +25,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "fluid.browser.supportsBinaryXHR": true,
             "fluid.browser.supportsFormData": true
         };
-        
+
         fluid.contextAware.makeChecks(fluid.tests.uploader.commonTags);
         fluid.contextAware.forgetChecks("fluid.uploader.requiredApi");
 

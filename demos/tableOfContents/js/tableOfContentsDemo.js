@@ -15,7 +15,7 @@ fluid.registerNamespace("fluid.demo");
 
 (function ($, fluid) {
     "use strict";
-    
+
     fluid.defaults("fluid.demo.tableOfContentsOptions", {
         gradeNames: ["fluid.component"],
         distributeOptions: {
@@ -30,7 +30,7 @@ fluid.registerNamespace("fluid.demo");
             target: "{/ fluid.tableOfContents.levels}.options"
         }
     });
-    
+
     fluid.demo.tableOfContentsOptions();
 
     fluid.demo.initTableOfContents = function () {

@@ -67,7 +67,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         strings: "strings",
         mergePolicy: "mergePolicy"
     };
-    
+
     fluid.defaults("fluid.uploader.compatibility.1_2", {
         transformOptions: {
             transformer: "fluid.model.transformWithRules",
@@ -87,7 +87,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             target: "{/ fluid.uploader}.options.contextAwareness.apiCompatibility.checks"
         }
     });
-    
+
     fluid.constructSingle([], {
         singleRootType: "fluid.uploader.compatibility.distributor",
         type: "fluid.uploader.compatibility.distributor.1_3"

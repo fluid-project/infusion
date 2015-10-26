@@ -485,7 +485,7 @@ var fluid = fluid || fluid_2_0_0;
         gradeNames: ["fluid.standardTransformFunction", "fluid.lens" ],
         invertConfiguration: "fluid.transforms.arrayToObject.invert"
     });
-    
+
     /** Transforms an array of objects into an object of objects, by indexing using the option "key" which must be supplied within the transform specification.
     * The key of each element will be taken from the value held in each each original object's member derived from the option value in "key" - this member should
     * exist in each array element. The member with name agreeing with "key" and its value will be removed from each original object before inserting into the returned
@@ -556,7 +556,7 @@ var fluid = fluid || fluid_2_0_0;
      * For example:
      * <code>fluid.transforms.objectToArray({e1: {b: 1, c: 2}, e2: {b: 2: c, 3}, {key: "k"})</code> will output the array
      * <code>[{k: "e1", b: 1, c: 2}, {k: "e2", b: 2: c: 3}]</code>
-     * 
+     *
      * This performs the inverse transform of fluid.transforms.arrayToObject.
      */
     fluid.transforms.objectToArray = function (hash, transformSpec, transformer) {
@@ -663,11 +663,11 @@ var fluid = fluid || fluid_2_0_0;
         }
         return togo;
     };
-    
+
     fluid.defaults("fluid.transforms.stringTemplate", {
         gradeNames: "fluid.standardOutputTransformFunction"
     });
-    
+
     fluid.transforms.stringTemplate = function (transformSpec) {
         return fluid.stringTemplate(transformSpec.template, transformSpec.terms);
     };

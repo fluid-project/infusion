@@ -466,7 +466,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         if (!element || fluid.isPrimitive(element)) {
             return null;
         }
-        
+
         if (!element.id) {
             var simpleId = "fluid-id-" + fluid.allocateGuid();
             element.id = simpleId;
@@ -496,7 +496,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
         }
     });
-    
+
     fluid.ariaLabeller.update = function (that, newOptions) {
         newOptions = newOptions || that.options;
         that.container.attr(that.options.labelAttribute, newOptions.text);

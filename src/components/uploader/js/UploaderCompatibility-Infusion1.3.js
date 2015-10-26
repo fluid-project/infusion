@@ -24,7 +24,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.contextAware.makeChecks({"fluid.uploader.requiredApi": {
         value: "fluid_1_3"
     }});
-    
+
     // fluid.contextAware.makeContext({"fluid.uploader.requiredApi": {
     //     contextName: "fluid.uploader.requiredApi.fluid_1_3" // check: true is assumed
     // });
@@ -75,8 +75,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
         }
     };
-    
-    // This grade, applied to a fluid.uploader, will adapt its accepted API from the Infusion 1.2 form to the Infusion 1.4-2.0 form 
+
+    // This grade, applied to a fluid.uploader, will adapt its accepted API from the Infusion 1.2 form to the Infusion 1.4-2.0 form
     fluid.defaults("fluid.uploader.compatibility.1_2-1_3", {
         transformOptions: {
             transformer: "fluid.model.transform.sequence",
@@ -90,8 +90,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             config: fluid.compat.fluid_1_3.uploader.optionsRules
         }
     });
-    
-    
+
+
     fluid.defaults("fluid.uploader.compatibility.distributor.1_4", {
         distributeOptions: {
             record: {
@@ -109,7 +109,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             target: "{/ fluid.uploader}.options.contextAwareness.apiCompatibility.checks"
         }
     });
-    
+
     fluid.constructSingle([], {
         singleRootType: "fluid.uploader.compatibility.distributor",
         type: "fluid.uploader.compatibility.distributor.1_4"

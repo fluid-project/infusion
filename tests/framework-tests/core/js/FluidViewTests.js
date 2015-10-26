@@ -48,7 +48,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // Give it a valid id selector.
             var result = fluid.container("#main-container");
             jqUnit.assertTrue("One element should be returned when specifying a selector", 1, result.length);
-            
+
             jqUnit.expectFrameworkDiagnostic("Selector matching two elements for container", function () {
                 result = fluid.container(".container");
             }, "container");
@@ -114,7 +114,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var elementWithId = $("#element-with-id");
             var returnWithId = fluid.allocateSimpleId(elementWithId);
             jqUnit.assertDeepEq("Calling allocateSimpleId on element with id leaves id unchanged", ["element-with-id", "element-with-id"], [returnWithId, elementWithId.prop("id")]);
-            
+
             var elementWithoutId = $(".element-without-id");
             var fluidId = fluid.allocateSimpleId(elementWithoutId);
 

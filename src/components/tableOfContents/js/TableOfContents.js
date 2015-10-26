@@ -206,7 +206,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             };
         });
     };
-            
+
     fluid.tableOfContents.modelBuilder.assembleModel = function (that, headings, anchorInfo) {
         var headingInfo = that.convertToHeadingObjects(headings, anchorInfo);
         return that.toModel(headingInfo);
@@ -339,14 +339,14 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         });
         return tree;
     };
-    
+
     fluid.tableOfContents.levels.fetchResources = function (that) {
         fluid.fetchResources(that.options.resources, function () {
             that.container.append(that.options.resources.template.resourceText);
             that.refreshView();
         });
     };
-    
+
 
     fluid.defaults("fluid.tableOfContents.levels", {
         gradeNames: ["fluid.rendererComponent"],
