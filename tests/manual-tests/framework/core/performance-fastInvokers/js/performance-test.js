@@ -22,7 +22,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.addFunc = function (acc, a, b, c, d) {
         return acc + a + b + c + d;
     };
-    
+
     fluid.tests.addFuncEnd = function (acc, a, b, c, d, target) {
         target.total = acc + a + b + c + d;
     };
@@ -90,7 +90,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // plain function call: 20ns
     // full invoker: 170us/call when warm (progressively improves)
     // "fast invoker": 1.4us
-    
+
     // on Chrome 41 "old framework" 5/4/15:
     // full invoker: 220us/call when warm (progressively deteriorates)
     // "fast invoker": 1.7us
@@ -99,11 +99,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // full invoker with fast resolve plus preExpand: 20us/call
     // full invoker with cached segs: 11us/call
     // full invoker with "monomorphic expanders": 4us/call -> 3us/call after irrelevant-seeming refactoring
-    
+
     // on Chrome 46 "new framework" FLUID-5796 fast listener test
     // initial: 70us/call
     // final: 6.5us/call after "monomorphic expanders" etc.
-    
+
     function runTests() {
 
         var results = [];
@@ -112,26 +112,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         child2.events.createIt.fire();
         var acc;
         for (var j = 0; j < 5; ++ j) {
-    
+
             var now = Date.now();
             var its = 50000;
             acc = 0;
-    
+
             for (var i = 0; i < its; ++ i) {
                 // acc = fluid.tests.addFunc(acc, 1, 2, 3, 4);
                 // acc = child2.child3.addit(acc, 4);
                 child2.child3.events.fireIt.fire(4);
                 // root.child2.events.createIt.fire();
             }
-    
+
             var delay = (Date.now() - now);
-    
+
             results.push(its + " iterations concluded in " + delay + " ms: " + 1000*(delay/its) + " us/it");
         }
-    
+
         // results.push("Accumulated: " + acc);
         results.push("Accumulated: " + child2.child3.total);
-    
+
         fluid.each(results, function (result) {
             var resultElm = $("<li>").text(result);
             $(".results").append(resultElm);

@@ -61,9 +61,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
         }
     });
-    
+
     fluid.registerNamespace("fluid.test.checkHang");
-    
+
     fluid.test.checkHang.beginStep = function (sequenceState, testEnvironment) {
         clearTimeout(sequenceState.hangTimer);
         sequenceState.hangTimer = setTimeout(
@@ -71,22 +71,22 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 testEnvironment.events.onSequenceHang.fire(sequenceState);
             }, testEnvironment.options.hangWait);
     };
-    
+
     fluid.test.checkHang.endSequence = function (sequenceState) {
         clearTimeout(sequenceState.hangTimer);
     };
-    
+
     fluid.test.checkHang.reportHang = function (sequenceState, testEnvironment) {
         fluid.log(fluid.logLevel.IMPORTANT, "Test case listener has not responded after " + testEnvironment.options.hangWait + "ms - at sequence pos " +
             sequenceState.sequenceText() + " sequence element ", sequenceState.fixture.sequence[sequenceState.sequencePos - 1], " of fixture " + sequenceState.fixture.name);
     };
-    
+
     fluid.defaults("fluid.test.sequenceListener", { // TODO: this used to be "fluid.emptySubcomponent" in the fluid.demands era - review and improve support for this
         gradeNames: ["fluid.component", "fluid.contextAware"]
     });
 
     /** In the browser only, hijack a piece of the QUnit UI in order to show the running sequence number **/
-    
+
     fluid.contextAware.makeAdaptation({
         distributionName: "fluid.test.browserSequenceDistribution",
         targetName: "fluid.test.sequenceListener",
@@ -306,7 +306,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         );
         return that;
     };
-    
+
     fluid.test.composeSimple = function (f1, f2) {
         return function () {
             f1();
@@ -475,7 +475,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             return (pos === undefined ? that.sequencePos : pos) + " of " + that.count;
         };
         testCaseState.events.onBeginSequence.fire(testCaseState, that);
-        
+
         var finishSequence = function () {
             testCaseState.events.onEndSequence.fire(testCaseState, that);
             testCaseState.finisher();
