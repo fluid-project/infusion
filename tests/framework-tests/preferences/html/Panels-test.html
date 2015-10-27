@@ -53,12 +53,17 @@
     <div class="flc-prefs-compositePanel"></div>
 
     <div class="flc-textFont">
-        <select class="flc-prefsEditor-text-font fl-inputs" id="text-font">
-        </select>
+        <h2>
+            <span class="fl-icon-font"></span>
+            <label class="flc-prefsEditor-text-font-label" for="text-font"></label>
+        </h2>
+        <p class="flc-prefsEditor-text-font-descr"></p>
+        <select class="flc-prefsEditor-text-font fl-inputs" id="text-font"></select>
     </div>
 
     <div class="flc-contrast">
         <h2><span class="fl-icon-contrast"></span><span class="flc-prefsEditor-contrast-label heading-text"></span></h2>
+        <p class="flc-prefsEditor-contrast-descr"></p>
         <div class="flc-prefsEditor-themeRow fl-choice">
             <input type="radio" class="flc-prefsEditor-themeInput fl-hidden-accessible" name="theme" id="default" value="default" />
             <div class="fl-indicator"></div>
@@ -71,41 +76,47 @@
     </div>
 
     <div class="flc-textSize">
-        <ul class="fl-prefsEditor-topContainer fl-clearfix">
-            <li class="flc-prefsEditor-min-text-size">
-                <label for="min-text-size">Text Size</label>
-                <div class="fl-inputs">
-                    <div class="fl-force-left">
-                        <div class="fl-force-left fl-text-slider-left"><span class="fl-hidden-accessible">icon of a small capital letter 'A'</span></div>
-                        <div class="flc-textfieldSlider-slider fl-force-left fl-slider fl-slider-horz"> </div>
-                        <div class="fl-force-left fl-text-slider-right"><span class="fl-hidden-accessible">icon of a large capital letter 'A'</span></div>
-                    </div>
-                    <div class="fl-slider-input"><input id="min-text-size" class="flc-textfieldSlider-field" type="text" /> times</div>
-
+        <div class="flc-prefsEditor-min-text-size">
+            <h2><span class="fl-icon-size"></span><label class="flc-prefsEditor-min-text-size-label" for="min-text-size"></label></h2>
+            <p class="flc-prefsEditor-text-size-descr"></p>
+            <div class="fl-inputs">
+                <div class="fl-force-left">
+                    <div class="fl-icon-small-a" aria-label="Icon of a small capital letter 'A'" role="img"></div>
+                    <div class="flc-textfieldSlider-slider fl-force-left fl-slider fl-slider-horz"> </div>
+                    <div class="fl-icon-big-a" aria-label="Icon of a large capital letter 'A'" role="img"></div>
                 </div>
-            </li>
-        </ul>
+                <div class="fl-slider-input"><input id="min-text-size" class="flc-textfieldSlider-field" type="text" /> <span class="flc-prefsEditor-multiplier"></span></div>
+            </div>
+        </div>
     </div>
 
     <div class="flc-lineSpace">
-        <ul class="fl-prefsEditor-topContainer fl-clearfix">
-            <li class="flc-prefsEditor-line-space">
-                <label for="line-space">Line Space</label>
-                <div class="fl-inputs">
-                    <div class="fl-force-left">
-                        <div class="fl-force-left fl-spacing-slider-left"><span class="fl-hidden-accessible">icon of 3 horizontal lines with narrow spacing</span></div>
-                        <div class="flc-textfieldSlider-slider fl-force-left fl-slider fl-slider-horz"> </div>
-                        <div class="fl-force-left fl-spacing-slider-right"><span class="fl-hidden-accessible">icon of 3 horizontal lines with wide spacing</span></div>
-                    </div>
-                    <div class="fl-slider-input"><input id="line-space" class="flc-textfieldSlider-field" type="text" /> times</div>
-
+         <div class="flc-prefsEditor-line-space">
+            <h2><span class="fl-icon-line-space"></span><label class="flc-prefsEditor-line-space-label" for="line-space"></label></h2>
+            <p class="flc-prefsEditor-line-space-descr"></p>
+            <div class="fl-inputs">
+                <div class="fl-force-left">
+                    <div class="fl-icon-line-space-condensed" aria-label="Icon of 3 horizontal lines with narrow space" role="img"></div>
+                    <div class="flc-textfieldSlider-slider fl-force-left fl-slider fl-slider-horz"> </div>
+                    <div class="fl-icon-line-space-expanded" aria-label="Icon of 3 horizontal lines with wide space" role="img"></div>
                 </div>
-            </li>
-        </ul>
+                <div class="fl-slider-input"><input id="line-space" class="flc-textfieldSlider-field" type="text" /> <span class="flc-prefsEditor-multiplier"></span></div>
+            </div>
+        </div>
     </div>
 
     <div class="flc-layout">
-        <input type="checkbox" id="toc-choice" class="flc-prefsEditor-toc fl-force-left" />
+        <!-- <input type="checkbox" id="toc-choice" class="flc-prefsEditor-toc fl-force-left" /> -->
+        <h2><span class="fl-icon-toc"></span><span class="flc-prefsEditor-toc-label heading-text"></span></h2>
+        <p class="flc-prefsEditor-toc-descr"></p>
+        <div class="fl-prefsEditor-onoff">
+            <input type="checkbox" id="toc-choice" class="flc-prefsEditor-toc" />
+            <label for="toc-choice">
+                <span class="fl-prefsEditor-switch" data-checkboxStateOn="ON" data-checkboxStateOff="OFF">
+                    <span class="fl-prefsEditor-switch-inner"></span>
+                </span>
+            </label>
+        </div>
     </div>
 
     <div class="flc-links">

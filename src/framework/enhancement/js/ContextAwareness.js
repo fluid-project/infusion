@@ -11,13 +11,13 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
 
     fluid.registerNamespace("fluid.contextAware");
-    
+
     /** Construct an instance of a component as a child of the specified parent, with a well-known, unique name derived from its typeName
     * @param parentPath {String|Array of String} Parent of path where the new component is to be constructed, represented as a string or array of segments
     * @param options {String|Object} Options encoding the component to be constructed. If this is of type String, it is assumed to represent the component's typeName with no options
@@ -46,7 +46,7 @@ var fluid_2_0 = fluid_2_0 || {};
         segs.push(memberName);
         fluid.construct(segs, options, instantiator);
     };
-    
+
     /** Destroy an instance created by `fluid.constructSingle`
      * @param parentPath {String|Array of String} Parent of path where the new component is to be constructed, represented as a string or array of segments
      * @param typeName {String} The type name used to construct the component (either `type` or `singleRootType` of the `options` argument to `fluid.constructSingle`
@@ -59,12 +59,12 @@ var fluid_2_0 = fluid_2_0 || {};
         segs.push(memberName);
         fluid.destroy(segs, instantiator);
     };
-    
+
     fluid.defaults("fluid.contextAware.marker", {
         gradeNames: ["fluid.component"]
     });
-    
-    
+
+
     // unsupported, NON-API function
     fluid.contextAware.makeCheckMarkers = function (checks, path, instantiator) {
         fluid.each(checks, function (value, markerTypeName) {
@@ -74,9 +74,9 @@ var fluid_2_0 = fluid_2_0 || {};
                 value: value
             }, instantiator);
         });
-        
+
     };
-    /** Peforms the computation for `fluid.contextAware.makeChecks` and returns a structure suitable for being sent to `fluid.contextAware.makeCheckMarkers` - 
+    /** Peforms the computation for `fluid.contextAware.makeChecks` and returns a structure suitable for being sent to `fluid.contextAware.makeCheckMarkers` -
      *
      * @return A hash of marker type names to grade names - this can be sent to fluid.contextAware.makeCheckMarkers
      */
@@ -105,14 +105,14 @@ var fluid_2_0 = fluid_2_0 || {};
     /**
      * Takes an object whose keys are check context names and whose values are check records, designating a collection of context markers which might be registered at a location
      * in the component tree.
-      
+
      * @param checkHash {Object} The keys in this structure are the context names to be supplied if the check passes, and the values are check records.
-     * A check record contains: 
+     * A check record contains:
      *    ONE OF:
      *    value {Any} [optional] A literal value name to be attached to the context
      *    func {Function} [optional] A zero-arg function to be called to compute the value
      *    funcName {String} [optional] The name of a zero-arg global function which will compute the value
-     * If the check record consists of a Number or Boolean, it is assumed to be the value given to "value". 
+     * If the check record consists of a Number or Boolean, it is assumed to be the value given to "value".
      * @param path {String|Array} [optional] The path in the component tree at which the check markers are to be registered. If omitted, "" is assumed
      * @param instantiator {Instantiator} [optional] The instantiator holding the component tree which will receive the markers. If omitted, use `fluid.globalInstantiator`.
      */
@@ -120,7 +120,7 @@ var fluid_2_0 = fluid_2_0 || {};
         var checkOptions = fluid.contextAware.performChecks(checkHash);
         fluid.contextAware.makeCheckMarkers(checkOptions, path, instantiator);
     };
-    
+
     /**
      * Forgets a check made at a particular level of the component tree.
      * @param markerNames {Array of String} The marker typeNames whose check values are to be forgotten
@@ -140,7 +140,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     /** A grade to be given to a component which requires context-aware adaptation.
-     * This grade consumes configuration held in the block named "contextAwareness", which is an object whose keys are check namespaces and whose values hold 
+     * This grade consumes configuration held in the block named "contextAwareness", which is an object whose keys are check namespaces and whose values hold
      * sequences of "checks" to be made in the component tree above the component. The value searched by
      * each check is encoded as the element named `contextValue` - this either represents an IoC reference to a component
      * or a particular value held at the component. If this reference has no path component, the path ".options.value" will be assumed.
@@ -157,8 +157,8 @@ var fluid_2_0 = fluid_2_0 || {};
         contextAwareness: {
             // Hash of names (check namespaces) to records: {
             //     checks: {}, // Hash of check namespace to: {
-            //         contextValue: IoCExpression testing value in environment, 
-            //         gradeNames: gradeNames which will be output, 
+            //         contextValue: IoCExpression testing value in environment,
+            //         gradeNames: gradeNames which will be output,
             //         priority: String/Number for priority of check [optional]
             //         equals: Value to be compared to contextValue [optional - default is `true`]
             //     defaultGradeNames: // String or Array of String holding default gradeNames which will be output if no check matches [optional]
@@ -172,7 +172,7 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         }
     });
-    
+
     fluid.contextAware.getCheckValue = function (that, reference) {
         // cf. core of distributeOptions!
         var targetRef = fluid.parseContextReference(reference);
@@ -182,7 +182,7 @@ var fluid_2_0 = fluid_2_0 || {};
         return value;
     };
 
-    // unsupported, NON-API function    
+    // unsupported, NON-API function
     fluid.contextAware.checkOne = function (that, contextAwareRecord) {
         if (contextAwareRecord.checks && contextAwareRecord.checks.contextValue) {
             fluid.fail("Nesting error in contextAwareness record ", contextAwareRecord, " - the \"checks\" entry must contain a hash and not a contextValue/gradeNames record at top level");
@@ -202,7 +202,7 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         }, contextAwareRecord.defaultGradeNames);
     };
-    
+
     // unsupported, NON-API function
     fluid.contextAware.check = function (that, contextAwarenessOptions) {
         var gradeNames = [];
@@ -226,7 +226,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *  targetName {String} A grade name - the name of the grade to receive the adaptation
      *  adaptationName {String} the name of the contextAwareness record to receive the record - this will be a simple string
      *  checkName {String} the name of the check within the contextAwareness record to receive the record - this will be a simple string
-     *  record {Object} the record to be broadcast into contextAwareness - should contain entries 
+     *  record {Object} the record to be broadcast into contextAwareness - should contain entries
      *      contextValue {IoC expression} the context value to be checked to activate the adaptation
      *      gradeNames {String/Array of String} the grade names to be supplied to the adapting target (matching advisedName)
      */
@@ -243,16 +243,15 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     // Context awareness for the browser environment
-    
+
     fluid.contextAware.isBrowser = function () {
         return typeof(window) !== "undefined" && window.document;
     };
-    
+
     fluid.contextAware.makeChecks({
         "fluid.browser": {
             funcName: "fluid.contextAware.isBrowser"
         }
     });
 
-})(jQuery, fluid_2_0);
-
+})(jQuery, fluid_2_0_0);

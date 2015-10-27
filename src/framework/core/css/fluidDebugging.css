@@ -99,7 +99,7 @@
 /* See http://stackoverflow.com/questions/14765817/why-does-css-td-width-not-work */
 
 .fl-debug-pane-index {
-    min-width: 3em; 
+    min-width: 3em;
 }
 
 .fl-debug-pane-dom-id {

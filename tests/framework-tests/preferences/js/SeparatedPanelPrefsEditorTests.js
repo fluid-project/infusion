@@ -66,7 +66,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-    
+
     fluid.tests.fetchGlobalSettingsStore = function () {
         return fluid.queryIoCSelector(fluid.rootComponent, "fluid.prefs.globalSettingsStore", true)[0].settingsStore;
     };
@@ -76,7 +76,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var settingsStore = fluid.tests.fetchGlobalSettingsStore();
         settingsStore.set();
     };
-    
+
     fluid.tests.getPageEnhancer = function (that) {
         var pageEnhancer = fluid.resolveContext("pageEnhancer", that);
         return pageEnhancer.uiEnhancer;

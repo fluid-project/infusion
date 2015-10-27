@@ -1,19 +1,18 @@
 
-##What Is Infusion?##
+## What Is Infusion? ##
 
-Infusion is a different kind of JavaScript framework. Our approach is to leave you in control-- it's your interface, using your markup, your way. Infusion is accessible and very, very configurable.
+Infusion is a different kind of JavaScript framework. Our approach is to leave you in control—it's your interface, using your markup, your way. Infusion is accessible and very, very configurable.
 
 Infusion includes:
 * an application framework for developing flexible stuff with JavaScript and jQuery
 * a collection of accessible UI components
 
 
-##Where Can I See Infusion Components?##
+## Where Can I See Infusion Components? ##
 
 <http://fluidproject.org/infusion.html>
 
-
-##How Do I Get Infusion?##
+## How Do I Get Infusion? ##
 
 You can checkout and fork Infusion on github:
 
@@ -21,46 +20,52 @@ You can checkout and fork Infusion on github:
 
 See [How Do I Create an Infusion Package?](#how-do-i-create-an-infusion-package), for details on creating complete or custom packages of Infusion.
 
-##Who Makes Infusion, and How Can I Help?##
+## Where is the Infusion Documentation? ##
+
+Infusion has comprehensive documentation at <http://docs.fluidproject.org/infusion/development/>.
+
+## Who Makes Infusion, and How Can I Help? ##
 
 The Fluid community is an international group of designers, developers, and testers who focus on a common mission: improving the user experience and accessibility of the open web.
 
 The best way to join the Fluid Community is to jump into any of our community activities. Visit our [website](http://fluidproject.org/) for links to our mailing lists, chat room, wiki, etc.
 
-##Where is Infusion Used?##
+## Where is Infusion Used? ##
 
 The Infusion library is the cornerstone of a number of projects. You can see some of them featured on our [Projects page](http://fluidproject.org/projects.html).
 
-##How Do I Create an Infusion Package?##
+## How Do I Create an Infusion Package? ##
 
 Strictly speaking, Infusion can be used directly from source (i.e. by including each individual required file). However, for simplicity and performance reasons, you may wish to create a concatenated, minified file. The Grunt build options described below will also allow you to remove any unneeded features or libraries that you may already have in your project.
 
-###Dependencies###
+### Dependencies ###
 
 * [node.js](http://nodejs.org/)
 * [grunt-cli](http://gruntjs.com/)
 
-All other dependencies will be installed by running the following from the project root:
+All other development dependencies will be installed by running the following from the project root:
 
     npm install
 
-###Package Types###
+(Infusion has no external runtime dependencies)
 
-####Infusion All Build####
+### Package Types ###
+
+#### Infusion All Build ####
 
 Will include all of Infusion. The source files packaged along with the single concatenated js file will include all of the demos and unit tests. This is a good choice if you are trying to learn Infusion.
 
     grunt
 
-#####Custom Build#####
+##### Custom Build #####
 
 Will only include the modules you request, and all of their dependencies, minus any that are explicitly excluded. Unlike the "all" build, none of the demos or tests are included with a custom package.
 
     grunt custom
 
-###Build Options###
+### Build Options ###
 
-####--source####
+#### --source ####
 
 __value__: true (Boolean)
 _the value can be omitted if --source is the last flag specified_
@@ -71,7 +76,7 @@ By default all packages are minified. This option will allow you to maintain the
 
     grunt custom --source=true
 
-####--include####
+#### --include ####
 
 __value__: "module(s)" (String)
 _only available to custom packages_
@@ -80,7 +85,7 @@ The `--include` option takes in a comma-separated string of the [Modules](#modul
 
     grunt custom --include="inlineEdit, uiOptions"
 
-####--exclude####
+#### --exclude ####
 
 __value__: "module(s)" (String)
 _only available to custom packages_
@@ -91,7 +96,7 @@ The exclude option takes in a comma-separated string of the [Modules](#modules) 
 
     grunt custom --include="framework" --exclude="jQuery"
 
-####--name####
+#### --name ####
 
 __value__: "custom suffix" (String)
 _only available to custom packages_
@@ -100,16 +105,16 @@ By default, custom packages are given a name with the form _infusion-custom-<ver
 
     grunt custom --name="myPackage"    # this produces infusion-myPackage.js
 
-###Modules###
+### Modules ###
 
-####Framework Modules####
+#### Framework Modules ####
 
 * enhancement
 * framework
 * preferences
 * renderer
 
-####Component Modules####
+#### Component Modules ####
 
 * inlineEdit
 * overviewPanel
@@ -126,20 +131,22 @@ By default, custom packages are given a name with the form _infusion-custom-<ver
 * undo
 * uploader
 
-####External Libraries####
+#### External Libraries ####
 
 * fastXmlPull
-* fonts
 * jQuery
 * jQueryScrollToPlugin
 * jQueryTouchPunchPlugin
 * jQueryUICore
 * jQueryUIWidgets
-* json
 * normalize
 
-##Developing with the Preferences Framework##
+All of these libraries are already bundled within the Infusion image.
 
-Infusion is in the process of switching to use [Stylus](http://learnboost.github.io/stylus/) for CSS pre-processing. CSS files for the Preferences Framework have been re-written in Stylus. Only Stylus files are pushed into the github repository. For developing the Preferences Framework, run the following from the project root to compile Stylus files to CSS:
+## Developing with the Preferences Framework ##
+
+Infusion is in the process of switching to use [Stylus](http://learnboost.github.io/stylus/) for CSS pre-processing.
+CSS files for the Preferences Framework have been re-written in Stylus. Only Stylus files are pushed into the github repository.
+For developing the Preferences Framework, run the following from the project root to compile Stylus files to CSS:
 
     grunt buildStylus

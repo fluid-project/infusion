@@ -13,15 +13,15 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
-var fluid = fluid || fluid_2_0;
+var fluid_2_0_0 = fluid_2_0_0 || {};
+var fluid = fluid || fluid_2_0_0;
 
 (function ($, fluid) {
     "use strict";
 
     /** Render a timestamp from a Date object into a helpful fixed format for debug logs to millisecond accuracy
      * @param date {Date} The date to be rendered
-     * @return {String} A string format consisting of hours:minutes:seconds.millis for the datestamp padded to fixed with 
+     * @return {String} A string format consisting of hours:minutes:seconds.millis for the datestamp padded to fixed with
      */
 
     fluid.renderTimestamp = function (date) {
@@ -137,7 +137,7 @@ var fluid = fluid || fluid_2_0;
         });
     };
 
-    // Main entry point for callers. 
+    // Main entry point for callers.
     fluid.getCallerInfo = function (atDepth) {
         atDepth = (atDepth || 3) - stackStyle.offset;
         var stack = fluid.decodeStack();
@@ -163,7 +163,7 @@ var fluid = fluid || fluid_2_0;
      * @param count {Integer} The number of times to repeat the character
      * @return A string of length <code>count</code> consisting of repetitions of the supplied character
      */
-    // UNOPTIMISED 
+    // UNOPTIMISED
     fluid.generatePadding = function (c, count) {
         var togo = "";
         for (var i = 0; i < count; ++ i) {
@@ -171,11 +171,11 @@ var fluid = fluid || fluid_2_0;
         }
         return togo;
     };
-     
+
     // Marker so that we can render a custom string for properties which are not direct and concrete
     fluid.SYNTHETIC_PROPERTY = {};
 
-    // utility to avoid triggering custom getter code which could throw an exception - e.g. express 3.x's request object 
+    // utility to avoid triggering custom getter code which could throw an exception - e.g. express 3.x's request object
     fluid.getSafeProperty = function (obj, key) {
         var desc = Object.getOwnPropertyDescriptor(obj, key); // supported on all of our environments - is broken on IE8
         return desc && !desc.get ? obj[key] : fluid.SYNTHETIC_PROPERTY;
@@ -295,4 +295,4 @@ var fluid = fluid || fluid_2_0;
         return togo;
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

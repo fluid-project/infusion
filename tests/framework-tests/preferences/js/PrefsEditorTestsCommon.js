@@ -15,7 +15,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     "use strict";
 
     fluid.contextAware.makeChecks({"fluid.prefs.tests": true});
-    
+
     fluid.contextAware.makeAdaptation({
         distributionName: "fluid.tests.prefs.tempStoreDistributor",
         targetName: "fluid.prefs.store",
@@ -26,7 +26,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             gradeNames: "fluid.prefs.tempStore"
         }
     });
-    
+
     // Merge a member definition into its flattened form to accommodate the interim FLUID-5668 framework
     fluid.tests.mergeMembers = function (memberDef) {
         var togo;
@@ -39,5 +39,5 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
         return togo;
     };
-    
+
 })();

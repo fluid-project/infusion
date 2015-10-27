@@ -33,7 +33,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Aria applied to tab links", "tab", $(".flc-tabs li").attr("role"));
             jqUnit.assertEquals("Aria applied to tab panels", "tabpanel", $(".flc-tabs #one").attr("role"));
         });
-        
+
         // TODO: Need to write tests for event forwarding
 
     });

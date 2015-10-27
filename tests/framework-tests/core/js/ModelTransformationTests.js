@@ -2173,6 +2173,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.transforms.testOneStructure(fluid.tests.transforms.undefinedSingleInput);
     });
 
+    fluid.tests.transforms.fluid5703 = [{
+        message: "FLUID-5703: defeat undefined input suppression with side-inputs",
+        transformWrap: true,
+        transform: {
+            type: "fluid.transforms.stringTemplate",
+            template: "This is a %thing",
+            terms: {
+                thing: "CATTTE"
+            }
+        },
+        method: "assertEquals",
+        expected: "This is a CATTTE"
+    }];
+
+    jqUnit.test("Defeat undefined input issue with side-inputs", function () {
+        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.fluid5703);
+    });
+
     /* --------------- arrayToObject and objectToArray tests -------------------- */
     fluid.tests.transforms.arrayObjectArrayTests = [
         {

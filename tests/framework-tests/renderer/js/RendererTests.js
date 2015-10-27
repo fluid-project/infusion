@@ -55,9 +55,9 @@
         jqUnit.assertDeepNeq("eq11", [1, [2, 3, 4]], [1, [2, 3, 4, 5]]);
         jqUnit.assertDeepEq("eq12", [1, 2, 3, 4, 5], [1, 2, 3, 4, 5]);
     });
-    
+
     jqUnit.module("messageResolver");
-    
+
     jqUnit.test("messageResolver", function () {
         var bundlea = {
             key1: "value1a",
@@ -107,7 +107,7 @@
         }];
         jqUnit.assertDeepEq("Parsed compound CSS selector", expected, tree);
     });
-    
+
 
     fluid.tests.testRenderer = function () {
 
@@ -1570,7 +1570,7 @@
             jqUnit.expect(2);
             fluid.failureEvent.addListener(fluid.identity, "jqUnit"); // temporarily displace jqUnit's test failing listener
             fluid.fetchResources(resourceSpec2, callback);
-            
+
             jqUnit.assertEquals("Two calls to destructive callback", 2, destructiveCalls);
             jqUnit.assertEquals("Call to overall callback", 1, callbackCalled);
         });

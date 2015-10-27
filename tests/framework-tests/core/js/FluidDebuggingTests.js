@@ -19,7 +19,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests");
 
     jqUnit.module("Fluid Debugging JS Tests");
-    
+
     jqUnit.test("fluid.prettyPrintJSON", function () {
         jqUnit.assertEquals("Render null", "null", fluid.prettyPrintJSON(null));
         jqUnit.assertEquals("Render undefined", "undefined", fluid.prettyPrintJSON(undefined));
@@ -27,13 +27,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         circular.field = circular;
         var renderCircular = fluid.prettyPrintJSON(circular);
         jqUnit.assertValue("Render circular: " + renderCircular, circular);
-        
+
         var functionHolder = function () {};
         functionHolder.listableProperty = 1;
         var renderFunction = fluid.prettyPrintJSON(functionHolder);
         jqUnit.assertTrue("Function is annotated", renderFunction.indexOf("Function") !== -1);
         jqUnit.assertTrue("Function property is listed", renderFunction.indexOf("listableProperty") !== -1);
-        
+
         var complex = {
             "null": null,
             "boolean": true,
@@ -49,16 +49,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var renderedComplex = fluid.prettyPrintJSON(complex);
         var reparsed = JSON.parse(renderedComplex);
         jqUnit.assertDeepEq("Round-tripping complex object", complex, reparsed);
-        
+
         function Synthetic () {}
         var proto = { b: 3 };
         Synthetic.prototype = proto;
         var synthetic = new Synthetic();
-        
+
         var renderedSynthetic = fluid.prettyPrintJSON(synthetic);
         jqUnit.assertTrue("Caught synthetic property", renderedSynthetic.indexOf("[Synthetic property]") !== -1);
     });
-    
+
     // Generates an obnoxiously cross-linked object in the style we might meet, for example, in "express"
     fluid.tests.generateObnoxiousObject = function (depth, crosslinkAt) {
         var root = {index: 0};
@@ -82,7 +82,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
         return root;
     };
-    
+
     jqUnit.test("fluid.prettyPrintJSON overflow (FLUID-5671)", function () {
         jqUnit.expect(1);
         var that = fluid.tests.generateObnoxiousObject(10, 2);
@@ -91,5 +91,5 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.prettyPrintJSON(that, {maxRenderChars: 2048});
         jqUnit.assert("Rendered obnoxious JS object without memory overflow");
     });
-    
+
 })();

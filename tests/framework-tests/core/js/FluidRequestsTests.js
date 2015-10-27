@@ -13,9 +13,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function () {
     "use strict";
-    
+
     fluid.setLogging(true);
-    
+
     /**
      * Deferred expander tests (these are in "view" tests since they require a working $.ajax)
      */
@@ -133,7 +133,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.start();
         });
     });
-    
+
     jqUnit.asyncTest("Localisation Tests", function () {
         var resourceSpecs = {
             messages1: { // test exact long locale
@@ -177,5 +177,5 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             defaultLocale: "en"
         });
     });
-    
+
 })();

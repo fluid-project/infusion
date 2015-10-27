@@ -10,7 +10,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 /**************************************************************************************
  * Note: this file should not be included in the InfusionAll build.                   *
@@ -67,7 +67,7 @@ var fluid_2_0 = fluid_2_0 || {};
         strings: "strings",
         mergePolicy: "mergePolicy"
     };
-    
+
     fluid.defaults("fluid.uploader.compatibility.1_2", {
         transformOptions: {
             transformer: "fluid.model.transformWithRules",
@@ -87,10 +87,10 @@ var fluid_2_0 = fluid_2_0 || {};
             target: "{/ fluid.uploader}.options.contextAwareness.apiCompatibility.checks"
         }
     });
-    
+
     fluid.constructSingle([], {
         singleRootType: "fluid.uploader.compatibility.distributor",
         type: "fluid.uploader.compatibility.distributor.1_3"
     });
 
-})(fluid_2_0);
+})(fluid_2_0_0);

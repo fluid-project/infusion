@@ -9,7 +9,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -55,7 +55,7 @@ var fluid_2_0 = fluid_2_0 || {};
             };
         }
     };
-    
+
     // Resolve FLUID-5673 by resolving the event target upwards to the nearest match for "items" - this will
     // reproduce the natural effect operated by event bubbling in conjunction with the widget
     fluid.tooltip.resolveTooltipTarget = function (items, event) {
@@ -213,4 +213,4 @@ var fluid_2_0 = fluid_2_0 || {};
         delay: 300
     });
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

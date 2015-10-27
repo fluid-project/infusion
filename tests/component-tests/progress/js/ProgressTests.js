@@ -90,7 +90,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.notVisible("Before update, ensure default progress bar is not visible",
                     ".flc-progress");
             // 1.2
-            jqUnit.notExists("Before update, ensure update text doesn't exist",
+            jqUnit.assertNodeNotExists("Before update, ensure update text doesn't exist",
                          ":contains(" + text + ")");
         });
 
@@ -125,7 +125,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // 3.1
             jqUnit.isVisible("After update, ensure default progress bar is visible", ".flc-progress");
             // 3.2
-            jqUnit.notExists("After update with out text, ensure update text doesn't exist",
+            jqUnit.assertNodeNotExists("After update with out text, ensure update text doesn't exist",
                              ":contains(" + text + ")");
             // don't test widths here because the animate function will make them fail
         });
@@ -140,7 +140,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.isVisible("After update, ensure default progress bar is visible",
                 ".flc-progress");
             // 4.2
-            jqUnit.exists("After update with out percentage, ensure the new text exists",
+            jqUnit.assertNodeExists("After update with out percentage, ensure the new text exists",
                  ":contains(" + text + ")");
             // 4.3
             jqUnit.assertEquals("We didn't update the percent so the indicator width should still be at the minimum default width of " + progressBar.options.minWidth + "px; actual ",
@@ -149,17 +149,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var newText = "hello test!";
             progressBar.update(null, newText);
             // 4.4
-            jqUnit.exists("New text with out a percentage update, ensure the new text exists",
+            jqUnit.assertNodeExists("New text with out a percentage update, ensure the new text exists",
                  ":contains(" + newText + ")");
             // 4.5
             // update with null text. It should be the same.
             progressBar.update(null, null);
-            jqUnit.exists("After update with null text, ensure the old text remains",
+            jqUnit.assertNodeExists("After update with null text, ensure the old text remains",
                  ":contains(" + newText + ")");
             // 4.6
             // update with undefined text
             progressBar.update(null);
-            jqUnit.exists("After updating the Progressor with out label text defined, the label should be unchanged",
+            jqUnit.assertNodeExists("After updating the Progressor with out label text defined, the label should be unchanged",
                  ":contains(" + newText + ")");
             // 4.7
             // update with empty text

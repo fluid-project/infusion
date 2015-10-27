@@ -13,7 +13,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 /*******************
  * File Queue View *
@@ -311,7 +311,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.defaults("fluid.uploader.fileQueueView", {
         gradeNames: ["fluid.viewComponent"],
         mergePolicy: {
-            // TODO: This mergePolicy was required by some attempts at fixing FLUID-5668 
+            // TODO: This mergePolicy was required by some attempts at fixing FLUID-5668
             // and may be required again in future if this component is not modelised
             // "members.queueFiles": "nomerge"
         },
@@ -425,7 +425,7 @@ var fluid_2_0 = fluid_2_0 || {};
             "onCreate.addKeyboardNavigation":   "fluid.uploader.fileQueueView.addKeyboardNavigation"
         }
     });
-    
+
     /**
      * An interactional mixin for binding a fileQueueView to an Uploader
      */
@@ -537,4 +537,4 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

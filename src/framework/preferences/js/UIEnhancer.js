@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -57,18 +57,18 @@ var fluid_2_0 = fluid_2_0 || {};
         gradeNames: ["fluid.uiEnhancer", "fluid.resolveRootSingle"],
         singleRootType: "fluid.uiEnhancer"
     });
-    
+
     fluid.uiEnhancer.ignorableGrades = ["fluid.uiEnhancer", "fluid.uiEnhancer.root", "fluid.resolveRoot", "fluid.resolveRootSingle"];
-    
+
     // These function is necessary so that we can "clone" a UIEnhancer (e.g. one in an iframe) from another.
     // This reflects a long-standing mistake in UIEnhancer design - we should separate the logic in an enhancer
-    // from a particular binding onto a container. 
+    // from a particular binding onto a container.
     fluid.prefs.filterEnhancerGrades = function (gradeNames) {
         return fluid.remove_if(fluid.makeArray(gradeNames), function (gradeName) {
             return fluid.frameworkGrades.indexOf(gradeName) !== -1 || fluid.uiEnhancer.ignorableGrades.indexOf(gradeName) !== -1;
         });
     };
-    
+
     // This just the options that we are clear safely represent user options - naturally this all has
     // to go when we refactor UIEnhancer
     fluid.prefs.filterEnhancerOptions = function (options) {
@@ -83,7 +83,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * "originalEnhancerOptions" is a grade component to keep track of the original *
      * uiEnhancer user options                                                      *
      ********************************************************************************/
-    
+
     // TODO: Both the pageEnhancer and the uiEnhancer need to be available separately - some
     // references to "{uiEnhancer}" are present in prefsEditorConnections, whilst other
     // sites refer to "{pageEnhancer}". The fact that uiEnhancer requires "body" prevents it
@@ -109,9 +109,9 @@ var fluid_2_0 = fluid_2_0 || {};
             "onCreate.initModel": "fluid.pageEnhancer.init"
         }
     });
-    
+
     fluid.pageEnhancer.init = function (that) {
         that.uiEnhancer.updateModel(fluid.get(that.getSettings(), "preferences"));
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);
