@@ -17,7 +17,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     "use strict";
 
     fluid.registerNamespace("fluid.tests");
-    
+
     fluid.setLogging(true);
 
     fluid.tests.testRendererUtilities = function () {
@@ -55,7 +55,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.module("Renderer component tests");
-        
+
         function assertRenderedText(els, array) {
             fluid.each(els, function (el, index) {
                 jqUnit.assertEquals("Element " + index + " text", array[index], $(el).text());
@@ -118,7 +118,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 messageBase: globalMessages
             });
             var that = fluid.tests.rendererComponentTest(".renderer-component-test");
-            
+
             that.refreshView();
             var renderMess = that.locate("message").text();
             jqUnit.assertEquals("Rendered message from bundle", that.options.strings.message, renderMess);
@@ -659,7 +659,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         // FLUID-5664: rendererComponent as a whole should respect model rebinding
-        
+
         fluid.defaults("fluid.tests.fluid5664root", {
             gradeNames: ["fluid.rendererComponent"],
             selectors: {
@@ -679,7 +679,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             renderOnInit: true
         });
-        
+
         jqUnit.test("FLUID-5664: Rebind model root in renderer component", function () {
             var that = fluid.tests.fluid5664root("#FLUID-5664");
             jqUnit.assertEquals("Successfully rendered with undefined model", "", that.dom.locate("input").val());
@@ -687,8 +687,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             that.refreshView();
             jqUnit.assertEquals("Markup updated for root change", "inputValue", that.dom.locate("input").val());
         });
-        
-        
+
+
         jqUnit.module("Protocomponent Expander Tests");
 
         jqUnit.test("makeProtoExpander Basic Tests", function () {
@@ -1656,7 +1656,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 that.refreshView();
             });
         };
-        
+
         fluid.defaults("fluid.tests.fluid5048.captionsSettings", {
             gradeNames: ["fluid.tests.fluid5048.mediaSettings"]
         });

@@ -166,19 +166,19 @@
             }
         };
     };
-    
+
     fluid.tests.cancelOrDie = function (that) {
         that.timer = setTimeout(function () {
             fluid.fail("Hang timer did not execute before 2000ms");
         }, 2000);
     };
-    
+
     fluid.tests.cancelTimer = function (that) {
         jqUnit.assert("Successfully cancelled hang timer");
         clearTimeout(that.timer);
         that.events.onUnhang.fire();
     };
-    
+
     fluid.defaults("fluid.tests.hangTester", { // tests FLUID-5252
         gradeNames: ["fluid.test.testEnvironment"],
         hangWait: 1000, // speed up the test run by detecting a hang after only 1000ms
@@ -212,15 +212,15 @@
             }
         }
     });
-    
+
     fluid.tests.pushListenerReport = function (arg1, that) {
         that.listenerReport = [arg1];
     };
-    
+
     fluid.tests.pushFixedListenerReport = function (that) {
         that.environment.listenerReport.push("Fixed argument");
     };
-    
+
     fluid.defaults("fluid.tests.listenerArg", { // tests FLUID-5496
         gradeNames: ["fluid.test.testEnvironment"],
         events: {
@@ -268,13 +268,13 @@
     if (!fluid.defaults("fluid.viewComponent")) {
         return;
     }
-    
+
     // FLUID-5497 model listener priority
-    
+
     fluid.tests.storeListenedValue = function (that, value) {
         that.listenedValue = value;
     };
-    
+
     fluid.tests.makePriorityChangeChecker = function (that, expectedCurrent, expectedListener) {
         return function () {
             jqUnit.assertEquals("Current value expected in model", expectedCurrent, that.model);
@@ -329,12 +329,12 @@
             }]
         }]
     });
-    
+
     // FLUID-5559 double firing of onTestCaseStart
-    
+
     // in presence of the bug, we will get two firings of onTestCaseStart and hence an extra onCreate of the component,
     // and hence one extra assertion
-    
+
     fluid.defaults("fluid.tests.onTestCaseStart.tree", {
         gradeNames: ["fluid.test.testEnvironment"],
         components: {
@@ -347,7 +347,7 @@
             }
         }
     });
-    
+
     fluid.defaults("fluid.tests.fluid5559Tree", {
         gradeNames: ["fluid.tests.onTestCaseStart.tree"],
         components: {
@@ -372,16 +372,16 @@
             }
         }
     });
-    
+
     fluid.tests.onTestCaseStart.assertOnce = function (arg) {
         jqUnit.assertValue("Received value", arg);
     };
-    
+
     // FLUID-5575 late firing of onTestCaseStart
-    
+
     // In this variant, we attach the onCreate listener directly, and refer to the
     // component eagerly - with the FLUID-5266 fix, this will now trigger an error if the event is late
-    
+
     fluid.tests.onTestCaseStart.moduleSource = function (name) {
         var modules = [{
             name: "FLUID-5575 Late firing of onTestCaseStart - " + name,
@@ -393,7 +393,7 @@
         modules[0].tests[0] = $.extend(true, modules[0].tests[0], sequence);
         return modules;
     };
-    
+
     fluid.defaults("fluid.tests.fluid5575Tree", {
         gradeNames: ["fluid.tests.onTestCaseStart.tree"],
         components: {
@@ -417,7 +417,7 @@
             }
         }
     });
-        
+
     fluid.tests.onTestCaseStart.singleActive = {
         expect: 2,
         sequence: [{
@@ -425,12 +425,12 @@
             args: "{targetTree}"
         }]
     };
-    
+
     fluid.defaults("fluid.tests.fluid5575Tree.singleActive", {
         gradeNames: ["fluid.tests.fluid5575Tree"],
         sequenceName: "fluid.tests.onTestCaseStart.singleActive"
     });
-    
+
     fluid.tests.onTestCaseStart.doubleActive = {
         expect: 3,
         sequence: [{
@@ -446,7 +446,7 @@
         gradeNames: ["fluid.tests.fluid5575Tree"],
         sequenceName: "fluid.tests.onTestCaseStart.doubleActive"
     });
-    
+
     // This case occurs in metadata feedback tests - "decodeEvent" for the upcoming passive fixture
     // would itself trigger creation before active starts
     fluid.tests.onTestCaseStart.activePassive = {
@@ -459,12 +459,12 @@
             listener: "fluid.tests.onTestCaseStart.assertOnce"
         }]
     };
-    
+
     fluid.defaults("fluid.tests.fluid5575Tree.activePassive", {
         gradeNames: ["fluid.tests.fluid5575Tree"],
         sequenceName: "fluid.tests.onTestCaseStart.activePassive"
     });
-    
+
     /**** VIEW-AWARE TESTS FROM HERE ONWARDS ****/
 
     fluid.defaults("fluid.tests.asyncTest", {
@@ -519,7 +519,7 @@
             }
         }
     });
-    
+
     // FLUID-5375: Use of IoC testing framework together with new relay grades
     fluid.defaults("fluid.tests.asyncTestRelayTree", {
         gradeNames: ["fluid.tests.asyncTestTree"],

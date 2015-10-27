@@ -136,7 +136,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         fluid.registerNamespace("fluid.tests.uploader");
-        
+
         fluid.tests.uploader.container = ".flc-uploader";
 
         fluid.tests.uploader.noIoC = function (options) {
@@ -161,7 +161,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         });
-        
+
         fluid.defaults("fluid.tests.uploader.mockHtml5", {
             distributeOptions: [{
                 target: "{that fluid.uploader.remote}.options.invokers.createXHR",
@@ -176,7 +176,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }]
         });
-        
+
         fluid.contextAware.makeAdaptation({
             distributionName: "fluid.tests.uploader.mockHtml5Distribution",
             targetName: "fluid.uploader",

@@ -10,8 +10,8 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0_0_beta_1 = fluid_2_0_0_beta_1 || {};
-var fluid = fluid || fluid_2_0_0_beta_1;
+var fluid_2_0_0 = fluid_2_0_0 || {};
+var fluid = fluid || fluid_2_0_0;
 
 (function ($, fluid) {
     "use strict";
@@ -248,10 +248,10 @@ var fluid = fluid || fluid_2_0_0_beta_1;
         }
         return transformed;
     };
-    
+
     // OLD PATHUTIL utilities: Rescued from old DataBinding implementation to support obsolete "schema" scheme for transforms - all of this needs to be rethought
     var globalAccept = [];
-    
+
     fluid.registerNamespace("fluid.pathUtil");
 
     /** Parses a path segment, following escaping rules, starting from character index i in the supplied path */
@@ -411,8 +411,8 @@ var fluid = fluid || fluid_2_0_0_beta_1;
         var defaults = fluid.defaults(typeName);
         return { defaults: defaults, typeName: typeName};
     };
-    
-    // A utility which is helpful in computing inverses involving compound values. 
+
+    // A utility which is helpful in computing inverses involving compound values.
     // For example, with the valueMapper, compound input values are accepted as literals implicitly,
     // whereas as output values they must be escaped. This utility escapes a value if it is not primitive.
     fluid.model.transform.literaliseValue = function (value) {
@@ -665,4 +665,4 @@ var fluid = fluid || fluid_2_0_0_beta_1;
         };
     };
 
-})(jQuery, fluid_2_0_0_beta_1);
+})(jQuery, fluid_2_0_0);

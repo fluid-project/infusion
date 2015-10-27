@@ -2172,7 +2172,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("Tests for undefined inputs to standardInputTransformations", function () {
         fluid.tests.transforms.testOneStructure(fluid.tests.transforms.undefinedSingleInput);
     });
-    
+
     fluid.tests.transforms.fluid5703 = [{
         message: "FLUID-5703: defeat undefined input suppression with side-inputs",
         transformWrap: true,

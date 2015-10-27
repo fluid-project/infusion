@@ -58,7 +58,7 @@ fluid.module.hasPackage = function (dir) {
 
 // A simple precursor of our eventual global module inspection system. This simply inspects the path
 // to root for any readable package.json files, and extracts their "name" field as a moral identifier
-// of a module's presence. Eventually our registry will include versions and be indexed from the 
+// of a module's presence. Eventually our registry will include versions and be indexed from the
 // requestor's viewpoint - in the further future it will be mapped directly into an IoC tree
 
 fluid.module.preInspect = function (root) {
