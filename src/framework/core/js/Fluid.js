@@ -1821,6 +1821,9 @@ var fluid = fluid || fluid_2_0_0;
     // it has long been disused by DataBinding itself
     fluid.model.mergeModel = function (target, source) {
         if (fluid.isPlainObject(target)) {
+            if (source === fluid.NO_VALUE) {
+                console.log("NOW");
+            }
             var copySource = fluid.copy(source);
             $.extend(true, source, target);
             $.extend(true, source, copySource);

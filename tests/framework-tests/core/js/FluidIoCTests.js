@@ -701,6 +701,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         jqUnit.assertLeftHand("Merged grades in correct left-to-right order with direct grade arguments", expected, merged2.options);
     });
+    
+    fluid.defaults("fluid.tests.FLUID5800base", {
+        events: {
+            onUserToken: null
+        },
+        listeners: {
+            onUserToken: [{
+               priority: "first",
+               listener: "gpii.flowManager.setUserToken",
+               args: ["{that}", "{arguments}.0"]
+            }, "{that}.getPreferences"]
+        }
+    });
+    
+    jqUnit.test("FLUID-5800 merge corruption", function () {
+        jqUnit.expect(1); // this used to throw on registration
+        fluid.defaults("fluid.tests.FLUID5800mid", {
+            gradeNames: "fluid.tests.FLUID5800base",
+            listeners: {
+                onUserToken: "{that}.getDeviceContext"
+            }
+        });
+        var def = fluid.defaults("fluid.tests.FLUID5800mid");
+        console.log(def);
+    });
 
     /** Listener merging tests **/
 
