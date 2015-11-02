@@ -708,23 +708,32 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         listeners: {
             onUserToken: [{
-               priority: "first",
-               listener: "gpii.flowManager.setUserToken",
-               args: ["{that}", "{arguments}.0"]
+                listener: "fluid.identity",
+                args: ["{that}", "{arguments}.0"]
             }, "{that}.getPreferences"]
+        },
+        invokers: {
+            getPreferences: "fluid.identity",
+            getDeviceContext: "fluid.identity"
+        }
+    });
+
+    fluid.defaults("fluid.tests.FLUID5800mid", { // this used to throw on registration
+        gradeNames: "fluid.tests.FLUID5800base",
+        listeners: {
+            onUserToken: "{that}.getDeviceContext"
         }
     });
     
+    fluid.defaults("fluid.tests.FLUID5800", {
+        gradeNames: ["fluid.component", "fluid.tests.FLUID5800mid"]
+    });
+    
     jqUnit.test("FLUID-5800 merge corruption", function () {
-        jqUnit.expect(1); // this used to throw on registration
-        fluid.defaults("fluid.tests.FLUID5800mid", {
-            gradeNames: "fluid.tests.FLUID5800base",
-            listeners: {
-                onUserToken: "{that}.getDeviceContext"
-            }
-        });
-        var def = fluid.defaults("fluid.tests.FLUID5800mid");
-        console.log(def);
+        jqUnit.expect(1);
+
+        var that = fluid.tests.FLUID5800();
+        jqUnit.assertValue("Successfully constructed instance (basic test)", that);
     });
 
     /** Listener merging tests **/
