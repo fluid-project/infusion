@@ -706,17 +706,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         events: {
             onUserToken: null
         },
+        members: {
+            eventCount: 0
+        },
         listeners: {
             onUserToken: [{
-                listener: "fluid.identity",
+                listener: "fluid.tests.fluid5800count",
                 args: ["{that}", "{arguments}.0"]
             }, "{that}.getPreferences"]
         },
         invokers: {
-            getPreferences: "fluid.identity",
-            getDeviceContext: "fluid.identity"
+            getPreferences: "fluid.tests.fluid5800count",
+            getDeviceContext: "fluid.tests.fluid5800count"
         }
     });
+    
+    fluid.tests.fluid5800count = function (that) {
+        ++ that.eventCount;
+    };
 
     fluid.defaults("fluid.tests.FLUID5800mid", { // this used to throw on registration
         gradeNames: "fluid.tests.FLUID5800base",
@@ -730,10 +737,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
     
     jqUnit.test("FLUID-5800 merge corruption", function () {
-        jqUnit.expect(1);
+        jqUnit.expect(2);
 
         var that = fluid.tests.FLUID5800();
+        console.log(that);
         jqUnit.assertValue("Successfully constructed instance (basic test)", that);
+        that.events.onUserToken.fire(that);
+        jqUnit.assertEquals("Listeners have merged correctly", 3, that.eventCount);
+        // Failure IS observable through this route, but it is not economic to fix this without rewriting the entire default merge workflow - 
+        // See FLUID-5800 JIRA comment
+        // var midDefaults = fluid.defaults("fluid.tests.FLUID5800mid");
+        // jqUnit.assertEquals("Listeners were designated correctly in abstract grade", 3, midDefaults.listeners.onUserToken.length);
     });
 
     /** Listener merging tests **/
