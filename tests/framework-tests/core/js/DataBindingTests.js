@@ -138,31 +138,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Queried resolved and strategised value", 4, resolved2);
     });
 
-    // NB - this implementation is in Fluid.js, but test is grouped with the one above
-    jqUnit.test("FLUID 4585 test: mergeModel with nested model", function () {
-        var defaults = {
-            twoLevels: {
-                one: 1,
-                two: 2,
-                three: 3
-            }
-        };
-        var options = {
-            twoLevels: {
-                two: "two"
-            }
-        };
-        var expected = {
-            twoLevels: {
-                one: 1,
-                two: "two",
-                three: 3
-            }
-        };
-        var result = fluid.model.mergeModel(defaults, options);
-        jqUnit.assertDeepEq("Model should be properly merged", expected, result);
-    });
-
     jqUnit.test("FLUID-3729 test: application into nothing", function () {
         var model = {};
         var holder = {model: model};

@@ -1973,7 +1973,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.fetchExpandChildren = function (target, i, segs, source, mergePolicy, options) {
         if (source.expander) { // possible expander at top level
             var expanded = fluid.expandExpander(target, source, options);
-            if (fluid.isPrimitive(expanded) || fluid.isDOMish(expanded) || !fluid.isPlainObject(expanded) || (fluid.isArrayable(expanded) ^ fluid.isArrayable(target))) {
+            if (fluid.isPrimitive(expanded) || !fluid.isPlainObject(expanded) || (fluid.isArrayable(expanded) ^ fluid.isArrayable(target))) {
                 return expanded;
             }
             else { // make an attempt to preserve the root reference if possible
