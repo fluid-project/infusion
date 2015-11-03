@@ -740,11 +740,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.expect(2);
 
         var that = fluid.tests.FLUID5800();
-        console.log(that);
         jqUnit.assertValue("Successfully constructed instance (basic test)", that);
         that.events.onUserToken.fire(that);
         jqUnit.assertEquals("Listeners have merged correctly", 3, that.eventCount);
-        // Failure IS observable through this route, but it is not economic to fix this without rewriting the entire default merge workflow - 
+        // Failure IS observable through this route, but it is not economic to fix this without rewriting the entire default merge workflow -
         // See FLUID-5800 JIRA comment
         // var midDefaults = fluid.defaults("fluid.tests.FLUID5800mid");
         // jqUnit.assertEquals("Listeners were designated correctly in abstract grade", 3, midDefaults.listeners.onUserToken.length);
