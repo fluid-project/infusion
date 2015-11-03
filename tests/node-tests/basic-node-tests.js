@@ -45,7 +45,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.log("Test concluded - " + data.name + ": " + data.passed + " passed");
     });
 
-    var expected = 16;
+    var expected = 18;
 
     QUnit.done(function (data) {
         fluid.log("Infusion node.js internal tests " +
@@ -138,8 +138,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     
     jqUnit.test("FLUID-5807 noncorrupt framework stack traces", function () {
         var error = new fluid.FluidError("thing");
+        jqUnit.assertTrue("Framework error is an error (from its own perspective)", error instanceof fluid.Error);
+        jqUnit.assertTrue("Framework error is an instance of itself", error instanceof fluid.FluidError);
         var stack = error.stack.toString();
-        console.log("Got stack of " + stack);
         jqUnit.assertTrue("Our own filename must appear in the stack", stack.indexOf("basic-node-tests") !== -1);
     });
 
