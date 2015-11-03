@@ -168,12 +168,16 @@ var fluid = fluid || fluid_2_0_0;
         activityStack.length = popped < 0 ? 0 : popped;
     };
     // "this-ist" style Error so that we can distinguish framework errors whilst still retaining access to platform Error features
-    // unsupported, non-API function
-    fluid.FluidError = function (message) {
-        this.message = message;
-        this.stack = new Error().stack;
+    // Solution taken from http://stackoverflow.com/questions/8802845/inheriting-from-the-error-object-where-is-the-message-property#answer-17936621
+    fluid.FluidError = function (/*message*/) {
+        var togo = Error.apply(this, arguments);
+        this.message = togo.message;
+        this.stack = togo.stack;
+        return this;
     };
-    fluid.FluidError.prototype = new Error();
+    var ErrorInheritor = function () {};
+    ErrorInheritor.prototype = Error.prototype;
+    fluid.FluidError.prototype = new ErrorInheritor();
 
     // The framework's built-in "log" failure handler - this logs the supplied message as well as any framework activity in progress via fluid.log
     fluid.logFailure = function (args, activity) {
