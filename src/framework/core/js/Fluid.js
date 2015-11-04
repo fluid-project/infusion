@@ -175,9 +175,7 @@ var fluid = fluid || fluid_2_0_0;
         this.stack = togo.stack;
         return this;
     };
-    var ErrorInheritor = function () {};
-    ErrorInheritor.prototype = Error.prototype;
-    fluid.FluidError.prototype = new ErrorInheritor();
+    fluid.FluidError.prototype = Object.create(Error.prototype);
 
     // The framework's built-in "log" failure handler - this logs the supplied message as well as any framework activity in progress via fluid.log
     fluid.logFailure = function (args, activity) {
