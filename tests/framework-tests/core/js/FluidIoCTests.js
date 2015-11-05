@@ -3294,6 +3294,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     /** FLUID-5615: Raw dynamic grades should be last-ditch **/
 
+    fluid.makeGradeLinkage("fluid.tests.FLUID5615linkage", ["fluid.tests.FLUID5615", "fluid.tests.FLUID5615.writable"], "fluid.tests.FLUID5615.linkage.writable");
+    
+    fluid.constructSingle([], "fluid.tests.FLUID5615linkage");
+
     fluid.defaults("fluid.tests.FLUID5615", {
         gradeNames: ["fluid.component", "{that}.getWritableGrade"],
         invokers: {
@@ -3317,6 +3321,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             gradeNames: "fluid.tests.FLUID5615derived"
         });
         jqUnit.assertTrue("Dynamic config hoisted to raw dynamic grade", fluid.componentHasGrade(that, "fluid.tests.FLUID5615.writable"));
+        jqUnit.assertTrue("Dynamic config led to linkage resolution", fluid.componentHasGrade(that, "fluid.tests.FLUID5615.linkage.writable"));
     });
 
     /** FLUID-5094: Dynamic grade merging takes an undefined source passed in from IoCSS into account rather than ignoring it **/

@@ -610,6 +610,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 gradeNames.push.apply(gradeNames, rec.plainDynamic);
                 rec.plainDynamic.length = 0;
                 fluid.applyDynamicGrades(rec);
+                fluid.collectDistributedGrades(rec);
             }
             if (rec.rawDynamic.length > 0) {
                 var expanded = fluid.expandImmediate(rec.rawDynamic.shift(), that, shadow.localDynamic);
@@ -1422,6 +1423,65 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             parent: parent,
             memberName: memberName
         };
+    };
+    
+   /** Construct an instance of a component as a child of the specified parent, with a well-known, unique name derived from its typeName
+    * @param parentPath {String|Array of String} Parent of path where the new component is to be constructed, represented as a string or array of segments
+    * @param options {String|Object} Options encoding the component to be constructed. If this is of type String, it is assumed to represent the component's typeName with no options
+    * @param instantiator {Instantiator} [optional] The instantiator holding the component to be created - if blank, the global instantiator will be used
+    */
+    fluid.constructSingle = function (parentPath, options, instantiator) {
+        instantiator = instantiator || fluid.globalInstantiator;
+        parentPath = parentPath || "";
+        var segs = fluid.model.parseToSegments(parentPath, instantiator.parseEL, true);
+        if (typeof(options) === "string") {
+            options = {type: options};
+        }
+        var type = options.type;
+        if (!type) {
+            fluid.fail("Cannot construct singleton object without a type entry");
+        }
+        options = $.extend({}, options);
+        var gradeNames = options.gradeNames = fluid.makeArray(options.gradeNames);
+        gradeNames.unshift(type); // principal type may be noninstantiable
+        options.type = "fluid.component";
+        var root = segs.length === 0;
+        if (root) {
+            gradeNames.push("fluid.resolveRoot");
+        }
+        var memberName = fluid.typeNameToMemberName(options.singleRootType || type);
+        segs.push(memberName);
+        fluid.construct(segs, options, instantiator);
+    };
+
+    /** Destroy an instance created by `fluid.constructSingle`
+     * @param parentPath {String|Array of String} Parent of path where the new component is to be constructed, represented as a string or array of segments
+     * @param typeName {String} The type name used to construct the component (either `type` or `singleRootType` of the `options` argument to `fluid.constructSingle`
+     * @param instantiator {Instantiator} [optional] The instantiator holding the component to be created - if blank, the global instantiator will be used
+    */
+    fluid.destroySingle = function (parentPath, typeName, instantiator) {
+        instantiator = instantiator || fluid.globalInstantiator;
+        var segs = fluid.model.parseToSegments(parentPath, instantiator.parseEL, true);
+        var memberName = fluid.typeNameToMemberName(typeName);
+        segs.push(memberName);
+        fluid.destroy(segs, instantiator);
+    };
+
+    /** Registers and constructs a "linkage distribution" which will ensure that wherever a set of "input grades" co-occur, they will
+     * always result in a supplied "output grades" in the component where they co-occur.
+     * @param linkageName {String} The name of the grade which will broadcast the resulting linkage. If required, this linkage can be destroyed by supplying this name to `fluid.destroySingle`.
+     * @param inputNames {Array of String} An array of grade names which will be tested globally for co-occurrence
+     * @param outputNames {String|Array of String} A single name or array of grade names which will be output into the co-occuring component
+     */
+    fluid.makeGradeLinkage = function (linkageName, inputNames, outputNames) {
+        fluid.defaults(linkageName, {
+            gradeNames: "fluid.component",
+            distributeOptions: {
+                record: outputNames,
+                target: "{/ " + inputNames.join("&") + "}.options.gradeNames"
+            }
+        });
+        fluid.constructSingle([], linkageName);
     };
 
     /** END NEXUS METHODS **/
