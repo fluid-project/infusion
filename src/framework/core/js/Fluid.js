@@ -174,7 +174,7 @@ var fluid = fluid || fluid_2_0_0;
         this.message = togo.message;
         try { // This technique is necessary on IE11 since otherwise the stack entry is not filled in
             throw togo;
-        } catch (togo) {
+        } catch (togo) { // jshint ignore:line
             this.stack = togo.stack;
         }
         return this;

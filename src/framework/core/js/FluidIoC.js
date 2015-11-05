@@ -439,6 +439,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var thatShadow = fluid.shadowForComponent(that);
         var records = fluid.driveStrategy(that.options, "distributeOptions", optionsStrategy);
         fluid.each(records, function (record) {
+            fluid.pushActivity("distributeOptions", "parsing distributeOptions block %record %that ", {that: that, record: record});
             var targetRef = fluid.parseContextReference(record.target);
             var targetComp, selector, context;
             if (fluid.isIoCSSSelector(targetRef.context)) {
@@ -493,6 +494,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 var targetShadow = fluid.shadowForComponent(targetComp);
                 fluid.applyDistributions(that, preBlocks, targetShadow);
             }
+            fluid.popActivity();
         });
     };
 
