@@ -526,80 +526,104 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         fluid.cacheShadowGrades(that, shadow);
         shadow.mergeOptions = mergeOptions;
     };
+    
+    /** Dynamic grade closure algorithm - the following 4 functions share access to a small record structure "rec" which is
+     * constructed at the start of fluid.computeDynamicGrades
+     */
 
-    fluid.expandDynamicGrades = function (that, shadow, gradeNames, dynamicGrades) {
-        var resolved = [];
+    fluid.collectDistributedGrades = function (rec) {
         // Receive distributions first since these may cause arrival of more contextAwareness blocks.
-        // TODO: this closure algorithm is not reliable since we only get one shot at a "function" grade source when
-        // really we should perform complete closure over all other sources of options before we try it at the very end - particularly important for contextAwareness
-        var distributedBlocks = fluid.receiveDistributions(null, null, null, that);
+        var distributedBlocks = fluid.receiveDistributions(null, null, null, rec.that);
         if (distributedBlocks.length > 0) {
-            var readyBlocks = fluid.applyDistributions(that, distributedBlocks, shadow);
-            // rely on the fact that "dirty tricks are not permitted" wrt. resolving gradeNames - each element must be a literal entry or array
-            // holding primitive or EL values - otherwise we would have to go all round the houses and reenter the top of fluid.computeDynamicGrades
+            var readyBlocks = fluid.applyDistributions(rec.that, distributedBlocks, rec.shadow);
             var gradeNamesList = fluid.transform(fluid.getMembers(readyBlocks, ["source", "gradeNames"]), fluid.makeArray);
-            resolved = resolved.concat.apply(resolved, gradeNamesList);
+            fluid.accumulateDynamicGrades(rec, fluid.flatten(gradeNamesList));
         }
-        fluid.each(dynamicGrades, function (dynamicGrade) {
-            var expanded = fluid.expandImmediate(dynamicGrade, that, shadow.localDynamic);
-            if (typeof(expanded) === "function") {
-                expanded = expanded();
-            }
-            if (expanded) {
-                resolved = resolved.concat(expanded);
-            }
-        });
-        return resolved;
     };
 
-    // Discover further grades that are entailed by the given base typeName and the current total "dynamic grades list" held in the argument "resolved".
-    // These are looked up conjointly in the grade registry, and then any further dynamic grades references
-    // are expanded and added into the list and concatenated into "resolved". Additional grades discovered during this function are returned as
-    // "furtherResolved".
-    fluid.collectDynamicGrades = function (that, shadow, defaultsBlock, gradeNames, dynamicGrades, resolved) {
-        var newDefaults = fluid.copy(fluid.getGradedDefaults(that.typeName, resolved));
-        gradeNames.length = 0; // acquire derivatives of dynamic grades (FLUID-5054)
-        gradeNames.push.apply(gradeNames, newDefaults.gradeNames);
+    // Apply a batch of freshly acquired plain dynamic grades to the target component and recompute its options
+    fluid.applyDynamicGrades = function (rec) {
+        rec.oldGradeNames = fluid.makeArray(rec.gradeNames);
+        // Note that this crude algorithm doesn't allow us to determine which grades are "new" and which not (requires C3-like approach overall)
+        var newDefaults = fluid.copy(fluid.getGradedDefaults(rec.that.typeName, rec.gradeNames));
+        rec.gradeNames.length = 0; // acquire derivatives of dynamic grades (FLUID-5054)
+        rec.gradeNames.push.apply(rec.gradeNames, newDefaults.gradeNames);
+        
+        fluid.each(rec.gradeNames, function (gradeName) {
+            if (gradeName.charAt(0) !== "{") {
+                rec.seenGrades[gradeName] = true;
+            }
+        });
 
-        fluid.cacheShadowGrades(that, shadow);
+        var shadow = rec.shadow;
+        fluid.cacheShadowGrades(rec.that, shadow);
         // This cheap strategy patches FLUID-5091 for now - some more sophisticated activity will take place
         // at this site when we have a full fix for FLUID-5028
         shadow.mergeOptions.destroyValue(["mergePolicy"]);
         shadow.mergeOptions.destroyValue(["components"]);
         shadow.mergeOptions.destroyValue(["invokers"]);
 
-        defaultsBlock.source = newDefaults;
+        rec.defaultsBlock.source = newDefaults;
         shadow.mergeOptions.updateBlocks();
         shadow.mergeOptions.computeMergePolicy(); // TODO: we should really only do this if its content changed - this implies moving all options evaluation over to some (cheap) variety of the ChangeApplier
-
-        var furtherResolved = fluid.remove_if(gradeNames, function (gradeName) {
-            return gradeName.charAt(0) === "{" && !fluid.contains(dynamicGrades, gradeName);
-        }, []);
-        dynamicGrades.push.apply(dynamicGrades, furtherResolved);
-        furtherResolved = fluid.expandDynamicGrades(that, shadow, gradeNames, furtherResolved);
-
-        resolved.push.apply(resolved, furtherResolved);
-
-        return furtherResolved;
+        
+        fluid.accumulateDynamicGrades(rec, newDefaults.gradeNames);
+    };
+    
+    // Filter some newly discovered grades into their plain and dynamic queues
+    fluid.accumulateDynamicGrades = function (rec, newGradeNames) {
+        fluid.each(newGradeNames, function (gradeName) {
+            if (!rec.seenGrades[gradeName]) {
+                if (gradeName.charAt(0) === "{") {
+                    rec.rawDynamic.push(gradeName);
+                    rec.seenGrades[gradeName] = true;
+                } else if (!fluid.contains(rec.oldGradeNames, gradeName)) {
+                    rec.plainDynamic.push(gradeName);
+                }
+            }
+        });
     };
 
     fluid.computeDynamicGrades = function (that, shadow, strategy) {
         delete that.options.gradeNames; // Recompute gradeNames for FLUID-5012 and others
-
-        var gradeNames = fluid.driveStrategy(that.options, "gradeNames", strategy);
+        var gradeNames = fluid.driveStrategy(that.options, "gradeNames", strategy); // Just acquire the reference, contents are wrong
+        gradeNames.length = 0;
         // TODO: In complex distribution cases, a component might end up with multiple default blocks
         var defaultsBlock = fluid.findMergeBlocks(shadow.mergeOptions.mergeBlocks, "defaults")[0];
-        var dynamicGrades = fluid.remove_if(gradeNames, function (gradeName) {
-            return gradeName.charAt(0) === "{" || !fluid.hasGrade(defaultsBlock.target, gradeName);
-        }, []);
-        var resolved = fluid.expandDynamicGrades(that, shadow, gradeNames, dynamicGrades);
-        if (resolved.length !== 0) {
-            var furtherResolved;
-            do { // repeatedly collect dynamic grades whilst they arrive (FLUID-5155)
-                furtherResolved = fluid.collectDynamicGrades(that, shadow, defaultsBlock, gradeNames, dynamicGrades, resolved);
+        
+        var rec = {
+            that: that,
+            shadow: shadow,
+            defaultsBlock: defaultsBlock,
+            gradeNames: gradeNames, // remember that this array is globally shared
+            seenGrades: {},
+            plainDynamic: [],
+            rawDynamic: []
+        };
+        fluid.each(shadow.mergeOptions.mergeBlocks, function (block) { // acquire parents of earlier blocks before applying later ones
+            gradeNames.push.apply(gradeNames, fluid.makeArray(block.source && block.source.gradeNames));
+            fluid.applyDynamicGrades(rec);
+        });
+        fluid.collectDistributedGrades(rec);
+        while (true) {
+            while (rec.plainDynamic.length > 0) {
+                gradeNames.push.apply(gradeNames, rec.plainDynamic);
+                rec.plainDynamic.length = 0;
+                fluid.applyDynamicGrades(rec);
             }
-            while (furtherResolved.length !== 0);
+            if (rec.rawDynamic.length > 0) {
+                var expanded = fluid.expandImmediate(rec.rawDynamic.shift(), that, shadow.localDynamic);
+                if (typeof(expanded) === "function") {
+                    expanded = expanded();
+                }
+                if (expanded) {
+                    rec.plainDynamic = rec.plainDynamic.concat(expanded);
+                }
+            } else {
+                break;
+            }
         }
+
         if (shadow.collectedClearer) {
             shadow.collectedClearer();
             delete shadow.collectedClearer;
