@@ -168,12 +168,16 @@ var fluid = fluid || fluid_2_0_0;
         activityStack.length = popped < 0 ? 0 : popped;
     };
     // "this-ist" style Error so that we can distinguish framework errors whilst still retaining access to platform Error features
-    // unsupported, non-API function
-    fluid.FluidError = function (message) {
-        this.message = message;
-        this.stack = new Error().stack;
+    // Solution taken from http://stackoverflow.com/questions/8802845/inheriting-from-the-error-object-where-is-the-message-property#answer-17936621
+    fluid.FluidError = function (/*message*/) {
+        var togo = Error.apply(this, arguments);
+        this.message = togo.message;
+        this.stack = togo.stack;
+        return this;
     };
-    fluid.FluidError.prototype = new Error();
+    var ErrorInheritor = function () {};
+    ErrorInheritor.prototype = Error.prototype;
+    fluid.FluidError.prototype = new ErrorInheritor();
 
     // The framework's built-in "log" failure handler - this logs the supplied message as well as any framework activity in progress via fluid.log
     fluid.logFailure = function (args, activity) {
@@ -349,10 +353,6 @@ var fluid = fluid || fluid_2_0_0;
         return obj && typeof (obj.nodeType) === "number";
     };
 
-    fluid.isDOMish = function (obj) {
-        return fluid.isDOMNode(obj) || obj.jquery;
-    };
-
     fluid.isComponent = function (obj) {
         return obj && obj.constructor === fluid.componentConstructor;
     };
@@ -376,7 +376,7 @@ var fluid = fluid || fluid_2_0_0;
     };
 
     fluid.isUncopyable = function (totest) {
-        return fluid.isPrimitive(totest) || fluid.isDOMish(totest) || !fluid.isPlainObject(totest);
+        return fluid.isPrimitive(totest) || !fluid.isPlainObject(totest);
     };
 
     fluid.copyRecurse = function (tocopy, segs) {
@@ -1816,18 +1816,6 @@ var fluid = fluid || fluid_2_0_0;
         fluid.setGlobalValue(componentName, creator);
     };
 
-    // Cheapskate implementation which avoids dependency on DataBinding.js
-    // TODO: This is apparently still used by the core merging algorithm, for reasons we no longer understand, even though
-    // it has long been disused by DataBinding itself
-    fluid.model.mergeModel = function (target, source) {
-        if (fluid.isPlainObject(target)) {
-            var copySource = fluid.copy(source);
-            $.extend(true, source, target);
-            $.extend(true, source, copySource);
-        }
-        return source;
-    };
-
     var emptyPolicy = {};
     // unsupported, NON-API function
     fluid.derefMergePolicy = function (policy) {
@@ -1884,8 +1872,7 @@ var fluid = fluid || fluid_2_0_0;
         var primitiveTarget = fluid.isPrimitive(thisTarget);
 
         if (thisSource !== undefined) {
-            if (!newPolicy.func && thisSource !== null && fluid.isPlainObject(thisSource) &&
-                    !fluid.isDOMish(thisSource) && thisSource !== fluid.VALUE && !newPolicy.nomerge) {
+            if (!newPolicy.func && thisSource !== null && fluid.isPlainObject(thisSource) && !newPolicy.nomerge) {
                 if (primitiveTarget) {
                     togo = thisTarget = fluid.freshContainer(thisSource);
                 }
@@ -1896,7 +1883,7 @@ var fluid = fluid || fluid_2_0_0;
                 if (newPolicy.func) {
                     togo = newPolicy.func.call(null, thisTarget, thisSource, segs[i - 1], segs, i); // NB - change in this mostly unused argument
                 } else {
-                    togo = fluid.isValue(thisTarget) ? fluid.model.mergeModel(thisTarget, thisSource) : thisSource;
+                    togo = thisSource;
                 }
             }
         }
