@@ -172,7 +172,11 @@ var fluid = fluid || fluid_2_0_0;
     fluid.FluidError = function (/*message*/) {
         var togo = Error.apply(this, arguments);
         this.message = togo.message;
-        this.stack = togo.stack;
+        try { // This technique is necessary on IE11 since otherwise the stack entry is not filled in
+            throw togo;
+        } catch (togo) {
+            this.stack = togo.stack;
+        }
         return this;
     };
     fluid.FluidError.prototype = Object.create(Error.prototype);
