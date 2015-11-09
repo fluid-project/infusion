@@ -833,7 +833,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             if (!foundComponent && parsed.path !== "") {
                 var ref = fluid.renderContextReference(parsed);
                 fluid.fail("Failed to resolve reference " + ref + " - could not match context with name " +
-                    context + " from component " + fluid.dumpThat(parentThat), parentThat);
+                    context + " from component " + fluid.dumpThat(parentThat) + " at path " + fluid.pathForComponent(parentThat).join(".") + " component: " , parentThat);
             }
             return fluid.getForComponent(foundComponent, parsed.path);
         };
