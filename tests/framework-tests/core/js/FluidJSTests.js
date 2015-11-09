@@ -423,6 +423,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }, "thingit");
         fluid.pushSoftFailure(-1);
     });
+    
+    jqUnit.test("FLUID-5807 tests - identify fluid.FluidError", function () {
+        // These tests have a direct analogue in basic-node-tests.js
+        var error = new fluid.FluidError("thing");
+        jqUnit.assertTrue("Framework error is an error (from its own perspective)", error instanceof fluid.Error);
+        jqUnit.assertTrue("Framework error is an instance of itself", error instanceof fluid.FluidError);
+        var stack = error.stack.toString();
+        jqUnit.assertTrue("Our own filename must appear in the stack", stack.indexOf("FluidJSTests") !== -1);
+    });
 
     function passTestLog(level, expected) {
         jqUnit.assertEquals("Should " + (expected ? "not " : "") + "pass debug level " + level, expected, fluid.passLogLevel(fluid.logLevel[level]));

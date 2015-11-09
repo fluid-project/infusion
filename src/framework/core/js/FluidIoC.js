@@ -185,6 +185,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.makeDistributionRecord = function (contextThat, sourceRecord, sourcePath, targetSegs, exclusions, sourceType) {
         sourceType = sourceType || "distribution";
+        fluid.pushActivity("makeDistributionRecord", "Making distribution record from source record %sourceRecord path %sourcePath to target path %targetSegs", {sourceRecord: sourceRecord, sourcePath: sourcePath, targetSegs: targetSegs});
 
         var source = fluid.copy(fluid.get(sourceRecord, sourcePath));
         fluid.each(exclusions, function (exclusion) {
@@ -194,6 +195,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var record = {options: {}};
         fluid.model.applyChangeRequest(record, {segs: targetSegs, type: "ADD", value: source});
         fluid.checkComponentRecord(record);
+        fluid.popActivity();
         return $.extend(record, {contextThat: contextThat, recordType: sourceType});
     };
 
@@ -384,12 +386,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         return context.indexOf(" ") !== -1; // simple-minded check for an IoCSS reference
     };
 
-    fluid.pushDistributions = function (targetHead, selector, blocks) {
+    fluid.pushDistributions = function (targetHead, selector, target, blocks) {
         var targetShadow = fluid.shadowForComponent(targetHead);
         var id = fluid.allocateGuid();
         var distributions = (targetShadow.distributions = targetShadow.distributions || []);
         distributions.push({
             id: id, // This id is used in clearDistributions
+            target: target, // Here for improved debuggability - info is duplicated in "selector"
             selector: selector,
             blocks: blocks
         });
@@ -438,7 +441,14 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.distributeOptions = function (that, optionsStrategy) {
         var thatShadow = fluid.shadowForComponent(that);
         var records = fluid.driveStrategy(that.options, "distributeOptions", optionsStrategy);
-        fluid.each(records, function (record) {
+        fluid.each(records, function distributeOptionsOne(record) {
+            fluid.pushActivity("distributeOptions", "parsing distributeOptions block %record %that ", {that: that, record: record});
+            if (typeof(record.target) !== "string") {
+                fluid.fail("Error in options distribution record ", record, " a member named \"target\" must be supplied holding an IoC reference");
+            }
+            if (typeof(record.source) === "string" ^ record.record === undefined) {
+                fluid.fail("Error in options distribution record ", record, ": must supply either a member \"source\" holding an IoC reference or a member \"record\" holding a literal record");
+            }
             var targetRef = fluid.parseContextReference(record.target);
             var targetComp, selector, context;
             if (fluid.isIoCSSSelector(targetRef.context)) {
@@ -463,7 +473,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 preBlocks = [(fluid.makeDistributionRecord(that, record.record, [], targetSegs, []))];
             }
             else {
-                var source = fluid.parseContextReference(record.source || "{that}.options"); // TODO: This is probably not a sensible default
+                var source = fluid.parseContextReference(record.source);
                 if (source.context !== "that") {
                     fluid.fail("Error in options distribution record ", record, " only a context of {that} is supported");
                 }
@@ -482,7 +492,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             // TODO: inline material has to be expanded in its original context!
 
             if (selector) {
-                var distributionId = fluid.pushDistributions(targetComp, selector, preBlocks);
+                var distributionId = fluid.pushDistributions(targetComp, selector, record.target, preBlocks);
                 thatShadow.outDistributions = thatShadow.outDistributions || [];
                 thatShadow.outDistributions.push({
                     targetComponent: targetComp,
@@ -493,6 +503,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 var targetShadow = fluid.shadowForComponent(targetComp);
                 fluid.applyDistributions(that, preBlocks, targetShadow);
             }
+            fluid.popActivity();
         });
     };
 
@@ -526,80 +537,105 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         fluid.cacheShadowGrades(that, shadow);
         shadow.mergeOptions = mergeOptions;
     };
+    
+    /** Dynamic grade closure algorithm - the following 4 functions share access to a small record structure "rec" which is
+     * constructed at the start of fluid.computeDynamicGrades
+     */
 
-    fluid.expandDynamicGrades = function (that, shadow, gradeNames, dynamicGrades) {
-        var resolved = [];
+    fluid.collectDistributedGrades = function (rec) {
         // Receive distributions first since these may cause arrival of more contextAwareness blocks.
-        // TODO: this closure algorithm is not reliable since we only get one shot at a "function" grade source when
-        // really we should perform complete closure over all other sources of options before we try it at the very end - particularly important for contextAwareness
-        var distributedBlocks = fluid.receiveDistributions(null, null, null, that);
+        var distributedBlocks = fluid.receiveDistributions(null, null, null, rec.that);
         if (distributedBlocks.length > 0) {
-            var readyBlocks = fluid.applyDistributions(that, distributedBlocks, shadow);
-            // rely on the fact that "dirty tricks are not permitted" wrt. resolving gradeNames - each element must be a literal entry or array
-            // holding primitive or EL values - otherwise we would have to go all round the houses and reenter the top of fluid.computeDynamicGrades
+            var readyBlocks = fluid.applyDistributions(rec.that, distributedBlocks, rec.shadow);
             var gradeNamesList = fluid.transform(fluid.getMembers(readyBlocks, ["source", "gradeNames"]), fluid.makeArray);
-            resolved = resolved.concat.apply(resolved, gradeNamesList);
+            fluid.accumulateDynamicGrades(rec, fluid.flatten(gradeNamesList));
         }
-        fluid.each(dynamicGrades, function (dynamicGrade) {
-            var expanded = fluid.expandImmediate(dynamicGrade, that, shadow.localDynamic);
-            if (typeof(expanded) === "function") {
-                expanded = expanded();
-            }
-            if (expanded) {
-                resolved = resolved.concat(expanded);
-            }
-        });
-        return resolved;
     };
 
-    // Discover further grades that are entailed by the given base typeName and the current total "dynamic grades list" held in the argument "resolved".
-    // These are looked up conjointly in the grade registry, and then any further dynamic grades references
-    // are expanded and added into the list and concatenated into "resolved". Additional grades discovered during this function are returned as
-    // "furtherResolved".
-    fluid.collectDynamicGrades = function (that, shadow, defaultsBlock, gradeNames, dynamicGrades, resolved) {
-        var newDefaults = fluid.copy(fluid.getGradedDefaults(that.typeName, resolved));
-        gradeNames.length = 0; // acquire derivatives of dynamic grades (FLUID-5054)
-        gradeNames.push.apply(gradeNames, newDefaults.gradeNames);
+    // Apply a batch of freshly acquired plain dynamic grades to the target component and recompute its options
+    fluid.applyDynamicGrades = function (rec) {
+        rec.oldGradeNames = fluid.makeArray(rec.gradeNames);
+        // Note that this crude algorithm doesn't allow us to determine which grades are "new" and which not (requires C3-like approach overall)
+        var newDefaults = fluid.copy(fluid.getGradedDefaults(rec.that.typeName, rec.gradeNames));
+        rec.gradeNames.length = 0; // acquire derivatives of dynamic grades (FLUID-5054)
+        rec.gradeNames.push.apply(rec.gradeNames, newDefaults.gradeNames);
+        
+        fluid.each(rec.gradeNames, function (gradeName) {
+            if (gradeName.charAt(0) !== "{") {
+                rec.seenGrades[gradeName] = true;
+            }
+        });
 
-        fluid.cacheShadowGrades(that, shadow);
+        var shadow = rec.shadow;
+        fluid.cacheShadowGrades(rec.that, shadow);
         // This cheap strategy patches FLUID-5091 for now - some more sophisticated activity will take place
         // at this site when we have a full fix for FLUID-5028
         shadow.mergeOptions.destroyValue(["mergePolicy"]);
         shadow.mergeOptions.destroyValue(["components"]);
         shadow.mergeOptions.destroyValue(["invokers"]);
 
-        defaultsBlock.source = newDefaults;
+        rec.defaultsBlock.source = newDefaults;
         shadow.mergeOptions.updateBlocks();
         shadow.mergeOptions.computeMergePolicy(); // TODO: we should really only do this if its content changed - this implies moving all options evaluation over to some (cheap) variety of the ChangeApplier
-
-        var furtherResolved = fluid.remove_if(gradeNames, function (gradeName) {
-            return gradeName.charAt(0) === "{" && !fluid.contains(dynamicGrades, gradeName);
-        }, []);
-        dynamicGrades.push.apply(dynamicGrades, furtherResolved);
-        furtherResolved = fluid.expandDynamicGrades(that, shadow, gradeNames, furtherResolved);
-
-        resolved.push.apply(resolved, furtherResolved);
-
-        return furtherResolved;
+        
+        fluid.accumulateDynamicGrades(rec, newDefaults.gradeNames);
+    };
+    
+    // Filter some newly discovered grades into their plain and dynamic queues
+    fluid.accumulateDynamicGrades = function (rec, newGradeNames) {
+        fluid.each(newGradeNames, function (gradeName) {
+            if (!rec.seenGrades[gradeName]) {
+                if (gradeName.charAt(0) === "{") {
+                    rec.rawDynamic.push(gradeName);
+                    rec.seenGrades[gradeName] = true;
+                } else if (!fluid.contains(rec.oldGradeNames, gradeName)) {
+                    rec.plainDynamic.push(gradeName);
+                }
+            }
+        });
     };
 
     fluid.computeDynamicGrades = function (that, shadow, strategy) {
         delete that.options.gradeNames; // Recompute gradeNames for FLUID-5012 and others
-
-        var gradeNames = fluid.driveStrategy(that.options, "gradeNames", strategy);
+        var gradeNames = fluid.driveStrategy(that.options, "gradeNames", strategy); // Just acquire the reference, contents are wrong
+        gradeNames.length = 0;
         // TODO: In complex distribution cases, a component might end up with multiple default blocks
         var defaultsBlock = fluid.findMergeBlocks(shadow.mergeOptions.mergeBlocks, "defaults")[0];
-        var dynamicGrades = fluid.remove_if(gradeNames, function (gradeName) {
-            return gradeName.charAt(0) === "{" || !fluid.hasGrade(defaultsBlock.target, gradeName);
-        }, []);
-        var resolved = fluid.expandDynamicGrades(that, shadow, gradeNames, dynamicGrades);
-        if (resolved.length !== 0) {
-            var furtherResolved;
-            do { // repeatedly collect dynamic grades whilst they arrive (FLUID-5155)
-                furtherResolved = fluid.collectDynamicGrades(that, shadow, defaultsBlock, gradeNames, dynamicGrades, resolved);
+        
+        var rec = {
+            that: that,
+            shadow: shadow,
+            defaultsBlock: defaultsBlock,
+            gradeNames: gradeNames, // remember that this array is globally shared
+            seenGrades: {},
+            plainDynamic: [],
+            rawDynamic: []
+        };
+        fluid.each(shadow.mergeOptions.mergeBlocks, function (block) { // acquire parents of earlier blocks before applying later ones
+            gradeNames.push.apply(gradeNames, fluid.makeArray(block.source && block.source.gradeNames));
+            fluid.applyDynamicGrades(rec);
+        });
+        fluid.collectDistributedGrades(rec);
+        while (true) {
+            while (rec.plainDynamic.length > 0) {
+                gradeNames.push.apply(gradeNames, rec.plainDynamic);
+                rec.plainDynamic.length = 0;
+                fluid.applyDynamicGrades(rec);
+                fluid.collectDistributedGrades(rec);
             }
-            while (furtherResolved.length !== 0);
+            if (rec.rawDynamic.length > 0) {
+                var expanded = fluid.expandImmediate(rec.rawDynamic.shift(), that, shadow.localDynamic);
+                if (typeof(expanded) === "function") {
+                    expanded = expanded();
+                }
+                if (expanded) {
+                    rec.plainDynamic = rec.plainDynamic.concat(expanded);
+                }
+            } else {
+                break;
+            }
         }
+
         if (shadow.collectedClearer) {
             shadow.collectedClearer();
             delete shadow.collectedClearer;
@@ -823,7 +859,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             if (!foundComponent && parsed.path !== "") {
                 var ref = fluid.renderContextReference(parsed);
                 fluid.fail("Failed to resolve reference " + ref + " - could not match context with name " +
-                    context + " from component " + fluid.dumpThat(parentThat), parentThat);
+                    context + " from component " + fluid.dumpThat(parentThat) + " at path " + fluid.pathForComponent(parentThat).join(".") + " component: " , parentThat);
             }
             return fluid.getForComponent(foundComponent, parsed.path);
         };
@@ -925,8 +961,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 fluid.constructScopeObjects(that, parent, component, shadow);
             } else {
                 shadow = that.idToShadow[component.id];
-                shadow.injectedPaths = shadow.injectedPaths || [];
-                shadow.injectedPaths.push(path);
+                shadow.injectedPaths = shadow.injectedPaths || {}; // a hash since we will modify whilst iterating
+                shadow.injectedPaths[path] = true;
                 var parentShadow = that.idToShadow[parent.id]; // structural parent shadow - e.g. resolveRootComponent
                 var keys = fluid.keys(shadow.contextHash);
                 keys.push(name); // add local name - FLUID-5696
@@ -974,6 +1010,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
             var childPath = that.composePath(path, name);
             var childShadow = that.idToShadow[child.id];
+            if (!childShadow) { // Explicit FLUID-5812 check - this can be eliminated once we move visitComponentChildren to instantiator's records 
+                return;
+            }
             var created = childShadow.path === childPath;
             that.events.onComponentClear.fire(child, childPath, component, created);
 
@@ -982,7 +1021,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             if (created) {
                 // Clear injected instance of this component from all other paths - historically we didn't bother
                 // to do this since injecting into a shorter scope is an error - but now we have resolveRoot area
-                fluid.each(childShadow.injectedPaths, function (injectedPath) {
+                fluid.each(childShadow.injectedPaths, function (troo, injectedPath) {
                     var parentPath = fluid.model.getToTailPath(injectedPath);
                     var otherParent = that.pathToComponent[parentPath];
                     that.clearComponent(otherParent, fluid.model.getTailPath(injectedPath), child);
@@ -996,6 +1035,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 fluid.clearListeners(childShadow);
                 child.events.afterDestroy.fire(child, name, component);
                 delete that.idToShadow[child.id];
+            } else {
+                fluid.remove_if(childShadow.injectedPaths, function (troo, path) {
+                    return path === childPath;
+                });
             }
             fluid.clearChildrenScope(that, shadow, child, childShadow);
             delete that.pathToComponent[childPath];
@@ -1198,6 +1241,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
         var fakeThat = {}; // fake "that" for receiveDistributions since we try to match selectors before creation for FLUID-5013
         var distributions = parentThat ? fluid.receiveDistributions(parentThat, upDefaults.gradeNames, options.memberName, fakeThat) : [];
+        fluid.each(distributions, function (distribution) { // TODO: The duplicated route for this is in fluid.mergeComponentOptions
+            if (fluid.isPrimitive(distribution.priority)) { // TODO: These should be immutable and parsed just once on registration - but we can't because of crazy target-dependent distance system
+                distribution.priority = fluid.parsePriority(distribution.priority, 0, false, "options distribution");
+            }
+        });
+        fluid.sortByPriority(distributions);
 
         var localDynamic = options.localDynamic;
         var localRecord = $.extend({}, fluid.censorKeys(options.componentRecord, ["type"]), localDynamic);
@@ -1398,6 +1447,65 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             parent: parent,
             memberName: memberName
         };
+    };
+    
+   /** Construct an instance of a component as a child of the specified parent, with a well-known, unique name derived from its typeName
+    * @param parentPath {String|Array of String} Parent of path where the new component is to be constructed, represented as a string or array of segments
+    * @param options {String|Object} Options encoding the component to be constructed. If this is of type String, it is assumed to represent the component's typeName with no options
+    * @param instantiator {Instantiator} [optional] The instantiator holding the component to be created - if blank, the global instantiator will be used
+    */
+    fluid.constructSingle = function (parentPath, options, instantiator) {
+        instantiator = instantiator || fluid.globalInstantiator;
+        parentPath = parentPath || "";
+        var segs = fluid.model.parseToSegments(parentPath, instantiator.parseEL, true);
+        if (typeof(options) === "string") {
+            options = {type: options};
+        }
+        var type = options.type;
+        if (!type) {
+            fluid.fail("Cannot construct singleton object without a type entry");
+        }
+        options = $.extend({}, options);
+        var gradeNames = options.gradeNames = fluid.makeArray(options.gradeNames);
+        gradeNames.unshift(type); // principal type may be noninstantiable
+        options.type = "fluid.component";
+        var root = segs.length === 0;
+        if (root) {
+            gradeNames.push("fluid.resolveRoot");
+        }
+        var memberName = fluid.typeNameToMemberName(options.singleRootType || type);
+        segs.push(memberName);
+        fluid.construct(segs, options, instantiator);
+    };
+
+    /** Destroy an instance created by `fluid.constructSingle`
+     * @param parentPath {String|Array of String} Parent of path where the new component is to be constructed, represented as a string or array of segments
+     * @param typeName {String} The type name used to construct the component (either `type` or `singleRootType` of the `options` argument to `fluid.constructSingle`
+     * @param instantiator {Instantiator} [optional] The instantiator holding the component to be created - if blank, the global instantiator will be used
+    */
+    fluid.destroySingle = function (parentPath, typeName, instantiator) {
+        instantiator = instantiator || fluid.globalInstantiator;
+        var segs = fluid.model.parseToSegments(parentPath, instantiator.parseEL, true);
+        var memberName = fluid.typeNameToMemberName(typeName);
+        segs.push(memberName);
+        fluid.destroy(segs, instantiator);
+    };
+
+    /** Registers and constructs a "linkage distribution" which will ensure that wherever a set of "input grades" co-occur, they will
+     * always result in a supplied "output grades" in the component where they co-occur.
+     * @param linkageName {String} The name of the grade which will broadcast the resulting linkage. If required, this linkage can be destroyed by supplying this name to `fluid.destroySingle`.
+     * @param inputNames {Array of String} An array of grade names which will be tested globally for co-occurrence
+     * @param outputNames {String|Array of String} A single name or array of grade names which will be output into the co-occuring component
+     */
+    fluid.makeGradeLinkage = function (linkageName, inputNames, outputNames) {
+        fluid.defaults(linkageName, {
+            gradeNames: "fluid.component",
+            distributeOptions: {
+                record: outputNames,
+                target: "{/ " + inputNames.join("&") + "}.options.gradeNames"
+            }
+        });
+        fluid.constructSingle([], linkageName);
     };
 
     /** END NEXUS METHODS **/
