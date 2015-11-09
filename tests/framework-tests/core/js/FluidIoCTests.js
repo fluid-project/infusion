@@ -1754,6 +1754,47 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertNotEquals("Child2 reinstantiated", origID, reins.child1.child2.id);
         checkValue("Changed value", reins, "headValue2", expectedPaths);
     });
+    
+    fluid.defaults("fluid.tests.FLUID5812root", {
+        gradeNames: "fluid.component",
+        components: {
+            child1: {
+                type: "fluid.component"
+            },
+            child2: {
+                type: "fluid.component",
+                options: {
+                    components: {
+                        child3: {
+                            type: "fluid.component",
+                            options: {
+                                components: {
+                                    inject1: "{FLUID5812root}.child1"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-5812 mis-clear test I", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.FLUID5812root();
+        that.child2.destroy();
+        that.child1.destroy();
+        jqUnit.assertNoValue("Successfully cleared child1 from injected site before root site", that.child1);
+    });
+
+    jqUnit.test("FLUID-5812 mis-clear test II", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.FLUID5812root();
+        that.manualInject = that.child2.child3;
+        that.child2.destroy();
+        that.destroy();
+        jqUnit.assert("No error on clearing with manually injected, destroyed component");
+    });
 
     /** FLUID-4711 - corruption in clear with injected material of longer scope **/
 

@@ -960,8 +960,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 fluid.constructScopeObjects(that, parent, component, shadow);
             } else {
                 shadow = that.idToShadow[component.id];
-                shadow.injectedPaths = shadow.injectedPaths || [];
-                shadow.injectedPaths.push(path);
+                shadow.injectedPaths = shadow.injectedPaths || {}; // a hash since we will modify whilst iterating
+                shadow.injectedPaths[path] = true;
                 var parentShadow = that.idToShadow[parent.id]; // structural parent shadow - e.g. resolveRootComponent
                 var keys = fluid.keys(shadow.contextHash);
                 keys.push(name); // add local name - FLUID-5696
@@ -1009,6 +1009,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
             var childPath = that.composePath(path, name);
             var childShadow = that.idToShadow[child.id];
+            if (!childShadow) { // Explicit FLUID-5812 check - this can be eliminated once we move visitComponentChildren to instantiator's records 
+                return;
+            }
             var created = childShadow.path === childPath;
             that.events.onComponentClear.fire(child, childPath, component, created);
 
@@ -1017,7 +1020,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             if (created) {
                 // Clear injected instance of this component from all other paths - historically we didn't bother
                 // to do this since injecting into a shorter scope is an error - but now we have resolveRoot area
-                fluid.each(childShadow.injectedPaths, function (injectedPath) {
+                fluid.each(childShadow.injectedPaths, function (troo, injectedPath) {
                     var parentPath = fluid.model.getToTailPath(injectedPath);
                     var otherParent = that.pathToComponent[parentPath];
                     that.clearComponent(otherParent, fluid.model.getTailPath(injectedPath), child);
@@ -1031,6 +1034,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 fluid.clearListeners(childShadow);
                 child.events.afterDestroy.fire(child, name, component);
                 delete that.idToShadow[child.id];
+            } else {
+                fluid.remove_if(childShadow.injectedPaths, function (troo, path) {
+                    return path === childPath;
+                });
             }
             fluid.clearChildrenScope(that, shadow, child, childShadow);
             delete that.pathToComponent[childPath];
