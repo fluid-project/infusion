@@ -1240,6 +1240,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
         var fakeThat = {}; // fake "that" for receiveDistributions since we try to match selectors before creation for FLUID-5013
         var distributions = parentThat ? fluid.receiveDistributions(parentThat, upDefaults.gradeNames, options.memberName, fakeThat) : [];
+        fluid.each(distributions, function (distribution) { // TODO: The duplicated route for this is in fluid.mergeComponentOptions
+            if (fluid.isPrimitive(distribution.priority)) { // TODO: These should be immutable and parsed just once on registration - but we can't because of crazy target-dependent distance system
+                distribution.priority = fluid.parsePriority(distribution.priority, 0, false, "options distribution");
+            }
+        });
+        fluid.sortByPriority(distributions);
 
         var localDynamic = options.localDynamic;
         var localRecord = $.extend({}, fluid.censorKeys(options.componentRecord, ["type"]), localDynamic);
