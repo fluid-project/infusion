@@ -38,7 +38,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // the ProtoTree is basically instructions to the Renderer
         // the keys in the prototree match the selectors above
         protoTree: {
-            // this value is an IoC reference to the last part of the model path in the preferenceMap
+            // this value is a reference to the last part of the model path in the preferenceMap
             autoPilot: "${autoPilot}"
         }
     });
