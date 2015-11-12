@@ -2531,7 +2531,9 @@ var fluid = fluid || fluid_2_0_0;
                     (error.componentSource ? " which was defined in grade " + error.componentSource : "") + " needs to be overridden with a concrete implementation");
             })).join("\n");
         }
-        that.lifecycleStatus = "constructed";
+        if (that.lifecycleStatus === "constructing") {
+            that.lifecycleStatus = "constructed";
+        }
         that.events.onCreate.fire(that);
         fluid.popActivity();
         return that;

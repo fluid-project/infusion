@@ -89,11 +89,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("Test module resolvePath", function () {
-        var resolved = fluid.module.resolvePath("${infusion}/src/components/tableOfContents/html/TableOfContents.html");
+        var resolved = fluid.module.resolvePath("%infusion/src/components/tableOfContents/html/TableOfContents.html");
         var expected = fluid.module.canonPath(path.resolve(__dirname, "../../src/components/tableOfContents/html/TableOfContents.html"));
         jqUnit.assertEquals("Resolved path into infusion module", expected, resolved);
 
-        var pkg = fluid.require("${test-module}/package.json");
+        var pkg = fluid.require("%test-module/package.json");
         jqUnit.assertEquals("Loaded package.json via resolved path directly via fluid.require", "test-module", pkg.name);
     });
 

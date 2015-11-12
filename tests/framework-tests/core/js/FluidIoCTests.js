@@ -1323,6 +1323,48 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Resolved injected component by member name", that.chaundleTileManager, resolved);
     });
 
+    /** FLUID-5818 - ginger reference from distant construct descendent of incomplete parent **/
+    
+    fluid.defaults("fluid.tests.FLUID5818root", {
+        gradeNames: "fluid.component",
+        components: {
+            child1: {
+                type: "fluid.component",
+                options: {
+                    components: {
+                        child3: {
+                            type: "fluid.component",
+                            options: {
+                                listeners: {
+                                    onCreate: {
+                                        funcName: "fluid.tests.fluid5818fetch",
+                                        args: "{child2}"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            child2: {
+                type: "fluid.component"
+            }
+            
+        }
+    });
+    
+    fluid.tests.fluid5818fetch = function (child2) {
+        jqUnit.assertValue("Should have caused fetch of child of unconstructed parent", child2);
+    };
+
+    jqUnit.test("FLUID-5818 ginger reference to child of unconstructed parent", function () {
+        jqUnit.expect(5);
+        var that = fluid.tests.FLUID5818root();
+        // White-box testing of lifecycle status
+        fluid.each([that, that.child1, that.child2, that.child1.child3], function (component) {
+            jqUnit.assertEquals("All components should have \"treeConstructed\" state", "treeConstructed", component.lifecycleStatus);
+        });
+    });
 
     /** FLUID-4135 - event injection and boiling test **/
 

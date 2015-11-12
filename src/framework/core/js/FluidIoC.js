@@ -735,6 +735,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     //     distributions, collectedClearer: Managing options distributions
     //     subcomponentLocal: Signalling local record from computeDynamicComponents to assembleCreatorArguments
     //     dynamicLocal: Local signalling for dynamic grades
+    //     ownScope: A hash of names to components which are in scope from this component - populated in cacheShadowGrades
+    //     childrenScope: A hash of names to components which are in scope because they are children of this component (BELOW own ownScope in resolution order)
 
     fluid.shadowForComponent = function (component) {
         var instantiator = fluid.getInstantiator(component);
@@ -1394,8 +1396,35 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         if (shadow.subcomponentLocal) {
             fluid.clear(shadow.subcomponentLocal); // still need repo for event-driven dynamic components - abolish these in time
         }
+        that.lifecycleStatus = "constructed";
+        fluid.assessTreeConstruction(that, shadow);
 
         fluid.popActivity();
+    };
+    
+    fluid.assessTreeConstruction = function (that, shadow) {
+        var instantiator = fluid.globalInstantiator;
+        var thatStack = instantiator.getThatStack(that);
+        var unstableUp = fluid.find_if(thatStack, function (that) {
+            return that.lifecycleStatus === "constructing";
+        });
+        if (unstableUp) {
+            that.lifecycleStatus = "constructed";
+        } else {
+            fluid.markSubtree(instantiator, that, shadow.path, "treeConstructed");
+        }
+    };
+    
+    fluid.markSubtree = function (instantiator, that, path, state) {
+        that.lifecycleStatus = state;
+        fluid.visitComponentChildren(that, function (child, name) {
+            var childPath = instantiator.composePath(path, name);
+            var childShadow = instantiator.idToShadow[child.id];
+            var created = childShadow && childShadow.path === childPath;
+            if (created) {
+                fluid.markSubtree(instantiator, child, childPath, state);
+            }
+        }, {flat: true});
     };
 
 
@@ -2296,10 +2325,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var localRecord = options.localRecord, context = source.expander.context, segs = source.expander.segs;
         var inLocal = localRecord[context] !== undefined;
         // somewhat hack to anticipate "fits" for FLUID-4925 - we assume that if THIS component is in construction, its reference target might be too
-        var component = inLocal ? localRecord[context] : fluid.resolveContext(context, options.contextThat, options.contextThat.lifecycleStatus === "constructed");
+        var component = inLocal ? localRecord[context] : fluid.resolveContext(context, options.contextThat, options.contextThat.lifecycleStatus === "treeConstructed");
         if (component) {
             var root = component;
-            if (inLocal || component.lifecycleStatus === "constructed") {
+            if (inLocal || component.lifecycleStatus === "constructed" || component.lifecycleStatus === "treeConstructed") {
                 for (var i = 0; i < segs.length; ++ i) {
                     root = root ? root[segs[i]] : undefined;
                 }
