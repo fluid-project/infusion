@@ -1309,12 +1309,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.initDependent = function (that, name, localRecord) {
         if (that[name]) { return; } // TODO: move this into strategy
         var component = that.options.components[name];
-        fluid.pushActivity("initDependent", "instantiating dependent component with name \"%name\" with record %record as child of %parent",
-            {name: name, record: component, parent: that});
         var instance;
         var instantiator = fluid.globalInstantiator;
         var shadow = instantiator.idToShadow[that.id];
         var localDynamic = localRecord || shadow.subcomponentLocal && shadow.subcomponentLocal[name];
+        fluid.pushActivity("initDependent", "instantiating dependent component at path \"%path\" with record %record as child of %parent",
+            {path: shadow.path + "." + name, record: component, parent: that});
 
         if (typeof(component) === "string") {
             that[name] = fluid.inEvaluationMarker;
