@@ -45,6 +45,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     /**
      * Initialize and instantiate the editor
+     * TODO: Update this when https://issues.fluidproject.org/browse/FLUID-5817 is addressed
      */
     minEditor.init = function (container) {
         return fluid.prefs.create(container, {
