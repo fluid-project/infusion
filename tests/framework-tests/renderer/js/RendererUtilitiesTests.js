@@ -430,8 +430,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             that.refreshView();
             var input = that.locate("input");
             jqUnit.assertEquals("Initial value rendered", model.value, input.val());
-            input.val("New Value");
-            input.change();
+            fluid.changeElementValue(input, "New Value");
             jqUnit.assertEquals("Updated value read", "New Value", that.model.value);
         });
 
@@ -1622,7 +1621,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     customSetConfigRendererComponent.model["a.b.c"].val);
             }
             checkDataBind("OLD");
-            escaped.val("NEW").change();
+            fluid.changeElementValue(escaped, "NEW");
             checkDataBind("NEW");
         });
 
@@ -1731,7 +1730,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.addSourceGuardedListener(that.applier, "test", "test", function () {
                 jqUnit.assert("Listener is applied correctly.");
             });
-            test.val("NEW VALUE").change();
+            fluid.changeElementValue(test, "NEW VALUE");
         });
 
         fluid.defaults("fluid.tests.fluid4986", {

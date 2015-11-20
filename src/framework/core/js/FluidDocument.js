@@ -174,4 +174,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         };
     });
 
+    // Sets the value to the node and fires the change event
+    fluid.changeElementValue = function (node, value) {
+        node = $(node);
+        node.val(value).change();
+    };
+
 })(jQuery, fluid_2_0_0);
