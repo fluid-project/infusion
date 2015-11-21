@@ -27,7 +27,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         schema: {
             // the actual specification of the preference
-            "minEditor.autoPilot": {
+            "minEditor.heatedSeats": {
                 "type": "boolean",
                 "default": false
             }

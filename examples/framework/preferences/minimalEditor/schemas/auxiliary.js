@@ -35,18 +35,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // the main template for the preference editor itself
             template: "%templatePrefix/minEditor.html",
 
-            autoPilot: {
+            heatedSeats: {
                 // this 'type' must match the name of the pref in the primary schema
-                type: "minEditor.autoPilot",
+                type: "minEditor.heatedSeats",
                 panel: {
                     // this 'type' must match the name of the panel grade created for this pref
-                    type: "minEditor.panels.autoPilot",
+                    type: "minEditor.panels.heatedSeats",
 
                     // selector indicating where, in the main template, to place this panel
-                    container: ".mec-autoPilot",
+                    container: ".mec-heatedSeats",
 
                     // the template for this panel
-                    template: "%templatePrefix/autoPilot.html"
+                    template: "%templatePrefix/heatedSeats.html"
                 }
             }
         }
