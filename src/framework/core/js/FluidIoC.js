@@ -967,10 +967,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 shadow.injectedPaths[path] = true;
                 var parentShadow = that.idToShadow[parent.id]; // structural parent shadow - e.g. resolveRootComponent
                 var keys = fluid.keys(shadow.contextHash);
-                keys.push(name); // add local name - FLUID-5696
                 fluid.remove_if(keys, function (key) {
                     return shadow.contextHash && shadow.contextHash[key] === "memberName";
                 });
+                keys.push(name); // add local name - FLUID-5696 and FLUID-5820
                 fluid.each(keys, function (context) {
                     if (!parentShadow.childrenScope[context]) {
                         parentShadow.childrenScope[context] = component;

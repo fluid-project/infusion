@@ -1365,6 +1365,41 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("All components should have \"treeConstructed\" state", "treeConstructed", component.lifecycleStatus);
         });
     });
+    
+    /** FLUID-5820 - scope chain reference to injected component **/
+    
+    fluid.defaults("fluid.tests.FLUID5820root", {
+        gradeNames: "fluid.component",
+        components: {
+            child1: {
+                type: "fluid.component",
+                options: {
+                    components: {
+                        child2: {
+                            type: "fluid.component"
+                        }
+                    }
+                }
+            },
+            child3: {
+                type: "fluid.component",
+                options: {
+                    components: {
+                        child2: "{child1}.child2"
+                    },
+                    invokers: {
+                        get: "fluid.identity({child2})"
+                    }
+                }
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-5820 scope chain reference to injected component", function () {
+        var root = fluid.tests.FLUID5820root();
+        var child = root.child3.get();
+        jqUnit.assertEquals("Got resolved injected value via scope chain", root.child1.child2, child);
+    });
 
     /** FLUID-4135 - event injection and boiling test **/
 
