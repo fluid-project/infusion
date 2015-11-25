@@ -248,7 +248,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             // 2. an object that describes what panels should be always rendered,
             //    and what panels should be rendered when a preference is turned on
             // The loop below is only needed for processing the latter.
-            if (!fluid.isPrimitive(thisCompositeOptions.panels) && !fluid.isArrayable(thisCompositeOptions.panels)) {
+            if (fluid.isPlainObject(thisCompositeOptions.panels) && !fluid.isArrayable(thisCompositeOptions.panels)) {
                 fluid.each(thisCompositeOptions.panels, function (subpanelArray, pref) {
                     subPanelList = subPanelList.concat(subpanelArray);
                     if (pref !== "always") {
