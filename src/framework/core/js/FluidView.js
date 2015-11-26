@@ -154,17 +154,16 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
 
             if (!selector) {
-                return thisContainer;
+                togo = userJQuery();
+            }
+            else {
+                if (typeof (selector) === "function") {
+                    togo = userJQuery(selector.call(null, fluid.unwrap(thisContainer)));
+                } else {
+                    togo = userJQuery(selector, thisContainer);
+                }
             }
 
-            if (typeof (selector) === "function") {
-                togo = userJQuery(selector.call(null, fluid.unwrap(thisContainer)));
-            } else {
-                togo = userJQuery(selector, thisContainer);
-            }
-            if (togo.get(0) === document) {
-                togo = [];
-            }
             if (!togo.selector) {
                 togo.selector = selector;
                 togo.context = thisContainer;
