@@ -1347,7 +1347,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }]
                 }, {
                     func: "fluid.tests.changeInput",
-                    args: ["{lineSpace}.dom.textSize", "{that}.options.testOptions.newValue"]
+                    args: ["{lineSpace}.dom.lineSpace", "{that}.options.testOptions.newValue"]
                 }, {
                     listener: "fluid.tests.panels.utils.checkModel",
                     args: ["lineSpace", "{lineSpace}.model", "{that}.options.testOptions.newValue"],

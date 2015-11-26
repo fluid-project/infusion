@@ -26,7 +26,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     // Real data binding would be nice to replace these two pairs.
     fluid.uploader.fileQueueView.rowForFile = function (that, file) {
-        return that.locate("fileQueue").find("#" + file.id);
+        return that.container.find("#" + file.id);
     };
 
     fluid.uploader.fileQueueView.errorRowForFile = function (that, file) {

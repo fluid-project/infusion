@@ -152,8 +152,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             if (!thisContainer) {
                 fluid.fail("DOM binder invoked for selector " + name + " without container");
             }
-
-            if (!selector) {
+            if (selector === "") {
+                togo = thisContainer;
+            }
+            else if (!selector) {
                 togo = userJQuery();
             }
             else {

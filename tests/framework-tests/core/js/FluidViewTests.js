@@ -45,35 +45,35 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 
         fluid.registerNamespace("fluid.tests.fluid5821");
-        fluid.tests.fluid5821.isEmptyJquery = function(element, checkSelector) {
-            jqUnit.assertEquals("The element should have a length of zero...", 0, element.length);
+        
+        fluid.tests.fluid5821.isEmptyJquery = function(message, element, checkSelector) {
+            jqUnit.assertEquals(message + ": The element should have a length of zero...", 0, element.length);
             var fieldsToCheck = ["context", "selectorName"];
             if (checkSelector) {
                 fieldsToCheck.push("selector");
             }
             fluid.each(fieldsToCheck, function(field) {
-                jqUnit.assertNotUndefined("The field '" + field + "' should not be undefined...", element[field]);
-                jqUnit.assertNotNull("The field '" + field + "' should not be null...", element[field]);
+                jqUnit.assertNotUndefined(message + ": The field '" + field + "' should not be undefined...", element[field]);
+                jqUnit.assertNotNull(message + ": The field '" + field + "' should not be null...", element[field]);
             });
         };
 
         fluid.defaults("fluid.tests.fluid5821", {
             gradeNames: ["fluid.viewComponent"],
             selectors: {
-                bad:  ".notGonnaFindIt"
+                bad:  ".notGonnaFindIt",
+                emptyString: ""
             }
         });
 
-        jqUnit.test("FLUID-5821: Try to locate a non-existent selector key...", function () {
-            var testComponent = fluid.tests.fluid5821("body");
-            var element = testComponent.locate("missing");
-            fluid.tests.fluid5821.isEmptyJquery(element);
-        });
-
-        jqUnit.test("FLUID-5821: Try to locate a selector key for which there is no corresponding markup...", function () {
-            var testComponent = fluid.tests.fluid5821("body");
-            var element = testComponent.locate("bad");
-            fluid.tests.fluid5821.isEmptyJquery(element, true);
+        jqUnit.test("FLUID-5821: DOM binder missing/empty selector tests", function () {
+            var that = fluid.tests.fluid5821("body");
+            var missingElement = that.locate("missing");
+            fluid.tests.fluid5821.isEmptyJquery("Locate a non-existent selector key", missingElement);
+            var badElement = that.locate("bad");
+            fluid.tests.fluid5821.isEmptyJquery("Locate a selector which matches nothing", badElement, true);
+            var container = that.locate("emptyString");
+            jqUnit.assertEquals("Located container with empty string ", fluid.unwrap(that.container), fluid.unwrap(container));
         });
 
         jqUnit.test("fluid.container: bind to an selector", function () {
