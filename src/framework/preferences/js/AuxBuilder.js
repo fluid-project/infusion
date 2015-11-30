@@ -243,9 +243,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             var subPanels = {};
             var subPanelRenderOn = {};
 
-            // panels can contain an array of always on panels, or an object
-            // describing which panels are always and which are initialized by a preference value
-            if (!fluid.isPrimitive(thisCompositeOptions.panels)) {
+            // thisCompositeOptions.panels can be in two forms:
+            // 1. an array of names of panels that should always be rendered;
+            // 2. an object that describes what panels should be always rendered,
+            //    and what panels should be rendered when a preference is turned on
+            // The loop below is only needed for processing the latter.
+            if (fluid.isPlainObject(thisCompositeOptions.panels) && !fluid.isArrayable(thisCompositeOptions.panels)) {
                 fluid.each(thisCompositeOptions.panels, function (subpanelArray, pref) {
                     subPanelList = subPanelList.concat(subpanelArray);
                     if (pref !== "always") {

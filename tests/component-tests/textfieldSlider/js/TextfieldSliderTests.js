@@ -46,8 +46,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var textfield = $(".flc-textfieldSlider-field");
             var thumb = $(".ui-slider-handle");
 
-            textfield.val(valToTest);
-            textfield.change();
+            fluid.changeElementValue(textfield, valToTest);
             jqUnit.assertEquals("Textfield value should be the " + expected, expected, +textfield.val());
             jqUnit.assertEquals("The ARIA value now should be " + expected, expected, +thumb.attr("aria-valuenow"));
             jqUnit.assertEquals("Slider value should be " + expected, expected, +slider.slider("value"));
