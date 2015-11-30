@@ -1063,10 +1063,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
-    fluid.tests.textFontPanel.changeSelection = function (element, newValue) {
-        element.val(newValue).change();
-    };
-
     fluid.defaults("fluid.tests.textFontTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
@@ -1084,7 +1080,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["{textFont}", "{that}.options.testOptions.expectedNumOfOptions", "{that}.options.testOptions.defaultValue"],
                     event: "{textFontPanel textFont}.events.afterRender"
                 }, {
-                    func: "fluid.tests.textFontPanel.changeSelection",
+                    func: "fluid.changeElementValue",
                     args: ["{textFont}.dom.textFont", "{that}.options.testOptions.newValue"]
                 }, {
                     listener: "fluid.tests.panels.utils.checkModel",
@@ -1221,7 +1217,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.changeInput = function (textSlider, newValue) {
-        textSlider.find("input").val(newValue).change();
+        fluid.changeElementValue(textSlider.find("input"), newValue);
     };
 
     /*******************************************************************************

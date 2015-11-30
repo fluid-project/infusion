@@ -338,9 +338,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             if (typeof(newValue) === "boolean") {
                 newValue = (newValue ? "true" : "false");
             }
-          // jQuery gets this partially right, but when dealing with radio button array will
-          // set all of their values to "newValue" rather than setting the checked property
-          // of the corresponding control.
+            // jQuery gets this partially right, but when dealing with radio button array will
+            // set all of their values to "newValue" rather than setting the checked property
+            // of the corresponding control.
             $.each(elements, function () {
                 this.checked = (newValue instanceof Array ?
                     newValue.indexOf(this.value) !== -1 : newValue === this.value);

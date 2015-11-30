@@ -561,7 +561,7 @@
                     listener: "fluid.tests.checkEvent",
                     event: "{asyncTest}.events.buttonClicked"
                 }, { // Issue two requests via UI to change field, and check model update
-                    func: "fluid.tests.changeField",
+                    func: "fluid.changeElementValue",
                     args: ["{asyncTest}.dom.textField", "{asyncTester}.options.newTextValue"]
                 }, {
                     listenerMaker: "fluid.tests.makeChangeChecker",
@@ -570,7 +570,7 @@
                     path: "textValue",
                     changeEvent: "{asyncTest}.applier.modelChanged"
                 }, {
-                    func: "fluid.tests.changeField",
+                    func: "fluid.changeElementValue",
                     args: ["{asyncTest}.dom.textField", "{asyncTester}.options.furtherTextValue"]
                 }, {
                     listenerMaker: "fluid.tests.makeChangeChecker",
@@ -596,10 +596,6 @@
 
     fluid.tests.checkEvent = function () {
         jqUnit.assert("Button event relayed");
-    };
-
-    fluid.tests.changeField = function (field, value) {
-        field.val(value).change();
     };
 
     fluid.tests.makeChangeChecker = function (toCheck, component, path) {
