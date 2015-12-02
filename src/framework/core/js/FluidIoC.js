@@ -185,6 +185,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.makeDistributionRecord = function (contextThat, sourceRecord, sourcePath, targetSegs, exclusions, sourceType) {
         sourceType = sourceType || "distribution";
+        fluid.pushActivity("makeDistributionRecord", "Making distribution record from source record %sourceRecord path %sourcePath to target path %targetSegs", {sourceRecord: sourceRecord, sourcePath: sourcePath, targetSegs: targetSegs});
 
         var source = fluid.copy(fluid.get(sourceRecord, sourcePath));
         fluid.each(exclusions, function (exclusion) {
@@ -194,6 +195,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var record = {options: {}};
         fluid.model.applyChangeRequest(record, {segs: targetSegs, type: "ADD", value: source});
         fluid.checkComponentRecord(record);
+        fluid.popActivity();
         return $.extend(record, {contextThat: contextThat, recordType: sourceType});
     };
 
@@ -438,7 +440,14 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.distributeOptions = function (that, optionsStrategy) {
         var thatShadow = fluid.shadowForComponent(that);
         var records = fluid.driveStrategy(that.options, "distributeOptions", optionsStrategy);
-        fluid.each(records, function (record) {
+        fluid.each(records, function distributeOptionsOne(record) {
+            fluid.pushActivity("distributeOptions", "parsing distributeOptions block %record %that ", {that: that, record: record});
+            if (typeof(record.target) !== "string") {
+                fluid.fail("Error in options distribution record ", record, " a member named \"target\" must be supplied holding an IoC reference");
+            }
+            if (typeof(record.source) === "string" ^ record.record === undefined) {
+                fluid.fail("Error in options distribution record ", record, ": must supply either a member \"source\" holding an IoC reference or a member \"record\" holding a literal record");
+            }
             var targetRef = fluid.parseContextReference(record.target);
             var targetComp, selector, context;
             if (fluid.isIoCSSSelector(targetRef.context)) {
@@ -463,7 +472,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 preBlocks = [(fluid.makeDistributionRecord(that, record.record, [], targetSegs, []))];
             }
             else {
-                var source = fluid.parseContextReference(record.source || "{that}.options"); // TODO: This is probably not a sensible default
+                var source = fluid.parseContextReference(record.source);
                 if (source.context !== "that") {
                     fluid.fail("Error in options distribution record ", record, " only a context of {that} is supported");
                 }
@@ -493,6 +502,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 var targetShadow = fluid.shadowForComponent(targetComp);
                 fluid.applyDistributions(that, preBlocks, targetShadow);
             }
+            fluid.popActivity();
         });
     };
 
@@ -823,7 +833,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             if (!foundComponent && parsed.path !== "") {
                 var ref = fluid.renderContextReference(parsed);
                 fluid.fail("Failed to resolve reference " + ref + " - could not match context with name " +
-                    context + " from component " + fluid.dumpThat(parentThat), parentThat);
+                    context + " from component " + fluid.dumpThat(parentThat) + " at path " + fluid.pathForComponent(parentThat).join(".") + " component: " , parentThat);
             }
             return fluid.getForComponent(foundComponent, parsed.path);
         };
