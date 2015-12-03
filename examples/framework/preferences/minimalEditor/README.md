@@ -7,4 +7,4 @@ This folder provides an example of a minimal but fully functional preferences ed
 - no localization (Note that this is not best practice!)
 
 This code is the basis for the
-[Preferences Framework tutorial](http://docs.fluidproject.org/infusion/development/tutorial-creatingAPreferencesEditorUsingThePreferencesFramework/PrefsFramework.html).
+[Preferences Framework tutorial](http://docs.fluidproject.org/infusion/development/tutorial-prefsFramework/CreatingAPrefsEditor.html).
