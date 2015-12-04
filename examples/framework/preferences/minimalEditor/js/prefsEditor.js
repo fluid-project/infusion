@@ -32,7 +32,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // selectors identify elements in the DOM that need to be accessed by the code;
         // in this case, the Renderer will render data into these particular elements
         selectors: {
-            heatedSeats: ".mec-heatedSeats"
+            heatedSeats: ".awec-heatedSeats"
         },
 
         // the ProtoTree is basically instructions to the Renderer

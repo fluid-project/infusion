@@ -33,7 +33,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
 
             // the main template for the preference editor itself
-            template: "%templatePrefix/minEditor.html",
+            template: "%templatePrefix/prefsEditorTemplate.html",
 
             heatedSeats: {
                 // this 'type' must match the name of the pref in the primary schema
@@ -43,7 +43,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     type: "awesomeCars.prefs.panels.heatedSeats",
 
                     // selector indicating where, in the main template, to place this panel
-                    container: ".mec-heatedSeats",
+                    container: ".awec-heatedSeats",
 
                     // the template for this panel
                     template: "%templatePrefix/heatedSeats.html"
