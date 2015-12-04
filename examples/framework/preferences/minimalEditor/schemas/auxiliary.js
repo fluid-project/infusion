@@ -17,7 +17,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /**
      * Auxiliary Schema
      */
-    fluid.defaults("minEditor.auxSchema", {
+    fluid.defaults("awesomeCars.prefs.auxSchema", {
 
         // the base grade for the schema
         gradeNames: ["fluid.prefs.auxSchema"],
@@ -37,10 +37,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             heatedSeats: {
                 // this 'type' must match the name of the pref in the primary schema
-                type: "minEditor.heatedSeats",
+                type: "awesomeCars.prefs.heatedSeats",
                 panel: {
                     // this 'type' must match the name of the panel grade created for this pref
-                    type: "minEditor.panels.heatedSeats",
+                    type: "awesomeCars.prefs.panels.heatedSeats",
 
                     // selector indicating where, in the main template, to place this panel
                     container: ".mec-heatedSeats",

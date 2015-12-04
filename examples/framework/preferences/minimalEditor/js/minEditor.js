@@ -17,13 +17,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /**
      * Panel for the heated seats preference
      */
-    fluid.defaults("minEditor.panels.heatedSeats", {
+    fluid.defaults("awesomeCars.prefs.panels.heatedSeats", {
         gradeNames: ["fluid.prefs.panel"],
 
         // the Preference Map maps the information in the primary schema to this panel
         preferenceMap: {
             // the key must match the name of the pref in the primary schema
-            "minEditor.heatedSeats": {
+            "awesomeCars.prefs.heatedSeats": {
                 // this key is the path into the panel's model where this preference is stored
                 "model.heatedSeats": "default"
             }
@@ -47,10 +47,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Initialize and instantiate the editor
      * TODO: Update this when https://issues.fluidproject.org/browse/FLUID-5817 is addressed
      */
-    minEditor.init = function (container) {
+    awesomeCars.prefs.init = function (container) {
         return fluid.prefs.create(container, {
             build: {
-                gradeNames: ["minEditor.auxSchema"]
+                gradeNames: ["awesomeCars.prefs.auxSchema"]
             }
         });
     };

@@ -19,7 +19,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * This schema defines the preference(s) edited by this preferences editor:
      * their names, types, default values, etc.
      */
-    fluid.defaults("minEditor.primarySchema", {
+    fluid.defaults("awesomeCars.prefs.schemas.heatedSeats", {
 
         // the base grade for the schema;
         // using this grade tells the framework that this is a primary schema
@@ -27,7 +27,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         schema: {
             // the actual specification of the preference
-            "minEditor.heatedSeats": {
+            "awesomeCars.prefs.heatedSeats": {
                 "type": "boolean",
                 "default": false
             }
