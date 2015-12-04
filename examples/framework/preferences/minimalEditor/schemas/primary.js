@@ -16,8 +16,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
    /**
      * Primary Schema
-     * This schema defines the preference(s) edited by this preferences editor:
-     * their names, types, default values, etc.
+     * This schema defines the "heated seats" preference edited by this preferences
+     * editor: its name, type, default value, etc.
      */
     fluid.defaults("awesomeCars.prefs.schemas.heatedSeats", {
 
