@@ -1202,11 +1202,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "template": "%templatePrefix/combinedBoth.html",
                 "message": "%messagePrefix/combinedBoth.json",
                 "type": "fluid.prefs.panel.combinedBoth",
-                "panels": ["subPanel1", "subPanel2"],
+                "panels": ["x", "y"],
                 "extraOption": 1
             }
         },
-        "subPanel1": {
+        "x": {
             "type": "fluid.prefs.subPanel1",
             "enactor": {
                 "type": "fluid.prefs.enactor.subPanel1",
@@ -1220,7 +1220,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "subPanelOption": 1
             }
         },
-        "subPanel2": {
+        "y": {
             "type": "fluid.prefs.subPanel2",
             "enactor": {
                 "type": "fluid.prefs.enactor.subPanel2",
@@ -1250,11 +1250,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "template": "%templatePrefix/combinedBoth.html",
                 "message": "%messagePrefix/combinedBoth.json",
                 "type": "fluid.prefs.panel.combinedBoth",
-                "panels": ["subPanel1", "subPanel2"],
+                "panels": ["x", "y"],
                 "extraOption": 1
             }
         },
-        "subPanel1": {
+        "x": {
             "type": "fluid.prefs.subPanel1",
             "enactor": {
                 "type": "fluid.prefs.enactor.subPanel1",
@@ -1268,7 +1268,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "subPanelOption": 1
             }
         },
-        "subPanel2": {
+        "y": {
             "type": "fluid.prefs.subPanel2",
             "enactor": {
                 "type": "fluid.prefs.enactor.subPanel2",
@@ -1353,7 +1353,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         },
-        panelsToIgnore: ["subPanel1", "subPanel2"]
+        panelsToIgnore: ["x", "y"]
     };
 
     fluid.tests.auxSchema.expandedCompositeFull = $.extend(true, {}, fluid.tests.auxSchema.expandedComposite, {
@@ -1619,7 +1619,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         },
-        panelsToIgnore: ["subPanel1", "subPanel2", "subPanel3", "subPanel4"]
+        panelsToIgnore: ["x", "y", "subPanel3", "subPanel4"]
     };
 
     fluid.tests.auxSchema.multiCompositePanelSchema = $.extend(true, {}, fluid.tests.auxSchema.compositePanelSchema, fluid.tests.auxSchema.anotherCompositePanelSchema);

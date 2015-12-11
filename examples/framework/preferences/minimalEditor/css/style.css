@@ -1,0 +1,15 @@
+.awe-instructions {
+    background-color: #EEEEEE;
+    padding: 1em;
+    width: 50em;
+}
+
+.awe-panel {
+    padding: 1em;
+    border: 1px solid black;
+    width: 50%;
+}
+
+.awe-save {
+    margin: 1em;
+}
