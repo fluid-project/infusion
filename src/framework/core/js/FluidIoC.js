@@ -289,7 +289,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         return path1.length + path2.length - 2*i;
     };
 
-    // Called from applyDistributions (immediate application route) as well as mergeRecordsToList (pre-instantiation route)
+    // Called from applyDistributions (immediate application route) as well as mergeRecordsToList (pre-instantiation route) AS WELL AS assembleCreatorArguments (pre-pre-instantiation route)
     fluid.computeDistributionPriority = function (targetThat, distributedBlock) {
         if (!distributedBlock.priority) {
             var instantiator = fluid.getInstantiator(targetThat);
@@ -298,7 +298,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             var sourceStack = instantiator.getThatStack(distributedBlock.contextThat);
             var sourcePath = fluid.getMemberNames(instantiator, sourceStack);
             var distance = fluid.computeTreeDistance(targetPath, sourcePath);
-            distributedBlock.priority = fluid.mergeRecordTypes.distribution + distance;
+            distributedBlock.priority = fluid.mergeRecordTypes.distribution - distance;
         }
         return distributedBlock;
     };
@@ -1244,6 +1244,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var fakeThat = {}; // fake "that" for receiveDistributions since we try to match selectors before creation for FLUID-5013
         var distributions = parentThat ? fluid.receiveDistributions(parentThat, upDefaults.gradeNames, options.memberName, fakeThat) : [];
         fluid.each(distributions, function (distribution) { // TODO: The duplicated route for this is in fluid.mergeComponentOptions
+            fluid.computeDistributionPriority(parentThat, distribution);
             if (fluid.isPrimitive(distribution.priority)) { // TODO: These should be immutable and parsed just once on registration - but we can't because of crazy target-dependent distance system
                 distribution.priority = fluid.parsePriority(distribution.priority, 0, false, "options distribution");
             }
