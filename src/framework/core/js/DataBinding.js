@@ -12,7 +12,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_1_9 = fluid_1_9 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -1363,7 +1363,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
 
-    /** OLD CHANGEAPPLIER IMPLEMENTATION (Infusion 1.5 and before - this will be removed on Fluid 2.0) **/
+    /** OLD CHANGEAPPLIER IMPLEMENTATION (Infusion 1.9 and before - this will be removed in Infusion 2.0) **/
 
     /** Parses a path segment, following escaping rules, starting from character index i in the supplied path */
     fluid.pathUtil.getPathSegment = function (path, i) {
@@ -1829,4 +1829,4 @@ var fluid_2_0 = fluid_2_0 || {};
         return togo;
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_1_9);

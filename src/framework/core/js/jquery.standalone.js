@@ -17,11 +17,11 @@
  * Date: Thu May 12 15:04:36 2011 -0400
  */
 
-/* global jQuery:true */
+/* global jQuery:true, global */
 /* exported jQuery */
 
-var fluid_2_0 = fluid_2_0 || {};
-var fluid = fluid || fluid_2_0;
+var fluid_1_9 = fluid_1_9 || {};
+var fluid = fluid || fluid_1_9;
 
 (function (fluid) {
     "use strict";
@@ -30,10 +30,14 @@ var fluid = fluid || fluid_2_0;
     var toString = Object.prototype.toString;
     var hasOwn = Object.prototype.hasOwnProperty;
     var indexOf = Array.prototype.indexOf;
+
+    var globalScope = typeof window !== "undefined" ? window :
+        typeof self !== "undefined" ? self : global;
+
     // Map over jQuery in case of overwrite
-    var _jQuery = window.jQuery;
+    var _jQuery = globalScope.jQuery;
     // Map over the $ in case of overwrite
-    var _$ = window.$;
+    var _$ = globalScope.$;
     // Used for trimming whitespace
     var trimLeft = /^\s+/,
         trimRight = /\s+$/,
@@ -45,11 +49,11 @@ var fluid = fluid || fluid_2_0;
         jquery: "1.6.1-fluidStandalone",
 
         noConflict: function (deep) {
-            if (window.$ === jQuery) {
-                window.$ = _$;
+            if (globalScope.$ === jQuery) {
+                globalScope.$ = _$;
             }
-            if (deep && window.jQuery === jQuery) {
-                window.jQuery = _jQuery;
+            if (deep && globalScope.jQuery === jQuery) {
+                globalScope.jQuery = _jQuery;
             }
             return jQuery;
         },
@@ -168,6 +172,6 @@ var fluid = fluid || fluid_2_0;
         }
     };
 
-})(fluid_2_0);
+})(fluid_1_9);
 
 var jQuery = fluid.jQueryStandalone;

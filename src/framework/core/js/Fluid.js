@@ -1,5 +1,5 @@
 /*!
- * Fluid Infusion v2.0
+ * Fluid Infusion v1.9
  *
  * Infusion is distributed under the Educational Community License 2.0 and new BSD licenses:
  * http://wiki.fluidproject.org/display/fluid/Fluid+Licensing
@@ -26,13 +26,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /* global console, opera, YAHOO*/
 
-var fluid_2_0 = fluid_2_0 || {};
-var fluid = fluid || fluid_2_0;
+var fluid_1_9 = fluid_1_9 || {};
+var fluid = fluid || fluid_1_9;
 
 (function ($, fluid) {
     "use strict";
 
-    fluid.version = "Infusion 2.0-SNAPSHOT";
+    fluid.version = "Infusion 1.9.0-SNAPSHOT";
 
     // Export this for use in environments like node.js, where it is useful for
     // configuring stack trace behaviour
@@ -42,7 +42,8 @@ var fluid = fluid || fluid_2_0;
         fluid: fluid
     };
 
-    fluid.global = fluid.global || window || {};
+    fluid.global = fluid.global || typeof window !== "undefined" ?
+        window : typeof self !== "undefined" ? self : {};
 
     // A standard utility to schedule the invocation of a function after the current
     // stack returns. On browsers this defaults to setTimeout(func, 1) but in
@@ -684,8 +685,8 @@ var fluid = fluid || fluid_2_0;
         });
         return togo;
     };
-    
-    /** Converts an array consisting of a mixture of arrays and non-arrays into the concatenation of any inner arrays 
+
+    /** Converts an array consisting of a mixture of arrays and non-arrays into the concatenation of any inner arrays
      * with the non-array elements
      */
     fluid.flatten = function (array) {
@@ -937,7 +938,7 @@ var fluid = fluid || fluid_2_0;
             : fluid.model.accessImpl(root, EL, fluid.NO_VALUE, env, null, false, fluid.model.traverseSimple);
     };
 
-    // This backward compatibility will be maintained for a number of releases, probably until Fluid 2.0
+    // This backward compatibility will be maintained until Infusion 2.0
     fluid.model.setBeanValue = fluid.set;
     fluid.model.getBeanValue = fluid.get;
 
@@ -1859,7 +1860,7 @@ var fluid = fluid || fluid_2_0;
      * This method is now used only for the purpose of merging "dead" option documents in order to
      * cache graded component defaults. Component option merging is now performed by the
      * fluid.makeMergeOptions pathway which sets up a deferred merging process. This function
-     * will not be removed in the Fluid 2.0 release but it is recommended that users not call it
+     * will not be removed in the Infusion 2.0 release but it is recommended that users not call it
      * directly.
      * The behaviour of this function is explained more fully on
      * the page http://wiki.fluidproject.org/display/fluid/Options+Merging+for+Fluid+Components .
@@ -2337,7 +2338,7 @@ var fluid = fluid || fluid_2_0;
     /** Initialise all the "subcomponents" which are configured to be attached to
      * the supplied top-level component, which share a particular "class name". This method
      * of instantiating components is deprecated and will be removed in favour of the automated
-     * IoC system in the Fluid 2.0 release.
+     * IoC system in the Infusion 2.0 release.
      * @param {Component} that The top-level component for which sub-components are
      * to be instantiated. It contains specifications for these subcomponents in its
      * <code>options</code> structure.
@@ -2559,4 +2560,4 @@ var fluid = fluid || fluid_2_0;
         };
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_1_9);
