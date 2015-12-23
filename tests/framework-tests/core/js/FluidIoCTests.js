@@ -749,6 +749,46 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // jqUnit.assertEquals("Listeners were designated correctly in abstract grade", 3, midDefaults.listeners.onUserToken.length);
     });
 
+    
+    /** FLUID-5615: Base grades of subcomponents should be weaker than dynamic **/
+    
+    fluid.defaults("fluid.tests.FLUID5615sub", {
+        gradeNames: ["fluid.component", "fluid.tests.FLUID5615subBase"],
+        value: "fromSub"
+    });
+
+    fluid.defaults("fluid.tests.FLUID5615subBase", {
+        gradeNames: "fluid.component",
+        value: "fromSubBase"
+    });
+
+    fluid.defaults("fluid.tests.FLUID5615dyn", {
+        gradeNames: "fluid.component",
+        value: "fromDyn"
+    });
+    
+    fluid.defaults("fluid.tests.FLUID5615base", {
+        gradeNames: "fluid.component",
+        distributeOptions: {
+            record: "fluid.tests.FLUID5615dyn",
+            target: "{that sub}.options.gradeNames"
+        },
+        components: {
+            sub: {
+                type: "fluid.component",
+                options: {
+                    gradeNames: "fluid.tests.FLUID5615sub"
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5615 sub vs dynamic", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.FLUID5615base();
+        jqUnit.assertEquals("Distribution should beat subcomponent base", "fromDyn", that.sub.options.value);
+    });
+
     /** Listener merging tests **/
 
     fluid.defaults("fluid.tests.listenerMerging", {
@@ -3250,6 +3290,38 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             protect: "{instantiator}"
         });
         jqUnit.assertValue("Constructed dynamic component", that);
+    });
+
+    /** FLUID-5615: Raw dynamic grades should be last-ditch **/
+
+    fluid.makeGradeLinkage("fluid.tests.FLUID5615linkage", ["fluid.tests.FLUID5615", "fluid.tests.FLUID5615.writable"], "fluid.tests.FLUID5615.linkage.writable");
+    
+    fluid.constructSingle([], "fluid.tests.FLUID5615linkage");
+
+    fluid.defaults("fluid.tests.FLUID5615", {
+        gradeNames: ["fluid.component", "{that}.getWritableGrade"],
+        invokers: {
+            getWritableGrade: {
+                funcName: "fluid.tests.FLUID5615.getWritableGrade",
+                args: ["{that}.options.writable"]
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.tests.FLUID5615derived", {
+        writable: true
+    });
+    
+    fluid.tests.FLUID5615.getWritableGrade = function (writable) {
+        return writable ? "fluid.tests.FLUID5615.writable" : [];
+    };
+    
+    jqUnit.test("FLUID-5615: Resolve dynamic grade material from raw dynamic grade", function () {
+        var that = fluid.tests.FLUID5615({
+            gradeNames: "fluid.tests.FLUID5615derived"
+        });
+        jqUnit.assertTrue("Dynamic config hoisted to raw dynamic grade", fluid.componentHasGrade(that, "fluid.tests.FLUID5615.writable"));
+        jqUnit.assertTrue("Dynamic config led to linkage resolution", fluid.componentHasGrade(that, "fluid.tests.FLUID5615.linkage.writable"));
     });
 
     /** FLUID-5094: Dynamic grade merging takes an undefined source passed in from IoCSS into account rather than ignoring it **/
