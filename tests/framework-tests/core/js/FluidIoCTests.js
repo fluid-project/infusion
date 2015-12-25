@@ -4109,6 +4109,47 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         advisor.destroy();
     });
     
+    /** FLUID-5835 test - uniquifying of multiple distribution blocks **/
+    
+    fluid.defaults("fluid.tests.fluid5835increase", {
+        gradeNames: "fluid.component",
+        messageBase: {
+            increaseHeader: "increase"
+        }
+    });
+    
+    fluid.defaults("fluid.tests.fluid5835panel", {
+        gradeNames: "fluid.component",
+        components: {
+            msgResolver: {
+                type: "fluid.component"
+            }
+        },
+        distributeOptions: {
+            source: "{that}.options.messageBase",
+            target: "{that > msgResolver}.options.messageBase"
+        }
+    });
+    
+    fluid.defaults("fluid.tests.fluid5835root", {
+        gradeNames: "fluid.component",
+        components: {
+            increasing: {
+                type: "fluid.tests.fluid5835panel",
+                options: {
+                    messageBase: "{fluid5835root}.nothing"
+                }
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-5835: Uniquifying multiple distribution blocks", function () {
+        var options = {};
+        fluid.set(options, "components.increasing.options.gradeNames", "fluid.tests.fluid5835increase");
+        var that = fluid.tests.fluid5835root(options);
+        jqUnit.assertEquals("Correctly distributed", "increase", that.increasing.msgResolver.options.messageBase.increaseHeader);
+    });
+    
     /** FLUID-5813: namespaces and priority for distributeOptions early route **/
     
     fluid.makeComponents({

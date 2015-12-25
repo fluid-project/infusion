@@ -2144,10 +2144,10 @@ var fluid = fluid || fluid_2_0_0;
         fluid.remove_if(mergeBlocks, function (mergeBlock) {
             var ns = mergeBlock.namespace;
             if (ns) {
-                if (byNamespace[ns]) {
+                if (byNamespace[ns] && byNamespace[ns] !== mergeBlock.contextThat.id) {  // source check for FLUID-5835
                     return true;
                 } else {
-                    byNamespace[ns] = mergeBlock;
+                    byNamespace[ns] = mergeBlock.contextThat.id;
                 }
             }
         });

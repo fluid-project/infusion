@@ -390,12 +390,15 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var targetShadow = fluid.shadowForComponent(targetHead);
         var id = fluid.allocateGuid();
         var distributions = (targetShadow.distributions = targetShadow.distributions || []);
-        distributions.push({
+        var distribution = {
             id: id, // This id is used in clearDistributions
             target: target, // Here for improved debuggability - info is duplicated in "selector"
             selector: selector,
             blocks: blocks
-        });
+        };
+        Object.freeze(distribution);
+        Object.freeze(distribution.blocks);
+        distributions.push(distribution);
         return id;
     };
 
@@ -733,6 +736,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     //     invokerStrategy, eventStrategyBlock, memberStrategy, getConfig: Junk required to operate the accessor
     //     listeners: Listeners registered during this component's construction, to be cleared during clearListeners
     //     distributions, collectedClearer: Managing options distributions
+    //     outDistributions: A list of distributions registered from this component, signalling from distributeOptions to clearDistributions
     //     subcomponentLocal: Signalling local record from computeDynamicComponents to assembleCreatorArguments
     //     dynamicLocal: Local signalling for dynamic grades
     //     ownScope: A hash of names to components which are in scope from this component - populated in cacheShadowGrades
