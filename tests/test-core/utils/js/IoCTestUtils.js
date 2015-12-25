@@ -585,6 +585,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.test.processTestCase = function (testCaseState) {
         var testCase = testCaseState.testCase;
+        if (!testCase.name) {
+            fluid.fail("Error in configuration of testCase - required field \"name\" is missing in ", testCase);
+        }
         jqUnit.module(testCase.name);
         var fixtures = fluid.makeArray(testCase.tests);
         fluid.each(fixtures, function (fixture) {
