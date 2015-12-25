@@ -23,7 +23,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         checkName: "test",
         record: {
             contextValue: "{fluid.prefs.tests}",
-            gradeNames: "fluid.prefs.tempStore"
+            gradeNames: "fluid.prefs.tempStore",
+            priority: "after:user"
         }
     });
 

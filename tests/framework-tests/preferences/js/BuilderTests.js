@@ -579,7 +579,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var prefsEdReady = false;
 
     fluid.defaults("fluid.tests.store", {
-        gradeNames: ["fluid.prefs.globalSettingsStore"]
+        gradeNames: "fluid.prefs.store",
+        invokers: {
+            get: "fluid.identity",
+            set: "fluid.identity"
+        }
     });
 
     fluid.defaults("fluid.tests.enhancer", {
@@ -653,7 +657,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.assertTrue(enhancerType + " should be in the base enhancer grades", fluid.hasGrade(prefsEditor.enhancer.options, enhancerType));
-        jqUnit.assertTrue(storeType + " should be in the base store grades", fluid.hasGrade(prefsEditor.store.options, storeType));
+        var storeOptions = prefsEditor.store.settingsStore.options;
+        jqUnit.assertTrue(storeType + " should be in the base store grades", fluid.hasGrade(storeOptions, storeType));
+        jqUnit.assertFalse("The default store grade should have been displaced", fluid.hasGrade(storeOptions, "fluid.prefs.cookieStore"));
+        jqUnit.assertFalse("The default store grade should have been displaced", fluid.hasGrade(storeOptions, "fluid.prefs.tempStore"));
 
         jqUnit.assertEquals("Munging options for enhancer should be passed down to the enhancer", "fl-aria", prefsEditor.enhancer.uiEnhancer.options.classnameMap["textFont.default"]);
     };
@@ -663,7 +670,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Builder munging",
             tests: [{
-                expect: 9,
+                expect: 11,
                 name: "Builder munging",
                 sequence: [{
                     listener: "fluid.tests.assertBuilderMunging",
