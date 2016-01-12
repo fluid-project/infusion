@@ -1,5 +1,5 @@
 /*
-Copyright 2013-2016 OCAD University
+Copyright 2016 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -15,10 +15,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     // Gradename to invoke "fluid.uiOptions.prefsEditor"
     fluid.prefs.builder({
-        gradeNames: ["fluid.prefs.auxSchema.starter"]
+        gradeNames: ["fluid.prefs.auxSchema.gpiiStarter"]
     });
 
-    fluid.defaults("fluid.uiOptions.prefsEditor", {
+    fluid.defaults("fluid.uiOptions.prefsEditorWithGPII", {
         gradeNames: ["fluid.uiOptions.prefsEditorCommonOptions", "fluid.prefs.constructed.prefsEditor"]
     });
 

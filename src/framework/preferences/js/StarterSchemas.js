@@ -1,5 +1,5 @@
 /*
-Copyright 2013-2015 OCAD University
+Copyright 2013-2016 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -20,8 +20,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * Contains the settings for 7 preferences: text size, line space, text font,
      * contrast, table of contents, inputs larger and emphasize links
      *******************************************************************************/
-
-    fluid.defaults("fluid.prefs.termsAware");
 
     fluid.defaults("fluid.prefs.auxSchema.starter", {
         gradeNames: ["fluid.prefs.auxSchema"],
@@ -162,6 +160,22 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
+    fluid.defaults("fluid.prefs.auxSchema.gpiiStarter", {
+        gradeNames: ["fluid.prefs.auxSchema.starter"],
+        auxiliarySchema: {
+            "template": "%templatePrefix/SeparatedPanelPrefsEditorWithGPII.html",
+            "gpii": {
+                "type": "fluid.prefs.gpii",
+                "panel": {
+                    "type": "fluid.prefs.panel.gpii",
+                    "container": ".flc-prefsEditor-gpii",  // the css selector in the template where the panel is rendered
+                    "template": "%templatePrefix/PrefsEditorTemplate-gpii.html",
+                    "message": "%messagePrefix/gpii.json"
+                }
+            }
+        }
+    });
+
     /*******************************************************************************
      * Starter primary schema grades
      *
@@ -243,6 +257,16 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             "fluid.prefs.inputsLarger": {
                 "type": "boolean",
                 "default": false
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.schemas.gpii", {
+        gradeNames: ["fluid.prefs.schemas"],
+        schema: {
+            "fluid.prefs.gpii": {
+                "type": "boolean",
+                "auto": false
             }
         }
     });

@@ -1,5 +1,5 @@
 /*
-Copyright 2013-2015 OCAD University
+Copyright 2013-2016 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -1000,5 +1000,53 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             $(option).addClass(styles.preview + " " + styles[fluid.value(option)]);
         });
     };
+
+    /***************************************
+     * Preferences Editor GPII Integration *
+     ***************************************/
+    /**
+     * A sub-component of fluid.prefs that renders the "GPII preference syncing" panel of the user preferences interface.
+     */
+    fluid.defaults("fluid.prefs.panel.gpii", {
+        gradeNames: ["fluid.prefs.panel"],
+        preferenceMap: {
+            "fluid.prefs.gpii": {
+                "model.auto": "auto"
+            }
+        },
+        selectors: {
+            gpiiLabel: ".flc-prefsEditor-gpii-label",
+            exportButton: ".flc-prefsEditor-gpii-export",
+            exportLabel: ".flc-prefsEditor-gpii-export-label",
+            importButton: ".flc-prefsEditor-gpii-import",
+            importLabel: ".flc-prefsEditor-gpii-import-label",
+            auto: ".flc-prefsEditor-gpii-auto",
+            autoLabel: ".flc-prefsEditor-gpii-auto-label"
+        },
+        selectorsToIgnore: ["exportButton", "importButton"],
+        protoTree: {
+            gpiiLabel: {messagekey: "gpiiLabel"},
+            exportLabel: {messagekey: "exportDescr"},
+            importLabel: {messagekey: "importDescr"},
+            autoLabel: {messagekey: "autoLabel"},
+            auto: "${auto}"
+        },
+        events: {
+            onExport: null,
+            onImport: null
+        },
+        listeners: {
+            "afterRender.bindExport": {
+                "this": "{that}.dom.export",
+                "method": "click",
+                "args": ["{that}.events.onExport.fire"]
+            },
+            "afterRender.bindImport": {
+                "this": "{that}.dom.import",
+                "method": "click",
+                "args": ["{that}.events.onImport.fire"]
+            }
+        }
+    });
 
 })(jQuery, fluid_2_0_0);
