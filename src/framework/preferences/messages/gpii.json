@@ -1,8 +1,8 @@
 {
     "gpiiLabel": "GPII preference syncing",
-    "exportLabel": "export",
-    "exportDescr": "your new preferences will be stored in your GPII account",
-    "importLabel": "import",
-    "importDescr": "your existing GPII preferences will be applied to this site",
+    "importLabel": "import & apply my GPII preferences",
+    "importTooltipContent": "your existing GPII preferences will be applied to this site",
+    "exportLabel": "export my new preferences to GPII",
+    "exportTooltipContent": "your new preferences will be stored in your GPII account",
     "autoLabel": "automatially sync my preferences"
 }
