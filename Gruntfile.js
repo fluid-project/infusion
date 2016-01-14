@@ -62,22 +62,20 @@ module.exports = function(grunt) {
         },
         uglify: {
             options: {
-                mangle: false
+                mangle: false,
+                sourceMap: true,
+                sourceMapIncludeSources: true
             },
             all: {
                 files: [{
-                    expand: true,     // Enable dynamic expansion.
-                    cwd: "./build/",      // Src matches are relative to this path.
-                    src: ["src/components/**/*.js", "src/framework/**/*.js", "src/lib/**/*.js"], // Actual pattern(s) to match.
-                    dest: "./build/"   // Destination path prefix.
+                    src: "<%= modulefiles.all.output.files %>",
+                    dest: "./build/<%= allBuildName %>.js"
                 }]
             },
             custom: {
                 files: [{
-                    expand: true,     // Enable dynamic expansion.
-                    cwd: "./build",      // Src matches are relative to this path.
-                    src: ["src/**/*.js"], // Actual pattern(s) to match.
-                    dest: "./build"   // Destination path prefix.
+                    src: "<%= modulefiles.custom.output.files %>",
+                    dest: "./build/<%= customBuildName %>.js"
                 }]
             }
         },
@@ -118,20 +116,6 @@ module.exports = function(grunt) {
                 fn: function (str) {
                     return "build/" + str;
                 }
-            }
-        },
-        concat: {
-            options: {
-                separator: ";",
-                banner: "/*! <%= pkg.name %> - v<%= pkg.version %> <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %>*/\n"
-            },
-            all: {
-                src: "<%= modulefiles.all.output.files %>",
-                dest: "./build/<%= allBuildName %>.js"
-            },
-            custom: {
-                src: "<%= modulefiles.custom.output.files %>",
-                dest: "./build/<%= customBuildName %>.js"
             }
         },
         compress: {
@@ -187,7 +171,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-contrib-clean");
     grunt.loadNpmTasks("grunt-contrib-copy");
-    grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-compress");
     grunt.loadNpmTasks("grunt-contrib-jshint");
     grunt.loadNpmTasks("grunt-jsonlint");
@@ -221,7 +204,6 @@ module.exports = function(grunt) {
             "copy:" + target,
             "copy:necessities",
             "uglify:" + target,
-            "concat:" + target,
             "compress:" + target,
             "clean:build"
         ];
