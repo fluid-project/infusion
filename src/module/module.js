@@ -79,26 +79,22 @@ fluid.module.canonPath = function (path) {
     return path.replace(/\\/g, "/");
 };
 
+fluid.module.getDirs = function () {
+    return fluid.getMembers(fluid.module.modules, "baseDir");
+};
+
+// A suitable set of terms for interpolating module root paths into dataSource file paths
+fluid.module.terms = function () {
+    return fluid.module.getDirs();
+};
+
 /** Resolve a path expression which may begin with a module reference of the form,
- * say, ${module-name}, into an absolute path relative to that module, using the
+ * say, %moduleName, into an absolute path relative to that module, using the
  * database of base directories registered previously with fluid.module.register.
  * If the path does not begin with such a module reference, it is returned unchanged.
  */
 
 fluid.module.resolvePath = function (path) {
-    if (path.indexOf("${") === 0) {
-        var ic = path.indexOf("}");
-        if (ic === -1) {
-            fluid.fail("Malformed context path without }: ", path);
-        } else {
-            var context = path.substring(2, ic);
-            var record = fluid.module.modules[context];
-            if (!record) {
-                fluid.fail("Unrecognised module " + context + ": loaded modules are " + fluid.keys(fluid.module.modules).join(", "));
-            }
-            return record.baseDir + path.substring(ic + 1);
-        }
-    } else {
-        return path;
-    }
+    return fluid.stringTemplate(path, fluid.module.getDirs());
 };
+

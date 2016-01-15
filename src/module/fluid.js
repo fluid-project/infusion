@@ -16,7 +16,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     var fs = require("fs"),
         path = require("path"),
-        vm = require("vm");
+        vm = require("vm"),
+        resolve = require("resolve");
+
+    var moduleBaseDir = path.resolve(__dirname, "../..");
+
+    /** Implementation for FLUID-5822 to avoid requirement for dedupe-infusion **/
+
+    var upInfusion;
+
+    try {
+        var upPath = path.resolve(__dirname, "../../../../..");
+        var upInfusionPath = resolve.sync("infusion", {
+            basedir: upPath
+        });
+        upInfusion = require(upInfusionPath);
+    } catch (e) {}
+
+    if (upInfusion) {
+        upInfusion.log("Resolved infusion from path " + __dirname + " to " + upInfusion.module.modules.infusion.baseDir);
+        module.exports = upInfusion;
+        return;
+    } else {
+        console.log("Infusion at path " + moduleBaseDir + " is at top level ");
+    }
 
     var getBaseDir = function () {
         return __dirname;
@@ -179,7 +202,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.module.preInspect();
 
-    fluid.module.register("infusion", path.resolve(__dirname, "../.."), require);
+    fluid.module.register("infusion", moduleBaseDir, require);
 
     // Export the fluid object into the pan-module node.js global object
     global.fluid = fluid;
