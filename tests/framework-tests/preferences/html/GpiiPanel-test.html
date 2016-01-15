@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>Settings Panels Tests</title>
+        <title>GPII Preference Syncing Panel Tests</title>
 
         <!--  This is the jqUnit test css file -->
         <link rel="stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
@@ -11,7 +11,8 @@
         <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery.ui.core.js"></script>
         <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery.ui.widget.js"></script>
         <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery.ui.mouse.js"></script>
-        <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery.ui.slider.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery.ui.position.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery.ui.tooltip.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
@@ -28,9 +29,10 @@
         <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
         <script type="text/javascript" src="../../../../src/framework/renderer/js/RendererUtilities.js"></script>
 
-        <script type="text/javascript" src="../../../../src/components/textfieldSlider/js/TextfieldSlider.js"></script>
+        <script type="text/javascript" src="../../../../src/components/tooltip/js/Tooltip.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/PrefsEditor.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/Panels.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/GpiiPanel.js"></script>
 
         <!--  These are the jqUnit test js files -->
         <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
@@ -39,52 +41,19 @@
 
         <!--  These are tests that have been written using this page as data -->
         <script type="text/javascript" src="../js/PanelTestUtils.js"></script>
-        <script type="text/javascript" src="../js/PanelsTests.js"></script>
+        <script type="text/javascript" src="../js/GpiiPanelTests.js"></script>
     </head>
 
     <body>
-    <h1 id="qunit-header">Settings Panels Test Suite</h1>
+    <h1 id="qunit-header">GPII Preference Syncing Panel Test Suite</h1>
     <h2 id="qunit-banner"></h2>
     <div id="qunit-testrunner-toolbar"></div>
     <h2 id="qunit-userAgent"></h2>
     <ol id="qunit-tests"></ol>
 
     <!-- Test HTML -->
-    <div class="flc-prefs-compositePanel"></div>
-
-    <div class="flc-textFont">
-        <!-- HTML markup for corresponding panel will be injected here -->
+    <div class="flc-gpii">
     </div>
-
-    <div class="flc-contrast">
-        <!-- HTML markup for corresponding panel will be injected here -->
-    </div>
-
-    <div class="flc-textSize">
-        <!-- HTML markup for corresponding panel will be injected here -->
-    </div>
-
-    <div class="flc-lineSpace">
-        <!-- HTML markup for corresponding panel will be injected here -->
-    </div>
-
-    <div class="flc-layout">
-        <!-- HTML markup for corresponding panel will be injected here -->
-    </div>
-
-    <div class="flc-links">
-         <!-- Unable to inject markup for this composite pane successfully. See FLUID-5726  -->
-        <input type="checkbox" id="links-choice" class="flc-prefsEditor-links fl-force-left" />
-        <input type="checkbox" id="inputs-choice" class="flc-prefsEditor-inputs-larger fl-force-left" />
-    </div>
-
-    <div class="renderOnPreference"></div>
-    <div class="fluid-5200"></div>
-    <div class="fluid-5201"></div>
-    <div class="fluid-5202"></div>
-    <div class="fluid-5203"></div>
-    <div class="fluid-5210"></div>
-    <div class="fluid-5220"></div>
 
     </body>
 </html>
