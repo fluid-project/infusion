@@ -36,7 +36,6 @@
     "grunt-contrib-uglify": "~0.11.0",
     "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-copy": "~0.4.1",
-    "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-compress": "~0.5.2",
     "grunt-contrib-stylus": "~0.20.0",
     "grunt-modulefiles": "git://github.com/fluid-project/grunt-modulefiles.git#0.2.1",
