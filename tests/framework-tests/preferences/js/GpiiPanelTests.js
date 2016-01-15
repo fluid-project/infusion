@@ -29,12 +29,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "exportLabel": "export my new preferences to GPII",
             "exportTooltipContent": "your new preferences will be stored in your GPII account",
             "autoLabel": "automatially sync my preferences"
-            // "gpiiLabel": "GPII preference syncing",
-            // "exportLabel": "export",
-            // "exportDescr": "your new preferences will be stored in your GPII account",
-            // "importLabel": "import",
-            // "importDescr": "your existing GPII preferences will be applied to this site",
-            // "autoLabel": "automatially sync my preferences"
         },
         model: {
             auto: true
@@ -62,13 +56,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.gpiiPanel.testDefault = function (that) {
         var messageBase = that.options.messageBase;
-console.log(that.tooltipForImport);
+
         jqUnit.assertEquals("The gpii title text is expected", messageBase.gpiiLabel, that.locate("gpiiLabel").text());
         jqUnit.assertEquals("The export button text is expected", messageBase.exportLabel, that.locate("exportButton").text());
         jqUnit.assertEquals("The import button text is expected", messageBase.importLabel, that.locate("importButton").text());
         jqUnit.assertEquals("The text for the automatical syncing checkbox is expected", messageBase.autoLabel, that.locate("autoLabel").text());
         jqUnit.assertTrue("The checkbox for the automatical syncing is checked", that.locate("auto").attr("checked"));
-        // jqUnit.assertEquals("The tooltip component for the import button is instantiated with the proper content", messageBase.importTooltipContent, that.tooltipForImport.options.content);
+        jqUnit.assertEquals("The tooltip component for the import button is instantiated with the proper content", messageBase.importTooltipContent, that.tooltipForImport.options.content);
+        jqUnit.assertEquals("The tooltip component for the export button is instantiated with the proper content", messageBase.exportTooltipContent, that.tooltipForExport.options.content);
     };
 
     fluid.defaults("fluid.tests.gpiiTester", {
@@ -76,12 +71,12 @@ console.log(that.tooltipForImport);
         modules: [{
             name: "Test the gpii settings panel",
             tests: [{
-                // expect: 7,
+                expect: 9,
                 name: "Test the rendering of the gpii panel",
                 sequence: [{
                     listener: "fluid.tests.gpiiPanel.testDefault",
                     args: ["{gpii}"],
-                    spec: {priority: "last:testing"},
+                    priority: "last:testing",
                     event: "{gpiiPanel gpii}.events.afterRender"
                 }, {
                     jQueryTrigger: "click",
