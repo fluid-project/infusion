@@ -438,7 +438,7 @@ var fluid = fluid || fluid_2_0_0;
      * neither an array nor an object, it will be returned untransformed
      * @param fn1, fn2, etc. {Function} An arbitrary number of optional further arguments,
      * all of type Function, accepting the signature (object, index), where object is the
-     * structure member to be transformed, and index is its key orindex. Each function will be
+     * structure member to be transformed, and index is its key or index. Each function will be
      * applied in turn to each structure member, which will be replaced by the return value
      * from the function.
      * @return The finally transformed list, where each member has been replaced by the
