@@ -16,6 +16,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests.panels.utils");
 
+    fluid.tests.prefsPaneltemplatePrefix = "../../../../src/framework/preferences/html/";
+
     fluid.defaults("fluid.tests.panels.utils.defaultTestPanel", {
         strings: {},
         testMessages: {},
