@@ -105,6 +105,12 @@ By default, custom packages are given a name with the form _infusion-custom-<ver
 
     grunt custom --name="myPackage"    # this produces infusion-myPackage.js
 
+### How Do I Run Tests? ###
+
+To test a build it is advisable to serve the contents of this directory using a web server and then opening [tests/all-tests.html](https://github.com/fluid-project/infusion/blob/master/tests/all-tests.html) in a web browser. The browser will need to remain in the foreground because some of the tests require window focus. 
+
+Automated tests can be run by first [installing Testem](https://github.com/testem/testem/#installation) and then running ``testem ci --file tests/testem.json`` in this directory. Any browsers that Testem detects on your platform will be launched with test results returned in the [TAP](https://testanything.org/) format. You can use the ``testem launchers`` command to get a list of available browsers.
+
 ### Modules ###
 
 #### Framework Modules ####
