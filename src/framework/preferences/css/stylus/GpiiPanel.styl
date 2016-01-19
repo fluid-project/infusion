@@ -1,0 +1,49 @@
+/* Preferences Editor styles, specifically for GPII Preferences Server integration */
+
+/* colors */
+button = {
+    color: {
+        foreground: #000000,
+        background: #FDD900,
+        disabled: #B3B4B3
+    }
+}
+
+@font-face {
+    font-family: 'InfusionIcons-Gpii';
+    src: url('../fonts/InfusionIcons-Gpii.ttf'),
+         url('../fonts/InfusionIcons-Gpii.eot');
+}
+
+.fl-prefsEditor {
+    .fl-prefsEditor-gpii-button {
+        background-color: button.color.background;
+        color: button.color.foreground;
+        border: 1px button.color.foreground solid;
+        width: 100%;
+        border-radius: 5px;
+        margin-bottom: 0.5rem;
+
+        &:disabled {
+            border: none;
+            background-color: button.color.disabled;
+        }
+    }
+
+    .fl-icon-gpii {
+        font-family: 'InfusionIcons-Gpii' !important;
+        speak: none;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        -webkit-font-smoothing: antialiased;
+        float: left;
+        margin: .2em .3em 0 0;
+        font-size: 1.5em;
+
+        &:before {
+            content: "\e901"
+        }
+    }
+}
