@@ -19,14 +19,28 @@ button = {
     .fl-prefsEditor-gpii-button {
         background-color: button.color.background;
         color: button.color.foreground;
-        border: 1px button.color.foreground solid;
-        width: 100%;
+        border-style: solid;
+        border-color: button.color.foreground;
+        border-width: 1px;
         border-radius: 5px;
+        width: 100%;
         margin-bottom: 0.5rem;
 
         &:disabled {
             border: none;
             background-color: button.color.disabled;
+        }
+
+        &:focus {
+            border-width: 3px;
+            outline: none;
+        }
+
+        &:hover {
+            outline-style: solid;
+            outline-offset: 2px;
+            outline-width:2px;
+            outline-color: button.color.foreground;
         }
     }
 

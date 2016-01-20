@@ -28,6 +28,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         tooltipOptions: {
             delay: 0,
             duration: 0,
+            position: {
+                at: "left bottom+3"
+            },
             styles: {
                 tooltip: "fl-prefsEditor-tooltip"
             }
