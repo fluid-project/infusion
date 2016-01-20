@@ -28,8 +28,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         tooltipOptions: {
             delay: 0,
             duration: 0,
-            position: {
-                my: "left+35 bottom-10"
+            styles: {
+                tooltip: "fl-prefsEditor-tooltip"
             }
         },
         selectors: {
@@ -77,22 +77,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 args: ["{that}.events.onExport.fire"]
             }
         },
-        invokers: {
-            getTooltipOptions: {
-                funcName: "fluid.prefs.panel.gpii.getTooltipOptions",
-                args: ["{that}.options.tooltipOptions", "{arguments}.0"]
-            }
-        },
         components: {
             tooltipForImport: {
                 type: "fluid.tooltip",
                 container: "{fluid.prefs.panel.gpii}.dom.importButton",
                 createOnEvent: "afterRender",
                 options: {
-                    expander: {
-                        func: "{fluid.prefs.panel.gpii}.getTooltipOptions",
-                        args: ["{fluid.prefs.panel.gpii}.options.strings.importTooltipContent"]
-                    }
+                    content: "{fluid.prefs.panel.gpii}.options.strings.importTooltipContent"
                 }
             },
             tooltipForExport: {
@@ -100,17 +91,14 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 container: "{fluid.prefs.panel.gpii}.dom.exportButton",
                 createOnEvent: "afterRender",
                 options: {
-                    expander: {
-                        func: "{fluid.prefs.panel.gpii}.getTooltipOptions",
-                        args: ["{fluid.prefs.panel.gpii}.options.strings.exportTooltipContent"]
-                    }
+                    content: "{fluid.prefs.panel.gpii}.options.strings.exportTooltipContent"
                 }
             }
-        }
+        },
+        distributeOptions: [{
+            source: "{that}.options.tooltipOptions",
+            target: "{that fluid.tooltip}.options"
+        }]
     });
-
-    fluid.prefs.panel.gpii.getTooltipOptions = function (defaultOptions, content) {
-        return $.extend(true, {}, defaultOptions, {content: content});
-    };
 
 })(jQuery, fluid_2_0_0);
