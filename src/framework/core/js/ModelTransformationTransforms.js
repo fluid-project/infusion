@@ -165,8 +165,8 @@ var fluid = fluid || fluid_2_0_0;
     });
 
     fluid.transforms.binaryLookup = {
-        "===": function (a, b) { return a === b; },
-        "!==": function (a, b) { return a !== b; },
+        "===": function (a, b) { return fluid.model.isSameValue(a, b); },
+        "!==": function (a, b) { return !fluid.model.isSameValue(a, b); },
         "<=": function (a, b) { return a <= b; },
         "<": function (a, b) { return a < b; },
         ">=": function (a, b) { return a >= b; },
@@ -177,7 +177,7 @@ var fluid = fluid || fluid_2_0_0;
         "/": function (a, b) { return a / b; },
         "%": function (a, b) { return a % b; },
         "&&": function (a, b) { return a && b; },
-        "||": function (a, b) { return a || b; }
+        "||": function (a, b) { return !!(a || b); } // FLUID-5845 ensure true/false is returned
     };
 
     fluid.transforms.binaryOp = function (inputs, transformSpec, transformer) {
