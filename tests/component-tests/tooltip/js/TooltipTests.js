@@ -211,7 +211,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     });
 
-    fluid.defaults("fluid.tests.tooltip.FLUID5846", {
+    fluid.defaults("fluid.tests.tooltip.FLUID5846.parent", {
         gradeNames: ["fluid.viewComponent"],
         selectors: {
             iframe: ".FLUID-5846-iframe"
@@ -222,32 +222,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         components: {
             tooltip: {
                 type: "fluid.tests.tooltip.FLUID5846",
-                container: "{that}.tooltipContainer",
-                createOnEvent: "iframeReady"
-            }
-        },
-        listeners: {
-            "onCreate.setup": "fluid.tests.tooltip.FLUID5846.setup",
-            "onCreate.test": {
-                listener: function (that) {
-                    console.log("created:", that);
-                },
-                priority: "before:setup"
-            },
-            "onDestroy.test": function (that) {
-                console.log("destroyed:", that);
+                container: "{that}.dom.iframe"
             }
         }
     });
-
-    fluid.tests.tooltip.FLUID5846.setup = function (that) {
-        var iframeWindow = that.locate("iframe")[0].contentWindow;
-        that.iframeDocument = iframeWindow.document;
-
-        that.jQuery = iframeWindow.jQuery;
-        that.tooltipContainer = that.jQuery("ul", that.iframeDocument);
-        that.events.iframeReady.fire();
-    };
 
     fluid.defaults("fluid.tests.tooltip.FLUID5846TestCases", {
         gradeNames: ["fluid.test.testCaseHolder"],
@@ -255,15 +233,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             name: "FLUID-5846 tooltip in iframe tests",
             tests: [{
                 name: "FLUID-5846 sequence",
+                // TODO: Write actual tests
                 sequence: [{
-                    event: "{FLUID5846Env tree}.events.iframeReady",
-                    listener: "jqUnit.assert",
-                    args: ["The iframeReady event should have fired"]
-                // }, {
-                //     func: "{FLUID5846Env}.tree.tooltip.open"
-                // }, {
-                //     event: "{tree}.tooltip.events.afterClose",
-                //     func: "fluid.identity"
+                    func: "{FLUID5846Env}.tree.tooltip.open"
+                }, {
+                    event: "{tree}.tooltip.events.afterClose",
+                    func: "fluid.identity"
                 }]
             }]
         }]
@@ -274,9 +249,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         markupFixture: "#ioc-fixture",
         components: {
             tree: {
-                type: "fluid.tests.tooltip.FLUID5846",
-                container: ".FLUID-5846",
-                createOnEvent: "{fixtures}.events.onTestCaseStart"
+                type: "fluid.tests.tooltip.FLUID5846.parent",
+                container: ".FLUID-5846"
             },
             fixtures: {
                 type: "fluid.tests.tooltip.FLUID5846TestCases"
