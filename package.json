@@ -5,7 +5,9 @@
   "author": "Fluid Project",
   "bugs": "http://issues.fluidproject.org/browse/FLUID",
   "homepage": "http://www.fluidproject.org/",
-  "dependencies": {},
+  "dependencies": {
+      "resolve": "1.1.6"
+  },
   "licenses": [
     {
       "type": "BSD-3-Clause",

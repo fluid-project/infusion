@@ -23,8 +23,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.defaults("fluid.prefs.dataSource", {
         gradeNames: ["fluid.component"],
         invokers: {
-            get: "fluid.prefs.dataSource.get", // nonexistent functions which will be advised by concrete implementation
-            set: "fluid.prefs.dataSource.set"
+            get: "fluid.notImplemented",
+            set: "fluid.notImplemented"
         }
     });
 

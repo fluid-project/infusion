@@ -73,10 +73,15 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         components: {
             // These two components become global
             store: {
-                type: "fluid.component",
+                type: "fluid.prefs.globalSettingsStore",
                 options: {
-                    gradeNames: ["{that}.options.storeType"],
-                    storeType: "fluid.prefs.globalSettingsStore"
+                    distributeOptions: {
+                        target: "{that fluid.prefs.store}.options.contextAwareness.strategy.checks.user",
+                        record: {
+                            contextValue: "{fluid.prefs.assembler.uie}.options.storeType",
+                            gradeNames: "{fluid.prefs.assembler.uie}.options.storeType"
+                        }
+                    }
                 }
             },
             enhancer: {
@@ -96,19 +101,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         },
         distributeOptions: [{
             source: "{that}.options.enhancer",
-            removeSource: true,
-            target: "{that uiEnhancer}.options"
+            target: "{that uiEnhancer}.options",
+            removeSource: true
         }, { // TODO: not clear that this hits anything since settings store is not a subcomponent
             source: "{that}.options.store",
-            removeSource: true,
             target: "{that fluid.prefs.store}.options"
         }, {
-            source: "{that}.options.storeType",
-            removeSource: true,
-            target: "{that > store}.options.storeType"
-        }, {
             source: "{that}.options.enhancerType",
-            removeSource: true,
             target: "{that > enhancer}.options.enhancerType"
         }]
     });
