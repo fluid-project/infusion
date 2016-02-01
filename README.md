@@ -111,6 +111,8 @@ To test a build it is advisable to serve the contents of this directory using a 
 
 Automated tests can be run by first [installing Testem](https://github.com/testem/testem/#installation) and then running ``testem ci --file tests/testem.json`` in this directory. Any browsers that Testem detects on your platform will be launched with test results returned in the [TAP](https://testanything.org/) format. You can use the ``testem launchers`` command to get a list of available browsers.
 
+A [Fedora VM](https://github.com/idi-ops/packer-fedora) can be automatically created using tools provided by the [Prosperity4All Quality Infrastructure](https://github.com/GPII/qi-development-environments/). Please ensure the [requirements](https://github.com/GPII/qi-development-environments/#requirements) have been met. The ``vagrant up`` command can then be used to provision a new VM. Typing ``grunt tests`` will run the Infusion tests using Testem in the VM and report the results in your console.
+
 ### Modules ###
 
 #### Framework Modules ####
