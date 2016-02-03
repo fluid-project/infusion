@@ -119,6 +119,8 @@ Please note that any browsers launched will need to remain in the foreground bec
 
 If installing Testem is not preferable, a [Fedora VM](https://github.com/idi-ops/packer-fedora) can be automatically created using tools provided by the [Prosperity4All Quality Infrastructure](https://github.com/GPII/qi-development-environments/). After meeting the [QI development VM requirements](https://github.com/GPII/qi-development-environments/#requirements) the ``vagrant up`` command can be used to launch a VM which will contain Testem and several browsers. Typing ``grunt tests`` will run the Infusion tests in the VM and the results will be displayed in your terminal.
 
+When this VM is first created Chrome and Firefox will be upgraded to the latest versions available in the Fedora and Google package repositories. The ``vagrant provision`` command can be used at a later time to trigger the browser upgrade and general VM provisioning mechanism.
+
 ### Modules ###
 
 #### Framework Modules ####

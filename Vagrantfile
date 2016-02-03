@@ -55,6 +55,7 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.provision "shell", inline: <<-SHELL
+    sudo dnf -y upgrade firefox google-chrome-stable
     sudo ansible-galaxy install -fr /home/vagrant/sync/provisioning/requirements.yml
     sudo PYTHONUNBUFFERED=1 ansible-playbook /home/vagrant/sync/provisioning/playbook.yml --tags="install,configure"
   SHELL
