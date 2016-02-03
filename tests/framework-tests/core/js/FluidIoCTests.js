@@ -1323,6 +1323,83 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Resolved injected component by member name", that.chaundleTileManager, resolved);
     });
 
+    /** FLUID-5818 - ginger reference from distant construct descendent of incomplete parent **/
+    
+    fluid.defaults("fluid.tests.FLUID5818root", {
+        gradeNames: "fluid.component",
+        components: {
+            child1: {
+                type: "fluid.component",
+                options: {
+                    components: {
+                        child3: {
+                            type: "fluid.component",
+                            options: {
+                                listeners: {
+                                    onCreate: {
+                                        funcName: "fluid.tests.fluid5818fetch",
+                                        args: "{child2}"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            child2: {
+                type: "fluid.component"
+            }
+            
+        }
+    });
+    
+    fluid.tests.fluid5818fetch = function (child2) {
+        jqUnit.assertValue("Should have caused fetch of child of unconstructed parent", child2);
+    };
+
+    jqUnit.test("FLUID-5818 ginger reference to child of unconstructed parent", function () {
+        jqUnit.expect(5);
+        var that = fluid.tests.FLUID5818root();
+        // White-box testing of lifecycle status
+        fluid.each([that, that.child1, that.child2, that.child1.child3], function (component) {
+            jqUnit.assertEquals("All components should have \"treeConstructed\" state", "treeConstructed", component.lifecycleStatus);
+        });
+    });
+    
+    /** FLUID-5820 - scope chain reference to injected component **/
+    
+    fluid.defaults("fluid.tests.FLUID5820root", {
+        gradeNames: "fluid.component",
+        components: {
+            child1: {
+                type: "fluid.component",
+                options: {
+                    components: {
+                        child2: {
+                            type: "fluid.component"
+                        }
+                    }
+                }
+            },
+            child3: {
+                type: "fluid.component",
+                options: {
+                    components: {
+                        child2: "{child1}.child2"
+                    },
+                    invokers: {
+                        get: "fluid.identity({child2})"
+                    }
+                }
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-5820 scope chain reference to injected component", function () {
+        var root = fluid.tests.FLUID5820root();
+        var child = root.child3.get();
+        jqUnit.assertEquals("Got resolved injected value via scope chain", root.child1.child2, child);
+    });
 
     /** FLUID-4135 - event injection and boiling test **/
 
@@ -1754,6 +1831,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertNotEquals("Child2 reinstantiated", origID, reins.child1.child2.id);
         checkValue("Changed value", reins, "headValue2", expectedPaths);
     });
+    
+    /** FLUID-5812 - corruption in clear in cases of partial clear **/
     
     fluid.defaults("fluid.tests.FLUID5812root", {
         gradeNames: "fluid.component",
@@ -2593,6 +2672,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /** FLUID-5012: IoCSS doesn't apply the gradeNames option onto the target component **/
+    
     fluid.defaults("fluid.tests.prefsEditor", {
         gradeNames: ["fluid.component"],
         components: {
@@ -3907,6 +3987,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Subcomponent with joint grades should not have been decorated after destruction of distributor", [false, false, false], hasGrade2);
     });
 
+    /** FLUID-5587 tests - namespaces for distributions **/
+
     fluid.defaults("fluid.tests.fluid5587root", {
         gradeNames: ["fluid.component"],
         distributeOptions: {
@@ -3938,12 +4020,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Options distribution should have been overwritten by namespaced grade definition", "gradeDistribution", that.subComponent.options.distributed);
     });
 
-    fluid.defaults("fluid.tests.fluid5621root", {
+    /** FLUID-5621 tests - priorities and distances for distributions **/
+
+    fluid.defaults("fluid.tests.fluid5621common", {
         gradeNames: ["fluid.component"],
-        distributeOptions: {
-            target: "{that fluid5621advised}.options.target",
-            record: "root"
-        },
         components: {
             child1: {
                 type: "fluid.component",
@@ -3980,6 +4060,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    fluid.defaults("fluid.tests.fluid5621root", {
+        gradeNames: ["fluid.tests.fluid5621common"],
+        distributeOptions: {
+            target: "{that fluid5621advised}.options.target",
+            record: "root"
+        }
+    });
+
     fluid.defaults("fluid.tests.fluid5621global", {
         gradeNames: ["fluid.component"],
         distributeOptions: {
@@ -3992,10 +4080,150 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("Test FLUID-5621 distributeOptions priority arbitration", function () {
         var advisor = fluid.tests.fluid5621global();
         var that = fluid.tests.fluid5621root();
-        var expected = ["root", "global", "middle", "closest"];
+        // all things being equal, the furthest away distribution source merges on top
+        var expected = ["closest", "global", "middle", "root"];
+        var options = that.child1.child2.child3.options.target;
+        jqUnit.assertDeepEq("Distributed options resolved in required priority order", expected, options);
+        that.destroy(); // it contains a global distribution!
+        advisor.destroy();
+    });
+    
+    /** FLUID-5824 tests - distances and namespace overriding for distributions **/
+    
+    fluid.defaults("fluid.tests.fluid5824root", {
+        gradeNames: "fluid.tests.fluid5621common",
+        distributeOptions: {
+            target: "{that fluid5621advised}.options.target",
+            record: "root",
+            namespace: "fluid5621middle"
+        }
+    });
+    
+    jqUnit.test("Test FLUID-5824 distributeOptions priority + namespace arbitration", function () {
+        var advisor = fluid.tests.fluid5621global();
+        var that = fluid.tests.fluid5824root();
+        // "root" should now displace "middle"
+        var expected = ["closest", "global", "root"];
         var options = that.child1.child2.child3.options.target;
         jqUnit.assertDeepEq("Distributed options resolved in required priority order", expected, options);
         advisor.destroy();
+    });
+    
+    /** FLUID-5835 test - uniquifying of multiple distribution blocks **/
+    
+    fluid.defaults("fluid.tests.fluid5835increase", {
+        gradeNames: "fluid.component",
+        messageBase: {
+            increaseHeader: "increase"
+        }
+    });
+    
+    fluid.defaults("fluid.tests.fluid5835panel", {
+        gradeNames: "fluid.component",
+        components: {
+            msgResolver: {
+                type: "fluid.component"
+            }
+        },
+        distributeOptions: {
+            source: "{that}.options.messageBase",
+            target: "{that > msgResolver}.options.messageBase"
+        }
+    });
+    
+    fluid.defaults("fluid.tests.fluid5835root", {
+        gradeNames: "fluid.component",
+        components: {
+            increasing: {
+                type: "fluid.tests.fluid5835panel",
+                options: {
+                    messageBase: "{fluid5835root}.nothing"
+                }
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-5835: Uniquifying multiple distribution blocks", function () {
+        var options = {};
+        fluid.set(options, "components.increasing.options.gradeNames", "fluid.tests.fluid5835increase");
+        var that = fluid.tests.fluid5835root(options);
+        jqUnit.assertEquals("Correctly distributed", "increase", that.increasing.msgResolver.options.messageBase.increaseHeader);
+    });
+    
+    /** FLUID-5813: namespaces and priority for distributeOptions early route **/
+    
+    fluid.makeComponents({
+        "fluid.tests.FLUID5813far":        "fluid.component",
+        "fluid.tests.FLUID5813near":       "fluid.component"
+    });
+    
+    fluid.defaults("fluid.tests.FLUID5813root", {
+        gradeNames: "fluid.component",
+        distributeOptions: {
+            farDistribute: {
+                target: "{that target}.type",
+                record: "fluid.tests.FLUID5813far",
+                priority: "after:nearDistribute"
+            }
+        },
+        components: {
+            child1: {
+                type: "fluid.component",
+                options: {
+                    distributeOptions: {
+                        nearDistribute: {
+                            target: "{that target}.type",
+                            record: "fluid.tests.FLUID5813near"
+                        }
+                    },
+                    components: {
+                        target: {
+                            type: "fluid.component"
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-5813 - namespaces and priority for distributeOptions early route", function () {
+        var that = fluid.tests.FLUID5813root();
+        jqUnit.assertEquals("Successfully overridden near distribution to type ", "fluid.tests.FLUID5813far", that.child1.target.typeName);
+    });
+    
+    /** FLUID-5824 variant of FLUID-5813: namespaces and priority for distributeOptions early route **/
+    
+    fluid.defaults("fluid.tests.FLUID5824earlyroot", {
+        gradeNames: "fluid.component",
+        distributeOptions: {
+            nameDistribute: {
+                target: "{that target}.type",
+                record: "fluid.tests.FLUID5813far"
+            }
+        },
+        components: {
+            child1: {
+                type: "fluid.component",
+                options: {
+                    distributeOptions: {
+                        nameDistribute: {
+                            target: "{that target}.type",
+                            record: "fluid.tests.FLUID5813near"
+                        }
+                    },
+                    components: {
+                        target: {
+                            type: "fluid.component"
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-5824 variant of FLUID-5813 - namespaces and priority for distributeOptions early route", function () {
+        var that = fluid.tests.FLUID5824earlyroot();
+        jqUnit.assertEquals("Successfully overridden near distribution to type ", "fluid.tests.FLUID5813far", that.child1.target.typeName);
     });
 
     /** Test nexus methods and global instantiator machinery **/

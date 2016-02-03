@@ -431,15 +431,15 @@ var fluid = fluid || fluid_2_0_0;
         togo[key] = transit;
     }
 
-    /** Return a list or hash of objects, transformed by one or more functions. Similar to
+    /** Return an array or hash of objects, transformed by one or more functions. Similar to
      * jQuery.map, only will accept an arbitrary list of transformation functions and also
      * works on non-arrays.
      * @param source {Array or Object} The initial container of objects to be transformed. If the source is
      * neither an array nor an object, it will be returned untransformed
      * @param fn1, fn2, etc. {Function} An arbitrary number of optional further arguments,
      * all of type Function, accepting the signature (object, index), where object is the
-     * list member to be transformed, and index is its list index. Each function will be
-     * applied in turn to each list member, which will be replaced by the return value
+     * structure member to be transformed, and index is its key or index. Each function will be
+     * applied in turn to each structure member, which will be replaced by the return value
      * from the function.
      * @return The finally transformed list, where each member has been replaced by the
      * original member acted on by the function or functions.
@@ -502,14 +502,14 @@ var fluid = fluid || fluid_2_0_0;
         };
     };
 
-    /** Scan through a list or hash of objects, terminating on the first member which
+    /** Scan through an array or hash of objects, terminating on the first member which
      * matches a predicate function.
-     * @param source {Arrayable or Object} The list or hash of objects to be searched.
+     * @param source {Arrayable or Object} The array or hash of objects to be searched.
      * @param func {Function} A predicate function, acting on a member. A predicate which
      * returns any value which is not <code>undefined</code> will terminate
      * the search. The function accepts (object, index).
      * @param deflt {Object} A value to be returned in the case no predicate function matches
-     * a list member. The default will be the natural value of <code>undefined</code>
+     * a structure member. The default will be the natural value of <code>undefined</code>
      * @return The first return value from the predicate function which is not <code>undefined</code>
      */
     fluid.find = fluid.make_find(false);
@@ -518,7 +518,7 @@ var fluid = fluid || fluid_2_0_0;
      */
     fluid.find_if = fluid.make_find(true);
 
-    /** Scan through a list of objects, "accumulating" a value over them
+    /** Scan through an array of objects, "accumulating" a value over them
      * (may be a straightforward "sum" or some other chained computation). "accumulate" is the name derived
      * from the C++ STL, other names for this algorithm are "reduce" or "fold".
      * @param list {Array} The list of objects to be accumulated over.
@@ -535,13 +535,14 @@ var fluid = fluid || fluid_2_0_0;
         return arg;
     };
 
-    /** Scan through a list or hash of objects, removing those which match a predicate. Similar to
+    /** Scan through an array or hash of objects, removing those which match a predicate. Similar to
      * jQuery.grep, only acts on the list in-place by removal, rather than by creating
      * a new list by inclusion.
-     * @param source {Array|Object} The list or hash of objects to be scanned over.
+     * @param source {Array|Object} The array or hash of objects to be scanned over. Note that in the case this is an array,
+     * the iteration will proceed from the end of the array towards the front.
      * @param fn {Function} A predicate function determining whether an element should be
      * removed. This accepts the standard signature (object, index) and returns a "truthy"
-     * result in order to determine that the supplied object should be removed from the list.
+     * result in order to determine that the supplied object should be removed from the structure.
      * @param target {Array|Object} (optional) A target object of the same type as <code>source</code>, which will
      * receive any objects removed from it.
      * @return <code>target</code>, containing the removed elements, if it was supplied, or else <code>source</code>
@@ -610,11 +611,11 @@ var fluid = fluid || fluid_2_0_0;
         });
     };
 
-    /** Accepts an object to be filtered, and a list of keys. Either all keys not present in
-     * the list are removed, or only keys present in the list are returned.
+    /** Accepts an object to be filtered, and an array of keys. Either all keys not present in
+     * the array are removed, or only keys present in the array are returned.
      * @param toFilter {Array|Object} The object to be filtered - this will be NOT modified by the operation (current implementation
      * passes through $.extend shallow algorithm)
-     * @param keys {Array of String} The list of keys to operate with
+     * @param keys {Array of String} The array of keys to operate with
      * @param exclude {boolean} If <code>true</code>, the keys listed are removed rather than included
      * @return the filtered object (the same object that was supplied as <code>toFilter</code>
      */
@@ -1748,8 +1749,8 @@ var fluid = fluid || fluid_2_0_0;
      * @param indexName {String} The name of this index record (currently ignored)
      * @param indexSpec {Object} Specification of the index to be performed - fields:
      *     gradeNames: {String/Array of String} List of grades that must be matched by this indexer
-     *     indexFunc:  {String/Function} An index function which accepts a defaults record and returns a list of keys
-     * @return A structure indexing keys to lists of matched gradenames
+     *     indexFunc:  {String/Function} An index function which accepts a defaults record and returns an array of keys
+     * @return A structure indexing keys to arrays of matched gradenames
      */
     // The expectation is that this function is extremely rarely used with respect to registration of defaults
     // in the system, so currently we do not make any attempts to cache the results. The field "indexName" is
@@ -2138,6 +2139,21 @@ var fluid = fluid || fluid_2_0_0;
     };
 
     // unsupported, NON-API function
+    fluid.dedupeDistributionNamespaces = function (mergeBlocks) { // to implement FLUID-5824
+        var byNamespace = {};
+        fluid.remove_if(mergeBlocks, function (mergeBlock) {
+            var ns = mergeBlock.namespace;
+            if (ns) {
+                if (byNamespace[ns] && byNamespace[ns] !== mergeBlock.contextThat.id) {  // source check for FLUID-5835
+                    return true;
+                } else {
+                    byNamespace[ns] = mergeBlock.contextThat.id;
+                }
+            }
+        });
+    };
+
+    // unsupported, NON-API function
     fluid.deliverOptionsStrategy = fluid.identity;
     fluid.computeComponentAccessor = fluid.identity;
     fluid.computeDynamicComponents = fluid.identity;
@@ -2226,6 +2242,7 @@ var fluid = fluid || fluid_2_0_0;
                 }
             });
             fluid.sortByPriority(mergeBlocks);
+            fluid.dedupeDistributionNamespaces(mergeBlocks);
             sourceStrategies.length = 0;
             sources.length = 0;
             fluid.each(mergeBlocks, function (block) {
@@ -2325,7 +2342,7 @@ var fluid = fluid || fluid_2_0_0;
     fluid.mergeOneDistribution = function (target, source, key) {
         var namespace = source.namespace || key || fluid.noNamespaceDistributionPrefix + fluid.allocateGuid();
         source.namespace = namespace;
-        target[namespace] = source;
+        target[namespace] = $.extend(true, {}, target[namespace], source);
     };
 
     fluid.distributeOptionsPolicy = function (target, source) {
@@ -2531,7 +2548,9 @@ var fluid = fluid || fluid_2_0_0;
                     (error.componentSource ? " which was defined in grade " + error.componentSource : "") + " needs to be overridden with a concrete implementation");
             })).join("\n");
         }
-        that.lifecycleStatus = "constructed";
+        if (that.lifecycleStatus === "constructing") {
+            that.lifecycleStatus = "constructed";
+        }
         that.events.onCreate.fire(that);
         fluid.popActivity();
         return that;
