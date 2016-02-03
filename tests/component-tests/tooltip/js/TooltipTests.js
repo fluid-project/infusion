@@ -217,12 +217,41 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             iframe: ".FLUID-5846-iframe"
         },
         events: {
-            iframeReady: null
+            iframeReady: null,
+            onReady: null,
+            afterOpen: null,
+            afterClose: null
+        },
+        members: {
+            iframeDocument: {
+                expander: {
+                    func: function (iframe) {
+                        return iframe[0].contentDocument;
+                    },
+                    args: ["{that}.dom.iframe"]
+                }
+            }
+        },
+        listeners: {
+            "onCreate.setupIframe": {
+                listener: function (that) {
+                    $(that.iframeDocument).ready(that.events.iframeReady.fire);
+                },
+                args: ["{that}"]
+            }
         },
         components: {
             tooltip: {
                 type: "fluid.tests.tooltip.FLUID5846",
-                container: "{that}.dom.iframe"
+                container: "{that}.iframeDocument",
+                createOnEvent: "iframeReady",
+                options: {
+                    listeners: {
+                        "onCreate.boil": "{parent}.events.onReady",
+                        "afterOpen.boil": "{parent}.events.afterOpen",
+                        "afterClose.boil": "{parent}.events.afterClose"
+                    }
+                }
             }
         }
     });
@@ -233,12 +262,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             name: "FLUID-5846 tooltip in iframe tests",
             tests: [{
                 name: "FLUID-5846 sequence",
-                // TODO: Write actual tests
+                expect: 1,
                 sequence: [{
-                    func: "{FLUID5846Env}.tree.tooltip.open"
+                    event: "{FLUID5846Env tree}.events.onReady",
+                    listener: "fluid.identity"
                 }, {
-                    event: "{tree}.tooltip.events.afterClose",
-                    func: "fluid.identity"
+                    func: "fluid.focus",
+                    args: ["{tree}.tooltip.dom.item1"]
+                }, {
+                    event: "{tree}.events.afterOpen",
+                    listener: "jqUnit.assert",
+                    args: ["The afterOpen event should have fired"]
                 }]
             }]
         }]
@@ -250,7 +284,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         components: {
             tree: {
                 type: "fluid.tests.tooltip.FLUID5846.parent",
-                container: ".FLUID-5846"
+                container: ".FLUID-5846",
+                createOnEvent: "{fixtures}.events.onTestCaseStart"
             },
             fixtures: {
                 type: "fluid.tests.tooltip.FLUID5846TestCases"
