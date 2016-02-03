@@ -105,6 +105,22 @@ By default, custom packages are given a name with the form _infusion-custom-<ver
 
     grunt custom --name="myPackage"    # this produces infusion-myPackage.js
 
+### How Do I Run Tests? ###
+
+There are two options available for running tests. The first option involves using browsers installed on your computer and the second uses browsers available in a VM. 
+
+#### Run Tests Using Browsers Installed On Your Computer ####
+
+Using this option requires the installation of [Testem](https://github.com/testem/testem/#installation) and then running ``testem ci --file tests/testem.json`` in this directory. Any browsers that Testem finds on your platform will be launched sequentially with each browser running the full Infusion test suite. The results will be returned in your terminal in the [TAP](https://testanything.org/) format. You can use the ``testem launchers`` command to get a list of available browsers. 
+
+Please note that any browsers launched will need to remain in the foreground because some of the tests require window focus.
+
+#### Run Tests Using Browsers Installed In a VM ####
+
+If installing Testem is not preferable, a [Fedora VM](https://github.com/idi-ops/packer-fedora) can be automatically created using tools provided by the [Prosperity4All Quality Infrastructure](https://github.com/GPII/qi-development-environments/). After meeting the [QI development VM requirements](https://github.com/GPII/qi-development-environments/#requirements) the ``vagrant up`` command can be used to launch a VM which will contain Testem and several browsers. Typing ``grunt tests`` will run the Infusion tests in the VM and the results will be displayed in your terminal.
+
+When this VM is first created Chrome and Firefox will be upgraded to the latest versions available in the Fedora and Google package repositories. The ``vagrant provision`` command can be used at a later time to trigger the browser upgrade and general VM provisioning mechanism.
+
 ### Modules ###
 
 #### Framework Modules ####
