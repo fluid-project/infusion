@@ -211,6 +211,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     });
 
+    fluid.tests.tooltip.FLUID5846.setupIframe = function (that, iframe) {
+        $(iframe).load(function () {
+            // DO NOT MOVE this property access outside this function!
+            var dokkument = iframe.contentDocument;
+            var iframeWindow = dokkument.defaultView;
+            var iframejQuery = iframeWindow.jQuery;
+            that.iframeBody = iframejQuery("body", dokkument);
+            that.events.iframeReady.fire();
+        });
+    };
+
     fluid.defaults("fluid.tests.tooltip.FLUID5846.parent", {
         gradeNames: ["fluid.viewComponent"],
         selectors: {
@@ -222,28 +233,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             afterOpen: null,
             afterClose: null
         },
-        members: {
-            iframeDocument: {
-                expander: {
-                    func: function (iframe) {
-                        return iframe[0].contentDocument;
-                    },
-                    args: ["{that}.dom.iframe"]
-                }
-            }
-        },
         listeners: {
-            "onCreate.setupIframe": {
-                listener: function (that) {
-                    $(that.iframeDocument).ready(that.events.iframeReady.fire);
-                },
-                args: ["{that}"]
-            }
+            "onCreate.setupIframe": "fluid.tests.tooltip.FLUID5846.setupIframe({that}, {that}.dom.iframe.0)"
         },
         components: {
             tooltip: {
                 type: "fluid.tests.tooltip.FLUID5846",
-                container: "{that}.iframeDocument",
+                container: "{that}.iframeBody",
                 createOnEvent: "iframeReady",
                 options: {
                     listeners: {
