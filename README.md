@@ -107,11 +107,17 @@ By default, custom packages are given a name with the form _infusion-custom-<ver
 
 ### How Do I Run Tests? ###
 
-To test a build it is advisable to serve the contents of this directory using a web server and then opening [tests/all-tests.html](https://github.com/fluid-project/infusion/blob/master/tests/all-tests.html) in a web browser. The browser will need to remain in the foreground because some of the tests require window focus. 
+There are two options available for running tests. The first option involves using browsers installed on your computer and the second uses browsers available in a VM. 
 
-Automated tests can be run by first [installing Testem](https://github.com/testem/testem/#installation) and then running ``testem ci --file tests/testem.json`` in this directory. Any browsers that Testem detects on your platform will be launched with test results returned in the [TAP](https://testanything.org/) format. You can use the ``testem launchers`` command to get a list of available browsers.
+#### Run Tests Using Browsers Installed On Your Computer ####
 
-A [Fedora VM](https://github.com/idi-ops/packer-fedora) can be automatically created using tools provided by the [Prosperity4All Quality Infrastructure](https://github.com/GPII/qi-development-environments/). Please ensure the [requirements](https://github.com/GPII/qi-development-environments/#requirements) have been met. The ``vagrant up`` command can then be used to provision a new VM. Typing ``grunt tests`` will run the Infusion tests using Testem in the VM and report the results in your console.
+Using this option requires the installation of [Testem](https://github.com/testem/testem/#installation) and then running ``testem ci --file tests/testem.json`` in this directory. Any browsers that Testem finds on your platform will be launched sequentially with each browser running the full Infusion test suite. The results will be returned in your terminal in the [TAP](https://testanything.org/) format. You can use the ``testem launchers`` command to get a list of available browsers. 
+
+Please note that any browsers launched will need to remain in the foreground because some of the tests require window focus.
+
+#### Run Tests Using Browsers Installed In a VM ####
+
+If installing Testem is not preferable, a [Fedora VM](https://github.com/idi-ops/packer-fedora) can be automatically created using tools provided by the [Prosperity4All Quality Infrastructure](https://github.com/GPII/qi-development-environments/). After meeting the [QI development VM requirements](https://github.com/GPII/qi-development-environments/#requirements) the ``vagrant up`` command can be used to launch a VM which will contain Testem and several browsers. Typing ``grunt tests`` will run the Infusion tests in the VM and the results will be displayed in your terminal.
 
 ### Modules ###
 
