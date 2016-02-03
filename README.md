@@ -36,7 +36,7 @@ The Infusion library is the cornerstone of a number of projects. You can see som
 
 ## How Do I Create an Infusion Package? ##
 
-Strictly speaking, Infusion can be used directly from source (i.e. by including each individual required file). However, for simplicity and performance reasons, you may wish to create a concatenated, minified file. The Grunt build options described below will also allow you to remove any unneeded features or libraries that you may already have in your project.
+Strictly speaking, Infusion can be used directly from source (i.e. by including each individual required file). However, for simplicity and performance reasons, you may wish to create a concatenated, minified file. Source maps for the minified file are automatically generated to make debugging easier. The Grunt build options described below will allow you to remove any unneeded features or libraries that you may already have in your project.
 
 ### Dependencies ###
 
@@ -107,11 +107,11 @@ By default, custom packages are given a name with the form _infusion-custom-<ver
 
 ### How Do I Run Tests? ###
 
-There are two options available for running tests. The first option involves using browsers installed on your computer and the second uses browsers available in a VM. 
+There are two options available for running tests. The first option involves using browsers installed on your computer and the second uses browsers available in a VM.
 
 #### Run Tests Using Browsers Installed On Your Computer ####
 
-Using this option requires the installation of [Testem](https://github.com/testem/testem/#installation) and then running ``testem ci --file tests/testem.json`` in this directory. Any browsers that Testem finds on your platform will be launched sequentially with each browser running the full Infusion test suite. The results will be returned in your terminal in the [TAP](https://testanything.org/) format. You can use the ``testem launchers`` command to get a list of available browsers. 
+Using this option requires the installation of [Testem](https://github.com/testem/testem/#installation) and then running ``testem ci --file tests/testem.json`` in this directory. Any browsers that Testem finds on your platform will be launched sequentially with each browser running the full Infusion test suite. The results will be returned in your terminal in the [TAP](https://testanything.org/) format. You can use the ``testem launchers`` command to get a list of available browsers.
 
 Please note that any browsers launched will need to remain in the foreground because some of the tests require window focus.
 
