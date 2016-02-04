@@ -448,17 +448,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     /**
-     * Returns the document to which an element belongs, or the element itself if it is already a document
-     *
-     * @param @param {jQuery||Element} element the element to return the document for
-     * @return {Document} dokkument the document in which it is to be found
-     */
-    fluid.getDocument = function (element) {
-        var node = fluid.unwrap(element);
-        return node.nodeType === 9 ? node : node.ownerDocument;
-    };
-
-    /**
      * Returns the id attribute from a jQuery or pure DOM element.
      *
      * @param {jQuery||Element} element the element to return the id attribute for
@@ -483,6 +472,18 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             element.id = simpleId;
         }
         return element.id;
+    };
+
+    /**
+     * Returns the document to which an element belongs, or the element itself if it is already a document
+     *
+     * @param {jQuery||Element} element The element to return the document for
+     * @return {Document} dokkument The document in which it is to be found
+     */
+    fluid.getDocument = function (element) {
+        var node = fluid.unwrap(element);
+        // DOCUMENT_NODE - guide to node types at https://developer.mozilla.org/en/docs/Web/API/Node/nodeType
+        return node.nodeType === 9 ? node : node.ownerDocument;
     };
 
     fluid.defaults("fluid.ariaLabeller", {
