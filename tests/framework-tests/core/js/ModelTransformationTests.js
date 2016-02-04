@@ -383,12 +383,48 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         expected: true
     }, {
+        message: "binaryOp - === (FLUID-5669)",
+        transform: {
+            type: "fluid.transforms.binaryOp",
+            left: NaN,
+            operator: "===",
+            right: NaN
+        },
+        expected: true
+    }, {
+        message: "binaryOp - === (FLUID-5669)",
+        transform: {
+            type: "fluid.transforms.binaryOp",
+            left: 0.20000000000000004,
+            operator: "===",
+            right: 0.2
+        },
+        expected: true
+    }, {
         message: "binaryOp - !==",
         transform: {
             type: "fluid.transforms.binaryOp",
             left: 100,
             operator: "!==",
             rightPath: "hundred"
+        },
+        expected: false
+    }, {
+        message: "binaryOp - !== (FLUID-5669)",
+        transform: {
+            type: "fluid.transforms.binaryOp",
+            left: NaN,
+            operator: "!==",
+            right: NaN
+        },
+        expected: false
+    }, {
+        message: "binaryOp - !== (FLUID-5669)",
+        transform: {
+            type: "fluid.transforms.binaryOp",
+            left: 0.20000000000000004,
+            operator: "!==",
+            right: 0.2
         },
         expected: false
     }, {
