@@ -590,7 +590,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
         jqUnit.module(testCase.name);
         var fixtures = fluid.makeArray(testCase.tests);
-        fluid.each(fixtures, function (fixture) {
+        fluid.each(fixtures, function (fixture, index) {
             var testType = "asyncTest";
 
             var testFunc = function () {
