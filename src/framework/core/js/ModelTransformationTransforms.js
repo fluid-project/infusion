@@ -165,8 +165,8 @@ var fluid = fluid || fluid_2_0_0;
     });
 
     fluid.transforms.binaryLookup = {
-        "===": function (a, b) { return a === b; },
-        "!==": function (a, b) { return a !== b; },
+        "===": function (a, b) { return fluid.model.isSameValue(a, b); },
+        "!==": function (a, b) { return !fluid.model.isSameValue(a, b); },
         "<=": function (a, b) { return a <= b; },
         "<": function (a, b) { return a < b; },
         ">=": function (a, b) { return a >= b; },

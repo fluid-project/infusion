@@ -43,6 +43,39 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Ancestor should be 'top1'", "top1", fluid.findAncestor($("#page-link-1"), testFunc).id);
         });
 
+
+        fluid.registerNamespace("fluid.tests.fluid5821");
+        
+        fluid.tests.fluid5821.isEmptyJquery = function(message, element, checkSelector) {
+            jqUnit.assertEquals(message + ": The element should have a length of zero...", 0, element.length);
+            var fieldsToCheck = ["context", "selectorName"];
+            if (checkSelector) {
+                fieldsToCheck.push("selector");
+            }
+            fluid.each(fieldsToCheck, function(field) {
+                jqUnit.assertNotUndefined(message + ": The field '" + field + "' should not be undefined...", element[field]);
+                jqUnit.assertNotNull(message + ": The field '" + field + "' should not be null...", element[field]);
+            });
+        };
+
+        fluid.defaults("fluid.tests.fluid5821", {
+            gradeNames: ["fluid.viewComponent"],
+            selectors: {
+                bad:  ".notGonnaFindIt",
+                emptyString: ""
+            }
+        });
+
+        jqUnit.test("FLUID-5821: DOM binder missing/empty selector tests", function () {
+            var that = fluid.tests.fluid5821("body");
+            var missingElement = that.locate("missing");
+            fluid.tests.fluid5821.isEmptyJquery("Locate a non-existent selector key", missingElement);
+            var badElement = that.locate("bad");
+            fluid.tests.fluid5821.isEmptyJquery("Locate a selector which matches nothing", badElement, true);
+            var container = that.locate("emptyString");
+            jqUnit.assertEquals("Located container with empty string ", fluid.unwrap(that.container), fluid.unwrap(container));
+        });
+
         jqUnit.test("fluid.container: bind to an selector", function () {
             jqUnit.expect(1);
             // Give it a valid id selector.
@@ -121,7 +154,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Calling on allocateSimpleId with parameter returns an ID starts with 'fluid-id-'", 0, fluidId.indexOf("fluid-id-"));
             jqUnit.assertEquals("The element ID should be set after allocateSimpleId is called with element.", fluidId, elementWithoutId.prop("id"));
         });
-
 
         // FLUID-5277: Improve the error message when an nonexistent container is provided for fluid.viewComponent and fluid.rendererComponent
         fluid.defaults("fluid.tests.fluid5277", {

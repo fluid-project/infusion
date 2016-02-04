@@ -152,19 +152,20 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             if (!thisContainer) {
                 fluid.fail("DOM binder invoked for selector " + name + " without container");
             }
-
-            if (!selector) {
-                return thisContainer;
+            if (selector === "") {
+                togo = thisContainer;
+            }
+            else if (!selector) {
+                togo = userJQuery();
+            }
+            else {
+                if (typeof (selector) === "function") {
+                    togo = userJQuery(selector.call(null, fluid.unwrap(thisContainer)));
+                } else {
+                    togo = userJQuery(selector, thisContainer);
+                }
             }
 
-            if (typeof (selector) === "function") {
-                togo = userJQuery(selector.call(null, fluid.unwrap(thisContainer)));
-            } else {
-                togo = userJQuery(selector, thisContainer);
-            }
-            if (togo.get(0) === document) {
-                togo = [];
-            }
             if (!togo.selector) {
                 togo.selector = selector;
                 togo.context = thisContainer;
