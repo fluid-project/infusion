@@ -614,6 +614,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             // might enter the queue and immediately leave it as a result of only ever issuing
             // asynchronous tests
             var oldLength = QUnit.config.queue.length;
+            if (!fixture.name) {
+                fluid.fail("Error in configuration of test fixture - required field \"name\" is missing in ", fixture, " at index " + index + " of test case ", testCase);
+            }
             jqUnit[testType](fixture.name, testFunc);
             if (QUnit.config.queue.length === oldLength) {
                 fluid.log(fluid.logLevel.IMPORTANT, "Skipped test " + fixture.name);
