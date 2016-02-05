@@ -173,8 +173,6 @@ main {
 }
 .fl-prefsEditor-separatedPanel .fl-panelBar button {
     font-family: "Myriad Pro", Helvetica, Tahoma, Verdana, sans-serif;
-    border: 0;
-    border-radius: 0;
     text-transform: uppercase;
     font-weight: bold;
 }
