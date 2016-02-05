@@ -177,7 +177,13 @@ build-themes-Enactors(contrastThemes) {
             button {
                 &:disabled {
                     border-style: dashed !important;
-                    text-decoration: line-through !important;
+                    background-image: repeating-linear-gradient(
+                        -45deg,
+                        fColor,
+                        fColor 0.2rem,
+                        bColor 0.2rem,
+                        bColor 1rem
+                    );
                 }
             }
 
