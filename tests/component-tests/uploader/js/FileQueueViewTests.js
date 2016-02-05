@@ -235,7 +235,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 q.fileProgressors[mountainTestFile.id + "_progress"].storedPercent);
 
             jqUnit.assertTrue("Row state should be changed when row is marked as completed. ",
-                                q.locate("fileQueue").find("#" + mountainTestFile.id).hasClass(q.options.styles.uploaded));
+                                q.container.find("#" + mountainTestFile.id).hasClass(q.options.styles.uploaded));
         });
 
         jqUnit.test("Show error for files", function () {
@@ -251,7 +251,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 q.locate("errorText").text());
 
             jqUnit.assertTrue("Row state should be changed when we have an error. ",
-                                q.locate("fileQueue").find("#" + mountainTestFile.id).hasClass(q.options.styles.error));
+                                q.container.find("#" + mountainTestFile.id).hasClass(q.options.styles.error));
         });
 
         jqUnit.test("Hide file progress", function () {
@@ -262,7 +262,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             q.addFile(mountainTestFile);
             q.hideFileProgress(mountainTestFile);
             jqUnit.assertFalse("the dim class should be removed on hidden. ",
-                                q.locate("fileIconBtn", q.locate("fileQueue").find("#" + mountainTestFile.id)).hasClass(q.options.styles.dim));
+                                q.locate("fileIconBtn", q.container.find("#" + mountainTestFile.id)).hasClass(q.options.styles.dim));
         });
 
         jqUnit.test("Keyboard navigation", function () {

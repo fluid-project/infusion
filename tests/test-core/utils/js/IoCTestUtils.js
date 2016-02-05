@@ -585,9 +585,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.test.processTestCase = function (testCaseState) {
         var testCase = testCaseState.testCase;
+        if (!testCase.name) {
+            fluid.fail("Error in configuration of testCase - required field \"name\" is missing in ", testCase);
+        }
         jqUnit.module(testCase.name);
         var fixtures = fluid.makeArray(testCase.tests);
-        fluid.each(fixtures, function (fixture) {
+        fluid.each(fixtures, function (fixture, index) {
             var testType = "asyncTest";
 
             var testFunc = function () {
@@ -611,6 +614,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             // might enter the queue and immediately leave it as a result of only ever issuing
             // asynchronous tests
             var oldLength = QUnit.config.queue.length;
+            if (!fixture.name) {
+                fluid.fail("Error in configuration of test fixture - required field \"name\" is missing in ", fixture, " at index " + index + " of test case ", testCase);
+            }
             jqUnit[testType](fixture.name, testFunc);
             if (QUnit.config.queue.length === oldLength) {
                 fluid.log(fluid.logLevel.IMPORTANT, "Skipped test " + fixture.name);
