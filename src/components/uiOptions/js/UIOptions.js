@@ -13,13 +13,21 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
-    // Gradename to invoke "fluid.uiOptions.prefsEditor"
-    fluid.prefs.builder({
-        gradeNames: ["fluid.prefs.auxSchema.starter"]
-    });
-
     fluid.defaults("fluid.uiOptions.prefsEditor", {
-        gradeNames: ["fluid.uiOptions.prefsEditorCommonOptions", "fluid.prefs.constructed.prefsEditor"]
+        gradeNames: ["fluid.prefs.create"],
+        build: {
+            gradeNames: ["fluid.prefs.auxSchema.starter"]
+        },
+        distributeOptions: [{
+            source: "{that}.options.terms",
+            target: "{that > prefsEditor}.options.terms"
+        }, {
+            source: "{that}.options.tocTemplate",
+            target: "{that fluid.prefs.enactor.tableOfContents}.options.tocTemplate"
+        }, {
+            source: "{that}.options.ignoreForToC",
+            target: "{that fluid.prefs.enactor.tableOfContents}.options.ignoreForToC"
+        }]
     });
 
 })(jQuery, fluid_2_0_0);
