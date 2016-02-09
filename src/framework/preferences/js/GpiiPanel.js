@@ -70,12 +70,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 args: ["{that}.options.strings.exportLabel"]
             },
             "afterRender.bindImport": {
-                "this": "{that}.dom.import",
+                "this": "{that}.dom.importButton",
                 method: "click",
                 args: ["{that}.events.onImport.fire"]
             },
             "afterRender.bindExport": {
-                "this": "{that}.dom.export",
+                "this": "{that}.dom.exportButton",
                 method: "click",
                 args: ["{that}.events.onExport.fire"]
             }

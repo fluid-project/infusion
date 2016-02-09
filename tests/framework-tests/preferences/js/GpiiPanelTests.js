@@ -80,14 +80,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     event: "{gpiiPanel gpii}.events.afterRender"
                 }, {
                     jQueryTrigger: "click",
-                    element: "{gpii}.dom.export"
+                    element: "{gpii}.dom.exportButton"
                 }, {
                     listener: "jqUnit.assertTrue",
                     args: ["The onExport event is triggered", true],
                     event: "{gpii}.events.onExport"
                 }, {
                     jQueryTrigger: "click",
-                    element: "{gpii}.dom.import"
+                    element: "{gpii}.dom.importButton"
                 }, {
                     listener: "jqUnit.assertTrue",
                     args: ["The onImport event is triggered", true],
