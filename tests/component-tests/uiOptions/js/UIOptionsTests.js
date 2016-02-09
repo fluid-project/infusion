@@ -26,16 +26,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             fluid.uiOptions.prefsEditor(".flc-prefsEditor-separatedPanel", {
                 tocTemplate: customizedTocTemplate,
-                listeners: {
+                terms: {
+                    templatePrefix: "../../../../src/framework/preferences/html",
+                    messagePrefix: "../../../../src/framework/preferences/messages"
+                },
+                prefsEditorListeners: {
                     onReady: function (that) {
                         jqUnit.assertEquals("The toc template is applied properly to the pageEnhancer", customizedTocTemplate, that.enhancer.uiEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate);
                         jqUnit.assertEquals("FLUID-5474: The toc template is applied properly to iframeEnhancer", customizedTocTemplate, that.prefsEditorLoader.iframeRenderer.iframeEnhancer.fluid_prefs_enactor_tableOfContents.options.tocTemplate);
                         jqUnit.start();
                     }
                 },
-                terms: {
-                    templatePrefix: "../../../../src/framework/preferences/html",
-                    messagePrefix: "../../../../src/framework/preferences/messages"
+                distributeOptions: {
+                    source: "{that}.options.prefsEditorListeners",
+                    target: "{that > prefsEditor}.options.listeners"
                 }
             });
         });
