@@ -13,14 +13,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /** This file contains functions which depend on the presence of a DOM document
  *  and which depend on the contents of Fluid.js **/
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
 
-    // The base grade for fluid.viewComponent and fluid.viewRelayComponent - will be removed again once the old ChangeApplier is eliminated
-    fluid.defaults("fluid.commonViewComponent", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+    fluid.defaults("fluid.viewComponent", {
+        gradeNames: ["fluid.modelComponent"],
         initFunction: "fluid.initView",
         argumentMap: {
             container: 0,
@@ -31,16 +30,6 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-    fluid.defaults("fluid.viewComponent", {
-        gradeNames: ["fluid.commonViewComponent", "fluid.standardComponent", "autoInit"]
-    });
-
-    // a version of the standard grade fluid.viewComponent that uses the new FLUID-5024 ChangeApplier and model relay system - this will be the default
-    // in Fluid 2.0 and be renamed back to fluid.viewComponent
-    fluid.defaults("fluid.viewRelayComponent", {
-        gradeNames: ["fluid.commonViewComponent", "fluid.standardRelayComponent", "autoInit"]
-    });
-
     // unsupported, NON-API function
     fluid.dumpSelector = function (selectable) {
         return typeof (selectable) === "string" ? selectable :
@@ -49,13 +38,13 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // unsupported, NON-API function
     // NOTE: this function represents a temporary strategy until we have more integrated IoC debugging.
-    // It preserves the current framework behaviour for the 1.4 release, but provides a more informative
+    // It preserves the 1.3 and previous framework behaviour for the 1.x releases, but provides a more informative
     // diagnostic - in fact, it is perfectly acceptable for a component's creator to return no value and
-    // the failure is really in assumptions in fluid.initComponent. Revisit this issue for 1.5
+    // the failure is really in assumptions in fluid.initLittleComponent. Revisit this issue for 2.0
     fluid.diagnoseFailedView = function (componentName, that, options, args) {
-        if (!that && (fluid.hasGrade(options, "fluid.viewComponent") || fluid.hasGrade(options, "fluid.viewRelayComponent"))) {
+        if (!that && fluid.hasGrade(options, "fluid.viewComponent")) {
             var container = fluid.wrap(args[1]);
-            var message1 = "Instantiation of autoInit component with type " + componentName + " failed, since ";
+            var message1 = "Instantiation of view component with type " + componentName + " failed, since ";
             if (!container) {
                 fluid.fail(message1 + " container argument is empty");
             }
@@ -99,7 +88,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {jQuery} obj the jQuery instance to unwrap into a pure DOM element
      */
     fluid.unwrap = function (obj) {
-        return obj && obj.jquery && obj.length === 1 ? obj[0] : obj;
+        return obj && obj.jquery ? obj[0] : obj;
     };
 
     /**
@@ -141,7 +130,10 @@ var fluid_2_0 = fluid_2_0 || {};
      */
     fluid.createDomBinder = function (container, selectors) {
         // don't put on a typename to avoid confusing primitive visitComponentChildren
-        var cache = {}, that = {id: fluid.allocateGuid()};
+        var that = {
+            id: fluid.allocateGuid(),
+            cache: {}
+        };
         var userJQuery = container.constructor;
 
         function cacheKey(name, thisContainer) {
@@ -149,7 +141,7 @@ var fluid_2_0 = fluid_2_0 || {};
         }
 
         function record(name, thisContainer, result) {
-            cache[cacheKey(name, thisContainer)] = result;
+            that.cache[cacheKey(name, thisContainer)] = result;
         }
 
         that.locate = function (name, localContainer) {
@@ -160,19 +152,20 @@ var fluid_2_0 = fluid_2_0 || {};
             if (!thisContainer) {
                 fluid.fail("DOM binder invoked for selector " + name + " without container");
             }
-
-            if (!selector) {
-                return thisContainer;
+            if (selector === "") {
+                togo = thisContainer;
+            }
+            else if (!selector) {
+                togo = userJQuery();
+            }
+            else {
+                if (typeof (selector) === "function") {
+                    togo = userJQuery(selector.call(null, fluid.unwrap(thisContainer)));
+                } else {
+                    togo = userJQuery(selector, thisContainer);
+                }
             }
 
-            if (typeof (selector) === "function") {
-                togo = userJQuery(selector.call(null, fluid.unwrap(thisContainer)));
-            } else {
-                togo = userJQuery(selector, thisContainer);
-            }
-            if (togo.get(0) === document) {
-                togo = [];
-            }
             if (!togo.selector) {
                 togo.selector = selector;
                 togo.context = thisContainer;
@@ -184,11 +177,11 @@ var fluid_2_0 = fluid_2_0 || {};
         that.fastLocate = function (name, localContainer) {
             var thisContainer = localContainer ? localContainer : container;
             var key = cacheKey(name, thisContainer);
-            var togo = cache[key];
+            var togo = that.cache[key];
             return togo ? togo : that.locate(name, localContainer);
         };
         that.clear = function () {
-            cache = {};
+            that.cache = {};
         };
         that.refresh = function (names, localContainer) {
             var thisContainer = localContainer ? localContainer : container;
@@ -265,6 +258,11 @@ var fluid_2_0 = fluid_2_0 || {};
      * @param {Object} that the component instance to attach the new DOM Binder to
      */
     fluid.initDomBinder = function (that, selectors) {
+        if (!that.container) {
+            fluid.fail("fluid.initDomBinder called for component with typeName " + that.typeName +
+                " without an initialised container - this has probably resulted from placing \"fluid.viewComponent\" in incorrect position in grade merging order. " +
+                " Make sure to place it to the right of any non-view grades in the gradeNames list to ensure that it overrides properly: resolved gradeNames is ", that.options.gradeNames, " for component ", that);
+        }
         that.dom = fluid.createDomBinder(that.container, selectors || that.options.selectors || {});
         that.locate = that.dom.locate;
         return that.dom;
@@ -273,9 +271,10 @@ var fluid_2_0 = fluid_2_0 || {};
     // DOM Utilities.
 
     /**
-     * Finds the nearest ancestor of the element that passes the test
+     * Finds the nearest ancestor of the element that matches a predicate
      * @param {Element} element DOM element
-     * @param {Function} test A function which takes an element as a parameter and return true or false for some test
+     * @param {Function} test A function (predicate) accepting a DOM element, returning a truthy value representing a match
+     * @return The first element parent for which the predicate returns truthy - or undefined if no parent matches
      */
     fluid.findAncestor = function (element, test) {
         element = fluid.unwrap(element);
@@ -340,12 +339,12 @@ var fluid_2_0 = fluid_2_0 || {};
             if (typeof(newValue) === "boolean") {
                 newValue = (newValue ? "true" : "false");
             }
-          // jQuery gets this partially right, but when dealing with radio button array will
-          // set all of their values to "newValue" rather than setting the checked property
-          // of the corresponding control.
+            // jQuery gets this partially right, but when dealing with radio button array will
+            // set all of their values to "newValue" rather than setting the checked property
+            // of the corresponding control.
             $.each(elements, function () {
                 this.checked = (newValue instanceof Array ?
-                    $.inArray(this.value, newValue) !== -1 : newValue === this.value);
+                    newValue.indexOf(this.value) !== -1 : newValue === this.value);
             });
         } else { // this part jQuery will not do - extracting value from <input> array
             var checked = $.map(elements, function (element) {
@@ -464,19 +463,32 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.allocateSimpleId = function (element) {
-        var simpleId = "fluid-id-" + fluid.allocateGuid();
-        if (!element || fluid.isPrimitive(element)) {
-            return simpleId;
-        }
         element = fluid.unwrap(element);
+        if (!element || fluid.isPrimitive(element)) {
+            return null;
+        }
+
         if (!element.id) {
+            var simpleId = "fluid-id-" + fluid.allocateGuid();
             element.id = simpleId;
         }
         return element.id;
     };
 
+    /**
+     * Returns the document to which an element belongs, or the element itself if it is already a document
+     *
+     * @param {jQuery||Element} element The element to return the document for
+     * @return {Document} dokkument The document in which it is to be found
+     */
+    fluid.getDocument = function (element) {
+        var node = fluid.unwrap(element);
+        // DOCUMENT_NODE - guide to node types at https://developer.mozilla.org/en/docs/Web/API/Node/nodeType
+        return node.nodeType === 9 ? node : node.ownerDocument;
+    };
+
     fluid.defaults("fluid.ariaLabeller", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         labelAttribute: "aria-label",
         liveRegionMarkup: "<div class=\"liveRegion fl-hidden-accessible\" aria-live=\"polite\"></div>",
         liveRegionId: "fluid-ariaLabeller-liveRegion",
@@ -497,7 +509,7 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         }
     });
-    
+
     fluid.ariaLabeller.update = function (that, newOptions) {
         newOptions = newOptions || that.options;
         that.container.attr(that.options.labelAttribute, newOptions.text);
@@ -661,8 +673,9 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.deadMansBlur", {
+        gradeNames: "fluid.function",
         delay: 150,
         backDelay: 100
     });
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

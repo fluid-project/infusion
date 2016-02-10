@@ -10,7 +10,6 @@
  https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
  */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -18,69 +17,99 @@
 
     fluid.registerNamespace("fluid.tests");
 
+    jqUnit.module("Deep Equivalence Tests");
+
+    jqUnit.test("Test", function () {
+        jqUnit.assertDeepEq("eq1", {
+            p1: "thing1"
+        }, {
+            p1: "thing1"
+        });
+        jqUnit.assertDeepNeq("eq2", {
+            p1: "thing1"
+        }, {
+            p2: "thing1"
+        });
+        jqUnit.assertDeepNeq("eq3", {
+            p1: "thing1"
+        }, null);
+        jqUnit.assertDeepNeq("eq4", null, {
+            p1: "thing1"
+        });
+        jqUnit.assertDeepEq("eq5", null, null);
+        jqUnit.assertDeepEq("eq6", undefined, undefined);
+        jqUnit.assertDeepNeq("eq7", {
+            p1: "thing1",
+            p2: "thing"
+        }, {
+            p1: "thing1"
+        });
+        jqUnit.assertDeepNeq("eq8", {
+            p1: "thing1"
+        }, {
+            p1: "thing1",
+            p2: "thing"
+        });
+        jqUnit.assertDeepEq("eq9", [1, 2], [1, 2]);
+        jqUnit.assertDeepNeq("eq10", [1, 2], [1, 2, 3]);
+        jqUnit.assertDeepNeq("eq11", [1, [2, 3, 4]], [1, [2, 3, 4, 5]]);
+        jqUnit.assertDeepEq("eq12", [1, 2, 3, 4, 5], [1, 2, 3, 4, 5]);
+    });
+
+    jqUnit.module("messageResolver");
+
+    jqUnit.test("messageResolver", function () {
+        var bundlea = {
+            key1: "value1a",
+            key2: "value2a"
+        };
+        var bundleb = {
+            key1: "value1b",
+            key3: "value3b"
+        };
+        var resolverParent = fluid.messageResolver({messageBase: bundlea});
+        var resolver = fluid.messageResolver({messageBase: bundleb, parents: [resolverParent]});
+
+        var requiredLook = {
+            key1: "value1b",
+            key2: "value2a",
+            key3: "value3b",
+            key4: undefined
+        };
+        fluid.each(requiredLook, function (value, key) {
+            var looked = resolver.lookup([key]);
+            jqUnit.assertEquals("Resolve key " + key, value, looked ? looked.template : looked);
+        });
+        jqUnit.assertEquals("Local fallback",  bundleb.key1, resolver.resolve(["key2", "key1"]));
+        jqUnit.assertEquals("Global fallback", bundlea.key2, resolver.resolve(["key4", "key2"]));
+    });
+
+    jqUnit.module("Selector Parser Test");
+
+    jqUnit.test("Test", function () {
+        var tree = fluid.parseSelector("  div span#id  > .class", fluid.simpleCSSMatcher);
+        jqUnit.assertEquals("treeLength", 3, tree.length);
+        var expected = [{
+            predList: [{
+                tag: "div"
+            }]
+        }, {
+            predList: [{
+                tag: "span"
+            }, {
+                id: "id"
+            }],
+            child: true
+        }, {
+            predList: [{
+                clazz: "class"
+            }]
+        }];
+        jqUnit.assertDeepEq("Parsed compound CSS selector", expected, tree);
+    });
+
+
     fluid.tests.testRenderer = function () {
-        jqUnit.module("Deep Equivalence Tests");
-
-        jqUnit.test("Test", function () {
-            jqUnit.assertDeepEq("eq1", {
-                p1: "thing1"
-            }, {
-                p1: "thing1"
-            });
-            jqUnit.assertDeepNeq("eq2", {
-                p1: "thing1"
-            }, {
-                p2: "thing1"
-            });
-            jqUnit.assertDeepNeq("eq3", {
-                p1: "thing1"
-            }, null);
-            jqUnit.assertDeepNeq("eq4", null, {
-                p1: "thing1"
-            });
-            jqUnit.assertDeepEq("eq5", null, null);
-            jqUnit.assertDeepEq("eq6", undefined, undefined);
-            jqUnit.assertDeepNeq("eq7", {
-                p1: "thing1",
-                p2: "thing"
-            }, {
-                p1: "thing1"
-            });
-            jqUnit.assertDeepNeq("eq8", {
-                p1: "thing1"
-            }, {
-                p1: "thing1",
-                p2: "thing"
-            });
-            jqUnit.assertDeepEq("eq9", [1, 2], [1, 2]);
-            jqUnit.assertDeepNeq("eq10", [1, 2], [1, 2, 3]);
-            jqUnit.assertDeepNeq("eq11", [1, [2, 3, 4]], [1, [2, 3, 4, 5]]);
-            jqUnit.assertDeepEq("eq12", [1, 2, 3, 4, 5], [1, 2, 3, 4, 5]);
-        });
-
-        jqUnit.module("Selector Parser Test");
-
-        jqUnit.test("Test", function () {
-            var tree = fluid.parseSelector("  div span#id  > .class", fluid.simpleCSSMatcher);
-            jqUnit.assertEquals("treeLength", 3, tree.length);
-            var expected = [{
-                predList: [{
-                    tag: "div"
-                }]
-            }, {
-                predList: [{
-                    tag: "span"
-                }, {
-                    id: "id"
-                }],
-                child: true
-            }, {
-                predList: [{
-                    clazz: "class"
-                }]
-            }];
-            jqUnit.assertDeepEq("Parsed compound CSS selector", expected, tree);
-        });
 
         jqUnit.module("Parser Tests");
 
@@ -244,11 +273,11 @@
         });
 
         jqUnit.test("Decorator and degradation test", function () {
-            var indexClick = null;
-            var columnClick = null;
-            var clickBack = function (index, column) {
-                indexClick = index;
-                columnClick = column;
+            var indexChange = null;
+            var columnChange = null;
+            var changeBack = function (index, column) {
+                indexChange = index;
+                columnChange = column;
             };
             var contentTree = fluid.transform(enc_table, function (row, i) {
                 return {
@@ -258,7 +287,7 @@
                         value: row.species,
                         decorators: {
                             jQuery: ["click", function () {
-                                clickBack(i, "species");
+                                changeBack(i, "species");
                             }],
                             identify: "species-" + i,
                             addClass: "CATTclick1 CATTclick2",
@@ -271,7 +300,7 @@
                             type: "$",
                             func: "change",
                             args: function () {
-                                clickBack(i, "score");
+                                changeBack(i, "score");
                             }
                         }, {
                             type: "identify",
@@ -293,28 +322,13 @@
             jqUnit.assertTrue("Decorated by addClass", el.hasClass("CATTclick1"));
             jqUnit.assertFalse("Undecorated by removeClass", el.hasClass("CATTclick3"));
             el.click();
-            jqUnit.assertEquals("Decorated by click", 7, indexClick);
-            clickBack(null, null);
+            jqUnit.assertEquals("Decorated by click", 7, indexChange);
+            changeBack(null, null);
             var input = fluid.jById(idMap["score-7"]);
-            jqUnit.assertEquals("Input text", 1.00, input.val());
-            input.val(100);
-            input.change();
-            jqUnit.assertEquals("change-decorate-identify", 7, indexClick);
+            jqUnit.assertEquals("Input text", "1", input.val());
+            fluid.changeElementValue(input, 100);
+            jqUnit.assertEquals("change-decorate-identify", 7, indexChange);
         });
-
-        //   rendertests.test("Invalid trees", function () {
-        //     var node = $(".RSF-77-test");
-        //     var error;
-        //     try {
-        //      fluid.selfRender(node, {
-        //         "row:": ["Label 1", "Label 2"]
-        //         });
-        //     }
-        //     catch (e) {
-        //      error = e;
-        //     }
-        //     jqUnit.assertNotUndefined("Invalid tree")
-        //   });
 
         var messageBase = {
             message1: "A simple message",
@@ -680,8 +694,7 @@
             var label = $("label", node);
             jqUnit.assertEquals("Label for select should match the id of the select itself",
                 label.attr("for"), select.attr("id"));
-            select.val("Enchiridion");
-            select.change();
+            fluid.changeElementValue(select, "Enchiridion");
             if (!opts) {
                 fluid.applyBoundChange(select);
             }
@@ -749,8 +762,7 @@
             }, opts));
             multipleSelectionRenderTests(node);
             var select = $("select", node);
-            select.val(["Exomologesis", "Apocatastasis"]);
-            select.change();
+            fluid.changeElementValue(select, ["Exomologesis", "Apocatastasis"]);
             if (!opts) {
                 fluid.applyBoundChange(select);
             }
@@ -971,8 +983,7 @@
                 type: "text",
                 value: "value"
             }, text);
-            text.val("New value");
-            text.change();
+            fluid.changeElementValue(text, "New value");
             jqUnit.assertEquals("Model updated", "New value", model.string);
 
             var checkbox = $(".checkbox");
@@ -1298,13 +1309,17 @@
 
         jqUnit.test("Id uniquification and autobind test (FLUID-3656)", function () {
             var node = $(".FLUID-3656-test");
-            var model1 = {
-                value1: "Cat",
-                value2: "Dog"
+            var holder1 = {
+                model: {
+                    value1: "Cat",
+                    value2: "Dog"
+                }
             };
-            var model2 = {
-                value1: "Chat",
-                value2: "Chien"
+            var holder2 = {
+                model: {
+                    value1: "Chat",
+                    value2: "Chien"
+                }
             };
             var tree = {
                 children: [{
@@ -1322,41 +1337,42 @@
                 id: "input-2",
                 selector: ".my-input-2"
             }];
-            var applier1 = fluid.makeChangeApplier(model1);
-            var applier2 = fluid.makeChangeApplier(model2);
+            var applier1 = fluid.makeHolderChangeApplier(holder1);
+            var applier2 = fluid.makeHolderChangeApplier(holder2);
             fluid.selfRender($(".first-block", node), fluid.copy(tree), {
                 autoBind: true,
-                model: model1,
+                model: holder1.model,
                 applier: applier1,
                 cutpoints: cutpoints
             });
             fluid.selfRender($(".second-block", node), fluid.copy(tree), {
                 autoBind: true,
-                model: model2,
+                model: holder2.model,
                 applier: applier2,
                 cutpoints: cutpoints
             });
-            var orig1 = fluid.copy(model1);
+            var orig1 = fluid.copy(holder1.model);
             var CATT2 = $(".my-input-1", $(".second-block", node));
-            CATT2.val("CHATT");
-            CATT2.change();
-            jqUnit.assertDeepEq("Unchanged model 1", model1, orig1);
-            jqUnit.assertDeepEq("Changed model 2", model2, {
+            fluid.changeElementValue(CATT2, "CHATT");
+            jqUnit.assertDeepEq("Unchanged model 1", orig1, holder1.model);
+            jqUnit.assertDeepEq("Changed model 2", {
                 value1: "CHATT",
                 value2: "Chien"
-            });
+            }, holder2.model);
         });
 
         jqUnit.test("Id uniquification and autobind test II (fossils for multipass rendering) (FLUID-3755)", function () {
-            var model = {
-                value1: "value1",
-                value2: "value2"
+            var holder = {
+                model: {
+                    value1: "value1",
+                    value2: "value2"
+                }
             };
-            var applier = fluid.makeChangeApplier(model);
+            var applier = fluid.makeHolderChangeApplier(model);
             var fossils = {};
             var renderOptions = {
                 autoBind: true,
-                model: model,
+                model: holder.model,
                 applier: applier,
                 fossils: fossils
             };
@@ -1474,7 +1490,7 @@
 
             jqUnit.assertEquals("Number of Inputs", selectionModel.values.length, $("input", ".nestedDataBinding").length);
             jqUnit.assertEquals("Number of Labels", selectionModel.values.length, $("label", ".nestedDataBinding").length);
-            jqUnit.assertEquals("Selected Value", selectionModel.selection, $("input:checked", ".nestedDataBinding").attr("value"));
+            jqUnit.assertEquals("Selected Value", selectionModel.selection[0], $("input:checked", ".nestedDataBinding").attr("value"));
         });
 
 
@@ -1530,13 +1546,12 @@
             var callbackCalled = 0;
             function callback() {
                 ++callbackCalled;
+                fluid.failureEvent.removeListener("jqUnit"); // restore the original jqUnit test failing listener
             }
-            try {
-                fluid.pushSoftFailure(true);
-                fluid.fetchResources(resourceSpec2, callback);
-            } finally {
-                fluid.pushSoftFailure(-1);
-            }
+            jqUnit.expect(2);
+            fluid.failureEvent.addListener(fluid.identity, "jqUnit"); // temporarily displace jqUnit's test failing listener
+            fluid.fetchResources(resourceSpec2, callback);
+
             jqUnit.assertEquals("Two calls to destructive callback", 2, destructiveCalls);
             jqUnit.assertEquals("Call to overall callback", 1, callbackCalled);
         });

@@ -13,7 +13,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
  */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -882,7 +881,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertTrue("Keyboard instruction has fl-inlineEdit-editModeInstruction style", editModeInstruction.hasClass(styles.editModeInstruction));
 
                 var display = fluid.inlineEdit.setupDisplayText(editor.viewEl, editor.options.styles.text);
-                jqUnit.assertEquals("Display text is removed from the tab order", -1, display.attr("tabindex"));
+                jqUnit.assertEquals("Display text is removed from the tab order", -1, +display.attr("tabindex"));
 
                 var button = fluid.inlineEdit.setupTextEditButton(editor);
                 jqUnit.assertTrue("textEditButton has button role", "button", button.attr("role"));
@@ -922,7 +921,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
 
             fluid.defaults("fluid.componentWithInlineEdit", {
-                gradeNames: ["fluid.viewComponent", "autoInit"],
+                gradeNames: ["fluid.viewComponent"],
                 selectors: {
                     inlineEdit: ".flc-ioc-inlineEditable"
                 },

@@ -11,7 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -25,16 +24,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.test("PathUtil", function () {
         var path = "path1.path2.path3";
-        jqUnit.assertEquals("getHeadPath", "path1", fluid.pathUtil.getHeadPath(path));
-        jqUnit.assertEquals("getTailPath", "path3", fluid.pathUtil.getTailPath(path));
-        jqUnit.assertEquals("getToTailPath", "path1.path2", fluid.pathUtil.getToTailPath(path));
-        jqUnit.assertEquals("getFromHeadPath", "path2.path3", fluid.pathUtil.getFromHeadPath(path));
 
-        jqUnit.assertDeepEq("Match empty", [], fluid.pathUtil.matchPath("", "thing"));
-        jqUnit.assertDeepEq("Match *", ["thing"], fluid.pathUtil.matchPath("*", "thing"));
-        jqUnit.assertDeepEq("Match thing", ["thing"], fluid.pathUtil.matchPath("thing", "thing"));
-        jqUnit.assertDeepEq("Match thing", ["thing"], fluid.pathUtil.matchPath("thing", "thing.otherThing"));
-        jqUnit.assertDeepEq("Match thing.*", ["thing", "otherThing"], fluid.pathUtil.matchPath("thing.*", "thing.otherThing"));
+        // TODO: Only these will survive as the unescaped, high-performance utilities used in IoC
+        jqUnit.assertEquals("getTailPath", "path3", fluid.model.getTailPath(path));
+        jqUnit.assertEquals("getToTailPath", "path1.path2", fluid.model.getToTailPath(path));
     });
 
 
@@ -145,77 +138,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Queried resolved and strategised value", 4, resolved2);
     });
 
-
-    function testPreservingMerge(name, preserve, defaultModel) {
-        var defaults = { lala: "blalalha"};
-        if (preserve) {
-            defaults.mergePolicy = {model: "preserve"};
-        }
-        if (defaultModel !== undefined) {
-            defaults.model = defaultModel;
-        }
-        fluid.defaults(name, defaults);
-        fluid.setGlobalValue(name, function (options) {
-            return fluid.initLittleComponent(name, options);
-        });
-        var model = { foo: "foo" };
-
-        var comp = fluid.invokeGlobalFunction(name, [{model: model}]);
-
-        var presString = name + (preserve ? " - preserve" : "");
-
-        jqUnit.assertEquals("Identical model reference " + presString,
-            preserve, comp.options.model === model);
-        var mergedModel = $.extend(true, {}, model, defaultModel);
-
-        jqUnit.assertDeepEq("Merged model contents " + presString, mergedModel, comp.options.model);
-    }
-
-
-    jqUnit.test("Merge model semantics - preserve", function () {
-        testPreservingMerge("undef1", true);
-        testPreservingMerge("undef2", false);
-         // defaultModel of "null" tests FLUID-3768
-        testPreservingMerge("null1", true, null);
-        testPreservingMerge("null2", false, null);
-        // populated defaultModel tests FLUID-3824
-        var defaultModel = { roo: "roo"};
-        testPreservingMerge("model1", true, defaultModel);
-        testPreservingMerge("model2", false, defaultModel);
-    });
-
-    // NB - this implementation is in Fluid.js, but test is grouped with the one above
-    jqUnit.test("FLUID 4585 test: mergeModel with nested model", function () {
-        var defaults = {
-            twoLevels: {
-                one: 1,
-                two: 2,
-                three: 3
-            }
-        };
-        var options = {
-            twoLevels: {
-                two: "two"
-            }
-        };
-        var expected = {
-            twoLevels: {
-                one: 1,
-                two: "two",
-                three: 3
-            }
-        };
-        var result = fluid.model.mergeModel(defaults, options);
-        jqUnit.assertDeepEq("Model should be properly merged", expected, result);
-    });
-
     jqUnit.test("FLUID-3729 test: application into nothing", function () {
         var model = {};
         var holder = {model: model};
 
-        var applyOldChange = function (request) {
-            fluid.model.applyChangeRequest(model, request);
-        };
         var applyHolderChange = function (request) {
             request.segs = fluid.model.parseEL(request.path);
             fluid.model.applyHolderChangeRequest(holder, request);
@@ -229,7 +155,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             applyFunc({type: "ADD", path: "path1.nonexistent2", value: "value2"});
             jqUnit.assertEquals("Application 1 level into nothing", "value2", model.path1.nonexistent2);
         }
-        applyTests(applyOldChange);
         applyTests(applyHolderChange);
     });
 
@@ -275,6 +200,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         message: "Delete into nothing",
         model: {a: 1, b: 2},
         request: {type: "DELETE", path: "c.c"},
+        expected: {a: 1, b: 2},
+        changes: 0,
+        changeMap: {}
+    }, {
+        message: "Delete deeper into nothing",
+        model: {a: 1, b: 2},
+        request: {type: "DELETE", path: "c.c.c"},
         expected: {a: 1, b: 2},
         changes: 0,
         changeMap: {}
@@ -353,31 +285,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("ApplyChangeRequest - ADD, DELETE and MERGE", function () {
-        var model = {a: 1, b: 2};
-        var model2 = {c: 3};
-
-        var testModel1 = fluid.copy(model);
-        fluid.model.applyChangeRequest(testModel1, {type: "ADD", path: "", value: fluid.copy(model2)});
-        jqUnit.assertDeepEq("Add at root === clear + add", {c: 3}, testModel1);
-
-        var testModel2 = fluid.copy(model);
-        fluid.model.applyChangeRequest(testModel2, {type: "DELETE", path: ""});
-        jqUnit.assertDeepEq("Delete root", {}, testModel2);
-
-        var testModel3 = fluid.copy(model);
-        testModel3.c = fluid.copy(model);
-        var testModel5 = fluid.copy(testModel3);
-        fluid.model.applyChangeRequest(testModel3, {type: "MERGE", path: "c", value: fluid.copy(model2)});
-        jqUnit.assertDeepEq("Merge at trunk", {a: 1, b: 2, c: {a: 1, b: 2, c: 3}}, testModel3);
-
-        var testModel4 = fluid.copy(model);
-        fluid.model.applyChangeRequest(testModel4, {type: "MERGE", path: "c", value: fluid.copy(model2)});
-        jqUnit.assertDeepEq("Merge into nothing", {a: 1, b: 2, c: {c: 3}}, testModel4);
-
-        fluid.model.applyChangeRequest(testModel5, {type: "ADD", path: "c", value: fluid.copy(model2)});
-        jqUnit.assertDeepEq("Add at trunk", {a: 1, b: 2, c: {c: 3}}, testModel5);
-    });
 
     fluid.tests.testExternalTrans = function (applierMaker, name) {
         jqUnit.test("Transactional ChangeApplier - external transactions: " + name, function () {
@@ -396,140 +303,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
-    fluid.tests.testExternalTrans(fluid.makeHolderChangeApplier, "old applier");
-    fluid.tests.testExternalTrans(fluid.makeNewChangeApplier, "new applier");
-
-    function makeTransTest(trans, thin) {
-        jqUnit.test("Transactional ChangeApplier - Transactional: " +
-            trans + " Thin: " + thin, function () {
-                var model = {
-                    outerProperty: false,
-                    transWorld: {
-                        innerPath1: 3,
-                        innerPath2: 4
-                    }
-                };
-
-                var modelChangedCheck = [];
-                var pathsCheck = [];
-                var guard1check = 0;
-
-                function modelChanged(newModel, oldModel, changes, paths) {
-                    if (trans) {
-                        jqUnit.assertEquals("Changes after guard", 1, guard1check);
-                    } else {
-                        jqUnit.assertEquals("Changes wrt guard", modelChangedCheck.length, guard1check);
-                    }
-                    modelChangedCheck = modelChangedCheck.concat(changes);
-                    pathsCheck.push(paths);
-                }
-
-                function transGuard1(innerModel, changeRequest, applier) {
-                    if (changeRequest.path !== "transWorld.innerPath2") { // guard infinite recursion
-                        applier.requestChange("transWorld.innerPath2", 5);
-                    }
-                    else {
-                        return;
-                    }
-                    jqUnit.assertEquals("Change wrt transaction", trans && !thin ? 4 : 5, model.transWorld.innerPath2);
-                    jqUnit.assertEquals("ModelChanged count", trans ? 0 : 1, modelChangedCheck.length);
-                    guard1check++;
-                }
-                var applier = fluid.makeChangeApplier(model, {thin: thin});
-                applier.guards.addListener((trans ? "!" : "") + "transWorld", transGuard1);
-                applier.modelChanged.addListener("*", modelChanged);
-                applier.requestChange("transWorld.innerPath1", 4);
-                jqUnit.assertEquals("Guard 1 executed", 1, guard1check);
-                jqUnit.assertDeepEq("Final model state", {innerPath1: 4, innerPath2: 5}, model.transWorld);
-                jqUnit.assertEquals("2 changes received", 2, modelChangedCheck.length);
-                var expectedPaths = trans? [["transWorld"]] : [["transWorld"], ["transWorld"]];
-                jqUnit.assertDeepEq("Paths changed " + (trans ? "1 time" : "2 times"), expectedPaths, pathsCheck);
-            }
-        );
-    }
-
-    makeTransTest(true, false); // Old ChangeApplier no longer supports nontransactionality
-    makeTransTest(true, true);
-
-    jqUnit.test("Culling Applier", function () {
-        var model = {
-            outerProperty: false,
-            transWorld: {
-                innerPath1: 3,
-                innerPath2: 4
-            }
-        };
-        function nullingGuard(newModel, changeRequest) {
-            if (changeRequest.path === "transWorld.innerPath2") {
-                changeRequest.value = 4;
-            }
-        }
-        var lowExecuted = false;
-        function lowPriorityGuard() {
-            lowExecuted = true;
-        }
-        var modelChangedCheck = false;
-        function modelChanged() {
-            modelChangedCheck = true;
-        }
-        var postGuardCheck = false;
-        function postGuard() {
-            postGuardCheck = true;
-        }
-        var applier = fluid.makeChangeApplier(model, {cullUnchanged: true});
-        applier.guards.addListener({path: "transWorld", transactional: true, priority: 20}, lowPriorityGuard);
-        applier.guards.addListener({path: "transWorld", transactional: true, priority: 10}, nullingGuard);
-        applier.postGuards.addListener({path: "transWorld", transactional: true}, postGuard);
-        applier.modelChanged.addListener("*", modelChanged);
-
-        applier.requestChange("transWorld.innerPath2", 5);
-        jqUnit.assertEquals("Final model state", 4, model.transWorld.innerPath2, 4);
-        jqUnit.assertFalse("PostGuard culled", postGuardCheck);
-        jqUnit.assertFalse("Model changed listener culled", modelChangedCheck);
-        jqUnit.assertFalse("Low priority guard culled", lowExecuted);
-    });
-
-    jqUnit.test("PostGuards", function () {
-        var model = {
-            outerProperty: false,
-            transWorld: {
-                innerPath1: 3,
-                innerPath2: 4
-            }
-        };
-        function midGuard(newModel, changeRequest, applier) {
-            if (changeRequest.path === "transWorld.innerPath2") {
-                changeRequest.value = 6;
-            }
-            // Don't cause infinite recursion by firing a change that we react to
-            if (changeRequest.path !== "transWorld.innerPath1") {
-                applier.requestChange("transWorld.innerPath1", 4);
-            }
-        }
-        var postGuardCheck = 0;
-        function postGuard(newModel, changes) {
-            jqUnit.assertEquals("PostGuard count", 0, postGuardCheck);
-            jqUnit.assertDeepEq("PostGuard model state", newModel, {outerProperty: false, transWorld: {innerPath1: 4, innerPath2: 6}});
-            jqUnit.assertEquals("PostGuard change count", 2, changes.length);
-            ++postGuardCheck;
-            return false;
-        }
-        var modelChangedCheck = false;
-        function modelChanged() {
-            modelChangedCheck = true;
-        }
-        var initModel = fluid.copy(model);
-        var applier = fluid.makeChangeApplier(model);
-        applier.guards.addListener({path: "transWorld", transactional: true}, midGuard);
-        applier.postGuards.addListener({path: "transWorld", transactional: true}, postGuard);
-        applier.modelChanged.addListener("*", modelChanged);
-
-        applier.requestChange("transWorld.innerPath2", 5);
-
-        jqUnit.assertDeepEq("Final model state", initModel, model);
-        jqUnit.assertFalse("Model unchanged ", modelChangedCheck);
-    });
-
+    fluid.tests.testExternalTrans(fluid.makeHolderChangeApplier, "new applier");
 
 
     jqUnit.test("FLUID-4633 test - source tracking", function() {
@@ -537,7 +311,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             property1: 1,
             property2: 2
         };
-        var applier = fluid.makeChangeApplier(model);
+        var applier = fluid.makeHolderChangeApplier({model: model});
 
         var indirect = fluid.makeEventFirer();
         applier.modelChanged.addListener("property1", function() {
@@ -552,104 +326,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         fluid.fireSourcedChange(applier, "property1", 2, "originalSource");
         jqUnit.assertFalse("Recurrence censored from originalSource", listenerFired);
-        fluid.fireSourcedChange(applier, "property1", 3, "alternateSource");
-        jqUnit.assertTrue("Recurrence propagated from alternate source", listenerFired);
+        // TODO: new source tracking is not accumulative - we may support this again in future
+        // fluid.fireSourcedChange(applier, "property1", 3, "alternateSource");
+        // jqUnit.assertTrue("Recurrence propagated from alternate source", listenerFired);
 
 
-    });
-
-    jqUnit.test("ChangeApplier", function () {
-        var outerDAR = null;
-        function checkingGuard(model, dar) {
-            outerDAR = dar;
-        }
-        var outerNewModel, outerOldModel, outerdar;
-        function observingListener(newModel, oldModel, dar) {
-            outerNewModel = newModel;
-            outerOldModel = oldModel;
-            outerdar = dar; // immer dar!
-        }
-        var model = {
-            outerProperty: false,
-            innerProperty: {
-                innerPath1: 3,
-                innerPath2: "Owneriet"
-            },
-            arrayInnerProperty: [{a: "a", b: "b"}, {a: "A", b: "B"}]
-        };
-        var applier = fluid.makeChangeApplier(model);
-        applier.guards.addListener("outerProperty", checkingGuard, "firstListener");
-        applier.modelChanged.addListener("*", observingListener);
-        applier.requestChange("outerProperty", true);
-
-        jqUnit.assertLeftHand("Guard triggered", {
-            path: "outerProperty",
-            value: true,
-            type: "ADD"
-        }, outerDAR);
-        jqUnit.assertEquals("Value applied", true, model.outerProperty);
-
-        jqUnit.assertEquals("Outer listener old", false, outerOldModel.outerProperty);
-        jqUnit.assertEquals("Outer listener new", true, outerNewModel.outerProperty);
-
-        function preventingGuard() {
-            return false;
-        }
-
-        applier.guards.addListener("innerProperty.innerPath2", preventingGuard, "preventingGuard");
-        outerDAR = null;
-        applier.requestChange("innerProperty.innerPath1", 5);
-        jqUnit.assertNull("No collateral guard", outerDAR);
-
-        var outerDAR2 = null;
-        function checkingGuard2(model, dar) {
-            outerDAR2 = dar;
-        }
-
-        applier.guards.addListener("innerProperty.*", checkingGuard2);
-        applier.requestChange("innerProperty.innerPath1", 6);
-        jqUnit.assertLeftHand("Guard2 triggered", {
-            path: "innerProperty.innerPath1",
-            value: 6,
-            type: "ADD"
-        }, outerDAR2);
-
-        outerNewModel = null;
-        applier.requestChange("innerProperty.innerPath2", "Disowneriet");
-        jqUnit.assertEquals("Unchanged through veto", "Owneriet", model.innerProperty.innerPath2);
-        jqUnit.assertNull("Model changed not fired through veto", outerNewModel);
-
-        applier.guards.removeListener("preventingGuard");
-        applier.requestChange("innerProperty.innerPath2", "Disowneriet");
-        jqUnit.assertEquals("Changed since veto removed", "Disowneriet", model.innerProperty.innerPath2);
-        jqUnit.assertEquals("Model changed through firing", "Disowneriet", outerNewModel.innerProperty.innerPath2);
-
-        applier.fireChangeRequest({path: "innerProperty.innerPath2", type: "DELETE"});
-        jqUnit.assertEquals("Removed via deletion", undefined, model.innerProperty.innerpath2);
-
-        var guardPath = "arrayInnerProperty.0.a";
-
-        function checkingGuard3(model, dar) {
-            var excess = fluid.pathUtil.getExcessPath(dar.path, guardPath);
-            var value = fluid.get(dar.value, excess);
-            return value.length === 1;
-        }
-        // Tests FLUID-4869
-        outerNewModel = null;
-        applier.modelChanged.removeListener(observingListener);
-
-        // Tests for FLUID-4739
-        applier.guards.addListener(guardPath, checkingGuard3, "checkingGuard3");
-        applier.requestChange("arrayInnerProperty.0.a", "new a");
-        jqUnit.assertEquals("The model should have been guarded and not changed", "a", model.arrayInnerProperty[0].a);
-        applier.requestChange("arrayInnerProperty.0.b", "new b");
-        jqUnit.assertEquals("The model should have updated", "new b", model.arrayInnerProperty[0].b);
-        var newArray = [{a: "a", b: "b", c: "c"}, {a: "A", b: "B", c: "C"}];
-        applier.requestChange("arrayInnerProperty", newArray);
-        jqUnit.assertDeepEq("The model should have updated", newArray, model.arrayInnerProperty);
-        applier.guards.removeListener("checkingGuard3");
-
-        jqUnit.assertEquals("Stopped observing model", null, outerNewModel);
     });
 
     jqUnit.test("FLUID-4625 test: Over-broad changes", function() {
@@ -662,68 +343,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 lineSpace: 1.0
             }
         };
-        var applier = fluid.makeChangeApplier(model);
+        var applier = fluid.makeHolderChangeApplier({model: model});
         var notified = false;
-        applier.modelChanged.addListener("selections.linespace", function() {
+        applier.modelChanged.addListener("selections.lineSpace", function() {
             notified = true;
         });
         applier.requestChange("selections", {lineSpace: 1.5});
         jqUnit.assertTrue("Over-broad change triggers listener", notified);
-    });
-
-
-    fluid.tests.initLifecycle = function (that) {
-        that.initted = true;
-    };
-
-    fluid.defaults("fluid.tests.lifecycleTest", {
-        gradeNames: ["fluid.modelComponent", "autoInit"],
-        preInitFunction: "fluid.tests.initLifecycle"
-    });
-
-    jqUnit.test("Proper merging of lifecycle functions", function () {
-        var model = { value: 3 };
-        var that = fluid.tests.lifecycleTest({model: model});
-        jqUnit.assertEquals("Grade preInit function fired", model, that.model);
-        jqUnit.assertEquals("Custom preInit function fired", true, that.initted);
-    });
-
-    fluid.tests.initLifecycle1 = function (that) {
-        that.initted = 1;
-    };
-
-    fluid.tests.initLifecycle2 = function (that) {
-        that.initted = 2;
-    };
-
-    fluid.tests.initLifecycleM = function (that) {
-        that.initMultiple = that.initMultiple || 0;
-        that.initMultiple++;
-    };
-
-    fluid.defaults("fluid.tests.lifecycleTest2", {
-        gradeNames: ["fluid.modelComponent", "autoInit"],
-        preInitFunction: [{
-            namespace: "preInitModelComponent",
-            listener: "fluid.identity"
-        }, {
-            priority: 2,
-            listener: "fluid.tests.initLifecycle2"
-        }, {
-            priority: 1,
-            listener: "fluid.tests.initLifecycle1"
-        }],
-        postInitFunction: [ // This tests FLUID-4779
-            "fluid.tests.initLifecycleM",
-            "fluid.tests.initLifecycleM"
-        ]
-    });
-
-    jqUnit.test("Detailed interaction of priority and namespacing with lifecycle functions", function () {
-        var model = { value: 3 };
-        var that = fluid.tests.lifecycleTest2({model: model});
-        jqUnit.assertEquals("Priority order respected", 1, that.initted);
-        jqUnit.assertEquals("Two global name listeners added", 2, that.initMultiple);
     });
 
 
@@ -734,7 +360,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.changeRecorder", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         members: {
             fireRecord: []
         },
@@ -744,7 +370,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.fluid4258head", {
-        gradeNames: ["fluid.standardComponent", "fluid.tests.changeRecorder", "autoInit"],
+        gradeNames: ["fluid.modelComponent", "fluid.tests.changeRecorder"],
         model: {
             thing1: {
                 nest1: 2,
@@ -768,11 +394,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         components: {
             child: {
-                type: "fluid.standardComponent",
+                type: "fluid.modelComponent",
                 createOnEvent: "createEvent",
                 options: {
                     modelListeners: {
                         "{fluid4258head}.model.thing1.nest2": {
+                            excludeSource: "init",
                             func: "{fluid4258head}.record",
                             args: ["{change}.path", "{change}.value", "{change}.oldValue"]
                         }
@@ -787,11 +414,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         modelListeners: {
-            "thing1.nest1": "{that}.record({change}.path, {change}.value, {change}.oldValue)",
+            "thing1.nest1": {
+                func: "{that}.record",
+                args: ["{change}.path", "{change}.value", "{change}.oldValue"],
+                excludeSource: "init"
+            },
             "thing2": {
                 func: "{that}.record",
                 args: "{change}.value",
-                guardSource: "internalSource"
+                excludeSource: "init"
+              //  guardSource: "internalSource" // TODO: sources may be supported in future
             }
         }
     });
@@ -815,7 +447,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.changer", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         invokers: {
             change: {
                 changePath: "{arguments}.0",
@@ -823,9 +455,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
+    fluid.setLogging(true);
 
     fluid.defaults("fluid.tests.fluid3674head", {
-        gradeNames: ["fluid.standardRelayComponent", "fluid.tests.changer", "fluid.tests.changeRecorder", "autoInit"],
+        gradeNames: ["fluid.modelComponent", "fluid.tests.changer", "fluid.tests.changeRecorder"],
         model: { // test forward reference as well as transactional initialisation
             innerModel: "{child}.model.nested1"
         },
@@ -836,7 +469,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             child: {
                 type: "fluid.tests.changer",
                 options: {
-                    gradeNames: ["fluid.standardRelayComponent"],
+                    gradeNames: ["fluid.modelComponent"],
                     model: {
                         nested1: {
                             nested2: "thing"
@@ -848,6 +481,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("FLUID-3674 basic model relay test", function () {
+        fluid.begun = true;
         var that = fluid.tests.fluid3674head();
         var expected = {
             innerModel: {
@@ -886,7 +520,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.fluid3674eventHead", {
-        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent"],
         model: {
             outerModel: "outerValue"
         },
@@ -895,14 +529,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         components: {
             child: {
-                type: "fluid.standardRelayComponent",
+                type: "fluid.modelComponent",
                 createOnEvent: "createEvent",
                 options: {
                     model: "{fluid3674eventHead}.model.outerModel"
                 }
             },
             child2: {
-                type: "fluid.standardRelayComponent",
+                type: "fluid.modelComponent",
                 options: {
                     modelListeners: {
                         "{fluid3674eventHead}.model": "fluid.tests.fluid3674childRecord({that}, {change}.value)"
@@ -938,12 +572,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.fluid5024head", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         components: {
             child1: {
-                type: "fluid.standardRelayComponent",
+                type: "fluid.modelComponent",
                 options: {
-                    gradeNames: ["fluid.tests.allChangeRecorder", "autoInit"],
+                    gradeNames: ["fluid.tests.allChangeRecorder"],
                     model: {
                         celsius: 22
                     },
@@ -959,9 +593,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             child2: {
-                type: "fluid.standardRelayComponent",
+                type: "fluid.modelComponent",
                 options: { // no options: model will be initialised via relay
-                    gradeNames: ["fluid.tests.allChangeRecorder", "autoInit"]
+                    gradeNames: ["fluid.tests.allChangeRecorder"]
                 }
             }
         }
@@ -1040,22 +674,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         fluid.tests.assertTransactionsConcluded(that);
     });
-    
+
     /** FLUID-5361 listener order notification test **/
-    
+
     fluid.tests.priorityRecorder = function (that, priority) {
         that.priorityLog.push(priority);
     };
-    
+
     fluid.tests.recordAndDestroy = function (head, priority, that) {
         head.priorityLog.push(priority);
         if (head.destroyNow) {
             that.applier.modelChanged.removeListener("priority2");
         }
     };
-    
+
     fluid.defaults("fluid.tests.fluid5361head", {
-        gradeNames: ["fluid.tests.fluid5024head", "autoInit"],
+        gradeNames: ["fluid.tests.fluid5024head"],
         members: {
             priorityLog: []
         },
@@ -1111,9 +745,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-    
+
     fluid.defaults("fluid.tests.fluid5361destroyingHead", {
-        gradeNames: ["fluid.tests.fluid5361head", "autoInit"],
+        gradeNames: ["fluid.tests.fluid5361head"],
         invokers: {
             recordPriority: "fluid.tests.recordAndDestroy"
         }
@@ -1125,7 +759,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.child1.applier.change("celsius", 25);
         var expected = [2, 2, 1, 1, "last", "last"];
         jqUnit.assertDeepEq("Model notifications globally sorted by priority", expected, that.priorityLog);
-        
+
         var that2 = fluid.tests.fluid5361destroyingHead();
         that2.priorityLog = [];
         that2.destroyNow = true;
@@ -1142,12 +776,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * double relay and longer "transform" form of relay specification */
 
     fluid.defaults("fluid.tests.fluid5024cycleHead", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         components: {
             child1: {
-                type: "fluid.standardRelayComponent",
+                type: "fluid.modelComponent",
                 options : {
-                    gradeNames: ["fluid.tests.allChangeRecorder", "autoInit"],
+                    gradeNames: ["fluid.tests.allChangeRecorder"],
                     model: {
                         forwardValue: "{child2}.model.child2Area",
                         backwardValue: 97
@@ -1155,9 +789,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             child2: {
-                type: "fluid.standardRelayComponent",
+                type: "fluid.modelComponent",
                 options : {
-                    gradeNames: ["fluid.tests.allChangeRecorder", "autoInit"],
+                    gradeNames: ["fluid.tests.allChangeRecorder"],
                     model: {
                     },
                     modelRelay: {
@@ -1173,9 +807,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             child3: {
-                type: "fluid.standardRelayComponent",
+                type: "fluid.modelComponent",
                 options : {
-                    gradeNames: ["fluid.tests.allChangeRecorder", "autoInit"],
+                    gradeNames: ["fluid.tests.allChangeRecorder"],
                     model: {
                         lastArea: 35,
                         backwardRef: "{child1}.model.backwardValue"
@@ -1240,14 +874,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]);
     });
 
-    jqUnit.test("FLUID-5151: One single listener function hooked up for multiple model paths only have the last call registered succesfully", function () {
+    jqUnit.test("FLUID-5151: One single listener function hooked up for multiple model paths only has the last call registered succesfully", function () {
         var holder = {
             model:  {
                 path1: null,
                 path2: null
             }
         };
-        var applier = fluid.makeNewChangeApplier(holder);
+        var applier = fluid.makeHolderChangeApplier(holder);
 
         var currentPath = null;
         var listenerToFire = function (newModel, oldModel, path) {
@@ -1259,7 +893,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         var triggerChangeRequest = function (fireOn) {
             applier.requestChange(fireOn, fireOn);
-            jqUnit.assertEquals("The listener registered for model path " + fireOn + " has been fired", fireOn, currentPath);
+            jqUnit.assertDeepEq("The listener registered for model path " + fireOn + " has been fired", [fireOn], currentPath);
         };
 
         triggerChangeRequest("path1");
@@ -1278,7 +912,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.fluid5045root", {
-        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent"],
         model: {
             pageIndex: 0,
             pageSize: 10,
@@ -1312,15 +946,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var expected = {pageIndex: 0, pageSize: 10, totalRange: 75, pageCount: 8};
         jqUnit.assertDeepEq("pageCount computed correctly on init", expected, that.model);
         fluid.tests.assertTransactionsConcluded(that);
-        
+
         that.applier.change("pageIndex", -1);
         jqUnit.assertDeepEq("pageIndex clamped to 0", expected, that.model);
         fluid.tests.assertTransactionsConcluded(that);
-        
+
         that.applier.change("pageIndex", -1);
         jqUnit.assertDeepEq("pageIndex clamped to 0 second time", expected, that.model);
         fluid.tests.assertTransactionsConcluded(that);
-        
+
         that.applier.change("pageIndex", 8);
         var expected2 = {pageIndex: 7, pageSize: 10, totalRange: 75, pageCount: 8};
         jqUnit.assertDeepEq("pageIndex clamped to pageCount - 1", expected2, that.model);
@@ -1335,7 +969,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-5397: Mouse droppings within relay documents in complex cases **/
 
     fluid.defaults("fluid.tests.fluid5397root", {
-        gradeNames: ["fluid.tests.fluid5045root", "autoInit"],
+        gradeNames: ["fluid.tests.fluid5045root"],
         model: {
             pageSize: 20,
             totalRange: 164
@@ -1358,43 +992,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Model allows last page", expected, that.model);
     });
 
-     // FLUID-3674: Old-fashioned model sharing between components is still possible (remove this test when old grades are removed)
-    var fluid3674Model = {
-        key: "value"
-    };
-
-    fluid.defaults("fluid.tests.fluid3674root", {
-        gradeNames: ["fluid.modelComponent", "autoInit"],
-        model: fluid3674Model,
-        components: {
-            sub: {
-                type: "fluid.modelComponent",
-                options: {
-                    model: "{fluid3674root}.model",
-                    members: {
-                        applier: "{fluid3674root}.applier"
-                    }
-                }
-            }
-        }
-    });
-
-    jqUnit.asyncTest("FLUID-3674: The direct model sharing btw components is maintained", function () {
-        var newModelValue = "another value",
-            that = fluid.tests.fluid3674root();
-
-        jqUnit.assertDeepEq("The subcomponent shares the same model", fluid3674Model, that.sub.model);
-        that.applier.modelChanged.addListener("key", function (newModel) {
-            jqUnit.assertEquals("The change request from the subcomponent triggers the model listener registered in the parent component", newModelValue, fluid.get(newModel, "key"));
-            jqUnit.start();
-        });
-        that.sub.applier.requestChange("key", newModelValue);
-    });
-
-
     // FLUID-5270: The model is not transformed when the "modelRelay" option is defined in the target component
     fluid.defaults("fluid.tests.fluid5270OnSource", {
-        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent"],
         model: {
             celsius: 22
         },
@@ -1409,19 +1009,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         components: {
             sub: {
-                type: "fluid.standardRelayComponent"
+                type: "fluid.modelComponent"
             }
         }
     });
 
     fluid.defaults("fluid.tests.fluid5270OnTarget", {
-        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent"],
         model: {
             celsius: 22
         },
         components: {
             sub: {
-                type: "fluid.standardRelayComponent",
+                type: "fluid.modelComponent",
                 options: {
                     modelRelay: {
                         source: "{fluid5270OnTarget}.model.celsius",
@@ -1448,7 +1048,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     // FLUID-5293: The model relay using "fluid.transforms.arrayToSetMembership" isn't transformed properly
     fluid.defaults("fluid.tests.fluid5293", {
-        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent"],
         model: {
             accessibilityHazard: []
         },
@@ -1465,7 +1065,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }],
         components: {
             sub: {
-                type: "fluid.standardRelayComponent",
+                type: "fluid.modelComponent",
                 options: {
                     model: {
                         accessibilityHazard: "{fluid5293}.model.accessibilityHazard",
@@ -1516,13 +1116,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /** FLUID-5358 - Use of arbitrary functions and fluid.transforms.identity **/
-    
+
     fluid.tests.fluid5358Multiply = function (a) {
         return a * 2;
     };
-    
+
     fluid.defaults("fluid.tests.fluid5358root", {
-        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent"],
         model: {
             baseValue: 1,
             identityValue: 2
@@ -1543,11 +1143,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         ],
         components: {
             sub: {
-                type: "fluid.standardRelayComponent"
+                type: "fluid.modelComponent"
             }
         }
     });
-    
+
     jqUnit.test("FLUID-5358: Use of arbitrary functions for relay and fluid.transforms.identity", function () {
         var that = fluid.tests.fluid5358root();
         jqUnit.assertEquals("Transformed using free multiply", 2, that.sub.model.multipliedValue);
@@ -1561,7 +1161,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // FLUID-5368: Using "fluid.transforms.arrayToSetMembership" with any other transforms in modelRelay option causes the source array value to be missing
 
     fluid.defaults("fluid.tests.fluid5368root", {
-        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent"],
         model: {
             forArrayToSetMembership: ["value1"],
             forIdentity: ["value2"]
@@ -1599,11 +1199,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.assertDeepEq("The input model is merged with the default model", expectedModel, that.model);
     });
-    
+
     // FLUID-5371: Model relay directive "forward" and "backward"
-    
+
     fluid.defaults("fluid.tests.fluid5371root", {
-        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent"],
         model: {
             forwardOnly: 3,
             forwardOnlyTarget: 3.5,
@@ -1634,32 +1234,32 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }]
     });
-    
+
     jqUnit.test("FLUID-5371: Model relay directives \"forward\" and \"backward\"", function () {
         var that = fluid.tests.fluid5371root();
         jqUnit.assertEquals("Forward init relay with backward never", 3, that.model.forwardOnlyTarget);
         that.applier.change("forwardOnly", 4);
         jqUnit.assertEquals("Forward live relay with backward never", 4, that.model.forwardOnlyTarget);
-        
+        jqUnit.assertEquals("No init relay with liveOnly forward", undefined, that.model.liveOnlyTarget);
+
         that.applier.change("forwardOnlyTarget", 4.5);
         jqUnit.assert("No backward live relay with backward never", 4, that.model.forwardOnly);
 
         jqUnit.assertEquals("Backward init relay with forward never", 5, that.model.backwardOnlySource);
         that.applier.change("backwardOnly", 6);
         jqUnit.assert("Backward live relay with forward never", 6, that.model.backwardOnlySource);
-        
+
         that.applier.change("backwardOnlySource", 6.5);
         jqUnit.assert("No forward live relay with forward never", 6, that.model.backwardOnly);
-        
-        jqUnit.assertEquals("No init relay with liveOnly forward", undefined, that.model.liveOnlyTarget);
+
         that.applier.change("liveOnly", 8);
         jqUnit.assertEquals("Forward relay with liveOnly forward", 8, that.model.liveOnlyTarget);
         that.applier.change("liveOnlyTarget", 9);
         jqUnit.assertEquals("Backward relay with liveOnly forward", 9, that.model.liveOnly);
     });
-    
+
     // FLUID-5489: Avoid all cases of notifying listeners of changes which are null from their point of view
-    
+
     fluid.tests.fluid5489diff = [ {
         modela: undefined,
         modelb: "thing",
@@ -1770,7 +1370,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     }
     ];
-    
+
     jqUnit.test("FLUID-5489: Test fluid.model.diff", function () {
         fluid.each(fluid.tests.fluid5489diff, function (fixture, index) {
             var options = {
@@ -1787,9 +1387,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.recordFire = function (that, value) {
         that.fireRecord.push(value);
     };
-    
+
     fluid.defaults("fluid.tests.fluid5489root", {
-        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent"],
         model: {},
         members: {
             fireRecord: []
@@ -1802,16 +1402,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    
+
     jqUnit.test("FLUID-5489: Do not notify null changes for listeners to overbroad", function () {
         var that = fluid.tests.fluid5489root();
         jqUnit.assertDeepEq("No firings for no change of member during init", [], that.fireRecord);
     });
-    
+
     // FLUID-5490: New source guarding for changes
-    
+
     fluid.defaults("fluid.tests.fluid5490root", {
-        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent"],
         model: {},
         members: {
             fireRecord: []
@@ -1845,14 +1445,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         components: {
             child: {
-                type: "fluid.standardRelayComponent",
+                type: "fluid.modelComponent",
                 options: {
                     model: "{fluid5490root}.model"
                 }
             }
         }
     });
-    
+
     jqUnit.test("FLUID-5490: Inclusion and exclusion of sources for model listeners", function () {
         var that = fluid.tests.fluid5490root();
         var expected = ["includeInit", "excludeRelay", "excludeLocal"];
@@ -1866,11 +1466,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.child.applier.change("innerPath2", "value2");
         jqUnit.assertDeepEq("Correct firing record after relay change", expected3, that.fireRecord);
     });
-    
+
     // FLUID-5479: Compound values for valueMapper transform - example from metadata editor
-    
+
     fluid.defaults("fluid.tests.fluid5479root", {
-        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent"],
         model: {
             accessibilityHazard: []
         },
@@ -1913,7 +1513,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }]
     });
-    
+
     jqUnit.test("FLUID-5479: Model relay with compound valueMapper values - metadata editor example", function () {
         var that = fluid.tests.fluid5479root();
         var expectedInitial = {
@@ -1932,15 +1532,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.applier.change("flashingRender", "unknown");
         jqUnit.assertDeepEq("Propagated unknown to upstream model", [], that.model.accessibilityHazard);
     });
-    
+
     fluid.defaults("fluid.tests.fluid5504root", {
-        gradeNames: ["fluid.standardRelayComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent"],
         listeners: {
             onCreate: "{sub}.subInvoker"
         },
         components: {
             sub: {
-                type: "fluid.standardRelayComponent",
+                type: "fluid.modelComponent",
                 options: {
                     model: {
                         root: "{fluid5504root}.model"
@@ -1959,17 +1559,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.applier.change("value", 42);
         jqUnit.assertEquals("Relay must be established", 42, that.sub.model.root.value);
     });
-    
+
     // FLUID-5592: Error received using model relay to destroyed component
-    
+
     fluid.tests.fluid5592destruct = function (that, value) {
         if (value === 2) { // do not destroy on init relay, but only on manual change
             that.child.destroy();
         }
     };
-    
+
     fluid.defaults("fluid.tests.fluid5592root", {
-        gradeNames: ["fluid.modelRelayComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent"],
         model: {
             value: 1
         },
@@ -1986,10 +1586,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-    
+
 
     fluid.defaults("fluid.tests.fluid5592child", {
-        gradeNames: ["fluid.modelRelayComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent"],
         model: {
             renderValue: "{fluid5592root}.model.value"
         },
@@ -2004,7 +1604,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("FLUID-5592: Error received using model relay to destroyed component", function () {
         var that = fluid.tests.fluid5592root();
         jqUnit.assertValue("The initial model relay has set the target model value", 1, that.child.renderValue);
-        
+
         // manual registration of changeListeners exercises notification via different pathways that avoid fluid.resolveModelListener
         that.child.applier.modelChanged.addListener("renderValue", function () {
             jqUnit.fail("This listener should not be notified if the component is destroyed");
@@ -2013,11 +1613,53 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.applier.change("value", 2);
         jqUnit.assertNoValue("The change request has destroyed the child component", that.child);
     });
-    
+
+    fluid.defaults("fluid.tests.fluid5632root1", {
+        gradeNames: ["fluid.modelComponent"],
+        model: {
+            value1: NaN,
+            value2: "{that}.model.value1"
+        }
+    });
+
+    fluid.tests.isNaN = function (value) { // replicate for Number.isNaN which is not supported on IE or Safari
+        return typeof(value) === "number" && value !== value;
+    };
+
+    jqUnit.test("FLUID-5632: Model value of NaN causes infinite recursion", function () {
+        var that = fluid.tests.fluid5632root1();
+        jqUnit.assertTrue("Model successfully initialised with NaN value", fluid.tests.isNaN(that.model.value1));
+        jqUnit.assertTrue("Model successfully relays NaN value", fluid.tests.isNaN(that.model.value2));
+    });
+
+    fluid.defaults("fluid.tests.fluid5632root2", {
+        gradeNames: ["fluid.modelComponent"],
+        model: {
+            value: 1
+        },
+        modelRelay: {
+            source: "value",
+            target: "value",
+            singleTransform: {
+                type: "fluid.tests.badRelayRule"
+            }
+        }
+    });
+
+    fluid.tests.badRelayRule = function (value) { // A bad relay rule which causes a non-stabilising model
+        return value + 1;
+    };
+
+    jqUnit.test("FLUID-5632: Bad relay rule triggers framework diagnostic", function () {
+        jqUnit.expectFrameworkDiagnostic("Diagnostic from infinite relay rule", function () {
+            fluid.tests.fluid5632root2();
+        }, "settling");
+    });
+
     // FLUID-5659: Saturating relay counts through back-to-back transactions
-    
+
     fluid.defaults("fluid.tests.fluid5659relay", {
-        gradeNames: ["fluid.modelRelayComponent", "autoInit"],
+        gradeNames: "fluid.modelComponent",
         model: {
             lang: "none"
         },
@@ -2048,9 +1690,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }]
     });
-    
+
     fluid.defaults("fluid.tests.fluid5659root", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             relayComponent: {
                 type: "fluid.tests.fluid5659relay"
@@ -2066,7 +1708,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-    
+
     fluid.tests.fluid5659modules = {
         name: "FLUID-5659 repeated relay test",
         tests: {
@@ -2075,7 +1717,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             sequence: []
         }
     };
-    
+
     fluid.tests.fluid5659verify = function (model, langs, lang) {
         var index = langs.indexOf(lang) + 1;
         var firstLangSelected = index === 1;
@@ -2088,7 +1730,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         jqUnit.assertDeepEq("Expected model for selected language " + lang, expected, model);
     };
-    
+
     fluid.tests.fluid5659sequence = [{
         func: "{fluid5659relay}.applier.change",
         args: ["lang", "fr"]
@@ -2098,7 +1740,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         spec: {path: "lang", priority: "last"},
         changeEvent: "{fluid5659relay}.applier.modelChanged"
     }];
-    
+
     fluid.tests.fluid5659source = function (langs) {
         var togo = fluid.copy(fluid.tests.fluid5659modules);
         togo.tests.expect = langs.length;
@@ -2111,7 +1753,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         togo.tests.sequence = fluid.flatten(sequence);
         return togo;
     };
-    
+
     fluid.test.runTests(["fluid.tests.fluid5659root"]);
-    
+
 })(jQuery);

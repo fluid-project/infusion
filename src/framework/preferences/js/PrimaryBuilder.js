@@ -9,7 +9,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -43,7 +43,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.primaryBuilder", {
-        gradeNames: ["fluid.littleComponent", "autoInit", "{that}.buildPrimary"],
+        gradeNames: ["fluid.component", "{that}.buildPrimary"],
         // An index of all schema grades registered with the framework.
         schemaIndex: {
             expander: {
@@ -87,7 +87,7 @@ var fluid_2_0 = fluid_2_0 || {};
         var suppliedPrimaryGradeName = "fluid.prefs.schemas.suppliedPrimary" + fluid.allocateGuid();
         // Create a grade that has a primary schema passed as an option inclosed.
         fluid.defaults(suppliedPrimaryGradeName, {
-            gradeNames: ["autoInit", "fluid.prefs.schemas"],
+            gradeNames: ["fluid.prefs.schemas"],
             schema: fluid.filterKeys(primarySchema.properties || primarySchema,
                 typeFilter, false)
         });
@@ -120,10 +120,10 @@ var fluid_2_0 = fluid_2_0 || {};
      * Base primary schema grade
      *******************************************************************************/
     fluid.defaults("fluid.prefs.schemas", {
-        gradeNames: ["autoInit", "fluid.littleComponent"],
+        gradeNames: ["fluid.component"],
         mergePolicy: {
             schema: fluid.prefs.schemas.merge
         }
     });
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

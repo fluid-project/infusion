@@ -12,7 +12,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -601,7 +601,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.inlineEdit.standardAccessor", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         members: {
             nodeName: {
                 expander: {
@@ -623,7 +623,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.inlineEdit.standardDisplayView", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         invokers: {
             refreshView: {
                 funcName: "fluid.inlineEdit.standardDisplayView.refreshView",
@@ -651,7 +651,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.inlineEdit.standardEditView", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         invokers: {
             refreshView: {
                 funcName: "fluid.inlineEdit.standardEditView.refreshView",
@@ -712,7 +712,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.inlineEdit", {
-        gradeNames: ["fluid.viewComponent", "fluid.undoable", "autoInit"],
+        gradeNames: ["fluid.undoable", "fluid.viewComponent"],
         mergePolicy: {
             "strings.defaultViewText": "defaultViewText"
         },
@@ -748,8 +748,7 @@ var fluid_2_0 = fluid_2_0 || {};
               */
             isEditing: {
                 funcName: "fluid.identity",
-                args: "{that}.isEditingState",
-                dynamic: true
+                args: "{that}.isEditingState"
             },
             /** Finishes editing, switching back to view mode. */
             finish: {
@@ -949,11 +948,11 @@ var fluid_2_0 = fluid_2_0 || {};
         });
     };
 
-    fluid.defaults("fluid.inlineEdits", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+    fluid.defaults("fluid.inlineEditsComponent", {
+        gradeNames: ["fluid.viewComponent"],
         distributeOptions: {
             source: "{that}.options",
-            exclusions: ["members.inlineEdits", "selectors.editables"],
+            exclusions: ["members.inlineEdits", "selectors.editables", "events"],
             removeSource: true,
             target: "{that > fluid.inlineEdit}.options"
         },
@@ -965,9 +964,14 @@ var fluid_2_0 = fluid_2_0 || {};
                 }
             }
         },
-        returnedPath: "inlineEdits", // courtesy for manual creation
         selectors: {
             editables: ".flc-inlineEditable"
         }
     });
-})(jQuery, fluid_2_0);
+
+    fluid.inlineEdits = function (container, options) {
+        var that = fluid.inlineEditsComponent(container, options);
+        return that.inlineEdits;
+    };
+
+})(jQuery, fluid_2_0_0);

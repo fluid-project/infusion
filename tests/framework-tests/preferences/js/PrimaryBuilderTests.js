@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -18,7 +17,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests");
 
     fluid.defaults("fluid.tests.sampleSchemaGrade", {
-        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        gradeNames: ["fluid.prefs.schemas"],
         schema: {
             "type": "object",
             "properties": {
@@ -34,7 +33,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.customTextSize", {
-        gradeNames: ["autoInit", "fluid.littleComponent"],
+        gradeNames: ["fluid.component"],
         schema: {
             "type": "object",
             "properties": {
@@ -50,16 +49,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.contributedSchema", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             schema: {
-                type: "fluid.littleComponent",
+                type: "fluid.component",
                 options: {
                     gradeNames: ["fluid.prefs.schemas.textSize", "fluid.prefs.schemas.lineSpace"]
                 }
             },
             properSchema: {
-                type: "fluid.littleComponent",
+                type: "fluid.component",
                 options: {
                     gradeNames: ["fluid.tests.sampleSchemaGrade"]
                 }
@@ -71,7 +70,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             primaryBuilderSchema: {
-                type: "fluid.littleComponent",
+                type: "fluid.component",
                 options: {
                     gradeNames: ["{primaryBuilder}.buildPrimary"]
                 }
@@ -94,7 +93,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             primaryBuilderWithSuppliedPrimarySchemaSchema: {
-                type: "fluid.littleComponent",
+                type: "fluid.component",
                 options: {
                     gradeNames: ["{primaryBuilderWithSuppliedPrimarySchema}.buildPrimary"]
                 }
@@ -106,7 +105,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.schemaTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "Contributed Schema",
             tests: [{

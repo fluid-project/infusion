@@ -1,5 +1,5 @@
 /*
-Copyright 2011 OCAD University
+Copyright 2011-2015 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -10,7 +10,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 
@@ -25,14 +24,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.prefs.expectedSeparatedPanel = [
         "templateLoader",
         "messageLoader",
-        "pageEnhancer",
         "slidingPanel",
         "iframeRenderer",
         "iframeRenderer.iframeEnhancer"
     ];
 
     fluid.defaults("fluid.tests.separatedPanelIntegration", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         listeners: {
             onDestroy: "fluid.tests.clearStore"
         },
@@ -69,9 +67,40 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    fluid.tests.fetchGlobalSettingsStore = function () {
+        return fluid.queryIoCSelector(fluid.rootComponent, "fluid.prefs.globalSettingsStore", true)[0].settingsStore;
+    };
+
     // Cleanup listener that restores a global settings store model to default.
     fluid.tests.clearStore = function () {
-        fluid.staticEnvironment.settingsStore.set();
+        var settingsStore = fluid.tests.fetchGlobalSettingsStore();
+        settingsStore.set();
+    };
+
+    fluid.tests.getPageEnhancer = function (that) {
+        var pageEnhancer = fluid.resolveContext("pageEnhancer", that);
+        return pageEnhancer.uiEnhancer;
+    };
+
+    fluid.tests.assertAriaForButton = function (button, buttonName, controlsId) {
+        jqUnit.assertEquals(buttonName + " button has the button role", "button", button.attr("role"));
+        jqUnit.assertEquals(buttonName + " button has correct aria-controls", controlsId, button.attr("aria-controls"));
+    };
+
+    fluid.tests.assertAriaForToggleButton = function (button, buttonName, controlsId, state) {
+        fluid.tests.assertAriaForButton(button, buttonName, controlsId);
+        jqUnit.assertEquals(buttonName + " button has correct aria-pressed", state, button.attr("aria-pressed"));
+    };
+
+    fluid.tests.assertAria = function (that, state) {
+        var toggleButton = that.locate("toggleButton");
+        var panel = that.locate("panel");
+        var panelId = panel.attr("id");
+
+        fluid.tests.assertAriaForToggleButton(toggleButton, "Hide/show", panelId, state);
+        jqUnit.assertEquals("Panel has the group role", "group", panel.attr("role"));
+        jqUnit.assertEquals("Panel has the correct aria-label", that.options.strings.panelLabel, panel.attr("aria-label"));
+        jqUnit.assertEquals("Panel has correct aria-expanded", state, panel.attr("aria-expanded"));
     };
 
     fluid.tests.testSeparatedPanel = function (separatedPanel) {
@@ -82,48 +111,35 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Reset button is invisible", false, $(".flc-prefsEditor-reset").is(":visible"));
         fluid.tests.prefs.assertPresent(prefsEditor, fluid.tests.prefs.expectedComponents["fluid.prefs.separatedPanel"]);
 
-        var toggleButtonAriaPressedState = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-pressed");
-        var toggleButtonAriaLabelState = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-label");
-        var ariaExpandedState = separatedPanel.locate("iframe").attr("aria-expanded");
-
-        jqUnit.assertEquals("Show/hide button has correct aria-pressed", "false", toggleButtonAriaPressedState);
-        jqUnit.assertEquals("Show/hide button has correct aria-label", "Show Display Preferences", toggleButtonAriaLabelState);
-        jqUnit.assertEquals("Panel has correct aria-expanded", "false", ariaExpandedState);
+        fluid.tests.assertAria(separatedPanel.slidingPanel, "false");
+        fluid.tests.assertAriaForButton(separatedPanel.locate("reset"), "Reset", separatedPanel.slidingPanel.panelId);
     };
 
     fluid.tests.afterShowFunc1 = function (separatedPanel) {
         return function () {
             fluid.tests.prefs.applierRequestChanges(separatedPanel.prefsEditor, fluid.tests.prefs.bwSkin);
-            fluid.tests.prefs.checkModelSelections("enhancerModel from bwSkin", fluid.tests.prefs.bwSkin, separatedPanel.pageEnhancer.model);
+            var enhancerModel = fluid.tests.getPageEnhancer(separatedPanel).model;
+            fluid.tests.prefs.checkModelSelections("enhancerModel from bwSkin", fluid.tests.prefs.bwSkin.preferences, enhancerModel);
             jqUnit.assertEquals("Reset button is visible", true, $(".flc-prefsEditor-reset").is(":visible"));
-           
-            var resetButtonAriaControlsState = separatedPanel.locate("reset").attr("aria-controls");
-            var toggleButtonAriaControlsState = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-controls");
-            var toggleButtonAriaPressedState = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-pressed");
-            var toggleButtonAriaLabelState = separatedPanel.slidingPanel.locate("toggleButton").attr("aria-label");
-            var panelId = separatedPanel.slidingPanel.panelId;
-            var ariaExpandedState = separatedPanel.locate("iframe").attr("aria-expanded");
 
-            jqUnit.assertEquals("Reset button has correct aria-controls", resetButtonAriaControlsState, panelId);
-            jqUnit.assertEquals("Show/hide button has correct aria-controls", toggleButtonAriaControlsState, panelId);
-            jqUnit.assertEquals("Show/hide button has correct aria-pressed", "true", toggleButtonAriaPressedState);
-            jqUnit.assertEquals("Show/hide button has correct aria-label", "Hide Display Preferences", toggleButtonAriaLabelState);
-            jqUnit.assertEquals("Panel has correct aria-expanded", "true", ariaExpandedState);
+            fluid.tests.assertAria(separatedPanel.slidingPanel, "true");
+            fluid.tests.assertAriaForButton(separatedPanel.locate("reset"), "Reset", separatedPanel.slidingPanel.panelId, "true");
         };
     };
 
     fluid.tests.afterHideFunc1 = function () {
         return function () {
+            var settingsStore = fluid.tests.fetchGlobalSettingsStore();
             jqUnit.assertEquals("Reset button is invisible", false, $(".flc-prefsEditor-reset").is(":visible"));
-            jqUnit.assertDeepEq("Only the changed preferences are saved", fluid.tests.prefs.bwSkin, fluid.staticEnvironment.settingsStore.get());
+            jqUnit.assertDeepEq("Only the changed preferences are saved", fluid.tests.prefs.bwSkin, settingsStore.get());
         };
     };
     fluid.tests.afterShowFunc2 = function (separatedPanel) {
         return function () {
-            var enhancerModel = separatedPanel.pageEnhancer.model;
+            var enhancerModel = fluid.tests.getPageEnhancer(separatedPanel).model;
             var iframeEnhancerModel = separatedPanel.iframeRenderer.iframeEnhancer.model;
 
-            fluid.tests.prefs.checkModelSelections("iframeEnhancerModel from bwSkin", fluid.tests.prefs.bwSkin, iframeEnhancerModel);
+            fluid.tests.prefs.checkModelSelections("iframeEnhancerModel from bwSkin", fluid.tests.prefs.bwSkin.preferences, iframeEnhancerModel);
             fluid.tests.prefs.checkModelSelections("iframeEnhancerModel from enhancerModel", enhancerModel, iframeEnhancerModel);
         };
     };
@@ -133,22 +149,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             separatedPanel.locate("reset").click();
 
             var initialModel = separatedPanel.initialModel;
-            var enhancerModel = separatedPanel.pageEnhancer.model;
+            var enhancerModel = fluid.tests.getPageEnhancer(separatedPanel).model;
             var iframeEnhancerModel = separatedPanel.iframeRenderer.iframeEnhancer.model;
 
-            fluid.tests.prefs.checkModelSelections("enhancerModel from defaults", initialModel, enhancerModel);
+            fluid.tests.prefs.checkModelSelections("enhancerModel from defaults", initialModel.preferences, enhancerModel);
             separatedPanel.slidingPanel.hidePanel();
-            fluid.tests.prefs.checkModelSelections("iframeEnhancerModel from defaults", initialModel, iframeEnhancerModel);
+            fluid.tests.prefs.checkModelSelections("iframeEnhancerModel from defaults", initialModel.preferences, iframeEnhancerModel);
             fluid.tests.prefs.checkModelSelections("enhancerModel from iframeEnhancerModel", enhancerModel, iframeEnhancerModel);
         };
     };
 
     fluid.defaults("fluid.tests.separatedPanelIntegrationTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "Separated panel integration tests",
             tests: [{
-                expect: 31,
+                expect: 38,
                 name: "Separated panel integration tests",
                 sequence: [{
                     listener: "fluid.tests.testSeparatedPanel",
@@ -194,13 +210,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var isSlidingPanelShown = false;
 
     fluid.defaults("fluid.tests.separatedPanelMungingIntegration", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             separatedPanel: {
                 type: "fluid.prefs.separatedPanel",
                 container: ".flc-prefsEditor-separatedPanel",
                 createOnEvent: "{mungingIntegrationTester}.events.onTestCaseStart",
-                options: fluid.merge(null, fluid.tests.prefs.mungingIntegrationOptions, {
+                options: fluid.merge(null, fluid.tests.prefs.mungingIntegrationOptions, { // TODO: Why on earth does this not use standard grade merging?
                     iframeRenderer: {
                         markupProps: {
                             src: "./SeparatedPanelPrefsEditorFrame.html"
@@ -217,7 +233,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     prefsEditor: {
                         members: {
                             initialModel: {
-                                theme: "yb"
+                                preferences: {
+                                    theme: "yb"
+                                }
                             }
                         }
                     }
@@ -231,10 +249,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.testEnhancerTransit = function testEnhancerTransit(separatedPanel, expectedIframeSelector) {
         var cMap = fluid.tests.prefs.enhancerOptions.uiEnhancer.classnameMap;
+        var pageEnhancer = fluid.tests.getPageEnhancer(separatedPanel);
 
         // "outerEnhancerOptions" option mapping
         jqUnit.assertEquals("classnameMap transferred to outer UIEnhancer", cMap.textFont["default"],
-             separatedPanel.pageEnhancer.options.classnameMap.textFont["default"]);
+             pageEnhancer.options.classnameMap.textFont["default"]);
         jqUnit.assertEquals("classnameMap transferred to inner UIEnhancer", cMap.textFont["default"],
              separatedPanel.iframeRenderer.iframeEnhancer.options.classnameMap.textFont["default"]);
 
@@ -248,7 +267,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.mungingIntegrationTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         expectedIframeSelector: expectedIframeSelector,
         modules: [{
             name: "Separated panel munging integration tests",
@@ -268,7 +287,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     $(document).ready(function () {
 
-        fluid.globalSettingsStore();
+        fluid.tests.prefs.globalSettingsStore();
         fluid.pageEnhancer(fluid.tests.prefs.enhancerOptions);
 
         fluid.test.runTests([

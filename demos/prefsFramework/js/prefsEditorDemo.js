@@ -9,11 +9,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /*global demo:true, fluid, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var demo = demo || {};
 
@@ -21,10 +17,6 @@ var demo = demo || {};
     "use strict";
 
     fluid.registerNamespace("demo.prefsEditor");
-
-    fluid.enhance.check({
-        "fluid.supportsTTS": "fluid.textToSpeech.isSupported"
-    });
 
     // add extra prefs to the starter primary schemas
     demo.prefsEditor.primarySchema = {
@@ -34,14 +26,21 @@ var demo = demo || {};
         }
     };
 
+    fluid.contextAware.makeChecks({
+        "fluid.supportsTTS": "fluid.textToSpeech.isSupported"
+    });
+
     fluid.defaults("demo.prefsEditor.progressiveEnhancement", {
-        gradeNames: ["fluid.progressiveCheckerForComponent"],
-        componentName: "demo.prefsEditor.progressiveEnhancement",
-        progressiveCheckerOptions: {
-            checks: [{
-                feature: "{fluid.supportsTTS}",
-                contextName: "demo.prefsEditor.auxSchema.speak"
-            }]
+        gradeNames: ["fluid.contextAware"],
+        contextAwareness: {
+            textToSpeech: {
+                checks: {
+                    supportsTTS: {
+                        contextValue: "{fluid.supportsTTS}",
+                        gradeNames: "demo.prefsEditor.auxSchema.speak"
+                    }
+                }
+            }
         }
     });
 
@@ -107,7 +106,7 @@ var demo = demo || {};
      * simplifyPanel
      **********************************************************************************/
     fluid.defaults("demo.prefsEditor.simplifyPanel", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "demo.prefs.simplify": {
                 "model.simplify": "default"
@@ -116,11 +115,11 @@ var demo = demo || {};
         selectors: {
             simplify: ".demo-prefsEditor-simplify",
             label: ".demo-prefsEditor-simplify-label",
-            choiceLabel: ".demo-prefsEditor-simplify-choice-label"
+            simplifyDescr: ".demo-prefsEditor-simplify-descr"
         },
         protoTree: {
             label: {messagekey: "simplifyLabel"},
-            choiceLabel: {messagekey: "simplifyChoiceLabel"},
+            simplifyDescr: {messagekey: "simplifyDescr"},
             simplify: "${simplify}"
         }
     });
@@ -131,7 +130,7 @@ var demo = demo || {};
      * Simplify content based upon the model value.
      **********************************************************************************/
     fluid.defaults("demo.prefsEditor.simplifyEnactor", {
-        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.enactor", "autoInit"],
+        gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
         preferenceMap: {
             "demo.prefs.simplify": {
                 "model.simplify": "default"

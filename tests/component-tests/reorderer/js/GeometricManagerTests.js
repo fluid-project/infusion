@@ -10,7 +10,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -234,7 +233,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         ];
 
         var elementToIndex = function (element) {
-            return element.id.substring(3); // remove "el-" prefix
+            return +element.id.substring(3); // remove "el-" prefix
         };
 
         var testGeometryComputor = function (rects) {

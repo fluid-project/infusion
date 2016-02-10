@@ -10,7 +10,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -27,7 +27,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************/
 
     fluid.defaults("fluid.prefs.separatedPanel", {
-        gradeNames: ["fluid.prefs.prefsEditorLoader", "autoInit"],
+        gradeNames: ["fluid.prefs.prefsEditorLoader"],
         events: {
             afterRender: null,
             onReady: null,
@@ -66,7 +66,6 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         },
         components: {
-            pageEnhancer: "{uiEnhancer}",
             slidingPanel: {
                 type: "fluid.slidingPanel",
                 container: "{separatedPanel}.container",
@@ -77,7 +76,8 @@ var fluid_2_0 = fluid_2_0 || {};
                         showText: "{that}.msgLookup.slidingPanelShowText",
                         hideText: "{that}.msgLookup.slidingPanelHideText",
                         showTextAriaLabel: "{that}.msgLookup.showTextAriaLabel",
-                        hideTextAriaLabel: "{that}.msgLookup.hideTextAriaLabel"
+                        hideTextAriaLabel: "{that}.msgLookup.hideTextAriaLabel",
+                        panelLabel: "{that}.msgLookup.slidingPanelPanelLabel"
                     },
                     invokers: {
                         operateShow: {
@@ -121,9 +121,9 @@ var fluid_2_0 = fluid_2_0 || {};
                             container: "{iframeRenderer}.renderPrefsEditorContainer",
                             createOnEvent: "afterRender",
                             options: {
-                                gradeNames: ["{pageEnhancer}.options.gradeNames"],
+                                gradeNames: ["{pageEnhancer}.uiEnhancer.options.userGrades"],
                                 jQuery: "{iframeRenderer}.jQuery",
-                                tocTemplate: "{pageEnhancer}.options.tocTemplate"
+                                tocTemplate: "{pageEnhancer}.uiEnhancer.options.tocTemplate"
                             }
                         }
                     }
@@ -146,7 +146,7 @@ var fluid_2_0 = fluid_2_0 || {};
                             listener: "{separatedPanel}.bindReset",
                             args: ["{that}.reset"]
                         },
-                        onReset: "{that}.applyChanges",
+                        afterReset: "{that}.applyChanges",
                         onReady: {
                             listener: "{separatedPanel}.events.onReady",
                             args: "{separatedPanel}"
@@ -186,7 +186,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *****************************************/
 
     fluid.defaults("fluid.prefs.separatedPanel.renderIframe", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         events: {
             afterRender: null
         },
@@ -199,10 +199,13 @@ var fluid_2_0 = fluid_2_0 || {};
         markupProps: {
             "class": "flc-iframe",
             src: "%templatePrefix/prefsEditorIframe.html"
+        },
+        listeners: {
+            "onCreate.startLoadingIframe": "fluid.prefs.separatedPanel.renderIframe.startLoadingIframe"
         }
     });
 
-    fluid.prefs.separatedPanel.renderIframe.finalInit = function (that) {
+    fluid.prefs.separatedPanel.renderIframe.startLoadingIframe = function (that) {
         var styles = that.options.styles;
         // TODO: get earlier access to templateLoader,
         that.options.markupProps.src = fluid.stringTemplate(that.options.markupProps.src, that.options.terms);
@@ -231,23 +234,25 @@ var fluid_2_0 = fluid_2_0 || {};
         prefsEditor.events.onSignificantDOMChange.fire();
     };
 
+
     fluid.prefs.separatedPanel.bindEvents = function (prefsEditor, iframeEnhancer, separatedPanel) {
-        // TODO: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
+        // FLUID-5740: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
         // which is a child of this component
 
-        // var panelId = separatedPanel.locate("iframe").attr("id");
         var separatedPanelId = separatedPanel.slidingPanel.panelId;
-        separatedPanel.locate("reset").attr("aria-controls", separatedPanelId);
+        separatedPanel.locate("reset").attr({
+            "aria-controls": separatedPanelId,
+            "role": "button"
+        });
 
         separatedPanel.slidingPanel.events.afterPanelShow.addListener(function () {
             fluid.prefs.separatedPanel.updateView(prefsEditor);
-
         });
 
         prefsEditor.events.onPrefsEditorRefresh.addListener(function () {
-            iframeEnhancer.updateModel(prefsEditor.model);
+            iframeEnhancer.updateModel(prefsEditor.model.preferences);
         });
-        prefsEditor.events.onReset.addListener(function (prefsEditor) {
+        prefsEditor.events.afterReset.addListener(function (prefsEditor) {
             fluid.prefs.separatedPanel.updateView(prefsEditor);
         });
         prefsEditor.events.onSignificantDOMChange.addListener(function () {
@@ -291,4 +296,4 @@ var fluid_2_0 = fluid_2_0 || {};
         setTimeout(callback, 1);
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

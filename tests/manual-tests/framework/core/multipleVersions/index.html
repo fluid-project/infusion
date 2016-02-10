@@ -26,6 +26,7 @@
         <script type="text/javascript" src="../../../../../src/framework/core/js/FluidIoC.js"></script>
         <script type="text/javascript" src="../../../../../src/framework/core/js/FluidView.js"></script>
         <script type="text/javascript" src="../../../../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/renderer/js/fluidRenderer.js"></script>
         <script type="text/javascript" src="../../../../../src/components/reorderer/js/ReordererDOMUtilities.js"></script>
         <script type="text/javascript" src="../../../../../src/components/reorderer/js/GeometricManager.js"></script>
         <script type="text/javascript" src="../../../../../src/components/reorderer/js/Reorderer.js"></script>
@@ -74,8 +75,8 @@
             $("#priorVersionNumber").text(fluid.version);
 
             // initialize the list using the current version of Infusion
-            fluid_2_0.reorderList("#list-currentVersion");
-            $("#currentVersionNumber").text(fluid_2_0.version);
+            fluid_2_0_0.reorderList("#list-currentVersion");
+            $("#currentVersionNumber").text(fluid_2_0_0.version);
         </script>
     </body>
 </html>

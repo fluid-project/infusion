@@ -8,9 +8,8 @@ Licenses.
 You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
- */
+*/
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($, fluid) {
@@ -78,7 +77,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.focusNotifier", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         events: {
             notifyFocusChange: null
         },
@@ -137,7 +136,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.tooltip.tree", {
-        gradeNames: ["fluid.tests.tooltip.trackTooltips", "fluid.tests.focusNotifier", "autoInit"],
+        gradeNames: ["fluid.tests.tooltip.trackTooltips", "fluid.tests.focusNotifier"],
         selectors: {
             focusTarget: ".focusTarget"
         },
@@ -157,7 +156,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-    
+
     fluid.tests.tooltip.moduleSource = function (parent) {
         var modules = fluid.copy(fluid.tests.tooltip.module);
         modules.name = modules.name + " - " + parent.typeName;
@@ -165,7 +164,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.tooltip.delegateEnv", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         markupFixture: "#ioc-fixture",
         expectedVisible: ["anchor-1"],
         components: {
@@ -184,9 +183,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-    
+
     fluid.defaults("fluid.tests.tooltip.FLUID5673Env", {
-        gradeNames: ["fluid.tests.tooltip.delegateEnv", "autoInit"],
+        gradeNames: ["fluid.tests.tooltip.delegateEnv"],
         expectedVisible: ["anchor-3"],
         components: {
             tree: {
@@ -195,10 +194,107 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    // FLUID-5846 tests for when tooltip is run on content in an iframe
+
+    fluid.defaults("fluid.tests.tooltip.FLUID5846", {
+        gradeNames: ["fluid.tooltip"],
+        selectors: {
+            item1: "#tooltip-item-1",
+            item2: "#tooltip-item-2"
+        },
+        model: {
+            idToContent: {
+                "tooltip-item-1": "item 1",
+                "tooltip-item-2": "item 2"
+            }
+        }
+
+    });
+
+    fluid.tests.tooltip.FLUID5846.setupIframe = function (that, iframe) {
+        $(iframe).load(function () {
+            // DO NOT MOVE this property access outside this function!
+            var dokkument = iframe.contentDocument;
+            var iframeWindow = dokkument.defaultView;
+            var iframejQuery = iframeWindow.jQuery;
+            that.iframeBody = iframejQuery("body", dokkument);
+            that.events.iframeReady.fire();
+        });
+    };
+
+    fluid.defaults("fluid.tests.tooltip.FLUID5846.parent", {
+        gradeNames: ["fluid.viewComponent"],
+        selectors: {
+            iframe: ".FLUID-5846-iframe"
+        },
+        events: {
+            iframeReady: null,
+            onReady: null,
+            afterOpen: null,
+            afterClose: null
+        },
+        listeners: {
+            "onCreate.setupIframe": "fluid.tests.tooltip.FLUID5846.setupIframe({that}, {that}.dom.iframe.0)"
+        },
+        components: {
+            tooltip: {
+                type: "fluid.tests.tooltip.FLUID5846",
+                container: "{that}.iframeBody",
+                createOnEvent: "iframeReady",
+                options: {
+                    listeners: {
+                        "onCreate.boil": "{parent}.events.onReady",
+                        "afterOpen.boil": "{parent}.events.afterOpen",
+                        "afterClose.boil": "{parent}.events.afterClose"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.tooltip.FLUID5846TestCases", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [ {
+            name: "FLUID-5846 tooltip in iframe tests",
+            tests: [{
+                name: "FLUID-5846 sequence",
+                expect: 1,
+                sequence: [{
+                    event: "{FLUID5846Env tree}.events.onReady",
+                    listener: "fluid.identity"
+                }, {
+                    func: "fluid.focus",
+                    args: ["{tree}.tooltip.dom.item1"]
+                }, {
+                    event: "{tree}.events.afterOpen",
+                    listener: "jqUnit.assert",
+                    args: ["The afterOpen event should have fired"]
+                }]
+            }]
+        }]
+    });
+
+    fluid.defaults("fluid.tests.tooltip.FLUID5846Env", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        markupFixture: "#ioc-fixture",
+        components: {
+            tree: {
+                type: "fluid.tests.tooltip.FLUID5846.parent",
+                container: ".FLUID-5846",
+                createOnEvent: "{fixtures}.events.onTestCaseStart"
+            },
+            fixtures: {
+                type: "fluid.tests.tooltip.FLUID5846TestCases"
+            }
+        }
+    });
+
+
     fluid.tests.tooltip.runTests = function () {
 
         fluid.test.runTests(["fluid.tests.tooltip.delegateEnv"]);
         fluid.test.runTests(["fluid.tests.tooltip.FLUID5673Env"]);
+        fluid.test.runTests(["fluid.tests.tooltip.FLUID5846Env"]);
 
         jqUnit.module("Standard Tooltip Tests");
 

@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-fluid_2_0 = fluid_2_0 || {};
+fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -27,7 +27,7 @@ fluid_2_0 = fluid_2_0 || {};
             if (name.indexOf(fluid.renderer.decoratorComponentPrefix) === 0) {
                 visitor(component, name);
             }
-        }, {flat: true});
+        }, {flat: true}, []);
     };
 
     fluid.renderer.clearDecorators = function(that) {
@@ -66,6 +66,7 @@ fluid_2_0 = fluid_2_0 || {};
     fluid.renderer.createRendererSubcomponent = function (container, selectors, options, parentThat, fossils) {
         options = options || {};
         var source = options.templateSource ? options.templateSource : {node: $(container)};
+        var nativeModel = options.rendererOptions.model === undefined;
         var rendererOptions = fluid.renderer.modeliseOptions(options.rendererOptions, null, parentThat);
         rendererOptions.fossils = fossils || {};
         rendererOptions.parentComponent = parentThat;
@@ -83,6 +84,10 @@ fluid_2_0 = fluid_2_0 || {};
         that.render = function (tree) {
             var cutpointFn = options.cutpointGenerator || "fluid.renderer.selectorsToCutpoints";
             rendererOptions.cutpoints = rendererOptions.cutpoints || fluid.invokeGlobalFunction(cutpointFn, [selectors, options]);
+            if (nativeModel) { // check necessary since the component insanely supports the possibility the model is not the component's model!
+                               // and the pagedTable uses this.
+                rendererOptions.model = parentThat.model; // fix FLUID-5664
+            }
             var renderTarget = $(options.renderTarget ? options.renderTarget : container);
 
             if (templates) {
@@ -99,12 +104,11 @@ fluid_2_0 = fluid_2_0 || {};
         return that;
     };
 
-    fluid.defaults("fluid.commonRendererComponent", {
-        gradeNames: [],
+    fluid.defaults("fluid.rendererComponent", {
+        gradeNames: ["fluid.viewComponent"],
         initFunction: "fluid.initRendererComponent",
         mergePolicy: {
             "rendererOptions.idMap": "nomerge",
-            "rendererOptions.model": "preserve",
             protoTree: "noexpand, replace",
             parentBundle: "nomerge",
             "changeApplierOptions.resolverSetConfig": "resolverSetConfig"
@@ -123,6 +127,7 @@ fluid_2_0 = fluid_2_0 || {};
             autoBind: true
         },
         events: {
+            onResourcesFetched: null,
             prepareModelForRender: null,
             onRenderTree: null,
             afterRender: null
@@ -134,14 +139,6 @@ fluid_2_0 = fluid_2_0 || {};
                 priority: "last"
             }
         }
-    });
-
-    fluid.defaults("fluid.rendererComponent", {
-        gradeNames: ["fluid.commonRendererComponent", "fluid.viewComponent", "autoInit"]
-    });
-
-    fluid.defaults("fluid.rendererRelayComponent", {
-        gradeNames: ["fluid.commonRendererComponent", "fluid.viewRelayComponent", "autoInit"]
     });
 
     fluid.rendererComponent.renderOnInit = function (renderOnInit, that) {
@@ -193,7 +190,7 @@ fluid_2_0 = fluid_2_0 || {};
         fluid.getForComponent(that, "applier");
         fluid.diagnoseFailedView(componentName, that, fluid.defaults(componentName), arguments);
 
-        fluid.fetchResources(that.options.resources); // TODO: deal with asynchrony
+        fluid.fetchResources(that.options.resources, that.events.onResourcesFetched.fire); // TODO: deal with asynchrony
 
         var rendererOptions = fluid.renderer.modeliseOptions(that.options.rendererOptions, null, that);
 
@@ -305,7 +302,7 @@ fluid_2_0 = fluid_2_0 || {};
     /** Definition of expanders - firstly, "heavy" expanders **/
 
     fluid.renderer.selection.inputs = function (options, container, key, config) {
-        fluid.expect("Selection to inputs expander", ["selectID", "inputID", "labelID", "rowID"], options);
+        fluid.expect("Selection to inputs expander", options, ["selectID", "inputID", "labelID", "rowID"]);
         var selection = config.expander(options.tree);
         var rows = fluid.transform(selection.optionlist.value, function (option, index) {
             var togo = {};
@@ -322,7 +319,7 @@ fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.renderer.repeat = function (options, container, key, config) {
-        fluid.expect("Repetition expander", ["controlledBy", "tree"], options);
+        fluid.expect("Repetition expander", options, ["controlledBy", "tree"]);
         var env = config.threadLocal();
         var path = fluid.extractContextualPath(options.controlledBy, {ELstyle: "ALL"}, env);
         var list = fluid.get(config.model, path, config.resolverGetConfig);
@@ -362,11 +359,11 @@ fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.renderer.condition = function (options, container, key, config) {
-        fluid.expect("Selection to condition expander", ["condition"], options);
+        fluid.expect("Selection to condition expander", options, ["condition"]);
         var condition;
         if (options.condition.funcName) {
             var args = config.expandLight(options.condition.args);
-            condition = fluid.invoke(options.condition.funcName, args);
+            condition = fluid.invokeGlobalFunction(options.condition.funcName, args);
         } else if (options.condition.expander) {
             condition = config.expander(options.condition);
         } else {
@@ -659,4 +656,4 @@ fluid_2_0 = fluid_2_0 || {};
         };
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

@@ -9,31 +9,33 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
 
     /*******************************************************************************
-     * Starter Root Model
+     * Starter prefsEditor Model
      *
-     * Provides the default values for the starter enhancer/panels models
+     * Provides the default values for the starter prefsEditor model
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.initialModel.starter", {
-        gradeNames: ["fluid.prefs.initialModel", "autoInit"],
+        gradeNames: ["fluid.prefs.initialModel"],
         members: {
             // TODO: This information is supposed to be generated from the JSON
             // schema describing various preferences. For now it's kept in top
             // level prefsEditor to avoid further duplication.
             initialModel: {
-                textFont: "default",          // key from classname map
-                theme: "default",             // key from classname map
-                textSize: 1,                  // in points
-                lineSpace: 1,                 // in ems
-                toc: false,                  // boolean
-                links: false,                // boolean
-                inputsLarger: false          // boolean
+                preferences: {
+                    textFont: "default",          // key from classname map
+                    theme: "default",             // key from classname map
+                    textSize: 1,                  // in points
+                    lineSpace: 1,                 // in ems
+                    toc: false,                   // boolean
+                    links: false,                 // boolean
+                    inputsLarger: false           // boolean
+                }
             }
         }
     });
@@ -46,7 +48,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.uiEnhancer.cssClassEnhancerBase", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         classnameMap: {
             "textFont": {
                 "default": "",
@@ -76,7 +78,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.uiEnhancer.browserTextEnhancerBase", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         fontSizeMap: {
             "xx-small": "9px",
             "x-small":  "11px",
@@ -96,8 +98,8 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.uiEnhancer.starterEnactors", {
-        gradeNames: ["fluid.uiEnhancer", "fluid.uiEnhancer.cssClassEnhancerBase", "fluid.uiEnhancer.browserTextEnhancerBase", "autoInit"],
-        model: "{fluid.prefs.initialModel}.initialModel",
+        gradeNames: ["fluid.uiEnhancer", "fluid.uiEnhancer.cssClassEnhancerBase", "fluid.uiEnhancer.browserTextEnhancerBase"],
+        model: "{fluid.prefs.initialModel}.initialModel.preferences",
         components: {
             textSize: {
                 type: "fluid.prefs.enactor.textSize",
@@ -178,7 +180,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * A collection of all the default Preferences Editorsetting panels.
      *********************************************************************************************************/
     fluid.defaults("fluid.prefs.starterPanels", {
-        gradeNames: ["fluid.prefs.prefsEditor", "autoInit"],
+        gradeNames: ["fluid.prefs.prefsEditor"],
         selectors: {
             textSize: ".flc-prefsEditor-text-size",
             textFont: ".flc-prefsEditor-text-font",
@@ -196,7 +198,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 options: {
                     gradeNames: "fluid.prefs.prefsEditorConnections",
                     model: {
-                        textSize: "{prefsEditor}.model.textSize"
+                        textSize: "{prefsEditor}.model.preferences.textSize"
                     },
                     messageBase: "{messageLoader}.resources.textSize.resourceText",
                     resources: {
@@ -211,7 +213,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 options: {
                     gradeNames: "fluid.prefs.prefsEditorConnections",
                     model: {
-                        lineSpace: "{prefsEditor}.model.lineSpace"
+                        lineSpace: "{prefsEditor}.model.preferences.lineSpace"
                     },
                     messageBase: "{messageLoader}.resources.lineSpace.resourceText",
                     resources: {
@@ -227,7 +229,7 @@ var fluid_2_0 = fluid_2_0 || {};
                     gradeNames: "fluid.prefs.prefsEditorConnections",
                     classnameMap: "{uiEnhancer}.options.classnameMap",
                     model: {
-                        value: "{prefsEditor}.model.textFont"
+                        value: "{prefsEditor}.model.preferences.textFont"
                     },
                     messageBase: "{messageLoader}.resources.textFont.resourceText",
                     resources: {
@@ -243,7 +245,7 @@ var fluid_2_0 = fluid_2_0 || {};
                     gradeNames: "fluid.prefs.prefsEditorConnections",
                     classnameMap: "{uiEnhancer}.options.classnameMap",
                     model: {
-                        value: "{prefsEditor}.model.theme"
+                        value: "{prefsEditor}.model.preferences.theme"
                     },
                     messageBase: "{messageLoader}.resources.contrast.resourceText",
                     resources: {
@@ -258,7 +260,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 options: {
                     gradeNames: "fluid.prefs.prefsEditorConnections",
                     model: {
-                        toc: "{prefsEditor}.model.toc"
+                        toc: "{prefsEditor}.model.preferences.toc"
                     },
                     messageBase: "{messageLoader}.resources.layoutControls.resourceText",
                     resources: {
@@ -278,8 +280,8 @@ var fluid_2_0 = fluid_2_0 || {};
                     },
                     selectorsToIgnore: ["emphasizeLinks", "inputsLarger"],
                     model: {
-                        fluid_prefs_emphasizeLinks: "{prefsEditor}.model.links",
-                        fluid_prefs_inputsLarger: "{prefsEditor}.model.inputsLarger"
+                        fluid_prefs_emphasizeLinks: "{prefsEditor}.model.preferences.links",
+                        fluid_prefs_inputsLarger: "{prefsEditor}.model.preferences.inputsLarger"
                     },
                     components: {
                         emphasizeLinks: {
@@ -321,7 +323,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.prefs.starterTemplateLoader", {
-        gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
+        gradeNames: ["fluid.prefs.resourceLoader"],
         resources: {
             textSize: "%templatePrefix/PrefsEditorTemplate-textSize.html",
             textFont: "%templatePrefix/PrefsEditorTemplate-textFont.html",
@@ -335,21 +337,21 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.defaults("fluid.prefs.starterSeparatedPanelTemplateLoader", {
-        gradeNames: ["fluid.prefs.starterTemplateLoader", "autoInit"],
+        gradeNames: ["fluid.prefs.starterTemplateLoader"],
         resources: {
             prefsEditor: "%templatePrefix/SeparatedPanelPrefsEditor.html"
         }
     });
 
     fluid.defaults("fluid.prefs.starterFullPreviewTemplateLoader", {
-        gradeNames: ["fluid.prefs.starterTemplateLoader", "autoInit"],
+        gradeNames: ["fluid.prefs.starterTemplateLoader"],
         resources: {
             prefsEditor: "%templatePrefix/FullPreviewPrefsEditor.html"
         }
     });
 
     fluid.defaults("fluid.prefs.starterFullNoPreviewTemplateLoader", {
-        gradeNames: ["fluid.prefs.starterTemplateLoader", "autoInit"],
+        gradeNames: ["fluid.prefs.starterTemplateLoader"],
         resources: {
             prefsEditor: "%templatePrefix/FullNoPreviewPrefsEditor.html"
         }
@@ -366,7 +368,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.prefs.starterMessageLoader", {
-        gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
+        gradeNames: ["fluid.prefs.resourceLoader"],
         resources: {
             prefsEditor: "%messagePrefix/prefsEditor.json",
             textSize: "%messagePrefix/textSize.json",
@@ -380,4 +382,4 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

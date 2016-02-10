@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid */
 
 var demo = demo || {};
@@ -195,8 +194,8 @@ var demo = demo || {};
      * Utility function for displaying the data model, so users of the demo can see
      * how it changes with the autobinding.
      */
-    var displayDataModel = function () {
-        jQuery("#autobound-model").text(modelToString(demo.data));
+    var displayDataModel = function (applier) {
+        jQuery("#autobound-model").text(modelToString(applier.holder.model));
     };
 
     /**
@@ -204,9 +203,9 @@ var demo = demo || {};
      * and update the demo's model display.
      */
     var setupDataModel = function () {
-        var applier = fluid.makeChangeApplier(demo.data);
+        var applier = fluid.makeHolderChangeApplier({model: demo.data});
         applier.modelChanged.addListener("*", function () {
-            displayDataModel();
+            displayDataModel(applier);
         });
         return applier;
     };
@@ -233,6 +232,6 @@ var demo = demo || {};
         var renderButton = fluid.jById("render");
         bindEventHandlers(renderButton, applier);
 
-        displayDataModel();
+        displayDataModel(applier);
     };
 })(jQuery);

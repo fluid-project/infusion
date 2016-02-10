@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -53,7 +52,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The section instance should have " + expectedNumFiles + " files in its model.",
                 expectedNumFiles, section.model.files.length);
             jqUnit.assertEquals("The newly added file should be at index " + expectedIdx + " in the section's model.",
-                expectedIdx, $.inArray(file.name, section.model.files));
+                expectedIdx, section.model.files.indexOf(file.name));
         };
 
         jqUnit.test("errorPanel.section.addFile()", function () {
@@ -202,13 +201,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         /********************
          * errorPanel Tests *
          ********************/
-
-        fluid.staticEnvironment.uploader = fluid.typeTag("fluid.uploader.tests");
-
-        fluid.demands("fluid.uploader.errorPanel.section", ["fluid.uploader.errorPanel", "fluid.uploader.tests"], {
-            // Empty demands block for tests in isolation from the Uploader.
-            options: {}
-        });
 
         var addFileAndRefresh = function (errorPanel, section, file) {
             section.addFile(file, section.model.errorCode);

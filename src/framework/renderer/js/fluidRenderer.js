@@ -11,10 +11,75 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-fluid_2_0 = fluid_2_0 || {};
+fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
+
+
+    fluid.defaults("fluid.messageResolver", {
+        gradeNames: ["fluid.component"],
+        mergePolicy: {
+            messageBase: "nomerge",
+            parents: "nomerge"
+        },
+        resolveFunc: fluid.stringTemplate,
+        parseFunc: fluid.identity,
+        messageBase: {},
+        members: {
+            messageBase: "@expand:{that}.options.parseFunc({that}.options.messageBase)"
+        },
+        invokers: {
+            lookup: "fluid.messageResolver.lookup({that}, {arguments}.0)", // messagecodes
+            resolve: "fluid.messageResolver.resolve({that}, {arguments}.0, {arguments}.1)" // messagecodes, args
+        },
+        parents: []
+    });
+
+    fluid.messageResolver.lookup = function (that, messagecodes) {
+        var resolved = fluid.messageResolver.resolveOne(that.messageBase, messagecodes);
+        if (resolved === undefined) {
+            return fluid.find(that.options.parents, function (parent) {
+                return parent ? parent.lookup(messagecodes) : undefined;
+            });
+        } else {
+            return {template: resolved, resolveFunc: that.options.resolveFunc};
+        }
+    };
+
+    fluid.messageResolver.resolve = function (that, messagecodes, args) {
+        if (!messagecodes) {
+            return "[No messagecodes provided]";
+        }
+        messagecodes = fluid.makeArray(messagecodes);
+        var looked = that.lookup(messagecodes);
+        return looked ? looked.resolveFunc(looked.template, args) :
+            "[Message string for key " + messagecodes[0] + " not found]";
+    };
+
+
+    // unsupported, NON-API function
+    fluid.messageResolver.resolveOne = function (messageBase, messagecodes) {
+        for (var i = 0; i < messagecodes.length; ++i) {
+            var code = messagecodes[i];
+            var message = messageBase[code];
+            if (message !== undefined) {
+                return message;
+            }
+        }
+    };
+
+    /** Converts a data structure consisting of a mapping of keys to message strings,
+     * into a "messageLocator" function which maps an array of message codes, to be
+     * tried in sequence until a key is found, and an array of substitution arguments,
+     * into a substituted message string.
+     */
+    fluid.messageLocator = function (messageBase, resolveFunc) {
+        var resolver = fluid.messageResolver({messageBase: messageBase, resolveFunc: resolveFunc});
+        return function (messagecodes, args) {
+            return resolver.resolve(messagecodes, args);
+        };
+    };
 
     function debugPosition(component) {
         return "as child of " + (component.parent.fullID ? "component with full ID " + component.parent.fullID : "root");
@@ -99,10 +164,6 @@ fluid_2_0 = fluid_2_0 || {};
 
     function fixupValue(uibound, model, resolverGetConfig) {
         if (uibound.value === undefined && uibound.valuebinding !== undefined) {
-            if (!model) {
-                fluid.fail("Cannot perform value fixup for valuebinding " +
-                    uibound.valuebinding + " since no model was supplied to rendering");
-            }
             uibound.value = fluid.get(model, uibound.valuebinding, resolverGetConfig);
         }
     }
@@ -273,13 +334,12 @@ fluid_2_0 = fluid_2_0 || {};
         if (options.parentComponent) {
             var parent = options.parentComponent;
             var name = renderer.IDtoComponentName(ID, num);
-            // TODO: The best we can do here without GRADES is to wildly guess
-            // that it is a view component with options in the 2nd place and container in first place
-            fluid.set(parent, fluid.path("options", "components", name), {type: func});
-            // This MIGHT really be a variant of fluid.invoke... only we often probably DO want the component
-            // itself to be inserted into the that stack. This *ALSO* requires GRADES to resolve. A
-            // "function" is that which has no grade. The gradeless grade.
-            that = fluid.initDependent(options.parentComponent, name, args);
+            fluid.set(parent, ["options", "components", name], {
+                type: func,
+                container: args[0],
+                options: args[1]
+            });
+            that = fluid.initDependent(options.parentComponent, name);
         }
         else {
             that = fluid.invokeGlobalFunction(func, args);
@@ -618,7 +678,7 @@ fluid_2_0 = fluid_2_0 || {};
         function dumpBoundFields(/** UIBound**/ torender, parent) { // jslint:ok - whitespace
             if (torender) {
                 var holder = parent? parent : torender;
-                if (renderOptions.fossils && holder.valuebinding) {
+                if (renderOptions.fossils && holder.valuebinding !== undefined) {
                     var fossilKey = holder.submittingname || torender.finalID;
                   // TODO: this will store multiple times for each member of a UISelect
                     renderOptions.fossils[fossilKey] = {
@@ -649,9 +709,7 @@ fluid_2_0 = fluid_2_0 || {};
 
         function isSelectedValue(torender, value) {
             var selection = torender.selection;
-            return selection.value && typeof(selection.value) !== "string" && typeof(selection.value.length) === "number" ?
-                $.inArray(value, selection.value) !== -1 :
-                selection.value === value;
+            return fluid.isArrayable(selection.value) ? selection.value.indexOf(value) !== -1 : selection.value === value;
         }
 
         function getRelativeComponent(component, relativeID) {
@@ -1587,4 +1645,4 @@ fluid_2_0 = fluid_2_0 || {};
         return fluid.render({node: node, armouring: options.armouring}, node, tree, options);
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

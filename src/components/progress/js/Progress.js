@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -154,7 +154,7 @@ var fluid_2_0 = fluid_2_0 || {};
     */
 
     fluid.defaults("fluid.progress", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         members: {
             displayElement: "{that}.dom.displayElement",
             progressBar: "{that}.dom.progressBar",
@@ -266,4 +266,4 @@ var fluid_2_0 = fluid_2_0 || {};
         updatePosition: false
     });
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

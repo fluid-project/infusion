@@ -13,7 +13,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 /*******************
  * File Queue View *
@@ -26,15 +26,16 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // Real data binding would be nice to replace these two pairs.
     fluid.uploader.fileQueueView.rowForFile = function (that, file) {
-        return that.locate("fileQueue").find("#" + file.id);
+        return that.container.find("#" + file.id);
     };
 
     fluid.uploader.fileQueueView.errorRowForFile = function (that, file) {
         return $("#" + file.id + "_error", that.container);
     };
 
+    // TODO: None of this hierarchy operates a proper model idiom since it just shares an array instance with fileQueue
     fluid.uploader.fileQueueView.fileForRow = function (that, row) {
-        return fluid.find_if(that.model, function (file) {
+        return fluid.find_if(that.queueFiles, function (file) {
             return file.id.toString() === row.prop("id");
         });
     };
@@ -308,9 +309,15 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.uploader.fileQueueView", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
+        mergePolicy: {
+            // TODO: This mergePolicy was required by some attempts at fixing FLUID-5668
+            // and may be required again in future if this component is not modelised
+            // "members.queueFiles": "nomerge"
+        },
         members: {
             fileProgressors: {}
+            // queueFiles: applied in uploader options - TODO: no model idiom
         },
         invokers: {
             addFile: {
@@ -356,10 +363,8 @@ var fluid_2_0 = fluid_2_0 || {};
         },
         components: {
             scroller: {
-                type: "fluid.scrollableTable"
-            },
-            eventBinder: {
-                type: "fluid.uploader.fileQueueView.eventBinder"
+                type: "fluid.scrollableTable",
+                container: "{fileQueueView}.container"
             }
         },
 
@@ -416,22 +421,28 @@ var fluid_2_0 = fluid_2_0 || {};
             onFileRemoved: null
         },
         listeners: {
-            onCreate: [ { // TODO: Create a better syntax than anonymous onCreate listeners
-                listener: "fluid.uploader.fileQueueView.prepareTemplateElements",
-                args: "{that}"
-            }, {
-                listener: "fluid.uploader.fileQueueView.addKeyboardNavigation",
-                args: "{that}"
-            }
-            ]
+            "onCreate.prepareTemplateElement": "fluid.uploader.fileQueueView.prepareTemplateElements",
+            "onCreate.addKeyboardNavigation":   "fluid.uploader.fileQueueView.addKeyboardNavigation"
         }
     });
 
     /**
-     * EventBinder declaratively binds FileQueueView's methods as listeners to Uploader events using IoC.
+     * An interactional mixin for binding a fileQueueView to an Uploader
      */
-    fluid.defaults("fluid.uploader.fileQueueView.eventBinder", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"]
+    fluid.defaults("fluid.uploader.fileQueueView.bindUploader", {
+        events: {
+            onFileRemoved: "{uploader}.events.onFileRemoved"
+        },
+        listeners: {
+            "{uploader}.events.afterFileQueued": "{fileQueueView}.addFile",
+            "{uploader}.events.onUploadStart": "{fileQueueView}.prepareForUpload",
+            "{uploader}.events.onFileStart": "{fileQueueView}.showFileProgress",
+            "{uploader}.events.onFileProgress": "{fileQueueView}.updateFileProgress",
+            "{uploader}.events.onFileSuccess": "{fileQueueView}.markFileComplete",
+            "{uploader}.events.onFileError": "{fileQueueView}.showErrorForFile",
+            "{uploader}.events.afterFileComplete": "{fileQueueView}.hideFileProgress",
+            "{uploader}.events.afterUploadComplete": "{fileQueueView}.refreshAfterUpload"
+        }
     });
 
     /**************
@@ -444,8 +455,8 @@ var fluid_2_0 = fluid_2_0 || {};
         return fluid.container(element);
     };
 
-    fluid.scrollable.makeTable =  function (table, options) {
-        table.wrap(options.wrapperMarkup);
+    fluid.scrollable.makeTable =  function (table, wrapperMarkup) {
+        table.wrap(wrapperMarkup);
         return table.closest(".fl-scrollable-scroller");
     };
 
@@ -459,13 +470,13 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.scrollable", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         makeScrollableFn: fluid.scrollable.makeSimple, // NB - a modern style would configure an invoker
         members: {
             scrollable: {
                 expander: {
                     func: "{that}.options.makeScrollableFn",
-                    args: ["{that}.container", "{that}.options"]
+                    args: ["{that}.container", "{that}.options.wrapperMarkup"] // TODO: we need to make sure that expander arguments are evaluated fully
                 }
             },
             maxHeight: {
@@ -520,13 +531,10 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.scrollableTable", {
-        gradeNames: ["fluid.scrollable", "autoInit"],
+        gradeNames: ["fluid.scrollable"],
         makeScrollableFn: fluid.scrollable.makeTable,
         wrapperMarkup: "<div class='fl-scrollable-scroller'><div class='fl-scrollable-inner'></div></div>"
     });
 
-    fluid.demands("fluid.scrollableTable", "fluid.uploader.fileQueueView", {
-        container: "{fileQueueView}.container"
-    });
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

@@ -10,7 +10,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -23,25 +22,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         /**************************************************
          * fluid.fullPreviewPrefsEditor Integration Tests *
          **************************************************/
-        fluid.demands("fluid.prefs.preview", ["fluid.prefs.fullPreview"], {
-            options: {
-                templateUrl: "TestPreviewTemplate.html"
-            }
-        });
 
         fluid.tests.prefs.integrationTest("fluid.prefs.fullPreview", false);
 
         var testSettings = {
-            textSize: "1.5",
-            textFont: "verdana",
-            theme: "bw",
-            layout: false,
-            toc: true,
-            links: true
+            preferences: {
+                textSize: "1.5",
+                textFont: "verdana",
+                theme: "bw",
+                layout: false,
+                toc: true,
+                links: true
+            }
         };
 
-        // TODO: we need MUCH better event boiling support in order to avoid rubbish like this
-        var that, prefsEditor;
+        // TODO: Rewrite this using proper argument boiling
+        var prefsEditor;
         function testToCEnhancement(innerPrefsEditor) {
             prefsEditor = innerPrefsEditor;
         }
@@ -57,7 +53,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.start();
         }
 
-        that = fluid.tests.prefs.mungingIntegrationTest("fluid.prefs.fullPreview", "#myPrefsEditor", {
+        fluid.tests.prefs.mungingIntegrationTest("fluid.prefs.fullPreview", "#myPrefsEditor", {
             previewEnhancer: {
                 components: {
                     tableOfContents: {

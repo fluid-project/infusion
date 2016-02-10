@@ -11,10 +11,9 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global CKEDITOR, tinyMCE */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -24,7 +23,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *************************************/
 
     fluid.defaults("fluid.inlineEdit.editorViewAccessor", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         invokers: {
             value: {
                 funcName: "fluid.inlineEdit.editorViewAccessor.value",
@@ -49,7 +48,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.inlineEdit.richTextViewAccessor", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         invokers: {
             value: {
                 funcName: "fluid.inlineEdit.richTextViewAccessor.value",
@@ -150,7 +149,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.inlineEdit.tinyMCE.viewAccessor", {
-        gradeNames: ["fluid.inlineEdit.editorViewAccessor", "autoInit"],
+        gradeNames: ["fluid.inlineEdit.editorViewAccessor"],
         editorGetFn: flTinyMCE.getEditor,
         setValueFn: flTinyMCE.setValue,
         getValueFn: flTinyMCE.getValue
@@ -238,7 +237,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.inlineEdit.tinyMCE", {
-        gradeNames: ["fluid.inlineEdit", "autoInit"],
+        gradeNames: ["fluid.inlineEdit"],
         tinyMCE : {
             mode: "exact",
             theme: "simple"
@@ -299,7 +298,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.inlineEdit.CKEditor.viewAccessor", {
-        gradeNames: ["fluid.inlineEdit.editorViewAccessor", "autoInit"],
+        gradeNames: ["fluid.inlineEdit.editorViewAccessor"],
         editorGetFn: flCKEditor.getEditor,
         setValueFn: flCKEditor.setValue,
         getValueFn: flCKEditor.getValue
@@ -351,7 +350,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.inlineEdit.CKEditor", {
-        gradeNames: ["fluid.inlineEdit", "autoInit"],
+        gradeNames: ["fluid.inlineEdit"],
         selectors: {
             edit: "textarea"
         },
@@ -417,9 +416,9 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.inlineEdit.dropdown", {
-        gradeNames: ["fluid.inlineEdit", "autoInit"],
+        gradeNames: ["fluid.inlineEdit"],
         applyEditPadding: false,
         blurHandlerBinder: fluid.inlineEdit.dropdown.blurHandlerBinder,
         editModeRenderer: fluid.inlineEdit.dropdown.editModeRenderer
     });
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

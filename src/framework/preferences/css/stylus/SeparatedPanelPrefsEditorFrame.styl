@@ -34,7 +34,7 @@ html {
     overflow-x: auto;
     overflow-y: hidden;
     color: #766d68;
-    padding: 10px 0px;
+    padding: 1px 0px;
     margin: 0px;
 
     .fl-prefsEditor {
@@ -44,8 +44,9 @@ html {
 
     // Preference Panels
     .fl-prefsEditor-panels {
-        margin: 0 20px;
         white-space: nowrap;
+        display: table;
+        border-spacing: 20px 0px;
 
         .fl-prefsEditor-panel {
             border: 1px solid #615e59;
@@ -53,12 +54,10 @@ html {
             box-shadow: 2px 2px #7a766d;
             display: inline-block;
             padding: 1em;
-            min-height: 9.6em;
-            width: 25em;
+            min-width: 25em;
             background-color: #fff;
-            margin-right: 10px;
             white-space: normal;
-            vertical-align: middle;
+            display: table-cell;
         }
     }
 
@@ -77,10 +76,12 @@ html {
 
     .fl-inputs {
         float: none;
+        padding: 0;
     }
 
     label {
         font-size: 1em;
+        display: block;
     }
 
     // Table of Contents switch

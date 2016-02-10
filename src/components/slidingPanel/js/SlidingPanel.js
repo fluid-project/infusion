@@ -1,5 +1,5 @@
 /*
-Copyright 2011 OCAD University
+Copyright 2011-2015 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -10,7 +10,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -19,7 +19,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *********************/
 
     fluid.defaults("fluid.slidingPanel", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         selectors: {
             panel: ".flc-slidingPanel-panel",
             toggleButton: ".flc-slidingPanel-toggleButton",
@@ -27,7 +27,8 @@ var fluid_2_0 = fluid_2_0 || {};
         },
         strings: {
             showText: "show",
-            hideText: "hide"
+            hideText: "hide",
+            panelLabel: "panel"
         },
         events: {
             onPanelHide: null,
@@ -45,14 +46,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 listener: "{that}.applier.modelChanged.addListener",
                 args: ["isShowing", "{that}.refreshView"]
             },
-            "onCreate.setAriaControls":{
-                "this": "{that}.dom.toggleButton",
-                "method": "attr",
-                "args": {
-                    "role": "button",
-                    "aria-controls": "{that}.panelId"
-                }
-            },
+            "onCreate.setAriaProps": "{that}.setAriaProps",
             "onCreate.setInitialState": {
                 listener: "{that}.refreshView"
             },
@@ -100,7 +94,7 @@ var fluid_2_0 = fluid_2_0 || {};
             isShowing: false
         },
         modelListeners: {
-            "{that}.model.isShowing": {
+            "isShowing": {
                 funcName: "{that}.setAriaStates",
                 excludeSource: "init"
             }
@@ -128,6 +122,10 @@ var fluid_2_0 = fluid_2_0 || {};
                 funcName: "fluid.slidingPanel.setAriaStates",
                 args: ["{that}", "{that}.model.isShowing"]
             },
+            setAriaProps: {
+                funcName: "fluid.slidingPanel.setAriaProperties",
+                args: ["{that}", "{that}.panelId"]
+            },
             togglePanel: {
                 funcName: "fluid.slidingPanel.togglePanel",
                 args: ["{that}"]
@@ -151,9 +149,22 @@ var fluid_2_0 = fluid_2_0 || {};
         that.events[that.model.isShowing ? "onPanelShow" : "onPanelHide"].fire();
     };
 
+    // panelId is passed in to ensure that it is evaluated before this
+    // function is called.
+    fluid.slidingPanel.setAriaProperties = function (that, panelId) {
+        that.locate("toggleButton").attr({
+            "role": "button",
+            "aria-controls": panelId
+        });
+        that.locate("panel").attr({
+            "aria-label": that.options.strings.panelLabel,
+            "role": "group"
+        });
+    };
+
     fluid.slidingPanel.setAriaStates = function (that, isShowing) {
         that.locate("toggleButton").attr("aria-pressed", isShowing);
         that.locate("panel").attr("aria-expanded", isShowing);
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

@@ -11,8 +11,8 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
-var fluid = fluid || fluid_2_0;
+var fluid_2_0_0 = fluid_2_0_0 || {};
+var fluid = fluid || fluid_2_0_0;
 
 (function ($, fluid) {
     "use strict";
@@ -165,8 +165,8 @@ var fluid = fluid || fluid_2_0;
     });
 
     fluid.transforms.binaryLookup = {
-        "===": function (a, b) { return a === b; },
-        "!==": function (a, b) { return a !== b; },
+        "===": function (a, b) { return fluid.model.isSameValue(a, b); },
+        "!==": function (a, b) { return !fluid.model.isSameValue(a, b); },
         "<=": function (a, b) { return a <= b; },
         "<": function (a, b) { return a < b; },
         ">=": function (a, b) { return a >= b; },
@@ -370,7 +370,7 @@ var fluid = fluid || fluid_2_0;
 
         fluid.each(options, function (outPath, key) {
             // write to output path given in options the value <presentValue> or <missingValue> depending on whether key is found in user input
-            var outVal = ($.inArray(key, value) !== -1) ? transformSpec.presentValue : transformSpec.missingValue;
+            var outVal = (value.indexOf(key) !== -1) ? transformSpec.presentValue : transformSpec.missingValue;
             fluid.model.transform.setValue(outPath, outVal, transformer);
         });
         // TODO: Why does this transform make no return?
@@ -486,6 +486,17 @@ var fluid = fluid || fluid_2_0;
         invertConfiguration: "fluid.transforms.arrayToObject.invert"
     });
 
+    /** Transforms an array of objects into an object of objects, by indexing using the option "key" which must be supplied within the transform specification.
+    * The key of each element will be taken from the value held in each each original object's member derived from the option value in "key" - this member should
+    * exist in each array element. The member with name agreeing with "key" and its value will be removed from each original object before inserting into the returned
+    * object.
+    * For example,
+    * <code>fluid.transforms.arrayToObject([{k: "e1", b: 1, c: 2}, {k: "e2", b: 2: c: 3}], {key: "k"})</code> will output the object
+    * <code>{e1: {b: 1, c: 2}, e2: {b: 2: c, 3}</code>
+    * Note: This transform frequently arises in the context of data which arose in XML form, which often represents "morally indexed" data in repeating array-like
+    * constructs where the indexing key is held, for example, in an attribute.
+    */
+
     fluid.transforms.arrayToObject = function (arr, transformSpec, transformer) {
         if (transformSpec.key === undefined) {
             fluid.fail("arrayToObject requires a 'key' option.", transformSpec);
@@ -540,12 +551,17 @@ var fluid = fluid || fluid_2_0;
     });
 
     /**
-     * Transforms an object into array of objects.
+     * Transforms an object of objects into an array of objects, by deindexing by the option "key" which must be supplied within the transform specification.
+     * The key of each object will become split out into a fresh value in each array element which will be given the key held in the transformSpec option "key".
+     * For example:
+     * <code>fluid.transforms.objectToArray({e1: {b: 1, c: 2}, e2: {b: 2: c, 3}, {key: "k"})</code> will output the array
+     * <code>[{k: "e1", b: 1, c: 2}, {k: "e2", b: 2: c: 3}]</code>
+     *
      * This performs the inverse transform of fluid.transforms.arrayToObject.
      */
     fluid.transforms.objectToArray = function (hash, transformSpec, transformer) {
         if (transformSpec.key === undefined) {
-            fluid.fail("objectToArray requires a 'key' option.", transformSpec);
+            fluid.fail("objectToArray requires a \"key\" option.", transformSpec);
         }
 
         var newArray = [];
@@ -648,6 +664,14 @@ var fluid = fluid || fluid_2_0;
         return togo;
     };
 
+    fluid.defaults("fluid.transforms.stringTemplate", {
+        gradeNames: "fluid.standardOutputTransformFunction"
+    });
+
+    fluid.transforms.stringTemplate = function (transformSpec) {
+        return fluid.stringTemplate(transformSpec.template, transformSpec.terms);
+    };
+
     fluid.defaults("fluid.transforms.free", {
         gradeNames: "fluid.transformFunction"
     });
@@ -657,4 +681,4 @@ var fluid = fluid || fluid_2_0;
         return fluid.invokeGlobalFunction(transformSpec.func, args);
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

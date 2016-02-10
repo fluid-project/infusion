@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid */
 
 var demo = demo || {};
@@ -37,11 +36,13 @@ var demo = demo || {};
          * Simple inline edits example.
          */
         fluid.inlineEdit(".demoSelector-inlineEdit-container-title", {
-            componentDecorators: {
-                type: "fluid.undoDecorator",
-                options: {
-                    selectors: demo.initInlineEdit.selectors,
-                    renderer: demo.undoRenderer
+            components: {
+                undo: {
+                    type: "fluid.undo",
+                    options: {
+                        selectors: demo.initInlineEdit.selectors,
+                        renderer: demo.undoRenderer
+                    }
                 }
             },
             styles: {
@@ -54,11 +55,13 @@ var demo = demo || {};
         });
 
         fluid.inlineEdit(".demoSelector-inlineEdit-container-caption", {
-            componentDecorators: {
-                type: "fluid.undoDecorator",
-                options: {
-                    selectors: demo.initInlineEdit.selectors,
-                    renderer: demo.undoRenderer
+            components: {
+                undo: {
+                    type: "fluid.undo",
+                    options: {
+                        selectors: demo.initInlineEdit.selectors,
+                        renderer: demo.undoRenderer
+                    }
                 }
             },
             strings: {

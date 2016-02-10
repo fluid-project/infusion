@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global require, module */
 
 var _ = require("lodash");
@@ -181,6 +180,11 @@ module.exports = function(grunt) {
         },
         jsonlint: {
             all: ["src/**/*.json", "tests/**/*.json", "demos/**/*.json", "examples/**/*.json"]
+        },
+        shell: {
+            runTests: {
+                command: "vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 testem ci --file tests/testem.json'"
+            }
         }
     });
 
@@ -194,6 +198,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-jsonlint");
     grunt.loadNpmTasks("grunt-modulefiles");
     grunt.loadNpmTasks("grunt-contrib-stylus");
+    grunt.loadNpmTasks("grunt-shell");
 
     // Custom tasks:
 
@@ -213,6 +218,7 @@ module.exports = function(grunt) {
 
     // Task for organizing the build
     grunt.registerTask("build", "Generates a minified or source distribution for the specified build target", function (target) {
+        target = target || "all";
         var tasks = [
             "clean",
             "stylus",
@@ -238,4 +244,6 @@ module.exports = function(grunt) {
     grunt.registerTask("custom", ["build:custom"]);
 
     grunt.registerTask("lint", "Apply jshint and jsonlint", ["jshint", "jsonlint"]);
+
+    grunt.registerTask("tests", "Run tests", ["shell:runTests"]);
 };

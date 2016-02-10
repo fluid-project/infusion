@@ -9,7 +9,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -23,7 +23,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.enactor.speak", {
-        gradeNames: ["fluid.prefs.enactor", "autoInit"],
+        gradeNames: "fluid.prefs.enactor",
         preferenceMap: {
             "fluid.prefs.speak": {
                 "model.enabled": "default"
@@ -71,7 +71,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.enactor.selfVoicing", {
-        gradeNames: ["fluid.viewRelayComponent", "fluid.prefs.enactor.speak", "autoInit"],
+        gradeNames: ["fluid.prefs.enactor.speak", "fluid.viewComponent"],
         modelListeners: {
             "enabled": {
                 listener: "{that}.handleSelfVoicing",
@@ -132,4 +132,4 @@ var fluid_2_0 = fluid_2_0 || {};
         });
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

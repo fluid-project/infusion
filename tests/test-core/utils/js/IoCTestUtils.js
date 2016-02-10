@@ -9,10 +9,9 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global jqUnit, QUnit */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -20,7 +19,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.registerNamespace("fluid.test");
 
     fluid.defaults("fluid.test.testEnvironment", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         components: {
             sequenceListener: {
                 type: "fluid.test.sequenceListener"
@@ -62,9 +61,9 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         }
     });
-    
+
     fluid.registerNamespace("fluid.test.checkHang");
-    
+
     fluid.test.checkHang.beginStep = function (sequenceState, testEnvironment) {
         clearTimeout(sequenceState.hangTimer);
         sequenceState.hangTimer = setTimeout(
@@ -72,24 +71,35 @@ var fluid_2_0 = fluid_2_0 || {};
                 testEnvironment.events.onSequenceHang.fire(sequenceState);
             }, testEnvironment.options.hangWait);
     };
-    
+
     fluid.test.checkHang.endSequence = function (sequenceState) {
         clearTimeout(sequenceState.hangTimer);
     };
-    
+
     fluid.test.checkHang.reportHang = function (sequenceState, testEnvironment) {
         fluid.log(fluid.logLevel.IMPORTANT, "Test case listener has not responded after " + testEnvironment.options.hangWait + "ms - at sequence pos " +
             sequenceState.sequenceText() + " sequence element ", sequenceState.fixture.sequence[sequenceState.sequencePos - 1], " of fixture " + sequenceState.fixture.name);
     };
 
-    fluid.demands("fluid.test.sequenceListener", [], {funcName: "fluid.emptySubcomponent"});
+    fluid.defaults("fluid.test.sequenceListener", { // TODO: this used to be "fluid.emptySubcomponent" in the fluid.demands era - review and improve support for this
+        gradeNames: ["fluid.component", "fluid.contextAware"]
+    });
 
     /** In the browser only, hijack a piece of the QUnit UI in order to show the running sequence number **/
 
-    fluid.demands("fluid.test.sequenceListener", "fluid.browser", {funcName: "fluid.test.browserSequenceListener"});
+    fluid.contextAware.makeAdaptation({
+        distributionName: "fluid.test.browserSequenceDistribution",
+        targetName: "fluid.test.sequenceListener",
+        adaptationName: "browserSequence",
+        checkName: "browserSequence",
+        record: {
+            contextValue: "{fluid.browser}",
+            gradeNames: "fluid.test.browserSequenceListener"
+        }
+    });
 
     fluid.defaults("fluid.test.browserSequenceListener", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         listeners: {
             "{testEnvironment}.events.onBeginSequence": {
                 listener: "fluid.test.browserSequenceListener.onBeginSequence",
@@ -157,7 +167,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 that.testCaseHolders.push(component);
             }
         };
-        fluid.visitComponentChildren(that, visitor, visitOptions, "");
+        fluid.visitComponentChildren(that, visitor, visitOptions);
         // This structure is constructed here, reused for each "TestCaseHolder" but is given a shallow
         // clone in "sequenceExecutor".
         var testCaseState = {
@@ -186,7 +196,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.test.testCaseHolder", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         mergePolicy: {
             modules: "noexpand",
             moduleSource: "noexpand"
@@ -235,7 +245,7 @@ var fluid_2_0 = fluid_2_0 || {};
         if (fixture.args) {
             togo = function () {
                 var expandedArgs = fluid.expandOptions(fixture.args, testCaseState.testCaseHolder, {}, {"arguments": arguments});
-                return listener.apply(null, expandedArgs);
+                return listener.apply(null, fluid.makeArray(expandedArgs));
             };
         } else {
             togo = listener;
@@ -296,7 +306,7 @@ var fluid_2_0 = fluid_2_0 || {};
         );
         return that;
     };
-    
+
     fluid.test.composeSimple = function (f1, f2) {
         return function () {
             f1();
@@ -343,11 +353,12 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.test.decoders.event = function (testCaseState, fixture) {
         var analysed = fluid.analyseTarget(testCaseState, fixture.event, "events");
         var listener = fluid.test.decodeListener(testCaseState, fixture);
+        var priority = fixture.priority === undefined ? "last:testing" : fixture.priority;
         var bind, unbind;
         if (analysed.resolved) {
             var event = analysed.resolved;
             bind = function (wrapped) {
-                event.addListener(wrapped, fixture.namespace, null, fixture.priority);
+                event.addListener(wrapped, fixture.namespace, priority);
             };
             unbind = function (wrapped) {
                 event.removeListener(wrapped);
@@ -364,12 +375,12 @@ var fluid_2_0 = fluid_2_0 || {};
                     namespace: fixture.namespace,
                     priority: fixture.priority
                 });
-                id = fluid.pushDistributions(analysed.head, analysed.selector,
+                id = fluid.pushDistributions(analysed.head, analysed.selector, fixture.event,
                     [{options: options, recordType: "distribution", priority: fluid.mergeRecordTypes.distribution}]
                 );
             };
             unbind = function () {
-                fluid.clearDistributions(analysed.head, id);
+                fluid.clearDistribution(analysed.head, id);
             };
         } else {
             fluid.fail("Error decoding event fixture ", fixture, ": must be able to look up member \"event\" to one or more events");
@@ -387,11 +398,9 @@ var fluid_2_0 = fluid_2_0 || {};
                 fluid.fail("Error in changeEvent fixture ", fixture,
                    ": could not find path specification named \"path\" or \"spec\"");
             }
-            if (event.isRelayEvent) { // special support for new-style change listeners
-                spec.transactional = true;
-                if (spec.priority === undefined) {
-                    spec.priority = "last";
-                }
+            spec.transactional = true;
+            if (spec.priority === undefined) {
+                spec.priority = "last:testing";
             }
             event.addListener(spec, wrapped, fixture.namespace);
         }, function (wrapped) {
@@ -466,7 +475,7 @@ var fluid_2_0 = fluid_2_0 || {};
             return (pos === undefined ? that.sequencePos : pos) + " of " + that.count;
         };
         testCaseState.events.onBeginSequence.fire(testCaseState, that);
-        
+
         var finishSequence = function () {
             testCaseState.events.onEndSequence.fire(testCaseState, that);
             testCaseState.finisher();
@@ -576,9 +585,12 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.test.processTestCase = function (testCaseState) {
         var testCase = testCaseState.testCase;
+        if (!testCase.name) {
+            fluid.fail("Error in configuration of testCase - required field \"name\" is missing in ", testCase);
+        }
         jqUnit.module(testCase.name);
         var fixtures = fluid.makeArray(testCase.tests);
-        fluid.each(fixtures, function (fixture) {
+        fluid.each(fixtures, function (fixture, index) {
             var testType = "asyncTest";
 
             var testFunc = function () {
@@ -602,6 +614,9 @@ var fluid_2_0 = fluid_2_0 || {};
             // might enter the queue and immediately leave it as a result of only ever issuing
             // asynchronous tests
             var oldLength = QUnit.config.queue.length;
+            if (!fixture.name) {
+                fluid.fail("Error in configuration of test fixture - required field \"name\" is missing in ", fixture, " at index " + index + " of test case ", testCase);
+            }
             jqUnit[testType](fixture.name, testFunc);
             if (QUnit.config.queue.length === oldLength) {
                 fluid.log(fluid.logLevel.IMPORTANT, "Skipped test " + fixture.name);
@@ -629,4 +644,4 @@ var fluid_2_0 = fluid_2_0 || {};
         });
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

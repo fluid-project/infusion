@@ -28,6 +28,7 @@
     "worker": true,
 
     "globals": {
-        "fluid_2_0": true
+        "fluid_2_0_0": true,
+        "JSON": false
     }
 }
