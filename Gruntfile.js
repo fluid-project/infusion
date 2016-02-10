@@ -198,7 +198,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-jsonlint");
     grunt.loadNpmTasks("grunt-modulefiles");
     grunt.loadNpmTasks("grunt-contrib-stylus");
-    grunt.loadNpmTasks('grunt-shell');
+    grunt.loadNpmTasks("grunt-shell");
 
     // Custom tasks:
 

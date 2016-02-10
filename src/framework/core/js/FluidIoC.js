@@ -389,7 +389,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.pushDistributions = function (targetHead, selector, target, blocks) {
         var targetShadow = fluid.shadowForComponent(targetHead);
         var id = fluid.allocateGuid();
-        var distributions = (targetShadow.distributions = targetShadow.distributions || []);
         var distribution = {
             id: id, // This id is used in clearDistributions
             target: target, // Here for improved debuggability - info is duplicated in "selector"
@@ -398,7 +397,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         };
         Object.freeze(distribution);
         Object.freeze(distribution.blocks);
-        distributions.push(distribution);
+        fluid.pushArray(targetShadow, "distributions", distribution);
         return id;
     };
 
@@ -891,11 +890,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.recordListener = function (event, listener, shadow, listenerId) {
         if (event.ownerId !== shadow.that.id) { // don't bother recording listeners registered from this component itself
-            var listeners = shadow.listeners;
-            if (!listeners) {
-                listeners = shadow.listeners = [];
-            }
-            listeners.push({event: event, listener: listener, listenerId: listenerId});
+            fluid.pushArray(shadow, "listeners", {event: event, listener: listener, listenerId: listenerId});
         }
     };
 
@@ -1770,6 +1765,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var transRecs = fluid.transform(records, function (record) {
             // TODO: FLUID-5242 fix - we copy here since distributeOptions does not copy options blocks that it distributes and we can hence corrupt them.
             // need to clarify policy on options sharing - for slightly better efficiency, copy should happen during distribution and not here
+            // Note that fluid.mergeModelListeners expects to write to these too
             var expanded = fluid.isPrimitive(record) || record.expander ? {listener: record} : fluid.copy(record);
             var methodist = fluid.recordToApplicable(record, that);
             if (methodist) {

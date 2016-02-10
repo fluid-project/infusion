@@ -723,18 +723,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     modelListeners: {
                         "fahrenheit": [{
-                            path: "fahrenheit",
+                            //path: "fahrenheit",
                             func: "{fluid5361head}.recordPriority",
                             priority: 1,
                             args: ["{fluid5361head}", 1, "{that}"]
                         }, {
-                            path: "fahrenheit",
+                            //path: "fahrenheit",
                             func: "{fluid5361head}.recordPriority",
                             priority: 2,
                             namespace: "priority2",
                             args: ["{fluid5361head}", 2, "{that}"]
                         }, {
-                            path: "fahrenheit",
+                            //path: "fahrenheit",
                             func: "{fluid5361head}.recordPriority",
                             priority: "last",
                             args: ["{fluid5361head}", "last", "{that}"]
@@ -770,6 +770,65 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that2.child1.applier.change("celsius", 30);
         var expected2 = [1, 1, "last", "last"];
         jqUnit.assertDeepEq("Model notifications globally sorted by priority, with actioned listener removal", expected2, that2.priorityLog);
+    });
+
+    /** FLUID-5695: New-style multiple paths and namespaces for model listeners **/
+
+    fluid.defaults("fluid.tests.fluid5695root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            position: 30,
+            irrelevantValue: false,
+            windowHolders: {
+                mainWindow: {
+                    x: 20,
+                    y: 30
+                },
+                otherWindow: {
+                    x: 30,
+                    y: 90
+                }
+            }
+        },
+        modelListeners: {
+            layoutListener: {
+                path: [
+                    "position", {
+                        segs: [["windowHolders"], "{that}.options.ourWindow"]
+                    }
+                ],
+                priority: "before:notifyExternal",
+                func: "{that}.refreshView",
+                args: ["{change}.value", "{change}.oldValue"]
+            }
+        },
+        members: {
+            refreshes: 0
+        },
+        invokers: {
+            refreshView: "fluid.tests.fluid5695record({that}, {arguments}.0)"
+        },
+        ourWindow: "mainWindow"
+    });
+
+    fluid.tests.fluid5695record = function (that, newValue) {
+        that.refreshes ++;
+        that.frozenModel = fluid.copy(newValue);
+    };
+
+    // Note - we need to WARN/FAIL if we discover two model listeners with the same namespace attached to different components
+    // which are notified as part of the same transaction. In the end we need to be able to statically verify that this has
+    // not occurred at design time
+
+    jqUnit.test("FLUID-5695: Complex specification of paths and namespaces for model listeners", function () {
+        var that = fluid.tests.fluid5695root();
+        jqUnit.assertEquals("Captured initial transition for initial transaction", 1, that.refreshes);
+        that.applier.change("position", 40);
+        jqUnit.assertEquals("Invalidated by change in position field", 2, that.refreshes);
+        jqUnit.assertLeftHand("Captured model by argument", {position: 40}, that.frozenModel);
+        that.applier.change("windowHolders.mainWindow.x", 30);
+        jqUnit.assertEquals("Invalidated by change in position field", 3, that.refreshes);
+        jqUnit.assertDeepEq("Captured model by argument", {x: 30, y: 30}, that.frozenModel.windowHolders.mainWindow);
     });
 
     /** Demonstrate resolving a set of model references which is cyclic in components (although not in values), as well as

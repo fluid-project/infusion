@@ -392,32 +392,49 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.parseModelReference = function (that, ref) {
         var parsed = fluid.parseContextReference(ref);
         parsed.segs = that.applier.parseEL(parsed.path);
+        // At this point, resolve FLUID-5848 - we may as well call fluid.resolveContext here
         return parsed;
     };
 
     fluid.parseValidModelReference = function (that, name, ref) {
         var reject = function (message) {
-            fluid.fail("Error in " + name + ": " + ref + message);
+            fluid.fail("Error in " + name + ": ", ref, message);
         };
-        var parsed, target;
-        if (ref.charAt(0) === "{") {
-            parsed = fluid.parseModelReference(that, ref);
-            if (parsed.segs[0] !== "model") {
-                reject(" must be a reference into a component model beginning with \"model\"");
+        var parsed; // resolve ref into context and modelSegs
+        if (typeof(ref) === "string") {
+            if (ref.charAt(0) === "{") {
+                parsed = fluid.parseModelReference(that, ref);
+                // TODO: At this point, resolve FLUID-5848
+                if (parsed.segs[0] !== "model") {
+                    reject(" must be a reference into a component model beginning with \"model\"");
+                } else {
+                    parsed.modelSegs = parsed.segs.slice(1);
+                    delete parsed.path;
+                }
+
             } else {
-                parsed.modelSegs = parsed.segs.slice(1);
-                delete parsed.path;
+                parsed = {
+                    path: ref,
+                    modelSegs: that.applier.parseEL(ref)
+                };
             }
+        } else {
+            if (!fluid.isArrayable(ref.segs)) {
+                reject(" must contain an entry \"segs\" holding path segments referring a model path within a component");
+            }
+            parsed = {
+                context: ref.context,
+                modelSegs: fluid.expandOptions(ref.segs, that)
+            };
+        }
+        var target; // resolve target component, which defaults to "that"
+        if (parsed.context) {
             target = fluid.resolveContext(parsed.context, that);
             if (!target) {
                 reject(" must be a reference to an existing component");
             }
         } else {
             target = that;
-            parsed = {
-                path: ref,
-                modelSegs: that.applier.parseEL(ref)
-            };
         }
         if (!target.applier) {
             fluid.getForComponent(target, ["applier"]);
@@ -677,6 +694,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.parseImplicitRelay = function (that, modelRec, segs, options) {
         var value;
         if (typeof(modelRec) === "string" && modelRec.charAt(0) === "{") {
+            // TODO: Another site for FLUID-5848
             var parsed = fluid.parseModelReference(that, modelRec);
             var target = fluid.resolveContext(parsed.context, that);
             if (parsed.segs[0] === "model") {
@@ -835,50 +853,65 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         return togo;
     };
 
+    fluid.registerModelListeners = function (that, record, paths, namespace, perComponent) {
+        var func = fluid.resolveModelListener(that, record);
+        fluid.each(record.byTarget, function (parsedArray) {
+            var parsed = parsedArray[0]; // that, applier are common across all these elements
+            var spec = {
+                listener: func, // for initModelEvent
+                listenerIndex: perComponent.listenerCount,
+                segsArray: fluid.getMembers(parsedArray, "modelSegs"),
+                pathArray: fluid.getMembers(parsedArray, "path"),
+                includeSource: record.includeSource,
+                excludeSource: record.excludeSource,
+                priority: record.priority,
+                transactional: true
+            };
+            ++perComponent.listenerCount;
+            // update "spec" so that we parse priority information just once
+            spec = parsed.applier.modelChanged.addListener(spec, func, namespace, record.softNamespace);
+
+            fluid.recordChangeListener(that, parsed.applier, func);
+            function initModelEvent() {
+                if (fluid.isModelComplete(parsed.that)) {
+                    var trans = parsed.applier.initiate("init");
+                    fluid.initModelEvent(that, parsed.applier, trans, [spec]);
+                    trans.commit();
+                }
+            }
+            if (that !== parsed.that && !fluid.isModelComplete(that)) { // TODO: Use FLUID-4883 "latched events" when available
+                // Don't confuse the end user by firing their listener before the component is constructed
+                // TODO: Better detection than this is requred - we assume that the target component will not be discovered as part
+                // of the initial transaction wave, but if it is, it will get a double notification - we really need "wave of explosions"
+                // since we are currently too early in initialisation of THIS component in order to tell if other will be found
+                // independently.
+                var onCreate = fluid.getForComponent(that, ["events", "onCreate"]);
+                onCreate.addListener(initModelEvent);
+            }
+        });
+    };
+
     fluid.mergeModelListeners = function (that, listeners) {
-        var listenerCount = 0;
-        fluid.each(listeners, function (value, path) {
+        var perComponent = {
+            listenerCount: 0
+        };
+        fluid.each(listeners, function (value, key) {
             if (typeof(value) === "string") {
                 value = {
                     funcName: value
                 };
             }
-            var records = fluid.event.resolveListenerRecord(value, that, "modelListeners", null, false);
-            var parsed = fluid.parseValidModelReference(that, "modelListeners entry", path);
             // Bypass fluid.event.dispatchListener by means of "standard = false" and enter our custom workflow including expanding "change":
-            fluid.each(records.records, function (record) {
-                var func = fluid.resolveModelListener(that, record);
-                var spec = {
-                    listener: func, // for initModelEvent
-                    listenerIndex: listenerCount,
-                    segs: parsed.modelSegs,
-                    path: parsed.path,
-                    includeSource: record.includeSource,
-                    excludeSource: record.excludeSource,
-                    priority: record.priority,
-                    transactional: true
-                };
-                ++listenerCount;
-                 // update "spec" so that we parse priority information just once
-                spec = parsed.applier.modelChanged.addListener(spec, func, record.namespace, record.softNamespace);
-
-                fluid.recordChangeListener(that, parsed.applier, func);
-                function initModelEvent() {
-                    if (fluid.isModelComplete(parsed.that)) {
-                        var trans = parsed.applier.initiate("init");
-                        fluid.initModelEvent(that, parsed.applier, trans, [spec]);
-                        trans.commit();
-                    }
-                }
-                if (that !== parsed.that && !fluid.isModelComplete(that)) { // TODO: Use FLUID-4883 "latched events" when available
-                    // Don't confuse the end user by firing their listener before the component is constructed
-                    // TODO: Better detection than this is requred - we assume that the target component will not be discovered as part
-                    // of the initial transaction wave, but if it is, it will get a double notification - we really need "wave of explosions"
-                    // since we are currently too early in initialisation of THIS component in order to tell if other will be found
-                    // independently.
-                    var onCreate = fluid.getForComponent(that, ["events", "onCreate"]);
-                    onCreate.addListener(initModelEvent);
-                }
+            var records = fluid.event.resolveListenerRecord(value, that, "modelListeners", null, false).records;
+            fluid.each(records, function (record) {
+                record.byTarget = {};
+                var paths = fluid.makeArray(record.path || key);
+                fluid.each(paths, function (path) {
+                    var parsed = fluid.parseValidModelReference(that, "modelListeners entry", path);
+                    fluid.pushArray(record.byTarget, parsed.that.id, parsed);
+                });
+                var namespace = (record.namespace && !record.softNamespace ? record.namespace : null) || (record.path ? key : null);
+                fluid.registerModelListeners(that, record, paths, namespace, perComponent);
             });
         });
     };
@@ -1162,8 +1195,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.storeExternalChange = function (transRec, applier, invalidPath, spec, args) {
         var pathString = applier.composeSegments.apply(null, invalidPath);
-        var keySegs = [applier.applierId, fluid.event.identifyListener(spec.listener), spec.listenerIndex, pathString];
+        //var keySegs = [applier.applierId, fluid.event.identifyListener(spec.listener), spec.listenerIndex, pathString];
+        //var keyString = keySegs.join("|");
+        var keySegs = [applier.holder.id, spec.specId, (spec.wildcard ? pathString : "")];
         var keyString = keySegs.join("|");
+        // TODO: We think we probably have a bug in that notifications destined for end of transaction are actually continuously emitted during the transaction
         // These are unbottled in fluid.concludeTransaction
         transRec.externalChanges[keyString] = {listener: spec.listener, priority: spec.priority, args: args};
     };
@@ -1189,34 +1225,40 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var transRec = transaction && fluid.getModelTransactionRec(instantiator, transaction.id);
         for (var i = 0; i < listeners.length; ++ i) {
             var spec = listeners[i];
-            var invalidPaths = fluid.matchChanges(changeMap, spec.segs, newHolder);
-            for (var j = 0; j < invalidPaths.length; ++ j) {
-                if (applier.destroyed) { // 2nd guarding point for FLUID-5592
-                    return;
-                }
-                var invalidPath = invalidPaths[j];
-                spec.listener = fluid.event.resolveListener(spec.listener);
-                // TODO: process namespace and softNamespace rules, and propagate "sources" in 4th argument
-                var args = [fluid.model.getSimple(newHolder, invalidPath), fluid.model.getSimple(oldHolder, invalidPath), invalidPath.slice(1), changeRequest, transaction, applier];
-                // FLUID-5489: Do not notify of null changes which were reported as a result of invalidating a higher path
-                // TODO: We can improve greatly on efficiency by i) reporting a special code from fluid.matchChanges which signals the difference between invalidating a higher and lower path,
-                // ii) improving fluid.model.diff to create fewer intermediate structures and no copies
-                // TODO: The relay invalidation system is broken and must always be notified (branch 1) - since our old/new value detection is based on the wrong (global) timepoints in the transaction here,
-                // rather than the "last received model" by the holder of the transform document
-                if (!spec.isRelay) {
-                    var isNull = fluid.model.diff(args[0], args[1]);
-                    if (isNull) {
-                        continue;
+            var multiplePaths = spec.segsArray.length > 1; // does this spec listen on multiple paths? If so, don't rebase arguments and just report once per transaction
+            for (var j = 0; j < spec.segsArray.length; ++ j) {
+                var invalidPaths = fluid.matchChanges(changeMap, spec.segsArray[j], newHolder);
+                // We only have multiple invalidPaths here if there is a wildcard
+                for (var k = 0; k < invalidPaths.length; ++ k) {
+                    if (applier.destroyed) { // 2nd guarding point for FLUID-5592
+                        return;
                     }
-                    var sourceExcluded = fluid.isExcludedChangeSource(transaction, spec);
-                    if (sourceExcluded) {
-                        continue;
+                    var invalidPath = invalidPaths[k];
+                    spec.listener = fluid.event.resolveListener(spec.listener);
+                    // TODO: process namespace and softNamespace rules, and propagate "sources" in 4th argument
+                    var args = [multiplePaths ? newHolder.model : fluid.model.getSimple(newHolder, invalidPath),
+                                multiplePaths ? oldHolder.model : fluid.model.getSimple(oldHolder, invalidPath),
+                                multiplePaths ? [] : invalidPath.slice(1), changeRequest, transaction, applier];
+                    // FLUID-5489: Do not notify of null changes which were reported as a result of invalidating a higher path
+                    // TODO: We can improve greatly on efficiency by i) reporting a special code from fluid.matchChanges which signals the difference between invalidating a higher and lower path,
+                    // ii) improving fluid.model.diff to create fewer intermediate structures and no copies
+                    // TODO: The relay invalidation system is broken and must always be notified (branch 1) - since our old/new value detection is based on the wrong (global) timepoints in the transaction here,
+                    // rather than the "last received model" by the holder of the transform document
+                    if (!spec.isRelay) {
+                        var isNull = fluid.model.diff(args[0], args[1]);
+                        if (isNull) {
+                            continue;
+                        }
+                        var sourceExcluded = fluid.isExcludedChangeSource(transaction, spec);
+                        if (sourceExcluded) {
+                            continue;
+                        }
                     }
-                }
-                if (transRec && !spec.isRelay && spec.transactional) { // bottle up genuine external changes so we can sort and dedupe them later
-                    fluid.storeExternalChange(transRec, applier, invalidPath, spec, args);
-                } else {
-                    spec.listener.apply(null, args);
+                    if (transRec && !spec.isRelay && spec.transactional) { // bottle up genuine external changes so we can sort and dedupe them later
+                        fluid.storeExternalChange(transRec, applier, invalidPath, spec, args);
+                    } else {
+                        spec.listener.apply(null, args);
+                    }
                 }
             }
         }
@@ -1273,7 +1315,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             } else {
                 spec = fluid.copy(spec);
             }
-            spec.id = fluid.event.identifyListener(listener);
+            spec.id = fluid.event.identifyListener(listener); // used in removeListener
+            spec.specId = fluid.allocateGuid(); // used when deduplicating changes in notifyExternal
             spec.namespace = namespace;
             spec.softNamespace = softNamespace;
             if (typeof(listener) === "string") { // The reason for "globalName" is so that listener names can be resolved on first use and not on registration
@@ -1283,11 +1326,25 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             if (spec.transactional !== false) {
                 spec.transactional = true;
             }
-            spec.segs = spec.segs || that.parseEL(spec.path);
+            if (!spec.segsArray) { // It's a manual registration
+                if (spec.path !== undefined) {
+                    spec.segs = spec.segs || that.parseEL(spec.path);
+                }
+                if (!spec.segsArray) {
+                    spec.segsArray = [spec.segs];
+                }
+            }
             var collection = that.changeListeners[spec.transactional ? "transListeners" : "listeners"];
             spec.excludeSource = fluid.arrayToHash(fluid.makeArray(spec.excludeSource || (spec.includeSource ? "*" : undefined)));
             spec.includeSource = fluid.arrayToHash(fluid.makeArray(spec.includeSource));
-            spec.priority = fluid.parsePriority(spec.priority, collection.length, true, "model listener");
+            spec.wildcard = fluid.accumulate(fluid.transform(spec.segsArray, function (segs) {
+                return fluid.contains(segs, "*");
+            }), fluid.add, 0);
+            if (spec.wildcard && spec.segsArray.length > 1) {
+                fluid.fail("Error in model listener specification ", spec, " - you may not supply a wildcard pattern as one of a set of multiple paths to be matched");
+            }
+
+            spec.priority = fluid.parsePriority(spec.priority, collection.length, false, "model listener");
             collection.push(spec);
             return spec;
         };

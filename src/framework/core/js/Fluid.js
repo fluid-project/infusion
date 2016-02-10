@@ -423,6 +423,21 @@ var fluid = fluid || fluid_2_0_0;
         return togo;
     };
 
+    /** Pushes an element or elements onto an array, initialising the array as a member of a holding object if it is
+     * not already allocated.
+     * @param holder {Array or Object} The holding object whose member is to receive the pushed element(s).
+     * @param member {String} The member of the <code>holder</code> onto which the element(s) are to be pushed
+     * @param topush {Array or Object} If an array, these elements will be added to the end of the array using Array.push.apply. If an object, it will be pushed to the end of the array using Array.push.
+     */
+    fluid.pushArray = function (holder, member, topush) {
+        var array = holder[member] ? holder[member] : (holder[member] = []);
+        if (fluid.isArrayable(topush)) {
+            array.push.apply(array, topush);
+        } else {
+            array.push(topush);
+        }
+    };
+
     function transformInternal(source, togo, key, args) {
         var transit = source[key];
         for (var j = 0; j < args.length - 1; ++j) {
@@ -533,6 +548,15 @@ var fluid = fluid || fluid_2_0_0;
             arg = fn(list[i], arg, i);
         }
         return arg;
+    };
+
+    /** Returns the sum of its two arguments. A useful utility to combine with fluid.accumulate to compute totals 
+     * @param a {Number|Boolean} The first operand to be added
+     * @param b {Number|Boolean} The second operand to be added
+     * @return {Number} The sum of the two operands
+     **/
+    fluid.add = function (a, b) {
+        return a + b;
     };
 
     /** Scan through an array or hash of objects, removing those which match a predicate. Similar to
@@ -1120,6 +1144,7 @@ var fluid = fluid || fluid_2_0_0;
     };
 
     // unsupported, NON-API function
+    // TODO: Note - no "fixedOnly = true" sites remain in the framework
     fluid.parsePriorityConstraint = function (constraint, fixedOnly, site) {
         var segs = constraint.split(":");
         var type = segs[0];
@@ -1182,6 +1207,7 @@ var fluid = fluid || fluid_2_0_0;
 
     fluid.honourConstraint = function (array, firstConstraint, c) {
         var constraint = array[c].priority.constraint;
+        // TODO: We should find the LAST entry for a namespace for an "after" type (this is only relevant for model listeners)
         var matchIndex = fluid.find(array, function (element, index) {
             return element.namespace === constraint.target ? index : undefined;
         }, -1);
@@ -1741,7 +1767,8 @@ var fluid = fluid || fluid_2_0_0;
         var indexFunc = typeof(indexSpec.indexFunc) === "function" ? indexSpec.indexFunc : fluid.getGlobalValue(indexSpec.indexFunc);
         var keys = indexFunc(defaults) || [];
         for (var j = 0; j < keys.length; ++ j) {
-            (index[keys[j]] = index[keys[j]] || []).push(defaultName);
+            fluid.pushArray(index, keys[j], defaultName);
+            // (index[keys[j]] = index[keys[j]] || []).push(defaultName);
         }
     };
 
