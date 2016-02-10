@@ -17,7 +17,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     "use strict";
 
     fluid.registerNamespace("fluid.tests");
-    
+
     fluid.setLogging(true);
 
     fluid.tests.testRendererUtilities = function () {
@@ -55,7 +55,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.module("Renderer component tests");
-        
+
         function assertRenderedText(els, array) {
             fluid.each(els, function (el, index) {
                 jqUnit.assertEquals("Element " + index + " text", array[index], $(el).text());
@@ -118,7 +118,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 messageBase: globalMessages
             });
             var that = fluid.tests.rendererComponentTest(".renderer-component-test");
-            
+
             that.refreshView();
             var renderMess = that.locate("message").text();
             jqUnit.assertEquals("Rendered message from bundle", that.options.strings.message, renderMess);
@@ -430,8 +430,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             that.refreshView();
             var input = that.locate("input");
             jqUnit.assertEquals("Initial value rendered", model.value, input.val());
-            input.val("New Value");
-            input.change();
+            fluid.changeElementValue(input, "New Value");
             jqUnit.assertEquals("Updated value read", "New Value", that.model.value);
         });
 
@@ -659,7 +658,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         // FLUID-5664: rendererComponent as a whole should respect model rebinding
-        
+
         fluid.defaults("fluid.tests.fluid5664root", {
             gradeNames: ["fluid.rendererComponent"],
             selectors: {
@@ -679,7 +678,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             renderOnInit: true
         });
-        
+
         jqUnit.test("FLUID-5664: Rebind model root in renderer component", function () {
             var that = fluid.tests.fluid5664root("#FLUID-5664");
             jqUnit.assertEquals("Successfully rendered with undefined model", "", that.dom.locate("input").val());
@@ -687,8 +686,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             that.refreshView();
             jqUnit.assertEquals("Markup updated for root change", "inputValue", that.dom.locate("input").val());
         });
-        
-        
+
+
         jqUnit.module("Protocomponent Expander Tests");
 
         jqUnit.test("makeProtoExpander Basic Tests", function () {
@@ -1622,7 +1621,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     customSetConfigRendererComponent.model["a.b.c"].val);
             }
             checkDataBind("OLD");
-            escaped.val("NEW").change();
+            fluid.changeElementValue(escaped, "NEW");
             checkDataBind("NEW");
         });
 
@@ -1656,7 +1655,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 that.refreshView();
             });
         };
-        
+
         fluid.defaults("fluid.tests.fluid5048.captionsSettings", {
             gradeNames: ["fluid.tests.fluid5048.mediaSettings"]
         });
@@ -1731,7 +1730,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.addSourceGuardedListener(that.applier, "test", "test", function () {
                 jqUnit.assert("Listener is applied correctly.");
             });
-            test.val("NEW VALUE").change();
+            fluid.changeElementValue(test, "NEW VALUE");
         });
 
         fluid.defaults("fluid.tests.fluid4986", {

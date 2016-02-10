@@ -10,11 +10,11 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
-    
+
     fluid.defaults("fluid.uploader.html5", {
         gradeNames: "fluid.uploader.multiFileUploader",
         components: {
@@ -138,7 +138,7 @@ var fluid_2_0 = fluid_2_0 || {};
             formData.append(key, value);
         });
     };
-    
+
     fluid.defaults("fluid.uploader.html5Strategy.fileSender", {
         gradeNames: ["fluid.component", "fluid.contextAware"],
         invokers: {
@@ -222,7 +222,7 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         }
     });
-    
+
 
     fluid.uploader.html5Strategy.local.addFiles = function (that, files) {
         // Add files to the file queue without exceeding the fileUploadLimit and the fileSizeLimit
@@ -363,4 +363,4 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

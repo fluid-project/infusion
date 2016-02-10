@@ -24,7 +24,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests");
 
     jqUnit.module("Fluid JS Tests");
-    
+
     fluid.tests.plainObjectTrue = {
         "object": {},
         "array": [],
@@ -39,7 +39,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "jDocument": $("document"),
         "component": fluid.component()
     };
-    
+
     jqUnit.test("fluid.isPlainObject tests", function () {
         fluid.each(fluid.tests.plainObjectTrue, function (totest, key) {
             jqUnit.assertEquals("Expected plain: " + key, true, fluid.isPlainObject(totest));
@@ -48,7 +48,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Expected nonplain: " + key, false, fluid.isPlainObject(totest));
         });
     });
-    
+
 
     function isOdd(i) {
         return i % 2 === 1;
@@ -76,12 +76,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.remove_if({"one": 1, "three": 3, "five": 5, "seven": 7}, isOdd));
         jqUnit.assertDeepEq("Remove from nothing", {}, fluid.remove_if({}, isOdd));
     });
-    
+
     fluid.tests.indexChecker = function (value, index) {
         jqUnit.assertEquals("Index should remain stable through removal: " + value, value, index);
         return value === 1 || value === 2;
     };
-    
+
     jqUnit.test("remove_if index stability and target", function () {
         jqUnit.expect(5);
         var target = [];
@@ -132,7 +132,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.assertTrue("a null each and a null transform don't crash the framework", true);
     });
-    
+
     fluid.tests.flattenFixtures = [ {
             message: "standard mixture",
             arg: [1, [{a: 1}, 13], false, [{b: 2}]],
@@ -151,7 +151,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expected: [null]
         }
     ];
-    
+
     jqUnit.test("fluid.flatten", function () {
         fluid.each(fluid.tests.flattenFixtures, function (fixture) {
             jqUnit.assertDeepEq(fixture.message, fixture.expected, fluid.flatten(fixture.arg));
@@ -423,6 +423,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }, "thingit");
         fluid.pushSoftFailure(-1);
     });
+    
+    jqUnit.test("FLUID-5807 tests - identify fluid.FluidError", function () {
+        // These tests have a direct analogue in basic-node-tests.js
+        var error = new fluid.FluidError("thing");
+        jqUnit.assertTrue("Framework error is an error (from its own perspective)", error instanceof fluid.Error);
+        jqUnit.assertTrue("Framework error is an instance of itself", error instanceof fluid.FluidError);
+        var stack = error.stack.toString();
+        jqUnit.assertTrue("Our own filename must appear in the stack", stack.indexOf("FluidJSTests") !== -1);
+    });
 
     function passTestLog(level, expected) {
         jqUnit.assertEquals("Should " + (expected ? "not " : "") + "pass debug level " + level, expected, fluid.passLogLevel(fluid.logLevel[level]));
@@ -552,7 +561,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         firer.removeListener("toRemoveNonExistent"); // for FLUID-4791
         firer.fire(false);
     });
-    
+
     jqUnit.test("FLUID-5506 stack for namespaced listeners", function () {
         var firer = fluid.makeEventFirer();
         var record = [];
@@ -568,7 +577,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         firer.fire(); // listener 1 is now top of stack
         jqUnit.assertDeepEq("Listener removed by namespace reveals earlier", [2, 1], record);
     });
-    
+
     fluid.tests.constraintTests = [{
         name: "one before",
         listeners: {
@@ -611,13 +620,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         expected: "a"
     }];
-    
+
     fluid.tests.upgradeListeners = function (listeners) {
         return fluid.hashToArray(listeners, "namespace", function (newElement, oldElement) {
             newElement.priority = fluid.parsePriority(oldElement, 0, false, "listeners");
         });
     };
-    
+
     jqUnit.test("FLUID-5506 constraint-based listeners", function () {
         fluid.each(fluid.tests.constraintTests, function (fixture) {
             var listeners = fluid.tests.upgradeListeners(fixture.listeners);
@@ -628,7 +637,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Expected sort order for test " + fixture.name, fixture.expected, flattened);
         });
     });
-    
+
     fluid.tests.failedConstraintTests = [{
         name: "self-reference",
         listeners: {
@@ -655,7 +664,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "c": "before:b"
         }
     }];
-    
+
     jqUnit.test("FLUID-5506: constraint-based listeners - failure cases", function () {
         fluid.each(fluid.tests.failedConstraintTests, function (fixture) {
             jqUnit.expectFrameworkDiagnostic("Expected failure for test " + fixture.name, function () {
@@ -748,16 +757,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.tests.missingGradeComponent();
         }, ["incomplete", "nonexistentGrade"]);
     });
-    
-        
+
+
     fluid.defaults("fluid.tests.forwardRefComponent", {
         gradeNames: "fluid.tests.forwardBaseComponent"
     });
-    
+
     fluid.defaults("fluid.tests.forwardBaseComponent", {
         gradeNames: "fluid.component"
     });
-    
+
     jqUnit.test("Forward reference through grade hierarchy", function () {
         jqUnit.expect(1);
         var that = fluid.tests.forwardRefComponent();
@@ -816,7 +825,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         jqUnit.assertDeepEq("Indexed multiple grades", expected, indexedPanels);
     });
-    
+
     fluid.tests.invokeGlobalFunction = {
         withArgs: function (arg1) {
             jqUnit.assertEquals("A single argument should have been passed in", 1, arguments.length);
@@ -833,8 +842,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.invokeGlobalFunction("fluid.tests.invokeGlobalFunction.withArgs", ["test arg"]);
         fluid.invokeGlobalFunction("fluid.tests.invokeGlobalFunction.withoutArgs");
     });
-    
-    
+
+
     fluid.defaults("fluid.tests.functionWithoutArgMap", {
         gradeNames: "fluid.function"
     });
@@ -844,13 +853,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.invokeGradedFunction(name, spec);
         }, "Cannot look up name");
     };
-    
+
     jqUnit.test("fluid.invokeGradedFunction - diagnostics from bad invocations", function () {
         fluid.tests.testInvalidGradedFunction("fluid.tests.nonexistentName");
         fluid.tests.testInvalidGradedFunction("fluid.tests.functionWithoutArgMap");
         fluid.tests.testInvalidGradedFunction("fluid.tests.gradeComponent");
     });
-    
+
     fluid.defaults("fluid.tests.functionWithArgMap", {
         gradeNames: "fluid.function",
         argumentMap: {
@@ -858,11 +867,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             denominator: 1
         }
     });
-    
+
     fluid.tests.functionWithArgMap = function (numerator, denominator) {
         return numerator / denominator;
     };
-    
+
     jqUnit.test("fluid.invokeGradedFunction - valid case", function () {
         var result = fluid.invokeGradedFunction("fluid.tests.functionWithArgMap", {
             numerator: 1,
@@ -887,5 +896,5 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The value returned from the bind should be the same as the native call", jqElm.text(), fluid.bind(jqElm, "text"));
         jqUnit.assertEquals("The correct value should be returned", 6, fluid.bind(testObj, "fn", [1, 2]));
     });
-    
+
 })(jQuery);

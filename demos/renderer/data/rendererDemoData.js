@@ -21,7 +21,7 @@ demo.data = {
         price: "Price",
         include: "Include?"
     },
-    
+
     locations: {
         codes: ["parlour", "library", "dining"],
         names: ["Parlour", "Library", "Dining Room"],
@@ -41,5 +41,3 @@ demo.data = {
         choices: []
     }
 };
-
-

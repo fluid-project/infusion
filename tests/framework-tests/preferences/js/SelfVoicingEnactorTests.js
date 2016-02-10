@@ -139,6 +139,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.selfVoicingTests", {
         gradeNames: ["fluid.test.testEnvironment"],
+        markupFixture: ".flc-selfVoicing",
         components: {
             selfVoicing: {
                 type: "fluid.tests.prefs.enactor.selfVoicingEnactor",

@@ -9,7 +9,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -106,9 +106,9 @@ var fluid_2_0 = fluid_2_0 || {};
         that.locate("header").text(that.options.strings.headerText);
         that.container.hide();
     };
-      
+
     // An "interactional mixin" - a courtesy to dream of a possibility that an "errorPanel" could conceivably be deployed separately
-    // from an "uploader"  
+    // from an "uploader"
     fluid.defaults("fluid.uploader.errorPanel.bindUploader", {
         listeners: {
             "{uploader}.events.afterFileDialog": "{errorPanel}.refreshView"
@@ -123,7 +123,7 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         }
     });
-    
+
     fluid.defaults("fluid.uploader.errorPanel.section", {
         gradeNames: ["fluid.viewComponent"],
         model: {
@@ -231,4 +231,4 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

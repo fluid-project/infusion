@@ -55,9 +55,9 @@
         jqUnit.assertDeepNeq("eq11", [1, [2, 3, 4]], [1, [2, 3, 4, 5]]);
         jqUnit.assertDeepEq("eq12", [1, 2, 3, 4, 5], [1, 2, 3, 4, 5]);
     });
-    
+
     jqUnit.module("messageResolver");
-    
+
     jqUnit.test("messageResolver", function () {
         var bundlea = {
             key1: "value1a",
@@ -107,7 +107,7 @@
         }];
         jqUnit.assertDeepEq("Parsed compound CSS selector", expected, tree);
     });
-    
+
 
     fluid.tests.testRenderer = function () {
 
@@ -326,24 +326,9 @@
             changeBack(null, null);
             var input = fluid.jById(idMap["score-7"]);
             jqUnit.assertEquals("Input text", "1", input.val());
-            input.val(100);
-            input.change();
+            fluid.changeElementValue(input, 100);
             jqUnit.assertEquals("change-decorate-identify", 7, indexChange);
         });
-
-        //   rendertests.test("Invalid trees", function () {
-        //     var node = $(".RSF-77-test");
-        //     var error;
-        //     try {
-        //      fluid.selfRender(node, {
-        //         "row:": ["Label 1", "Label 2"]
-        //         });
-        //     }
-        //     catch (e) {
-        //      error = e;
-        //     }
-        //     jqUnit.assertNotUndefined("Invalid tree")
-        //   });
 
         var messageBase = {
             message1: "A simple message",
@@ -709,8 +694,7 @@
             var label = $("label", node);
             jqUnit.assertEquals("Label for select should match the id of the select itself",
                 label.attr("for"), select.attr("id"));
-            select.val("Enchiridion");
-            select.change();
+            fluid.changeElementValue(select, "Enchiridion");
             if (!opts) {
                 fluid.applyBoundChange(select);
             }
@@ -778,8 +762,7 @@
             }, opts));
             multipleSelectionRenderTests(node);
             var select = $("select", node);
-            select.val(["Exomologesis", "Apocatastasis"]);
-            select.change();
+            fluid.changeElementValue(select, ["Exomologesis", "Apocatastasis"]);
             if (!opts) {
                 fluid.applyBoundChange(select);
             }
@@ -1000,8 +983,7 @@
                 type: "text",
                 value: "value"
             }, text);
-            text.val("New value");
-            text.change();
+            fluid.changeElementValue(text, "New value");
             jqUnit.assertEquals("Model updated", "New value", model.string);
 
             var checkbox = $(".checkbox");
@@ -1371,8 +1353,7 @@
             });
             var orig1 = fluid.copy(holder1.model);
             var CATT2 = $(".my-input-1", $(".second-block", node));
-            CATT2.val("CHATT");
-            CATT2.change();
+            fluid.changeElementValue(CATT2, "CHATT");
             jqUnit.assertDeepEq("Unchanged model 1", orig1, holder1.model);
             jqUnit.assertDeepEq("Changed model 2", {
                 value1: "CHATT",
@@ -1570,7 +1551,7 @@
             jqUnit.expect(2);
             fluid.failureEvent.addListener(fluid.identity, "jqUnit"); // temporarily displace jqUnit's test failing listener
             fluid.fetchResources(resourceSpec2, callback);
-            
+
             jqUnit.assertEquals("Two calls to destructive callback", 2, destructiveCalls);
             jqUnit.assertEquals("Call to overall callback", 1, callbackCalled);
         });

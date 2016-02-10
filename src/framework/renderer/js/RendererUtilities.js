@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-fluid_2_0 = fluid_2_0 || {};
+fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -127,6 +127,7 @@ fluid_2_0 = fluid_2_0 || {};
             autoBind: true
         },
         events: {
+            onResourcesFetched: null,
             prepareModelForRender: null,
             onRenderTree: null,
             afterRender: null
@@ -189,7 +190,7 @@ fluid_2_0 = fluid_2_0 || {};
         fluid.getForComponent(that, "applier");
         fluid.diagnoseFailedView(componentName, that, fluid.defaults(componentName), arguments);
 
-        fluid.fetchResources(that.options.resources); // TODO: deal with asynchrony
+        fluid.fetchResources(that.options.resources, that.events.onResourcesFetched.fire); // TODO: deal with asynchrony
 
         var rendererOptions = fluid.renderer.modeliseOptions(that.options.rendererOptions, null, that);
 
@@ -655,4 +656,4 @@ fluid_2_0 = fluid_2_0 || {};
         };
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

@@ -12,7 +12,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -113,7 +113,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // Implementation notes: The EL path manipulation utilities here are equivalents of the simpler ones
     // that are provided in Fluid.js and elsewhere - they apply escaping rules to parse characters .
-    // as \. and \ as \\ - allowing us to process member names containing periods. These versions are mostly 
+    // as \. and \ as \\ - allowing us to process member names containing periods. These versions are mostly
     // in use within model machinery, whereas the cheaper versions based on String.split(".") are mostly used
     // within the IoC machinery.
     // Performance testing in early 2015 suggests that modern browsers now allow these to execute slightly faster
@@ -223,7 +223,7 @@ var fluid_2_0 = fluid_2_0 || {};
         }
         return path;
     };
-    
+
     /** Helpful utility for use in resolvers - matches a path which has already been
      * parsed into segments **/
 
@@ -303,13 +303,13 @@ var fluid_2_0 = fluid_2_0 || {};
         }
         return enlist;
     };
-    
+
     fluid.clearTransactions = function () {
         var instantiator = fluid.globalInstantiator;
         fluid.clear(instantiator.modelTransactions);
         instantiator.modelTransactions.init = {};
     };
-    
+
     fluid.failureEvent.addListener(fluid.clearTransactions, "clearTransactions", "before:fail");
 
     // Utility to coordinate with our crude "oscillation prevention system" which limits each link to 2 updates (presumably
@@ -455,7 +455,7 @@ var fluid_2_0 = fluid_2_0 || {};
         var shadow = fluid.shadowForComponent(component);
         fluid.recordListener(applier.modelChanged, sourceListener, shadow);
     };
-    
+
     // Configure this parameter to tweak the number of relays the model will attempt per transaction before bailing out with an error
     fluid.relayRecursionBailout = 100;
 
@@ -504,7 +504,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 }
                 if (transducer && !options.targetApplier) {
                     // TODO: This is just for safety but is still unusual and now abused. The transducer doesn't need the "newValue" since all the transform information
-                    // has been baked into the transform document itself. However, we now rely on this special signalling value to make sure we regenerate transforms in 
+                    // has been baked into the transform document itself. However, we now rely on this special signalling value to make sure we regenerate transforms in
                     // the "forwardAdapter"
                     transducer(existing.transaction, options.sourceApplier ? undefined : newValue, sourceSegs, targetSegs);
                 } else if (newValue !== undefined) {
@@ -781,7 +781,7 @@ var fluid_2_0 = fluid_2_0 || {};
         applier.preCommit.addListener(updateRelays);
         applier.preCommit.addListener(commitRelays);
         applier.postCommit.addListener(concludeTransaction);
-        
+
         return null;
     };
 
@@ -1078,7 +1078,7 @@ var fluid_2_0 = fluid_2_0 || {};
         }
         return options.deltas ? options.deltaMap : null;
     };
-    
+
     /** Compare two models for equality using a deep algorithm. It is assumed that both models are JSON-equivalent and do
      * not contain circular links.
      * @param modela The first model to be compared
@@ -1167,7 +1167,7 @@ var fluid_2_0 = fluid_2_0 || {};
         // These are unbottled in fluid.concludeTransaction
         transRec.externalChanges[keyString] = {listener: spec.listener, priority: spec.priority, args: args};
     };
-    
+
     fluid.isExcludedChangeSource = function (transaction, spec) {
         if (!spec.excludeSource) { // mergeModelListeners initModelEvent fabricates a fake spec that bypasses processing
             return false;
@@ -1236,14 +1236,14 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.emptyHolder = { model: undefined };
-    
+
     fluid.preFireChangeRequest = function (applier, changeRequest) {
         if (!changeRequest.type) {
             changeRequest.type = "ADD";
         }
         changeRequest.segs = changeRequest.segs || applier.parseEL(changeRequest.path);
     };
-    
+
     fluid.ChangeApplier = function () {};
 
     fluid.makeHolderChangeApplier = function (holder, options) {
@@ -1276,7 +1276,7 @@ var fluid_2_0 = fluid_2_0 || {};
             spec.id = fluid.event.identifyListener(listener);
             spec.namespace = namespace;
             spec.softNamespace = softNamespace;
-            if (typeof(listener) === "string") { // TODO: replicate this nonsense from Fluid.js until we remember its purpose
+            if (typeof(listener) === "string") { // The reason for "globalName" is so that listener names can be resolved on first use and not on registration
                 listener = {globalName: listener};
             }
             spec.listener = listener;
@@ -1356,4 +1356,4 @@ var fluid_2_0 = fluid_2_0 || {};
         return that;
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

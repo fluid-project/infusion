@@ -13,7 +13,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($) {
     "use strict";
-    
+
     fluid.defaults("fluid.tests.tableOfContents.templateDistributor", {
         distributeOptions: {
             target: "{/ fluid.tableOfContents.levels}.options.resources.template",
@@ -23,7 +23,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-    
+
     fluid.constructSingle([], "fluid.tests.tableOfContents.templateDistributor");
 
     /* For testing a page with no headings */

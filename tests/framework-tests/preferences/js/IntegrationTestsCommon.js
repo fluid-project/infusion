@@ -79,7 +79,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.prefs.applierRequestChanges = function (prefsEditor, selectionOptions) {
         prefsEditor.applier.requestChange("", selectionOptions);
     };
-    
+
     fluid.defaults("fluid.tests.prefs.globalSettingsStore", {
         gradeNames: ["fluid.prefs.globalSettingsStore"],
         distributeOptions: {
@@ -92,7 +92,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // TODO: Rewrite this test case as a proper grade rather than a bunch of functions and state in a closure
         jqUnit.asyncTest(componentName + " Integration tests", function () {
             fluid.tests.prefs.globalSettingsStore();
-                
+
             fluid.pageEnhancer({
                 uiEnhancer: {
                     gradeNames: ["fluid.uiEnhancer.starterEnactors"],

@@ -11,7 +11,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 /* global jqUnit, QUnit */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -61,9 +61,9 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         }
     });
-    
+
     fluid.registerNamespace("fluid.test.checkHang");
-    
+
     fluid.test.checkHang.beginStep = function (sequenceState, testEnvironment) {
         clearTimeout(sequenceState.hangTimer);
         sequenceState.hangTimer = setTimeout(
@@ -71,22 +71,22 @@ var fluid_2_0 = fluid_2_0 || {};
                 testEnvironment.events.onSequenceHang.fire(sequenceState);
             }, testEnvironment.options.hangWait);
     };
-    
+
     fluid.test.checkHang.endSequence = function (sequenceState) {
         clearTimeout(sequenceState.hangTimer);
     };
-    
+
     fluid.test.checkHang.reportHang = function (sequenceState, testEnvironment) {
         fluid.log(fluid.logLevel.IMPORTANT, "Test case listener has not responded after " + testEnvironment.options.hangWait + "ms - at sequence pos " +
             sequenceState.sequenceText() + " sequence element ", sequenceState.fixture.sequence[sequenceState.sequencePos - 1], " of fixture " + sequenceState.fixture.name);
     };
-    
+
     fluid.defaults("fluid.test.sequenceListener", { // TODO: this used to be "fluid.emptySubcomponent" in the fluid.demands era - review and improve support for this
         gradeNames: ["fluid.component", "fluid.contextAware"]
     });
 
     /** In the browser only, hijack a piece of the QUnit UI in order to show the running sequence number **/
-    
+
     fluid.contextAware.makeAdaptation({
         distributionName: "fluid.test.browserSequenceDistribution",
         targetName: "fluid.test.sequenceListener",
@@ -245,7 +245,7 @@ var fluid_2_0 = fluid_2_0 || {};
         if (fixture.args) {
             togo = function () {
                 var expandedArgs = fluid.expandOptions(fixture.args, testCaseState.testCaseHolder, {}, {"arguments": arguments});
-                return listener.apply(null, expandedArgs);
+                return listener.apply(null, fluid.makeArray(expandedArgs));
             };
         } else {
             togo = listener;
@@ -306,7 +306,7 @@ var fluid_2_0 = fluid_2_0 || {};
         );
         return that;
     };
-    
+
     fluid.test.composeSimple = function (f1, f2) {
         return function () {
             f1();
@@ -375,7 +375,7 @@ var fluid_2_0 = fluid_2_0 || {};
                     namespace: fixture.namespace,
                     priority: fixture.priority
                 });
-                id = fluid.pushDistributions(analysed.head, analysed.selector,
+                id = fluid.pushDistributions(analysed.head, analysed.selector, fixture.event,
                     [{options: options, recordType: "distribution", priority: fluid.mergeRecordTypes.distribution}]
                 );
             };
@@ -475,7 +475,7 @@ var fluid_2_0 = fluid_2_0 || {};
             return (pos === undefined ? that.sequencePos : pos) + " of " + that.count;
         };
         testCaseState.events.onBeginSequence.fire(testCaseState, that);
-        
+
         var finishSequence = function () {
             testCaseState.events.onEndSequence.fire(testCaseState, that);
             testCaseState.finisher();
@@ -585,9 +585,12 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.test.processTestCase = function (testCaseState) {
         var testCase = testCaseState.testCase;
+        if (!testCase.name) {
+            fluid.fail("Error in configuration of testCase - required field \"name\" is missing in ", testCase);
+        }
         jqUnit.module(testCase.name);
         var fixtures = fluid.makeArray(testCase.tests);
-        fluid.each(fixtures, function (fixture) {
+        fluid.each(fixtures, function (fixture, index) {
             var testType = "asyncTest";
 
             var testFunc = function () {
@@ -611,6 +614,9 @@ var fluid_2_0 = fluid_2_0 || {};
             // might enter the queue and immediately leave it as a result of only ever issuing
             // asynchronous tests
             var oldLength = QUnit.config.queue.length;
+            if (!fixture.name) {
+                fluid.fail("Error in configuration of test fixture - required field \"name\" is missing in ", fixture, " at index " + index + " of test case ", testCase);
+            }
             jqUnit[testType](fixture.name, testFunc);
             if (QUnit.config.queue.length === oldLength) {
                 fluid.log(fluid.logLevel.IMPORTANT, "Skipped test " + fixture.name);
@@ -638,4 +644,4 @@ var fluid_2_0 = fluid_2_0 || {};
         });
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

@@ -14,7 +14,7 @@ Copyright 2007-2009 University of California, Berkeley
 Copyright 2010-2011 Lucendo Development Ltd.
 Copyright 2010 OCAD University
 Copyright 2011 Charly Molter
-Copyright 2014-2015 Raising the Floor (International)
+Copyright 2014-2015 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -26,13 +26,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 /* global console */
 
-var fluid_2_0 = fluid_2_0 || {};
-var fluid = fluid || fluid_2_0;
+var fluid_2_0_0 = fluid_2_0_0 || {};
+var fluid = fluid || fluid_2_0_0;
 
 (function ($, fluid) {
     "use strict";
 
-    fluid.version = "Infusion 2.0-SNAPSHOT";
+    fluid.version = "Infusion 2.0.0";
 
     // Export this for use in environments like node.js, where it is useful for
     // configuring stack trace behaviour
@@ -95,8 +95,8 @@ var fluid = fluid || fluid_2_0;
         renderer = renderer || fluid.renderOneActivity;
         return fluid.transform(activityStack, renderer);
     };
-    
-    // Definitions for ThreadLocals, the static and dynamic environment - lifted here from
+
+    // Definitions for ThreadLocals - lifted here from
     // FluidIoC.js so that we can issue calls to fluid.describeActivity for debugging purposes
     // in the core framework
 
@@ -168,19 +168,25 @@ var fluid = fluid || fluid_2_0;
         activityStack.length = popped < 0 ? 0 : popped;
     };
     // "this-ist" style Error so that we can distinguish framework errors whilst still retaining access to platform Error features
-    // unsupported, non-API function
-    fluid.FluidError = function (message) {
-        this.message = message;
-        this.stack = new Error().stack;
+    // Solution taken from http://stackoverflow.com/questions/8802845/inheriting-from-the-error-object-where-is-the-message-property#answer-17936621
+    fluid.FluidError = function (/*message*/) {
+        var togo = Error.apply(this, arguments);
+        this.message = togo.message;
+        try { // This technique is necessary on IE11 since otherwise the stack entry is not filled in
+            throw togo;
+        } catch (togo) { // jshint ignore:line
+            this.stack = togo.stack;
+        }
+        return this;
     };
-    fluid.FluidError.prototype = new Error();
-    
+    fluid.FluidError.prototype = Object.create(Error.prototype);
+
     // The framework's built-in "log" failure handler - this logs the supplied message as well as any framework activity in progress via fluid.log
     fluid.logFailure = function (args, activity) {
         fluid.log.apply(null, [fluid.logLevel.FAIL, "ASSERTION FAILED: "].concat(args));
         fluid.logActivity(activity);
     };
-    
+
     fluid.renderLoggingArg = function (arg) {
         return fluid.isPrimitive(arg) || !fluid.isPlainObject(arg) ? arg : JSON.stringify(arg);
     };
@@ -333,7 +339,7 @@ var fluid = fluid || fluid_2_0;
         } // FLUID-5226: This inventive strategy taken from jQuery detects whether the object's prototype is directly Object.prototype by virtue of having an "isPrototypeOf" direct member
         return !totest.constructor || !totest.constructor.prototype || Object.prototype.hasOwnProperty.call(totest.constructor.prototype, "isPrototypeOf");
     };
-    
+
     /** Returns <code>primitive</code>, <code>array</code> or <code>object</code> depending on whether the supplied object has
      * one of those types, by use of the <code>fluid.isPrimitive</code>, <code>fluid.isPlainObject</code> and <code>fluid.isArrayable</code> utilities
      */
@@ -349,10 +355,6 @@ var fluid = fluid || fluid_2_0;
         return obj && typeof (obj.nodeType) === "number";
     };
 
-    fluid.isDOMish = function (obj) {
-        return fluid.isDOMNode(obj) || obj.jquery;
-    };
-
     fluid.isComponent = function (obj) {
         return obj && obj.constructor === fluid.componentConstructor;
     };
@@ -364,7 +366,7 @@ var fluid = fluid || fluid_2_0;
     };
 
     /** A function which raises a failure if executed */
-    
+
     fluid.notImplemented = function () {
         fluid.fail("This operation is not implemented");
     };
@@ -376,9 +378,9 @@ var fluid = fluid || fluid_2_0;
     };
 
     fluid.isUncopyable = function (totest) {
-        return fluid.isPrimitive(totest) || fluid.isDOMish(totest) || !fluid.isPlainObject(totest);
+        return fluid.isPrimitive(totest) || !fluid.isPlainObject(totest);
     };
-    
+
     fluid.copyRecurse = function (tocopy, segs) {
         if (segs.length > fluid.strategyRecursionBailout) {
             fluid.fail("Runaway recursion encountered in fluid.copy - reached path depth of " + fluid.strategyRecursionBailout + " via path of " + segs.join(".") +
@@ -429,15 +431,15 @@ var fluid = fluid || fluid_2_0;
         togo[key] = transit;
     }
 
-    /** Return a list or hash of objects, transformed by one or more functions. Similar to
+    /** Return an array or hash of objects, transformed by one or more functions. Similar to
      * jQuery.map, only will accept an arbitrary list of transformation functions and also
      * works on non-arrays.
      * @param source {Array or Object} The initial container of objects to be transformed. If the source is
      * neither an array nor an object, it will be returned untransformed
      * @param fn1, fn2, etc. {Function} An arbitrary number of optional further arguments,
      * all of type Function, accepting the signature (object, index), where object is the
-     * list member to be transformed, and index is its list index. Each function will be
-     * applied in turn to each list member, which will be replaced by the return value
+     * structure member to be transformed, and index is its key or index. Each function will be
+     * applied in turn to each structure member, which will be replaced by the return value
      * from the function.
      * @return The finally transformed list, where each member has been replaced by the
      * original member acted on by the function or functions.
@@ -500,14 +502,14 @@ var fluid = fluid || fluid_2_0;
         };
     };
 
-    /** Scan through a list or hash of objects, terminating on the first member which
+    /** Scan through an array or hash of objects, terminating on the first member which
      * matches a predicate function.
-     * @param source {Arrayable or Object} The list or hash of objects to be searched.
+     * @param source {Arrayable or Object} The array or hash of objects to be searched.
      * @param func {Function} A predicate function, acting on a member. A predicate which
      * returns any value which is not <code>undefined</code> will terminate
      * the search. The function accepts (object, index).
      * @param deflt {Object} A value to be returned in the case no predicate function matches
-     * a list member. The default will be the natural value of <code>undefined</code>
+     * a structure member. The default will be the natural value of <code>undefined</code>
      * @return The first return value from the predicate function which is not <code>undefined</code>
      */
     fluid.find = fluid.make_find(false);
@@ -516,7 +518,7 @@ var fluid = fluid || fluid_2_0;
      */
     fluid.find_if = fluid.make_find(true);
 
-    /** Scan through a list of objects, "accumulating" a value over them
+    /** Scan through an array of objects, "accumulating" a value over them
      * (may be a straightforward "sum" or some other chained computation). "accumulate" is the name derived
      * from the C++ STL, other names for this algorithm are "reduce" or "fold".
      * @param list {Array} The list of objects to be accumulated over.
@@ -533,13 +535,14 @@ var fluid = fluid || fluid_2_0;
         return arg;
     };
 
-    /** Scan through a list or hash of objects, removing those which match a predicate. Similar to
+    /** Scan through an array or hash of objects, removing those which match a predicate. Similar to
      * jQuery.grep, only acts on the list in-place by removal, rather than by creating
      * a new list by inclusion.
-     * @param source {Array|Object} The list or hash of objects to be scanned over.
+     * @param source {Array|Object} The array or hash of objects to be scanned over. Note that in the case this is an array,
+     * the iteration will proceed from the end of the array towards the front.
      * @param fn {Function} A predicate function determining whether an element should be
      * removed. This accepts the standard signature (object, index) and returns a "truthy"
-     * result in order to determine that the supplied object should be removed from the list.
+     * result in order to determine that the supplied object should be removed from the structure.
      * @param target {Array|Object} (optional) A target object of the same type as <code>source</code>, which will
      * receive any objects removed from it.
      * @return <code>target</code>, containing the removed elements, if it was supplied, or else <code>source</code>
@@ -608,11 +611,11 @@ var fluid = fluid || fluid_2_0;
         });
     };
 
-    /** Accepts an object to be filtered, and a list of keys. Either all keys not present in
-     * the list are removed, or only keys present in the list are returned.
+    /** Accepts an object to be filtered, and an array of keys. Either all keys not present in
+     * the array are removed, or only keys present in the array are returned.
      * @param toFilter {Array|Object} The object to be filtered - this will be NOT modified by the operation (current implementation
      * passes through $.extend shallow algorithm)
-     * @param keys {Array of String} The list of keys to operate with
+     * @param keys {Array of String} The array of keys to operate with
      * @param exclude {boolean} If <code>true</code>, the keys listed are removed rather than included
      * @return the filtered object (the same object that was supplied as <code>toFilter</code>
      */
@@ -664,8 +667,7 @@ var fluid = fluid || fluid_2_0;
      * @param obj {Object} the Object to be searched through
      * @param value {Object} the value to be found. This will be compared against the object's
      * member using === equality.
-     * @return {String} The first key whose value matches the one supplied, or <code>null</code> if no
-     * such key is found.
+     * @return {String} The first key whose value matches the one supplied
      */
     fluid.keyForValue = function (obj, value) {
         return fluid.find(obj, function (thisValue, key) {
@@ -687,14 +689,14 @@ var fluid = fluid || fluid_2_0;
         });
         return togo;
     };
-    
+
     /** Applies a stable sorting algorithm to the supplied array and comparator (note that Array.sort in JavaScript is not specified
      * to be stable). The algorithm used will be an insertion sort, which whilst quadratic in time, will perform well
      * on small array sizes.
      * @param array {Array} The array to be sorted. This input array will be modified in place.
      * @param func {Function} A comparator returning >0, 0, or <0 on pairs of elements representing their sort order (same contract as Array.sort comparator)
      */
-    
+
     fluid.stableSort = function (array, func) {
         for (var i = 0; i < array.length; i++) {
             var k = array[i];
@@ -704,11 +706,11 @@ var fluid = fluid || fluid_2_0;
             array[j] = k;
         }
     };
-    
+
     /** Converts a hash into an object by hoisting out the object's keys into an array element via the supplied String "key", and then transforming via an optional further function, which receives the signature
      * (newElement, oldElement, key) where newElement is the freshly cloned element, oldElement is the original hash's element, and key is the key of the element.
      * If the function is not supplied, the old element is simply deep-cloned onto the new element (same effect
-     * as transform fluid.transforms.objectToArray) 
+     * as transform fluid.transforms.objectToArray)
      */
     fluid.hashToArray = function (hash, keyName, func) {
         var togo = [];
@@ -725,7 +727,7 @@ var fluid = fluid || fluid_2_0;
         return togo;
     };
 
-    /** Converts an array consisting of a mixture of arrays and non-arrays into the concatenation of any inner arrays 
+    /** Converts an array consisting of a mixture of arrays and non-arrays into the concatenation of any inner arrays
      * with the non-array elements
      */
     fluid.flatten = function (array) {
@@ -782,14 +784,14 @@ var fluid = fluid || fluid_2_0;
       * use internal to the framework **/
 
     fluid.marker = function () {};
-    
+
     fluid.makeMarker = function (value, extra) {
         var togo = Object.create(fluid.marker.prototype);
         togo.value = value;
         $.extend(togo, extra);
         return Object.freeze(togo);
     };
-    
+
     /** A special "marker object" representing that a distinguished
      * (probably context-dependent) value should be substituted.
      */
@@ -814,7 +816,7 @@ var fluid = fluid || fluid_2_0;
         }
         return totest.value === type.value;
     };
-    
+
     fluid.logLevelsSpec = {
         "FATAL":      0,
         "FAIL":       5,
@@ -831,7 +833,7 @@ var fluid = fluid || fluid_2_0;
         return fluid.makeMarker(key, {priority: value});
     });
     var logLevelStack = [fluid.logLevel.IMPORTANT]; // The stack of active logging levels, with the current level at index 0
-    
+
 
     // Model functions
     fluid.model = {}; // cannot call registerNamespace yet since it depends on fluid.model
@@ -975,7 +977,7 @@ var fluid = fluid || fluid_2_0;
         }
         return fluid.model.accessSimple(root, EL, fluid.NO_VALUE, environment, initSegs, false);
     };
-    
+
     /** Even more optimised version which assumes segs are parsed and no configuration **/
     fluid.getImmediate = function (root, segs, i) {
         var limit = (i === undefined ? segs.length: i + 1);
@@ -1075,10 +1077,7 @@ var fluid = fluid || fluid_2_0;
     fluid.dumpEl = fluid.identity;
     fluid.renderTimestamp = fluid.identity;
 
-
-    /*** The Fluid Event system. ***/
-
-    fluid.registerNamespace("fluid.event");
+    /*** The Fluid instance id ***/
 
     // unsupported, NON-API function
     fluid.generateUniquePrefix = function () {
@@ -1097,9 +1096,13 @@ var fluid = fluid || fluid_2_0;
     fluid.allocateGuid = function () {
         return fluid_prefix + (fluid_guid++);
     };
-    
+
+    /*** The Fluid Event system. ***/
+
+    fluid.registerNamespace("fluid.event");
+
     // Fluid priority system for encoding relative positions of, e.g. listeners, transforms, options, in lists
-    
+
     fluid.extremePriority = 4e9; // around 2^32 - allows headroom of 21 fractional bits for sub-priorities
     fluid.priorityTypes = {
         first: -1,
@@ -1115,8 +1118,8 @@ var fluid = fluid || fluid_2_0;
         testing: 10,
         authoring: 20
     };
-    
-    // unsupported, NON-API function    
+
+    // unsupported, NON-API function
     fluid.parsePriorityConstraint = function (constraint, fixedOnly, site) {
         var segs = constraint.split(":");
         var type = segs[0];
@@ -1132,7 +1135,7 @@ var fluid = fluid || fluid_2_0;
             target: segs[1]
         };
     };
-    
+
     // unsupported, NON-API function
     fluid.parsePriority = function (priority, count, fixedOnly, site) {
         priority = priority || 0;
@@ -1159,10 +1162,10 @@ var fluid = fluid || fluid_2_0;
         if (togo.fixed !== null) {
             togo.fixed += togo.count / 1024; // use some fractional bits to encode count bias
         }
-        
+
         return togo;
     };
-    
+
     fluid.renderPriority = function (parsed) {
         return parsed.constraint ? (parsed.constraint.target ? parsed.constraint.type + ":" + parsed.constraint.target : parsed.constraint.type ) : Math.floor(parsed.fixed);
     };
@@ -1176,7 +1179,7 @@ var fluid = fluid || fluid_2_0;
             return (recA.priority.fixed === null) - (recB.priority.fixed === null);
         }
     };
-    
+
     fluid.honourConstraint = function (array, firstConstraint, c) {
         var constraint = array[c].priority.constraint;
         var matchIndex = fluid.find(array, function (element, index) {
@@ -1199,14 +1202,14 @@ var fluid = fluid || fluid_2_0;
     };
 
     // unsupported, NON-API function
-    // Priorities accepted from users have higher numbers representing high priority (sort first) - 
+    // Priorities accepted from users have higher numbers representing high priority (sort first) -
     fluid.sortByPriority = function (array) {
         fluid.stableSort(array, fluid.compareByPriority);
 
         var firstConstraint = fluid.find(array, function (element, index) {
             return element.priority.constraint && fluid.priorityTypes[element.priority.constraint.type] === 0 ? index : undefined;
         }, array.length);
-        
+
         while (true) {
             if (firstConstraint === array.length) {
                 return array;
@@ -1263,17 +1266,18 @@ var fluid = fluid || fluid_2_0;
     // unsupported, non-API function
     fluid.event.invokeListener = function (listener, args) {
         if (typeof(listener) === "string") {
-            listener = fluid.event.resolveListener({globalName: listener}); // just resolves globals
+            listener = fluid.event.resolveListener(listener); // just resolves globals
         }
         return listener.apply(null, args);
     };
 
     // unsupported, NON-API function
     fluid.event.resolveListener = function (listener) {
-        if (listener.globalName) {
-            var listenerFunc = fluid.getGlobalValue(listener.globalName);
+        var listenerName = listener.globalName || (typeof(listener) === "string" ? listener : null);
+        if (listenerName) {
+            var listenerFunc = fluid.getGlobalValue(listenerName);
             if (!listenerFunc) {
-                fluid.fail("Unable to look up name " + listener.globalName + " as a global function");
+                fluid.fail("Unable to look up name " + listenerName + " as a global function");
             } else {
                 listener = listenerFunc;
             }
@@ -1503,7 +1507,7 @@ var fluid = fluid || fluid_2_0;
             return target;
         };
     };
-    
+
     fluid.validateListenersImplemented = function (that) {
         var errors = [];
         fluid.each(that.events, function (event, name) {
@@ -1526,14 +1530,14 @@ var fluid = fluid || fluid_2_0;
     fluid.arrayConcatPolicy = function (target, source) {
         return fluid.makeArray(target).concat(fluid.makeArray(source));
     };
-    
+
     /*** FLUID ERROR SYSTEM ***/
-    
+
     fluid.failureEvent = fluid.makeEventFirer({name: "failure event"});
-    
+
     fluid.failureEvent.addListener(fluid.builtinFail, "fail");
     fluid.failureEvent.addListener(fluid.logFailure, "log", "before:fail");
-    
+
     /**
      * Configure the behaviour of fluid.fail by pushing or popping a disposition record onto a stack.
      * @param {Number|Function} condition
@@ -1553,13 +1557,13 @@ var fluid = fluid || fluid_2_0;
     };
 
     /*** DEFAULTS AND OPTIONS MERGING SYSTEM ***/
-    
+
     // A function to tag the types of all Fluid components
     fluid.componentConstructor = function () {};
 
     /** Create a "type tag" component with no state but simply a type name and id. The most
      *  minimal form of Fluid component */
-    // No longer a publically supported function - we don't abolish this because it is too annoying to prevent 
+    // No longer a publically supported function - we don't abolish this because it is too annoying to prevent
     // circularity during the bootup of the IoC system if we try to construct full components before it is complete
     // unsupported, non-API function
     fluid.typeTag = function (name) {
@@ -1617,7 +1621,7 @@ var fluid = fluid || fluid_2_0;
             gradeHash: {},
             optionsChain: []
         };
-        // stronger grades appear to the right in defaults - dynamic grades are stronger still - FLUID-5085 
+        // stronger grades appear to the right in defaults - dynamic grades are stronger still - FLUID-5085
         // we supply these in reverse order to resolveGradesImpl with weak grades at the right
         return resolveGradesImpl(gradeStruct, [defaultName].concat(fluid.makeArray(gradeNames)), true);
     };
@@ -1674,8 +1678,8 @@ var fluid = fluid || fluid_2_0;
         }
         return mergedDefaults.defaults;
     };
-    
-    // unsupported, NON-API function    
+
+    // unsupported, NON-API function
     fluid.upgradePrimitiveFunc = function (rec, key) {
         if (rec && fluid.isPrimitive(rec)) {
             var togo = {};
@@ -1745,8 +1749,8 @@ var fluid = fluid || fluid_2_0;
      * @param indexName {String} The name of this index record (currently ignored)
      * @param indexSpec {Object} Specification of the index to be performed - fields:
      *     gradeNames: {String/Array of String} List of grades that must be matched by this indexer
-     *     indexFunc:  {String/Function} An index function which accepts a defaults record and returns a list of keys
-     * @return A structure indexing keys to lists of matched gradenames
+     *     indexFunc:  {String/Function} An index function which accepts a defaults record and returns an array of keys
+     * @return A structure indexing keys to arrays of matched gradenames
      */
     // The expectation is that this function is extremely rarely used with respect to registration of defaults
     // in the system, so currently we do not make any attempts to cache the results. The field "indexName" is
@@ -1761,9 +1765,9 @@ var fluid = fluid || fluid_2_0;
     };
 
     /**
-     * Retrieves and stores a component's default settings centrally.
-     * @param {String} componentName the name of the component
-     * @param {Object} (optional) an container of key/value pairs to set
+     * Retrieves and stores a grade's configuration centrally.
+     * @param {String} gradeName the name of the grade whose options are to be read or written
+     * @param {Object} (optional) an object containing the options to be set
      */
 
     fluid.defaults = function (componentName, options) {
@@ -1813,18 +1817,6 @@ var fluid = fluid || fluid_2_0;
             $.extend(creator, existing);
         }
         fluid.setGlobalValue(componentName, creator);
-    };
-
-    // Cheapskate implementation which avoids dependency on DataBinding.js
-    // TODO: This is apparently still used by the core merging algorithm, for reasons we no longer understand, even though
-    // it has long been disused by DataBinding itself
-    fluid.model.mergeModel = function (target, source) {
-        if (fluid.isPlainObject(target)) {
-            var copySource = fluid.copy(source);
-            $.extend(true, source, target);
-            $.extend(true, source, copySource);
-        }
-        return source;
     };
 
     var emptyPolicy = {};
@@ -1883,8 +1875,7 @@ var fluid = fluid || fluid_2_0;
         var primitiveTarget = fluid.isPrimitive(thisTarget);
 
         if (thisSource !== undefined) {
-            if (!newPolicy.func && thisSource !== null && fluid.isPlainObject(thisSource) &&
-                    !fluid.isDOMish(thisSource) && thisSource !== fluid.VALUE && !newPolicy.nomerge) {
+            if (!newPolicy.func && thisSource !== null && fluid.isPlainObject(thisSource) && !newPolicy.nomerge) {
                 if (primitiveTarget) {
                     togo = thisTarget = fluid.freshContainer(thisSource);
                 }
@@ -1895,7 +1886,7 @@ var fluid = fluid || fluid_2_0;
                 if (newPolicy.func) {
                     togo = newPolicy.func.call(null, thisTarget, thisSource, segs[i - 1], segs, i); // NB - change in this mostly unused argument
                 } else {
-                    togo = fluid.isValue(thisTarget) ? fluid.model.mergeModel(thisTarget, thisSource) : thisSource;
+                    togo = thisSource;
                 }
             }
         }
@@ -1985,7 +1976,7 @@ var fluid = fluid || fluid_2_0;
             }
             else {
                 if (target !== fluid.inEvaluationMarker) { // TODO: blatant "coding to the test" - this enables the simplest "re-trunking" in
-                    // FluidIoCTests to function. In practice, we need to throw away this implementation entirely in favour of the 
+                    // FluidIoCTests to function. In practice, we need to throw away this implementation entirely in favour of the
                     // "iterative deepening" model coming with FLUID-4925
                     target[name] = fluid.inEvaluationMarker;
                 }
@@ -2148,6 +2139,21 @@ var fluid = fluid || fluid_2_0;
     };
 
     // unsupported, NON-API function
+    fluid.dedupeDistributionNamespaces = function (mergeBlocks) { // to implement FLUID-5824
+        var byNamespace = {};
+        fluid.remove_if(mergeBlocks, function (mergeBlock) {
+            var ns = mergeBlock.namespace;
+            if (ns) {
+                if (byNamespace[ns] && byNamespace[ns] !== mergeBlock.contextThat.id) {  // source check for FLUID-5835
+                    return true;
+                } else {
+                    byNamespace[ns] = mergeBlock.contextThat.id;
+                }
+            }
+        });
+    };
+
+    // unsupported, NON-API function
     fluid.deliverOptionsStrategy = fluid.identity;
     fluid.computeComponentAccessor = fluid.identity;
     fluid.computeDynamicComponents = fluid.identity;
@@ -2195,7 +2201,7 @@ var fluid = fluid || fluid_2_0;
             fluid.model.applyChangeRequest(target, {type: "DELETE", segs: segs});
         }
     };
-    
+
     /**
      * Merges the component's declared defaults, as obtained from fluid.defaults(),
      * with the user's specified overrides.
@@ -2236,6 +2242,7 @@ var fluid = fluid || fluid_2_0;
                 }
             });
             fluid.sortByPriority(mergeBlocks);
+            fluid.dedupeDistributionNamespaces(mergeBlocks);
             sourceStrategies.length = 0;
             sources.length = 0;
             fluid.each(mergeBlocks, function (block) {
@@ -2287,13 +2294,13 @@ var fluid = fluid || fluid_2_0;
         fluid.deliverOptionsStrategy(that, options, mergeOptions); // do this early to broadcast and receive "distributeOptions"
 
         fluid.computeComponentAccessor(that, userOptions && userOptions.localRecord);
-        
+
         var transformOptions = fluid.driveStrategy(options, "transformOptions", mergeOptions.strategy);
         if (transformOptions) {
             fluid.transformOptionsBlocks(mergeBlocks, transformOptions, ["user", "subcomponentRecord"]);
             updateBlocks(); // because the possibly simple blocks may have changed target
         }
-        
+
         if (!baseMergeOptions.target.mergePolicy) {
             computeMergePolicy();
         }
@@ -2329,15 +2336,15 @@ var fluid = fluid || fluid_2_0;
         });
         return fluid.invokeGlobalFunction(name, args);
     };
-    
+
     fluid.noNamespaceDistributionPrefix = "no-namespace-distribution-";
-    
+
     fluid.mergeOneDistribution = function (target, source, key) {
         var namespace = source.namespace || key || fluid.noNamespaceDistributionPrefix + fluid.allocateGuid();
         source.namespace = namespace;
-        target[namespace] = source;
+        target[namespace] = $.extend(true, {}, target[namespace], source);
     };
-    
+
     fluid.distributeOptionsPolicy = function (target, source) {
         target = target || {};
         if (fluid.isArrayable(source)) {
@@ -2353,10 +2360,10 @@ var fluid = fluid || fluid_2_0;
         }
         return target;
     };
-    
+
     fluid.mergingArray = function () {};
     fluid.mergingArray.prototype = [];
-    
+
     // Defer all evaluation of all nested members to resolve FLUID-5668
     fluid.membersMergePolicy = function (target, source) {
         target = target || {};
@@ -2372,9 +2379,9 @@ var fluid = fluid || fluid_2_0;
         });
         return target;
     };
-    
+
     fluid.invokerStrategies = fluid.arrayToHash(["func", "funcName", "listener", "this", "method"]);
-    
+
     // Resolve FLUID-5741, FLUID-5184 by ensuring that we avoid mixing incompatible invoker strategies
     fluid.invokersMergePolicy = function (target, source) {
         target = target || {};
@@ -2428,7 +2435,7 @@ var fluid = fluid || fluid_2_0;
             afterDestroy: null
         }
     });
-    
+
     fluid.defaults("fluid.emptySubcomponent", {
         gradeNames: ["fluid.component"]
     });
@@ -2485,7 +2492,7 @@ var fluid = fluid || fluid_2_0;
 
         fluid.instantiateFirers(that, options);
         fluid.mergeListeners(that, that.events, options.listeners);
-        
+
         return that;
     };
 
@@ -2541,7 +2548,9 @@ var fluid = fluid || fluid_2_0;
                     (error.componentSource ? " which was defined in grade " + error.componentSource : "") + " needs to be overridden with a concrete implementation");
             })).join("\n");
         }
-        that.lifecycleStatus = "constructed";
+        if (that.lifecycleStatus === "constructing") {
+            that.lifecycleStatus = "constructed";
+        }
         that.events.onCreate.fire(that);
         fluid.popActivity();
         return that;
@@ -2661,7 +2670,7 @@ var fluid = fluid || fluid_2_0;
      * Simple string template system.
      * Takes a template string containing tokens in the form of "%value".
      * Returns a new string with the tokens replaced by the specified values.
-     * Keys and values can be of any data type that can be coerced into a string. Arrays will work here as well.
+     * Keys and values can be of any data type that can be coerced into a string.
      *
      * @param {String}    template    a string (can be HTML) that contains tokens embedded into it
      * @param {object}    values      a collection of token keys and values
@@ -2677,4 +2686,4 @@ var fluid = fluid || fluid_2_0;
         return template;
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

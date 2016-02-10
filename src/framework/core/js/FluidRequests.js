@@ -10,13 +10,13 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
-    
+
     /** NOTE: All contents of this file are DEPRECATED and no entry point should be considered a supported API **/
-    
+
     fluid.explodeLocalisedName = function (fileName, locale, defaultLocale) {
         var lastDot = fileName.lastIndexOf(".");
         if (lastDot === -1 || lastDot === 0) {
@@ -24,9 +24,9 @@ var fluid_2_0 = fluid_2_0 || {};
         }
         var baseName = fileName.substring(0, lastDot);
         var extension = fileName.substring(lastDot);
-        
+
         var segs = locale.split("_");
-        
+
         var exploded = fluid.transform(segs, function (seg, index) {
             var shortSegs = segs.slice(0, index + 1);
             return baseName + "_" + shortSegs.join("_") + extension;
@@ -79,7 +79,7 @@ var fluid_2_0 = fluid_2_0 || {};
         that.operate();
         return that;
     };
-    
+
     fluid.fetchResources.explodeForLocales = function (resourceSpecs) {
         fluid.each(resourceSpecs, function (resourceSpec, key) {
             if (resourceSpec.locale) {
@@ -97,7 +97,7 @@ var fluid_2_0 = fluid_2_0 || {};
         });
         return resourceSpecs;
     };
-    
+
     fluid.fetchResources.condenseOneResource = function (resourceSpecs, resourceSpec, key, localeCount) {
         var localeSpecs = [resourceSpec];
         for (var i = 0; i < localeCount; ++ i) {
@@ -112,7 +112,7 @@ var fluid_2_0 = fluid_2_0 || {};
             resourceSpecs[key] = lastNonError;
         }
     };
-    
+
     fluid.fetchResources.condenseForLocales = function (resourceSpecs) {
         fluid.each(resourceSpecs, function (resourceSpec, key) {
             if (typeof(resourceSpec.localeExploded) === "number") {
@@ -120,7 +120,7 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         });
     };
-        
+
     fluid.fetchResources.notifyResources = function (that, resourceSpecs, callback) {
         fluid.fetchResources.condenseForLocales(resourceSpecs);
         callback(resourceSpecs);
@@ -434,4 +434,4 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

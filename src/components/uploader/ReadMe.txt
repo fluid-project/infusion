@@ -24,7 +24,7 @@ concatenated file.
 
 UPGRADING from previous versions:
 
-As of Infusion 1.5, the Flash version of the Uploader has been removed due to a cross-site scripting vulnerability. 
+As of Infusion 1.5, the Flash version of the Uploader has been removed due to a cross-site scripting vulnerability.
 
 https://nealpoole.com/blog/2012/05/xss-and-csrf-via-swf-applets-swfupload-plupload/
 

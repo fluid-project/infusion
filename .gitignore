@@ -2,3 +2,5 @@ build/
 products/
 node_modules/
 src/framework/preferences/css/*.css
+.bundle/
+.vagrant/

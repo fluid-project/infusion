@@ -28,6 +28,7 @@ var jqUnit = jqUnit || {};
         document.write("<scr" + "ipt src='" + injectPath + "?" + (new Date()).getTime() + "'></scr" + "ipt>"); /* from testswarm setup */ // jshint ignore:line
     }
 
+    // TODO: None of the contents of this file possess any test cases of their own
 
     /*******************************************
      * Browser-dependent jqUnit test functions *
@@ -42,11 +43,11 @@ var jqUnit = jqUnit || {};
             jqUnit.okWithPrefix($(selector).is(":hidden"), msg);
         },
 
-        exists: function (msg, selector) {
-            jqUnit.okWithPrefix((selector)[0], msg);
+        assertNodeExists: function (msg, selector) {
+            jqUnit.okWithPrefix($(selector)[0], msg);
         },
 
-        notExists: function (msg, selector) {
+        assertNodeNotExists: function (msg, selector) {
             jqUnit.okWithPrefix(!$(selector)[0], msg);
         },
 
@@ -169,4 +170,4 @@ var jqUnit = jqUnit || {};
         }
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

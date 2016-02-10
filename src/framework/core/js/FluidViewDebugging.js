@@ -9,13 +9,13 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
-    
+
     fluid.registerNamespace("fluid.debug");
-    
+
     fluid.debug.toggleClass = function (styles, element, openStyle, closedStyle, state) {
         if (openStyle) {
             element.toggleClass(styles[openStyle], state);
@@ -24,15 +24,15 @@ var fluid_2_0 = fluid_2_0 || {};
             element.toggleClass(styles[closedStyle], !state);
         }
     };
-    
+
     fluid.debug.bindToggleClick = function (element, applier, path) {
         element.click(function () {
             var state = fluid.get(applier.holder.model, path);
             applier.change(path, !state);
         });
     };
-   
-    
+
+
     fluid.defaults("fluid.debug.highlighter", {
         gradeNames: ["fluid.viewComponent"],
         selectors: {
@@ -53,19 +53,19 @@ var fluid_2_0 = fluid_2_0 || {};
             highlight: "fluid.debug.highlighter.highlight({that}, {that}.dom.highlightRoot, {arguments}.0)" // dispositions
         }
     });
-    
+
     fluid.debug.highlighter.renderRoot = function (that) {
         var highlightRoot = $(that.options.markup.highlightRoot);
         that.container.append(highlightRoot);
         highlightRoot.click(that.events.highlightClick.fire);
     };
-    
+
     fluid.debug.highlighter.clear = function (highlightRoot) {
         highlightRoot.empty();
     };
-    
+
     fluid.debug.highlighter.positionProps = ["width","height","marginLeft","marginTop","paddingLeft","paddingTop"];
-    
+
     fluid.debug.highlighter.colours = {
         components: [
             [0, 0, 0],    // black
@@ -75,15 +75,15 @@ var fluid_2_0 = fluid_2_0 || {};
         domBinder: [0, 255, 0],  // green
         renderer:  [0, 255, 255] // cyan
     };
-    
+
     fluid.debug.arrayToRGBA = function (array) {
         return "rgba(" + array.join(", ") + ")";
     };
-    
+
     fluid.debug.assignColour = function (colour, alpha) {
         return [colour[0], colour[1], colour[2], alpha];
     };
-    
+
     fluid.debug.highlighter.indexToColour = function (i, isDomBind, isRenderer) {
         var a = fluid.debug.assignColour, c = fluid.debug.highlighter.colours.components;
         var base;
@@ -96,14 +96,14 @@ var fluid_2_0 = fluid_2_0 || {};
         }
         return base;
     };
-    
+
     fluid.debug.isRendererSelector = function (component, selectorName) {
         var isRendererComponent = fluid.componentHasGrade(component, "fluid.rendererComponent");
         var ignoreContains = fluid.contains(component.options.selectorsToIgnore, selectorName);
 
         return isRendererComponent ? (!selectorName || ignoreContains ? false : true) : false;
     };
-    
+
     fluid.debug.highlighter.disposeEntries = function (entries, domIds) {
         return fluid.transform(entries, function (entry, i) {
             var component = entry.component;
@@ -125,14 +125,14 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.debug.domIdtoHighlightId = function (domId) {
         return "highlight-for:" + domId;
     };
-    
+
     fluid.debug.highlighter.construct = function (markup, highlightRoot, container) {
         var highlight = $(markup);
         highlight.prop("id", fluid.debug.domIdtoHighlightId(container.prop("id")));
         highlightRoot.append(highlight);
         return highlight;
     };
-    
+
     fluid.debug.highlighter.position =  function (highlight, disp, container) {
         var p = fluid.debug.highlighter.positionProps;
         for (var j = 0; j < p.length; ++ j) {
@@ -146,7 +146,7 @@ var fluid_2_0 = fluid_2_0 || {};
         }
         highlight.offset(offset);
     };
-    
+
     fluid.debug.highlighter.highlight = function (that, highlightRoot, dispositions) {
         for (var i = 0; i < dispositions.length; ++ i) {
             var disp = dispositions[i];
@@ -159,11 +159,11 @@ var fluid_2_0 = fluid_2_0 || {};
             fluid.debug.highlighter.position(highlight, disp, container);
         }
     };
-    
+
     fluid.debug.ignorableGrades = ["fluid.debug.listeningView", "fluid.debug.listeningPanel", "fluid.debug.listeningRenderer"];
-    
+
     fluid.debug.frameworkGrades = fluid.frameworkGrades;
-    
+
     fluid.debug.filterGrades = function (gradeNames) {
         var highestFrameworkIndex = -1;
         var output = [];
@@ -178,14 +178,14 @@ var fluid_2_0 = fluid_2_0 || {};
         output.push(fluid.debug.frameworkGrades[highestFrameworkIndex]);
         return output;
     };
-    
+
     fluid.debug.renderDefaults = function (defaultsTemplate, typeName, options) {
         return fluid.stringTemplate(defaultsTemplate, {
             typeName: typeName,
             options: JSON.stringify(options, null, 4)
         });
     };
-    
+
     fluid.debug.renderSelectorUsageRecurse = function (source, segs, options) {
         if (fluid.isPrimitive(source)) {
             if (typeof(source) === "string" && source.indexOf(options.findString) !== -1) {
@@ -201,7 +201,7 @@ var fluid_2_0 = fluid_2_0 || {};
             });
         }
     };
-    
+
     fluid.debug.renderSelectorUsage = function (selectorUsageTemplate, selectorName, options) {
         var target = {}, segs = [], findString = "}.dom." + selectorName;
         fluid.debug.renderSelectorUsageRecurse(options, segs, {
@@ -212,22 +212,22 @@ var fluid_2_0 = fluid_2_0 || {};
         var markup = fluid.stringTemplate(selectorUsageTemplate, {selectorUsage: JSON.stringify(target, null, 4)});
         return markup;
     };
-    
+
     fluid.debug.renderIndexElement = function (indexElTemplate, colour) {
         return fluid.stringTemplate(indexElTemplate, {colour: fluid.debug.arrayToRGBA(colour)});
     };
-    
+
     fluid.debug.domIdtoRowId = function (domId) {
         return "row-for:" + domId;
     };
-    
+
     fluid.debug.rowForDomId = function (row, indexElTemplate, disp, rowIdToDomId) {
         row.indexEl = fluid.debug.renderIndexElement(indexElTemplate, disp.colour);
         row.domId = disp.container.prop("id");
         row.rowId = fluid.debug.domIdtoRowId(row.domId);
         rowIdToDomId[row.rowId] = row.domId;
     };
-    
+
     fluid.debug.renderSelectorUsageRows = function (disp, markup, defaultsIdToContent) {
         var tooltipTriggerId = fluid.allocateGuid();
         var options = disp.component.options;
@@ -242,7 +242,7 @@ var fluid_2_0 = fluid_2_0 || {};
         }];
         return rows;
     };
-    
+
     fluid.debug.renderDefaultsRows = function (oneGrade, markup, defaultsIdToContent) {
         var defaults = fluid.defaultsStore[oneGrade];
         var line = defaults && defaults.callerInfo ? defaults.callerInfo.filename + ":" + defaults.callerInfo.index : "";
@@ -265,7 +265,7 @@ var fluid_2_0 = fluid_2_0 || {};
             tooltipTriggerId: tooltipTriggerId
         };
     };
-    
+
     fluid.debug.renderOneDisposition = function (disp, markup, defaultsIdToContent, rowIdToDomId) {
         var rows;
         if (disp.selectorName) {
@@ -280,7 +280,7 @@ var fluid_2_0 = fluid_2_0 || {};
         fluid.debug.rowForDomId(rows[0], markup.indexElement, disp, rowIdToDomId);
         return rows;
     };
-    
+
     fluid.debug.renderInspecting = function (that, paneBody, markup, inspecting) {
         if (!paneBody || !that.highlighter) { // stupid ginger world failure
             return;
@@ -299,7 +299,7 @@ var fluid_2_0 = fluid_2_0 || {};
             return fluid.debug.renderOneDisposition(disp, markup, defaultsIdToContent, rowIdToDomId);
         });
         var flatRows = fluid.flatten(allRows);
-        
+
         var contents = fluid.transform(flatRows, function (row) {
             return fluid.stringTemplate(markup.paneRow, row);
         });
@@ -311,8 +311,8 @@ var fluid_2_0 = fluid_2_0 || {};
         var initSelection = fluid.arrayToHash(fluid.values(rowIdToDomId));
         that.applier.change("highlightSelected", initSelection);
     };
-    
-    
+
+
     fluid.defaults("fluid.debug.browser", {
         gradeNames: ["fluid.viewComponent"],
         model: {
@@ -441,7 +441,7 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         }
     });
-    
+
     fluid.debug.browser.finishInspecting = function (that, isInspecting) {
         if (!isInspecting) {
             var ation = that.applier.initiate();
@@ -453,7 +453,7 @@ var fluid_2_0 = fluid_2_0 || {};
             ation.commit();
         }
     };
-    
+
     // go into frozen state if we are not in it and are inspecting.
     // if we are already frozen, finish inspecting (which will also finish frozen)
     fluid.debug.browser.highlightClick = function (that) {
@@ -463,14 +463,14 @@ var fluid_2_0 = fluid_2_0 || {};
             that.applier.change("isFrozen", true);
         }
     };
-            
+
     fluid.debug.browser.renderMarkup = function (that, holderMarkup, paneMarkup) {
         that.container.append(holderMarkup);
         var debugPane = that.locate("pane");
         debugPane.append(paneMarkup);
         that.events.onMarkupReady.fire();
     };
-    
+
     fluid.debug.browser.domIdForElement = function (rowIdToDomId, rowSelector, element) {
         var row = $(element).closest(rowSelector);
         if (row.length > 0) {
@@ -478,7 +478,7 @@ var fluid_2_0 = fluid_2_0 || {};
             return rowIdToDomId[rowId];
         }
     };
-    
+
     fluid.debug.browser.bindHighlightSelection = function (that, pane) {
         pane.on("click", that.options.selectors.indexEl, function (evt) {
             var domId = fluid.debug.browser.domIdForElement(that.rowIdToDomId, that.options.selectors.row, evt.target);
@@ -486,7 +486,7 @@ var fluid_2_0 = fluid_2_0 || {};
             that.applier.change(path, !fluid.get(that.model, path));
         });
     };
-    
+
     fluid.debug.renderHighlightSelection = function (that, newState, path) {
         var domId = path[1];
         var disposition = fluid.find_if(that.dispositions, function (disp) {
@@ -502,7 +502,7 @@ var fluid_2_0 = fluid_2_0 || {};
         $(that.options.selectors.indexEl, row).css("background-color", colourString);
         fluid.jById(fluid.debug.domIdtoHighlightId(domId)).css("background-color", colourString);
     };
-    
+
     fluid.debug.browser.bindHighlightClick = function (that, dokkument) {
         // We have a global problem in that we can't accept pointer events on the highlight elements
         // themselves since this will cause their own mouseenter/mouseleave events to self-block.
@@ -518,7 +518,7 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         });
     };
-    
+
     fluid.debug.browser.bindHover = function (that, dokkument) {
         var listener = function (event) {
             if (!that.model.isInspecting || that.model.isFrozen) {
@@ -539,7 +539,7 @@ var fluid_2_0 = fluid_2_0 || {};
         };
         dokkument.on("mouseenter mouseleave", "*", listener);
     };
-    
+
     fluid.defaults("fluid.debug.listeningView", {
         listeners: {
             onCreate: {
@@ -552,7 +552,7 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         }
     });
-    
+
     fluid.defaults("fluid.debug.listeningPanel", {
         listeners: {
             onDomBind: {
@@ -561,7 +561,7 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         }
     });
-    
+
     fluid.defaults("fluid.debug.listeningRenderer", {
         listeners: {
             afterRender: {
@@ -570,7 +570,7 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         }
     });
-    
+
     fluid.defaults("fluid.debug.viewMapper", {
         gradeNames: ["fluid.component", "fluid.resolveRoot"],
         members: {
@@ -597,7 +597,7 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         }
     });
-    
+
     fluid.debug.viewMapper.registerComponent = function (that, component, containerId) {
         var domBound = fluid.transform(component.options.selectors, function (selector, selectorName) {
             return fluid.allocateSimpleId(component.locate(selectorName));
@@ -610,7 +610,7 @@ var fluid_2_0 = fluid_2_0 || {};
         that.idToEntry[component.id] = entry;
         if (containerId) {
             that.domIdToEntry[containerId] = entry;
-            
+
             fluid.each(domBound, function (subId, selectorName) {
                 var subEntry = $.extend({}, entry);
                 subEntry.selectorName = selectorName;
@@ -618,7 +618,7 @@ var fluid_2_0 = fluid_2_0 || {};
             });
         }
     };
-    
+
     fluid.debug.viewMapper.deregisterComponent = function (that, id) {
         var entry = that.idToEntry[id];
         delete that.idToEntry[id];
@@ -627,7 +627,7 @@ var fluid_2_0 = fluid_2_0 || {};
             delete that.domIdToEntry[subId];
         });
     };
-    
+
     fluid.debug.viewMapper.registerView = function (that, component, action) {
         var id = component.id;
         var containerId = fluid.allocateSimpleId(component.container);
@@ -648,16 +648,16 @@ var fluid_2_0 = fluid_2_0 || {};
             fluid.debug.viewMapper.registerComponent(that, component, containerId);
         }
     };
-        
+
     fluid.debug.viewMapper.scanInit = function (that) {
         var views = fluid.queryIoCSelector(fluid.rootComponent, "fluid.viewComponent");
         for (var i = 0; i < views.length; ++ i) {
             fluid.debug.viewMapper.registerView(that, views[i], true);
         }
     };
-    
+
     $(document).ready(function () {
         fluid.debug.browser("body");
     });
-    
-})(jQuery, fluid_2_0);
+
+})(jQuery, fluid_2_0_0);

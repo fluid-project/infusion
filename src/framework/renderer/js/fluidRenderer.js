@@ -11,12 +11,12 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-fluid_2_0 = fluid_2_0 || {};
+fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
-    
-    
+
+
     fluid.defaults("fluid.messageResolver", {
         gradeNames: ["fluid.component"],
         mergePolicy: {
@@ -46,7 +46,7 @@ fluid_2_0 = fluid_2_0 || {};
             return {template: resolved, resolveFunc: that.options.resolveFunc};
         }
     };
-    
+
     fluid.messageResolver.resolve = function (that, messagecodes, args) {
         if (!messagecodes) {
             return "[No messagecodes provided]";
@@ -1645,4 +1645,4 @@ fluid_2_0 = fluid_2_0 || {};
         return fluid.render({node: node, armouring: options.armouring}, node, tree, options);
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

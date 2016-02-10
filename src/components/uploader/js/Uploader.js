@@ -13,7 +13,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 /************
  * Uploader *
@@ -21,7 +21,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
 (function ($, fluid) {
     "use strict";
-    
+
     fluid.enhance.supportsBinaryXHR = function () {
         return window.FormData || (window.XMLHttpRequest && window.XMLHttpRequest.prototype && window.XMLHttpRequest.prototype.sendAsBinary);
     };
@@ -357,7 +357,7 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         }
     });
-    
+
     fluid.defaults("fluid.uploader.builtinStrategyDistributor", {
         gradeNames: ["fluid.component"],
         distributeOptions: {
@@ -368,7 +368,7 @@ var fluid_2_0 = fluid_2_0 || {};
             target: "{/ fluid.uploader}.options.contextAwareness.technology.checks.supportsBinaryXHR"
         }
     });
-    
+
     fluid.constructSingle([], "fluid.uploader.builtinStrategyDistributor");
 
     // Implementation of standard public invoker methods
@@ -421,7 +421,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * Multiple file Uploader implementation. Encapsulates logic which is common across all configurations supporing multiple
      * file uploads - HTML5 (and historically Flash)
      */
-     
+
     fluid.defaults("fluid.uploader.multiFileUploader", {
         gradeNames: ["fluid.viewComponent"],
         members: {
@@ -796,7 +796,7 @@ var fluid_2_0 = fluid_2_0 || {};
             "onCreate.showMarkup": "fluid.uploader.singleFile.showMarkup"
         }
     });
-    
+
     fluid.uploader.singleFile.toggleVisibility = function (toShow, toHide) {
         // For FLUID-2789: hide() doesn't work in Opera
         if (window.opera) {
@@ -813,4 +813,4 @@ var fluid_2_0 = fluid_2_0 || {};
         fluid.uploader.singleFile.toggleVisibility($(that.options.selectors.basicUpload), that.container);
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

@@ -383,12 +383,48 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         expected: true
     }, {
+        message: "binaryOp - === (FLUID-5669)",
+        transform: {
+            type: "fluid.transforms.binaryOp",
+            left: NaN,
+            operator: "===",
+            right: NaN
+        },
+        expected: true
+    }, {
+        message: "binaryOp - === (FLUID-5669)",
+        transform: {
+            type: "fluid.transforms.binaryOp",
+            left: 0.20000000000000004,
+            operator: "===",
+            right: 0.2
+        },
+        expected: true
+    }, {
         message: "binaryOp - !==",
         transform: {
             type: "fluid.transforms.binaryOp",
             left: 100,
             operator: "!==",
             rightPath: "hundred"
+        },
+        expected: false
+    }, {
+        message: "binaryOp - !== (FLUID-5669)",
+        transform: {
+            type: "fluid.transforms.binaryOp",
+            left: NaN,
+            operator: "!==",
+            right: NaN
+        },
+        expected: false
+    }, {
+        message: "binaryOp - !== (FLUID-5669)",
+        transform: {
+            type: "fluid.transforms.binaryOp",
+            left: 0.20000000000000004,
+            operator: "!==",
+            right: 0.2
         },
         expected: false
     }, {
@@ -2171,6 +2207,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.test("Tests for undefined inputs to standardInputTransformations", function () {
         fluid.tests.transforms.testOneStructure(fluid.tests.transforms.undefinedSingleInput);
+    });
+
+    fluid.tests.transforms.fluid5703 = [{
+        message: "FLUID-5703: defeat undefined input suppression with side-inputs",
+        transformWrap: true,
+        transform: {
+            type: "fluid.transforms.stringTemplate",
+            template: "This is a %thing",
+            terms: {
+                thing: "CATTTE"
+            }
+        },
+        method: "assertEquals",
+        expected: "This is a CATTTE"
+    }];
+
+    jqUnit.test("Defeat undefined input issue with side-inputs", function () {
+        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.fluid5703);
     });
 
     /* --------------- arrayToObject and objectToArray tests -------------------- */

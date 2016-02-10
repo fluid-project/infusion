@@ -10,7 +10,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -21,7 +21,8 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.defaults("fluid.prefs.fullPreview", {
         gradeNames: ["fluid.prefs.prefsEditorLoader"],
-        outerPreviewEnhancerOptions: "{originalEnhancerOptions}.options.originalUserOptions",
+        outerUiEnhancerOptions: "{originalEnhancerOptions}.options.originalUserOptions",
+        outerUiEnhancerGrades: "{originalEnhancerOptions}.uiEnhancer.options.userGrades",
         components: {
             prefsEditor: {
                 container: "{that}.container",
@@ -60,18 +61,19 @@ var fluid_2_0 = fluid_2_0 || {};
                 args: "{that}"
             }
         },
-        distributeOptions: [{ // TODO: send userGrades as well, or else wait for refactoring
-            source: "{that}.options.outerPreviewEnhancerOptions",
-            removeSource: true,
+        distributeOptions: [{
+            source: "{that}.options.outerUiEnhancerOptions",
             target: "{that enhancer}.options"
         }, {
             source: "{that}.options.preview",
             target: "{that preview}.options"
         }, {
             source: "{that}.options.previewEnhancer",
-            removeSource: true,
             target: "{that enhancer}.options"
+        }, {
+            source: "{that}.options.outerUiEnhancerGrades",
+            target: "{that enhancer}.options.gradeNames"
         }]
     });
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

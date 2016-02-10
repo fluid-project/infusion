@@ -13,7 +13,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /** This file contains functions which depend on the presence of a DOM document
  *  and which depend on the contents of Fluid.js **/
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -152,19 +152,20 @@ var fluid_2_0 = fluid_2_0 || {};
             if (!thisContainer) {
                 fluid.fail("DOM binder invoked for selector " + name + " without container");
             }
-
-            if (!selector) {
-                return thisContainer;
+            if (selector === "") {
+                togo = thisContainer;
+            }
+            else if (!selector) {
+                togo = userJQuery();
+            }
+            else {
+                if (typeof (selector) === "function") {
+                    togo = userJQuery(selector.call(null, fluid.unwrap(thisContainer)));
+                } else {
+                    togo = userJQuery(selector, thisContainer);
+                }
             }
 
-            if (typeof (selector) === "function") {
-                togo = userJQuery(selector.call(null, fluid.unwrap(thisContainer)));
-            } else {
-                togo = userJQuery(selector, thisContainer);
-            }
-            if (togo.get(0) === document) {
-                togo = [];
-            }
             if (!togo.selector) {
                 togo.selector = selector;
                 togo.context = thisContainer;
@@ -338,9 +339,9 @@ var fluid_2_0 = fluid_2_0 || {};
             if (typeof(newValue) === "boolean") {
                 newValue = (newValue ? "true" : "false");
             }
-          // jQuery gets this partially right, but when dealing with radio button array will
-          // set all of their values to "newValue" rather than setting the checked property
-          // of the corresponding control.
+            // jQuery gets this partially right, but when dealing with radio button array will
+            // set all of their values to "newValue" rather than setting the checked property
+            // of the corresponding control.
             $.each(elements, function () {
                 this.checked = (newValue instanceof Array ?
                     newValue.indexOf(this.value) !== -1 : newValue === this.value);
@@ -466,12 +467,24 @@ var fluid_2_0 = fluid_2_0 || {};
         if (!element || fluid.isPrimitive(element)) {
             return null;
         }
-        
+
         if (!element.id) {
             var simpleId = "fluid-id-" + fluid.allocateGuid();
             element.id = simpleId;
         }
         return element.id;
+    };
+
+    /**
+     * Returns the document to which an element belongs, or the element itself if it is already a document
+     *
+     * @param {jQuery||Element} element The element to return the document for
+     * @return {Document} dokkument The document in which it is to be found
+     */
+    fluid.getDocument = function (element) {
+        var node = fluid.unwrap(element);
+        // DOCUMENT_NODE - guide to node types at https://developer.mozilla.org/en/docs/Web/API/Node/nodeType
+        return node.nodeType === 9 ? node : node.ownerDocument;
     };
 
     fluid.defaults("fluid.ariaLabeller", {
@@ -496,7 +509,7 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         }
     });
-    
+
     fluid.ariaLabeller.update = function (that, newOptions) {
         newOptions = newOptions || that.options;
         that.container.attr(that.options.labelAttribute, newOptions.text);
@@ -665,4 +678,4 @@ var fluid_2_0 = fluid_2_0 || {};
         backDelay: 100
     });
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

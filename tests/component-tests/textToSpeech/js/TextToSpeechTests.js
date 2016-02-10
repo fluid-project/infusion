@@ -97,13 +97,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-    
+
     fluid.tests.textToSpeech.bypassTest = function () {
         jqUnit.assert("TEST SKIPPED - browser does not support SpeechSynthesis");
         jqUnit.start();
     };
 
-    // only run the tests in browsers that support the Web Speech API for speech synthesis    
+    // only run the tests in browsers that support the Web Speech API for speech synthesis
     fluid.tests.textToSpeech.issueTest = function (name, testFunc) {
         jqUnit.asyncTest(name, function () {
             var runTests = fluid.textToSpeech.checkTTSSupport();
@@ -138,6 +138,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             that.queueSpeech("Testing pause and resume events");
         });
     }
-    
-    
+
+
 })();

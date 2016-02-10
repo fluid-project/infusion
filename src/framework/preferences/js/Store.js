@@ -10,7 +10,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -23,8 +23,8 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.defaults("fluid.prefs.dataSource", {
         gradeNames: ["fluid.component"],
         invokers: {
-            get: "fluid.prefs.dataSource.get", // nonexistent functions which will be advised by concrete implementation
-            set: "fluid.prefs.dataSource.set"
+            get: "fluid.notImplemented",
+            set: "fluid.notImplemented"
         }
     });
 
@@ -164,4 +164,4 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);
