@@ -1207,7 +1207,6 @@ var fluid = fluid || fluid_2_0_0;
 
     fluid.honourConstraint = function (array, firstConstraint, c) {
         var constraint = array[c].priority.constraint;
-        // TODO: We should find the LAST entry for a namespace for an "after" type (this is only relevant for model listeners)
         var matchIndex = fluid.find(array, function (element, index) {
             return element.namespace === constraint.target ? index : undefined;
         }, -1);
@@ -1768,7 +1767,6 @@ var fluid = fluid || fluid_2_0_0;
         var keys = indexFunc(defaults) || [];
         for (var j = 0; j < keys.length; ++ j) {
             fluid.pushArray(index, keys[j], defaultName);
-            // (index[keys[j]] = index[keys[j]] || []).push(defaultName);
         }
     };
 
