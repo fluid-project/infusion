@@ -48,8 +48,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             importTooltipContent: "{that}.msgLookup.importTooltipContent",
             exportTooltipContent: "{that}.msgLookup.exportTooltipContent"
         },
-        selectorsToIgnore: ["exportButton", "importButton"],
         protoTree: {
+            gpiiLabel: {messagekey: "gpiiLabel"},
+            importButton: {messagekey: "importLabel"},
+            exportButton: {messagekey: "exportLabel"},
             gpiiLabel: {messagekey: "gpiiLabel"},
             autoLabel: {messagekey: "autoLabel"},
             auto: "${auto}"
@@ -59,16 +61,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             onExport: null
         },
         listeners: {
-            "afterRender.setImportButtonLabel": {
-                "this": "{that}.dom.importButton",
-                method: "html",
-                args: ["{that}.options.strings.importLabel"]
-            },
-            "afterRender.setExportButtonLabel": {
-                "this": "{that}.dom.exportButton",
-                method: "html",
-                args: ["{that}.options.strings.exportLabel"]
-            },
             "afterRender.bindImport": {
                 "this": "{that}.dom.importButton",
                 method: "click",
