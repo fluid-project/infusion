@@ -628,7 +628,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             },
             // This explicit detection is now required for jQuery UI after version 1.10.2 since the upstream API has been broken permanently.
             // See https://github.com/jquery/jquery-ui/pull/963
-            handle: handle === item ? null : handle
+            handle: fluid.unwrap(handle) === fluid.unwrap(item) ? null : handle
         });
     };
 
