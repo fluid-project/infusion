@@ -65,15 +65,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 emptyString: ""
             }
         });
+        
+        fluid.tests.assertJQuery = function (message, node) {
+            jqUnit.assertValue(message, node.jquery);
+        };
 
         jqUnit.test("FLUID-5821: DOM binder missing/empty selector tests", function () {
             var that = fluid.tests.fluid5821("body");
+            function expectContainer(message, container) {
+                jqUnit.assertEquals(message + " - located container with empty string ", fluid.unwrap(that.container), fluid.unwrap(container));
+                fluid.tests.assertJQuery(message + " - located container should be a jQuery", container);
+            }
             var missingElement = that.locate("missing");
             fluid.tests.fluid5821.isEmptyJquery("Locate a non-existent selector key", missingElement);
             var badElement = that.locate("bad");
             fluid.tests.fluid5821.isEmptyJquery("Locate a selector which matches nothing", badElement, true);
             var container = that.locate("emptyString");
-            jqUnit.assertEquals("Located container with empty string ", fluid.unwrap(that.container), fluid.unwrap(container));
+            expectContainer("Original locate", container);
+            var rawContainer = fluid.unwrap(that.container);
+            var container2 = that.locate("emptyString", rawContainer);
+            expectContainer("locate with raw container", container2);
+            var container3 = that.dom.fastLocate("emptyString", that.container);
+            expectContainer("fastLocate after cached raw container", container3);
         });
 
         jqUnit.test("fluid.container: bind to an selector", function () {
