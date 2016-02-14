@@ -1619,7 +1619,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             apply: function (noThis, args) {
                 var parsed = fluid.parseValidModelReference(that, "changePath listener record", record.changePath);
                 var value = fluid.expandOptions(record.value, that, {}, {"arguments": args});
-                fluid.fireSourcedChange(parsed.applier, parsed.path, value, record.source);
+                fluid.fireSourcedChange(parsed.applier, parsed.modelSegs, value, record.source);
             }
         };
     };

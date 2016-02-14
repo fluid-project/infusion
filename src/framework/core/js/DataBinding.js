@@ -380,23 +380,34 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     };
 
-    fluid.transformToAdapter = function (transform, targetPath) {
-        var basedTransform = {};
-        basedTransform[targetPath] = transform;
-        return function (trans, newValue /*, sourceSegs, targetSegs */) {
-            // TODO: More efficient model that can only run invalidated portion of transform (need to access changeMap of source transaction)
-            fluid.model.transformWithRules(newValue, basedTransform, {finalApplier: trans});
-        };
-    };
-
     fluid.parseModelReference = function (that, ref) {
         var parsed = fluid.parseContextReference(ref);
         parsed.segs = that.applier.parseEL(parsed.path);
-        // At this point, resolve FLUID-5848 - we may as well call fluid.resolveContext here
         return parsed;
     };
 
-    fluid.parseValidModelReference = function (that, name, ref) {
+    /** Given a string which may represent a reference into a model, parses it into a structure holding the coordinates for resolving the reference. It specially
+     * detects "references into model material" by looking for the first path segment in the path reference which holds the value "model". Some of its workflow is bypassed
+     * in the special case of a reference representing an implicit model relay. In this case, ref will definitely be a String, and if it does not refer to model material, rather than
+     * raising an error, the return structure will include a field <code>nonModel: true</code>
+     * @param that {Component} The component holding the reference
+     * @param name {String} A human-readable string representing the type of block holding the reference - e.g. "modelListeners"
+     * @param ref {String|ModelReference} The model reference to be parsed. This may have already been partially parsed at the original site - that is, a ModelReference is a
+     * structure containing
+     *     segs: {Array of String} An array of model path segments to be dereferenced in the target component (will become `modelSegs` in the final return)
+     *     context: {String} An IoC reference to the component holding the model
+     * @param implicitRelay {Boolean} <code>true</code> if the reference was being resolved for an implicit model relay - that is, 
+     * whether it occured within the `model` block itself. In this case, references to non-model material are not a failure and will simply be resolved
+     * (by the caller) onto their targets (as constants). Otherwise, this function will issue a failure on discovering a reference to non-model material.
+     * @return A structure holding:
+     *    that {Component} The component whose model is the target of the reference. This may end up being constructed as part of the act of resolving the reference
+     *    applier {Component} The changeApplier for the component <code>that</code>. This may end up being constructed as part of the act of resolving the reference
+     *    modelSegs {Array of String} An array of path segments into the model of the component
+     *    path {String} the value of <code>modelSegs</code> encoded as an EL path (remove client uses of this in time)
+     *    nonModel {Boolean} Set if <code>implicitRelay</code> was true and the reference was not into a model (modelSegs/path will not be set in this case)
+     *    segs {Array of String} Holds the full array of path segments found by parsing the original reference - only useful in <code>nonModel</code> case
+     */
+    fluid.parseValidModelReference = function (that, name, ref, implicitRelay) {
         var reject = function (message) {
             fluid.fail("Error in " + name + ": ", ref, message);
         };
@@ -404,11 +415,16 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         if (typeof(ref) === "string") {
             if (ref.charAt(0) === "{") {
                 parsed = fluid.parseModelReference(that, ref);
-                // TODO: At this point, resolve FLUID-5848
-                if (parsed.segs[0] !== "model") {
-                    reject(" must be a reference into a component model beginning with \"model\"");
+                var modelPoint = parsed.segs.indexOf("model");
+                if (modelPoint === -1) {
+                    if (implicitRelay) {
+                        parsed.nonModel = true;
+                    } else {
+                        reject(" must be a reference into a component model via a path including the segment \"model\"");
+                    }
                 } else {
-                    parsed.modelSegs = parsed.segs.slice(1);
+                    parsed.modelSegs = parsed.segs.slice(modelPoint + 1);
+                    parsed.contextSegs = parsed.segs.slice(0, modelPoint);
                     delete parsed.path;
                 }
 
@@ -433,14 +449,19 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             if (!target) {
                 reject(" must be a reference to an existing component");
             }
+            if (parsed.contextSegs) {
+                target = fluid.getForComponent(target, parsed.contextSegs);
+            }
         } else {
             target = that;
         }
-        if (!target.applier) {
-            fluid.getForComponent(target, ["applier"]);
-        }
-        if (!target.applier) {
-            reject(" must be a reference to a component with a ChangeApplier (descended from fluid.modelComponent)");
+        if (!parsed.nonModel) {
+            if (!target.applier) {
+                fluid.getForComponent(target, ["applier"]);
+            }
+            if (!target.applier) {
+                reject(" must be a reference to a component with a ChangeApplier (descended from fluid.modelComponent)");
+            }
         }
         parsed.that = target;
         parsed.applier = target.applier;
@@ -598,6 +619,17 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     };
 
+    // TODO: This rather crummy function is the only site with a hard use of "path" as String
+    fluid.transformToAdapter = function (transform, targetPath) {
+        var basedTransform = {};
+        basedTransform[targetPath] = transform;
+        return function (trans, newValue /*, sourceSegs, targetSegs */) {
+            // TODO: More efficient model that can only run invalidated portion of transform (need to access changeMap of source transaction)
+            fluid.model.transformWithRules(newValue, basedTransform, {finalApplier: trans});
+        };
+    };
+
+    // TODO: sourcePath and targetPath should really be converted to segs to avoid excess work in parseValidModelReference
     fluid.makeTransformPackage = function (componentThat, transform, sourcePath, targetPath, forwardCond, backwardCond) {
         var that = {
             forwardHolder: {model: transform},
@@ -694,15 +726,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.parseImplicitRelay = function (that, modelRec, segs, options) {
         var value;
         if (typeof(modelRec) === "string" && modelRec.charAt(0) === "{") {
-            // TODO: Another site for FLUID-5848
-            var parsed = fluid.parseModelReference(that, modelRec);
-            var target = fluid.resolveContext(parsed.context, that);
-            if (parsed.segs[0] === "model") {
-                var modelSegs = parsed.segs.slice(1);
-                ++options.refCount;
-                fluid.connectModelRelay(that, segs, target, modelSegs, options);
+            var parsed = fluid.parseValidModelReference(that, "model reference from model (implicit relay)", modelRec, true);
+            if (parsed.nonModel) {
+                value = fluid.getForComponent(parsed.that, parsed.segs);
             } else {
-                value = fluid.getForComponent(target, parsed.segs);
+                ++options.refCount; // This count is used from within fluid.makeTransformPackage
+                fluid.connectModelRelay(that, segs, parsed.that, parsed.modelSegs, options);
             }
         } else if (fluid.isPrimitive(modelRec) || !fluid.isPlainObject(modelRec)) {
             value = modelRec;
@@ -772,6 +801,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             fluid.parseModelRelay(that, mrrec);
         });
 
+        // Note: this particular instance of "refCount" is disused. We only use the count made within fluid.makeTransformPackge
         var initModels = fluid.transform(optionsModel, function (modelRec) {
             return fluid.parseImplicitRelay(that, modelRec, [], {refCount: 0});
         });
@@ -904,13 +934,14 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             // Bypass fluid.event.dispatchListener by means of "standard = false" and enter our custom workflow including expanding "change":
             var records = fluid.event.resolveListenerRecord(value, that, "modelListeners", null, false).records;
             fluid.each(records, function (record) {
+                // Aggregate model listeners into groups referring to the same component target. This is probably unnecessary now.
                 record.byTarget = {};
-                var paths = fluid.makeArray(record.path || key);
+                var paths = fluid.makeArray(record.path === undefined ? key : record.path);
                 fluid.each(paths, function (path) {
                     var parsed = fluid.parseValidModelReference(that, "modelListeners entry", path);
                     fluid.pushArray(record.byTarget, parsed.that.id, parsed);
                 });
-                var namespace = (record.namespace && !record.softNamespace ? record.namespace : null) || (record.path ? key : null);
+                var namespace = (record.namespace && !record.softNamespace ? record.namespace : null) || (record.path !== undefined ? key : null);
                 fluid.registerModelListeners(that, record, paths, namespace, perComponent);
             });
         });
@@ -1195,8 +1226,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.storeExternalChange = function (transRec, applier, invalidPath, spec, args) {
         var pathString = applier.composeSegments.apply(null, invalidPath);
-        //var keySegs = [applier.applierId, fluid.event.identifyListener(spec.listener), spec.listenerIndex, pathString];
-        //var keyString = keySegs.join("|");
         var keySegs = [applier.holder.id, spec.specId, (spec.wildcard ? pathString : "")];
         var keyString = keySegs.join("|");
         // TODO: We think we probably have a bug in that notifications destined for end of transaction are actually continuously emitted during the transaction
@@ -1352,7 +1381,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             var id = fluid.event.identifyListener(listener);
             var namespace = typeof(listener) === "string" ? listener: null;
             var removePred = function (record) {
-                return record.id === id || record.namespace === namespace;
+                return record.id === id || (namespace && record.namespace === namespace);
             };
             fluid.remove_if(that.changeListeners.listeners, removePred);
             fluid.remove_if(that.changeListeners.transListeners, removePred);

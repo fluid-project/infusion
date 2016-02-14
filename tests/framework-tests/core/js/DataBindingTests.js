@@ -831,6 +831,44 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Captured model by argument", {x: 30, y: 30}, that.frozenModel.windowHolders.mainWindow);
     });
 
+    /** FLUID-5848: Detect indirect references to component models (at components nested one or more levels below context of reference) **/
+
+    fluid.defaults("fluid.tests.fluid5848root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            value: "{that}.childModel.model.value"
+        },
+        members: {
+            changes: 0
+        },
+        modelListeners: {
+            "{that}.childModel.model.value": "fluid.tests.fluid5848record({that})"
+        },
+        components: {
+            childModel: {
+                type: "fluid.modelComponent",
+                options: {
+                    model: {
+                        value: 20
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid5848record = function (that) {
+        ++ that.changes;
+    };
+
+    jqUnit.test("FLUID-5848: Model reference using indirect context", function () {
+        var that = fluid.tests.fluid5848root();
+        jqUnit.assertEquals("Synchronised value on startup", 20, that.model.value);
+        jqUnit.assertEquals("One change on startup", 1, that.changes);
+        that.childModel.applier.change("value", 30);
+        jqUnit.assertEquals("Relay relationship set up via indirect context", 30, that.model.value);
+        jqUnit.assertEquals("Two changes after change", 2, that.changes);
+    });
+
     /** Demonstrate resolving a set of model references which is cyclic in components (although not in values), as well as
      * double relay and longer "transform" form of relay specification */
 
