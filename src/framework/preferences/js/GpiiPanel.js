@@ -52,14 +52,14 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             gpiiLabel: {messagekey: "gpiiLabel"},
             importButton: {messagekey: "importLabel"},
             exportButton: {messagekey: "exportLabel"},
-            gpiiLabel: {messagekey: "gpiiLabel"},
             autoLabel: {messagekey: "autoLabel"},
             auto: "${auto}"
         },
         events: {
             onImport: null,
-            beforeExport: null,
-            afterExport: null
+            onExport: null,
+            onFetchGPIIPrefsSuccess: null,
+            onFetchGPIIPrefsError: null
         },
         listeners: {
             "afterRender.bindImport": {
@@ -70,13 +70,20 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             "afterRender.bindExport": {
                 "this": "{that}.dom.exportButton",
                 method: "click",
-                args: ["{that}.export"]
-            }
-        },
-        invokers: {
-            export: {
-                funcName: "fluid.prefs.panel.gpii.export",
-                args: ["{that}", "{prefsEditor}", "{arguments}.0"]
+                args: ["{that}.events.onExport.fire"]
+            },
+            "onExport.preventDefault": {
+                funcName: "fluid.prefs.panel.gpii.preventDefault",
+                args: ["{arguments}.0"],
+                priority: "before:fetchGPIIPrefs"
+            },
+            "onExport.fetchGPIIPrefs": {
+                funcName: "fluid.prefs.panel.gpii.fetchGPIIPrefs",
+                args: ["{that}"]
+            },
+            "onFetchGPIIPrefsSuccess.applyGPIIPrefs": {
+                funcName: "fluid.prefs.panel.gpii.applyGPIIPrefs",
+                args: ["{that}", "{prefsEditorLoader}", "{arguments}.0"]
             }
         },
         components: {
@@ -103,23 +110,46 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }]
     });
 
-    fluid.prefs.panel.gpii.export = function (that, prefsEditor, event) {
+    fluid.prefs.panel.gpii.preventDefault = function (event) {
+        event.preventDefault();
+    };
+
+    fluid.prefs.panel.gpii.fetchGPIIPrefs = function (that) {
+        $.ajax({
+            url: "/preferences/carla",
+            method: "GET",
+            success: function (data, textStatus, jqXHR) {
+                that.events.onFetchGPIIPrefsSuccess.fire(data, textStatus, jqXHR);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                that.events.onFetchGPIIPrefsError.fire(jqXHR, textStatus, errorThrown);
+            }
+        });
+    };
+
+    fluid.prefs.panel.gpii.applyGPIIPrefs = function (that, prefsEditorLoader, gpiiPrefs) {
         // TODO:
-        // 1. get UIO preferences from GPII to compare
-        // 2. if the saved prefs is same as the local prefs or no saved preferences, do nothing.
-        // 3. if the saved prefs is different from the local prefs,
+        // 1. if the saved prefs is same as the local prefs or no saved preferences, do nothing.
+        // 2. if the saved prefs is different from the local prefs,
         // (1) the local chang is different from the default prefs, show warning dialog
         // (2) the local change is same as the default prefs, apply the gpii prefs.
 
-        that.events.beforeExport.fire(gpiiPrefs);
-        event.preventDefault();
-        var localPrefs = prefsEditor.model.preferences,
-            stats = {changes: 0, unchanged: 0, changeMap: {}},
-            gpiiPrefs = prefsEditor.model.preferences;  // retrieved GPII prefs
-        console.log("localPrefs", localPrefs, "gpiiPrefs", gpiiPrefs)
+        var localPrefs = prefsEditorLoader.prefsEditor.model.preferences,
+            diffBtwLocalAndGPIIPrefs = {changes: 0, unchanged: 0, changeMap: {}};
 
-        if (stats.changes > 0) {
-            // compare local prefs with default prefss
+        fluid.model.diff(localPrefs, gpiiPrefs, diffBtwLocalAndGPIIPrefs);
+        console.log(diffBtwLocalAndGPIIPrefs, "localPrefs", localPrefs, "gpiiPrefs", gpiiPrefs);
+
+        if (diffBtwLocalAndGPIIPrefs.changes > 0) {
+            // compare local prefs with default prefs
+            var initialCompletePrefs = prefsEditorLoader.settings.preferences,
+                diffBtwLocalAndInitPrefs = {changes: 0, unchanged: 0, changeMap: {}};
+            console.log("initialCompletePrefs", initialCompletePrefs);
+            fluid.model.diff(localPrefs, initialCompletePrefs, diffBtwLocalAndInitPrefs);
+
+            if (diffBtwLocalAndInitPrefs.changes === 0) {
+
+            }
         }
         that.events.afterExport.fire(gpiiPrefs);
     };
