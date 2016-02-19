@@ -59,7 +59,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             onImport: null,
             onExport: null,
             onFetchGPIIPrefsSuccess: null,
-            onFetchGPIIPrefsError: null
+            onFetchGPIIPrefsError: null,
+            onContinueExport: null,
+            onCancelExport: null,
+            onGPIIPrefsApplied: null
         },
         listeners: {
             "afterRender.bindImport": {
@@ -81,9 +84,19 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 funcName: "fluid.prefs.panel.gpii.fetchGPIIPrefs",
                 args: ["{that}"]
             },
-            "onFetchGPIIPrefsSuccess.applyGPIIPrefs": {
-                funcName: "fluid.prefs.panel.gpii.applyGPIIPrefs",
+            "onFetchGPIIPrefsSuccess.processGPIIPrefs": {
+                funcName: "fluid.prefs.panel.gpii.processGPIIPrefs",
                 args: ["{that}", "{prefsEditorLoader}", "{arguments}.0"]
+            },
+            "onContinueExport.applyGPIIPrefs": {
+                func: "{that}.applyGPIIPrefs",
+                args: ["{arguments}.0"]
+            }
+        },
+        invokers: {
+            applyGPIIPrefs: {
+                funcName: "fluid.prefs.panel.gpii.applyGPIIPrefs",
+                args: ["{that}", "{prefsEditor}", "{arguments}.0"]
             }
         },
         components: {
@@ -115,43 +128,77 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.prefs.panel.gpii.fetchGPIIPrefs = function (that) {
-        $.ajax({
-            url: "/preferences/carla",
-            method: "GET",
-            success: function (data, textStatus, jqXHR) {
-                that.events.onFetchGPIIPrefsSuccess.fire(data, textStatus, jqXHR);
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                that.events.onFetchGPIIPrefsError.fire(jqXHR, textStatus, errorThrown);
-            }
-        });
+        var data = {
+            "fluid_prefs_contrast": "bw"
+        };
+        that.events.onFetchGPIIPrefsSuccess.fire(data);
+        return;
+
+        // TODO: ajax calls to fetch GPII preferences
+        // $.ajax({
+        //     url: "/preferences/carla",
+        //     method: "GET",
+        //     success: function (data, textStatus, jqXHR) {
+        //         that.events.onFetchGPIIPrefsSuccess.fire(data, textStatus, jqXHR);
+        //     },
+        //     error: function (jqXHR, textStatus, errorThrown) {
+        //         that.events.onFetchGPIIPrefsError.fire(jqXHR, textStatus, errorThrown);
+        //     }
+        // });
     };
 
-    fluid.prefs.panel.gpii.applyGPIIPrefs = function (that, prefsEditorLoader, gpiiPrefs) {
-        // TODO:
-        // 1. if the saved prefs is same as the local prefs or no saved preferences, do nothing.
-        // 2. if the saved prefs is different from the local prefs,
+    fluid.prefs.panel.gpii.processGPIIPrefs = function (that, prefsEditorLoader, gpiiPrefs) {
+        // The export work flow:
+        // 1. if the GPII prefs is same as the local prefs or no GPII preferences, do nothing.
+        // 2. if the GPII prefs is different from the local prefs,
         // (1) the local chang is different from the default prefs, show warning dialog
         // (2) the local change is same as the default prefs, apply the gpii prefs.
 
         var localPrefs = prefsEditorLoader.prefsEditor.model.preferences,
-            diffBtwLocalAndGPIIPrefs = {changes: 0, unchanged: 0, changeMap: {}};
+            gpiiPrefs = fluid.prefs.panel.gpii.consolidateGPIIPrefs(gpiiPrefs, localPrefs),
+            diffLocalAndGPIIPrefs = {changes: 0, unchanged: 0, changeMap: {}};
 
-        fluid.model.diff(localPrefs, gpiiPrefs, diffBtwLocalAndGPIIPrefs);
-        console.log(diffBtwLocalAndGPIIPrefs, "localPrefs", localPrefs, "gpiiPrefs", gpiiPrefs);
+        fluid.model.diff(localPrefs, gpiiPrefs, diffLocalAndGPIIPrefs);
 
-        if (diffBtwLocalAndGPIIPrefs.changes > 0) {
+        if (diffLocalAndGPIIPrefs.changes > 0) {
             // compare local prefs with default prefs
             var initialCompletePrefs = prefsEditorLoader.settings.preferences,
-                diffBtwLocalAndInitPrefs = {changes: 0, unchanged: 0, changeMap: {}};
-            console.log("initialCompletePrefs", initialCompletePrefs);
-            fluid.model.diff(localPrefs, initialCompletePrefs, diffBtwLocalAndInitPrefs);
+                diffLocalAndInitPrefs = {changes: 0, unchanged: 0, changeMap: {}};
 
-            if (diffBtwLocalAndInitPrefs.changes === 0) {
+            fluid.model.diff(localPrefs, initialCompletePrefs, diffLocalAndInitPrefs);
 
+            if (diffLocalAndInitPrefs.changes === 0) {
+                that.applyGPIIPrefs(gpiiPrefs);
+            } else {
+                // TODO: Show the export warning dialog
+                // Fire onContinueExport event with the argument "gpiiPrefs" when the continue button is pressed
+                // Fire onCancelExport event when the cancel button is pressed
+                that.events.onContinueExport.fire(gpiiPrefs);
             }
         }
-        that.events.afterExport.fire(gpiiPrefs);
+    };
+
+    // This function does:
+    // 1. remove GPII preferences that are not included in the local preferences;
+    // 2. for the preferences that are in the local object but not in GPII object, add them
+    //    with their local values into the GPII preference object. This is because when
+    //    applying GPII preferences, the entire GPII prefs object is applied, this would
+    //    cause the loss of the preferences that are already at the local but not included
+    //    in the GPII prefs object.
+    fluid.prefs.panel.gpii.consolidateGPIIPrefs = function (gpiiPrefs, localPrefs) {
+        var localPrefKeys = fluid.keys(localPrefs);
+
+        fluid.remove_if(gpiiPrefs, function (value, pref) {
+            return ($.inArray(pref, localPrefKeys) === -1);
+        });
+
+        return $.extend(true, {}, localPrefs, gpiiPrefs);
+    };
+
+    fluid.prefs.panel.gpii.applyGPIIPrefs = function (that, prefsEditor, gpiiPrefs) {
+        prefsEditor.applier.change("preferences", gpiiPrefs);
+        prefsEditor.events.onPrefsEditorRefresh.fire();
+        that.events.onGPIIPrefsApplied.fire(gpiiPrefs);
     };
 
 })(jQuery, fluid_2_0_0);
