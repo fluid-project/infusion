@@ -1055,6 +1055,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     // Look up the globally registered instantiator for a particular component - we now only really support a
     // single, global instantiator, but this method is left as a notation point in case this ever reverts
+    // Returns null if argument is a noncomponent or has no shadow
     fluid.getInstantiator = function (component) {
         var instantiator = fluid.globalInstantiator;
         return component && instantiator.idToShadow[component.id] ? instantiator : null;
@@ -1616,18 +1617,19 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.changeToApplicable = function (record, that) {
         return {
-            apply: function (noThis, args) {
+            apply: function (noThis, args, localRecord, mergeRecord) {
                 var parsed = fluid.parseValidModelReference(that, "changePath listener record", record.changePath);
-                var value = fluid.expandOptions(record.value, that, {}, {"arguments": args});
-                fluid.fireSourcedChange(parsed.applier, parsed.modelSegs, value, record.source);
+                var value = fluid.expandOptions(record.value, that, {}, fluid.extend(localRecord, {"arguments": args}));
+                var sources = mergeRecord && mergeRecord.source && mergeRecord.source.length ? fluid.makeArray(record.source).concat(mergeRecord.source) : record.source;
+                parsed.applier.change(parsed.modelSegs, value, record.type, sources); // FLUID-5586 now resolved
             }
         };
     };
 
     // Convert "exotic records" into an applicable form ("this/method" for FLUID-4878 or "changePath" for FLUID-3674)
-    fluid.recordToApplicable = function (record, that) {
-        if (record.changePath) {
-            return fluid.changeToApplicable(record, that);
+    fluid.recordToApplicable = function (record, that, standard) {
+        if (record.changePath !== undefined) { // Allow falsy paths for FLUID-5586
+            return fluid.changeToApplicable(record, that, standard);
         }
         var recthis = record["this"];
         if (record.method ^ recthis) {
@@ -1767,7 +1769,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             // need to clarify policy on options sharing - for slightly better efficiency, copy should happen during distribution and not here
             // Note that fluid.mergeModelListeners expects to write to these too
             var expanded = fluid.isPrimitive(record) || record.expander ? {listener: record} : fluid.copy(record);
-            var methodist = fluid.recordToApplicable(record, that);
+            var methodist = fluid.recordToApplicable(record, that, standard);
             if (methodist) {
                 expanded.listener = methodist;
             }

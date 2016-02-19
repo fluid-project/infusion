@@ -122,7 +122,7 @@ var fluid = fluid || fluid_2_0_0;
         var outputPath = fluid.model.composePaths(transform.outputPrefix, userOutputPath);
         // TODO: custom resolver config here to create non-hash output model structure
         if (toset !== undefined) {
-            transform.applier.requestChange(outputPath, toset);
+            transform.applier.change(outputPath, toset);
         }
         return userOutputPath ? fluid.model.transform.NONDEFAULT_OUTPUT_PATH_RETURN : toset;
     };
@@ -153,6 +153,22 @@ var fluid = fluid || fluid_2_0_0;
 
     fluid.firstDefined = function (a, b) {
         return a === undefined ? b : a;
+    };
+
+    // TODO: This cut and pasted code was hoisted out of the inverse of transforms - it needs to go into the
+    // the inversion mechanism itself
+    fluid.model.transform.copyInversePaths = function (transformSpec, transformer) {
+        var togo = fluid.copy(transformSpec);
+        // TODO: this will not behave correctly in the face of compound "value" which contains
+        // further transforms
+        togo.inputPath = fluid.model.composePaths(transformer.outputPrefix, transformSpec.outputPath);
+        if (transformSpec.valuePath) { // Remove this branch when FLUID-5294 is closed
+            togo.outputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.valuePath);
+            delete togo.valuePath;
+        } else {
+            togo.outputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.inputPath);
+        }
+        return togo;
     };
 
 
@@ -227,6 +243,7 @@ var fluid = fluid || fluid_2_0_0;
             fluid.each(expdef.inputVariables, function (v, k) {
                 inputs[k] = function () {
                     var input = fluid.model.transform.getValue(transformSpec[k + "Path"], transformSpec[k], transform);
+                    // TODO: This is a mess, null might perfectly well be a possible default
                     // if no match, assign default if one exists (v != null)
                     input = (input === undefined && v !== null) ? v : input;
                     return input;
@@ -572,7 +589,7 @@ var fluid = fluid || fluid_2_0_0;
      */
     fluid.model.fireSortedChanges = function (changes, applier) {
         changes.sort(fluid.model.compareByPathLength);
-        fluid.requestChanges(applier, changes);
+        fluid.fireChanges(applier, changes);
     };
 
     /**

@@ -147,7 +147,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     return false;
                 }
                 newModel.pageIndex = 0;
-                tableThat.applier.requestChange("", newModel);
+                tableThat.applier.change("", newModel);
                 // fluid.table.setModelSortHeaderClass(newModel, options); - done during rerender, surely
             }
             return false;

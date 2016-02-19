@@ -67,7 +67,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         });
 
         var headingsModel = that.modelBuilder.assembleModel(headings, that.anchorInfo);
-        that.applier.requestChange("", headingsModel);
+        that.applier.change("", headingsModel);
 
         that.events.onRefresh.fire();
     };

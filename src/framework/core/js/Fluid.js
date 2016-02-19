@@ -329,7 +329,7 @@ var fluid = fluid || fluid_2_0_0;
     };
 
     /** Determines whether the supplied object is a plain JSON-forming container - that is, it is either a plain Object
-     * or a plain Array */
+     * or a plain Array. Note that this differs from jQuery's isPlainObject which does not pass Arrays */
     fluid.isPlainObject = function (totest) {
         var string = Object.prototype.toString.call(totest);
         if (string === "[object Array]") {
@@ -405,6 +405,9 @@ var fluid = fluid || fluid_2_0_0;
     fluid.copy = function (tocopy) {
         return fluid.copyRecurse(tocopy, []);
     };
+
+    // TODO: Coming soon - reimplementation of $.extend using strategyRecursionBailout
+    fluid.extend = $.extend;
 
     /** Corrected version of jQuery makeArray that returns an empty array on undefined rather than crashing.
       * We don't deal with as many pathological cases as jQuery **/
@@ -799,6 +802,16 @@ var fluid = fluid || fluid_2_0_0;
      */
     fluid.parseInteger = function (string) {
         return isFinite(string) && ((string % 1) === 0) ? Number(string) : NaN;
+    };
+
+    /** Calls Object.freeze at each level of containment of the supplied object
+     * @return The supplied argument, recursively frozen
+     */
+    fluid.freezeRecursive = function (tofreeze) {
+        fluid.each(tofreeze, function (value) {
+            fluid.freezeRecursive(value);
+        });
+        return Object.freeze(tofreeze);
     };
 
     /** A set of special "marker values" used in signalling in function arguments and return values,
@@ -1288,14 +1301,6 @@ var fluid = fluid || fluid_2_0_0;
         return fluid.sortByPriority(togo);
     };
 
-    // unsupported, non-API function
-    fluid.event.invokeListener = function (listener, args) {
-        if (typeof(listener) === "string") {
-            listener = fluid.event.resolveListener(listener); // just resolves globals
-        }
-        return listener.apply(null, args);
-    };
-
     // unsupported, NON-API function
     fluid.event.resolveListener = function (listener) {
         var listenerName = listener.globalName || (typeof(listener) === "string" ? listener : null);
@@ -1376,7 +1381,7 @@ var fluid = fluid || fluid_2_0_0;
             addListener: function () {
                 lazyInit.apply(null, arguments);
             },
-
+            // Can be supplied either listener, namespace, or id (which may match either listener function's guid or original listenerId argument)
             removeListener: function (listener) {
                 if (!that.listeners) { return; }
                 var namespace, id, record;

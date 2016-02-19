@@ -294,9 +294,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var initModel = fluid.copy(model);
 
             var transApp = applier.initiate();
-            transApp.requestChange("c", 3);
+            transApp.change("c", 3);
             jqUnit.assertDeepEq("Observable model unchanged", initModel, holder.model);
-            transApp.requestChange("d", 4);
+            transApp.change("d", 4);
             jqUnit.assertDeepEq("Observable model unchanged", initModel, holder.model);
             transApp.commit();
             jqUnit.assertDeepEq("All changes applied", {a: 1, b: 2, c: 3, d: 4}, holder.model);
@@ -305,35 +305,39 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.testExternalTrans(fluid.makeHolderChangeApplier, "new applier");
 
-
-    jqUnit.test("FLUID-4633 test - source tracking", function() {
-        var model = {
+    fluid.defaults("fluid.tests.FLUID4633root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
             property1: 1,
             property2: 2
-        };
-        var applier = fluid.makeHolderChangeApplier({model: model});
+        }
+    });
 
-        var indirect = fluid.makeEventFirer();
-        applier.modelChanged.addListener("property1", function() {
-            indirect.fire();
-        });
-        indirect.addListener(function() {
-            fluid.fireSourcedChange(applier, "property2", 3, "indirectSource");
+
+    jqUnit.test("FLUID-4633 test - source tracking", function () {
+        var that = fluid.tests.FLUID4633root();
+        var applier = that.applier;
+        // This complex malarky is achieved automatically in the declarative system. The ancient source tracking system used
+        // to use the call stack which we can no longer rely on now model relay will become asynchronous
+        applier.modelChanged.addListener("property1", function (newValue, oldValue, path, changeRequest, transaction) {
+            applier.change("property2", newValue, "ADD", ["indirectSource"].concat(Object.keys(transaction.sources)));
         });
         var listenerFired = false;
-        fluid.addSourceGuardedListener(applier, "property2", "originalSource", function() {
-            listenerFired = applier.hasChangeSource("indirectSource");
+        applier.modelChanged.addListener({
+            path: "property2",
+            excludeSource: "originalSource"
+        }, function (newValue, oldValue, path, changeRequest, transaction) {
+            listenerFired = transaction.hasChangeSource("indirectSource");
         });
-        fluid.fireSourcedChange(applier, "property1", 2, "originalSource");
+        applier.change("property1", 2, "ADD", "originalSource");
         jqUnit.assertFalse("Recurrence censored from originalSource", listenerFired);
-        // TODO: new source tracking is not accumulative - we may support this again in future
-        // fluid.fireSourcedChange(applier, "property1", 3, "alternateSource");
-        // jqUnit.assertTrue("Recurrence propagated from alternate source", listenerFired);
+        applier.change("property1", 3, "ADD", "alternateSource");
+        jqUnit.assertTrue("Recurrence propagated from alternate source", listenerFired);
 
 
     });
 
-    jqUnit.test("FLUID-4625 test: Over-broad changes", function() {
+    jqUnit.test("FLUID-4625 test: Over-broad changes", function () {
         // This tests FLUID-4625 - we don't test at the utility level of matchPath since this is the functional
         // behaviour required. In practice we may want a better implementation which explodes composite changes into
         // smaller increments so that we can avoid unnecessary notifications, but this at least covers the case
@@ -348,7 +352,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         applier.modelChanged.addListener("selections.lineSpace", function() {
             notified = true;
         });
-        applier.requestChange("selections", {lineSpace: 1.5});
+        applier.change("selections", {lineSpace: 1.5});
         jqUnit.assertTrue("Over-broad change triggers listener", notified);
     });
 
@@ -422,20 +426,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "thing2": {
                 func: "{that}.record",
                 args: "{change}.value",
-                excludeSource: "init"
-              //  guardSource: "internalSource" // TODO: sources may be supported in future
+                excludeSource: ["init", "internalSource"]
             }
         }
     });
 
     jqUnit.test("FLUID-4258 declarative listener test", function () {
         var that = fluid.tests.fluid4258head();
-        that.applier.requestChange("thing1.nest1", 3);
+        function assertListenerCount(count) {
+            // blatant white-box testing - make sure that the outer applier has the expected number of listeners
+            jqUnit.assertEquals("Expected external model listener count ", count, that.applier.changeListeners.transListeners.length);
+        }
+        assertListenerCount(2);
+        that.applier.change("thing1.nest1", 3);
         jqUnit.assertDeepEq("Single change correctly reported to same component's listener",
             [{path: ["thing1", "nest1"], value: 3, oldValue: 2}], that.fireRecord);
         for (var i = 0; i < 2; ++ i) {
             that.fireRecord.length = 0;
             that.events.createEvent.fire();
+            assertListenerCount(3); // Make sure that 1 old listener was removed and one was added (2nd time round)
             that.changeNest2(true);
             jqUnit.assertDeepEq("Change reported to subcomponent's listener to root model - time " + (i + 1),
                 [{path: ["thing1", "nest2"], value: true, oldValue: false}], that.fireRecord);
@@ -502,12 +511,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             value: {nested2: "thing"}
         }];
         jqUnit.assertDeepEq("Registered initial change", expected3, that.fireRecord);
-        that.applier.requestChange("innerModel", "exterior thing");
+        that.applier.change("innerModel", "exterior thing");
         var expected4 = {
             nested1: "exterior thing"
         };
         jqUnit.assertDeepEq("Propagated change inwards", expected4, that.child.model);
-        that.child.applier.requestChange("nested1", "interior thing");
+        that.child.applier.change("nested1", "interior thing");
         var expected5 = {
             innerModel: "interior thing"
         };
@@ -553,14 +562,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Outer model propagated inwards on creation", "outerValue", child.model);
         jqUnit.assertDeepEq("Outer model propagated to bare listener inwards on creation", that.model, that.child2.parentInitModel);
 
-        that.applier.requestChange("outerModel", "exterior thing");
+        that.applier.change("outerModel", "exterior thing");
         jqUnit.assertEquals("Propagated change inwards through relay", "exterior thing", child.model);
-        child.applier.requestChange("", "interior thing");
+        child.applier.change("", "interior thing");
         jqUnit.assertDeepEq("Propagated change outwards through relay", {outerModel: "interior thing"}, that.model);
         child.destroy();
-        that.applier.requestChange("outerModel", "exterior thing 2");
+        that.applier.change("outerModel", "exterior thing 2");
         jqUnit.assertEquals("No change propagated inwards to destroyed component", "interior thing", child.model);
-        child.applier.requestChange("", "interior thing 2");
+        child.applier.change("", "interior thing 2");
         jqUnit.assertDeepEq("No change propagated outwards from destroyed component", {outerModel: "exterior thing 2"}, that.model);
     });
 
@@ -615,7 +624,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var supersetL = fluid.tests.checkNearSuperset(model1, model2);
         var supersetR = fluid.tests.checkNearSuperset(model2, model1);
         var equal = supersetL && supersetR;
-        jqUnit.assertTrue(message + "expected: " + JSON.stringify(model1) + " actual: " + JSON.stringify(model2), equal);
+        jqUnit.assertTrue(message + " expected: " + JSON.stringify(model1) + " actual: " + JSON.stringify(model2), equal);
     };
 
     fluid.tests.fluid5024clear = function (that) {
@@ -723,18 +732,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     modelListeners: {
                         "fahrenheit": [{
-                            //path: "fahrenheit",
                             func: "{fluid5361head}.recordPriority",
                             priority: 1,
                             args: ["{fluid5361head}", 1, "{that}"]
                         }, {
-                            //path: "fahrenheit",
                             func: "{fluid5361head}.recordPriority",
                             priority: 2,
                             namespace: "priority2",
                             args: ["{fluid5361head}", 2, "{that}"]
                         }, {
-                            //path: "fahrenheit",
                             func: "{fluid5361head}.recordPriority",
                             priority: "last",
                             args: ["{fluid5361head}", "last", "{that}"]
@@ -797,7 +803,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         segs: [["windowHolders"], "{that}.options.ourWindow"]
                     }
                 ],
-                priority: "before:notifyExternal",
+                priority: "before:notifyExternal", // TODO: interpret this!!
                 func: "{that}.refreshView",
                 args: ["{change}.value", "{change}.oldValue"]
             }
@@ -989,7 +995,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         applier.modelChanged.addListener("path2", listenerToFire);
 
         var triggerChangeRequest = function (fireOn) {
-            applier.requestChange(fireOn, fireOn);
+            applier.change(fireOn, fireOn);
             jqUnit.assertDeepEq("The listener registered for model path " + fireOn + " has been fired", [fireOn], currentPath);
         };
 
@@ -1194,12 +1200,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         };
 
-        that.applier.requestChange("modelInTransit.flashing", true);
-        that.applier.requestChange("modelInTransit.noflashing", true);
+        that.applier.change("modelInTransit.flashing", true);
+        that.applier.change("modelInTransit.noflashing", true);
         jqUnit.assertDeepEq("The backward transformation to add array values is performed properly", expectedModelAfterChangeRequest, that.model);
 
-        that.applier.requestChange("modelInTransit.flashing", false);
-        that.applier.requestChange("modelInTransit.noflashing", false);
+        that.applier.change("modelInTransit.flashing", false);
+        that.applier.change("modelInTransit.noflashing", false);
         jqUnit.assertDeepEq("The backward transformation to remove array values is performed properly", expectedModel, that.model);
 
         var expectedSubcomponentModel = {
@@ -1207,7 +1213,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             highContrast: true,
             signLanguage: true
         };
-        that.applier.requestChange("accessibilityHazard", ["flashing", "noflashing"]);
+        that.applier.change("accessibilityHazard", ["flashing", "noflashing"]);
         jqUnit.assertDeepEq("The transformation from array elements to the intermediary object is performed properly", expectedModelAfterChangeRequest, that.model);
         jqUnit.assertDeepEq("The change request on the model array element is properly relayed and transformed to the subcomponent", expectedSubcomponentModel, that.sub.model);
     });
@@ -1297,7 +1303,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("The input model is merged with the default model", expectedModel, that.model);
     });
 
-    // FLUID-5371: Model relay directive "forward" and "backward"
+    // FLUID-5371: Model relay directives "forward" and "backward"
 
     fluid.defaults("fluid.tests.fluid5371root", {
         gradeNames: ["fluid.modelComponent"],
@@ -1563,6 +1569,134 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.child.applier.change("innerPath2", "value2");
         jqUnit.assertDeepEq("Correct firing record after relay change", expected3, that.fireRecord);
     });
+
+    /** FLUID-5490: New-style source tracking in ChangeApplier **/
+
+    fluid.defaults("fluid.tests.fluid5490root2", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            position: 10
+        },
+        modelRelay: {
+            source: "position",
+            target: "{that}.dodgyScrollbar.model.position",
+            singleTransform: {
+                type: "fluid.transforms.round"
+            },
+            forward: {
+                excludeSource: "scrollbar"
+            }
+        },
+        components: {
+            dodgyScrollbar: {
+                type: "fluid.modelComponent",
+                options: {
+                    invokers: {
+                        scrollToPosition: {
+                            changePath: "position",
+                            value: "{arguments}.0",
+                            source: "scrollbar"
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5490: Source tracking for model relay", function () {
+        var that = fluid.tests.fluid5490root2();
+        that.applier.change("position", 3.35);
+        jqUnit.assertEquals("Updated base model from direct change", 3, that.model.position);
+        jqUnit.assertEquals("Updated rounded model", 3, that.dodgyScrollbar.model.position);
+        that.dodgyScrollbar.scrollToPosition(3.88);
+        jqUnit.assertEquals("Updated base model via backward relay from sourced change", 3.88, that.model.position);
+        jqUnit.assertEquals("Rounded model has not self-reacted", 3.88, that.dodgyScrollbar.model.position);
+    });
+
+    /** FLUID-5490: Cascade of new-style source tracking through back-to-back listeners **/
+
+    fluid.defaults("fluid.tests.fluid5490root3", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            position: 10
+        },
+        members: {
+            fireRecord: []
+        },
+        modelListeners: {
+            position: {
+                changePath: "oldPosition",
+                value: "{change}.value"
+            },
+            oldPosition: {
+                excludeSource: ["originalSource", "init"],
+                funcName: "fluid.tests.recordFire",
+                args: ["{that}", "notOriginalSource"]
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5490: Automatic cascade of source tracking through back-to-back model listeners", function () {
+        var that = fluid.tests.fluid5490root3();
+        that.applier.change("position", 20, "ADD", "originalSource");
+        jqUnit.assertDeepEq("No notification due to original source excluded", [], that.fireRecord);
+        jqUnit.assertDeepEq("Model updated via listeners", {position: 20, oldPosition: 20}, that.model);
+    });
+
+    /** FLUID-5586 - variant records for "changePath" including source tracking, falsy changePath and DELETE records **/
+
+    fluid.defaults("fluid.tests.fluid5586", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            position: 10
+        },
+        members: {
+            fireRecord: []
+        },
+        invokers: {
+            clearPosition: {
+                changePath: "position",
+                type: "DELETE" // tests FLUID-5586
+            },
+            clearAll: {
+                changePath: "", // tests another part of FLUID-5586
+                type: "DELETE"
+            },
+            changeRoot: {
+                changePath: {
+                    segs: []
+                },
+                value: {
+                    position: 9.5
+                },
+                source: "scrollbar"
+            }
+        },
+        modelListeners: {
+            position: {
+                excludeSource: ["scrollbar", "init"],
+                funcName: "fluid.tests.recordFire",
+                args: ["{that}", "positionListen"]
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5586: Source tracking for model listeners", function () {
+        var that = fluid.tests.fluid5586();
+        that.applier.change("position", 3.35, "ADD", "scrollbar");
+        jqUnit.assertDeepEq("No notification for excluded source", [], that.fireRecord);
+        jqUnit.assertEquals("Model updated", 3.35, that.model.position);
+        that.clearPosition();
+        jqUnit.assertDeepEq("Notification for non-excluded source", ["positionListen"], that.fireRecord);
+        jqUnit.assertEquals("Model updated", undefined, that.model.position);
+        that.clearAll();
+        jqUnit.assertDeepEq("No notification for undefined-undefined transition", ["positionListen"], that.fireRecord);
+        jqUnit.assertEquals("Model updated", undefined, that.model);
+        that.changeRoot();
+        jqUnit.assertDeepEq("No notification for excluded source", ["positionListen"], that.fireRecord);
+        jqUnit.assertEquals("Model updated", 9.5, that.model.position);
+    });
+
 
     // FLUID-5479: Compound values for valueMapper transform - example from metadata editor
 

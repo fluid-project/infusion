@@ -2513,7 +2513,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("Invoker resolution tests", function () {
         var that = fluid.tests.invokerGrandParent();
         var newValue = 2;
-        that.invokerwrapper.parent2.applier.requestChange("testValue", newValue);
+        that.invokerwrapper.parent2.applier.change("testValue", newValue);
         jqUnit.assertEquals("The invoker for second subcomponent should return the value from its parent",
             newValue, that.invokerwrapper.parent2.checkTestValue());
     });

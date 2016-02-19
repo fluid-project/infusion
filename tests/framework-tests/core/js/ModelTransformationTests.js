@@ -265,7 +265,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             value: {
                 transform: {
                     type: "fluid.transforms.linearScale",
-                    valuePath: "dozen"
+                    valuePath: "dozen" // Revert to "inputPath" once FLUID-5294 is resolved
                 }
             }
         },
@@ -273,7 +273,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             transform: [{
                 type: "fluid.transforms.linearScale",
                 outputPath: "dozen",
-                valuePath: "value"
+                inputPath: "value"
             }]
         },
         method: "assertDeepEq",
@@ -302,7 +302,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             transform: [{
                 type: "fluid.transforms.linearScale",
                 outputPath: "dozen",
-                valuePath: "value",
+                inputPath: "value",
                 factor: 4
             }]
         },
@@ -320,7 +320,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             value: {
                 transform: {
                     type: "fluid.transforms.linearScale",
-                    valuePath: "dozen",
+                    inputPath: "dozen",
                     factor: 0.50,
                     offset: 100
                 }
@@ -330,7 +330,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             transform: [{
                 type: "fluid.transforms.linearScale",
                 outputPath: "dozen",
-                valuePath: "value",
+                inputPath: "value",
                 factor: 2,
                 offset: -200
             }]

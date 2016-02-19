@@ -79,11 +79,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 "args": ["{that}.options.animationDurations.show", "{that}.events.afterPanelShow.fire"]
             },
             hidePanel: {
-                func: "{that}.applier.requestChange",
+                func: "{that}.applier.change",
                 args: ["isShowing", false]
             },
             showPanel: {
-                func: "{that}.applier.requestChange",
+                func: "{that}.applier.change",
                 args: ["isShowing", true]
             },
             togglePanel: {
@@ -105,7 +105,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     });
 
     fluid.slidingPanel.togglePanel = function (that) {
-        that.applier.requestChange("isShowing", !that.model.isShowing);
+        that.applier.change("isShowing", !that.model.isShowing);
     };
 
     fluid.slidingPanel.refreshView = function (that) {
