@@ -60,6 +60,33 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             onExport: null,
             onFetchGPIIPrefsSuccess: null,
             onFetchGPIIPrefsError: null,
+
+            onGPIIPrefsReadyForImport: {
+                events: {
+                    onImport: "onImport",
+                    onFetchGPIIPrefsSuccess: "onFetchGPIIPrefsSuccess"
+                }
+            },
+            onFetchGPIIPrefsErrorForImport: {
+                events: {
+                    onImport: "onImport",
+                    onFetchGPIIPrefsError: "onFetchGPIIPrefsError"
+                }
+            },
+
+            onGPIIPrefsReadyForExport: {
+                events: {
+                    onExport: "onExport",
+                    onFetchGPIIPrefsSuccess: "onFetchGPIIPrefsSuccess"
+                }
+            },
+            onFetchGPIIPrefsErrorForExport: {
+                events: {
+                    onExport: "onExport",
+                    onFetchGPIIPrefsError: "onFetchGPIIPrefsError"
+                }
+            },
+
             onContinueExport: null,
             onCancelExport: null,
             onGPIIPrefsApplied: null
@@ -75,25 +102,65 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 method: "click",
                 args: ["{that}.events.onExport.fire"]
             },
+            // *** Import ***
+            // 1. Fetch GPII pref set
+            "onImport.preventDefault": {
+                funcName: "fluid.prefs.panel.gpii.preventDefault",
+                args: ["{arguments}.0"],
+                priority: "before:fetchGPIIPrefs"
+            },
+            "onImport.fetchGPIIPrefs": {
+                func: "{that}.fetchGPIIPrefs"
+            },
+            // 2. IMPORT - fetch success handling: import GPII prefs to the site and UIO
+            "onGPIIPrefsReadyForImport.importGPIIPrefs": {
+                funcName: "fluid.prefs.panel.gpii.importGPIIPrefs",
+                args: ["{that}", "{prefsEditorLoader}"]
+            },
+            "onContinueImport.applyGPIIPrefs": {
+                func: "{that}.applyGPIIPrefs",
+                args: ["{arguments}.0"]
+            },
+            // 3. IMPORT - fetch error handling: check the existence of the GPII pref set,
+            // if user has no GPII pref set, show message of doing export first
+            // Q1: Still need to go thru the OAuth login (or sign up here) to know whether a pref set exists or not?
+            // Q2: how to handle other error cases? a place to display an error message?
+            // Q3: every time of export and import, users will see privacy settings page to determine the prefs to be shared with UIO?
+            "onFetchGPIIPrefsErrorForImport.handleImportError": {
+                // TODO: show warning message of exporting UIO changes first in order to create the initial GPII pref set
+            },
+            // *** End of Import ***
+
+            // *** Export ***
+            // 1. fetch GPII pref set
             "onExport.preventDefault": {
                 funcName: "fluid.prefs.panel.gpii.preventDefault",
                 args: ["{arguments}.0"],
                 priority: "before:fetchGPIIPrefs"
             },
             "onExport.fetchGPIIPrefs": {
+                func: "{that}.fetchGPIIPrefs"
+            },
+            // TODO: 2. EXPORT - fetch success handling: user has an UIO pref set saved at GPII, save adjusted prefs to GPII
+            // Q1: GPII hasn't implmented the OAuth feature that updates existing pref sets?
+            // Q2: Are only prefs selected on the privacy settings imported or exported?
+            // "onGPIIPrefsReadyForExport.exportGPIIPrefs": {
+            //     funcName: "fluid.prefs.panel.gpii.exportGPIIPrefs",
+            //     args: ["{that}", "{prefsEditorLoader}"]
+            // },
+            // TODO: 3. EXPORT - fetch error handling: user doesn't have an UIO pref set saved at GPII, create an UIO set automatically at GPII
+            // Q1: GPII hasn't implmented the OAuth feature that creates pref sets?
+            // "onFetchGPIIPrefsErrorForExport.exportGPIIPrefs": {
+            //     funcName: "fluid.prefs.panel.gpii.exportGPIIPrefs",
+            //     args: ["{that}", "{prefsEditorLoader}"]
+            // }
+            // *** End of Export ***
+        },
+        invokers: {
+            fetchGPIIPrefs: {
                 funcName: "fluid.prefs.panel.gpii.fetchGPIIPrefs",
                 args: ["{that}"]
             },
-            "onFetchGPIIPrefsSuccess.processGPIIPrefs": {
-                funcName: "fluid.prefs.panel.gpii.processGPIIPrefs",
-                args: ["{that}", "{prefsEditorLoader}", "{arguments}.0"]
-            },
-            "onContinueExport.applyGPIIPrefs": {
-                func: "{that}.applyGPIIPrefs",
-                args: ["{arguments}.0"]
-            }
-        },
-        invokers: {
             applyGPIIPrefs: {
                 funcName: "fluid.prefs.panel.gpii.applyGPIIPrefs",
                 args: ["{that}", "{prefsEditor}", "{arguments}.0"]
@@ -131,6 +198,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var data = {
             "fluid_prefs_contrast": "bw"
         };
+        that.gpiiPrefs = data;
         that.events.onFetchGPIIPrefsSuccess.fire(data);
         return;
 
@@ -147,15 +215,15 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         // });
     };
 
-    fluid.prefs.panel.gpii.processGPIIPrefs = function (that, prefsEditorLoader, gpiiPrefs) {
+    fluid.prefs.panel.gpii.importGPIIPrefs = function (that, prefsEditorLoader) {
         // The export work flow:
-        // 1. if the GPII prefs is same as the local prefs or no GPII preferences, do nothing.
+        // 1. if the GPII prefs is same as the local prefs, do nothing.
         // 2. if the GPII prefs is different from the local prefs,
         // (1) the local chang is different from the default prefs, show warning dialog
         // (2) the local change is same as the default prefs, apply the gpii prefs.
 
         var localPrefs = prefsEditorLoader.prefsEditor.model.preferences,
-            gpiiPrefs = fluid.prefs.panel.gpii.consolidateGPIIPrefs(gpiiPrefs, localPrefs),
+            gpiiPrefs = fluid.prefs.panel.gpii.consolidateGPIIPrefs(that.gpiiPrefs, localPrefs),
             diffLocalAndGPIIPrefs = {changes: 0, unchanged: 0, changeMap: {}};
 
         fluid.model.diff(localPrefs, gpiiPrefs, diffLocalAndGPIIPrefs);
@@ -168,11 +236,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             fluid.model.diff(localPrefs, initialCompletePrefs, diffLocalAndInitPrefs);
 
             if (diffLocalAndInitPrefs.changes === 0) {
+                console.log("no local prefs changes");
                 that.applyGPIIPrefs(gpiiPrefs);
             } else {
                 // TODO: Show the export warning dialog
                 // Fire onContinueExport event with the argument "gpiiPrefs" when the continue button is pressed
                 // Fire onCancelExport event when the cancel button is pressed
+                console.log("has local prefs changes, show warning dialog");
                 that.events.onContinueExport.fire(gpiiPrefs);
             }
         }
