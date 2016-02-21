@@ -1266,6 +1266,17 @@ var fluid = fluid || fluid_2_0_0;
             }
         }
     };
+ 
+    fluid.parsePriorityRecords = function (records, name, root) {
+        var array = fluid.hashToArray(records, "namespace", function (newElement, oldElement, index) {
+            if (!root) {
+                $.extend(newElement, oldElement);
+            }
+            newElement.priority = fluid.parsePriority(root ? oldElement : oldElement.priority, index, false, name);
+        });
+        fluid.sortByPriority(array);
+        return array;
+    };
 
     fluid.event.identifyListener = function (listener, soft) {
         if (typeof(listener) !== "string" && !listener.$$fluid_guid && !soft) {

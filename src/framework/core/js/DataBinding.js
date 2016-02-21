@@ -895,6 +895,23 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
+    /** Utility grade to compute and hold priorities for model listeners **/
+    fluid.defaults("fluid.priorityHolder", {
+        gradeNames: "fluid.component",
+        members: {
+            priorities: "@expand:fluid.priorityHolder.expand({that}.options.priorities)"
+        }
+    });
+
+    fluid.priorityHolder.expand = function (priorities) {
+        var array = fluid.parsePriorityRecords(priorities, "priorityHolder entry", true);
+        var togo = {}; // note that fluid.transforms.arrayToObject can't unpack this value
+        fluid.each(array, function (element, index) {
+            togo[element.namespace] = - index * 10;
+        });
+        return togo;
+    };
+
     fluid.modelChangedToChange = function (args) {
         return {
             value: args[0],
@@ -930,22 +947,20 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         return togo;
     };
 
-    fluid.registerModelListeners = function (that, record, paths, namespace, perComponent) {
+    fluid.registerModelListeners = function (that, record, paths, namespace) {
         var func = fluid.resolveModelListener(that, record);
         fluid.each(record.byTarget, function (parsedArray) {
             var parsed = parsedArray[0]; // that, applier are common across all these elements
             var spec = {
                 listener: func, // for initModelEvent
                 listenerId: fluid.allocateGuid(), // external declarative listeners may often share listener handle, identify here
-                listenerIndex: perComponent.listenerCount,
                 segsArray: fluid.getMembers(parsedArray, "modelSegs"),
                 pathArray: fluid.getMembers(parsedArray, "path"),
                 includeSource: record.includeSource,
                 excludeSource: record.excludeSource,
-                priority: record.priority,
+                priority: fluid.expandOptions(record.priority, that),
                 transactional: true
             };
-            ++perComponent.listenerCount;
             // update "spec" so that we parse priority information just once
             spec = parsed.applier.modelChanged.addListener(spec, func, namespace, record.softNamespace);
 
@@ -970,9 +985,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.mergeModelListeners = function (that, listeners) {
-        var perComponent = {
-            listenerCount: 0
-        };
         fluid.each(listeners, function (value, key) {
             if (typeof(value) === "string") {
                 value = {
@@ -982,7 +994,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             // Bypass fluid.event.dispatchListener by means of "standard = false" and enter our custom workflow including expanding "change":
             var records = fluid.event.resolveListenerRecord(value, that, "modelListeners", null, false).records;
             fluid.each(records, function (record) {
-                // Aggregate model listeners into groups referring to the same component target. This is probably unnecessary now.
+                // Aggregate model listeners into groups referring to the same component target.
+                // We do this so that a single entry will appear in its modelListeners so that they may
+                // be notified just once per transaction, and also displaced by namespace
                 record.byTarget = {};
                 var paths = fluid.makeArray(record.path === undefined ? key : record.path);
                 fluid.each(paths, function (path) {
@@ -990,7 +1004,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     fluid.pushArray(record.byTarget, parsed.that.id, parsed);
                 });
                 var namespace = (record.namespace && !record.softNamespace ? record.namespace : null) || (record.path !== undefined ? key : null);
-                fluid.registerModelListeners(that, record, paths, namespace, perComponent);
+                fluid.registerModelListeners(that, record, paths, namespace);
             });
         });
     };
@@ -1237,7 +1251,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var keyString = keySegs.join("|");
         // TODO: We think we probably have a bug in that notifications destined for end of transaction are actually continuously emitted during the transaction
         // These are unbottled in fluid.concludeTransaction
-        transRec.externalChanges[keyString] = {listener: spec.listener, priority: spec.priority, args: args};
+        transRec.externalChanges[keyString] = {listener: spec.listener, namespace: spec.namespace, priority: spec.priority, args: args};
     };
 
     fluid.notifyModelChanges = function (listeners, changeMap, newHolder, oldHolder, changeRequest, transaction, applier, that) {
@@ -1254,7 +1268,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     }
                     var invalidPath = invalidPaths[k];
                     spec.listener = fluid.event.resolveListener(spec.listener);
-                    // TODO: process namespace and softNamespace rules, and propagate "sources" in 4th argument
                     var args = [multiplePaths ? newHolder.model : fluid.model.getSimple(newHolder, invalidPath),
                                 multiplePaths ? oldHolder.model : fluid.model.getSimple(oldHolder, invalidPath),
                                 multiplePaths ? [] : invalidPath.slice(1), changeRequest, transaction, applier];
@@ -1412,7 +1425,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             ation.fireChangeRequest(changeRequest);
             ation.commit();
         };
-
+        /**
+         * Initiate a fresh transaction on this applier, perhaps coordinated with other transactions sharing the same id across the component tree 
+         * Arguments all optional
+         * localSource {String}: "local", "relay" or null Local source identifiers only good for transaction's representative on this applier
+         *  globalSources: {String|Array of String|Object String->true} Global source identifiers common across this transaction
+         *  transactionId: {String} Global transaction id to enlist with
+         */
         that.initiate = function (localSource, globalSources, transactionId) {
             localSource = globalSources === "init" ? null : (localSource || "local"); // supported values for localSource are "local" and "relay" - globalSource of "init" defeats defaulting of localSource to "local" 
             var defeatPost = localSource === "relay"; // defeatPost is supplied for all non-top-level transactions

@@ -797,7 +797,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         modelListeners: {
-            layoutListener: {
+            checkBefore: {
+                path: "position",
+                priority: "before:layoutListener",
+                excludeSource: "init",
+                listener: "fluid.tests.fluid5695checkBefore",
+                args: "{that}"
+            },
+            notifyExternal: {
+                path: "windowHolders.mainWindow.x",
+                excludeSource: "init",
+                listener: "fluid.tests.fluid5695checkAfter",
+                args: "{that}"
+            },
+            layoutListener: { // This becomes the namespace of the listener
                 path: [
                     "position", {
                         segs: [["windowHolders"], "{that}.options.ourWindow"]
@@ -822,11 +835,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.frozenModel = fluid.copy(newValue);
     };
 
-    // Note - we need to WARN/FAIL if we discover two model listeners with the same namespace attached to different components
-    // which are notified as part of the same transaction. In the end we need to be able to statically verify that this has
-    // not occurred at design time
+    fluid.tests.fluid5695checkBefore = function (that) {
+        jqUnit.assertEquals("Notified before refreshView in priority order", 1, that.refreshes);
+    };
+
+    fluid.tests.fluid5695checkAfter = function (that) {
+        jqUnit.assertEquals("Notified after refreshView in priority order", 3, that.refreshes);
+    };
 
     jqUnit.test("FLUID-5695: Complex specification of paths and namespaces for model listeners", function () {
+        jqUnit.expect(7);
         var that = fluid.tests.fluid5695root();
         jqUnit.assertEquals("Captured initial transition for initial transaction", 1, that.refreshes);
         that.applier.change("position", 40);
@@ -835,6 +853,77 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.applier.change("windowHolders.mainWindow.x", 30);
         jqUnit.assertEquals("Invalidated by change in position field", 3, that.refreshes);
         jqUnit.assertDeepEq("Captured model by argument", {x: 30, y: 30}, that.frozenModel.windowHolders.mainWindow);
+    });
+
+    /** FLUID-5866: Global priorities mediated by "priorityHolder" component **/
+
+    fluid.defaults("fluid.tests.fluid5866root", {
+        gradeNames: "fluid.modelComponent",
+        components: {
+            priorityHolder: {
+                type: "fluid.priorityHolder",
+                options: {
+                    priorities: {
+                        repaint: null,
+                        notifyExternal: "after:repaint",
+                        compute: "before:repaint"
+                    }
+                }
+            },
+            notifier: {
+                type: "fluid.modelComponent",
+                options: {
+                    model: {
+                        position: "{fluid5866root}.model.position"
+                    },
+                    modelListeners: {
+                        position: {
+                            priority: "{priorityHolder}.priorities.notifyExternal",
+                            func: "fluid.tests.recordFire",
+                            excludeSource: "init",
+                            args: ["{fluid5866root}", "notifyExternal"]
+                        }
+                    }
+                }
+            },
+            computer: {
+                type: "fluid.modelComponent",
+                options: {
+                    model: {
+                        position: "{fluid5866root}.model.position"
+                    },
+                    modelListeners: {
+                        position: {
+                            priority: "{priorityHolder}.priorities.compute",
+                            func: "fluid.tests.recordFire",
+                            excludeSource: "init",
+                            args: ["{fluid5866root}", "compute"]
+                        }
+                    }
+                }
+            }
+        },
+        members: {
+            fireRecord: []
+        },
+        model: {
+            position: 10
+        },
+        modelListeners: {
+            position: {
+                priority: "{priorityHolder}.priorities.repaint",
+                func: "fluid.tests.recordFire",
+                excludeSource: "init",
+                args: ["{that}", "repaint"]
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5866: Global priorities mediated by \"priorityHolder\" component", function () {
+        var that = fluid.tests.fluid5866root();
+        that.applier.change("position", 20);
+        jqUnit.assertDeepEq("Global listeners notified in priority order",
+            ["compute", "repaint", "notifyExternal"], that.fireRecord);
     });
 
     /** FLUID-5848: Detect indirect references to component models (at components nested one or more levels below context of reference) **/
