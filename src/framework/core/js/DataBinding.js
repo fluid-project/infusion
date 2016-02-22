@@ -834,8 +834,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         fluid.mergeModelListeners(that, optionsML);
 
         var enlist = fluid.enlistModelComponent(that);
-        fluid.each(optionsMR, function (mrrec) {
-            fluid.parseModelRelay(that, mrrec);
+        fluid.each(optionsMR, function (mrrec, key) {
+            for (var i = 0; i < mrrec.length; ++ i) {
+                fluid.parseModelRelay(that, mrrec[i], key);
+            }
         });
 
         // Note: this particular instance of "refCount" is disused. We only use the count made within fluid.makeTransformPackge
@@ -888,10 +890,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 func: fluid.arrayConcatPolicy // TODO: bug here in case a model consists of an array
             },
             modelListeners: fluid.makeMergeListenersPolicy(fluid.arrayConcatPolicy),
-            modelRelay: {
-                noexpand: true,
-                func: fluid.arrayConcatPolicy
-            }
+            modelRelay: fluid.makeMergeListenersPolicy(fluid.arrayConcatPolicy, true)
         }
     });
 

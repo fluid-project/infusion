@@ -1539,12 +1539,16 @@ var fluid = fluid || fluid_2_0_0;
     };
 
     // unsupported, NON-API function
-    fluid.makeMergeListenersPolicy = function (merger) {
+    fluid.makeMergeListenersPolicy = function (merger, modelRelay) {
         return function (target, source) {
             target = target || {};
-            fluid.each(source, function (listeners, key) {
-                target[key] = merger(target[key], listeners, key);
-            });
+            if (modelRelay && (fluid.isArrayable(source) || typeof(source.target) === "string")) { // This form allowed for modelRelay
+                target[""] = merger(target[""], source, "");
+            } else {
+                fluid.each(source, function (listeners, key) {
+                    target[key] = merger(target[key], listeners, key);
+                });
+            }
             return target;
         };
     };

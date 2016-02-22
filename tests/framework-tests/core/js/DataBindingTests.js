@@ -816,7 +816,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         segs: [["windowHolders"], "{that}.options.ourWindow"]
                     }
                 ],
-                priority: "before:notifyExternal", // TODO: interpret this!!
+                priority: "before:notifyExternal",
                 func: "{that}.refreshView",
                 args: ["{change}.value", "{change}.oldValue"]
             }
@@ -924,6 +924,93 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.applier.change("position", 20);
         jqUnit.assertDeepEq("Global listeners notified in priority order",
             ["compute", "repaint", "notifyExternal"], that.fireRecord);
+    });
+
+    /** FLUID-5865: Priorities for relay rules **/
+
+    fluid.defaults("fluid.tests.fluid5865.root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            position: 50,
+            screenChaundles: 100,
+            visWindow: {
+                start: 500,
+                end: 1500,
+                step: 10
+            },
+            dataRange: {
+                start: 0,
+                end: 2000,
+                step: "{that}.model.visWindow.step"
+            }
+        },
+        modelRelay: {
+            positionToVis: {
+                target: "visWindow",
+                singleTransform: {
+                    type: "fluid.tests.fluid5865.positionToVis",
+                    input: {
+                        screenChaundles: "{that}.model.screenChaundles",
+                        position: "{that}.model.position",
+                        step: "{that}.model.dataRange.step"
+                    }
+                }
+            },
+            rescalePosition: {
+                target: "position",
+                singleTransform: {
+                    type: "fluid.tests.fluid5865.rescalePosition",
+                    input: {
+                        position: "{that}.model.visWindow",
+                        step: "{that}.model.dataRange.step"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.tests.getWindowMidpoint = function (w) {
+        return (w.start + w.end) / 2;
+    };
+
+    fluid.tests.fluid5865.positionToVis = function (model) {
+        var dataRange = model.dataRange,
+            position = model.position;
+        // that.model.position holds scrollbar's index, which is between 0 and dataRange width / step
+        if (!dataRange || !dataRange.start) {
+            return;
+        }
+        var visStart = dataRange.start + position * dataRange.step;
+        var visWindow = {
+            start: visStart,
+            end: visStart + dataRange.step * model.screenChaundles,
+            step: dataRange.step
+        };
+        return visWindow;
+    };
+
+    fluid.tests.fluid5865.rescalePosition = function (model) {
+        if (model.visWindow) {
+            var dataRange = model.dataRange;
+            var midpoint = fluid.tests.getWindowMidpoint(model.visWindow);
+            var newStart = midpoint - dataRange.step * model.screenChaundles / 2;
+            var newPosition = (newStart - dataRange.start) / dataRange.step;
+            return newPosition;
+        }
+    };
+
+    jqUnit.test("FLUID-5865: Priorities and namespaces for model relay rules", function () {
+        var that = fluid.tests.fluid5865.root();
+        that.applier.change("dataRange.step", 20);
+        var expected = {
+            position: 0,
+            visWindow: {
+                start: 0,
+                end: 2000,
+                step: 20
+            }
+        };
+        jqUnit.assertLeftHand("Model updated in coordinated way", expected, that.model);
     });
 
     /** FLUID-5848: Detect indirect references to component models (at components nested one or more levels below context of reference) **/

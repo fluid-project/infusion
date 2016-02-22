@@ -1149,7 +1149,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     // TODO: overall efficiency could huge be improved by resorting to the hated PROTOTYPALISM as an optimisation
     // for this mergePolicy which occurs in every component. Although it is a deep structure, the root keys are all we need
     var addPolicyBuiltins = function (policy) {
-        fluid.each(["gradeNames", "mergePolicy", "argumentMap", "components", "dynamicComponents", "events", "listeners", "modelListeners", "distributeOptions", "transformOptions"], function (key) {
+        fluid.each(["gradeNames", "mergePolicy", "argumentMap", "components", "dynamicComponents", "events", "listeners", "modelListeners", "modelRelay", "distributeOptions", "transformOptions"], function (key) {
             fluid.set(policy, [key, "*", "noexpand"], true);
         });
         return policy;
