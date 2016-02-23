@@ -87,9 +87,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 }
             },
 
-            onContinueExport: null,
-            onCancelExport: null,
-            onGPIIPrefsApplied: null
+            onContinueImport: null,
+            onCancelImport: null,
+            onGPIIPrefsApplied: null,
+            onSavePrefsToGPIISuccess: null,
+            onSavePrefsToGPIIError: null
         },
         listeners: {
             "afterRender.bindImport": {
@@ -121,14 +123,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 func: "{that}.applyGPIIPrefs",
                 args: ["{arguments}.0"]
             },
-            // 3. IMPORT - fetch error handling: check the existence of the GPII pref set,
-            // if user has no GPII pref set, show message of doing export first
-            // Q1: Still need to go thru the OAuth login (or sign up here) to know whether a pref set exists or not?
-            // Q2: how to handle other error cases? a place to display an error message?
-            // Q3: every time of export and import, users will see privacy settings page to determine the prefs to be shared with UIO?
-            "onFetchGPIIPrefsErrorForImport.handleImportError": {
-                // TODO: show warning message of exporting UIO changes first in order to create the initial GPII pref set
-            },
+            // 3. IMPORT - fetch error handling: make sure the error is caused by the user not having an UIO pref set
+            // saved at GPII, show message of doing export first. In other error cases, show a error message.
+            // "onFetchGPIIPrefsErrorForImport.handleImportError": {
+            //     // TODO: show warning message of exporting UIO changes first in order to create the initial GPII pref set
+            // },
             // *** End of Import ***
 
             // *** Export ***
@@ -141,18 +140,21 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             "onExport.fetchGPIIPrefs": {
                 func: "{that}.fetchGPIIPrefs"
             },
-            // TODO: 2. EXPORT - fetch success handling: user has an UIO pref set saved at GPII, save adjusted prefs to GPII
-            // Q1: GPII hasn't implmented the OAuth feature that updates existing pref sets?
-            // Q2: Are only prefs selected on the privacy settings imported or exported?
-            // "onGPIIPrefsReadyForExport.exportGPIIPrefs": {
-            //     funcName: "fluid.prefs.panel.gpii.exportGPIIPrefs",
-            //     args: ["{that}", "{prefsEditorLoader}"]
+            // TODO: 2. EXPORT - fetch success handling: user has an UIO pref set saved at GPII, before saving adjusted UIO prefs to GPII,
+            // show a warning message that the GPII prefs will be overwritten.
+            // Note: GPII hasn't implmented the OAuth feature that updates existing pref sets
+            // "onGPIIPrefsReadyForExport.showWarningMessage": {
             // },
-            // TODO: 3. EXPORT - fetch error handling: user doesn't have an UIO pref set saved at GPII, create an UIO set automatically at GPII
-            // Q1: GPII hasn't implmented the OAuth feature that creates pref sets?
-            // "onFetchGPIIPrefsErrorForExport.exportGPIIPrefs": {
-            //     funcName: "fluid.prefs.panel.gpii.exportGPIIPrefs",
-            //     args: ["{that}", "{prefsEditorLoader}"]
+            // TODO: 3. EXPORT - fetch error handling: make sure the error is caused by the user not having an UIO pref set
+            // saved at GPII, the export automatically creates an UIO set at GPII. In other error cases, show a error message.
+            // Note: GPII hasn't implmented the OAuth feature that creates a new pref sets?
+            // "onFetchGPIIPrefsErrorForExport.verifyError": {
+            // },
+            // TODO: 4. show message of prefs being saved successful
+            // "onSavePrefsToGPIISuccess.showMessage": {
+            // },
+            // TODO: 5. show error message when prefs are not saved successful
+            // "onSavePrefsToGPIIError.showMessage": {
             // }
             // *** End of Export ***
         },
@@ -164,6 +166,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             applyGPIIPrefs: {
                 funcName: "fluid.prefs.panel.gpii.applyGPIIPrefs",
                 args: ["{that}", "{prefsEditor}", "{arguments}.0"]
+            },
+            savePrefsToGPII: {
+                funcName: "fluid.prefs.panel.gpii.savePrefsToGPII",
+                args: ["{that}", "{arguments}.0"]
             }
         },
         components: {
@@ -195,6 +201,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.prefs.panel.gpii.fetchGPIIPrefs = function (that) {
+        // Test code to be removed when TODO is done
         var data = {
             "fluid_prefs_contrast": "bw"
         };
@@ -236,14 +243,14 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             fluid.model.diff(localPrefs, initialCompletePrefs, diffLocalAndInitPrefs);
 
             if (diffLocalAndInitPrefs.changes === 0) {
-                console.log("no local prefs changes");
+                fluid.log("no local prefs changes");
                 that.applyGPIIPrefs(gpiiPrefs);
             } else {
                 // TODO: Show the export warning dialog
-                // Fire onContinueExport event with the argument "gpiiPrefs" when the continue button is pressed
-                // Fire onCancelExport event when the cancel button is pressed
-                console.log("has local prefs changes, show warning dialog");
-                that.events.onContinueExport.fire(gpiiPrefs);
+                // Fire onContinueImport event with the argument "gpiiPrefs" when the continue button is pressed
+                // Fire onCancelImport event when the cancel button is pressed
+                fluid.log("has local prefs changes, show warning dialog");
+                that.events.onContinueImport.fire(gpiiPrefs);
             }
         }
     };
@@ -269,6 +276,25 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         prefsEditor.applier.change("preferences", gpiiPrefs);
         prefsEditor.events.onPrefsEditorRefresh.fire();
         that.events.onGPIIPrefsApplied.fire(gpiiPrefs);
+    };
+
+    fluid.prefs.panel.gpii.savePrefsToGPII = function (that, uioPrefs) {
+        // Test code to be removed when TODO is done
+        that.events.onSavePrefsToGPIISuccess.fire(uioPrefs);
+
+        // TODO: ajax calls to fetch GPII preferences
+        // fire onSavePrefsToGPIISuccess event if the save is successful;
+        // otherwise, fire onSavePrefsToGPIIError event
+        // $.ajax({
+        //     url: "/preferences/carla",
+        //     method: "GET",
+        //     success: function (data, textStatus, jqXHR) {
+        //         that.events.onSavePrefsToGPIISuccess.fire(data, textStatus, jqXHR);
+        //     },
+        //     error: function (jqXHR, textStatus, errorThrown) {
+        //         that.events.onSavePrefsToGPIIError.fire(jqXHR, textStatus, errorThrown);
+        //     }
+        // });
     };
 
 })(jQuery, fluid_2_0_0);
