@@ -625,10 +625,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.transforms.condition",
                 conditionPath: "catsAreDecent",
                 "true": {
-                    "Antranig": "cat"
+                    transform: {
+                        type: "fluid.transforms.value",
+                        outputPath: "Antranig",
+                        inputPath: "cat"
+                    }
                 },
                 "false": {
-                    "Kasper": "polar"
+                    transform: {
+                        type: "fluid.transforms.value",
+                        outputPath: "Kasper",
+                        inputPath: "polar"
+                    }
                 }
             },
             method: "assertDeepEq",
@@ -707,22 +715,29 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             method: "assertEquals",
             expected: fluid.tests.transforms.source.cat
         }, {
-            message: "Where the path is a rules object, the result should be an expanded version of it.",
-            transform: {
+            message: "Where input is another transform, the result should be the expanded version of it.",
+            transform: { // FLUID-5867: NOONE wants the original behaviour here of expanding short-form value transforms automatically
                 type: "fluid.transforms.value",
                 input: {
-                    alligator: {
-                        transform: {
-                            type: "fluid.transforms.value",
-                            inputPath: "hamster"
+                    transform: [{
+                        type: "fluid.transforms.value",
+                        outputPath: "alligator",
+                        input: {
+                            transform: {
+                                type: "fluid.transforms.value",
+                                inputPath: "hamster"
+                            }
                         }
-                    },
-                    tiger: {
-                        transform: {
-                            type: "fluid.transforms.value",
-                            inputPath: "hamster.wheel"
+                    }, {
+                        type: "fluid.transforms.value",
+                        outputPath: "tiger",
+                        input: {
+                            transform: {
+                                type: "fluid.transforms.value",
+                                inputPath: "hamster.wheel"
+                            }
                         }
-                    }
+                    }]
                 }
             },
             method: "assertDeepEq",

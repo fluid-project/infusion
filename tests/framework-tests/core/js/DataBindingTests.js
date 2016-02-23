@@ -952,7 +952,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     input: {
                         screenChaundles: "{that}.model.screenChaundles",
                         position: "{that}.model.position",
-                        step: "{that}.model.dataRange.step"
+                        dataRange: "{that}.model.dataRange"
                     }
                 }
             },
@@ -961,10 +961,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 singleTransform: {
                     type: "fluid.tests.fluid5865.rescalePosition",
                     input: {
-                        position: "{that}.model.visWindow",
-                        step: "{that}.model.dataRange.step"
+                        screenChaundles: "{that}.model.screenChaundles",
+                        visWindow: "{that}.model.visWindow",
+                        dataRange: "{that}.model.dataRange"
                     }
-                }
+                },
+                priority: "before:positionToVis"
             }
         }
     });
@@ -977,7 +979,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var dataRange = model.dataRange,
             position = model.position;
         // that.model.position holds scrollbar's index, which is between 0 and dataRange width / step
-        if (!dataRange || !dataRange.start) {
+        if (!dataRange || dataRange.start === undefined) {
             return;
         }
         var visStart = dataRange.start + position * dataRange.step;

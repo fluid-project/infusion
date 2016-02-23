@@ -317,6 +317,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     // changes are arising in the system with each new enlisted model. TODO: if we ever get users operating their own
     // transactions, think of a way to incorporate this into that workflow
     fluid.clearLinkCounts = function (transRec, relaysAlso) {
+        // TODO: Separate this record out into different types of records (relays are already in their own area)
         fluid.each(transRec, function (value, key) {
             if (typeof(value) === "number") {
                 transRec[key] = 0;
@@ -473,6 +474,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     // Gets global record for a particular transaction id, allocating if necessary - looks up applier id to transaction,
     // as well as looking up source id (linkId in below) to count/true
+    // Through poor implementation quality, not every access passes through this function - some look up instantiator.modelTransactions directly
     fluid.getModelTransactionRec = function (that, transId) {
         var instantiator = fluid.getInstantiator(that);
         if (!transId) {
@@ -484,6 +486,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var transRec = instantiator.modelTransactions[transId];
         if (!transRec) {
             transRec = instantiator.modelTransactions[transId] = {
+                relays: [], // sorted array of relay elements (also appear at top level index by transaction id)
                 sources: {}, // hash of the global transaction sources (includes "init" but excludes "relay" and "local")
                 externalChanges: {} // index by applierId to changePath to listener record
             };
@@ -494,6 +497,14 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.recordChangeListener = function (component, applier, sourceListener, listenerId) {
         var shadow = fluid.shadowForComponent(component);
         fluid.recordListener(applier.modelChanged, sourceListener, shadow, listenerId);
+    };
+
+    fluid.registerRelayTransaction = function (transRec, targetApplier, transId, options, npOptions) {
+        var newTrans = targetApplier.initiate("relay", null, transId); // non-top-level transaction will defeat postCommit
+        var transEl = transRec[targetApplier.applierId] = {transaction: newTrans, relayCount: 0, namespace: npOptions.namespace, priority: npOptions.priority, options: options};
+        transEl.priority = fluid.parsePriority(transEl.priority, transRec.relays.length, false, "model relay");
+        transRec.relays.push(transEl);
+        return transEl;
     };
 
     // Configure this parameter to tweak the number of relays the model will attempt per transaction before bailing out with an error
@@ -517,7 +528,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     // required within the "overall" transaction whilst genuine (external) changes continue to arrive.
 
     // TODO: Vast overcomplication and generation of closure garbage. SURELY we should be able to convert this into an externalised, arg-ist form
-    fluid.registerDirectChangeRelay = function (target, targetSegs, source, sourceSegs, linkId, transducer, options) {
+    fluid.registerDirectChangeRelay = function (target, targetSegs, source, sourceSegs, linkId, transducer, options, npOptions) {
         var targetApplier = options.targetApplier || target.applier; // implies the target is a relay document
         var sourceApplier = options.sourceApplier || source.applier; // implies the source is a relay document - listener will be transactional
         var applierId = targetApplier.applierId;
@@ -539,8 +550,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     fluid.fail("Error in model relay specification at component ", target, " - operated more than " + fluid.relayRecursionBailout + " relays without model value settling - current model contents are ", trans.newHolder.model);
                 }
                 if (!existing) {
-                    var newTrans = targetApplier.initiate("relay", null, transId); // non-top-level transaction will defeat postCommit
-                    existing = transRec[applierId] = {transaction: newTrans, relayCount: 0, options: options};
+                    existing = fluid.registerRelayTransaction(transRec, targetApplier, transId, options, npOptions);
                 }
                 if (transducer && !options.targetApplier) {
                     // TODO: This is just for safety but is still unusual and now abused. The transducer doesn't need the "newValue" since all the transform information
@@ -589,6 +599,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
         enlistComponent(target);
         enlistComponent(source); // role of "source" and "target" may have been swapped in a modelRelay document
+        var npOptions = fluid.filterKeys(options, ["namespace", "priority"]);
 
         if (options.update) { // it is a call via parseImplicitRelay for a relay document
             if (options.targetApplier) {
@@ -597,16 +608,17 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     transactional: false,
                     targetApplier: options.targetApplier,
                     update: options.update
-                });
+                }, npOptions);
             } else {
-                // if parsing a contextualised MR, skip the "orthogonal" registration - instead
-                // register the "half-transactional" listener which binds changes from the relay itself onto the target
-                fluid.registerDirectChangeRelay(target, targetSegs, source, [], linkId+"-transform", options.forwardAdapter, {transactional: true, sourceApplier: options.forwardApplier});
+                // We are in the middle of parsing a contextualised relay, and this call has arrived via its parseImplicitRelay.
+                // Rather than bind source-source, instead register the "half-transactional" listener which binds changes 
+                // from the relay itself onto the target
+                fluid.registerDirectChangeRelay(target, targetSegs, source, [], linkId+"-transform", options.forwardAdapter, {transactional: true, sourceApplier: options.forwardApplier}, npOptions);
             }
         } else { // more efficient branch where relay is uncontextualised
-            fluid.registerDirectChangeRelay(target, targetSegs, source, sourceSegs, linkId, options.forwardAdapter, {transactional: false});
+            fluid.registerDirectChangeRelay(target, targetSegs, source, sourceSegs, linkId, options.forwardAdapter, {transactional: false}, npOptions);
             if (sourceSegs) {
-                fluid.registerDirectChangeRelay(source, sourceSegs, target, targetSegs, linkId, options.backwardAdapter, {transactional: false});
+                fluid.registerDirectChangeRelay(source, sourceSegs, target, targetSegs, linkId, options.backwardAdapter, {transactional: false}, npOptions);
             }
         }
     };
@@ -650,7 +662,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     // TODO: sourcePath and targetPath should really be converted to segs to avoid excess work in parseValidModelReference
-    fluid.makeTransformPackage = function (componentThat, transform, sourcePath, targetPath, forwardCond, backwardCond) {
+    fluid.makeTransformPackage = function (componentThat, transform, sourcePath, targetPath, forwardCond, backwardCond, namespace, priority) {
         var that = {
             forwardHolder: {model: transform},
             backwardHolder: {model: null}
@@ -690,10 +702,14 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var implicitOptions = {
             targetApplier: that.forwardApplier, // this special field identifies us to fluid.connectModelRelay
             update: that.update,
+            namespace: namespace,
+            priority: priority,
             refCount: 0
         };
         that.forwardHolder.model = fluid.parseImplicitRelay(componentThat, transform, [], implicitOptions);
         that.refCount = implicitOptions.refCount;
+        that.namespace = namespace;
+        that.priority = priority;
         that.generateAdapters();
         that.invalidator.addListener(that.generateAdapters);
         that.invalidator.addListener(that.runTransform);
@@ -737,23 +753,23 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         return fluid.parseSourceExclusionSpec({}, exclusionRec);
     };
 
-    fluid.parseModelRelay = function (that, mrrec) {
+    fluid.parseModelRelay = function (that, mrrec, key) {
         var parsedSource = mrrec.source ? fluid.parseValidModelReference(that, "modelRelay record member \"source\"", mrrec.source) :
             {path: null, modelSegs: null};
         var parsedTarget = fluid.parseValidModelReference(that, "modelRelay record member \"target\"", mrrec.target);
+        var namespace = mrrec.namespace || key;
 
         var transform = mrrec.singleTransform ? fluid.singleTransformToFull(mrrec.singleTransform) : mrrec.transform;
         if (!transform) {
             fluid.fail("Cannot parse modelRelay record without element \"singleTransform\" or \"transform\":", mrrec);
         }
         var forwardCond = fluid.model.parseRelayCondition(mrrec.forward), backwardCond = fluid.model.parseRelayCondition(mrrec.backward);
-        var transformPackage = fluid.makeTransformPackage(that, transform, parsedSource.path, parsedTarget.path, forwardCond, backwardCond);
-        if (transformPackage.refCount === 0) {
+        var transformPackage = fluid.makeTransformPackage(that, transform, parsedSource.path, parsedTarget.path, forwardCond, backwardCond, namespace, mrrec.priority);
+        if (transformPackage.refCount === 0) { // There were no implicit relay elements found in the relay document - it can be relayed directly
             // This first call binds changes emitted from the relay ends to each other, synchronously
-            fluid.connectModelRelay(parsedSource.that || that, parsedSource.modelSegs, parsedTarget.that, parsedTarget.modelSegs, {
-                forwardAdapter: transformPackage.forwardAdapter,
-                backwardAdapter: transformPackage.backwardAdapter
-            });
+            fluid.connectModelRelay(parsedSource.that || that, parsedSource.modelSegs, parsedTarget.that, parsedTarget.modelSegs,
+                fluid.filterKeys(transformPackage, ["forwardAdapter", "backwardAdapter", "namespace", "priority"]));
+            // Primarily, here, we want to get rid of "update" which is what signals to connectModelRelay that this is a invalidatable relay
         } else {
             // This second call binds changes emitted from the relay document itself onto the relay ends (using the "half-transactional system")
             fluid.connectModelRelay(parsedSource.that || that, parsedSource.modelSegs, parsedTarget.that, parsedTarget.modelSegs, transformPackage);
@@ -814,13 +830,14 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         });
     };
 
+    // Listens to all invalidation to relays, and reruns/applies them if they have been invalidated
     fluid.model.updateRelays = function (instantiator, transactionId) {
         var transRec = instantiator.modelTransactions[transactionId];
         var updates = 0;
-        fluid.each(transRec, function (transEl) {
-            // TODO: integrate the "source" if any into this computation, and fire the relay if it has changed - perhaps by adding a listener
-            // to it that updates changeRecord.changes (assuming we can find it)
-            if (transEl.options && transEl.transaction && transEl.transaction.changeRecord.changes > 0 && transEl.relayCount < 2 && transEl.options.update) {
+        fluid.sortByPriority(transRec.relays);
+        fluid.each(transRec.relays, function (transEl) {
+            // TODO: We have a bit of a problem here in that we only process updatable relays by priority - plain relays get to act non-transactionally
+            if (transEl.transaction.changeRecord.changes > 0 && transEl.relayCount < 2 && transEl.options.update) {
                 transEl.relayCount++;
                 fluid.clearLinkCounts(transRec);
                 transEl.options.update(transEl.transaction, transRec);
@@ -842,7 +859,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
         // Note: this particular instance of "refCount" is disused. We only use the count made within fluid.makeTransformPackge
         var initModels = fluid.transform(optionsModel, function (modelRec) {
-            return fluid.parseImplicitRelay(that, modelRec, [], {refCount: 0});
+            return fluid.parseImplicitRelay(that, modelRec, [], {refCount: 0, priority: "first"});
         });
         enlist.initModels = initModels;
 

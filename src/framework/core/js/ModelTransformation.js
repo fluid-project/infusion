@@ -83,30 +83,33 @@ var fluid = fluid || fluid_2_0_0;
         return !prefix ? suffix : (!suffix ? prefix : prefix + "." + suffix);
     };
 
-    fluid.model.transform.accumulateInputPath = function (inputPath, transform, paths) {
+    fluid.model.transform.accumulateInputPath = function (inputPath, transformer, paths) {
         if (inputPath !== undefined) {
-            paths.push(fluid.model.composePaths(transform.inputPrefix, inputPath));
+            paths.push(fluid.model.composePaths(transformer.inputPrefix, inputPath));
         }
     };
 
-    fluid.model.transform.accumulateStandardInputPath = function (input, transformSpec, transform, paths) {
-        fluid.model.transform.getValue(undefined, transformSpec[input], transform);
-        fluid.model.transform.accumulateInputPath(transformSpec[input + "Path"], transform, paths);
+    fluid.model.transform.accumulateStandardInputPath = function (input, transformSpec, transformer, paths) {
+        fluid.model.transform.getValue(undefined, transformSpec[input], transformer);
+        fluid.model.transform.accumulateInputPath(transformSpec[input + "Path"], transformer, paths);
     };
 
-    fluid.model.transform.accumulateMultiInputPaths = function (inputVariables, transformSpec, transform, paths) {
+    fluid.model.transform.accumulateMultiInputPaths = function (inputVariables, transformSpec, transformer, paths) {
         fluid.each(inputVariables, function (v, k) {
-            fluid.model.transform.accumulateStandardInputPath(k, transformSpec, transform, paths);
+            fluid.model.transform.accumulateStandardInputPath(k, transformSpec, transformer, paths);
         });
     };
 
-    fluid.model.transform.getValue = function (inputPath, value, transform) {
+    fluid.model.transform.getValue = function (inputPath, value, transformer) {
         var togo;
         if (inputPath !== undefined) { // NB: We may one day want to reverse the crazy jQuery-like convention that "no path means root path"
-            togo = fluid.get(transform.source, fluid.model.composePaths(transform.inputPrefix, inputPath), transform.resolverGetConfig);
+            togo = fluid.get(transformer.source, fluid.model.composePaths(transformer.inputPrefix, inputPath), transformer.resolverGetConfig);
         }
         if (togo === undefined) {
-            togo = fluid.isPrimitive(value) ? value : transform.expand(value);
+            // FLUID-5867 - actually helpful behaviour here rather than the insane original default of expecting a short-form value document
+            togo = fluid.isPrimitive(value) ? value :
+                ("literalValue" in value ? value.literalValue :
+                (value.transform === undefined ? value : transformer.expand(value)));
         }
         return togo;
     };
@@ -116,13 +119,13 @@ var fluid = fluid || fluid_2_0_0;
     // in a compound transform definition
     fluid.model.transform.NONDEFAULT_OUTPUT_PATH_RETURN = {};
 
-    fluid.model.transform.setValue = function (userOutputPath, value, transform) {
+    fluid.model.transform.setValue = function (userOutputPath, value, transformer) {
         // avoid crosslinking to input object - this might be controlled by a "nocopy" option in future
         var toset = fluid.copy(value);
-        var outputPath = fluid.model.composePaths(transform.outputPrefix, userOutputPath);
+        var outputPath = fluid.model.composePaths(transformer.outputPrefix, userOutputPath);
         // TODO: custom resolver config here to create non-hash output model structure
         if (toset !== undefined) {
-            transform.applier.change(outputPath, toset);
+            transformer.applier.change(outputPath, toset);
         }
         return userOutputPath ? fluid.model.transform.NONDEFAULT_OUTPUT_PATH_RETURN : toset;
     };
@@ -132,8 +135,8 @@ var fluid = fluid || fluid_2_0_0;
      * or expanding otherwise. <def> defines the default value if unableto resolve the key. If no
      * default value is given undefined is returned
      */
-    fluid.model.transform.resolveParam = function (transformSpec, transform, key, def) {
-        var val = fluid.model.transform.getValue(transformSpec[key + "Path"], transformSpec[key], transform);
+    fluid.model.transform.resolveParam = function (transformSpec, transformer, key, def) {
+        var val = fluid.model.transform.getValue(transformSpec[key + "Path"], transformSpec[key], transformer);
         return (val !== undefined) ? val : def;
     };
 
