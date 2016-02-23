@@ -79,7 +79,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     fontSize: 1
                 }
             },
-            case4: {
+            case5: {
                 message: "The local prefs object is empty",
                 local: {
                 },

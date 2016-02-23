@@ -139,7 +139,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             },
             "onExport.fetchGPIIPrefs": {
                 func: "{that}.fetchGPIIPrefs"
-            },
+            }
             // TODO: 2. EXPORT - fetch success handling: user has an UIO pref set saved at GPII, before saving adjusted UIO prefs to GPII,
             // show a warning message that the GPII prefs will be overwritten.
             // Note: GPII hasn't implmented the OAuth feature that updates existing pref sets
