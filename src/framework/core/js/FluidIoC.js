@@ -1376,6 +1376,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
         fluid.getForComponent(that, "modelRelay");
         fluid.getForComponent(that, "model"); // trigger this as late as possible - but must be before components so that child component has model on its onCreate
+        if (fluid.isDestroyed(that)) {
+            return; // Further fix for FLUID-5869 - if we managed to destroy ourselves through some bizarre model self-reaction, bail out here
+        }
 
         var options = that.options;
         var components = options.components || {};

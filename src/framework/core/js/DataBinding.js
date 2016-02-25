@@ -356,7 +356,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 });
             }
             var shadow = fluid.shadowForComponent(that);
-            shadow.modelComplete = true; // technically this is a little early, but this flag is only read in fluid.connectModelRelay
+            if (shadow) { // Fix for FLUID-5869 - the component may have been destroyed during its own init transaction
+                shadow.modelComplete = true; // technically this is a little early, but this flag is only read in fluid.connectModelRelay
+            }
         });
 
         transac.commit(); // committing one representative transaction will commit them all

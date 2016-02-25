@@ -1015,6 +1015,62 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertLeftHand("Model updated in coordinated way", expected, that.model);
     });
 
+    /** FLUID-5869: Error when recreating model relay component during existing transaction **/
+
+    fluid.defaults("fluid.tests.fluid5869.root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            sharedValue: 35,
+            reactiveValue: 10
+        },
+        modelListeners: {
+            "": "fluid.tests.fluid5869.recreate({that})"
+        },
+        events: {
+            createRelay: null
+        },
+        components: {
+            relayHolder: {
+                type: "fluid.modelComponent",
+                createOnEvent: "createRelay",
+                options: {
+                    model: {
+                        sharedValue: 55
+                    },
+                    modelRelay: {
+                        source: "{root}.model.sharedValue",
+                        target: "sharedValue",
+                        singleTransform: {
+                            type: "fluid.transforms.identity"
+                        }
+                    },
+                    components: {
+                        nestedHolder: {
+                            type: "fluid.modelComponent",
+                            options: {
+                                model: {
+                                    nestedValue: "{root}.model.sharedValue"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid5869.recreate = function (that) {
+        that.events.createRelay.fire(); // The aim here is to create a self-reaction during the init transaction of the recreated component
+    };
+
+    jqUnit.test("FLUID-5869: Error when recreating model relay component during transaction", function () {
+        var that = fluid.tests.fluid5869.root();
+        that.events.createRelay.fire();
+        that.applier.change("sharedValue", null, "DELETE");
+        jqUnit.assertEquals("Successfully relayed back nested default model value", 55, that.model.sharedValue);
+        jqUnit.assertEquals("Successfully relayed inwards nested default model value", 55, that.relayHolder.nestedHolder.model.nestedValue);
+    });
+
     /** FLUID-5848: Detect indirect references to component models (at components nested one or more levels below context of reference) **/
 
     fluid.defaults("fluid.tests.fluid5848root", {
