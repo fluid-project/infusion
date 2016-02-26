@@ -50,13 +50,18 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             iframe: ".flc-prefsEditor-iframe"
         },
         listeners: {
-            onReady: {
-                listener: "fluid.prefs.separatedPanel.bindEvents",
-                args: ["{separatedPanel}.prefsEditor", "{iframeRenderer}.iframeEnhancer", "{separatedPanel}"]
-            },
-            onCreate: {
+            "onCreate.hideReset": {
                 listener: "fluid.prefs.separatedPanel.hideReset",
                 args: ["{separatedPanel}"]
+            },
+            "onPrefsEditorMsgLookupReady.setResetLabel": {
+                "this": "{that}.dom.reset",
+                method: "text",
+                args: ["{prefsEditorMsgLookup}.msgLookup.reset"]
+            },
+            "onReady.bindEvents": {
+                listener: "fluid.prefs.separatedPanel.bindEvents",
+                args: ["{separatedPanel}.prefsEditor", "{iframeRenderer}.iframeEnhancer", "{separatedPanel}"]
             }
         },
         invokers: {
@@ -71,13 +76,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 container: "{separatedPanel}.container",
                 createOnEvent: "onCreateSlidingPanelReady",
                 options: {
-                    gradeNames: ["fluid.prefs.msgLookup"],
                     strings: {
-                        showText: "{that}.msgLookup.slidingPanelShowText",
-                        hideText: "{that}.msgLookup.slidingPanelHideText",
-                        showTextAriaLabel: "{that}.msgLookup.showTextAriaLabel",
-                        hideTextAriaLabel: "{that}.msgLookup.hideTextAriaLabel",
-                        panelLabel: "{that}.msgLookup.slidingPanelPanelLabel"
+                        showText: "{prefsEditorMsgLookup}.msgLookup.slidingPanelShowText",
+                        hideText: "{prefsEditorMsgLookup}.msgLookup.slidingPanelHideText",
+                        showTextAriaLabel: "{prefsEditorMsgLookup}.msgLookup.showTextAriaLabel",
+                        hideTextAriaLabel: "{prefsEditorMsgLookup}.msgLookup.hideTextAriaLabel",
+                        panelLabel: "{prefsEditorMsgLookup}.msgLookup.slidingPanelPanelLabel"
                     },
                     invokers: {
                         operateShow: {
@@ -93,14 +97,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                             // override default implementation
                             "this": null,
                             "method": null
-                        }
-                    },
-                    components: {
-                        msgResolver: {
-                            type: "fluid.messageResolver",
-                            options: {
-                                messageBase: "{messageLoader}.resources.prefsEditor.resourceText"
-                            }
                         }
                     }
                 }
@@ -141,13 +137,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                         updateEnhancerModel: "{that}.events.modelChanged"
                     },
                     listeners: {
-                        modelChanged: "{that}.save",
-                        onCreate: {
+                        "modelChanged.save": "{that}.save",
+                        "onCreate.bindReset": {
                             listener: "{separatedPanel}.bindReset",
                             args: ["{that}.reset"]
                         },
-                        afterReset: "{that}.applyChanges",
-                        onReady: {
+                        "afterReset.applyChanges": "{that}.applyChanges",
+                        "onReady.escalate": {
                             listener: "{separatedPanel}.events.onReady",
                             args: "{separatedPanel}"
                         }

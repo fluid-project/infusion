@@ -1,4 +1,7 @@
 {
+	"reset": "Reset",
+	"cancel": "Cancel",
+	"save": "Save and apply",
     "slidingPanelShowText": "+ Show Display Preferences",
     "slidingPanelHideText": "- Hide",
     "showTextAriaLabel": "Show Display Preferences",

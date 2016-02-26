@@ -15,6 +15,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     "use strict";
 
     /**
+     * The entire editor that has heated seats panel and the save button
+     */
+    fluid.defaults("awesomeCars.prefs.fullNoPreview", {
+        gradeNames: ["fluid.prefs.fullNoPreview"],
+
+        // set the label of the save button
+        distributeOptions: {
+            record: {
+                "onPrefsEditorMsgReady.setSaveLabel": {
+                    "this": "{that}.dom.save",
+                    method: "text",
+                    args: "{prefsEditorMsgLookup}.msgLookup.save"
+                }
+            },
+            target: "{that prefsEditor}.options.listeners"
+        }
+    });
+
+    /**
      * Panel for the heated seats preference
      */
     fluid.defaults("awesomeCars.prefs.panels.heatedSeats", {

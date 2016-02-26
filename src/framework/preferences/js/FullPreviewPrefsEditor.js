@@ -34,13 +34,36 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                             container: "{prefsEditor}.dom.previewFrame",
                             options: {
                                 listeners: {
-                                    onReady: "{fullPreview}.events.onPreviewReady"
+                                    "onReady.escalate": "{fullPreview}.events.onPreviewReady"
                                 }
                             }
                         }
                     },
+                    events: {
+                        onPrefsEditorMsgReady: {
+                            events: {
+                                "onPrefsEditorMsgLookupReady": "{prefsEditorLoader}.events.onPrefsEditorMsgLookupReady",
+                                "onReady": "onReady"
+                            }
+                        }
+                    },
                     listeners: {
-                        onReady: "{fullPreview}.events.onPrefsEditorReady"
+                        "onReady.escalate": "{fullPreview}.events.onPrefsEditorReady",
+                        "onPrefsEditorMsgReady.setResetLabel": {
+                            "this": "{that}.dom.reset",
+                            method: "attr",
+                            args: ["value", "{prefsEditorMsgLookup}.msgLookup.reset"]
+                        },
+                        "onPrefsEditorMsgReady.setCancelLabel": {
+                            "this": "{that}.dom.cancel",
+                            method: "attr",
+                            args: ["value", "{prefsEditorMsgLookup}.msgLookup.cancel"]
+                        },
+                        "onPrefsEditorMsgReady.setSaveLabel": {
+                            "this": "{that}.dom.save",
+                            method: "attr",
+                            args: ["value", "{prefsEditorMsgLookup}.msgLookup.save"]
+                        }
                     },
                     distributeOptions: {
                         source: "{that}.options.preview",

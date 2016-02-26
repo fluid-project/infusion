@@ -71,9 +71,39 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                         onResourcesLoaded: "{prefsEditorLoader}.events.onPrefsEditorMessagesLoaded"
                     }
                 }
+            },
+            prefsEditorMsgResolver: {
+                type: "fluid.messageResolver",
+                createOnEvent: "onPrefsEditorMessagesLoaded",
+                options: {
+                    messageBase: "{messageLoader}.resources.prefsEditor.resourceText",
+                    listeners: {
+                        "onCreate.escalate": "{prefsEditorLoader}.events.onPrefsEditorMsgResolverReady"
+                    }
+                }
+            },
+            // Used to look up the messages from the message bundle for the prefsEditor level, eg. prefsEditor.json
+            prefsEditorMsgLookup: {
+                type: "fluid.prefs.msgLookup",
+                createOnEvent: "onPrefsEditorMsgResolverReady",
+                options: {
+                    members: {
+                        msgLookup: {
+                            expander: {
+                                funcName: "fluid.prefs.stringLookup",
+                                args: ["{prefsEditorMsgResolver}", "{that}.options.stringArrayIndex"]
+                            }
+                        }
+                    },
+                    listeners: {
+                        "onCreate.escalate": "{prefsEditorLoader}.events.onPrefsEditorMsgLookupReady"
+                    }
+                }
             }
         },
         events: {
+            onPrefsEditorMsgResolverReady: null,
+            onPrefsEditorMsgLookupReady: null,
             onPrefsEditorTemplatesLoaded: null,
             onPrefsEditorMessagesLoaded: null,
             onCreatePrefsEditorReady: {
