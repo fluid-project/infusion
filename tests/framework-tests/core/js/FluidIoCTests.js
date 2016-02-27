@@ -3147,7 +3147,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Args changed", 6, that.argsInvoker(2, 2));
     });
 
-    /** FLUID-5127 - Test cases for compact invokers, listeners and expandesr **/
+    /** FLUID-5127 - Test cases for compact invokers, listeners and expanders **/
 
     fluid.tests.fluid5127listener = function (value1, value2, that) {
         that.fireValue = value1 + value2;
@@ -3214,6 +3214,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Multiple compact listeners", 4, that.fireValue);
 
         jqUnit.assertEquals("Invoker", 3, that.addOne(1));
+    });
+
+    /** Unresolvable expander function **/
+
+    fluid.defaults("fluid.tests.unresolvableExpander", {
+        gradeNames: "fluid.component",
+        badExpander: "@expand:fluid.tests.nonexistent()"
+    });
+
+    jqUnit.test("Unresolvable expander function", function () {
+        jqUnit.expectFrameworkDiagnostic("Unresolvable expander function", function () {
+            fluid.tests.unresolvableExpander();
+        }, ["expander record", "fluid.tests.nonexistent"]);
     });
 
     /** FLUID-5663 - Malformed syntax in compact invokers **/

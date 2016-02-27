@@ -1109,6 +1109,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Two changes after change", 2, that.changes);
     });
 
+    /** FLUID-5847: Relay transforms which have both "source" and a transform model dependency **/
+
+    fluid.defaults("fluid.tests.fluid5847.root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            source: 35,
+            sideValue: 50
+        },
+        modelRelay: {
+            source: "source",
+            target: "target",
+            singleTransform: {
+                type: "fluid.transforms.identity",
+                sideValue: "{that}.model.sideValue"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5847: Relay transforms with both \"source\" and transform model dependency", function () {
+        // TODO: in theory, we could detect this at fluid.defaults() time, with a lot more work
+        jqUnit.expectFrameworkDiagnostic("Framework diagnostic for relay with both source and transform model dependency", function () {
+            fluid.tests.fluid5847.root();
+        }, "source");
+    });
+
     /** Demonstrate resolving a set of model references which is cyclic in components (although not in values), as well as
      * double relay and longer "transform" form of relay specification */
 
@@ -2219,6 +2244,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return togo;
     };
 
-    fluid.test.runTests(["fluid.tests.fluid5659root"]);
+    // fluid.test.runTests(["fluid.tests.fluid5659root"]);
 
 })(jQuery);

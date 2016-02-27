@@ -773,6 +773,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 fluid.filterKeys(transformPackage, ["forwardAdapter", "backwardAdapter", "namespace", "priority"]));
             // Primarily, here, we want to get rid of "update" which is what signals to connectModelRelay that this is a invalidatable relay
         } else {
+            if (parsedSource.modelSegs) {
+                fluid.fail("Error in model relay definition: If a relay transform has a model dependency, you can not specify a \"source\" entry - please instead enter this as \"input\" in the transform specification. Definition was ", mrrec, " for component ", that);
+            }
             // This second call binds changes emitted from the relay document itself onto the relay ends (using the "half-transactional system")
             fluid.connectModelRelay(parsedSource.that || that, parsedSource.modelSegs, parsedTarget.that, parsedTarget.modelSegs, transformPackage);
         }

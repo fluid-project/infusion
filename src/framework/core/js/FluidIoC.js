@@ -1210,6 +1210,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.expandComponentOptions = function (mergePolicy, defaults, userOptions, that) {
         var initRecord = userOptions; // might have been tunnelled through "userOptions" from "assembleCreatorArguments"
         var instantiator = userOptions && userOptions.marker === fluid.EXPAND ? userOptions.instantiator : null;
+        fluid.pushActivity("expandComponentOptions", "expanding component options %options with record %record for component %that",
+            {options: instantiator ? userOptions.mergeRecords.user : userOptions, record: initRecord, that: that});
         if (!instantiator) { // it is a top-level component which needs to be attached to the global root
             instantiator = fluid.globalInstantiator;
             initRecord = { // upgrade "userOptions" to the same format produced by fluid.assembleCreatorArguments via the subcomponent route
@@ -1220,8 +1222,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             };
         }
         that.destroy = fluid.fabricateDestroyMethod(initRecord.parentThat, initRecord.memberName, instantiator, that);
-        fluid.pushActivity("expandComponentOptions", "expanding component options %options with record %record for component %that",
-            {options: fluid.get(initRecord.mergeRecords, "user.options"), record: initRecord, that: that});
 
         instantiator.recordKnownComponent(initRecord.parentThat, that, initRecord.memberName, true);
         var togo = expandComponentOptionsImpl(mergePolicy, defaults, initRecord, that);
@@ -1938,12 +1938,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var openPos = string.indexOf("(");
         var closePos = string.indexOf(")");
         if (openPos === -1 ^ closePos === -1 || openPos > closePos) {
-            fluid.fail("Badly-formed compact " + type + " record without matching parentheses: ", string);
+            fluid.fail("Badly-formed compact " + type + " record without matching parentheses: " + string);
         }
         if (openPos !== -1 && closePos !== -1) {
             var trail = string.substring(closePos + 1);
             if ($.trim(trail) !== "") {
-                fluid.fail("Badly-formed compact " + type + " - unexpected material following close parenthesis: " + trail);
+                fluid.fail("Badly-formed compact " + type + " record " + string + " - unexpected material following close parenthesis: " + trail);
             }
             var prefix = string.substring(0, openPos);
             var body = string.substring(openPos + 1, closePos);
@@ -1953,7 +1953,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             return togo;
         }
         else if (type === "expander") {
-            fluid.fail("Badly-formed compact expander record without parentheses: ", string);
+            fluid.fail("Badly-formed compact expander record without parentheses: " + string);
         }
         return string;
     };
@@ -2368,10 +2368,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
         var funcEntry = expander.func || expander.funcName;
         var func = (options.expandSource ? options.expandSource(funcEntry) : funcEntry) || fluid.recordToApplicable(expander, options.contextThat);
-        if (!func) {
-            fluid.fail("Error in expander record - " + funcEntry + " could not be resolved to a function for component ", options.contextThat);
+        if (typeof(func) === "string") {
+            func = fluid.getGlobalValue(func);
         }
-        return func.apply ? func.apply(null, args) : fluid.invokeGlobalFunction(func, args);
+        if (!func) {
+            fluid.fail("Error in expander record ", expander, ": " + funcEntry + " could not be resolved to a function for component ", options.contextThat);
+        }
+        return func.apply(null, args);
     };
 
     // The "noexpand" expander which simply unwraps one level of expansion and ceases.
