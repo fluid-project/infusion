@@ -48,6 +48,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     },
                     invokers: {
                         getSettings: "{prefsEditorLoader}.getSettings"
+                    },
+                    listeners: {
+                        "onReady.escalate": "{prefsEditorLoader}.events.onPrefsEditorReady"
                     }
                 }
             },
@@ -110,6 +113,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 events: {
                     templateLoaded: "onPrefsEditorTemplatesLoaded",
                     prefsEditorMessagesLoaded: "onPrefsEditorMessagesLoaded"
+                }
+            },
+            onPrefsEditorReady: null,
+            onPrefsEditorMsgReady: {
+                events: {
+                    prefsEditorReady: "onPrefsEditorReady",
+                    prefsEditorMsgLookupReady: "onPrefsEditorMsgLookupReady"
                 }
             }
         },

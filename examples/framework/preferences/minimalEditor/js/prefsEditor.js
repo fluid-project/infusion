@@ -23,7 +23,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // set the label of the save button
         distributeOptions: {
             record: {
-                "onPrefsEditorMsgReady.setSaveLabel": {
+                "{prefsEditorLoader}.events.onPrefsEditorMsgReady": {
                     "this": "{that}.dom.save",
                     method: "text",
                     args: "{prefsEditorMsgLookup}.msgLookup.save"

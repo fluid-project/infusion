@@ -59,6 +59,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 method: "text",
                 args: ["{prefsEditorMsgLookup}.msgLookup.reset"]
             },
+            "onPrefsEditorReady.escalate": {
+                listener: "{that}.events.onReady.fire",
+                args: ["{that}"]
+            },
             "onReady.bindEvents": {
                 listener: "fluid.prefs.separatedPanel.bindEvents",
                 args: ["{separatedPanel}.prefsEditor", "{iframeRenderer}.iframeEnhancer", "{separatedPanel}"]
@@ -142,11 +146,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                             listener: "{separatedPanel}.bindReset",
                             args: ["{that}.reset"]
                         },
-                        "afterReset.applyChanges": "{that}.applyChanges",
-                        "onReady.escalate": {
-                            listener: "{separatedPanel}.events.onReady",
-                            args: "{separatedPanel}"
-                        }
+                        "afterReset.applyChanges": "{that}.applyChanges"
                     }
                 }
             }

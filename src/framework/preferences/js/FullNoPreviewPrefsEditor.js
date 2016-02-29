@@ -25,14 +25,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             prefsEditor: {
                 container: "{that}.container",
                 options: {
-                    events: {
-                        onPrefsEditorMsgReady: {
-                            events: {
-                                "onPrefsEditorMsgLookupReady": "{prefsEditorLoader}.events.onPrefsEditorMsgLookupReady",
-                                "onReady": "onReady"
-                            }
-                        }
-                    },
                     listeners: {
                         "afterReset.applyChanges": {
                             listener: "{that}.applyChanges"
@@ -40,31 +32,31 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                         "afterReset.save": {
                             listener: "{that}.save"
                         },
-                        "onReady.escalate": {
-                            listener: "{fullNoPreview}.events.onReady",
-                            args: "{fullNoPreview}"
-                        },
-                        "onPrefsEditorMsgReady.setResetLabel": {
+                        "{prefsEditorLoader}.events.onPrefsEditorMsgReady": [{
                             "this": "{that}.dom.reset",
                             method: "attr",
                             args: ["value", "{prefsEditorMsgLookup}.msgLookup.reset"]
-                        },
-                        "onPrefsEditorMsgReady.setCancelLabel": {
+                        }, {
                             "this": "{that}.dom.cancel",
                             method: "attr",
                             args: ["value", "{prefsEditorMsgLookup}.msgLookup.cancel"]
-                        },
-                        "onPrefsEditorMsgReady.setSaveLabel": {
+                        }, {
                             "this": "{that}.dom.save",
                             method: "attr",
                             args: ["value", "{prefsEditorMsgLookup}.msgLookup.save"]
-                        },
+                        }]
                     }
                 }
             }
         },
         events: {
             onReady: null
+        },
+        listeners: {
+            "onPrefsEditorReady.escalate": {
+                listener: "{that}.events.onReady.fire",
+                args: ["{that}"]
+            }
         }
     });
 
