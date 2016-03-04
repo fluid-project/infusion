@@ -811,7 +811,7 @@ var fluid = fluid || fluid_2_0_0;
         fluid.each(tofreeze, function (value) {
             fluid.freezeRecursive(value);
         });
-        return Object.freeze(tofreeze);
+        return fluid.isPlainObject(tofreeze) ? Object.freeze(tofreeze) : tofreeze; // IE11 crashes on freeze of non-object
     };
 
     /** A set of special "marker values" used in signalling in function arguments and return values,
