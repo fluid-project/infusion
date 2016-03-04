@@ -145,11 +145,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         if (contextAwareRecord.checks && contextAwareRecord.checks.contextValue) {
             fluid.fail("Nesting error in contextAwareness record ", contextAwareRecord, " - the \"checks\" entry must contain a hash and not a contextValue/gradeNames record at top level");
         }
-        var checkList = fluid.hashToArray(contextAwareRecord.checks, "namespace", function (newElement, oldElement, index) {
-            $.extend(newElement, oldElement);
-            newElement.priority = fluid.parsePriority(oldElement.priority, index);
-        });
-        fluid.sortByPriority(checkList);
+        var checkList = fluid.parsePriorityRecords(contextAwareRecord.checks, "contextAwareness checkRecord");
         return fluid.find(checkList, function (check) {
             if (!check.contextValue) {
                 fluid.fail("Cannot perform check for contextAwareness record ", check, " without a valid field named \"contextValue\"");
@@ -164,11 +160,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     // unsupported, NON-API function
     fluid.contextAware.check = function (that, contextAwarenessOptions) {
         var gradeNames = [];
-        var contextAwareList = fluid.hashToArray(contextAwarenessOptions, "namespace", function (newElement, oldElement, index) {
-            $.extend(newElement, oldElement);
-            newElement.priority = fluid.parsePriority(oldElement.priority, index, false, "context awareness records");
-        });
-        fluid.sortByPriority(contextAwareList);
+        var contextAwareList = fluid.parsePriorityRecords(contextAwarenessOptions, "contextAwareness adaptationRecord");
         fluid.each(contextAwareList, function (record) {
             var matched = fluid.contextAware.checkOne(that, record);
             gradeNames = gradeNames.concat(fluid.makeArray(matched));

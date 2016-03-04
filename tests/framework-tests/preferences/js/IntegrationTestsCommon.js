@@ -77,7 +77,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.prefs.applierRequestChanges = function (prefsEditor, selectionOptions) {
-        prefsEditor.applier.requestChange("", selectionOptions);
+        prefsEditor.applier.change("", selectionOptions);
     };
 
     fluid.defaults("fluid.tests.prefs.globalSettingsStore", {

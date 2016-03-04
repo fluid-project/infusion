@@ -32,12 +32,7 @@ var fluid = fluid || fluid_2_0_0;
     fluid.transforms.value = fluid.identity;
 
     fluid.transforms.value.invert = function (transformSpec, transformer) {
-        var togo = fluid.copy(transformSpec);
-        // TODO: this will not behave correctly in the face of compound "value" which contains
-        // further transforms
-        togo.inputPath = fluid.model.composePaths(transformer.outputPrefix, transformSpec.outputPath);
-        togo.outputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.inputPath);
-        return togo;
+        return fluid.model.transform.copyInversePaths(transformSpec, transformer);
     };
 
     // Export the use of the "value" transform under the "identity" name for FLUID-5293
@@ -45,6 +40,13 @@ var fluid = fluid || fluid_2_0_0;
     fluid.defaults("fluid.transforms.identity", {
         gradeNames: "fluid.transforms.value"
     });
+
+    // A helpful utility function to be used when a transform's inverse is the identity
+    fluid.transforms.invertToIdentity = function (transformSpec, transformer) {
+        var togo = fluid.model.transform.copyInversePaths(transformSpec, transformer);
+        togo.type = "fluid.transforms.identity";
+        return togo;
+    };
 
     fluid.defaults("fluid.transforms.literalValue", {
         gradeNames: "fluid.standardOutputTransformFunction"
@@ -81,7 +83,8 @@ var fluid = fluid || fluid_2_0_0;
 
 
     fluid.defaults("fluid.transforms.round", {
-        gradeNames: "fluid.standardTransformFunction"
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
+        invertConfiguration: "fluid.transforms.invertToIdentity"
     });
 
     fluid.transforms.round = function (value) {
@@ -95,7 +98,7 @@ var fluid = fluid || fluid_2_0_0;
 
     fluid.transforms["delete"] = function (transformSpec, transformer) {
         var outputPath = fluid.model.composePaths(transformer.outputPrefix, transformSpec.outputPath);
-        transformer.applier.requestChange(outputPath, null, "DELETE");
+        transformer.applier.change(outputPath, null, "DELETE");
     };
 
 
@@ -121,7 +124,8 @@ var fluid = fluid || fluid_2_0_0;
         gradeNames: [ "fluid.multiInputTransformFunction", "fluid.standardOutputTransformFunction", "fluid.lens" ],
         invertConfiguration: "fluid.transforms.linearScale.invert",
         inputVariables: {
-            value: null,
+            value: null, // This is now deprecated, as per FLUID-5294
+            input: null,
             factor: 1,
             offset: 0
         }
@@ -130,6 +134,12 @@ var fluid = fluid || fluid_2_0_0;
     /* simple linear transformation */
     fluid.transforms.linearScale = function (inputs) {
         var value = inputs.value();
+        if (fluid.isValue(value)) {
+            fluid.log(fluid.logLevel.WARN, "The input \"value\" is deprecated and will be renamed to \"input\" for all transforms");
+        } else {
+            value = inputs.input();
+        }
+
         var factor = inputs.factor();
         var offset = inputs.offset();
 
@@ -140,19 +150,15 @@ var fluid = fluid || fluid_2_0_0;
     };
 
     /* TODO: This inversion doesn't work if the value and factors are given as paths in the source model */
-    fluid.transforms.linearScale.invert = function  (transformSpec, transformer) {
-        var togo = fluid.copy(transformSpec);
+    fluid.transforms.linearScale.invert = function (transformSpec, transformer) {
+        var togo = fluid.model.transform.copyInversePaths(transformSpec, transformer);
 
-        if (togo.factor) {
+        if (togo.factor !== undefined) {
             togo.factor = (togo.factor === 0) ? 0 : 1 / togo.factor;
         }
-        if (togo.offset) {
+        if (togo.offset !== undefined) {
             togo.offset = - togo.offset * (togo.factor !== undefined ? togo.factor : 1);
         }
-        // TODO: This rubbish should be done by the inversion machinery by itself. We shouldn't have to repeat it in every
-        // inversion rule
-        togo.valuePath = fluid.model.composePaths(transformer.outputPrefix, transformSpec.outputPath);
-        togo.outputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.valuePath);
         return togo;
     };
 
@@ -655,9 +661,7 @@ var fluid = fluid || fluid_2_0_0;
     };
 
     fluid.transforms.invertArrayIndexation = function (transformSpec, transformer) {
-        var togo = fluid.copy(transformSpec);
-        togo.inputPath = fluid.model.composePaths(transformer.outputPrefix, transformSpec.outputPath);
-        togo.outputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.inputPath);
+        var togo = fluid.model.transform.copyInversePaths(transformSpec, transformer);
         if (!isNaN(Number(togo.offset))) {
             togo.offset = Number(togo.offset) * (-1);
         }
