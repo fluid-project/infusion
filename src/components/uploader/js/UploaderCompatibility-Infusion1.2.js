@@ -41,13 +41,19 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     outputPath: "",
                     merge: true,
                     value: {
-                        strategy: {
-                            options: {
-                                styles: "decorators.0.options.styles"
-                            }
-                        },
-                        fileQueueView: "fileQueueView",
-                        totalProgressBar: "totalProgressBar"
+                        transform: [{ // TODO: We could recover the old compact form of this with some dedicated form of transform
+                            type: "fluid.transforms.value",
+                            outputPath: "strategy.options.styles",
+                            inputPath: "decorators.0.options.styles"
+                        }, {
+                            type: "fluid.transforms.value",
+                            inputPath: "fileQueueView",
+                            outputPath: "fileQueueView"
+                        }, {
+                            type: "fluid.transforms.value",
+                            inputPath: "totalProgressBar",
+                            outputPath: "totalProgressBar"
+                        }]
                     }
                 }
             ]
