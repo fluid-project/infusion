@@ -34,7 +34,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             onCreateSlidingPanelReady: {
                 events: {
                     iframeRendered: "afterRender",
-                    onPrefsEditorMessagesLoaded: "onPrefsEditorMessagesLoaded"
+                    prefsEditorMsgLookupReady: "onPrefsEditorMsgLookupReady"
                 }
             },
             templatesAndIframeReady: {
