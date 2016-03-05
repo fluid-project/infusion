@@ -47,7 +47,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var tooltipInfo = {};
 
         fluid.each(tree, function (cell) {
-            if (cell.ID === "page-link:link" && !cell.current) {
+            if (cell.ID === "page-link:link") {
                 var page = cell.pageIndex;
                 var start = page * tModel.pageSize;
                 tModel.pageIndex = page;
