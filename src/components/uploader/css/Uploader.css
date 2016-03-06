@@ -485,6 +485,10 @@ html>body .fl-uploader span.fl-uploader-browse {
     display:block;
 }
 
+.fl-uploader-no-js-note {
+    font-weight: bold;
+}
+
 /* hidden */
 .fl-uploader-hidden {
     display: none;
