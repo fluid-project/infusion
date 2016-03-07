@@ -855,21 +855,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Captured model by argument", {x: 30, y: 30}, that.frozenModel.windowHolders.mainWindow);
     });
 
-    /** FLUID-5866: Global priorities mediated by "priorityHolder" component **/
-
+    /** FLUID-5866: Global priorities mediated without "priorityHolder" component **/
+    
     fluid.defaults("fluid.tests.fluid5866root", {
         gradeNames: "fluid.modelComponent",
         components: {
-            priorityHolder: {
-                type: "fluid.priorityHolder",
-                options: {
-                    priorities: {
-                        repaint: null,
-                        notifyExternal: "after:repaint",
-                        compute: "before:repaint"
-                    }
-                }
-            },
             notifier: {
                 type: "fluid.modelComponent",
                 options: {
@@ -878,7 +868,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     modelListeners: {
                         position: {
-                            priority: "{priorityHolder}.priorities.notifyExternal",
+                            priority: "after:repaint",
+                            namespace: "notifyExternal",
                             func: "fluid.tests.recordFire",
                             excludeSource: "init",
                             args: ["{fluid5866root}", "notifyExternal"]
@@ -894,7 +885,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     modelListeners: {
                         position: {
-                            priority: "{priorityHolder}.priorities.compute",
+                            namespace: "compute",
+                            priority: "before:repaint",
                             func: "fluid.tests.recordFire",
                             excludeSource: "init",
                             args: ["{fluid5866root}", "compute"]
@@ -911,7 +903,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         modelListeners: {
             position: {
-                priority: "{priorityHolder}.priorities.repaint",
+                namespace: "repaint",
                 func: "fluid.tests.recordFire",
                 excludeSource: "init",
                 args: ["{that}", "repaint"]
@@ -919,7 +911,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("FLUID-5866: Global priorities mediated by \"priorityHolder\" component", function () {
+    jqUnit.test("FLUID-5866: Global priorities mediated without \"priorityHolder\" component", function () {
         var that = fluid.tests.fluid5866root();
         that.applier.change("position", 20);
         jqUnit.assertDeepEq("Global listeners notified in priority order",
