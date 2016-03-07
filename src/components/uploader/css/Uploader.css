@@ -243,6 +243,7 @@ tr.fl-uploader-file-state-uploaded button:before {
     height: 2em;
     width: 7em;
     cursor: default;
+    padding-right: 30px;
 }
 
 /* Fake add files button wrapper ("Add more")
