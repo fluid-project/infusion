@@ -45,7 +45,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 
         fluid.registerNamespace("fluid.tests.fluid5821");
-        
+
         fluid.tests.fluid5821.isEmptyJquery = function(message, element, checkSelector) {
             jqUnit.assertEquals(message + ": The element should have a length of zero...", 0, element.length);
             var fieldsToCheck = ["context", "selectorName"];
@@ -65,7 +65,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 emptyString: ""
             }
         });
-        
+
         fluid.tests.assertJQuery = function (message, node) {
             jqUnit.assertValue(message, node.jquery);
         };
@@ -210,7 +210,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
 
         function blurTest(message, provokeTarget, provokeOp, shouldBlur, excludeMaker) {
-            jqUnit.test("Dead man's blur test - " + message, function () {
+            jqUnit.asyncTest("Dead man's blur test - " + message, function () {
 
                 noteTime();
 
@@ -255,8 +255,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, blurrer.options.delay - 100);
 
                 window.setTimeout(blurOutwaiter, blurrer.options.delay + 300);
-
-                jqUnit.stop();
             });
         }
 
