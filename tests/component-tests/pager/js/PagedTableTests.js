@@ -153,12 +153,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var pageLinksTop = $("a", pager.pagerBar.locate("pageLinks"));
         var pageLinksBottom = $("a", pager["pagerBar-1"].locate("pageLinks"));
 
-        var tooltipContents = [
-            [
+        var tooltipContents = {
+            "page-link:link1": [
+                {nodeName: "b", nodeText: "dog"},
+                {nodeName: "b", nodeText: "cat"}
+            ],
+            "page-link:link2": [
+                {nodeName: "b", nodeText: "bird"},
+                {nodeName: "b", nodeText: "fish"}
+            ],
+            "page-link:link1-1": [
+                {nodeName: "b", nodeText: "dog"},
+                {nodeName: "b", nodeText: "cat"}
+            ],
+            "page-link:link2-1": [
                 {nodeName: "b", nodeText: "bird"},
                 {nodeName: "b", nodeText: "fish"}
             ]
-        ];
+        };
 
         var sequence = [];
 
@@ -167,7 +179,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 event: "{trackTooltips}.events.notifyFocusChange",
                 listener: function () {
                     fluid.tests.tooltip.assertVisible(message, pager, targetIds, null, function (tooltip) {
-                        jqUnit.assertNode("The contents of the tooltip should be set", tooltipContents[0], $("b", tooltip));
+                        jqUnit.assertNode("The contents of the tooltip should be set", tooltipContents[targetIds[0]], $("b", tooltip));
                     });
                 }
             });
@@ -182,11 +194,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     jQueryTrigger: "focus"
                 });
 
-                if (link.hasClass(pager.pagerBar.options.styles.currentPage)) { // assumption that this will not change between now and then!
-                    assertVisibleTips("There shouldn't be any tooltips visible when the currentPage is focused", []);
-                } else {
-                    assertVisibleTips("Only the tooltip for page link " + (idx + 1) + ", in the " + location + " page bar is visible", [linkId]);
-                }
+                
+                assertVisibleTips("There should be tooltip visible when none of the pageLinks are focused", [linkId]);
                 sequence.push({
                     element: link,
                     jQueryTrigger: "blur"
