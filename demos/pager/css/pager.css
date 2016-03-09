@@ -1,7 +1,7 @@
 /* pager demo styles */
 
 .demo-pager-container {
-    width:95%;
+    width: 95%;
 }
 
 .demo-pager-container input {
@@ -12,13 +12,9 @@
     display: none;
 }
 
-.demo-pager-container a:visited {
-    color: blue;
-}
-
 .demo-pager-container a:hover{
     outline: 2px #000 solid;
-    padding:0px;
+    padding: 0px;
 }
 
 /***********************************************
@@ -58,8 +54,8 @@
 }
 
 .demo-pager-bar  li  {
-    display:inline;
-    float:left;
+    display: inline;
+    float: left;
 }
 
 /***********************************************
@@ -77,13 +73,12 @@
 
 
 .demo-pager-pageLink-default a {
-    /* Using display:block and float:left, it creates helps create a horizontal list with fixed width elements.*/
-    display:block;
-    float:left;
-
-    width:3em;
-    text-align:center;
-    margin:2px;
+    /* Using display:block and float:left, it helps create a horizontal list with fixed width elements.*/
+    display: block;
+    float: left;
+    width: 3em;
+    text-align: center;
+    margin: 2px;
     border: 1px solid #afafaf;
 }
 
@@ -92,15 +87,13 @@
 }
 
 .demo-pager-links .fl-pager-currentPage {
-    color: #fff;
-    display:block;
-    width:3em;
-    float:left;
-    background: #000;
-    padding:0px;
-    margin:2px;
+    display: block;
+    width: 3em;
+    float: left;
+    padding: 0px;
+    margin: 2px;
     border: 1px solid #000;
-    text-align:center;
+    text-align: center;
 }
 
 .demo-pager-links .fl-pager-currentPage:visited {
@@ -108,8 +101,8 @@
 }
 
 .demo-pager-head a {
-    display:block;
-    width:100%;
+    display: block;
+    width: 100%;
 }
 
 /***********************************************

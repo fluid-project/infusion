@@ -18,41 +18,52 @@
 /* Pager UI */
 /* Class name for the list container */
 .fl-pager .fl-pager-ui {
-    margin:0; padding:0;
+    margin: 0;
+    padding: 0;
 }
 .fl-pager .fl-pager-ui li {
-    list-style-type:none;
-    display:inline;
+    list-style-type: none;
+    display: inline;
 }
 .fl-pager .fl-pager-ui a {
-    padding:0 3px;
-    margin:0 2px;
+    margin: 0 2px;
 }
 .fl-pager .fl-pager-ui .fl-pager-links a {
-    border:1px solid #ccc;
-    background-color:#fff;
-    zoom:1;
-}
-.fl-pager .fl-pager-ui .fl-pager-disabled,
-.fl-pager .fl-pager-ui .fl-pager-links .fl-pager-currentPage {
-    color:#000;
-    border:none;
-    background-color:transparent;
-    text-decoration:none;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    zoom: 1;
 }
 .fl-pager .fl-pager-ui .fl-pager-links a:hover {
-    background-color:#0287C5;
-    color:#fff;
+    background-color: #0287C5;
+    color: #fff;
     text-decoration:none;
 }
-.fl-pager .fl-pager-ui .fl-pager-disabled:hover,
-.fl-pager .fl-pager-ui .fl-pager-links .fl-pager-currentPage:hover {
-    background-color:transparent;
-    color:#000;
-    text-decoration:none;
-    cursor:default;
+.fl-pager .fl-pager-ui .fl-pager-links .fl-pager-currentPage {
+    color: #fff;
+    border: none;
+    outline: 0px;
+    background-color: #000;
+    text-decoration: none;
+    cursor: default;
+}
+.fl-pager .fl-pager-ui .fl-pager-links .fl-pager-currentPage:hover,
+.fl-pager .fl-pager-ui .fl-pager-links .fl-pager-currentPage:focus {
+    outline: 2px #000 solid;
+    background-color: #000;
+}
+.fl-pager .fl-pager-ui .fl-pager-disabled a,
+.fl-pager .fl-pager-ui .fl-pager-disabled a:hover {
+    color: #afafaf;
+    cursor: default;
+    border: none;
+    outline: 0px;
+    pointer-events: none;
 }
 
+/*On :focus doesnt work*/
+.fl-pager .fl-pager-ui .fl-pager-disabled:focus {
+    outline: 2px #000 solid;
+}
 
 /***********************************************************/
 /** THEMES - High Contrast **/

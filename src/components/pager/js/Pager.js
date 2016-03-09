@@ -295,8 +295,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     });
 
     fluid.pager.previousNext.update = function (that, disabledStyle, newModel) {
-        that.previous.toggleClass(disabledStyle, newModel.pageIndex === 0);
-        that.next.toggleClass(disabledStyle, newModel.pageIndex === newModel.pageCount - 1);
+        var isFirstPage = (newModel.pageIndex === 0);
+        var isLastPage = (newModel.pageIndex === newModel.pageCount - 1);
+        that.previous.toggleClass(disabledStyle, isFirstPage);
+        that.next.toggleClass(disabledStyle, isLastPage);
+        that.previous.attr("aria-disabled", isFirstPage);
+        that.next.attr("aria-disabled", isLastPage);
     };
 
     fluid.defaults("fluid.pager.pagerBar", {
