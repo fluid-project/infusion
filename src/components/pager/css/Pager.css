@@ -18,41 +18,47 @@
 /* Pager UI */
 /* Class name for the list container */
 .fl-pager .fl-pager-ui {
-    margin:0; padding:0;
+    margin: 0;
+    padding: 0;
 }
 .fl-pager .fl-pager-ui li {
-    list-style-type:none;
-    display:inline;
+    list-style-type: none;
+    display: inline;
 }
 .fl-pager .fl-pager-ui a {
-    padding:0 3px;
-    margin:0 2px;
+    margin: 0 2px;
 }
 .fl-pager .fl-pager-ui .fl-pager-links a {
-    border:1px solid #ccc;
-    background-color:#fff;
-    zoom:1;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    zoom: 1;
 }
-.fl-pager .fl-pager-ui .fl-pager-disabled,
 .fl-pager .fl-pager-ui .fl-pager-links .fl-pager-currentPage {
-    color:#000;
-    border:none;
-    background-color:transparent;
-    text-decoration:none;
+    color: #fff;
+    border: none;
+    background-color: #000;
+    text-decoration: none;
+    pointer-events: none;
+    cursor: default;
 }
-.fl-pager .fl-pager-ui .fl-pager-links a:hover {
-    background-color:#0287C5;
-    color:#fff;
-    text-decoration:none;
+.fl-pager .fl-pager-ui .fl-pager-disabled a {
+    color: #afafaf;
+    pointer-events: none;
+    cursor: default;
 }
-.fl-pager .fl-pager-ui .fl-pager-disabled:hover,
 .fl-pager .fl-pager-ui .fl-pager-links .fl-pager-currentPage:hover {
-    background-color:transparent;
-    color:#000;
-    text-decoration:none;
-    cursor:default;
+    background-color: #000;
+    color: #fff;
+    text-decoration: none;
+    cursor: default;
+    pointer-events: none;
+    cursor: default;
 }
-
+.fl-pager .fl-pager-ui .fl-pager-disabled a:hover {
+    color: #afafaf;
+    pointer-events: none;
+    cursor: default;
+}
 
 /***********************************************************/
 /** THEMES - High Contrast **/
