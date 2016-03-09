@@ -65,7 +65,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 emptyString: ""
             }
         });
-        
+
         fluid.tests.assertJQuery = function (message, node) {
             jqUnit.assertValue(message, node.jquery);
         };
