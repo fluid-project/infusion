@@ -192,3 +192,8 @@ main {
 .fl-prefsEditor-separatedPanel .fl-panelBar .fl-prefsEditor-reset  {
     border-right: 1px solid #fff;
 }
+
+.demo-columns p{
+    -webkit-padding-end:2em;
+    -webkit-padding-after: 2em;
+}
