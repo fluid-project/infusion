@@ -11,3 +11,11 @@
 .fl-uploader {
     width: 31.5rem
 }
+
+.fl-uploader-browse {
+    width:8em;
+}
+
+.fl-uploader-browse.fl-uploader-browseMore {
+   width: 7em;
+}
