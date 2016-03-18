@@ -493,7 +493,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
         }],
         modelListeners: {
-            "{fluid.pager}.model": "{that}.events.onModelChange.fire({change}.value, {change}.oldValue, {that})"
+            "": "{that}.events.onModelChange.fire({change}.value, {change}.oldValue, {that})"
         },
         listeners: {
             onCreate: {
