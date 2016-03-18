@@ -193,9 +193,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     element: link,
                     jQueryTrigger: "focus"
                 });
-
-                
-                assertVisibleTips("There should be tooltip visible when none of the pageLinks are focused", [linkId]);
+                assertVisibleTips("The tooltip for page link " + (idx + 1) + ", in the " + location + " page bar is visible", [linkId]);
                 sequence.push({
                     element: link,
                     jQueryTrigger: "blur"
