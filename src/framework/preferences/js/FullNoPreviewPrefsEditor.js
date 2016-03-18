@@ -26,21 +26,37 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 container: "{that}.container",
                 options: {
                     listeners: {
-                        afterReset: [{
+                        "afterReset.applyChanges": {
                             listener: "{that}.applyChanges"
-                        }, {
+                        },
+                        "afterReset.save": {
                             listener: "{that}.save"
-                        }],
-                        onReady: {
-                            listener: "{fullNoPreview}.events.onReady",
-                            args: "{fullNoPreview}"
-                        }
+                        },
+                        "{prefsEditorLoader}.events.onPrefsEditorMsgReady": [{
+                            "this": "{that}.dom.reset",
+                            method: "attr",
+                            args: ["value", "{prefsEditorMsgLookup}.msgLookup.reset"]
+                        }, {
+                            "this": "{that}.dom.cancel",
+                            method: "attr",
+                            args: ["value", "{prefsEditorMsgLookup}.msgLookup.cancel"]
+                        }, {
+                            "this": "{that}.dom.save",
+                            method: "attr",
+                            args: ["value", "{prefsEditorMsgLookup}.msgLookup.save"]
+                        }]
                     }
                 }
             }
         },
         events: {
             onReady: null
+        },
+        listeners: {
+            "onPrefsEditorReady.escalate": {
+                listener: "{that}.events.onReady.fire",
+                args: ["{that}"]
+            }
         }
     });
 

@@ -34,13 +34,25 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                             container: "{prefsEditor}.dom.previewFrame",
                             options: {
                                 listeners: {
-                                    onReady: "{fullPreview}.events.onPreviewReady"
+                                    "onReady.escalate": "{fullPreview}.events.onPreviewReady"
                                 }
                             }
                         }
                     },
                     listeners: {
-                        onReady: "{fullPreview}.events.onPrefsEditorReady"
+                        "{prefsEditorLoader}.events.onPrefsEditorMsgReady": [{
+                            "this": "{that}.dom.reset",
+                            method: "attr",
+                            args: ["value", "{prefsEditorMsgLookup}.msgLookup.reset"]
+                        }, {
+                            "this": "{that}.dom.cancel",
+                            method: "attr",
+                            args: ["value", "{prefsEditorMsgLookup}.msgLookup.cancel"]
+                        }, {
+                            "this": "{that}.dom.save",
+                            method: "attr",
+                            args: ["value", "{prefsEditorMsgLookup}.msgLookup.save"]
+                        }]
                     },
                     distributeOptions: {
                         source: "{that}.options.preview",
@@ -51,7 +63,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
         },
         events: {
-            onPrefsEditorReady: null,
             onPreviewReady: null,
             onReady: {
                 events: {

@@ -104,6 +104,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.testSeparatedPanel = function (separatedPanel) {
+        jqUnit.assertNotUndefined("The subcomponent prefsEditorMsgResolver has been instantiated", separatedPanel.prefsEditorMsgResolver);
+        jqUnit.assertNotUndefined("The subcomponent prefsEditorMsgLookup has been instantiated", separatedPanel.prefsEditorMsgLookup);
+        jqUnit.assertNotUndefined("The subcomponent slidingPanel has been instantiated", separatedPanel.slidingPanel);
+        jqUnit.assertNotUndefined("The subcomponent iframeRenderer has been instantiated", separatedPanel.iframeRenderer);
+        jqUnit.assertNotUndefined("The subcomponent prefsEditor has been instantiated", separatedPanel.prefsEditor);
+
+        jqUnit.assertNotUndefined("The label for the reset message has been loaded from the message bundle", separatedPanel.prefsEditorMsgResolver.messageBase.reset);
+        jqUnit.assertEquals("The text for the reset button text has been set correctly", separatedPanel.prefsEditorMsgResolver.messageBase.reset, separatedPanel.locate("reset").text());
+
         jqUnit.assertEquals("IFrame is invisible and keyboard inaccessible", false, separatedPanel.iframeRenderer.iframe.is(":visible"));
         fluid.tests.prefs.assertPresent(separatedPanel, fluid.tests.prefs.expectedSeparatedPanel);
 
@@ -164,7 +173,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Separated panel integration tests",
             tests: [{
-                expect: 38,
+                expect: 45,
                 name: "Separated panel integration tests",
                 sequence: [{
                     listener: "fluid.tests.testSeparatedPanel",

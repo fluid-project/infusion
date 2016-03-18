@@ -136,16 +136,16 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                         gradeNames: ["{fluid.prefs.assembler.prefsEd}.options.componentGrades.panels", "fluid.prefs.uiEnhancerRelay"]
                     },
                     events: {
-                        onReady: "{fluid.prefs.assembler.prefsEd}.events.onPrefsEditorReady"
+                        onReady: "{fluid.prefs.assembler.prefsEd}.events.onPrefsEditorLoaderReady"
                     }
                 }
             }
         },
         events: {
-            onPrefsEditorReady: null,
+            onPrefsEditorLoaderReady: null,
             onReady: {
                 events: {
-                    onPrefsEditorReady: "onPrefsEditorReady",
+                    onPrefsEditorLoaderReady: "onPrefsEditorLoaderReady",
                     onCreate: "onCreate"
                 },
                 args: ["{that}"]

@@ -25,15 +25,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         auxiliarySchema: {
 
             // the loaderGrade identifies the "base" form of preference editor desired
-            loaderGrades: ["fluid.prefs.fullNoPreview"],
+            loaderGrades: ["awesomeCars.prefs.fullNoPreview"],
 
             // 'terms' are strings that can be re-used elsewhere in this schema;
             terms: {
-                templatePrefix: "html"
+                templatePrefix: "html",
+                messagePrefix: "messages"
             },
 
             // the main template for the preference editor itself
             template: "%templatePrefix/prefsEditorTemplate.html",
+
+            // the message bundles for the preference editor itself
+            "message": "%messagePrefix/prefsEditor.json",
 
             heatedSeats: {
                 // this 'type' must match the name of the pref in the primary schema

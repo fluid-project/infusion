@@ -109,6 +109,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
 
             function testComponent(prefsEditorLoader) {
+                jqUnit.assertNotUndefined("The subcomponent prefsEditor has been instantiated", prefsEditorLoader.prefsEditor);
+                jqUnit.assertNotUndefined("The subcomponent templateLoader has been instantiated", prefsEditorLoader.templateLoader);
+                jqUnit.assertNotUndefined("The subcomponent messageLoader has been instantiated", prefsEditorLoader.messageLoader);
+                jqUnit.assertNotUndefined("The subcomponent prefsEditorMsgResolver has been instantiated", prefsEditorLoader.prefsEditorMsgResolver);
+                jqUnit.assertNotUndefined("The subcomponent prefsEditorMsgLookup has been instantiated", prefsEditorLoader.prefsEditorMsgLookup);
+
+                jqUnit.assertNotUndefined("The label for the reset message has been loaded from the message bundle", prefsEditorLoader.prefsEditorMsgResolver.messageBase.reset);
+                jqUnit.assertEquals("The text for the reset button text has been set correctly", prefsEditorLoader.prefsEditorMsgResolver.messageBase.reset, prefsEditorLoader.prefsEditor.locate("reset").attr("value"));
+                jqUnit.assertNotUndefined("The label for the save message has been loaded from the message bundle", prefsEditorLoader.prefsEditorMsgResolver.messageBase.save);
+                jqUnit.assertEquals("The text for the save button text has been set correctly", prefsEditorLoader.prefsEditorMsgResolver.messageBase.save, prefsEditorLoader.prefsEditor.locate("save").attr("value"));
+                jqUnit.assertNotUndefined("The label for the cancel message has been loaded from the message bundle", prefsEditorLoader.prefsEditorMsgResolver.messageBase.cancel);
+                jqUnit.assertEquals("The text for the cancel button text has been set correctly", prefsEditorLoader.prefsEditorMsgResolver.messageBase.cancel, prefsEditorLoader.prefsEditor.locate("cancel").attr("value"));
+
                 var prefsEditor = prefsEditorLoader.prefsEditor;
                 var globalUIEnhancer = fluid.queryIoCSelector(fluid.rootComponent, "fluid.pageEnhancer", true)[0].uiEnhancer;
                 var initialModel = prefsEditorLoader.initialModel;
