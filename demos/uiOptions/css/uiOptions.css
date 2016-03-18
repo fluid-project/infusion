@@ -28,7 +28,7 @@
 
 
 body {
-    font-family: LatoLight, Helvetica, Tahoma, Verdana, sans-serif;
+    font-family: LatoLight, Helvetica, Tahoma, Verdana, sans-serif;z
 }
 img {
     box-shadow: rgba(0,0,0,0.4) 0px 0px 5px 1px;
@@ -41,9 +41,10 @@ main {
 }
 
 .demo-columns {
-    -webkit-columns: 12.5rem 4;
-    -moz-columns: 12.5rem 4;
-    columns: 12.5rem 4;
+
+    -webkit-columns: 20%;
+    -moz-columns: 20%;
+    columns: 20%;
 }
 
 .demo-column {
