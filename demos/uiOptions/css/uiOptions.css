@@ -46,6 +46,13 @@ main {
     columns: 12.5rem 4;
 }
 
+
+/*Remove overlapping text on headers with default theme on chrome browser*/
+.demo-columns p{
+    -webkit-padding-end:2em;
+    -webkit-padding-after: 2em;
+}
+
 .demo-column {
     -webkit-column-break-inside: avoid;
     page-break-inside: avoid;
@@ -192,3 +199,4 @@ main {
 .fl-prefsEditor-separatedPanel .fl-panelBar .fl-prefsEditor-reset  {
     border-right: 1px solid #fff;
 }
+
