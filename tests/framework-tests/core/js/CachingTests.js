@@ -90,7 +90,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.module("Caching Tests");
 
         function testSimpleCache(requestDelay) {
-            jqUnit.test("Simple caching test with delay " + requestDelay, function () {
+            jqUnit.asyncTest("Simple caching test with delay " + requestDelay, function () {
                 fluid.log("Begin with delay " + requestDelay);
                 fluid.fetchResources.clearResourceCache(fluid.tests.cacheTestUrl);
                 var fetches = 0;
@@ -108,7 +108,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 window.setTimeout(function () {
                     fluid.fetchResources(fluid.copy(defaults.resources), finalCallback);
                 }, 100);
-                jqUnit.stop();
             });
         }
 
@@ -117,7 +116,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         testSimpleCache(150);
 
         function testProleptickJoinset(delays, message, expectedFinal) {
-            jqUnit.test("Test proleptick joinsets: " + message + " (" + delays.cacheTestUrl3 + ", " + delays.cacheTestUrl4 + ")" , function () {
+            jqUnit.asyncTest("Test proleptick joinsets: " + message + " (" + delays.cacheTestUrl3 + ", " + delays.cacheTestUrl4 + ")" , function () {
                 fluid.log("Begin test " + message);
                 var fetches = {};
                 function countCallback(key) {
@@ -150,7 +149,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         amalgamateClasses: ["slowTemplate", "fastTemplate"]
                     });
                 }, 100); // TODO: Stability of tests seems to be very sensitive to this timeout
-                jqUnit.stop();
             });
         }
 
