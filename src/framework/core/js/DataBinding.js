@@ -399,7 +399,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * structure containing
      *     segs: {Array of String} An array of model path segments to be dereferenced in the target component (will become `modelSegs` in the final return)
      *     context: {String} An IoC reference to the component holding the model
-     * @param implicitRelay {Boolean} <code>true</code> if the reference was being resolved for an implicit model relay - that is, 
+     * @param implicitRelay {Boolean} <code>true</code> if the reference was being resolved for an implicit model relay - that is,
      * whether it occured within the `model` block itself. In this case, references to non-model material are not a failure and will simply be resolved
      * (by the caller) onto their targets (as constants). Otherwise, this function will issue a failure on discovering a reference to non-model material.
      * @return A structure holding:
@@ -613,7 +613,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 }, npOptions);
             } else {
                 // We are in the middle of parsing a contextualised relay, and this call has arrived via its parseImplicitRelay.
-                // Rather than bind source-source, instead register the "half-transactional" listener which binds changes 
+                // Rather than bind source-source, instead register the "half-transactional" listener which binds changes
                 // from the relay itself onto the target
                 fluid.registerDirectChangeRelay(target, targetSegs, source, [], linkId+"-transform", options.forwardAdapter, {transactional: true, sourceApplier: options.forwardApplier}, npOptions);
             }
@@ -719,7 +719,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.singleTransformToFull = function (singleTransform) {
-        var withPath = $.extend(true, {valuePath: ""}, singleTransform);
+        var withPath = $.extend(true, {inputPath: ""}, singleTransform);
         return {
             "": {
                 transform: withPath
@@ -1357,7 +1357,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.isObjectSimple = function (totest) {
         return Object.prototype.toString.call(totest) === "[object Object]";
     };
-    
+
     fluid.mergeChangeSources = function (target, globalSources) {
         if (fluid.isObjectSimple(globalSources)) { // TODO: No test for this branch!
             fluid.extend(target, globalSources);
@@ -1447,14 +1447,14 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             ation.commit();
         };
         /**
-         * Initiate a fresh transaction on this applier, perhaps coordinated with other transactions sharing the same id across the component tree 
+         * Initiate a fresh transaction on this applier, perhaps coordinated with other transactions sharing the same id across the component tree
          * Arguments all optional
          * localSource {String}: "local", "relay" or null Local source identifiers only good for transaction's representative on this applier
          *  globalSources: {String|Array of String|Object String->true} Global source identifiers common across this transaction
          *  transactionId: {String} Global transaction id to enlist with
          */
         that.initiate = function (localSource, globalSources, transactionId) {
-            localSource = globalSources === "init" ? null : (localSource || "local"); // supported values for localSource are "local" and "relay" - globalSource of "init" defeats defaulting of localSource to "local" 
+            localSource = globalSources === "init" ? null : (localSource || "local"); // supported values for localSource are "local" and "relay" - globalSource of "init" defeats defaulting of localSource to "local"
             var defeatPost = localSource === "relay"; // defeatPost is supplied for all non-top-level transactions
             var trans = {
                 instanceId: fluid.allocateGuid(), // for debugging only - the representative of this transction on this applier

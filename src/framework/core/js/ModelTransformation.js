@@ -67,11 +67,11 @@ var fluid = fluid || fluid_2_0_0;
     };
 
     // unsupported, NON-API function
-    fluid.model.transform.literalValueToRule = function (value) {
+    fluid.model.transform.literalValueToRule = function (input) {
         return {
             transform: {
                 type: "fluid.transforms.literalValue",
-                value: value
+                input: input
             }
         };
     };
@@ -162,15 +162,10 @@ var fluid = fluid || fluid_2_0_0;
     // the inversion mechanism itself
     fluid.model.transform.copyInversePaths = function (transformSpec, transformer) {
         var togo = fluid.copy(transformSpec);
-        // TODO: this will not behave correctly in the face of compound "value" which contains
+        // TODO: this will not behave correctly in the face of compound "input" which contains
         // further transforms
         togo.inputPath = fluid.model.composePaths(transformer.outputPrefix, transformSpec.outputPath);
-        if (transformSpec.valuePath) { // Remove this branch when FLUID-5294 is closed
-            togo.outputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.valuePath);
-            delete togo.valuePath;
-        } else {
-            togo.outputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.inputPath);
-        }
+        togo.outputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.inputPath);
         return togo;
     };
 
@@ -183,7 +178,7 @@ var fluid = fluid || fluid_2_0_0;
         if (transformSpec.outputPrefix) {
             transform.outputPrefixOp.push(transformSpec.outputPrefix);
         }
-        transform.expand(transformSpec.value);
+        transform.expand(transformSpec.input);
         if (transformSpec.inputPrefix) {
             transform.inputPrefixOp.pop();
         }
@@ -212,13 +207,6 @@ var fluid = fluid || fluid_2_0_0;
         };
     };
 
-    fluid.model.transform.aliasStandardInput = function (transformSpec) {
-        return { // alias input and value, and their paths
-            value: transformSpec.value === undefined ? transformSpec.input : transformSpec.value,
-            valuePath: transformSpec.valuePath === undefined ? transformSpec.inputPath : transformSpec.valuePath
-        };
-    };
-
     // unsupported, NON-API function
     fluid.model.transform.doTransform = function (transformSpec, transform, transformOpts) {
         var expdef = transformOpts.defaults;
@@ -233,8 +221,7 @@ var fluid = fluid || fluid_2_0_0;
         }
         var transformArgs = [transformSpec, transform];
         if (fluid.hasGrade(expdef, "fluid.standardInputTransformFunction")) {
-            var valueHolder = fluid.model.transform.aliasStandardInput(transformSpec);
-            var expanded = fluid.model.transform.getValue(valueHolder.valuePath, valueHolder.value, transform);
+            var expanded = fluid.model.transform.getValue(transformSpec.inputPath, transformSpec.input, transform);
 
             transformArgs.unshift(expanded);
             // if the function has no input, the result is considered undefined, and this is returned
