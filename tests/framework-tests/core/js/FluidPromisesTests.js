@@ -133,7 +133,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.linearScale = function (value, options) {
         var transform = $.extend({
             type: "fluid.transforms.linearScale",
-            value: value
+            input: value
         }, options);
         var fullTransform = {};
         fluid.set(fullTransform, ["", "transform"], transform);
