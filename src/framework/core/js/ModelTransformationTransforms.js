@@ -53,7 +53,7 @@ var fluid = fluid || fluid_2_0_0;
     });
 
     fluid.transforms.literalValue = function (transformSpec) {
-        return transformSpec.value;
+        return transformSpec.input;
     };
 
 
@@ -124,7 +124,6 @@ var fluid = fluid || fluid_2_0_0;
         gradeNames: [ "fluid.multiInputTransformFunction", "fluid.standardOutputTransformFunction", "fluid.lens" ],
         invertConfiguration: "fluid.transforms.linearScale.invert",
         inputVariables: {
-            value: null, // This is now deprecated, as per FLUID-5294
             input: null,
             factor: 1,
             offset: 0
@@ -133,20 +132,14 @@ var fluid = fluid || fluid_2_0_0;
 
     /* simple linear transformation */
     fluid.transforms.linearScale = function (inputs) {
-        var value = inputs.value();
-        if (fluid.isValue(value)) {
-            fluid.log(fluid.logLevel.WARN, "The input \"value\" is deprecated and will be renamed to \"input\" for all transforms");
-        } else {
-            value = inputs.input();
-        }
-
+        var input = inputs.input();
         var factor = inputs.factor();
         var offset = inputs.offset();
 
-        if (typeof(value) !== "number" || typeof(factor) !== "number" || typeof(offset) !== "number") {
+        if (typeof(input) !== "number" || typeof(factor) !== "number" || typeof(offset) !== "number") {
             return undefined;
         }
-        return value * factor + offset;
+        return input * factor + offset;
     };
 
     /* TODO: This inversion doesn't work if the value and factors are given as paths in the source model */
