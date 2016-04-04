@@ -52,6 +52,11 @@ build-themes-prefsEditor(contrastThemes) {
                     background-image: none;
                     background-color: inherit;
                 }
+                
+                 //FLUID-4991: The shadow effect around the hide/show preferences bug fix.
+                 .fl-prefsEditor-buttons { 
+                    box-shadow: none !important; 
+                }
 
                 input:focus + label,
                 .fl-choice input:focus ~ label {
