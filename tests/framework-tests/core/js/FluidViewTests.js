@@ -70,6 +70,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertValue(message, node.jquery);
         };
 
+        fluid.tests.assertJQuery = function (message, node) {
+            jqUnit.assertValue(message, node.jquery);
+        };
+
+        fluid.tests.assertJQuery = function (message, node) {
+            jqUnit.assertValue(message, node.jquery);
+        };
+
+        fluid.tests.assertJQuery = function (message, node) {
+            jqUnit.assertValue(message, node.jquery);
+        };
+
         jqUnit.test("FLUID-5821: DOM binder missing/empty selector tests", function () {
             var that = fluid.tests.fluid5821("body");
             function expectContainer(message, container) {
