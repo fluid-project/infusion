@@ -53,6 +53,12 @@
     cursor:default;
 }
 
+/* Pager List Item Conatiner Width */ 
+
+.flc-pager-li-container {
+ width:550px !important; /* FLUID-2797 The prev/next link moves as user clicks previous, Next Button Click Fix */
+}
+
 
 /***********************************************************/
 /** THEMES - High Contrast **/
