@@ -354,12 +354,17 @@ var fluid = fluid || fluid_2_0_0;
         if (hw(transformSpec.inputPath)) {
             matchPath = fluid.model.composePaths(transform.inputPrefix, transformSpec.inputPath);
         }
-        else if (hw(transform.outputPrefix) || hw(transformSpec.outputPath)) {
-            matchPath = fluid.model.composePaths(transform.outputPrefix, transformSpec.outputPath);
+        else if (hw(transform.outputPrefix)) {
+            matchPath = transform.outputPrefix
         }
 
         if (matchPath) {
-            transform.queuedTransforms.push({transformSpec: transformSpec, outputPrefix: transform.outputPrefix, inputPrefix: transform.inputPrefix, matchPath: matchPath});
+            transform.queuedTransforms.push({
+                transformSpec: transformSpec,
+                outputPrefix: transform.outputPrefix,
+                inputPrefix: transform.inputPrefix,
+                matchPath: matchPath
+            });
             return true;
         }
         return false;

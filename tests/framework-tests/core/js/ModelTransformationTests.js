@@ -778,6 +778,107 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
+    var wildCardTestsFixtures = [
+        {
+            rules: {
+                "cat.*": {
+                    transform: {
+                        inputPath: "",
+                        outputPath: "test",
+                        type: "value"
+                    }
+                }
+            },
+            expected: {
+                cat: {
+                    meow: {
+                        test: {
+                            "its": true
+                        }
+                    },
+                    barks: {
+                        test: {
+                            "its": false
+                        }
+                    }
+                }
+            }
+        }, {
+            rules: {
+                transform: {
+                    inputPath: "cat.*",
+                    outputPath: "test",
+                    type: "value"
+                }
+            },
+            expected: {
+                cat: {
+                    meow: {
+                        test: {
+                            "its": true
+                        }
+                    },
+                    barks: {
+                        test: {
+                            "its": false
+                        }
+                    }
+                }
+            }
+        }, {
+            rules: {
+                transform: {
+                    inputPath: "cat.*.its",
+                    outputPath: "",
+                    type: "value"
+                }
+            },
+            expected: {
+                cat: {
+                    meow: {
+                        "its": true
+                    },
+                    barks: {
+                        "its": false
+                    }
+                }
+            }
+        }, {
+            rules: {
+                "cat.*": {
+                    transform: {
+                        inputPath: "its",
+                        outputPath: "",
+                        type: "value"
+                    }
+                }
+            },
+            expected: {
+                cat: {
+                    meow: true,
+                    barks: false
+                }
+            }
+        }
+    ];
+
+    jqUnit.test("Transform with wildcard path, input and output Path", function () {
+        var model = {
+            cat: {
+                meow: {
+                    "its": true
+                },
+                barks: {
+                    "its": false
+                }
+            }
+        };
+        fluid.each(wildCardTestsFixtures, function (fixture) {
+            var result = fluid.model.transformWithRules(model, fixture.rules);
+            jqUnit.assertDeepEq("bafdsklsadf", fixture.expected, result);
+        });
+    });
+
     var arrayValueTests = [{
         message: "arrayValue() should box a non-array value up as one.",
         transformWrap: true,
