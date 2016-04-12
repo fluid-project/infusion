@@ -237,12 +237,21 @@ tr.fl-uploader-file-state-uploaded button:before {
  */
 
 /* Fake add files button wrapper ("Browse files") */
+.fl-force-right{
+    width: 9.1em;
+    text-align: center;
+}
+
 .fl-uploader-browse {
     display: block;
     overflow: hidden;
     height: 2em;
-    width: 9em;
+    width: 9.1em;
     cursor: default;
+}
+
+span.fl-uploader-button-browse-text {
+    padding-left: 7px;
 }
 
 /* Fake add files button wrapper ("Add more")
