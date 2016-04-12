@@ -4,38 +4,23 @@
 themes = {
     ".fl-theme-bw": {
         foregroundColor: #000000,
-        backgroundColor: #ffffff,
-        .fl-prefsEditor-buttons { //FLUID-4991: The shadow effect around the hide/show preferences bug fix.
-          box-shadow:none !important;
-          }
+        backgroundColor: #ffffff
     }
     ".fl-theme-wb": {
         foregroundColor: #ffffff,
-        backgroundColor: #000000,
-        .fl-prefsEditor-buttons { //FLUID-4991: The shadow effect around the hide/show preferences bug fix.
-          box-shadow:none !important;
-          }
+        backgroundColor: #000000
     }
     ".fl-theme-yb": {
         foregroundColor: #ffff00,
-        backgroundColor: #000000,
-        .fl-prefsEditor-buttons { //FLUID-4991: The shadow effect around the hide/show preferences bug fix.
-          box-shadow:none !important;
-          }
+        backgroundColor: #000000
     }
     ".fl-theme-by": {
         foregroundColor: #000000,
-        backgroundColor: #ffff00,
-        .fl-prefsEditor-buttons { //FLUID-4991: The shadow effect around the hide/show preferences bug fix.
-          box-shadow:none !important;
-          }
+        backgroundColor: #ffff00
     }
     ".fl-theme-lgdg": {
         foregroundColor: #bdbdbb,
-        backgroundColor: #555555,
-        .fl-prefsEditor-buttons { //FLUID-4991: The shadow effect around the hide/show preferences bug fix.
-          box-shadow:none !important;
-          }
+        backgroundColor: #555555
     }
 }
 
@@ -346,3 +331,9 @@ build-themes-Enactors(contrastThemes) {
         }
     }
 }
+
+.fl-theme-prefsEditor-default { //FLUID-4991: The shadow effect around the hide/show preferences bug fix.
+    .fl-prefsEditor-buttons {
+   box-shadow: 2px 2px 3px 0 #6f6f6f;
+     }
+  }
