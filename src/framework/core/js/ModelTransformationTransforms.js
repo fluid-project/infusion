@@ -1,7 +1,7 @@
 /*
 Copyright 2010 University of Toronto
 Copyright 2010-2011 OCAD University
-Copyright 2013 Raising the Floor - International
+Copyright 2013, 2016 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -26,14 +26,10 @@ var fluid = fluid || fluid_2_0_0;
 
     fluid.defaults("fluid.transforms.value", {
         gradeNames: "fluid.standardTransformFunction",
-        invertConfiguration: "fluid.transforms.value.invert"
+        invertConfiguration: "fluid.identity"
     });
 
     fluid.transforms.value = fluid.identity;
-
-    fluid.transforms.value.invert = function (transformSpec, transformer) {
-        return fluid.model.transform.copyInversePaths(transformSpec, transformer);
-    };
 
     // Export the use of the "value" transform under the "identity" name for FLUID-5293
     fluid.transforms.identity = fluid.transforms.value;
@@ -42,10 +38,9 @@ var fluid = fluid || fluid_2_0_0;
     });
 
     // A helpful utility function to be used when a transform's inverse is the identity
-    fluid.transforms.invertToIdentity = function (transformSpec, transformer) {
-        var togo = fluid.model.transform.copyInversePaths(transformSpec, transformer);
-        togo.type = "fluid.transforms.identity";
-        return togo;
+    fluid.transforms.invertToIdentity = function (transformSpec) {
+        transformSpec.type = "fluid.transforms.identity";
+        return transformSpec;
     };
 
     fluid.defaults("fluid.transforms.literalValue", {
@@ -65,12 +60,32 @@ var fluid = fluid || fluid_2_0_0;
 
 
     fluid.defaults("fluid.transforms.stringToNumber", {
-        gradeNames: ["fluid.standardTransformFunction"]
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
+        invertConfiguration: "fluid.transforms.stringToNumber.invert"
     });
 
     fluid.transforms.stringToNumber = function (value) {
         var newValue = Number(value);
         return isNaN(newValue) ? undefined : newValue;
+    };
+
+    fluid.transforms.stringToNumber.invert = function (transformSpec) {
+        transformSpec.type = "fluid.transforms.numberToString";
+        return transformSpec;
+    };
+
+    fluid.defaults("fluid.transforms.numberToString", {
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
+        invertConfiguration: "fluid.transforms.numberToString.invert"
+    });
+
+    fluid.transforms.numberToString = function (value) {
+        return (typeof value !== "number") ? undefined : "" + value;
+    };
+
+    fluid.transforms.numberToString.invert = function (transformSpec) {
+        transformSpec.type = "fluid.transforms.stringToNumber";
+        return transformSpec;
     };
 
     fluid.defaults("fluid.transforms.count", {
@@ -344,12 +359,13 @@ var fluid = fluid || fluid_2_0_0;
     /* -------- arrayToSetMembership and setMembershipToArray ---------------- */
 
     fluid.defaults("fluid.transforms.arrayToSetMembership", {
-        gradeNames: ["fluid.standardInputTransformFunction", "fluid.lens"],
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
         invertConfiguration: "fluid.transforms.arrayToSetMembership.invert"
     });
 
 
-    fluid.transforms.arrayToSetMembership = function (value, transformSpec, transformer) {
+    fluid.transforms.arrayToSetMembership = function (value, transformSpec) {
+        var output = {};
         var options = transformSpec.options;
 
         if (!value || !fluid.isArrayable(value)) {
@@ -368,32 +384,40 @@ var fluid = fluid || fluid_2_0_0;
         }
 
         fluid.each(options, function (outPath, key) {
-            // write to output path given in options the value <presentValue> or <missingValue> depending on whether key is found in user input
+            // write to output object the value <presentValue> or <missingValue> depending on whether key is found in user input
             var outVal = (value.indexOf(key) !== -1) ? transformSpec.presentValue : transformSpec.missingValue;
-            fluid.model.transform.setValue(outPath, outVal, transformer);
+            fluid.set(output, outPath, outVal);
         });
-        // TODO: Why does this transform make no return?
+        return output;
     };
 
-    fluid.transforms.arrayToSetMembership.invert = function (transformSpec, transformer) {
+    /**
+     * NON-API function; Copies the entire transformSpec with the following modifications:
+     * * A new type is set (from argument)
+     * * each [key]=value entry in the options is swapped to be: [value]=key
+     */
+    fluid.transforms.arrayToSetMembership.invertWithType = function (transformSpec, transformer, newType) {
         var togo = fluid.copy(transformSpec);
-        delete togo.inputPath;
-        togo.type = "fluid.transforms.setMembershipToArray";
-        togo.outputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.inputPath);
+        togo.type = newType;
         var newOptions = {};
         fluid.each(transformSpec.options, function (path, oldKey) {
-            var newKey = fluid.model.composePaths(transformer.outputPrefix, path);
-            newOptions[newKey] = oldKey;
+            newOptions[path] = oldKey;
         });
         togo.options = newOptions;
         return togo;
     };
 
+    fluid.transforms.arrayToSetMembership.invert = function (transformSpec, transformer) {
+        return fluid.transforms.arrayToSetMembership.invertWithType(transformSpec, transformer,
+            "fluid.transforms.setMembershipToArray");
+    };
+
     fluid.defaults("fluid.transforms.setMembershipToArray", {
-        gradeNames: ["fluid.standardOutputTransformFunction"]
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
+        invertConfiguration: "fluid.transforms.setMembershipToArray.invert"
     });
 
-    fluid.transforms.setMembershipToArray = function (transformSpec, transformer) {
+    fluid.transforms.setMembershipToArray = function (input, transformSpec) {
         var options = transformSpec.options;
 
         if (!options) {
@@ -409,13 +433,17 @@ var fluid = fluid || fluid_2_0_0;
         }
 
         var outputArr = [];
-        fluid.each(options, function (arrVal, inPath) {
-            var val = fluid.model.transform.getValue(inPath, undefined, transformer);
+        fluid.each(input, function (val, key) {
             if (val === transformSpec.presentValue) {
-                outputArr.push(arrVal);
+                outputArr.push(options[key]);
             }
         });
         return outputArr;
+    };
+
+    fluid.transforms.setMembershipToArray.invert = function (transformSpec, transformer) {
+        return fluid.transforms.arrayToSetMembership.invertWithType(transformSpec, transformer,
+            "fluid.transforms.arrayToSetMembership");
     };
 
     /* -------- objectToArray and arrayToObject -------------------- */
@@ -495,7 +523,6 @@ var fluid = fluid || fluid_2_0_0;
     * Note: This transform frequently arises in the context of data which arose in XML form, which often represents "morally indexed" data in repeating array-like
     * constructs where the indexing key is held, for example, in an attribute.
     */
-
     fluid.transforms.arrayToObject = function (arr, transformSpec, transformer) {
         if (transformSpec.key === undefined) {
             fluid.fail("arrayToObject requires a 'key' option.", transformSpec);
@@ -519,18 +546,16 @@ var fluid = fluid || fluid_2_0_0;
             // fix sub Arrays if needed:
             if (transformSpec.innerValue) {
                 content = fluid.model.transform.expandInnerValues([transformer.inputPrefix, transformSpec.inputPath, k.toString()],
-                    [newKey], transformer, transformSpec.innerValue);
+                    [transformSpec.outputPath, newKey], transformer, transformSpec.innerValue);
             }
             newHash[newKey] = content;
         });
         return newHash;
     };
 
-    fluid.transforms.arrayToObject.invert = function (transformSpec, transformer) {
+    fluid.transforms.arrayToObject.invert = function (transformSpec) {
         var togo = fluid.copy(transformSpec);
         togo.type = "fluid.transforms.objectToArray";
-        togo.inputPath = fluid.model.composePaths(transformer.outputPrefix, transformSpec.outputPath);
-        togo.outputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.inputPath);
         // invert transforms from innerValue as well:
         // TODO: The Model Transformations framework should be capable of this, but right now the
         // issue is that we use a "private contract" to operate the "innerValue" slot. We need to
@@ -546,7 +571,8 @@ var fluid = fluid || fluid_2_0_0;
 
 
     fluid.defaults("fluid.transforms.objectToArray", {
-        gradeNames: "fluid.standardTransformFunction"
+        gradeNames: [ "fluid.standardTransformFunction", "fluid.lens" ],
+        invertConfiguration: "fluid.transforms.objectToArray.invert"
     });
 
     /**
@@ -577,6 +603,22 @@ var fluid = fluid || fluid_2_0_0;
             newArray.push(content);
         });
         return newArray;
+    };
+
+    fluid.transforms.objectToArray.invert = function (transformSpec) {
+        var togo = fluid.copy(transformSpec);
+        togo.type = "fluid.transforms.arrayToObject";
+        // invert transforms from innerValue as well:
+        // TODO: The Model Transformations framework should be capable of this, but right now the
+        // issue is that we use a "private contract" to operate the "innerValue" slot. We need to
+        // spend time thinking of how this should be formalised
+        if (togo.innerValue) {
+            var innerValue = togo.innerValue;
+            for (var i = 0; i < innerValue.length; ++i) {
+                innerValue[i] = fluid.model.transform.invertConfiguration(innerValue[i]);
+            }
+        }
+        return togo;
     };
 
     fluid.defaults("fluid.transforms.limitRange", {
@@ -653,12 +695,11 @@ var fluid = fluid || fluid_2_0_0;
         return parsedOffset;
     };
 
-    fluid.transforms.invertArrayIndexation = function (transformSpec, transformer) {
-        var togo = fluid.model.transform.copyInversePaths(transformSpec, transformer);
-        if (!isNaN(Number(togo.offset))) {
-            togo.offset = Number(togo.offset) * (-1);
+    fluid.transforms.invertArrayIndexation = function (transformSpec) {
+        if (!isNaN(Number(transformSpec.offset))) {
+            transformSpec.offset = Number(transformSpec.offset) * (-1);
         }
-        return togo;
+        return transformSpec;
     };
 
     fluid.defaults("fluid.transforms.stringTemplate", {

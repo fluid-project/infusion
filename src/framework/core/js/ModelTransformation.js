@@ -382,6 +382,10 @@ var fluid = fluid || fluid_2_0_0;
     };
     // unsupported, NON-API function
     fluid.model.transform.handleInvertStrategy = function (transformSpec, transform, transformOpts) {
+        // if we have a standardTransformFunction we can switch input and output arguments:
+        if (fluid.hasGrade(transformOpts.defaults, "fluid.standardTransformFunction")) {
+            transformSpec = fluid.model.transform.copyInversePaths(transformSpec, transform);
+        }
         var invertor = transformOpts.defaults && transformOpts.defaults.invertConfiguration;
         if (invertor) {
             var inverted = fluid.invokeGlobalFunction(invertor, [transformSpec, transform]);
