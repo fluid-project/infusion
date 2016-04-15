@@ -118,7 +118,7 @@ var fluid = fluid || fluid_2_0_0;
 
 
     fluid.defaults("fluid.transforms.firstValue", {
-        gradeNames: "fluid.transformFunction"
+        gradeNames: "fluid.standardOutputTransformFunction"
     });
 
     fluid.transforms.firstValue = function (transformSpec, transformer) {

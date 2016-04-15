@@ -1216,6 +1216,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             values: ["hippo", "cat"]
         },
         expected: fluid.tests.transforms.source.hippo
+    }, {
+        message: "firstValue() should return the first non-undefined value in paths",
+        transform: {
+            type: "fluid.transforms.firstValue",
+            values: ["cat", "dog"],
+            outputPath: "whichanimal"
+        },
+        expected: {
+            whichanimal: fluid.tests.transforms.source.cat
+        },
+        method: "assertDeepEq"
     }];
 
     jqUnit.test("fluid.transforms.firstValue()", function () {
