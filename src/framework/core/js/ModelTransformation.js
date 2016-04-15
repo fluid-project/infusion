@@ -160,13 +160,13 @@ var fluid = fluid || fluid_2_0_0;
 
     // TODO: This cut and pasted code was hoisted out of the inverse of transforms - it needs to go into the
     // the inversion mechanism itself
-    fluid.model.transform.copyInversePaths = function (transformSpec, transformer) {
-        var togo = fluid.copy(transformSpec);
+    fluid.model.transform.invertPaths = function (transformSpec, transformer) {
         // TODO: this will not behave correctly in the face of compound "input" which contains
         // further transforms
-        togo.inputPath = fluid.model.composePaths(transformer.outputPrefix, transformSpec.outputPath);
-        togo.outputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.inputPath);
-        return togo;
+        var oldOutput = fluid.model.composePaths(transformer.outputPrefix, transformSpec.outputPath);
+        transformSpec.outputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.inputPath);
+        transformSpec.inputPath = oldOutput;
+        return transformSpec;
     };
 
 
@@ -382,9 +382,10 @@ var fluid = fluid || fluid_2_0_0;
     };
     // unsupported, NON-API function
     fluid.model.transform.handleInvertStrategy = function (transformSpec, transform, transformOpts) {
+        transformSpec = fluid.copy(transformSpec);
         // if we have a standardTransformFunction we can switch input and output arguments:
         if (fluid.hasGrade(transformOpts.defaults, "fluid.standardTransformFunction")) {
-            transformSpec = fluid.model.transform.copyInversePaths(transformSpec, transform);
+            transformSpec = fluid.model.transform.invertPaths(transformSpec, transform);
         }
         var invertor = transformOpts.defaults && transformOpts.defaults.invertConfiguration;
         if (invertor) {

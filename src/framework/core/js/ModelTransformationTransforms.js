@@ -159,7 +159,9 @@ var fluid = fluid || fluid_2_0_0;
 
     /* TODO: This inversion doesn't work if the value and factors are given as paths in the source model */
     fluid.transforms.linearScale.invert = function (transformSpec, transformer) {
-        var togo = fluid.model.transform.copyInversePaths(transformSpec, transformer);
+        // we can use this function since one of our inputs is named and behaves
+        // like input/inputPaths of the standardInputTransformFunction
+        var togo = fluid.model.transform.invertPaths(transformSpec, transformer);
 
         if (togo.factor !== undefined) {
             togo.factor = (togo.factor === 0) ? 0 : 1 / togo.factor;
@@ -397,14 +399,13 @@ var fluid = fluid || fluid_2_0_0;
      * * each [key]=value entry in the options is swapped to be: [value]=key
      */
     fluid.transforms.arrayToSetMembership.invertWithType = function (transformSpec, transformer, newType) {
-        var togo = fluid.copy(transformSpec);
-        togo.type = newType;
+        transformSpec.type = newType;
         var newOptions = {};
         fluid.each(transformSpec.options, function (path, oldKey) {
             newOptions[path] = oldKey;
         });
-        togo.options = newOptions;
-        return togo;
+        transformSpec.options = newOptions;
+        return transformSpec;
     };
 
     fluid.transforms.arrayToSetMembership.invert = function (transformSpec, transformer) {
@@ -554,19 +555,18 @@ var fluid = fluid || fluid_2_0_0;
     };
 
     fluid.transforms.arrayToObject.invert = function (transformSpec) {
-        var togo = fluid.copy(transformSpec);
-        togo.type = "fluid.transforms.objectToArray";
+        transformSpec.type = "fluid.transforms.objectToArray";
         // invert transforms from innerValue as well:
         // TODO: The Model Transformations framework should be capable of this, but right now the
         // issue is that we use a "private contract" to operate the "innerValue" slot. We need to
         // spend time thinking of how this should be formalised
-        if (togo.innerValue) {
-            var innerValue = togo.innerValue;
+        if (transformSpec.innerValue) {
+            var innerValue = transformSpec.innerValue;
             for (var i = 0; i < innerValue.length; ++i) {
                 innerValue[i] = fluid.model.transform.invertConfiguration(innerValue[i]);
             }
         }
-        return togo;
+        return transformSpec;
     };
 
 
@@ -606,19 +606,18 @@ var fluid = fluid || fluid_2_0_0;
     };
 
     fluid.transforms.objectToArray.invert = function (transformSpec) {
-        var togo = fluid.copy(transformSpec);
-        togo.type = "fluid.transforms.arrayToObject";
+        transformSpec.type = "fluid.transforms.arrayToObject";
         // invert transforms from innerValue as well:
         // TODO: The Model Transformations framework should be capable of this, but right now the
         // issue is that we use a "private contract" to operate the "innerValue" slot. We need to
         // spend time thinking of how this should be formalised
-        if (togo.innerValue) {
-            var innerValue = togo.innerValue;
+        if (transformSpec.innerValue) {
+            var innerValue = transformSpec.innerValue;
             for (var i = 0; i < innerValue.length; ++i) {
                 innerValue[i] = fluid.model.transform.invertConfiguration(innerValue[i]);
             }
         }
-        return togo;
+        return transformSpec;
     };
 
     fluid.defaults("fluid.transforms.limitRange", {
