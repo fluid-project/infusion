@@ -3834,6 +3834,242 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
+    /* --------------- fluid.transforms.quantize tests -------------------- */
+    fluid.tests.transforms.quantizeTests = [{
+        name: "Basic quantize transformations",
+        rules: {
+            "foo": {
+                "transform": {
+                    "type": "fluid.transforms.quantize",
+                    "inputPath": "someval",
+                    "ranges": [
+                        {
+                            "upperBound": 380,
+                            "output": 1
+                        }, {
+                            "upperBound": 450,
+                            "output": 2
+                        }, {
+                            "upperBound": 600,
+                            "output": {
+                                "transform": {
+                                    "type": "fluid.transforms.literalValue",
+                                    "input": "DOGG",
+                                    "outputPath": "bar"
+                                }
+                            }
+                        }, {
+                            "output": 3
+                        }
+                    ]
+                }
+            }
+        },
+        fixtures: {
+            "low value check": {
+                input: {
+                    someval: 200
+                },
+                expected: {
+                    foo: 1
+                }
+            },
+            "on upper bound limit": {
+                input: {
+                    someval: 380
+                },
+                expected: {
+                    foo: 1
+                }
+            },
+            "interval check": {
+                input: {
+                    someval: 429
+                },
+                expected: {
+                    foo: 2
+                }
+            },
+            "upper default value": {
+                input: {
+                    someval: 1000
+                },
+                expected: {
+                    foo: 3
+                }
+            },
+            "expander in output": {
+                input: {
+                    someval: 500
+                },
+                expected: {
+                    foo: {
+                        bar: "DOGG"
+                    }
+                }
+            }
+        }
+    }, {
+        name: "Treatment of non-finite values",
+        rules: {
+            "transform": {
+                "type": "fluid.transforms.quantize",
+                "inputPath": "",
+                "outputPath": "value",
+                "ranges": [{
+                    "output": 1
+                }]
+            }
+        },
+        fixtures: {
+            "undefined check": {
+            },
+            "NaN check": {
+                input: NaN // warning, this fixture not valid for JSON interchange
+            },
+            "single value check": {
+                input: 6,
+                expected: {
+                    value: 1
+                }
+            }
+        }
+    }];
+
+    jqUnit.test("Quantize tests", function () {
+        fluid.each(fluid.tests.transforms.quantizeTests, function (quantizeTest) {
+            fluid.each(quantizeTest.fixtures, function (test, testname) {
+                var transformed = fluid.model.transformWithRules(test.input, quantizeTest.rules);
+                jqUnit.assertDeepEq(quantizeTest.name + " - " + testname, test.expected, transformed);
+            });
+        });
+    });
+
+     /* --------------- fluid.transforms.inRange tests -------------------- */
+    fluid.tests.transforms.inRangeTests = {
+        rules: {
+            minOnly: {
+                "foo": {
+                    "transform": {
+                        "type": "fluid.transforms.inRange",
+                        "inputPath": "bar",
+                        "min": 100
+                    }
+                }
+            },
+            maxOnly: {
+                "foo": {
+                    "transform": {
+                        "type": "fluid.transforms.inRange",
+                        "inputPath": "bar",
+                        "max": 200
+                    }
+                }
+            },
+            minAndMax: {
+                "foo": {
+                    "transform": {
+                        "type": "fluid.transforms.inRange",
+                        "inputPath": "bar",
+                        "min": 100,
+                        "max": 200
+                    }
+                }
+            }
+        },
+        expects: {
+            "Min only - below threshold": {
+                rule: "minOnly",
+                input: {
+                    bar: 23
+                },
+                expected: {
+                    foo: false
+                }
+            },
+            "Min only - on threshold": {
+                rule: "minOnly",
+                input: {
+                    bar: 100
+                },
+                expected: {
+                    foo: true
+                }
+            },
+            "Min only - above threshold": {
+                rule: "minOnly",
+                input: {
+                    bar: 100
+                },
+                expected: {
+                    foo: true
+                }
+            },
+            "Max only - below threshold": {
+                rule: "maxOnly",
+                input: {
+                    bar: 23
+                },
+                expected: {
+                    foo: true
+                }
+            },
+            "Max only - on threshold": {
+                rule: "maxOnly",
+                input: {
+                    bar: 200
+                },
+                expected: {
+                    foo: true
+                }
+            },
+            "Max only - above threshold": {
+                rule: "maxOnly",
+                input: {
+                    bar: 2100
+                },
+                expected: {
+                    foo: false
+                }
+            },
+            "Min and Max - above threshold": {
+                rule: "minAndMax",
+                input: {
+                    bar: 2100
+                },
+                expected: {
+                    foo: false
+                }
+            },
+            "Min and Max - within range": {
+                rule: "minAndMax",
+                input: {
+                    bar: 160
+                },
+                expected: {
+                    foo: true
+                }
+            },
+            "Min and Max - below threshold": {
+                rule: "minAndMax",
+                input: {
+                    bar: 21
+                },
+                expected: {
+                    foo: false
+                }
+            }
+        }
+    };
+
+    jqUnit.test("fluid.transforms.inRange tests", function () {
+        fluid.each(fluid.tests.transforms.inRangeTests.expects, function (test, tname) {
+            var transformed = fluid.model.transformWithRules(test.input, fluid.tests.transforms.inRangeTests.rules[test.rule]);
+            jqUnit.assertDeepEq("inRange transformation tests - " + tname, test.expected, transformed);
+        });
+    });
+
+
     /* --------------- FLUID-5294: `value` key should no longer be supported ------------- */
     fluid.tests.transforms.noValueSupport = [{
         message: "Ensure literalValue transformation no longer supports value",

@@ -719,4 +719,42 @@ var fluid = fluid || fluid_2_0_0;
         return fluid.invokeGlobalFunction(transformSpec.func, args);
     };
 
+    fluid.defaults("fluid.transforms.quantize", {
+        gradeNames: "fluid.standardTransformFunction"
+    });
+
+    /**
+     * Quantize function maps a continuous range into discrete values. Given an input, it will
+     * be matched into a discrete bucket and the corresponding output will be done.
+     */
+    fluid.transforms.quantize = function (value, transformSpec, transform) {
+        if (!transformSpec.ranges || !transformSpec.ranges.length) {
+            fluid.fail("fluid.transforms.quantize should have a key called ranges containing an array defining ranges to quantize");
+        }
+        // TODO: error checking that upper bounds are all numbers and increasing
+        for (var i = 0; i < transformSpec.ranges.length; i++) {
+            var rangeSpec = transformSpec.ranges[i];
+            if (value <= rangeSpec.upperBound || rangeSpec.upperBound === undefined && value >= Number.NEGATIVE_INFINITY) {
+                return fluid.isPrimitive(rangeSpec.output) ? rangeSpec.output : transform.expand(rangeSpec.output);
+            }
+        }
+    };
+
+    /**
+     * inRange transformer checks whether a value is within a given range and returns true if it is,
+     * and false if it's not.
+     *
+     * The range is defined by the two inputs: "min" and "max" (both inclusive). If one of these inputs
+     * is not present it is considered -infinite and +infinite, respectively - In other words, if no
+     * `min` value is defined, any value below or equal to the given "max" value will result in true.
+     */
+    fluid.defaults("fluid.transforms.inRange", {
+        gradeNames: "fluid.standardTransformFunction"
+    });
+
+    fluid.transforms.inRange = function (value, transformSpec) {
+        return (transformSpec.min === undefined || transformSpec.min <= value) &&
+            (transformSpec.max === undefined ||  transformSpec.max >= value) ? true : false;
+    };
+
 })(jQuery, fluid_2_0_0);
