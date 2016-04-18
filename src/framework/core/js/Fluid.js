@@ -736,8 +736,8 @@ var fluid = fluid || fluid_2_0_0;
 
     /** Converts a hash into an object by hoisting out the object's keys into an array element via the supplied String "key", and then transforming via an optional further function, which receives the signature
      * (newElement, oldElement, key) where newElement is the freshly cloned element, oldElement is the original hash's element, and key is the key of the element.
-     * If the function is not supplied, the old element is simply deep-cloned onto the new element (same effect
-     * as transform fluid.transforms.objectToArray)
+     * If the function is not supplied, the old element is simply deep-cloned onto the new element (same effect as transform fluid.transforms.objectToArray).
+     * The supplied hash will not be modified, unless the supplied function explicitly does so by modifying its 2nd argument.
      */
     fluid.hashToArray = function (hash, keyName, func) {
         var togo = [];
@@ -1267,12 +1267,16 @@ var fluid = fluid || fluid_2_0_0;
         }
     };
  
-    fluid.parsePriorityRecords = function (records, name, root) {
+    /** Parse a hash containing prioritised records (for example, as found in a ContextAwareness record) and return a sorted array of these records in priority order.
+     * @param records {Object} A hash of key names to prioritised records. Each record may contain an member `namespace` - if it does not, the namespace will be taken from the
+     * record's key. It may also contain a `String` member `priority` encoding a priority with respect to these namespaces as document at http://docs.fluidproject.org/infusion/development/Priorities.html .
+     * @param name {String} A human-readable name describing the supplied records, which will be incorporated into the message of any error encountered when resolving the priorities
+     * @return [Array] An array of the same elements supplied to `records`, sorted into priority order. The supplied argument `records` will not be modified.
+     */
+    fluid.parsePriorityRecords = function (records, name) {
         var array = fluid.hashToArray(records, "namespace", function (newElement, oldElement, index) {
-            if (!root) {
-                $.extend(newElement, oldElement);
-            }
-            newElement.priority = fluid.parsePriority(root ? oldElement : oldElement.priority, index, false, name);
+            $.extend(newElement, oldElement);
+            newElement.priority = fluid.parsePriority(oldElement.priority, index, false, name);
         });
         fluid.sortByPriority(array);
         return array;
