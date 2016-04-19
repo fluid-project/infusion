@@ -49,6 +49,58 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
+    jqUnit.test("fluid.makeArray tests", function () {
+        jqUnit.assertDeepEq("fluid.makeArray on non-array", [1], fluid.makeArray(1));
+        jqUnit.assertDeepEq("fluid.makeArray on null", [], fluid.makeArray(null));
+        jqUnit.assertDeepEq("fluid.makeArray on undefined", [], fluid.makeArray(undefined));
+        var inputArray = [1];
+        var outputArray = fluid.makeArray(inputArray);
+        jqUnit.assertDeepEq("fluid.makeArray on array - deep equality", inputArray, outputArray);
+        jqUnit.assertNotEquals("fluid.makeArray on array - cloning", inputArray, outputArray);
+    });
+
+    fluid.tests.pushArray = [{
+        message: "nonexistent element - nonarray",
+        holder: {},
+        topush: 1,
+        expected: {
+            m1: [1]
+        }
+    }, {
+        message: "nonexistent element - array",
+        holder: {},
+        topush: [1],
+        expected: {
+            m1: [1]
+        }
+    }, {
+        message: "existent element - nonarray",
+        holder: {
+            m1: [1]
+        },
+        topush: 2,
+        expected: {
+            m1: [1, 2]
+        }
+    }, {
+        message: "existent element - array",
+        holder: {
+            m1: [1]
+        },
+        topush: [2, 3],
+        expected: {
+            m1: [1, 2, 3]
+        }
+    }
+    ];
+
+    jqUnit.test("fluid.pushArray tests", function () {
+        fluid.each(fluid.tests.pushArray, function (fixture) {
+            var holder = fluid.copy(fixture.holder);
+            fluid.pushArray(holder, "m1", fixture.topush);
+            jqUnit.assertDeepEq("fluid.pushArray - " + fixture.message, fixture.expected, holder);
+        });
+    });
 
     function isOdd(i) {
         return i % 2 === 1;

@@ -856,14 +856,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     listener: "fluid.tests.composite.tester.initialRendering",
                     event: "{compositePrefsEditor prefsEditor prefsEditorLoader prefsEditor}.events.onReady"
                 }, {
-                    func: "{prefsEditor}.prefsEditorLoader.prefsEditor.applier.requestChange",
+                    func: "{prefsEditor}.prefsEditorLoader.prefsEditor.applier.change",
                     args: ["preferences.fluid_tests_composite_pref_increaseSize", true]
                 }, {
                     listener: "fluid.tests.composite.tester.conditionalCreation",
                     event: "{prefsEditor}.prefsEditorLoader.prefsEditor.increasing.events.afterRender",
                     priority: "last"
                 }, {
-                    func: "{prefsEditor}.prefsEditorLoader.prefsEditor.applier.requestChange",
+                    func: "{prefsEditor}.prefsEditorLoader.prefsEditor.applier.change",
                     args: ["preferences.fluid_tests_composite_pref_increaseSize", false]
                 }, {
                     listener: "fluid.tests.composite.tester.conditionalDestruction",

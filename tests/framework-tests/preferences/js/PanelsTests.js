@@ -426,7 +426,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assertNotInitialized(that, "conditionalPanel2");
             that.events.afterRender.removeListener("pref1_true");
         }, "pref1_true", "last");
-        that.applier.requestChange("some_pref_1", true);
+        that.applier.change("some_pref_1", true);
 
         // set some.pref.1 to false
         jqUnit.expect(10);
@@ -439,7 +439,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assertNotInitialized(that, "conditionalPanel2");
             that.events.afterRender.removeListener("pref1_false");
         }, "pref1_false", "last");
-        that.applier.requestChange("some_pref_1", false);
+        that.applier.change("some_pref_1", false);
 
         // set some.pref.2 to true
         jqUnit.expect(11);
@@ -453,7 +453,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assertText(that, "conditionalPanel2", "conditionalPanel2");
             that.events.afterRender.removeListener("pref2_true");
         }, "pref2_true", "last");
-        that.applier.requestChange("some_pref_2", true);
+        that.applier.change("some_pref_2", true);
 
         // set some.pref.2 to false
         jqUnit.expect(10);
@@ -466,7 +466,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assertNotInitialized(that, "conditionalPanel2");
             that.events.afterRender.removeListener("pref2_false");
         }, "pref2_false", "last");
-        that.applier.requestChange("some_pref_2", false);
+        that.applier.change("some_pref_2", false);
 
     });
 
@@ -901,8 +901,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assert("The initial state with the min value for slider1 has been set properly", 0, $(".flc-tests-panel-slider1 .flc-textfieldSlider-slider").slider("value"));
         jqUnit.assert("The initial state with the min value for slider2 has been set properly", 1, $(".flc-tests-panel-slider2 .flc-textfieldSlider-slider").slider("value"));
 
-        that.slider1.applier.requestChange("value", 100);
-        that.slider2.applier.requestChange("value", 100);
+        that.slider1.applier.change("value", 100);
+        that.slider2.applier.change("value", 100);
         that.refreshView();
         jqUnit.assert("The max value for slider1 has been set properly", 10, $(".flc-tests-panel-slider1 .flc-textfieldSlider-slider").slider("value"));
         jqUnit.assert("The max value for slider2 has been set properly", 100, $(".flc-tests-panel-slider2 .flc-textfieldSlider-slider").slider("value"));
@@ -1343,7 +1343,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }]
                 }, {
                     func: "fluid.tests.changeInput",
-                    args: ["{lineSpace}.dom.textSize", "{that}.options.testOptions.newValue"]
+                    args: ["{lineSpace}.dom.lineSpace", "{that}.options.testOptions.newValue"]
                 }, {
                     listener: "fluid.tests.panels.utils.checkModel",
                     args: ["lineSpace", "{lineSpace}.model", "{that}.options.testOptions.newValue"],

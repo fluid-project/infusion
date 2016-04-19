@@ -132,18 +132,37 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.notVisible("After ctrl is released, drop warning should not be visible", "#drop-warning");
 
         });
-
-        function expectOrder(message, order) {
-            var items = fluid.transform($(".portlet"), fluid.getId);
-            var expected = fluid.transform(order, function (item) {
+        
+        function numbersToIds(numbers) {
+            return fluid.transform(numbers, function (item) {
                 return fluid.testUtils.moduleLayout.portletIds[item];
             });
-            jqUnit.assertDeepEq(message, expected, items);
+        }
+
+        function expectOrder(canonEqual) {
+            canonEqual = numbersToIds(canonEqual);
+            // TODO: Hack to allow two possible orders for FLUID-5859 in "LEFT" test
+            var canonFunc = canonEqual ? function (array) {
+                return fluid.transform(array, function (element) {
+                    return fluid.contains(canonEqual, element) ? canonEqual[0] : element;
+                });
+            } : fluid.identity;
+            return function (message, order) {
+                var items = fluid.transform($(".portlet"), fluid.getId);
+                var expected = numbersToIds(order);
+                if (canonEqual) {
+                    jqUnit.assertCanoniseEqual(message, expected, items, canonFunc);
+                } else {
+                    jqUnit.assertDeepEq(message, expected, items);
+                }
+            };
         }
 
         jqUnit.module("Reorder Layout Tests");
 
-        var assembleOptions = function (isDisableWrap, isLocked) {
+        // TODO: This should be expressed as a proper grade constructor rather than
+        // "a bunch of functions returning stuff"
+        var assembleOptions = function (isDisableWrap, isLocked, canonEqual) {
             var obj = {
                 selectors: {
                     columns: "[id^='c']",
@@ -152,7 +171,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 disableWrap: isDisableWrap,
                 reordererFn: "fluid.reorderLayout",
-                expectOrderFn: expectOrder,
+                expectOrderFn: expectOrder(canonEqual),
                 key: fluid.testUtils.reorderer.compositeKey
             };
 
@@ -295,10 +314,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.test("reorderLayout with locked portlets, option set disabled wrap, user action ctrl+left", function () {
             var options = {
-                reordererOptions: assembleOptions(true, ".locked"),
+                // TODO: HACK to resolve FLUID-5859 on Linux - these portlets may appear in either order in the left column due to layout variation
+                reordererOptions: assembleOptions(true, ".locked", [3, 9]),
                 direction: "LEFT",
                 expectedOrderArrays: [[1, 2, 3, 4, 5, 6, 9, 7, 8], [1, 2, 3, 9, 4, 5, 6, 7, 8],
-                                      [1, 2, 3, 9, 4, 5, 6, 7, 8]],
+                // FLUID-5859: variant order here to test the test
+                                      [1, 2, 9, 3, 4, 5, 6, 7, 8]],
                 itemSelector: fluid.jById(fluid.testUtils.moduleLayout.portletIds[9])
             };
 
