@@ -2145,6 +2145,33 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.tests.fluid5632root2();
         }, "settling");
     });
+    
+    // FLUID-5885: Correct context for indirect model relay
+    
+    fluid.defaults("fluid.tests.fluid5885root", {
+        gradeNames: "fluid.modelComponent",
+        components: {
+            innerModel: {
+                type: "fluid.modelComponent"
+            }
+        },
+        modelListeners: {
+            "{that}.innerModel.model.pressed": {
+                funcName: "fluid.tests.fluid5885listener",
+                args: ["{that}", "{fluid.tests.fluid5885root}"]
+            }
+        }
+    });
+    
+    fluid.tests.fluid5885listener = function (actualThat, expectedThat) {
+        jqUnit.assertEquals("Context \"that\" should be site of definition", expectedThat, actualThat);
+    };
+    
+    jqUnit.test("FLUID-5885: Proper contextualisation of \"that\" during indirect model listener", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.fluid5885root();
+        that.innerModel.applier.change("pressed", true);
+    });
 
     // FLUID-5659: Saturating relay counts through back-to-back transactions
 
