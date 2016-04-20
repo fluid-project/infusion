@@ -329,11 +329,14 @@ var fluid = fluid || fluid_2_0_0;
     };
 
     /** Determines whether the supplied object is a plain JSON-forming container - that is, it is either a plain Object
-     * or a plain Array. Note that this differs from jQuery's isPlainObject which does not pass Arrays */
-    fluid.isPlainObject = function (totest) {
+     * or a plain Array. Note that this differs from jQuery's isPlainObject which does not pass Arrays.
+     * @param totest {Any} The object to be tested
+     * @param strict {Boolean} (optional) If `true`, plain Arrays will fail the test rather than passing. 
+     */
+    fluid.isPlainObject = function (totest, strict) {
         var string = Object.prototype.toString.call(totest);
         if (string === "[object Array]") {
-            return true;
+            return !strict;
         } else if (string !== "[object Object]") {
             return false;
         } // FLUID-5226: This inventive strategy taken from jQuery detects whether the object's prototype is directly Object.prototype by virtue of having an "isPrototypeOf" direct member
@@ -1354,24 +1357,36 @@ var fluid = fluid || fluid_2_0_0;
             that.listeners = {};
             that.byId = {};
             that.sortedListeners = [];
+            // TODO: arguments after 2nd are not part of public API - reform to use "options form" for all of these
             that.addListener = function (listener, namespace, priority, softNamespace, listenerId) {
+                var record;
                 if (that.destroyed) {
                     fluid.fail("Cannot add listener to destroyed event firer " + that.name);
                 }
                 if (!listener) {
                     return;
                 }
+                if (fluid.isPlainObject(listener, true)) {
+                    record = listener;
+                    listener = record.listener;
+                    namespace = record.namespace;
+                    priority = record.priority;
+                    listenerId = record.listenerId;
+                } else {
+                    record = {};
+                }
                 if (typeof(listener) === "string") {
                     listener = {globalName: listener};
                 }
                 var id = listenerId || fluid.event.identifyListener(listener);
                 namespace = namespace || id;
-                var record = {listener: listener,
+                record = $.extend(record || {}, {
                     namespace: namespace,
+                    listener: listener,
                     softNamespace: softNamespace,
                     listenerId: listenerId,
                     priority: fluid.parsePriority(priority, that.sortedListeners.length, false, "listeners")
-                };
+                });
                 that.byId[id] = record;
 
                 var thisListeners = (that.listeners[namespace] = fluid.makeArray(that.listeners[namespace]));
