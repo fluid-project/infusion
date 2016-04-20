@@ -126,99 +126,48 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             },
             slider: {
                 expander: {
-                    "this": "{that}.container",
-                    method: "slider",
-                    args: ["{that}.combinedSliderOptions"]
-                }
-            },
-            rangeInput: {
-                expander: {
-                    "this": "{that}.container",
-                    method: "append",
-                    args: "<br/><input class=\"flc-textfieldSlider-rangeInput\" type=\"range\" min=\"1\" max=\"2\" step=\"0.1\">"
+                    funcName: "fluid.slider.appendRangeInput",
+                    args: ["{that}"]
                 }
             }
         },
         invokers: {
             setSliderValue: {
                 "this": "{that}.slider",
-                "method": "slider",
-                args: ["value", "{arguments}.0"]
-            },
-            setSliderAria: {
-                "this": "{that}.dom.thumb",
-                "method": "attr",
-                args: ["aria-valuenow", "{arguments}.0"]
-            },
-            setModel: {
-                changePath: "value",
-                value: "{arguments}.1.value"
-            },
-            setModelFromRangeInput: {
-                funcName: "fluid.slider.setModelFromRangeInput",
-                args: ["{that}"]
-            },
-            setRangeInputValue: {
-                "this": "{that}.dom.rangeInput",
                 "method": "val",
                 args: ["{arguments}.0"]
             },
-            setRangeInputAria: {
-                "this": "{that}.dom.rangeInput",
-                "method": "attr",
-                args: ["aria-valuenow", "{arguments}.0"]
+            setModel: {
+                funcName: "fluid.slider.setModelFromRangeInput",
+                args: ["{that}"]
             }
         },
         listeners: {
-            // This can be removed once the jQuery UI slider has built in ARIA
-            "onCreate.initSliderAria": {
-                "this": "{that}.dom.thumb",
-                method: "attr",
-                args: [{
-                    role: "slider",
-                    "aria-valuenow": "{that}.combinedSliderOptions.value",
-                    "aria-valuemin": "{that}.combinedSliderOptions.min",
-                    "aria-valuemax": "{that}.combinedSliderOptions.max"
-                }]
-            },
-            "onCreate.bindSlideEvt": {
-                "this": "{that}.slider",
-                "method": "bind",
-                "args": ["slide", "{that}.setModel"]
-            },
-            "onCreate.initRangeInputAria": {
+            "onCreate.initSliderAttributes": {
                 "this": "{that}.dom.rangeInput",
                 method: "attr",
                 args: [{
-                    role: "slider",
-                    "aria-valuenow": "{that}.combinedSliderOptions.value",
-                    "aria-valuemin": "{that}.combinedSliderOptions.min",
-                    "aria-valuemax": "{that}.combinedSliderOptions.max"
+                    "value": "{that}.model.value",
+                    "min": "{that}.combinedSliderOptions.min",
+                    "max": "{that}.combinedSliderOptions.max",
+                    "step": "{that}.combinedSliderOptions.step",
+                    "type": "range"
                 }]
             },
-            "onCreate.bindRangeInputEvt": {
-                "this": "{that}.rangeInput",
+            "onCreate.bindSlideEvt": {
+                "this": "{that}.dom.rangeInput",
                 "method": "on",
-                "args": ["input", "{that}.setModelFromRangeInput"]
+                "args": ["input", "{that}.setModel"]
             },
             "onCreate.bindRangeChangeEvt": {
-                "this": "{that}.rangeInput",
+                "this": "{that}.dom.rangeInput",
                 "method": "on",
-                "args": ["change", "{that}.setModelFromRangeInput"]
+                "args": ["change", "{that}.setModel"]
             }
         },
         modelListeners: {
             "value": [{
                 listener: "{that}.setSliderValue",
-                args: ["{change}.value"]
-            }, {
-                listener: "{that}.setSliderAria",
-                args: ["{change}.value"]
-            }, {
-                listener: "{that}.setRangeInputValue",
-                args: ["{change}.value"]
-            }, {
-                listener: "{that}.setRangeInputAria",
                 args: ["{change}.value"]
             }]
         }
@@ -226,6 +175,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.slider.combineSliderOptions = function (sliderOptions, model, range) {
         return $.extend(true, {}, sliderOptions, model, range);
+    };
+
+    fluid.slider.appendRangeInput = function (that) {
+        var sliderSelector = that.options.selectors.rangeInput.slice(1);
+        var sliderMarkup = "<input class=\"" + sliderSelector + "\" type=\"range\">";
+
+        return that.container.append(sliderMarkup);
     };
 
     fluid.slider.setModelFromRangeInput = function (that) {

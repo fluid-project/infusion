@@ -28,35 +28,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.test("Test Init", function () {
             jqUnit.expect(8);
             var textfieldSlider = fluid.tests.textfieldSlider.createTextfieldSlider({model: {value: 15}});
-            jqUnit.assertEquals("Slider value is set to input value", 15, $(".flc-textfieldSlider-slider").slider("value"));
+            jqUnit.assertEquals("Slider value is set to input value", 15, +$(".flc-textfieldSlider-rangeInput").val());
             jqUnit.assertEquals("Textfield value is set", 15, +$(".flc-textfieldSlider-field").val());
             jqUnit.assertEquals("The model should be set", 15, textfieldSlider.model.value);
             jqUnit.assertEquals("Min should be the default", 0, textfieldSlider.options.range.min);
             jqUnit.assertEquals("Max should be the default", 100, textfieldSlider.options.range.max);
 
-            // Check ARIA defaults
-            var thumb = $(".ui-slider-handle");
-            jqUnit.assertEquals("The ARIA value now should be 15", 15, +thumb.attr("aria-valuenow"));
-            jqUnit.assertEquals("The ARIA max should be 100", 100, +thumb.attr("aria-valuemax"));
-            jqUnit.assertEquals("The ARIA min should be 0", 0, +thumb.attr("aria-valuemin"));
+            // Check range slider attributes
+            var slider = $(".flc-textfieldSlider-rangeInput");
+            jqUnit.assertEquals("The value now should be 15", 15, +slider.attr("value"));
+            jqUnit.assertEquals("The max should be 100", 100, +slider.attr("max"));
+            jqUnit.assertEquals("The min should be 0", 0, +slider.attr("min"));
         });
 
         fluid.tests.textfieldSlider.testInputField = function (valToTest, expected) {
-            var slider = $(".flc-textfieldSlider-slider");
+
+            var slider = $(".flc-textfieldSlider-rangeInput");
             var textfield = $(".flc-textfieldSlider-field");
-            var thumb = $(".ui-slider-handle");
 
             fluid.changeElementValue(textfield, valToTest);
+
             jqUnit.assertEquals("Textfield value should be the " + expected, expected, +textfield.val());
-            jqUnit.assertEquals("The ARIA value now should be " + expected, expected, +thumb.attr("aria-valuenow"));
-            jqUnit.assertEquals("Slider value should be " + expected, expected, +slider.slider("value"));
+
+            jqUnit.assertEquals("Slider value should be " + expected, expected, +slider.val());
         };
 
         fluid.tests.textfieldSlider.testSlider = function (valToTest, expected) {
-            var slider = $(".flc-textfieldSlider-slider");
+            var slider = $(".flc-textfieldSlider-rangeInput");
 
-            slider.slider("value", valToTest);
-            jqUnit.assertEquals("Slider value should be " + expected, expected, slider.slider("value"));
+            slider.val(valToTest);
+            jqUnit.assertEquals("Slider value should be " + expected, expected, +slider.val());
         };
 
         fluid.tests.textfieldSlider.testAll = function (valToTest, expected) {
@@ -65,7 +66,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         jqUnit.test("Test Min/Max Size", function () {
-            jqUnit.expect(24);
+            jqUnit.expect(18);
 
             var that = fluid.tests.textfieldSlider.createTextfieldSlider({range: {min: 5, max: 55}});
             fluid.tests.textfieldSlider.testAll(56, 55, that);
@@ -77,7 +78,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.test("Test Negative Scale", function () {
-            jqUnit.expect(20);
+            jqUnit.expect(15);
 
             fluid.tests.textfieldSlider.createTextfieldSlider({range: {min: -15, max: -5}});
             fluid.tests.textfieldSlider.testAll(56, -5);
@@ -88,7 +89,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.test("Test Invalid Values", function () {
-            jqUnit.expect(6);
+            jqUnit.expect(4);
 
             fluid.tests.textfieldSlider.createTextfieldSlider({
                 range: {
