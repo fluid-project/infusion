@@ -123,19 +123,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     funcName: "fluid.slider.combineSliderOptions",
                     args: ["{that}.options.sliderOptions", "{that}.options.range"]
                 }
-            },
-            slider: {
-                expander: {
-                    funcName: "fluid.slider.appendRangeInput",
-                    args: ["{that}"]
-                }
             }
         },
         invokers: {
             setSliderValue: {
-                "this": "{that}.slider",
-                "method": "val",
-                args: ["{arguments}.0"]
+                funcName: "fluid.slider.setSliderValue",
+                args: ["{that}", "{arguments}.0"]
             },
             setModel: {
                 funcName: "fluid.slider.setModelFromRangeInput",
@@ -143,6 +136,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
         },
         listeners: {
+            "onCreate.appendRangeInput": {
+                funcName: "fluid.slider.appendRangeInput",
+                args: ["{that}"],
+                priority: "first"
+            },
             "onCreate.initSliderAttributes": {
                 "this": "{that}.dom.rangeInput",
                 method: "attr",
@@ -180,14 +178,18 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.slider.appendRangeInput = function (that) {
         var sliderSelector = that.options.selectors.rangeInput.slice(1);
         var sliderMarkup = "<input class=\"" + sliderSelector + "\" type=\"range\">";
-
-        return that.container.append(sliderMarkup);
+        that.container.append(sliderMarkup);
     };
 
     fluid.slider.setModelFromRangeInput = function (that) {
         var rangeInput = that.locate("rangeInput");
         var newValue = rangeInput.val();
         that.applier.change("value", newValue);
+    };
+
+    fluid.slider.setSliderValue = function (that, newValue) {
+        var rangeInput = that.locate("rangeInput");
+        rangeInput.val(newValue);
     };
 
 })(jQuery, fluid_2_0_0);

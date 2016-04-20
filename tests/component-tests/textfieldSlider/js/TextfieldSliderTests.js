@@ -56,7 +56,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.textfieldSlider.testSlider = function (valToTest, expected) {
             var slider = $(".flc-textfieldSlider-rangeInput");
 
-            slider.val(valToTest);
+            fluid.changeElementValue(slider, valToTest);
             jqUnit.assertEquals("Slider value should be " + expected, expected, +slider.val());
         };
 
@@ -91,7 +91,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.test("Test Invalid Values", function () {
             jqUnit.expect(4);
 
-            fluid.tests.textfieldSlider.createTextfieldSlider({
+            var textFieldSlider = fluid.tests.textfieldSlider.createTextfieldSlider({
                 range: {
                     min: -5,
                     max: 5
@@ -102,6 +102,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
             fluid.tests.textfieldSlider.testInputField("aaa", 1);
             fluid.tests.textfieldSlider.testInputField(null, 0);
+
         });
     });
 })(jQuery);
