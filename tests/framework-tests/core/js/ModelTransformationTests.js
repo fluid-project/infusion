@@ -881,50 +881,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
-    var arrayValueTests = [{
-        message: "arrayValue() should box a non-array value up as one.",
-        transformWrap: true,
-        transform: {
-            type: "fluid.transforms.arrayValue",
-            inputPath: "cat"
-        },
-        expected: [fluid.tests.transforms.source.cat]
-    }, {
-        message: "arrayValue() should not box up an array value.",
-        transformWrap: true,
-        transform: {
-            type: "fluid.transforms.arrayValue",
-            inputPath: "sheep"
-        },
-        expected: fluid.tests.transforms.source.sheep
-    }, {
-        message: "FLUID-5248: arrayValue() with a nested transformation",
-        transformWrap: false,
-        transform: {
-            "b": {
-                "transform": {
-                    "type": "fluid.transforms.arrayValue",
-                    "input": {
-                        "transform": {
-                            "type": "fluid.transforms.linearScale",
-                            "input": 5,
-                            "factor": 0.1
-                        }
-                    }
-                }
-            }
-        },
-        expected: {
-            "b": [0.5]
-        }
-    }];
-
-    jqUnit.test("fluid.transforms.arrayValue()", function () {
-        fluid.tests.transforms.testOneStructure(arrayValueTests, {
-            method: "assertDeepEq"
-        });
-    });
-
     var stringToNumberTests = [{
         message: "stringToNumber() converts integers.",
         transformWrap: true,

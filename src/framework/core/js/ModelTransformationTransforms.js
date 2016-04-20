@@ -52,13 +52,6 @@ var fluid = fluid || fluid_2_0_0;
     };
 
 
-    fluid.defaults("fluid.transforms.arrayValue", {
-        gradeNames: "fluid.standardTransformFunction"
-    });
-
-    fluid.transforms.arrayValue = fluid.makeArray;
-
-
     fluid.defaults("fluid.transforms.stringToNumber", {
         gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
         invertConfiguration: "fluid.transforms.stringToNumber.invert"
