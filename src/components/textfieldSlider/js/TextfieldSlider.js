@@ -126,10 +126,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
         },
         invokers: {
-            setSliderValue: {
-                funcName: "fluid.slider.setSliderValue",
-                args: ["{that}", "{arguments}.0"]
-            },
             setModel: {
                 funcName: "fluid.slider.setModelFromRangeInput",
                 args: ["{that}"]
@@ -165,7 +161,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         },
         modelListeners: {
             "value": [{
-                listener: "{that}.setSliderValue",
+                "this": "{that}.dom.rangeInput",
+                "method": "val",
                 args: ["{change}.value"]
             }]
         }
@@ -185,11 +182,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var rangeInput = that.locate("rangeInput");
         var newValue = rangeInput.val();
         that.applier.change("value", newValue);
-    };
-
-    fluid.slider.setSliderValue = function (that, newValue) {
-        var rangeInput = that.locate("rangeInput");
-        rangeInput.val(newValue);
     };
 
 })(jQuery, fluid_2_0_0);
