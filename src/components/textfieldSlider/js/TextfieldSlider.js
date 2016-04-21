@@ -129,8 +129,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         },
         invokers: {
             setModel: {
-                funcName: "fluid.slider.setModelFromRangeInput",
-                args: ["{that}"]
+                changePath: "value",
+                value: {
+                    expander: {
+                        "this": "{that}.dom.rangeInput",
+                        "method": "val"
+                    }
+                }
             }
         },
         listeners: {
@@ -178,12 +183,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var sliderClasses = that.options.styles.rangeInput;
         var sliderMarkup = "<input class=\"" + sliderClasses + "\" type=\"range\">";
         that.container.append(sliderMarkup);
-    };
-
-    fluid.slider.setModelFromRangeInput = function (that) {
-        var rangeInput = that.locate("rangeInput");
-        var newValue = rangeInput.val();
-        that.applier.change("value", newValue);
     };
 
 })(jQuery, fluid_2_0_0);
