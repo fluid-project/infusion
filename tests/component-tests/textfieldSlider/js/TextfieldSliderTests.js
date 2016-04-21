@@ -28,14 +28,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.test("Test Init", function () {
             jqUnit.expect(8);
             var textfieldSlider = fluid.tests.textfieldSlider.createTextfieldSlider({model: {value: 15}});
-            jqUnit.assertEquals("Slider value is set to input value", 15, +$(".flc-textfieldSlider-rangeInput").val());
+            jqUnit.assertEquals("Slider value is set to input value", 15, +$(".flc-slider-rangeInput").val());
             jqUnit.assertEquals("Textfield value is set", 15, +$(".flc-textfieldSlider-field").val());
             jqUnit.assertEquals("The model should be set", 15, textfieldSlider.model.value);
             jqUnit.assertEquals("Min should be the default", 0, textfieldSlider.options.range.min);
             jqUnit.assertEquals("Max should be the default", 100, textfieldSlider.options.range.max);
 
             // Check range slider attributes
-            var slider = $(".flc-textfieldSlider-rangeInput");
+            var slider = $(".flc-slider-rangeInput");
             jqUnit.assertEquals("The value now should be 15", 15, +slider.attr("value"));
             jqUnit.assertEquals("The max should be 100", 100, +slider.attr("max"));
             jqUnit.assertEquals("The min should be 0", 0, +slider.attr("min"));
@@ -43,7 +43,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         fluid.tests.textfieldSlider.testInputField = function (valToTest, expected) {
 
-            var slider = $(".flc-textfieldSlider-rangeInput");
+            var slider = $(".flc-slider-rangeInput");
             var textfield = $(".flc-textfieldSlider-field");
 
             fluid.changeElementValue(textfield, valToTest);
@@ -54,7 +54,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         fluid.tests.textfieldSlider.testSlider = function (valToTest, expected) {
-            var slider = $(".flc-textfieldSlider-rangeInput");
+            var slider = $(".flc-slider-rangeInput");
 
             fluid.changeElementValue(slider, valToTest);
             jqUnit.assertEquals("Slider value should be " + expected, expected, +slider.val());

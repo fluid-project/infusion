@@ -114,8 +114,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         gradeNames: ["fluid.viewComponent"],
         range: {}, // should be used to specify the min, max range e.g. {min: 0, max: 100}
         selectors: {
-            thumb: ".ui-slider-handle",
-            rangeInput: ".flc-textfieldSlider-rangeInput"
+            rangeInput: ".flc-slider-rangeInput"
+        },
+        styles: {
+            rangeInput: "flc-slider-rangeInput fl-slider-rangeInput"
         },
         members: {
             combinedSliderOptions: {
@@ -173,8 +175,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.slider.appendRangeInput = function (that) {
-        var sliderSelector = that.options.selectors.rangeInput.slice(1);
-        var sliderMarkup = "<input class=\"" + sliderSelector + "\" type=\"range\">";
+        var sliderClasses = that.options.styles.rangeInput;
+        var sliderMarkup = "<input class=\"" + sliderClasses + "\" type=\"range\">";
         that.container.append(sliderMarkup);
     };
 
