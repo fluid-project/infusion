@@ -186,14 +186,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         var tooltipTest = function (location) {
-            return function (idx, linkEl) {
+            return function (index, linkEl) {
                 var linkId = linkEl.id;
                 var link = $(linkEl);
+                var linkNumber = index + 1;
                 sequence.push({
                     element: link,
                     jQueryTrigger: "focus"
                 });
-                assertVisibleTips("The tooltip for page link " + (idx + 1) + ", in the " + location + " page bar is visible", [linkId]);
+                assertVisibleTips("The tooltip for page link " + linkNumber + ", in the " + location + " page bar is visible", [linkId]);
                 sequence.push({
                     element: link,
                     jQueryTrigger: "blur"
