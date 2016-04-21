@@ -614,7 +614,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             rawDynamic: []
         };
         fluid.each(shadow.mergeOptions.mergeBlocks, function (block) { // acquire parents of earlier blocks before applying later ones
-            gradeNames.push.apply(gradeNames, fluid.makeArray(block.source && block.source.gradeNames));
+            gradeNames.push.apply(gradeNames, fluid.makeArray(block.target && block.target.gradeNames));
             fluid.applyDynamicGrades(rec);
         });
         fluid.collectDistributedGrades(rec);

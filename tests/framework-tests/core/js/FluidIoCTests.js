@@ -3011,6 +3011,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertTrue("Grade name transmitted via arguments", fluid.componentHasGrade(first, "fluid.tests.fluid5022Grade"));
         jqUnit.assertEquals("Second component source transmitted: ", 3, head["dynamic-1"].options.source);
     });
+    
+    /** FLUID-5893 - Dynamic components with grades sourced from single reference **/
+    
+    fluid.defaults("fluid.tests.fluid5893root", {
+        gradeNames: "fluid.component",
+        events: {
+            createIt: null
+        },
+        dynamicComponents: {
+            dynamic: {
+                createOnEvent: "createIt",
+                type: "fluid.component",
+                options: "{arguments}.0"
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-5893: Dynamic component creation with grades sourced from single reference", function () {
+        var that = fluid.tests.fluid5893root();
+        that.events.createIt.fire({gradeNames: "fluid.resolveRoot"});
+        jqUnit.assertTrue("Dynamic grade applied to dynamic component", fluid.componentHasGrade(that.dynamic, "fluid.resolveRoot"));
+    });
 
     /** FLUID-5029 - Child selector ">" in IoCSS selector should not select an indirect child **/
 
