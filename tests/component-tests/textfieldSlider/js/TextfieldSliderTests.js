@@ -1,6 +1,6 @@
 /*
 Copyright 2009 University of Toronto
-Copyright 2011 OCAD University
+Copyright 2011-2016 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -27,23 +27,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.test("Test Init", function () {
             jqUnit.expect(8);
-            var textfieldSlider = fluid.tests.textfieldSlider.createTextfieldSlider({model: {value: 15}});
-            jqUnit.assertEquals("Slider value is set to input value", 15, +$(".flc-slider-rangeInput").val());
+            var that = fluid.tests.textfieldSlider.createTextfieldSlider({model: {value: 15}});
+
+            var slider = that.slider.locate("rangeInput");
+
+            jqUnit.assertEquals("Slider value is set to input value", 15, +slider.val());
             jqUnit.assertEquals("Textfield value is set", 15, +$(".flc-textfieldSlider-field").val());
-            jqUnit.assertEquals("The model should be set", 15, textfieldSlider.model.value);
-            jqUnit.assertEquals("Min should be the default", 0, textfieldSlider.options.range.min);
-            jqUnit.assertEquals("Max should be the default", 100, textfieldSlider.options.range.max);
+            jqUnit.assertEquals("The model should be set", 15, that.model.value);
+            jqUnit.assertEquals("Min should be the default", 0, that.options.range.min);
+            jqUnit.assertEquals("Max should be the default", 100, that.options.range.max);
 
             // Check range slider attributes
-            var slider = $(".flc-slider-rangeInput");
-            jqUnit.assertEquals("The value now should be 15", 15, +slider.attr("value"));
+            jqUnit.assertEquals("The value now should be 15", 15, +slider.val());
             jqUnit.assertEquals("The max should be 100", 100, +slider.attr("max"));
             jqUnit.assertEquals("The min should be 0", 0, +slider.attr("min"));
         });
 
-        fluid.tests.textfieldSlider.testInputField = function (valToTest, expected) {
+        fluid.tests.textfieldSlider.testInputField = function (valToTest, expected, that) {
 
-            var slider = $(".flc-slider-rangeInput");
+            var slider = that.slider.locate("rangeInput");
             var textfield = $(".flc-textfieldSlider-field");
 
             fluid.changeElementValue(textfield, valToTest);
@@ -53,16 +55,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Slider value should be " + expected, expected, +slider.val());
         };
 
-        fluid.tests.textfieldSlider.testSlider = function (valToTest, expected) {
-            var slider = $(".flc-slider-rangeInput");
+        fluid.tests.textfieldSlider.testSlider = function (valToTest, expected, that) {
+            var slider = that.slider.locate("rangeInput");
 
             fluid.changeElementValue(slider, valToTest);
             jqUnit.assertEquals("Slider value should be " + expected, expected, +slider.val());
         };
 
-        fluid.tests.textfieldSlider.testAll = function (valToTest, expected) {
-            fluid.tests.textfieldSlider.testSlider(valToTest, expected);
-            fluid.tests.textfieldSlider.testInputField(valToTest, expected);
+        fluid.tests.textfieldSlider.testAll = function (valToTest, expected, that) {
+            fluid.tests.textfieldSlider.testSlider(valToTest, expected, that);
+            fluid.tests.textfieldSlider.testInputField(valToTest, expected, that);
         };
 
         jqUnit.test("Test Min/Max Size", function () {
@@ -80,18 +82,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.test("Test Negative Scale", function () {
             jqUnit.expect(15);
 
-            fluid.tests.textfieldSlider.createTextfieldSlider({range: {min: -15, max: -5}});
-            fluid.tests.textfieldSlider.testAll(56, -5);
-            fluid.tests.textfieldSlider.testAll(-10, -10);
-            fluid.tests.textfieldSlider.testAll(-16, -15);
-            fluid.tests.textfieldSlider.testAll(-15, -15);
-            fluid.tests.textfieldSlider.testAll(-5, -5);
+            var that = fluid.tests.textfieldSlider.createTextfieldSlider({range: {min: -15, max: -5}});
+            fluid.tests.textfieldSlider.testAll(56, -5, that);
+            fluid.tests.textfieldSlider.testAll(-10, -10, that);
+            fluid.tests.textfieldSlider.testAll(-16, -15, that);
+            fluid.tests.textfieldSlider.testAll(-15, -15, that);
+            fluid.tests.textfieldSlider.testAll(-5, -5, that);
         });
 
         jqUnit.test("Test Invalid Values", function () {
             jqUnit.expect(4);
 
-            var textFieldSlider = fluid.tests.textfieldSlider.createTextfieldSlider({
+            var that = fluid.tests.textfieldSlider.createTextfieldSlider({
                 range: {
                     min: -5,
                     max: 5
@@ -100,8 +102,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     value: 1
                 }
             });
-            fluid.tests.textfieldSlider.testInputField("aaa", 1);
-            fluid.tests.textfieldSlider.testInputField(null, 0);
+            fluid.tests.textfieldSlider.testInputField("aaa", 1, that);
+            fluid.tests.textfieldSlider.testInputField(null, 0, that);
 
         });
     });
