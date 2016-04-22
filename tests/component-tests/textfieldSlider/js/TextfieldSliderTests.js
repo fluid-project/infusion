@@ -29,7 +29,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.expect(8);
             var that = fluid.tests.textfieldSlider.createTextfieldSlider({model: {value: 15}});
 
-            var slider = that.slider.locate("rangeInput");
+            var slider = that.locate("slider");
 
             jqUnit.assertEquals("Slider value is set to input value", 15, +slider.val());
             jqUnit.assertEquals("Textfield value is set", 15, +$(".flc-textfieldSlider-field").val());
@@ -45,7 +45,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         fluid.tests.textfieldSlider.testInputField = function (valToTest, expected, that) {
 
-            var slider = that.slider.locate("rangeInput");
+            var slider = that.locate("slider");
             var textfield = $(".flc-textfieldSlider-field");
 
             fluid.changeElementValue(textfield, valToTest);
@@ -56,7 +56,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         fluid.tests.textfieldSlider.testSlider = function (valToTest, expected, that) {
-            var slider = that.slider.locate("rangeInput");
+            var slider = that.locate("slider");
 
             fluid.changeElementValue(slider, valToTest);
             jqUnit.assertEquals("Slider value should be " + expected, expected, +slider.val());

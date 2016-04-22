@@ -116,9 +116,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         selectors: {
             rangeInput: ".flc-slider-rangeInput"
         },
-        styles: {
-            rangeInput: "flc-slider-rangeInput fl-slider-rangeInput"
-        },
         members: {
             combinedSliderOptions: {
                 expander: {
@@ -132,20 +129,15 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 changePath: "value",
                 value: {
                     expander: {
-                        "this": "{that}.dom.rangeInput",
+                        "this": "{that}.container",
                         "method": "val"
                     }
                 }
             }
         },
         listeners: {
-            "onCreate.appendRangeInput": {
-                funcName: "fluid.slider.appendRangeInput",
-                args: ["{that}"],
-                priority: "first"
-            },
             "onCreate.initSliderAttributes": {
-                "this": "{that}.dom.rangeInput",
+                "this": "{that}.container",
                 method: "attr",
                 args: [{
                     "value": "{that}.model.value",
@@ -156,33 +148,32 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 }]
             },
             "onCreate.bindSlideEvt": {
-                "this": "{that}.dom.rangeInput",
+                "this": "{that}.container",
                 "method": "on",
                 "args": ["input", "{that}.setModel"]
             },
             "onCreate.bindRangeChangeEvt": {
-                "this": "{that}.dom.rangeInput",
+                "this": "{that}.container",
                 "method": "on",
                 "args": ["change", "{that}.setModel"]
             }
         },
         modelListeners: {
             "value": [{
-                "this": "{that}.dom.rangeInput",
+                "this": "{that}.container",
                 "method": "val",
-                args: ["{change}.value"]
+                args: ["{change}.value"],
+                // If we don't exclude init, the value can get
+                // set before onCreate.initSliderAttributes
+                // sets min / max / step, which messes up the
+                // initial slider rendering                
+                excludeSource: "init"
             }]
         }
     });
 
     fluid.slider.combineSliderOptions = function (sliderOptions, model, range) {
         return $.extend(true, {}, sliderOptions, model, range);
-    };
-
-    fluid.slider.appendRangeInput = function (that) {
-        var sliderClasses = that.options.styles.rangeInput;
-        var sliderMarkup = "<input class=\"" + sliderClasses + "\" type=\"range\">";
-        that.container.append(sliderMarkup);
     };
 
 })(jQuery, fluid_2_0_0);
