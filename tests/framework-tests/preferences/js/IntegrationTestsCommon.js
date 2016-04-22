@@ -20,7 +20,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.prefs.bwSkin = {
         preferences: {
-            textSize: "1.8",
+            textSize: 1.8,
             textFont: "verdana",
             theme: "bw",
             lineSpace: 2
@@ -29,7 +29,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.prefs.ybSkin = {
         preferences: {
-            textSize: "2",
+            textSize: 2,
             textFont: "comic sans",
             theme: "yb",
             lineSpace: 1.5

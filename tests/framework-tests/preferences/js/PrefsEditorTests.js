@@ -150,7 +150,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.prefs.models.bwSkin = {
         preferences: {
-            textSize: "1.8",
+            textSize: 1.8,
             textFont: "verdana",
             theme: "bw",
             lineSpace: 2
@@ -159,7 +159,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.prefs.models.bwSkin2 = {
         preferences: {
-            textSize: "1.1",
+            textSize: 1.1,
             textFont: "italic",
             theme: "cw",
             lineSpace: 1
@@ -276,7 +276,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     preferences: {
                         lineSpace: 2,
                         textFont: "verdana",
-                        textSize: "1.8",
+                        textSize: 1.8,
                         theme: "bw"
                     }
                 }
