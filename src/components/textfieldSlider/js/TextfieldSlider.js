@@ -124,6 +124,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 }
             }
         },
+        modelRelay: {
+            target: "value",
+            singleTransform: {
+                type: "fluid.transforms.stringToNumber",
+                input: "{that}.model.value"
+            }
+        },
         invokers: {
             setModel: {
                 changePath: "value",
@@ -166,7 +173,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 // If we don't exclude init, the value can get
                 // set before onCreate.initSliderAttributes
                 // sets min / max / step, which messes up the
-                // initial slider rendering                
+                // initial slider rendering
                 excludeSource: "init"
             }]
         }
