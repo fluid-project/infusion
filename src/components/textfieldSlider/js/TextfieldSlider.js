@@ -30,7 +30,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 }
             },
             slider: {
-                type: "fluid.slider",
+                type: "fluid.slider.native",
                 container: "{textfieldSlider}.dom.slider",
                 options: {
                     model: "{fluid.textfieldSlider}.model",
@@ -62,6 +62,15 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         sliderOptions: {
             orientation: "horizontal",
             step: 1.0
+        }
+    });
+
+    fluid.defaults("fluid.textfieldSliderJQuery", {
+        gradeNames: ["fluid.textfieldSlider"],
+        components: {
+            slider: {
+                type: "fluid.slider.jQuery"
+            }
         }
     });
 
@@ -110,7 +119,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    fluid.defaults("fluid.slider", {
+    fluid.defaults("fluid.slider.native", {
         gradeNames: ["fluid.viewComponent"],
         range: {}, // should be used to specify the min, max range e.g. {min: 0, max: 100}
         members: {
@@ -175,6 +184,72 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }]
         }
     });
+
+    fluid.defaults("fluid.slider.jQuery", {
+            gradeNames: ["fluid.viewComponent"],
+            range: {}, // should be used to specify the min, max range e.g. {min: 0, max: 100}
+            selectors: {
+                thumb: ".ui-slider-handle"
+            },
+            members: {
+                combinedSliderOptions: {
+                    expander: {
+                        funcName: "fluid.slider.combineSliderOptions",
+                        args: ["{that}.options.sliderOptions", "{that}.options.range"]
+                    }
+                },
+                slider: {
+                    expander: {
+                        "this": "{that}.container",
+                        method: "slider",
+                        args: ["{that}.combinedSliderOptions"]
+                    }
+                }
+            },
+            invokers: {
+                setSliderValue: {
+                    "this": "{that}.slider",
+                    "method": "slider",
+                    args: ["value", "{arguments}.0"]
+                },
+                setSliderAria: {
+                    "this": "{that}.dom.thumb",
+                    "method": "attr",
+                    args: ["aria-valuenow", "{arguments}.0"]
+                },
+                setModel: {
+                    changePath: "value",
+                    value: "{arguments}.1.value"
+                }
+            },
+            listeners: {
+                // This can be removed once the jQuery UI slider has built in ARIA
+                "onCreate.initSliderAria": {
+                    "this": "{that}.dom.thumb",
+                    method: "attr",
+                    args: [{
+                        role: "slider",
+                        "aria-valuenow": "{that}.combinedSliderOptions.value",
+                        "aria-valuemin": "{that}.combinedSliderOptions.min",
+                        "aria-valuemax": "{that}.combinedSliderOptions.max"
+                    }]
+                },
+                "onCreate.bindSlideEvt": {
+                    "this": "{that}.slider",
+                    "method": "bind",
+                    "args": ["slide", "{that}.setModel"]
+                }
+            },
+            modelListeners: {
+                "value": [{
+                    listener: "{that}.setSliderValue",
+                    args: ["{change}.value"]
+                }, {
+                    listener: "{that}.setSliderAria",
+                    args: ["{change}.value"]
+                }]
+            }
+        });
 
     fluid.slider.combineSliderOptions = function (sliderOptions, model, range) {
         return $.extend(true, {}, sliderOptions, model, range);
