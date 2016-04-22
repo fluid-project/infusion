@@ -113,9 +113,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.defaults("fluid.slider", {
         gradeNames: ["fluid.viewComponent"],
         range: {}, // should be used to specify the min, max range e.g. {min: 0, max: 100}
-        selectors: {
-            rangeInput: ".flc-slider-rangeInput"
-        },
         members: {
             combinedSliderOptions: {
                 expander: {
