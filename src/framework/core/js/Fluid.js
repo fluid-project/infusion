@@ -1379,9 +1379,8 @@ var fluid = fluid || fluid_2_0_0;
                     listener = record.listener;
                     namespace = record.namespace;
                     priority = record.priority;
+                    softNamespace = record.softNamespace;
                     listenerId = record.listenerId;
-                } else {
-                    record = {};
                 }
                 if (typeof(listener) === "string") {
                     listener = {globalName: listener};
