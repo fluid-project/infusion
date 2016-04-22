@@ -882,10 +882,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     resourceText: "<ul><li class=\"flc-tests-panel-slider1\"></li><li class=\"flc-tests-panel-slider2\"></li></ul>"
                 },
                 slider1: {
-                    resourceText: "<div class=\"flc-prefsEditor-min-val\"><div class=\"flc-textfieldSlider-slider\"></div><input id=\"min-val\" class=\"flc-textfieldSlider-field\" type=\"text\" /><span class=\"flc-prefsEditor-multiplier\"></span></div>"
+                    resourceText: "<div class=\"flc-prefsEditor-min-val\"><input class=\"flc-textfieldSlider-slider\" /><input id=\"min-val\" class=\"flc-textfieldSlider-field\" type=\"text\" /><span class=\"flc-prefsEditor-multiplier\"></span></div>"
                 },
                 slider2: {
-                    resourceText: "<div class=\"flc-prefsEditor-min-val\"><div class=\"flc-textfieldSlider-slider\"></div><input id=\"min-val\" class=\"flc-textfieldSlider-field\" type=\"text\" /><span class=\"flc-prefsEditor-multiplier\"></span></div>"
+                    resourceText: "<div class=\"flc-prefsEditor-min-val\"><input class=\"flc-textfieldSlider-slider\" /><input id=\"min-val\" class=\"flc-textfieldSlider-field\" type=\"text\" /><span class=\"flc-prefsEditor-multiplier\"></span></div>"
                 }
             }
         });
@@ -898,14 +898,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // the renderer decorator component which isn't a panel
         that.refreshView();
 
-        jqUnit.assert("The initial state with the min value for slider1 has been set properly", 0, $(".flc-tests-panel-slider1 .flc-textfieldSlider-slider").slider("value"));
-        jqUnit.assert("The initial state with the min value for slider2 has been set properly", 1, $(".flc-tests-panel-slider2 .flc-textfieldSlider-slider").slider("value"));
+        jqUnit.assert("The initial state with the min value for slider1 has been set properly", 0, $(".flc-tests-panel-slider1 .flc-textfieldSlider-slider").val());
+        jqUnit.assert("The initial state with the min value for slider2 has been set properly", 1, $(".flc-tests-panel-slider2 .flc-textfieldSlider-slider").val());
 
         that.slider1.applier.change("value", 100);
         that.slider2.applier.change("value", 100);
         that.refreshView();
-        jqUnit.assert("The max value for slider1 has been set properly", 10, $(".flc-tests-panel-slider1 .flc-textfieldSlider-slider").slider("value"));
-        jqUnit.assert("The max value for slider2 has been set properly", 100, $(".flc-tests-panel-slider2 .flc-textfieldSlider-slider").slider("value"));
+        jqUnit.assert("The max value for slider1 has been set properly", 10, $(".flc-tests-panel-slider1 .flc-textfieldSlider-slider").val());
+        jqUnit.assert("The max value for slider2 has been set properly", 100, $(".flc-tests-panel-slider2 .flc-textfieldSlider-slider").val());
     });
 
     /* end FLUID-5203 */
