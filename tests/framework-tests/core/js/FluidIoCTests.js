@@ -702,6 +702,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertLeftHand("Merged grades in correct left-to-right order with direct grade arguments", expected, merged2.options);
     });
     
+    /** FLUID-5800 - grade hierarchy resolution algorithm **/
+
     fluid.defaults("fluid.tests.FLUID5800base", {
         events: {
             onUserToken: null
@@ -720,7 +722,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             getDeviceContext: "fluid.tests.fluid5800count"
         }
     });
-    
+
     fluid.tests.fluid5800count = function (that) {
         ++ that.eventCount;
     };
@@ -731,11 +733,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             onUserToken: "{that}.getDeviceContext"
         }
     });
-    
+
     fluid.defaults("fluid.tests.FLUID5800", {
         gradeNames: ["fluid.component", "fluid.tests.FLUID5800mid"]
     });
-    
+
     jqUnit.test("FLUID-5800 merge corruption", function () {
         jqUnit.expect(2);
 
@@ -749,7 +751,40 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // jqUnit.assertEquals("Listeners were designated correctly in abstract grade", 3, midDefaults.listeners.onUserToken.length);
     });
 
-    
+    fluid.defaults("fluid.tests.FLUID5800base2", {
+        gradeNames: "fluid.component",
+        members: {
+            expanderCount: 0
+        },
+        mergePolicy: {
+            expanderOption: fluid.arrayConcatPolicy
+        },
+        expanderOption: "@expand:fluid.tests.FLUID5800expand({that}, {that}.expanderCount)"
+    });
+
+    fluid.defaults("fluid.tests.FLUID5800mid2", {
+        gradeNames: "fluid.tests.FLUID5800base2"
+    });
+
+    fluid.defaults("fluid.tests.FLUID5800mid3", {
+        gradeNames: "fluid.tests.FLUID5800base2"
+    });
+    // NB this grade just here for reference purposes, not used in test
+    fluid.defaults("fluid.tests.FLUID5800leaf", {
+        gradeNames: ["fluid.tests.FLUID5800mid2", "fluid.tests.FLUID5800mid3"]
+    });
+
+    fluid.tests.FLUID5800expand = function (that) {
+        return that.expanderCount++;
+    };
+
+    jqUnit.test("FLUID-5800 repeated expander evaluation", function () {
+        // Note that, obnoxiously, this failure cannot be observed via fluid.tests.FLUID5800leaf since defaults really DO just accumulate
+        // non-accumulatively
+        var that = fluid.tests.FLUID5800mid2({gradeNames: "fluid.tests.FLUID5800mid3"});
+        jqUnit.assertEquals("Expander evaluated only once", 1, that.expanderCount);
+    });
+
     /** FLUID-5615: Base grades of subcomponents should be weaker than dynamic **/
     
     fluid.defaults("fluid.tests.FLUID5615sub", {

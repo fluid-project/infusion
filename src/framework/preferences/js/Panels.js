@@ -281,8 +281,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * Only use in cases where the instatiated component cannot be used.
      */
     fluid.prefs.compositePanel.prefetchComponentOptions = function (type, options) {
-        var baseOptions = fluid.getGradedDefaults(type, fluid.get(options, "gradeNames"));
-        return fluid.merge(baseOptions.mergePolicy, baseOptions, options);
+        var baseOptions = fluid.getMergedDefaults(type, fluid.get(options, "gradeNames"));
+        // TODO: awkwardly, fluid.merge is destructive on each argument!
+        return fluid.merge(baseOptions.mergePolicy, fluid.copy(baseOptions), options);
     };
     /*
      * Should only be used when fluid.prefs.compositePanel.isActivatePanel cannot.

@@ -557,8 +557,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     // Apply a batch of freshly acquired plain dynamic grades to the target component and recompute its options
     fluid.applyDynamicGrades = function (rec) {
         rec.oldGradeNames = fluid.makeArray(rec.gradeNames);
-        // Note that this crude algorithm doesn't allow us to determine which grades are "new" and which not (requires C3-like approach overall)
-        var newDefaults = fluid.copy(fluid.getGradedDefaults(rec.that.typeName, rec.gradeNames));
+        // Note that this crude algorithm doesn't allow us to determine which grades are "new" and which not // TODO: can no longer interpret comment
+        var newDefaults = fluid.copy(fluid.getMergedDefaults(rec.that.typeName, rec.gradeNames));
         rec.gradeNames.length = 0; // acquire derivatives of dynamic grades (FLUID-5054)
         rec.gradeNames.push.apply(rec.gradeNames, newDefaults.gradeNames);
         
@@ -599,7 +599,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.computeDynamicGrades = function (that, shadow, strategy) {
         delete that.options.gradeNames; // Recompute gradeNames for FLUID-5012 and others
-        var gradeNames = fluid.driveStrategy(that.options, "gradeNames", strategy); // Just acquire the reference, contents are wrong
+        var gradeNames = fluid.driveStrategy(that.options, "gradeNames", strategy); // Just acquire the reference and force eval of mergeBlocks "target", contents are wrong
         gradeNames.length = 0;
         // TODO: In complex distribution cases, a component might end up with multiple default blocks
         var defaultsBlock = fluid.findMergeBlocks(shadow.mergeOptions.mergeBlocks, "defaults")[0];
@@ -2012,10 +2012,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     /** End compact record expansion machinery **/
-
-    fluid.isIoCReference = function (ref) {
-        return typeof(ref) === "string" && ref.charAt(0) === "{" && ref.indexOf("}") > 0;
-    };
 
     fluid.extractEL = function (string, options) {
         if (options.ELstyle === "ALL") {
