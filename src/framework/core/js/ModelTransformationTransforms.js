@@ -51,7 +51,6 @@ var fluid = fluid || fluid_2_0_0;
         return transformSpec.input;
     };
 
-
     fluid.defaults("fluid.transforms.stringToNumber", {
         gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
         invertConfiguration: "fluid.transforms.stringToNumber.invert"
@@ -155,6 +154,10 @@ var fluid = fluid || fluid_2_0_0;
         // we can use this function since one of our inputs is named and behaves
         // like input/inputPaths of the standardInputTransformFunction
         var togo = fluid.model.transform.invertPaths(transformSpec, transformer);
+
+        // delete the factor and offset paths if present
+        delete togo.factorPath;
+        delete togo.offsetPath;
 
         if (togo.factor !== undefined) {
             togo.factor = (togo.factor === 0) ? 0 : 1 / togo.factor;
@@ -440,7 +443,7 @@ var fluid = fluid || fluid_2_0_0;
             "fluid.transforms.arrayToSetMembership");
     };
 
-    /* -------- objectToArray and arrayToObject -------------------- */
+    /* -------- deindexIntoArrayByKey and indexArrayByKey -------------------- */
 
     /**
      * Transforms the given array to an object.
@@ -502,9 +505,9 @@ var fluid = fluid || fluid_2_0_0;
     };
 
 
-    fluid.defaults("fluid.transforms.arrayToObject", {
+    fluid.defaults("fluid.transforms.indexArrayByKey", {
         gradeNames: ["fluid.standardTransformFunction", "fluid.lens" ],
-        invertConfiguration: "fluid.transforms.arrayToObject.invert"
+        invertConfiguration: "fluid.transforms.indexArrayByKey.invert"
     });
 
     /** Transforms an array of objects into an object of objects, by indexing using the option "key" which must be supplied within the transform specification.
@@ -512,17 +515,17 @@ var fluid = fluid || fluid_2_0_0;
     * exist in each array element. The member with name agreeing with "key" and its value will be removed from each original object before inserting into the returned
     * object.
     * For example,
-    * <code>fluid.transforms.arrayToObject([{k: "e1", b: 1, c: 2}, {k: "e2", b: 2: c: 3}], {key: "k"})</code> will output the object
+    * <code>fluid.transforms.indexArrayByKey([{k: "e1", b: 1, c: 2}, {k: "e2", b: 2: c: 3}], {key: "k"})</code> will output the object
     * <code>{e1: {b: 1, c: 2}, e2: {b: 2: c, 3}</code>
     * Note: This transform frequently arises in the context of data which arose in XML form, which often represents "morally indexed" data in repeating array-like
     * constructs where the indexing key is held, for example, in an attribute.
     */
-    fluid.transforms.arrayToObject = function (arr, transformSpec, transformer) {
+    fluid.transforms.indexArrayByKey = function (arr, transformSpec, transformer) {
         if (transformSpec.key === undefined) {
-            fluid.fail("arrayToObject requires a 'key' option.", transformSpec);
+            fluid.fail("indexArrayByKey requires a 'key' option.", transformSpec);
         }
         if (!fluid.isArrayable(arr)) {
-            fluid.fail("arrayToObject didn't find array at inputPath.", transformSpec);
+            fluid.fail("indexArrayByKey didn't find array at inputPath.", transformSpec);
         }
         var newHash = {};
         var pivot = transformSpec.key;
@@ -532,7 +535,7 @@ var fluid = fluid || fluid_2_0_0;
             var newKey = v[pivot];
             var keyType = typeof(newKey);
             if (keyType !== "string" && keyType !== "boolean" && keyType !== "number") {
-                fluid.fail("arrayToObject encountered untransformable array due to missing or invalid key", v);
+                fluid.fail("indexArrayByKey encountered untransformable array due to missing or invalid key", v);
             }
             // use the value of the key element as key and use the remaining content as value
             var content = fluid.copy(v);
@@ -547,8 +550,8 @@ var fluid = fluid || fluid_2_0_0;
         return newHash;
     };
 
-    fluid.transforms.arrayToObject.invert = function (transformSpec) {
-        transformSpec.type = "fluid.transforms.objectToArray";
+    fluid.transforms.indexArrayByKey.invert = function (transformSpec) {
+        transformSpec.type = "fluid.transforms.deindexIntoArrayByKey";
         // invert transforms from innerValue as well:
         // TODO: The Model Transformations framework should be capable of this, but right now the
         // issue is that we use a "private contract" to operate the "innerValue" slot. We need to
@@ -563,23 +566,23 @@ var fluid = fluid || fluid_2_0_0;
     };
 
 
-    fluid.defaults("fluid.transforms.objectToArray", {
+    fluid.defaults("fluid.transforms.deindexIntoArrayByKey", {
         gradeNames: [ "fluid.standardTransformFunction", "fluid.lens" ],
-        invertConfiguration: "fluid.transforms.objectToArray.invert"
+        invertConfiguration: "fluid.transforms.deindexIntoArrayByKey.invert"
     });
 
     /**
      * Transforms an object of objects into an array of objects, by deindexing by the option "key" which must be supplied within the transform specification.
      * The key of each object will become split out into a fresh value in each array element which will be given the key held in the transformSpec option "key".
      * For example:
-     * <code>fluid.transforms.objectToArray({e1: {b: 1, c: 2}, e2: {b: 2: c, 3}, {key: "k"})</code> will output the array
+     * <code>fluid.transforms.deindexIntoArrayByKey({e1: {b: 1, c: 2}, e2: {b: 2: c, 3}, {key: "k"})</code> will output the array
      * <code>[{k: "e1", b: 1, c: 2}, {k: "e2", b: 2: c: 3}]</code>
      *
-     * This performs the inverse transform of fluid.transforms.arrayToObject.
+     * This performs the inverse transform of fluid.transforms.indexArrayByKey.
      */
-    fluid.transforms.objectToArray = function (hash, transformSpec, transformer) {
+    fluid.transforms.deindexIntoArrayByKey = function (hash, transformSpec, transformer) {
         if (transformSpec.key === undefined) {
-            fluid.fail("objectToArray requires a \"key\" option.", transformSpec);
+            fluid.fail("deindexIntoArrayByKey requires a \"key\" option.", transformSpec);
         }
 
         var newArray = [];
@@ -598,8 +601,8 @@ var fluid = fluid || fluid_2_0_0;
         return newArray;
     };
 
-    fluid.transforms.objectToArray.invert = function (transformSpec) {
-        transformSpec.type = "fluid.transforms.arrayToObject";
+    fluid.transforms.deindexIntoArrayByKey.invert = function (transformSpec) {
+        transformSpec.type = "fluid.transforms.indexArrayByKey";
         // invert transforms from innerValue as well:
         // TODO: The Model Transformations framework should be capable of this, but right now the
         // issue is that we use a "private contract" to operate the "innerValue" slot. We need to

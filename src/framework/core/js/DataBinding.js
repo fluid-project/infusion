@@ -926,7 +926,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.priorityHolder.expand = function (priorities) {
         var array = fluid.parsePriorityRecords(priorities, "priorityHolder entry", true);
-        var togo = {}; // note that fluid.transforms.arrayToObject can't unpack this value
+        var togo = {}; // note that fluid.transforms.indexArrayByKey can't unpack this value
         fluid.each(array, function (element, index) {
             togo[element.namespace] = - index * 10;
         });

@@ -553,7 +553,7 @@ var fluid = fluid || fluid_2_0_0;
         return arg;
     };
 
-    /** Returns the sum of its two arguments. A useful utility to combine with fluid.accumulate to compute totals 
+    /** Returns the sum of its two arguments. A useful utility to combine with fluid.accumulate to compute totals
      * @param a {Number|Boolean} The first operand to be added
      * @param b {Number|Boolean} The second operand to be added
      * @return {Number} The sum of the two operands
@@ -737,7 +737,7 @@ var fluid = fluid || fluid_2_0_0;
     /** Converts a hash into an object by hoisting out the object's keys into an array element via the supplied String "key", and then transforming via an optional further function, which receives the signature
      * (newElement, oldElement, key) where newElement is the freshly cloned element, oldElement is the original hash's element, and key is the key of the element.
      * If the function is not supplied, the old element is simply deep-cloned onto the new element (same effect
-     * as transform fluid.transforms.objectToArray)
+     * as transform fluid.transforms.deindexIntoArrayByKey)
      */
     fluid.hashToArray = function (hash, keyName, func) {
         var togo = [];
@@ -1266,7 +1266,7 @@ var fluid = fluid || fluid_2_0_0;
             }
         }
     };
- 
+
     fluid.parsePriorityRecords = function (records, name, root) {
         var array = fluid.hashToArray(records, "namespace", function (newElement, oldElement, index) {
             if (!root) {
