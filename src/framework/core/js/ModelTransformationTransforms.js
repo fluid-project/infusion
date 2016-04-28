@@ -128,20 +128,20 @@ var fluid = fluid || fluid_2_0_0;
     };
 
     fluid.defaults("fluid.transforms.linearScale", {
-        gradeNames: [ "fluid.multiInputTransformFunction", "fluid.standardOutputTransformFunction", "fluid.lens" ],
+        gradeNames: ["fluid.multiInputTransformFunction",
+                     "fluid.standardTransformFunction",
+                     "fluid.lens" ],
         invertConfiguration: "fluid.transforms.linearScale.invert",
         inputVariables: {
-            input: null,
             factor: 1,
             offset: 0
         }
     });
 
     /* simple linear transformation */
-    fluid.transforms.linearScale = function (inputs) {
-        var input = inputs.input();
-        var factor = inputs.factor();
-        var offset = inputs.offset();
+    fluid.transforms.linearScale = function (input, extraInputs) {
+        var factor = extraInputs.factor();
+        var offset = extraInputs.offset();
 
         if (typeof(input) !== "number" || typeof(factor) !== "number" || typeof(offset) !== "number") {
             return undefined;
@@ -150,22 +150,18 @@ var fluid = fluid || fluid_2_0_0;
     };
 
     /* TODO: This inversion doesn't work if the value and factors are given as paths in the source model */
-    fluid.transforms.linearScale.invert = function (transformSpec, transformer) {
-        // we can use this function since one of our inputs is named and behaves
-        // like input/inputPaths of the standardInputTransformFunction
-        var togo = fluid.model.transform.invertPaths(transformSpec, transformer);
-
+    fluid.transforms.linearScale.invert = function (transformSpec) {
         // delete the factor and offset paths if present
-        delete togo.factorPath;
-        delete togo.offsetPath;
+        delete transformSpec.factorPath;
+        delete transformSpec.offsetPath;
 
-        if (togo.factor !== undefined) {
-            togo.factor = (togo.factor === 0) ? 0 : 1 / togo.factor;
+        if (transformSpec.factor !== undefined) {
+            transformSpec.factor = (transformSpec.factor === 0) ? 0 : 1 / transformSpec.factor;
         }
-        if (togo.offset !== undefined) {
-            togo.offset = - togo.offset * (togo.factor !== undefined ? togo.factor : 1);
+        if (transformSpec.offset !== undefined) {
+            transformSpec.offset = - transformSpec.offset * (transformSpec.factor !== undefined ? transformSpec.factor : 1);
         }
-        return togo;
+        return transformSpec;
     };
 
     fluid.defaults("fluid.transforms.binaryOp", {
@@ -646,6 +642,10 @@ var fluid = fluid || fluid_2_0_0;
     });
 
     fluid.transforms.indexOf = function (value, transformSpec) {
+        // We do not allow a positive number as 'notFound' value, as it threatens invertibility
+        if (typeof (transformSpec.notFound) === "number" && transformSpec.notFound >= 0) {
+            fluid.fail("A positive number is not allowed as 'notFound' value for indexOf");
+        }
         var offset = fluid.transforms.parseIndexationOffset(transformSpec.offset, "indexOf");
         var array = fluid.makeArray(transformSpec.array);
         var originalIndex = array.indexOf(value);
@@ -665,12 +665,12 @@ var fluid = fluid || fluid_2_0_0;
 
     fluid.transforms.dereference = function (value, transformSpec) {
         if (typeof (value) !== "number") {
-            fluid.fail("dereference requires \"value\" to be a number. " + value + " is invalid.");
+            return undefined;
         }
         var offset = fluid.transforms.parseIndexationOffset(transformSpec.offset, "dereference");
         var array = fluid.makeArray(transformSpec.array);
         var index = value + offset;
-        return index === -1 && transformSpec.notFound ? transformSpec.notFound : array[index];
+        return array[index];
     };
 
     fluid.transforms.dereference.invert = function (transformSpec, transformer) {

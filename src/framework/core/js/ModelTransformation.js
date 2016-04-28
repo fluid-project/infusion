@@ -220,15 +220,7 @@ var fluid = fluid || fluid_2_0_0;
             expdef = fluid.defaults("fluid.standardTransformFunction");
         }
         var transformArgs = [transformSpec, transform];
-        if (fluid.hasGrade(expdef, "fluid.standardInputTransformFunction")) {
-            var expanded = fluid.model.transform.getValue(transformSpec.inputPath, transformSpec.input, transform);
-
-            transformArgs.unshift(expanded);
-            // if the function has no input, the result is considered undefined, and this is returned
-            if (expanded === undefined) {
-                return undefined;
-            }
-        } else if (fluid.hasGrade(expdef, "fluid.multiInputTransformFunction")) {
+        if (fluid.hasGrade(expdef, "fluid.multiInputTransformFunction")) {
             var inputs = {};
             fluid.each(expdef.inputVariables, function (v, k) {
                 inputs[k] = function () {
@@ -240,6 +232,15 @@ var fluid = fluid || fluid_2_0_0;
                 };
             });
             transformArgs.unshift(inputs);
+        }
+        if (fluid.hasGrade(expdef, "fluid.standardInputTransformFunction")) {
+            var expanded = fluid.model.transform.getValue(transformSpec.inputPath, transformSpec.input, transform);
+
+            transformArgs.unshift(expanded);
+            // if the function has no input, the result is considered undefined, and this is returned
+            if (expanded === undefined) {
+                return undefined;
+            }
         }
         var transformed = transformFn.apply(null, transformArgs);
         if (fluid.hasGrade(expdef, "fluid.standardOutputTransformFunction")) {
@@ -402,9 +403,11 @@ var fluid = fluid || fluid_2_0_0;
 
         if (standardInput) {
             fluid.model.transform.accumulateStandardInputPath("input", transformSpec, transform, transform.inputPaths);
-        } else if (multiInput) {
+        }
+        if (multiInput) {
             fluid.model.transform.accumulateMultiInputPaths(defaults.inputVariables, transformSpec, transform, transform.inputPaths);
-        } else {
+        }
+        if (!multiInput && !standardInput) {
             var collector = defaults.collectInputPaths;
             if (collector) {
                 var collected = fluid.makeArray(fluid.invokeGlobalFunction(collector, [transformSpec, transform]));

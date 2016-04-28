@@ -3325,7 +3325,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.tests.transforms.testOneStructure(fluid.tests.transforms.indexOfBoundaryTests, {
-            transformWrap: true
+            transformWrap: true,
+            partlyInvertible: true
         });
     });
 
@@ -3466,15 +3467,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             offset: 3
         },
         expected: undefined
-    }, {
-        message: "dereference() should return what's defined in the notFound when the value is not found in the array.",
-        transform: {
-            type: "fluid.transforms.dereference",
-            array: ["sheep", "dog"],
-            input: -1,
-            notFound: "notFound"
-        },
-        expected: "notFound"
     }];
 
     jqUnit.test("fluid.transforms.dereference()", function () {
