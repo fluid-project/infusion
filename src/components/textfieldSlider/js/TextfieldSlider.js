@@ -119,7 +119,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    fluid.defaults("fluid.slider.native", {
+    // Base slider grade
+    fluid.defaults("fluid.slider", {
         gradeNames: ["fluid.viewComponent"],
         range: {}, // should be used to specify the min, max range e.g. {min: 0, max: 100}
         members: {
@@ -129,7 +130,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     args: ["{that}.options.sliderOptions", "{that}.options.range"]
                 }
             }
-        },
+        }
+    });
+
+    fluid.defaults("fluid.slider.native", {
+        gradeNames: ["fluid.slider"],
         modelRelay: {
             target: "value",
             singleTransform: {
@@ -186,18 +191,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     });
 
     fluid.defaults("fluid.slider.jQuery", {
-            gradeNames: ["fluid.viewComponent"],
-            range: {}, // should be used to specify the min, max range e.g. {min: 0, max: 100}
+            gradeNames: ["fluid.slider"],
             selectors: {
                 thumb: ".ui-slider-handle"
             },
             members: {
-                combinedSliderOptions: {
-                    expander: {
-                        funcName: "fluid.slider.combineSliderOptions",
-                        args: ["{that}.options.sliderOptions", "{that}.options.range"]
-                    }
-                },
                 slider: {
                     expander: {
                         "this": "{that}.container",
