@@ -139,12 +139,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             target: "value",
             singleTransform: {
                 type: "fluid.transforms.stringToNumber",
-                input: "{that}.model.value"
+                input: "{that}.model.stringValue"
             }
         },
         invokers: {
             setModel: {
-                changePath: "value",
+                changePath: "stringValue",
                 value: {
                     expander: {
                         "this": "{that}.container",
