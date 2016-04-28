@@ -916,23 +916,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    /** Utility grade to compute and hold priorities for model listeners **/
-    fluid.defaults("fluid.priorityHolder", {
-        gradeNames: "fluid.component",
-        members: {
-            priorities: "@expand:fluid.priorityHolder.expand({that}.options.priorities)"
-        }
-    });
-
-    fluid.priorityHolder.expand = function (priorities) {
-        var array = fluid.parsePriorityRecords(priorities, "priorityHolder entry", true);
-        var togo = {}; // note that fluid.transforms.indexArrayByKey can't unpack this value
-        fluid.each(array, function (element, index) {
-            togo[element.namespace] = - index * 10;
-        });
-        return togo;
-    };
-
     fluid.modelChangedToChange = function (args) {
         return {
             value: args[0],
