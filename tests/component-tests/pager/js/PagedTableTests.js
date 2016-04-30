@@ -59,6 +59,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 {
                     animal: "fish"
+                },
+                {
+                    animal: "camel"
+                },
+                {
+                    animal: "dragon"
+                },
+                {
+                    animal: "ant"
                 }
             ]
         },
@@ -150,67 +159,101 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.tooltipModuleSource = function (pager) {
-        var pageLinksTop = $("a", pager.pagerBar.locate("pageLinks"));
-        var pageLinksBottom = $("a", pager["pagerBar-1"].locate("pageLinks"));
-
-        var tooltipContents = {
-            "page-link:link1": [
-                {nodeName: "b", nodeText: "dog"},
-                {nodeName: "b", nodeText: "cat"}
+        
+        var expectedTooltipContents = {
+            size2: [
+                [ {nodeName: "b", nodeText: "dog"}, {nodeName: "b", nodeText: "cat"} ],
+                [ {nodeName: "b", nodeText: "bird"}, {nodeName: "b", nodeText: "fish"} ],
+                [ {nodeName: "b", nodeText: "camel"}, {nodeName: "b", nodeText: "dragon"} ],
+                [ {nodeName: "b", nodeText: "ant"}, {nodeName: "b", nodeText: "ant"} ]
             ],
-            "page-link:link2": [
-                {nodeName: "b", nodeText: "bird"},
-                {nodeName: "b", nodeText: "fish"}
+            size3: [
+                [ {nodeName: "b", nodeText: "dog"}, {nodeName: "b", nodeText: "bird"} ],
+                [ {nodeName: "b", nodeText: "fish"}, {nodeName: "b", nodeText: "dragon"} ],
+                [ {nodeName: "b", nodeText: "ant"}, {nodeName: "b", nodeText: "ant"} ]
             ],
-            "page-link:link1-1": [
-                {nodeName: "b", nodeText: "dog"},
-                {nodeName: "b", nodeText: "cat"}
-            ],
-            "page-link:link2-1": [
-                {nodeName: "b", nodeText: "bird"},
-                {nodeName: "b", nodeText: "fish"}
+            size4: [
+                [ {nodeName: "b", nodeText: "dog"}, {nodeName: "b", nodeText: "fish"} ],
+                [ {nodeName: "b", nodeText: "camel"}, {nodeName: "b", nodeText: "ant"} ]
             ]
         };
 
         var sequence = [];
 
-        var assertVisibleTips = function (message, targetIds) {
+        var assertVisibleTips = function (message, targetIds, expectedTooltipContents, index) {
             sequence.push({
                 event: "{trackTooltips}.events.notifyFocusChange",
                 listener: function () {
                     fluid.tests.tooltip.assertVisible(message, pager, targetIds, null, function (tooltip) {
-                        jqUnit.assertNode("The contents of the tooltip should be set", tooltipContents[targetIds[0]], $("b", tooltip));
+                        jqUnit.assertNode("When the page size is " + pager.model.pageSize + ", The contents of the tooltip should be set", expectedTooltipContents[index], $("b", tooltip));
                     });
                 }
             });
         };
 
-        var tooltipTest = function (location) {
-            return function (index, linkEl) {
-                var linkId = linkEl.id;
-                var link = $(linkEl);
-                var linkNumber = index + 1;
-                sequence.push({
-                    element: link,
-                    jQueryTrigger: "focus"
-                });
-                assertVisibleTips("The tooltip for page link " + linkNumber + ", in the " + location + " page bar is visible", [linkId]);
-                sequence.push({
-                    element: link,
-                    jQueryTrigger: "blur"
-                });
-                assertVisibleTips("There shouldn't be any tooltips visible when none of the pageLinks are focused", []);
-            };
+        var tooltipTest = function (location, index, expectedTooltipContents) {
+            var link =  "#rendered-ioc .flc-pager-" + location + " .flc-pager-links .flc-pager-pageLink a:eq(" + index + ")";
+            var linkNumber = index + 1;
+            var linkId = "page-link:link" + linkNumber + (location === "bottom" ? "-1" : "");
+            sequence.push({
+                element: link,
+                jQueryTrigger: "focus"
+            });
+            assertVisibleTips("When the page size is " + pager.model.pageSize + ", The tooltip for page link " + linkNumber + ", in the " + location + " page bar is visible", [linkId], expectedTooltipContents, index);
+            sequence.push({
+                element: link,
+                jQueryTrigger: "blur"
+            });
+            assertVisibleTips("There shouldn't be any tooltips visible when none of the pageLinks are focused", [], expectedTooltipContents, index);
         };
 
-        pageLinksTop.each(tooltipTest("top"));
-        pageLinksBottom.each(tooltipTest("bottom"));
+        /* 
+         * Change the page size if it has provided and
+         * verify whether the displaying links and their tooltips are synced are with page size
+         */
+        var verifyToolTips = function (pageSize) {
+            if (pageSize) {
+                sequence.push({
+                    func: function () {
+                        $("#rendered-ioc .flc-pager-page-size").val(pageSize);
+                    }
+                });
+                sequence.push({
+                    element: "#rendered-ioc .flc-pager-page-size",
+                    jQueryTrigger: "change"
+                });
+            } else {
+                pageSize = pager.model.pageSize;
+            }
+            
+            var expectedNumberOfLinks = Math.ceil(pager.dataModel.length / pageSize);
+            sequence.push({
+                func: function () {
+                    $("#rendered-ioc .flc-pager-page-size").val(pageSize);
+                    jqUnit.assertEquals("When the page size is " + pager.model.pageSize + ", Top pageLinks", expectedNumberOfLinks, $("#rendered-ioc .flc-pager-top .flc-pager-links .flc-pager-pageLink a").length);
+                    jqUnit.assertEquals("When the page size is " + pager.model.pageSize + ", Bottom pageLinks", expectedNumberOfLinks, $("#rendered-ioc .flc-pager-bottom .flc-pager-links .flc-pager-pageLink a").length);
+                }
+            });
+            
+            for (var x = 0; x < expectedNumberOfLinks; x++) {
+                tooltipTest("top", x, expectedTooltipContents["size" + pageSize]);
+                tooltipTest("bottom", x, expectedTooltipContents["size" + pageSize]);
+            }
+        };
+        
+        /* Change the page size and verify whether the tooltips are synced accordingly */
+        verifyToolTips(2);
+        verifyToolTips(3);
+        verifyToolTips(4);
+        
         return {
             name: "Pager tooltip tests",
-            tests: {
-                name: "Tooltip visibility",
-                sequence: sequence
-            }
+            tests: [
+                {
+                    name: "Tooltip visibility",
+                    sequence: sequence
+                }
+            ]
         };
     };
 
