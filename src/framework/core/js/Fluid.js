@@ -329,7 +329,7 @@ var fluid = fluid || fluid_2_0_0;
     };
 
     /** Determines whether the supplied object is a plain JSON-forming container - that is, it is either a plain Object
-     * or a plain Array */
+     * or a plain Array. Note that this differs from jQuery's isPlainObject which does not pass Arrays */
     fluid.isPlainObject = function (totest) {
         var string = Object.prototype.toString.call(totest);
         if (string === "[object Array]") {
@@ -406,6 +406,9 @@ var fluid = fluid || fluid_2_0_0;
         return fluid.copyRecurse(tocopy, []);
     };
 
+    // TODO: Coming soon - reimplementation of $.extend using strategyRecursionBailout
+    fluid.extend = $.extend;
+
     /** Corrected version of jQuery makeArray that returns an empty array on undefined rather than crashing.
       * We don't deal with as many pathological cases as jQuery **/
     fluid.makeArray = function (arg) {
@@ -421,6 +424,21 @@ var fluid = fluid || fluid_2_0_0;
             }
         }
         return togo;
+    };
+
+    /** Pushes an element or elements onto an array, initialising the array as a member of a holding object if it is
+     * not already allocated.
+     * @param holder {Array or Object} The holding object whose member is to receive the pushed element(s).
+     * @param member {String} The member of the <code>holder</code> onto which the element(s) are to be pushed
+     * @param topush {Array or Object} If an array, these elements will be added to the end of the array using Array.push.apply. If an object, it will be pushed to the end of the array using Array.push.
+     */
+    fluid.pushArray = function (holder, member, topush) {
+        var array = holder[member] ? holder[member] : (holder[member] = []);
+        if (fluid.isArrayable(topush)) {
+            array.push.apply(array, topush);
+        } else {
+            array.push(topush);
+        }
     };
 
     function transformInternal(source, togo, key, args) {
@@ -533,6 +551,15 @@ var fluid = fluid || fluid_2_0_0;
             arg = fn(list[i], arg, i);
         }
         return arg;
+    };
+
+    /** Returns the sum of its two arguments. A useful utility to combine with fluid.accumulate to compute totals 
+     * @param a {Number|Boolean} The first operand to be added
+     * @param b {Number|Boolean} The second operand to be added
+     * @return {Number} The sum of the two operands
+     **/
+    fluid.add = function (a, b) {
+        return a + b;
     };
 
     /** Scan through an array or hash of objects, removing those which match a predicate. Similar to
@@ -709,8 +736,8 @@ var fluid = fluid || fluid_2_0_0;
 
     /** Converts a hash into an object by hoisting out the object's keys into an array element via the supplied String "key", and then transforming via an optional further function, which receives the signature
      * (newElement, oldElement, key) where newElement is the freshly cloned element, oldElement is the original hash's element, and key is the key of the element.
-     * If the function is not supplied, the old element is simply deep-cloned onto the new element (same effect
-     * as transform fluid.transforms.objectToArray)
+     * If the function is not supplied, the old element is simply deep-cloned onto the new element (same effect as transform fluid.transforms.objectToArray).
+     * The supplied hash will not be modified, unless the supplied function explicitly does so by modifying its 2nd argument.
      */
     fluid.hashToArray = function (hash, keyName, func) {
         var togo = [];
@@ -775,6 +802,16 @@ var fluid = fluid || fluid_2_0_0;
      */
     fluid.parseInteger = function (string) {
         return isFinite(string) && ((string % 1) === 0) ? Number(string) : NaN;
+    };
+
+    /** Calls Object.freeze at each level of containment of the supplied object
+     * @return The supplied argument, recursively frozen
+     */
+    fluid.freezeRecursive = function (tofreeze) {
+        fluid.each(tofreeze, function (value) {
+            fluid.freezeRecursive(value);
+        });
+        return fluid.isPlainObject(tofreeze) ? Object.freeze(tofreeze) : tofreeze; // IE11 crashes on freeze of non-object
     };
 
     /** A set of special "marker values" used in signalling in function arguments and return values,
@@ -1120,6 +1157,7 @@ var fluid = fluid || fluid_2_0_0;
     };
 
     // unsupported, NON-API function
+    // TODO: Note - no "fixedOnly = true" sites remain in the framework
     fluid.parsePriorityConstraint = function (constraint, fixedOnly, site) {
         var segs = constraint.split(":");
         var type = segs[0];
@@ -1228,6 +1266,21 @@ var fluid = fluid || fluid_2_0_0;
             }
         }
     };
+ 
+    /** Parse a hash containing prioritised records (for example, as found in a ContextAwareness record) and return a sorted array of these records in priority order.
+     * @param records {Object} A hash of key names to prioritised records. Each record may contain an member `namespace` - if it does not, the namespace will be taken from the
+     * record's key. It may also contain a `String` member `priority` encoding a priority with respect to these namespaces as document at http://docs.fluidproject.org/infusion/development/Priorities.html .
+     * @param name {String} A human-readable name describing the supplied records, which will be incorporated into the message of any error encountered when resolving the priorities
+     * @return [Array] An array of the same elements supplied to `records`, sorted into priority order. The supplied argument `records` will not be modified.
+     */
+    fluid.parsePriorityRecords = function (records, name) {
+        var array = fluid.hashToArray(records, "namespace", function (newElement, oldElement, index) {
+            $.extend(newElement, oldElement);
+            newElement.priority = fluid.parsePriority(oldElement.priority, index, false, name);
+        });
+        fluid.sortByPriority(array);
+        return array;
+    };
 
     fluid.event.identifyListener = function (listener, soft) {
         if (typeof(listener) !== "string" && !listener.$$fluid_guid && !soft) {
@@ -1261,14 +1314,6 @@ var fluid = fluid || fluid_2_0_0;
             }
         });
         return fluid.sortByPriority(togo);
-    };
-
-    // unsupported, non-API function
-    fluid.event.invokeListener = function (listener, args) {
-        if (typeof(listener) === "string") {
-            listener = fluid.event.resolveListener(listener); // just resolves globals
-        }
-        return listener.apply(null, args);
     };
 
     // unsupported, NON-API function
@@ -1351,7 +1396,7 @@ var fluid = fluid || fluid_2_0_0;
             addListener: function () {
                 lazyInit.apply(null, arguments);
             },
-
+            // Can be supplied either listener, namespace, or id (which may match either listener function's guid or original listenerId argument)
             removeListener: function (listener) {
                 if (!that.listeners) { return; }
                 var namespace, id, record;
@@ -1498,12 +1543,16 @@ var fluid = fluid || fluid_2_0_0;
     };
 
     // unsupported, NON-API function
-    fluid.makeMergeListenersPolicy = function (merger) {
+    fluid.makeMergeListenersPolicy = function (merger, modelRelay) {
         return function (target, source) {
             target = target || {};
-            fluid.each(source, function (listeners, key) {
-                target[key] = merger(target[key], listeners, key);
-            });
+            if (modelRelay && (fluid.isArrayable(source) || typeof(source.target) === "string")) { // This form allowed for modelRelay
+                target[""] = merger(target[""], source, "");
+            } else {
+                fluid.each(source, function (listeners, key) {
+                    target[key] = merger(target[key], listeners, key);
+                });
+            }
             return target;
         };
     };
@@ -1741,7 +1790,7 @@ var fluid = fluid || fluid_2_0_0;
         var indexFunc = typeof(indexSpec.indexFunc) === "function" ? indexSpec.indexFunc : fluid.getGlobalValue(indexSpec.indexFunc);
         var keys = indexFunc(defaults) || [];
         for (var j = 0; j < keys.length; ++ j) {
-            (index[keys[j]] = index[keys[j]] || []).push(defaultName);
+            fluid.pushArray(index, keys[j], defaultName);
         }
     };
 

@@ -391,8 +391,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.test.decoders.changeEvent = function (testCaseState, fixture) {
         var event = testCaseState.expand(fixture.changeEvent);
         var listener = fluid.test.decodeListener(testCaseState, fixture);
-        var that = fluid.test.makeBinder(listener,
-           function (wrapped) {
+        var that = fluid.test.makeBinder(listener, function (wrapped) {
             var spec = fixture.path === undefined ? fixture.spec : {path: fixture.path};
             if (spec === undefined || spec.path === undefined) {
                 fluid.fail("Error in changeEvent fixture ", fixture,

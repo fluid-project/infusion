@@ -92,7 +92,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "dog": {
                 transform: {
                     type: "fluid.transforms.linearScale",
-                    value: 3,
+                    input: 3,
                     factor: 2,
                     offset: 5
                 }
@@ -108,7 +108,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "dog": {
                 transform: {
                     type: "fluid.transforms.linearScale",
-                    value: 3,
+                    input: 3,
                     factor: 2,
                     offset: 5,
                     outputPath: "walk"
@@ -130,7 +130,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     input: {
                         transform: {
                             type: "fluid.transforms.linearScale",
-                            valuePath: "dozen",
+                            inputPath: "dozen",
                             factor: 100
                         }
                     },
@@ -139,7 +139,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 dataType: {
                     transform: {
                         type: "fluid.transforms.literalValue",
-                        value: "REG_DWORD"
+                        input: "REG_DWORD"
                     }
                 }
             }
@@ -156,12 +156,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "dog": {
                 transform: [{
                     type: "fluid.transforms.linearScale",
-                    value: 3,
+                    input: 3,
                     factor: 2,
                     offset: 5
                 }, {
                     type: "fluid.transforms.literalValue",
-                    value: "ooooops"
+                    input: "ooooops"
                 }]
             }
         },
@@ -173,13 +173,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "dog": {
                 transform: [{
                     type: "fluid.transforms.linearScale",
-                    value: 3,
+                    input: 3,
                     factor: 2,
                     offset: 5,
                     outputPath: "math"
                 }, {
                     type: "fluid.transforms.literalValue",
-                    value: "ooooops"
+                    input: "ooooops"
                 }]
             }
         },
@@ -196,7 +196,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 {
                     transform: {
                         type: "fluid.transforms.linearScale",
-                        value: 3,
+                        input: 3,
                         factor: 2,
                         offset: 5
                     }
@@ -204,13 +204,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "cat": {
                         transform: {
                             type: "fluid.transforms.literalValue",
-                            value: "I'm a cat"
+                            input: "I'm a cat"
                         }
                     }
                 }, {
                     transform: {
                         type: "fluid.transforms.literalValue",
-                        value: "And I'm a squirrel",
+                        input: "And I'm a squirrel",
                         outputPath: "squirrel"
                     }
                 }
@@ -227,7 +227,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 {
                     transform: {
                         type: "fluid.transforms.linearScale",
-                        value: 3,
+                        input: 3,
                         factor: 2,
                         offset: 5
                     }
@@ -235,13 +235,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "cat": {
                         transform: {
                             type: "fluid.transforms.literalValue",
-                            value: "I'm a cat"
+                            input: "I'm a cat"
                         }
                     }
                 }, {
                     transform: {
                         type: "fluid.transforms.literalValue",
-                        value: "And I'm a squirrel",
+                        input: "And I'm a squirrel",
                         outputPath: "squirrel"
                     }
                 }
@@ -265,7 +265,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             value: {
                 transform: {
                     type: "fluid.transforms.linearScale",
-                    valuePath: "dozen"
+                    inputPath: "dozen"
                 }
             }
         },
@@ -273,7 +273,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             transform: [{
                 type: "fluid.transforms.linearScale",
                 outputPath: "dozen",
-                valuePath: "value"
+                inputPath: "value"
             }]
         },
         method: "assertDeepEq",
@@ -293,7 +293,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             value: {
                 transform: {
                     type: "fluid.transforms.linearScale",
-                    valuePath: "dozen",
+                    inputPath: "dozen",
                     factor: 0.25
                 }
             }
@@ -302,7 +302,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             transform: [{
                 type: "fluid.transforms.linearScale",
                 outputPath: "dozen",
-                valuePath: "value",
+                inputPath: "value",
                 factor: 4
             }]
         },
@@ -320,7 +320,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             value: {
                 transform: {
                     type: "fluid.transforms.linearScale",
-                    valuePath: "dozen",
+                    inputPath: "dozen",
                     factor: 0.50,
                     offset: 100
                 }
@@ -330,7 +330,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             transform: [{
                 type: "fluid.transforms.linearScale",
                 outputPath: "dozen",
-                valuePath: "value",
+                inputPath: "value",
                 factor: 2,
                 offset: -200
             }]
@@ -344,7 +344,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         message: "linearScale - everything by path",
         transform: {
             type: "fluid.transforms.linearScale",
-            valuePath: "dozen",
+            inputPath: "dozen",
             factorPath: "halfdozen",
             offsetPath: "hundred"
         },
@@ -610,7 +610,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "false": {
                     transform: {
                         type: "fluid.transforms.literalValue",
-                        value: "Congratulations, you are a genius",
+                        input: "Congratulations, you are a genius",
                         outputPath: "conclusion"
                     }
                 }
@@ -625,10 +625,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.transforms.condition",
                 conditionPath: "catsAreDecent",
                 "true": {
-                    "Antranig": "cat"
+                    transform: {
+                        type: "fluid.transforms.value",
+                        outputPath: "Antranig",
+                        inputPath: "cat"
+                    }
                 },
                 "false": {
-                    "Kasper": "polar"
+                    transform: {
+                        type: "fluid.transforms.value",
+                        outputPath: "Kasper",
+                        inputPath: "polar"
+                    }
                 }
             },
             method: "assertDeepEq",
@@ -707,22 +715,29 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             method: "assertEquals",
             expected: fluid.tests.transforms.source.cat
         }, {
-            message: "Where the path is a rules object, the result should be an expanded version of it.",
-            transform: {
+            message: "Where input is another transform, the result should be the expanded version of it.",
+            transform: { // FLUID-5867: NOONE wants the original behaviour here of expanding short-form value transforms automatically
                 type: "fluid.transforms.value",
                 input: {
-                    alligator: {
-                        transform: {
-                            type: "fluid.transforms.value",
-                            inputPath: "hamster"
+                    transform: [{
+                        type: "fluid.transforms.value",
+                        outputPath: "alligator",
+                        input: {
+                            transform: {
+                                type: "fluid.transforms.value",
+                                inputPath: "hamster"
+                            }
                         }
-                    },
-                    tiger: {
-                        transform: {
-                            type: "fluid.transforms.value",
-                            inputPath: "hamster.wheel"
+                    }, {
+                        type: "fluid.transforms.value",
+                        outputPath: "tiger",
+                        input: {
+                            transform: {
+                                type: "fluid.transforms.value",
+                                inputPath: "hamster.wheel"
+                            }
                         }
-                    }
+                    }]
                 }
             },
             method: "assertDeepEq",
@@ -786,10 +801,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "b": {
                 "transform": {
                     "type": "fluid.transforms.arrayValue",
-                    "value": {
+                    "input": {
                         "transform": {
                             "type": "fluid.transforms.linearScale",
-                            "value": 5,
+                            "input": 5,
                             "factor": 0.1
                         }
                     }
@@ -1162,7 +1177,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         outputValue: {
                             transform: {
                                 type: "fluid.transforms.literalValue",
-                                value: "Elephant - Brilliant work, it is indeed big",
+                                input: "Elephant - Brilliant work, it is indeed big",
                                 outputPath: "path"
                             }
                         }
@@ -1189,12 +1204,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             transform: [
                                 {
                                     type: "fluid.transforms.literalValue",
-                                    value: "silence",
+                                    input: "silence",
                                     outputPath: "speech.synth"
                                 },
                                 {
                                     type: "fluid.transforms.literalValue",
-                                    value: "Microsoft Sound Mapper",
+                                    input: "Microsoft Sound Mapper",
                                     outputPath: "speech.outputDevice"
                                 }
                             ]
@@ -1404,7 +1419,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 {
                     transform: {
                         type: "fluid.transforms.linearScale",
-                        value: 3,
+                        input: 3,
                         factor: 2,
                         offset: 5
                     }
@@ -1412,13 +1427,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "cat": {
                         transform: {
                             type: "fluid.transforms.literalValue",
-                            value: "I'm a cat"
+                            input: "I'm a cat"
                         }
                     }
                 }, {
                     transform: {
                         type: "fluid.transforms.literalValue",
-                        value: "And I'm a squirrel",
+                        input: "And I'm a squirrel",
                         outputPath: "squirrel"
                     }
                 }
@@ -1879,7 +1894,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 transform: {
                     type: "fluid.transforms.value",
                     inputPath: "gerbil",
-                    value: "sold out"
+                    input: "sold out"
                 }
             },
 
@@ -1887,7 +1902,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             kangaroo: {
                 transform: {
                     type: "fluid.transforms.value",
-                    value: "literal value"
+                    input: "literal value"
                 }
             },
 
@@ -2042,7 +2057,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "components.fish.type": {
             transform: {
                 type: "fluid.transforms.value",
-                value: "bowl.fish"
+                input: "bowl.fish"
             }
         },
         "components.fish.options.quantity": "numFish",
@@ -2606,7 +2621,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             type: "fluid.transforms.limitRange",
             min: 0,
             max: 10,
-            value: -3
+            input: -3
         },
         expected: 0
     }, {
@@ -2615,7 +2630,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             type: "fluid.transforms.limitRange",
             min: 0,
             max: 10,
-            value: 13
+            input: 13
         },
         expected: 10
     }, {
@@ -2625,7 +2640,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             min: -15,
             max: 10,
             excludeMin: 1,
-            value: -Infinity
+            input: -Infinity
         },
         expected: -14
     }, {
@@ -2635,7 +2650,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             min: 0,
             max: 17,
             excludeMax: 2.5,
-            value: 999
+            input: 999
         },
         expected: 14.5
     }, {
@@ -2779,7 +2794,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         transform: {
             type: "fluid.transforms.indexOf",
             array: ["sheep", "dog"],
-            value: "cat"
+            input: "cat"
         },
         expected: -1
     }, {
@@ -2787,7 +2802,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         transform: {
             type: "fluid.transforms.indexOf",
             array: "dog",
-            value: "sheep"
+            input: "sheep"
         },
         expected: -1
     }, {
@@ -2802,7 +2817,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         transform: {
             type: "fluid.transforms.indexOf",
             array: ["sheep", "dog"],
-            value: "a",
+            input: "a",
             offset: 3
         },
         expected: 2
@@ -2811,7 +2826,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         transform: {
             type: "fluid.transforms.indexOf",
             array: ["sheep", "dog"],
-            value: "cat",
+            input: "cat",
             notFound: "notFound"
         },
         expected: "notFound"
@@ -2820,7 +2835,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         transform: {
             type: "fluid.transforms.indexOf",
             array: ["sheep", "dog"],
-            value: "sheep",
+            input: "sheep",
             notFound: "notFound"
         },
         expected: 0
@@ -2985,7 +3000,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         transform: {
             type: "fluid.transforms.dereference",
             array: ["sheep", "dog"],
-            value: -1
+            input: -1
         },
         expected: undefined
     }, {
@@ -2993,7 +3008,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         transform: {
             type: "fluid.transforms.dereference",
             array: "dog",
-            value: -1
+            input: -1
         },
         expected: undefined
     }, {
@@ -3008,7 +3023,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         transform: {
             type: "fluid.transforms.dereference",
             array: ["sheep", "dog"],
-            value: 2,
+            input: 2,
             offset: 3
         },
         expected: undefined
@@ -3017,7 +3032,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         transform: {
             type: "fluid.transforms.dereference",
             array: ["sheep", "dog"],
-            value: -1,
+            input: -1,
             notFound: "notFound"
         },
         expected: "notFound"
@@ -3158,4 +3173,109 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
+    /* --------------- FLUID-5294: Value should no longer be supported ------------- */
+    fluid.tests.transforms.noValueSupport = [{
+        message: "Ensure literalValue transformation no longer supports value",
+        transform: {
+            type: "fluid.transforms.literalValue",
+            value: "I am wrong"
+        },
+        expected: undefined
+    }, {
+        message: "Ensure literalValue transformation no longer supports valuePath",
+        transform: {
+            type: "fluid.transforms.literalValue",
+            inputPath: "mypath"
+        },
+        model: {
+            mypath: "Hello world"
+        },
+        expected: undefined
+    }, {
+        message: "Ensure standardTransformFunction (transforms.value) no longer supports 'value'",
+        transform: {
+            type: "fluid.transforms.value",
+            value: {
+                literalValue: "I should not be read"
+            }
+        },
+        expected: undefined
+    }, {
+        message: "Ensure standardTransformFunction (transforms.value) no longer supports 'valuePath'",
+        transform: {
+            type: "fluid.transforms.value",
+            valuePath: "tester"
+        },
+        model: {
+            tester: "hello"
+        },
+        expected: undefined
+    }, {
+        message: "Ensure valueMapper no longer supports 'valuePath'",
+        transform: {
+            type: "fluid.transforms.valueMapper",
+            valuePath: "condition",
+            defaultOutputValue: "CATTOO",
+            options: {
+                "true": {
+                    outputPath: "trueCATT"
+                },
+                "false": {
+                    outputPath: "falseCATT"
+                }
+            }
+        },
+        model: {
+            condition: true
+        },
+        expected: undefined
+    }, {
+        message: "Ensure valueMapper no longer supports 'value'",
+        transform: {
+            type: "fluid.transforms.valueMapper",
+            value: "true",
+            defaultOutputValue: "CATTOO",
+            options: {
+                "true": {
+                    outputPath: "trueCATT"
+                },
+                "false": {
+                    outputPath: "falseCATT"
+                }
+            }
+        },
+        expected: undefined
+    }, {
+        message: "Ensure linearScale no longer supports 'value'",
+        transform: {
+            type: "fluid.transforms.linearScale",
+            value: 3,
+            factor: 2,
+            offset: 5
+        },
+        expected: undefined
+    }, {
+        message: "Ensure linearScale no longer supports 'valuePath'",
+        transform: {
+            type: "fluid.transforms.linearScale",
+            valuePath: "myvalue",
+            factor: 2,
+            offset: 5
+        },
+        model: {
+            myvalue: 4
+        },
+        expected: undefined
+    }];
+
+    //to test:
+    // test inversions
+
+
+    jqUnit.test("FLUID-5294: avoid ambiguous support of 'value' and 'valuePath' - only accept 'input' and 'inputPath'", function () {
+        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.noValueSupport, {
+            transformWrap: true,
+            method: "assertEquals"
+        });
+    });
 })(jQuery);
