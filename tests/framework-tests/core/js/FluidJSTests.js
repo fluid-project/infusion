@@ -27,7 +27,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.plainObjectTrue = {
         "object": {},
-        "array": [],
         "noproto": Object.create(null),
         "malignNoProto": Object.create(null, {"constructor": {value: "thing"}})
     };
@@ -43,10 +42,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("fluid.isPlainObject tests", function () {
         fluid.each(fluid.tests.plainObjectTrue, function (totest, key) {
             jqUnit.assertEquals("Expected plain: " + key, true, fluid.isPlainObject(totest));
+            jqUnit.assertEquals("Expected plain in strict: " + key, true, fluid.isPlainObject(totest, true));
         });
         fluid.each(fluid.tests.plainObjectFalse, function (totest, key) {
             jqUnit.assertEquals("Expected nonplain: " + key, false, fluid.isPlainObject(totest));
+            jqUnit.assertEquals("Expected nonplain in strict: " + key, false, fluid.isPlainObject(totest, true));
         });
+        jqUnit.assertEquals("Array is plain by standard", true, fluid.isPlainObject([]));
+        jqUnit.assertEquals("Array is nonplain in strict", false, fluid.isPlainObject([], true));
     });
 
     jqUnit.test("fluid.makeArray tests", function () {

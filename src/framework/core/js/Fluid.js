@@ -329,11 +329,14 @@ var fluid = fluid || fluid_2_0_0;
     };
 
     /** Determines whether the supplied object is a plain JSON-forming container - that is, it is either a plain Object
-     * or a plain Array. Note that this differs from jQuery's isPlainObject which does not pass Arrays */
-    fluid.isPlainObject = function (totest) {
+     * or a plain Array. Note that this differs from jQuery's isPlainObject which does not pass Arrays.
+     * @param totest {Any} The object to be tested
+     * @param strict {Boolean} (optional) If `true`, plain Arrays will fail the test rather than passing. 
+     */
+    fluid.isPlainObject = function (totest, strict) {
         var string = Object.prototype.toString.call(totest);
         if (string === "[object Array]") {
-            return true;
+            return !strict;
         } else if (string !== "[object Object]") {
             return false;
         } // FLUID-5226: This inventive strategy taken from jQuery detects whether the object's prototype is directly Object.prototype by virtue of having an "isPrototypeOf" direct member
@@ -1342,9 +1345,9 @@ var fluid = fluid || fluid_2_0_0;
     /** Construct an "event firer" object which can be used to register and deregister
      * listeners, to which "events" can be fired. These events consist of an arbitrary
      * function signature. General documentation on the Fluid events system is at
-     * http://wiki.fluidproject.org/display/fluid/The+Fluid+Event+System .
+     * http://docs.fluidproject.org/infusion/development/InfusionEventSystem.html .
      * @param {Object} options - A structure to configure this event firer. Supported fields:
-     *     {String} name - a name for this firer
+     *     {String} name - a readable name for this firer to be used in diagnostics and debugging
      *     {Boolean} preventable - If <code>true</code> the return value of each handler will
      * be checked for <code>false</code> in which case further listeners will be shortcircuited, and this
      * will be the return value of fire()
@@ -1358,24 +1361,43 @@ var fluid = fluid || fluid_2_0_0;
             that.listeners = {};
             that.byId = {};
             that.sortedListeners = [];
+            // arguments after 3rd are not part of public API
+            // listener as Object is used only by ChangeApplier to tunnel path, segs, etc as part of its "spec"
+            /** Adds a listener to this event.
+              * @param listener {Function|String} The listener function to be added, or a global name resolving to a function. The signature of the function is arbitrary and matches that sent to event.fire()
+              * @param namespace {String} (Optional) A namespace for this listener. At most one listener with a particular namespace can be active on an event at one time. Removing successively added listeners with a particular
+              * namespace will expose previously added ones in a stack idiom
+              * @param priority {String|Number} A priority for the listener relative to others, perhaps expressed with a constraint relative to the namespace of another - see
+              * http://docs.fluidproject.org/infusion/development/Priorities.html
+              */
             that.addListener = function (listener, namespace, priority, softNamespace, listenerId) {
+                var record;
                 if (that.destroyed) {
                     fluid.fail("Cannot add listener to destroyed event firer " + that.name);
                 }
                 if (!listener) {
                     return;
                 }
+                if (fluid.isPlainObject(listener, true)) {
+                    record = listener;
+                    listener = record.listener;
+                    namespace = record.namespace;
+                    priority = record.priority;
+                    softNamespace = record.softNamespace;
+                    listenerId = record.listenerId;
+                }
                 if (typeof(listener) === "string") {
                     listener = {globalName: listener};
                 }
                 var id = listenerId || fluid.event.identifyListener(listener);
                 namespace = namespace || id;
-                var record = {listener: listener,
+                record = $.extend(record || {}, {
                     namespace: namespace,
+                    listener: listener,
                     softNamespace: softNamespace,
                     listenerId: listenerId,
                     priority: fluid.parsePriority(priority, that.sortedListeners.length, false, "listeners")
-                };
+                });
                 that.byId[id] = record;
 
                 var thisListeners = (that.listeners[namespace] = fluid.makeArray(that.listeners[namespace]));
@@ -1396,6 +1418,10 @@ var fluid = fluid || fluid_2_0_0;
             addListener: function () {
                 lazyInit.apply(null, arguments);
             },
+            /** Removes a listener previously registered with this event.
+              * @param toremove {Function|String} Either the listener function, the namespace of a listener (in which case a previous listener with that namespace may be uncovered) or an id sent to the undocumented
+              * `listenerId` argument of `addListener
+              */
             // Can be supplied either listener, namespace, or id (which may match either listener function's guid or original listenerId argument)
             removeListener: function (listener) {
                 if (!that.listeners) { return; }
@@ -1433,6 +1459,7 @@ var fluid = fluid || fluid_2_0_0;
                 }
                 that.sortedListeners = fluid.event.sortListeners(that.listeners);
             },
+            /** Fires this event to all listeners which are active. They will be notified in order of priority. The signature of this method is free **/
             fire: function () {
                 var listeners = that.sortedListeners;
                 if (!listeners || that.destroyed) { return; }
