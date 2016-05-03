@@ -160,13 +160,13 @@ var fluid = fluid || fluid_2_0_0;
 
     // TODO: This cut and pasted code was hoisted out of the inverse of transforms - it needs to go into the
     // the inversion mechanism itself
-    fluid.model.transform.copyInversePaths = function (transformSpec, transformer) {
-        var togo = fluid.copy(transformSpec);
+    fluid.model.transform.invertPaths = function (transformSpec, transformer) {
         // TODO: this will not behave correctly in the face of compound "input" which contains
         // further transforms
-        togo.inputPath = fluid.model.composePaths(transformer.outputPrefix, transformSpec.outputPath);
-        togo.outputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.inputPath);
-        return togo;
+        var oldOutput = fluid.model.composePaths(transformer.outputPrefix, transformSpec.outputPath);
+        transformSpec.outputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.inputPath);
+        transformSpec.inputPath = oldOutput;
+        return transformSpec;
     };
 
 
@@ -220,15 +220,7 @@ var fluid = fluid || fluid_2_0_0;
             expdef = fluid.defaults("fluid.standardTransformFunction");
         }
         var transformArgs = [transformSpec, transform];
-        if (fluid.hasGrade(expdef, "fluid.standardInputTransformFunction")) {
-            var expanded = fluid.model.transform.getValue(transformSpec.inputPath, transformSpec.input, transform);
-
-            transformArgs.unshift(expanded);
-            // if the function has no input, the result is considered undefined, and this is returned
-            if (expanded === undefined) {
-                return undefined;
-            }
-        } else if (fluid.hasGrade(expdef, "fluid.multiInputTransformFunction")) {
+        if (fluid.hasGrade(expdef, "fluid.multiInputTransformFunction")) {
             var inputs = {};
             fluid.each(expdef.inputVariables, function (v, k) {
                 inputs[k] = function () {
@@ -240,6 +232,15 @@ var fluid = fluid || fluid_2_0_0;
                 };
             });
             transformArgs.unshift(inputs);
+        }
+        if (fluid.hasGrade(expdef, "fluid.standardInputTransformFunction")) {
+            var expanded = fluid.model.transform.getValue(transformSpec.inputPath, transformSpec.input, transform);
+
+            transformArgs.unshift(expanded);
+            // if the function has no input, the result is considered undefined, and this is returned
+            if (expanded === undefined) {
+                return undefined;
+            }
         }
         var transformed = transformFn.apply(null, transformArgs);
         if (fluid.hasGrade(expdef, "fluid.standardOutputTransformFunction")) {
@@ -382,6 +383,11 @@ var fluid = fluid || fluid_2_0_0;
     };
     // unsupported, NON-API function
     fluid.model.transform.handleInvertStrategy = function (transformSpec, transform, transformOpts) {
+        transformSpec = fluid.copy(transformSpec);
+        // if we have a standardTransformFunction we can switch input and output arguments:
+        if (fluid.hasGrade(transformOpts.defaults, "fluid.standardTransformFunction")) {
+            transformSpec = fluid.model.transform.invertPaths(transformSpec, transform);
+        }
         var invertor = transformOpts.defaults && transformOpts.defaults.invertConfiguration;
         if (invertor) {
             var inverted = fluid.invokeGlobalFunction(invertor, [transformSpec, transform]);
@@ -397,9 +403,11 @@ var fluid = fluid || fluid_2_0_0;
 
         if (standardInput) {
             fluid.model.transform.accumulateStandardInputPath("input", transformSpec, transform, transform.inputPaths);
-        } else if (multiInput) {
+        }
+        if (multiInput) {
             fluid.model.transform.accumulateMultiInputPaths(defaults.inputVariables, transformSpec, transform, transform.inputPaths);
-        } else {
+        }
+        if (!multiInput && !standardInput) {
             var collector = defaults.collectInputPaths;
             if (collector) {
                 var collected = fluid.makeArray(fluid.invokeGlobalFunction(collector, [transformSpec, transform]));

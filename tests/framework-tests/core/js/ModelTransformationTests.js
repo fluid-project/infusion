@@ -59,29 +59,68 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
     };
 
-    fluid.tests.transforms.testOneTransform = function (message, model, transform, method, expected, transformWrap) {
-        if (transformWrap) {
-            transform = fluid.tests.transforms.wrapTransform(transform);
-        }
-        var transformed = fluid.model.transform(model, transform);
-        jqUnit[method].apply(null, [message, expected, (transformWrap ? transformed.value : transformed) ]);
+    fluid.tests.transforms.testOneTransform = function (test) {
+        var transformed = fluid.model.transform(test.model, test.transform);
+        jqUnit[test.method].apply(null, [test.message, test.expected, transformed ]);
     };
 
     fluid.tests.transforms.testOneInversion = function (test) {
-        var inverseRules = fluid.model.transform.invertConfiguration(test.transform);
-        jqUnit.assertDeepEq(test.message + " -- inverted rules", test.invertedRules, inverseRules);
-        if (test.fullyinvertible) {
-            var transformed = fluid.model.transform(test.expected, inverseRules);
-            jqUnit.assertDeepEq(test.message + " -- result transformation with inverse", test.model, transformed);
+        var inverseRules = fluid.model.transform.invertConfiguration(test.transform); // generate B
+        if (test.invertedRules) { // if we got an inverse rule to assert against
+            jqUnit.assertDeepEq(test.message + " -- inverted rules", test.invertedRules, inverseRules);
+        }
+        if (test.fullyInvertible || test.partlyInvertible) {
+            var inverselyTransformed = fluid.model.transform(test.expected, inverseRules); // B(A(x))
+            if (test.fullyInvertible) { // if fully invertible, expect: B(A(x)) = x (where B is inverse of A)
+                jqUnit.assertDeepEq(test.message + " -- transformation with lossless inverse", test.model, inverselyTransformed);
+            } else if (test.partlyInvertible) { // if partly invertiblae, expect: A(x) = A(B(A(x)))
+                if (test.modelAfterInversion) { // if we're provided with a model to assert B(A(x)) against
+                    jqUnit.assertDeepEq(test.message + " -- result transformation with inverse", test.modelAfterInversion, inverselyTransformed);
+                }
+                var trippleTransformed = fluid.model.transform(inverselyTransformed, test.transform);
+                var singleTransformed = fluid.model.transform(test.model, test.transform);
+                jqUnit.assertDeepEq(test.message + " -- partly invertible check", singleTransformed, trippleTransformed);
+            }
         }
     };
 
+    /**
+     * Used to test transformations and potentially their invertibility.
+     * Expects an array of objects, each object holding the test definitions. The extra options
+     * argument are test-options that will be merged with the individual tests options.
+     *
+     * The allowed directives in each test are the following:
+     *
+     * message (REQUIRED): the title of the test (string)
+     * transform (REQUIRED): the transformation rules
+     * expected (REQUIRED): the expected output
+     * model: the source model. If undefined, fluid.tests.transforms.source will be used
+     * invertedRules: How the rules are expected to look after inversion
+     * fullyInvertible: if true, the transformation is tested to see if it's fully invertible
+     *        that is, B(A(x)) = x (where A is regular transformation func, B is inverted func)
+     * partlyInvertible: if true, the transformation is tested to see if it's partly invertible
+     *        that is, A(x) = (A(B(A(x))) (where A is regular transformation func, B is inverted func)
+     * transformWrap: if true, the 'transform' will be wrapped in a: { value: { transform: <content> }}
+     *        where <content> is the original content of the transform property. It will also wrap the
+     *        'expected' content with { value: <expected> }, where <expected> is the original content
+     *        of the 'expected' property. transformWrap is useful for making less verbose tests
+     */
     fluid.tests.transforms.testOneStructure = function (tests, options) {
         fluid.each(tests, function (test) {
-            var v = $.extend(true, {}, options, test);
-            fluid.tests.transforms.testOneTransform(v.message, v.model || fluid.tests.transforms.source, v.transform, v.method, v.expected, v.transformWrap);
-            if (v.invertedRules) {
-                fluid.tests.transforms.testOneInversion(v);
+            test = $.extend(true, {}, options, test);
+            if (test.model === undefined) {
+                test.model = fluid.tests.transforms.source;
+            }
+            if (test.transformWrap) {
+                test.transform = fluid.tests.transforms.wrapTransform(test.transform);
+                test.expected = (test.expected === undefined) ? undefined : { value: test.expected };
+            }
+            if (test.method === undefined) {
+                test.method = "assertDeepEq";
+            }
+            fluid.tests.transforms.testOneTransform(test);
+            if (test.invertedRules || test.fullyInvertible || test.partlyInvertible) {
+                fluid.tests.transforms.testOneInversion(test);
             }
         });
     };
@@ -259,15 +298,83 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
+
+    fluid.tests.transforms.literalValueTests = [{
+        message: "literalValue - basic test",
+        transform: {
+            outie: {
+                transform: {
+                    type: "fluid.transforms.literalValue",
+                    input: "lazers"
+                }
+            }
+        },
+        method: "assertDeepEq",
+        model: {},
+        expected: {
+            outie: "lazers"
+        },
+        fullyInvertible: true
+    }, {
+        message: "literalValue - ensuring that input isn't interpreted",
+        transform: {
+            outie: {
+                transform: {
+                    type: "fluid.transforms.literalValue",
+                    input: {
+                        transform: {
+                            type: "fluid.transforms.helloworld",
+                            value: "I'm not interpreted"
+                        }
+                    }
+                }
+            }
+        },
+        method: "assertDeepEq",
+        model: {},
+        expected: {
+            outie: {
+                transform: {
+                    type: "fluid.transforms.helloworld",
+                    value: "I'm not interpreted"
+                }
+            }
+        },
+        fullyInvertible: true
+    }, {
+        message: "literalValue - shorthand notation",
+        transform: {
+            outie: {
+                "literalValue": {
+                    transform: {
+                        type: "fluid.transforms.helloworld",
+                        value: "I'm not interpreted"
+                    }
+                }
+            }
+        },
+        method: "assertDeepEq",
+        model: {},
+        expected: {
+            outie: {
+                transform: {
+                    type: "fluid.transforms.helloworld",
+                    value: "I'm not interpreted"
+                }
+            }
+        },
+        fullyInvertible: true
+    }];
+
+    jqUnit.test("fluid.transforms.literalValue()", function () {
+        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.literalValueTests);
+    });
+
     fluid.tests.transforms.linearScaleTests = [{
         message: "linearScale - no parameters given",
         transform: {
-            value: {
-                transform: {
-                    type: "fluid.transforms.linearScale",
-                    inputPath: "dozen"
-                }
-            }
+            type: "fluid.transforms.linearScale",
+            inputPath: "dozen"
         },
         invertedRules: {
             transform: [{
@@ -276,27 +383,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 inputPath: "value"
             }]
         },
-        method: "assertDeepEq",
-        model: {
-            dozen: 12
-        },
-        expected: {
-            value: 12
-        },
-        fullyinvertible: true
+        expected: 12
     }, {
         message: "linearScale - factor parameter only",
-        model: {
-            dozen: 12
-        },
         transform: {
-            value: {
-                transform: {
-                    type: "fluid.transforms.linearScale",
-                    inputPath: "dozen",
-                    factor: 0.25
-                }
-            }
+            type: "fluid.transforms.linearScale",
+            inputPath: "dozen",
+            factor: 0.25
         },
         invertedRules: {
             transform: [{
@@ -306,25 +399,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 factor: 4
             }]
         },
-        method: "assertDeepEq",
-        expected: {
-            value: 3
-        },
-        fullyinvertible: true
+        expected: 3
     }, {
         message: "linearScale - factor parameter and offset",
-        model: {
-            dozen: 12
-        },
         transform: {
-            value: {
-                transform: {
-                    type: "fluid.transforms.linearScale",
-                    inputPath: "dozen",
-                    factor: 0.50,
-                    offset: 100
-                }
-            }
+            type: "fluid.transforms.linearScale",
+            inputPath: "dozen",
+            factor: 0.50,
+            offset: 100
         },
         invertedRules: {
             transform: [{
@@ -335,11 +417,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 offset: -200
             }]
         },
-        method: "assertDeepEq",
-        expected: {
-            value: 106
-        },
-        fullyinvertible: true
+        expected: 106
     }, {
         message: "linearScale - everything by path",
         transform: {
@@ -348,13 +426,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             factorPath: "halfdozen",
             offsetPath: "hundred"
         },
-        method: "assertEquals",
-        expected: 172,
-        transformWrap: true
+        model: {
+            dozen: 12,
+            halfdozen: 6,
+            hundred: 100
+        },
+        partlyInvertible: true,
+        fullyInvertible: false,
+        expected: 172
     }];
 
     jqUnit.test("fluid.transforms.linearScale()", function () {
-        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.linearScaleTests);
+        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.linearScaleTests, {
+            fullyInvertible: true,
+            transformWrap: true,
+            model: {
+                dozen: 12
+            }
+        });
     });
 
     fluid.tests.transforms.binaryOpTests = [{
@@ -539,8 +628,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.test("fluid.transforms.binaryOp()", function () {
         fluid.tests.transforms.testOneStructure(fluid.tests.transforms.binaryOpTests, {
-            transformWrap: true,
-            method: "assertEquals"
+            transformWrap: true
         });
     });
 
@@ -553,7 +641,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "true": "it was true",
                 "false": "it was false"
             },
-            method: "assertEquals",
             expected: "it was true"
         }, {
             message: "truePath condition",
@@ -562,7 +649,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 condition: true,
                 "truePath": "cow"
             },
-            method: "assertDeepEq",
             expected: {
                 grass: "chew"
             }
@@ -573,7 +659,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 conditionPath: "catsAreDecent",
                 "true": fluid.tests.transforms.source.bow
             },
-            method: "assertEquals",
             expected: undefined
         }, {
             message: "invalid condition path",
@@ -583,7 +668,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "true": "it was true",
                 "false": "it was false"
             },
-            method: "assertEquals",
             expected: "it was false"
         }, {
             message: "Condition is a string - evaluating to true",
@@ -593,7 +677,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "true": "it was true",
                 "false": "it was false"
             },
-            method: "assertEquals",
             expected: "it was true"
         }, {
             message: "Nesting",
@@ -615,7 +698,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 }
             },
-            method: "assertDeepEq",
             expected: {
                 conclusion: "Congratulations, you are a genius"
             }
@@ -639,7 +721,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 }
             },
-            method: "assertDeepEq",
             expected: {
                 "Antranig": "meow"
             }
@@ -659,8 +740,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.transforms.value",
                 inputPath: "hamster.wheel"
             },
-            method: "assertEquals",
-            expected: fluid.tests.transforms.source.hamster.wheel
+            expected: fluid.tests.transforms.source.hamster.wheel,
+            fullyInvertible: true,
+            model: {
+                "hamster": {
+                    "wheel": "spin"
+                }
+            }
         }, {
             message: "When the path is valid, the value option should not be returned.",
             transform: {
@@ -668,8 +754,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 inputPath: "hamster.wheel",
                 input: "hello!"
             },
-            method: "assertNotEquals",
-            expected: "hello!"
+            expected: "spin"
         }, {
             message: "When the path's value is null, the value option should not be returned.",
             transform: {
@@ -677,8 +762,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 inputPath: "dog",
                 input: "hello!"
             },
-            method: "assertNotEquals",
-            expected: "hello!"
+            expected: null
         }, {
             message: "When the path's value is false, the value option should not be returned.",
             transform: {
@@ -686,8 +770,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 inputPath: "goat",
                 input: "hello!"
             },
-            method: "assertNotEquals",
-            expected: "hello!"
+            expected: false
         }, {
             message: "When the path's value is undefined, the value option should be returned.",
             transform: {
@@ -695,7 +778,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 inputPath: "gerbil",
                 input: "hello!"
             },
-            method: "assertEquals",
             expected: "hello!"
         }, {
             message: "When the path's value is not specified, the value option should be returned.",
@@ -703,7 +785,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.transforms.value",
                 input: "toothpick"
             },
-            method: "assertEquals",
             expected: "toothpick"
         }, {
             message: "When the path's value is defined, the referenced value should be returned.",
@@ -712,7 +793,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 inputPath: "cat",
                 input: "rrrrr"
             },
-            method: "assertEquals",
             expected: fluid.tests.transforms.source.cat
         }, {
             message: "Where input is another transform, the result should be the expanded version of it.",
@@ -740,7 +820,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }]
                 }
             },
-            method: "assertDeepEq",
             expected: {
                 alligator: fluid.tests.transforms.source.hamster,
                 tiger: fluid.tests.transforms.source.hamster.wheel
@@ -748,10 +827,41 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     ];
 
+    fluid.tests.transforms.valueTestsWithInversion = [{
+        message: "Inversion of fluid.transforms.value",
+        model: {
+            hamster: {
+                wheel: "spin"
+            }
+        },
+        transform: {
+            outie: {
+                transform: {
+                    type: "fluid.transforms.value",
+                    inputPath: "hamster.wheel"
+                }
+            }
+        },
+        method: "assertDeepEq",
+        expected: {
+            outie: fluid.tests.transforms.source.hamster.wheel
+        },
+        invertedRules: {
+            transform: [{
+                type: "fluid.transforms.value",
+                outputPath: "hamster.wheel",
+                inputPath: "outie"
+            }]
+        },
+        fullyInvertible: true
+    }];
+
     jqUnit.test("fluid.transforms.value()", function () {
         fluid.tests.transforms.testOneStructure(fluid.tests.transforms.valueTests, {
             transformWrap: true
         });
+
+        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.valueTestsWithInversion);
     });
 
     var transformToShortNames = {
@@ -778,53 +888,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
-    var arrayValueTests = [{
-        message: "arrayValue() should box a non-array value up as one.",
-        transformWrap: true,
-        transform: {
-            type: "fluid.transforms.arrayValue",
-            inputPath: "cat"
-        },
-        expected: [fluid.tests.transforms.source.cat]
-    }, {
-        message: "arrayValue() should not box up an array value.",
-        transformWrap: true,
-        transform: {
-            type: "fluid.transforms.arrayValue",
-            inputPath: "sheep"
-        },
-        expected: fluid.tests.transforms.source.sheep
-    }, {
-        message: "FLUID-5248: arrayValue() with a nested transformation",
-        transformWrap: false,
-        transform: {
-            "b": {
-                "transform": {
-                    "type": "fluid.transforms.arrayValue",
-                    "input": {
-                        "transform": {
-                            "type": "fluid.transforms.linearScale",
-                            "input": 5,
-                            "factor": 0.1
-                        }
-                    }
-                }
-            }
-        },
-        expected: {
-            "b": [0.5]
-        }
-    }];
-
-    jqUnit.test("fluid.transforms.arrayValue()", function () {
-        fluid.tests.transforms.testOneStructure(arrayValueTests, {
-            method: "assertDeepEq"
-        });
-    });
-
     var stringToNumberTests = [{
         message: "stringToNumber() converts integers.",
-        transformWrap: true,
         transform: {
             type: "fluid.transforms.stringToNumber",
             inputPath: "hundredInString"
@@ -833,7 +898,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: fluid.tests.transforms.source.hundred
     }, {
         message: "stringToNumber() converts float values.",
-        transformWrap: true,
         transform: {
             type: "fluid.transforms.stringToNumber",
             inputPath: "floatInString"
@@ -842,7 +906,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: fluid.tests.transforms.source.floatyHighy
     }, {
         message: "stringToNumber() converts negative float values.",
-        transformWrap: true,
         transform: {
             type: "fluid.transforms.stringToNumber",
             inputPath: "floaty2InString"
@@ -850,27 +913,147 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         method: "assertValue",
         expected: fluid.tests.transforms.source.floaty2
     }, {
-        message: "stringToNumber() converts integers.",
-        transformWrap: true,
+        message: "stringToNumber() doesn't convert non-number strings #2",
         transform: {
             type: "fluid.transforms.stringToNumber",
             inputPath: "cat"
         },
-        method: "assertEquals",
         expected: undefined
     }, {
-        message: "stringToNumber() converts integers.",
-        transformWrap: true,
+        message: "stringToNumber() doesn't convert non-number strings",
         transform: {
             type: "fluid.transforms.stringToNumber",
             inputPath: "gerbil"
         },
-        method: "assertEquals",
         expected: undefined
     }];
 
     jqUnit.test("fluid.transforms.stringToNumber()", function () {
-        fluid.tests.transforms.testOneStructure(stringToNumberTests);
+        fluid.tests.transforms.testOneStructure(stringToNumberTests, {
+            transformWrap: true
+        });
+    });
+
+    var numberToStringTests = [{
+        message: "numberToString() converts integers.",
+        transformWrap: true,
+        transform: {
+            type: "fluid.transforms.numberToString",
+            inputPath: "hundred"
+        },
+        method: "assertValue",
+        expected: fluid.tests.transforms.source.hundredInString
+    }, {
+        message: "numberToString() converts float values.",
+        transformWrap: true,
+        transform: {
+            type: "fluid.transforms.numberToString",
+            inputPath: "floatyHighy"
+        },
+        method: "assertValue",
+        expected: fluid.tests.transforms.source.floatInString
+    }, {
+        message: "numberToString() converts negative float values.",
+        transformWrap: true,
+        transform: {
+            type: "fluid.transforms.numberToString",
+            inputPath: "floaty2"
+        },
+        method: "assertValue",
+        expected: fluid.tests.transforms.source.floaty2InString
+    }, {
+        message: "numberToString() doesnt attempt to convert non-numbers.",
+        transformWrap: true,
+        transform: {
+            type: "fluid.transforms.numberToString",
+            inputPath: "cat"
+        },
+        expected: undefined
+    }];
+
+    jqUnit.test("fluid.transforms.numberToString()", function () {
+        fluid.tests.transforms.testOneStructure(numberToStringTests);
+    });
+
+    var stringToNumberAndInverseTests = [{
+        message: "stringToNumber() converts integers - with inversion.",
+        model: {
+            perhapsNumber: "1337"
+        },
+        transform: {
+            outie: {
+                transform: {
+                    type: "fluid.transforms.stringToNumber",
+                    inputPath: "perhapsNumber"
+                }
+            }
+        },
+        method: "assertDeepEq",
+        expected: {
+            outie: 1337
+        },
+        invertedRules: {
+            transform: [{
+                type: "fluid.transforms.numberToString",
+                outputPath: "perhapsNumber",
+                inputPath: "outie"
+            }]
+        },
+        fullyInvertible: true
+    }, {
+        message: "stringToNumber() converts integers - with inversion.",
+        model: {
+            perhapsNumber: "13.37"
+        },
+        transform: {
+            outie: {
+                transform: {
+                    type: "fluid.transforms.stringToNumber",
+                    inputPath: "perhapsNumber"
+                }
+            }
+        },
+        method: "assertDeepEq",
+        expected: {
+            outie: 13.37
+        },
+        invertedRules: {
+            transform: [{
+                type: "fluid.transforms.numberToString",
+                outputPath: "perhapsNumber",
+                inputPath: "outie"
+            }]
+        },
+        fullyInvertible: true
+    }, {
+        message: "numberToString() converts to string - with inversion.",
+        model: {
+            perhapsNumber: 1337
+        },
+        transform: {
+            outie: {
+                transform: {
+                    type: "fluid.transforms.numberToString",
+                    inputPath: "perhapsNumber"
+                }
+            }
+        },
+        method: "assertDeepEq",
+        expected: {
+            outie: "1337"
+        },
+        invertedRules: {
+            transform: [{
+                type: "fluid.transforms.stringToNumber",
+                outputPath: "perhapsNumber",
+                inputPath: "outie"
+            }]
+        },
+        fullyInvertible: true
+    }];
+
+    jqUnit.test("fluid.transforms.stringToNumber() <-> fluid.transforms.numberToString() inversion tests", function () {
+        fluid.tests.transforms.testOneStructure(stringToNumberAndInverseTests);
     });
 
     var countTests = [{
@@ -891,8 +1074,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.test("fluid.transforms.count()", function () {
         fluid.tests.transforms.testOneStructure(countTests, {
-            transformWrap: true,
-            method: "assertEquals"
+            transformWrap: true
         });
     });
 
@@ -917,12 +1099,40 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             inputPath: "floaty2"
         },
         expected: -9877
+    }, {
+        message: "round() is able to do (lacky) inverse.",
+        transform: {
+            outie: {
+                transform: {
+                    type: "fluid.transforms.round",
+                    inputPath: "myin"
+                }
+            }
+        },
+        model: {
+            myin: -912.50
+        },
+        expected: {
+            outie: -912
+        },
+        invertedRules: {
+            transform: [{
+                type: "fluid.transforms.identity",
+                outputPath: "myin",
+                inputPath: "outie"
+            }]
+        },
+        modelAfterInversion: {
+            myin: -912
+        },
+        partlyInvertible: true,
+        transformWrap: false,
+        method: "assertDeepEq"
     }];
 
     jqUnit.test("fluid.transforms.round()", function () {
         fluid.tests.transforms.testOneStructure(roundTests, {
-            transformWrap: true,
-            method: "assertEquals"
+            transformWrap: true
         });
     });
 
@@ -961,12 +1171,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             values: ["hippo", "cat"]
         },
         expected: fluid.tests.transforms.source.hippo
+    }, {
+        message: "firstValue() should return the first non-undefined value in paths",
+        transform: {
+            type: "fluid.transforms.firstValue",
+            values: ["cat", "dog"],
+            outputPath: "whichanimal"
+        },
+        expected: {
+            whichanimal: fluid.tests.transforms.source.cat
+        },
+        method: "assertDeepEq"
     }];
 
     jqUnit.test("fluid.transforms.firstValue()", function () {
         fluid.tests.transforms.testOneStructure(fluid.tests.transforms.firstValueTests, {
-            transformWrap: true,
-            method: "assertEquals"
+            transformWrap: true
         });
     });
 
@@ -2842,16 +3062,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.transforms.undefinedSingleInput = [{
         message: "FLUID-5130: non-existing path.",
-        transformWrap: true,
         transform: {
             type: "fluid.transforms.count",
             inputPath: "idontexist"
         },
-        method: "assertEquals",
         expected: undefined
     }, {
         message: "FLUID-5130: input from expander that evaluates to undefined",
-        transformWrap: true,
         transform: {
             type: "fluid.transforms.count",
             input: {
@@ -2861,12 +3078,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         },
-        method: "assertEquals",
         expected: undefined
     }];
 
     jqUnit.test("Tests for undefined inputs to standardInputTransformations", function () {
-        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.undefinedSingleInput);
+        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.undefinedSingleInput, {
+            transformWrap: true
+        });
     });
 
     fluid.tests.transforms.fluid5703 = [{
@@ -2879,7 +3097,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 thing: "CATTTE"
             }
         },
-        method: "assertEquals",
         expected: "This is a CATTTE"
     }];
 
@@ -2887,12 +3104,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.transforms.testOneStructure(fluid.tests.transforms.fluid5703);
     });
 
-    /* --------------- arrayToObject and objectToArray tests -------------------- */
-    fluid.tests.transforms.arrayObjectArrayTests = [
+    /* --------------- indexArrayByKey and inverse tests -------------------- */
+    fluid.tests.transforms.indexArrayByKeyTests = [
         {
-            name: "Basic Array transformations",
-            expectPerfectInversion: true,
-            raw: {
+            message: "Basic Array transformations",
+            fullyInvertible: true,
+            model: {
                 a: {
                     c: [
                         { name: "c1", val: "vc1" },
@@ -2900,10 +3117,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     ]
                 }
             },
-            rules: {
+            transform: {
                 "a.c": {
                     "transform": {
-                        type: "fluid.transforms.arrayToObject",
+                        type: "fluid.transforms.indexArrayByKey",
                         inputPath: "a.c",
                         key: "name"
                     }
@@ -2923,7 +3140,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             invertedRules: {
                 transform: [
                     {
-                        type: "fluid.transforms.objectToArray",
+                        type: "fluid.transforms.deindexIntoArrayByKey",
                         inputPath: "a.c",
                         outputPath: "a.c",
                         key: "name"
@@ -2931,9 +3148,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 ]
             }
         }, {
-            name: "More Complex Array transformations",
-            expectPerfectInversion: true,
-            raw: {
+            message: "More Complex Array transformations",
+            fullyInvertible: true,
+            model: {
                 b: {
                     b1: "hello",
                     b2: "hello"
@@ -2945,11 +3162,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     ]
                 }
             },
-            rules: {
+            transform: {
                 b: "b",
                 "c.dotted\\.key": {
                     "transform": {
-                        type: "fluid.transforms.arrayToObject",
+                        type: "fluid.transforms.indexArrayByKey",
                         inputPath: "a.dotted\\.key",
                         key: "uni.que"
                     }
@@ -2978,7 +3195,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         inputPath: "b",
                         outputPath: "b"
                     }, {
-                        type: "fluid.transforms.objectToArray",
+                        type: "fluid.transforms.deindexIntoArrayByKey",
                         inputPath: "c.dotted\\.key",
                         outputPath: "a.dotted\\.key",
                         key: "uni.que"
@@ -2986,9 +3203,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 ]
             }
         }, {
-            name: "basic Nested Transformation",
-            expectPerfectInversion: false,
-            raw: {
+            message: "basic Nested Transformation",
+            fullyInvertible: false,
+            model: {
                 foo: {
                     bar: [
                         { product: "salad", info: { price: 10, healthy: "yes" }},
@@ -2996,9 +3213,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     ]
                 }
             },
-            rules: {
+            transform: {
                 transform: {
-                    type: "fluid.transforms.arrayToObject",
+                    type: "fluid.transforms.indexArrayByKey",
                     inputPath: "foo.bar",
                     key: "product",
                     outputPath: "",
@@ -3016,7 +3233,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             invertedRules: {
                 transform: [{
-                    type: "fluid.transforms.objectToArray",
+                    type: "fluid.transforms.deindexIntoArrayByKey",
                     outputPath: "foo.bar",
                     key: "product",
                     innerValue: [{
@@ -3030,9 +3247,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }]
             }
         }, {
-            name: "Nested Array transformations",
-            expectPerfectInversion: true,
-            raw: {
+            message: "Nested Array transformations",
+            fullyInvertible: true,
+            model: {
                 outer: [
                     {
                         outerpivot: "outerkey1",
@@ -3063,17 +3280,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 ]
             },
-            rules: {
+            transform: {
                 "outer": {
                     "transform": {
-                        type: "fluid.transforms.arrayToObject",
+                        type: "fluid.transforms.indexArrayByKey",
                         inputPath: "outer",
                         key: "outerpivot",
                         innerValue: [
                             {
                                 "outervar": {
                                     "transform": {
-                                        type: "fluid.transforms.arrayToObject",
+                                        type: "fluid.transforms.indexArrayByKey",
                                         inputPath: "outervar",
                                         key: "innerpivot"
                                     }
@@ -3115,13 +3332,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             invertedRules: {
                 "transform": [{
-                    type: "fluid.transforms.objectToArray",
+                    type: "fluid.transforms.deindexIntoArrayByKey",
                     inputPath: "outer",
                     outputPath: "outer",
                     key: "outerpivot",
                     innerValue: [{
                         transform: [{
-                            type: "fluid.transforms.objectToArray",
+                            type: "fluid.transforms.deindexIntoArrayByKey",
                             inputPath: "outervar",
                             outputPath: "outervar",
                             key: "innerpivot"
@@ -3130,9 +3347,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }]
             }
         }, {
-            name: "Multiple Nested Array transformations",
-            expectPerfectInversion: true,
-            raw: {
+            message: "Multiple Nested Array transformations",
+            fullyInvertible: true,
+            model: {
                 outer: [
                     {
                         outerpivot: "outerkey1",
@@ -3161,17 +3378,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 ]
             },
-            rules: {
+            transform: {
                 "outer": {
                     "transform": {
-                        type: "fluid.transforms.arrayToObject",
+                        type: "fluid.transforms.indexArrayByKey",
                         inputPath: "outer",
                         key: "outerpivot",
                         innerValue: [
                             {
                                 "outervar.arr1": {
                                     "transform": {
-                                        type: "fluid.transforms.arrayToObject",
+                                        type: "fluid.transforms.indexArrayByKey",
                                         inputPath: "outervar.arr1",
                                         key: "innerpivot1"
                                     }
@@ -3180,7 +3397,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             {
                                 "outervar.arr2": {
                                     "transform": {
-                                        type: "fluid.transforms.arrayToObject",
+                                        type: "fluid.transforms.indexArrayByKey",
                                         inputPath: "outervar.arr2",
                                         key: "innerpivot2"
                                     }
@@ -3213,20 +3430,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             invertedRules: {
                 "transform": [{
-                    type: "fluid.transforms.objectToArray",
+                    type: "fluid.transforms.deindexIntoArrayByKey",
                     inputPath: "outer",
                     outputPath: "outer",
                     key: "outerpivot",
                     innerValue: [{
                         transform: [{
-                            type: "fluid.transforms.objectToArray",
+                            type: "fluid.transforms.deindexIntoArrayByKey",
                             inputPath: "outervar.arr1",
                             outputPath: "outervar.arr1",
                             key: "innerpivot1"
                         }]
                     }, {
                         transform: [{
-                            type: "fluid.transforms.objectToArray",
+                            type: "fluid.transforms.deindexIntoArrayByKey",
                             inputPath: "outervar.arr2",
                             outputPath: "outervar.arr2",
                             key: "innerpivot2"
@@ -3237,26 +3454,319 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     ];
 
-    fluid.tests.transforms.arrayTest = function (json) {
-        var description = json.name;
-        var transformed = fluid.model.transformWithRules(json.raw, json.rules);
-        jqUnit.assertDeepEq(description + " forward transformation", json.expected, transformed);
-        // NOT YET IMPLEMENTED: FLUID-5051
-        // var paths = fluid.model.transform.collectInputPaths(json.rules);
-        // jqUnit.assertDeepEq(description+" path collection", json.expectedInputPaths, paths);
-        var inverseRules = fluid.model.transform.invertConfiguration(json.rules);
-        jqUnit.assertDeepEq(description + " inverted rules", json.invertedRules, inverseRules);
-        if (json.expectPerfectInversion === true) {
-            var inverseTransformed = fluid.model.transformWithRules(json.expected, json.invertedRules);
-            jqUnit.assertDeepEq(description + " inverted transformation", json.raw, inverseTransformed);
-        }
-    };
-
-    jqUnit.test("arrayToObject and objectToArray transformation tests", function () {
-        fluid.each(fluid.tests.transforms.arrayObjectArrayTests, function (v) {
-            fluid.tests.transforms.arrayTest(v);
+    jqUnit.test("indexArrayByKey and inverse transformation tests", function () {
+        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.indexArrayByKeyTests, {
+            method: "assertDeepEq"
         });
     });
+
+        /* --------------- deindexIntoArrayByKey and inverse tests -------------------- */
+    fluid.tests.transforms.deindexIntoArrayByKeyTests = [
+        {
+            message: "Basic Array transformations",
+            fullyInvertible: true,
+            model: {
+                a: {
+                    c: {
+                        c1: { val: "vc1" },
+                        c2: { val: "vc2" }
+                    }
+                }
+            },
+            transform: {
+                "a.c": {
+                    "transform": {
+                        type: "fluid.transforms.deindexIntoArrayByKey",
+                        inputPath: "a.c",
+                        key: "name"
+                    }
+                }
+            },
+            expectedInputPaths: [
+                "a.c"
+            ],
+            expected: {
+                a: {
+                    c: [
+                        { name: "c1", val: "vc1" },
+                        { name: "c2", val: "vc2" }
+                    ]
+                }
+            },
+            invertedRules: {
+                transform: [
+                    {
+                        type: "fluid.transforms.indexArrayByKey",
+                        inputPath: "a.c",
+                        outputPath: "a.c",
+                        key: "name"
+                    }
+                ]
+            }
+        }, {
+            message: "More Complex Array transformations",
+            fullyInvertible: true,
+            model: {
+                b: {
+                    b1: "hello",
+                    b2: "hello"
+                },
+                c: {
+                    "dotted.key": {
+                        "u.q1": { val: { first: "vc1.1", second: "vc1.2" } },
+                        "u.q2": { val: { first: "vc2.1", second: "vc2.2" } }
+                    }
+                }
+            },
+            transform: {
+                b: "b",
+                "a.dotted\\.key": {
+                    "transform": {
+                        type: "fluid.transforms.deindexIntoArrayByKey",
+                        inputPath: "c.dotted\\.key",
+                        key: "uni.que"
+                    }
+                }
+            },
+            expectedInputPaths: [
+                "b",
+                "c.dotted\\.key"
+            ],
+            expected: {
+                b: {
+                    b1: "hello",
+                    b2: "hello"
+                },
+                a: {
+                    "dotted.key": [
+                        { "uni.que": "u.q1", val: { first: "vc1.1", second: "vc1.2" }},
+                        { "uni.que": "u.q2", val: { first: "vc2.1", second: "vc2.2" }}
+                    ]
+                }
+            },
+            invertedRules: {
+                transform: [
+                    {
+                        type: "fluid.transforms.value",
+                        inputPath: "b",
+                        outputPath: "b"
+                    }, {
+                        type: "fluid.transforms.indexArrayByKey",
+                        inputPath: "a.dotted\\.key",
+                        outputPath: "c.dotted\\.key",
+                        key: "uni.que"
+                    }
+                ]
+            }
+        }, {
+            message: "Nested Array transformations",
+            fullyInvertible: true,
+            model: {
+                "outer": {
+                    "outerkey1": {
+                        "outervar": {
+                            "innerkey1.1": {
+                                "innervar": "innerval1.1.1",
+                                "innervarx": "innerval1.1.2"
+                            },
+                            "innerkey1.2": {
+                                "innervar": "innerval1.2.1"
+                            }
+                        }
+                    },
+                    "outerkey2": {
+                        "outervar": {
+                            "innerkey2.1": {
+                                "innervar": "innerval2.1.1",
+                                "innervarx": "innerval2.1.2"
+                            },
+                            "innerkey2.2": {
+                                "innervar": "innerval2.2.1"
+                            }
+                        }
+                    }
+                }
+            },
+            transform: {
+                "outer": {
+                    "transform": {
+                        type: "fluid.transforms.deindexIntoArrayByKey",
+                        inputPath: "outer",
+                        key: "outerpivot",
+                        innerValue: [
+                            {
+                                "outervar": {
+                                    "transform": {
+                                        type: "fluid.transforms.deindexIntoArrayByKey",
+                                        inputPath: "outervar",
+                                        key: "innerpivot"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            expectedInputPaths: [
+                "outer",
+                "outervar"
+            ],
+            expected: {
+                outer: [
+                    {
+                        outerpivot: "outerkey1",
+                        outervar:  [
+                            {
+                                innerpivot: "innerkey1.1",
+                                innervar: "innerval1.1.1",
+                                innervarx: "innerval1.1.2"
+                            },
+                            {
+                                innerpivot: "innerkey1.2",
+                                innervar: "innerval1.2.1"
+                            }
+                        ]
+                    }, {
+                        outerpivot: "outerkey2",
+                        outervar: [
+                            {
+                                innerpivot: "innerkey2.1",
+                                innervar: "innerval2.1.1",
+                                innervarx: "innerval2.1.2"
+                            },
+                            {
+                                innerpivot: "innerkey2.2",
+                                innervar: "innerval2.2.1"
+                            }
+                        ]
+                    }
+                ]
+            },
+            invertedRules: {
+                "transform": [{
+                    type: "fluid.transforms.indexArrayByKey",
+                    inputPath: "outer",
+                    outputPath: "outer",
+                    key: "outerpivot",
+                    innerValue: [{
+                        transform: [{
+                            type: "fluid.transforms.indexArrayByKey",
+                            inputPath: "outervar",
+                            outputPath: "outervar",
+                            key: "innerpivot"
+                        }]
+                    }]
+                }]
+            }
+        }, {
+            message: "Multiple Nested Array transformations",
+            fullyInvertible: true,
+            model: {
+                "outer": {
+                    "outerkey1": {
+                        "outervar": {
+                            "arr1": {
+                                "arr1.1": { "innervar": "arr1.1.1" },
+                                "arr1.2": { "innervar": "arr1.2.1" }
+                            },
+                            "arr2": {
+                                "arr2.1": { "innervar": "arr2.1.1" },
+                                "arr2.2": { "innervar": "arr2.2.1" }
+                            }
+                        }
+                    }
+                }
+            },
+            transform: {
+                "outer": {
+                    "transform": {
+                        type: "fluid.transforms.deindexIntoArrayByKey",
+                        inputPath: "outer",
+                        key: "outerpivot",
+                        innerValue: [
+                            {
+                                "outervar.arr1": {
+                                    "transform": {
+                                        type: "fluid.transforms.deindexIntoArrayByKey",
+                                        inputPath: "outervar.arr1",
+                                        key: "innerpivot1"
+                                    }
+                                }
+                            },
+                            {
+                                "outervar.arr2": {
+                                    "transform": {
+                                        type: "fluid.transforms.deindexIntoArrayByKey",
+                                        inputPath: "outervar.arr2",
+                                        key: "innerpivot2"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            expected: {
+                outer: [
+                    {
+                        outerpivot: "outerkey1",
+                        outervar:  {
+                            arr1: [
+                                {
+                                    innerpivot1: "arr1.1",
+                                    innervar: "arr1.1.1"
+                                },
+                                {
+                                    innerpivot1: "arr1.2",
+                                    innervar: "arr1.2.1"
+                                }
+                            ],
+                            arr2: [
+                                {
+                                    innerpivot2: "arr2.1",
+                                    innervar: "arr2.1.1"
+                                },
+                                {
+                                    innerpivot2: "arr2.2",
+                                    innervar: "arr2.2.1"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            invertedRules: {
+                "transform": [{
+                    type: "fluid.transforms.indexArrayByKey",
+                    inputPath: "outer",
+                    outputPath: "outer",
+                    key: "outerpivot",
+                    innerValue: [{
+                        transform: [{
+                            type: "fluid.transforms.indexArrayByKey",
+                            inputPath: "outervar.arr1",
+                            outputPath: "outervar.arr1",
+                            key: "innerpivot1"
+                        }]
+                    }, {
+                        transform: [{
+                            type: "fluid.transforms.indexArrayByKey",
+                            inputPath: "outervar.arr2",
+                            outputPath: "outervar.arr2",
+                            key: "innerpivot2"
+                        }]
+                    }]
+                }]
+            }
+        }
+    ];
+
+    jqUnit.test("deindexIntoArrayByKey transformation tests", function () {
+        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.deindexIntoArrayByKeyTests, {
+            method: "assertDeepEq"
+        });
+    });
+
 
     /* --------------- fluid.transforms.limitRange tests --------------------*/
 
@@ -3313,8 +3823,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.test("limitRange tests", function () {
         fluid.tests.transforms.testOneStructure(fluid.tests.transforms.limitRangeTests, {
-            transformWrap: true,
-            method: "assertEquals"
+            transformWrap: true
         });
     });
 
@@ -3323,13 +3832,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.transforms.indexOfTests = [{
         message: "indexOf() should return the index of the value on the array.",
         transform: {
-            value: {
-                transform: {
-                    type: "fluid.transforms.indexOf",
-                    array: ["sheep", "dog"],
-                    inputPath: "element"
-                }
-            }
+            type: "fluid.transforms.indexOf",
+            array: ["sheep", "dog"],
+            inputPath: "element"
         },
         invertedRules: {
             transform: [{
@@ -3339,24 +3844,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 inputPath: "value"
             }]
         },
-        method: "assertDeepEq",
         model: {
             element: "dog"
         },
-        expected: {
-            value: 1
-        },
-        fullyinvertible: true
+        expected: 1
     }, {
         message: "indexOf() should return the index of the value when the value of the \"array\" argument is arrayable and match.",
         transform: {
-            value: {
-                transform: {
-                    type: "fluid.transforms.indexOf",
-                    array: "sheep",
-                    inputPath: "element"
-                }
-            }
+            type: "fluid.transforms.indexOf",
+            array: "sheep",
+            inputPath: "element"
         },
         invertedRules: {
             transform: [{
@@ -3366,25 +3863,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 inputPath: "value"
             }]
         },
-        method: "assertDeepEq",
         model: {
             element: "sheep"
         },
-        expected: {
-            value: 0
-        },
-        fullyinvertible: true
+        expected: 0
     }, {
         message: "indexOf() should add offset value to the return.",
         transform: {
-            value: {
-                transform: {
-                    type: "fluid.transforms.indexOf",
-                    array: ["sheep", "dog"],
-                    inputPath: "element",
-                    offset: 3
-                }
-            }
+            type: "fluid.transforms.indexOf",
+            array: ["sheep", "dog"],
+            inputPath: "element",
+            offset: 3
         },
         invertedRules: {
             transform: [{
@@ -3395,25 +3884,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 inputPath: "value"
             }]
         },
-        method: "assertDeepEq",
         model: {
             element: "dog"
         },
-        expected: {
-            value: 4
-        },
-        fullyinvertible: true
+        expected: 4
     }, {
         message: "indexOf() should add offset value to the return even when the offset value can be converted to a number.",
         transform: {
-            value: {
-                transform: {
-                    type: "fluid.transforms.indexOf",
-                    array: ["sheep", "dog"],
-                    inputPath: "element",
-                    offset: "1"
-                }
-            }
+            type: "fluid.transforms.indexOf",
+            array: ["sheep", "dog"],
+            inputPath: "element",
+            offset: "1"
         },
         invertedRules: {
             transform: [{
@@ -3424,14 +3905,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 inputPath: "value"
             }]
         },
-        method: "assertDeepEq",
         model: {
             element: "dog"
         },
-        expected: {
-            value: 2
-        },
-        fullyinvertible: true
+        expected: 2
     }];
 
     fluid.tests.transforms.indexOfBoundaryTests = [{
@@ -3487,11 +3964,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     }];
 
     jqUnit.test("fluid.transforms.indexOf()", function () {
-        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.indexOfTests);
+        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.indexOfTests, {
+            transformWrap: true,
+            fullyInvertible: true
+        });
 
         fluid.tests.transforms.testOneStructure(fluid.tests.transforms.indexOfBoundaryTests, {
             transformWrap: true,
-            method: "assertEquals"
+            partlyInvertible: true
         });
     });
 
@@ -3500,13 +3980,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.transforms.deferenceTests = [{
         message: "dereference() should return the value in an array based on the given index.",
         transform: {
-            value: {
-                transform: {
-                    type: "fluid.transforms.dereference",
-                    array: ["sheep", "dog"],
-                    inputPath: "element"
-                }
-            }
+            type: "fluid.transforms.dereference",
+            array: ["sheep", "dog"],
+            inputPath: "element"
         },
         invertedRules: {
             transform: [{
@@ -3516,24 +3992,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 inputPath: "value"
             }]
         },
-        method: "assertDeepEq",
         model: {
             element: 1
         },
-        expected: {
-            value: "dog"
-        },
-        fullyinvertible: true
+        expected: "dog"
     }, {
         message: "dereference() should return the value when the \"array\" is arrayable and match the given index.",
         transform: {
-            value: {
-                transform: {
-                    type: "fluid.transforms.dereference",
-                    array: "sheep",
-                    inputPath: "element"
-                }
-            }
+            type: "fluid.transforms.dereference",
+            array: "sheep",
+            inputPath: "element"
         },
         invertedRules: {
             transform: [{
@@ -3543,25 +4011,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 inputPath: "value"
             }]
         },
-        method: "assertDeepEq",
         model: {
             element: 0
         },
-        expected: {
-            value: "sheep"
-        },
-        fullyinvertible: true
+        expected: "sheep"
     }, {
         message: "dereference() should take the offset value into consideration.",
         transform: {
-            value: {
-                transform: {
-                    type: "fluid.transforms.dereference",
-                    array: ["sheep", "dog"],
-                    offset: -3,
-                    inputPath: "element"
-                }
-            }
+            type: "fluid.transforms.dereference",
+            array: ["sheep", "dog"],
+            offset: -3,
+            inputPath: "element"
         },
         invertedRules: {
             transform: [{
@@ -3572,25 +4032,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 inputPath: "value"
             }]
         },
-        method: "assertDeepEq",
         model: {
             element: 4
         },
-        expected: {
-            value: "dog"
-        },
-        fullyinvertible: true
+        expected: "dog"
     }, {
         message: "dereference() should take the offset value into consideration if the offset value can be converted to a number.",
         transform: {
-            value: {
-                transform: {
-                    type: "fluid.transforms.dereference",
-                    array: ["sheep", "dog"],
-                    offset: "-1",
-                    inputPath: "element"
-                }
-            }
+            type: "fluid.transforms.dereference",
+            array: ["sheep", "dog"],
+            offset: "-1",
+            inputPath: "element"
         },
         invertedRules: {
             transform: [{
@@ -3601,25 +4053,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 inputPath: "value"
             }]
         },
-        method: "assertDeepEq",
         model: {
             element: 2
         },
-        expected: {
-            value: "dog"
-        },
-        fullyinvertible: true
+        expected: "dog"
     }, {
         message: "dereference() should ignore notFound when the value is found in the array.",
         transform: {
-            value: {
-                transform: {
-                    type: "fluid.transforms.dereference",
-                    array: ["sheep", "dog"],
-                    notFound: "notFound",
-                    inputPath: "element"
-                }
-            }
+            type: "fluid.transforms.dereference",
+            array: ["sheep", "dog"],
+            notFound: "notFound",
+            inputPath: "element"
         },
         invertedRules: {
             transform: [{
@@ -3630,14 +4074,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 inputPath: "value"
             }]
         },
-        method: "assertDeepEq",
         model: {
             element: 0
         },
-        expected: {
-            value: "sheep"
-        },
-        fullyinvertible: true
+        expected: "sheep"
     }];
 
     fluid.tests.transforms.dereferenceBoundaryTests = [{
@@ -3672,23 +4112,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             offset: 3
         },
         expected: undefined
-    }, {
-        message: "dereference() should return what's defined in the notFound when the value is not found in the array.",
-        transform: {
-            type: "fluid.transforms.dereference",
-            array: ["sheep", "dog"],
-            input: -1,
-            notFound: "notFound"
-        },
-        expected: "notFound"
     }];
 
     jqUnit.test("fluid.transforms.dereference()", function () {
-        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.deferenceTests);
+        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.deferenceTests, {
+            transformWrap: true,
+            fullyInvertible: true
+        });
 
         fluid.tests.transforms.testOneStructure(fluid.tests.transforms.dereferenceBoundaryTests, {
-            transformWrap: true,
-            method: "assertEquals"
+            transformWrap: true
         });
     });
 
@@ -3722,18 +4155,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     jqUnit.test("free tests", function () {
         fluid.tests.transforms.testOneStructure(fluid.tests.transforms.freeTests, {
-            transformWrap: true,
-            method: "assertEquals"
+            transformWrap: true
         });
     });
 
     /* --------------- array to set-membership tests -------------------- */
     fluid.tests.transforms.arrayToSetMembershipTests = [{
-        name: "basic test",
-        raw: {
+        message: "basic test 1",
+        model: {
             a: [ "foo", "bar" ]
         },
-        rules: {
+        transform: {
             "b": {
                 "transform": {
                     type: "fluid.transforms.arrayToSetMembership",
@@ -3760,22 +4192,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 {
                     type: "fluid.transforms.setMembershipToArray",
                     outputPath: "a",
+                    inputPath: "b",
                     presentValue: "yes",
                     missingValue: "no",
                     options: {
-                        "b.settingF": "foo",
-                        "b.settingB": "bar",
-                        "b.settingT": "tar"
+                        "settingF": "foo",
+                        "settingB": "bar",
+                        "settingT": "tar"
                     }
                 }
             ]
-        }
+        },
+        fullyInvertible: true
     }, {
-        name: "basic test",
-        raw: {
+        message: "basic test with defaulted present and missing values",
+        model: {
             a: [ "foo", "bar" ]
         },
-        rules: {
+        transform: {
             "b": {
                 "transform": {
                     type: "fluid.transforms.arrayToSetMembership",
@@ -3800,25 +4234,361 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 {
                     type: "fluid.transforms.setMembershipToArray",
                     outputPath: "a",
+                    inputPath: "b",
                     presentValue: true,
                     missingValue: false,
                     options: {
-                        "b.settingF": "foo",
-                        "b.settingB": "bar",
-                        "b.settingT": "tar"
+                        "settingF": "foo",
+                        "settingB": "bar",
+                        "settingT": "tar"
                     }
                 }
             ]
-        }
+        },
+        fullyInvertible: true
     }];
 
     jqUnit.test("arrayToSetMembership and setMembershipToArray transformation tests", function () {
-        fluid.each(fluid.tests.transforms.arrayToSetMembershipTests, function (v) {
-            fluid.tests.transforms.arrayTest(v);
+        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.arrayToSetMembershipTests, {
+            method: "assertDeepEq"
         });
     });
 
-    /* --------------- FLUID-5294: Value should no longer be supported ------------- */
+    /* --------------- array to set-membership tests -------------------- */
+    fluid.tests.transforms.setMembershipToArrayTests = [{
+        message: "basic test",
+        model: {
+            a: {
+                settingF: "yes",
+                settingB: "yes",
+                settingT: "no"
+            }
+        },
+        transform: {
+            b: {
+                transform: {
+                    type: "fluid.transforms.setMembershipToArray",
+                    inputPath: "a",
+                    presentValue: "yes",
+                    missingValue: "no",
+                    options: {
+                        "settingF": "foo",
+                        "settingB": "bar",
+                        "settingT": "tar"
+                    }
+                }
+            }
+        },
+        expected: {
+            b: [ "foo", "bar" ]
+        },
+        invertedRules: {
+            transform: [
+                {
+                    type: "fluid.transforms.arrayToSetMembership",
+                    outputPath: "a",
+                    inputPath: "b",
+                    presentValue: "yes",
+                    missingValue: "no",
+                    options: { //(paths)
+                        "foo": "settingF",
+                        "bar": "settingB",
+                        "tar": "settingT"
+                    }
+                }
+            ]
+        },
+        fullyInvertible: true
+    }, {
+        message: "basic test with defaults for present and missing value",
+        model: {
+            detections: {
+                hasMouse: true,
+                hasKeyboard: true,
+                hasTrackpad: false,
+                hasHeadtracker: false
+            }
+        },
+        transform: {
+            controls: {
+                transform: {
+                    type: "fluid.transforms.setMembershipToArray",
+                    inputPath: "detections",
+                    options: {
+                        hasMouse: "mouse",
+                        hasKeyboard: "keyboard",
+                        hasTrackpad: "trackpad",
+                        hasHeadtracker: "headtracker"
+                    }
+                }
+            }
+        },
+        expected: {
+            controls: [ "mouse", "keyboard" ]
+        },
+        invertedRules: {
+            transform: [
+                {
+                    type: "fluid.transforms.arrayToSetMembership",
+                    outputPath: "detections",
+                    inputPath: "controls",
+                    presentValue: true,
+                    missingValue: false,
+                    options: { //(paths)
+                        mouse: "hasMouse",
+                        keyboard: "hasKeyboard",
+                        trackpad: "hasTrackpad",
+                        headtracker: "hasHeadtracker"
+                    }
+                }
+            ]
+        },
+        fullyInvertible: true
+    }];
+
+    jqUnit.test("setMembershipToArray transformation tests", function () {
+        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.setMembershipToArrayTests, {
+            method: "assertDeepEq"
+        });
+    });
+
+    /* --------------- fluid.transforms.quantize tests -------------------- */
+    fluid.tests.transforms.quantizeTests = [{
+        name: "Basic quantize transformations",
+        rules: {
+            "foo": {
+                "transform": {
+                    "type": "fluid.transforms.quantize",
+                    "inputPath": "someval",
+                    "ranges": [
+                        {
+                            "upperBound": 380,
+                            "output": 1
+                        }, {
+                            "upperBound": 450,
+                            "output": 2
+                        }, {
+                            "upperBound": 600,
+                            "output": {
+                                "transform": {
+                                    "type": "fluid.transforms.literalValue",
+                                    "input": "DOGG",
+                                    "outputPath": "bar"
+                                }
+                            }
+                        }, {
+                            "output": 3
+                        }
+                    ]
+                }
+            }
+        },
+        fixtures: {
+            "low value check": {
+                input: {
+                    someval: 200
+                },
+                expected: {
+                    foo: 1
+                }
+            },
+            "on upper bound limit": {
+                input: {
+                    someval: 380
+                },
+                expected: {
+                    foo: 1
+                }
+            },
+            "interval check": {
+                input: {
+                    someval: 429
+                },
+                expected: {
+                    foo: 2
+                }
+            },
+            "upper default value": {
+                input: {
+                    someval: 1000
+                },
+                expected: {
+                    foo: 3
+                }
+            },
+            "expander in output": {
+                input: {
+                    someval: 500
+                },
+                expected: {
+                    foo: {
+                        bar: "DOGG"
+                    }
+                }
+            }
+        }
+    }, {
+        name: "Treatment of non-finite values",
+        rules: {
+            "transform": {
+                "type": "fluid.transforms.quantize",
+                "inputPath": "",
+                "outputPath": "value",
+                "ranges": [{
+                    "output": 1
+                }]
+            }
+        },
+        fixtures: {
+            "undefined check": {
+            },
+            "NaN check": {
+                input: NaN // warning, this fixture not valid for JSON interchange
+            },
+            "single value check": {
+                input: 6,
+                expected: {
+                    value: 1
+                }
+            }
+        }
+    }];
+
+    jqUnit.test("Quantize tests", function () {
+        fluid.each(fluid.tests.transforms.quantizeTests, function (quantizeTest) {
+            fluid.each(quantizeTest.fixtures, function (test, testname) {
+                var transformed = fluid.model.transformWithRules(test.input, quantizeTest.rules);
+                jqUnit.assertDeepEq(quantizeTest.name + " - " + testname, test.expected, transformed);
+            });
+        });
+    });
+
+     /* --------------- fluid.transforms.inRange tests -------------------- */
+    fluid.tests.transforms.inRangeTests = {
+        rules: {
+            minOnly: {
+                "foo": {
+                    "transform": {
+                        "type": "fluid.transforms.inRange",
+                        "inputPath": "bar",
+                        "min": 100
+                    }
+                }
+            },
+            maxOnly: {
+                "foo": {
+                    "transform": {
+                        "type": "fluid.transforms.inRange",
+                        "inputPath": "bar",
+                        "max": 200
+                    }
+                }
+            },
+            minAndMax: {
+                "foo": {
+                    "transform": {
+                        "type": "fluid.transforms.inRange",
+                        "inputPath": "bar",
+                        "min": 100,
+                        "max": 200
+                    }
+                }
+            }
+        },
+        expects: {
+            "Min only - below threshold": {
+                rule: "minOnly",
+                input: {
+                    bar: 23
+                },
+                expected: {
+                    foo: false
+                }
+            },
+            "Min only - on threshold": {
+                rule: "minOnly",
+                input: {
+                    bar: 100
+                },
+                expected: {
+                    foo: true
+                }
+            },
+            "Min only - above threshold": {
+                rule: "minOnly",
+                input: {
+                    bar: 100
+                },
+                expected: {
+                    foo: true
+                }
+            },
+            "Max only - below threshold": {
+                rule: "maxOnly",
+                input: {
+                    bar: 23
+                },
+                expected: {
+                    foo: true
+                }
+            },
+            "Max only - on threshold": {
+                rule: "maxOnly",
+                input: {
+                    bar: 200
+                },
+                expected: {
+                    foo: true
+                }
+            },
+            "Max only - above threshold": {
+                rule: "maxOnly",
+                input: {
+                    bar: 2100
+                },
+                expected: {
+                    foo: false
+                }
+            },
+            "Min and Max - above threshold": {
+                rule: "minAndMax",
+                input: {
+                    bar: 2100
+                },
+                expected: {
+                    foo: false
+                }
+            },
+            "Min and Max - within range": {
+                rule: "minAndMax",
+                input: {
+                    bar: 160
+                },
+                expected: {
+                    foo: true
+                }
+            },
+            "Min and Max - below threshold": {
+                rule: "minAndMax",
+                input: {
+                    bar: 21
+                },
+                expected: {
+                    foo: false
+                }
+            }
+        }
+    };
+
+    jqUnit.test("fluid.transforms.inRange tests", function () {
+        fluid.each(fluid.tests.transforms.inRangeTests.expects, function (test, tname) {
+            var transformed = fluid.model.transformWithRules(test.input, fluid.tests.transforms.inRangeTests.rules[test.rule]);
+            jqUnit.assertDeepEq("inRange transformation tests - " + tname, test.expected, transformed);
+        });
+    });
+
+
+    /* --------------- FLUID-5294: `value` key should no longer be supported ------------- */
     fluid.tests.transforms.noValueSupport = [{
         message: "Ensure literalValue transformation no longer supports value",
         transform: {
@@ -3913,14 +4683,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: undefined
     }];
 
-    //to test:
-    // test inversions
-
-
     jqUnit.test("FLUID-5294: avoid ambiguous support of 'value' and 'valuePath' - only accept 'input' and 'inputPath'", function () {
         fluid.tests.transforms.testOneStructure(fluid.tests.transforms.noValueSupport, {
-            transformWrap: true,
-            method: "assertEquals"
+            transformWrap: true
         });
     });
 })(jQuery);
