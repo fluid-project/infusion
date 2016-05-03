@@ -217,7 +217,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             var iframeWindow = that.iframe[0].contentWindow;
             that.iframeDocument = iframeWindow.document;
 
-            that.jQuery = iframeWindow.jQuery;
+            // Use the iframe's own jQuery if it's loaded, otherwise use the
+            // parent document
+
+            var iframeWindowHasJQuery = iframeWindow.jQuery !== undefined;
+            that.jQuery = iframeWindowHasJQuery ? iframeWindow.jQuery : $;
+
             that.renderPrefsEditorContainer = that.jQuery("body", that.iframeDocument);
             that.jQuery(that.iframeDocument).ready(that.events.afterRender.fire);
         });

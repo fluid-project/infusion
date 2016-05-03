@@ -42,7 +42,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 "panel": {
                     "type": "fluid.prefs.panel.textSize",
                     "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
-                    "template": "%templatePrefix/PrefsEditorTemplate-textSize.html",
+                    "template": "%templatePrefix/PrefsEditorTemplate-textSize-native.html",
                     "message": "%messagePrefix/textSize.json"
                 }
             },
@@ -63,7 +63,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 "panel": {
                     "type": "fluid.prefs.panel.lineSpace",
                     "container": ".flc-prefsEditor-line-space",  // the css selector in the template where the panel is rendered
-                    "template": "%templatePrefix/PrefsEditorTemplate-lineSpace.html",
+                    "template": "%templatePrefix/PrefsEditorTemplate-lineSpace-native.html",
                     "message": "%messagePrefix/lineSpace.json"
                 }
             },

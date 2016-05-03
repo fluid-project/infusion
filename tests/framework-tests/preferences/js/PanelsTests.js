@@ -1236,7 +1236,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-textSize.html"
+                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-textSize-native.html"
             }
         }
     });
@@ -1304,7 +1304,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-lineSpace.html"
+                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-lineSpace-native.html"
             }
         }
     });
