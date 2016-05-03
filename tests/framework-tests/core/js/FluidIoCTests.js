@@ -170,7 +170,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.expanderMemberTiming();
     });
 
-    /** FLUID-5758 - expanders in listener args which refer to {arguments} **/
+    /** FLUID-5758: expanders in listener args which refer to {arguments} **/
 
     fluid.defaults("fluid.tests.FLUID5758test", {
         gradeNames: "fluid.component",
@@ -198,6 +198,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var comp = fluid.tests.FLUID5758test();
         comp.events.onDoIt.fire("Hugo");
         jqUnit.assertEquals("Resolved value from {arguments}", "Hugo", comp.recorded);
+    });
+
+    /** FLUID-5898: Diagnostic when expanding pathed "fast path" references with mismatched context **/
+    
+    fluid.defaults("fluid.tests.FLUID5898test", {
+        gradeNames: "fluid.component",
+        events: {
+            onDoIt: null
+        },
+        listeners: {
+            onDoIt: "fluid.identity({fluid.mismatched}.member)"
+        }
+    });
+    
+    jqUnit.test("FLUID-5898: diagnostic for pathed reference with mismatched context", function () {
+        var that = fluid.tests.FLUID5898test();
+        jqUnit.expectFrameworkDiagnostic("Received framework diagnostic", function () {
+            that.events.onDoIt.fire();
+        }, ["could not match context", "fluid.mismatched"]);
     });
 
     /** Preservation of material with "exotic types" (with constructor) for FLUID-5089 **/
@@ -2555,13 +2574,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("Invoker contextualisation tests", function() {
-        jqUnit.expect(3);
+        jqUnit.expect(2);
         var that = fluid.tests.test4712parent();
         jqUnit.assertEquals("Child component should be properly instantiated", 3, that.refChild.refChild2.ref3.options.refOption);
         jqUnit.assertEquals("Invoker should resolve on startup", 3, that.refChild.invoker());
         that.refChild.refChild2.destroy();
-        var resolved = that.refChild.invoker();
-        jqUnit.assertEquals("No ginger construction outside fit", undefined, resolved); // Change in behaviour for 2.0 framework - old framework would reconstruct this
+        jqUnit.expectFrameworkDiagnostic("No ginger construction outside fit", function () {
+            // Change in behaviour for 2.0 framework - old framework would reconstruct this
+            that.refChild.invoker();
+        }, ["could not match context", "refChild2"]);
     });
 
     /** FLUID-4285 - prevent attempts to refer to options outside options block **/

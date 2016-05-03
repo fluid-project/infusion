@@ -850,6 +850,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             return foundComponent;
         }
     };
+    
+    fluid.triggerMismatchedPathError = function (parsed, parentThat) {
+        var ref = fluid.renderContextReference(parsed);
+        fluid.fail("Failed to resolve reference " + ref + " - could not match context with name " +
+            parsed.context + " from component " + fluid.dumpThat(parentThat) + " at path " + fluid.pathForComponent(parentThat).join(".") + " component: " , parentThat);
+    };
 
     fluid.makeStackFetcher = function (parentThat, localRecord, fast) {
         var fetcher = function (parsed) {
@@ -862,9 +868,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
             var foundComponent = fluid.resolveContext(context, parentThat, fast);
             if (!foundComponent && parsed.path !== "") {
-                var ref = fluid.renderContextReference(parsed);
-                fluid.fail("Failed to resolve reference " + ref + " - could not match context with name " +
-                    context + " from component " + fluid.dumpThat(parentThat) + " at path " + fluid.pathForComponent(parentThat).join(".") + " component: " , parentThat);
+                fluid.triggerMismatchedPathError(parsed, parentThat);
             }
             return fluid.getForComponent(foundComponent, parsed.path);
         };
@@ -2347,6 +2351,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 root = fluid.getForComponent(component, segs);
             }
             return root;
+        } else if (segs.length > 0) {
+            fluid.triggerMismatchedPathError(source.expander, options.contextThat);
         }
     };
 
