@@ -952,7 +952,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // i) registering an onCreate listener after a component has been created
     // ii) making a faulty call to assertDeepEq with simply a value of "false" which counted as a pass as a result of FLUID-5901
     // iii) Issuing inline configuration to a creator function rather than defining a grade
-    // iv) General problems with workflow - the test fixtues seem to appeal to a sequence of events following the addition of listeners
+    // iv) General problems with workflow - the test fixtures seem to appeal to a sequence of events following the addition of listeners
     // which don't in fact occur at these points (onCreate, afterRender, etc.)
 
     jqUnit.test("FLUID-5220: onDomBind", function () {

@@ -14,14 +14,16 @@
     "use strict";
 
     fluid.registerNamespace("fluid.tests.jqUnit");
-    
+
     jqUnit.module("Conventional jqUnit tests");
-    
+
     fluid.tests.jqUnit.failIsPass = false;
-    
-    // We have to use this insane scheme for subverting QUnit's accounting rather than a teardown function,
-    // since we need to beat qunit-composite.js own logging function. When will the "industry" learn that
-    // integration is the first priority?
+
+    // Insanely, we need both the teardown function and the log subversion because qunit-composite.js uses a completely
+    // different strategy to the standard QUnit UI for accounting for test failures:
+    // https://github.com/fluid-project/infusion/blob/master/tests/lib/qunit/addons/composite/qunit-composite.js#L79 .
+    // If we just use failingTeardown, the main QUnit UI works fine, but the "failures" are rendered as real failures in the iframe-based all-tests.html driver.
+    // When will the "industry" learn that integration is the first priority?
     QUnit.log(function (data) {
         if (fluid.tests.jqUnit.failIsPass) {
             data.result = !data.result;
