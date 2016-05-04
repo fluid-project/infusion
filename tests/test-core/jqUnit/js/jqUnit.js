@@ -172,7 +172,7 @@ var jqUnit = jqUnit || {};
         },
 
         assertDeepEq: function (msg, expected, actual) {
-            if (fluid.isPrimitive(expected)) {
+            if (fluid.isPrimitive(expected) || fluid.isPrimitive(actual)) {
                 jqUnit.assertEquals(msg, expected, actual);
             } else {
                 QUnit.propEqual(actual, expected, processMessage(msg));
@@ -180,7 +180,7 @@ var jqUnit = jqUnit || {};
         },
 
         assertDeepNeq: function (msg, unexpected, actual) {
-            if (fluid.isPrimitive(unexpected)) {
+            if (fluid.isPrimitive(unexpected) || fluid.isPrimitive(actual)) {
                 jqUnit.assertNotEquals(msg, unexpected, actual);
             } else {
                 QUnit.notPropEqual(actual, unexpected, processMessage(msg));
