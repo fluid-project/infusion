@@ -1546,7 +1546,7 @@ var fluid = fluid || fluid_2_0_0;
             fluid.fail("Error in listeners declaration - the keys in this structure must resolve to event names - got " + key + " from ", source);
         }
         // cf. triage in mergeListeners
-        var hasNamespace = key.charAt(0) !== "{" && key.indexOf(".") !== -1;
+        var hasNamespace = !fluid.isIoCReference(key) && key.indexOf(".") !== -1;
         return hasNamespace ? (source || target) : fluid.arrayConcatPolicy(target, source);
     };
 
@@ -1643,7 +1643,7 @@ var fluid = fluid || fluid_2_0_0;
         for (var i = gradeNames.length - 1; i >= 0; -- i) { // from stronger to weaker
             var gradeName = gradeNames[i];
             if (gradeName && !gs.gradeHash[gradeName]) {
-                var isDynamic = gradeName.charAt(0) === "{";
+                var isDynamic = fluid.isIoCReference(gradeName);
                 var options = (isDynamic ? null : fluid.rawDefaults(gradeName)) || {};
                 var thisTick = gradeTickStore[gradeName] || (gradeTick - 1); // a nonexistent grade is recorded as just previous to current
                 gs.lastTick = Math.max(gs.lastTick, thisTick);

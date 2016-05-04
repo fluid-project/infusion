@@ -563,7 +563,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         rec.gradeNames.push.apply(rec.gradeNames, newDefaults.gradeNames);
         
         fluid.each(rec.gradeNames, function (gradeName) {
-            if (gradeName.charAt(0) !== "{") {
+            if (!fluid.isIoCReference(gradeName)) {
                 rec.seenGrades[gradeName] = true;
             }
         });
@@ -587,7 +587,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.accumulateDynamicGrades = function (rec, newGradeNames) {
         fluid.each(newGradeNames, function (gradeName) {
             if (!rec.seenGrades[gradeName]) {
-                if (gradeName.charAt(0) === "{") {
+                if (fluid.isIoCReference(gradeName)) {
                     rec.rawDynamic.push(gradeName);
                     rec.seenGrades[gradeName] = true;
                 } else if (!fluid.contains(rec.oldGradeNames, gradeName)) {
@@ -1345,7 +1345,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.bindDeferredComponent = function (that, componentName, component) {
         var events = fluid.makeArray(component.createOnEvent);
         fluid.each(events, function(eventName) {
-            var event = eventName.charAt(0) === "{" ? fluid.expandOptions(eventName, that) : that.events[eventName];
+            var event = fluid.isIoCReference(eventName) ? fluid.expandOptions(eventName, that) : that.events[eventName];
             if (!event || !event.addListener) {
                 fluid.fail("Error instantiating createOnEvent component with name " + componentName + " of parent ", that, " since event specification " +
                     eventName + " could not be expanded to an event - got ", event);
