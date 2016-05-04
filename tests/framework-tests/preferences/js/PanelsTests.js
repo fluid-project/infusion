@@ -946,6 +946,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.panel"]
     });
 
+    /**
+
+    // This test is very faulty and has been commented out. There are several problems, including
+    // i) registering an onCreate listener after a component has been created
+    // ii) making a faulty call to assertDeepEq with simply a value of "false" which counted as a pass as a result of FLUID-5901
+    // iii) Issuing inline configuration to a creator function rather than defining a grade
+    // iv) General problems with workflow - the test fixtues seem to appeal to a sequence of events following the addition of listeners
+    // which don't in fact occur at these points (onCreate, afterRender, etc.)
+
     jqUnit.test("FLUID-5220: onDomBind", function () {
         // TODO: Rewrite this highly stateful test using the IoC Testing Framework
         var that = fluid.prefs.compositePanel(".fluid-5220", {
@@ -994,6 +1003,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         that.refreshView();
     });
+    */
 
     /* end FLUID-5220 */
 

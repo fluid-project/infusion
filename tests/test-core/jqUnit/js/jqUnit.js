@@ -12,11 +12,11 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/* global fluid, QUnit */
+/* global fluid_2_0_0, QUnit */
 
 var jqUnit = jqUnit || {};
 
-(function ($) {
+(function ($, fluid) {
     "use strict";
 
     var QUnitPassthroughs = ["module", "test", "asyncTest", "throws", "raises", "start", "stop", "expect"];
@@ -172,11 +172,19 @@ var jqUnit = jqUnit || {};
         },
 
         assertDeepEq: function (msg, expected, actual) {
-            QUnit.propEqual(actual, expected, processMessage(msg));
+            if (fluid.isPrimitive(expected)) {
+                jqUnit.assertEquals(msg, expected, actual);
+            } else {
+                QUnit.propEqual(actual, expected, processMessage(msg));
+            }
         },
 
         assertDeepNeq: function (msg, unexpected, actual) {
-            QUnit.notPropEqual(actual, unexpected, processMessage(msg));
+            if (fluid.isPrimitive(unexpected)) {
+                jqUnit.assertNotEquals(msg, unexpected, actual);
+            } else {
+                QUnit.notPropEqual(actual, unexpected, processMessage(msg));
+            }
         },
         // This version of "expect" offers the cumulative semantic we desire
         expect: function (number) {
@@ -285,4 +293,4 @@ var jqUnit = jqUnit || {};
         }
     };
 
-})(jQuery);
+})(jQuery, fluid_2_0_0);
