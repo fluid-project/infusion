@@ -1250,22 +1250,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 condition: true
             },
             transform: {
-                type: "fluid.transforms.valueMapper",
-                defaultInputPath: "condition",
-                defaultOutputValue: "CATTOO",
-                match: {
-                    "true": {
-                        outputPath: "trueCATT",
-                        outputUndefinedValue: true
-                    },
-                    "false": {
-                        outputPath: "falseCATT"
+                transform: {
+                    type: "fluid.transforms.valueMapper",
+                    defaultInputPath: "condition",
+                    defaultOutputValue: "CATTOO",
+                    match: {
+                        "true": {
+                            outputPath: "trueCATT",
+                            outputUndefinedValue: true
+                        },
+                        "false": {
+                            outputPath: "falseCATT"
+                        }
                     }
                 }
             },
-            expected: {
-                "trueCATT": undefined
-            }
+            expected: {},
+            transformWrap: false
         },
         "outputUndefinedValue-falsevalue": {
             message: "valueMapper with outputUndefinedValue set to false",
@@ -1346,22 +1347,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 whichCountry: "Brazil"
             },
             transform: {
-                type: "fluid.transforms.valueMapper",
-                defaultInputPath: "whichAnimal",
-                defaultOutputValue: "CATT",
-                match: [
-                    {
-                        inputPath: "bogusPath",
-                        inputValue: "CATTOO",
-                        outputPath: "trueCATT"
-                    }, {
-                        inputPath: "bogusPath",
-                        inputValue: "tiger",
-                        outputPath: "falseCATT"
-                    }
-                ]
+                transform: {
+                    type: "fluid.transforms.valueMapper",
+                    defaultInputPath: "whichAnimal",
+                    defaultOutputValue: "CATT",
+                    match: [
+                        {
+                            inputPath: "bogusPath",
+                            inputValue: "CATTOO",
+                            outputPath: "trueCATT"
+                        }, {
+                            inputPath: "bogusPath",
+                            inputValue: "tiger",
+                            outputPath: "falseCATT"
+                        }
+                    ]
+                }
             },
-            expected: {}
+            expected: {},
+            transformWrap: false
         },
         "inputPath-double-match-first-returned": {
             message: "inputPath - if multiple directives matches, first one is returned",
@@ -1449,25 +1453,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 whichAnimal: "CATTOO"
             },
             transform: {
-                type: "fluid.transforms.valueMapper",
-                defaultInputPath: "condition",
-                defaultOutputValue: "CATTOO",
-                defaultOutputPath: "mypath",
-                match: [
-                    {
-                        inputValue: "eagle",
-                        outputPath: "trueCATT"
-                    }, {
-                        inputValue: "tiger",
-                        outputPath: "falseCATT"
+                transform: {
+                    type: "fluid.transforms.valueMapper",
+                    defaultInputPath: "condition",
+                    defaultOutputValue: "CATTOO",
+                    defaultOutputPath: "mypath",
+                    match: [
+                        {
+                            inputValue: "eagle",
+                            outputPath: "trueCATT"
+                        }, {
+                            inputValue: "tiger",
+                            outputPath: "falseCATT"
+                        }
+                    ],
+                    noMatch: {
+                        outputPath: "WhosThat",
+                        outputUndefinedValue: true
                     }
-                ],
-                noMatch: {
-                    outputPath: "WhosThat",
-                    outputUndefinedValue: true
                 }
             },
-            expected: {}
+            expected: {},
+            transformWrap: false
         },
         "noMatch-works-with-defaultOutputValue": {
             message: "valueMapper using noMatch is working with defaultOutputValue",
@@ -1627,7 +1634,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 correct: {
                     path: "Elephant - Brilliant work, it is indeed big"
                 }
-            }
+            },
+            partlyInvertible: false // due to nested transforms
         },
         "valueMapping-multiout": {
             message: "valueMapper with multiple outputs to different paths",
@@ -1661,7 +1669,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     synth: "silence",
                     outputDevice: "Microsoft Sound Mapper"
                 }
-            }
+            },
+            partlyInvertible: false // due to nested transforms
         },
         "FLUID-5300": {
             message: "FLUID-5300: Compact way to produce literal output",
@@ -1691,13 +1700,32 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 hazard: "flashing"
             },
             transform: {
-                type: "fluid.transforms.valueMapper",
-                defaultInputPath: "hazard",
-                match: {
-                    "flashing": "test"
+                value: {
+                    transform: {
+                        type: "fluid.transforms.valueMapper",
+                        defaultInputPath: "hazard",
+                        match: {
+                            "flashing": "test"
+                        }
+                    }
                 }
             },
-            expected: "test"
+            expected: {
+                value: "test"
+            },
+            invertedRules: {
+                transform: [{
+                    type: "fluid.transforms.valueMapper",
+                    defaultOutputPath: "hazard",
+                    defaultInputPath: "value",
+                    match: [{
+                        inputValue: "test",
+                        outputValue: "flashing"
+                    }]
+                }]
+            },
+            transformWrap: false
+
         },
         "FLUID-5608": {
             message: "FLUID-5608: be able to output `false` (as outputValue) in short format",
@@ -1871,7 +1899,46 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.transforms.valueMapper",
                 defaultInputPath: "info",
                 defaultOutputPath: "creature",
-                match: fluid.tests.transforms.mapperMatchDirectiveForPartial
+                match: [
+                    {
+                        inputValue: {
+                            "legs": 2,
+                            "arms": 2,
+                            "hasLazers": true
+                        },
+                        outputValue: "KASPARNET"
+                    }, {
+                        inputValue: {
+                            "legs": 2,
+                            "arms": 2,
+                            "veryhairy": false
+                        },
+                        partialMatches: true,
+                        outputValue: "human"
+                    }
+                ]
+            },
+            invertedRules: {
+                transform: [{
+                    type: "fluid.transforms.valueMapper",
+                    defaultOutputPath: "info",
+                    defaultInputPath: "value.creature",
+                    match: [{
+                        inputValue: "KASPARNET",
+                        outputValue: {
+                            "legs": 2,
+                            "arms": 2,
+                            "hasLazers": true
+                        }
+                    }, {
+                        outputValue: {
+                            "legs": 2,
+                            "arms": 2,
+                            "veryhairy": false
+                        },
+                        inputValue: "human"
+                    }]
+                }]
             },
             expected: {
                 creature: "KASPARNET"
@@ -1955,14 +2022,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             transform: {
-                type: "fluid.transforms.valueMapper",
-                defaultInputPath: "info",
-                defaultOutputPath: "creature",
-                match: fluid.tests.transforms.mapperMatchDirectiveForPartial
+                transform: {
+                    type: "fluid.transforms.valueMapper",
+                    defaultInputPath: "info",
+                    defaultOutputPath: "creature",
+                    match: fluid.tests.transforms.mapperMatchDirectiveForPartial
+                }
             },
-            expected: {
-                creature: undefined
-            }
+            expected: {},
+            transformWrap: false
         }, {
             message: "valueMapper partialMatches: working with defaultOutputValue",
             model: {
@@ -1980,7 +2048,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             expected: {
                 creature: "default animal"
-            }
+            },
+            partlyInvertible: false // due to usage of defaultOutputValue
         }, {
             message: "valueMapper partialMatches: working with outputPath overrides default",
             model: {
@@ -2000,7 +2069,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 secretPath: "default animal"
             }
         }, {
-            message: "valueMapper - exact partialMatche vs. input path - first entry wins",
+            message: "valueMapper - exact partialMatch vs. input path - first entry wins",
             model: {
                 info: {
                     "special": 2,
@@ -2026,6 +2095,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             expected: {
                 whoWon: "inputPath won"
+            },
+            invertedRules: {
+                transform: [{
+                    type: "fluid.transforms.valueMapper",
+                    defaultInputPath: "value.whoWon",
+                    defaultOutputPath: "info",
+                    match: [{
+                        outputPath: "info.special",
+                        inputValue: "inputPath won",
+                        outputValue: 2
+                    }, {
+                        outputValue: {
+                            "special": 2,
+                            "other": true
+                        },
+                        inputValue: "partialMatches won"
+                    }]
+                }]
             }
         }, {
             message: "valueMapper - exact partialMatche vs. input path - first entry wins #2",
@@ -2054,6 +2141,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             expected: {
                 whoWon: "partialMatches won"
+            },
+            invertedRules: {
+                transform: [{
+                    type: "fluid.transforms.valueMapper",
+                    defaultInputPath: "value.whoWon",
+                    defaultOutputPath: "info",
+                    match: [{
+                        outputValue: {
+                            "special": 2,
+                            "other": true
+                        },
+                        inputValue: "partialMatches won"
+                    }, {
+                        outputPath: "info.special",
+                        inputValue: "inputPath won",
+                        outputValue: 2
+                    }]
+                }]
             }
         }, {
             message: "valueMapper - unexact partialMatch vs. input path - input path wins",
@@ -2081,6 +2186,86 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             expected: {
                 whoWon: "inputPath won"
+            },
+            partlyInvertible: false // due to the two matches actually being identical wrt what they're testing (ie. info.special: 2)
+        }, {
+            message: "valueMapper - partial match when part of it is given as inputPath (a part which doesn't affect how well it matches) #1",
+            model: {
+                a: {
+                    b: 1,
+                    c: 2
+                }
+            },
+            transform: {
+                type: "valueMapper",
+                defaultInputPath: "",
+                defaultOutputPath: "whoWon",
+                match: [{
+                    inputPath: "a",
+                    partialMatches: true,
+                    inputValue: { b: 1 },
+                    outputValue: "first one"
+                }, {
+                    partialMatches: true,
+                    inputValue: { a: { b: 1 }},
+                    outputValue: "second one"
+                }]
+            },
+            expected: {
+                whoWon: "first one"
+            }
+        }, {
+            message: "valueMapper - partial match when part of it is given as inputPath (a part which doesn't affect how well it matches) #2",
+            model: {
+                a: {
+                    b: 1,
+                    c: 2
+                }
+            },
+            transform: {
+                type: "valueMapper",
+                defaultInputPath: "",
+                defaultOutputPath: "whoWon",
+                match: [{
+                    partialMatches: true,
+                    inputValue: { a: { b: 1 }},
+                    outputValue: "new first one"
+                }, {
+                    inputPath: "a",
+                    partialMatches: true,
+                    inputValue: { b: 1 },
+                    outputValue: "new second one"
+                }]
+            },
+            expected: {
+                whoWon: "new first one"
+            }
+        }, {
+            message: "valueMapper: we partial match only looking at the content of the given path",
+            model: {
+                a: {
+                    b: 1,
+                    c: 2
+                },
+                x: "extra"
+            },
+            transform: {
+                type: "valueMapper",
+                defaultInputPath: "",
+                defaultOutputPath: "outie",
+                match: [{
+                    partialMatches: true,
+                    inputPath: "a",
+                    inputValue: { b: 1 },
+                    outputValue: "first"
+                }, {
+                    partialMatches: true,
+                    inputValue: { a: { b: 1 }},
+                    outputValue: "second"
+                }]
+            },
+            expected: {
+                outie: "first"
             }
         }
     ];
@@ -2088,11 +2273,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("fluid.transforms.valueMapper()", function () {
         fluid.tests.transforms.testOneStructure(fluid.tests.transforms.mapperTests, {
             transformWrap: true,
-            method: "assertDeepEq"
+            method: "assertDeepEq",
+            partlyInvertible: true
         });
         fluid.tests.transforms.testOneStructure(fluid.tests.transforms.mapperTestsForPartial, {
             transformWrap: true,
-            method: "assertDeepEq"
+            method: "assertDeepEq",
+            partlyInvertible: true
         });
 
     });
@@ -2511,6 +2698,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             transform: [{
                 type: "fluid.transforms.valueMapper",
                 defaultOutputPath: "tracking",
+                defaultInputPath: "",
                 match: [
                     {
                         inputPath: "FollowMouse",
@@ -2544,6 +2732,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             transform: [{
                 type: "fluid.transforms.valueMapper",
                 defaultOutputPath: "condition",
+                defaultInputPath: "",
                 match: [ {
                     outputValue: true,
                     inputValue: "CATTOO",

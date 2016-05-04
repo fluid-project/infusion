@@ -856,7 +856,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /** FLUID-5866: Global priorities mediated without "priorityHolder" component **/
-    
+
     fluid.defaults("fluid.tests.fluid5866root", {
         gradeNames: "fluid.modelComponent",
         components: {
@@ -1971,8 +1971,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             target: "flashingRender",
             singleTransform: {
                 type: "fluid.transforms.valueMapper",
-                inputPath: "",
-                options: [{ // slightly modified from version in ModelTransformationTests.js to test a variant expression of the same rules (all are compound here)
+                defaultInputPath: "",
+                match: [{ // slightly modified from version in ModelTransformationTests.js to test a variant expression of the same rules (all are compound here)
                     inputValue: {
                         "flashing": true,
                         "noFlashingHazard": false
@@ -2137,9 +2137,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.tests.fluid5632root2();
         }, "settling");
     });
-    
+
     // FLUID-5885: Correct context for indirect model relay
-    
+
     fluid.defaults("fluid.tests.fluid5885root", {
         gradeNames: "fluid.modelComponent",
         components: {
@@ -2154,11 +2154,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-    
+
     fluid.tests.fluid5885listener = function (actualThat, expectedThat) {
         jqUnit.assertEquals("Context \"that\" should be site of definition", expectedThat, actualThat);
     };
-    
+
     jqUnit.test("FLUID-5885: Proper contextualisation of \"that\" during indirect model listener", function () {
         jqUnit.expect(1);
         var that = fluid.tests.fluid5885root();
