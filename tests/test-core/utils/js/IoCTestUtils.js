@@ -330,7 +330,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     // TODO: This will eventually go into the core framework for "Luke Skywalker Event Binding"
     fluid.analyseTarget = function (testCaseState, material, expectedPrefix) {
-        if (typeof(material) === "string" && material.charAt(0) === "{") {
+        if (fluid.isIoCReference(material)) {
             var parsed = fluid.parseContextReference(material);
             if (fluid.isIoCSSSelector(parsed.context)) {
                 var selector = fluid.parseSelector(parsed.context, fluid.IoCSSMatcher);

@@ -442,6 +442,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("test", testDefaults);
 
     jqUnit.test("Defaults: store and retrieve default values", function () {
+        jqUnit.expect(4);
         // Assign a collection of defaults for the first time.
 
         jqUnit.assertCanoniseEqual("defaults() should return the specified defaults",
@@ -455,10 +456,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             baz: "foo"
         };
         fluid.defaults("test", testDefaults2);
-        jqUnit.assertCanoniseEqual("defaults() should return the original defaults",
-            testDefaults2, fluid.defaults("test"), function (options) {
+        var retrieved = fluid.defaults("test");
+        jqUnit.assertCanoniseEqual("defaults() should return the updated defaults",
+            testDefaults2, retrieved, function (options) {
                 return fluid.filterKeys(options, ["foo", "baz"]);
             });
+        var assignException;
+
+        try {
+            retrieved.baz = "quux";
+        } catch (e) {
+            assignException = e;
+        }
+        jqUnit.assertValue("Retrieved defaults should be immutable", assignException);
 
         // Try to access defaults for a component that doesn't exist.
         jqUnit.assertNoValue("The defaults for a nonexistent component should be null.",

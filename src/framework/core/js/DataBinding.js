@@ -416,7 +416,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         };
         var parsed; // resolve ref into context and modelSegs
         if (typeof(ref) === "string") {
-            if (ref.charAt(0) === "{") {
+            if (fluid.isIoCReference(ref)) {
                 parsed = fluid.parseModelReference(that, ref);
                 var modelPoint = parsed.segs.indexOf("model");
                 if (modelPoint === -1) {
@@ -783,7 +783,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.parseImplicitRelay = function (that, modelRec, segs, options) {
         var value;
-        if (typeof(modelRec) === "string" && modelRec.charAt(0) === "{") {
+        if (fluid.isIoCReference(modelRec)) {
             var parsed = fluid.parseValidModelReference(that, "model reference from model (implicit relay)", modelRec, true);
             if (parsed.nonModel) {
                 value = fluid.getForComponent(parsed.that, parsed.segs);
@@ -853,6 +853,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.establishModelRelay = function (that, optionsModel, optionsML, optionsMR, applier) {
+        var shadow = fluid.shadowForComponent(that);
+        if (!shadow.modelRelayEstablished) {
+            shadow.modelRelayEstablished = true;
+        } else {
+            fluid.fail("FLUID-5887 failure: Model relay initialised twice on component", that);
+        }
         fluid.mergeModelListeners(that, optionsML);
 
         var enlist = fluid.enlistModelComponent(that);

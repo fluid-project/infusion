@@ -843,7 +843,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             layoutListener: { // This becomes the namespace of the listener
                 path: [
                     "position", {
-                        segs: [["windowHolders"], "{that}.options.ourWindow"]
+                        segs: ["windowHolders", "{that}.options.ourWindow"]
                     }
                 ],
                 priority: "before:notifyExternal",
