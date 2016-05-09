@@ -274,8 +274,11 @@ html>body .fl-uploader span.fl-uploader-browse {
 }
 
 .fl-uploader span.fl-uploader-browse:hover {
-    border: 1px solid #CCC;
     background-color: #FFF;
+}
+
+span.fl-uploader-browse:hover{
+    border: 1px solid #CCC;
 }
 
 .fl-uploader span.fl-uploader-browse:focus, .fl-uploader span.fl-uploader-browse.focus {
