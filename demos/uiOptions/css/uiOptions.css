@@ -41,9 +41,10 @@ main {
 }
 
 .demo-columns {
-    -webkit-columns: 12.5rem 4;
-    -moz-columns: 12.5rem 4;
-    columns: 12.5rem 4;
+
+    -webkit-columns: 20%;
+    -moz-columns: 20%;
+    columns: 20%;
 }
 
 .demo-column {
