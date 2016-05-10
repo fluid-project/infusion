@@ -305,6 +305,9 @@ var fluid = fluid || fluid_2_0_0;
 
         var def = fluid.firstDefined;
         fluid.each(transformSpec.match, function (option, key) {
+            if (option.outputUndefinedValue === true) {
+                return; // dont attempt to invert undefined output value entries
+            }
             var outOption = {};
             var origInputValue = def(isArray ? option.inputValue : key, transformSpec.defaultInputValue);
             if (origInputValue === undefined) {

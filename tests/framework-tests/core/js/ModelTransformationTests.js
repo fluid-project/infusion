@@ -1393,6 +1393,29 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 smartAnimal: "youWin"
             }
         },
+        "multiMatch-test": {
+            message: "valueMapper tie-breaks equally good matches by selecting the first",
+            model: {
+                whichAnimal: "CATTOO"
+            },
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultInputPath: "whichAnimal",
+                defaultOutputValue: "CATTOO",
+                match: [
+                    {
+                        inputValue: "CATTOO",
+                        outputPath: "firstCATT"
+                    }, {
+                        inputValue: "CATTOO",
+                        outputPath: "secondCATT"
+                    }
+                ]
+            },
+            expected: {
+                "firstCATT": "CATTOO"
+            }
+        },
         "noMatch-test1": {
             message: "valueMapper using noMatch",
             model: {
@@ -1529,21 +1552,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expected: {
                 mypath: "myValue"
             }
-        },
-        "unmatched-undefined-short": { // TODO KASPER: Seriously??????
-            message: "valueMapper with undefined input value mapped to undefined value with short form",
-            model: {},
-            transform: {
-                type: "fluid.transforms.valueMapper",
-                defaultInputPath: "uncondition",
-                defaultOutputPath: "wouldbeCATT",
-                match: {
-                    "undefined": {
-                        outputUndefinedValue: true
-                    }
-                }
-            },
-            expected: undefined
         },
         "defaultOutpath": {
             message: "valueMapper with defaultOutputPath",
@@ -1825,7 +1833,44 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expected: {
                 flashing: "unknown"
             }
-
+        },
+        "UndefinedOutputValue-test": {
+            message: "valueMapper - UndefinedOutputValue behaves correctly on inversion",
+            model: {
+                info: {
+                    "tester": true,
+                    "bester": true
+                }
+            },
+            transform: {
+                transform: {
+                    type: "fluid.transforms.valueMapper",
+                    defaultInputPath: "info",
+                    defaultOutputPath: "whoWon",
+                    match: [{
+                        inputValue: "tester",
+                        partialMatches: true,
+                        outputUndefinedValue: true
+                    }, {
+                        inputValue: "bester",
+                        outputValue: "I'm hit",
+                        partialMatches: true
+                    }]
+                }
+            },
+            expected: {},
+            invertedRules: {
+                transform: [{
+                    type: "fluid.transforms.valueMapper",
+                    defaultInputPath: "whoWon",
+                    defaultOutputPath: "info",
+                    match: [{
+                        outputValue: "bester",
+                        inputValue: "I'm hit"
+                    }]
+                }]
+            },
+            transformWrap: false
         }
     };
 
@@ -2048,8 +2093,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             expected: {
                 creature: "default animal"
-            },
-            partlyInvertible: false // due to usage of defaultOutputValue
+            }
         }, {
             message: "valueMapper partialMatches: working with outputPath overrides default",
             model: {
@@ -2115,7 +2159,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }]
             }
         }, {
-            message: "valueMapper - exact partialMatche vs. input path - first entry wins #2",
+            message: "valueMapper - exact partialMatches vs. input path - first entry wins #2",
             model: {
                 info: {
                     "special": 2,
