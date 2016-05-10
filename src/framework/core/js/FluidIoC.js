@@ -1038,7 +1038,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 fluid.doDestroy(child, name, component);
                 fluid.clearDistributions(childShadow);
                 fluid.clearListeners(childShadow);
-                child.events.afterDestroy.fire(child, name, component);
+                fluid.fireEvent(child, "afterDestroy", [child, name, component]);
                 delete that.idToShadow[child.id];
             } else {
                 fluid.remove_if(childShadow.injectedPaths, function (troo, path) {

@@ -1929,6 +1929,40 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assert("No error on clearing with manually injected, destroyed component");
     });
 
+    /** FLUID-5904 - corruption when throwing during expander resolution **/
+
+    fluid.defaults("fluid.tests.FLUID5904root", {
+        gradeNames: "fluid.component",
+        events: {
+            createIt: null
+        },
+        components: {
+            child: {
+                type: "fluid.component",
+                createOnEvent: "createIt",
+                options: {
+                    explodingMember: "@expand:fluid.tests.FLUID5904explode()"
+                }
+            }
+        }
+    });
+
+    fluid.tests.FLUID5904explode = function () {
+        throw new Error("explode");
+    };
+
+    jqUnit.test("FLUID-5904: corruption when throwing from expander", function () {
+        jqUnit.expect(2);
+        var that = fluid.tests.FLUID5904root();
+        try {
+            that.events.createIt.fire();
+        } catch (e) {
+            jqUnit.assert("Exception received during construction");
+        }
+        that.destroy();
+        jqUnit.assert("Successfully destroyed root");
+    });
+
     /** FLUID-4711 - corruption in clear with injected material of longer scope **/
 
     fluid.defaults("fluid.tests.clearParent", {

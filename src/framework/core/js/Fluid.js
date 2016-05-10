@@ -1491,6 +1491,15 @@ var fluid = fluid || fluid_2_0_0;
     };
 
     // unsupported, NON-API function
+    // Fires to an event which may not be instantiated (in which case no-op) - primary modern usage is to resolve FLUID-5904
+    fluid.fireEvent = function (component, eventName, args) {
+        var firer = component.events[eventName];
+        if (firer) {
+            firer.fire.apply(null, fluid.makeArray(args));
+        }
+    };
+
+    // unsupported, NON-API function
     fluid.event.addListenerToFirer = function (firer, value, namespace, wrapper) {
         wrapper = wrapper || fluid.identity;
         if (fluid.isArrayable(value)) {
@@ -2582,7 +2591,7 @@ var fluid = fluid || fluid_2_0_0;
     fluid.makeRootDestroy = function (that) {
         return function () {
             fluid.doDestroy(that);
-            that.events.afterDestroy.fire(that, "", null);
+            fluid.fireEvent(that, "afterDestroy", [that, "", null]);
         };
     };
 
@@ -2594,7 +2603,7 @@ var fluid = fluid || fluid_2_0_0;
 
     // unsupported, NON-API function
     fluid.doDestroy = function (that, name, parent) {
-        that.events.onDestroy.fire(that, name || "", parent);
+        fluid.fireEvent(that, "onDestroy", [that, name || "", parent]);
         that.lifecycleStatus = "destroyed";
         for (var key in that.events) {
             if (key !== "afterDestroy" && typeof(that.events[key].destroy) === "function") {
