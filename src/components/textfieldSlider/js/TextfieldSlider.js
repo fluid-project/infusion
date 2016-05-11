@@ -84,6 +84,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     // makeGradeLinkage call
     fluid.makeGradeLinkage("fluid.textfieldSliderVariety", ["fluid.textfieldSlider"],["fluid.textfieldSliderNative"]);
 
+    // fluid.makeGradeLinkage("fluid.textfieldSliderVariety", ["fluid.textfieldSlider"],["fluid.textfieldSliderJQuery"]);
+
     fluid.defaults("fluid.textfieldSlider.textfield", {
         gradeNames: ["fluid.viewComponent"],
         range: {}, // should be used to specify the min, max range e.g. {min: 0, max: 100}

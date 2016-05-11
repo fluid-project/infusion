@@ -23,17 +23,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.defaults("fluid.prefs.termsAware");
 
-    fluid.defaults("fluid.prefs.auxSchema.starter", {
-        gradeNames: ["fluid.prefs.auxSchema"],
+    // textSize mixin (base)
+    fluid.defaults("fluid.prefs.auxSchema.starter.textSize", {
         auxiliarySchema: {
-            "loaderGrades": ["fluid.prefs.separatedPanel"],
-            "namespace": "fluid.prefs.constructed", // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed PrefsEditor.
-            "terms": {
-                "templatePrefix": "../../framework/preferences/html",  // Must match the keyword used below to identify the common path to settings panel templates.
-                "messagePrefix": "../../framework/preferences/messages"  // Must match the keyword used below to identify the common path to message files.
-            },
-            "template": "%templatePrefix/SeparatedPanelPrefsEditor.html",
-            "message": "%messagePrefix/prefsEditor.json",
             "textSize": {
                 "type": "fluid.prefs.textSize",
                 "enactor": {
@@ -42,10 +34,41 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 "panel": {
                     "type": "fluid.prefs.panel.textSize",
                     "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
-                    "template": "%templatePrefix/PrefsEditorTemplate-textSize-native.html",
                     "message": "%messagePrefix/textSize.json"
                 }
-            },
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.auxSchema.starter.textSizeNative", {
+        auxiliarySchema: {
+            "textSize": {
+                "panel": {
+                    "template": "%templatePrefix/PrefsEditorTemplate-textSize-native.html"
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.auxSchema.starter.textSizeJQuery", {
+        auxiliarySchema: {
+            "textSize": {
+                "panel": {
+                    "template": "%templatePrefix/PrefsEditorTemplate-textSize-jQuery.html"
+                }
+            }
+        }
+    });
+
+    // Use native widget by default; an end user may override via another
+    // makeGradeLinkage call
+    fluid.makeGradeLinkage("fluid.prefs.auxSchema.starter.textSizeVariety", ["fluid.prefs.auxSchema.starter.textSize"],["fluid.prefs.auxSchema.starter.textSizeNative"]);
+
+    // fluid.makeGradeLinkage("fluid.prefs.auxSchema.starter.textSizeVariety", ["fluid.prefs.auxSchema.starter.textSize"],["fluid.prefs.auxSchema.starter.textSizeJQuery"]);
+
+    // lineSpace mixin (base)
+    fluid.defaults("fluid.prefs.auxSchema.starter.lineSpace", {
+        auxiliarySchema: {
             "lineSpace": {
                 "type": "fluid.prefs.lineSpace",
                 "enactor": {
@@ -63,10 +86,49 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 "panel": {
                     "type": "fluid.prefs.panel.lineSpace",
                     "container": ".flc-prefsEditor-line-space",  // the css selector in the template where the panel is rendered
-                    "template": "%templatePrefix/PrefsEditorTemplate-lineSpace-native.html",
                     "message": "%messagePrefix/lineSpace.json"
                 }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.auxSchema.starter.lineSpaceNative", {
+        auxiliarySchema: {
+            "lineSpace": {
+                "panel": {
+                    "template": "%templatePrefix/PrefsEditorTemplate-lineSpace-native.html"
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.auxSchema.starter.lineSpaceJQuery", {
+        auxiliarySchema: {
+            "lineSpace": {
+                "panel": {
+                    "template": "%templatePrefix/PrefsEditorTemplate-lineSpace-jQuery.html"
+                }
+            }
+        }
+    });
+
+    // Use native widget by default; an end user may override via another
+    // makeGradeLinkage call
+    fluid.makeGradeLinkage("fluid.prefs.auxSchema.starter.lineSpaceVariety", ["fluid.prefs.auxSchema.starter.lineSpace"],["fluid.prefs.auxSchema.starter.lineSpaceNative"]);
+
+    // fluid.makeGradeLinkage("fluid.prefs.auxSchema.starter.lineSpaceVariety", ["fluid.prefs.auxSchema.starter.lineSpace"],["fluid.prefs.auxSchema.starter.lineSpaceJQuery"]);
+
+    fluid.defaults("fluid.prefs.auxSchema.starter", {
+        gradeNames: ["fluid.prefs.auxSchema", "fluid.prefs.auxSchema.starter.lineSpace", "fluid.prefs.auxSchema.starter.textSize"],
+        auxiliarySchema: {
+            "loaderGrades": ["fluid.prefs.separatedPanel"],
+            "namespace": "fluid.prefs.constructed", // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed PrefsEditor.
+            "terms": {
+                "templatePrefix": "../../framework/preferences/html",  // Must match the keyword used below to identify the common path to settings panel templates.
+                "messagePrefix": "../../framework/preferences/messages"  // Must match the keyword used below to identify the common path to message files.
             },
+            "template": "%templatePrefix/SeparatedPanelPrefsEditor.html",
+            "message": "%messagePrefix/prefsEditor.json",
             "textFont": {
                 "type": "fluid.prefs.textFont",
                 "classes": {
