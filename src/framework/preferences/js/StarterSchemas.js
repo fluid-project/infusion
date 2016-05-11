@@ -25,6 +25,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     // textSize mixin (base)
     fluid.defaults("fluid.prefs.auxSchema.starter.textSize", {
+        gradeNames: ["fluid.contextAware"],
         auxiliarySchema: {
             "textSize": {
                 "type": "fluid.prefs.textSize",
@@ -35,6 +36,23 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     "type": "fluid.prefs.panel.textSize",
                     "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
                     "message": "%messagePrefix/textSize.json"
+                }
+            }
+        },
+        contextAwareness: {
+            textSizeSliderVariety: {
+                checks: {
+                    nativeHTML: {
+                        contextValue: "{fluid.prefsWidgetType}",
+                        equals: "nativeHTML",
+                        gradeNames: "fluid.prefs.auxSchema.starter.textSizeNative"
+
+                    },
+                    jQuery: {
+                        contextValue: "{fluid.prefsWidgetType}",
+                        equals: "jQuery",
+                        gradeNames: "fluid.prefs.auxSchema.starter.textSizeJQuery"
+                    }
                 }
             }
         }
@@ -60,14 +78,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    // Use native widget by default; an end user may override via another
-    // makeGradeLinkage call
-    fluid.makeGradeLinkage("fluid.prefs.auxSchema.starter.textSizeVariety", ["fluid.prefs.auxSchema.starter.textSize"],["fluid.prefs.auxSchema.starter.textSizeNative"]);
-
-    // fluid.makeGradeLinkage("fluid.prefs.auxSchema.starter.textSizeVariety", ["fluid.prefs.auxSchema.starter.textSize"],["fluid.prefs.auxSchema.starter.textSizeJQuery"]);
-
     // lineSpace mixin (base)
     fluid.defaults("fluid.prefs.auxSchema.starter.lineSpace", {
+        gradeNames: ["fluid.contextAware"],
         auxiliarySchema: {
             "lineSpace": {
                 "type": "fluid.prefs.lineSpace",
@@ -87,6 +100,23 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     "type": "fluid.prefs.panel.lineSpace",
                     "container": ".flc-prefsEditor-line-space",  // the css selector in the template where the panel is rendered
                     "message": "%messagePrefix/lineSpace.json"
+                }
+            }
+        },
+        contextAwareness: {
+            lineSpaceSliderVariety: {
+                checks: {
+                    nativeHTML: {
+                        contextValue: "{fluid.prefsWidgetType}",
+                        equals: "nativeHTML",
+                        gradeNames: "fluid.prefs.auxSchema.starter.lineSpaceNative"
+
+                    },
+                    jQuery: {
+                        contextValue: "{fluid.prefsWidgetType}",
+                        equals: "jQuery",
+                        gradeNames: "fluid.prefs.auxSchema.starter.lineSpaceJQuery"
+                    }
                 }
             }
         }
@@ -111,12 +141,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
         }
     });
-
-    // Use native widget by default; an end user may override via another
-    // makeGradeLinkage call
-    fluid.makeGradeLinkage("fluid.prefs.auxSchema.starter.lineSpaceVariety", ["fluid.prefs.auxSchema.starter.lineSpace"],["fluid.prefs.auxSchema.starter.lineSpaceNative"]);
-
-    // fluid.makeGradeLinkage("fluid.prefs.auxSchema.starter.lineSpaceVariety", ["fluid.prefs.auxSchema.starter.lineSpace"],["fluid.prefs.auxSchema.starter.lineSpaceJQuery"]);
 
     fluid.defaults("fluid.prefs.auxSchema.starter", {
         gradeNames: ["fluid.prefs.auxSchema", "fluid.prefs.auxSchema.starter.lineSpace", "fluid.prefs.auxSchema.starter.textSize"],

@@ -22,6 +22,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.module("TextfieldSlider Tests");
 
         fluid.tests.textfieldSlider.createTextfieldSliderNative = function (options) {
+            // Make sure we're using the native widget
+            fluid.makeGradeLinkage("fluid.textfieldSliderVariety", ["fluid.textfieldSlider"],["fluid.textfieldSliderNative"]);
             return fluid.textfieldSlider(".fl-textfield-slider-native", options);
         };
 

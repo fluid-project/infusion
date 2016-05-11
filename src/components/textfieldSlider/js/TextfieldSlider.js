@@ -84,7 +84,21 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     // makeGradeLinkage call
     fluid.makeGradeLinkage("fluid.textfieldSliderVariety", ["fluid.textfieldSlider"],["fluid.textfieldSliderNative"]);
 
+    // For context-aware components
+    fluid.contextAware.makeChecks({
+        "fluid.prefsWidgetType": {
+            value: "nativeHTML"
+        }
+    });
+
+
     // fluid.makeGradeLinkage("fluid.textfieldSliderVariety", ["fluid.textfieldSlider"],["fluid.textfieldSliderJQuery"]);
+    //
+    // fluid.contextAware.makeChecks({
+    //     "fluid.prefsWidgetType": {
+    //         value: "jQuery"
+    //     }
+    // });
 
     fluid.defaults("fluid.textfieldSlider.textfield", {
         gradeNames: ["fluid.viewComponent"],
