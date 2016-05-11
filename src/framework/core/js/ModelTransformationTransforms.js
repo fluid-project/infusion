@@ -426,9 +426,9 @@ var fluid = fluid || fluid_2_0_0;
         }
 
         var outputArr = [];
-        fluid.each(input, function (val, key) {
-            if (val === transformSpec.presentValue) {
-                outputArr.push(options[key]);
+        fluid.each(options, function (outputVal, key) {
+            if (input[key] === transformSpec.presentValue) {
+                outputArr.push(outputVal);
             }
         });
         return outputArr;

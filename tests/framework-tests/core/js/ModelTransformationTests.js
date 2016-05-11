@@ -3699,6 +3699,53 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             ]
         },
         fullyInvertible: true
+    }, {
+        message: "Checking for missing / extra values",
+        model: {
+            detections: {
+                hasMouse: "supported",
+                hasKeyboard: "supported",
+                hasTrackpad: "not supported",
+                hasHeadtracker: "not supported",
+                hasTelephone: "supported"
+            }
+        },
+        transform: {
+            transform: {
+                type: "fluid.transforms.setMembershipToArray",
+                inputPath: "detections",
+                outputPath: "controls",
+                presentValue: "supported",
+                missingValue: "not supported",
+                options: {
+                    hasMouse: "mouse",
+                    hasKeyboard: "keyboard",
+                    hasTrackpad: "trackpad",
+                    hasHeadtracker: "headtracker"
+                }
+            }
+        },
+        expected: {
+            controls: [ "mouse", "keyboard" ]
+        },
+        invertedRules: {
+            transform: [
+                {
+                    type: "fluid.transforms.arrayToSetMembership",
+                    outputPath: "detections",
+                    inputPath: "controls",
+                    presentValue: "supported",
+                    missingValue: "not supported",
+                    options: {
+                        mouse: "hasMouse",
+                        keyboard: "hasKeyboard",
+                        trackpad: "hasTrackpad",
+                        headtracker: "hasHeadtracker"
+                    }
+                }
+            ]
+        },
+        partlyInvertible: true
     }];
 
     jqUnit.test("setMembershipToArray transformation tests", function () {
