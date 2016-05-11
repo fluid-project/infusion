@@ -26,7 +26,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         fluid.tests.textfieldSlider.createTextfieldSliderJQuery = function (options) {
-            return fluid.textfieldSliderJQuery(".fl-textfield-slider-jQuery", options);
+            // Override default native widget to use jQuery slider instead
+            fluid.makeGradeLinkage("fluid.textfieldSliderVariety", ["fluid.textfieldSlider"],["fluid.textfieldSliderJQuery"]);
+
+            return fluid.textfieldSlider(".fl-textfield-slider-jQuery", options);
         };
 
         // Returns the value of either a native input[type=range] or a jQuery slider

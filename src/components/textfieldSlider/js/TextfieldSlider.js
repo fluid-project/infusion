@@ -30,7 +30,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 }
             },
             slider: {
-                type: "fluid.slider.native",
                 container: "{textfieldSlider}.dom.slider",
                 options: {
                     model: "{fluid.textfieldSlider}.model",
@@ -65,14 +64,25 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
+    fluid.defaults("fluid.textfieldSliderNative", {
+        components: {
+            slider: {
+                type: "fluid.slider.native"
+            }
+        }
+    });
+
     fluid.defaults("fluid.textfieldSliderJQuery", {
-        gradeNames: ["fluid.textfieldSlider"],
         components: {
             slider: {
                 type: "fluid.slider.jQuery"
             }
         }
     });
+
+    // Use native widget by default; an end user may override via another
+    // makeGradeLinkage call
+    fluid.makeGradeLinkage("fluid.textfieldSliderVariety", ["fluid.textfieldSlider"],["fluid.textfieldSliderNative"]);
 
     fluid.defaults("fluid.textfieldSlider.textfield", {
         gradeNames: ["fluid.viewComponent"],
