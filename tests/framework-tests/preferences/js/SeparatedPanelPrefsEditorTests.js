@@ -47,7 +47,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     iframeRenderer: {
                         markupProps: {
-                            src: "./SeparatedPanelPrefsEditorFrame.html"
+                            src: "./SeparatedPanelPrefsEditorFrame-native.html"
                         }
                     },
                     templateLoader: {
@@ -219,7 +219,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: fluid.merge(null, fluid.tests.prefs.mungingIntegrationOptions, { // TODO: Why on earth does this not use standard grade merging?
                     iframeRenderer: {
                         markupProps: {
-                            src: "./SeparatedPanelPrefsEditorFrame.html"
+                            src: "./SeparatedPanelPrefsEditorFrame-native.html"
                         }
                     },
                     slidingPanel: {

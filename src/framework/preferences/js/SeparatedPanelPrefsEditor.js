@@ -110,7 +110,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 container: "{separatedPanel}.dom.iframe",
                 options: {
                     markupProps: {
-                        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame.html"
+                        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame-native.html"
                     },
                     events: {
                         afterRender: "{separatedPanel}.events.afterRender"

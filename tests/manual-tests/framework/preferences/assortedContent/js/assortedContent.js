@@ -49,7 +49,7 @@ var assortedContent = assortedContent || {};
             },
             iframeRenderer: {
                 markupProps: {
-                    src: "../../../../../src/framework/preferences/html/SeparatedPanelPrefsEditorFrame.html"
+                    src: "../../../../../src/framework/preferences/html/SeparatedPanelPrefsEditorFrame-native.html"
                 }
             }
         });
