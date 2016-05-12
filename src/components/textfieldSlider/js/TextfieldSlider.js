@@ -81,24 +81,18 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     });
 
     // Use native widget by default; an end user may override via another
-    // makeGradeLinkage call
+    // makeGradeLinkage call to link textfieldSliderJQuery instead
+    // the fluid.prefsWidgetType below should be updated as well
     fluid.makeGradeLinkage("fluid.textfieldSliderVariety", ["fluid.textfieldSlider"],["fluid.textfieldSliderNative"]);
 
-    // For context-aware components
+    // For context-aware components that can choose between native or
+    // jQuery-based widgets
+    // set to value: "jQuery" to prefer jQuery-based widgets instead
     fluid.contextAware.makeChecks({
         "fluid.prefsWidgetType": {
             value: "nativeHTML"
         }
     });
-
-
-    // fluid.makeGradeLinkage("fluid.textfieldSliderVariety", ["fluid.textfieldSlider"],["fluid.textfieldSliderJQuery"]);
-    //
-    // fluid.contextAware.makeChecks({
-    //     "fluid.prefsWidgetType": {
-    //         value: "jQuery"
-    //     }
-    // });
 
     fluid.defaults("fluid.textfieldSlider.textfield", {
         gradeNames: ["fluid.viewComponent"],
