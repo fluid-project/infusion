@@ -27,7 +27,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      *******************************************************/
 
     fluid.defaults("fluid.prefs.separatedPanel", {
-        gradeNames: ["fluid.prefs.prefsEditorLoader"],
+        gradeNames: ["fluid.prefs.prefsEditorLoader", "fluid.contextAware"],
         events: {
             afterRender: null,
             onReady: null,
@@ -42,6 +42,23 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     iframeReady: "afterRender",
                     templatesLoaded: "onPrefsEditorTemplatesLoaded",
                     messagesLoaded: "onPrefsEditorMessagesLoaded"
+                }
+            }
+        },
+        contextAwareness: {
+            separatedPanelPrefsWidgetType: {
+                checks: {
+                    nativeHTML: {
+                        contextValue: "{fluid.prefsWidgetType}",
+                        equals: "nativeHTML",
+                        gradeNames: "fluid.prefs.separatedPanelNative"
+
+                    },
+                    jQuery: {
+                        contextValue: "{fluid.prefsWidgetType}",
+                        equals: "jQuery",
+                        gradeNames: "fluid.prefs.separatedPanelJQuery"
+                    }
                 }
             }
         },
@@ -109,9 +126,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 type: "fluid.prefs.separatedPanel.renderIframe",
                 container: "{separatedPanel}.dom.iframe",
                 options: {
-                    markupProps: {
-                        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame-native.html"
-                    },
                     events: {
                         afterRender: "{separatedPanel}.events.afterRender"
                     },
@@ -176,6 +190,32 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             source: "{that}.options.terms",
             target: "{that > iframeRenderer}.options.terms"
         }]
+    });
+
+    // Used for context-awareness behaviour
+    fluid.defaults("fluid.prefs.separatedPanelNative", {
+        components: {
+            iframeRenderer: {
+                options: {
+                    markupProps: {
+                        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame-native.html"
+                    }
+                }
+            }
+        }
+    });
+
+    // Used for context-awareness behaviour
+    fluid.defaults("fluid.prefs.separatedPanelJQuery", {
+        components: {
+            iframeRenderer: {
+                options: {
+                    markupProps: {
+                        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame-jQuery.html"
+                    }
+                }
+            }
+        }
     });
 
     fluid.prefs.separatedPanel.hideReset = function (separatedPanel) {
