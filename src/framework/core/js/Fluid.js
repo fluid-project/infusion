@@ -560,7 +560,7 @@ var fluid = fluid || fluid_2_0_0;
         return arg;
     };
 
-    /** Returns the sum of its two arguments. A useful utility to combine with fluid.accumulate to compute totals 
+    /** Returns the sum of its two arguments. A useful utility to combine with fluid.accumulate to compute totals
      * @param a {Number|Boolean} The first operand to be added
      * @param b {Number|Boolean} The second operand to be added
      * @return {Number} The sum of the two operands
@@ -743,7 +743,7 @@ var fluid = fluid || fluid_2_0_0;
 
     /** Converts a hash into an object by hoisting out the object's keys into an array element via the supplied String "key", and then transforming via an optional further function, which receives the signature
      * (newElement, oldElement, key) where newElement is the freshly cloned element, oldElement is the original hash's element, and key is the key of the element.
-     * If the function is not supplied, the old element is simply deep-cloned onto the new element (same effect as transform fluid.transforms.objectToArray).
+     * If the function is not supplied, the old element is simply deep-cloned onto the new element (same effect as transform fluid.transforms.deindexIntoArrayByKey).
      * The supplied hash will not be modified, unless the supplied function explicitly does so by modifying its 2nd argument.
      */
     fluid.hashToArray = function (hash, keyName, func) {
@@ -1277,7 +1277,7 @@ var fluid = fluid || fluid_2_0_0;
             }
         }
     };
- 
+
     /** Parse a hash containing prioritised records (for example, as found in a ContextAwareness record) and return a sorted array of these records in priority order.
      * @param records {Object} A hash of key names to prioritised records. Each record may contain an member `namespace` - if it does not, the namespace will be taken from the
      * record's key. It may also contain a `String` member `priority` encoding a priority with respect to these namespaces as document at http://docs.fluidproject.org/infusion/development/Priorities.html .
