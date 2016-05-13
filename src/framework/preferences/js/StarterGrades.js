@@ -323,16 +323,46 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      */
 
     fluid.defaults("fluid.prefs.starterTemplateLoader", {
-        gradeNames: ["fluid.prefs.resourceLoader"],
+        gradeNames: ["fluid.prefs.resourceLoader", "fluid.contextAware"],
         resources: {
-            textSize: "%templatePrefix/PrefsEditorTemplate-textSize-native.html",
-            textFont: "%templatePrefix/PrefsEditorTemplate-textFont.html",
-            lineSpace: "%templatePrefix/PrefsEditorTemplate-lineSpace-native.html",
-            contrast: "%templatePrefix/PrefsEditorTemplate-contrast.html",
+            textFont: "%templatePrefix/PrefsEditorTemplate-textFont.html",            contrast: "%templatePrefix/PrefsEditorTemplate-contrast.html",
             layoutControls: "%templatePrefix/PrefsEditorTemplate-layout.html",
             linksControls: "%templatePrefix/PrefsEditorTemplate-linksControls.html",
             emphasizeLinks: "%templatePrefix/PrefsEditorTemplate-emphasizeLinks.html",
             inputsLarger: "%templatePrefix/PrefsEditorTemplate-inputsLarger.html"
+        },
+        contextAwareness: {
+            starterTemplateLoaderPrefsWidgetType: {
+                checks: {
+                    nativeHTML: {
+                        contextValue: "{fluid.prefsWidgetType}",
+                        equals: "nativeHTML",
+                        gradeNames: "fluid.prefs.starterTemplateNative"
+
+                    },
+                    jQuery: {
+                        contextValue: "{fluid.prefsWidgetType}",
+                        equals: "jQuery",
+                        gradeNames: "fluid.prefs.starterTemplateLoaderJQuery"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.starterTemplateNative", {
+        gradeNames: ["fluid.prefs.resourceLoader"],
+        resources: {
+            textSize: "%templatePrefix/PrefsEditorTemplate-textSize-native.html",
+            lineSpace: "%templatePrefix/PrefsEditorTemplate-lineSpace-native.html"
+        }
+    });
+
+    fluid.defaults("fluid.prefs.starterTemplateLoaderJQuery", {
+        gradeNames: ["fluid.prefs.resourceLoader"],
+        resources: {
+            textSize: "%templatePrefix/PrefsEditorTemplate-textSize-jQuery.html",
+            lineSpace: "%templatePrefix/PrefsEditorTemplate-lineSpace-jQuery.html"
         }
     });
 
