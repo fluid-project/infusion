@@ -19,21 +19,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         vm = require("vm"),
         resolve = require("resolve");
 
+    // Version of resolve.sync which does not throw when module is not found
+    var resolveModuleSync = function (moduleId, fromPath) {
+        try {
+            return resolve.sync(moduleId, {
+                basedir: fromPath
+            });
+        } catch (e) {
+            return null;
+        }
+    };
+
     var moduleBaseDir = path.resolve(__dirname, "../..");
 
     /** Implementation for FLUID-5822 to avoid requirement for dedupe-infusion **/
 
     var upInfusion;
 
-    try {
-        var upPath = path.resolve(__dirname, "../../../../..");
-        var upInfusionPath = resolve.sync("infusion", {
-            basedir: upPath
-        });
+    var upPath = path.resolve(__dirname, "../../../../..");
+    var upInfusionPath = resolveModuleSync("infusion", upPath);
+    if (upInfusionPath) {
         upInfusion = require(upInfusionPath);
-    } catch (e) {}
-
-    if (upInfusion) {
         upInfusion.log("Resolved infusion from path " + __dirname + " to " + upInfusion.module.modules.infusion.baseDir);
         module.exports = upInfusion;
         return;
@@ -149,41 +155,33 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         console.log(args.join(""));
     };
 
+    fluid.prepareV8StackTrace = function (err, stack) {
+        return stack;
+    };
+
+    // Monkey-patch the fluid.getCallerInfo utility from FluidDebugging.js for the V8 API - see https://github.com/v8/v8/wiki/Stack-Trace-API
+
+    fluid.getCallerInfo = function (atDepth) {
+        var origPrepare = Error.prepareStackTrace;
+        try {
+            Error.prepareStackTrace = fluid.prepareV8StackTrace;
+            var err = new Error();
+            var element = err.stack[atDepth];
+            var filename = element.getFileName();
+            return {
+                path: path.dirname(filename),
+                filename: path.basename(filename),
+                index: element.getLineNumber() + ":" + element.getColumnNumber()
+            };
+        } catch (e) {
+        } finally {
+            Error.prepareStackTrace = origPrepare;
+        }
+    };
+
     fluid.loadInContext = loadInContext;
     fluid.loadIncludes = loadIncludes;
-
-    /** Load a node-aware JavaScript file using either a supplied or the native
-      * Fluid require function. The module name may start with a module reference
-      * of the form ${module-name} to indicate a base reference into an already
-      * loaded module that was previously registered using fluid.module.register.
-      * If the <code>namespace</code> argument is supplied, the module's export
-      * object will be written to that path in the global Fluid namespace */
-
-    fluid.require = function (moduleName, foreignRequire, namespace) {
-        foreignRequire = foreignRequire || require;
-        var resolved = fluid.module.resolvePath(moduleName);
-        var module = foreignRequire(resolved);
-        if (namespace) {
-            fluid.setGlobalValue(namespace, module);
-        }
-        return module;
-    };
-
-    /** Produce a loader object exposing a "require" object which will automatically
-     * prefix the supplied directory name to any requested modules before forwarding
-     * the operation to fluid.require
-     */
-
-    fluid.getLoader = function (dirName, foreignRequire) {
-        return {
-            require: function (moduleName, namespace) {
-                if (moduleName.indexOf("/") > -1) {
-                    moduleName = dirName + "/" + moduleName;
-                }
-                return fluid.require(moduleName, foreignRequire, namespace);
-            }
-        };
-    };
+    fluid.module.resolveSync = resolveModuleSync;
 
     /**
      * Set up testing environment with jqUnit and IoC Test Utils in node.
