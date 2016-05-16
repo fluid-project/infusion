@@ -19,7 +19,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      ********************/
 
     fluid.defaults("fluid.textfieldSlider", {
-        gradeNames: ["fluid.viewComponent"],
+        gradeNames: ["fluid.viewComponent", "fluid.contextAware"],
         components: {
             textfield: {
                 type: "fluid.textfieldSlider.textfield",
@@ -35,6 +35,23 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     model: "{fluid.textfieldSlider}.model",
                     range: "{fluid.textfieldSlider}.options.range",
                     sliderOptions: "{fluid.textfieldSlider}.options.sliderOptions"
+                }
+            }
+        },
+        contextAwareness: {
+            sliderVariety: {
+                checks: {
+                    nativeHTML: {
+                        contextValue: "{fluid.prefsWidgetType}",
+                        equals: "nativeHTML",
+                        gradeNames: "fluid.textfieldSliderNative"
+
+                    },
+                    jQuery: {
+                        contextValue: "{fluid.prefsWidgetType}",
+                        equals: "jQuery",
+                        gradeNames: "fluid.textfieldSliderJQuery"
+                    }
                 }
             }
         },
@@ -80,13 +97,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    // Use native widget by default; an end user may override via another
-    // makeGradeLinkage call to link textfieldSliderJQuery instead
-    // the fluid.prefsWidgetType below should be updated as well
-    fluid.makeGradeLinkage("fluid.textfieldSliderVariety", ["fluid.textfieldSlider"],["fluid.textfieldSliderNative"]);
-
     // For context-aware components that can choose between native or
-    // jQuery-based widgets
+    // jQuery-based widgets, such as textfieldSlider
     // set to value: "jQuery" to prefer jQuery-based widgets instead
     fluid.contextAware.makeChecks({
         "fluid.prefsWidgetType": {
