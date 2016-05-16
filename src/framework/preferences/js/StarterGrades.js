@@ -323,16 +323,45 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      */
 
     fluid.defaults("fluid.prefs.starterTemplateLoader", {
-        gradeNames: ["fluid.prefs.resourceLoader"],
+        gradeNames: ["fluid.prefs.resourceLoader", "fluid.contextAware"],
         resources: {
-            textSize: "%templatePrefix/PrefsEditorTemplate-textSize-native.html",
             textFont: "%templatePrefix/PrefsEditorTemplate-textFont.html",
-            lineSpace: "%templatePrefix/PrefsEditorTemplate-lineSpace-native.html",
             contrast: "%templatePrefix/PrefsEditorTemplate-contrast.html",
             layoutControls: "%templatePrefix/PrefsEditorTemplate-layout.html",
             linksControls: "%templatePrefix/PrefsEditorTemplate-linksControls.html",
             emphasizeLinks: "%templatePrefix/PrefsEditorTemplate-emphasizeLinks.html",
             inputsLarger: "%templatePrefix/PrefsEditorTemplate-inputsLarger.html"
+        },
+        contextAwareness: {
+            startTemplateLoaderPrefsWidgetType: {
+                checks: {
+                    nativeHTML: {
+                        contextValue: "{fluid.prefsWidgetType}",
+                        equals: "nativeHTML",
+                        gradeNames: "fluid.prefs.starterTemplateLoader.native"
+
+                    },
+                    jQuery: {
+                        contextValue: "{fluid.prefsWidgetType}",
+                        equals: "jQuery",
+                        gradeNames: "fluid.prefs.starterTemplateLoader.jQuery"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.starterTemplateLoader.native", {
+        resources: {
+            textSize: "%templatePrefix/PrefsEditorTemplate-textSize-native.html",
+            lineSpace: "%templatePrefix/PrefsEditorTemplate-lineSpace-native.html"
+        }
+    });
+
+    fluid.defaults("fluid.prefs.starterTemplateLoader.jQuery", {
+        resources: {
+            textSize: "%templatePrefix/PrefsEditorTemplate-textSize-jQuery.html",
+            lineSpace: "%templatePrefix/PrefsEditorTemplate-lineSpace-jQuery.html"
         }
     });
 
