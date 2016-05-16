@@ -126,12 +126,10 @@ fluid.module.refToModuleName = function (ref) {
 fluid.require = function (ref, foreignRequire, namespace) {
     var moduleTerm = fluid.module.refToModuleName(ref);
     if (moduleTerm && !foreignRequire) {
-        console.log("Got term " + moduleTerm + " from ref " + ref);
         var entry = fluid.module.modules[moduleTerm];
         if (!entry) {
             var callerInfo = fluid.getCallerInfo(2);
             var callerPath = callerInfo.path;
-            console.log("CALLER WAS ", callerInfo);
             var resolvedTerm = fluid.module.resolveSync(moduleTerm, callerPath);
             if (!resolvedTerm) {
                 fluid.fail("Module " + moduleTerm + " has not been loaded and could not be loaded from caller's path " + callerPath);
