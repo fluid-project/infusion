@@ -62,7 +62,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         auxiliarySchema: {
             "textSize": {
                 "panel": {
-                    "template": "%templatePrefix/PrefsEditorTemplate-textSize-native.html"
+                    "template": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html"
                 }
             }
         }
@@ -72,7 +72,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         auxiliarySchema: {
             "textSize": {
                 "panel": {
-                    "template": "%templatePrefix/PrefsEditorTemplate-textSize-jQuery.html"
+                    "template": "%templatePrefix/PrefsEditorTemplate-textSize-jQueryUI.html"
                 }
             }
         }
@@ -126,7 +126,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         auxiliarySchema: {
             "lineSpace": {
                 "panel": {
-                    "template": "%templatePrefix/PrefsEditorTemplate-lineSpace-native.html"
+                    "template": "%templatePrefix/PrefsEditorTemplate-lineSpace-nativeHTML.html"
                 }
             }
         }
@@ -136,7 +136,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         auxiliarySchema: {
             "lineSpace": {
                 "panel": {
-                    "template": "%templatePrefix/PrefsEditorTemplate-lineSpace-jQuery.html"
+                    "template": "%templatePrefix/PrefsEditorTemplate-lineSpace-jQueryUI.html"
                 }
             }
         }

@@ -44,13 +44,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     nativeHTML: {
                         contextValue: "{fluid.prefsWidgetType}",
                         equals: "nativeHTML",
-                        gradeNames: "fluid.textfieldSliderNative"
+                        gradeNames: "fluid.textfieldSlider.nativeHTML"
 
                     },
                     jQueryUI: {
                         contextValue: "{fluid.prefsWidgetType}",
                         equals: "jQueryUI",
-                        gradeNames: "fluid.textfieldSliderJQuery"
+                        gradeNames: "fluid.textfieldSlider.jQueryUI"
                     }
                 }
             }
@@ -81,7 +81,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    fluid.defaults("fluid.textfieldSliderNative", {
+    fluid.defaults("fluid.textfieldSlider.nativeHTML", {
         components: {
             slider: {
                 type: "fluid.slider.native"
@@ -89,7 +89,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    fluid.defaults("fluid.textfieldSliderJQuery", {
+    fluid.defaults("fluid.textfieldSlider.jQueryUI", {
         components: {
             slider: {
                 type: "fluid.slider.jQuery"

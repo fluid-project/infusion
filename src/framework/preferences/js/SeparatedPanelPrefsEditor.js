@@ -198,7 +198,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             iframeRenderer: {
                 options: {
                     markupProps: {
-                        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame-native.html"
+                        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame-nativeHTML.html"
                     }
                 }
             }
@@ -211,7 +211,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             iframeRenderer: {
                 options: {
                     markupProps: {
-                        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame-jQuery.html"
+                        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame-jQueryUI.html"
                     }
                 }
             }

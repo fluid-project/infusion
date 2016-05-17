@@ -353,15 +353,15 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.defaults("fluid.prefs.starterTemplateLoader.native", {
         resources: {
-            textSize: "%templatePrefix/PrefsEditorTemplate-textSize-native.html",
-            lineSpace: "%templatePrefix/PrefsEditorTemplate-lineSpace-native.html"
+            textSize: "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html",
+            lineSpace: "%templatePrefix/PrefsEditorTemplate-lineSpace-nativeHTML.html"
         }
     });
 
     fluid.defaults("fluid.prefs.starterTemplateLoader.jQuery", {
         resources: {
-            textSize: "%templatePrefix/PrefsEditorTemplate-textSize-jQuery.html",
-            lineSpace: "%templatePrefix/PrefsEditorTemplate-lineSpace-jQuery.html"
+            textSize: "%templatePrefix/PrefsEditorTemplate-textSize-jQueryUI.html",
+            lineSpace: "%templatePrefix/PrefsEditorTemplate-lineSpace-jQueryUI.html"
         }
     });
 

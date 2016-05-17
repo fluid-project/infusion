@@ -34,7 +34,7 @@ var assortedContent = assortedContent || {};
         fluid.defaults("fluid.assortedContent.native", {
             iframeRenderer: {
                 markupProps: {
-                    src: "../../../../../src/framework/preferences/html/SeparatedPanelPrefsEditorFrame-native.html"
+                    src: "../../../../../src/framework/preferences/html/SeparatedPanelPrefsEditorFrame-nativeHTML.html"
                 }
             }
         });
@@ -42,7 +42,7 @@ var assortedContent = assortedContent || {};
         fluid.defaults("fluid.assortedContent.jQueryUI", {
             iframeRenderer: {
                 markupProps: {
-                    src: "../../../../../src/framework/preferences/html/SeparatedPanelPrefsEditorFrame-jQuery.html"
+                    src: "../../../../../src/framework/preferences/html/SeparatedPanelPrefsEditorFrame-jQueryUI.html"
                 }
             }
         });

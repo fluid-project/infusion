@@ -80,7 +80,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "panel": {
                         "type": "fluid.prefs.panel.textSize",
                         "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
-                        "template": "%templatePrefix/PrefsEditorTemplate-textSize-native.html",
+                        "template": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html",
                         "message": "%messagePrefix/textSize.json"
                     }
                 },
@@ -101,7 +101,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "panel": {
                         "type": "fluid.prefs.panel.lineSpace",
                         "container": ".flc-prefsEditor-line-space",  // the css selector in the template where the panel is rendered
-                        "template": "%templatePrefix/PrefsEditorTemplate-lineSpace-native.html",
+                        "template": "%templatePrefix/PrefsEditorTemplate-lineSpace-nativeHTML.html",
                         "message": "%messagePrefix/lineSpace.json"
                     }
                 }
