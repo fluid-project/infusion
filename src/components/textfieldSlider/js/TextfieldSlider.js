@@ -100,6 +100,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     // For context-aware components that can choose between native or
     // jQuery-based widgets, such as textfieldSlider
     // set to value: "jQueryUI" to prefer jQuery-based widgets instead
+
     fluid.contextAware.makeChecks({
         "fluid.prefsWidgetType": {
             value: "nativeHTML"
