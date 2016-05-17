@@ -51,13 +51,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     nativeHTML: {
                         contextValue: "{fluid.prefsWidgetType}",
                         equals: "nativeHTML",
-                        gradeNames: "fluid.prefs.separatedPanelNative"
+                        gradeNames: "fluid.prefs.separatedPanel.nativeHTML"
 
                     },
                     jQueryUI: {
                         contextValue: "{fluid.prefsWidgetType}",
                         equals: "jQueryUI",
-                        gradeNames: "fluid.prefs.separatedPanelJQuery"
+                        gradeNames: "fluid.prefs.separatedPanel.jQueryUI"
                     }
                 }
             }
@@ -193,7 +193,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     });
 
     // Used for context-awareness behaviour
-    fluid.defaults("fluid.prefs.separatedPanelNative", {
+    fluid.defaults("fluid.prefs.separatedPanel.nativeHTML", {
         components: {
             iframeRenderer: {
                 options: {
@@ -206,7 +206,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     });
 
     // Used for context-awareness behaviour
-    fluid.defaults("fluid.prefs.separatedPanelJQuery", {
+    fluid.defaults("fluid.prefs.separatedPanel.jQueryUI", {
         components: {
             iframeRenderer: {
                 options: {
