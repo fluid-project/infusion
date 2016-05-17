@@ -45,20 +45,20 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     nativeHTML: {
                         contextValue: "{fluid.prefsWidgetType}",
                         equals: "nativeHTML",
-                        gradeNames: "fluid.prefs.auxSchema.starter.textSizeNative"
+                        gradeNames: "fluid.prefs.auxSchema.starter.textSize.nativeHTML"
 
                     },
                     jQueryUI: {
                         contextValue: "{fluid.prefsWidgetType}",
                         equals: "jQueryUI",
-                        gradeNames: "fluid.prefs.auxSchema.starter.textSizeJQuery"
+                        gradeNames: "fluid.prefs.auxSchema.starter.textSize.jQueryUI"
                     }
                 }
             }
         }
     });
 
-    fluid.defaults("fluid.prefs.auxSchema.starter.textSizeNative", {
+    fluid.defaults("fluid.prefs.auxSchema.starter.textSize.nativeHTML", {
         auxiliarySchema: {
             "textSize": {
                 "panel": {
@@ -68,7 +68,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    fluid.defaults("fluid.prefs.auxSchema.starter.textSizeJQuery", {
+    fluid.defaults("fluid.prefs.auxSchema.starter.textSize.jQueryUI", {
         auxiliarySchema: {
             "textSize": {
                 "panel": {
@@ -109,20 +109,20 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     nativeHTML: {
                         contextValue: "{fluid.prefsWidgetType}",
                         equals: "nativeHTML",
-                        gradeNames: "fluid.prefs.auxSchema.starter.lineSpaceNative"
+                        gradeNames: "fluid.prefs.auxSchema.starter.lineSpace.nativeHTML"
 
                     },
                     jQueryUI: {
                         contextValue: "{fluid.prefsWidgetType}",
                         equals: "jQueryUI",
-                        gradeNames: "fluid.prefs.auxSchema.starter.lineSpaceJQuery"
+                        gradeNames: "fluid.prefs.auxSchema.starter.lineSpace.jQueryUI"
                     }
                 }
             }
         }
     });
 
-    fluid.defaults("fluid.prefs.auxSchema.starter.lineSpaceNative", {
+    fluid.defaults("fluid.prefs.auxSchema.starter.lineSpace.nativeHTML", {
         auxiliarySchema: {
             "lineSpace": {
                 "panel": {
@@ -132,7 +132,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    fluid.defaults("fluid.prefs.auxSchema.starter.lineSpaceJQuery", {
+    fluid.defaults("fluid.prefs.auxSchema.starter.lineSpace.jQueryUI", {
         auxiliarySchema: {
             "lineSpace": {
                 "panel": {
