@@ -1223,14 +1223,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.switchToJqueryWidgets = function (testPanel) {
         fluid.contextAware.makeChecks({
             "fluid.prefsWidgetType": {
-                value: "jQuery"
+                value: "jQueryUI"
             }
         });
 
         testPanel.events.onSwitchedToJqueryWidgets.fire();
     };
 
-    fluid.tests.switchToNativeWidgets = function (testPanel) {    
+    fluid.tests.switchToNativeWidgets = function (testPanel) {
         fluid.contextAware.makeChecks({
             "fluid.prefsWidgetType": {
                 value: "nativeHTML"

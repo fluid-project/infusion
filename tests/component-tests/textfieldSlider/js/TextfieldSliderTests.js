@@ -35,7 +35,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // Override default native widget to use jQuery slider instead
             fluid.contextAware.makeChecks({
                 "fluid.prefsWidgetType": {
-                    value: "jQuery"
+                    value: "jQueryUI"
                 }
             });
 

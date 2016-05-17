@@ -47,9 +47,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                         gradeNames: "fluid.textfieldSliderNative"
 
                     },
-                    jQuery: {
+                    jQueryUI: {
                         contextValue: "{fluid.prefsWidgetType}",
-                        equals: "jQuery",
+                        equals: "jQueryUI",
                         gradeNames: "fluid.textfieldSliderJQuery"
                     }
                 }
@@ -99,7 +99,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     // For context-aware components that can choose between native or
     // jQuery-based widgets, such as textfieldSlider
-    // set to value: "jQuery" to prefer jQuery-based widgets instead
+    // set to value: "jQueryUI" to prefer jQuery-based widgets instead
     fluid.contextAware.makeChecks({
         "fluid.prefsWidgetType": {
             value: "nativeHTML"

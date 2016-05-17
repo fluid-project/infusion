@@ -54,9 +54,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                         gradeNames: "fluid.prefs.separatedPanelNative"
 
                     },
-                    jQuery: {
+                    jQueryUI: {
                         contextValue: "{fluid.prefsWidgetType}",
-                        equals: "jQuery",
+                        equals: "jQueryUI",
                         gradeNames: "fluid.prefs.separatedPanelJQuery"
                     }
                 }

@@ -341,9 +341,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                         gradeNames: "fluid.prefs.starterTemplateLoader.native"
 
                     },
-                    jQuery: {
+                    jQueryUI: {
                         contextValue: "{fluid.prefsWidgetType}",
-                        equals: "jQuery",
+                        equals: "jQueryUI",
                         gradeNames: "fluid.prefs.starterTemplateLoader.jQuery"
                     }
                 }

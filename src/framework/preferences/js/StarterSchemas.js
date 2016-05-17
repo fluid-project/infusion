@@ -48,9 +48,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                         gradeNames: "fluid.prefs.auxSchema.starter.textSizeNative"
 
                     },
-                    jQuery: {
+                    jQueryUI: {
                         contextValue: "{fluid.prefsWidgetType}",
-                        equals: "jQuery",
+                        equals: "jQueryUI",
                         gradeNames: "fluid.prefs.auxSchema.starter.textSizeJQuery"
                     }
                 }
@@ -112,9 +112,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                         gradeNames: "fluid.prefs.auxSchema.starter.lineSpaceNative"
 
                     },
-                    jQuery: {
+                    jQueryUI: {
                         contextValue: "{fluid.prefsWidgetType}",
-                        equals: "jQuery",
+                        equals: "jQueryUI",
                         gradeNames: "fluid.prefs.auxSchema.starter.lineSpaceJQuery"
                     }
                 }
