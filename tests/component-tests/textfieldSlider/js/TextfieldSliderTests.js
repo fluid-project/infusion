@@ -23,13 +23,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         fluid.tests.textfieldSlider.createTextfieldSliderNative = function (options) {
             // Make sure we're using the native widget
-            fluid.makeGradeLinkage("fluid.textfieldSliderVariety", ["fluid.textfieldSlider"],["fluid.textfieldSliderNative"]);
+            fluid.contextAware.makeChecks({
+                "fluid.prefsWidgetType": {
+                    value: "nativeHTML"
+                }
+            });
             return fluid.textfieldSlider(".fl-textfield-slider-native", options);
         };
 
         fluid.tests.textfieldSlider.createTextfieldSliderJQuery = function (options) {
             // Override default native widget to use jQuery slider instead
-            fluid.makeGradeLinkage("fluid.textfieldSliderVariety", ["fluid.textfieldSlider"],["fluid.textfieldSliderJQuery"]);
+            fluid.contextAware.makeChecks({
+                "fluid.prefsWidgetType": {
+                    value: "jQuery"
+                }
+            });
 
             return fluid.textfieldSlider(".fl-textfield-slider-jQuery", options);
         };

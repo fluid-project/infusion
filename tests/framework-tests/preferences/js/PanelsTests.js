@@ -1221,8 +1221,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.switchToJqueryWidgets = function (testPanel) {
-        fluid.makeGradeLinkage("fluid.textfieldSliderVariety", ["fluid.textfieldSlider"],["fluid.textfieldSliderJQuery"]);
-
         fluid.contextAware.makeChecks({
             "fluid.prefsWidgetType": {
                 value: "jQuery"
@@ -1232,9 +1230,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         testPanel.events.onSwitchedToJqueryWidgets.fire();
     };
 
-    fluid.tests.switchToNativeWidgets = function (testPanel) {
-        fluid.makeGradeLinkage("fluid.textfieldSliderVariety", ["fluid.textfieldSlider"],["fluid.textfieldSliderNative"]);
-
+    fluid.tests.switchToNativeWidgets = function (testPanel) {    
         fluid.contextAware.makeChecks({
             "fluid.prefsWidgetType": {
                 value: "nativeHTML"
