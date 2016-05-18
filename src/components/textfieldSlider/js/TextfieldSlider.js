@@ -41,18 +41,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         contextAwareness: {
             sliderVariety: {
                 checks: {
-                    nativeHTML: {
-                        contextValue: "{fluid.prefsWidgetType}",
-                        equals: "nativeHTML",
-                        gradeNames: "fluid.textfieldSlider.nativeHTML"
-
-                    },
                     jQueryUI: {
                         contextValue: "{fluid.prefsWidgetType}",
                         equals: "jQueryUI",
                         gradeNames: "fluid.textfieldSlider.jQueryUI"
                     }
-                }
+                },
+                defaultGradeNames: "fluid.textfieldSlider.nativeHTML"
             }
         },
         selectors: {
@@ -155,15 +150,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     // Base slider grade
     fluid.defaults("fluid.slider", {
         gradeNames: ["fluid.viewComponent"],
-        range: {}, // should be used to specify the min, max range e.g. {min: 0, max: 100}
-        members: {
-            combinedSliderOptions: {
-                expander: {
-                    funcName: "fluid.slider.combineSliderOptions",
-                    args: ["{that}.options.sliderOptions", "{that}.options.range"]
-                }
-            }
-        }
+        range: {} // should be used to specify the min, max range e.g. {min: 0, max: 100}
     });
 
     fluid.defaults("fluid.slider.native", {
@@ -192,9 +179,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 method: "attr",
                 args: [{
                     "value": "{that}.model.value",
-                    "min": "{that}.combinedSliderOptions.min",
-                    "max": "{that}.combinedSliderOptions.max",
-                    "step": "{that}.combinedSliderOptions.step",
+                    "min": "{that}.options.range.min",
+                    "max": "{that}.options.range.max",
+                    "step": "{that}.options.sliderOptions.step",
                     "type": "range"
                 }]
             },
@@ -234,6 +221,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                         "this": "{that}.container",
                         method: "slider",
                         args: ["{that}.combinedSliderOptions"]
+                    }
+                },
+                combinedSliderOptions: {
+                    expander: {
+                        funcName: "fluid.slider.combineSliderOptions",
+                        args: ["{that}.options.sliderOptions", "{that}.options.range"]
                     }
                 }
             },
