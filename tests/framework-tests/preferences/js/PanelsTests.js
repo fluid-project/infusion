@@ -1314,10 +1314,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Test the rendering of the text size panel",
                 sequence: [{
                     func: "fluid.tests.switchWidgetType",
-                    args: ["nativeHTML", "{textSizePanelNative}"]
+                    args: ["nativeHTML", "{textSizePanel}"]
                 }, {
                     listener: "fluid.tests.testDefault",
-                    event: "{textSizePanelNative textSize}.events.afterRender",
+                    event: "{textSizePanel textSize}.events.afterRender",
                     priority: "last",
                     args: ["{textSize}", {
                         label: "textSizeLabel",
@@ -1348,10 +1348,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Test the rendering of the text size panel",
                 sequence: [{
                     func: "fluid.tests.switchWidgetType",
-                    args: ["jQueryUI", "{textSizePanelJQuery}"]
+                    args: ["jQueryUI", "{textSizePanel}"]
                 },  {
                     listener: "fluid.tests.testDefault",
-                    event: "{textSizePanelJQuery textSize}.events.afterRender",
+                    event: "{textSizePanel textSize}.events.afterRender",
                     priority: "last",
                     args: ["{textSize}", {
                         label: "textSizeLabel",
