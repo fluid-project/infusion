@@ -236,7 +236,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     "method": "slider",
                     args: ["value", "{arguments}.0"]
                 },
-                setSliderAria: {
+                setSliderAriaValueNow: {
                     "this": "{that}.dom.thumb",
                     "method": "attr",
                     args: ["aria-valuenow", "{arguments}.0"]
@@ -269,7 +269,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     listener: "{that}.setSliderValue",
                     args: ["{change}.value"]
                 }, {
-                    listener: "{that}.setSliderAria",
+                    listener: "{that}.setSliderAriaValueNow",
                     args: ["{change}.value"]
                 }]
             }
