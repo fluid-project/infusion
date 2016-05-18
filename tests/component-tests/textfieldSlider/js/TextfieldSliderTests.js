@@ -83,7 +83,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Max should be the default", 100, that.options.range.max);
         };
 
-        jqUnit.test("Test Init (native slider)", function () {
+        jqUnit.test("Test Init (native HTML slider)", function () {
             jqUnit.expect(8);
             var that = fluid.tests.textfieldSlider.createTextfieldSliderNativeHTML({model: {value: 15}});
 
@@ -97,7 +97,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The min should be 0", 0, +slider.attr("min"));
         });
 
-        jqUnit.test("Test Init (jQuery slider)", function () {
+        jqUnit.test("Test Init (jQuery UI slider)", function () {
             jqUnit.expect(8);
             var that = fluid.tests.textfieldSlider.createTextfieldSliderJQueryUI({model: {value: 15}});
 
@@ -147,64 +147,64 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.tests.textfieldSlider.testAll(-5, -5, that);
         };
 
-        jqUnit.test("Test Min/Max Size (native)", function () {
-            jqUnit.expect(18);
-            var that = fluid.tests.textfieldSlider.createTextfieldSliderNativeHTML({range: {min: 5, max: 55}});
-            fluid.tests.textfieldSlider.testMinMax(that);
-        });
-
-        jqUnit.test("Test Min/Max Size (jQuery)", function () {
-            jqUnit.expect(18);
-            var that = fluid.tests.textfieldSlider.createTextfieldSliderJQueryUI({range: {min: 5, max: 55}});
-            fluid.tests.textfieldSlider.testMinMax(that);
-        });
-
-        jqUnit.test("Test Negative Scale (native)", function () {
-            jqUnit.expect(15);
-
-            var that = fluid.tests.textfieldSlider.createTextfieldSliderNativeHTML({range: {min: -15, max: -5}});
-            fluid.tests.textfieldSlider.testNegativeScale(that);
-        });
-
-        jqUnit.test("Test Negative Scale (jQuery)", function () {
-            jqUnit.expect(15);
-
-            var that = fluid.tests.textfieldSlider.createTextfieldSliderJQueryUI({range: {min: -15, max: -5}});
-            fluid.tests.textfieldSlider.testNegativeScale(that);
-        });
-
-        jqUnit.test("Test Invalid Values (native)", function () {
-            jqUnit.expect(4);
-
-            var that = fluid.tests.textfieldSlider.createTextfieldSliderNativeHTML({
-                range: {
-                    min: -5,
-                    max: 5
-                },
-                model: {
-                    value: 1
-                }
-            });
+        fluid.tests.textfieldSlider.testInvalidValues = function (that) {
             fluid.tests.textfieldSlider.testInputField("aaa", 1, that);
             fluid.tests.textfieldSlider.testInputField(null, 0, that);
-        });
+        };
 
-        jqUnit.test("Test Invalid Values (jQuery)", function () {
-            jqUnit.expect(4);
+        fluid.tests.textfieldSlider.testImplementedComponentTypes = function (messagePrefix, expected, componentOptions, testFunction) {
+            var implementedTypes = [
+                    {
+                        messageSuffix: " (native HTML)",
+                        creatorFunc: fluid.tests.textfieldSlider.createTextfieldSliderNativeHTML
+                    },
+                    {
+                        messageSuffix: " (jQuery UI)",
+                        creatorFunc: fluid.tests.textfieldSlider.createTextfieldSliderJQueryUI
+                    }
+                ];
 
-            var that = fluid.tests.textfieldSlider.createTextfieldSliderJQueryUI({
-                range: {
-                    min: -5,
-                    max: 5
-                },
-                model: {
-                    value: 1
-                }
+            fluid.each(implementedTypes, function (currentType) {
+                jqUnit.test(messagePrefix + currentType.messageSuffix, function () {
+                    jqUnit.expect(expected);
+                    var that = currentType.creatorFunc(componentOptions);
+                    testFunction(that);
+                });
             });
-            fluid.tests.textfieldSlider.testInputField("aaa", 1, that);
-            fluid.tests.textfieldSlider.testInputField(null, 0, that);
-        });
+        };
 
+        var testCases = [
+            {
+                messagePrefix: "Test Min/Max Size",
+                expected: 18,
+                componentOptions: {range: {min: 5, max: 55}},
+                testFunction: fluid.tests.textfieldSlider.testMinMax
+            },
+            {
+                messagePrefix: "Test Negative Scale",
+                expected: 15,
+                componentOptions: {range: {min: -15, max: -5}},
+                testFunction: fluid.tests.textfieldSlider.testNegativeScale
+            },
+            {
+                messagePrefix: "Test Invalid Values",
+                expected: 4,
+                componentOptions: {
+                    range: {
+                        min: -5,
+                        max: 5
+                    },
+                    model: {
+                        value: 1
+                    }
+                },
+                testFunction: fluid.tests.textfieldSlider.testInvalidValues
+            }
+        ];
+
+        fluid.each(testCases, function (currentCase) {
+            fluid.tests.textfieldSlider.testImplementedComponentTypes(currentCase.messagePrefix, currentCase.expected, currentCase.componentOptions, currentCase.testFunction);
+        });
 
     });
 })(jQuery);
