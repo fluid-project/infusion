@@ -388,6 +388,10 @@ var fluid = fluid || fluid_2_0_0;
         return fluid.isPrimitive(totest) || !fluid.isPlainObject(totest);
     };
 
+    fluid.isApplicable = function (totest) {
+        return totest.apply && typeof(totest.apply) === "function";
+    };
+
     fluid.copyRecurse = function (tocopy, segs) {
         if (segs.length > fluid.strategyRecursionBailout) {
             fluid.fail("Runaway recursion encountered in fluid.copy - reached path depth of " + fluid.strategyRecursionBailout + " via path of " + segs.join(".") +
@@ -1386,7 +1390,7 @@ var fluid = fluid || fluid_2_0_0;
                 if (!listener) {
                     return;
                 }
-                if (fluid.isPlainObject(listener, true)) {
+                if (fluid.isPlainObject(listener, true) && !fluid.isApplicable(listener)) {
                     record = listener;
                     listener = record.listener;
                     namespace = record.namespace;
