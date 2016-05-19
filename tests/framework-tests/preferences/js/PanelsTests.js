@@ -1246,7 +1246,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.defaults("fluid.tests.prefs.panel.textSizeNative", {
+    fluid.defaults("fluid.tests.prefs.panel.textSize.nativeHTML", {
         gradeNames: ["fluid.tests.prefs.panel.textSize"],
         resources: {
             template: {
@@ -1255,7 +1255,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.defaults("fluid.tests.prefs.panel.textSizeJQuery", {
+    fluid.defaults("fluid.tests.prefs.panel.textSize.jQueryUI", {
         gradeNames: ["fluid.tests.prefs.panel.textSize"],
         resources: {
             template: {
@@ -1280,49 +1280,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    // fluid.tests.textSizePanelNative
-    fluid.defaults("fluid.tests.textSizePanelNative", {
-        gradeNames: ["fluid.tests.textSizePanel"],
-        components: {
-            textSize: {
-                type: "fluid.tests.prefs.panel.textSizeNative",
-                container: ".flc-textSize"
-            },
-            textSizeTester: {
-                options: {
-                    testOptions: {
-                        widgetType: "nativeHTML"
-                    },
-                    modules: [{
-                        name: "Test the text sizer settings panel (nativeHTML)"
-                    }]
-                }
-            }
-        }
-    });
-
-    // fluid.tests.textSizePanelJQuery
-    fluid.defaults("fluid.tests.textSizePanelJQuery", {
-        gradeNames: ["fluid.tests.textSizePanel"],
-        components: {
-            textSize: {
-                type: "fluid.tests.prefs.panel.textSizeJQuery",
-                container: ".flc-textSize-jQuery"
-            },
-            textSizeTester: {
-                options: {
-                    testOptions: {
-                        widgetType: "jQueryUI"
-                    },
-                    modules: [{
-                        name: "Test the text sizer settings panel (jQueryUI)"
-                    }]
-                }
-            }
-        }
-    });
-
-
+    // Base test grade
     fluid.defaults("fluid.tests.textSizeTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
@@ -1355,6 +1313,48 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }]
             }]
         }]
+    });
+
+    // fluid.tests.textSizePanelNative
+    fluid.defaults("fluid.tests.textSizePanel.nativeHTML", {
+        gradeNames: ["fluid.tests.textSizePanel"],
+        components: {
+            textSize: {
+                type: "fluid.tests.prefs.panel.textSize.nativeHTML",
+                container: ".flc-textSize"
+            },
+            textSizeTester: {
+                options: {
+                    testOptions: {
+                        widgetType: "nativeHTML"
+                    },
+                    modules: [{
+                        name: "Test the text sizer settings panel (nativeHTML)"
+                    }]
+                }
+            }
+        }
+    });
+
+    // fluid.tests.textSizePanelJQuery
+    fluid.defaults("fluid.tests.textSizePanel.jQueryUI", {
+        gradeNames: ["fluid.tests.textSizePanel"],
+        components: {
+            textSize: {
+                type: "fluid.tests.prefs.panel.textSize.jQueryUI",
+                container: ".flc-textSize-jQuery"
+            },
+            textSizeTester: {
+                options: {
+                    testOptions: {
+                        widgetType: "jQueryUI"
+                    },
+                    modules: [{
+                        name: "Test the text sizer settings panel (jQueryUI)"
+                    }]
+                }
+            }
+        }
     });
 
     /*******************************************************************************
@@ -1795,8 +1795,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.test.runTests([
             "fluid.tests.textFontPanel",
             "fluid.tests.contrastPanel",
-            "fluid.tests.textSizePanelNative",
-            "fluid.tests.textSizePanelJQuery",
+            "fluid.tests.textSizePanel.nativeHTML",
+            "fluid.tests.textSizePanel.jQueryUI",
             "fluid.tests.lineSpacePanel",
             "fluid.tests.lineSpacePanelJQuery",
             "fluid.tests.layoutPanel",
