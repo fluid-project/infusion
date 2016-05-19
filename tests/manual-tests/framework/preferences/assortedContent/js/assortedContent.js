@@ -66,18 +66,13 @@ var assortedContent = assortedContent || {};
             contextAwareness: {
                 sliderVariety: {
                     checks: {
-                        nativeHTML: {
-                            contextValue: "{fluid.prefsWidgetType}",
-                            equals: "nativeHTML",
-                            gradeNames: "fluid.assortedContent.native"
-
-                        },
                         jQueryUI: {
                             contextValue: "{fluid.prefsWidgetType}",
                             equals: "jQueryUI",
                             gradeNames: "fluid.assortedContent.jQueryUI"
                         }
-                    }
+                    },
+                    defaultGradeNames: "fluid.assortedContent.native"
                 }
             }
         });

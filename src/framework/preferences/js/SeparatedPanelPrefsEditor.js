@@ -48,18 +48,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         contextAwareness: {
             separatedPanelPrefsWidgetType: {
                 checks: {
-                    nativeHTML: {
-                        contextValue: "{fluid.prefsWidgetType}",
-                        equals: "nativeHTML",
-                        gradeNames: "fluid.prefs.separatedPanel.nativeHTML"
-
-                    },
                     jQueryUI: {
                         contextValue: "{fluid.prefsWidgetType}",
                         equals: "jQueryUI",
                         gradeNames: "fluid.prefs.separatedPanel.jQueryUI"
                     }
-                }
+                },
+                defaultGradeNames: "fluid.prefs.separatedPanel.nativeHTML"
             }
         },
         selectors: {

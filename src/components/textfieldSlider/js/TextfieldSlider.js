@@ -92,16 +92,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    // For context-aware components that can choose between native or
-    // jQuery-based widgets, such as textfieldSlider
-    // set to value: "jQueryUI" to prefer jQuery-based widgets instead
-
-    fluid.contextAware.makeChecks({
-        "fluid.prefsWidgetType": {
-            value: "nativeHTML"
-        }
-    });
-
     fluid.defaults("fluid.textfieldSlider.textfield", {
         gradeNames: ["fluid.viewComponent"],
         range: {}, // should be used to specify the min, max range e.g. {min: 0, max: 100}

@@ -335,18 +335,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         contextAwareness: {
             startTemplateLoaderPrefsWidgetType: {
                 checks: {
-                    nativeHTML: {
-                        contextValue: "{fluid.prefsWidgetType}",
-                        equals: "nativeHTML",
-                        gradeNames: "fluid.prefs.starterTemplateLoader.native"
-
-                    },
                     jQueryUI: {
                         contextValue: "{fluid.prefsWidgetType}",
                         equals: "jQueryUI",
                         gradeNames: "fluid.prefs.starterTemplateLoader.jQuery"
                     }
-                }
+                },
+                defaultGradeNames: "fluid.prefs.starterTemplateLoader.native"
             }
         }
     });

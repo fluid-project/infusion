@@ -42,18 +42,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         contextAwareness: {
             textSizeSliderVariety: {
                 checks: {
-                    nativeHTML: {
-                        contextValue: "{fluid.prefsWidgetType}",
-                        equals: "nativeHTML",
-                        gradeNames: "fluid.prefs.auxSchema.starter.textSize.nativeHTML"
-
-                    },
                     jQueryUI: {
                         contextValue: "{fluid.prefsWidgetType}",
                         equals: "jQueryUI",
                         gradeNames: "fluid.prefs.auxSchema.starter.textSize.jQueryUI"
                     }
-                }
+                },
+                defaultGradeNames: "fluid.prefs.auxSchema.starter.textSize.nativeHTML"
             }
         }
     });
@@ -106,18 +101,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         contextAwareness: {
             lineSpaceSliderVariety: {
                 checks: {
-                    nativeHTML: {
-                        contextValue: "{fluid.prefsWidgetType}",
-                        equals: "nativeHTML",
-                        gradeNames: "fluid.prefs.auxSchema.starter.lineSpace.nativeHTML"
-
-                    },
                     jQueryUI: {
                         contextValue: "{fluid.prefsWidgetType}",
                         equals: "jQueryUI",
                         gradeNames: "fluid.prefs.auxSchema.starter.lineSpace.jQueryUI"
                     }
-                }
+                },
+                defaultGradeNames: "fluid.prefs.auxSchema.starter.lineSpace.nativeHTML"
             }
         }
     });
