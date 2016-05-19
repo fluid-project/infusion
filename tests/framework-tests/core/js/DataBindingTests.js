@@ -1183,6 +1183,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         target: "{child3}.model.lastArea",
                         transform: {
                             transform: {
+                                inputPath: "",
                                 type: "fluid.transforms.linearScale",
                                 factor: 10
                             }
