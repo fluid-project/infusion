@@ -1264,6 +1264,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    // Base test grade
     fluid.defaults("fluid.tests.textSizePanel", {
         gradeNames: ["fluid.test.testEnvironment"],
         components: {
@@ -1280,7 +1281,48 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    // Base test grade
+    // native HTML widget test
+    fluid.defaults("fluid.tests.textSizePanel.nativeHTML", {
+        gradeNames: ["fluid.tests.textSizePanel"],
+        components: {
+            textSize: {
+                type: "fluid.tests.prefs.panel.textSize.nativeHTML",
+                container: ".flc-textSize"
+            },
+            textSizeTester: {
+                options: {
+                    testOptions: {
+                        widgetType: "nativeHTML"
+                    },
+                    modules: [{
+                        name: "Test the text sizer settings panel (nativeHTML)"
+                    }]
+                }
+            }
+        }
+    });
+
+    // jQueryUI widget test
+    fluid.defaults("fluid.tests.textSizePanel.jQueryUI", {
+        gradeNames: ["fluid.tests.textSizePanel"],
+        components: {
+            textSize: {
+                type: "fluid.tests.prefs.panel.textSize.jQueryUI",
+                container: ".flc-textSize-jQuery"
+            },
+            textSizeTester: {
+                options: {
+                    testOptions: {
+                        widgetType: "jQueryUI"
+                    },
+                    modules: [{
+                        name: "Test the text sizer settings panel (jQueryUI)"
+                    }]
+                }
+            }
+        }
+    });
+
     fluid.defaults("fluid.tests.textSizeTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
@@ -1315,48 +1357,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
-    // fluid.tests.textSizePanelNative
-    fluid.defaults("fluid.tests.textSizePanel.nativeHTML", {
-        gradeNames: ["fluid.tests.textSizePanel"],
-        components: {
-            textSize: {
-                type: "fluid.tests.prefs.panel.textSize.nativeHTML",
-                container: ".flc-textSize"
-            },
-            textSizeTester: {
-                options: {
-                    testOptions: {
-                        widgetType: "nativeHTML"
-                    },
-                    modules: [{
-                        name: "Test the text sizer settings panel (nativeHTML)"
-                    }]
-                }
-            }
-        }
-    });
-
-    // fluid.tests.textSizePanelJQuery
-    fluid.defaults("fluid.tests.textSizePanel.jQueryUI", {
-        gradeNames: ["fluid.tests.textSizePanel"],
-        components: {
-            textSize: {
-                type: "fluid.tests.prefs.panel.textSize.jQueryUI",
-                container: ".flc-textSize-jQuery"
-            },
-            textSizeTester: {
-                options: {
-                    testOptions: {
-                        widgetType: "jQueryUI"
-                    },
-                    modules: [{
-                        name: "Test the text sizer settings panel (jQueryUI)"
-                    }]
-                }
-            }
-        }
-    });
-
     /*******************************************************************************
      * lineSpace
      *******************************************************************************/
@@ -1372,7 +1372,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "lineSpaceWideIcon": "icon of 3 horizontal lines with wide spacing",
             "multiplier": "times",
             "lineSpaceDescr": "Adjust the spacing between lines of text"
-        },
+        }
+    });
+
+    fluid.defaults("fluid.tests.prefs.panel.lineSpace.nativeHTML", {
+        gradeNames: ["fluid.tests.prefs.panel.lineSpace"],
         resources: {
             template: {
                 href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-lineSpace-nativeHTML.html"
@@ -1380,7 +1384,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.defaults("fluid.tests.prefs.panel.lineSpaceJQuery", {
+    fluid.defaults("fluid.tests.prefs.panel.lineSpace.jQueryUI", {
         gradeNames: ["fluid.tests.prefs.panel.lineSpace"],
         resources: {
             template: {
@@ -1389,12 +1393,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    // Base test grade
     fluid.defaults("fluid.tests.lineSpacePanel", {
         gradeNames: ["fluid.test.testEnvironment"],
         components: {
             lineSpace: {
-                type: "fluid.tests.prefs.panel.lineSpace",
-                container: ".flc-lineSpace",
                 createOnEvent: "{lineSpacePanel}.events.onSwitchedWidgetType"
             },
             lineSpaceTester: {
@@ -1406,20 +1409,47 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.defaults("fluid.tests.lineSpacePanelJQuery", {
-        gradeNames: ["fluid.test.testEnvironment"],
+    // Native HTML test
+    fluid.defaults("fluid.tests.lineSpacePanel.nativeHTML", {
+        gradeNames: ["fluid.tests.lineSpacePanel"],
         components: {
             lineSpace: {
-                type: "fluid.tests.prefs.panel.lineSpaceJQuery",
-                container: ".flc-lineSpace-jQuery",
-                createOnEvent: "{lineSpacePanelJQuery}.events.onSwitchedWidgetType"
+                type: "fluid.tests.prefs.panel.lineSpace.nativeHTML",
+                container: ".flc-lineSpace"
             },
             lineSpaceTester: {
-                type: "fluid.tests.lineSpaceTesterJQuery"
+                type: "fluid.tests.lineSpaceTester",
+                options: {
+                    testOptions: {
+                        widgetType: "nativeHTML"
+                    },
+                    modules: [{
+                        name: "Test the line space settings panel (nativeHTML)"
+                    }]
+                }
             }
-        },
-        events: {
-            "onSwitchedWidgetType": null
+        }
+    });
+
+    // jQuery UI test
+    fluid.defaults("fluid.tests.lineSpacePanel.jQueryUI", {
+        gradeNames: ["fluid.tests.lineSpacePanel"],
+        components: {
+            lineSpace: {
+                type: "fluid.tests.prefs.panel.lineSpace.jQueryUI",
+                container: ".flc-lineSpace-jQuery"
+            },
+            lineSpaceTester: {
+                type: "fluid.tests.lineSpaceTester",
+                options: {
+                    testOptions: {
+                        widgetType: "jQueryUI"
+                    },
+                    modules: [{
+                        name: "Test the line space settings panel (jQueryUI)"
+                    }]
+                }
+            }
         }
     });
 
@@ -1435,44 +1465,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Test the rendering of the line space panel",
                 sequence: [{
                     func: "fluid.tests.switchWidgetType",
-                    args: ["nativeHTML", "{lineSpacePanel}"]
+                    args: ["{that}.options.testOptions.widgetType", "{lineSpacePanel}"]
                 }, {
                     listener: "fluid.tests.testDefault",
                     event: "{lineSpacePanel lineSpace}.events.afterRender",
-                    priority: "last",
-                    args: ["{lineSpace}", {
-                        label: "lineSpaceLabel",
-                        lineSpaceDescr: "lineSpaceDescr"
-                    }]
-                }, {
-                    func: "fluid.tests.changeInput",
-                    args: ["{lineSpace}.dom.lineSpace", "{that}.options.testOptions.newValue"]
-                }, {
-                    listener: "fluid.tests.panels.utils.checkModel",
-                    args: ["lineSpace", "{lineSpace}.model", "{that}.options.testOptions.newValue"],
-                    spec: {path: "lineSpace", priority: "last"},
-                    changeEvent: "{lineSpace}.applier.modelChanged"
-                }]
-            }]
-        }]
-    });
-
-    fluid.defaults("fluid.tests.lineSpaceTesterJQuery", {
-        gradeNames: ["fluid.test.testCaseHolder"],
-        testOptions: {
-            newValue: 1.2
-        },
-        modules: [{
-            name: "Test the line space settings panel (jQuery slider)",
-            tests: [{
-                expect: 4,
-                name: "Test the rendering of the line space panel",
-                sequence: [{
-                    func: "fluid.tests.switchWidgetType",
-                    args: ["jQueryUI", "{lineSpacePanelJQuery}"]
-                }, {
-                    listener: "fluid.tests.testDefault",
-                    event: "{lineSpacePanelJQuery lineSpace}.events.afterRender",
                     priority: "last",
                     args: ["{lineSpace}", {
                         label: "lineSpaceLabel",
@@ -1797,8 +1793,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "fluid.tests.contrastPanel",
             "fluid.tests.textSizePanel.nativeHTML",
             "fluid.tests.textSizePanel.jQueryUI",
-            "fluid.tests.lineSpacePanel",
-            "fluid.tests.lineSpacePanelJQuery",
+            "fluid.tests.lineSpacePanel.nativeHTML",
+            "fluid.tests.lineSpacePanel.jQueryUI",
             "fluid.tests.layoutPanel",
             "fluid.tests.emphasizeLinksPanel",
             "fluid.tests.inputsLargerPanel",
