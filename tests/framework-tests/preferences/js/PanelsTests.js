@@ -1243,7 +1243,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "textSizeLabel": "Text Size",
             "multiplier": "times",
             "textSizeDescr": "Adjust text size"
-        },
+        }
+    });
+
+    fluid.defaults("fluid.tests.prefs.panel.textSizeNative", {
+        gradeNames: ["fluid.tests.prefs.panel.textSize"],
         resources: {
             template: {
                 href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-textSize-nativeHTML.html"
@@ -1266,6 +1270,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             textSize: {
                 type: "fluid.tests.prefs.panel.textSize",
                 createOnEvent: "{textSizePanel}.events.onSwitchedWidgetType"
+            },
+            textSizeTester: {
+                type: "fluid.tests.textSizeTester"
             }
         },
         events: {
@@ -1278,11 +1285,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.tests.textSizePanel"],
         components: {
             textSize: {
-                type: "fluid.tests.prefs.panel.textSize",
+                type: "fluid.tests.prefs.panel.textSizeNative",
                 container: ".flc-textSize"
             },
             textSizeTester: {
-                type: "fluid.tests.textSizeTester"
+                options: {
+                    testOptions: {
+                        widgetType: "nativeHTML"
+                    },
+                    modules: [{
+                        name: "Test the text sizer settings panel (nativeHTML)"
+                    }]
+                }
             }
         }
     });
@@ -1296,7 +1310,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 container: ".flc-textSize-jQuery"
             },
             textSizeTester: {
-                type: "fluid.tests.textSizeJQueryTester"
+                options: {
+                    testOptions: {
+                        widgetType: "jQueryUI"
+                    },
+                    modules: [{
+                        name: "Test the text sizer settings panel (jQueryUI)"
+                    }]
+                }
             }
         }
     });
@@ -1308,48 +1329,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             newValue: 1.2
         },
         modules: [{
-            name: "Test the text sizer settings panel (native slider)",
+            name: "Test the text sizer settings panel",
             tests: [{
                 expect: 4,
                 name: "Test the rendering of the text size panel",
                 sequence: [{
                     func: "fluid.tests.switchWidgetType",
-                    args: ["nativeHTML", "{textSizePanel}"]
+                    args: ["{that}.options.testOptions.widgetType", "{textSizePanel}"]
                 }, {
-                    listener: "fluid.tests.testDefault",
-                    event: "{textSizePanel textSize}.events.afterRender",
-                    priority: "last",
-                    args: ["{textSize}", {
-                        label: "textSizeLabel",
-                        textSizeDescr: "textSizeDescr"
-                    }]
-                }, {
-                    func: "fluid.tests.changeInput",
-                    args: ["{textSize}.dom.textSize", "{that}.options.testOptions.newValue"]
-                }, {
-                    listener: "fluid.tests.panels.utils.checkModel",
-                    args: ["textSize", "{textSize}.model", "{that}.options.testOptions.newValue"],
-                    spec: {path: "textSize", priority: "last"},
-                    changeEvent: "{textSize}.applier.modelChanged"
-                }]
-            }]
-        }]
-    });
-
-    fluid.defaults("fluid.tests.textSizeJQueryTester", {
-        gradeNames: ["fluid.test.testCaseHolder"],
-        testOptions: {
-            newValue: 1.2
-        },
-        modules: [{
-            name: "Test the text sizer settings panel (jQuery slider)",
-            tests: [{
-                expect: 4,
-                name: "Test the rendering of the text size panel",
-                sequence: [{
-                    func: "fluid.tests.switchWidgetType",
-                    args: ["jQueryUI", "{textSizePanel}"]
-                },  {
                     listener: "fluid.tests.testDefault",
                     event: "{textSizePanel textSize}.events.afterRender",
                     priority: "last",
