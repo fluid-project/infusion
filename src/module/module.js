@@ -18,7 +18,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 // An extremely simple base for the module system that just has the functionality of
 // tracking base directories for loaded modules, and the ability to interpolate paths
-// of the form ${module}/further-path
+// of the form %module/further-path
 
 fluid.registerNamespace("fluid.module");
 
@@ -98,3 +98,50 @@ fluid.module.resolvePath = function (path) {
     return fluid.stringTemplate(path, fluid.module.getDirs());
 };
 
+fluid.module.moduleRegex = /^%([^\W._][\w\.-]*)/;
+
+/** Determine whether ths supplied string begins with the pattern %module-name for
+ * some `module-name` which is considered a valid module name by npm by its legacy rules (see
+ * https://github.com/npm/validate-npm-package-name ).
+ * Returns the matched module name if the string matches, or falsy if it does not.
+ */
+
+fluid.module.refToModuleName = function (ref) {
+    var matches = ref.match(fluid.module.moduleRegex);
+    return matches && matches[1];
+};
+
+/** Load a node-aware JavaScript file using either a supplied or the native
+  * Fluid require function. The module name may start with a module reference
+  * of the form %module-name to indicate a base reference into either an already
+  * loaded module that was previously registered using fluid.module.register, or
+  * a module which can be loaded from the point of view of the caller.
+  * If the <code>namespace</code> argument is supplied, the module's export
+  * object will be written to that path in the global Fluid namespace */
+
+// TODO: deprecation/change of meaning for 2nd argument. The docs bizarrely say
+// "to be used after interpolation" which makes no sense - if interpolation could be
+// done, it means the module was already loaded
+
+fluid.require = function (ref, foreignRequire, namespace) {
+    var moduleTerm = fluid.module.refToModuleName(ref);
+    if (moduleTerm && !foreignRequire) {
+        var entry = fluid.module.modules[moduleTerm];
+        if (!entry) {
+            var callerInfo = fluid.getCallerInfo(2);
+            var callerPath = callerInfo.path;
+            var resolvedTerm = fluid.module.resolveSync(moduleTerm, callerPath);
+            if (!resolvedTerm) {
+                fluid.fail("Module " + moduleTerm + " has not been loaded and could not be loaded from caller's path " + callerPath);
+            }
+            require(resolvedTerm);
+        }
+    }
+    foreignRequire = foreignRequire || require;
+    var resolved = fluid.module.resolvePath(ref);
+    var module = foreignRequire(resolved);
+    if (namespace) {
+        fluid.setGlobalValue(namespace, module);
+    }
+    return module;
+};
