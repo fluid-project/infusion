@@ -1,0 +1,70 @@
+/* Preferences Editor styles, specifically for GPII Preferences Server integration */
+
+/* colors */
+button = {
+    color: {
+        foreground: #000000,
+        background: #FDD900,
+        disabled: #B3B4B3
+    }
+}
+
+@font-face {
+    font-family: 'InfusionIcons-Gpii';
+    src: url('../fonts/InfusionIcons-Gpii.ttf'),
+         url('../fonts/InfusionIcons-Gpii.eot');
+}
+
+.fl-prefsEditor {
+    .fl-prefsEditor-gpii-button {
+        background-color: button.color.background;
+        color: button.color.foreground;
+        border-style: solid;
+        border-color: button.color.foreground;
+        border-width: 1px;
+        border-radius: 5px;
+        padding-top: 2px;
+        padding-bottom: 2px;
+        width: 100%;
+        margin-bottom: 0.5rem;
+
+        &:disabled {
+            border-style: none;
+            background-color: button.color.disabled;
+        }
+
+        &:hover {
+            border-width: 3px;
+            padding-top: 0;
+            padding-bottom: 0px;
+            outline: none;
+        }
+
+        &:focus {
+            outline-offset: 2px;
+        }
+    }
+
+    .fl-icon-gpii {
+        font-family: 'InfusionIcons-Gpii' !important;
+        speak: none;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        -webkit-font-smoothing: antialiased;
+        float: left;
+        margin: .2em .3em 0 0;
+        font-size: 1.5em;
+
+        &:before {
+            content: "\e901"
+        }
+    }
+}
+
+.fl-prefsEditor-tooltip.ui-tooltip {
+    background-color: button.color.background;
+    color: button.color.foreground;
+    border: 1px button.color.foreground solid;
+}

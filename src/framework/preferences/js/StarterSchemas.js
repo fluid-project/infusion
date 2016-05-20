@@ -21,8 +21,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * contrast, table of contents, inputs larger and emphasize links
      *******************************************************************************/
 
-    fluid.defaults("fluid.prefs.termsAware");
-
     fluid.defaults("fluid.prefs.auxSchema.starter", {
         gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {

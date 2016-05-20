@@ -15,9 +15,9 @@ linear-gradient() {
 
     if current-property {
         for vendor in vendors {
-            add-property(current-property[0], s('-%s-linear-gradient(%s);', vendor, content));
+            add-property(current-property[0], s('-%s-linear-gradient(%s)', vendor, content));
         }
 
-        s('linear-gradient(%s);', content);
+        s('linear-gradient(%s)', content);
     }
 }

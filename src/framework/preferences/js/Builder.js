@@ -196,12 +196,22 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     /*
-     * A one-stop-shop function to build and instantiate a prefsEditor from a schema.
+     * A one-stop-shop component to build and instantiate a prefsEditor from a schema.
      */
-    fluid.prefs.create = function (container, options) {
-        options = options || {};
-        var builder = fluid.prefs.builder(options.build);
-        return fluid.invokeGlobalFunction(builder.options.assembledPrefsEditorGrade, [container, options.prefsEditor]);
-    };
+    fluid.defaults("fluid.prefs.create", {
+        gradeNames: ["fluid.viewComponent"],
+        builder: {}, // options provided by users
+        prefsEditor: {}, // options provided by users
+        members: {
+            constructedGrades: "@expand:fluid.prefs.builder({that}.options.build)"
+        },
+        components: {
+            prefsEditor: {
+                type: "{fluid.prefs.create}.constructedGrades.options.assembledPrefsEditorGrade",
+                container: "{fluid.prefs.create}.container",
+                options: "{fluid.prefs.create}.options.prefsEditor"
+            }
+        }
+    });
 
 })(jQuery, fluid_2_0_0);

@@ -903,6 +903,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     jqUnit.test("fluid.prefs.create", function () {
+        jqUnit.expect(5);
+
         var pref_defaultNamespace = fluid.prefs.create(".prefs_defaultNamespace", {
             build: {
                 gradeNames: ["fluid.prefs.auxSchema.starter"],
@@ -916,8 +918,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         });
-        jqUnit.assertTrue("The prefs editor should have been returned", fluid.hasGrade(pref_defaultNamespace.options, "fluid.prefs.assembler.prefsEd"));
-        jqUnit.assertTrue("The prefsEditor grade should use the custom namespace", startsWith(pref_defaultNamespace.typeName, "fluid.prefs.created_"));
+        jqUnit.assertNotNull("The member option \"constructedGrades\" has been constructed", pref_defaultNamespace.constructedGrades);
+        jqUnit.assertTrue("The prefs editor should have been returned", fluid.hasGrade(pref_defaultNamespace.prefsEditor.options, "fluid.prefs.assembler.prefsEd"));
+        jqUnit.assertTrue("The prefsEditor grade should use the custom namespace", startsWith(pref_defaultNamespace.prefsEditor.typeName, "fluid.prefs.created_"));
 
         var namespace = "fluid.test.namespace";
         var pref_customNamespace = fluid.prefs.create(".prefs_customNamespace", {
@@ -933,8 +936,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         });
-        jqUnit.assertTrue("The prefs editor should have been returned", fluid.hasGrade(pref_customNamespace.options, "fluid.prefs.assembler.prefsEd"));
-        jqUnit.assertTrue("The prefsEditor grade should use the custom namespace", startsWith(pref_customNamespace.typeName, namespace));
+        jqUnit.assertTrue("The prefs editor should have been returned", fluid.hasGrade(pref_customNamespace.prefsEditor.options, "fluid.prefs.assembler.prefsEd"));
+        jqUnit.assertTrue("The prefsEditor grade should use the custom namespace", startsWith(pref_customNamespace.prefsEditor.typeName, namespace));
     });
 
     /***********************

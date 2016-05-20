@@ -177,6 +177,19 @@ build-themes-Enactors(contrastThemes) {
                 border-left-color: fColor !important;
             }
 
+            button {
+                &:disabled {
+                    border-style: dashed !important;
+                    background-image: repeating-linear-gradient(
+                        -45deg,
+                        fColor,
+                        fColor 0.2rem,
+                        bColor 0.2rem,
+                        bColor 1rem
+                    );
+                }
+            }
+
             // Focus
             .fl-focus:focus, .fl-focus :focus, &.fl-focus :focus, .selectable {
                 outline-width: 0.2em;
