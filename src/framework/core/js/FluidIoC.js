@@ -557,13 +557,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     // Apply a batch of freshly acquired plain dynamic grades to the target component and recompute its options
     fluid.applyDynamicGrades = function (rec) {
         rec.oldGradeNames = fluid.makeArray(rec.gradeNames);
-        // Note that this crude algorithm doesn't allow us to determine which grades are "new" and which not (requires C3-like approach overall)
-        var newDefaults = fluid.copy(fluid.getGradedDefaults(rec.that.typeName, rec.gradeNames));
+        // Note that this crude algorithm doesn't allow us to determine which grades are "new" and which not // TODO: can no longer interpret comment
+        var newDefaults = fluid.copy(fluid.getMergedDefaults(rec.that.typeName, rec.gradeNames));
         rec.gradeNames.length = 0; // acquire derivatives of dynamic grades (FLUID-5054)
         rec.gradeNames.push.apply(rec.gradeNames, newDefaults.gradeNames);
         
         fluid.each(rec.gradeNames, function (gradeName) {
-            if (gradeName.charAt(0) !== "{") {
+            if (!fluid.isIoCReference(gradeName)) {
                 rec.seenGrades[gradeName] = true;
             }
         });
@@ -587,7 +587,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.accumulateDynamicGrades = function (rec, newGradeNames) {
         fluid.each(newGradeNames, function (gradeName) {
             if (!rec.seenGrades[gradeName]) {
-                if (gradeName.charAt(0) === "{") {
+                if (fluid.isIoCReference(gradeName)) {
                     rec.rawDynamic.push(gradeName);
                     rec.seenGrades[gradeName] = true;
                 } else if (!fluid.contains(rec.oldGradeNames, gradeName)) {
@@ -599,7 +599,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.computeDynamicGrades = function (that, shadow, strategy) {
         delete that.options.gradeNames; // Recompute gradeNames for FLUID-5012 and others
-        var gradeNames = fluid.driveStrategy(that.options, "gradeNames", strategy); // Just acquire the reference, contents are wrong
+        var gradeNames = fluid.driveStrategy(that.options, "gradeNames", strategy); // Just acquire the reference and force eval of mergeBlocks "target", contents are wrong
         gradeNames.length = 0;
         // TODO: In complex distribution cases, a component might end up with multiple default blocks
         var defaultsBlock = fluid.findMergeBlocks(shadow.mergeOptions.mergeBlocks, "defaults")[0];
@@ -614,7 +614,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             rawDynamic: []
         };
         fluid.each(shadow.mergeOptions.mergeBlocks, function (block) { // acquire parents of earlier blocks before applying later ones
-            gradeNames.push.apply(gradeNames, fluid.makeArray(block.source && block.source.gradeNames));
+            gradeNames.push.apply(gradeNames, fluid.makeArray(block.target && block.target.gradeNames));
             fluid.applyDynamicGrades(rec);
         });
         fluid.collectDistributedGrades(rec);
@@ -850,6 +850,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             return foundComponent;
         }
     };
+    
+    fluid.triggerMismatchedPathError = function (parsed, parentThat) {
+        var ref = fluid.renderContextReference(parsed);
+        fluid.fail("Failed to resolve reference " + ref + " - could not match context with name " +
+            parsed.context + " from component " + fluid.dumpThat(parentThat) + " at path " + fluid.pathForComponent(parentThat).join(".") + " component: " , parentThat);
+    };
 
     fluid.makeStackFetcher = function (parentThat, localRecord, fast) {
         var fetcher = function (parsed) {
@@ -862,9 +868,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
             var foundComponent = fluid.resolveContext(context, parentThat, fast);
             if (!foundComponent && parsed.path !== "") {
-                var ref = fluid.renderContextReference(parsed);
-                fluid.fail("Failed to resolve reference " + ref + " - could not match context with name " +
-                    context + " from component " + fluid.dumpThat(parentThat) + " at path " + fluid.pathForComponent(parentThat).join(".") + " component: " , parentThat);
+                fluid.triggerMismatchedPathError(parsed, parentThat);
             }
             return fluid.getForComponent(foundComponent, parsed.path);
         };
@@ -1034,7 +1038,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 fluid.doDestroy(child, name, component);
                 fluid.clearDistributions(childShadow);
                 fluid.clearListeners(childShadow);
-                child.events.afterDestroy.fire(child, name, component);
+                fluid.fireEvent(child, "afterDestroy", [child, name, component]);
                 delete that.idToShadow[child.id];
             } else {
                 fluid.remove_if(childShadow.injectedPaths, function (troo, path) {
@@ -1345,7 +1349,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.bindDeferredComponent = function (that, componentName, component) {
         var events = fluid.makeArray(component.createOnEvent);
         fluid.each(events, function(eventName) {
-            var event = eventName.charAt(0) === "{" ? fluid.expandOptions(eventName, that) : that.events[eventName];
+            var event = fluid.isIoCReference(eventName) ? fluid.expandOptions(eventName, that) : that.events[eventName];
             if (!event || !event.addListener) {
                 fluid.fail("Error instantiating createOnEvent component with name " + componentName + " of parent ", that, " since event specification " +
                     eventName + " could not be expanded to an event - got ", event);
@@ -2013,10 +2017,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     /** End compact record expansion machinery **/
 
-    fluid.isIoCReference = function (ref) {
-        return typeof(ref) === "string" && ref.charAt(0) === "{" && ref.indexOf("}") > 0;
-    };
-
     fluid.extractEL = function (string, options) {
         if (options.ELstyle === "ALL") {
             return string;
@@ -2347,6 +2347,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 root = fluid.getForComponent(component, segs);
             }
             return root;
+        } else if (segs.length > 0) {
+            fluid.triggerMismatchedPathError(source.expander, options.contextThat);
         }
     };
 

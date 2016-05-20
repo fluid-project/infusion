@@ -435,7 +435,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var that = fluid.tests.fluid4258head();
         function assertListenerCount(count) {
             // blatant white-box testing - make sure that the outer applier has the expected number of listeners
-            jqUnit.assertEquals("Expected external model listener count ", count, that.applier.changeListeners.transListeners.length);
+            jqUnit.assertEquals("Expected external model listener count ", count, that.applier.transListeners.sortedListeners.length);
         }
         assertListenerCount(2);
         that.applier.change("thing1.nest1", 3);
@@ -778,6 +778,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Model notifications globally sorted by priority, with actioned listener removal", expected2, that2.priorityLog);
     });
 
+    /** FLUID-5886: Deduplication of listeners by namespace at a single applier **/
+    
+    fluid.defaults("fluid.tests.fluid5886head", {
+        gradeNames: "fluid.modelComponent",
+        members: {
+            listenerCount: 0
+        },
+        modelListeners: {
+            target: [{
+                namespace: "deduplicate",
+                funcName: "fluid.tests.fluid5886count",
+                args: "{that}"
+            }, {
+                namespace: "deduplicate",
+                funcName: "fluid.tests.fluid5886count",
+                args: "{that}"
+            }]
+        }
+    });
+    
+    fluid.tests.fluid5886count = function (that) {
+        that.listenerCount++;
+    };
+    
+    jqUnit.test("FLUID-5886: Deduplication of model listeners by namespace at single applier", function () {
+        var that = fluid.tests.fluid5886head();
+        that.applier.change("target", true);
+        jqUnit.assertEquals("Just one listener registered", 1, that.listenerCount);
+    });
+
     /** FLUID-5695: New-style multiple paths and namespaces for model listeners **/
 
     fluid.defaults("fluid.tests.fluid5695root", {
@@ -813,7 +843,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             layoutListener: { // This becomes the namespace of the listener
                 path: [
                     "position", {
-                        segs: [["windowHolders"], "{that}.options.ourWindow"]
+                        segs: ["windowHolders", "{that}.options.ourWindow"]
                     }
                 ],
                 priority: "before:notifyExternal",
@@ -1153,6 +1183,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         target: "{child3}.model.lastArea",
                         transform: {
                             transform: {
+                                inputPath: "",
                                 type: "fluid.transforms.linearScale",
                                 factor: 10
                             }
@@ -2178,7 +2209,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             singleTransform: {
                 type: "fluid.transforms.indexOf",
                 array: "{that}.options.lang",
-                value: "{that}.model.lang",
+                input: "{that}.model.lang",
                 offset: 1
             }
         }, {
@@ -2263,6 +2294,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return togo;
     };
 
-    // fluid.test.runTests(["fluid.tests.fluid5659root"]);
+    fluid.test.runTests(["fluid.tests.fluid5659root"]);
 
 })(jQuery);

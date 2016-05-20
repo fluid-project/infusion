@@ -170,7 +170,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.expanderMemberTiming();
     });
 
-    /** FLUID-5758 - expanders in listener args which refer to {arguments} **/
+    /** FLUID-5758: expanders in listener args which refer to {arguments} **/
 
     fluid.defaults("fluid.tests.FLUID5758test", {
         gradeNames: "fluid.component",
@@ -198,6 +198,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var comp = fluid.tests.FLUID5758test();
         comp.events.onDoIt.fire("Hugo");
         jqUnit.assertEquals("Resolved value from {arguments}", "Hugo", comp.recorded);
+    });
+
+    /** FLUID-5898: Diagnostic when expanding pathed "fast path" references with mismatched context **/
+    
+    fluid.defaults("fluid.tests.FLUID5898test", {
+        gradeNames: "fluid.component",
+        events: {
+            onDoIt: null
+        },
+        listeners: {
+            onDoIt: "fluid.identity({fluid.mismatched}.member)"
+        }
+    });
+    
+    jqUnit.test("FLUID-5898: diagnostic for pathed reference with mismatched context", function () {
+        var that = fluid.tests.FLUID5898test();
+        jqUnit.expectFrameworkDiagnostic("Received framework diagnostic", function () {
+            that.events.onDoIt.fire();
+        }, ["could not match context", "fluid.mismatched"]);
     });
 
     /** Preservation of material with "exotic types" (with constructor) for FLUID-5089 **/
@@ -702,6 +721,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertLeftHand("Merged grades in correct left-to-right order with direct grade arguments", expected, merged2.options);
     });
     
+    /** FLUID-5800 - grade hierarchy resolution algorithm **/
+
     fluid.defaults("fluid.tests.FLUID5800base", {
         events: {
             onUserToken: null
@@ -720,7 +741,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             getDeviceContext: "fluid.tests.fluid5800count"
         }
     });
-    
+
     fluid.tests.fluid5800count = function (that) {
         ++ that.eventCount;
     };
@@ -731,11 +752,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             onUserToken: "{that}.getDeviceContext"
         }
     });
-    
+
     fluid.defaults("fluid.tests.FLUID5800", {
         gradeNames: ["fluid.component", "fluid.tests.FLUID5800mid"]
     });
-    
+
     jqUnit.test("FLUID-5800 merge corruption", function () {
         jqUnit.expect(2);
 
@@ -749,7 +770,40 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // jqUnit.assertEquals("Listeners were designated correctly in abstract grade", 3, midDefaults.listeners.onUserToken.length);
     });
 
-    
+    fluid.defaults("fluid.tests.FLUID5800base2", {
+        gradeNames: "fluid.component",
+        members: {
+            expanderCount: 0
+        },
+        mergePolicy: {
+            expanderOption: fluid.arrayConcatPolicy
+        },
+        expanderOption: "@expand:fluid.tests.FLUID5800expand({that}, {that}.expanderCount)"
+    });
+
+    fluid.defaults("fluid.tests.FLUID5800mid2", {
+        gradeNames: "fluid.tests.FLUID5800base2"
+    });
+
+    fluid.defaults("fluid.tests.FLUID5800mid3", {
+        gradeNames: "fluid.tests.FLUID5800base2"
+    });
+    // NB this grade just here for reference purposes, not used in test
+    fluid.defaults("fluid.tests.FLUID5800leaf", {
+        gradeNames: ["fluid.tests.FLUID5800mid2", "fluid.tests.FLUID5800mid3"]
+    });
+
+    fluid.tests.FLUID5800expand = function (that) {
+        return that.expanderCount++;
+    };
+
+    jqUnit.test("FLUID-5800 repeated expander evaluation", function () {
+        // Note that, obnoxiously, this failure cannot be observed via fluid.tests.FLUID5800leaf since defaults really DO just accumulate
+        // non-accumulatively
+        var that = fluid.tests.FLUID5800mid2({gradeNames: "fluid.tests.FLUID5800mid3"});
+        jqUnit.assertEquals("Expander evaluated only once", 1, that.expanderCount);
+    });
+
     /** FLUID-5615: Base grades of subcomponents should be weaker than dynamic **/
     
     fluid.defaults("fluid.tests.FLUID5615sub", {
@@ -1875,6 +1929,40 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assert("No error on clearing with manually injected, destroyed component");
     });
 
+    /** FLUID-5904 - corruption when throwing during expander resolution **/
+
+    fluid.defaults("fluid.tests.FLUID5904root", {
+        gradeNames: "fluid.component",
+        events: {
+            createIt: null
+        },
+        components: {
+            child: {
+                type: "fluid.component",
+                createOnEvent: "createIt",
+                options: {
+                    explodingMember: "@expand:fluid.tests.FLUID5904explode()"
+                }
+            }
+        }
+    });
+
+    fluid.tests.FLUID5904explode = function () {
+        throw new Error("explode");
+    };
+
+    jqUnit.test("FLUID-5904: corruption when throwing from expander", function () {
+        jqUnit.expect(2);
+        var that = fluid.tests.FLUID5904root();
+        try {
+            that.events.createIt.fire();
+        } catch (e) {
+            jqUnit.assert("Exception received during construction");
+        }
+        that.destroy();
+        jqUnit.assert("Successfully destroyed root");
+    });
+
     /** FLUID-4711 - corruption in clear with injected material of longer scope **/
 
     fluid.defaults("fluid.tests.clearParent", {
@@ -2555,13 +2643,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("Invoker contextualisation tests", function() {
-        jqUnit.expect(3);
+        jqUnit.expect(2);
         var that = fluid.tests.test4712parent();
         jqUnit.assertEquals("Child component should be properly instantiated", 3, that.refChild.refChild2.ref3.options.refOption);
         jqUnit.assertEquals("Invoker should resolve on startup", 3, that.refChild.invoker());
         that.refChild.refChild2.destroy();
-        var resolved = that.refChild.invoker();
-        jqUnit.assertEquals("No ginger construction outside fit", undefined, resolved); // Change in behaviour for 2.0 framework - old framework would reconstruct this
+        jqUnit.expectFrameworkDiagnostic("No ginger construction outside fit", function () {
+            // Change in behaviour for 2.0 framework - old framework would reconstruct this
+            that.refChild.invoker();
+        }, ["could not match context", "refChild2"]);
     });
 
     /** FLUID-4285 - prevent attempts to refer to options outside options block **/
@@ -3010,6 +3100,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("First component source transmitted: ", 2, first.options.source);
         jqUnit.assertTrue("Grade name transmitted via arguments", fluid.componentHasGrade(first, "fluid.tests.fluid5022Grade"));
         jqUnit.assertEquals("Second component source transmitted: ", 3, head["dynamic-1"].options.source);
+    });
+    
+    /** FLUID-5893 - Dynamic components with grades sourced from single reference **/
+    
+    fluid.defaults("fluid.tests.fluid5893root", {
+        gradeNames: "fluid.component",
+        events: {
+            createIt: null
+        },
+        dynamicComponents: {
+            dynamic: {
+                createOnEvent: "createIt",
+                type: "fluid.component",
+                options: "{arguments}.0"
+            }
+        }
+    });
+    
+    jqUnit.test("FLUID-5893: Dynamic component creation with grades sourced from single reference", function () {
+        var that = fluid.tests.fluid5893root();
+        that.events.createIt.fire({gradeNames: "fluid.resolveRoot"});
+        jqUnit.assertTrue("Dynamic grade applied to dynamic component", fluid.componentHasGrade(that.dynamic, "fluid.resolveRoot"));
     });
 
     /** FLUID-5029 - Child selector ">" in IoCSS selector should not select an indirect child **/

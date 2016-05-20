@@ -348,7 +348,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             var that = recel.that;
             var transac = transacs[that.id];
             if (recel.completeOnInit) {
-                fluid.initModelEvent(that, that.applier, transac, that.applier.changeListeners.listeners);
+                fluid.initModelEvent(that, that.applier, transac, that.applier.listeners.sortedListeners);
             } else {
                 fluid.each(recel.initModels, function (initModel) {
                     transac.fireChangeRequest({type: "ADD", segs: [], value: initModel});
@@ -416,7 +416,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         };
         var parsed; // resolve ref into context and modelSegs
         if (typeof(ref) === "string") {
-            if (ref.charAt(0) === "{") {
+            if (fluid.isIoCReference(ref)) {
                 parsed = fluid.parseModelReference(that, ref);
                 var modelPoint = parsed.segs.indexOf("model");
                 if (modelPoint === -1) {
@@ -564,22 +564,22 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 }
             }
         };
-        sourceListener.relayListenerId = fluid.allocateGuid();
+        var spec;
         if (sourceSegs) {
-            fluid.log(fluid.logLevel.TRACE, "Adding relay listener with id " + sourceListener.relayListenerId + " to source applier with id " +
-                sourceApplier.applierId + " from target applier with id " + applierId + " for target component with id " + target.id);
-            sourceApplier.modelChanged.addListener({
+            spec = sourceApplier.modelChanged.addListener({
                 isRelay: true,
                 segs: sourceSegs,
                 transactional: options.transactional
             }, sourceListener);
+            fluid.log(fluid.logLevel.TRACE, "Adding relay listener with listenerId " + spec.listenerId + " to source applier with id " +
+                sourceApplier.applierId + " from target applier with id " + applierId + " for target component with id " + target.id);
         }
         if (source) { // TODO - we actually may require to register on THREE sources in the case modelRelay is attached to a
             // component which is neither source nor target. Note there will be problems if source, say, is destroyed and recreated,
             // and holder is not - relay will in that case be lost. Need to integrate relay expressions with IoCSS.
-            fluid.recordChangeListener(source, sourceApplier, sourceListener);
+            fluid.recordChangeListener(source, sourceApplier, sourceListener, spec.listenerId);
             if (target !== source) {
-                fluid.recordChangeListener(target, sourceApplier, sourceListener);
+                fluid.recordChangeListener(target, sourceApplier, sourceListener, spec.listenerId);
             }
         }
     };
@@ -783,7 +783,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.parseImplicitRelay = function (that, modelRec, segs, options) {
         var value;
-        if (typeof(modelRec) === "string" && modelRec.charAt(0) === "{") {
+        if (fluid.isIoCReference(modelRec)) {
             var parsed = fluid.parseValidModelReference(that, "model reference from model (implicit relay)", modelRec, true);
             if (parsed.nonModel) {
                 value = fluid.getForComponent(parsed.that, parsed.segs);
@@ -853,6 +853,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.establishModelRelay = function (that, optionsModel, optionsML, optionsMR, applier) {
+        var shadow = fluid.shadowForComponent(that);
+        if (!shadow.modelRelayEstablished) {
+            shadow.modelRelayEstablished = true;
+        } else {
+            fluid.fail("FLUID-5887 failure: Model relay initialised twice on component", that);
+        }
         fluid.mergeModelListeners(that, optionsML);
 
         var enlist = fluid.enlistModelComponent(that);
@@ -1259,6 +1265,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.notifyModelChanges = function (listeners, changeMap, newHolder, oldHolder, changeRequest, transaction, applier, that) {
+        if (!listeners) {
+            return;
+        }
         var transRec = transaction && fluid.getModelTransactionRec(that, transaction.id);
         for (var i = 0; i < listeners.length; ++ i) {
             var spec = listeners[i];
@@ -1357,17 +1366,16 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         options = fluid.model.defaultAccessorConfig(options);
         var applierId = fluid.allocateGuid();
         var that = new fluid.ChangeApplier();
+        var name = fluid.isComponent(holder) ? "ChangeApplier for component " + fluid.dumpThat(holder) : "ChangeApplier with id " + applierId;
         $.extend(that, {
             applierId: applierId,
             holder: holder,
-            changeListeners: {
-                listeners: [],
-                transListeners: []
-            },
+            listeners: fluid.makeEventFirer({name: "Internal change listeners for " + name}),
+            transListeners: fluid.makeEventFirer({name: "External change listeners for " + name}),
             options: options,
             modelChanged: {},
-            preCommit: fluid.makeEventFirer({name: "preCommit event for ChangeApplier " }),
-            postCommit: fluid.makeEventFirer({name: "postCommit event for ChangeApplier "})
+            preCommit: fluid.makeEventFirer({name: "preCommit event for " + name}),
+            postCommit: fluid.makeEventFirer({name: "postCommit event for " + name})
         });
         that.destroy = function () {
             that.preCommit.destroy();
@@ -1377,13 +1385,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         that.modelChanged.addListener = function (spec, listener, namespace, softNamespace) {
             if (typeof(spec) === "string") {
                 spec = {
-                    path: spec,
-                    listenerId: fluid.event.identifyListener(listener)
+                    path: spec
                 };
             } else {
                 spec = fluid.copy(spec);
             }
-            spec.listenerId = spec.listenerId || fluid.event.identifyListener(listener); // analogous to listenerId in IoC listener records
+            spec.listenerId = spec.listenerId || fluid.allocateGuid(); // FLUID-5151: don't use identifyListener since event.addListener will use this as a namespace
             spec.namespace = namespace;
             spec.softNamespace = softNamespace;
             if (typeof(listener) === "string") { // The reason for "globalName" is so that listener names can be resolved on first use and not on registration
@@ -1401,7 +1408,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     spec.segsArray = [spec.segs];
                 }
             }
-            var collection = that.changeListeners[spec.transactional ? "transListeners" : "listeners"];
             fluid.parseSourceExclusionSpec(spec, spec);
             spec.wildcard = fluid.accumulate(fluid.transform(spec.segsArray, function (segs) {
                 return fluid.contains(segs, "*");
@@ -1409,20 +1415,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             if (spec.wildcard && spec.segsArray.length > 1) {
                 fluid.fail("Error in model listener specification ", spec, " - you may not supply a wildcard pattern as one of a set of multiple paths to be matched");
             }
-
-            spec.priority = fluid.parsePriority(spec.priority, collection.length, false, "model listener");
-            collection.push(spec);
-            return spec;
+            var firer = that[spec.transactional ? "transListeners" : "listeners"];
+            firer.addListener(spec);
+            return spec; // return is used in registerModelListeners
         };
-        // TODO: Reorganise when we refactor transactions - this duplicates the function of standard fluid.event.removeListener
         that.modelChanged.removeListener = function (listener) {
-            var id = fluid.event.identifyListener(listener);
-            var namespace = typeof(listener) === "string" ? listener : null;
-            var removePred = function (record) { // listenerId is ALWAYS set, namespace is not always - same alg but variant impl from plain events because we don't have index here
-                return record.listenerId === id || record.listenerId === namespace || (namespace && record.namespace === namespace);
-            };
-            fluid.remove_if(that.changeListeners.listeners, removePred);
-            fluid.remove_if(that.changeListeners.transListeners, removePred);
+            that.listeners.removeListener(listener);
+            that.transListeners.removeListener(listener);
         };
         that.fireChangeRequest = function (changeRequest) {
             var ation = that.initiate("local", changeRequest.source);
@@ -1458,7 +1457,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     if (trans.changeRecord.changes > 0) {
                         var oldHolder = {model: holder.model};
                         holder.model = trans.newHolder.model;
-                        fluid.notifyModelChanges(that.changeListeners.transListeners, trans.changeRecord.changeMap, holder, oldHolder, null, trans, that, holder);
+                        fluid.notifyModelChanges(that.transListeners.sortedListeners, trans.changeRecord.changeMap, holder, oldHolder, null, trans, that, holder);
                     }
                     if (!defeatPost) {
                         that.postCommit.fire(trans, that, code);
@@ -1468,7 +1467,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     fluid.preFireChangeRequest(that, changeRequest);
                     changeRequest.transactionId = trans.id;
                     var deltaMap = fluid.model.applyHolderChangeRequest(trans.newHolder, changeRequest, trans.changeRecord);
-                    fluid.notifyModelChanges(that.changeListeners.listeners, deltaMap, trans.newHolder, holder, changeRequest, trans, that, holder);
+                    fluid.notifyModelChanges(that.listeners.sortedListeners, deltaMap, trans.newHolder, holder, changeRequest, trans, that, holder);
                 },
                 hasChangeSource: function (source) {
                     return trans.fullSources[source];
