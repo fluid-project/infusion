@@ -158,32 +158,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return pager;
     };
 
-    fluid.tests.tooltipModuleSource = function (pager) {
+    fluid.tests.tooltipModuleSource = function (pager, sequencesOfPageSizes) {
         var sequence = [];
+        var linksList = fluid.transform(pager.dataModel, function (data) {
+            return {text: data.animal};
+        });
 
-        /* Change the page size and verify whether the tooltips are synced accordingly */
+        /* Change the page size and verify whether the tooltips and links are synced accordingly */
+        for (var i = 0; i < sequencesOfPageSizes.length; i++) {
+            var pageSize = sequencesOfPageSizes[i];
+            sequence.push({
+                func: "fluid.changeElementValue",
+                args: ["{pager}.dom.pageSize", pageSize]
+            });
+            sequence.push({
+                func: "fluid.tests.verifyLinksAndTooltips",
+                args: ["{pager}", pageSize, linksList]
+            });
+        }
 
-        fluid.tests.setPageSize(pager, sequence, 2);
-        fluid.tests.verifyToolTips(pager, sequence, 2, [
-            [ {nodeName: "b", nodeText: "dog"}, {nodeName: "b", nodeText: "cat"} ],
-            [ {nodeName: "b", nodeText: "bird"}, {nodeName: "b", nodeText: "fish"} ],
-            [ {nodeName: "b", nodeText: "camel"}, {nodeName: "b", nodeText: "dragon"} ],
-            [ {nodeName: "b", nodeText: "ant"}, {nodeName: "b", nodeText: "ant"} ]
-        ]);
-
-        fluid.tests.setPageSize(pager, sequence, 3);
-        fluid.tests.verifyToolTips(pager, sequence, 3, [
-            [ {nodeName: "b", nodeText: "dog"}, {nodeName: "b", nodeText: "bird"} ],
-            [ {nodeName: "b", nodeText: "fish"}, {nodeName: "b", nodeText: "dragon"} ],
-            [ {nodeName: "b", nodeText: "ant"}, {nodeName: "b", nodeText: "ant"} ]
-        ]);
-
-        fluid.tests.setPageSize(pager, sequence, 4);
-        fluid.tests.verifyToolTips(pager, sequence, 4, [
-            [ {nodeName: "b", nodeText: "dog"}, {nodeName: "b", nodeText: "fish"} ],
-            [ {nodeName: "b", nodeText: "camel"}, {nodeName: "b", nodeText: "ant"} ]
-        ]);
-        
         return {
             name: "Pager tooltip tests",
             tests: [
@@ -195,77 +188,69 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
     };
 
-    fluid.tests.assertVisibleTips = function (pager, sequence, message, targetIds, expectedTooltip) {
-        sequence.push({
-            event: "{trackTooltips}.events.notifyFocusChange",
-            listener: function () {
-                fluid.tests.tooltip.assertVisible(message, pager, targetIds, null, function (tooltip) {
-                    jqUnit.assertNode("When the page size is " + pager.model.pageSize + ", The contents of the tooltip should be set", expectedTooltip,
-                        $("b", tooltip));
-                });
-            }
-        });
+    fluid.tests.getTooltipContents = function (listOfData, pageSize) {
+        var tooltipContents = [];
+        for (var i = 0; i < listOfData.length; i += pageSize) {
+            var tooltipContent = [];
+            var pageStartIndex = i;
+            var pageEndIndex = Math.min(pageStartIndex + pageSize - 1, listOfData.length - 1);
+            tooltipContent.push({nodeName: "b", nodeText: listOfData[pageStartIndex].text});
+            tooltipContent.push({nodeName: "b", nodeText: listOfData[pageEndIndex].text});
+            tooltipContents.push(tooltipContent);
+        }
+
+        return tooltipContents;
     };
 
-    /**
-     * Change the page size
-     */
-    fluid.tests.setPageSize = function (pager, sequence, pageSize) {
-        sequence.push({
-            func: function () {
-                pager.locate("pageSize").val(pageSize);
-            }
-        });
-        sequence.push({
-            element: "#rendered-ioc .flc-pager-page-size",
-            jQueryTrigger: "change"
-        });
+    fluid.tests.verifyLinksAndTooltips = function (pager, pageSize, linksList) {
+        fluid.tests.verifyPagerBar(pager, "top", pageSize);
+        fluid.tests.verifyPagerBar(pager, "bottom", pageSize);
+
+        var expectedTooltips = fluid.tests.getTooltipContents(linksList, pageSize);
+        fluid.tests.verifyToolTipsOfPagerBar(pager, "top", pageSize, expectedTooltips);
+        fluid.tests.verifyToolTipsOfPagerBar(pager, "bottom", pageSize, expectedTooltips);
     };
 
-    /**
-     * verify whether the displaying links and their tooltips
-     */
-    fluid.tests.verifyToolTips = function (pager, sequence, pageSize, expectedTooltips) {
+    fluid.tests.getPagerBar = function (pager, location) {
+        return pager[location === "top" ? "pagerBar" : "pagerBar-1"];
+    };
+
+    fluid.tests.verifyPagerBar = function (pager, location, pageSize) {
         var expectedNumberOfLinks = Math.ceil(pager.dataModel.length / pageSize);
-        sequence.push({
-            func: function () {
-                pager.locate("pageSize").val(pageSize);
-                jqUnit.assertEquals("When the page size is " + pager.model.pageSize + ", Top pageLinks",
-                    expectedNumberOfLinks,
-                    $("#rendered-ioc .flc-pager-top .flc-pager-links .flc-pager-pageLink a").length);
-                jqUnit.assertEquals("When the page size is " + pager.model.pageSize + ", Bottom pageLinks",
-                    expectedNumberOfLinks,
-                    $("#rendered-ioc .flc-pager-bottom .flc-pager-links .flc-pager-pageLink a").length);
-            }
-        });
 
+        //Verify the number of links in the pager bar
+        jqUnit.assertEquals("The number of links in the pager should be according to the page size",
+            expectedNumberOfLinks,
+            fluid.tests.getPagerBar(pager, location).locate("pageLinks").length);
+    };
+
+    fluid.tests.assertVisibleTips = function (pager, message, targetIds, expectedTooltip) {
+        fluid.tests.tooltip.assertVisible(message, pager, targetIds, null, function (tooltip) {
+            jqUnit.assertNode(tooltip.length, expectedTooltip, $("b", tooltip));
+        });
+    };
+
+    fluid.tests.verifyToolTipsOfPagerBar = function (pager, location, pageSize, expectedTooltips) {
+        var expectedNumberOfLinks = Math.ceil(pager.dataModel.length / pageSize);
         for (var x = 0; x < expectedNumberOfLinks; x++) {
-            fluid.tests.verifyToolTip(pager, sequence, "top", x, expectedTooltips[x]);
-            fluid.tests.verifyToolTip(pager, sequence, "bottom", x, expectedTooltips[x]);
+            fluid.tests.verifyPagerToolTip(pager, location, x, expectedTooltips[x]);
         }
     };
 
-    /**
-     * Verify whether the tooltip of the given index is matched with the provided tooltip
-     */
-    fluid.tests.verifyToolTip = function (pager, sequence, location, index, expectedTooltip) {
-        var link =  "#rendered-ioc .flc-pager-" + location + " .flc-pager-links .flc-pager-pageLink a:eq(" + index + ")";
+    fluid.tests.verifyPagerToolTip = function (pager, location, index, expectedTooltip) {
+        var link =  fluid.tests.getPagerBar(pager, location).locate("pageLinks").find("a").eq(index);
         var linkNumber = index + 1;
         var linkId = "page-link:link" + linkNumber + (location === "bottom" ? "-1" : "");
-        sequence.push({
-            element: link,
-            jQueryTrigger: "focus"
-        });
-        fluid.tests.assertVisibleTips(pager, sequence,
-            "When the page size is " + pager.model.pageSize + ", The tooltip for page link " + linkNumber + ", in the " + location + " page bar is visible", [linkId],
-            expectedTooltip);
-        sequence.push({
-            element: link,
-            jQueryTrigger: "blur"
-        });
-        fluid.tests.assertVisibleTips(pager, sequence,
-            "There shouldn't be any tooltips visible when none of the pageLinks are focused", [],
-            expectedTooltip);
+
+        link.trigger("focus");
+        fluid.tests.assertVisibleTips(pager,
+            "The tooltip of page link " + linkNumber + ", in " + location + " page bar is visible",
+            [linkId], expectedTooltip);
+
+        link.trigger("blur");
+        fluid.tests.assertVisibleTips(pager,
+            "There should not be any tooltips visible when no pageLinks are focused.",
+            [], expectedTooltip);
     };
 
     fluid.defaults("fluid.tests.pagerTooltipEnv", {
@@ -282,9 +267,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fixtures: {
                 type: "fluid.test.testCaseHolder",
                 options: {
+                    sequenceOfPageSizes: [2, 3, 4],
                     moduleSource: {
                         func: "fluid.tests.tooltipModuleSource",
-                        args: "{pager}"
+                        args: ["{pager}", "{that}.options.sequenceOfPageSizes"]
                     }
                 }
             }
