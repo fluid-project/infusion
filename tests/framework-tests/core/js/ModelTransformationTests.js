@@ -63,7 +63,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var collected = fluid.model.transform.collectInputPaths(test.transform);
         jqUnit.expect(1);
         jqUnit.assertDeepEq(test.message + " - collect input paths", test.expectedInputPaths, collected);
-    },
+    };
 
     fluid.tests.transforms.testOneTransform = function (test) {
         if (test.errorTexts) {
@@ -1307,27 +1307,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             model: fluid.tests.transforms.mapperModel,
             transform: {
                 type: "fluid.transforms.valueMapper",
-                inputPath: "tracking",
-                options: fluid.tests.transforms.mapperOptions
+                defaultInputPath: "tracking",
+                match: fluid.tests.transforms.mapperOptions
             },
             expected: {
                 "FollowFocus": true
-            }
-        },
-        "deffolt": {
-            message: "valueMapper selects mouse by default",
-            model: {
-                tracking: "unknown-thing"
             },
-            transform: {
-                type: "fluid.transforms.valueMapper",
-                inputPath: "tracking",
-                defaultInputValue: "mouse",
-                options: fluid.tests.transforms.mapperOptions
-            },
-            expected: {
-                "FollowMouse": true
-            }
+            expectedInputPaths: [ "tracking" ]
         },
         "nonString": {
             message: "valueMapper with default output value and non-string input value",
@@ -1336,11 +1322,60 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             transform: {
                 type: "fluid.transforms.valueMapper",
-                inputPath: "condition",
+                defaultInputPath: "condition",
                 defaultOutputValue: "CATTOO",
-                options: {
+                match: {
                     "true": {
                         outputPath: "trueCATT"
+                    },
+                    "false": {
+                        outputPath: "falseCATT"
+                    }
+                }
+            },
+            expected: {
+                "trueCATT": "CATTOO"
+            },
+            expectedInputPaths: [ "condition" ]
+        },
+        "outputUndefinedValue-test1": {
+            message: "valueMapper with outputUndefinedValue",
+            model: {
+                condition: true
+            },
+            transform: {
+                transform: {
+                    type: "fluid.transforms.valueMapper",
+                    defaultInputPath: "condition",
+                    defaultOutputValue: "CATTOO",
+                    match: {
+                        "true": {
+                            outputPath: "trueCATT",
+                            outputUndefinedValue: true
+                        },
+                        "false": {
+                            outputPath: "falseCATT"
+                        }
+                    }
+                }
+            },
+            expected: {},
+            expectedInputPaths: [ "condition" ],
+            transformWrap: false
+        },
+        "outputUndefinedValue-falsevalue": {
+            message: "valueMapper with outputUndefinedValue set to false",
+            model: {
+                condition: true
+            },
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultInputPath: "condition",
+                defaultOutputValue: "CATTOO",
+                match: {
+                    "true": {
+                        outputPath: "trueCATT",
+                        outputUndefinedValue: false
                     },
                     "false": {
                         outputPath: "falseCATT"
@@ -1358,9 +1393,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             transform: {
                 type: "fluid.transforms.valueMapper",
-                inputPath: "condition",
+                defaultInputPath: "condition",
                 defaultOutputValue: "CATTOO",
-                options: [
+                match: [
                     {
                         inputValue: true,
                         outputPath: "trueCATT"
@@ -1374,73 +1409,258 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "trueCATT": "CATTOO"
             }
         },
-        "unmatched-none": {
-            message: "valueMapper with undefined input value and no defaultInput",
-            model: {},
+        "inputPath-works": {
+            message: "inputPath in 'match' overrides defaultInputPath",
+            model: {
+                whichAnimal: "CATTOO",
+                whichCountry: "Brazil"
+            },
             transform: {
                 type: "fluid.transforms.valueMapper",
-                inputPath: "uncondition",
-                defaultOutputValue: "CATTOO",
-                defaultOutputPath: "anyCATT",
-                options: [
+                defaultInputPath: "bogusPath",
+                defaultOutputValue: "CATT",
+                match: [
                     {
-                        undefinedInputValue: true,
-                        undefinedOutputValue: true,
+                        inputPath: "whichAnimal",
+                        inputValue: "CATTOO",
                         outputPath: "trueCATT"
                     }, {
-                        inputValue: true,
-                        outputPath: "trueCATT"
-                    }, {
-                        inputValue: false,
+                        inputPath: "whichAnimal",
+                        inputValue: "tiger",
                         outputPath: "falseCATT"
                     }
                 ]
             },
-            expected: undefined
+            expected: {
+                "trueCATT": "CATT"
+            },
+            expectedInputPaths: [ "bogusPath", "whichAnimal", "whichAnimal" ]
         },
-        "unmatched-definite": {
-            message: "valueMapper with undefined input value mapped to definite value",
-            model: {},
+        "inputPath-no-defaultInputPath-fallback": {
+            message: "inputPath does not fallback to defaultInputPath if no value is found at inputPath",
+            model: {
+                whichAnimal: "CATTOO",
+                whichCountry: "Brazil"
+            },
+            transform: {
+                transform: {
+                    type: "fluid.transforms.valueMapper",
+                    defaultInputPath: "whichAnimal",
+                    defaultOutputValue: "CATT",
+                    match: [
+                        {
+                            inputPath: "bogusPath",
+                            inputValue: "CATTOO",
+                            outputPath: "trueCATT"
+                        }, {
+                            inputPath: "bogusPath",
+                            inputValue: "tiger",
+                            outputPath: "falseCATT"
+                        }
+                    ]
+                }
+            },
+            expected: {},
+            expectedInputPaths: [ "whichAnimal", "bogusPath", "bogusPath" ],
+            transformWrap: false
+        },
+        "inputPath-double-match-first-returned": {
+            message: "inputPath - if multiple directives matches, first one is returned",
+            model: {
+                whichAnimal: "CATTOO",
+                whichCountry: "Brazil"
+            },
             transform: {
                 type: "fluid.transforms.valueMapper",
-                inputPath: "uncondition",
-                options: [
+                defaultInputPath: "whichAnimal",
+                defaultOutputValue: "youWin",
+                match: [
                     {
-                        undefinedInputValue: true,
-                        outputValue: "undefinedCATT",
-                        outputPath: "trueCATT"
+                        inputPath: "whichAnimal",
+                        inputValue: "CATTOO",
+                        outputPath: "smartAnimal"
+                    }, {
+                        inputPath: "whichCountry",
+                        inputValue: "Brazil",
+                        outputPath: "smartCountry"
                     }
                 ]
             },
             expected: {
-                trueCATT: "undefinedCATT"
-            }
+                smartAnimal: "youWin"
+            },
+            expectedInputPaths: [ "whichAnimal", "whichAnimal", "whichCountry" ]
         },
-        "unmatched-undefined-short": {
-            message: "valueMapper with undefined input value mapped to undefined value with short form",
-            model: {},
+        "multiMatch-test": {
+            message: "valueMapper tie-breaks equally good matches by selecting the first",
+            model: {
+                whichAnimal: "CATTOO"
+            },
             transform: {
                 type: "fluid.transforms.valueMapper",
-                inputPath: "uncondition",
-                defaultOutputPath: "wouldbeCATT",
-                options: {
-                    "undefined": {
-                        undefinedOutputValue: true
+                defaultInputPath: "whichAnimal",
+                defaultOutputValue: "CATTOO",
+                match: [
+                    {
+                        inputValue: "CATTOO",
+                        outputPath: "firstCATT"
+                    }, {
+                        inputValue: "CATTOO",
+                        outputPath: "secondCATT"
+                    }
+                ]
+            },
+            expected: {
+                "firstCATT": "CATTOO"
+            }
+        },
+        "noMatch-test1": {
+            message: "valueMapper using noMatch",
+            model: {
+                whichAnimal: "CATTOO"
+            },
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultInputPath: "condition",
+                defaultOutputValue: "CATTOO",
+                match: [
+                    {
+                        inputValue: "eagle",
+                        outputPath: "trueCATT"
+                    }, {
+                        inputValue: "tiger",
+                        outputPath: "falseCATT"
+                    }
+                ],
+                noMatch: {
+                    outputPath: "WhosThat",
+                    outputValue: "theNoMatchCATT"
+                }
+            },
+            expected: {
+                "WhosThat": "theNoMatchCATT"
+            }
+        },
+        "noMatch-test2": {
+            message: "valueMapper with noMatch still able to match regularly",
+            model: {
+                whichAnimal: "tiger"
+            },
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultInputPath: "whichAnimal",
+                defaultOutputValue: "CATTOO",
+                match: [
+                    {
+                        inputValue: "eagle",
+                        outputPath: "trueCATT"
+                    }, {
+                        inputValue: "tiger",
+                        outputPath: "falseCATT"
+                    }
+                ],
+                noMatch: {
+                    outputPath: "WhosThat",
+                    outputValue: "theNoMatchCATT"
+                }
+            },
+            expected: {
+                "falseCATT": "CATTOO"
+            }
+        },
+        "noMatch-works-with-outputUndefinedValue": {
+            message: "valueMapper using noMatch is working with outputUndefinedValue",
+            model: {
+                whichAnimal: "CATTOO"
+            },
+            transform: {
+                transform: {
+                    type: "fluid.transforms.valueMapper",
+                    defaultInputPath: "condition",
+                    defaultOutputValue: "CATTOO",
+                    defaultOutputPath: "mypath",
+                    match: [
+                        {
+                            inputValue: "eagle",
+                            outputPath: "trueCATT"
+                        }, {
+                            inputValue: "tiger",
+                            outputPath: "falseCATT"
+                        }
+                    ],
+                    noMatch: {
+                        outputPath: "WhosThat",
+                        outputUndefinedValue: true
                     }
                 }
             },
-            expected: undefined
+            expected: {},
+            transformWrap: false
         },
-        "unmatched-defaultOutpath": {
+        "noMatch-works-with-defaultOutputValue": {
+            message: "valueMapper using noMatch is working with defaultOutputValue",
+            model: {
+                whichAnimal: "CATTOO"
+            },
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultInputPath: "condition",
+                defaultOutputValue: "CATTOO",
+                defaultOutputPath: "mypath",
+                match: [
+                    {
+                        inputValue: "eagle",
+                        outputPath: "trueCATT"
+                    }, {
+                        inputValue: "tiger",
+                        outputPath: "falseCATT"
+                    }
+                ],
+                noMatch: {
+                    outputPath: "WhosThat"
+                }
+            },
+            expected: {
+                WhosThat: "CATTOO"
+            }
+        },
+        "noMatch-works-with-defaultOutputPath": {
+            message: "valueMapper using noMatch is working with defaultOutputPath",
+            model: {
+                whichAnimal: "CATTOO"
+            },
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultInputPath: "condition",
+                defaultOutputValue: "CATTOO",
+                defaultOutputPath: "mypath",
+                match: [
+                    {
+                        inputValue: "eagle",
+                        outputPath: "trueCATT"
+                    }, {
+                        inputValue: "tiger",
+                        outputPath: "falseCATT"
+                    }
+                ],
+                noMatch: {
+                    outputValue: "myValue"
+                }
+            },
+            expected: {
+                mypath: "myValue"
+            }
+        },
+        "defaultOutpath": {
             message: "valueMapper with defaultOutputPath",
             model: {
                 foo: "bar"
             },
             transform: {
                 type: "fluid.transforms.valueMapper",
-                inputPath: "foo",
+                defaultInputPath: "foo",
                 defaultOutputPath: "stupidCATT",
-                options: {
+                match: {
                     bar: {
                         outputValue: "it works"
                     }
@@ -1450,7 +1670,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 stupidCATT: "it works"
             }
         },
-        "unmatched-nodefaults": {
+        "defaultOutpath-2": {
+            message: "valueMapper with defaultOutputPath uses outputPath if available",
+            model: {
+                foo: "bar"
+            },
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultInputPath: "foo",
+                defaultOutputPath: "stupidCATT",
+                match: {
+                    bar: {
+                        outputValue: "it works",
+                        outputPath: "decentCATT"
+                    }
+                }
+            },
+            expected: {
+                decentCATT: "it works"
+            }
+        },
+        "unmatched-no-defaults": {
             message: "valueMapper with undefined and unmatched input value",
             model: {
                 display: {
@@ -1461,8 +1701,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             transform: {
                 type: "fluid.transforms.valueMapper",
-                inputPath: "display.screenEnhancement.tracking",
-                options: {
+                defaultInputPath: "display.screenEnhancement.tracking",
+                match: {
                     "mouse": {
                         "outputValue": "centered"
                     }
@@ -1482,8 +1722,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             transform: {
                 type: "fluid.transforms.valueMapper",
-                inputPath: "animals.mammals.elephant",
-                options: {
+                defaultInputPath: "animals.mammals.elephant",
+                match: {
                     big: {
                         outputPath: "correct",
                         outputValue: {
@@ -1500,7 +1740,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 correct: {
                     path: "Elephant - Brilliant work, it is indeed big"
                 }
-            }
+            },
+            whichAnimal: "animals.mammals.elephant",
+            weaklyInvertible: false // due to nested transforms
         },
         "valueMapping-multiout": {
             message: "valueMapper with multiple outputs to different paths",
@@ -1509,8 +1751,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             transform: {
                 type: "fluid.transforms.valueMapper",
-                inputPath: "screenReaderTTSEnabled",
-                options: {
+                defaultInputPath: "screenReaderTTSEnabled",
+                match: {
                     "false": {
                         outputValue: {
                             transform: [
@@ -1534,24 +1776,664 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     synth: "silence",
                     outputDevice: "Microsoft Sound Mapper"
                 }
+            },
+            weaklyInvertible: false // due to nested transforms
+        },
+        "FLUID-5300": {
+            message: "FLUID-5300: Compact way to produce literal output",
+            model: {
+                hazard: "flashing"
+            },
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultInputPath: "hazard",
+                match: {
+                    "flashing": {
+                        "outputValue": {
+                            "hasHazard": true,
+                            "sound": true
+                        }
+                    }
+                }
+            },
+            expected: {
+                hasHazard: true,
+                sound: true
             }
+        },
+        "FLUID-5300 #2": {
+            message: "FLUID-5300 #2: Ultra compact way for outputting primitive types",
+            model: {
+                hazard: "flashing"
+            },
+            transform: {
+                value: {
+                    transform: {
+                        type: "fluid.transforms.valueMapper",
+                        defaultInputPath: "hazard",
+                        match: {
+                            "flashing": "test"
+                        }
+                    }
+                }
+            },
+            expected: {
+                value: "test"
+            },
+            invertedRules: {
+                transform: [{
+                    type: "fluid.transforms.valueMapper",
+                    defaultOutputPath: "hazard",
+                    defaultInputPath: "value",
+                    match: [{
+                        inputValue: "test",
+                        outputValue: "flashing"
+                    }]
+                }]
+            },
+            transformWrap: false
+
+        },
+        "FLUID-5608": {
+            message: "FLUID-5608: be able to output `false` (as outputValue) in short format",
+            model: {
+                hazard: "flashing"
+            },
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultInputPath: "hazard",
+                match: {
+                    "flashing": false,
+                    "non-flashing": true
+                }
+            },
+            expected: false
+        },
+        "FLUID-5608 #2": {
+            message: "FLUID-5608 #2: be able to output `false` (as outputValue) in noMatch directive",
+            model: {
+                hazard: "bla"
+            },
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultInputPath: "hazard",
+                match: {
+                    "flashing": false,
+                    "non-flashing": true
+                },
+                noMatch: false
+            },
+            expected: false
+        },
+        "FLUID-5608 #3": {
+            message: "FLUID-5608 #3: be able to output `false` to outputPath",
+            model: {
+                hazard: "flashing"
+            },
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultInputPath: "hazard",
+                match: {
+                    "flashing": {
+                        outputValue: false,
+                        outputPath: "myPath"
+                    }
+                }
+            },
+            expected: {
+                myPath: false
+            }
+        },
+        "FLUID-5608 #4": {
+            message: "FLUID-5608 #4: be able to output `false` defaultOutputValue",
+            model: {
+                hazard: "flashing"
+            },
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultInputPath: "hazard",
+                defaultOutputValue: false,
+                match: {
+                    "flashing": {
+                        outputPath: "myPath1"
+                    }
+                }
+            },
+            expected: {
+                myPath1: false
+            }
+        },
+        "FLUID-5473": {
+            message: "FLUID-5473: Ensure we support a variation over this issue (support for no match)",
+            model: {
+                flashing: true,
+                noFlashing: true
+            },
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultOutputPath: "flashing",
+                defaultOutputValue: "unknown",
+                match: [
+                    {
+                        inputValue: { flashing: true },
+                        partialMatches: true,
+                        outputValue: "flashing"
+                    },
+                    {
+                        inputValue: { noflashing: true },
+                        partialMatches: true,
+                        outputValue: "noflashing"
+                    }
+                ],
+                noMatch: {
+                    outputValue: "unknown"
+                }
+            },
+            expected: {
+                flashing: "unknown"
+            }
+        },
+        "UndefinedOutputValue-test": {
+            message: "valueMapper - UndefinedOutputValue behaves correctly on inversion",
+            model: {
+                info: {
+                    "tester": true,
+                    "bester": true
+                }
+            },
+            transform: {
+                transform: {
+                    type: "fluid.transforms.valueMapper",
+                    defaultInputPath: "info",
+                    defaultOutputPath: "whoWon",
+                    match: [{
+                        inputValue: "tester",
+                        partialMatches: true,
+                        outputUndefinedValue: true
+                    }, {
+                        inputValue: "bester",
+                        outputValue: "I'm hit",
+                        partialMatches: true
+                    }]
+                }
+            },
+            expected: {},
+            invertedRules: {
+                transform: [{
+                    type: "fluid.transforms.valueMapper",
+                    defaultInputPath: "whoWon",
+                    defaultOutputPath: "info",
+                    match: [{
+                        outputValue: "bester",
+                        inputValue: "I'm hit"
+                    }]
+                }]
+            },
+            transformWrap: false
         }
     };
+
+
+    fluid.tests.transforms.mapperMatchDirectiveForPartial = [
+        {
+            inputValue: {
+                "legs": 2,
+                "arms": 2,
+                "hasLazers": true
+            },
+            outputValue: "KASPARNET"
+        }, {
+            inputValue: {
+                "legs": 2,
+                "arms": 2,
+                "veryhairy": false
+            },
+            partialMatches: true,
+            outputValue: "human"
+        }, {
+            inputValue: {
+                "legs": 2,
+                "arms": 2
+            },
+            partialMatches: true,
+            outputValue: "probably monkey"
+        }, {
+            inputValue: {
+                "eyes": 2
+            },
+            partialMatches: true,
+            outputValue: "can see"
+        }, {
+            inputValue: {
+                "arms": 2
+            },
+            partialMatches: true,
+            outputValue: "can handstand"
+        }, {
+            inputValue: {
+                "fingers": 2000
+            },
+            partialMatches: true,
+            outputUndefinedValue: true
+        }, {
+            inputValue: {
+                "special": 1
+            },
+            partialMatches: true
+        }, {
+            inputValue: {
+                "special": 2
+            },
+            partialMatches: true,
+            outputPath: "secretPath"
+        }
+    ];
+
+    fluid.tests.transforms.mapperTestsForPartial = [
+        {
+            message: "valueMapper partialMatches available, but non-partial is fully matching",
+            model: {
+                info: {
+                    "legs": 2,
+                    "arms": 2,
+                    "hasLazers": true
+                }
+            },
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultInputPath: "info",
+                defaultOutputPath: "creature",
+                match: [
+                    {
+                        inputValue: {
+                            "legs": 2,
+                            "arms": 2,
+                            "hasLazers": true
+                        },
+                        outputValue: "KASPARNET"
+                    }, {
+                        inputValue: {
+                            "legs": 2,
+                            "arms": 2,
+                            "veryhairy": false
+                        },
+                        partialMatches: true,
+                        outputValue: "human"
+                    }
+                ]
+            },
+            invertedRules: {
+                transform: [{
+                    type: "fluid.transforms.valueMapper",
+                    defaultOutputPath: "info",
+                    defaultInputPath: "value.creature",
+                    match: [{
+                        inputValue: "KASPARNET",
+                        outputValue: {
+                            "legs": 2,
+                            "arms": 2,
+                            "hasLazers": true
+                        }
+                    }, {
+                        outputValue: {
+                            "legs": 2,
+                            "arms": 2,
+                            "veryhairy": false
+                        },
+                        inputValue: "human"
+                    }]
+                }]
+            },
+            expected: {
+                creature: "KASPARNET"
+            }
+        }, {
+            message: "valueMapper partialMatches entry matches fully",
+            model: {
+                info: {
+                    "legs": 2,
+                    "arms": 2,
+                    "veryhairy": false
+                }
+            },
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultInputPath: "info",
+                defaultOutputPath: "creature",
+                match: fluid.tests.transforms.mapperMatchDirectiveForPartial
+            },
+            expected: {
+                creature: "human"
+            }
+        }, {
+            message: "valueMapper partialMatches: partial match works",
+            model: {
+                info: {
+                    "arms": 2,
+                    "ears": 2
+                }
+            },
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultInputPath: "info",
+                defaultOutputPath: "creature",
+                match: fluid.tests.transforms.mapperMatchDirectiveForPartial
+            },
+            expected: {
+                creature: "can handstand"
+            }
+        }, {
+            message: "valueMapper partialMatches: best partial match wins",
+            model: {
+                info: {
+                    "arms": 2,
+                    "eyes": 2,
+                    "legs": 2
+                }
+            },
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultInputPath: "info",
+                defaultOutputPath: "creature",
+                match: fluid.tests.transforms.mapperMatchDirectiveForPartial
+            },
+            expected: {
+                creature: "probably monkey"
+            }
+        }, {
+            message: "valueMapper partialMatches: if 2+ best partial matches ties, first match is returned",
+            model: {
+                info: {
+                    "arms": 2,
+                    "eyes": 2
+                }
+            },
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultInputPath: "info",
+                defaultOutputPath: "creature",
+                match: fluid.tests.transforms.mapperMatchDirectiveForPartial
+            },
+            expected: {
+                creature: "can see"
+            }
+        }, {
+            message: "valueMapper partialMatches: working with outputUndefinedValue",
+            model: {
+                info: {
+                    "face": false,
+                    "fingers": 2000
+                }
+            },
+            transform: {
+                transform: {
+                    type: "fluid.transforms.valueMapper",
+                    defaultInputPath: "info",
+                    defaultOutputPath: "creature",
+                    match: fluid.tests.transforms.mapperMatchDirectiveForPartial
+                }
+            },
+            expected: {},
+            transformWrap: false
+        }, {
+            message: "valueMapper partialMatches: working with defaultOutputValue",
+            model: {
+                info: {
+                    "special": 1,
+                    "other": true
+                }
+            },
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultInputPath: "info",
+                defaultOutputPath: "creature",
+                defaultOutputValue: "default animal",
+                match: fluid.tests.transforms.mapperMatchDirectiveForPartial
+            },
+            expected: {
+                creature: "default animal"
+            }
+        }, {
+            message: "valueMapper partialMatches: working with outputPath overrides default",
+            model: {
+                info: {
+                    "special": 2,
+                    "other": true
+                }
+            },
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultInputPath: "info",
+                defaultOutputPath: "creature",
+                defaultOutputValue: "default animal",
+                match: fluid.tests.transforms.mapperMatchDirectiveForPartial
+            },
+            expected: {
+                secretPath: "default animal"
+            }
+        }, {
+            message: "valueMapper - exact partialMatch vs. input path - first entry wins",
+            model: {
+                info: {
+                    "special": 2,
+                    "other": true
+                }
+            },
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultInputPath: "info",
+                defaultOutputPath: "whoWon",
+                match: [{
+                    inputPath: "info.special",
+                    inputValue: 2,
+                    outputValue: "inputPath won"
+                }, {
+                    partialMatches: true,
+                    inputValue: {
+                        "special": 2,
+                        "other": true
+                    },
+                    outputValue: "partialMatches won"
+                }]
+            },
+            expected: {
+                whoWon: "inputPath won"
+            },
+            invertedRules: {
+                transform: [{
+                    type: "fluid.transforms.valueMapper",
+                    defaultInputPath: "value.whoWon",
+                    defaultOutputPath: "info",
+                    match: [{
+                        outputPath: "info.special",
+                        inputValue: "inputPath won",
+                        outputValue: 2
+                    }, {
+                        outputValue: {
+                            "special": 2,
+                            "other": true
+                        },
+                        inputValue: "partialMatches won"
+                    }]
+                }]
+            }
+        }, {
+            message: "valueMapper - exact partialMatches vs. input path - first entry wins #2",
+            model: {
+                info: {
+                    "special": 2,
+                    "other": true
+                }
+            },
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultInputPath: "info",
+                defaultOutputPath: "whoWon",
+                match: [{
+                    partialMatches: true,
+                    inputValue: {
+                        "special": 2,
+                        "other": true
+                    },
+                    outputValue: "partialMatches won"
+                }, {
+                    inputPath: "info.special",
+                    inputValue: 2,
+                    outputValue: "inputPath won"
+                }]
+            },
+            expected: {
+                whoWon: "partialMatches won"
+            },
+            invertedRules: {
+                transform: [{
+                    type: "fluid.transforms.valueMapper",
+                    defaultInputPath: "value.whoWon",
+                    defaultOutputPath: "info",
+                    match: [{
+                        outputValue: {
+                            "special": 2,
+                            "other": true
+                        },
+                        inputValue: "partialMatches won"
+                    }, {
+                        outputPath: "info.special",
+                        inputValue: "inputPath won",
+                        outputValue: 2
+                    }]
+                }]
+            }
+        }, {
+            message: "valueMapper - unexact partialMatch vs. input path - input path wins",
+            model: {
+                info: {
+                    "special": 2,
+                    "other": true
+                }
+            },
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultInputPath: "info",
+                defaultOutputPath: "whoWon",
+                match: [{
+                    partialMatches: true,
+                    inputValue: {
+                        "special": 2
+                    },
+                    outputValue: "partialMatches won"
+                }, {
+                    inputPath: "info.special",
+                    inputValue: 2,
+                    outputValue: "inputPath won"
+                }]
+            },
+            expected: {
+                whoWon: "inputPath won"
+            },
+            weaklyInvertible: false // due to the two matches actually being identical wrt what they're testing (ie. info.special: 2)
+        }, {
+            message: "valueMapper - partial match when part of it is given as inputPath (a part which doesn't affect how well it matches) #1",
+            model: {
+                a: {
+                    b: 1,
+                    c: 2
+                }
+            },
+            transform: {
+                type: "valueMapper",
+                defaultInputPath: "",
+                defaultOutputPath: "whoWon",
+                match: [{
+                    inputPath: "a",
+                    partialMatches: true,
+                    inputValue: { b: 1 },
+                    outputValue: "first one"
+                }, {
+                    partialMatches: true,
+                    inputValue: { a: { b: 1 }},
+                    outputValue: "second one"
+                }]
+            },
+            expected: {
+                whoWon: "first one"
+            }
+        }, {
+            message: "valueMapper - partial match when part of it is given as inputPath (a part which doesn't affect how well it matches) #2",
+            model: {
+                a: {
+                    b: 1,
+                    c: 2
+                }
+            },
+            transform: {
+                type: "valueMapper",
+                defaultInputPath: "",
+                defaultOutputPath: "whoWon",
+                match: [{
+                    partialMatches: true,
+                    inputValue: { a: { b: 1 }},
+                    outputValue: "new first one"
+                }, {
+                    inputPath: "a",
+                    partialMatches: true,
+                    inputValue: { b: 1 },
+                    outputValue: "new second one"
+                }]
+            },
+            expected: {
+                whoWon: "new first one"
+            }
+        }, {
+            message: "valueMapper: we partial match only looking at the content of the given path",
+            model: {
+                a: {
+                    b: 1,
+                    c: 2
+                },
+                x: "extra"
+            },
+            transform: {
+                type: "valueMapper",
+                defaultInputPath: "",
+                defaultOutputPath: "outie",
+                match: [{
+                    partialMatches: true,
+                    inputPath: "a",
+                    inputValue: { b: 1 },
+                    outputValue: "first"
+                }, {
+                    partialMatches: true,
+                    inputValue: { a: { b: 1 }},
+                    outputValue: "second"
+                }]
+            },
+            expected: {
+                outie: "first"
+            }
+        }
+    ];
 
     jqUnit.test("fluid.transforms.valueMapper()", function () {
         fluid.tests.transforms.testOneStructure(fluid.tests.transforms.mapperTests, {
             transformWrap: true,
-            method: "assertDeepEq"
+            method: "assertDeepEq",
+            weaklyInvertible: true
         });
+        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.mapperTestsForPartial, {
+            transformWrap: true,
+            method: "assertDeepEq",
+            weaklyInvertible: true
+        });
+
     });
 
     fluid.tests.transforms.a4aFontRules = {
         "textFont": {
             "transform": {
                 "type": "fluid.transforms.valueMapper",
-                "inputPath": "fontFace.genericFontFace",
+                "defaultInputPath": "fontFace.genericFontFace",
                 "_comment": "TODO: For now, this ignores the actual \"fontName\" setting",
-                "options": {
+                "match": {
                     "serif": "times",
                     "sans serif": "verdana",
                     "monospaced": "default",
@@ -1583,7 +2465,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         testCompact(" - compact", fluid.tests.transforms.a4aFontRules);
         var exRules = {
-            "textFont.transform.options.*": {
+            "textFont.transform.match.*": {
                 transform: {
                     type: "fluid.tests.transforms.expandCompactRule"
                 }
@@ -1592,7 +2474,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         var expandedRules = fluid.model.transform(fluid.tests.transforms.a4aFontRules, exRules);
         var expectedRules = fluid.copy(fluid.tests.transforms.a4aFontRules);
-        fluid.set(expectedRules, "textFont.transform.options", fluid.transform(fluid.tests.transforms.a4aFontRules.textFont.transform.options, function (value) {
+        fluid.set(expectedRules, "textFont.transform.match", fluid.transform(fluid.tests.transforms.a4aFontRules.textFont.transform.match, function (value) {
             return fluid.tests.transforms.expandCompactRule(value);
         }));
         jqUnit.assertDeepEq("Rules transformed to expanded form", expectedRules, expandedRules);
@@ -1601,15 +2483,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.transforms.metadataRules = {
         type: "fluid.transforms.valueMapper",
-        defaultInputValue: true,
         defaultOutputPath: "soundHazard",
-        options: [
+        defaultInputPath: "",
+        match: [
             {
                 inputPath: "flashing",
-                outputValue: "yes"
+                outputValue: "yes",
+                inputValue: true
             }, {
                 inputPath: "noFlashingHazard",
-                outputValue: "no"
+                outputValue: "no",
+                inputValue: true
             }, {
                 inputPath: "",
                 inputValue: {
@@ -1944,8 +2828,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var rules = {
             transform: {
                 type: "fluid.transforms.valueMapper",
-                inputPath: "tracking",
-                options: fluid.tests.transforms.mapperOptions
+                defaultInputPath: "tracking",
+                match: fluid.tests.transforms.mapperOptions
             }
         };
         var mapperModel = {
@@ -1957,7 +2841,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             transform: [{
                 type: "fluid.transforms.valueMapper",
                 defaultOutputPath: "tracking",
-                options: [
+                defaultInputPath: "",
+                match: [
                     {
                         inputPath: "FollowMouse",
                         inputValue: true,
@@ -1990,7 +2875,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             transform: [{
                 type: "fluid.transforms.valueMapper",
                 defaultOutputPath: "condition",
-                options: [ {
+                defaultInputPath: "",
+                match: [ {
                     outputValue: true,
                     inputValue: "CATTOO",
                     inputPath: "trueCATT"
@@ -2015,8 +2901,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var rules = {
             transform: {
                 type: "fluid.transforms.valueMapper",
-                inputPath: "audio",
-                options: [ {
+                defaultInputPath: "audio",
+                match: [ {
                     "inputValue": true,
                     "outputPath": "audio",
                     "outputValue": "available"
@@ -2050,7 +2936,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "mouse-tracking": {
             "transform": {
                 "type": "fluid.transforms.valueMapper",
-                "inputPath": "display.screenEnhancement.tracking",
+                "defaultInputPath": "display.screenEnhancement.tracking",
                 "options": {
                     "mouse": {
                         "outputValue": "centered"
@@ -2134,18 +3020,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("FLUID-5512: valueMapper with a defaulting output value", function () {
         var rules = {
             type: "fluid.transforms.valueMapper",
-            inputPath: "",
-            options: [{
+            defaultInputPath: "",
+            match: [{
                 inputValue: {
                     "isTooltipOpen": true,
                     "isDialogOpen": true
                 },
                 outputValue: true
-            }, { // a "match always" rule
-                undefinedInputValue: true,
-                partialMatches: true,
+            }],
+            noMatch: {
                 outputValue: false
-            }]
+            }
         };
 
         var transform = {
@@ -3933,7 +4818,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 expected: {
                     foo: 1
-                },
+                }
             },
             "on upper bound limit": {
                 input: {
@@ -4180,7 +5065,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             type: "fluid.transforms.valueMapper",
             valuePath: "condition",
             defaultOutputValue: "CATTOO",
-            options: {
+            match: {
                 "true": {
                     outputPath: "trueCATT"
                 },
@@ -4199,7 +5084,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             type: "fluid.transforms.valueMapper",
             value: "true",
             defaultOutputValue: "CATTOO",
-            options: {
+            match: {
                 "true": {
                     outputPath: "trueCATT"
                 },
