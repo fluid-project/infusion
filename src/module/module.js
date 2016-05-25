@@ -11,7 +11,8 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/* jshint node:true */
+/* eslint-env node */
+/* eslint strict: ["error", "global"] */
 /* global fluid, path */
 
 "use strict";

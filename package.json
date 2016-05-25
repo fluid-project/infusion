@@ -1,6 +1,6 @@
 {
   "name": "infusion",
-  "description": "Infusion is an application framework for developing flexible stuff with JavaScript.",
+  "description": "Infusion is an application framework for developing flexible stuff with JavaScript",
   "version": "2.0.0",
   "author": "Fluid Project",
   "bugs": "http://issues.fluidproject.org/browse/FLUID",
@@ -31,7 +31,7 @@
   "repository": "git://github.com/fluid-project/infusion.git",
   "main": "./src/module/fluid.js",
   "engines": {
-    "node": ">=0.1.9"
+    "node": ">=0.10.0"
   },
   "devDependencies": {
     "grunt": "~0.4.2",
@@ -43,7 +43,7 @@
     "grunt-contrib-stylus": "~0.20.0",
     "grunt-modulefiles": "git://github.com/fluid-project/grunt-modulefiles.git#0.2.1",
     "lodash": "~2.4.1",
-    "grunt-contrib-jshint": "~0.9.0",
+    "fluid-grunt-eslint": "18.1.1",
     "grunt-jsonlint": "1.0.4",
     "grunt-shell": "^1.1.2"
   }

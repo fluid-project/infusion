@@ -172,12 +172,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             // are delivered to the actual body - however, on recent TinyMCE, the
             // "focusEditor" call DOES deliver a blur which causes FLUID-4681
             that.deadMansBlur = fluid.deadMansBlur(that.editField, {
-                    cancelByDefault: true,
-                    exclusions: {body: $(editorBody), container: that.container},
-                    handler: function () {
-                        that[that.options.onBlur]();
-                    }
-                });
+                cancelByDefault: true,
+                exclusions: {body: $(editorBody), container: that.container},
+                handler: function () {
+                    that[that.options.onBlur]();
+                }
+            });
             // Ridiculous drilling down functions on 3.4.9 to track dynamic creation of
             // menu dropdowns which otherwise causes an undetectable focus transfer
             // away from editor (they are appended to the end of the document rather than

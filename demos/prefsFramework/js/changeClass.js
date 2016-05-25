@@ -15,10 +15,10 @@ var demo = demo || {};
     "use strict";
 
     demo.changeClass = function(id) {
-        document.getElementById(id).style.display="block";
+        document.getElementById(id).style.display = "block";
 
     };
     demo.changeAgain = function(id) {
-        document.getElementById(id).style.display="none";
+        document.getElementById(id).style.display = "none";
     };
 })();

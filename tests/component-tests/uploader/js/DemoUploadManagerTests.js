@@ -139,7 +139,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         var checkEventSequenceForFile = function (transcript, file) {
             // Check that each event corresponds to the specified file.
-            for (var i = 0; i < transcript.length; i++) {
+            var i;
+            for (i = 0; i < transcript.length; i++) {
                 jqUnit.assertEquals("In each event callback, the file id should be correctly set.",
                                     file.id, transcript[i].args[0].id);
             }

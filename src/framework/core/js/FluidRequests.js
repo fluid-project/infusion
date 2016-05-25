@@ -84,7 +84,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         fluid.each(resourceSpecs, function (resourceSpec, key) {
             if (resourceSpec.locale) {
                 var exploded = fluid.explodeLocalisedName(resourceSpec.href, resourceSpec.locale, resourceSpec.defaultLocale);
-                for (var i = 0; i < exploded.length; ++ i) {
+                for (var i = 0; i < exploded.length; ++i) {
                     var newKey = key + "$localised-" + i;
                     var newRecord = $.extend(true, {}, resourceSpec, {
                         href: exploded[i],
@@ -100,7 +100,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.fetchResources.condenseOneResource = function (resourceSpecs, resourceSpec, key, localeCount) {
         var localeSpecs = [resourceSpec];
-        for (var i = 0; i < localeCount; ++ i) {
+        for (var i = 0; i < localeCount; ++i) {
             var localKey = key + "$localised-" + i;
             localeSpecs.unshift(resourceSpecs[localKey]);
             delete resourceSpecs[localKey];
@@ -135,7 +135,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         fluid.each(classes, function(clazz) {
             var pending = pendingClass[clazz];
             fluid.each(pending, function(pendingrec, canon) {
-                specs[clazz+"!"+canon] = pendingrec;
+                specs[clazz + "!" + canon] = pendingrec;
                 pendingrec.recurseFirer.addListener(operator);
             });
         });

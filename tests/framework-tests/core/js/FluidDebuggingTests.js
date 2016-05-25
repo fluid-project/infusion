@@ -63,10 +63,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.generateObnoxiousObject = function (depth, crosslinkAt) {
         var root = {index: 0};
         var levels = [[root]];
-        for (var i = 0; i < depth; ++ i) {
+        for (var i = 0; i < depth; ++i) {
             var thisLevel = levels[i];
             var nextLevel = levels[i + 1] = [];
-            for (var j = 0; j < thisLevel.length; ++ j) {
+            for (var j = 0; j < thisLevel.length; ++j) {
                 var parent = thisLevel[j];
                 if (i === depth - 1) {
                     var crossLevel = levels[crosslinkAt];

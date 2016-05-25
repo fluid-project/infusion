@@ -52,7 +52,7 @@ fluid_2_0_0 = fluid_2_0_0 || {};
         text = text.replace(/\r/g, "\n");
         var lines = text.split("\n");
         var contin, key, valueComp, valueRaw, valueEsc;
-        for (var i = 0; i < lines.length; ++ i) {
+        for (var i = 0; i < lines.length; ++i) {
             var line = $.trim(lines[i]);
             if (!line || line.charAt(0) === "#" || line.charAt(0) === "!") {
                 continue;
@@ -108,7 +108,7 @@ fluid_2_0_0 = fluid_2_0_0 || {};
         if (typeof(args) === "string") {
             args = [args];
         }
-        for (var i = 0; i < args.length; ++ i) {
+        for (var i = 0; i < args.length; ++i) {
             messageString = messageString.replace("{" + i + "}", args[i]);
         }
         return messageString;

@@ -72,11 +72,11 @@ var demo = demo || {};
      */
     var buildLocationsSubtree = function () {
         var treeChildren =  [
-                {ID: "locations", optionlist: {valuebinding: "locations.codes"},
-                              optionnames: {valuebinding: "locations.names"},
-                              selection: {valuebinding: "locations.choice"}
-                }
-            ];
+            {ID: "locations", optionlist: {valuebinding: "locations.codes"},
+                          optionnames: {valuebinding: "locations.names"},
+                          selection: {valuebinding: "locations.choice"}
+            }
+        ];
         var locationRows = fluid.explodeSelectionToInputs(demo.data.locations.codes, {
             rowID: "location-row:",
             inputID: "location",
@@ -100,11 +100,11 @@ var demo = demo || {};
      */
     var buildWineListSubtree = function () {
         var treeChildren =  [
-                {ID: "wines", optionlist: {valuebinding: "wineList.codes"},
-                              optionnames: {valuebinding: "wineList.names"},
-                              selection: {valuebinding: "wineList.choice"}
-                }
-            ];
+            {ID: "wines", optionlist: {valuebinding: "wineList.codes"},
+                          optionnames: {valuebinding: "wineList.names"},
+                          selection: {valuebinding: "wineList.choice"}
+            }
+        ];
         var wineRows = fluid.explodeSelectionToInputs(demo.data.wineList.codes, {
             rowID: "wine-row:",
             inputID: "wine",
@@ -125,11 +125,11 @@ var demo = demo || {};
      */
     var buildCanapeListSubtree = function () {
         var treeChildren =  [
-                {ID: "canapes", optionlist: {valuebinding: "canapeList.codes"},
-                              optionnames: {valuebinding: "canapeList.names"},
-                              selection: {valuebinding: "canapeList.choices"}
-                }
-            ];
+            {ID: "canapes", optionlist: {valuebinding: "canapeList.codes"},
+                          optionnames: {valuebinding: "canapeList.names"},
+                          selection: {valuebinding: "canapeList.choices"}
+            }
+        ];
         var canapeRows = fluid.transform(demo.data.canapeList.codes, function (opt, index) {
             return {
                 ID: "canape-row:",

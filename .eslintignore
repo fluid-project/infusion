@@ -1,0 +1,5 @@
+**/lib/**
+/build/**
+/products/**
+/node_modules/**
+infusion-1.5.js

@@ -569,9 +569,9 @@ fluid_2_0_0 = fluid_2_0_0 || {};
                 var child = children[i];
                 // This use of function creation within a loop is acceptable since
                 // the function does not attempt to close directly over the loop counter
-                var childPusher = function (comp) {
+                var childPusher = function (comp) { // eslint-disable-line no-loop-func
                     target[target.length] = comp;
-                };  /* function in loop */ /* jshint ignore:line */
+                };
 
                 expandLeafOrCond(child, target, childPusher);
                 // Rescue the case of an expanded leaf into single component - TODO: check what sense this makes of the grammar
@@ -612,6 +612,7 @@ fluid_2_0_0 = fluid_2_0_0 || {};
         // give rise to one or many elements with the SAME key - if "expandSingle" discovers
         // "thing with children" they will all share the same key found in proto.
         expandCond = function (proto, target) {
+            var key;
             var expandToTarget = function (expander) {
                 var expanded = fluid.invokeGlobalFunction(expander.type, [expander, proto, key, expandConfig]);
                 if (expanded !== fluid.renderer.NO_COMPONENT) {
@@ -622,7 +623,7 @@ fluid_2_0_0 = fluid_2_0_0 || {};
                 comp.ID = key;
                 target[target.length] = comp;
             };
-            for (var key in proto) {
+            for (key in proto) {
                 var entry = proto[key];
                 if (key.charAt(0) === IDescape) {
                     key = key.substring(1);

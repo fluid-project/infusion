@@ -153,11 +153,11 @@ module.exports = function(grunt) {
                 files: "<%= compress.all.files %>"
             }
         },
-        jshint: {
-            all: ["**/*.js"],
-            buildScripts: ["Gruntfile.js"],
+        eslint: {
+            all: ["**/*.js", "*.js"],
             options: {
-                jshintrc: true
+                ignore: true,
+                warnIgnoredByDefault: false
             }
         },
         stylus: {
@@ -194,7 +194,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-compress");
-    grunt.loadNpmTasks("grunt-contrib-jshint");
+    grunt.loadNpmTasks("fluid-grunt-eslint");
     grunt.loadNpmTasks("grunt-jsonlint");
     grunt.loadNpmTasks("grunt-modulefiles");
     grunt.loadNpmTasks("grunt-contrib-stylus");
@@ -243,7 +243,7 @@ module.exports = function(grunt) {
     grunt.registerTask("default", ["build:all"]);
     grunt.registerTask("custom", ["build:custom"]);
 
-    grunt.registerTask("lint", "Apply jshint and jsonlint", ["jshint", "jsonlint"]);
+    grunt.registerTask("lint", "Apply eslint and jsonlint", ["eslint", "jsonlint"]);
 
     grunt.registerTask("tests", "Run tests", ["shell:runTests"]);
 };

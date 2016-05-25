@@ -58,7 +58,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         if (to === undefined) {
             to = segs.length;
         }
-        for (var i = from; i < to - 1; ++ i) {
+        for (var i = from; i < to - 1; ++i) {
             togo += segs[i] + "/";
         }
         if (to > from) { // TODO: bug in Kettle version
@@ -80,12 +80,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      */
     fluid.url.cononocolosePath = function(pathInfo) {
         var consume = 0;
-        for (var i = 0; i < pathInfo.length; ++ i) {
+        for (var i = 0; i < pathInfo.length; ++i) {
             if (pathInfo[i] === "..") {
                 ++consume;
             }
             else if (consume !== 0) {
-                pathInfo.splice(i - consume*2, consume*2);
+                pathInfo.splice(i - consume * 2, consume * 2);
                 i -= consume * 2;
                 consume = 0;
             }
@@ -99,9 +99,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.url.parseUri = function (str) {
         var o  = fluid.url.parseUri.options,
-          m   = o.parser[o.strictMode ? "strict" : "loose"].exec(str),
-          uri = {},
-          i   = 14;
+            m   = o.parser[o.strictMode ? "strict" : "loose"].exec(str),
+            uri = {},
+            i   = 14;
 
         while (i--) { uri[o.key[i]] = m[i] || ""; }
 
@@ -147,7 +147,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         fluid.url.cononocolosePath(parsedRel);
         var parsedInner = fluid.url.parseSegs(iframeLocation);
         var seg = 0;
-        for (; seg < parsedRel.length; ++ seg) {
+        for (; seg < parsedRel.length; ++seg) {
             if (parsedRel[seg] !== parsedInner[seg]) { break; }
         }
         var excess = parsedInner.length - seg;

@@ -45,7 +45,7 @@
         jqUnit.assertDeepNeq("eq11", [1, [2, 3, 4]], [1, [2, 3, 4, 5]]);
         jqUnit.assertDeepEq("eq12", [1, 2, 3, 4, 5], [1, 2, 3, 4, 5]);
     });
-    
+
     jqUnit.test("jqUnit.assertDeepEq passing tests (FLUID-5901)", function () {
         jqUnit.expect(5);
         jqUnit.assertDeepNeq("True is not deep equal to false", true, false);
@@ -54,14 +54,14 @@
         jqUnit.assertDeepEq("1 is deep equal to 1", 1, 1);
         jqUnit.assertDeepNeq("{} is not equal to true", {}, true);
     });
-    
+
     /** From here on, EVERY TEST MUST FAIL **/
 
     fluid.tests.failingSetup = function () {
         // Ensure that the "data" argument sent to QUnit.log() callbacks is subverted too
         fluid.tests.jqUnit.failIsPass = true;
     };
-    
+
     fluid.tests.failingTeardown = function () {
         // Subvert QUnit's records by converting every failing test to a passing test and vice versa
         var current = QUnit.config.current;
@@ -71,12 +71,12 @@
         // Undo subversion of QUnit.log() callbacks at the end of the test
         fluid.tests.jqUnit.failIsPass = false;
     };
-    
+
     jqUnit.module("jqUnit tests which must each fail", {
         setup: fluid.tests.failingSetup,
         teardown: fluid.tests.failingTeardown
     });
-    
+
     jqUnit.test("jqUnit.assertDeepEq failing tests (FLUID-5901)", function () {
         jqUnit.expect(5);
 
@@ -94,5 +94,5 @@
         jqUnit.assertDeepEq("eq11", [1, [2, 3, 4]], [1, [2, 3, 4, 5]]);
         jqUnit.assertDeepEq("eq4", null, {p1: "thing1"});
     });
-    
+
 })();

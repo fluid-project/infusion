@@ -22,19 +22,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.module("InlineEdit Tests");
         var customOptions = {selectors: {
-                text: ".customText",
-                editContainer: ".customEditContainer",
-                edit: ".customEdit"
+            text: ".customText",
+            editContainer: ".customEditContainer",
+            edit: ".customEdit"
+        },
+            styles: {
+                invitation: "customInvitation",
+                focus: "customFocus"
             },
-                styles: {
-                    invitation: "customInvitation",
-                    focus: "customFocus"
-                },
-                paddings: {
-                    edit: 20,
-                    minimumEdit: 40
-                }
-                };
+            paddings: {
+                edit: 20,
+                minimumEdit: 40
+            }
+        };
 
         function insistSelect(message, that, name) {
             var togo = that.locate(name);
