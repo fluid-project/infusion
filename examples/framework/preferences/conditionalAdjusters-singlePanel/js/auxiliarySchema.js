@@ -132,38 +132,30 @@ var example = example || {};
     });
 
     // Context-aware mixin for jQueryUI slider
-    fluid.defaults("example.auxSchema.jQueryUI", {
+    fluid.defaults("example.auxSchema.nativeHTML", {
         auxiliarySchema: {
             vol: {
                 panel: {
-                    template: "%templatePrefix/slider-template-jQueryUI.html"
+                    template: "%templatePrefix/slider-template-nativeHTML.html"
                 }
             },
             wpm: {
                 panel: {
-                    template: "%templatePrefix/slider-template-jQueryUI.html"
+                    template: "%templatePrefix/slider-template-nativeHTML.html"
                 }
             },
             cursor: {
                 type: "example.cursorSize",
                 panel: {
-                    template: "%templatePrefix/slider-template-jQueryUI.html"
+                    template: "%templatePrefix/slider-template-nativeHTML.html"
                 }
             },
             magFactor: {
                 type: "example.magnification",
                 panel: {
-                    template: "%templatePrefix/slider-template-jQueryUI.html"
+                    template: "%templatePrefix/slider-template-nativeHTML.html"
                 }
             }
         }
     });
-
-    // Context-aware mixin for native slider
-    fluid.defaults("example.auxSchema.nativeHTML", {
-        auxiliarySchema: {
-
-        }
-    });
-
 })(jQuery, fluid);
