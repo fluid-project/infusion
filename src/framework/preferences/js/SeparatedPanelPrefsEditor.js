@@ -221,7 +221,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      *****************************************/
 
     fluid.defaults("fluid.prefs.separatedPanel.renderIframe", {
-        gradeNames: ["fluid.viewComponent", "fluid.contextAware"],
+        gradeNames: ["fluid.viewComponent"],
         events: {
             afterRender: null
         },
@@ -237,48 +237,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         },
         listeners: {
             "onCreate.startLoadingIframe": "fluid.prefs.separatedPanel.renderIframe.startLoadingIframe"
-        },
-        contextAwareness: {
-            prefsWidgetType: {
-                checks: {
-                    jQueryUI: {
-                        contextValue: "{fluid.prefsWidgetType}",
-                        equals: "jQueryUI",
-                        gradeNames: "fluid.prefs.separatedPanel.renderIframe.jQueryUI"
-                    }
-                },
-                defaultGradeNames: "fluid.prefs.separatedPanel.renderIframe.nativeHTML"
-            }
         }
     });
-
-    // Assumes use of the parent dcoument's jQuery
-    fluid.defaults("fluid.prefs.separatedPanel.renderIframe.nativeHTML", {
-        invokers: {
-            getJQuery: {
-                funcName: "fluid.prefs.separatedPanel.renderIframe.getParentJQuery"
-            }
-        }
-    });
-
-    fluid.prefs.separatedPanel.renderIframe.getParentJQuery = function () {
-        return $;
-    };
-
-    // Assumes a separate jQuery loaded in the iframe
-    fluid.defaults("fluid.prefs.separatedPanel.renderIframe.jQueryUI", {
-        invokers: {
-            getJQuery: {
-                funcName: "fluid.prefs.separatedPanel.renderIframe.getIframeJQuery",
-                args: ["{that}"]
-            }
-        }
-    });
-
-    fluid.prefs.separatedPanel.renderIframe.getIframeJQuery = function (that) {
-        var iframeWindow = that.iframe[0].contentWindow;
-        return iframeWindow.jQuery;
-    };
 
     fluid.prefs.separatedPanel.renderIframe.startLoadingIframe = function (that) {
         var styles = that.options.styles;
@@ -291,8 +251,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         that.iframe.load(function () {
             var iframeWindow = that.iframe[0].contentWindow;
             that.iframeDocument = iframeWindow.document;
-
-            that.jQuery = that.getJQuery();
+            // The iframe should prefer its own version of jQuery if a separate
+            // one is loaded
+            that.jQuery = iframeWindow.jQuery || $;
 
             that.renderPrefsEditorContainer = that.jQuery("body", that.iframeDocument);
             that.jQuery(that.iframeDocument).ready(that.events.afterRender.fire);
