@@ -19,7 +19,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.registerNamespace("fluid.url");
 
-    fluid.url.generateDepth = function(depth) {
+    fluid.url.generateDepth = function (depth) {
         return fluid.generate(depth, "../").join("");
     };
 
@@ -50,7 +50,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * segment index - this will not terminate with a slash, unless the final segment
      * is the empty string
      */
-    fluid.url.collapseSegs = function(segs, from, to) {
+    fluid.url.collapseSegs = function (segs, from, to) {
         var togo = "";
         if (from === undefined) {
             from = 0;
@@ -67,7 +67,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         return togo;
     };
 
-    fluid.url.makeRelPath = function(parsed, index) {
+    fluid.url.makeRelPath = function (parsed, index) {
         var togo = fluid.kettle.collapseSegs(parsed.pathInfo, index);
         if (parsed.extension) {
             togo += "." + parsed.extension;
@@ -78,7 +78,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     /** Canonicalise IN PLACE the supplied segment array derived from parsing a
      * pathInfo structure. Warning, this destructively modifies the argument.
      */
-    fluid.url.cononocolosePath = function(pathInfo) {
+    fluid.url.cononocolosePath = function (pathInfo) {
         var consume = 0;
         for (var i = 0; i < pathInfo.length; ++i) {
             if (pathInfo[i] === "..") {
@@ -126,18 +126,18 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     };
 
-    fluid.url.parseSegs = function(url) {
+    fluid.url.parseSegs = function (url) {
         var parsed = fluid.url.parseUri(url);
         var parsedSegs = fluid.url.parsePathInfoTrim(parsed.directory);
         return parsedSegs.pathInfo;
     };
 
-    fluid.url.isAbsoluteUrl = function(url) {
+    fluid.url.isAbsoluteUrl = function (url) {
         var parseRel = fluid.url.parseUri(url);
         return (parseRel.host || parseRel.protocol || parseRel.directory.charAt(0) === "/");
     };
 
-    fluid.url.computeRelativePrefix = function(outerLocation, iframeLocation, relPath) {
+    fluid.url.computeRelativePrefix = function (outerLocation, iframeLocation, relPath) {
         if (fluid.url.isAbsoluteUrl(relPath)) {
             return relPath;
         }

@@ -62,13 +62,13 @@ var fluid = fluid || fluid_2_0_0;
     fluid.tracing.condensePathCount = function (prefixes, pathCount) {
         prefixes = fluid.makeArray(prefixes);
         var prefixCount = {};
-        fluid.each(prefixes, function(prefix) {
+        fluid.each(prefixes, function (prefix) {
             prefixCount[prefix] = 0;
         });
         var togo = [];
         fluid.each(pathCount, function (el) {
             var path = el.path;
-            if (!fluid.find(prefixes, function(prefix) {
+            if (!fluid.find(prefixes, function (prefix) {
                 if (path.indexOf(prefix) === 0) {
                     prefixCount[prefix] += el.count;
                     return true;
@@ -77,7 +77,7 @@ var fluid = fluid || fluid_2_0_0;
                 togo.push(el);
             }
         });
-        fluid.each(prefixCount, function(count, path) {
+        fluid.each(prefixCount, function (count, path) {
             togo.unshift({path: path, count: count});
         });
         return togo;
@@ -181,7 +181,7 @@ var fluid = fluid || fluid_2_0_0;
         return desc && !desc.get ? obj[key] : fluid.SYNTHETIC_PROPERTY;
     };
 
-    function printImpl (obj, small, options) {
+    function printImpl(obj, small, options) {
         function out(str) {
             options.output += str;
         }

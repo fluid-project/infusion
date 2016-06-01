@@ -254,7 +254,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var dropManager = fluid.dropManager();
 
             var zones = $(".zone", "#FLUID-4692-test");
-            var extents = fluid.transform(zones, function(zone) {
+            var extents = fluid.transform(zones, function (zone) {
                 return {
                     orientation: fluid.orientation.VERTICAL,
                     elements: [],

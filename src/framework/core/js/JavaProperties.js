@@ -19,7 +19,7 @@ fluid_2_0_0 = fluid_2_0_0 || {};
     var unUnicode = /(\\u[\dabcdef]{4}|\\x[\dabcdef]{2})/g;
 
     fluid.unescapeProperties = function (string) {
-        string = string.replace(unUnicode, function(match) {
+        string = string.replace(unUnicode, function (match) {
             var code = match.substring(2);
             var parsed = parseInt(code, 16);
             return String.fromCharCode(parsed);
@@ -45,7 +45,7 @@ fluid_2_0_0 = fluid_2_0_0 || {};
 
     var breakPos = /[^\\][\s:=]/;
 
-    fluid.parseJavaProperties = function(text) {
+    fluid.parseJavaProperties = function (text) {
         // File format described at http://java.sun.com/javase/6/docs/api/java/util/Properties.html#load(java.io.Reader)
         var togo = {};
         text = text.replace(/\r\n/g, "\n");

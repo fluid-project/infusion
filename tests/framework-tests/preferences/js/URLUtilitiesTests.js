@@ -20,7 +20,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.module("URLUtilities Tests");
 
         var testRelPath = function (options, key) {
-            jqUnit.test("Expand Path " + key, function() {
+            jqUnit.test("Expand Path " + key, function () {
                 var actual =  fluid.url.computeRelativePrefix(options.outerLoc, options.iframeLoc, options.relPath);
                 jqUnit.assertEquals("Relative path computed", options.expected, actual);
             });
@@ -65,7 +65,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         ];
 
-        fluid.each(tests, function(test, key) {
+        fluid.each(tests, function (test, key) {
             testRelPath(test, key);
         });
     });

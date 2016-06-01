@@ -349,7 +349,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         var applier = fluid.makeHolderChangeApplier({model: model});
         var notified = false;
-        applier.modelChanged.addListener("selections.lineSpace", function() {
+        applier.modelChanged.addListener("selections.lineSpace", function () {
             notified = true;
         });
         applier.change("selections", {lineSpace: 1.5});
@@ -656,7 +656,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var that = fluid.tests.fluid5024head();
         fluid.tests.assertTransactionsConcluded(that);
 
-        function expectChanges (message, child1Record, child2Record) {
+        function expectChanges(message, child1Record, child2Record) {
             fluid.tests.checkNearEquality(message + " change record child 1", child1Record, that.child1.fireRecord);
             fluid.tests.checkNearEquality(message + " change record child 2", child2Record, that.child2.fireRecord);
             fluid.tests.fluid5024clear(that);
@@ -1207,7 +1207,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("FLUID-5024: Resolving references which are cyclic in components", function () {
         var that = fluid.tests.fluid5024cycleHead();
 
-        function expectChanges (message, child1Record, child2Record, child3Record) {
+        function expectChanges(message, child1Record, child2Record, child3Record) {
             fluid.tests.checkNearEquality(message + " change record child 1", child1Record, that.child1.fireRecord);
             fluid.tests.checkNearEquality(message + " change record child 2", child2Record, that.child2.fireRecord);
             fluid.tests.checkNearEquality(message + " change record child 3", child3Record, that.child3.fireRecord);

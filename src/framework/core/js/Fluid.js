@@ -1989,14 +1989,14 @@ var fluid = fluid || fluid_2_0_0;
     // since at each regeneration step driving the RHS we are discarding the "cursor arguments" these
     // would have to be regenerated at each step - although in practice this can only happen once for
     // each object for all time, since after first resolution it will be concrete.
-    function regenerateCursor (source, segs, limit, sourceStrategy) {
+    function regenerateCursor(source, segs, limit, sourceStrategy) {
         for (var i = 0; i < limit; ++i) {
             source = sourceStrategy(source, segs[i], i, fluid.makeArray(segs)); // copy for FLUID-5243
         }
         return source;
     }
 
-    function regenerateSources (sources, segs, limit, sourceStrategies) {
+    function regenerateSources(sources, segs, limit, sourceStrategies) {
         var togo = [];
         for (var i = 0; i < sources.length; ++i) {
             var thisSource = regenerateCursor(sources[i], segs, limit, sourceStrategies[i]);

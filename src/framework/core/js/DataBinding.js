@@ -877,7 +877,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var instantiator = fluid.getInstantiator(that);
 
         function updateRelays(transaction) {
-            while (fluid.model.updateRelays(instantiator, transaction.id) > 0){} // eslint-disable-line no-empty
+            while (fluid.model.updateRelays(instantiator, transaction.id) > 0) {} // eslint-disable-line no-empty
         }
 
         function commitRelays(transaction, applier, code) {

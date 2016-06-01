@@ -325,11 +325,11 @@ fluid_2_0_0 = fluid_2_0_0 || {};
 
     renderer.decoratorComponentPrefix = "**-renderer-";
 
-    renderer.IDtoComponentName = function(ID, num) {
+    renderer.IDtoComponentName = function (ID, num) {
         return renderer.decoratorComponentPrefix + ID.replace(/\./g, "") + "-" + num;
     };
 
-    renderer.invokeFluidDecorator = function(func, args, ID, num, options) {
+    renderer.invokeFluidDecorator = function (func, args, ID, num, options) {
         var that;
         if (options.parentComponent) {
             var parent = options.parentComponent;
@@ -724,7 +724,7 @@ fluid_2_0_0 = fluid_2_0_0 || {};
         // TODO: This mechanism inefficiently handles the rare case of a target document
         // id collision requiring a rewrite for FLUID-5048. In case it needs improving, we
         // could hold an inverted index - however, these cases will become even rarer with FLUID-5047
-        function rewriteRewriteMap (from, to) {
+        function rewriteRewriteMap(from, to) {
             fluid.each(rewritemap, function (value, key) {
                 if (value === from) {
                     rewritemap[key] = to;
@@ -802,9 +802,9 @@ fluid_2_0_0 = fluid_2_0_0 || {};
             return togo;
         }
 
-        outDecoratorsImpl = function(torender, decorators, attrcopy, finalID) {
+        outDecoratorsImpl = function (torender, decorators, attrcopy, finalID) {
             var id;
-            var sanitizeAttrs = function(value, key) {
+            var sanitizeAttrs = function (value, key) {
                 if (value === null || value === undefined) {
                     delete attrcopy[key];
                 }
@@ -1223,7 +1223,7 @@ fluid_2_0_0 = fluid_2_0_0 || {};
             renderRecurse(child, targetlump, firstchild);
         }
 
-        fetchComponent = function(basecontainer, id) {
+        fetchComponent = function (basecontainer, id) {
             if (id.indexOf("msg=") === 0) {
                 var key = id.substring(4);
                 return {componentType: "UIMessage", messagekey: key};
@@ -1259,7 +1259,7 @@ fluid_2_0_0 = fluid_2_0_0 || {};
             return headlumps ? headlumps[0] : null;
         }
 
-        renderRecurse = function(basecontainer, parentlump, baselump) {
+        renderRecurse = function (basecontainer, parentlump, baselump) {
             var children;
             var targetlump;
             var child;

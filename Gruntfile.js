@@ -14,7 +14,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var _ = require("lodash");
 var path = require("path");
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
     "use strict";
 
     // Project configuration.
@@ -54,7 +54,7 @@ module.exports = function(grunt) {
                     // that have individual dependencies.json files.
                     src: "src/lib/jQuery/jQuery-LICENSE.txt",
                     dest: "build/lib/jQuery/jQuery-LICENSE.txt",
-                    filter: function() {
+                    filter: function () {
                         return grunt.file.exists("build/lib/jQuery/");
                     }
                 }]
@@ -168,7 +168,7 @@ module.exports = function(grunt) {
                     expand: true,
                     src: ["src/**/css/stylus/*.styl"],
                     ext: ".css",
-                    rename: function(dest, src) {
+                    rename: function (dest, src) {
                         // Move the generated css files one level up out of the stylus directory
                         var dir = path.dirname(src);
                         var filename = path.basename(src);

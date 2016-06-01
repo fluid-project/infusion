@@ -50,16 +50,16 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * to jQuery.ajax().
      */
 
-    fluid.fetchResources = function(resourceSpecs, callback, options) {
+    fluid.fetchResources = function (resourceSpecs, callback, options) {
         var that = {
             options: fluid.copy(options || {})
         };
         that.resourceSpecs = resourceSpecs;
         that.callback = callback;
-        that.operate = function() {
+        that.operate = function () {
             fluid.fetchResources.fetchResourcesImpl(that);
         };
-        fluid.each(resourceSpecs, function(resourceSpec, key) {
+        fluid.each(resourceSpecs, function (resourceSpec, key) {
             resourceSpec.recurseFirer = fluid.makeEventFirer({name: "I/O completion for resource \"" + key + "\""});
             resourceSpec.recurseFirer.addListener(that.operate);
             if (resourceSpec.url && !resourceSpec.href) {
@@ -131,10 +131,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      */
     // Add "synthetic" elements of *this* resourceSpec list corresponding to any
     // still pending elements matching the PROLEPTICK CLASS SPECIFICATION supplied
-    fluid.fetchResources.amalgamateClasses = function(specs, classes, operator) {
-        fluid.each(classes, function(clazz) {
+    fluid.fetchResources.amalgamateClasses = function (specs, classes, operator) {
+        fluid.each(classes, function (clazz) {
             var pending = pendingClass[clazz];
-            fluid.each(pending, function(pendingrec, canon) {
+            fluid.each(pending, function (pendingrec, canon) {
                 specs[clazz + "!" + canon] = pendingrec;
                 pendingrec.recurseFirer.addListener(operator);
             });
@@ -144,10 +144,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     /*
      * This function is unsupported: It is not really intended for use by implementors.
      */
-    fluid.fetchResources.timeSuccessCallback = function(resourceSpec) {
+    fluid.fetchResources.timeSuccessCallback = function (resourceSpec) {
         if (resourceSpec.timeSuccess && resourceSpec.options && resourceSpec.options.success) {
             var success = resourceSpec.options.success;
-            resourceSpec.options.success = function() {
+            resourceSpec.options.success = function () {
                 var startTime = new Date();
                 var ret = success.apply(null, arguments);
                 fluid.log("External callback for URL " + resourceSpec.href + " completed - callback time: " +
@@ -162,7 +162,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         return url;
     }
 
-    fluid.fetchResources.clearResourceCache = function(url) {
+    fluid.fetchResources.clearResourceCache = function (url) {
         if (url) {
             delete resourceCache[canonUrl(url)];
         }
@@ -174,7 +174,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     /*
      * This function is unsupported: It is not really intended for use by implementors.
      */
-    fluid.fetchResources.handleCachedRequest = function(resourceSpec, response, fetchError) {
+    fluid.fetchResources.handleCachedRequest = function (resourceSpec, response, fetchError) {
         var canon = canonUrl(resourceSpec.href);
         var cached = resourceCache[canon];
         if (cached.$$firer$$) {
@@ -193,7 +193,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     /*
      * This function is unsupported: It is not really intended for use by implementors.
      */
-    fluid.fetchResources.completeRequest = function(thisSpec) {
+    fluid.fetchResources.completeRequest = function (thisSpec) {
         thisSpec.queued = false;
         thisSpec.completeTime = new Date();
         fluid.log("Request to URL " + thisSpec.href + " completed - total elapsed time: " +
@@ -204,9 +204,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     /*
      * This function is unsupported: It is not really intended for use by implementors.
      */
-    fluid.fetchResources.makeResourceCallback = function(thisSpec) {
+    fluid.fetchResources.makeResourceCallback = function (thisSpec) {
         return {
-            success: function(response) {
+            success: function (response) {
                 thisSpec.resourceText = response;
                 thisSpec.resourceKey = thisSpec.href;
                 if (thisSpec.forceCache) {
@@ -214,7 +214,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 }
                 fluid.fetchResources.completeRequest(thisSpec);
             },
-            error: function(response, textStatus, errorThrown) {
+            error: function (response, textStatus, errorThrown) {
                 thisSpec.fetchError = {
                     status: response.status,
                     textStatus: response.textStatus,
@@ -233,7 +233,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     /*
      * This function is unsupported: It is not really intended for use by implementors.
      */
-    fluid.fetchResources.issueCachedRequest = function(resourceSpec, options) {
+    fluid.fetchResources.issueCachedRequest = function (resourceSpec, options) {
         var canon = canonUrl(resourceSpec.href);
         var cached = resourceCache[canon];
         if (!cached) {
@@ -261,7 +261,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
             else {
                 fluid.log("Request for cached resource which is in flight: url " + canon);
-                cached.addListener(function(response, fetchError) {
+                cached.addListener(function (response, fetchError) {
                     if (response) {
                         options.success(response);
                     } else {
@@ -292,7 +292,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     // unsupported, NON-API function
-    fluid.fetchResources.composePolicy = function(target, source) {
+    fluid.fetchResources.composePolicy = function (target, source) {
         return fluid.fetchResources.composeCallbacks(target, source);
     };
 
@@ -305,7 +305,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     });
 
     // unsupported, NON-API function
-    fluid.fetchResources.issueRequest = function(resourceSpec, key) {
+    fluid.fetchResources.issueRequest = function (resourceSpec, key) {
         var thisCallback = fluid.fetchResources.makeResourceCallback(resourceSpec);
         var options = {
             url:     resourceSpec.href,
@@ -329,7 +329,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
 
-    fluid.fetchResources.fetchResourcesImpl = function(that) {
+    fluid.fetchResources.fetchResourcesImpl = function (that) {
         var complete = true;
         var allSync = true;
         var resourceSpecs = that.resourceSpecs;
@@ -358,7 +358,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             that.callbackCalled = true;
             if ($.browser.mozilla && !allSync) {
                 // Defer this callback to avoid debugging problems on Firefox
-                setTimeout(function() {
+                setTimeout(function () {
                     fluid.fetchResources.notifyResources(that, resourceSpecs, that.callback);
                 }, 1);
             }
@@ -371,7 +371,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     // TODO: This framework function is a stop-gap before the "ginger world" is capable of
     // asynchronous instantiation. It currently performs very poor fidelity expansion of a
     // component's options to discover "resources" only held in the static environment
-    fluid.fetchResources.primeCacheFromResources = function(componentName) {
+    fluid.fetchResources.primeCacheFromResources = function (componentName) {
         var resources = fluid.defaults(componentName).resources;
         var expanded = (fluid.expandOptions ? fluid.expandOptions : fluid.identity)(fluid.copy(resources));
         fluid.fetchResources(expanded);
@@ -385,11 +385,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      */
     fluid.expander.makeDefaultFetchOptions = function (successdisposer, failid, options) {
         return $.extend(true, {dataType: "text"}, options, {
-            success: function(response, environmentdisposer) {
+            success: function (response, environmentdisposer) {
                 var json = JSON.parse(response);
                 environmentdisposer(successdisposer(json));
             },
-            error: function(response, textStatus) {
+            error: function (response, textStatus) {
                 fluid.log("Error fetching " + failid + ": " + textStatus);
             }
         });
@@ -408,7 +408,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }};
     };
 
-    fluid.expander.deferredFetcher = function(deliverer, source, expandOptions) {
+    fluid.expander.deferredFetcher = function (deliverer, source, expandOptions) {
         var expander = source.expander;
         var spec = fluid.copy(expander);
         // fetch the "global" collector specified in the external environment to receive
@@ -417,7 +417,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         delete spec.type;
         delete spec.resourceSpecCollector;
         delete spec.fetchKey;
-        var environmentdisposer = function(disposed) {
+        var environmentdisposer = function (disposed) {
             deliverer(disposed);
         };
         // replace the callback which is there (taking 2 arguments) with one which
@@ -425,7 +425,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         // which once the user has processed the response (say, parsing JSON and repackaging)
         // finally deposits it in the place of the expander in the tree to which this reference
         // has been stored at the point this expander was evaluated.
-        spec.options.success = function(response) {
+        spec.options.success = function (response) {
             expander.options.success(response, environmentdisposer);
         };
         var key = expander.fetchKey || fluid.allocateGuid();

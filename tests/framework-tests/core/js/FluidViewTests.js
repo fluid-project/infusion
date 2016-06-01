@@ -46,13 +46,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         fluid.registerNamespace("fluid.tests.fluid5821");
 
-        fluid.tests.fluid5821.isEmptyJquery = function(message, element, checkSelector) {
+        fluid.tests.fluid5821.isEmptyJquery = function (message, element, checkSelector) {
             jqUnit.assertEquals(message + ": The element should have a length of zero...", 0, element.length);
             var fieldsToCheck = ["context", "selectorName"];
             if (checkSelector) {
                 fieldsToCheck.push("selector");
             }
-            fluid.each(fieldsToCheck, function(field) {
+            fluid.each(fieldsToCheck, function (field) {
                 jqUnit.assertNotUndefined(message + ": The field '" + field + "' should not be undefined...", element[field]);
                 jqUnit.assertNotNull(message + ": The field '" + field + "' should not be null...", element[field]);
             });

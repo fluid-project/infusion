@@ -1261,7 +1261,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 fetcher: expandFetcher,
                 mergePolicy: fluid.compileMergePolicy({ "unexpandable" : "noexpand", "unexpandableString" : "noexpand"}).builtins
             };
-            var allExpandOptions = fluid.transform(blocks, function(block) {
+            var allExpandOptions = fluid.transform(blocks, function (block) {
                 var thisOptions = $.extend(true, {}, baseExpandOptions);
                 return fluid.makeExpandOptions(block, thisOptions);
             });
@@ -1271,7 +1271,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
             var mergeOptions = fluid.makeMergeOptions({}, fluid.getMembers(allExpandOptions, "target"), baseMergeOptions);
             ultimateStrategy = mergeOptions.strategy;
-            fluid.each(allExpandOptions, function(expandOption) { expandOption.initter();});
+            fluid.each(allExpandOptions, function (expandOption) { expandOption.initter();});
             mergeOptions.initter();
             jqUnit.assertDeepEq("Properly merged and expanded self-referential structure", entry.expected, target);
         });
@@ -1598,7 +1598,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("FLUID-4398 event and listener boiling", function () {
         var that = fluid.tests.eventParent3();
         var received = {};
-        that.eventChild.events.relayEvent.addListener(function(arg) {
+        that.eventChild.events.relayEvent.addListener(function (arg) {
             received.arg = arg;
         });
         that.events.parentEvent1.fire(that); // first event only fires to invoker
@@ -2266,7 +2266,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         parentThat.records.push(arg);
     };
 
-    jqUnit.test("FLUID-4257 test: removal of injected listeners", function() {
+    jqUnit.test("FLUID-4257 test: removal of injected listeners", function () {
         var that = fluid.tests.head4257();
         that.events.parentEvent.fire(3);
         that.events.parentEvent2.fire(4);
@@ -2641,7 +2641,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("Invoker contextualisation tests", function() {
+    jqUnit.test("Invoker contextualisation tests", function () {
         jqUnit.expect(2);
         var that = fluid.tests.test4712parent();
         jqUnit.assertEquals("Child component should be properly instantiated", 3, that.refChild.refChild2.ref3.options.refOption);
@@ -2713,11 +2713,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("FLUID-4626 test - cross-island use of instantiators", function() {
+    jqUnit.test("FLUID-4626 test - cross-island use of instantiators", function () {
         jqUnit.expect(1);
         var island1 = fluid.tests.island1();
         var island2 = fluid.tests.island2();
-        island1.events.outEvent2.addListener(function() {
+        island1.events.outEvent2.addListener(function () {
             island2.events.inEvent.fire();
         });
         island1.events.outEvent2.fire();
@@ -3417,7 +3417,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("FLUID-5036, Case 2 - An IoCSS source that is fetched from the static environment is not resolved correctly - and displacement using fluid.resolveRootSingle", function () {
-        function issueRootAndReference (targetOption) {
+        function issueRootAndReference(targetOption) {
             var optionHolder = fluid.component({
                 gradeNames: ["fluid5036_2UserOption", "fluid.resolveRootSingle"],
                 singleRootType: "fluid5036_2UserOption",

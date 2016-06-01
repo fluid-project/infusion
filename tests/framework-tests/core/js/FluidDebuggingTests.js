@@ -50,7 +50,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var reparsed = JSON.parse(renderedComplex);
         jqUnit.assertDeepEq("Round-tripping complex object", complex, reparsed);
 
-        function Synthetic () {}
+        function Synthetic() {}
         var proto = { b: 3 };
         Synthetic.prototype = proto;
         var synthetic = new Synthetic();

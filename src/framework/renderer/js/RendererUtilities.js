@@ -22,24 +22,24 @@ fluid_2_0_0 = fluid_2_0_0 || {};
 
     // TODO: API status of these 3 functions is uncertain. So far, they have never
     // appeared in documentation.
-    fluid.renderer.visitDecorators = function(that, visitor) {
-        fluid.visitComponentChildren(that, function(component, name) {
+    fluid.renderer.visitDecorators = function (that, visitor) {
+        fluid.visitComponentChildren(that, function (component, name) {
             if (name.indexOf(fluid.renderer.decoratorComponentPrefix) === 0) {
                 visitor(component, name);
             }
         }, {flat: true}, []);
     };
 
-    fluid.renderer.clearDecorators = function(that) {
+    fluid.renderer.clearDecorators = function (that) {
         var instantiator = fluid.getInstantiator(that);
-        fluid.renderer.visitDecorators(that, function(component, name) {
+        fluid.renderer.visitDecorators(that, function (component, name) {
             instantiator.clearComponent(that, name);
         });
     };
 
-    fluid.renderer.getDecoratorComponents = function(that) {
+    fluid.renderer.getDecoratorComponents = function (that) {
         var togo = {};
-        fluid.renderer.visitDecorators(that, function(component, name) {
+        fluid.renderer.visitDecorators(that, function (component, name) {
             togo[name] = component;
         });
         return togo;
@@ -338,7 +338,7 @@ fluid_2_0_0 = fluid_2_0_0 || {};
             if (options.valueAs) {
                 envAdd[options.valueAs] = fluid.get(config.model, EL, config.resolverGetConfig);
             }
-            var expandrow = fluid.withEnvironment(envAdd, function() {
+            var expandrow = fluid.withEnvironment(envAdd, function () {
                 return config.expander(options.tree);
             }, env);
             if (fluid.isArrayable(expandrow)) {
@@ -647,8 +647,8 @@ fluid_2_0_0 = fluid_2_0_0 || {};
 
         };
 
-        return function(entry) {
-            threadLocal = fluid.threadLocal(function() {
+        return function (entry) {
+            threadLocal = fluid.threadLocal(function () {
                 return $.extend({}, options.envAdd);
             });
             options.fetcher = fluid.makeEnvironmentFetcher(options.model, fluid.transformContextPath, threadLocal, options.externalFetcher);

@@ -182,9 +182,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             // menu dropdowns which otherwise causes an undetectable focus transfer
             // away from editor (they are appended to the end of the document rather than
             // nested within the editor).
-            editor.controlManager.onAdd.add(function(e) {
+            editor.controlManager.onAdd.add(function (e) {
                 if (e.onShowMenu) {
-                    e.onShowMenu.add(function() {
+                    e.onShowMenu.add(function () {
                         var el = fluid.byId(e.element.id);
                         if (el) {
                             that.deadMansBlur.addExclusion({id: el});
@@ -224,7 +224,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         // its afterInitEdit listener is registered in time. All of this architecture
         // is unsatisfactory, but can't be easily fixed until the whole component is
         // migrated over to IoC with declarative listener registration.
-        setTimeout(function() {
+        setTimeout(function () {
             tinyMCE.init(options);
         }, 1);
     };

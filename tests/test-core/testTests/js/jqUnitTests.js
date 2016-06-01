@@ -87,7 +87,7 @@
         jqUnit.assertDeepEq("{} is not equal to true", {}, true);
     });
 
-    jqUnit.test("THESE TESTS SHOULD FAIL - testing message support", function() {
+    jqUnit.test("THESE TESTS SHOULD FAIL - testing message support", function () {
         jqUnit.expect(4);
         jqUnit.assertDeepEq("eq12", [1, 2, 3, 4, 5], [1, 2, 3, 4, 6]);
         jqUnit.assertDeepEq("eq10", [1, 2], [1, 2, 3]);

@@ -813,7 +813,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.dumpThatStack = function (thatStack, instantiator) {
-        var togo = fluid.transform(thatStack, function(that) {
+        var togo = fluid.transform(thatStack, function (that) {
             var path = instantiator.idToPath(that.id);
             return fluid.dumpThat(that) + (path ? (" - path: " + path) : "");
         });
@@ -1031,7 +1031,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     var otherParent = that.pathToComponent[parentPath];
                     that.clearComponent(otherParent, fluid.model.getTailPath(injectedPath), child);
                 });
-                fluid.visitComponentChildren(child, function(gchild, gchildname, segs, i) {
+                fluid.visitComponentChildren(child, function (gchild, gchildname, segs, i) {
                     var parentPath = that.composeSegments.apply(null, segs.slice(0, i));
                     that.clearComponent(child, gchildname, null, options, true, parentPath);
                 }, options, that.parseEL(childPath));
@@ -1348,7 +1348,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.bindDeferredComponent = function (that, componentName, component) {
         var events = fluid.makeArray(component.createOnEvent);
-        fluid.each(events, function(eventName) {
+        fluid.each(events, function (eventName) {
             var event = fluid.isIoCReference(eventName) ? fluid.expandOptions(eventName, that) : that.events[eventName];
             if (!event || !event.addListener) {
                 fluid.fail("Error instantiating createOnEvent component with name " + componentName + " of parent ", that, " since event specification " +
@@ -1666,7 +1666,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         } else if (func === fluid.notImplemented) {
             fluid.fail("Error constructing component ", that, " - the invoker named " + name + " which was defined in grade " + invokerec.componentSource + " needs to be overridden with a concrete implementation");
         }
-        return function invokeInvoker () {
+        return function invokeInvoker() {
             if (fluid.defeatLogging === false) {
                 fluid.pushActivity("invokeInvoker", "invoking invoker with name %name and record %record from component %that", {name: name, record: invokerec, that: that});
             }
@@ -1700,7 +1700,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.event.listenerEngine = function (eventSpec, callback, adder) {
         var argstruc = {};
         function checkFire() {
-            var notall = fluid.find(eventSpec, function(value, key) {
+            var notall = fluid.find(eventSpec, function (value, key) {
                 if (argstruc[key] === undefined) {
                     return true;
                 }
@@ -1921,7 +1921,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.makeEnvironmentFetcher = function (directModel, elResolver, envGetter, externalFetcher) {
         envGetter = envGetter || fluid.globalThreadLocal;
-        return function(parsed) {
+        return function (parsed) {
             var env = envGetter();
             return fluid.fetchContextReference(parsed, directModel, env, elResolver, externalFetcher);
         };
@@ -2143,7 +2143,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     // TODO: This method is unnecessary and will quadratic inefficiency if RHS block is not concrete.
     // The driver should detect "homogeneous uni-strategy trundling" and agree to preserve the extra
     // "cursor arguments" which should be advertised somehow (at least their number)
-    function regenerateCursor (source, segs, limit, sourceStrategy) {
+    function regenerateCursor(source, segs, limit, sourceStrategy) {
         for (var i = 0; i < limit; ++i) {
             // copy segs to avoid aliasing with FLUID-5243
             source = sourceStrategy(source, segs[i], i, fluid.makeArray(segs));

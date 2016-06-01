@@ -14,11 +14,11 @@ var demo = demo || {};
 (function () {
     "use strict";
 
-    demo.changeClass = function(id) {
+    demo.changeClass = function (id) {
         document.getElementById(id).style.display = "block";
 
     };
-    demo.changeAgain = function(id) {
+    demo.changeAgain = function (id) {
         document.getElementById(id).style.display = "none";
     };
 })();
