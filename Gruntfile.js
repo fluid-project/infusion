@@ -154,11 +154,10 @@ module.exports = function(grunt) {
             }
         },
         eslint: {
-            all: ["**/*.js", "*.js"],
-            options: {
-                ignore: true,
-                warnIgnoredByDefault: false
-            }
+            all: ["src/**/*.js", "tests/**/*.js", "demos/**/*.js", "examples/**/*.js", "*.js"],
+        },
+        jsonlint: {
+            all: ["src/**/*.json", "tests/**/*.json", "demos/**/*.json", "examples/**/*.json"]
         },
         stylus: {
             compile: {
@@ -177,9 +176,6 @@ module.exports = function(grunt) {
                     }
                 }]
             }
-        },
-        jsonlint: {
-            all: ["src/**/*.json", "tests/**/*.json", "demos/**/*.json", "examples/**/*.json"]
         },
         shell: {
             runTests: {

@@ -1,50 +1,44 @@
 {
-  "name": "infusion",
-  "description": "Infusion is an application framework for developing flexible stuff with JavaScript",
-  "version": "2.0.0",
-  "author": "Fluid Project",
-  "bugs": "http://issues.fluidproject.org/browse/FLUID",
-  "homepage": "http://www.fluidproject.org/",
-  "dependencies": {
-      "resolve": "1.1.6"
-  },
-  "licenses": [
-    {
-      "type": "BSD-3-Clause",
-      "url": "http://www.opensource.org/licenses/BSD-3-Clause"
+    "name": "infusion",
+    "description": "Infusion is an application framework for developing flexible stuff with JavaScript",
+    "version": "2.0.0",
+    "author": "Fluid Project",
+    "bugs": "http://issues.fluidproject.org/browse/FLUID",
+    "homepage": "http://www.fluidproject.org/",
+    "dependencies": {
+        "resolve": "1.1.6"
     },
-    {
-      "type": "ECL-2.0",
-      "url": "http://www.opensource.org/licenses/ECL-2.0"
+    "license": "(BSD-3-Clause OR ECL-2.0)",
+    "keywords": [
+        "infusion",
+        "framework",
+        "application",
+        "fluid",
+        "IoC",
+        "Inversion of Control",
+        "MVC",
+        "evented"
+    ],
+    "repository": "git://github.com/fluid-project/infusion.git",
+    "main": "./src/module/fluid.js",
+    "scripts": {
+        "test": "node tests/node-tests/basic-node-tests.js"
+    },
+    "engines": {
+        "node": ">=0.10.0"
+    },
+    "devDependencies": {
+        "grunt": "1.0.1",
+        "grunt-contrib-uglify": "1.0.1",
+        "grunt-contrib-clean": "1.0.0",
+        "grunt-contrib-copy": "1.0.0",
+        "grunt-contrib-concat": "1.0.1",
+        "grunt-contrib-compress": "1.3.0",
+        "grunt-contrib-stylus": "1.2.0",
+        "grunt-modulefiles": "git://github.com/amb26/grunt-modulefiles.git#ae649605ec77028f8c46564d6b644d527876573b",
+        "lodash": "4.13.1",
+        "fluid-grunt-eslint": "18.1.1",
+        "grunt-jsonlint": "1.0.4",
+        "grunt-shell": "1.3.0"
     }
-  ],
-  "keywords": [
-    "infusion",
-    "framework",
-    "application",
-    "fluid",
-    "IoC",
-    "Inversion of Control",
-    "MVC",
-    "evented"
-  ],
-  "repository": "git://github.com/fluid-project/infusion.git",
-  "main": "./src/module/fluid.js",
-  "engines": {
-    "node": ">=0.10.0"
-  },
-  "devDependencies": {
-    "grunt": "~0.4.2",
-    "grunt-contrib-uglify": "~0.2.2",
-    "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-copy": "~0.4.1",
-    "grunt-contrib-concat": "~0.3.0",
-    "grunt-contrib-compress": "~0.5.2",
-    "grunt-contrib-stylus": "~0.20.0",
-    "grunt-modulefiles": "git://github.com/fluid-project/grunt-modulefiles.git#0.2.1",
-    "lodash": "~2.4.1",
-    "fluid-grunt-eslint": "18.1.1",
-    "grunt-jsonlint": "1.0.4",
-    "grunt-shell": "^1.1.2"
-  }
 }
