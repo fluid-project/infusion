@@ -35,7 +35,7 @@
         "grunt-contrib-concat": "1.0.1",
         "grunt-contrib-compress": "1.3.0",
         "grunt-contrib-stylus": "1.2.0",
-        "grunt-modulefiles": "git://github.com/amb26/grunt-modulefiles.git#ae649605ec77028f8c46564d6b644d527876573b",
+        "grunt-modulefiles": "0.3.1",
         "lodash": "4.13.1",
         "fluid-grunt-eslint": "18.1.1",
         "grunt-jsonlint": "1.0.4",
