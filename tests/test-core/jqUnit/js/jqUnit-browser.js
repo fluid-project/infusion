@@ -25,7 +25,7 @@ var jqUnit = jqUnit || {};
 
     if (url && url.indexOf("http") === 0) {
         var injectPath = window.location.protocol + "//" + window.location.host + "/js/inject.js";
-        document.write("<scr" + "ipt src='" + injectPath + "?" + (new Date()).getTime() + "'></scr" + "ipt>"); /* from testswarm setup */ // jshint ignore:line
+        document.write("<scr" + "ipt src='" + injectPath + "?" + (new Date()).getTime() + "'></scr" + "ipt>"); /* from testswarm setup */
     }
 
     // TODO: None of the contents of this file possess any test cases of their own
@@ -97,7 +97,7 @@ var jqUnit = jqUnit || {};
         tn.modKeyEvent = function (modifier, keyCode, target) {
             var togo = tn.keyEvent(keyCode, target);
             modifier = jQuery.makeArray(modifier);
-            for (var i = 0; i < modifier.length; ++ i) {
+            for (var i = 0; i < modifier.length; ++i) {
                 var mod = modifier[i];
                 if (mod === "CTRL") {
                     togo.ctrlKey = true;
@@ -135,7 +135,7 @@ var jqUnit = jqUnit || {};
             }
             else if (node.length !== undefined) {
                 jqUnit.assertEquals("Expected number of nodes " + message, expected.length, node.length);
-                for (var i = 0; i < node.length; ++ i) {
+                for (var i = 0; i < node.length; ++i) {
                     jqUnit.assertNode(message + ": node " + i + ": ", expected[i], node[i]);
                 }
                 return;
@@ -158,7 +158,7 @@ var jqUnit = jqUnit || {};
             var evalue = expected[key];
             var pass = evalue === attr;
             if (attr === false || attr === true) { // support for IE refusing to honour XHTML values
-                pass = !!evalue === attr; /* convert evalue to boolean */ // jshint ignore:line
+                pass = !!evalue === attr;
             }
             if (key !== "children") {
                 jqUnit.assertTrue(message + messageExt + " expected value: " + evalue + " actual: " + attr, pass);

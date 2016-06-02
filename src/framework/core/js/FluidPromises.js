@@ -64,7 +64,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         that.complete = function (which, queue, arg) {
             that.disposition = which;
             that.value = arg;
-            for (var i = 0; i < queue.length; ++ i) {
+            for (var i = 0; i < queue.length; ++i) {
                 queue[i](arg);
             }
         };
@@ -144,7 +144,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.promise.processSequenceReject = function (that, error) { // Allow earlier promises in the sequence to wrap the rejection supplied by later ones (FLUID-5584)
-        for (var i = that.index - 1; i >= 0; -- i) {
+        for (var i = that.index - 1; i >= 0; --i) {
             var resolved = that.resolvedSources[i];
             var accumulator = fluid.isPromise(resolved) && typeof(resolved.accumulateRejectionReason) === "function" ? resolved.accumulateRejectionReason : fluid.identity;
             error = accumulator(error);

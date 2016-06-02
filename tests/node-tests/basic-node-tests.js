@@ -8,7 +8,7 @@ Licenses.
 You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
-/* jshint node:true */
+/* eslint-env node */
 
 (function () {
     "use strict";
@@ -145,7 +145,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "string".fail(); // provoke a global uncaught error
         });
     });
-    
+
     jqUnit.test("FLUID-5807 noncorrupt framework stack traces", function () {
         var error = new fluid.FluidError("thing");
         jqUnit.assertTrue("Framework error is an error (from its own perspective)", error instanceof fluid.Error);

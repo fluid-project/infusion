@@ -8,7 +8,7 @@ Licenses.
 You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
-/* jshint node: true */
+/* eslint-env node */
 /* global global */
 
 (function () {
@@ -123,7 +123,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
-    process.on("uncaughtException", function onUncaughtException (err) {
+    process.on("uncaughtException", function onUncaughtException(err) {
         fluid.onUncaughtException.fire(err);
     });
 
@@ -135,8 +135,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.onUncaughtException.addListener(fluid.logUncaughtException, "log",
         fluid.handlerPriorities.uncaughtException.log);
-        
-    fluid.onUncaughtException.addListener(function() {fluid.logActivity();}, "logActivity",
+
+    fluid.onUncaughtException.addListener(function () {fluid.logActivity();}, "logActivity",
         fluid.handlerPriorities.uncaughtException.logActivity);
 
     // Convert an argument intended for console.log in the node environment to a readable form (the

@@ -78,7 +78,7 @@ var fluid = fluid || fluid_2_0_0;
             // if last one is own, then all properties are own.
             // TODO: Isn't this enormously expensive?
             var key;
-            for (key in obj) {}
+            for (key in obj) {} // eslint-disable-line no-empty
             return key === undefined || hasOwn.call( obj, key );
         },
 
@@ -87,8 +87,7 @@ var fluid = fluid || fluid_2_0_0;
         },
 
         isEmptyObject: function (obj) {
-            var name;
-            for ( name in obj ) {
+            for ( var name in obj ) { // eslint-disable-line no-unused-vars
                 return false;
             }
             return true;

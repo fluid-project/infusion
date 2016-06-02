@@ -1944,16 +1944,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             transform: {
                 type: "fluid.transforms.valueMapper",
                 inputPath: "audio",
-                options: [ {
-                    "inputValue": true,
-                    "outputPath": "audio",
-                    "outputValue": "available"
-                },
-                {
-                    "inputValue": false,
-                    "outputPath": "audio",
-                    "outputValue": "unavailable"
-                }]
+                options: [
+                    {
+                        "inputValue": true,
+                        "outputPath": "audio",
+                        "outputValue": "available"
+                    },
+                    {
+                        "inputValue": false,
+                        "outputPath": "audio",
+                        "outputValue": "unavailable"
+                    }
+                ]
             }
         };
 
@@ -4153,5 +4155,5 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             transformWrap: true
         });
     });
-    
+
 })(jQuery);

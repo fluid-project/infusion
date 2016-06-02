@@ -1220,7 +1220,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var messageBase = that.options.messageBase;
         jqUnit.assertEquals("The default input value has been set to the min value", that.options.range.min, inputValue);
 
-        fluid.each(messageMap, function(messageName, selectorName) {
+        fluid.each(messageMap, function (messageName, selectorName) {
             jqUnit.assertEquals("The label text is " + messageBase[messageName], messageBase[messageName], that.locate(selectorName).text());
         });
 

@@ -172,19 +172,19 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             // are delivered to the actual body - however, on recent TinyMCE, the
             // "focusEditor" call DOES deliver a blur which causes FLUID-4681
             that.deadMansBlur = fluid.deadMansBlur(that.editField, {
-                    cancelByDefault: true,
-                    exclusions: {body: $(editorBody), container: that.container},
-                    handler: function () {
-                        that[that.options.onBlur]();
-                    }
-                });
+                cancelByDefault: true,
+                exclusions: {body: $(editorBody), container: that.container},
+                handler: function () {
+                    that[that.options.onBlur]();
+                }
+            });
             // Ridiculous drilling down functions on 3.4.9 to track dynamic creation of
             // menu dropdowns which otherwise causes an undetectable focus transfer
             // away from editor (they are appended to the end of the document rather than
             // nested within the editor).
-            editor.controlManager.onAdd.add(function(e) {
+            editor.controlManager.onAdd.add(function (e) {
                 if (e.onShowMenu) {
-                    e.onShowMenu.add(function() {
+                    e.onShowMenu.add(function () {
                         var el = fluid.byId(e.element.id);
                         if (el) {
                             that.deadMansBlur.addExclusion({id: el});
@@ -224,7 +224,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         // its afterInitEdit listener is registered in time. All of this architecture
         // is unsatisfactory, but can't be easily fixed until the whole component is
         // migrated over to IoC with declarative listener registration.
-        setTimeout(function() {
+        setTimeout(function () {
             tinyMCE.init(options);
         }, 1);
     };
