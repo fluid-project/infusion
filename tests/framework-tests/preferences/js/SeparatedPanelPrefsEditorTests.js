@@ -290,68 +290,74 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * PrefsEditor separatedPanel conditional panel integration tests
      *******************************************************************************/
 
-     fluid.defaults("fluid.tests.separatedPanelConditionalPanelIntegration", {
-         gradeNames: ["fluid.test.testEnvironment"],
-         components: {
-             prefsEditor: {
-                 type: "fluid.tests.composite.separatedPanel.prefsEditor",
-                 container: ".flc-prefsEditor-separatedPanel",
-                 createOnEvent: "{prefsTester}.events.onTestCaseStart"
-             },
-             prefsTester: {
-                 type: "fluid.tests.separatedPanelConditionalPanelIntegrationTester"
-             }
-         }
-     });
+    fluid.defaults("fluid.tests.separatedPanelConditionalPanelIntegration", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        components: {
+            prefsEditor: {
+                type: "fluid.tests.composite.separatedPanel.prefsEditor",
+                container: ".flc-prefsEditor-separatedPanel",
+                createOnEvent: "{prefsTester}.events.onTestCaseStart"
+            },
+            prefsTester: {
+                type: "fluid.tests.separatedPanelConditionalPanelIntegrationTester"
+            }
+        }
+    });
 
-     fluid.defaults("fluid.tests.separatedPanelConditionalPanelIntegrationTester", {
-         gradeNames: ["fluid.test.testCaseHolder"],
-         modules: [{
-             name: "Prefs editor with composite panel",
-             tests: [{
-                 name: "Rendering",
-                 expect: 7,
-                 sequence: [{
-                     listener: "jqUnit.assert",
-                     event: "{separatedPanelConditionalPanelIntegration prefsEditorLoader prefsEditor}.events.onReady",
-                     args: ["The onReady event should have fired"]
-                 }, {
-                     func: "{prefsEditor}.prefsEditorLoader.slidingPanel.showPanel"
-                 }, {
-                     func: "{prefsEditor}.prefsEditorLoader.prefsEditor.applier.change",
-                     args: ["preferences.fluid_tests_composite_pref_increaseSize", true]
-                 }, {
-                     listener: "fluid.tests.separatedPanelConditionalPanelIntegrationTester.assertConditionalComponents",
-                     event: "{prefsEditor}.prefsEditorLoader.prefsEditor.increasing.events.afterRender",
-                     args: ["{arguments}.0", ["fluid_tests_composite_pref_lineSpace", "fluid_tests_composite_pref_magnification"], true],
-                     priority: "last"
-                 }, {
-                     func: "{prefsEditor}.prefsEditorLoader.prefsEditor.applier.change",
-                     args: ["preferences.fluid_tests_composite_pref_increaseSize", false]
-                 }, {
-                     listener: "fluid.tests.separatedPanelConditionalPanelIntegrationTester.assertConditionalComponents",
-                     event: "{prefsEditor}.prefsEditorLoader.prefsEditor.increasing.events.afterRender",
-                     args: ["{arguments}.0", ["fluid_tests_composite_pref_lineSpace", "fluid_tests_composite_pref_magnification"], false],
-                     priority: "last"
-                 }]
-             }]
-         }]
-     });
+    fluid.defaults("fluid.tests.separatedPanelConditionalPanelIntegrationTester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [{
+            name: "Prefs editor with composite panel",
+            tests: [{
+                name: "Rendering",
+                expect: 14,
+                sequence: [{
+                    listener: "fluid.tests.separatedPanelConditionalPanelIntegrationTester.assertConditionalComponents",
+                    event: "{separatedPanelConditionalPanelIntegration prefsEditorLoader prefsEditor}.events.onReady",
+                    args: [
+                        "{prefsEditor}.prefsEditorLoader.prefsEditor.increasing.fluid_tests_composite_pref_increaseSize",
+                        ["fluid_tests_composite_pref_lineSpace", "fluid_tests_composite_pref_magnification"],
+                        false
+                    ]
+                }, {
+                    func: "{prefsEditor}.prefsEditorLoader.slidingPanel.showPanel"
+                }, {
+                    func: "{prefsEditor}.prefsEditorLoader.prefsEditor.applier.change",
+                    args: ["preferences.fluid_tests_composite_pref_increaseSize", true]
+                }, {
+                    listener: "fluid.tests.separatedPanelConditionalPanelIntegrationTester.assertConditionalComponents",
+                    event: "{prefsEditor}.prefsEditorLoader.prefsEditor.increasing.events.afterRender",
+                    args: ["{arguments}.0", ["fluid_tests_composite_pref_lineSpace", "fluid_tests_composite_pref_magnification"], true],
+                    priority: "last"
+                }, {
+                    func: "{prefsEditor}.prefsEditorLoader.prefsEditor.applier.change",
+                    args: ["preferences.fluid_tests_composite_pref_increaseSize", false]
+                }, {
+                    listener: "fluid.tests.separatedPanelConditionalPanelIntegrationTester.assertConditionalComponents",
+                    event: "{prefsEditor}.prefsEditorLoader.prefsEditor.increasing.events.afterRender",
+                    args: ["{arguments}.0", ["fluid_tests_composite_pref_lineSpace", "fluid_tests_composite_pref_magnification"], false],
+                    priority: "last"
+                }]
+            }]
+        }]
+    });
 
-     fluid.tests.separatedPanelConditionalPanelIntegrationTester.assertConditionalComponents = function (parentPanel, memberNames, instantiated) {
-         if (instantiated) {
-             fluid.each(memberNames, function (memberName) {
-                 var comp = parentPanel[memberName];
-                 jqUnit.assertNotUndefined("The " + memberName + " should be instantiated", comp);
-                 console.log("locate bool:", comp.locate("bool"), "comp selectors:", comp.options.selectors);
-                 jqUnit.assertEquals("The " + memberName + " should be rendered", comp.model.value, comp.locate("bool").text());
-             });
-         } else {
-             fluid.each(memberNames, function (memberName) {
-                 jqUnit.assertUndefined("The " + memberName + " should not be instantiated", parentPanel[memberName]);
-             });
-         }
-     };
+    fluid.tests.separatedPanelConditionalPanelIntegrationTester.assertConditionalComponents = function (parentPanel, memberNames, instantiated) {
+        if (instantiated) {
+            fluid.each(memberNames, function (memberName) {
+                var comp = parentPanel[memberName];
+                jqUnit.assertNotUndefined("The " + memberName + " should be instantiated", comp);
+                jqUnit.assertDeepEq("The context for " + memberName + " should be retained", comp.origContext, comp.container[0].ownerDocument);
+                jqUnit.assertNodeExists("The container for " + memberName + " should exist", comp.container);
+                jqUnit.assertNodeExists("The input for " + memberName + " should exist", comp.locate("bool"));
+                jqUnit.assertEquals("The " + memberName + " should be rendered", comp.model.value, comp.locate("bool").prop("checked"));
+            });
+        } else {
+            fluid.each(memberNames, function (memberName) {
+                jqUnit.assertUndefined("The " + memberName + " should not be instantiated", parentPanel[memberName]);
+            });
+        }
+    };
 
     $(document).ready(function () {
 
