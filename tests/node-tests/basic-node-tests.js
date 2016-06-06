@@ -8,7 +8,7 @@ Licenses.
 You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
-/* jshint node:true */
+/* eslint-env node */
 
 (function () {
     "use strict";
@@ -42,10 +42,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.setLogging(true);
 
     QUnit.testDone(function (data) {
-        fluid.log("Test concluded - " + data.name + ": " + data.passed + " passed");
+        fluid.log("Test concluded - " + data.name + ": " + data.passed + " passed, " + data.failed + " failed");
     });
 
-    var expected = 18;
+    var expected = 20;
 
     QUnit.done(function (data) {
         fluid.log("Infusion node.js internal tests " +
@@ -77,6 +77,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var testModule = fluid.registerNamespace("test-module");
         jqUnit.assertEquals("Loaded module as Fluid namespace", "Export from test-module", testModule.value);
         jqUnit.assertEquals("Loaded module as Fluid global entry", "Export from test-module", fluid.global["test-module"].value);
+    });
+
+    jqUnit.test("Test fluid.require diagnostics and FLUID-5906 loading", function () {
+        jqUnit.expect(1);
+        jqUnit.expectFrameworkDiagnostic("Module name for unloaded modules", function () {
+            fluid.require("%test-module3");
+        }, ["Module test-module3 has not been loaded and could not be loaded"]);
+        var testModule2 = fluid.require("%test-module2");
+        var rawTestModule2 = require("test-module2");
+        jqUnit.assertEquals("Same module resolvable via fluid.require and require ", rawTestModule2, testModule2);
     });
 
     jqUnit.test("Test propagation of standard globals", function () {
@@ -135,7 +145,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "string".fail(); // provoke a global uncaught error
         });
     });
-    
+
     jqUnit.test("FLUID-5807 noncorrupt framework stack traces", function () {
         var error = new fluid.FluidError("thing");
         jqUnit.assertTrue("Framework error is an error (from its own perspective)", error instanceof fluid.Error);

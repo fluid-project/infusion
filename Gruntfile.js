@@ -14,7 +14,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var _ = require("lodash");
 var path = require("path");
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
     "use strict";
 
     // Project configuration.
@@ -54,7 +54,7 @@ module.exports = function(grunt) {
                     // that have individual dependencies.json files.
                     src: "src/lib/jQuery/jQuery-LICENSE.txt",
                     dest: "build/lib/jQuery/jQuery-LICENSE.txt",
-                    filter: function() {
+                    filter: function () {
                         return grunt.file.exists("build/lib/jQuery/");
                     }
                 }]
@@ -153,12 +153,11 @@ module.exports = function(grunt) {
                 files: "<%= compress.all.files %>"
             }
         },
-        jshint: {
-            all: ["**/*.js"],
-            buildScripts: ["Gruntfile.js"],
-            options: {
-                jshintrc: true
-            }
+        eslint: {
+            all: ["src/**/*.js", "tests/**/*.js", "demos/**/*.js", "examples/**/*.js", "*.js"],
+        },
+        jsonlint: {
+            all: ["src/**/*.json", "tests/**/*.json", "demos/**/*.json", "examples/**/*.json"]
         },
         stylus: {
             compile: {
@@ -169,7 +168,7 @@ module.exports = function(grunt) {
                     expand: true,
                     src: ["src/**/css/stylus/*.styl"],
                     ext: ".css",
-                    rename: function(dest, src) {
+                    rename: function (dest, src) {
                         // Move the generated css files one level up out of the stylus directory
                         var dir = path.dirname(src);
                         var filename = path.basename(src);
@@ -177,9 +176,6 @@ module.exports = function(grunt) {
                     }
                 }]
             }
-        },
-        jsonlint: {
-            all: ["src/**/*.json", "tests/**/*.json", "demos/**/*.json", "examples/**/*.json"]
         },
         shell: {
             runTests: {
@@ -194,7 +190,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-compress");
-    grunt.loadNpmTasks("grunt-contrib-jshint");
+    grunt.loadNpmTasks("fluid-grunt-eslint");
     grunt.loadNpmTasks("grunt-jsonlint");
     grunt.loadNpmTasks("grunt-modulefiles");
     grunt.loadNpmTasks("grunt-contrib-stylus");
@@ -243,7 +239,7 @@ module.exports = function(grunt) {
     grunt.registerTask("default", ["build:all"]);
     grunt.registerTask("custom", ["build:custom"]);
 
-    grunt.registerTask("lint", "Apply jshint and jsonlint", ["jshint", "jsonlint"]);
+    grunt.registerTask("lint", "Apply eslint and jsonlint", ["eslint", "jsonlint"]);
 
     grunt.registerTask("tests", "Run tests", ["shell:runTests"]);
 };

@@ -59,7 +59,7 @@ fluid_2_0_0 = fluid_2_0_0 || {};
         }
 
         function init(baseURLin, debugModeIn, cutpointsIn) {
-            t.rootlump = XMLLump(0, -1); /* capital letter */ // jshint ignore:line
+            t.rootlump = XMLLump(0, -1); // eslint-disable-line new-cap
             tagstack = [t.rootlump];
             lumpindex = 0;
             nestingdepth = 0;
@@ -94,7 +94,7 @@ fluid_2_0_0 = fluid_2_0_0 || {};
         }
 
         function newLump() {
-            var togo = XMLLump(lumpindex, nestingdepth); /* capital letter */ // jshint ignore:line
+            var togo = XMLLump(lumpindex, nestingdepth); // eslint-disable-line new-cap
             if (debugMode) {
                 togo.line = parser.getLineNumber();
                 togo.column = parser.getColumnNumber();
@@ -277,7 +277,7 @@ fluid_2_0_0 = fluid_2_0_0 || {};
 
             // TODO: accelerate this by grabbing original template text (requires parser
             // adjustment) as well as dealing with empty tags
-            headlump.text = "<" + tagname + fluid.dumpAttributes(attrs) + (isempty && !ID? "/>" : ">");
+            headlump.text = "<" + tagname + fluid.dumpAttributes(attrs) + (isempty && !ID ? "/>" : ">");
             tagstack[tagstack.length] = headlump;
             if (isempty) {
                 if (ID) {
@@ -320,7 +320,7 @@ fluid_2_0_0 = fluid_2_0_0 || {};
             parser = fluid.XMLP(template);
         }
 
-parseloop:
+parseloop: // eslint-disable-line indent
         while (true) {
             var iEvent = parser.next();
             switch (iEvent) {
@@ -377,7 +377,7 @@ parseloop:
         var togo = lump.text;
         togo += " at ";
         togo += "lump line " + lump.line + " column " + lump.column + " index " + lump.lumpindex;
-        togo += lump.parent.href === null? "" : " in file " + lump.parent.href;
+        togo += lump.parent.href === null ? "" : " in file " + lump.parent.href;
         return togo;
     };
 
@@ -388,7 +388,7 @@ parseloop:
     // unsupported, non-API function
     fluid.getPrefix = function (id) {
         var colpos = id.indexOf(":");
-        return colpos === -1? id : id.substring(0, colpos);
+        return colpos === -1 ? id : id.substring(0, colpos);
     };
 
     // unsupported, non-API function
@@ -453,7 +453,7 @@ parseloop:
         for (var i = 0; i < templateList.length; ++i) {
             var resource = resourceSpec[templateList[i]];
             var lastslash = resource.href.lastIndexOf("/");
-            var baseURL = lastslash === -1? "" : resource.href.substring(0, lastslash + 1);
+            var baseURL = lastslash === -1 ? "" : resource.href.substring(0, lastslash + 1);
 
             var template = fluid.parseTemplate(resource.resourceText, baseURL,
                 opts.scanStart && i === 0, resource.cutpoints, opts);
