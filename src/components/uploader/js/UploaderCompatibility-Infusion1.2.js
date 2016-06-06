@@ -40,8 +40,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     type: "fluid.transforms.value",
                     outputPath: "",
                     merge: true,
-                    value: {
+                    input: {
                         transform: [{ // TODO: We could recover the old compact form of this with some dedicated form of transform
+                                      // TODO: This part of the transform is untested
                             type: "fluid.transforms.value",
                             outputPath: "strategy.options.styles",
                             inputPath: "decorators.0.options.styles"

@@ -270,7 +270,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     ];
 
     jqUnit.test("ApplyHolderChangeRequest - cautious application + invalidation", function () {
-        for (var i = 0; i < fluid.tests.changeTests.length; ++ i) {
+        for (var i = 0; i < fluid.tests.changeTests.length; ++i) {
             var test = fluid.tests.changeTests[i];
             var holder = {model: fluid.copy(test.model)};
             var options = {changeMap: {}, changes: 0};
@@ -349,7 +349,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         var applier = fluid.makeHolderChangeApplier({model: model});
         var notified = false;
-        applier.modelChanged.addListener("selections.lineSpace", function() {
+        applier.modelChanged.addListener("selections.lineSpace", function () {
             notified = true;
         });
         applier.change("selections", {lineSpace: 1.5});
@@ -435,13 +435,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var that = fluid.tests.fluid4258head();
         function assertListenerCount(count) {
             // blatant white-box testing - make sure that the outer applier has the expected number of listeners
-            jqUnit.assertEquals("Expected external model listener count ", count, that.applier.changeListeners.transListeners.length);
+            jqUnit.assertEquals("Expected external model listener count ", count, that.applier.transListeners.sortedListeners.length);
         }
         assertListenerCount(2);
         that.applier.change("thing1.nest1", 3);
         jqUnit.assertDeepEq("Single change correctly reported to same component's listener",
             [{path: ["thing1", "nest1"], value: 3, oldValue: 2}], that.fireRecord);
-        for (var i = 0; i < 2; ++ i) {
+        for (var i = 0; i < 2; ++i) {
             that.fireRecord.length = 0;
             that.events.createEvent.fire();
             assertListenerCount(3); // Make sure that 1 old listener was removed and one was added (2nd time round)
@@ -595,7 +595,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         target: "{child2}.model.fahrenheit",
                         singleTransform: {
                             type: "fluid.transforms.linearScale",
-                            factor: 9/5,
+                            factor: 9 / 5,
                             offset: 32
                         }
                     }
@@ -656,7 +656,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var that = fluid.tests.fluid5024head();
         fluid.tests.assertTransactionsConcluded(that);
 
-        function expectChanges (message, child1Record, child2Record) {
+        function expectChanges(message, child1Record, child2Record) {
             fluid.tests.checkNearEquality(message + " change record child 1", child1Record, that.child1.fireRecord);
             fluid.tests.checkNearEquality(message + " change record child 2", child2Record, that.child2.fireRecord);
             fluid.tests.fluid5024clear(that);
@@ -778,6 +778,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Model notifications globally sorted by priority, with actioned listener removal", expected2, that2.priorityLog);
     });
 
+    /** FLUID-5886: Deduplication of listeners by namespace at a single applier **/
+
+    fluid.defaults("fluid.tests.fluid5886head", {
+        gradeNames: "fluid.modelComponent",
+        members: {
+            listenerCount: 0
+        },
+        modelListeners: {
+            target: [{
+                namespace: "deduplicate",
+                funcName: "fluid.tests.fluid5886count",
+                args: "{that}"
+            }, {
+                namespace: "deduplicate",
+                funcName: "fluid.tests.fluid5886count",
+                args: "{that}"
+            }]
+        }
+    });
+
+    fluid.tests.fluid5886count = function (that) {
+        that.listenerCount++;
+    };
+
+    jqUnit.test("FLUID-5886: Deduplication of model listeners by namespace at single applier", function () {
+        var that = fluid.tests.fluid5886head();
+        that.applier.change("target", true);
+        jqUnit.assertEquals("Just one listener registered", 1, that.listenerCount);
+    });
+
     /** FLUID-5695: New-style multiple paths and namespaces for model listeners **/
 
     fluid.defaults("fluid.tests.fluid5695root", {
@@ -813,7 +843,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             layoutListener: { // This becomes the namespace of the listener
                 path: [
                     "position", {
-                        segs: [["windowHolders"], "{that}.options.ourWindow"]
+                        segs: ["windowHolders", "{that}.options.ourWindow"]
                     }
                 ],
                 priority: "before:notifyExternal",
@@ -855,21 +885,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Captured model by argument", {x: 30, y: 30}, that.frozenModel.windowHolders.mainWindow);
     });
 
-    /** FLUID-5866: Global priorities mediated by "priorityHolder" component **/
+    /** FLUID-5866: Global priorities mediated without "priorityHolder" component **/
 
     fluid.defaults("fluid.tests.fluid5866root", {
         gradeNames: "fluid.modelComponent",
         components: {
-            priorityHolder: {
-                type: "fluid.priorityHolder",
-                options: {
-                    priorities: {
-                        repaint: null,
-                        notifyExternal: "after:repaint",
-                        compute: "before:repaint"
-                    }
-                }
-            },
             notifier: {
                 type: "fluid.modelComponent",
                 options: {
@@ -878,7 +898,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     modelListeners: {
                         position: {
-                            priority: "{priorityHolder}.priorities.notifyExternal",
+                            priority: "after:repaint",
+                            namespace: "notifyExternal",
                             func: "fluid.tests.recordFire",
                             excludeSource: "init",
                             args: ["{fluid5866root}", "notifyExternal"]
@@ -894,7 +915,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     modelListeners: {
                         position: {
-                            priority: "{priorityHolder}.priorities.compute",
+                            namespace: "compute",
+                            priority: "before:repaint",
                             func: "fluid.tests.recordFire",
                             excludeSource: "init",
                             args: ["{fluid5866root}", "compute"]
@@ -911,7 +933,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         modelListeners: {
             position: {
-                priority: "{priorityHolder}.priorities.repaint",
+                namespace: "repaint",
                 func: "fluid.tests.recordFire",
                 excludeSource: "init",
                 args: ["{that}", "repaint"]
@@ -919,7 +941,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("FLUID-5866: Global priorities mediated by \"priorityHolder\" component", function () {
+    jqUnit.test("FLUID-5866: Global priorities mediated without \"priorityHolder\" component", function () {
         var that = fluid.tests.fluid5866root();
         that.applier.change("position", 20);
         jqUnit.assertDeepEq("Global listeners notified in priority order",
@@ -1097,7 +1119,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.fluid5848record = function (that) {
-        ++ that.changes;
+        ++that.changes;
     };
 
     jqUnit.test("FLUID-5848: Model reference using indirect context", function () {
@@ -1161,6 +1183,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         target: "{child3}.model.lastArea",
                         transform: {
                             transform: {
+                                inputPath: "",
                                 type: "fluid.transforms.linearScale",
                                 factor: 10
                             }
@@ -1184,7 +1207,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("FLUID-5024: Resolving references which are cyclic in components", function () {
         var that = fluid.tests.fluid5024cycleHead();
 
-        function expectChanges (message, child1Record, child2Record, child3Record) {
+        function expectChanges(message, child1Record, child2Record, child3Record) {
             fluid.tests.checkNearEquality(message + " change record child 1", child1Record, that.child1.fireRecord);
             fluid.tests.checkNearEquality(message + " change record child 2", child2Record, that.child2.fireRecord);
             fluid.tests.checkNearEquality(message + " change record child 3", child3Record, that.child3.fireRecord);
@@ -1365,7 +1388,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             target: "{sub}.model.fahrenheit",
             singleTransform: {
                 type: "fluid.transforms.linearScale",
-                factor: 9/5,
+                factor: 9 / 5,
                 offset: 32
             }
         },
@@ -1390,7 +1413,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         target: "{that}.model.fahrenheit",
                         singleTransform: {
                             type: "fluid.transforms.linearScale",
-                            factor: 9/5,
+                            factor: 9 / 5,
                             offset: 32
                         }
                     }
@@ -2146,6 +2169,33 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }, "settling");
     });
 
+    // FLUID-5885: Correct context for indirect model relay
+
+    fluid.defaults("fluid.tests.fluid5885root", {
+        gradeNames: "fluid.modelComponent",
+        components: {
+            innerModel: {
+                type: "fluid.modelComponent"
+            }
+        },
+        modelListeners: {
+            "{that}.innerModel.model.pressed": {
+                funcName: "fluid.tests.fluid5885listener",
+                args: ["{that}", "{fluid.tests.fluid5885root}"]
+            }
+        }
+    });
+
+    fluid.tests.fluid5885listener = function (actualThat, expectedThat) {
+        jqUnit.assertEquals("Context \"that\" should be site of definition", expectedThat, actualThat);
+    };
+
+    jqUnit.test("FLUID-5885: Proper contextualisation of \"that\" during indirect model listener", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.fluid5885root();
+        that.innerModel.applier.change("pressed", true);
+    });
+
     // FLUID-5659: Saturating relay counts through back-to-back transactions
 
     fluid.defaults("fluid.tests.fluid5659relay", {
@@ -2159,7 +2209,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             singleTransform: {
                 type: "fluid.transforms.indexOf",
                 array: "{that}.options.lang",
-                value: "{that}.model.lang",
+                input: "{that}.model.lang",
                 offset: 1
             }
         }, {
@@ -2244,6 +2294,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return togo;
     };
 
-    // fluid.test.runTests(["fluid.tests.fluid5659root"]);
+    fluid.test.runTests(["fluid.tests.fluid5659root"]);
 
 })(jQuery);

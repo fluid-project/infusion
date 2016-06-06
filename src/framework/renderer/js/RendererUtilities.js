@@ -22,24 +22,24 @@ fluid_2_0_0 = fluid_2_0_0 || {};
 
     // TODO: API status of these 3 functions is uncertain. So far, they have never
     // appeared in documentation.
-    fluid.renderer.visitDecorators = function(that, visitor) {
-        fluid.visitComponentChildren(that, function(component, name) {
+    fluid.renderer.visitDecorators = function (that, visitor) {
+        fluid.visitComponentChildren(that, function (component, name) {
             if (name.indexOf(fluid.renderer.decoratorComponentPrefix) === 0) {
                 visitor(component, name);
             }
         }, {flat: true}, []);
     };
 
-    fluid.renderer.clearDecorators = function(that) {
+    fluid.renderer.clearDecorators = function (that) {
         var instantiator = fluid.getInstantiator(that);
-        fluid.renderer.visitDecorators(that, function(component, name) {
+        fluid.renderer.visitDecorators(that, function (component, name) {
             instantiator.clearComponent(that, name);
         });
     };
 
-    fluid.renderer.getDecoratorComponents = function(that) {
+    fluid.renderer.getDecoratorComponents = function (that) {
         var togo = {};
-        fluid.renderer.visitDecorators(that, function(component, name) {
+        fluid.renderer.visitDecorators(that, function (component, name) {
             togo[name] = component;
         });
         return togo;
@@ -338,7 +338,7 @@ fluid_2_0_0 = fluid_2_0_0 || {};
             if (options.valueAs) {
                 envAdd[options.valueAs] = fluid.get(config.model, EL, config.resolverGetConfig);
             }
-            var expandrow = fluid.withEnvironment(envAdd, function() {
+            var expandrow = fluid.withEnvironment(envAdd, function () {
                 return config.expander(options.tree);
             }, env);
             if (fluid.isArrayable(expandrow)) {
@@ -569,9 +569,9 @@ fluid_2_0_0 = fluid_2_0_0 || {};
                 var child = children[i];
                 // This use of function creation within a loop is acceptable since
                 // the function does not attempt to close directly over the loop counter
-                var childPusher = function (comp) {
+                var childPusher = function (comp) { // eslint-disable-line no-loop-func
                     target[target.length] = comp;
-                };  /* function in loop */ /* jshint ignore:line */
+                };
 
                 expandLeafOrCond(child, target, childPusher);
                 // Rescue the case of an expanded leaf into single component - TODO: check what sense this makes of the grammar
@@ -612,6 +612,7 @@ fluid_2_0_0 = fluid_2_0_0 || {};
         // give rise to one or many elements with the SAME key - if "expandSingle" discovers
         // "thing with children" they will all share the same key found in proto.
         expandCond = function (proto, target) {
+            var key;
             var expandToTarget = function (expander) {
                 var expanded = fluid.invokeGlobalFunction(expander.type, [expander, proto, key, expandConfig]);
                 if (expanded !== fluid.renderer.NO_COMPONENT) {
@@ -622,7 +623,7 @@ fluid_2_0_0 = fluid_2_0_0 || {};
                 comp.ID = key;
                 target[target.length] = comp;
             };
-            for (var key in proto) {
+            for (key in proto) {
                 var entry = proto[key];
                 if (key.charAt(0) === IDescape) {
                     key = key.substring(1);
@@ -646,8 +647,8 @@ fluid_2_0_0 = fluid_2_0_0 || {};
 
         };
 
-        return function(entry) {
-            threadLocal = fluid.threadLocal(function() {
+        return function (entry) {
+            threadLocal = fluid.threadLocal(function () {
                 return $.extend({}, options.envAdd);
             });
             options.fetcher = fluid.makeEnvironmentFetcher(options.model, fluid.transformContextPath, threadLocal, options.externalFetcher);
