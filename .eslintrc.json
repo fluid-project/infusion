@@ -4,7 +4,7 @@
     "jquery": true
   },
   "globals": {
-    "fluid_2_0_0": true,
+    "fluid_2_0_0": true
   },
   "rules": {
     "block-scoped-var": "error",
@@ -71,7 +71,7 @@
             "typeof": false
         }
     }],
-    "strict": ["error", "function"],
+    "strict": ["error", "safe"],
     "valid-typeof": "error",
     "wrap-iife": [
       "error",
