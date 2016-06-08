@@ -1,4 +1,12 @@
 @import "utils/Themes"
+//function to generate border radius
+border-radius(n)
+    -webkit-border-radius: n;
+    -moz-border-radius: n;
+    border-top-left-radius: n;
+    border-top-right-radius: n;
+    border-bottom-left-radius: n;
+    border-bottom-right-radius: n;
 
 @font-face {
     font-family: 'OpenSans';
@@ -22,6 +30,50 @@
 }
 
 // Top bar and show/hide button
+@media (max-width: 639px) {
+    .fl-prefsEditor-separatedPanel {
+        position: fixed;
+        bottom: 0px;
+        left: 0px;
+        width: 100%;
+
+        .fl-panelBar {
+            border-bottom: 0px;
+
+            span.fl-prefsEditor-buttons {
+                position: relative;
+                left: 5px;
+                bottom: 5px;
+                margin-right: 0px;
+                float: left;
+                border: 2px solid #999696;
+                border-radius(3px);
+                box-shadow: none;
+                background: #fff;
+
+                .fl-prefsEditor-showHide, .fl-prefsEditor-reset {
+                    background-color: #fff;
+                    color: #2f2b2a;
+                }
+
+                .fl-prefsEditor-showHide {
+                    min-width: 6em;
+                }
+            }
+        }
+    }
+
+    .prefsEditor-demo-theme .fl-prefsEditor-separatedPanel .fl-panelBar span.fl-prefsEditor-buttons {
+        background: #fff;
+    }
+
+    .fl-prefsEditor-separatedPanel-iframe {
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+    }
+}
+
 .fl-prefsEditor-separatedPanel {
     .fl-panelBar {
         width: 100%;
