@@ -44,7 +44,6 @@
     "no-loop-func": "error",
     "no-multi-str": "error",
     "no-new": "error",
-    "no-plusplus": 0,
     "no-proto": "error",
     "no-script-url": "error",
     "no-sequences": "error",
@@ -57,7 +56,7 @@
       "double"
     ],
     "semi": [
-      0,
+      "error",
       "always"
     ],
     "space-before-blocks": ["error", "always"],
