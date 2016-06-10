@@ -1,5 +1,5 @@
 /*
-Copyright 2011 OCAD University
+Copyright 2011-2016 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -50,10 +50,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var container = prefsEditor.preview.enhancerContainer;
             var links = $(".flc-toc-tocContainer a", container);
             jqUnit.assertTrue("ToC links created", links.length > 0);
-            jqUnit.start();
         }
 
-        fluid.tests.prefs.mungingIntegrationTest("fluid.prefs.fullPreview", "#myPrefsEditor", {
+        fluid.defaults("fluid.tests.prefs.FullPreviewMungingIntegration", {
+            gradeNames: ["fluid.tests.prefs.mungingIntegration"],
             previewEnhancer: {
                 components: {
                     tableOfContents: {
@@ -76,8 +76,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         priority: "last"
                     }
                 }
+            },
+            prefsEditor: {
+                listeners: {
+                    "onReady.testToCEnhancement2": {
+                        funcName: "testToCEnhancement2",
+                        priority: "before:jqUnitStart"
+                    }
+                }
             }
-        }, testToCEnhancement);
+        });
     });
 
 })(jQuery);
