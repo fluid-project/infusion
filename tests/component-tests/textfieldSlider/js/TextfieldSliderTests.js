@@ -154,15 +154,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         fluid.tests.textfieldSlider.testImplementedComponentTypes = function (messagePrefix, expected, componentOptions, testFunction) {
             var implementedTypes = [
-                    {
-                        messageSuffix: " (native HTML)",
-                        creatorFunc: fluid.tests.textfieldSlider.createTextfieldSliderNativeHTML
-                    },
-                    {
-                        messageSuffix: " (jQuery UI)",
-                        creatorFunc: fluid.tests.textfieldSlider.createTextfieldSliderJQueryUI
-                    }
-                ];
+                {
+                    messageSuffix: " (native HTML)",
+                    creatorFunc: fluid.tests.textfieldSlider.createTextfieldSliderNativeHTML
+                },
+                {
+                    messageSuffix: " (jQuery UI)",
+                    creatorFunc: fluid.tests.textfieldSlider.crea15teTextfieldSliderJQueryUI
+                }
+            ];
 
             fluid.each(implementedTypes, function (currentType) {
                 jqUnit.test(messagePrefix + currentType.messageSuffix, function () {

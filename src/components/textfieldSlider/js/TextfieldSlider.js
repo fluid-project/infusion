@@ -201,69 +201,69 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     });
 
     fluid.defaults("fluid.slider.jQuery", {
-            gradeNames: ["fluid.slider"],
-            selectors: {
-                thumb: ".ui-slider-handle"
-            },
-            members: {
-                slider: {
-                    expander: {
-                        "this": "{that}.container",
-                        method: "slider",
-                        args: ["{that}.combinedSliderOptions"]
-                    }
-                },
-                combinedSliderOptions: {
-                    expander: {
-                        funcName: "fluid.slider.combineSliderOptions",
-                        args: ["{that}.options.sliderOptions", "{that}.options.range"]
-                    }
+        gradeNames: ["fluid.slider"],
+        selectors: {
+            thumb: ".ui-slider-handle"
+        },
+        members: {
+            slider: {
+                expander: {
+                    "this": "{that}.container",
+                    method: "slider",
+                    args: ["{that}.combinedSliderOptions"]
                 }
             },
-            invokers: {
-                setSliderValue: {
-                    "this": "{that}.slider",
-                    "method": "slider",
-                    args: ["value", "{arguments}.0"]
-                },
-                setSliderAriaValueNow: {
-                    "this": "{that}.dom.thumb",
-                    "method": "attr",
-                    args: ["aria-valuenow", "{arguments}.0"]
-                },
-                setModel: {
-                    changePath: "value",
-                    value: "{arguments}.1.value"
+            combinedSliderOptions: {
+                expander: {
+                    funcName: "fluid.slider.combineSliderOptions",
+                    args: ["{that}.options.sliderOptions", "{that}.options.range"]
                 }
-            },
-            listeners: {
-                // This can be removed once the jQuery UI slider has built in ARIA
-                "onCreate.initSliderAria": {
-                    "this": "{that}.dom.thumb",
-                    method: "attr",
-                    args: [{
-                        role: "slider",
-                        "aria-valuenow": "{that}.combinedSliderOptions.value",
-                        "aria-valuemin": "{that}.combinedSliderOptions.min",
-                        "aria-valuemax": "{that}.combinedSliderOptions.max"
-                    }]
-                },
-                "onCreate.bindSlideEvt": {
-                    "this": "{that}.slider",
-                    "method": "bind",
-                    "args": ["slide", "{that}.setModel"]
-                }
-            },
-            modelListeners: {
-                "value": [{
-                    listener: "{that}.setSliderValue",
-                    args: ["{change}.value"]
-                }, {
-                    listener: "{that}.setSliderAriaValueNow",
-                    args: ["{change}.value"]
-                }]
             }
-        });
+        },
+        invokers: {
+            setSliderValue: {
+                "this": "{that}.slider",
+                "method": "slider",
+                args: ["value", "{arguments}.0"]
+            },
+            setSliderAriaValueNow: {
+                "this": "{that}.dom.thumb",
+                "method": "attr",
+                args: ["aria-valuenow", "{arguments}.0"]
+            },
+            setModel: {
+                changePath: "value",
+                value: "{arguments}.1.value"
+            }
+        },
+        listeners: {
+            // This can be removed once the jQuery UI slider has built in ARIA
+            "onCreate.initSliderAria": {
+                "this": "{that}.dom.thumb",
+                method: "attr",
+                args: [{
+                    role: "slider",
+                    "aria-valuenow": "{that}.combinedSliderOptions.value",
+                    "aria-valuemin": "{that}.combinedSliderOptions.min",
+                    "aria-valuemax": "{that}.combinedSliderOptions.max"
+                }]
+            },
+            "onCreate.bindSlideEvt": {
+                "this": "{that}.slider",
+                "method": "bind",
+                "args": ["slide", "{that}.setModel"]
+            }
+        },
+        modelListeners: {
+            "value": [{
+                listener: "{that}.setSliderValue",
+                args: ["{change}.value"]
+            }, {
+                listener: "{that}.setSliderAriaValueNow",
+                args: ["{change}.value"]
+            }]
+        }
+    });
 
     fluid.slider.combineSliderOptions = function (sliderOptions, model, range) {
         return $.extend(true, {}, sliderOptions, model, range);
