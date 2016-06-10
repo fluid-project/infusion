@@ -26,6 +26,25 @@ html {
 }
 
 /* Preferences Editor Separated Panel styles */
+@media (max-width: 639px) {
+
+    body.fl-prefsEditor-separatedPanel {
+
+        .fl-prefsEditor-panels {
+            min-height: min-content;
+            flex-flow: column nowrap;
+            padding: 0px;
+            margin: 0px;
+
+            .fl-prefsEditor-panel {
+                min-width: 23em;
+                overflow: auto;
+                margin 0px;
+            }
+        }
+    }
+}
+
 .fl-prefsEditor-separatedPanel {
     background-color: #fff;
     background-image: url('../images/default/separatedpanelbg.png');
@@ -45,19 +64,20 @@ html {
     // Preference Panels
     .fl-prefsEditor-panels {
         white-space: nowrap;
-        display: table;
-        border-spacing: 20px 0px;
+        display: flex;
+        flex-flow: row nowrap;
+        padding: 0px 10px;
 
         .fl-prefsEditor-panel {
             border: 1px solid #615e59;
             border-radius: 5px;
             box-shadow: 2px 2px #7a766d;
-            display: inline-block;
+            display: block;
+            margin: 0px 10px;
             padding: 1em;
             min-width: 25em;
             background-color: #fff;
             white-space: normal;
-            display: table-cell;
         }
     }
 
