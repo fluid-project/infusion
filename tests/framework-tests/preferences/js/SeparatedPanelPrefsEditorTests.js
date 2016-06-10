@@ -225,7 +225,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     slidingPanel: {
                         listeners: {
-                            onPanelShow: function() {
+                            onPanelShow: function () {
                                 isSlidingPanelShown = true;
                             }
                         }

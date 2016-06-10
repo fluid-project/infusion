@@ -479,8 +479,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Component test headings", function () {
             // craft headingInfo so renderTOCTest() can use it
             var testHeadings = {
-                    headingInfo : []
-                };
+                headingInfo : []
+            };
             var headings = $("#flc-toc").children(":header");
             var serializeHeading = function (level, text) {
                 // macro to serialize heading elements, level, text
@@ -513,8 +513,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Component test empty headings", function () {
             // craft headingInfo so renderTOCTest() can use it
             var testHeadings = {
-                    headingInfo : []
-                };
+                headingInfo : []
+            };
             renderTOCComponent("#flc-toc-noHeaders", {
                 listeners: {
                     onReady: {

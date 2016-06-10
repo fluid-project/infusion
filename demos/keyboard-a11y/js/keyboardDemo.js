@@ -151,7 +151,6 @@ var demo = demo || {};
                 container: "{that}.dom.ranker",
                 options: {
                     modelRelay: [{
-                        source: "{imageViewer}.model.selected",
                         target: "rank",
                         singleTransform: {
                             type: "fluid.transforms.free",
@@ -161,7 +160,6 @@ var demo = demo || {};
                             func: "demo.fiveStar.getRank"
                         }
                     }, {
-                        source: "rank",
                         target: "{imageViewer}.model.imageRanks",
                         singleTransform: {
                             type: "fluid.transforms.free",

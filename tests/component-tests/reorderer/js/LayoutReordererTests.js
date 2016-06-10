@@ -132,7 +132,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.notVisible("After ctrl is released, drop warning should not be visible", "#drop-warning");
 
         });
-        
+
         function numbersToIds(numbers) {
             return fluid.transform(numbers, function (item) {
                 return fluid.testUtils.moduleLayout.portletIds[item];
@@ -213,15 +213,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.test("reorderLayout with optional styles", function () {
             var options = {
-                    selectors: {
-                        columns: "[id^='c']",
-                        modules: ".portlet"
-                    },
-                    styles: {
-                        defaultStyle: "myDefault",
-                        selected: "mySelected"
-                    }
-                };
+                selectors: {
+                    columns: "[id^='c']",
+                    modules: ".portlet"
+                },
+                styles: {
+                    defaultStyle: "myDefault",
+                    selected: "mySelected"
+                }
+            };
 
             var layoutReorderer = fluid.reorderLayout(".reorderer_container", options);
 
