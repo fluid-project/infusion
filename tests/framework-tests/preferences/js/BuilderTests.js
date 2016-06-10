@@ -730,9 +730,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.composite.tester.initialRendering = function (prefsEditor) {
         var singlePanel = prefsEditor.fluid_tests_cmpPanel_speak;
         var compositePanel = prefsEditor.increasing;
-        jqUnit.assertFalse("The single panel's checkbox should be in the correct state", singlePanel.locate("bool").val());
+        jqUnit.assertFalse("The single panel's checkbox should be in the correct state", singlePanel.locate("bool").attr("checked"));
         jqUnit.assertEquals("The composite panel should be rendered correctly", "increase", compositePanel.locate("label").text());
-        jqUnit.assertFalse("The composite panel's always on subpanel's checkbox should be in the correct state", compositePanel.fluid_tests_composite_pref_increaseSize.locate("bool").val());
+        jqUnit.assertFalse("The composite panel's always on subpanel's checkbox should be in the correct state", compositePanel.fluid_tests_composite_pref_increaseSize.locate("bool").attr("checked"));
         jqUnit.notVisible("The composite panel's conditional subpanel container should not be visible", compositePanel.locate("fluid_tests_composite_pref_magnification"));
         jqUnit.assertFalse("The composite panel's conditional subpanel should not be initialized", compositePanel.fluid_tests_composite_pref_magnification);
     };
