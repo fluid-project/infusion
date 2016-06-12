@@ -556,6 +556,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 that.index++;
             } else {
                 that.stopped = true;
+                QUnit.config.testsArriving = false;
             }
         };
         that.nextLater = function () {
@@ -567,6 +568,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 that.next();
             }
         };
+        // FLUID-5810: Support our patched option for QUnit to prevent premature test termination
+        QUnit.config.testsArriving = true;
         return that;
     };
 
