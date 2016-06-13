@@ -1,5 +1,14 @@
 @import "utils/Themes"
 
+//function to generate border radius
+border-radius(n)
+    -webkit-border-radius: n;
+    -moz-border-radius: n;
+    border-top-left-radius: n;
+    border-top-right-radius: n;
+    border-bottom-left-radius: n;
+    border-bottom-right-radius: n;
+
 @font-face {
     font-family: "OpenSans";
     src: url("../../../lib/fonts/OpenSans-Light.ttf");
@@ -26,7 +35,7 @@ html {
 }
 
 /* Preferences Editor Separated Panel styles */
-@media (max-width: 639px) {
+@media all and (max-width: 639px) {
 
     body.fl-prefsEditor-separatedPanel {
 
@@ -37,9 +46,62 @@ html {
             margin: 0px;
 
             .fl-prefsEditor-panel {
-                min-width: 23em;
                 overflow: auto;
                 margin 0px;
+                min-width: 23em;
+                border: none;
+                box-shadow: none;
+                border-radius(0px);
+                border-bottom: 1px solid #615e59; //will be remover in the later implementation
+
+                div {
+                    > h2 {
+                        display: flex;
+                        margin-bottom: 0.5em;
+                        padding: 0px;
+                        box-shadow: none;
+                        border-bottom: none;
+
+                        > span:first-of-type {
+                            display: none;
+                        }
+
+                        > * {
+                            margin: 0px auto;
+                            font-size: 1.1em;
+                        }
+                    }
+                }
+
+                .flc-prefsEditor-contrast {
+                    display: flex;
+                    flex-flow: row wrap;
+                    
+                    h2 {
+                        flex: 1 100%;
+                    }
+
+                    p {
+                        display: none;
+                    }
+
+                    .flc-prefsEditor-themeRow {
+                        flex: 1 auto;
+
+                        label {
+                            display: block;
+                            margin: 0px auto;
+                        }
+                    }
+
+                    > div:first-of-type {
+                        margin-left: 5%;
+                    }
+
+                    > div:last-of-type {
+                        margin-right: 5%;
+                    }
+                }
             }
         }
     }

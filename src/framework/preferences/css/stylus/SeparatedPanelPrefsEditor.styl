@@ -1,4 +1,5 @@
 @import "utils/Themes"
+
 //function to generate border radius
 border-radius(n)
     -webkit-border-radius: n;
@@ -30,7 +31,7 @@ border-radius(n)
 }
 
 // Top bar and show/hide button
-@media (max-width: 639px) {
+@media all and (max-width: 639px) {
     .fl-prefsEditor-separatedPanel {
         position: fixed;
         bottom: 0px;
