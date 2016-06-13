@@ -64,12 +64,23 @@ border-radius(n)
         .flc-prefsEditor-iframe {
             order: 2;
             height: 35vh;
-            overflow-y: scroll;
+
+
+            .fl-prefsEditor-separatedPanel-iframe {
+                height: 100%;
+                overflow-y: auto;
+            }
         }
     }
 
     .prefsEditor-demo-theme .fl-prefsEditor-separatedPanel .fl-panelBar span.fl-prefsEditor-buttons {
         background: #fff;
+    }
+}
+
+@media all and (min-height: 450px) and (max-width: 639px) {
+    .fl-prefsEditor-separatedPanel .flc-prefsEditor-iframe {
+        height: 160px;
     }
 }
 

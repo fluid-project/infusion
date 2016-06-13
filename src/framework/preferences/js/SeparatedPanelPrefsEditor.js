@@ -262,7 +262,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             var attrs = {height: height + 15}; // TODO: Configurable padding here
             var panel = separatedPanel.slidingPanel.locate("panel");
             panel.css({height: ""});
-            iframe.animate(attrs, 400);
+            if ($(window).width()< "640") {
+                iframe.removeAttr("style");
+            }
+            else {
+                iframe.animate(attrs, 400);
+            }
         });
 
         separatedPanel.slidingPanel.events.afterPanelHide.addListener(function () {
