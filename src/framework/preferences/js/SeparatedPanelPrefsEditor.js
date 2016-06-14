@@ -264,6 +264,22 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             panel.css({height: ""});
             if ($(window).width()< "640") {
                 iframe.removeAttr("style");
+                //The rest of the if make the scroll go to the next tool
+                var jqueryDokkument = $(dokkument);
+                var scrollStep = iframe.height();
+                var lastPosition = 0;
+                jqueryDokkument.on("scroll", function () {
+                    var scrollPosition = jqueryDokkument.scrollTop();
+                    //Scroll down
+                    if (lastPosition > scrollPosition) {
+                        jqueryDokkument.scrollTop((Math.floor(scrollPosition/scrollStep))*scrollStep);
+                    }
+                    //Scroll up
+                    else if (lastPosition < scrollPosition) {
+                        jqueryDokkument.scrollTop((Math.ceil(scrollPosition/scrollStep))*scrollStep);
+                    }
+                    lastPosition = jqueryDokkument.scrollTop();
+                });
             }
             else {
                 iframe.animate(attrs, 400);
@@ -283,6 +299,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         separatedPanel.slidingPanel.events.onPanelHide.addListener(function () {
             separatedPanel.locate("reset").hide();
         });
+        //Make the responsive panel scroll in steps
+
+
     };
 
     // Replace the standard animator since we don't want the panel to become hidden
@@ -302,3 +321,4 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
 })(jQuery, fluid_2_0_0);
+
