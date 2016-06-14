@@ -323,6 +323,7 @@
             jqUnit.assertFalse("Undecorated by removeClass", el.hasClass("CATTclick3"));
             el.click();
             jqUnit.assertEquals("Decorated by click", 7, indexChange);
+            jqUnit.assertValue("Received column", columnChange); // TODO: Actually validate this value
             changeBack(null, null);
             var input = fluid.jById(idMap["score-7"]);
             jqUnit.assertEquals("Input text", "1", input.val());
@@ -1214,7 +1215,7 @@
             };
             fluid.selfRender(node, tree);
             var block = $("div", node);
-            var result = eval(block.html()); /* required to test initBlock rendering */ // jshint ignore:line
+            var result = eval(block.html()); /* required to test initBlock rendering */ // eslint-disable-line no-eval
             jqUnit.assertDeepEq("Idempotent transit", args, result);
         });
 
@@ -1410,7 +1411,7 @@
             jqUnit.assertEquals("Simple unescaping", "This is a thing", fluid.unescapeProperties("This\\ is\\ a\\ thing")[0]);
             jqUnit.assertEquals("Unicode unescaping", "\u30b5\u30a4\u30c8\u304b\u3089\u3053\u306e\u30da\u30fc\u30b8\u3092\u524a\u9664", fluid.unescapeProperties("\\u30b5\\u30a4\\u30c8\\u304b\\u3089\\u3053\\u306e\\u30da\\u30fc\\u30b8\\u3092\\u524a\\u9664")[0]);
             // 10 slashes ACTUALLY means 5 REAL \ characters
-            jqUnit.assertDeepEq("Random junk", ["\\\\\\\\\\ \t\nThing\x53\u0000", true], fluid.unescapeProperties("\\\\\\\\\\\\\\\\\\\\\ \\t\\nThing\\x53\\u0000\\")); /* testing escaping */ // jshint ignore:line
+            jqUnit.assertDeepEq("Random junk", ["\\\\\\\\\\ \t\nThing\x53\u0000", true], fluid.unescapeProperties("\\\\\\\\\\\\\\\\\\\\\ \\t\\nThing\\x53\\u0000\\"));
         });
 
         jqUnit.test("Nested data binding", function () {

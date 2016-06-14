@@ -79,9 +79,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var idMap = renderedPageList.rendererOptions.idMap;
         var idToContent = {};
         fluid.each(pagerBar.tooltipInfo, function (value, index) {
-            idToContent[idMap["pageLink:"+index]] = fluid.stringTemplate(pagedTable.options.markup.rangeAnnotation, value);
+            idToContent[idMap["pageLink:" + index]] = fluid.stringTemplate(pagedTable.options.markup.rangeAnnotation, value);
         });
-        pagerBar.tooltip.applier.requestChange("idToContent", idToContent);
+        pagerBar.tooltip.applier.change("idToContent", idToContent);
     };
 
     fluid.defaults("fluid.pagedTable", {

@@ -155,17 +155,19 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             localID: page + 1,
             value: page + 1,
             pageIndex: page,
-            decorators: [{
-                identify: "pageLink:" + page
-            },
-            {
-                type: "jQuery",
-                func: "click",
-                args: function (event) {
-                    initiatePageChange.fire({pageIndex: page});
-                    event.preventDefault();
+            decorators: [
+                {
+                    identify: "pageLink:" + page
+                },
+                {
+                    type: "jQuery",
+                    func: "click",
+                    args: function (event) {
+                        initiatePageChange.fire({pageIndex: page});
+                        event.preventDefault();
+                    }
                 }
-            }]
+            ]
         };
 
         if (isCurrent) {
@@ -419,11 +421,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         if (arg.relativePage !== undefined) {
             newPageIndex = that.model.pageIndex + arg.relativePage;
         }
-        that.applier.requestChange("pageIndex", newPageIndex);
+        that.applier.change("pageIndex", newPageIndex);
     };
 
     fluid.pager.initiatePageSizeChangeListener = function (that, arg) {
-        that.applier.requestChange("pageSize", arg);
+        that.applier.change("pageSize", arg);
     };
 
     /*******************

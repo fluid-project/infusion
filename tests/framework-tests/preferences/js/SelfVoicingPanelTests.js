@@ -37,7 +37,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         components: {
             speak: {
                 type: "fluid.tests.prefs.panel.speak",
-                container: ".flc-speak"
+                container: ".flc-speak",
+                createOnEvent: "{speakTester}.events.onTestCaseStart"
             },
             speakTester: {
                 type: "fluid.tests.speakTester"
@@ -62,6 +63,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 4,
                 name: "Test the rendering of the speak panel",
                 sequence: [{
+                    event: "{testEnvironment speak}.events.onResourcesFetched",
+                    listeners: "fluid.identity"
+                },  {
                     func: "{speak}.refreshView"
                 }, {
                     listener: "fluid.tests.speakPanel.verifyRendering",

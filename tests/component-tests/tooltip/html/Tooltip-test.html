@@ -40,7 +40,7 @@
       <h2 id="qunit-userAgent"></h2>
       <ol id="qunit-tests"></ol>
       <div id="qunit-fixture">
-        <a class="testTooltip">tooltip anchor</a>
+          <a class="testTooltip">tooltip anchor</a>
       </div>
       <div id="ioc-fixture">
          <div class="FLUID-5673-root">
@@ -52,9 +52,12 @@
              <a class="testDelegateTooltip focusTarget" id="anchor-1" href="#">tooltip anchor 1</a>
              <a class="testDelegateTooltip" id="anchor-2" href="#">tooltip anchor 2</a>
          </div>
+         <div class="FLUID-5846">
+             <iframe src="iframe.html" class="FLUID-5846-iframe"></iframe>
+         </div>
       </div>
       <script>
-          $(document).ready(fluid.tests.tooltip.runTests);
+          fluid.tests.tooltip.runTests();
       </script>
     </body>
 </html>

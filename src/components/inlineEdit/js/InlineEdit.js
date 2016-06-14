@@ -952,7 +952,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         gradeNames: ["fluid.viewComponent"],
         distributeOptions: {
             source: "{that}.options",
-            exclusions: ["members.inlineEdits", "selectors.editables", "events"],
+            // TODO: Appalling requirement to evade FLUID-5887 check - otherwise all of this fluid.modelComponent material is broadcast down to each component.
+            // "source" distributions are silly and dangerous in any case, but they have become fairly widely used, together with the expectation that the
+            // material from "defaults" can be broadcast too. But clearly material that is from base grade defaults is unwelcome to be distributed.
+            // This seems to imply that we've got no option but to start supporting "provenance" in options and defaults - highly expensive.
+            exclusions: ["members.inlineEdits", "members.modelRelay", "members.applier", "members.model", "selectors.editables", "events"],
             removeSource: true,
             target: "{that > fluid.inlineEdit}.options"
         },

@@ -27,7 +27,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.plainObjectTrue = {
         "object": {},
-        "array": [],
         "noproto": Object.create(null),
         "malignNoProto": Object.create(null, {"constructor": {value: "thing"}})
     };
@@ -43,12 +42,68 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("fluid.isPlainObject tests", function () {
         fluid.each(fluid.tests.plainObjectTrue, function (totest, key) {
             jqUnit.assertEquals("Expected plain: " + key, true, fluid.isPlainObject(totest));
+            jqUnit.assertEquals("Expected plain in strict: " + key, true, fluid.isPlainObject(totest, true));
         });
         fluid.each(fluid.tests.plainObjectFalse, function (totest, key) {
             jqUnit.assertEquals("Expected nonplain: " + key, false, fluid.isPlainObject(totest));
+            jqUnit.assertEquals("Expected nonplain in strict: " + key, false, fluid.isPlainObject(totest, true));
         });
+        jqUnit.assertEquals("Array is plain by standard", true, fluid.isPlainObject([]));
+        jqUnit.assertEquals("Array is nonplain in strict", false, fluid.isPlainObject([], true));
     });
 
+    jqUnit.test("fluid.makeArray tests", function () {
+        jqUnit.assertDeepEq("fluid.makeArray on non-array", [1], fluid.makeArray(1));
+        jqUnit.assertDeepEq("fluid.makeArray on null", [], fluid.makeArray(null));
+        jqUnit.assertDeepEq("fluid.makeArray on undefined", [], fluid.makeArray(undefined));
+        var inputArray = [1];
+        var outputArray = fluid.makeArray(inputArray);
+        jqUnit.assertDeepEq("fluid.makeArray on array - deep equality", inputArray, outputArray);
+        jqUnit.assertNotEquals("fluid.makeArray on array - cloning", inputArray, outputArray);
+    });
+
+    fluid.tests.pushArray = [{
+        message: "nonexistent element - nonarray",
+        holder: {},
+        topush: 1,
+        expected: {
+            m1: [1]
+        }
+    }, {
+        message: "nonexistent element - array",
+        holder: {},
+        topush: [1],
+        expected: {
+            m1: [1]
+        }
+    }, {
+        message: "existent element - nonarray",
+        holder: {
+            m1: [1]
+        },
+        topush: 2,
+        expected: {
+            m1: [1, 2]
+        }
+    }, {
+        message: "existent element - array",
+        holder: {
+            m1: [1]
+        },
+        topush: [2, 3],
+        expected: {
+            m1: [1, 2, 3]
+        }
+    }
+    ];
+
+    jqUnit.test("fluid.pushArray tests", function () {
+        fluid.each(fluid.tests.pushArray, function (fixture) {
+            var holder = fluid.copy(fixture.holder);
+            fluid.pushArray(holder, "m1", fixture.topush);
+            jqUnit.assertDeepEq("fluid.pushArray - " + fixture.message, fixture.expected, holder);
+        });
+    });
 
     function isOdd(i) {
         return i % 2 === 1;
@@ -133,7 +188,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertTrue("a null each and a null transform don't crash the framework", true);
     });
 
-    fluid.tests.flattenFixtures = [ {
+    fluid.tests.flattenFixtures = [
+        {
             message: "standard mixture",
             arg: [1, [{a: 1}, 13], false, [{b: 2}]],
             expected: [1, {a: 1}, 13, false, {b: 2}]
@@ -387,6 +443,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("test", testDefaults);
 
     jqUnit.test("Defaults: store and retrieve default values", function () {
+        jqUnit.expect(4);
         // Assign a collection of defaults for the first time.
 
         jqUnit.assertCanoniseEqual("defaults() should return the specified defaults",
@@ -400,10 +457,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             baz: "foo"
         };
         fluid.defaults("test", testDefaults2);
-        jqUnit.assertCanoniseEqual("defaults() should return the original defaults",
-            testDefaults2, fluid.defaults("test"), function (options) {
+        var retrieved = fluid.defaults("test");
+        jqUnit.assertCanoniseEqual("defaults() should return the updated defaults",
+            testDefaults2, retrieved, function (options) {
                 return fluid.filterKeys(options, ["foo", "baz"]);
             });
+        var assignException;
+
+        try {
+            retrieved.baz = "quux";
+        } catch (e) {
+            assignException = e;
+        }
+        jqUnit.assertValue("Retrieved defaults should be immutable", assignException);
 
         // Try to access defaults for a component that doesn't exist.
         jqUnit.assertNoValue("The defaults for a nonexistent component should be null.",
@@ -423,7 +489,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }, "thingit");
         fluid.pushSoftFailure(-1);
     });
-    
+
     jqUnit.test("FLUID-5807 tests - identify fluid.FluidError", function () {
         // These tests have a direct analogue in basic-node-tests.js
         var error = new fluid.FluidError("thing");

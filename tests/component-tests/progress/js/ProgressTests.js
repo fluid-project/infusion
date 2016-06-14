@@ -24,8 +24,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var progressELPaths = {
             listenersShowText:   "listeners.onProgressBegin",
             listenersHiddenText: "listeners.afterProgressHidden",
-            showAnimationText:   "showAnimation.callback",
-            hiddenAnimationText: "hideAnimation.callback"
+            showAnimationText:   "showAnimation.onProgressBegin",
+            hiddenAnimationText: "hideAnimation.afterProgressHidden"
         };
 
         // common steps for the progress

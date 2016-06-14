@@ -73,11 +73,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.prefs.checkModelSelections = function (message, expectedSelections, actualSelections) {
-        jqUnit.assertLeftHand("Model correctly updated: " + message, expectedSelections.preferences, actualSelections.preferences);
+        jqUnit.assertLeftHand("Model correctly updated: " + message, expectedSelections.preferences || {}, actualSelections.preferences);
     };
 
     fluid.tests.prefs.applierRequestChanges = function (prefsEditor, selectionOptions) {
-        prefsEditor.applier.requestChange("", selectionOptions);
+        prefsEditor.applier.change("", selectionOptions);
     };
 
     fluid.defaults("fluid.tests.prefs.globalSettingsStore", {

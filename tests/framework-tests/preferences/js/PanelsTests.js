@@ -426,7 +426,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assertNotInitialized(that, "conditionalPanel2");
             that.events.afterRender.removeListener("pref1_true");
         }, "pref1_true", "last");
-        that.applier.requestChange("some_pref_1", true);
+        that.applier.change("some_pref_1", true);
 
         // set some.pref.1 to false
         jqUnit.expect(10);
@@ -439,7 +439,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assertNotInitialized(that, "conditionalPanel2");
             that.events.afterRender.removeListener("pref1_false");
         }, "pref1_false", "last");
-        that.applier.requestChange("some_pref_1", false);
+        that.applier.change("some_pref_1", false);
 
         // set some.pref.2 to true
         jqUnit.expect(11);
@@ -453,7 +453,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assertText(that, "conditionalPanel2", "conditionalPanel2");
             that.events.afterRender.removeListener("pref2_true");
         }, "pref2_true", "last");
-        that.applier.requestChange("some_pref_2", true);
+        that.applier.change("some_pref_2", true);
 
         // set some.pref.2 to false
         jqUnit.expect(10);
@@ -466,7 +466,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             assertNotInitialized(that, "conditionalPanel2");
             that.events.afterRender.removeListener("pref2_false");
         }, "pref2_false", "last");
-        that.applier.requestChange("some_pref_2", false);
+        that.applier.change("some_pref_2", false);
 
     });
 
@@ -901,8 +901,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assert("The initial state with the min value for slider1 has been set properly", 0, $(".flc-tests-panel-slider1 .flc-textfieldSlider-slider").slider("value"));
         jqUnit.assert("The initial state with the min value for slider2 has been set properly", 1, $(".flc-tests-panel-slider2 .flc-textfieldSlider-slider").slider("value"));
 
-        that.slider1.applier.requestChange("value", 100);
-        that.slider2.applier.requestChange("value", 100);
+        that.slider1.applier.change("value", 100);
+        that.slider2.applier.change("value", 100);
         that.refreshView();
         jqUnit.assert("The max value for slider1 has been set properly", 10, $(".flc-tests-panel-slider1 .flc-textfieldSlider-slider").slider("value"));
         jqUnit.assert("The max value for slider2 has been set properly", 100, $(".flc-tests-panel-slider2 .flc-textfieldSlider-slider").slider("value"));
@@ -945,6 +945,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.fluid_5220.subPanel", {
         gradeNames: ["fluid.prefs.panel"]
     });
+
+    /**
+
+    // This test is very faulty and has been commented out. There are several problems, including
+    // i) registering an onCreate listener after a component has been created
+    // ii) making a faulty call to assertDeepEq with simply a value of "false" which counted as a pass as a result of FLUID-5901
+    // iii) Issuing inline configuration to a creator function rather than defining a grade
+    // iv) General problems with workflow - the test fixtures seem to appeal to a sequence of events following the addition of listeners
+    // which don't in fact occur at these points (onCreate, afterRender, etc.)
 
     jqUnit.test("FLUID-5220: onDomBind", function () {
         // TODO: Rewrite this highly stateful test using the IoC Testing Framework
@@ -994,6 +1003,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         that.refreshView();
     });
+    */
 
     /* end FLUID-5220 */
 
@@ -1210,7 +1220,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var messageBase = that.options.messageBase;
         jqUnit.assertEquals("The default input value has been set to the min value", that.options.range.min, inputValue);
 
-        fluid.each(messageMap, function(messageName, selectorName) {
+        fluid.each(messageMap, function (messageName, selectorName) {
             jqUnit.assertEquals("The label text is " + messageBase[messageName], messageBase[messageName], that.locate(selectorName).text());
         });
 
@@ -1343,7 +1353,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }]
                 }, {
                     func: "fluid.tests.changeInput",
-                    args: ["{lineSpace}.dom.textSize", "{that}.options.testOptions.newValue"]
+                    args: ["{lineSpace}.dom.lineSpace", "{that}.options.testOptions.newValue"]
                 }, {
                     listener: "fluid.tests.panels.utils.checkModel",
                     args: ["lineSpace", "{lineSpace}.model", "{that}.options.testOptions.newValue"],

@@ -135,7 +135,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.debug.highlighter.position =  function (highlight, disp, container) {
         var p = fluid.debug.highlighter.positionProps;
-        for (var j = 0; j < p.length; ++ j) {
+        for (var j = 0; j < p.length; ++j) {
             highlight.css(p[j], container.css(p[j] || ""));
         }
         var offset = container.offset();
@@ -148,7 +148,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.debug.highlighter.highlight = function (that, highlightRoot, dispositions) {
-        for (var i = 0; i < dispositions.length; ++ i) {
+        for (var i = 0; i < dispositions.length; ++i) {
             var disp = dispositions[i];
             if (disp.noHighlight) {
                 continue;
@@ -525,7 +525,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 return;
             }
             var allParents = $(event.target).parents().addBack().get();
-            for (var i = 0; i < allParents.length; ++ i) {
+            for (var i = 0; i < allParents.length; ++i) {
                 var id = allParents[i].id;
                 var entry = that.viewMapper.domIdToEntry[id];
                 if (entry) {
@@ -651,7 +651,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.debug.viewMapper.scanInit = function (that) {
         var views = fluid.queryIoCSelector(fluid.rootComponent, "fluid.viewComponent");
-        for (var i = 0; i < views.length; ++ i) {
+        for (var i = 0; i < views.length; ++i) {
             fluid.debug.viewMapper.registerView(that, views[i], true);
         }
     };

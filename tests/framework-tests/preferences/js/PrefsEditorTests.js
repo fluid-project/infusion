@@ -93,7 +93,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.prefs.noteRefreshCalled = function (that) {
-        ++ that.refreshCount;
+        ++that.refreshCount;
     };
 
     fluid.defaults("fluid.tests.prefs.standardEditor", { // a mixin grade for fluid.prefs.prefsEditor
@@ -356,7 +356,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.prefs.applierRequestChanges = function (prefsEditor, selectionOptions) {
         ["textFont", "theme", "textSize", "lineSpace"].forEach(function (pref) {
-            prefsEditor.applier.requestChange(["preferences", pref], selectionOptions.preferences[pref]);
+            prefsEditor.applier.change(["preferences", pref], selectionOptions.preferences[pref]);
         });
     };
 
