@@ -36,7 +36,11 @@ The Infusion library is the cornerstone of a number of projects. You can see som
 
 ## How Do I Create an Infusion Package? ##
 
-Strictly speaking, Infusion can be used directly from source (i.e. by including each individual required file). However, for simplicity and performance reasons, you may wish to create a concatenated, minified file. Source maps for the minified file are automatically generated to make debugging easier. The Grunt build options described below will allow you to remove any unneeded features or libraries that you may already have in your project.
+For simplicity and performance reasons, you may wish to create a concatenated, minified file. However, such a file is often difficult to read. To address this, source maps for the minified file are automatically generated to make debugging easier.
+
+### Source Maps ###
+
+Source maps are supported in all of the major browser: [Chrome](https://developer.chrome.com/devtools/docs/javascript-debugging#source-maps), [Firefox](https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map), [IE 11](https://msdn.microsoft.com/library/dn255007#source_maps), and Safari. To make use of them, enabled source maps in your support debugging environment, and ensure that the source maps are hosted from the same relative path that they were generated at.
 
 ### Dependencies ###
 
