@@ -882,10 +882,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     resourceText: "<ul><li class=\"flc-tests-panel-slider1\"></li><li class=\"flc-tests-panel-slider2\"></li></ul>"
                 },
                 slider1: {
-                    resourceText: "<div class=\"flc-prefsEditor-min-val\"><div class=\"flc-textfieldSlider-slider\"></div><input id=\"min-val\" class=\"flc-textfieldSlider-field\" type=\"text\" /><span class=\"flc-prefsEditor-multiplier\"></span></div>"
+                    resourceText: "<div class=\"flc-prefsEditor-min-val\"><input class=\"flc-textfieldSlider-slider\" /><input id=\"min-val\" class=\"flc-textfieldSlider-field\" type=\"text\" /><span class=\"flc-prefsEditor-multiplier\"></span></div>"
                 },
                 slider2: {
-                    resourceText: "<div class=\"flc-prefsEditor-min-val\"><div class=\"flc-textfieldSlider-slider\"></div><input id=\"min-val\" class=\"flc-textfieldSlider-field\" type=\"text\" /><span class=\"flc-prefsEditor-multiplier\"></span></div>"
+                    resourceText: "<div class=\"flc-prefsEditor-min-val\"><input class=\"flc-textfieldSlider-slider\" /><input id=\"min-val\" class=\"flc-textfieldSlider-field\" type=\"text\" /><span class=\"flc-prefsEditor-multiplier\"></span></div>"
                 }
             }
         });
@@ -898,14 +898,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // the renderer decorator component which isn't a panel
         that.refreshView();
 
-        jqUnit.assert("The initial state with the min value for slider1 has been set properly", 0, $(".flc-tests-panel-slider1 .flc-textfieldSlider-slider").slider("value"));
-        jqUnit.assert("The initial state with the min value for slider2 has been set properly", 1, $(".flc-tests-panel-slider2 .flc-textfieldSlider-slider").slider("value"));
+        jqUnit.assert("The initial state with the min value for slider1 has been set properly", 0, $(".flc-tests-panel-slider1 .flc-textfieldSlider-slider").val());
+        jqUnit.assert("The initial state with the min value for slider2 has been set properly", 1, $(".flc-tests-panel-slider2 .flc-textfieldSlider-slider").val());
 
         that.slider1.applier.change("value", 100);
         that.slider2.applier.change("value", 100);
         that.refreshView();
-        jqUnit.assert("The max value for slider1 has been set properly", 10, $(".flc-tests-panel-slider1 .flc-textfieldSlider-slider").slider("value"));
-        jqUnit.assert("The max value for slider2 has been set properly", 100, $(".flc-tests-panel-slider2 .flc-textfieldSlider-slider").slider("value"));
+        jqUnit.assert("The max value for slider1 has been set properly", 10, $(".flc-tests-panel-slider1 .flc-textfieldSlider-slider").val());
+        jqUnit.assert("The max value for slider2 has been set properly", 100, $(".flc-tests-panel-slider2 .flc-textfieldSlider-slider").val());
     });
 
     /* end FLUID-5203 */
@@ -1230,6 +1230,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.changeElementValue(textSlider.find("input"), newValue);
     };
 
+    fluid.tests.switchWidgetType = function (widgetType, testPanel) {
+        fluid.contextAware.makeChecks({
+            "fluid.prefsWidgetType": {
+                value: widgetType
+            }
+        });
+
+        testPanel.events.onSwitchedWidgetType.fire();
+    };
+
     /*******************************************************************************
      * textSize
      *******************************************************************************/
@@ -1243,24 +1253,82 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "textSizeLabel": "Text Size",
             "multiplier": "times",
             "textSizeDescr": "Adjust text size"
-        },
+        }
+    });
+
+    fluid.defaults("fluid.tests.prefs.panel.textSize.nativeHTML", {
+        gradeNames: ["fluid.tests.prefs.panel.textSize"],
         resources: {
             template: {
-                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-textSize.html"
+                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-textSize-nativeHTML.html"
             }
         }
     });
 
+    fluid.defaults("fluid.tests.prefs.panel.textSize.jQueryUI", {
+        gradeNames: ["fluid.tests.prefs.panel.textSize"],
+        resources: {
+            template: {
+                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-textSize-jQueryUI.html"
+            }
+        }
+    });
+
+    // Base test grade
     fluid.defaults("fluid.tests.textSizePanel", {
         gradeNames: ["fluid.test.testEnvironment"],
         components: {
             textSize: {
                 type: "fluid.tests.prefs.panel.textSize",
-                container: ".flc-textSize",
-                createOnEvent: "{textSizeTester}.events.onTestCaseStart"
+                createOnEvent: "{textSizePanel}.events.onSwitchedWidgetType"
             },
             textSizeTester: {
                 type: "fluid.tests.textSizeTester"
+            }
+        },
+        events: {
+            "onSwitchedWidgetType": null
+        }
+    });
+
+    // native HTML widget test
+    fluid.defaults("fluid.tests.textSizePanel.nativeHTML", {
+        gradeNames: ["fluid.tests.textSizePanel"],
+        components: {
+            textSize: {
+                type: "fluid.tests.prefs.panel.textSize.nativeHTML",
+                container: ".flc-textSize"
+            },
+            textSizeTester: {
+                options: {
+                    testOptions: {
+                        widgetType: "nativeHTML"
+                    },
+                    modules: [{
+                        name: "Test the text sizer settings panel (nativeHTML)"
+                    }]
+                }
+            }
+        }
+    });
+
+    // jQueryUI widget test
+    fluid.defaults("fluid.tests.textSizePanel.jQueryUI", {
+        gradeNames: ["fluid.tests.textSizePanel"],
+        components: {
+            textSize: {
+                type: "fluid.tests.prefs.panel.textSize.jQueryUI",
+                container: ".flc-textSize-jQuery"
+            },
+            textSizeTester: {
+                options: {
+                    testOptions: {
+                        widgetType: "jQueryUI"
+                    },
+                    modules: [{
+                        name: "Test the text sizer settings panel (jQueryUI)"
+                    }]
+                }
             }
         }
     });
@@ -1276,6 +1344,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 4,
                 name: "Test the rendering of the text size panel",
                 sequence: [{
+                    func: "fluid.tests.switchWidgetType",
+                    args: ["{that}.options.testOptions.widgetType", "{textSizePanel}"]
+                }, {
                     listener: "fluid.tests.testDefault",
                     event: "{textSizePanel textSize}.events.afterRender",
                     priority: "last",
@@ -1311,24 +1382,83 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "lineSpaceWideIcon": "icon of 3 horizontal lines with wide spacing",
             "multiplier": "times",
             "lineSpaceDescr": "Adjust the spacing between lines of text"
-        },
+        }
+    });
+
+    fluid.defaults("fluid.tests.prefs.panel.lineSpace.nativeHTML", {
+        gradeNames: ["fluid.tests.prefs.panel.lineSpace"],
         resources: {
             template: {
-                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-lineSpace.html"
+                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-lineSpace-nativeHTML.html"
             }
         }
     });
 
+    fluid.defaults("fluid.tests.prefs.panel.lineSpace.jQueryUI", {
+        gradeNames: ["fluid.tests.prefs.panel.lineSpace"],
+        resources: {
+            template: {
+                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-lineSpace-jQueryUI.html"
+            }
+        }
+    });
+
+    // Base test grade
     fluid.defaults("fluid.tests.lineSpacePanel", {
         gradeNames: ["fluid.test.testEnvironment"],
         components: {
             lineSpace: {
-                type: "fluid.tests.prefs.panel.lineSpace",
-                container: ".flc-lineSpace",
-                createOnEvent: "{lineSpaceTester}.events.onTestCaseStart"
+                createOnEvent: "{lineSpacePanel}.events.onSwitchedWidgetType"
             },
             lineSpaceTester: {
                 type: "fluid.tests.lineSpaceTester"
+            }
+        },
+        events: {
+            "onSwitchedWidgetType": null
+        }
+    });
+
+    // Native HTML test
+    fluid.defaults("fluid.tests.lineSpacePanel.nativeHTML", {
+        gradeNames: ["fluid.tests.lineSpacePanel"],
+        components: {
+            lineSpace: {
+                type: "fluid.tests.prefs.panel.lineSpace.nativeHTML",
+                container: ".flc-lineSpace"
+            },
+            lineSpaceTester: {
+                type: "fluid.tests.lineSpaceTester",
+                options: {
+                    testOptions: {
+                        widgetType: "nativeHTML"
+                    },
+                    modules: [{
+                        name: "Test the line space settings panel (nativeHTML)"
+                    }]
+                }
+            }
+        }
+    });
+
+    // jQuery UI test
+    fluid.defaults("fluid.tests.lineSpacePanel.jQueryUI", {
+        gradeNames: ["fluid.tests.lineSpacePanel"],
+        components: {
+            lineSpace: {
+                type: "fluid.tests.prefs.panel.lineSpace.jQueryUI",
+                container: ".flc-lineSpace-jQuery"
+            },
+            lineSpaceTester: {
+                type: "fluid.tests.lineSpaceTester",
+                options: {
+                    testOptions: {
+                        widgetType: "jQueryUI"
+                    },
+                    modules: [{
+                        name: "Test the line space settings panel (jQueryUI)"
+                    }]
+                }
             }
         }
     });
@@ -1339,11 +1469,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             newValue: 1.2
         },
         modules: [{
-            name: "Test the line space settings panel",
+            name: "Test the line space settings panel (native slider)",
             tests: [{
                 expect: 4,
                 name: "Test the rendering of the line space panel",
                 sequence: [{
+                    func: "fluid.tests.switchWidgetType",
+                    args: ["{that}.options.testOptions.widgetType", "{lineSpacePanel}"]
+                }, {
                     listener: "fluid.tests.testDefault",
                     event: "{lineSpacePanel lineSpace}.events.afterRender",
                     priority: "last",
@@ -1668,8 +1801,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.test.runTests([
             "fluid.tests.textFontPanel",
             "fluid.tests.contrastPanel",
-            "fluid.tests.textSizePanel",
-            "fluid.tests.lineSpacePanel",
+            "fluid.tests.textSizePanel.nativeHTML",
+            "fluid.tests.textSizePanel.jQueryUI",
+            "fluid.tests.lineSpacePanel.nativeHTML",
+            "fluid.tests.lineSpacePanel.jQueryUI",
             "fluid.tests.layoutPanel",
             "fluid.tests.emphasizeLinksPanel",
             "fluid.tests.inputsLargerPanel",

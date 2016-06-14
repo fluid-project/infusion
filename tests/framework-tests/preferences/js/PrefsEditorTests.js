@@ -25,7 +25,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.prefs.resourceLoader.linksControlsTemplateName = "PrefsEditorTemplate-linksControls.html";
     fluid.tests.prefs.resourceLoader.testTemplatePrefix = "../../../../src/framework/preferences/html";
-    fluid.tests.prefs.resourceLoader.textControlsFullPath = "../../../../src/framework/preferences/html/PrefsEditorTemplate-textSize.html";
+    fluid.tests.prefs.resourceLoader.textControlsFullPath = "../../../../src/framework/preferences/html/PrefsEditorTemplate-textSize-nativeHTML.html";
 
     fluid.defaults("fluid.tests.prefs.resourceLoader", {
         gradeNames: ["fluid.prefs.resourceLoader"],
@@ -58,7 +58,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.prefs.resourceLoader();
     });
 
-    fluid.tests.prefs.resourceLoader.lineSpaceTemplateName = "PrefsEditorTemplate-lineSpace.html";
+    fluid.tests.prefs.resourceLoader.lineSpaceTemplateName = "PrefsEditorTemplate-lineSpace-nativeHTML.html";
 
     fluid.tests.prefs.resourceLoader.testCustomizedResourceLoader = function (resources) {
         jqUnit.assertEquals("lineSpace template url is set correctly", fluid.tests.prefs.resourceLoader.testTemplatePrefix + "/" + fluid.tests.prefs.resourceLoader.lineSpaceTemplateName, resources.lineSpace.url);
@@ -150,7 +150,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.prefs.models.bwSkin = {
         preferences: {
-            textSize: "1.8",
+            textSize: 1.8,
             textFont: "verdana",
             theme: "bw",
             lineSpace: 2
@@ -159,7 +159,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.prefs.models.bwSkin2 = {
         preferences: {
-            textSize: "1.1",
+            textSize: 1.1,
             textFont: "italic",
             theme: "cw",
             lineSpace: 1
@@ -276,7 +276,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     preferences: {
                         lineSpace: 2,
                         textFont: "verdana",
-                        textSize: "1.8",
+                        textSize: 1.8,
                         theme: "bw"
                     }
                 }

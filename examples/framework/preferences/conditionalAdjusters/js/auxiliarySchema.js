@@ -19,7 +19,26 @@ var example = example || {};
      * Auxiliary Schema
      */
     fluid.defaults("example.auxSchema", {
-        gradeNames: ["fluid.prefs.auxSchema"],
+        gradeNames: ["fluid.prefs.auxSchema", "fluid.contextAware"],
+        listeners: {
+            "onCreate.logInfo": {
+                this: "console",
+                method: "log",
+                args: "{that}"
+            }
+        },
+        contextAwareness: {
+            sliderVariety: {
+                checks: {
+                    jQueryUI: {
+                        contextValue: "{fluid.prefsWidgetType}",
+                        equals: "jQueryUI",
+                        gradeNames: "example.auxSchema.jQueryUI"
+                    }
+                },
+                defaultGradeNames: "example.auxSchema.nativeHTML"
+            }
+        },
         auxiliarySchema: {
             template: "html/prefsEditor.html",
             message: "%messagePrefix/prefsEditor.json",
@@ -65,7 +84,6 @@ var example = example || {};
                 panel: {
                     type: "example.panels.vol",
                     container: ".mpe-speaking-vol",
-                    template: "%templatePrefix/slider-template.html",
                     message: "%messagePrefix/speaking.json"
                 }
             },
@@ -77,7 +95,6 @@ var example = example || {};
                 panel: {
                     type: "example.panels.wpm",
                     container: ".mpe-speaking-wpm",
-                    template: "%templatePrefix/slider-template.html",
                     message: "%messagePrefix/speaking.json"
                 }
             },
@@ -101,7 +118,6 @@ var example = example || {};
                 panel: {
                     type: "example.panels.cursor",
                     container: ".mpe-increasing-cursor",
-                    template: "%templatePrefix/slider-template.html",
                     message: "%messagePrefix/increasing.json"
                 }
             },
@@ -113,7 +129,6 @@ var example = example || {};
                 panel: {
                     type: "example.panels.magFactor",
                     container: ".mpe-increasing-magFactor",
-                    template: "%templatePrefix/slider-template.html",
                     message: "%messagePrefix/increasing.json"
                 }
             },
@@ -127,6 +142,62 @@ var example = example || {};
                     container: ".mpe-increasing-magPos",
                     template: "%templatePrefix/radioButton-template.html",
                     message: "%messagePrefix/increasing.json"
+                }
+            }
+        }
+    });
+
+    // Context-aware mixin for jQueryUI slider
+    fluid.defaults("example.auxSchema.jQueryUI", {
+        auxiliarySchema: {
+            vol: {
+                panel: {
+                    template: "%templatePrefix/slider-template-jQueryUI.html"
+                }
+            },
+            wpm: {
+                panel: {
+                    template: "%templatePrefix/slider-template-jQueryUI.html"
+                }
+            },
+            cursor: {
+                type: "example.cursorSize",
+                panel: {
+                    template: "%templatePrefix/slider-template-jQueryUI.html"
+                }
+            },
+            magFactor: {
+                type: "example.magnification",
+                panel: {
+                    template: "%templatePrefix/slider-template-jQueryUI.html"
+                }
+            }
+        }
+    });
+
+    // Context-aware mixin for native slider
+    fluid.defaults("example.auxSchema.nativeHTML", {
+        auxiliarySchema: {
+            vol: {
+                panel: {
+                    template: "%templatePrefix/slider-template-nativeHTML.html"
+                }
+            },
+            wpm: {
+                panel: {
+                    template: "%templatePrefix/slider-template-nativeHTML.html"
+                }
+            },
+            cursor: {
+                type: "example.cursorSize",
+                panel: {
+                    template: "%templatePrefix/slider-template-nativeHTML.html"
+                }
+            },
+            magFactor: {
+                type: "example.magnification",
+                panel: {
+                    template: "%templatePrefix/slider-template-nativeHTML.html"
                 }
             }
         }
