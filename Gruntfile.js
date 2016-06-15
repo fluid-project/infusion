@@ -14,16 +14,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 var _ = require("lodash");
 var path = require("path");
+var execSync = require("child_process").execSync;
 
 module.exports = function (grunt) {
 
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
+        revision: execSync("git rev-parse --verify --short HEAD"),
+        branch: execSync("git rev-parse --abbrev-ref HEAD"),
         allBuildName: "<%= pkg.name %>-all",
         customBuildName: "<%= pkg.name %>-" + (grunt.option("name") || "custom"),
         isCompressed: !grunt.option("source"),
-        banner: "/*! <%= pkg.name %> - v<%= pkg.version %> <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %>*/\n",
+        banner: "/*!\n <%= pkg.name %> - v<%= pkg.version %>\n <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %>\n branch: <%= branch %> revision: <%= revision %>*/\n",
         clean: {
             build: "build",
             products: "products",
@@ -119,7 +122,7 @@ module.exports = function (grunt) {
                 }
             }
         },
-        // Still need the concat task as uglify does not honor the {compress: false} option
+        // Still need the concat task as uglify does not honour the {compress: false} option
         // see: https://github.com/mishoo/UglifyJS2/issues/696
         concat: {
             options: {
