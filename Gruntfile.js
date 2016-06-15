@@ -22,7 +22,8 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON("package.json"),
         allBuildName: "<%= pkg.name %>-all",
         customBuildName: "<%= pkg.name %>-" + (grunt.option("name") || "custom"),
-        stylusCompress: !grunt.option("source"),
+        isCompressed: !grunt.option("source"),
+        banner: "/*! <%= pkg.name %> - v<%= pkg.version %> <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %>*/\n",
         clean: {
             build: "build",
             products: "products",
@@ -61,6 +62,7 @@ module.exports = function (grunt) {
         },
         uglify: {
             options: {
+                banner: "<%= banner %>",
                 mangle: false,
                 sourceMap: true,
                 sourceMapIncludeSources: true
@@ -117,6 +119,23 @@ module.exports = function (grunt) {
                 }
             }
         },
+        // Still need the concat task as uglify does not honor the {compress: false} option
+        // see: https://github.com/mishoo/UglifyJS2/issues/696
+        concat: {
+            options: {
+                separator: ";",
+                banner: "<%= banner %>",
+                sourceMap: true
+            },
+            all: {
+                src: "<%= modulefiles.all.output.files %>",
+                dest: "./build/<%= allBuildName %>.js"
+            },
+            custom: {
+                src: "<%= modulefiles.custom.output.files %>",
+                dest: "./build/<%= customBuildName %>.js"
+            }
+        },
         compress: {
             all: {
                 options: {
@@ -145,7 +164,7 @@ module.exports = function (grunt) {
         stylus: {
             compile: {
                 options: {
-                    compress: "<%= stylusCompress %>"
+                    compress: "<%= isCompressed %>"
                 },
                 files: [{
                     expand: true,
@@ -171,6 +190,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-contrib-clean");
     grunt.loadNpmTasks("grunt-contrib-copy");
+    grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-compress");
     grunt.loadNpmTasks("fluid-grunt-eslint");
     grunt.loadNpmTasks("grunt-jsonlint");
@@ -197,6 +217,7 @@ module.exports = function (grunt) {
     // Task for organizing the build
     grunt.registerTask("build", "Generates a minified or source distribution for the specified build target", function (target) {
         target = target || "all";
+        var concatTask = grunt.option("source") ? "concat:" : "uglify:";
         var tasks = [
             "clean",
             "stylus",
@@ -204,14 +225,10 @@ module.exports = function (grunt) {
             "pathMap:" + target,
             "copy:" + target,
             "copy:necessities",
-            "uglify:" + target,
+            concatTask + target,
             "compress:" + target,
             "clean:build"
         ];
-        // remove the uglify task when creating a source build
-        if (grunt.option("source")) {
-            _.pull(tasks, "uglify:" + target);
-        }
         grunt.task.run(tasks);
     });
 
