@@ -126,7 +126,7 @@ module.exports = function (grunt) {
         // see: https://github.com/mishoo/UglifyJS2/issues/696
         concat: {
             options: {
-                separator: ";",
+                separator: ";\n",
                 banner: "<%= banner %>",
                 sourceMap: true
             },
