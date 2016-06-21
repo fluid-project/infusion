@@ -16,9 +16,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     "use strict";
 
     /**
-     * A configurable component to allow users to set either the location of their own templates
-     * or the templates that are relative to the path defined in the Preferences Editor template
-     * path component.
+     * A configurable component to allow users to load multiple resources via AJAX requests.
+     * The resources can be localised by means of options `locale`, `defaultLocale`. Once all
+     * resources are loaded, the event `onResourceLoaded` will be fired, which can be used
+     * to time the creation of components dependent on the resources.
      *
      * @param {Object} options
      */
@@ -62,7 +63,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.resourceLoader.loadResources = function (that, resources) {
-        console.log(resources);
         fluid.fetchResources(resources, function () {
             that.resources = resources;
             that.events.onResourcesLoaded.fire(resources);
