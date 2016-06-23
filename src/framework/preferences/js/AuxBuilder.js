@@ -419,10 +419,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 gradeNames: ["fluid.uiEnhancer"]
             },
             templateLoader: {
-                gradeNames: ["fluid.prefs.resourceLoader"]
+                gradeNames: ["fluid.resourceLoader"]
             },
             messageLoader: {
-                gradeNames: ["fluid.prefs.resourceLoader"]
+                gradeNames: ["fluid.resourceLoader"]
             },
             initialModel: {
                 gradeNames: ["fluid.prefs.initialModel"]
