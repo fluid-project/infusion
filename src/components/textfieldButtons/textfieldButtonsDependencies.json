@@ -1,0 +1,18 @@
+{
+    "textfieldButtons": {
+        "name": "Textfield Buttons",
+        "description": "A synchronized buttons and textfield",
+        "cssFiles": [],
+        "files": [
+            "./js/TextfieldButtons.js"
+        ],
+        "dependencies": [
+            "jQuery",
+            "jQueryUICore",
+            "normalize",
+            "framework",
+            "jQueryUIWidgets",
+            "jQueryTouchPunchPlugin"
+        ]
+    }
+}

@@ -641,7 +641,18 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * A sub-component of fluid.prefs that renders the "text size" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.textSize", {
-        gradeNames: ["fluid.prefs.panel"],
+        gradeNames: ["fluid.prefs.panel", "fluid.contextAware"],
+        contextAwareness: {
+            responsiveAware: {
+                checks: {
+                    responsive: {
+                        contextValue: "{fluid.responsiveCheck}",
+                        gradeNames: "fluid.prefs.responsiveTextSize"
+                    }
+                },
+                defaultGradeNames: "fluid.prefs.defaultTextSize"
+            }
+        },
         preferenceMap: {
             "fluid.prefs.textSize": {
                 "model.textSize": "default",
@@ -657,8 +668,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             max: 2
         },
         selectors: {
-            textSize: ".flc-prefsEditor-min-text-size",
-            label: ".flc-prefsEditor-min-text-size-label",
             smallIcon: ".flc-prefsEditor-min-text-size-smallIcon",
             largeIcon: ".flc-prefsEditor-min-text-size-largeIcon",
             multiplier: ".flc-prefsEditor-multiplier",
@@ -693,6 +702,16 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
+    fluid.defaults("fluid.prefs.defaultTextSize", {
+        selectors: {
+            textSize: ".flc-prefsEditor-min-text-size",
+            label: ".flc-prefsEditor-min-text-size-label"
+        }
+    });
+
+    fluid.defaults("fluid.prefs.responsiveTextSize", {      
+    });
+    
     /********************************
      * Preferences Editor Text Font *
      ********************************/

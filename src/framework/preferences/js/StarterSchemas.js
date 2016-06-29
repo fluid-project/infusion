@@ -21,10 +21,41 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * contrast, table of contents, inputs larger and emphasize links
      *******************************************************************************/
 
+    fluid.contextAware.makeChecks({
+        "fluid.responsiveCheck": true
+    });
+
+    var check;
+    var widthCheck = function() {
+        var width = $(window).width();
+        check = (width<640);
+        if (check) {
+            fluid.contextAware.makeChecks({
+                "fluid.responsiveCheck": true
+            });
+        }
+        else {
+            fluid.contextAware.forgetChecks("fluid.responsiveCheck");
+        }
+    };
+    widthCheck();
+    $(window).resize(widthCheck);
+
     fluid.defaults("fluid.prefs.termsAware");
 
     fluid.defaults("fluid.prefs.auxSchema.starter", {
-        gradeNames: ["fluid.prefs.auxSchema"],
+        gradeNames: ["fluid.prefs.auxSchema", "fluid.contextAware"],
+        contextAwareness: {
+            responsiveAware: {
+                checks: {
+                    responsive: {
+                        contextValue: "{fluid.responsiveCheck}",
+                        gradeNames: "fluid.prefs.responsiveSchema"
+                    }
+                },
+                defaultGradeNames: "fluid.prefs.defaultSchema"
+            }
+        },
         auxiliarySchema: {
             "loaderGrades": ["fluid.prefs.separatedPanel"],
             "namespace": "fluid.prefs.constructed", // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed PrefsEditor.
@@ -42,7 +73,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 "panel": {
                     "type": "fluid.prefs.panel.textSize",
                     "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
-                    "template": "%templatePrefix/PrefsEditorTemplate-textSize.html",
                     "message": "%messagePrefix/textSize.json"
                 }
             },
@@ -157,6 +187,27 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     "message": "%messagePrefix/linksControls.json",
                     "type": "fluid.prefs.panel.linksControls",
                     "panels": ["emphasizeLinks", "inputsLarger"]
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.defaultSchema", {
+        gradeNames: ["fluid.prefs.auxSchema"],
+        auxiliarySchema: {
+            "textSize": {
+                "panel": {
+                    "template": "%templatePrefix/PrefsEditorTemplate-textSize-default.html"
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.responsiveSchema", {
+        auxiliarySchema: {
+            "textSize": {
+                "panel": {
+                    "template": "%templatePrefix/PrefsEditorTemplate-textSize-responsive.html"
                 }
             }
         }
