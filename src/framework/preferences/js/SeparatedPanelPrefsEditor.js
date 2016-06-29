@@ -264,6 +264,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             panel.css({height: ""});
             if ($(window).width()< "640") {
                 iframe.removeAttr("style");
+                
                 //The rest of the if make the scroll go to the next tool
                 var jqueryDokkument = $(dokkument);
                 var scrollStep = iframe.height();
@@ -299,9 +300,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         separatedPanel.slidingPanel.events.onPanelHide.addListener(function () {
             separatedPanel.locate("reset").hide();
         });
-        //Make the responsive panel scroll in steps
-
-
     };
 
     // Replace the standard animator since we don't want the panel to become hidden
