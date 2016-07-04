@@ -21,10 +21,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * contrast, table of contents, inputs larger and emphasize links
      *******************************************************************************/
 
-    fluid.contextAware.makeChecks({
-        "fluid.responsiveCheck": true
-    });
-
     var check;
     var widthCheck = function() {
         var width = $(window).width();
