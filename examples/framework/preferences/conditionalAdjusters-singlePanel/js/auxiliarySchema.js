@@ -1,5 +1,5 @@
 /*
-Copyright 2013 OCAD University
+Copyright 2013-2016 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -126,34 +126,6 @@ var example = example || {};
                     container: ".mpe-increasing-magPos",
                     template: "%templatePrefix/radioButton-template.html",
                     message: "%messagePrefix/speakIncrease.json"
-                }
-            }
-        }
-    });
-
-    // Context-aware mixin for jQueryUI slider
-    fluid.defaults("example.auxSchema.nativeHTML", {
-        auxiliarySchema: {
-            vol: {
-                panel: {
-                    template: "%templatePrefix/slider-template-nativeHTML.html"
-                }
-            },
-            wpm: {
-                panel: {
-                    template: "%templatePrefix/slider-template-nativeHTML.html"
-                }
-            },
-            cursor: {
-                type: "example.cursorSize",
-                panel: {
-                    template: "%templatePrefix/slider-template-nativeHTML.html"
-                }
-            },
-            magFactor: {
-                type: "example.magnification",
-                panel: {
-                    template: "%templatePrefix/slider-template-nativeHTML.html"
                 }
             }
         }

@@ -1,5 +1,5 @@
 /*
-Copyright 2013 OCAD University
+Copyright 2013-2016 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -20,13 +20,6 @@ var example = example || {};
      */
     fluid.defaults("example.auxSchema", {
         gradeNames: ["fluid.prefs.auxSchema", "fluid.contextAware"],
-        listeners: {
-            "onCreate.logInfo": {
-                this: "console",
-                method: "log",
-                args: "{that}"
-            }
-        },
         contextAwareness: {
             sliderVariety: {
                 checks: {
@@ -146,62 +139,5 @@ var example = example || {};
             }
         }
     });
-
-    // Context-aware mixin for jQueryUI slider
-    fluid.defaults("example.auxSchema.jQueryUI", {
-        auxiliarySchema: {
-            vol: {
-                panel: {
-                    template: "%templatePrefix/slider-template-jQueryUI.html"
-                }
-            },
-            wpm: {
-                panel: {
-                    template: "%templatePrefix/slider-template-jQueryUI.html"
-                }
-            },
-            cursor: {
-                type: "example.cursorSize",
-                panel: {
-                    template: "%templatePrefix/slider-template-jQueryUI.html"
-                }
-            },
-            magFactor: {
-                type: "example.magnification",
-                panel: {
-                    template: "%templatePrefix/slider-template-jQueryUI.html"
-                }
-            }
-        }
-    });
-
-    // Context-aware mixin for native slider
-    fluid.defaults("example.auxSchema.nativeHTML", {
-        auxiliarySchema: {
-            vol: {
-                panel: {
-                    template: "%templatePrefix/slider-template-nativeHTML.html"
-                }
-            },
-            wpm: {
-                panel: {
-                    template: "%templatePrefix/slider-template-nativeHTML.html"
-                }
-            },
-            cursor: {
-                type: "example.cursorSize",
-                panel: {
-                    template: "%templatePrefix/slider-template-nativeHTML.html"
-                }
-            },
-            magFactor: {
-                type: "example.magnification",
-                panel: {
-                    template: "%templatePrefix/slider-template-nativeHTML.html"
-                }
-            }
-        }
-    });
-
 
 })(jQuery, fluid);
