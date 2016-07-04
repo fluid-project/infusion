@@ -668,12 +668,26 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             max: 2
         },
         selectors: {
+            textSize: ".flc-prefsEditor-min-text-size",
+            label: ".flc-prefsEditor-min-text-size-label"
+        },
+        selectorsToIgnore: ["textSize"],
+        protoTree: {
+            label: {messagekey: "textSizeLabel"},
+            textSizeDescr: {messagekey: "textSizeDescr"},
+            smallIcon: {messagekey: "textSizeSmallIcon"},
+            largeIcon: {messagekey: "textSizeLargeIcon"},
+            multiplier: {messagekey: "multiplier"}
+        }
+    });
+
+    fluid.defaults("fluid.prefs.defaultTextSize", {
+        selectors: {
             smallIcon: ".flc-prefsEditor-min-text-size-smallIcon",
             largeIcon: ".flc-prefsEditor-min-text-size-largeIcon",
             multiplier: ".flc-prefsEditor-multiplier",
             textSizeDescr: ".flc-prefsEditor-text-size-descr"
         },
-        selectorsToIgnore: ["textSize"],
         components: {
             textfieldSlider: {
                 type: "fluid.textfieldSlider",
@@ -688,13 +702,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 }
             }
         },
-        protoTree: {
-            label: {messagekey: "textSizeLabel"},
-            smallIcon: {messagekey: "textSizeSmallIcon"},
-            largeIcon: {messagekey: "textSizeLargeIcon"},
-            multiplier: {messagekey: "multiplier"},
-            textSizeDescr: {messagekey: "textSizeDescr"}
-        },
         sliderOptions: {
             orientation: "horizontal",
             step: 0.1,
@@ -702,14 +709,28 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    fluid.defaults("fluid.prefs.defaultTextSize", {
+    fluid.defaults("fluid.prefs.responsiveTextSize", {
         selectors: {
-            textSize: ".flc-prefsEditor-min-text-size",
-            label: ".flc-prefsEditor-min-text-size-label"
+            increaseButton: "fl-increase-button",
+            decreaseButton: "fl-decrease-button"
+        },
+        components: {
+            textfieldButtons: {
+                type: "fluid.textfieldButtons",
+                container: "{that}.dom.textSize",
+                createOnEvent: "afterRender",
+                options: {
+                    model: {
+                        value: "{fluid.prefs.panel.textSize}.model.textSize"
+                    },
+                    range: "{fluid.prefs.panel.textSize}.options.range",
+                    buttonOptions: "{fluid.prefs.panel.textSize}.options.buttonOptions"
+                }
+            }
+        },
+        buttonOptions: {
+            step: 0.1
         }
-    });
-
-    fluid.defaults("fluid.prefs.responsiveTextSize", {      
     });
     
     /********************************
