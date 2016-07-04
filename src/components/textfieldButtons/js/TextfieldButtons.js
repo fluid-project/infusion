@@ -15,33 +15,51 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     "use strict";
 
     /********************
-     * Textfield Slider *
+     * Textfield Buttons *
      ********************/
 
-    fluid.defaults("fluid.textfieldSlider", {
+    fluid.defaults("fluid.textfieldButtons", {
         gradeNames: ["fluid.viewComponent"],
         components: {
             textfield: {
-                type: "fluid.textfieldSlider.textfield",
-                container: "{textfieldSlider}.dom.textfield",
+                type: "fluid.textfieldButtons.textfield",
+                container: "{textfieldButtons}.dom.textfield",
                 options: {
-                    model: "{textfieldSlider}.model",
-                    range: "{textfieldSlider}.options.range"
+                    model: "{textfieldButtons}.model",
+                    range: "{textfieldButtons}.options.range"
                 }
             },
-            slider: {
-                type: "fluid.slider",
-                container: "{textfieldSlider}.dom.slider",
+            increaseButton: {
+                type: "fluid.button",
+                container: "{textfieldButtons}.dom.increaseButton",
                 options: {
-                    model: "{fluid.textfieldSlider}.model",
-                    range: "{fluid.textfieldSlider}.options.range",
-                    sliderOptions: "{fluid.textfieldSlider}.options.sliderOptions"
+                    selectors: {
+                        button: ".fl-increase-button"
+                    },
+                    model: "{fluid.textfieldButtons}.model",
+                    range: "{fluid.textfieldButtons}.options.range",
+                    buttonOptions: "{fluid.textfieldButtons}.options.buttonOptions",
+                    incrementCoefficient: 1
+                }
+            },
+            decreaseButton: {
+                type: "fluid.button",
+                container: "{textfieldButtons}.dom.decreaseButton",
+                options: {
+                    selectors: {
+                        button: ".fl-decrease-button"
+                    },
+                    model: "{fluid.textfieldButtons}.model",
+                    range: "{fluid.textfieldButtons}.options.range",
+                    buttonOptions: "{fluid.textfieldButtons}.options.buttonOptions",
+                    incrementCoefficient: -1
                 }
             }
         },
         selectors: {
-            textfield: ".flc-textfieldSlider-field",
-            slider: ".flc-textfieldSlider-slider"
+            textfield: ".flc-textfieldButtons-field",
+            increaseButton: ".fl-increase-button",
+            decreaseButton: ".fl-decrease-button"
         },
         model: {
             value: null
@@ -59,13 +77,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             min: 0,
             max: 100
         },
-        sliderOptions: {
-            orientation: "horizontal",
-            step: 1.0
+        buttonOptions: {
+            step: 10
         }
     });
 
-    fluid.defaults("fluid.textfieldSlider.textfield", {
+    fluid.defaults("fluid.textfieldButtons.textfield", {
         gradeNames: ["fluid.viewComponent"],
         range: {}, // should be used to specify the min, max range e.g. {min: 0, max: 100}
         modelRelay: {
@@ -110,74 +127,34 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    fluid.defaults("fluid.slider", {
-        gradeNames: ["fluid.viewComponent"],
+    fluid.defaults("fluid.button", {
+        gradeNames: ["fluid.rendererComponent"],
         range: {}, // should be used to specify the min, max range e.g. {min: 0, max: 100}
-        selectors: {
-            thumb: ".ui-slider-handle"
-        },
-        members: {
-            combinedSliderOptions: {
-                expander: {
-                    funcName: "fluid.slider.combineSliderOptions",
-                    args: ["{that}.options.sliderOptions", "{that}.options.range"]
-                }
-            },
-            slider: {
-                expander: {
-                    "this": "{that}.container",
-                    method: "slider",
-                    args: ["{that}.combinedSliderOptions"]
-                }
-            }
-        },
         invokers: {
-            setSliderValue: {
-                "this": "{that}.slider",
-                "method": "slider",
-                args: ["value", "{arguments}.0"]
-            },
-            setSliderAria: {
-                "this": "{that}.dom.thumb",
-                "method": "attr",
-                args: ["aria-valuenow", "{arguments}.0"]
-            },
             setModel: {
                 changePath: "value",
-                value: "{arguments}.1.value"
+                value: "{that}.calculateValue"
+            },
+            calculateValue: {
+                funcName: "fluid.buttonCalculateValue",
+                args: ["{that}.dom.button", "{that}.incrementCoefficient", "{that}.buttonOptions.step", "{that}.model.value", "{that}.range.min", "{that}.range.max"]
             }
         },
         listeners: {
-            // This can be removed once the jQuery UI slider has built in ARIA
-            "onCreate.initSliderAria": {
-                "this": "{that}.dom.thumb",
-                method: "attr",
-                args: [{
-                    role: "slider",
-                    "aria-valuenow": "{that}.combinedSliderOptions.value",
-                    "aria-valuemin": "{that}.combinedSliderOptions.min",
-                    "aria-valuemax": "{that}.combinedSliderOptions.max"
-                }]
-            },
-            "onCreate.bindSlideEvt": {
-                "this": "{that}.slider",
-                "method": "bind",
-                "args": ["slide", "{that}.setModel"]
+            afterRender: {
+                "this": "{that}.dom.button",
+                "method": "click",
+                "args": "fluid.printText"
             }
-        },
-        modelListeners: {
-            "value": [{
-                listener: "{that}.setSliderValue",
-                args: ["{change}.value"]
-            }, {
-                listener: "{that}.setSliderAria",
-                args: ["{change}.value"]
-            }]
         }
     });
 
-    fluid.slider.combineSliderOptions = function (sliderOptions, model, range) {
-        return $.extend(true, {}, sliderOptions, model, range);
+    fluid.buttonCalculateValue = function (button, coeff, step, modelValue, min, max) {
+        console.log(modelValue);
+        var value = coeff * step;
+        if ((modelValue + value) < min) return min;
+        else if ((modelValue + value) > max) return max;
+        else return (modelValue + value);
     };
 
 })(jQuery, fluid_2_0_0);
