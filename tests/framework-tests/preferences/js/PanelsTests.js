@@ -1362,6 +1362,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["textSize", "{textSize}.model", "{that}.options.testOptions.newValue"],
                     spec: {path: "textSize", priority: "last"},
                     changeEvent: "{textSize}.applier.modelChanged"
+                }, {
+                    func: "fluid.contextAware.forgetChecks",
+                    args: ["fluid.prefsWidgetType"]
                 }]
             }]
         }]
@@ -1492,6 +1495,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["lineSpace", "{lineSpace}.model", "{that}.options.testOptions.newValue"],
                     spec: {path: "lineSpace", priority: "last"},
                     changeEvent: "{lineSpace}.applier.modelChanged"
+                }, {
+                    func: "fluid.contextAware.forgetChecks",
+                    args: ["fluid.prefsWidgetType"]
                 }]
             }]
         }]

@@ -95,6 +95,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The value now should be 15", 15, +that.getSliderValue());
             jqUnit.assertEquals("The max should be 100", 100, +slider.attr("max"));
             jqUnit.assertEquals("The min should be 0", 0, +slider.attr("min"));
+            fluid.contextAware.forgetChecks("fluid.prefsWidgetType");
         });
 
         jqUnit.test("Test Init (jQuery UI slider)", function () {
@@ -108,6 +109,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The ARIA value now should be 15", 15, +thumb.attr("aria-valuenow"));
             jqUnit.assertEquals("The ARIA max should be 100", 100, +thumb.attr("aria-valuemax"));
             jqUnit.assertEquals("The ARIA min should be 0", 0, +thumb.attr("aria-valuemin"));
+            fluid.contextAware.forgetChecks("fluid.prefsWidgetType");
         });
 
         fluid.tests.textfieldSlider.testInputField = function (valToTest, expected, that) {
@@ -169,6 +171,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     jqUnit.expect(expected);
                     var that = currentType.creatorFunc(componentOptions);
                     testFunction(that);
+                    fluid.contextAware.forgetChecks("fluid.prefsWidgetType");
                 });
             });
         };
