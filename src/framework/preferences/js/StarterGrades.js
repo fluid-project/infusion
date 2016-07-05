@@ -323,7 +323,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      */
 
     fluid.defaults("fluid.prefs.starterTemplateLoader", {
-        gradeNames: ["fluid.prefs.resourceLoader", "fluid.contextAware"],
+        gradeNames: ["fluid.resourceLoader", "fluid.contextAware"],
         resources: {
             textFont: "%templatePrefix/PrefsEditorTemplate-textFont.html",
             contrast: "%templatePrefix/PrefsEditorTemplate-contrast.html",
@@ -392,7 +392,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      */
 
     fluid.defaults("fluid.prefs.starterMessageLoader", {
-        gradeNames: ["fluid.prefs.resourceLoader"],
+        gradeNames: ["fluid.resourceLoader"],
         resources: {
             prefsEditor: "%messagePrefix/prefsEditor.json",
             textSize: "%messagePrefix/textSize.json",

@@ -52,7 +52,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 }
             },
             templateLoader: {
-                type: "fluid.prefs.resourceLoader",
+                type: "fluid.resourceLoader",
                 options: {
                     events: {
                         onResourcesLoaded: "{prefsEditorLoader}.events.onPrefsEditorTemplatesLoaded"
@@ -60,7 +60,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 }
             },
             messageLoader: {
-                type: "fluid.prefs.resourceLoader",
+                type: "fluid.resourceLoader",
                 options: {
                     defaultLocale: "{prefsEditorLoader}.options.defaultLocale",
                     locale: "{prefsEditorLoader}.settings.locale",
@@ -142,63 +142,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             target: "{that linksControls}.options"
         }]
     });
-
-    /**************************************
-     * Preferences Editor Resource Loader *
-     **************************************/
-
-    /**
-     * A configurable component to allow users to set either the location of their own templates
-     * or the templates that are relative to the path defined in the Preferences Editor template
-     * path component.
-     *
-     * @param {Object} options
-     */
-
-    fluid.defaults("fluid.prefs.resourceLoader", {
-        gradeNames: ["fluid.component"],
-        listeners: {
-            "onCreate.loadResources": {
-                listener: "fluid.prefs.resourceLoader.loadResources",
-                args: ["{that}", {expander: {func: "{that}.resolveResources"}}]
-            }
-        },
-        defaultLocale: null,
-        locale: null,
-        terms: {},  // Must be supplied by integrators
-        resources: {},  // Must be supplied by integrators
-        resourceOptions: {},
-        // Unsupported, non-API option
-        invokers: {
-            transformURL: {
-                funcName: "fluid.stringTemplate",
-                args: ["{arguments}.0", "{that}.options.terms"]
-            },
-            resolveResources: {
-                funcName: "fluid.prefs.resourceLoader.resolveResources",
-                args: "{that}"
-            }
-        },
-        events: {
-            onResourcesLoaded: null
-        }
-    });
-
-    fluid.prefs.resourceLoader.resolveResources = function (that) {
-        var mapped = fluid.transform(that.options.resources, that.transformURL);
-
-        return fluid.transform(mapped, function (url) {
-            var resourceSpec = {url: url, forceCache: true, options: that.options.resourceOptions};
-            return $.extend(resourceSpec, fluid.filterKeys(that.options, ["defaultLocale", "locale"]));
-        });
-    };
-
-    fluid.prefs.resourceLoader.loadResources = function (that, resources) {
-        fluid.fetchResources(resources, function () {
-            that.resources = resources;
-            that.events.onResourcesLoaded.fire(resources);
-        });
-    };
 
     /**********************
      * Preferences Editor *

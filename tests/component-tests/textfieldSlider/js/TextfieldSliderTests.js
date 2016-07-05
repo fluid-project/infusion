@@ -160,7 +160,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },
                 {
                     messageSuffix: " (jQuery UI)",
-                    creatorFunc: fluid.tests.textfieldSlider.crea15teTextfieldSliderJQueryUI
+                    creatorFunc: fluid.tests.textfieldSlider.createTextfieldSliderJQueryUI
                 }
             ];
 
