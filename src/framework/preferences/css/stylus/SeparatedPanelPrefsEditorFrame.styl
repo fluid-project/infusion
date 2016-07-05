@@ -9,6 +9,19 @@ border-radius(n)
     border-bottom-left-radius: n;
     border-bottom-right-radius: n;
 
+unselectable()
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+    -moz-user-select: none;     /* Firefox all */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none;          /* Likely future */
+
+gradientBackground(topColor, bottomColor)
+    background: bottomColor; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(topColor, bottomColor); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(topColor, bottomColor); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(topColor, bottomColor); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(topColor, bottomColor); /* Standard syntax */
+
 @font-face {
     font-family: "OpenSans";
     src: url("../../../lib/fonts/OpenSans-Light.ttf");
@@ -76,48 +89,59 @@ html {
                     }
                 }
 
-                .flc-prefsEditor-text-size {
-                    .fl-inputs {
+                .fl-buttons-textfield-inputs {
+                    display: flex;
+                    justify-content: center;
+                    margin-top: 1.2em;
+
+                    .flc-textfieldButtons-field {
+                        box-sizing: border-box;
+                        width: 6em;
+                        height: 2em;
+                        border: 1px solid #a7a9ac;
+                        border-radius(0.25em);
+                        text-align: center;
+                    }
+
+                    .flc-textfieldButtons-button {
+                        box-sizing: border-box;
                         display: flex;
-                        justify-content: center;
-                        margin-top: 1.2em;
+                        cursor: pointer;
+                        width: 2em;
+                        height: 2em;
+                        border: 2px solid #4d4e4e;
+                        border-radius(0.25em);
+                        color: #4d4e4e;
 
-                        .flc-textfieldButtons-field {
-                            box-sizing: border-box;
-                            width: 6em;
-                            height: 2em;
-                            border: 1px solid #a7a9ac;
-                            border-radius(0.25em);
-                            text-align: center;
+                        &:hover {
+                            border: 2px solid #343535
+                            color: #343535
+                            gradientBackground(#ffffff, #cccccc);
                         }
 
-                        .flc-textfieldButtons-button {
-                            box-sizing: border-box;
-                            display: flex;
-                            cursor: pointer;
-                            width: 2em;
-                            height: 2em;
+                        &:active {
                             border: 2px solid #4d4e4e;
-                            border-radius(0.25em);
                             color: #4d4e4e;
-
-                            .fl-sign-container {
-                                margin: auto;
-                                font-size: 2em;
-                                vertical-align: middle;
-                            }
+                            gradientBackground(#cccccc, #ffffff);
                         }
 
-                        .fl-decrease-button {
-                            margin-right: 0.5em;
-                            padding-bottom: 0.3em;
+                        .fl-sign-container {
+                            margin: auto;
+                            font-size: 2em;
+                            vertical-align: middle;
+                            unselectable();
                         }
+                    }
 
-                        .fl-increase-button {
-                            margin-left: 0.5em;
-                            padding-bottom: 0.1em;
-                            padding-left: 0.1em;
-                        }
+                    .fl-decrease-button {
+                        margin-right: 0.5em;
+                        padding-bottom: 0.3em;
+                    }
+
+                    .fl-increase-button {
+                        margin-left: 0.5em;
+                        padding-bottom: 0.1em;
+                        padding-left: 0.1em;
                     }
                 }
 
