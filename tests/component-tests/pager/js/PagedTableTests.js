@@ -158,24 +158,67 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return pager;
     };
 
-    fluid.tests.tooltipModuleSource = function (pager, sequencesOfPageSizes) {
+    fluid.defaults("fluid.tests.pagerTooltipEnv", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        markupFixture: "#rendered-ioc",
+        components: {
+            pager: {
+                type: "fluid.tests.renderedPager",
+                container: "#rendered-ioc",
+                options: {
+                    gradeNames: ["fluid.tests.tooltip.trackTooltips", "fluid.tests.focusNotifier"]
+                }
+            },
+            fixtures: {
+                type: "fluid.tests.pagerTooltipTests",
+                options: {
+                    sequenceOfPageSizes: [2, 3, 4]
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.pagerTooltipTests", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        sequenceOfPageSizes: [],
+        moduleSource: {
+            func: "fluid.tests.getTooltipModuleSource",
+            args: ["{pager}", "{that}.options.sequenceOfPageSizes"]
+        }
+    });
+
+    fluid.tests.getTooltipModuleSource = function (pager, sequencesOfPageSizes) {
         var sequence = [];
         var linksList = fluid.transform(pager.dataModel, function (data) {
             return {text: data.animal};
         });
 
         /* Change the page size and verify whether the tooltips and links are synced accordingly */
-        for (var i = 0; i < sequencesOfPageSizes.length; i++) {
-            var pageSize = sequencesOfPageSizes[i];
-            sequence.push({
-                func: "fluid.changeElementValue",
-                args: ["{pager}.dom.pageSize", pageSize]
-            });
-            sequence.push({
-                func: "fluid.tests.verifyLinksAndTooltips",
-                args: ["{pager}", pageSize, linksList]
-            });
-        }
+        fluid.each(sequencesOfPageSizes, function (pageSize) {
+            var expectedTooltips = fluid.tests.getTooltipContents(linksList, pageSize);
+            $.merge(sequence, [
+                {
+                    func: "fluid.changeElementValue",
+                    args: ["{pager}.dom.pageSize", pageSize]
+                },
+                {
+                    func: "fluid.tests.verifyPagerBar",
+                    args: ["{pager}", "top", pageSize]
+                },
+                {
+                    func: "fluid.tests.verifyPagerBar",
+                    args: ["{pager}", "bottom", pageSize]
+                },
+                {
+                    func: "fluid.tests.verifyToolTipsOfPagerBar",
+                    args: ["{pager}", "top", pageSize, expectedTooltips]
+                },
+                {
+                    func: "fluid.tests.verifyToolTipsOfPagerBar",
+                    args: ["{pager}", "bottom", pageSize, expectedTooltips]
+                }
+            ]);
+        });
 
         return {
             name: "Pager tooltip tests",
@@ -200,15 +243,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
 
         return tooltipContents;
-    };
-
-    fluid.tests.verifyLinksAndTooltips = function (pager, pageSize, linksList) {
-        fluid.tests.verifyPagerBar(pager, "top", pageSize);
-        fluid.tests.verifyPagerBar(pager, "bottom", pageSize);
-
-        var expectedTooltips = fluid.tests.getTooltipContents(linksList, pageSize);
-        fluid.tests.verifyToolTipsOfPagerBar(pager, "top", pageSize, expectedTooltips);
-        fluid.tests.verifyToolTipsOfPagerBar(pager, "bottom", pageSize, expectedTooltips);
     };
 
     fluid.tests.getPagerBar = function (pager, location) {
@@ -252,30 +286,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "There should not be any tooltips visible when no pageLinks are focused.",
             [], expectedTooltip);
     };
-
-    fluid.defaults("fluid.tests.pagerTooltipEnv", {
-        gradeNames: ["fluid.test.testEnvironment"],
-        markupFixture: "#rendered-ioc",
-        components: {
-            pager: {
-                type: "fluid.tests.renderedPager",
-                container: "#rendered-ioc",
-                options: {
-                    gradeNames: ["fluid.tests.tooltip.trackTooltips", "fluid.tests.focusNotifier"]
-                }
-            },
-            fixtures: {
-                type: "fluid.test.testCaseHolder",
-                options: {
-                    sequenceOfPageSizes: [2, 3, 4],
-                    moduleSource: {
-                        func: "fluid.tests.tooltipModuleSource",
-                        args: ["{pager}", "{that}.options.sequenceOfPageSizes"]
-                    }
-                }
-            }
-        }
-    });
 
     fluid.tests.runPagedTableTests = function () {
 
