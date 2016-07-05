@@ -487,7 +487,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "panel": {
                 "type": "fluid.prefs.panel.textSize",
                 "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
-                "template": "%templatePrefix/PrefsEditorTemplate-textSize.html",
+                "template": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html",
                 "message": "%messagePrefix/PrefsEditorTemplate-textSize.json"
             }
         }
@@ -544,7 +544,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "panel": {
                 "type": "fluid.prefs.panel.textSize",
                 "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
-                "template": "%templatePrefix/PrefsEditorTemplate-textSize.html",
+                "template": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html",
                 "message": "%messagePrefix/PrefsEditorTemplate-textSize.json"
             }
         },
@@ -657,7 +657,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "panel": {
                 "type": "fluid.prefs.panel.textSize",
                 "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
-                "template": "%templatePrefix/PrefsEditorTemplate-textSize.html",
+                "template": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html",
                 "message": "%messagePrefix/PrefsEditorTemplate-textSize.json"
             }
         },
@@ -691,7 +691,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         templateLoader: {
             gradeNames: ["fluid.resourceLoader"],
             resources: {
-                "fluid_prefs_panel_textSize": "%templatePrefix/PrefsEditorTemplate-textSize.html"
+                "fluid_prefs_panel_textSize": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html"
             }
         },
         messageLoader: {
@@ -794,7 +794,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "panel": {
                         "type": "fluid.prefs.panel.textSize",
                         "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
-                        "template": "%templatePrefix/PrefsEditorTemplate-textSize.html",
+                        "template": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html",
                         "message": "%messagePrefix/PrefsEditorTemplate-textSize.json"
                     }
                 },
@@ -857,7 +857,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 templateLoader: {
                     gradeNames: ["fluid.resourceLoader"],
                     resources: {
-                        "fluid_prefs_panel_textSize": "%templatePrefix/PrefsEditorTemplate-textSize.html",
+                        "fluid_prefs_panel_textSize": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html",
                         "fluid_prefs_panel_otherTextSize": "%templatePrefix/PrefsEditorTemplate-otherTextSize.html"
                     }
                 },
@@ -967,7 +967,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "panel": {
                         "type": "fluid.prefs.panel.textSize",
                         "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
-                        "template": "%templatePrefix/PrefsEditorTemplate-textSize.html",
+                        "template": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html",
                         "message": "%messagePrefix/PrefsEditorTemplate-textSize.json"
                     },
                     "enactor": {
@@ -1005,7 +1005,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     gradeNames: ["fluid.resourceLoader"],
                     resources: {
                         "prefsEditor": "%templatePrefix/SeparatedPanelPrefsEditor.html",
-                        "fluid_prefs_panel_textSize": "%templatePrefix/PrefsEditorTemplate-textSize.html"
+                        "fluid_prefs_panel_textSize": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html"
                     }
                 },
                 messageLoader: {

@@ -1,5 +1,5 @@
 /*
-Copyright 2011-2015 OCAD University
+Copyright 2011-2016 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -47,7 +47,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     iframeRenderer: {
                         markupProps: {
-                            src: "./SeparatedPanelPrefsEditorFrame.html"
+                            src: "./SeparatedPanelPrefsEditorFrame-nativeHTML.html"
                         }
                     },
                     templateLoader: {
@@ -216,10 +216,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.prefs.separatedPanel",
                 container: ".flc-prefsEditor-separatedPanel",
                 createOnEvent: "{mungingIntegrationTester}.events.onTestCaseStart",
-                options: fluid.merge(null, fluid.tests.prefs.mungingIntegrationOptions, { // TODO: Why on earth does this not use standard grade merging?
+                options: {
+                    gradeNames: ["fluid.tests.prefs.mungingIntegrationBase"],
                     iframeRenderer: {
                         markupProps: {
-                            src: "./SeparatedPanelPrefsEditorFrame.html"
+                            src: "./SeparatedPanelPrefsEditorFrame-nativeHTML.html"
                         }
                     },
                     slidingPanel: {
@@ -239,7 +240,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             }
                         }
                     }
-                })
+                }
             },
             mungingIntegrationTester: {
                 type: "fluid.tests.mungingIntegrationTester"
@@ -285,6 +286,79 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
+    /*******************************************************************************
+     * PrefsEditor separatedPanel conditional panel integration tests
+     *******************************************************************************/
+
+    fluid.defaults("fluid.tests.separatedPanelConditionalPanelIntegration", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        components: {
+            prefsEditor: {
+                type: "fluid.tests.composite.separatedPanel.prefsEditor",
+                container: ".flc-prefsEditor-separatedPanel",
+                createOnEvent: "{prefsTester}.events.onTestCaseStart"
+            },
+            prefsTester: {
+                type: "fluid.tests.separatedPanelConditionalPanelIntegrationTester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.separatedPanelConditionalPanelIntegrationTester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [{
+            name: "Prefs editor with composite panel",
+            tests: [{
+                name: "Rendering",
+                expect: 14,
+                sequence: [{
+                    listener: "fluid.tests.separatedPanelConditionalPanelIntegrationTester.assertConditionalComponents",
+                    event: "{separatedPanelConditionalPanelIntegration prefsEditorLoader prefsEditor}.events.onReady",
+                    args: [
+                        "{prefsEditor}.prefsEditorLoader.prefsEditor.increasing.fluid_tests_composite_pref_increaseSize",
+                        ["fluid_tests_composite_pref_lineSpace", "fluid_tests_composite_pref_magnification"],
+                        false
+                    ]
+                }, {
+                    func: "{prefsEditor}.prefsEditorLoader.slidingPanel.showPanel"
+                }, {
+                    func: "{prefsEditor}.prefsEditorLoader.prefsEditor.applier.change",
+                    args: ["preferences.fluid_tests_composite_pref_increaseSize", true]
+                }, {
+                    listener: "fluid.tests.separatedPanelConditionalPanelIntegrationTester.assertConditionalComponents",
+                    event: "{prefsEditor}.prefsEditorLoader.prefsEditor.increasing.events.afterRender",
+                    args: ["{arguments}.0", ["fluid_tests_composite_pref_lineSpace", "fluid_tests_composite_pref_magnification"], true],
+                    priority: "last"
+                }, {
+                    func: "{prefsEditor}.prefsEditorLoader.prefsEditor.applier.change",
+                    args: ["preferences.fluid_tests_composite_pref_increaseSize", false]
+                }, {
+                    listener: "fluid.tests.separatedPanelConditionalPanelIntegrationTester.assertConditionalComponents",
+                    event: "{prefsEditor}.prefsEditorLoader.prefsEditor.increasing.events.afterRender",
+                    args: ["{arguments}.0", ["fluid_tests_composite_pref_lineSpace", "fluid_tests_composite_pref_magnification"], false],
+                    priority: "last"
+                }]
+            }]
+        }]
+    });
+
+    fluid.tests.separatedPanelConditionalPanelIntegrationTester.assertConditionalComponents = function (parentPanel, memberNames, instantiated) {
+        if (instantiated) {
+            fluid.each(memberNames, function (memberName) {
+                var comp = parentPanel[memberName];
+                jqUnit.assertNotUndefined("The " + memberName + " should be instantiated", comp);
+                jqUnit.assertDeepEq("The context for " + memberName + " should be retained", comp.origContext, comp.container[0].ownerDocument);
+                jqUnit.assertNodeExists("The container for " + memberName + " should exist", comp.container);
+                jqUnit.assertNodeExists("The input for " + memberName + " should exist", comp.locate("bool"));
+                jqUnit.assertEquals("The " + memberName + " should be rendered", comp.model.value, comp.locate("bool").prop("checked"));
+            });
+        } else {
+            fluid.each(memberNames, function (memberName) {
+                jqUnit.assertUndefined("The " + memberName + " should not be instantiated", parentPanel[memberName]);
+            });
+        }
+    };
+
     $(document).ready(function () {
 
         fluid.tests.prefs.globalSettingsStore();
@@ -292,7 +366,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         fluid.test.runTests([
             "fluid.tests.separatedPanelIntegration",
-            "fluid.tests.separatedPanelMungingIntegration"
+            "fluid.tests.separatedPanelMungingIntegration",
+            "fluid.tests.separatedPanelConditionalPanelIntegration"
         ]);
     });
 

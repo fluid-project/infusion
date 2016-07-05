@@ -80,7 +80,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "panel": {
                         "type": "fluid.prefs.panel.textSize",
                         "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
-                        "template": "%templatePrefix/PrefsEditorTemplate-textSize.html",
+                        "template": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html",
                         "message": "%messagePrefix/textSize.json"
                     }
                 },
@@ -101,7 +101,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "panel": {
                         "type": "fluid.prefs.panel.lineSpace",
                         "container": ".flc-prefsEditor-line-space",  // the css selector in the template where the panel is rendered
-                        "template": "%templatePrefix/PrefsEditorTemplate-lineSpace.html",
+                        "template": "%templatePrefix/PrefsEditorTemplate-lineSpace-nativeHTML.html",
                         "message": "%messagePrefix/lineSpace.json"
                     }
                 }
@@ -685,158 +685,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Composite Panels Tests *
      **************************/
 
-    fluid.registerNamespace("fluid.tests.composite");
-
-    fluid.tests.composite.primarySchema = {
-        "fluid.tests.composite.pref.speakText": {
-            "type": "boolean",
-            "default": false
-        },
-        "fluid.tests.composite.pref.increaseSize": {
-            "type": "boolean",
-            "default": false
-        },
-        "fluid.tests.composite.pref.magnification": {
-            "type": "boolean",
-            "default": false
-        },
-        "fluid.tests.composite.pref.lineSpace": {
-            "type": "boolean",
-            "default": false
-        }
-    };
-
-    fluid.defaults("fluid.tests.composite.auxSchema", {
-        gradeNames: ["fluid.prefs.auxSchema"],
-        auxiliarySchema: {
-            template: "%templatePrefix/compositePrefsEditorTemplate.html",
-            groups: {
-                increasing: {
-                    "container": ".fluid-tests-composite-increasing",
-                    "template": "%templatePrefix/increaseTemplate.html",
-                    "type": "fluid.tests.composite.increase",
-                    "panels": {
-                        "always": ["incSize"],
-                        "fluid.tests.composite.pref.increaseSize": ["magnify", "lineSpace"]
-                    }
-                }
-            },
-            speak: {
-                type: "fluid.tests.composite.pref.speakText",
-                panel: {
-                    type: "fluid.tests.cmpPanel.speak",
-                    container: ".fluid-tests-composite-speaking-onOff",
-                    template: "%templatePrefix/checkboxTemplate.html"
-                }
-            },
-            incSize: {
-                type: "fluid.tests.composite.pref.increaseSize",
-                panel: {
-                    type: "fluid.tests.cmpPanel.incSize",
-                    container: ".fluid-tests-composite-increasing-onOff",
-                    template: "%templatePrefix/checkboxTemplate.html"
-                }
-            },
-            magnify: {
-                type: "fluid.tests.composite.pref.magnification",
-                panel: {
-                    type: "fluid.tests.cmpPanel.magFactor",
-                    container: ".fluid-tests-composite-increasing-magFactor",
-                    template: "%templatePrefix/checkboxTemplate.html"
-                }
-            },
-            lineSpace: {
-                type: "fluid.tests.composite.pref.lineSpace",
-                panel: {
-                    type: "fluid.tests.cmpPanel.lineSpace",
-                    container: ".fluid-tests-composite-increasing-lineSpace",
-                    template: "%templatePrefix/checkboxTemplate.html"
-                }
-            }
-        }
-    });
-
-    fluid.defaults("fluid.tests.composite.increase", {
-        gradeNames: ["fluid.prefs.compositePanel"],
-        messageBase: {
-            increaseHeader: "increase"
-        },
-        selectors: {
-            label: ".fluid-tests-composite-increase-header"
-        },
-        protoTree: {
-            label: {messagekey: "increaseHeader"}
-        }
-    });
-
-    fluid.defaults("fluid.tests.cmpPanel.speak", {
-        gradeNames: ["fluid.prefs.panel"],
-        preferenceMap: {
-            "fluid.tests.composite.pref.speakText": {
-                "model.speakText": "default"
-            }
-        },
-        selectors: {
-            bool: ".fluid-tests-composite-input"
-        },
-        protoTree: {
-            bool: "${speakText}"
-        }
-    });
-
-    fluid.defaults("fluid.tests.cmpPanel.base", {
-        gradeNames: ["fluid.prefs.panel"],
-        selectors: {
-            bool: ".fluid-tests-composite-input"
-        },
-        protoTree: {
-            bool: "${value}"
-        }
-    });
-
-    fluid.defaults("fluid.tests.cmpPanel.incSize", {
-        gradeNames: ["fluid.tests.cmpPanel.base"],
-        preferenceMap: {
-            "fluid.tests.composite.pref.increaseSize": {
-                "model.value": "default"
-            }
-        }
-    });
-
-    fluid.defaults("fluid.tests.cmpPanel.magFactor", {
-        gradeNames: ["fluid.tests.cmpPanel.base"],
-        preferenceMap: {
-            "fluid.tests.composite.pref.magnification": {
-                "model.value": "default"
-            }
-        }
-    });
-
-    fluid.defaults("fluid.tests.cmpPanel.lineSpace", {
-        gradeNames: ["fluid.tests.cmpPanel.base"],
-        preferenceMap: {
-            "fluid.tests.composite.pref.lineSpace": {
-                "model.value": "default"
-            }
-        }
-    });
-
-    var builder = fluid.prefs.builder({
-        gradeNames: ["fluid.tests.composite.auxSchema"],
-        primarySchema: fluid.tests.composite.primarySchema,
-        auxiliarySchema: {
-            "loaderGrades": ["fluid.prefs.fullNoPreview"],
-            "terms": {
-                "templatePrefix": "../testResources/html"
-            }
-        }
-    });
-
     fluid.defaults("fluid.tests.compositePrefsEditor", {
         gradeNames: ["fluid.test.testEnvironment"],
         components: {
             prefsEditor: {
-                type: builder.options.assembledPrefsEditorGrade,
+                type: "fluid.tests.composite.fullNoPreview.prefsEditor",
                 container: ".fluid-tests-composite-prefsEditor",
                 createOnEvent: "{prefsTester}.events.onTestCaseStart"
             },
@@ -877,9 +730,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.composite.tester.initialRendering = function (prefsEditor) {
         var singlePanel = prefsEditor.fluid_tests_cmpPanel_speak;
         var compositePanel = prefsEditor.increasing;
-        jqUnit.assertFalse("The single panel's checkbox should be in the correct state", singlePanel.locate("bool").val());
+        jqUnit.assertFalse("The single panel's checkbox should be in the correct state", singlePanel.locate("bool").prop("checked"));
         jqUnit.assertEquals("The composite panel should be rendered correctly", "increase", compositePanel.locate("label").text());
-        jqUnit.assertFalse("The composite panel's always on subpanel's checkbox should be in the correct state", compositePanel.fluid_tests_composite_pref_increaseSize.locate("bool").val());
+        jqUnit.assertFalse("The composite panel's always on subpanel's checkbox should be in the correct state", compositePanel.fluid_tests_composite_pref_increaseSize.locate("bool").prop("checked"));
         jqUnit.notVisible("The composite panel's conditional subpanel container should not be visible", compositePanel.locate("fluid_tests_composite_pref_magnification"));
         jqUnit.assertFalse("The composite panel's conditional subpanel should not be initialized", compositePanel.fluid_tests_composite_pref_magnification);
     };

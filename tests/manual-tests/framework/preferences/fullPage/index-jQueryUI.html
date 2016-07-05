@@ -57,6 +57,14 @@
         <script type="text/javascript" src="../../../../../src/framework/preferences/js/FullPreviewPrefsEditor.js"></script>
         <script type="text/javascript" src="../../../../../src/components/tableOfContents/js/TableOfContents.js"></script>
 
+        <script>
+            fluid.contextAware.makeChecks({
+                "fluid.prefsWidgetType": {
+                    value: "jQueryUI"
+                }
+            });
+        </script>
+
         <script type="text/javascript" src="js/prefsEditorFullpage.js"></script>
     </head>
 
@@ -88,6 +96,7 @@
                     </li>
                     <li>Use the "save and apply" button to apply the preview styles to Preferences Editor</li>
                     <li>Use the "reset" button to reset the styles</li>
+                    <li>Be sure to test with the <a href="index-nativeHTML.html">native HTML widgets version as well.</a></li>
                 </ol>
             </div>
         </aside>

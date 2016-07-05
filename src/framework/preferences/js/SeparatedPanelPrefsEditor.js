@@ -27,7 +27,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      *******************************************************/
 
     fluid.defaults("fluid.prefs.separatedPanel", {
-        gradeNames: ["fluid.prefs.prefsEditorLoader"],
+        gradeNames: ["fluid.prefs.prefsEditorLoader", "fluid.contextAware"],
         events: {
             afterRender: null,
             onReady: null,
@@ -43,6 +43,18 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     templatesLoaded: "onPrefsEditorTemplatesLoaded",
                     messagesLoaded: "onPrefsEditorMessagesLoaded"
                 }
+            }
+        },
+        contextAwareness: {
+            separatedPanelPrefsWidgetType: {
+                checks: {
+                    jQueryUI: {
+                        contextValue: "{fluid.prefsWidgetType}",
+                        equals: "jQueryUI",
+                        gradeNames: "fluid.prefs.separatedPanel.jQueryUI"
+                    }
+                },
+                defaultGradeNames: "fluid.prefs.separatedPanel.nativeHTML"
             }
         },
         selectors: {
@@ -109,9 +121,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 type: "fluid.prefs.separatedPanel.renderIframe",
                 container: "{separatedPanel}.dom.iframe",
                 options: {
-                    markupProps: {
-                        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame.html"
-                    },
                     events: {
                         afterRender: "{separatedPanel}.events.afterRender"
                     },
@@ -178,6 +187,32 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }]
     });
 
+    // Used for context-awareness behaviour
+    fluid.defaults("fluid.prefs.separatedPanel.nativeHTML", {
+        components: {
+            iframeRenderer: {
+                options: {
+                    markupProps: {
+                        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame-nativeHTML.html"
+                    }
+                }
+            }
+        }
+    });
+
+    // Used for context-awareness behaviour
+    fluid.defaults("fluid.prefs.separatedPanel.jQueryUI", {
+        components: {
+            iframeRenderer: {
+                options: {
+                    markupProps: {
+                        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame-jQueryUI.html"
+                    }
+                }
+            }
+        }
+    });
+
     fluid.prefs.separatedPanel.hideReset = function (separatedPanel) {
         separatedPanel.locate("reset").hide();
     };
@@ -216,8 +251,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         that.iframe.load(function () {
             var iframeWindow = that.iframe[0].contentWindow;
             that.iframeDocument = iframeWindow.document;
+            // The iframe should prefer its own version of jQuery if a separate
+            // one is loaded
+            that.jQuery = iframeWindow.jQuery || $;
 
-            that.jQuery = iframeWindow.jQuery;
             that.renderPrefsEditorContainer = that.jQuery("body", that.iframeDocument);
             that.jQuery(that.iframeDocument).ready(that.events.afterRender.fire);
         });

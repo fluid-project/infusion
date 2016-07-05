@@ -52,6 +52,7 @@
 
         <script type="text/javascript" src="../shared/js/primarySchema.js"></script>
         <script type="text/javascript" src="../shared/js/utilities.js"></script>
+        <script type="text/javascript" src="../shared/js/contextAwareAuxSchemas.js"></script>
         <script type="text/javascript" src="js/auxiliarySchema.js"></script>
         <script type="text/javascript" src="../shared/js/panels.js"></script>
         <script type="text/javascript" src="js/panels.js"></script>
@@ -60,11 +61,6 @@
     </head>
 
     <body class="example-theme fl-focus">
-        <script type="text/javascript">
-            $(document).ready(function () {
-                example.initPrefsEditor(".flc-prefsEditor-separatedPanel");
-            })
-        </script>
 
         <!-- BEGIN markup for Preference Editor -->
         <div class="flc-prefsEditor-separatedPanel fl-prefsEditor-separatedPanel">
@@ -80,6 +76,16 @@
             </div>
         </div>
         <!-- END markup for Preference Editor -->
+
+        <script type="text/javascript">
+            fluid.contextAware.makeChecks({
+                "fluid.prefsWidgetType": {
+                    value: "jQueryUI"
+                }
+            });
+
+            example.initPrefsEditor(".flc-prefsEditor-separatedPanel");
+        </script>
 
         <div class="overview">
             <h1>Test of Composite Panels With Conditional Show/Hide of Adjusters</h1>
