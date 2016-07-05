@@ -33,9 +33,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 type: "fluid.button",
                 container: "{textfieldButtons}.dom.increaseButton",
                 options: {
-                    selectors: {
-                        button: ".fl-increase-button"
-                    },
                     model: "{fluid.textfieldButtons}.model",
                     range: "{fluid.textfieldButtons}.options.range",
                     buttonOptions: "{fluid.textfieldButtons}.options.buttonOptions",
@@ -46,9 +43,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 type: "fluid.button",
                 container: "{textfieldButtons}.dom.decreaseButton",
                 options: {
-                    selectors: {
-                        button: ".fl-decrease-button"
-                    },
                     model: "{fluid.textfieldButtons}.model",
                     range: "{fluid.textfieldButtons}.options.range",
                     buttonOptions: "{fluid.textfieldButtons}.options.buttonOptions",
@@ -76,9 +70,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         range: {
             min: 0,
             max: 100
-        },
-        buttonOptions: {
-            step: 10
         }
     });
 
@@ -128,33 +119,35 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     });
 
     fluid.defaults("fluid.button", {
-        gradeNames: ["fluid.rendererComponent"],
+        gradeNames: ["fluid.viewComponent"],
         range: {}, // should be used to specify the min, max range e.g. {min: 0, max: 100}
         invokers: {
             setModel: {
                 changePath: "value",
-                value: "{that}.calculateValue"
-            },
-            calculateValue: {
-                funcName: "fluid.buttonCalculateValue",
-                args: ["{that}.dom.button", "{that}.incrementCoefficient", "{that}.buttonOptions.step", "{that}.model.value", "{that}.range.min", "{that}.range.max"]
+                value: {
+                    expander: {
+                        funcName: "fluid.buttonCalculateValue",
+                        args: ["{that}.options.incrementCoefficient", "{that}.options.buttonOptions.stepMultiplier", "{that}.model.value", "{that}.options.range.min", "{that}.options.range.max"]
+                    }
+                }
             }
         },
         listeners: {
-            afterRender: {
-                "this": "{that}.dom.button",
+            "onCreate.bindClickEvt": {
+                "this": "{that}.container",
                 "method": "click",
-                "args": "fluid.printText"
+                "args": "{that}.setModel"
             }
         }
     });
 
-    fluid.buttonCalculateValue = function (button, coeff, step, modelValue, min, max) {
-        console.log(modelValue);
-        var value = coeff * step;
-        if ((modelValue + value) < min) return min;
-        else if ((modelValue + value) > max) return max;
-        else return (modelValue + value);
+    fluid.buttonCalculateValue = function (value, stepMultiplier, modelValue, min, max) {
+        modelValue = Math.round(modelValue * stepMultiplier);
+        min = Math.round(min * stepMultiplier);
+        max = Math.round(max * stepMultiplier);
+        if ((modelValue + value) < min) return min/stepMultiplier;
+        else if ((modelValue + value) > max) return max/stepMultiplier;
+        else return (modelValue + value)/stepMultiplier;
     };
 
 })(jQuery, fluid_2_0_0);
