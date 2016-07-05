@@ -229,8 +229,7 @@ module.exports = function (grunt) {
             "copy:" + target,
             "copy:necessities",
             concatTask + target,
-            "compress:" + target,
-            "clean:build"
+            "compress:" + target
         ];
         grunt.task.run(tasks);
     });

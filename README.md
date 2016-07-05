@@ -40,20 +40,21 @@ For simplicity and performance reasons, you may wish to create a concatenated, m
 
 ### Source Maps ###
 
-Source maps are supported in all of the major browsers: [Chrome](https://developer.chrome.com/devtools/docs/javascript-debugging#source-maps), [Firefox](https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map), [IE 11](https://msdn.microsoft.com/library/dn255007#source_maps), and Safari. To make use of them, enable source maps in your debugging environment, and ensure that the source maps are hosted adjacent to the file they are associated with.
+Source maps are supported in all of the major browsers: [Chrome](https://developer.chrome.com/devtools/docs/javascript-debugging#source-maps), [Firefox](https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map), 
+[IE 11](https://msdn.microsoft.com/library/dn255007#source_maps), and Safari. To make use of them, enable source maps in your debugging environment, and ensure that the source maps are hosted adjacent to the file they are associated with.
 
 #### Source Map Example ####
 
 * From the command line, run `grunt` to create a build of Infusion
-    * All Infusion packages come with a source map for the concatenated JavaScript file.
-* In the Infusion package, modify one of the demos to replace the individual javascript includes with a references to "infusion-all.js".
-* The "infusion-all.js" includes a refernce to the "infusion-all.js.map" file, which is assumed to be hosted as its sibling.
+    * All Infusion packages come with a source map for the concatenated JavaScript file
+* In the Infusion package, modify one of the demos to replace the individual javascript includes with a reference to "infusion-all.js"
+* The "infusion-all.js" includes a reference to the "infusion-all.js.map" file, which is assumed to be hosted as its sibling
 * Open the demo in a browser
-* In the browser's debugger ensure that source maps are enabled.
+* In the browser's debugger ensure that source maps are enabled
     *  In Firefox open the debugger
         *  In the debugger options, ensure that "Show Original Sources" is enabled
         * see [MDN: Use a source map](https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map)
-* In the debugger you should now be able to view and debug the individual JavaScript files as though they were included separately.
+* In the debugger you should now be able to view and debug the individual JavaScript files as though they were included separately
 
 ### Dependencies ###
 
@@ -63,8 +64,6 @@ Source maps are supported in all of the major browsers: [Chrome](https://develop
 All other development dependencies will be installed by running the following from the project root:
 
     npm install
-
-(Infusion has no external runtime dependencies)
 
 ### Package Types ###
 
