@@ -729,7 +729,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
         },
         buttonOptions: {
-            step: 0.1
+            stepMultiplier: 10
         }
     });
     
@@ -786,7 +786,18 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * A sub-component of fluid.prefs that renders the "line space" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.lineSpace", {
-        gradeNames: ["fluid.prefs.panel"],
+        gradeNames: ["fluid.prefs.panel", "fluid.contextAware"],
+        contextAwareness: {
+            responsiveAware: {
+                checks: {
+                    responsive: {
+                        contextValue: "{fluid.responsiveCheck}",
+                        gradeNames: "fluid.prefs.responsiveLineSpace"
+                    }
+                },
+                defaultGradeNames: "fluid.prefs.defaultLineSpace"
+            }
+        },
         preferenceMap: {
             "fluid.prefs.lineSpace": {
                 "model.lineSpace": "default",
@@ -803,13 +814,25 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         },
         selectors: {
             lineSpace: ".flc-prefsEditor-line-space",
-            label: ".flc-prefsEditor-line-space-label",
+            label: ".flc-prefsEditor-line-space-label"
+        },
+        selectorsToIgnore: ["lineSpace"],
+        protoTree: {
+            label: {messagekey: "lineSpaceLabel"},
+            narrowIcon: {messagekey: "lineSpaceNarrowIcon"},
+            wideIcon: {messagekey: "lineSpaceWideIcon"},
+            multiplier: {messagekey: "multiplier"},
+            lineSpaceDescr: {messagekey: "lineSpaceDescr"}
+        }
+    });
+
+    fluid.defaults("fluid.prefs.defaultLineSpace", {
+        selectors: {
             narrowIcon: ".flc-prefsEditor-line-space-narrowIcon",
             wideIcon: ".flc-prefsEditor-line-space-wideIcon",
             multiplier: ".flc-prefsEditor-multiplier",
             lineSpaceDescr: ".flc-prefsEditor-line-space-descr"
         },
-        selectorsToIgnore: ["lineSpace"],
         components: {
             textfieldSlider: {
                 type: "fluid.textfieldSlider",
@@ -824,17 +847,34 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 }
             }
         },
-        protoTree: {
-            label: {messagekey: "lineSpaceLabel"},
-            narrowIcon: {messagekey: "lineSpaceNarrowIcon"},
-            wideIcon: {messagekey: "lineSpaceWideIcon"},
-            multiplier: {messagekey: "multiplier"},
-            lineSpaceDescr: {messagekey: "lineSpaceDescr"}
-        },
         sliderOptions: {
             orientation: "horizontal",
             step: 0.1,
             range: "min"
+        }
+    });
+
+    fluid.defaults("fluid.prefs.responsiveLineSpace", {
+        selectors: {
+            increaseButton: "fl-increase-button",
+            decreaseButton: "fl-decrease-button"
+        },
+        components: {
+            textfieldButtons: {
+                type: "fluid.textfieldButtons",
+                container: "{that}.dom.lineSpace",
+                createOnEvent: "afterRender",
+                options: {
+                    model: {
+                        value: "{fluid.prefs.panel.lineSpace}.model.lineSpace"
+                    },
+                    range: "{fluid.prefs.panel.lineSpace}.options.range",
+                    buttonOptions: "{fluid.prefs.panel.lineSpace}.options.buttonOptions"
+                }
+            }
+        },
+        buttonOptions: {
+            stepMultiplier: 10
         }
     });
 
