@@ -168,11 +168,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 "this": "{that}.container",
                 method: "attr",
                 args: [{
-                    "value": "{that}.model.value",
                     "min": "{that}.options.range.min",
                     "max": "{that}.options.range.max",
                     "step": "{that}.options.sliderOptions.step",
-                    "type": "range"
+                    "type": "range",
+                    "value": "{that}.model.value"
                 }]
             },
             "onCreate.bindSlideEvt": {
