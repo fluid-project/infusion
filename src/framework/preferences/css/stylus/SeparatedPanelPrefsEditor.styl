@@ -1,5 +1,14 @@
 @import "utils/Themes"
 
+//function to generate border radius
+border-radius(n)
+    -webkit-border-radius: n;
+    -moz-border-radius: n;
+    border-top-left-radius: n;
+    border-top-right-radius: n;
+    border-bottom-left-radius: n;
+    border-bottom-right-radius: n;
+
 @font-face {
     font-family: 'OpenSans';
     src:url('../../../lib/fonts/OpenSans-Light.ttf');
@@ -22,11 +31,66 @@
 }
 
 // Top bar and show/hide button
-.fl-prefsEditor-separatedPanel {
-    .fl-panelBar {
+@media all and (max-width: 639px) {
+    .fl-prefsEditor-separatedPanel {
+        position: fixed;
+        bottom: 0px;
+        left: 0px;
         width: 100%;
-        background-color: #fff;
-        border-bottom: 1px solid #ccc;
+
+        div.fl-panelBar {
+            border-bottom: 0px;
+            order: 1;
+
+            span.fl-prefsEditor-buttons {
+                margin: 0px 0px 5px 5px;
+                float: left;
+                border: 2px solid #999696;
+                border-radius(3px);
+                box-shadow: none;
+                background: #fff;
+
+                .fl-prefsEditor-showHide, .fl-prefsEditor-reset {
+                    background-color: #fff;
+                    color: #2f2b2a;
+                }
+
+                .fl-prefsEditor-showHide {
+                    min-width: 6em;
+                }
+            }
+        }
+
+        .flc-prefsEditor-iframe {
+            order: 2;
+            height: 35vh;
+
+
+            .fl-prefsEditor-separatedPanel-iframe {
+                height: 100%;
+                overflow-y: auto;
+            }
+        }
+    }
+
+    .prefsEditor-demo-theme .fl-prefsEditor-separatedPanel .fl-panelBar span.fl-prefsEditor-buttons {
+        background: #fff;
+    }
+}
+
+@media all and (min-height: 450px) and (max-width: 639px) {
+    .fl-prefsEditor-separatedPanel .flc-prefsEditor-iframe {
+        height: 160px;
+    }
+}
+
+.fl-prefsEditor-separatedPanel {
+    display: flex;
+    flex-flow: column nowrap;
+
+    .fl-panelBar {
+        order: 2;
+        width: 100%;
 
         .fl-prefsEditor-buttons {
             box-shadow: 2px 2px 3px 0 #6f6f6f;
@@ -86,6 +150,10 @@
     .fl-icon-preferences:before {
         content: "\e00f";
     }
+}
+
+.flc-prefsEditor-iframe {
+    order: 1;
 }
 
 // IFrame

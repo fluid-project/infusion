@@ -1,5 +1,27 @@
 @import "utils/Themes"
 
+//function to generate border radius
+border-radius(n)
+    -webkit-border-radius: n;
+    -moz-border-radius: n;
+    border-top-left-radius: n;
+    border-top-right-radius: n;
+    border-bottom-left-radius: n;
+    border-bottom-right-radius: n;
+
+unselectable()
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+    -moz-user-select: none;     /* Firefox all */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none;          /* Likely future */
+
+gradientBackground(topColor, bottomColor)
+    background: bottomColor; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(topColor, bottomColor); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(topColor, bottomColor); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(topColor, bottomColor); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(topColor, bottomColor); /* Standard syntax */
+
 @font-face {
     font-family: "OpenSans";
     src: url("../../../lib/fonts/OpenSans-Light.ttf");
@@ -26,6 +48,137 @@ html {
 }
 
 /* Preferences Editor Separated Panel styles */
+@media all and (max-width: 639px) {
+
+    body.fl-prefsEditor-separatedPanel {
+        overflow-y: auto;
+        padding: 0px;
+
+        .fl-prefsEditor-panels {
+            min-height: min-content;
+            flex-flow: column nowrap;
+            padding: 0px;
+            margin: 0px;
+
+            .fl-prefsEditor-panel {
+                overflow: auto;
+                margin 0px;
+                min-width: 23em;
+                box-sizing: border-box;
+                height: 100vh;
+                border: none;
+                box-shadow: none;
+                border-radius(0px);
+
+                div {
+                    > h2 {
+                        display: flex;
+                        margin-bottom: 0.5em;
+                        padding: 0px;
+                        box-shadow: none;
+                        border-bottom: none;
+
+                        > span:first-of-type {
+                            display: none;
+                        }
+
+                        > * {
+                            margin: 0px auto;
+                            font-size: 1.1em;
+                        }
+                    }
+                }
+
+                .fl-buttons-textfield-inputs {
+                    display: flex;
+                    justify-content: center;
+                    margin-top: 1.2em;
+
+                    .flc-textfieldButtons-field {
+                        box-sizing: border-box;
+                        width: 6em;
+                        height: 2em;
+                        border: 1px solid #a7a9ac;
+                        border-radius(0.25em);
+                        text-align: center;
+                    }
+
+                    .flc-textfieldButtons-button {
+                        box-sizing: border-box;
+                        display: flex;
+                        cursor: pointer;
+                        width: 2em;
+                        height: 2em;
+                        border: 2px solid #4d4e4e;
+                        border-radius(0.25em);
+                        color: #4d4e4e;
+
+                        &:hover {
+                            border: 2px solid #343535
+                            color: #343535
+                            gradientBackground(#ffffff, #cccccc);
+                        }
+
+                        &:active {
+                            border: 2px solid #4d4e4e;
+                            color: #4d4e4e;
+                            gradientBackground(#cccccc, #ffffff);
+                        }
+
+                        .fl-sign-container {
+                            margin: auto;
+                            font-size: 2em;
+                            vertical-align: middle;
+                            unselectable();
+                        }
+                    }
+
+                    .fl-decrease-button {
+                        margin-right: 0.5em;
+                        padding-bottom: 0.3em;
+                    }
+
+                    .fl-increase-button {
+                        margin-left: 0.5em;
+                        padding-bottom: 0.1em;
+                        padding-left: 0.1em;
+                    }
+                }
+
+                .flc-prefsEditor-contrast {
+                    display: flex;
+                    flex-flow: row wrap;
+                    
+                    h2 {
+                        flex: 1 100%;
+                    }
+
+                    p {
+                        display: none;
+                    }
+
+                    .flc-prefsEditor-themeRow {
+                        flex: 1 auto;
+
+                        label {
+                            display: block;
+                            margin: 0px auto;
+                        }
+                    }
+
+                    > div:first-of-type {
+                        margin-left: 5%;
+                    }
+
+                    > div:last-of-type {
+                        margin-right: 5%;
+                    }
+                }
+            }
+        }
+    }
+}
+
 .fl-prefsEditor-separatedPanel {
     background-color: #fff;
     background-image: url('../images/default/separatedpanelbg.png');
@@ -45,19 +198,20 @@ html {
     // Preference Panels
     .fl-prefsEditor-panels {
         white-space: nowrap;
-        display: table;
-        border-spacing: 20px 0px;
+        display: flex;
+        flex-flow: row nowrap;
+        padding: 0px 10px;
 
         .fl-prefsEditor-panel {
             border: 1px solid #615e59;
             border-radius: 5px;
             box-shadow: 2px 2px #7a766d;
-            display: inline-block;
+            display: block;
+            margin: 0px 10px;
             padding: 1em;
             min-width: 25em;
             background-color: #fff;
             white-space: normal;
-            display: table-cell;
         }
     }
 

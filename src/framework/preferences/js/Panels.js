@@ -645,7 +645,18 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * A sub-component of fluid.prefs that renders the "text size" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.textSize", {
-        gradeNames: ["fluid.prefs.panel"],
+        gradeNames: ["fluid.prefs.panel", "fluid.contextAware"],
+        contextAwareness: {
+            responsiveAware: {
+                checks: {
+                    responsive: {
+                        contextValue: "{fluid.responsiveCheck}",
+                        gradeNames: "fluid.prefs.responsiveTextSize"
+                    }
+                },
+                defaultGradeNames: "fluid.prefs.defaultTextSize"
+            }
+        },
         preferenceMap: {
             "fluid.prefs.textSize": {
                 "model.textSize": "default",
@@ -662,13 +673,25 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         },
         selectors: {
             textSize: ".flc-prefsEditor-min-text-size",
-            label: ".flc-prefsEditor-min-text-size-label",
+            label: ".flc-prefsEditor-min-text-size-label"
+        },
+        selectorsToIgnore: ["textSize"],
+        protoTree: {
+            label: {messagekey: "textSizeLabel"},
+            textSizeDescr: {messagekey: "textSizeDescr"},
+            smallIcon: {messagekey: "textSizeSmallIcon"},
+            largeIcon: {messagekey: "textSizeLargeIcon"},
+            multiplier: {messagekey: "multiplier"}
+        }
+    });
+
+    fluid.defaults("fluid.prefs.defaultTextSize", {
+        selectors: {
             smallIcon: ".flc-prefsEditor-min-text-size-smallIcon",
             largeIcon: ".flc-prefsEditor-min-text-size-largeIcon",
             multiplier: ".flc-prefsEditor-multiplier",
             textSizeDescr: ".flc-prefsEditor-text-size-descr"
         },
-        selectorsToIgnore: ["textSize"],
         components: {
             textfieldSlider: {
                 type: "fluid.textfieldSlider",
@@ -683,13 +706,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 }
             }
         },
-        protoTree: {
-            label: {messagekey: "textSizeLabel"},
-            smallIcon: {messagekey: "textSizeSmallIcon"},
-            largeIcon: {messagekey: "textSizeLargeIcon"},
-            multiplier: {messagekey: "multiplier"},
-            textSizeDescr: {messagekey: "textSizeDescr"}
-        },
         sliderOptions: {
             orientation: "horizontal",
             step: 0.1,
@@ -697,6 +713,30 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
+    fluid.defaults("fluid.prefs.responsiveTextSize", {
+        selectors: {
+            increaseButton: "fl-increase-button",
+            decreaseButton: "fl-decrease-button"
+        },
+        components: {
+            textfieldButtons: {
+                type: "fluid.textfieldButtons",
+                container: "{that}.dom.textSize",
+                createOnEvent: "afterRender",
+                options: {
+                    model: {
+                        value: "{fluid.prefs.panel.textSize}.model.textSize"
+                    },
+                    range: "{fluid.prefs.panel.textSize}.options.range",
+                    buttonOptions: "{fluid.prefs.panel.textSize}.options.buttonOptions"
+                }
+            }
+        },
+        buttonOptions: {
+            stepMultiplier: 10
+        }
+    });
+    
     /********************************
      * Preferences Editor Text Font *
      ********************************/
@@ -750,7 +790,18 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * A sub-component of fluid.prefs that renders the "line space" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.lineSpace", {
-        gradeNames: ["fluid.prefs.panel"],
+        gradeNames: ["fluid.prefs.panel", "fluid.contextAware"],
+        contextAwareness: {
+            responsiveAware: {
+                checks: {
+                    responsive: {
+                        contextValue: "{fluid.responsiveCheck}",
+                        gradeNames: "fluid.prefs.responsiveLineSpace"
+                    }
+                },
+                defaultGradeNames: "fluid.prefs.defaultLineSpace"
+            }
+        },
         preferenceMap: {
             "fluid.prefs.lineSpace": {
                 "model.lineSpace": "default",
@@ -767,13 +818,25 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         },
         selectors: {
             lineSpace: ".flc-prefsEditor-line-space",
-            label: ".flc-prefsEditor-line-space-label",
+            label: ".flc-prefsEditor-line-space-label"
+        },
+        selectorsToIgnore: ["lineSpace"],
+        protoTree: {
+            label: {messagekey: "lineSpaceLabel"},
+            narrowIcon: {messagekey: "lineSpaceNarrowIcon"},
+            wideIcon: {messagekey: "lineSpaceWideIcon"},
+            multiplier: {messagekey: "multiplier"},
+            lineSpaceDescr: {messagekey: "lineSpaceDescr"}
+        }
+    });
+
+    fluid.defaults("fluid.prefs.defaultLineSpace", {
+        selectors: {
             narrowIcon: ".flc-prefsEditor-line-space-narrowIcon",
             wideIcon: ".flc-prefsEditor-line-space-wideIcon",
             multiplier: ".flc-prefsEditor-multiplier",
             lineSpaceDescr: ".flc-prefsEditor-line-space-descr"
         },
-        selectorsToIgnore: ["lineSpace"],
         components: {
             textfieldSlider: {
                 type: "fluid.textfieldSlider",
@@ -788,17 +851,34 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 }
             }
         },
-        protoTree: {
-            label: {messagekey: "lineSpaceLabel"},
-            narrowIcon: {messagekey: "lineSpaceNarrowIcon"},
-            wideIcon: {messagekey: "lineSpaceWideIcon"},
-            multiplier: {messagekey: "multiplier"},
-            lineSpaceDescr: {messagekey: "lineSpaceDescr"}
-        },
         sliderOptions: {
             orientation: "horizontal",
             step: 0.1,
             range: "min"
+        }
+    });
+
+    fluid.defaults("fluid.prefs.responsiveLineSpace", {
+        selectors: {
+            increaseButton: "fl-increase-button",
+            decreaseButton: "fl-decrease-button"
+        },
+        components: {
+            textfieldButtons: {
+                type: "fluid.textfieldButtons",
+                container: "{that}.dom.lineSpace",
+                createOnEvent: "afterRender",
+                options: {
+                    model: {
+                        value: "{fluid.prefs.panel.lineSpace}.model.lineSpace"
+                    },
+                    range: "{fluid.prefs.panel.lineSpace}.options.range",
+                    buttonOptions: "{fluid.prefs.panel.lineSpace}.options.buttonOptions"
+                }
+            }
+        },
+        buttonOptions: {
+            stepMultiplier: 10
         }
     });
 

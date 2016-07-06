@@ -21,6 +21,23 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * contrast, table of contents, inputs larger and emphasize links
      *******************************************************************************/
 
+    var check;
+    var widthCheck = function() {
+        var width = $(window).width();
+        check = (width<640);
+        if (check) {
+            console.log("checked");
+            fluid.contextAware.makeChecks({
+                "fluid.responsiveCheck": true
+            });
+        }
+        else {
+            fluid.contextAware.forgetChecks("fluid.responsiveCheck");
+        }
+    };
+    widthCheck();
+    $(window).resize(widthCheck);
+
     fluid.defaults("fluid.prefs.termsAware");
 
     // textSize mixin (base)
@@ -40,15 +57,23 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
         },
         contextAwareness: {
-            textSizeSliderVariety: {
+            // textSizeSliderVariety: {
+            //     checks: {
+            //         jQueryUI: {
+            //             contextValue: "{fluid.prefsWidgetType}",
+            //             equals: "jQueryUI",
+            //             gradeNames: "fluid.prefs.auxSchema.starter.textSize.jQueryUI"
+            //         }
+            //     },
+            //     defaultGradeNames: "fluid.prefs.auxSchema.starter.textSize.nativeHTML"
+            // },
+            responsiveAware: {
                 checks: {
-                    jQueryUI: {
-                        contextValue: "{fluid.prefsWidgetType}",
-                        equals: "jQueryUI",
-                        gradeNames: "fluid.prefs.auxSchema.starter.textSize.jQueryUI"
+                    responsive: {
+                        contextValue: "{fluid.responsiveCheck}",
+                        gradeNames: "fluid.prefs.auxSchema.starter.textSize.responsive"
                     }
-                },
-                defaultGradeNames: "fluid.prefs.auxSchema.starter.textSize.nativeHTML"
+                }
             }
         }
     });
@@ -68,6 +93,16 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             "textSize": {
                 "panel": {
                     "template": "%templatePrefix/PrefsEditorTemplate-textSize-jQueryUI.html"
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.auxSchema.starter.textSize.responsive", {
+        auxiliarySchema: {
+            "textSize": {
+                "panel": {
+                    "template": "%templatePrefix/PrefsEditorTemplate-textSize-responsive.html"
                 }
             }
         }
@@ -99,15 +134,23 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
         },
         contextAwareness: {
-            lineSpaceSliderVariety: {
+            // lineSpaceSliderVariety: {
+            //     checks: {
+            //         jQueryUI: {
+            //             contextValue: "{fluid.prefsWidgetType}",
+            //             equals: "jQueryUI",
+            //             gradeNames: "fluid.prefs.auxSchema.starter.lineSpace.jQueryUI"
+            //         }
+            //     },
+            //     defaultGradeNames: "fluid.prefs.auxSchema.starter.lineSpace.nativeHTML"
+            // },
+            responsiveAware: {
                 checks: {
-                    jQueryUI: {
-                        contextValue: "{fluid.prefsWidgetType}",
-                        equals: "jQueryUI",
-                        gradeNames: "fluid.prefs.auxSchema.starter.lineSpace.jQueryUI"
+                    responsive: {
+                        contextValue: "{fluid.responsiveCheck}",
+                        gradeNames: "fluid.prefs.auxSchema.starter.lineSpace.responsive"
                     }
-                },
-                defaultGradeNames: "fluid.prefs.auxSchema.starter.lineSpace.nativeHTML"
+                }
             }
         }
     });
@@ -127,6 +170,16 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             "lineSpace": {
                 "panel": {
                     "template": "%templatePrefix/PrefsEditorTemplate-lineSpace-jQueryUI.html"
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.auxSchema.starter.lineSpace.responsive", {
+        auxiliarySchema: {
+            "lineSpace": {
+                "panel": {
+                    "template": "%templatePrefix/PrefsEditorTemplate-lineSpace-responsive.html"
                 }
             }
         }

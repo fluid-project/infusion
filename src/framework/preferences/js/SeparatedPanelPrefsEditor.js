@@ -299,7 +299,29 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             var attrs = {height: height + 15}; // TODO: Configurable padding here
             var panel = separatedPanel.slidingPanel.locate("panel");
             panel.css({height: ""});
-            iframe.animate(attrs, 400);
+            if ($(window).width()< "640") {
+                iframe.removeAttr("style");
+                
+                //The rest of the if make the scroll go to the next tool
+                var jqueryDokkument = $(dokkument);
+                var scrollStep = iframe.height();
+                var lastPosition = 0;
+                jqueryDokkument.on("scroll", function () {
+                    var scrollPosition = jqueryDokkument.scrollTop();
+                    //Scroll down
+                    if (lastPosition > scrollPosition) {
+                        jqueryDokkument.scrollTop((Math.floor(scrollPosition/scrollStep))*scrollStep);
+                    }
+                    //Scroll up
+                    else if (lastPosition < scrollPosition) {
+                        jqueryDokkument.scrollTop((Math.ceil(scrollPosition/scrollStep))*scrollStep);
+                    }
+                    lastPosition = jqueryDokkument.scrollTop();
+                });
+            }
+            else {
+                iframe.animate(attrs, 400);
+            }
         });
 
         separatedPanel.slidingPanel.events.afterPanelHide.addListener(function () {
@@ -334,3 +356,4 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
 })(jQuery, fluid_2_0_0);
+
