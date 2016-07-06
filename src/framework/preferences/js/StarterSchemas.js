@@ -57,17 +57,18 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
         },
         contextAwareness: {
-            // textSizeSliderVariety: {
-            //     checks: {
-            //         jQueryUI: {
-            //             contextValue: "{fluid.prefsWidgetType}",
-            //             equals: "jQueryUI",
-            //             gradeNames: "fluid.prefs.auxSchema.starter.textSize.jQueryUI"
-            //         }
-            //     },
-            //     defaultGradeNames: "fluid.prefs.auxSchema.starter.textSize.nativeHTML"
-            // },
+            textSizeSliderVariety: {
+                checks: {
+                    jQueryUI: {
+                        contextValue: "{fluid.prefsWidgetType}",
+                        equals: "jQueryUI",
+                        gradeNames: "fluid.prefs.auxSchema.starter.textSize.jQueryUI"
+                    }
+                },
+                defaultGradeNames: "fluid.prefs.auxSchema.starter.textSize.nativeHTML"
+            },
             responsiveAware: {
+                priority: "after:textSizeSliderVariety",
                 checks: {
                     responsive: {
                         contextValue: "{fluid.responsiveCheck}",
@@ -134,17 +135,18 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
         },
         contextAwareness: {
-            // lineSpaceSliderVariety: {
-            //     checks: {
-            //         jQueryUI: {
-            //             contextValue: "{fluid.prefsWidgetType}",
-            //             equals: "jQueryUI",
-            //             gradeNames: "fluid.prefs.auxSchema.starter.lineSpace.jQueryUI"
-            //         }
-            //     },
-            //     defaultGradeNames: "fluid.prefs.auxSchema.starter.lineSpace.nativeHTML"
-            // },
+            lineSpaceSliderVariety: {
+                checks: {
+                    jQueryUI: {
+                        contextValue: "{fluid.prefsWidgetType}",
+                        equals: "jQueryUI",
+                        gradeNames: "fluid.prefs.auxSchema.starter.lineSpace.jQueryUI"
+                    }
+                },
+                defaultGradeNames: "fluid.prefs.auxSchema.starter.lineSpace.nativeHTML"
+            },
             responsiveAware: {
+                priority: "after:lineSpaceSliderVariety",
                 checks: {
                     responsive: {
                         contextValue: "{fluid.responsiveCheck}",
