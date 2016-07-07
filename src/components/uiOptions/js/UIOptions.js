@@ -19,7 +19,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     });
 
     fluid.defaults("fluid.uiOptions.prefsEditor", {
-        gradeNames: ["fluid.prefs.constructed.prefsEditor"],
+        gradeNames: ["fluid.prefs.constructed.prefsEditor", "{that}.getLazyLoadGrade"],
+        lazyLoad: false,
         distributeOptions: [{
             source: "{that}.options.tocTemplate",
             target: "{that uiEnhancer}.options.tocTemplate"
@@ -35,6 +36,25 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 source: "{that}.options.ignoreForToC",
                 target: "{that > fluid.prefs.enactor.tableOfContents}.options.ignoreForToC"
             }]
+        },
+        invokers: {
+            getLazyLoadGrade: {
+                funcName: "fluid.uiOptions.prefsEditor.getLazyLoadGrade",
+                args: ["{that}.options.lazyLoad"]
+            }
+        }
+    });
+
+    fluid.uiOptions.prefsEditor.getLazyLoadGrade = function (lazyLoad) {
+        if (lazyLoad) {
+            return "fluid.uiOptions.prefsEditor.lazyLoad";
+        }
+    };
+
+    fluid.defaults("fluid.uiOptions.prefsEditor.lazyLoad", {
+        distributeOptions: {
+            record: "fluid.prefs.separatedPanel.lazyLoad",
+            target: "{that separatedPanel}.options.gradeNames"
         }
     });
 
