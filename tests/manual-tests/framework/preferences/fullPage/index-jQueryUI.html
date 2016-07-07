@@ -23,7 +23,7 @@
         <!-- styling for manual tests -->
         <link rel="stylesheet" type="text/css" href="../../../shared/css/manualTests.css" />
 
-        <title>Preferences Editor: Full Page, With Preview, Using Schema</title>
+        <title>Preferences Editor: Full Page</title>
         <script type="text/javascript" src="../../../../../src/lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../../../src/lib/jquery/ui/js/jquery.ui.core.js"></script>
         <script type="text/javascript" src="../../../../../src/lib/jquery/ui/js/jquery.ui.widget.js"></script>
@@ -41,6 +41,7 @@
         <script type="text/javascript" src="../../../../../src/framework/core/js/ModelTransformationTransforms.js"></script>
         <script type="text/javascript" src="../../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
         <script type="text/javascript" src="../../../../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/core/js/ResourceLoader.js"></script>
         <script type="text/javascript" src="../../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
         <script type="text/javascript" src="../../../../../src/framework/renderer/js/fluidParser.js"></script>
         <script type="text/javascript" src="../../../../../src/framework/renderer/js/fluidRenderer.js"></script>
@@ -52,25 +53,30 @@
         <script type="text/javascript" src="../../../../../src/components/textfieldSlider/js/TextfieldSlider.js"></script>
         <script type="text/javascript" src="../../../../../src/framework/preferences/js/PrefsEditor.js"></script>
         <script type="text/javascript" src="../../../../../src/framework/preferences/js/Panels.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/preferences/js/StarterGrades.js"></script>
         <script type="text/javascript" src="../../../../../src/framework/preferences/js/FullPreviewPrefsEditor.js"></script>
         <script type="text/javascript" src="../../../../../src/components/tableOfContents/js/TableOfContents.js"></script>
-        <script type="text/javascript" src="../../../../../src/framework/preferences/js/PrimaryBuilder.js"></script>
-        <script type="text/javascript" src="../../../../../src/framework/preferences/js/AuxBuilder.js"></script>
-        <script type="text/javascript" src="../../../../../src/framework/preferences/js/StarterSchemas.js"></script>
-        <script type="text/javascript" src="../../../../../src/framework/preferences/js/Builder.js"></script>
 
-        <script type="text/javascript" src="js/prefsEditorFullPageSchema.js"></script>
+        <script>
+            fluid.contextAware.makeChecks({
+                "fluid.prefsWidgetType": {
+                    value: "jQueryUI"
+                }
+            });
+        </script>
+
+        <script type="text/javascript" src="js/prefsEditorFullpage.js"></script>
     </head>
 
     <body>
         <!-- The page-wide UI Enhancer needs to be initialized right away -->
         <script type="text/javascript">
             $(document).ready(function () {
+                demo.initSettingsStore();
+                demo.initPageEnhancer();
                 demo.initFullWithPreview("#myPrefsEditor", {
-                    prefsEditor: {
-                        preview: {
-                            templateUrl: "../shared/html/prefsEditorPreview.html"
-                        }
+                    preview: {
+                        templateUrl: "../shared/html/prefsEditorPreview.html"
                     }
                 });
             });
@@ -90,6 +96,7 @@
                     </li>
                     <li>Use the "save and apply" button to apply the preview styles to Preferences Editor</li>
                     <li>Use the "reset" button to reset the styles</li>
+                    <li>Be sure to test with the <a href="index-nativeHTML.html">native HTML widgets version as well.</a></li>
                 </ol>
             </div>
         </aside>
@@ -100,7 +107,7 @@
                 </div>
             </div>
 
-            <h1>Preferences Editor: Full Page using Schema</h1>
+            <h1>Preferences Editor: Full Page</h1>
             <div id="myPrefsEditor"></div>
         </main>
 

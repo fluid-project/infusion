@@ -474,8 +474,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     // Very sadly this simple implementation now makes the setup O(n^2) in the number of elements
 
     fluid.dropManager.normalizeSentinels = function (targets) {
-        for (var i = 0; i < targets.length; ++ i) {
-            for (var j = 0; j < targets.length; ++ j) {
+        for (var i = 0; i < targets.length; ++i) {
+            for (var j = 0; j < targets.length; ++j) {
                 var ti = targets[i], tj = targets[j];
                 var jrect = tj.origRect || tj.rect;
                 if (ti.element !== tj.element && ti.origRect && fluid.geom.minRectRect(ti.rect, jrect) === 0) {

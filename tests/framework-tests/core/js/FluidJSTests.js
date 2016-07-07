@@ -188,7 +188,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertTrue("a null each and a null transform don't crash the framework", true);
     });
 
-    fluid.tests.flattenFixtures = [ {
+    fluid.tests.flattenFixtures = [
+        {
             message: "standard mixture",
             arg: [1, [{a: 1}, 13], false, [{b: 2}]],
             expected: [1, {a: 1}, 13, false, {b: 2}]
@@ -488,7 +489,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }, "thingit");
         fluid.pushSoftFailure(-1);
     });
-    
+
     jqUnit.test("FLUID-5807 tests - identify fluid.FluidError", function () {
         // These tests have a direct analogue in basic-node-tests.js
         var error = new fluid.FluidError("thing");

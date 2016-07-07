@@ -55,7 +55,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 return root;
             }
             var accepted;
-            for (var j = 0; j < strategies.length; ++ j) {
+            for (var j = 0; j < strategies.length; ++j) {
                 accepted = strategies[j](root, segs[i], i + 1, segs);
                 if (accepted !== undefined) {
                     break; // May now short-circuit with stateless strategies
@@ -218,7 +218,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     // supported, PUBLIC API function
     fluid.pathUtil.composeSegments = function () {
         var path = "";
-        for (var i = 0; i < arguments.length; ++ i) {
+        for (var i = 0; i < arguments.length; ++i) {
             path = fluid.pathUtil.composePath(path, arguments[i]);
         }
         return path;
@@ -231,7 +231,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         if (end - start !== toMatch.length) {
             return false;
         }
-        for (var i = start; i < end; ++ i) {
+        for (var i = start; i < end; ++i) {
             if (segs[i] !== toMatch[i - start]) {
                 return false;
             }
@@ -615,7 +615,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 // We are in the middle of parsing a contextualised relay, and this call has arrived via its parseImplicitRelay.
                 // Rather than bind source-source, instead register the "half-transactional" listener which binds changes
                 // from the relay itself onto the target
-                fluid.registerDirectChangeRelay(target, targetSegs, source, [], linkId+"-transform", options.forwardAdapter, {transactional: true, sourceApplier: options.forwardApplier}, npOptions);
+                fluid.registerDirectChangeRelay(target, targetSegs, source, [], linkId + "-transform", options.forwardAdapter, {transactional: true, sourceApplier: options.forwardApplier}, npOptions);
             }
         } else { // more efficient branch where relay is uncontextualised
             fluid.registerDirectChangeRelay(target, targetSegs, source, sourceSegs, linkId, options.forwardAdapter, {transactional: false}, npOptions);
@@ -814,7 +814,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.model.notifyExternal = function (transRec) {
         var allChanges = transRec ? fluid.values(transRec.externalChanges) : [];
         fluid.sortByPriority(allChanges);
-        for (var i = 0; i < allChanges.length; ++ i) {
+        for (var i = 0; i < allChanges.length; ++i) {
             var change = allChanges[i];
             var targetApplier = change.args[5]; // NOTE: This argument gets here via fluid.model.storeExternalChange from fluid.notifyModelChanges
             if (!targetApplier.destroyed) { // 3rd point of guarding for FLUID-5592
@@ -863,7 +863,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
         var enlist = fluid.enlistModelComponent(that);
         fluid.each(optionsMR, function (mrrec, key) {
-            for (var i = 0; i < mrrec.length; ++ i) {
+            for (var i = 0; i < mrrec.length; ++i) {
                 fluid.parseModelRelay(that, mrrec[i], key);
             }
         });
@@ -877,7 +877,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var instantiator = fluid.getInstantiator(that);
 
         function updateRelays(transaction) {
-            while (fluid.model.updateRelays(instantiator, transaction.id) > 0){}
+            while (fluid.model.updateRelays(instantiator, transaction.id) > 0) {} // eslint-disable-line no-empty
         }
 
         function commitRelays(transaction, applier, code) {
@@ -1040,7 +1040,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.model.isChangedPath = function (changeMap, segs) {
-        for (var i = 0; i <= segs.length; ++ i) {
+        for (var i = 0; i <= segs.length; ++i) {
             if (typeof(changeMap) === "string") {
                 return true;
             }
@@ -1118,7 +1118,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.model.stepTargetAccess = function (target, type, segs, startpos, endpos, options) {
-        for (var i = startpos; i < endpos; ++ i) {
+        for (var i = startpos; i < endpos; ++i) {
             if (!target) {
                 continue;
             }
@@ -1229,7 +1229,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var outSegs = ["model"];
         var wildcard = false;
         var togo = [];
-        for (var i = 0; i < specSegs.length; ++ i) {
+        for (var i = 0; i < specSegs.length; ++i) {
             var seg = specSegs[i];
             if (seg === "*") {
                 if (i === specSegs.length - 1) {
@@ -1269,13 +1269,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             return;
         }
         var transRec = transaction && fluid.getModelTransactionRec(that, transaction.id);
-        for (var i = 0; i < listeners.length; ++ i) {
+        for (var i = 0; i < listeners.length; ++i) {
             var spec = listeners[i];
             var multiplePaths = spec.segsArray.length > 1; // does this spec listen on multiple paths? If so, don't rebase arguments and just report once per transaction
-            for (var j = 0; j < spec.segsArray.length; ++ j) {
+            for (var j = 0; j < spec.segsArray.length; ++j) {
                 var invalidPaths = fluid.matchChanges(changeMap, spec.segsArray[j], newHolder);
                 // We only have multiple invalidPaths here if there is a wildcard
-                for (var k = 0; k < invalidPaths.length; ++ k) {
+                for (var k = 0; k < invalidPaths.length; ++k) {
                     if (applier.destroyed) { // 2nd guarding point for FLUID-5592
                         return;
                     }

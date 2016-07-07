@@ -174,7 +174,7 @@ var fluid = fluid || fluid_2_0_0;
         this.message = togo.message;
         try { // This technique is necessary on IE11 since otherwise the stack entry is not filled in
             throw togo;
-        } catch (togo) { // jshint ignore:line
+        } catch (togo) {
             this.stack = togo.stack;
         }
         return this;
@@ -253,7 +253,7 @@ var fluid = fluid || fluid_2_0_0;
     fluid.setLogging = function (enabled) {
         var logLevel;
         if (typeof enabled === "boolean") {
-            logLevel = fluid.logLevel[enabled? "INFO" : "IMPORTANT"];
+            logLevel = fluid.logLevel[enabled ? "INFO" : "IMPORTANT"];
         } else if (fluid.isLogLevel(enabled)) {
             logLevel = enabled;
         } else {
@@ -267,7 +267,7 @@ var fluid = fluid || fluid_2_0_0;
 
     /** Undo the effect of the most recent "setLogging", returning the logging system to its previous state **/
     fluid.popLogging = function () {
-        var togo = logLevelStack.length === 1? logLevelStack[0] : logLevelStack.shift();
+        var togo = logLevelStack.length === 1 ? logLevelStack[0] : logLevelStack.shift();
         fluid.defeatLogging = !fluid.isLogging();
         return togo;
     };
@@ -331,7 +331,7 @@ var fluid = fluid || fluid_2_0_0;
     /** Determines whether the supplied object is a plain JSON-forming container - that is, it is either a plain Object
      * or a plain Array. Note that this differs from jQuery's isPlainObject which does not pass Arrays.
      * @param totest {Any} The object to be tested
-     * @param strict {Boolean} (optional) If `true`, plain Arrays will fail the test rather than passing. 
+     * @param strict {Boolean} (optional) If `true`, plain Arrays will fail the test rather than passing.
      */
     fluid.isPlainObject = function (totest, strict) {
         var string = Object.prototype.toString.call(totest);
@@ -429,7 +429,7 @@ var fluid = fluid || fluid_2_0_0;
                 togo.push(arg);
             }
             else {
-                for (var i = 0; i < arg.length; ++ i) {
+                for (var i = 0; i < arg.length; ++i) {
                     togo[i] = arg[i];
                 }
             }
@@ -618,8 +618,8 @@ var fluid = fluid || fluid_2_0_0;
 
     fluid.generate = function (n, generator, applyFunc) {
         var togo = [];
-        for (var i = 0; i < n; ++ i) {
-            togo[i] = applyFunc? generator(i) : generator;
+        for (var i = 0; i < n; ++i) {
+            togo[i] = applyFunc ? generator(i) : generator;
         }
         return togo;
     };
@@ -737,8 +737,8 @@ var fluid = fluid || fluid_2_0_0;
 
     fluid.stableSort = function (array, func) {
         for (var i = 0; i < array.length; i++) {
-            var k = array[i];
-            for (var j = i; j > 0 && func(k, array[j - 1]) < 0; j--) {
+            var j, k = array[i];
+            for (j = i; j > 0 && func(k, array[j - 1]) < 0; j--) {
                 array[j] = array[j - 1];
             }
             array[j] = k;
@@ -959,7 +959,7 @@ var fluid = fluid || fluid_2_0_0;
         }
         if (create && root[segment] === undefined) {
             // This optimisation in this heavily used function has a fair effect
-            return root[segment] = {}; // jshint ignore:line
+            return root[segment] = {};
         }
         return root[segment];
     };
@@ -1032,8 +1032,8 @@ var fluid = fluid || fluid_2_0_0;
 
     /** Even more optimised version which assumes segs are parsed and no configuration **/
     fluid.getImmediate = function (root, segs, i) {
-        var limit = (i === undefined ? segs.length: i + 1);
-        for (var j = 0; j < limit; ++ j) {
+        var limit = (i === undefined ? segs.length : i + 1);
+        for (var j = 0; j < limit; ++j) {
             root = root ? root[segs[j]] : undefined;
         }
         return root;
@@ -1246,7 +1246,7 @@ var fluid = fluid || fluid_2_0_0;
             var offset = constraint.type === "after" ? 1 : 0;
             var target = matchIndex + offset;
             var temp = array[c];
-            for (var shift = c; shift >= target; -- shift) {
+            for (var shift = c; shift >= target; --shift) {
                 array[shift] = array[shift - 1];
             }
             array[target] = temp;
@@ -1268,7 +1268,7 @@ var fluid = fluid || fluid_2_0_0;
                 return array;
             }
             var oldFirstConstraint = firstConstraint;
-            for (var c = firstConstraint; c < array.length; ++ c) {
+            for (var c = firstConstraint; c < array.length; ++c) {
                 var applied = fluid.honourConstraint(array, firstConstraint, c);
                 if (applied) {
                     ++firstConstraint;
@@ -1316,7 +1316,7 @@ var fluid = fluid || fluid_2_0_0;
         var togo = [];
         fluid.each(listeners, function (oneNamespace) {
             var headHard; // notify only the first listener with hard namespace - or else all if all are soft
-            for (var i = 0; i < oneNamespace.length; ++ i) {
+            for (var i = 0; i < oneNamespace.length; ++i) {
                 var thisListener = oneNamespace[i];
                 if (!thisListener.softNamespace && !headHard) {
                     headHard = thisListener;
@@ -1680,7 +1680,7 @@ var fluid = fluid || fluid_2_0_0;
     // builds up gradeStructure.gradeChain pushed from strongest to weakest (reverse defaults order)
     fluid.resolveGradesImpl = function (gs, gradeNames) {
         gradeNames = fluid.makeArray(gradeNames);
-        for (var i = gradeNames.length - 1; i >= 0; -- i) { // from stronger to weaker
+        for (var i = gradeNames.length - 1; i >= 0; --i) { // from stronger to weaker
             var gradeName = gradeNames[i];
             if (gradeName && !gs.gradeHash[gradeName]) {
                 var isDynamic = fluid.isIoCReference(gradeName);
@@ -1690,7 +1690,7 @@ var fluid = fluid || fluid_2_0_0;
                 gs.gradeHash[gradeName] = true;
                 gs.gradeChain.push(gradeName);
                 var oGradeNames = fluid.makeArray(options.gradeNames);
-                for (var j = oGradeNames.length - 1; j >= 0; -- j) { // from stronger to weaker grades
+                for (var j = oGradeNames.length - 1; j >= 0; --j) { // from stronger to weaker grades
                     // TODO: in future, perhaps restore mergedDefaultsCache function of storing resolved gradeNames for bare grades
                     fluid.resolveGradesImpl(gs, oGradeNames[j]);
                 }
@@ -1725,7 +1725,7 @@ var fluid = fluid || fluid_2_0_0;
             return !options;
         });
         var mergePolicy = {};
-        for (var i = 0; i < mergeArgs.length; ++ i) {
+        for (var i = 0; i < mergeArgs.length; ++i) {
             if (mergeArgs[i] && mergeArgs[i].mergePolicy) {
                 mergePolicy = $.extend(true, mergePolicy, mergeArgs[i].mergePolicy);
             }
@@ -1753,7 +1753,7 @@ var fluid = fluid || fluid_2_0_0;
         if (mergedDefaults) {
             var lastTick = 0; // check if cache should be invalidated through real latest tick being later than the one stored
             var searchGrades = mergedDefaults.defaults.gradeNames || [];
-            for (var i = 0; i < searchGrades.length; ++ i) {
+            for (var i = 0; i < searchGrades.length; ++i) {
                 lastTick = Math.max(lastTick, gradeTickStore[searchGrades[i]] || 0);
             }
             if (lastTick > mergedDefaults.lastTick) {
@@ -1828,12 +1828,12 @@ var fluid = fluid || fluid_2_0_0;
     // unsupported, NON-API function
     fluid.doIndexDefaults = function (defaultName, defaults, index, indexSpec) {
         var requiredGrades = fluid.makeArray(indexSpec.gradeNames);
-        for (var i = 0; i < requiredGrades.length; ++ i) {
+        for (var i = 0; i < requiredGrades.length; ++i) {
             if (!fluid.hasGrade(defaults, requiredGrades[i])) { return; }
         }
         var indexFunc = typeof(indexSpec.indexFunc) === "function" ? indexSpec.indexFunc : fluid.getGlobalValue(indexSpec.indexFunc);
         var keys = indexFunc(defaults) || [];
-        for (var j = 0; j < keys.length; ++ j) {
+        for (var j = 0; j < keys.length; ++j) {
             fluid.pushArray(index, keys[j], defaultName);
         }
     };
@@ -1887,7 +1887,7 @@ var fluid = fluid || fluid_2_0_0;
                 fluid.fail("Cannot make component creator for type " + componentName + " which does not have any gradeNames defined");
             } else if (!defaults.initFunction) {
                 var blankGrades = [];
-                for (var i = 0; i < defaults.gradeNames.length; ++ i) {
+                for (var i = 0; i < defaults.gradeNames.length; ++i) {
                     var gradeName = defaults.gradeNames[i];
                     var rawDefaults = fluid.rawDefaults(gradeName);
                     if (!rawDefaults) {
@@ -1915,7 +1915,7 @@ var fluid = fluid || fluid_2_0_0;
     var emptyPolicy = {};
     // unsupported, NON-API function
     fluid.derefMergePolicy = function (policy) {
-        return (policy? policy["*"]: emptyPolicy) || emptyPolicy;
+        return (policy ? policy["*"] : emptyPolicy) || emptyPolicy;
     };
 
     // unsupported, NON-API function
@@ -1936,7 +1936,7 @@ var fluid = fluid || fluid_2_0_0;
             }
             else if (!fluid.isDefaultValueMergePolicy(value)) {
                 var split = value.split(/\s*,\s*/);
-                for (var i = 0; i < split.length; ++ i) {
+                for (var i = 0; i < split.length; ++i) {
                     parsed[split[i]] = true;
                 }
             }
@@ -1989,16 +1989,16 @@ var fluid = fluid || fluid_2_0_0;
     // since at each regeneration step driving the RHS we are discarding the "cursor arguments" these
     // would have to be regenerated at each step - although in practice this can only happen once for
     // each object for all time, since after first resolution it will be concrete.
-    function regenerateCursor (source, segs, limit, sourceStrategy) {
-        for (var i = 0; i < limit; ++ i) {
+    function regenerateCursor(source, segs, limit, sourceStrategy) {
+        for (var i = 0; i < limit; ++i) {
             source = sourceStrategy(source, segs[i], i, fluid.makeArray(segs)); // copy for FLUID-5243
         }
         return source;
     }
 
-    function regenerateSources (sources, segs, limit, sourceStrategies) {
+    function regenerateSources(sources, segs, limit, sourceStrategies) {
         var togo = [];
-        for (var i = 0; i < sources.length; ++ i) {
+        for (var i = 0; i < sources.length; ++i) {
             var thisSource = regenerateCursor(sources[i], segs, limit, sourceStrategies[i]);
             if (thisSource !== undefined) {
                 togo.push(thisSource);
@@ -2008,9 +2008,9 @@ var fluid = fluid || fluid_2_0_0;
     }
 
     // unsupported, NON-API function
-    fluid.fetchMergeChildren = function (target, i, segs, sources, mergePolicy, options) { /* unused parameter left for documentation purposes */ // jshint ignore:line
+    fluid.fetchMergeChildren = function (target, i, segs, sources, mergePolicy, options) {
         var thisPolicy = fluid.derefMergePolicy(mergePolicy);
-        for (var j = sources.length - 1; j >= 0; -- j) { // this direction now irrelevant - control is in the strategy
+        for (var j = sources.length - 1; j >= 0; --j) { // this direction now irrelevant - control is in the strategy
             var source = sources[j];
             // NB - this detection relies on strategy return being complete objects - which they are
             // although we need to set up the roots separately. We need to START the process of evaluating each
@@ -2028,7 +2028,7 @@ var fluid = fluid || fluid_2_0_0;
                             options.strategy(target, name, i + 1, segs, sources, mergePolicy);
                         }
                     }
-                });  /* function in loop */ // jshint ignore:line
+                });
                 if (thisPolicy.replace) { // this branch primarily deals with a policy of replace at the root
                     break;
                 }
@@ -2085,10 +2085,10 @@ var fluid = fluid || fluid_2_0_0;
 
             var start, limit, mul;
             if (newPolicy.replace) {
-                start = 1 - sources.length; limit = 0; mul = -1; /* on one line for easier visual comparison of the two algorithms  */ // jshint ignore:line
+                start = 1 - sources.length; limit = 0; mul = -1;
             }
             else {
-                start = 0; limit = sources.length - 1; mul = +1; /* on one line for easier visual comparison of the two algorithms  */ // jshint ignore:line
+                start = 0; limit = sources.length - 1; mul = +1;
             }
             var newSources = [];
             var thisTarget;
@@ -2133,7 +2133,7 @@ var fluid = fluid || fluid_2_0_0;
     // A simple stand-in for "fluid.get" where the material is covered by a single strategy
     fluid.driveStrategy = function (root, pathSegs, strategy) {
         pathSegs = fluid.makeArray(pathSegs);
-        for (var i = 0; i < pathSegs.length; ++ i) {
+        for (var i = 0; i < pathSegs.length; ++i) {
             if (!root) {
                 return undefined;
             }
@@ -2145,7 +2145,7 @@ var fluid = fluid || fluid_2_0_0;
     // A very simple "new inner trundler" that just performs concrete property access
     // Note that every "strategy" is also a "trundler" of this type, considering just the first two arguments
     fluid.concreteTrundler = function (source, seg) {
-        return !source? undefined : source[seg];
+        return !source ? undefined : source[seg];
     };
 
     /** Merge a collection of options structures onto a target, following an optional policy.
@@ -2226,7 +2226,7 @@ var fluid = fluid || fluid_2_0_0;
             var blocks = fluid.findMergeBlocks(mergeBlocks, recordType);
             fluid.each(blocks, function (block) {
                 var source = block.source ? "source" : "target"; // TODO: Problem here with irregular presentation of options which consist of a reference in their entirety
-                block[block.simple || source === "target" ? "target": "source"] = fluid.transformOptions(block[source], transformOptions);
+                block[block.simple || source === "target" ? "target" : "source"] = fluid.transformOptions(block[source], transformOptions);
             });
         });
     };
@@ -2273,7 +2273,7 @@ var fluid = fluid || fluid_2_0_0;
         } else if (request.type === "ADD") {
             fluid.model.setSimple(model, request.segs, request.value);
         } else {
-            for (var i = 0; i < segs.length - 1; ++ i) {
+            for (var i = 0; i < segs.length - 1; ++i) {
                 model = model[segs[i]];
                 if (!model) {
                     return;
@@ -2348,7 +2348,7 @@ var fluid = fluid || fluid_2_0_0;
         mergeOptions.mergeBlocks = mergeBlocks;
         mergeOptions.updateBlocks = updateBlocks;
         mergeOptions.destroyValue = function (segs) { // This method is a temporary hack to assist FLUID-5091
-            for (var i = 0; i < mergeBlocks.length; ++ i) {
+            for (var i = 0; i < mergeBlocks.length; ++i) {
                 fluid.destroyValue(mergeBlocks[i].target, segs);
             }
             fluid.destroyValue(baseMergeOptions.target, segs);
@@ -2371,10 +2371,10 @@ var fluid = fluid || fluid_2_0_0;
         if (compiledPolicy.hasDefaults) {
             if (fluid.generateExpandBlock) {
                 mergeBlocks.push(fluid.generateExpandBlock({
-                        options: compiledPolicy.defaultValues,
-                        recordType: "defaultValueMerge",
-                        priority: fluid.mergeRecordTypes.defaultValueMerge
-                    }, that, {}));
+                    options: compiledPolicy.defaultValues,
+                    recordType: "defaultValueMerge",
+                    priority: fluid.mergeRecordTypes.defaultValueMerge
+                }, that, {}));
                 updateBlocks();
             }
             else {
@@ -2441,7 +2441,7 @@ var fluid = fluid || fluid_2_0_0;
     fluid.distributeOptionsPolicy = function (target, source) {
         target = target || {};
         if (fluid.isArrayable(source)) {
-            for (var i = 0; i < source.length; ++ i) {
+            for (var i = 0; i < source.length; ++i) {
                 fluid.mergeOneDistribution(target, source[i]);
             }
         } else if (typeof(source.target) === "string") {
@@ -2577,7 +2577,7 @@ var fluid = fluid || fluid_2_0_0;
 
         // TODO: ****THIS**** is the point we must deliver and suspend!! Construct the "component skeleton" first, and then continue
         // for as long as we can continue to find components.
-        for (var i = 0; i < mergeOptions.mergeBlocks.length; ++ i) {
+        for (var i = 0; i < mergeOptions.mergeBlocks.length; ++i) {
             mergeOptions.mergeBlocks[i].initter();
         }
         mergeOptions.initter();
@@ -2637,8 +2637,8 @@ var fluid = fluid || fluid_2_0_0;
         var errors = fluid.validateListenersImplemented(that);
         if (errors.length > 0) {
             fluid.fail(fluid.transform(errors, function (error) {
-                return "Error constructing component ", that, " - the listener for event " + error.name + " with namespace " + error.namespace + (
-                    (error.componentSource ? " which was defined in grade " + error.componentSource : "") + " needs to be overridden with a concrete implementation");
+                return ["Error constructing component ", that, " - the listener for event " + error.name + " with namespace " + error.namespace + (
+                    (error.componentSource ? " which was defined in grade " + error.componentSource : "") + " needs to be overridden with a concrete implementation")];
             })).join("\n");
         }
         if (that.lifecycleStatus === "constructing") {
