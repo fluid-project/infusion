@@ -337,6 +337,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         gradeNames: ["fluid.prefs.separatedPanel"],
         events: {
             onLazyLoad: null,
+            onPrefsEditorMessagesPreloaded: null,
+            onCreateSlidingPanelReady: {
+                events: {
+                    onPrefsEditorMessagesLoaded: "onPrefsEditorMessagesPreloaded"
+                }
+            },
             templatesAndIframeReady: {
                 events: {
                     onLazyLoad: "onLazyLoad"
@@ -346,6 +352,23 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         components: {
             templateLoader: {
                 createOnEvent: "onLazyLoad"
+            },
+            messageLoader: {
+                options: {
+                    events: {
+                        onResourcesPreloaded: "{separatedPanel}.events.onPrefsEditorMessagesPreloaded"
+                    },
+                    listeners: {
+                        "onCreate.loadResources": {
+                            listener: "fluid.prefs.separatedPanel.lazyLoad.preloadResources",
+                            args: ["{that}", {expander: {func: "{that}.resolveResources"}}, "prefsEditor"]
+                        },
+                        "{separatedPanel}.events.onLazyLoad": {
+                            listener: "fluid.resourceLoader.loadResources",
+                            args: ["{messageLoader}", {expander: {func: "{messageLoader}.resolveResources"}}]
+                        }
+                    }
+                }
             },
             slidingPanel: {
                 options: {
@@ -374,6 +397,20 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             separatedPanel.events.onLazyLoad.fire();
         }
 
+    };
+
+    fluid.prefs.separatedPanel.lazyLoad.preloadResources = function (that, resources, toPreload) {
+        toPreload = fluid.makeArray(toPreload);
+        var preloadResources = {};
+
+        fluid.each(toPreload, function (resourceName) {
+            preloadResources[resourceName] = resources[resourceName];
+        });
+
+        fluid.fetchResources(preloadResources, function () {
+            that.resources = preloadResources;
+            that.events.onResourcesPreloaded.fire(preloadResources);
+        });
     };
 
 })(jQuery, fluid_2_0_0);
