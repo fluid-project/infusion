@@ -260,7 +260,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.assertVisibleTips = function (pager, message, targetIds, expectedTooltip) {
         fluid.tests.tooltip.assertVisible(message, pager, targetIds, null, function (tooltip) {
-            jqUnit.assertNode(tooltip.length, expectedTooltip, $("b", tooltip));
+            jqUnit.assertNode("The contents of the tooltip should be set", expectedTooltip, $("b", tooltip));
         });
     };
 
