@@ -26,13 +26,27 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var width = $(window).width();
         check = (width<640);
         if (check) {
-            console.log("checked");
             fluid.contextAware.makeChecks({
                 "fluid.responsiveCheck": true
             });
         }
         else {
             fluid.contextAware.forgetChecks("fluid.responsiveCheck");
+            fluid.defaults("fluid.prefs.auxSchema.starter.default", {
+                gradeNames: ["fluid.contextAware"],
+                contextAwareness: {
+                    sliderVariety: {
+                        checks: {
+                            jQueryUI: {
+                                contextValue: "{fluid.prefsWidgetType}",
+                                equals: "jQueryUI",
+                                gradeNames: ["fluid.prefs.auxSchema.starter.textSize.jQueryUI", "fluid.prefs.auxSchema.starter.lineSpace.jQueryUI"]
+                            }
+                        },
+                        defaultGradeNames: ["fluid.prefs.auxSchema.starter.textSize.nativeHTML", "fluid.prefs.auxSchema.starter.lineSpace.nativeHTML"]
+                    }
+                }
+            });
         }
     };
     widthCheck();
@@ -42,7 +56,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     // textSize mixin (base)
     fluid.defaults("fluid.prefs.auxSchema.starter.textSize", {
-        gradeNames: ["fluid.contextAware"],
         auxiliarySchema: {
             "textSize": {
                 "type": "fluid.prefs.textSize",
@@ -53,27 +66,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     "type": "fluid.prefs.panel.textSize",
                     "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
                     "message": "%messagePrefix/textSize.json"
-                }
-            }
-        },
-        contextAwareness: {
-            textSizeSliderVariety: {
-                checks: {
-                    jQueryUI: {
-                        contextValue: "{fluid.prefsWidgetType}",
-                        equals: "jQueryUI",
-                        gradeNames: "fluid.prefs.auxSchema.starter.textSize.jQueryUI"
-                    }
-                },
-                defaultGradeNames: "fluid.prefs.auxSchema.starter.textSize.nativeHTML"
-            },
-            responsiveAware: {
-                priority: "after:textSizeSliderVariety",
-                checks: {
-                    responsive: {
-                        contextValue: "{fluid.responsiveCheck}",
-                        gradeNames: "fluid.prefs.auxSchema.starter.textSize.responsive"
-                    }
                 }
             }
         }
@@ -94,16 +86,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             "textSize": {
                 "panel": {
                     "template": "%templatePrefix/PrefsEditorTemplate-textSize-jQueryUI.html"
-                }
-            }
-        }
-    });
-
-    fluid.defaults("fluid.prefs.auxSchema.starter.textSize.responsive", {
-        auxiliarySchema: {
-            "textSize": {
-                "panel": {
-                    "template": "%templatePrefix/PrefsEditorTemplate-textSize-responsive.html"
                 }
             }
         }
@@ -133,27 +115,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     "message": "%messagePrefix/lineSpace.json"
                 }
             }
-        },
-        contextAwareness: {
-            lineSpaceSliderVariety: {
-                checks: {
-                    jQueryUI: {
-                        contextValue: "{fluid.prefsWidgetType}",
-                        equals: "jQueryUI",
-                        gradeNames: "fluid.prefs.auxSchema.starter.lineSpace.jQueryUI"
-                    }
-                },
-                defaultGradeNames: "fluid.prefs.auxSchema.starter.lineSpace.nativeHTML"
-            },
-            responsiveAware: {
-                priority: "after:lineSpaceSliderVariety",
-                checks: {
-                    responsive: {
-                        contextValue: "{fluid.responsiveCheck}",
-                        gradeNames: "fluid.prefs.auxSchema.starter.lineSpace.responsive"
-                    }
-                }
-            }
         }
     });
 
@@ -177,8 +138,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    fluid.defaults("fluid.prefs.auxSchema.starter.lineSpace.responsive", {
+    fluid.defaults("fluid.prefs.responsiveSchema", {
         auxiliarySchema: {
+            "textSize": {
+                "panel": {
+                    "template": "%templatePrefix/PrefsEditorTemplate-textSize-responsive.html"
+                }
+            },
             "lineSpace": {
                 "panel": {
                     "template": "%templatePrefix/PrefsEditorTemplate-lineSpace-responsive.html"
@@ -188,7 +154,17 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     });
 
     fluid.defaults("fluid.prefs.auxSchema.starter", {
-        gradeNames: ["fluid.prefs.auxSchema", "fluid.prefs.auxSchema.starter.lineSpace", "fluid.prefs.auxSchema.starter.textSize"],
+        gradeNames: ["fluid.prefs.auxSchema", "fluid.prefs.auxSchema.starter.lineSpace", "fluid.prefs.auxSchema.starter.textSize", "fluid.contextAware", "fluid.prefs.auxSchema.starter.default"],
+        contextAwareness: {
+            responsiveAware: {
+                checks: {
+                    responsive: {
+                        contextValue: "{fluid.responsiveCheck}",
+                        gradeNames: "fluid.prefs.responsiveSchema"
+                    }
+                }
+            }
+        },
         auxiliarySchema: {
             "loaderGrades": ["fluid.prefs.separatedPanel"],
             "namespace": "fluid.prefs.constructed", // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed PrefsEditor.
