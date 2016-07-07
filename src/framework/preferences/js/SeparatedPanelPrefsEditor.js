@@ -333,4 +333,47 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         setTimeout(callback, 1);
     };
 
+    fluid.defaults("fluid.prefs.separatedPanel.lazyLoad", {
+        gradeNames: ["fluid.prefs.separatedPanel"],
+        events: {
+            onLazyLoad: null,
+            templatesAndIframeReady: {
+                events: {
+                    onLazyLoad: "onLazyLoad"
+                }
+            }
+        },
+        components: {
+            templateLoader: {
+                createOnEvent: "onLazyLoad"
+            },
+            slidingPanel: {
+                options: {
+                    invokers: {
+                        operateShow: {
+                            funcName: "fluid.prefs.separatedPanel.lazyLoad.showPanel",
+                            args: ["{separatedPanel}", "{that}.events.afterPanelShow.fire"],
+                            // override default implementation
+                            "this": null,
+                            "method": null
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.prefs.separatedPanel.lazyLoad.showPanel = function (separatedPanel, callback) {
+        if (separatedPanel.prefsEditor) {
+            setTimeout(callback, 1);
+        } else {
+            separatedPanel.events.onReady.addListener(function (that) {
+                that.events.onReady.removeListener("showPanelCallBack");
+                setTimeout(callback, 1);
+            }, "showPanelCallBack");
+            separatedPanel.events.onLazyLoad.fire();
+        }
+
+    };
+
 })(jQuery, fluid_2_0_0);
