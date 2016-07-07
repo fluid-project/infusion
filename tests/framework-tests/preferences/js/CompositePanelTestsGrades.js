@@ -40,8 +40,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         auxiliarySchema: {
             template: "%templatePrefix/compositePrefsEditorTemplate.html",
             "terms": {
-                "templatePrefix": "../testResources/html"
+                "templatePrefix": "../testResources/html",
+                "messagePrefix": "../testResources/messages"
             },
+            "message": "%messagePrefix/prefsEditor.json",
             groups: {
                 increasing: {
                     "container": ".fluid-tests-composite-increasing",
@@ -172,6 +174,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         auxiliarySchema: {
             "loaderGrades": ["fluid.tests.prefs.composite.separatedPanel"],
             "namespace": "fluid.tests.composite.separatedPanel"
+        }
+    });
+
+    // Creates the "fluid.tests.composite.separatedPanel.lazyLoad.prefsEditor" grade
+    fluid.prefs.builder({
+        gradeNames: ["fluid.tests.composite.auxSchema"],
+        primarySchema: fluid.tests.composite.primarySchema,
+        auxiliarySchema: {
+            "loaderGrades": ["fluid.tests.prefs.composite.separatedPanel", "fluid.prefs.separatedPanel.lazyLoad"],
+            "namespace": "fluid.tests.composite.separatedPanel.lazyLoad"
         }
     });
 

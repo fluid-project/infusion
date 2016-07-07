@@ -334,7 +334,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.defaults("fluid.prefs.separatedPanel.lazyLoad", {
-        gradeNames: ["fluid.prefs.separatedPanel"],
         events: {
             onLazyLoad: null,
             onPrefsEditorMessagesPreloaded: null,
@@ -358,10 +357,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     events: {
                         onResourcesPreloaded: "{separatedPanel}.events.onPrefsEditorMessagesPreloaded"
                     },
+                    preloadResources: "prefsEditor",
                     listeners: {
                         "onCreate.loadResources": {
                             listener: "fluid.prefs.separatedPanel.lazyLoad.preloadResources",
-                            args: ["{that}", {expander: {func: "{that}.resolveResources"}}, "prefsEditor"]
+                            args: ["{that}", {expander: {func: "{that}.resolveResources"}}, "{that}.options.preloadResources"]
                         },
                         "{separatedPanel}.events.onLazyLoad": {
                             listener: "fluid.resourceLoader.loadResources",
