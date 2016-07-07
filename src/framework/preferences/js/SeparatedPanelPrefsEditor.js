@@ -308,7 +308,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             // Prevent the hidden Preferences Editorpanel from being keyboard and screen reader accessible
             separatedPanel.iframeRenderer.iframe.hide();
         });
-        separatedPanel.slidingPanel.events.onPanelShow.addListener(function () {
+        separatedPanel.slidingPanel.events.afterPanelShow.addListener(function () {
             separatedPanel.iframeRenderer.iframe.show();
             separatedPanel.locate("reset").show();
         });
