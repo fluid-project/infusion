@@ -134,8 +134,8 @@ var jqUnit = jqUnit || {};
                 node = node[0];
             }
             else if (node.length !== undefined) {
-                jqUnit.assertEquals("Expected number of nodes ", expected.length, node.length);
-                for (var i = 0; i < node.length; ++ i) {
+                jqUnit.assertEquals(message + ": Expected number of nodes ", expected.length, node.length);
+                for (var i = 0; i < node.length; ++i) {
                     jqUnit.assertNode(message + ": node " + i + ": ", expected[i], node[i]);
                 }
                 return;
