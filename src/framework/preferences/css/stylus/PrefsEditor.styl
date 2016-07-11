@@ -3,6 +3,16 @@
 @import "utils/Helpers"
 @import "utils/Themes"
 
+//function to generate border radius
+border-radius(n)
+    -webkit-border-radius: n;
+    -moz-border-radius: n;
+    border-top-left-radius: n;
+    border-top-right-radius: n;
+    border-bottom-left-radius: n;
+    border-bottom-right-radius: n;
+
+
 @font-face {
     font-family: 'InfusionIcons';
     src: url('../fonts/InfusionIcons-PrefsEditor.ttf'),
@@ -362,6 +372,122 @@
     }
     .fl-icon-toc:before {
         content: "\e012";
+    }
+}
+
+//Styling for the responsive version
+@media all and (max-width: 639px) {
+    .fl-prefsEditor {
+        .fl-prefsEditor-panel {
+            .fl-prefsEditor-onoff {
+                margin-top: 1.2em;
+
+                .flc-prefsEditor-toc-descr {
+                    display: none;
+                }
+
+                label {
+                    display: flex;
+                }
+
+                .fl-prefsEditor-switch {
+                    margin: auto;
+                    width: 4em;
+                    padding-left: 4em;
+                    border: 1px solid #a7a9ac;
+                    border-radius(4px);
+                    box-shadow: none;
+                    background: #ffffff;
+                }
+
+                //When the on button is checked
+                input:checked + label {
+                    .fl-prefsEditor-switch {
+                        box-shadow: none;
+                        width: 4em;
+                        padding-left: 4em;
+                        background: #ffffff;
+
+                        //On button
+                        &:before {
+                            text-indent: -3.15em;
+                            content: "\002713 " attr(data-checkboxStateOn);
+                        }
+
+                        //Off button
+                        &:after {
+                            top: 0;
+                            left: 1em;
+                            content: attr(data-checkboxStateOff);
+                        }
+
+                        .fl-prefsEditor-switch-inner {
+                            top: 0;
+                            left: 0.5em;
+                            width: 0;
+                            height: inherit;
+
+                            //The moving berder
+                            &:before {
+                                top: 0.15em;
+                                left: -6.05em;
+                            }
+                        }
+                    }
+
+                }
+
+                //When the off button is checked
+                input + label {
+                    .fl-prefsEditor-switch {
+                        //On button
+                        &:before {
+                            border: none;
+                            box-shadow: none;
+                            background: transparent;
+                            width: 0;
+                            line-height: 2em;
+                            text-indent: -2.7em;
+                            text-transform: uppercase;
+                            text-shadow: none;
+                            color: #3a3a3c;
+                            content: attr(data-checkboxStateOn);
+                        }
+
+                        //Off button
+                        &:after {
+                            top: 0;
+                            left: 0.5em;
+                            line-height: 2em;
+                            text-transform: uppercase;
+                            text-shadow: none;
+                            color: #3a3a3c;
+                            content: "\002713 "attr(data-checkboxStateOff);
+                        }
+                    }
+                }
+
+                .fl-prefsEditor-switch-inner {
+                    border: none;
+                    background: none;
+                    box-shadow: none;
+
+                    //Moving border
+                    &:before {
+                        float: left;
+                        position: relative;
+                        top: -0.3em;
+                        left: 0.4em;
+                        width: 3.3em;
+                        height: 1.5em;
+                        border: 0.15em solid #3a3a3c;
+                        border-radius(0.2em);
+                        content: " ";
+                        transition: left 0.4s;
+                    }
+                }
+            }
+        }
     }
 }
 // Theming
