@@ -36,7 +36,25 @@ The Infusion library is the cornerstone of a number of projects. You can see som
 
 ## How Do I Create an Infusion Package? ##
 
-Strictly speaking, Infusion can be used directly from source (i.e. by including each individual required file). However, for simplicity and performance reasons, you may wish to create a concatenated, minified file. The Grunt build options described below will also allow you to remove any unneeded features or libraries that you may already have in your project.
+For simplicity and performance reasons, you may wish to create a concatenated, minified file. However, such a file is often difficult to read. To address this, source maps for the minified file are automatically generated to make debugging easier.
+
+### Source Maps ###
+
+Source maps are supported in all of the major browsers: [Chrome](https://developer.chrome.com/devtools/docs/javascript-debugging#source-maps), [Firefox](https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map), 
+[IE 11](https://msdn.microsoft.com/library/dn255007#source_maps), and Safari. To make use of them, enable source maps in your debugging environment, and ensure that the source maps are hosted adjacent to the file they are associated with.
+
+#### Source Map Example ####
+
+* From the command line, run `grunt` to create a build of Infusion
+    * All Infusion packages come with a source map for the concatenated JavaScript file
+* In the Infusion package, modify one of the demos to replace the individual javascript includes with a reference to "infusion-all.js"
+* The "infusion-all.js" includes a reference to the "infusion-all.js.map" file, which is assumed to be hosted as its sibling
+* Open the demo in a browser
+* In the browser's debugger ensure that source maps are enabled
+    *  In Firefox open the debugger
+        *  In the debugger options, ensure that "Show Original Sources" is enabled
+        * see [MDN: Use a source map](https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map)
+* In the debugger you should now be able to view and debug the individual JavaScript files as though they were included separately
 
 ### Dependencies ###
 
@@ -46,8 +64,6 @@ Strictly speaking, Infusion can be used directly from source (i.e. by including 
 All other development dependencies will be installed by running the following from the project root:
 
     npm install
-
-(Infusion has no external runtime dependencies)
 
 ### Package Types ###
 
@@ -107,11 +123,11 @@ By default, custom packages are given a name with the form _infusion-custom-<ver
 
 ### How Do I Run Tests? ###
 
-There are two options available for running tests. The first option involves using browsers installed on your computer and the second uses browsers available in a VM. 
+There are two options available for running tests. The first option involves using browsers installed on your computer and the second uses browsers available in a VM.
 
 #### Run Tests Using Browsers Installed On Your Computer ####
 
-Using this option requires the installation of [Testem](https://github.com/testem/testem/#installation) and then running ``testem ci --file tests/testem.json`` in this directory. Any browsers that Testem finds on your platform will be launched sequentially with each browser running the full Infusion test suite. The results will be returned in your terminal in the [TAP](https://testanything.org/) format. You can use the ``testem launchers`` command to get a list of available browsers. 
+Using this option requires the installation of [Testem](https://github.com/testem/testem/#installation) and then running ``testem ci --file tests/testem.json`` in this directory. Any browsers that Testem finds on your platform will be launched sequentially with each browser running the full Infusion test suite. The results will be returned in your terminal in the [TAP](https://testanything.org/) format. You can use the ``testem launchers`` command to get a list of available browsers.
 
 Please note that any browsers launched will need to remain in the foreground because some of the tests require window focus.
 

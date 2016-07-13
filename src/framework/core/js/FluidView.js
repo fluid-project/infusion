@@ -588,7 +588,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
           // Don't bother to use the real id if it is from a foreign document - we will never receive events
           // from it directly in any case - and foreign documents may be under the control of malign fiends
           // such as tinyMCE who allocate the same id to everything
-            var id = fluid.unwrap(node).ownerDocument === document? fluid.allocateSimpleId(node) : fluid.allocateGuid();
+            var id = fluid.unwrap(node).ownerDocument === document ? fluid.allocateSimpleId(node) : fluid.allocateGuid();
             if (dismissFunc) {
                 dismissList[id] = dismissFunc;
             }

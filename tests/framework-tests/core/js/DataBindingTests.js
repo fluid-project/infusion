@@ -270,7 +270,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     ];
 
     jqUnit.test("ApplyHolderChangeRequest - cautious application + invalidation", function () {
-        for (var i = 0; i < fluid.tests.changeTests.length; ++ i) {
+        for (var i = 0; i < fluid.tests.changeTests.length; ++i) {
             var test = fluid.tests.changeTests[i];
             var holder = {model: fluid.copy(test.model)};
             var options = {changeMap: {}, changes: 0};
@@ -349,7 +349,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         var applier = fluid.makeHolderChangeApplier({model: model});
         var notified = false;
-        applier.modelChanged.addListener("selections.lineSpace", function() {
+        applier.modelChanged.addListener("selections.lineSpace", function () {
             notified = true;
         });
         applier.change("selections", {lineSpace: 1.5});
@@ -441,7 +441,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.applier.change("thing1.nest1", 3);
         jqUnit.assertDeepEq("Single change correctly reported to same component's listener",
             [{path: ["thing1", "nest1"], value: 3, oldValue: 2}], that.fireRecord);
-        for (var i = 0; i < 2; ++ i) {
+        for (var i = 0; i < 2; ++i) {
             that.fireRecord.length = 0;
             that.events.createEvent.fire();
             assertListenerCount(3); // Make sure that 1 old listener was removed and one was added (2nd time round)
@@ -595,7 +595,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         target: "{child2}.model.fahrenheit",
                         singleTransform: {
                             type: "fluid.transforms.linearScale",
-                            factor: 9/5,
+                            factor: 9 / 5,
                             offset: 32
                         }
                     }
@@ -656,7 +656,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var that = fluid.tests.fluid5024head();
         fluid.tests.assertTransactionsConcluded(that);
 
-        function expectChanges (message, child1Record, child2Record) {
+        function expectChanges(message, child1Record, child2Record) {
             fluid.tests.checkNearEquality(message + " change record child 1", child1Record, that.child1.fireRecord);
             fluid.tests.checkNearEquality(message + " change record child 2", child2Record, that.child2.fireRecord);
             fluid.tests.fluid5024clear(that);
@@ -779,7 +779,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /** FLUID-5886: Deduplication of listeners by namespace at a single applier **/
-    
+
     fluid.defaults("fluid.tests.fluid5886head", {
         gradeNames: "fluid.modelComponent",
         members: {
@@ -797,11 +797,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }]
         }
     });
-    
+
     fluid.tests.fluid5886count = function (that) {
         that.listenerCount++;
     };
-    
+
     jqUnit.test("FLUID-5886: Deduplication of model listeners by namespace at single applier", function () {
         var that = fluid.tests.fluid5886head();
         that.applier.change("target", true);
@@ -1119,7 +1119,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.fluid5848record = function (that) {
-        ++ that.changes;
+        ++that.changes;
     };
 
     jqUnit.test("FLUID-5848: Model reference using indirect context", function () {
@@ -1207,7 +1207,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("FLUID-5024: Resolving references which are cyclic in components", function () {
         var that = fluid.tests.fluid5024cycleHead();
 
-        function expectChanges (message, child1Record, child2Record, child3Record) {
+        function expectChanges(message, child1Record, child2Record, child3Record) {
             fluid.tests.checkNearEquality(message + " change record child 1", child1Record, that.child1.fireRecord);
             fluid.tests.checkNearEquality(message + " change record child 2", child2Record, that.child2.fireRecord);
             fluid.tests.checkNearEquality(message + " change record child 3", child3Record, that.child3.fireRecord);
@@ -1388,7 +1388,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             target: "{sub}.model.fahrenheit",
             singleTransform: {
                 type: "fluid.transforms.linearScale",
-                factor: 9/5,
+                factor: 9 / 5,
                 offset: 32
             }
         },
@@ -1413,7 +1413,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         target: "{that}.model.fahrenheit",
                         singleTransform: {
                             type: "fluid.transforms.linearScale",
-                            factor: 9/5,
+                            factor: 9 / 5,
                             offset: 32
                         }
                     }

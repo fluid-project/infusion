@@ -73,7 +73,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         fluid.tests.uploader.noIoC = function (options, rules) {
-            var transRec = (fluid.isArrayable(rules)? fluid.transformMany : fluid.transformOne) (rules);
+            var transRec = (fluid.isArrayable(rules) ? fluid.transformMany : fluid.transformOne) (rules);
             return fluid.uploader(".flc-uploader", $.extend(true, options, transRec));
         };
 

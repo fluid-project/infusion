@@ -1479,7 +1479,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         });
 
-        fluid.tests.FLUID4536.tryLoad = function(that) {
+        fluid.tests.FLUID4536.tryLoad = function (that) {
             that.iframe = that.dom.locate("iframe");
             function tryLoad() {
                 var iframeWindow = that.iframe[0].contentWindow;
@@ -1524,14 +1524,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             renderOnInit: true
         });
 
-        jqUnit.asyncTest("FLUID-4536 iframe propagation test", function() {
+        jqUnit.asyncTest("FLUID-4536 iframe propagation test", function () {
             jqUnit.expect(4);
             fluid.tests.FLUID4536("#qunit-fixture", {
                 listeners: {
                     iframeLoad: {
                         priority: "last",
                         listener:
-                        function(that) {
+                        function (that) {
                             jqUnit.assertValue("Inner component constructed", that.iframeHead.iframeChild);
                             var outerExpando = $.expando;
                             var innerExpando = that.iframeContainer.constructor.expando;

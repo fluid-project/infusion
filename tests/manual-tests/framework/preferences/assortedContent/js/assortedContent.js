@@ -31,9 +31,25 @@ var assortedContent = assortedContent || {};
             }
         });
 
+        fluid.defaults("fluid.assortedContent.native", {
+            iframeRenderer: {
+                markupProps: {
+                    src: "../../../../../src/framework/preferences/html/SeparatedPanelPrefsEditorFrame-nativeHTML.html"
+                }
+            }
+        });
+
+        fluid.defaults("fluid.assortedContent.jQueryUI", {
+            iframeRenderer: {
+                markupProps: {
+                    src: "../../../../../src/framework/preferences/html/SeparatedPanelPrefsEditorFrame-jQueryUI.html"
+                }
+            }
+        });
+
         // Next, start up Preferences Editor
         fluid.prefs.separatedPanel(".flc-prefsEditor-separatedPanel", {
-            gradeNames: ["fluid.prefs.transformDefaultPanelsOptions", "fluid.prefs.initialModel.starter"],
+            gradeNames: ["fluid.prefs.transformDefaultPanelsOptions", "fluid.prefs.initialModel.starter", "fluid.contextAware"],
             terms: {
                 templatePrefix: "../../../../../src/framework/preferences/html/",
                 messagePrefix: "../../../../../src/framework/preferences/messages/"
@@ -47,9 +63,16 @@ var assortedContent = assortedContent || {};
             prefsEditor: {
                 gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.uiEnhancerRelay"]
             },
-            iframeRenderer: {
-                markupProps: {
-                    src: "../../../../../src/framework/preferences/html/SeparatedPanelPrefsEditorFrame.html"
+            contextAwareness: {
+                sliderVariety: {
+                    checks: {
+                        jQueryUI: {
+                            contextValue: "{fluid.prefsWidgetType}",
+                            equals: "jQueryUI",
+                            gradeNames: "fluid.assortedContent.jQueryUI"
+                        }
+                    },
+                    defaultGradeNames: "fluid.assortedContent.native"
                 }
             }
         });

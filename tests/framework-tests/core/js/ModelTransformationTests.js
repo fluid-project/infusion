@@ -2902,16 +2902,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             transform: {
                 type: "fluid.transforms.valueMapper",
                 defaultInputPath: "audio",
-                match: [ {
-                    "inputValue": true,
-                    "outputPath": "audio",
-                    "outputValue": "available"
-                },
-                {
-                    "inputValue": false,
-                    "outputPath": "audio",
-                    "outputValue": "unavailable"
-                }]
+                match: [
+                    {
+                        "inputValue": true,
+                        "outputPath": "audio",
+                        "outputValue": "available"
+                    },
+                    {
+                        "inputValue": false,
+                        "outputPath": "audio",
+                        "outputValue": "unavailable"
+                    }
+                ]
             }
         };
 

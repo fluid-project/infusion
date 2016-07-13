@@ -11,6 +11,7 @@
             "jQueryUICore",
             "normalize",
             "framework",
+            "enhancement",
             "jQueryUIWidgets",
             "jQueryTouchPunchPlugin"
         ]

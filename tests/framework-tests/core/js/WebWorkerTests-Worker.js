@@ -9,8 +9,8 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/*jshint worker:true*/
-/*global fluid*/
+/* eslint-env worker */
+/* global fluid */
 
 (function () {
     "use strict";
@@ -49,4 +49,4 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // Runs immediately when the worker is evaluated.
     var cat = fluid.test.workerTestComponent();
     self.postMessage(cat.meow());
-}());
+})();

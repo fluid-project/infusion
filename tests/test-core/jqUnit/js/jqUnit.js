@@ -22,7 +22,7 @@ var jqUnit = jqUnit || {};
     var QUnitPassthroughs = ["module", "test", "asyncTest", "throws", "raises", "start", "stop", "expect"];
     QUnit.config.reorder = false; // defeat this QUnit feature which frequently just causes confusion
 
-    for (var i = 0; i < QUnitPassthroughs.length; ++ i) {
+    for (var i = 0; i < QUnitPassthroughs.length; ++i) {
         var method = QUnitPassthroughs[i];
         jqUnit[method] = QUnit[method];
         window[method] = undefined; // work around IE8 bug http://stackoverflow.com/questions/1073414/deleting-a-window-property-in-ie
