@@ -31,7 +31,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // Merge a member definition into its flattened form to accommodate the interim FLUID-5668 framework
     fluid.tests.mergeMembers = function (memberDef) {
         var togo;
-        for (var i = 0; i < memberDef.length; ++ i) {
+        for (var i = 0; i < memberDef.length; ++i) {
             if (fluid.isPlainObject(togo)) {
                 togo = $.extend(true, togo, memberDef[i]);
             } else {

@@ -39,6 +39,7 @@
         <script type="text/javascript" src="../../../../../src/framework/core/js/ModelTransformationTransforms.js"></script>
         <script type="text/javascript" src="../../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
         <script type="text/javascript" src="../../../../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/core/js/ResourceLoader.js"></script>
         <script type="text/javascript" src="../../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
         <script type="text/javascript" src="../../../../../src/framework/renderer/js/fluidParser.js"></script>
         <script type="text/javascript" src="../../../../../src/framework/renderer/js/fluidRenderer.js"></script>
@@ -56,6 +57,14 @@
         <script type="text/javascript" src="../../../../../src/components/slidingPanel/js/SlidingPanel.js"></script>
         <script type="text/javascript" src="../../../../../src/components/tableOfContents/js/TableOfContents.js"></script>
         <script type="text/javascript" src="../../../../../src/components/undo/js/Undo.js"></script>
+
+        <script>
+            fluid.contextAware.makeChecks({
+                "fluid.prefsWidgetType": {
+                    value: "jQueryUI"
+                }
+            });
+        </script>
 
         <script type="text/javascript" src="js/assortedContent.js"></script>
     </head>
@@ -86,6 +95,7 @@
                 <ol>
                     <li>activate the "Show Display Preferences" button in the top left corner of the screen</li>
                     <li>experiment with the various Preferences Editor settings and verify that the window contents are styled correctly.</li>
+                    <li>Be sure to test with the <a href="index-nativeHTML.html">native HTML widgets version as well.</a></li>
                 </ol>
             </div>
         </aside>
@@ -221,7 +231,7 @@
                     <form>
                         <h4>Mid-term Exam</h4>
                         <fieldset class="radio-buttons">
-                            <legend>Choose the best way to declare a javascript variable</legend>
+                            <legend>Choose the best way to declare a JavaScript variable</legend>
                             <ul>
                                 <li>
                                     <input id="test-radio-var" type="radio" name="javascript_variable" value="var">
@@ -272,8 +282,8 @@
                             </div>
                         </fieldset>
                         <fieldset class="text-area">
-                            <legend>Javascript function</legend>
-                            <textarea>Please enter a simple javascript function to find the smallest value of an array.</textarea>
+                            <legend>JavaScript function</legend>
+                            <textarea>Please enter a simple JavaScript function to find the smallest value of an array.</textarea>
                             <button>Run Script</button>
                         </fieldset>
                         <input type="submit" value="Submit answers">

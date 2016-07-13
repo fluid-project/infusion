@@ -159,7 +159,7 @@ var fluid = fluid || fluid_2_0_0;
             transformSpec.factor = (transformSpec.factor === 0) ? 0 : 1 / transformSpec.factor;
         }
         if (transformSpec.offset !== undefined) {
-            transformSpec.offset = - transformSpec.offset * (transformSpec.factor !== undefined ? transformSpec.factor : 1);
+            transformSpec.offset = -transformSpec.offset * (transformSpec.factor !== undefined ? transformSpec.factor : 1);
         }
         return transformSpec;
     };
@@ -345,7 +345,7 @@ var fluid = fluid || fluid_2_0_0;
     });
 
 
-    fluid.transforms.arrayToSetMembership = function (value, transformSpec) {
+    fluid.transforms.arrayToSetMembership = function (value, transformSpec, transformer) {
         var output = {};
         var options = transformSpec.options;
 
@@ -367,7 +367,7 @@ var fluid = fluid || fluid_2_0_0;
         fluid.each(options, function (outPath, key) {
             // write to output object the value <presentValue> or <missingValue> depending on whether key is found in user input
             var outVal = (value.indexOf(key) !== -1) ? transformSpec.presentValue : transformSpec.missingValue;
-            fluid.set(output, outPath, outVal);
+            fluid.set(output, outPath, outVal, transformer.resolverSetConfig);
         });
         return output;
     };
@@ -397,7 +397,7 @@ var fluid = fluid || fluid_2_0_0;
         invertConfiguration: "fluid.transforms.setMembershipToArray.invert"
     });
 
-    fluid.transforms.setMembershipToArray = function (input, transformSpec) {
+    fluid.transforms.setMembershipToArray = function (input, transformSpec, transformer) {
         var options = transformSpec.options;
 
         if (!options) {
@@ -413,9 +413,10 @@ var fluid = fluid || fluid_2_0_0;
         }
 
         var outputArr = [];
-        fluid.each(input, function (val, key) {
-            if (val === transformSpec.presentValue) {
-                outputArr.push(options[key]);
+        fluid.each(options, function (outputVal, key) {
+            var value = fluid.get(input, key, transformer.resolverGetConfig);
+            if (value === transformSpec.presentValue) {
+                outputArr.push(outputVal);
             }
         });
         return outputArr;

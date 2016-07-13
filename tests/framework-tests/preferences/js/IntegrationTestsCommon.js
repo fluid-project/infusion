@@ -1,5 +1,5 @@
 /*
-Copyright 2011 OCAD University
+Copyright 2011-2016 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 Copyright 2015 Raising the Floor (International)
 
@@ -20,7 +20,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.prefs.bwSkin = {
         preferences: {
-            textSize: "1.8",
+            textSize: 1.8,
             textFont: "verdana",
             theme: "bw",
             lineSpace: 2
@@ -29,7 +29,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.prefs.ybSkin = {
         preferences: {
-            textSize: "2",
+            textSize: 2,
             textFont: "comic sans",
             theme: "yb",
             lineSpace: 1.5
@@ -73,7 +73,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.prefs.checkModelSelections = function (message, expectedSelections, actualSelections) {
-        jqUnit.assertLeftHand("Model correctly updated: " + message, expectedSelections.preferences, actualSelections.preferences);
+        jqUnit.assertLeftHand("Model correctly updated: " + message, expectedSelections.preferences || {}, actualSelections.preferences);
     };
 
     fluid.tests.prefs.applierRequestChanges = function (prefsEditor, selectionOptions) {
@@ -209,7 +209,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The fifth text font control value matches", testControlValues[4], actualTextFontControlValues[4]);
     };
 
-    fluid.tests.prefs.mungingIntegrationOptions = {
+    fluid.defaults("fluid.tests.prefs.mungingIntegrationBase", {
         gradeNames: ["fluid.prefs.transformDefaultPanelsOptions", "fluid.prefs.initialModel.starter"],
         terms: {
             templatePrefix: "../../../../src/framework/preferences/html",
@@ -232,35 +232,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         prefsEditor: {
             gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.uiEnhancerRelay"]
         }
-    };
+    });
 
-    fluid.tests.prefs.mungingIntegrationTest = function (componentName, container, extraOpts, extraListener) {
-        extraListener = extraListener || function () { jqUnit.start(); };
+    fluid.defaults("fluid.tests.prefs.mungingIntegration", {
+        gradeNames: ["fluid.tests.prefs.mungingIntegrationBase"],
+        members: {
+            initialModel: {
+                preferences: {
+                    theme: "yb"
+                }
+            }
+        },
+        prefsEditor: {
+            listeners: {
+                "onReady.testComponentIntegration": {
+                    funcName: "fluid.tests.prefs.testComponentIntegration",
+                    priority: "before:jqUnitStart"
+                },
+                "onReady.jqUnitStart": {
+                    func: "jqUnit.start",
+                    priority: "last:testing"
+                }
+            }
+        }
+    });
+
+    fluid.tests.prefs.mungingIntegrationTest = function (componentName, container, options) {
 
         jqUnit.asyncTest(componentName + " Munging Integration tests", function () {
             fluid.tests.prefs.globalSettingsStore();
             fluid.pageEnhancer(fluid.tests.prefs.enhancerOptions);
-            // TODO: rewrite this invocation as a standard grade constructor rather than an ad-hoc invocation of fluid.merge
-            var options = fluid.merge(null, fluid.tests.prefs.mungingIntegrationOptions, {
-                members: {
-                    initialModel: {
-                        preferences: {
-                            theme: "yb"
-                        }
-                    }
-                },
-                prefsEditor: {
-                    listeners: {
-                        onReady: [{
-                            funcName: "fluid.tests.prefs.testComponentIntegration",
-                            priority: "last:testing"
-                        }, {
-                            func: extraListener,
-                            priority: "last:testing"
-                        }]
-                    }
-                }
-            }, extraOpts);
             fluid.invokeGlobalFunction(componentName, [container, options]);
         });
     };

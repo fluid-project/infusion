@@ -150,7 +150,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         // in order to reset the dom binder when panels are in an iframe.
         // It can be be eliminated once we have the new renderer.
         var userJQuery = that.container.constructor;
-        that.container = userJQuery(that.container.selector);
+        var oldContainer = that.container;
+        that.container = userJQuery(that.container.selector, oldContainer[0].ownerDocument);
+        if (that.container.length === 0) {
+            fluid.fail("resetDomBinder got no elements in DOM for container searching for selector " + that.container.selector);
+        }
         fluid.initDomBinder(that, that.options.selectors);
         that.events.onDomBind.fire(that);
     };
@@ -281,8 +285,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * Only use in cases where the instatiated component cannot be used.
      */
     fluid.prefs.compositePanel.prefetchComponentOptions = function (type, options) {
-        var baseOptions = fluid.getGradedDefaults(type, fluid.get(options, "gradeNames"));
-        return fluid.merge(baseOptions.mergePolicy, baseOptions, options);
+        var baseOptions = fluid.getMergedDefaults(type, fluid.get(options, "gradeNames"));
+        // TODO: awkwardly, fluid.merge is destructive on each argument!
+        return fluid.merge(baseOptions.mergePolicy, fluid.copy(baseOptions), options);
     };
     /*
      * Should only be used when fluid.prefs.compositePanel.isActivatePanel cannot.

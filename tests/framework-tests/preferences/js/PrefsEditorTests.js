@@ -19,72 +19,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests.prefs");
 
-    jqUnit.module("PrefsEditor ResourceLoader Tests");
-
-    fluid.registerNamespace("fluid.tests.prefs.resourceLoader");
-
-    fluid.tests.prefs.resourceLoader.linksControlsTemplateName = "PrefsEditorTemplate-linksControls.html";
-    fluid.tests.prefs.resourceLoader.testTemplatePrefix = "../../../../src/framework/preferences/html";
-    fluid.tests.prefs.resourceLoader.textControlsFullPath = "../../../../src/framework/preferences/html/PrefsEditorTemplate-textSize.html";
-
-    fluid.defaults("fluid.tests.prefs.resourceLoader", {
-        gradeNames: ["fluid.prefs.resourceLoader"],
-        resources: {
-            linksControls: "%prefix/" + fluid.tests.prefs.resourceLoader.linksControlsTemplateName,
-            textControls: fluid.tests.prefs.resourceLoader.textControlsFullPath
-        },
-        listeners: {
-            onResourcesLoaded: "fluid.tests.prefs.resourceLoader.testTemplateLoader"
-        },
-        terms: {
-            prefix: fluid.tests.prefs.resourceLoader.testTemplatePrefix
-        }
-    });
-
-    fluid.tests.prefs.resourceLoader.testTemplateLoader = function (resources) {
-        // The template with a customized full url
-        jqUnit.assertEquals("textControls template url is set correctly", fluid.tests.prefs.resourceLoader.textControlsFullPath, resources.textControls.url);
-        jqUnit.assertTrue("textControls forceCache is set", resources.textControls.forceCache);
-
-        // The template with prefix + customized name
-        jqUnit.assertEquals("linksControls template url is set correctly", fluid.tests.prefs.resourceLoader.testTemplatePrefix + "/" + fluid.tests.prefs.resourceLoader.linksControlsTemplateName, resources.linksControls.url);
-        jqUnit.assertTrue("linksControls forceCache is set", resources.linksControls.forceCache);
-
-        jqUnit.start();
-    };
-
-    jqUnit.asyncTest("Template Loader", function () {
-        jqUnit.expect(4);
-        fluid.tests.prefs.resourceLoader();
-    });
-
-    fluid.tests.prefs.resourceLoader.lineSpaceTemplateName = "PrefsEditorTemplate-lineSpace.html";
-
-    fluid.tests.prefs.resourceLoader.testCustomizedResourceLoader = function (resources) {
-        jqUnit.assertEquals("lineSpace template url is set correctly", fluid.tests.prefs.resourceLoader.testTemplatePrefix + "/" + fluid.tests.prefs.resourceLoader.lineSpaceTemplateName, resources.lineSpace.url);
-        jqUnit.assertTrue("lineSpace forceCache is set", resources.lineSpace.forceCache);
-
-        jqUnit.start();
-    };
-
-    fluid.defaults("fluid.tests.prefs.customizedResourceLoader", {
-        gradeNames: ["fluid.prefs.resourceLoader"],
-        resources: {
-            lineSpace: "%prefix/" + fluid.tests.prefs.resourceLoader.lineSpaceTemplateName
-        },
-        listeners: {
-            onResourcesLoaded: "fluid.tests.prefs.resourceLoader.testCustomizedResourceLoader"
-        },
-        terms: {
-            prefix: fluid.tests.prefs.resourceLoader.testTemplatePrefix
-        }
-    });
-
-    jqUnit.asyncTest("Customized Template Loader", function () {
-        jqUnit.expect(2);
-        fluid.tests.prefs.customizedResourceLoader();
-    });
-
     jqUnit.module("PrefsEditor Tests");
 
     fluid.tests.prefs.trackSave = function (that, savedModel) {
@@ -93,7 +27,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.prefs.noteRefreshCalled = function (that) {
-        ++ that.refreshCount;
+        ++that.refreshCount;
     };
 
     fluid.defaults("fluid.tests.prefs.standardEditor", { // a mixin grade for fluid.prefs.prefsEditor
@@ -150,7 +84,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.prefs.models.bwSkin = {
         preferences: {
-            textSize: "1.8",
+            textSize: 1.8,
             textFont: "verdana",
             theme: "bw",
             lineSpace: 2
@@ -159,7 +93,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.prefs.models.bwSkin2 = {
         preferences: {
-            textSize: "1.1",
+            textSize: 1.1,
             textFont: "italic",
             theme: "cw",
             lineSpace: 1
@@ -276,7 +210,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     preferences: {
                         lineSpace: 2,
                         textFont: "verdana",
-                        textSize: "1.8",
+                        textSize: 1.8,
                         theme: "bw"
                     }
                 }
