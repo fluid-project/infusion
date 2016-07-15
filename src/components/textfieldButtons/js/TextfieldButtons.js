@@ -30,7 +30,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 }
             },
             increaseButton: {
-                type: "fluid.button",
+                type: "fluid.stepper.button",
                 container: "{textfieldButtons}.dom.increaseButton",
                 options: {
                     model: "{fluid.textfieldButtons}.model",
@@ -40,7 +40,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 }
             },
             decreaseButton: {
-                type: "fluid.button",
+                type: "fluid.stepper.button",
                 container: "{textfieldButtons}.dom.decreaseButton",
                 options: {
                     model: "{fluid.textfieldButtons}.model",
@@ -118,7 +118,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    fluid.defaults("fluid.button", {
+    fluid.defaults("fluid.stepper.button", {
         gradeNames: ["fluid.viewComponent"],
         range: {}, // should be used to specify the min, max range e.g. {min: 0, max: 100}
         invokers: {
@@ -126,10 +126,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 changePath: "value",
                 value: {
                     expander: {
-                        funcName: "fluid.buttonCalculateValue",
-                        args: ["{that}.options.incrementCoefficient", "{that}.options.buttonOptions.stepMultiplier", "{that}.model.value", "{that}.options.range.min", "{that}.options.range.max"]
+                        funcName: "{that}.calculateValue"
                     }
                 }
+            },
+            calculateValue: {
+                funcName: "fluid.stepper.button.buttonCalculateValue",
+                args: ["{that}.options.incrementCoefficient", "{that}.options.buttonOptions.stepMultiplier", "{that}.model.value", "{that}.options.range.min", "{that}.options.range.max"]
             }
         },
         listeners: {
@@ -138,16 +141,26 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 "method": "click",
                 "args": "{that}.setModel"
             }
+        },
+        incrementCoefficient: 1,
+        buttonOptions: {
+            stepMultiplier: 10
         }
     });
 
-    fluid.buttonCalculateValue = function (value, stepMultiplier, modelValue, min, max) {
+    fluid.stepper.button.buttonCalculateValue = function (value, stepMultiplier, modelValue, min, max) {
         modelValue = Math.round(modelValue * stepMultiplier);
         min = Math.round(min * stepMultiplier);
         max = Math.round(max * stepMultiplier);
-        if ((modelValue + value) < min) return min/stepMultiplier;
-        else if ((modelValue + value) > max) return max/stepMultiplier;
-        else return (modelValue + value)/stepMultiplier;
+        if ((modelValue + value) < min) {
+            return min/stepMultiplier;
+        }
+        else if ((modelValue + value) > max) {
+            return max/stepMultiplier;
+        }
+        else {
+            return (modelValue + value)/stepMultiplier;
+        }
     };
 
 })(jQuery, fluid_2_0_0);

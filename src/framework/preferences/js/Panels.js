@@ -651,10 +651,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 checks: {
                     responsive: {
                         contextValue: "{fluid.responsiveCheck}",
-                        gradeNames: "fluid.prefs.responsiveTextSize"
+                        gradeNames: "fluid.prefs.textSize.textfieldButtons"
                     }
                 },
-                defaultGradeNames: "fluid.prefs.defaultTextSize"
+                defaultGradeNames: "fluid.prefs.textSize.textfieldSlider"
             }
         },
         preferenceMap: {
@@ -685,7 +685,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    fluid.defaults("fluid.prefs.defaultTextSize", {
+    fluid.defaults("fluid.prefs.textSize.textfieldSlider", {
         selectors: {
             smallIcon: ".flc-prefsEditor-min-text-size-smallIcon",
             largeIcon: ".flc-prefsEditor-min-text-size-largeIcon",
@@ -713,7 +713,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    fluid.defaults("fluid.prefs.responsiveTextSize", {
+    fluid.defaults("fluid.prefs.textSize.textfieldButtons", {
         selectors: {
             increaseButton: "fl-increase-button",
             decreaseButton: "fl-decrease-button"
@@ -796,10 +796,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 checks: {
                     responsive: {
                         contextValue: "{fluid.responsiveCheck}",
-                        gradeNames: "fluid.prefs.responsiveLineSpace"
+                        gradeNames: "fluid.prefs.lineSpace.textfiledButtons"
                     }
                 },
-                defaultGradeNames: "fluid.prefs.defaultLineSpace"
+                defaultGradeNames: "fluid.prefs.lineSpace.textfieldSlider"
             }
         },
         preferenceMap: {
@@ -830,7 +830,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    fluid.defaults("fluid.prefs.defaultLineSpace", {
+    fluid.defaults("fluid.prefs.lineSpace.textfieldSlider", {
         selectors: {
             narrowIcon: ".flc-prefsEditor-line-space-narrowIcon",
             wideIcon: ".flc-prefsEditor-line-space-wideIcon",
@@ -858,7 +858,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    fluid.defaults("fluid.prefs.responsiveLineSpace", {
+    fluid.defaults("fluid.prefs.lineSpace.textfieldButtons", {
         selectors: {
             increaseButton: "fl-increase-button",
             decreaseButton: "fl-decrease-button"
