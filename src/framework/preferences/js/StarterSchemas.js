@@ -159,7 +159,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 "panel": {
                     "type": "fluid.prefs.panel.blueColorFilter",
                     "container": ".flc-prefsEditor-blue-color-filter",  // the css selector in the template where the panel is rendered
-                    "message": "%messagePrefix/blueColorFilterjson"
+                    "message": "%messagePrefix/blueColorFilter.json"
                 }
             }
         }
@@ -167,7 +167,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.defaults("fluid.prefs.auxSchema.starter.blueColorFilter.nativeHTML", {
         auxiliarySchema: {
-            "lineSpace": {
+            "blueColorFilter": {
                 "panel": {
                     "template": "%templatePrefix/PrefsEditorTemplate-blueColorFilter-nativeHTML.html"
                 }
@@ -177,7 +177,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.defaults("fluid.prefs.auxSchema.starter.blueColorFilter.jQueryUI", {
         auxiliarySchema: {
-            "lineSpace": {
+            "blueColorFilter": {
                 "panel": {
                     "template": "%templatePrefix/PrefsEditorTemplate-blueColorFilter-jQueryUI.html"
                 }
