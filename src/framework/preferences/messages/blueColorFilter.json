@@ -1,0 +1,7 @@
+{
+    "blueColorFilterLabel": "Line Spacing",
+//    "lineSpaceNarrowIcon": "icon of 3 horizontal lines with narrow spacing",
+//    "lineSpaceWideIcon": "icon of 3 horizontal lines with wide spacing",
+    "multiplier": "times",
+    "blueColorFilterDescr": "Adjust the intensity of the blue color"
+}

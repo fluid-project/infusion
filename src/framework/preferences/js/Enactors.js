@@ -353,6 +353,47 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     /*******************************************************************************
+     * blueColorFilter
+     *
+     * Sets the intensity of the blue color of the page to the multiple provided.
+     *******************************************************************************/
+
+    // Note that the implementors need to provide the container for this view component
+    fluid.defaults("fluid.prefs.enactor.blueColorFilter", {
+        gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
+        preferenceMap: {
+            "fluid.prefs.blueColorFilter": {
+                "model.value": "default"
+            }
+        },
+        // fontSizeMap: {},  // must be supplied by implementors
+        invokers: {
+            set: {
+                funcName: "fluid.prefs.enactor.blueColorFilter.set",
+                args: ["{arguments}.0"]
+            }
+        },
+        modelListeners: {
+            value: {
+                listener: "{that}.set",
+                args: ["{change}.value"]
+            }
+        }
+    });
+
+    fluid.prefs.enactor.blueColorFilter.set = function (times) {
+        var elements = $("body *");
+        elements.each(function () {
+            var color = $(this).css("color"); // get the color as "rgb(..., ..., ...)"
+            color = color.slice(4,-1);
+            color = color.split(", "); //color becomes and array with the 3 color components as his elements
+            color[2] = Math.round(color[2]*times); //blue component
+            var colorToSet = "rgb(" + color[0] + ", " +color[1] + ", " +color[2] + ")";
+            $(this).css("color", colorToSet);
+        });
+    };
+
+    /*******************************************************************************
      * tableOfContents
      *
      * To create and show/hide table of contents

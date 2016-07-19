@@ -125,6 +125,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             removeSource: true,
             target: "{that lineSpace}.options"
         }, {
+            source: "{that}.options.blueColorFilter",
+            removeSource: true,
+            target: "{that blueColorFilter}.options"
+        }, {
             source: "{that}.options.textFont",
             removeSource: true,
             target: "{that textFont}.options"

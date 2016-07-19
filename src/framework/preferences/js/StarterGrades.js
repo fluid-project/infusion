@@ -32,6 +32,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     theme: "default",             // key from classname map
                     textSize: 1,                  // in points
                     lineSpace: 1,                 // in ems
+                    blueColorFilter: 1,           // in times
                     toc: false,                   // boolean
                     links: false,                 // boolean
                     inputsLarger: false           // boolean
@@ -131,6 +132,16 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     }
                 }
             },
+            blueColorFilter: {
+                type: "fluid.prefs.enactor.blueColorFilter",
+                container: "{uiEnhancer}.container",
+                options: {
+                    // fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
+                    model: {
+                        value: "{uiEnhancer}.model.blueColorFilter"
+                    }
+                }
+            },
             contrast: {
                 type: "fluid.prefs.enactor.contrast",
                 container: "{uiEnhancer}.container",
@@ -185,6 +196,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             textSize: ".flc-prefsEditor-text-size",
             textFont: ".flc-prefsEditor-text-font",
             lineSpace: ".flc-prefsEditor-line-space",
+            blueColorFilter: ".flc-prefsEditor-blue-color-filter",
             contrast: ".flc-prefsEditor-contrast",
             textControls: ".flc-prefsEditor-text-controls",
             layoutControls: ".flc-prefsEditor-layout-controls",
@@ -218,6 +230,21 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     messageBase: "{messageLoader}.resources.lineSpace.resourceText",
                     resources: {
                         template: "{templateLoader}.resources.lineSpace"
+                    }
+                }
+            },
+            blueColorFilter: {
+                type: "fluid.prefs.panel.blueColorFilter",
+                container: "{prefsEditor}.dom.blueColorFilter",
+                createOnEvent: "onPrefsEditorMarkupReady",
+                options: {
+                    gradeNames: "fluid.prefs.prefsEditorConnections",
+                    model: {
+                        lineSpace: "{prefsEditor}.model.preferences.blueColorFilter"
+                    },
+                    messageBase: "{messageLoader}.resources.blueColorFilter.resourceText",
+                    resources: {
+                        template: "{templateLoader}.resources.blueColorFilter"
                     }
                 }
             },
@@ -349,14 +376,16 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.defaults("fluid.prefs.starterTemplateLoader.native", {
         resources: {
             textSize: "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html",
-            lineSpace: "%templatePrefix/PrefsEditorTemplate-lineSpace-nativeHTML.html"
+            lineSpace: "%templatePrefix/PrefsEditorTemplate-lineSpace-nativeHTML.html",
+            blueColorFilter: "%templatePrefix/PrefsEditorTemplate-blueColorFilter-nativeHTML.html"
         }
     });
 
     fluid.defaults("fluid.prefs.starterTemplateLoader.jQuery", {
         resources: {
             textSize: "%templatePrefix/PrefsEditorTemplate-textSize-jQueryUI.html",
-            lineSpace: "%templatePrefix/PrefsEditorTemplate-lineSpace-jQueryUI.html"
+            lineSpace: "%templatePrefix/PrefsEditorTemplate-lineSpace-jQueryUI.html",
+            blueColorFilter: "%templatePrefix/PrefsEditorTemplate-blueColorFilter-jQueryUI.html"
         }
     });
 
@@ -398,6 +427,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             textSize: "%messagePrefix/textSize.json",
             textFont: "%messagePrefix/textFont.json",
             lineSpace: "%messagePrefix/lineSpace.json",
+            blueColorFilter: "%messagePrefix/blueColorFilterjson",
             contrast: "%messagePrefix/contrast.json",
             layoutControls: "%messagePrefix/tableOfContents.json",
             linksControls: "%messagePrefix/linksControls.json",

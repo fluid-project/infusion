@@ -40,10 +40,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                             jQueryUI: {
                                 contextValue: "{fluid.prefsWidgetType}",
                                 equals: "jQueryUI",
-                                gradeNames: ["fluid.prefs.auxSchema.starter.textSize.jQueryUI", "fluid.prefs.auxSchema.starter.lineSpace.jQueryUI"]
+                                gradeNames: ["fluid.prefs.auxSchema.starter.textSize.jQueryUI", "fluid.prefs.auxSchema.starter.lineSpace.jQueryUI", "fluid.prefs.auxSchema.starter.blueColorFilter.jQueryUI"]
                             }
                         },
-                        defaultGradeNames: ["fluid.prefs.auxSchema.starter.textSize.nativeHTML", "fluid.prefs.auxSchema.starter.lineSpace.nativeHTML"]
+                        defaultGradeNames: ["fluid.prefs.auxSchema.starter.textSize.nativeHTML", "fluid.prefs.auxSchema.starter.lineSpace.nativeHTML", "fluid.prefs.auxSchema.starter.blueColorFilter.nativeHTML"]
                     }
                 }
             });
@@ -138,6 +138,53 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
+    // blueColorFilter mixin (base)
+    fluid.defaults("fluid.prefs.auxSchema.starter.blueColorFilter", {
+        gradeNames: ["fluid.contextAware"],
+        auxiliarySchema: {
+            "blueColorFilter": {
+                "type": "fluid.prefs.blueColorFilter",
+                "enactor": {
+                    "type": "fluid.prefs.enactor.blueColorFilter"
+                    // "fontSizeMap": {
+                    //     "xx-small": "9px",
+                    //     "x-small": "11px",
+                    //     "small": "13px",
+                    //     "medium": "15px",
+                    //     "large": "18px",
+                    //     "x-large": "23px",
+                    //     "xx-large": "30px"
+                    // }
+                },
+                "panel": {
+                    "type": "fluid.prefs.panel.blueColorFilter",
+                    "container": ".flc-prefsEditor-blue-color-filter",  // the css selector in the template where the panel is rendered
+                    "message": "%messagePrefix/blueColorFilterjson"
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.auxSchema.starter.blueColorFilter.nativeHTML", {
+        auxiliarySchema: {
+            "lineSpace": {
+                "panel": {
+                    "template": "%templatePrefix/PrefsEditorTemplate-blueColorFilter-nativeHTML.html"
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.auxSchema.starter.blueColorFilter.jQueryUI", {
+        auxiliarySchema: {
+            "lineSpace": {
+                "panel": {
+                    "template": "%templatePrefix/PrefsEditorTemplate-blueColorFilter-jQueryUI.html"
+                }
+            }
+        }
+    });
+
     fluid.defaults("fluid.prefs.responsiveSchema", {
         auxiliarySchema: {
             "textSize": {
@@ -148,6 +195,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             "lineSpace": {
                 "panel": {
                     "template": "%templatePrefix/PrefsEditorTemplate-lineSpace-responsive.html"
+                }
+            },
+            "blueColorFilter" : {
+                "panel": {
+                    "template": "%templatePrefix/PrefsEditorTemplate-blueColorFilter-responsive.html"
                 }
             }
         }
@@ -297,6 +349,19 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 "default": 1,
                 "minimum": 1,
                 "maximum": 2,
+                "divisibleBy": 0.1
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.schemas.blueColorFilter", {
+        gradeNames: ["fluid.prefs.schemas"],
+        schema: {
+            "fluid.prefs.blueColorFilter": {
+                "type": "number",
+                "default": 1,
+                "minimum": 0,
+                "maximum": 1,
                 "divisibleBy": 0.1
             }
         }

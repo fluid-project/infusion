@@ -882,6 +882,106 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
+    /*********************************
+     * Preferences Editor Blue Color Filter *
+     *********************************/
+
+    /**
+     * A sub-component of fluid.prefs that renders the "blue color filter" panel of the user preferences interface.
+     */
+    fluid.defaults("fluid.prefs.panel.blueColorFilter", {
+        gradeNames: ["fluid.prefs.panel", "fluid.contextAware"],
+        contextAwareness: {
+            responsiveAware: {
+                checks: {
+                    responsive: {
+                        contextValue: "{fluid.responsiveCheck}",
+                        gradeNames: "fluid.prefs.blueColorFilter.textfiledButtons"
+                    }
+                },
+                defaultGradeNames: "fluid.prefs.blueColorFilter.textfieldSlider"
+            }
+        },
+        preferenceMap: {
+            "fluid.prefs.blueColorFilter": {
+                "model.blueColorFilter": "default",
+                "range.min": "minimum",
+                "range.max": "maximum"
+            }
+        },
+        // The default model values represent both the expected format as well as the setting to be applied in the absence of values passed down to the component.
+        // i.e. from the settings store, or specific defaults derived from schema.
+        // Note: Except for being passed down to its subcomponent, these default values are not contributed and shared out
+        range: {
+            min: 0,
+            max: 1
+        },
+        selectors: {
+            blueColorFilter: ".flc-prefsEditor-blue-color-filter",
+            label: ".flc-prefsEditor-blue-color-filter-label"
+        },
+        selectorsToIgnore: ["blueColorFilter"],
+        protoTree: {
+            label: {messagekey: "blueColorFilterLabel"},
+            // narrowIcon: {messagekey: "lineSpaceNarrowIcon"},
+            // wideIcon: {messagekey: "lineSpaceWideIcon"},
+            multiplier: {messagekey: "multiplier"},
+            blueColorFilterDescr: {messagekey: "blueColorFilterDescr"}
+        }
+    });
+
+    fluid.defaults("fluid.prefs.blueColorFilter.textfieldSlider", {
+        selectors: {
+            // narrowIcon: ".flc-prefsEditor-line-space-narrowIcon",
+            // wideIcon: ".flc-prefsEditor-line-space-wideIcon",
+            multiplier: ".flc-prefsEditor-multiplier",
+            blueColorFilterDescr: ".flc-prefsEditor-blue-color-filter-descr"
+        },
+        components: {
+            textfieldSlider: {
+                type: "fluid.textfieldSlider",
+                container: "{that}.dom.blueColorFilter",
+                createOnEvent: "afterRender",
+                options: {
+                    model: {
+                        value: "{fluid.prefs.panel.blueColorFilter}.model.blueColorFilter"
+                    },
+                    range: "{fluid.prefs.panel.blueColorFilter}.options.range",
+                    sliderOptions: "{fluid.prefs.panel.blueColorFilter}.options.sliderOptions"
+                }
+            }
+        },
+        sliderOptions: {
+            orientation: "horizontal",
+            step: 0.1,
+            range: "min"
+        }
+    });
+
+    fluid.defaults("fluid.prefs.blueColorFilter.textfieldButtons", {
+        selectors: {
+            increaseButton: "fl-increase-button",
+            decreaseButton: "fl-decrease-button"
+        },
+        components: {
+            textfieldButtons: {
+                type: "fluid.textfieldButtons",
+                container: "{that}.dom.blueColorFilter",
+                createOnEvent: "afterRender",
+                options: {
+                    model: {
+                        value: "{fluid.prefs.panel.blueColorFilter}.model.blueColorFilter"
+                    },
+                    range: "{fluid.prefs.panel.blueColorFilter}.options.range",
+                    buttonOptions: "{fluid.prefs.panel.blueColorFilter}.options.buttonOptions"
+                }
+            }
+        },
+        buttonOptions: {
+            stepMultiplier: 10
+        }
+    });
+
     /*******************************
      * Preferences Editor Contrast *
      *******************************/
