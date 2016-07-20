@@ -16,13 +16,23 @@ var _ = require("lodash");
 var path = require("path");
 var execSync = require("child_process").execSync;
 
+var getFromExec = function (command) {
+    var result;
+    try {
+        result = execSync(command);
+    } catch (e) {
+        result = "unknown";
+    }
+    return result;
+};
+
 module.exports = function (grunt) {
 
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
-        revision: execSync("git rev-parse --verify --short HEAD"),
-        branch: execSync("git rev-parse --abbrev-ref HEAD"),
+        revision: getFromExec("git rev-parse --verify --short HEAD"),
+        branch: getFromExec("git rev-parse --abbrev-ref HEAD"),
         allBuildName: "<%= pkg.name %>-all",
         customBuildName: "<%= pkg.name %>-" + (grunt.option("name") || "custom"),
         isCompressed: !grunt.option("source"),
