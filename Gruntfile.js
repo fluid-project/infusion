@@ -21,7 +21,7 @@ var getFromExec = function (command) {
     try {
         result = execSync(command);
     } catch (e) {
-        result = "unknown";
+        result = "unknown\n";
     }
     return result;
 };
