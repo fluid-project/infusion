@@ -206,7 +206,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     });
 
     fluid.defaults("fluid.prefs.auxSchema.starter", {
-        gradeNames: ["fluid.prefs.auxSchema", "fluid.prefs.auxSchema.starter.lineSpace", "fluid.prefs.auxSchema.starter.textSize", "fluid.contextAware", "fluid.prefs.auxSchema.starter.default"],
+        gradeNames: ["fluid.prefs.auxSchema", "fluid.prefs.auxSchema.starter.lineSpace", "fluid.prefs.auxSchema.starter.textSize", "fluid.prefs.auxSchema.starter.blueColorFilter", "fluid.contextAware", "fluid.prefs.auxSchema.starter.default"],
         contextAwareness: {
             responsiveAware: {
                 checks: {
