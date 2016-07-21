@@ -9,17 +9,16 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/* global require, module */
+/* eslint-env node */
+"use strict";
 
 var _ = require("lodash");
 var path = require("path");
 
 module.exports = function (grunt) {
-    "use strict";
 
     // Project configuration.
     grunt.initConfig({
-        // Project package file destination.
         pkg: grunt.file.readJSON("package.json"),
         allBuildName: "<%= pkg.name %>-all",
         customBuildName: "<%= pkg.name %>-" + (grunt.option("name") || "custom"),
@@ -184,7 +183,7 @@ module.exports = function (grunt) {
         }
     });
 
-    // Load the plugin(s):
+    // Load the plugins:
     grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-contrib-clean");
     grunt.loadNpmTasks("grunt-contrib-copy");
