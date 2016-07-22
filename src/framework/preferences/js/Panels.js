@@ -923,8 +923,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         selectorsToIgnore: ["blueColorFilter"],
         protoTree: {
             label: {messagekey: "blueColorFilterLabel"},
-            // narrowIcon: {messagekey: "lineSpaceNarrowIcon"},
-            // wideIcon: {messagekey: "lineSpaceWideIcon"},
             multiplier: {messagekey: "multiplier"},
             blueColorFilterDescr: {messagekey: "blueColorFilterDescr"}
         }
@@ -932,8 +930,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.defaults("fluid.prefs.blueColorFilter.textfieldSlider", {
         selectors: {
-            // narrowIcon: ".flc-prefsEditor-line-space-narrowIcon",
-            // wideIcon: ".flc-prefsEditor-line-space-wideIcon",
             multiplier: ".flc-prefsEditor-multiplier",
             blueColorFilterDescr: ".flc-prefsEditor-blue-color-filter-descr"
         },

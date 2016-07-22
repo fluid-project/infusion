@@ -366,11 +366,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 "model.value": "default"
             }
         },
-        // fontSizeMap: {},  // must be supplied by implementors
         invokers: {
+            calculateInitialColors: {
+                funcName: "fluid.prefs.enactor.blueColorFilter.calculateInitialColors"
+            },
             set: {
                 funcName: "fluid.prefs.enactor.blueColorFilter.set",
-                args: ["{arguments}.0"]
+                args: ["{arguments}.0", "{that}.calculateInitialColors"]
             }
         },
         modelListeners: {
@@ -381,15 +383,37 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    fluid.prefs.enactor.blueColorFilter.set = function (times) {
+    var flag = true;            // Used in fluid.prefs.enactor.blueColorFilter.calculateInitialColors
+    var lastElementsSize = 0;   // had to be defined here in order to not be create every time
+    var initialColors = [];     // the model is changed
+
+    fluid.prefs.enactor.blueColorFilter.calculateInitialColors = function () {
         var elements = $("body *");
+        if ((lastElementsSize != elements.size()) || flag) {
+            initialColors = [];
+            elements.each(function () {
+                var color = $(this).css("color");  // get the color as "rgb(..., ..., ...)"
+                color = color.slice(4,-1);
+                color = color.split(", ");  // color becomes and array with the 3 color components as his elements
+                initialColors.push(color);
+            });
+            lastElementsSize = elements.size();
+            flag = false;
+        }
+        return initialColors;
+    };
+
+    fluid.prefs.enactor.blueColorFilter.set = function (times, initialColors) {
+        var elements = $("body *");
+        var index = 0;
+        var arrayCopy = initialColors();
+        var initialColorsDeepCopy = $.extend(true, [], arrayCopy);  // make a deep copy of the original array in order to prevent changes in the initial array
         elements.each(function () {
-            var color = $(this).css("color"); // get the color as "rgb(..., ..., ...)"
-            color = color.slice(4,-1);
-            color = color.split(", "); //color becomes and array with the 3 color components as his elements
-            color[2] = Math.round(color[2]*times); //blue component
-            var colorToSet = "rgb(" + color[0] + ", " +color[1] + ", " +color[2] + ")";
+            var color = initialColorsDeepCopy[index];  //get the color of the current component
+            color[2] = Math.round(color[2]*times) + "";  //blue component
+            var colorToSet = "rgb(" + color[0] + ", " +color[1] + ", " +color[2] + ")";  //make the color in a "rbg(..,..,..)" format
             $(this).css("color", colorToSet);
+            index++;
         });
     };
 

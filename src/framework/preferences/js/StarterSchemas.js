@@ -146,15 +146,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 "type": "fluid.prefs.blueColorFilter",
                 "enactor": {
                     "type": "fluid.prefs.enactor.blueColorFilter"
-                    // "fontSizeMap": {
-                    //     "xx-small": "9px",
-                    //     "x-small": "11px",
-                    //     "small": "13px",
-                    //     "medium": "15px",
-                    //     "large": "18px",
-                    //     "x-large": "23px",
-                    //     "xx-large": "30px"
-                    // }
                 },
                 "panel": {
                     "type": "fluid.prefs.panel.blueColorFilter",
