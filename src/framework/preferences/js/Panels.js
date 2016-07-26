@@ -714,10 +714,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     });
 
     fluid.defaults("fluid.prefs.textSize.textfieldButtons", {
-        selectors: {
-            increaseButton: "fl-increase-button",
-            decreaseButton: "fl-decrease-button"
-        },
         components: {
             textfieldButtons: {
                 type: "fluid.textfieldButtons",
@@ -796,7 +792,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 checks: {
                     responsive: {
                         contextValue: "{fluid.responsiveCheck}",
-                        gradeNames: "fluid.prefs.lineSpace.textfiledButtons"
+                        gradeNames: "fluid.prefs.lineSpace.textfieldButtons"
                     }
                 },
                 defaultGradeNames: "fluid.prefs.lineSpace.textfieldSlider"
@@ -859,10 +855,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     });
 
     fluid.defaults("fluid.prefs.lineSpace.textfieldButtons", {
-        selectors: {
-            increaseButton: "fl-increase-button",
-            decreaseButton: "fl-decrease-button"
-        },
         components: {
             textfieldButtons: {
                 type: "fluid.textfieldButtons",
@@ -896,7 +888,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 checks: {
                     responsive: {
                         contextValue: "{fluid.responsiveCheck}",
-                        gradeNames: "fluid.prefs.blueColorFilter.textfiledButtons"
+                        gradeNames: "fluid.prefs.blueColorFilter.textfieldButtons"
                     }
                 },
                 defaultGradeNames: "fluid.prefs.blueColorFilter.textfieldSlider"
@@ -955,10 +947,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     });
 
     fluid.defaults("fluid.prefs.blueColorFilter.textfieldButtons", {
-        selectors: {
-            increaseButton: "fl-increase-button",
-            decreaseButton: "fl-decrease-button"
-        },
         components: {
             textfieldButtons: {
                 type: "fluid.textfieldButtons",
