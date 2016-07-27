@@ -38,7 +38,6 @@
     "no-empty": ["error", {"allowEmptyCatch": true}],
     "no-eval": "error",
     "no-extend-native": "error",
-    "no-extra-parens": "off",
     "no-irregular-whitespace": "error",
     "no-iterator": "error",
     "no-loop-func": "error",
