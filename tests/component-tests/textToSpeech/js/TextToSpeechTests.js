@@ -131,6 +131,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     // Chrome doesn't properly support pause which causes this test to break.
     // see: https://code.google.com/p/chromium/issues/detail?id=425553&q=SpeechSynthesis&colspec=ID%20Pri%20M%20Week%20ReleaseBlock%20Cr%20Status%20Owner%20Summary%20OS%20Modified
+    // This test now passes as of 2016-07-28 on Chrome, though the issue
+    // appears to still be outstanding - it appears the pause/resume events
+    // fire, but the global SpeechSynthesis object is not updated. Since this
+    // component tracks state by callback events rather than querying the
+    // global object directly, it is possible this bug in Chrome is not an
+    // issue any more & these tests should not be skipped    
     if (!window.chrome) {
         fluid.tests.textToSpeech.issueTest("Pause and Resume Events", function () {
             jqUnit.expect(8);
