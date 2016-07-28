@@ -48,7 +48,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 speechSynthesis.cancel();
                 promise.reject();
             }, delay || 1000);
-            toSpeak.onstop = function () {
+            toSpeak.onend = function () {
                 clearTimeout(timeout);
                 speechSynthesis.cancel();
                 promise.resolve();
