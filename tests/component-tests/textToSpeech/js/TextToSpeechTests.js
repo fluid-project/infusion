@@ -34,116 +34,146 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         speechSynthesis.cancel();
     };
 
-    fluid.defaults("fluid.tests.textToSpeech.startStop", {
-        gradeNames: ["fluid.tests.textToSpeech"],
-        listeners: {
-            "onStart.test": {
-                listener: function (that) {
-                    jqUnit.assert("The onStart event should have fired");
-                    jqUnit.assertTrue("Should be speaking", that.model.speaking);
-                    jqUnit.assertFalse("Nothing should be pending", that.model.pending);
-                    jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
-                    jqUnit.assertDeepEq("The queue should be empty", [], that.queue);
-                },
-                args: ["{that}"]
+    fluid.defaults("fluid.tests.textToSpeech.ttsTestEnvironment", {
+        gradeNames: "fluid.test.testEnvironment",
+        components: {
+            tts: {
+                type: "fluid.tests.textToSpeech",
+                createOnEvent: "{ttsTester}.events.onTestCaseStart"
             },
-            "onStop.test": {
-                listener: function (that) {
-                    jqUnit.assert("The onStop event should have fired");
-                    jqUnit.assertFalse("Should not be speaking", that.model.speaking);
-                    jqUnit.assertFalse("Nothing should be pending", that.model.pending);
-                    jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
-                    jqUnit.assertDeepEq("The queue should be empty", [], that.queue);
-                    that.cancel();
-                    jqUnit.start();
-                },
-                args: ["{that}"]
+            ttsTester: {
+                type: "fluid.tests.textToSpeech.ttsTester"
             }
         }
     });
 
-    fluid.defaults("fluid.tests.textToSpeech.pauseResume", {
-        gradeNames: ["fluid.tests.textToSpeech"],
-        listeners: {
-            "onStart.pause": {
-                listener: "{that}.pause"
+    fluid.defaults("fluid.tests.textToSpeech.ttsTester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [
+            {
+                name: "Initialization",
+                tests: [{
+                    expect: 4,
+                    name: "Test initialization",
+                    sequence:
+                    [{
+                        func: "fluid.tests.textToSpeech.testInitialization",
+                        args: ["{tts}"]
+                    }]
+                }],
+
             },
-            "onPause.test": {
-                listener: function (that) {
-                    that.wasPaused = true;
-                    jqUnit.assert("The pause event should have fired");
-                    jqUnit.assertTrue("Should be speaking", that.model.speaking);
-                    jqUnit.assertFalse("Nothing should be pending", that.model.pending);
-                    jqUnit.assertTrue("Should be paused", that.model.paused);
-                    that.resume();
-                },
-                args: ["{that}"]
-            },
-            "onResume.test": {
-                listener: function (that) {
-                    jqUnit.assert("The resume event should have fired");
-                    jqUnit.assertTrue("Should be speaking", that.model.speaking);
-                    jqUnit.assertFalse("Nothing should be pending", that.model.pending);
-                    jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
-                },
-                args: ["{that}"]
-            },
-            "onStop.end": {
-                listener: function (that) {
-                    that.cancel();
-                    jqUnit.start();
-                },
-                args: ["{that}"]
-            }
-        }
+            {
+                name: "Start and Stop Events",
+                tests: [{
+                    expect: 10,
+                    name: "Test Start and Stop Events",
+                    sequence:
+                    [{
+                        func: "{tts}.queueSpeech",
+                        args: "Testing start and end events"
+                    }, {
+                        listener: "fluid.tests.textToSpeech.testStart",
+                        args: ["{tts}"],
+                        event: "{tts}.events.onStart"
+                    }, {
+                        func: "fluid.identity"
+                    }, {
+                        listener: "fluid.tests.textToSpeech.testStop",
+                        args: ["{tts}"],
+                        event: "{tts}.events.onStop"
+                    }]
+            }]
+        },
+        {
+            name: "Pause and Resume Events",
+            tests: [{
+                expect: 8,
+                name: "Test Pause and Resume Events",
+                sequence:
+                [{
+                    func: "{tts}.queueSpeech",
+                    args: "Testing pause and resume events"
+                }, {
+                    listener: "{tts}.pause",
+                    args: ["{tts}"],
+                    event: "{tts}.events.onStart"
+                }, {
+                    func: "fluid.identity"
+                }, {
+                    listener: "fluid.tests.textToSpeech.testPause",
+                    args: ["{tts}"],
+                    event: "{tts}.events.onPause"
+                }, {
+                    func: "fluid.identity"
+                }, {
+                    listener: "fluid.tests.textToSpeech.testResume",
+                    args: ["{tts}"],
+                    event: "{tts}.events.onResume"
+                }]
+        }]
+    }]
     });
 
-    fluid.tests.textToSpeech.bypassTest = function () {
-        jqUnit.assert("TEST SKIPPED - browser does not support SpeechSynthesis");
-        jqUnit.start();
+    fluid.tests.textToSpeech.testPause = function (tts) {
+        var that = tts;
+        that.wasPaused = true;
+        jqUnit.assert("The pause event should have fired");
+        jqUnit.assertTrue("Should be speaking", that.model.speaking);
+        jqUnit.assertFalse("Nothing should be pending", that.model.pending);
+        jqUnit.assertTrue("Should be paused", that.model.paused);
+        that.resume();
     };
 
-    // only run the tests in browsers that support the Web Speech API for speech synthesis
-    fluid.tests.textToSpeech.issueTest = function (name, testFunc) {
-        jqUnit.asyncTest(name, function () {
-            var runTests = fluid.textToSpeech.checkTTSSupport();
-            runTests.then(function () {
-                testFunc();
-            }, fluid.tests.textToSpeech.bypassTest);
-        });
+    fluid.tests.textToSpeech.testResume = function (tts) {
+        var that = tts;
+        jqUnit.assert("The resume event should have fired");
+        jqUnit.assertTrue("Should be speaking", that.model.speaking);
+        jqUnit.assertFalse("Nothing should be pending", that.model.pending);
+        jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
     };
 
-    fluid.tests.textToSpeech.issueTest("Initialization", function () {
-        var that = fluid.tests.textToSpeech();
-
+    fluid.tests.textToSpeech.testInitialization = function (tts) {
+        var that = tts;
         jqUnit.assertTrue("The Text to Speech component should have initialized", that);
         jqUnit.assertFalse("Nothing should be speaking", that.model.speaking);
         jqUnit.assertFalse("Nothing should be pending", that.model.pending);
         jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
-        jqUnit.start();
-    });
+    };
 
-    fluid.tests.textToSpeech.issueTest("Start and Stop Events", function () {
-        jqUnit.expect(10);
-        var that = fluid.tests.textToSpeech.startStop();
-        that.queueSpeech("Testing start and end events");
-    });
+    fluid.tests.textToSpeech.testStart = function (tts) {
+        var that = tts;
+        jqUnit.assert("The onStart event should have fired");
+        jqUnit.assertTrue("Should be speaking", that.model.speaking);
+        jqUnit.assertFalse("Nothing should be pending", that.model.pending);
+        jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
+        jqUnit.assertDeepEq("The queue should be empty", [], that.queue);
+    };
 
-    // Chrome doesn't properly support pause which causes this test to break.
-    // see: https://code.google.com/p/chromium/issues/detail?id=425553&q=SpeechSynthesis&colspec=ID%20Pri%20M%20Week%20ReleaseBlock%20Cr%20Status%20Owner%20Summary%20OS%20Modified
-    // This test now passes as of 2016-07-28 on Chrome, though the issue
-    // appears to still be outstanding - it appears the pause/resume events
-    // fire, but the global SpeechSynthesis object is not updated. Since this
-    // component tracks state by callback events rather than querying the
-    // global object directly, it is possible this bug in Chrome is not an
-    // issue any more & these tests should not be skipped    
-    if (!window.chrome) {
-        fluid.tests.textToSpeech.issueTest("Pause and Resume Events", function () {
-            jqUnit.expect(8);
-            var that = fluid.tests.textToSpeech.pauseResume();
-            that.queueSpeech("Testing pause and resume events");
-        });
-    }
+    fluid.tests.textToSpeech.testStop = function (tts) {
+        var that = tts;
+        jqUnit.assert("The onStop event should have fired");
+        jqUnit.assertFalse("Should not be speaking", that.model.speaking);
+        jqUnit.assertFalse("Nothing should be pending", that.model.pending);
+        jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
+        jqUnit.assertDeepEq("The queue should be empty", [], that.queue);
+        that.cancel();
+    };
 
+    fluid.tests.textToSpeech.issueTest = function (name, testFunc) {
+            var runTests = fluid.textToSpeech.checkTTSSupport();
+            runTests.then(function () {
+                testFunc();
+            }, fluid.tests.textToSpeech.bypassTest);
+    };
+
+    fluid.tests.textToSpeech.bypassTest = function () {
+          jqUnit.test("Tests were skipped - browser does not appear to support TTS", function () {              
+              jqUnit.assert("TESTS SKIPPED - browser does not support SpeechSynthesis");
+          });
+
+      };
+
+    fluid.tests.textToSpeech.issueTest("Run test suite only in browsers supporting TTS", fluid.tests.textToSpeech.ttsTestEnvironment);
 
 })();

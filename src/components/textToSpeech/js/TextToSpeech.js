@@ -41,7 +41,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      */
     fluid.textToSpeech.checkTTSSupport = function (delay) {
         var promise = fluid.promise();
-        if (fluid.textToSpeech.isSupported()) {
+        if (fluid.textToSpeech.isSupported()) {            
             var toSpeak = new SpeechSynthesisUtterance(" "); // short text to attempt to speak
             toSpeak.volume = 0; // mutes the Speech Synthesizer
             var timeout = setTimeout(function () {
