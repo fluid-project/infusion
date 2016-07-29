@@ -353,71 +353,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     /*******************************************************************************
-     * blueColorFilter
-     *
-     * Sets the intensity of the blue color of the page to the multiple provided.
-     *******************************************************************************/
-
-    // Note that the implementors need to provide the container for this view component
-    fluid.defaults("fluid.prefs.enactor.blueColorFilter", {
-        gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
-        preferenceMap: {
-            "fluid.prefs.blueColorFilter": {
-                "model.value": "default"
-            }
-        },
-        invokers: {
-            calculateInitialColors: {
-                funcName: "fluid.prefs.enactor.blueColorFilter.calculateInitialColors"
-            },
-            set: {
-                funcName: "fluid.prefs.enactor.blueColorFilter.set",
-                args: ["{arguments}.0", "{that}.calculateInitialColors"]
-            }
-        },
-        modelListeners: {
-            value: {
-                listener: "{that}.set",
-                args: ["{change}.value"]
-            }
-        }
-    });
-
-    var flag = true;            // Used in fluid.prefs.enactor.blueColorFilter.calculateInitialColors
-    var lastElementsSize = 0;   // had to be defined here in order to not be create every time
-    var initialColors = [];     // the model is changed
-
-    fluid.prefs.enactor.blueColorFilter.calculateInitialColors = function () {
-        var elements = $("body *");
-        if ((lastElementsSize != elements.size()) || flag) {
-            initialColors = [];
-            elements.each(function () {
-                var color = $(this).css("color");  // get the color as "rgb(..., ..., ...)"
-                color = color.slice(4,-1);
-                color = color.split(", ");  // color becomes and array with the 3 color components as his elements
-                initialColors.push(color);
-            });
-            lastElementsSize = elements.size();
-            flag = false;
-        }
-        return initialColors;
-    };
-
-    fluid.prefs.enactor.blueColorFilter.set = function (times, initialColors) {
-        var elements = $("body *");
-        var index = 0;
-        var arrayCopy = initialColors();
-        var initialColorsDeepCopy = $.extend(true, [], arrayCopy);  // make a deep copy of the original array in order to prevent changes in the initial array
-        elements.each(function () {
-            var color = initialColorsDeepCopy[index];  //get the color of the current component
-            color[2] = Math.round(color[2]*times) + "";  //blue component
-            var colorToSet = "rgb(" + color[0] + ", " +color[1] + ", " +color[2] + ")";  //make the color in a "rbg(..,..,..)" format
-            $(this).css("color", colorToSet);
-            index++;
-        });
-    };
-
-    /*******************************************************************************
      * tableOfContents
      *
      * To create and show/hide table of contents
@@ -491,5 +426,118 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             that.tableOfContents.hide();
         }
     };
+
+    /*******************************************************************************
+     * blueColorFilter
+     *
+     * Sets the intensity of the blue color of the page to the multiple provided.
+     *******************************************************************************/
+
+    // Note that the implementors need to provide the container for this view component
+    fluid.defaults("fluid.prefs.enactor.blueColorFilter", {
+        gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
+        preferenceMap: {
+            "fluid.prefs.blueColorFilter": {
+                "model.value": "default"
+            }
+        },
+        expander: {
+            func: "{that}.addMutationObserver"
+        },
+        invokers: {
+            applyFilter: {
+                funcName: "fluid.prefs.enactor.blueColorFilter.applyFilter",
+                args: ["{that}.model.value"]
+            },
+            addMutationObserver: {
+                funcName: "fluid.prefs.enactor.blueColorFilter.addMutationObserver",
+                args: ["{that}.applyFilter"]
+            }
+        },
+        modelListeners: {
+            value: {
+                listener: "{that}.applyFilter"
+            }
+        }
+    });
+
+    /*Used in fluid.prefs.enactor.blueColorFilter.applyFilter
+     had to be defined here in order to not be create every time the model is changed */
+    var initialColorsDictionary = [];
+    var noMatchFlag = true;
+    var changedDOMFlag = false;
+    var blueColorFilterValue;
+
+    fluid.prefs.enactor.blueColorFilter.applyFilter = function (times) {
+        if (times === undefined) {
+            times = blueColorFilterValue;
+        }
+        blueColorFilterValue = times;
+        var elements = $("body *");
+        var index;
+        elements.each(function () {
+            var element = this;
+            for (var count in initialColorsDictionary) {
+                if (initialColorsDictionary[count].key == this) {
+                    noMatchFlag = false;
+                    break;
+                }
+            }
+            if (noMatchFlag) {
+                var color = $(element).css("color");  // get the color as "rgb(..., ..., ...)"
+                color = color.slice(4, -1);
+                color = color.split(", ");  // color becomes and array with the 3 color components as his elements
+                initialColorsDictionary.push({
+                    key: this,
+                    value: color
+                });
+            }
+            noMatchFlag = true;
+        });
+
+        var initialColors = $.extend(true, [], initialColorsDictionary);  // make a deep copy of the original array in order to prevent changes in the initial array
+        var counter = 0;
+        elements.each(function () {
+            for (var count in initialColors) {
+                if (initialColors[count].key == this) {
+                    index = count;
+                    break;
+                }
+            }
+            var color = initialColors[index].value;  //get the color of the current component
+            color[2] = Math.round(color[2] * times) + "";  //blue component
+            var colorToSet = "rgb(" + color[0] + ", " + color[1] + ", " + color[2] + ")";  //make the color in a "rbg(..,..,..)" format
+            $(this).css("color", colorToSet);
+        });
+    };
+
+    fluid.prefs.enactor.blueColorFilter.addMutationObserver = function (applyFilter) {
+        $(document).ready(function (){
+            var observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function (mutation) {
+                    if (mutation.type === "childList") {
+                        if (changedDOMFlag === false && mutation.target != "[object HTMLHtmlElement]") {
+                            changedDOMFlag = true;
+                            var additions = mutation.addedNodes;
+                            applyFilter();
+                        }
+                    }
+                });
+                changedDOMFlag = false;
+            });
+
+            var target = document.body;
+            var config = {
+                childList : true,
+                subtree : true
+            };
+
+            observer.observe(document, config);
+        });
+    };
+
+
+
+
 
 })(jQuery, fluid_2_0_0);
