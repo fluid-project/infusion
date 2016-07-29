@@ -2,11 +2,16 @@
 <html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>UIOptions Test Suite</title>
 
-        <!--  This is the jqUnit test css file -->
-        <link rel="stylesheet" type="text/css" media="screen" href="../../../lib/qunit/css/qunit.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/lib/normalize/css/normalize.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/framework/core/css/fluid.css" />
 
+        <link rel="stylesheet" type="text/css" href="../../../../src/framework/preferences/css/PrefsEditor.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/framework/preferences/css/SeparatedPanelPrefsEditor.css" />
+
+        <link rel="stylesheet" type="text/css" href="../shared/css/preferences.css" />
+
+        <title>Preferences Editor Example: Conditional Adjusters</title>
         <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery.ui.core.js"></script>
         <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery.ui.widget.js"></script>
@@ -22,13 +27,13 @@
         <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformation.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformationTransforms.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/ResourceLoader.js"></script>
         <script type="text/javascript" src="../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
         <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidParser.js"></script>
         <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
         <script type="text/javascript" src="../../../../src/framework/renderer/js/RendererUtilities.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
 
         <script type="text/javascript" src="../../../../src/framework/preferences/js/URLUtilities.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/Store.js"></script>
@@ -44,24 +49,19 @@
         <script type="text/javascript" src="../../../../src/framework/preferences/js/AuxBuilder.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/StarterSchemas.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/Builder.js"></script>
-        <script type="text/javascript" src="../../../../src/components/uiOptions/js/UIOptions.js"></script>
 
-        <!--  These are the jqUnit test framework js files -->
-        <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
-        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
-
-        <!--  These are tests that have been written using this page as data and test supports -->
-        <script type="text/javascript" src="../js/UIOptionsTests.js"></script>
-
+        <script type="text/javascript" src="../shared/js/primarySchema.js"></script>
+        <script type="text/javascript" src="../shared/js/utilities.js"></script>
+        <script type="text/javascript" src="../shared/js/contextAwareAuxSchemas.js"></script>
+        <script type="text/javascript" src="js/auxiliarySchema.js"></script>
+        <script type="text/javascript" src="../shared/js/panels.js"></script>
+        <script type="text/javascript" src="js/panels.js"></script>
+        <script type="text/javascript" src="../shared/js/enactors.js"></script>
+        <script type="text/javascript" src="js/conditional.js"></script>
     </head>
-    <body>
-    <!-- This is the markup that jqUnit will look for when running tests and displaying the results -->
-    <h1 id="qunit-header">UIOptions Test Suite</h1>
-    <h2 id="qunit-banner"></h2>
-    <div id="qunit-testrunner-toolbar"></div>
-    <h2 id="qunit-userAgent"></h2>
-    <ol id="qunit-tests"></ol>
-    <div id="qunit-fixture" class="container">
+
+    <body class="learning-theme fl-focus">
+
         <!-- BEGIN markup for Preference Editor -->
         <div class="flc-prefsEditor-separatedPanel fl-prefsEditor-separatedPanel">
             <!-- This is the div that will contain the Preference Editor component -->
@@ -77,8 +77,16 @@
         </div>
         <!-- END markup for Preference Editor -->
 
-        <!-- Markup for table of contents -->
-        <div class="flc-toc-tocContainer toc"> </div>
-    </div>
+        <script type="text/javascript">
+            example.initPrefsEditor(".flc-prefsEditor-separatedPanel");
+        </script>
+
+        <div class="overview">
+            <h1>Test of Composite Panels With Conditional Show/Hide of Adjustors</h1>
+            <p>This example illustrates two composite panels, each with a set of adjusters that are dependent on another boolean adjuster.</p>
+            <p>Initially*, you should see only a single on/off switch in each panel. Turning the preference on should reveal the dependent adjusters, and turning the preference off should hide them.</p>
+            <p>Any values set with the dependent adjusters should be preserved even if the controlling preference is turned off.</p>
+            <p>* Once the page is loaded, preference values are stored in a cookie, so on subsequent page loads the stored values will be used. To reset the example to its default state, clear cookies for the page.</p>
+        </div>
     </body>
 </html>

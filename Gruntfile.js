@@ -1,5 +1,5 @@
 /*
-Copyright 2013-2014 OCAD University
+Copyright 2013-2016 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -14,15 +14,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 var _ = require("lodash");
 var path = require("path");
+var execSync = require("child_process").execSync;
 
 module.exports = function (grunt) {
 
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
+        revision: execSync("git rev-parse --verify --short HEAD"),
+        branch: execSync("git rev-parse --abbrev-ref HEAD"),
         allBuildName: "<%= pkg.name %>-all",
         customBuildName: "<%= pkg.name %>-" + (grunt.option("name") || "custom"),
-        stylusCompress: !grunt.option("source"),
+        isCompressed: !grunt.option("source"),
+        banner: "/*!\n <%= pkg.name %> - v<%= pkg.version %>\n <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %>\n branch: <%= branch %> revision: <%= revision %>*/\n",
         clean: {
             build: "build",
             products: "products",
@@ -61,22 +65,21 @@ module.exports = function (grunt) {
         },
         uglify: {
             options: {
-                mangle: false
+                banner: "<%= banner %>",
+                mangle: false,
+                sourceMap: true,
+                sourceMapIncludeSources: true
             },
             all: {
                 files: [{
-                    expand: true,     // Enable dynamic expansion.
-                    cwd: "./build/",      // Src matches are relative to this path.
-                    src: ["src/components/**/*.js", "src/framework/**/*.js", "src/lib/**/*.js"], // Actual pattern(s) to match.
-                    dest: "./build/"   // Destination path prefix.
+                    src: "<%= modulefiles.all.output.files %>",
+                    dest: "./build/<%= allBuildName %>.js"
                 }]
             },
             custom: {
                 files: [{
-                    expand: true,     // Enable dynamic expansion.
-                    cwd: "./build",      // Src matches are relative to this path.
-                    src: ["src/**/*.js"], // Actual pattern(s) to match.
-                    dest: "./build"   // Destination path prefix.
+                    src: "<%= modulefiles.custom.output.files %>",
+                    dest: "./build/<%= customBuildName %>.js"
                 }]
             }
         },
@@ -119,10 +122,13 @@ module.exports = function (grunt) {
                 }
             }
         },
+        // Still need the concat task as uglify does not honour the {compress: false} option
+        // see: https://github.com/mishoo/UglifyJS2/issues/696
         concat: {
             options: {
-                separator: ";",
-                banner: "/*! <%= pkg.name %> - v<%= pkg.version %> <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %>*/\n"
+                separator: ";\n",
+                banner: "<%= banner %>",
+                sourceMap: true
             },
             all: {
                 src: "<%= modulefiles.all.output.files %>",
@@ -161,7 +167,7 @@ module.exports = function (grunt) {
         stylus: {
             compile: {
                 options: {
-                    compress: "<%= stylusCompress %>"
+                    compress: "<%= isCompressed %>"
                 },
                 files: [{
                     expand: true,
@@ -214,6 +220,7 @@ module.exports = function (grunt) {
     // Task for organizing the build
     grunt.registerTask("build", "Generates a minified or source distribution for the specified build target", function (target) {
         target = target || "all";
+        var concatTask = grunt.option("source") ? "concat:" : "uglify:";
         var tasks = [
             "clean",
             "stylus",
@@ -221,15 +228,9 @@ module.exports = function (grunt) {
             "pathMap:" + target,
             "copy:" + target,
             "copy:necessities",
-            "uglify:" + target,
-            "concat:" + target,
-            "compress:" + target,
-            "clean:build"
+            concatTask + target,
+            "compress:" + target
         ];
-        // remove the uglify task when creating a source build
-        if (grunt.option("source")) {
-            _.pull(tasks, "uglify:" + target);
-        }
         grunt.task.run(tasks);
     });
 

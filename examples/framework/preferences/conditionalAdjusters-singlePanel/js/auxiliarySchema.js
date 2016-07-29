@@ -1,5 +1,5 @@
 /*
-Copyright 2013 OCAD University
+Copyright 2013-2016 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -19,7 +19,19 @@ var example = example || {};
      * Auxiliary Schema
      */
     fluid.defaults("example.auxSchema", {
-        gradeNames: ["fluid.prefs.auxSchema"],
+        gradeNames: ["fluid.prefs.auxSchema", "fluid.contextAware"],
+        contextAwareness: {
+            sliderVariety: {
+                checks: {
+                    jQueryUI: {
+                        contextValue: "{fluid.prefsWidgetType}",
+                        equals: "jQueryUI",
+                        gradeNames: "example.auxSchema.jQueryUI"
+                    }
+                },
+                defaultGradeNames: "example.auxSchema.nativeHTML"
+            }
+        },
         auxiliarySchema: {
             template: "html/prefsEditor.html",
             message: "%messagePrefix/prefsEditor.json",
@@ -56,7 +68,6 @@ var example = example || {};
                 panel: {
                     type: "example.panels.vol",
                     container: ".mpe-speaking-vol",
-                    template: "%templatePrefix/slider-template.html",
                     message: "%messagePrefix/speakIncrease.json"
                 }
             },
@@ -68,7 +79,6 @@ var example = example || {};
                 panel: {
                     type: "example.panels.wpm",
                     container: ".mpe-speaking-wpm",
-                    template: "%templatePrefix/slider-template.html",
                     message: "%messagePrefix/speakIncrease.json"
                 }
             },
@@ -92,7 +102,6 @@ var example = example || {};
                 panel: {
                     type: "example.panels.cursor",
                     container: ".mpe-increasing-cursor",
-                    template: "%templatePrefix/slider-template.html",
                     message: "%messagePrefix/speakIncrease.json"
                 }
             },
@@ -104,7 +113,6 @@ var example = example || {};
                 panel: {
                     type: "example.panels.magFactor",
                     container: ".mpe-increasing-magFactor",
-                    template: "%templatePrefix/slider-template.html",
                     message: "%messagePrefix/speakIncrease.json"
                 }
             },
@@ -122,5 +130,4 @@ var example = example || {};
             }
         }
     });
-
 })(jQuery, fluid);
