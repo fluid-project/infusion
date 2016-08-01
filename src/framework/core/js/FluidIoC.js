@@ -1001,11 +1001,24 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 fluid.fail("Cannot record non-component with value ", component, " at path \"" + name + "\" of parent ", parent);
             }
         };
-        that.clearComponent = function (component, name, child, options, noModTree, path) {
+        that.clearConcreteComponent = function (record) {
+            // Clear injected instance of this component from all other paths - historically we didn't bother
+            // to do this since injecting into a shorter scope is an error - but now we have resolveRoot area
+            fluid.each(record.childShadow.injectedPaths, function (troo, injectedPath) {
+                var parentPath = fluid.model.getToTailPath(injectedPath);
+                var otherParent = that.pathToComponent[parentPath];
+                that.clearComponent(otherParent, fluid.model.getTailPath(injectedPath), record.child);
+            });
+            fluid.clearDistributions(record.childShadow);
+            fluid.clearListeners(record.childShadow);
+            fluid.fireEvent(record.child, "afterDestroy", [record.child, record.name, record.component]);
+            delete that.idToShadow[record.child.id];
+        };
+        that.clearComponent = function (component, name, child, options, nested, path) {
             // options are visitor options for recursive driving
             var shadow = that.idToShadow[component.id];
             // use flat recursion since we want to use our own recursion rather than rely on "visited" records
-            options = options || {flat: true, instantiator: that};
+            options = options || {flat: true, instantiator: that, destroyRecs: []};
             child = child || component[name];
             path = path || shadow.path;
             if (path === undefined) {
@@ -1024,22 +1037,15 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             // only recurse on components which were created in place - if the id record disagrees with the
             // recurse path, it must have been injected
             if (created) {
-                // Clear injected instance of this component from all other paths - historically we didn't bother
-                // to do this since injecting into a shorter scope is an error - but now we have resolveRoot area
-                fluid.each(childShadow.injectedPaths, function (troo, injectedPath) {
-                    var parentPath = fluid.model.getToTailPath(injectedPath);
-                    var otherParent = that.pathToComponent[parentPath];
-                    that.clearComponent(otherParent, fluid.model.getTailPath(injectedPath), child);
-                });
                 fluid.visitComponentChildren(child, function (gchild, gchildname, segs, i) {
                     var parentPath = that.composeSegments.apply(null, segs.slice(0, i));
                     that.clearComponent(child, gchildname, null, options, true, parentPath);
                 }, options, that.parseEL(childPath));
                 fluid.doDestroy(child, name, component);
-                fluid.clearDistributions(childShadow);
-                fluid.clearListeners(childShadow);
-                fluid.fireEvent(child, "afterDestroy", [child, name, component]);
-                delete that.idToShadow[child.id];
+                options.destroyRecs.push({child: child, childShadow: childShadow, name: name, component: component});
+                if (!nested) {
+                    fluid.each(options.destroyRecs, that.clearConcreteComponent);
+                }
             } else {
                 fluid.remove_if(childShadow.injectedPaths, function (troo, path) {
                     return path === childPath;
@@ -1047,7 +1053,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
             fluid.clearChildrenScope(that, shadow, child, childShadow);
             delete that.pathToComponent[childPath];
-            if (!noModTree) {
+            if (!nested) {
                 delete component[name]; // there may be no entry - if creation is not concluded
             }
         };
