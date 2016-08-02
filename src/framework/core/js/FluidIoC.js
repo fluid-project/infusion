@@ -1041,20 +1041,21 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     var parentPath = that.composeSegments.apply(null, segs.slice(0, i));
                     that.clearComponent(child, gchildname, null, options, true, parentPath);
                 }, options, that.parseEL(childPath));
-                fluid.doDestroy(child, name, component);
+                fluid.doDestroy(child, name, component); // call "onDestroy", null out events and invokers, setting lifecycleStatus to "destroyed"
                 options.destroyRecs.push({child: child, childShadow: childShadow, name: name, component: component});
-                if (!nested) {
-                    fluid.each(options.destroyRecs, that.clearConcreteComponent);
-                }
             } else {
                 fluid.remove_if(childShadow.injectedPaths, function (troo, path) {
                     return path === childPath;
                 });
             }
             fluid.clearChildrenScope(that, shadow, child, childShadow);
+            // Note that "pathToComponent" will not be available during afterDestroy. This is so that we can synchronously recreate the component
+            // in an afterDestroy listener (FLUID-5931). We don't clear up the shadow itself until after afterDestroy.
             delete that.pathToComponent[childPath];
             if (!nested) {
                 delete component[name]; // there may be no entry - if creation is not concluded
+                // Do actual destruction for the whole tree here, including "afterDestroy" and deleting shadows
+                fluid.each(options.destroyRecs, that.clearConcreteComponent);
             }
         };
         return that;
@@ -1366,7 +1367,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 if (that[componentName]) {
                     fluid.globalInstantiator.clearComponent(that, componentName);
                 }
-                fluid.initDependent(that, componentName);
+                var localRecord = {"arguments": fluid.makeArray(arguments)};
+                fluid.initDependent(that, componentName, localRecord);
                 fluid.popActivity();
             }, null, component.priority);
         });
@@ -1677,14 +1679,18 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 fluid.pushActivity("invokeInvoker", "invoking invoker with name %name and record %record from component %that", {name: name, record: invokerec, that: that});
             }
             var togo, finalArgs;
-            localRecord.arguments = arguments;
-            if (invokerec.args === undefined || invokerec.args === fluid.NO_VALUE) {
-                finalArgs = arguments;
+            if (that.lifecycleStatus === "destroyed") {
+                fluid.log(fluid.logLevel.WARN, "Ignoring call to invoker " + name + " of component ", that, " which has been destroyed");
             } else {
-                fluid.expandImmediateImpl(invokePre, expandOptions);
-                finalArgs = invokePre.source;
+                localRecord.arguments = arguments;
+                if (invokerec.args === undefined || invokerec.args === fluid.NO_VALUE) {
+                    finalArgs = arguments;
+                } else {
+                    fluid.expandImmediateImpl(invokePre, expandOptions);
+                    finalArgs = invokePre.source;
+                }
+                togo = func.apply(null, finalArgs);
             }
-            togo = func.apply(null, finalArgs);
             if (fluid.defeatLogging === false) {
                 fluid.popActivity();
             }
@@ -2334,18 +2340,19 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.expander.fetch = function (deliverer, source, options) {
         var localRecord = options.localRecord, context = source.expander.context, segs = source.expander.segs;
         var inLocal = localRecord[context] !== undefined;
+        var contextStatus = options.contextThat.lifecycleStatus;
         // somewhat hack to anticipate "fits" for FLUID-4925 - we assume that if THIS component is in construction, its reference target might be too
-        var component = inLocal ? localRecord[context] : fluid.resolveContext(context, options.contextThat, options.contextThat.lifecycleStatus === "treeConstructed");
+        // if context is destroyed, we are most likely in an afterDestroy listener and so path records have been destroyed
+        var fast = contextStatus === "treeConstructed" || contextStatus === "destroyed";
+        var component = inLocal ? localRecord[context] : fluid.resolveContext(context, options.contextThat, fast);
         if (component) {
             var root = component;
-            if (inLocal || component.lifecycleStatus === "constructed" || component.lifecycleStatus === "treeConstructed") {
-                for (var i = 0; i < segs.length; ++i) {
+            if (inLocal || component.lifecycleStatus !== "constructing") {
+                for (var i = 0; i < segs.length; ++i) { // fast resolution of paths when no ginger process active
                     root = root ? root[segs[i]] : undefined;
                 }
-            } else if (component.lifecycleStatus !== "destroyed") {
-                root = fluid.getForComponent(component, segs);
             } else {
-                fluid.fail("Cannot resolve path " + segs.join(".") + " into component ", component, " which has been destroyed");
+                root = fluid.getForComponent(component, segs);
             }
             if (root === undefined && !inLocal) { // last-ditch attempt to get exotic EL value from component
                 root = fluid.getForComponent(component, segs);

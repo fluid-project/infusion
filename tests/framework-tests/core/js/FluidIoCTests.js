@@ -2194,7 +2194,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-5930 - presence of injected components during onDestroy **/
 
     fluid.defaults("fluid.tests.fluid5930.root", {
-        gradeNames: ["fluid.component"],
+        gradeNames: "fluid.component",
         components: {
             toInject: {
                 type: "fluid.component"
@@ -2227,11 +2227,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /** FLUID-5931 - full clearance of records during afterDestroy **/
 
     fluid.defaults("fluid.tests.fluid5931.root", {
-        gradeNames: ["fluid.component"],
+        gradeNames: "fluid.component",
         events: {
             createIt: null
         },
-        dynamicComponents: {
+        components: {
             recreate: {
                 type: "fluid.component",
                 createOnEvent: "createIt",
@@ -2257,6 +2257,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Correct instance on first firing", 1, that.recreate.options.creationValue);
         that.recreate.destroy();
         jqUnit.assertEquals("Correct instance on second firing", 2, that.recreate.options.creationValue);
+    });
+
+    /** FLUID-5790 - neutering invoker support **/
+
+    fluid.defaults("fluid.tests.fluid5790.root", {
+        gradeNames: "fluid.component",
+        invokers: {
+            explode: "fluid.fail"
+        }
+    });
+
+    jqUnit.test("Neutering invoker test", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.fluid5790.root();
+        that.destroy();
+        that.explode();
+        jqUnit.assert("Harmless explosion after component is destroyed");
     });
 
     /** FLUID-5268 - direct root "afterDestroy" listener **/
