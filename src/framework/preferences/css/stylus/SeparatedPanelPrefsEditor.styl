@@ -51,12 +51,37 @@ border-radius(n)
                 background: #fff;
 
                 .fl-prefsEditor-showHide, .fl-prefsEditor-reset {
+                    border-right: none;
                     background-color: #fff;
                     color: #2f2b2a;
                 }
 
                 .fl-prefsEditor-showHide {
                     min-width: 6em;
+                }
+
+                // Hide/show button when the UI panel is opened
+                &.flc-prefsEditor-opened-panel-buttons {
+                    margin: 0px;
+                    position: relative;
+                    width: 100%;
+                    border-top: 2px solid #777475;
+                    border-left: none;
+                    border-right: none;
+                    border-bottom: none;
+                    border-radius(0px);
+                    box-shadow: 0px -3px 8px #a2a2a2;
+
+                    // Bottom line with shadow
+                    &:before {
+                        content: "";
+                        position: absolute;
+                        bottom: 0px;
+                        left: 3%;
+                        width: 94%;
+                        border-bottom: 1px solid #c8c7c7;
+                        box-shadow: 0px 2px 3px #d8d8d8;
+                    }
                 }
             }
         }
