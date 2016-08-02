@@ -464,7 +464,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     /*Used in fluid.prefs.enactor.blueColorFilter.applyFilter and fluid.prefs.enactor.blueColorFilter.addMutationObserver
      had to be defined here in order to not be create every time the model is changed */
     var initialColorsDictionary = [];
-    var initialBackgroundColorsDictionary = [];
     var noMatchFlag = true;
     var changedDOMFlag = false;
     var blueColorFilterValue;
@@ -491,10 +490,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 var color = $(element).css("color");  // get the color as "rgb(..., ..., ...)"
                 color = color.slice(4, -1);
                 color = color.split(", ");  // color becomes and array with the 3 color components as his elements
-                initialColorsDictionary.push({
-                    key: this,
-                    value: color
-                });
                 var backgroundColor = $(element).css("background-color"); // the color can be is rgb or rgba format
                 if (backgroundColor.substr(0,4) === "rgba") {
                     backgroundColor = backgroundColor.slice(5,-1);
@@ -503,29 +498,29 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     backgroundColor = backgroundColor.slice(4,-1);
                 }
                 backgroundColor = backgroundColor.split(", ");
-                initialBackgroundColorsDictionary.push({
+                initialColorsDictionary.push({
                     key: this,
-                    value: backgroundColor
+                    color: color,
+                    backgroundColor: backgroundColor
                 });
             }
             noMatchFlag = true;
         });
 
         var initialColors = $.extend(true, [], initialColorsDictionary);  // make a deep copy of the original array in order to prevent changes in the initial array
-        var initialBackgroundColors = $.extend(true, [], initialBackgroundColorsDictionary);
         elements.each(function () {
-            // Finds the element in the dictionaries
+            // Finds the element in the dictionary
             for (var count in initialColors) {
                 if (initialColors[count].key == this) {
                     index = count;
                     break;
                 }
             }
-            var color = initialColors[index].value;  //get the color of the current component
+            var color = initialColors[index].color;  //get the color of the current component
             color[2] = Math.round(color[2] * times) + "";  //blue component
             var colorToSet = "rgb(" + color[0] + ", " + color[1] + ", " + color[2] + ")";  //make the color in a "rbg(..,..,..)" format
             $(this).css("color", colorToSet);
-            var backgroundColor = initialBackgroundColors[index].value;
+            var backgroundColor = initialColors[index].backgroundColor;
             backgroundColor[2] = Math.round(backgroundColor[2] * times) + "";
             if (backgroundColor[3] === undefined) {
                 var backgroundColorToSet = "rgb(" + backgroundColor[0] + ", " + backgroundColor[1] + ", " + backgroundColor[2] + ")";
