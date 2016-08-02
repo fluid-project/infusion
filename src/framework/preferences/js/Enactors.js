@@ -461,14 +461,16 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    /*Used in fluid.prefs.enactor.blueColorFilter.applyFilter
+    /*Used in fluid.prefs.enactor.blueColorFilter.applyFilter and fluid.prefs.enactor.blueColorFilter.addMutationObserver
      had to be defined here in order to not be create every time the model is changed */
     var initialColorsDictionary = [];
+    var initialBackgroundColorsDictionary = [];
     var noMatchFlag = true;
     var changedDOMFlag = false;
     var blueColorFilterValue;
 
     fluid.prefs.enactor.blueColorFilter.applyFilter = function (times) {
+        // Prevents a bug when the panel is open and the model.value becomes undefined
         if (times === undefined) {
             times = blueColorFilterValue;
         }
@@ -477,12 +479,14 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var index;
         elements.each(function () {
             var element = this;
+            // Checks if the element exists in the dictionary with keys the elements and values the colors
             for (var count in initialColorsDictionary) {
                 if (initialColorsDictionary[count].key == this) {
                     noMatchFlag = false;
                     break;
                 }
             }
+            // If it is not already in the records its color and background-color are added as arrays
             if (noMatchFlag) {
                 var color = $(element).css("color");  // get the color as "rgb(..., ..., ...)"
                 color = color.slice(4, -1);
@@ -491,13 +495,26 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     key: this,
                     value: color
                 });
+                var backgroundColor = $(element).css("background-color"); // the color can be is rgb or rgba format
+                if (backgroundColor.substr(0,4) === "rgba") {
+                    backgroundColor = backgroundColor.slice(5,-1);
+                }
+                else {
+                    backgroundColor = backgroundColor.slice(4,-1);
+                }
+                backgroundColor = backgroundColor.split(", ");
+                initialBackgroundColorsDictionary.push({
+                    key: this,
+                    value: backgroundColor
+                });
             }
             noMatchFlag = true;
         });
 
         var initialColors = $.extend(true, [], initialColorsDictionary);  // make a deep copy of the original array in order to prevent changes in the initial array
-        var counter = 0;
+        var initialBackgroundColors = $.extend(true, [], initialBackgroundColorsDictionary);
         elements.each(function () {
+            // Finds the element in the dictionaries
             for (var count in initialColors) {
                 if (initialColors[count].key == this) {
                     index = count;
@@ -508,17 +525,27 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             color[2] = Math.round(color[2] * times) + "";  //blue component
             var colorToSet = "rgb(" + color[0] + ", " + color[1] + ", " + color[2] + ")";  //make the color in a "rbg(..,..,..)" format
             $(this).css("color", colorToSet);
+            var backgroundColor = initialBackgroundColors[index].value;
+            backgroundColor[2] = Math.round(backgroundColor[2] * times) + "";
+            if (backgroundColor[3] === undefined) {
+                var backgroundColorToSet = "rgb(" + backgroundColor[0] + ", " + backgroundColor[1] + ", " + backgroundColor[2] + ")";
+            }
+            else {
+                var backgroundColorToSet = "rgba(" + backgroundColor[0] + ", " + backgroundColor[1] + ", " + backgroundColor[2] + ", " + backgroundColor[3] + ")";
+            }
+            $(this).css("background-color", backgroundColorToSet);
         });
     };
 
     fluid.prefs.enactor.blueColorFilter.addMutationObserver = function (applyFilter) {
+        // Uses document ready, because the script is added before the body
         $(document).ready(function (){
             var observer = new MutationObserver(function(mutations) {
                 mutations.forEach(function (mutation) {
                     if (mutation.type === "childList") {
+                        // Changes in HTMLHtmlElement can be just hovering over elements, which should not trigger applyFilter
                         if (changedDOMFlag === false && mutation.target != "[object HTMLHtmlElement]") {
                             changedDOMFlag = true;
-                            var additions = mutation.addedNodes;
                             applyFilter();
                         }
                     }
@@ -532,12 +559,32 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 subtree : true
             };
 
-            observer.observe(document, config);
+            observer.observe(target, config);
         });
     };
 
+    /* Add a mutationObserver to track when the UI panel in its responsive version is opened.
+       It then adds and removes a class to the hide/show button to style it properly. */
+    $(document).ready(function (){
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function (mutation) {
+                var openedResponsivePanelCheck = $(".flc-slidingPanel-panel.flc-prefsEditor-iframe").attr("aria-expanded");
+                var panelButtons = $(".fl-prefsEditor-buttons");
+                if (openedResponsivePanelCheck == "true" && $(window).width() < 640) {
+                    panelButtons.addClass("flc-prefsEditor-opened-panel-buttons");
+                }
+                else {
+                    panelButtons.removeClass("flc-prefsEditor-opened-panel-buttons")
+                }
+            });
+        });
 
+        var target = document.querySelector(".flc-slidingPanel-panel.flc-prefsEditor-iframe");
+        var config = {
+            subtree : true,
+            attributeFilter: ["aria-expanded"]
+        };
 
-
-
+        observer.observe(target, config);
+    });
 })(jQuery, fluid_2_0_0);
