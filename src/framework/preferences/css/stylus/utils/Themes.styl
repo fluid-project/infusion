@@ -4,23 +4,28 @@
 themes = {
     ".fl-theme-bw": {
         foregroundColor: #000000,
-        backgroundColor: #ffffff
+        backgroundColor: #ffffff,
+        filterValue: grayscale(100%)
     }
     ".fl-theme-wb": {
         foregroundColor: #ffffff,
-        backgroundColor: #000000
+        backgroundColor: #000000,
+        filterValue: grayscale(100%)
     }
     ".fl-theme-yb": {
         foregroundColor: #ffff00,
-        backgroundColor: #000000
+        backgroundColor: #000000,
+        filterValue: sepia(100%) brightness(75%) contrast(150%)
     }
     ".fl-theme-by": {
         foregroundColor: #000000,
-        backgroundColor: #ffff00
+        backgroundColor: #ffff00,
+        filterValue: grayscale(100%) sepia(70%) contrast(130%) brightness(95%)
     }
     ".fl-theme-lgdg": {
         foregroundColor: #bdbdbb,
-        backgroundColor: #555555
+        backgroundColor: #555555,
+        filterValue: grayscale(80%) sepia(50%) contrast(65%) brightness(130%)
     }
 }
 
@@ -117,6 +122,7 @@ build-themes-Enactors(contrastThemes) {
     for themeName in contrastThemes {
         fColor = contrastThemes[themeName].foregroundColor;
         bColor = contrastThemes[themeName].backgroundColor;
+        filterValue = contrastThemes[themeName].filterValue;
 
         {themeName} {
             // General Styling
@@ -142,6 +148,11 @@ build-themes-Enactors(contrastThemes) {
                 color: fColor !important;
                 font-weight: bold !important;
                 background-color: bColor !important;
+            }
+
+            img {
+                -webkit-filter: filterValue !important;
+                filter: filterValue !important;
             }
 
             // Tables
