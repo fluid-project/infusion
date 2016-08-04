@@ -1419,6 +1419,72 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
+    /** FLUID-5925 - ginger reference from IoC-qualified listener key **/
+
+    fluid.defaults("fluid.tests.FLUID5925root1", {
+        gradeNames: "fluid.component",
+        components: {
+            referrer: {
+                type: "fluid.modelComponent",
+                options: {
+                    listeners: {
+                        "{eventHolder}.events.targetEvent": {
+                            changePath: "value",
+                            value: "{arguments}.0"
+                        }
+                    }
+                }
+            },
+            eventHolder: {
+                type: "fluid.component",
+                options: {
+                    events: {
+                        targetEvent: null
+                    }
+                }
+            },
+        }
+    });
+
+    jqUnit.test("FLUID-5925 ginger reference from IoC-qualified listener key", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.FLUID5925root1();
+        that.eventHolder.events.targetEvent.fire(1);
+        jqUnit.assertEquals("Ginger reference successfully registered model listener", 1, that.referrer.model.value);
+    });
+
+    fluid.defaults("fluid.tests.FLUID5925root2", {
+        gradeNames: "fluid.component",
+        events: {
+            localEvent: null
+        },
+        listeners: {
+            localEvent: {
+                listener: "{invokerHolder}.record"
+            }
+        },
+        components: {
+            invokerHolder: {
+                type: "fluid.modelComponent",
+                options: {
+                    invokers: {
+                        record: {
+                            changePath: "value",
+                            value: 1
+                        }
+                    }
+                }
+            },
+        }
+    });
+
+    jqUnit.test("FLUID-5925 ginger reference from IoC-qualified listener function", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.FLUID5925root2();
+        that.events.localEvent.fire(1);
+        jqUnit.assertEquals("Ginger reference successfully registered model listener", 1, that.invokerHolder.model.value);
+    });
+
     /** FLUID-5820 - scope chain reference to injected component **/
 
     fluid.defaults("fluid.tests.FLUID5820root", {
