@@ -2002,8 +2002,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             target: "flashingRender",
             singleTransform: {
                 type: "fluid.transforms.valueMapper",
-                inputPath: "",
-                options: [{ // slightly modified from version in ModelTransformationTests.js to test a variant expression of the same rules (all are compound here)
+                defaultInputPath: "",
+                match: [{ // slightly modified from version in ModelTransformationTests.js to test a variant expression of the same rules (all are compound here)
                     inputValue: {
                         "flashing": true,
                         "noFlashingHazard": false
