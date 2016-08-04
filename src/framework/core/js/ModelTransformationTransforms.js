@@ -224,12 +224,12 @@ var fluid = fluid || fluid_2_0_0;
     });
 
     /* unsupported, NON-API function
-     * sorts by the objects 'matchValue' property, where higher is better.
+     * sorts by the object's 'matchValue' property, where higher is better.
      * Tiebreaking is done via the `index` property, where a lower index takes priority
      */
     fluid.model.transform.compareMatches = function (speca, specb) {
         var matchDiff = specb.matchValue - speca.matchValue;
-        return (matchDiff === 0) ? speca.index - specb.index : matchDiff; // tiebreak using 'index'
+        return matchDiff === 0 ? speca.index - specb.index : matchDiff; // tiebreak using 'index'
     };
 
     fluid.transforms.valueMapper = function (transformSpec, transformer) {
@@ -266,7 +266,7 @@ var fluid = fluid || fluid_2_0_0;
         // output if we have a path and something to output
         if (typeof(outputPath) === "string" && outputValue !== undefined) {
             fluid.model.transform.setValue(undefined, outputValue, transformer, transformSpec.merge);
-            outputValue = undefined; // make sure we dont also return value
+            outputValue = undefined; // make sure we don't also return value
         }
         transformer.outputPrefixOp.pop();
         return outputValue;
@@ -281,15 +281,14 @@ var fluid = fluid || fluid_2_0_0;
         var matchPower = [];
         for (var i = 0; i < o.length; ++i) {
             var option = o[i];
-            var value = (option.inputPath) ?
-                fluid.model.transform.getValue(option.inputPath, undefined, transformer) :
-                valueFromDefaultPath;
+            var value = option.inputPath ?
+                fluid.model.transform.getValue(option.inputPath, undefined, transformer) : valueFromDefaultPath;
 
             var matchValue = fluid.model.transform.matchValue(option.inputValue, value, option.partialMatches);
             matchPower[i] = {index: i, matchValue: matchValue};
         }
         matchPower.sort(fluid.model.transform.compareMatches);
-        return (matchPower[0].matchValue <= 0) ? undefined : o[matchPower[0].index];
+        return matchPower[0].matchValue <= 0 ? undefined : o[matchPower[0].index];
     };
 
     fluid.transforms.valueMapper.invert = function (transformSpec, transformer) {
@@ -306,15 +305,15 @@ var fluid = fluid || fluid_2_0_0;
         var def = fluid.firstDefined;
         fluid.each(transformSpec.match, function (option, key) {
             if (option.outputUndefinedValue === true) {
-                return; // dont attempt to invert undefined output value entries
+                return; // don't attempt to invert undefined output value entries
             }
             var outOption = {};
             var origInputValue = def(isArray ? option.inputValue : key, transformSpec.defaultInputValue);
             if (origInputValue === undefined) {
                 fluid.fail("Failure inverting configuration for valueMapper - inputValue could not be resolved for record " + key + ": ", transformSpec);
             }
-            outOption.outputValue = origInputValue; //fluid.model.transform.literaliseValue(origInputValue);
-            outOption.inputValue = (!isArray && fluid.isPrimitive(option)) ?
+            outOption.outputValue = origInputValue;
+            outOption.inputValue = !isArray && fluid.isPrimitive(option) ?
                 option : def(option.outputValue, transformSpec.defaultOutputValue);
 
             if (option.outputPath) {
