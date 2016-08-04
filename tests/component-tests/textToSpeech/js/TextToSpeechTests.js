@@ -81,42 +81,43 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         args: ["{tts}"],
                         event: "{tts}.events.onStop"
                     }]
-            }]
-        },
-        {
-            name: "Pause and Resume Events",
-            tests: [{
-                expect: 8,
-                name: "Test Pause and Resume Events",
-                sequence:
-                [
-                {
-                    func: "{tts}.queueSpeech",
-                    args: "Testing pause and resume events"
-                },
-                {
-                    func: "{tts}.pause"
-                },
-                {
-                    listener: "fluid.tests.textToSpeech.testPause",
-                    args: ["{tts}"],
-                    event: "{tts}.events.onPause"
-                },
-                {
-                    func: "{tts}.resume"
-                }, {
-                    listener: "fluid.tests.textToSpeech.testResume",
-                    args: ["{tts}"],
-                    event: "{tts}.events.onResume"
-                },
-                // Catch the async event from onStop to know when the speech
-                // is actually finished and the fixture can be destroyed
-                {
-                    listener: "fluid.identity",
-                    event: "{tts}.events.onStop"
                 }]
-        }]
-    }]
+            },
+            {
+                name: "Pause and Resume Events",
+                tests: [{
+                    expect: 8,
+                    name: "Test Pause and Resume Events",
+                    sequence:
+                    [
+                        {
+                            func: "{tts}.queueSpeech",
+                            args: "Testing pause and resume events"
+                        },
+                        {
+                            func: "{tts}.pause"
+                        },
+                        {
+                            listener: "fluid.tests.textToSpeech.testPause",
+                            args: ["{tts}"],
+                            event: "{tts}.events.onPause"
+                        },
+                        {
+                            func: "{tts}.resume"
+                        }, {
+                            listener: "fluid.tests.textToSpeech.testResume",
+                            args: ["{tts}"],
+                            event: "{tts}.events.onResume"
+                        },
+                        // Catch the async event from onStop to know when the speech
+                        // is actually finished and the fixture can be destroyed
+                        {
+                            listener: "fluid.identity",
+                            event: "{tts}.events.onStop"
+                        }
+                    ]
+                }]
+            }]
     });
 
     fluid.tests.textToSpeech.testInitialization = function (tts) {
@@ -163,18 +164,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.textToSpeech.issueTest = function (name, testFunc) {
-            var runTests = fluid.textToSpeech.checkTTSSupport();
-            runTests.then(function () {
-                testFunc();
-            }, fluid.tests.textToSpeech.bypassTest);
+        var runTests = fluid.textToSpeech.checkTTSSupport();
+        runTests.then(function () {
+            testFunc();
+        }, fluid.tests.textToSpeech.bypassTest);
     };
 
     fluid.tests.textToSpeech.bypassTest = function () {
-          jqUnit.test("Tests were skipped - browser does not appear to support TTS", function () {
-              jqUnit.assert("TESTS SKIPPED - browser does not support SpeechSynthesis");
-          });
-
-      };
+        jqUnit.test("Tests were skipped - browser does not appear to support TTS", function () {
+            jqUnit.assert("TESTS SKIPPED - browser does not support SpeechSynthesis");
+        });
+    };
 
     // fluid.setLogging(fluid.logLevel.TRACE);
 
