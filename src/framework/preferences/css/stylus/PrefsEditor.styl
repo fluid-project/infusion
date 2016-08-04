@@ -373,9 +373,36 @@ border-radius(n)
     .fl-icon-toc:before {
         content: "\e012";
     }
+
+    .flc-prefsEditor-blue-color-filter-inactive-message {
+        display: none;
+    }
 }
 
-//Styling for the responsive version
+// A message to show that the blue color filter is not active when a cotrast theme is on
+body.fl-theme {
+    &-bw, &-wb, &-by, &-yb, &-lgdg {
+        .fl-prefsEditor-panels {
+            .fl-prefsEditor-panel {
+                .flc-prefsEditor-blue-color-filter {
+                    .flc-prefsEditor-blue-color-filter-descr {
+                        display: none;
+                    }
+
+                    div.fl-inputs {
+                        display: none;
+                    }
+
+                    .flc-prefsEditor-blue-color-filter-inactive-message {
+                        display: block;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Styling for the responsive version
 @media all and (max-width: 639px) {
     .fl-prefsEditor {
         .fl-prefsEditor-panel {

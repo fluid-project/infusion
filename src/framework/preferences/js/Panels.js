@@ -910,13 +910,15 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         },
         selectors: {
             blueColorFilter: ".flc-prefsEditor-blue-color-filter",
-            label: ".flc-prefsEditor-blue-color-filter-label"
+            label: ".flc-prefsEditor-blue-color-filter-label",
+            inactiveMessage: ".flc-prefsEditor-blue-color-filter-inactive-message"
         },
         selectorsToIgnore: ["blueColorFilter"],
         protoTree: {
             label: {messagekey: "blueColorFilterLabel"},
             multiplier: {messagekey: "multiplier"},
-            blueColorFilterDescr: {messagekey: "blueColorFilterDescr"}
+            blueColorFilterDescr: {messagekey: "blueColorFilterDescr"},
+            inactiveMessage: {messagekey: "blueColorFilterInactiveMessage"}
         }
     });
 

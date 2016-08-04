@@ -1,5 +1,6 @@
 {
     "blueColorFilterLabel": "Blue Color Filter",
     "multiplier": "times",
-    "blueColorFilterDescr": "Adjust the intensity of the blue color"
+    "blueColorFilterDescr": "Reduce the intensity of the blue color",
+    "blueColorFilterInactiveMessage": "This option is not compatible with a contrast theme"
 }
