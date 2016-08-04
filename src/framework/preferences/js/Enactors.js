@@ -517,11 +517,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 }
             }
             var color = initialColors[index].color;  //get the color of the current component
-            color[2] = Math.round(color[2] * times) + "";  //blue component
+            color[2] = Math.round(color[2] * (1 - times)) + "";  //blue component
             var colorToSet = "rgb(" + color[0] + ", " + color[1] + ", " + color[2] + ")";  //make the color in a "rbg(..,..,..)" format
             $(this).css("color", colorToSet);
             var backgroundColor = initialColors[index].backgroundColor;
-            backgroundColor[2] = Math.round(backgroundColor[2] * times) + "";
+            backgroundColor[2] = Math.round(backgroundColor[2] * (1 - times)) + "";
             if (backgroundColor[3] === undefined) {
                 var backgroundColorToSet = "rgb(" + backgroundColor[0] + ", " + backgroundColor[1] + ", " + backgroundColor[2] + ")";
             }

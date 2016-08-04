@@ -350,7 +350,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         schema: {
             "fluid.prefs.blueColorFilter": {
                 "type": "number",
-                "default": 1,
+                "default": 0,
                 "minimum": 0,
                 "maximum": 1,
                 "divisibleBy": 0.1
