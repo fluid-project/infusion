@@ -535,18 +535,35 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.prefs.enactor.blueColorFilter.addMutationObserver = function (applyFilter) {
         // Uses document ready, because the script is added before the body
         $(document).ready(function (){
-            var observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function (mutation) {
-                    if (mutation.type === "childList") {
-                        // Changes in HTMLHtmlElement can be just hovering over elements, which should not trigger applyFilter
-                        if (changedDOMFlag === false && mutation.target != "[object HTMLHtmlElement]") {
-                            changedDOMFlag = true;
-                            applyFilter();
+            var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+            if (isSafari) {
+                var observer = new WebKitMutationObserver(function(mutations) {
+                    mutations.forEach(function (mutation) {
+                        if (mutation.type === "childList") {
+                            // Changes in HTMLHtmlElement can be just hovering over elements, which should not trigger applyFilter
+                            if (changedDOMFlag === false && mutation.target != "[object HTMLHtmlElement]") {
+                                changedDOMFlag = true;
+                                applyFilter();
+                            }
                         }
-                    }
+                    });
+                    changedDOMFlag = false;
                 });
-                changedDOMFlag = false;
-            });
+            }
+            else {
+                var observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function (mutation) {
+                        if (mutation.type === "childList") {
+                            // Changes in HTMLHtmlElement can be just hovering over elements, which should not trigger applyFilter
+                            if (changedDOMFlag === false && mutation.target != "[object HTMLHtmlElement]") {
+                                changedDOMFlag = true;
+                                applyFilter();
+                            }
+                        }
+                    });
+                    changedDOMFlag = false;
+                });
+            }
 
             var target = document.body;
             var config = {
@@ -561,18 +578,32 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     /* Add a mutationObserver to track when the UI panel in its responsive version is opened.
        It then adds and removes a class to the hide/show button to style it properly. */
     $(document).ready(function (){
-        var observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function (mutation) {
-                var openedResponsivePanelCheck = $(".flc-slidingPanel-panel.flc-prefsEditor-iframe").attr("aria-expanded");
-                var panelButtons = $(".fl-prefsEditor-buttons");
-                if (openedResponsivePanelCheck == "true" && $(window).width() < 640) {
-                    panelButtons.addClass("flc-prefsEditor-opened-panel-buttons");
-                }
-                else {
-                    panelButtons.removeClass("flc-prefsEditor-opened-panel-buttons")
-                }
+        var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        function observerFunction() {
+            var openedResponsivePanelCheck = $(".flc-slidingPanel-panel.flc-prefsEditor-iframe").attr("aria-expanded");
+            var panelButtons = $(".fl-prefsEditor-buttons");
+            if (openedResponsivePanelCheck == "true" && $(window).width() < 640) {
+                panelButtons.addClass("flc-prefsEditor-opened-panel-buttons");
+            }
+            else {
+                panelButtons.removeClass("flc-prefsEditor-opened-panel-buttons")
+            }
+        }
+
+        if (isSafari) {
+            var observer = new WebKitMutationObserver(function(mutations) {
+                mutations.forEach(function (mutation) {
+                    observerFunction();
+                });
             });
-        });
+        }
+        else {
+            var observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function (mutation) {
+                    observerFunction();
+                });
+            });
+        }
 
         var target = document.querySelector(".flc-slidingPanel-panel.flc-prefsEditor-iframe");
         var config = {
