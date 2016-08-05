@@ -22,7 +22,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         model: {
             utteranceOpts: {
                 // not all speech synthesizers will respect this setting
-                volume: 0
+                volume: 100
             }
         },
         listeners: {
@@ -31,7 +31,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.textToSpeech.cleanUp = function () {
-        speechSynthesis.cancel();
+        if(fluid.textToSpeech.isSupported()) {
+          speechSynthesis.cancel();
+        }
     };
 
     fluid.defaults("fluid.tests.textToSpeech.ttsTestEnvironment", {
@@ -84,16 +86,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }]
             },
             {
-                name: "Pause and Resume Events",
+                name: "Test Including Pause and Resume Events",
                 tests: [{
-                    expect: 8,
-                    name: "Test Pause and Resume Events",
+                    expect: 18,
+                    name: "Test Including Pause and Resume Events",
                     sequence:
                     [
                         {
                             func: "{tts}.queueSpeech",
                             args: "Testing pause and resume events"
                         },
+                        {
+                           listener: "fluid.tests.textToSpeech.testStart",
+                           args: ["{tts}"],
+                           event: "{tts}.events.onStart"
+                       },
                         {
                             func: "{tts}.pause"
                         },
@@ -109,12 +116,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             args: ["{tts}"],
                             event: "{tts}.events.onResume"
                         },
-                        // Catch the async event from onStop to know when the speech
-                        // is actually finished and the fixture can be destroyed
                         {
-                            listener: "fluid.identity",
-                            event: "{tts}.events.onStop"
-                        }
+                           listener: "fluid.tests.textToSpeech.testStop",
+                           args: ["{tts}"],
+                           event: "{tts}.events.onStop"
+                       }
                     ]
                 }]
             }]
@@ -163,7 +169,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
     };
 
-    fluid.tests.textToSpeech.issueTest = function (name, testFunc) {
+    fluid.tests.textToSpeech.issueTest = function (testFunc) {
         var runTests = fluid.textToSpeech.checkTTSSupport();
         runTests.then(function () {
             testFunc();
@@ -178,6 +184,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     // fluid.setLogging(fluid.logLevel.TRACE);
 
-    fluid.tests.textToSpeech.ttsTestEnvironment();
+    fluid.tests.textToSpeech.issueTest(fluid.tests.textToSpeech.ttsTestEnvironment);
 
 })();

@@ -22,7 +22,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * fluid.textToSpeech provides a wrapper around the SpeechSynthesis Interface                *
      * from the Web Speech API ( https://dvcs.w3.org/hg/speech-api/raw-file/tip/speechapi.html ) *
      *********************************************************************************************/
-
+     
     fluid.textToSpeech.isSupported = function () {
         return !!(window && window.speechSynthesis);
     };
