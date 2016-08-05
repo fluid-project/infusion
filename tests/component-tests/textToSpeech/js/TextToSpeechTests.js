@@ -88,7 +88,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             {
                 name: "Test Including Pause and Resume Events",
                 tests: [{
-                    expect: 18,
+                    expect: 13,
                     name: "Test Including Pause and Resume Events",
                     sequence:
                     [
@@ -96,8 +96,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             func: "{tts}.queueSpeech",
                             args: "Testing pause and resume events"
                         },
+                        // This is necessary or {tts}.pause can be called
+                        // before the speech event has actually started,
+                        // which messes up the sequencing
                         {
-                           listener: "fluid.tests.textToSpeech.testStart",
+                           listener: "fluid.tests.textToSpeech.confirmStart",
                            args: ["{tts}"],
                            event: "{tts}.events.onStart"
                        },
@@ -116,6 +119,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             args: ["{tts}"],
                             event: "{tts}.events.onResume"
                         },
+                        // Test on stop to make sure IoC harness doesn't try
+                        // and destroy too early for the asynchronous onStop
+                        // event to fire and cause issues
                         {
                            listener: "fluid.tests.textToSpeech.testStop",
                            args: ["{tts}"],
@@ -125,6 +131,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }]
             }]
     });
+
+fluid.tests.textToSpeech.confirmStart = function (tts) {
+  return true;
+}
 
     fluid.tests.textToSpeech.testInitialization = function (tts) {
         var that = tts;
