@@ -32,7 +32,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.textToSpeech.cleanUp = function () {
         if(fluid.textToSpeech.isSupported()) {
-          speechSynthesis.cancel();
+            speechSynthesis.cancel();
         }
     };
 
@@ -100,10 +100,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         // before the speech event has actually started,
                         // which messes up the sequencing
                         {
-                           listener: "fluid.tests.textToSpeech.asyncSpeechControl",
-                           args: ["{tts}.pause", 0.05],
-                           event: "{tts}.events.onStart"
-                       },
+                            listener: "fluid.tests.textToSpeech.asyncSpeechControl",
+                            args: ["{tts}.pause", 0.05],
+                            event: "{tts}.events.onStart"
+                        },
                         {
                             listener: "fluid.tests.textToSpeech.testPause",
                             args: ["{tts}"],
@@ -121,22 +121,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         // and destroy too early for the asynchronous onStop
                         // event to fire and cause issues
                         {
-                           listener: "fluid.tests.textToSpeech.testStop",
-                           args: ["{tts}"],
-                           event: "{tts}.events.onStop"
-                       }
+                            listener: "fluid.tests.textToSpeech.testStop",
+                            args: ["{tts}"],
+                            event: "{tts}.events.onStop"
+                        }
                     ]
                 }]
             }]
     });
 
-//  We need to issue controls asynchronously to manage race conditions,
-// since speech events themselves are asynchronous
-// this also simulates the typical scenario of user interaction
-// with speech controls through a UI
-fluid.tests.textToSpeech.asyncSpeechControl = function (control, delay) {
-  setTimeout(control, delay);
-};
+    //  We need to issue controls asynchronously to manage race conditions,
+    // since speech events themselves are asynchronous
+    // this also simulates the typical scenario of user interaction
+    // with speech controls through a UI
+    fluid.tests.textToSpeech.asyncSpeechControl = function (control, delay) {
+        setTimeout(control, delay);
+    };
 
     fluid.tests.textToSpeech.testInitialization = function (tts) {
         var that = tts;
@@ -193,8 +193,6 @@ fluid.tests.textToSpeech.asyncSpeechControl = function (control, delay) {
             jqUnit.assert("TESTS SKIPPED - browser does not support SpeechSynthesis");
         });
     };
-
-    // fluid.setLogging(fluid.logLevel.TRACE);
 
     fluid.tests.textToSpeech.issueTest(fluid.tests.textToSpeech.ttsTestEnvironment);
 
