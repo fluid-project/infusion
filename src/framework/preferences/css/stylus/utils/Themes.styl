@@ -153,7 +153,7 @@ build-themes-Enactors(contrastThemes) {
             img {
                 -webkit-filter: filterValue !important;
                 filter: filterValue !important;
-                z-index: 0;
+                z-index: 0; // this is to fix a bug where an image element with a filter gets in front of the UI panel
             }
 
             // Tables

@@ -112,7 +112,7 @@ border-radius(n)
 .fl-prefsEditor-separatedPanel {
     display: flex;
     flex-flow: column nowrap;
-    z-index: 10;
+    z-index: 10; // this is to fix a bug where an image element with a filter gets in front of the UI panel
 
     .fl-panelBar {
         order: 2;
