@@ -109,16 +109,16 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 args: ["{that}"]
             },
             pause: {
-                "this": "speechSynthesis",
-                "method": "pause"
+                funcName: "fluid.textToSpeech.asyncSpeechSynthesisControl",
+                args: ["pause", 10]
             },
             resume: {
-                "this": "speechSynthesis",
-                "method": "resume"
+                funcName: "fluid.textToSpeech.asyncSpeechSynthesisControl",
+                args: ["resume", 10]
             },
             getVoices: {
-                "this": "speechSynthesis",
-                "method": "getVoices"
+                funcName: "fluid.textToSpeech.asyncSpeechSynthesisControl",
+                args: ["getVoices", 10]
             },
             handleStart: {
                 funcName: "fluid.textToSpeech.handleStart",
@@ -141,6 +141,16 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
         }
     });
+
+    // Issue functions to the speechSynthesis interface
+    // after a delay
+    // Makes the wrapper behave better when issuing commands
+    // in rapid succession
+    fluid.textToSpeech.asyncSpeechSynthesisControl = function (control, delay) {
+        setTimeout(function () {
+            speechSynthesis[control]();
+        }, delay);
+    };
 
     fluid.textToSpeech.speak = function (that, speaking) {
         that.events[speaking ? "onStart" : "onStop"].fire();

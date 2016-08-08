@@ -22,7 +22,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         model: {
             utteranceOpts: {
                 // not all speech synthesizers will respect this setting
-                volume: 0
+                volume: 100
             }
         },
         listeners: {
@@ -100,8 +100,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         // before the speech event has actually started,
                         // which messes up the sequencing
                         {
-                            listener: "fluid.tests.textToSpeech.asyncSpeechControl",
-                            args: ["{tts}.pause", 50],
+                            listener: "{tts}.pause",
                             event: "{tts}.events.onStart"
                         },
                         {
@@ -110,8 +109,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             event: "{tts}.events.onPause"
                         },
                         {
-                            func: "fluid.tests.textToSpeech.asyncSpeechControl",
-                            args: ["{tts}.resume", 50]
+                            func: "{tts}.resume"
                         }, {
                             listener: "fluid.tests.textToSpeech.testResume",
                             args: ["{tts}"],
@@ -129,14 +127,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }]
             }]
     });
-
-    //  We need to issue controls asynchronously to manage race conditions,
-    // since speech events themselves are asynchronous
-    // this also simulates the typical scenario of user interaction
-    // with speech controls through a UI
-    fluid.tests.textToSpeech.asyncSpeechControl = function (control, delay) {
-        setTimeout(control, delay);
-    };
 
     fluid.tests.textToSpeech.testInitialization = function (tts) {
         var that = tts;
