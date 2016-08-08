@@ -101,7 +101,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         // which messes up the sequencing
                         {
                             listener: "fluid.tests.textToSpeech.asyncSpeechControl",
-                            args: ["{tts}.pause", 0.05],
+                            args: ["{tts}.pause", 50],
                             event: "{tts}.events.onStart"
                         },
                         {
@@ -111,7 +111,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         },
                         {
                             func: "fluid.tests.textToSpeech.asyncSpeechControl",
-                            args: ["{tts}.resume", 0.05]
+                            args: ["{tts}.resume", 50]
                         }, {
                             listener: "fluid.tests.textToSpeech.testResume",
                             args: ["{tts}"],
