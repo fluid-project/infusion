@@ -428,6 +428,60 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     /*******************************************************************************
+     * muteAudio
+     *
+     * To mute and unmute all audios and videos in the page
+     *******************************************************************************/
+
+    // Note that the implementors need to provide the container for this view component
+    fluid.defaults("fluid.prefs.enactor.muteAudio", {
+        gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
+        preferenceMap: {
+            "fluid.prefs.muteAudio": {
+                "model.muteAudio": "default"
+            }
+        },
+        invokers: {
+            applyMuteAudio: {
+                funcName: "fluid.prefs.enactor.muteAudio.applyMuteAudio",
+                args: ["{arguments}.0"]
+            }
+        },
+        modelListeners: {
+            muteAudio: {
+                listener: "{that}.applyMuteAudio",
+                args: ["{change}.value"]
+            }
+        }
+    });
+
+    // An array in which all the components that have been muted by this option are stored
+    var mutedComponents = [];
+
+    fluid.prefs.enactor.muteAudio.applyMuteAudio = function (value) {
+        var audios = $("audio, video");
+        if (value) {
+            audios.each(function () {
+                if (!$(this).prop("muted")) {
+                    $(this).prop("muted", true);
+                    mutedComponents.push(this);
+                }
+            });
+        }
+        else {
+            audios.each(function () {
+                for (var index in mutedComponents) {
+                    if (mutedComponents[index] == this) {
+                        $(this).prop("muted", false);
+                        mutedComponents.splice(index,1);
+                        break;
+                    }
+                }
+            });
+        }
+    };
+
+    /*******************************************************************************
      * blueColorFilter
      *
      * Sets the intensity of the blue color of the page to the multiple provided.

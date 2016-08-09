@@ -141,6 +141,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             removeSource: true,
             target: "{that layoutControls}.options"
         }, {
+            source: "{that}.options.muteAudio",
+            removeSource: true,
+            target: "{that muteAudio}.options"
+        }, {
             source: "{that}.options.linksControls",
             removeSource: true,
             target: "{that linksControls}.options"

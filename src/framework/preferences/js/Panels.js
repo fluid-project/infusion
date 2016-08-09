@@ -1087,6 +1087,32 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     });
 
     /**************************************
+     * Preferences Editor Mute Audio *
+     **************************************/
+
+    /**
+     * A sub-component of fluid.prefs that renders the "mute audio" panel of the user preferences interface.
+     */
+    fluid.defaults("fluid.prefs.panel.muteAudio", {
+        gradeNames: ["fluid.prefs.panel"],
+        preferenceMap: {
+            "fluid.prefs.muteAudio": {
+                "model.muteAudio": "default"
+            }
+        },
+        selectors: {
+            muteAudio: ".flc-prefsEditor-mute-audio",
+            label: ".flc-prefsEditor-mute-audio-label",
+            muteAudioDescr: ".flc-prefsEditor-mute-audio-descr"
+        },
+        protoTree: {
+            label: {messagekey: "muteAudioLabel"},
+            muteAudioDescr: {messagekey: "muteAudioDescr"},
+            muteAudio: "${muteAudio}"
+        }
+    });
+
+    /**************************************
      * Preferences Editor Emphasize Links *
      **************************************/
     /**

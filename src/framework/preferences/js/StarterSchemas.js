@@ -274,6 +274,18 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     "message": "%messagePrefix/tableOfContents.json"
                 }
             },
+            "muteAudio": {
+                "type": "fluid.prefs.muteAudio",
+                "enactor": {
+                    "type": "fluid.prefs.enactor.muteAudio"
+                },
+                "panel": {
+                    "type": "fluid.prefs.panel.muteAudio",
+                    "container": ".flc-prefsEditor-mute-audio",  // the css selector in the template where the panel is rendered
+                    "template": "%templatePrefix/PrefsEditorTemplate-muteAudio.html",
+                    "message": "%messagePrefix/muteAudio.json"
+                }
+            },
             "emphasizeLinks": {
                 "type": "fluid.prefs.emphasizeLinks",
                 "enactor": {
@@ -384,6 +396,16 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         gradeNames: ["fluid.prefs.schemas"],
         schema: {
             "fluid.prefs.tableOfContents": {
+                "type": "boolean",
+                "default": false
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.schemas.muteAudio", {
+        gradeNames: ["fluid.prefs.schemas"],
+        schema: {
+            "fluid.prefs.muteAudio": {
                 "type": "boolean",
                 "default": false
             }

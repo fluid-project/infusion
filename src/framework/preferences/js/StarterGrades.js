@@ -34,6 +34,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     lineSpace: 1,                 // in ems
                     blueColorFilter: 1,           // in times
                     toc: false,                   // boolean
+                    muteAudio: false,             // boolean
                     links: false,                 // boolean
                     inputsLarger: false           // boolean
                 }
@@ -136,7 +137,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 type: "fluid.prefs.enactor.blueColorFilter",
                 container: "{uiEnhancer}.container",
                 options: {
-                    // fontSizeMap: "{uiEnhancer}.options.fontSizeMap",
                     model: {
                         value: "{uiEnhancer}.model.blueColorFilter"
                     }
@@ -181,6 +181,15 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                         toc: "{uiEnhancer}.model.toc"
                     }
                 }
+            },
+            muteAudio: {
+                type: "fluid.prefs.enactor.muteAudio",
+                container: "{uiEnhancer}.container",
+                options: {
+                    model: {
+                        muteAudi: "{uiEnhancer}.model.muteAudio"
+                    }
+                }
             }
         }
     });
@@ -200,6 +209,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             contrast: ".flc-prefsEditor-contrast",
             textControls: ".flc-prefsEditor-text-controls",
             layoutControls: ".flc-prefsEditor-layout-controls",
+            muteAudio: ".flc-prefsEditor-mute-audio",
             linksControls: ".flc-prefsEditor-links-controls"
         },
         components: {
@@ -292,6 +302,21 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     messageBase: "{messageLoader}.resources.layoutControls.resourceText",
                     resources: {
                         template: "{templateLoader}.resources.layoutControls"
+                    }
+                }
+            },
+            muteAudio: {
+                type: "fluid.prefs.panel.muteAudio",
+                container: "{prefsEditor}.dom.muteAudio",
+                createOnEvent: "onPrefsEditorMarkupReady",
+                options: {
+                    gradeNames: "fluid.prefs.prefsEditorConnections",
+                    model: {
+                        toc: "{prefsEditor}.model.preferences.muteAudio"
+                    },
+                    messageBase: "{messageLoader}.resources.muteAudio.resourceText",
+                    resources: {
+                        template: "{templateLoader}.resources.muteAudio"
                     }
                 }
             },
