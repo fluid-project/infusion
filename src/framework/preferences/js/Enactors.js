@@ -463,7 +463,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             var audios = $("audio, video");
             if (value) {
                 audios.each(function () {
-                    console.log($(this).prop("muted"));
                     if (!$(this).prop("muted")) {
                         $(this).prop("muted", true);
                         mutedComponents.push(this);
@@ -472,7 +471,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
             else {
                 audios.each(function () {
-                    console.log($(this).prop("muted"));
                     var index = mutedComponents.indexOf(this);
                     if (index > -1) {
                         $(this).prop("muted", false);
@@ -480,7 +478,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     }
                 });
             }
-            console.log(mutedComponents);
         });
     };
 
