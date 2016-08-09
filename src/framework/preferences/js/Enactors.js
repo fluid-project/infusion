@@ -459,26 +459,29 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     var mutedComponents = [];
 
     fluid.prefs.enactor.muteAudio.applyMuteAudio = function (value) {
-        var audios = $("audio, video");
-        if (value) {
-            audios.each(function () {
-                if (!$(this).prop("muted")) {
-                    $(this).prop("muted", true);
-                    mutedComponents.push(this);
-                }
-            });
-        }
-        else {
-            audios.each(function () {
-                for (var index in mutedComponents) {
-                    if (mutedComponents[index] == this) {
-                        $(this).prop("muted", false);
-                        mutedComponents.splice(index,1);
-                        break;
+        $(document).ready(function () {
+            var audios = $("audio, video");
+            if (value) {
+                audios.each(function () {
+                    console.log($(this).prop("muted"));
+                    if (!$(this).prop("muted")) {
+                        $(this).prop("muted", true);
+                        mutedComponents.push(this);
                     }
-                }
-            });
-        }
+                });
+            }
+            else {
+                audios.each(function () {
+                    console.log($(this).prop("muted"));
+                    var index = mutedComponents.indexOf(this);
+                    if (index > -1) {
+                        $(this).prop("muted", false);
+                        mutedComponents.splice(index, 1);
+                    }
+                });
+            }
+            console.log(mutedComponents);
+        });
     };
 
     /*******************************************************************************
