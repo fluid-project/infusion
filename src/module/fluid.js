@@ -38,11 +38,13 @@ var upPath = path.resolve(__dirname, "../../../../..");
 var upInfusionPath = resolveModuleSync("infusion", upPath);
 if (upInfusionPath) {
     upInfusion = require(upInfusionPath);
-    if (upInfusion && Object.keys(upInfusion).length != 0) {
+    if (upInfusion && Object.keys(upInfusion).length !== 0) {
         upInfusion.log("Resolved infusion from path " + __dirname + " to " + upInfusion.module.modules.infusion.baseDir);
         module.exports = upInfusion;
         return;
-    } else { console.log(upInfusionPath + " resolved to current Infusion"); }
+    } else {
+        console.log(upInfusionPath + " resolved to current Infusion");
+    }
 } else {
     console.log("Infusion at path " + moduleBaseDir + " is at top level ");
 }
