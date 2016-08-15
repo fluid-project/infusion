@@ -31,7 +31,7 @@ border-radius(n)
 }
 
 // Top bar and show/hide button
-@media all and (max-width: 639px) {
+@media only screen and (max-width: 639px), only screen and (max-device-width: 639px) {
     .fl-prefsEditor-separatedPanel {
         position: fixed;
         bottom: 0px;
@@ -103,7 +103,7 @@ border-radius(n)
     }
 }
 
-@media all and (min-height: 450px) and (max-width: 639px) {
+@media only screen and (min-height: 450px) and (max-width: 639px), only screen and (max-device-height: 450px) and (max-device-width: 639px) {
     .fl-prefsEditor-separatedPanel .flc-prefsEditor-iframe {
         height: 160px;
     }

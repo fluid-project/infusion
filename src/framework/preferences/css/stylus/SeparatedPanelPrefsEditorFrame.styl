@@ -48,7 +48,7 @@ html {
 }
 
 /* Preferences Editor Separated Panel styles */
-@media all and (max-width: 639px) {
+@media only screen and (max-width: 639px), only screen and (max-device-width: 639px) {
 
     body.fl-prefsEditor-separatedPanel {
         overflow-y: auto;
@@ -63,7 +63,7 @@ html {
             .fl-prefsEditor-panel {
                 overflow: auto;
                 margin 0px;
-                min-width: 23em;
+                min-width: auto;
                 box-sizing: border-box;
                 height: 100vh;
                 border: none;
@@ -164,6 +164,15 @@ html {
                             display: block;
                             margin: 0px auto;
                         }
+
+                        .fl-indicator {
+                            margin-left: 0px;
+
+                            &:before {
+                                display: block;
+                                text-align: center;
+                            }
+                        }
                     }
 
                     > div:first-of-type {
@@ -172,6 +181,69 @@ html {
 
                     > div:last-of-type {
                         margin-right: 5%;
+                    }
+                }
+
+                .fl-links-buttons-options {
+                    label {
+                        display: block;
+                        width: auto;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 479px), only screen and (max-device-width: 479px) {
+    body.fl-prefsEditor-separatedPanel {
+        .fl-prefsEditor-panels {
+            .fl-prefsEditor-panel {
+                .flc-prefsEditor-contrast {
+                    .flc-prefsEditor-themeRow {
+                        label {
+                            width: 2.6em;
+                            height: 2.6em;
+                            line-height: 2.6em !important;
+
+                            .fl-crossout {
+                                margin-top: -1.65em;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 399px), only screen and (max-device-width: 399px) {
+    body.fl-prefsEditor-separatedPanel {
+        .fl-prefsEditor-panels {
+            .fl-prefsEditor-panel {
+                .flc-prefsEditor-contrast {
+                    .flc-prefsEditor-themeRow {
+                        label {
+                            width: 2.2em;
+                            height: 2.2em;
+                            line-height: 2.2em !important;
+
+                            .fl-preview-A {
+                                font-size: 1.8em;
+                            }
+
+                            .fl-crossout {
+                                margin-top: -1.45em;
+                            }
+                        }
+                    }
+
+                    > div:first-of-type {
+                        margin-left: 0;
+                    }
+
+                    > div:last-of-type {
+                        margin-right: 0;
                     }
                 }
             }
