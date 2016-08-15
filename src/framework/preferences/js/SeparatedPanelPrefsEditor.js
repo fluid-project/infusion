@@ -375,10 +375,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     invokers: {
                         operateShow: {
                             funcName: "fluid.prefs.separatedPanel.lazyLoad.showPanel",
-                            args: ["{separatedPanel}", "{that}.events.afterPanelShow.fire"],
-                            // override default implementation
-                            "this": null,
-                            "method": null
+                            args: ["{separatedPanel}", "{that}.events.afterPanelShow.fire"]
                         }
                     }
                 }
