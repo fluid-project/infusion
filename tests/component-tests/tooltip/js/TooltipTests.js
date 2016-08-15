@@ -212,7 +212,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.tooltip.FLUID5846.setupIframe = function (that, iframeSrc, iframe) {
-        $(iframe).attr("src", iframeSrc);
         $(iframe).load(function () {
             // DO NOT MOVE this property access outside this function!
             var dokkument = iframe.contentDocument;
@@ -221,6 +220,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             that.iframeBody = iframejQuery("body", dokkument);
             that.events.iframeReady.fire();
         });
+
+        // Programmatically setting the iframe src to ensure that the load event
+        // is triggered after we have bound our listener.
+        // see: https://issues.fluidproject.org/browse/FLUID-5872
+        $(iframe).attr("src", iframeSrc);
     };
 
     fluid.defaults("fluid.tests.tooltip.FLUID5846.parent", {
