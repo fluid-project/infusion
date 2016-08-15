@@ -330,7 +330,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.prefs.separatedPanel.showPanel = function (panel, callback) {
         // A bizarre race condition has emerged under FF where the iframe held within the panel does not
         // react synchronously to being shown
-        setTimeout(callback, 1);
+        fluid.invokeLater(callback);
     };
 
     fluid.defaults("fluid.prefs.separatedPanel.lazyLoad", {
@@ -385,11 +385,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.prefs.separatedPanel.lazyLoad.showPanel = function (separatedPanel, callback) {
         if (separatedPanel.prefsEditor) {
-            setTimeout(callback, 1);
+            fluid.invokeLater(callback);
         } else {
             separatedPanel.events.onReady.addListener(function (that) {
                 that.events.onReady.removeListener("showPanelCallBack");
-                setTimeout(callback, 1);
+                fluid.invokeLater(callback);
             }, "showPanelCallBack");
             separatedPanel.events.onLazyLoad.fire();
         }
