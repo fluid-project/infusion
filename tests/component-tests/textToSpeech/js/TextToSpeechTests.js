@@ -171,19 +171,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
     };
 
-    fluid.tests.textToSpeech.issueTest = function (testFunc) {
-        var runTests = fluid.textToSpeech.checkTTSSupport();
-        runTests.then(function () {
-            testFunc();
-        }, fluid.tests.textToSpeech.bypassTest);
-    };
-
     fluid.tests.textToSpeech.bypassTest = function () {
         jqUnit.test("Tests were skipped - browser does not appear to support TTS", function () {
             jqUnit.assert("TESTS SKIPPED - browser does not support SpeechSynthesis");
         });
     };
 
-    fluid.tests.textToSpeech.issueTest(fluid.tests.textToSpeech.ttsTestEnvironment);
+    var ttsStatus;
 
+    jqUnit.asyncTest("Confirming if TTS is available", function () {
+        jqUnit.expect(1);
+        var ttsSupport = fluid.textToSpeech.checkTTSSupport();
+        ttsSupport.then(function (){
+            ttsStatus = "TTS is available";
+            fluid.tests.textToSpeech.ttsTestEnvironment();
+        }, function () {
+            ttsStatus = "TTS is unavailable";          
+            fluid.tests.textToSpeech.bypassTest();
+        });
+
+        var ttsTest = function () {
+            jqUnit.start();
+            jqUnit.assert(ttsStatus);
+        };
+
+        setTimeout(ttsTest, 1500);
+
+    });
 })();
