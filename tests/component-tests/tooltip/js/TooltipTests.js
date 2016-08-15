@@ -211,7 +211,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     });
 
-    fluid.tests.tooltip.FLUID5846.setupIframe = function (that, iframe) {
+    fluid.tests.tooltip.FLUID5846.setupIframe = function (that, iframeSrc, iframe) {
+        $(iframe).attr("src", iframeSrc);
         $(iframe).load(function () {
             // DO NOT MOVE this property access outside this function!
             var dokkument = iframe.contentDocument;
@@ -234,8 +235,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             afterClose: null
         },
         listeners: {
-            "onCreate.setupIframe": "fluid.tests.tooltip.FLUID5846.setupIframe({that}, {that}.dom.iframe.0)"
+            "onCreate.setupIframe": "fluid.tests.tooltip.FLUID5846.setupIframe({that}, {that}.options.iframeSrc, {that}.dom.iframe.0)"
         },
+        iframeSrc: "iframe.html",
         components: {
             tooltip: {
                 type: "fluid.tests.tooltip.FLUID5846",
