@@ -347,7 +347,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.each(memberNames, function (memberName) {
                 var comp = parentPanel[memberName];
                 jqUnit.assertNotUndefined("The " + memberName + " should be instantiated", comp);
-                jqUnit.assertDeepEq("The context for " + memberName + " should be retained", comp.origContext, comp.container[0].ownerDocument);
+                jqUnit.assertEquals("The context for " + memberName + " should be retained", comp.origContext.URL, comp.container[0].ownerDocument.URL);
                 jqUnit.assertNodeExists("The container for " + memberName + " should exist", comp.container);
                 jqUnit.assertNodeExists("The input for " + memberName + " should exist", comp.locate("bool"));
                 jqUnit.assertEquals("The " + memberName + " should be rendered", comp.model.value, comp.locate("bool").prop("checked"));

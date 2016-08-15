@@ -477,14 +477,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         selectors: {
             textSize: ".flc-prefsEditor-min-val",
             label: ".flc-prefsEditor-min-val-label",
-            smallIcon: ".flc-prefsEditor-min-val-smallIcon",
-            largeIcon: ".flc-prefsEditor-min-val-largeIcon",
             multiplier: ".flc-prefsEditor-multiplier"
         },
         protoTree: {
             label: {messagekey: "textSizeLabel"},
-            smallIcon: {messagekey: "textSizeSmallIcon"},
-            largeIcon: {messagekey: "textSizeLargeIcon"},
             multiplier: {messagekey: "multiplier"},
             textSize: {
                 decorators: {
@@ -790,8 +786,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         selectors: {
             textSize: ".flc-prefsEditor-min-val",
             label: ".flc-prefsEditor-min-val-label",
-            smallIcon: ".flc-prefsEditor-min-val-smallIcon",
-            largeIcon: ".flc-prefsEditor-min-val-largeIcon",
             multiplier: ".flc-prefsEditor-multiplier"
         },
         selectorsToIgnore: ["textSize"],
@@ -815,8 +809,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         protoTree: {
             label: {messagekey: "textSizeLabel"},
-            smallIcon: {messagekey: "textSizeSmallIcon"},
-            largeIcon: {messagekey: "textSizeLargeIcon"},
             multiplier: {messagekey: "multiplier"}
         }
     });
@@ -826,8 +818,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         selectors: {
             textSize: ".flc-prefsEditor-min-val",
             label: ".flc-prefsEditor-min-val-label",
-            smallIcon: ".flc-prefsEditor-min-val-smallIcon",
-            largeIcon: ".flc-prefsEditor-min-val-largeIcon",
             multiplier: ".flc-prefsEditor-multiplier"
         },
         selectorsToIgnore: ["textSize"],
@@ -851,8 +841,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         protoTree: {
             label: {messagekey: "textSizeLabel"},
-            smallIcon: {messagekey: "textSizeSmallIcon"},
-            largeIcon: {messagekey: "textSizeLargeIcon"},
             multiplier: {messagekey: "multiplier"}
         }
     });
@@ -1381,8 +1369,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         messageBase: {
             "lineSpaceLabel": "Line Spacing",
-            "lineSpaceNarrowIcon": "icon of 3 horizontal lines with narrow spacing",
-            "lineSpaceWideIcon": "icon of 3 horizontal lines with wide spacing",
             "multiplier": "times",
             "lineSpaceDescr": "Adjust the spacing between lines of text"
         }
