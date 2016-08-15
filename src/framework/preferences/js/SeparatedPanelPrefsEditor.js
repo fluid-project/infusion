@@ -45,7 +45,16 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 }
             }
         },
+        lazyLoad: false,
         contextAwareness: {
+            lazyLoad: {
+                checks: {
+                    lazyLoad: {
+                        contextValue: "{fluid.prefs.separatedPanel}.options.lazyLoad",
+                        gradeNames: "fluid.prefs.separatedPanel.lazyLoad"
+                    }
+                }
+            },
             separatedPanelPrefsWidgetType: {
                 checks: {
                     jQueryUI: {

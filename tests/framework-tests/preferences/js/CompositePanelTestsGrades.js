@@ -167,6 +167,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    fluid.defaults("fluid.tests.prefs.composite.separatedPanel.lazyLoad", {
+        gradeNames: ["fluid.tests.prefs.composite.separatedPanel"],
+        lazyLoad: true
+    });
+
     // Creates the "fluid.tests.composite.separatedPanel.prefsEditor" grade
     fluid.prefs.builder({
         gradeNames: ["fluid.tests.composite.auxSchema"],
@@ -182,7 +187,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.tests.composite.auxSchema"],
         primarySchema: fluid.tests.composite.primarySchema,
         auxiliarySchema: {
-            "loaderGrades": ["fluid.tests.prefs.composite.separatedPanel", "fluid.prefs.separatedPanel.lazyLoad"],
+            "loaderGrades": ["fluid.tests.prefs.composite.separatedPanel.lazyLoad"],
             "namespace": "fluid.tests.composite.separatedPanel.lazyLoad"
         }
     });
