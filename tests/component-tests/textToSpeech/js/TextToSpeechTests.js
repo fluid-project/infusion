@@ -182,11 +182,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.asyncTest("Confirming if TTS is available", function () {
         jqUnit.expect(1);
         var ttsSupport = fluid.textToSpeech.checkTTSSupport();
-        ttsSupport.then(function (){
+        ttsSupport.then(function () {
             ttsStatus = "TTS is available";
             fluid.tests.textToSpeech.ttsTestEnvironment();
         }, function () {
-            ttsStatus = "TTS is unavailable";          
+            ttsStatus = "TTS is unavailable";
             fluid.tests.textToSpeech.bypassTest();
         });
 
@@ -195,6 +195,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assert(ttsStatus);
         };
 
+        // .5 seconds longer than default timeout of
+        // fluid.textToSpeech.checkTTSSupport()
         setTimeout(ttsTest, 1500);
 
     });
