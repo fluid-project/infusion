@@ -142,10 +142,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    // Issue functions to the speechSynthesis interface
-    // after a delay
-    // Makes the wrapper behave better when issuing commands
-    // in rapid succession
+    // Issue functions to the speechSynthesis interface after a delay; this
+    // makes the wrapper behave better when issuing commands in rapid succession
     fluid.textToSpeech.asyncSpeechSynthesisControl = function (control, delay) {
         setTimeout(function () {
             speechSynthesis[control]();
