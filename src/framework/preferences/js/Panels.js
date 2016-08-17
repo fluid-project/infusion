@@ -646,6 +646,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      */
     fluid.defaults("fluid.prefs.panel.textSize", {
         gradeNames: ["fluid.prefs.panel", "fluid.contextAware"],
+        preferenceMap: {
+            "fluid.prefs.textSize": {
+                "model.textSize": "default",
+                "range.min": "minimum",
+                "range.max": "maximum"
+            }
+        },
         contextAwareness: {
             responsiveAware: {
                 checks: {
@@ -655,13 +662,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     }
                 },
                 defaultGradeNames: "fluid.prefs.textSize.textfieldSlider"
-            }
-        },
-        preferenceMap: {
-            "fluid.prefs.textSize": {
-                "model.textSize": "default",
-                "range.min": "minimum",
-                "range.max": "maximum"
             }
         },
         // The default model values represent both the expected format as well as the setting to be applied in the absence of values passed down to the component.
@@ -726,7 +726,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             stepMultiplier: 10
         }
     });
-    
+
     /********************************
      * Preferences Editor Text Font *
      ********************************/
@@ -781,6 +781,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      */
     fluid.defaults("fluid.prefs.panel.lineSpace", {
         gradeNames: ["fluid.prefs.panel", "fluid.contextAware"],
+        preferenceMap: {
+            "fluid.prefs.lineSpace": {
+                "model.lineSpace": "default",
+                "range.min": "minimum",
+                "range.max": "maximum"
+            }
+        },
         contextAwareness: {
             responsiveAware: {
                 checks: {
@@ -790,13 +797,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     }
                 },
                 defaultGradeNames: "fluid.prefs.lineSpace.textfieldSlider"
-            }
-        },
-        preferenceMap: {
-            "fluid.prefs.lineSpace": {
-                "model.lineSpace": "default",
-                "range.min": "minimum",
-                "range.max": "maximum"
             }
         },
         // The default model values represent both the expected format as well as the setting to be applied in the absence of values passed down to the component.
@@ -871,6 +871,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      */
     fluid.defaults("fluid.prefs.panel.blueColorFilter", {
         gradeNames: ["fluid.prefs.panel", "fluid.contextAware"],
+        preferenceMap: {
+            "fluid.prefs.blueColorFilter": {
+                "model.blueColorFilter": "default",
+                "range.min": "minimum",
+                "range.max": "maximum"
+            }
+        },
         contextAwareness: {
             responsiveAware: {
                 checks: {
@@ -880,13 +887,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     }
                 },
                 defaultGradeNames: "fluid.prefs.blueColorFilter.textfieldSlider"
-            }
-        },
-        preferenceMap: {
-            "fluid.prefs.blueColorFilter": {
-                "model.blueColorFilter": "default",
-                "range.min": "minimum",
-                "range.max": "maximum"
             }
         },
         // The default model values represent both the expected format as well as the setting to be applied in the absence of values passed down to the component.

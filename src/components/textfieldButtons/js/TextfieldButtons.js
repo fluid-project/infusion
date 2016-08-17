@@ -24,29 +24,29 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             target: "{that > fluid.stepper.button}.options",
             record: {
                 model: "{fluid.textfieldButtons}.model",
-                range: "{textfieldButtons}.options.range",
+                range: "{fluid.textfieldButtons}.options.range",
                 buttonOptions: "{fluid.textfieldButtons}.options.buttonOptions"
             }
         },
         components: {
             textfield: {
                 type: "fluid.textfieldSlider.textfield",
-                container: "{textfieldButtons}.dom.textfield",
+                container: "{fluid.textfieldButtons}.dom.textfield",
                 options: {
-                    model: "{textfieldButtons}.model",
-                    range: "{textfieldButtons}.options.range"
+                    model: "{fluid.textfieldButtons}.model",
+                    range: "{fluid.textfieldButtons}.options.range"
                 }
             },
             increaseButton: {
                 type: "fluid.stepper.button",
-                container: "{textfieldButtons}.dom.increaseButton",
+                container: "{fluid.textfieldButtons}.dom.increaseButton",
                 options: {
                     incrementCoefficient: 1
                 }
             },
             decreaseButton: {
                 type: "fluid.stepper.button",
-                container: "{textfieldButtons}.dom.decreaseButton",
+                container: "{fluid.textfieldButtons}.dom.decreaseButton",
                 options: {
                     incrementCoefficient: -1
                 }
@@ -110,13 +110,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         min = Math.round(min * stepMultiplier);
         max = Math.round(max * stepMultiplier);
         if ((modelValue + value) < min) {
-            return min/stepMultiplier;
+            return min / stepMultiplier;
         }
         else if ((modelValue + value) > max) {
-            return max/stepMultiplier;
+            return max / stepMultiplier;
         }
         else {
-            return (modelValue + value)/stepMultiplier;
+            return (modelValue + value) / stepMultiplier;
         }
     };
 

@@ -458,26 +458,24 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     // An array in which all the components that have been muted by this option are stored
     var mutedComponents = [];
 
-    fluid.prefs.enactor.muteAudio.applyMuteAudio = function (value) {
+    fluid.prefs.enactor.muteAudio.applyMuteAudio = function (isMuted) {
         $(document).ready(function () {
             var audios = $("audio, video");
-            if (value) {
-                audios.each(function () {
+            audios.each(function () {
+                if (isMuted) {
                     if (!$(this).prop("muted")) {
                         $(this).prop("muted", true);
                         mutedComponents.push(this);
                     }
-                });
-            }
-            else {
-                audios.each(function () {
+                }
+                else {
                     var index = mutedComponents.indexOf(this);
                     if (index > -1) {
                         $(this).prop("muted", false);
                         mutedComponents.splice(index, 1);
                     }
-                });
-            }
+                }
+            });
         });
     };
 
@@ -498,43 +496,42 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         expander: {
             func: "{that}.addMutationObserver"
         },
+        members: {
+            initialColorsDictionary : [],
+            blueColorFilterValue: [0]
+        },
         invokers: {
             applyFilter: {
                 funcName: "fluid.prefs.enactor.blueColorFilter.applyFilter",
-                args: ["{that}.model.value"]
+                args: ["{that}.model.value", "{arguments}.0"]
             },
             addMutationObserver: {
                 funcName: "fluid.prefs.enactor.blueColorFilter.addMutationObserver",
-                args: ["{that}.applyFilter"]
+                args: ["{that}.applyFilter", "{that}"]
             }
         },
         modelListeners: {
             value: {
-                listener: "{that}.applyFilter"
+                listener: "{that}.applyFilter",
+                args: ["{that}"]
             }
         }
     });
 
-    /*Used in fluid.prefs.enactor.blueColorFilter.applyFilter and fluid.prefs.enactor.blueColorFilter.addMutationObserver
-     had to be defined here in order to not be create every time the model is changed */
-    var initialColorsDictionary = [];
-    var noMatchFlag = true;
-    var changedDOMFlag = false;
-    var blueColorFilterValue;
+    fluid.prefs.enactor.blueColorFilter.applyFilter = function (times, that) {
+        // Prevents a bug when the panel is opened and the model.value becomes undefined
+        var blueColorFilterValue = that.options.members.blueColorFilterValue;
+        times = times || blueColorFilterValue[0];
+        blueColorFilterValue[0] = times;
 
-    fluid.prefs.enactor.blueColorFilter.applyFilter = function (times) {
-        // Prevents a bug when the panel is open and the model.value becomes undefined
-        if (times === undefined) {
-            times = blueColorFilterValue;
-        }
-        blueColorFilterValue = times;
         var elements = $("body *");
         var index;
-        elements.each(function () {
-            var element = this;
+        var noMatchFlag = true;
+        var initialColorsDictionary = that.options.members.initialColorsDictionary;
+        fluid.each(elements, (function (element) {
             // Checks if the element exists in the dictionary with keys the elements and values the colors
             for (var count in initialColorsDictionary) {
-                if (initialColorsDictionary[count].key == this) {
+                if (initialColorsDictionary[count].key === element) {
                     noMatchFlag = false;
                     break;
                 }
@@ -545,27 +542,23 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 color = color.slice(4, -1);
                 color = color.split(", ");  // color becomes and array with the 3 color components as his elements
                 var backgroundColor = $(element).css("background-color"); // the color can be is rgb or rgba format
-                if (backgroundColor.substr(0,4) === "rgba") {
-                    backgroundColor = backgroundColor.slice(5,-1);
-                }
-                else {
-                    backgroundColor = backgroundColor.slice(4,-1);
-                }
+                var startPosition = backgroundColor.substr(0,4) === "rgba" ? 5 : 4;
+                backgroundColor = backgroundColor.slice(startPosition, -1);
                 backgroundColor = backgroundColor.split(", ");
                 initialColorsDictionary.push({
-                    key: this,
+                    key: element,
                     color: color,
                     backgroundColor: backgroundColor
                 });
             }
             noMatchFlag = true;
-        });
+        }));
 
         var initialColors = $.extend(true, [], initialColorsDictionary);  // make a deep copy of the original array in order to prevent changes in the initial array
-        elements.each(function () {
+        fluid.each(elements, (function (element) {
             // Finds the element in the dictionary
             for (var count in initialColors) {
-                if (initialColors[count].key == this) {
+                if (initialColors[count].key === element) {
                     index = count;
                     break;
                 }
@@ -573,51 +566,31 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             var color = initialColors[index].color;  //get the color of the current component
             color[2] = Math.round(color[2] * (1 - times)) + "";  //blue component
             var colorToSet = "rgb(" + color[0] + ", " + color[1] + ", " + color[2] + ")";  //make the color in a "rbg(..,..,..)" format
-            $(this).css("color", colorToSet);
-            var backgroundColor = initialColors[index].backgroundColor;
+            $(element).css("color", colorToSet);
+            var backgroundColor = initialColors[index].backgroundColor; //the background color is stored as and array with components from the rgb or rgba fromat
             backgroundColor[2] = Math.round(backgroundColor[2] * (1 - times)) + "";
-            if (backgroundColor[3] === undefined) {
-                var backgroundColorToSet = "rgb(" + backgroundColor[0] + ", " + backgroundColor[1] + ", " + backgroundColor[2] + ")";
-            }
-            else {
-                var backgroundColorToSet = "rgba(" + backgroundColor[0] + ", " + backgroundColor[1] + ", " + backgroundColor[2] + ", " + backgroundColor[3] + ")";
-            }
-            $(this).css("background-color", backgroundColorToSet);
-        });
+            var backgroundColorToSet = "rgb(" + backgroundColor[0] + ", " + backgroundColor[1] + ", " + backgroundColor[2];
+            backgroundColorToSet += backgroundColor[3] === undefined ? ")" : (", " + backgroundColor[3] + ")");
+            $(element).css("background-color", backgroundColorToSet);
+        }));
     };
 
-    fluid.prefs.enactor.blueColorFilter.addMutationObserver = function (applyFilter) {
+    fluid.prefs.enactor.blueColorFilter.addMutationObserver = function (applyFilter, that) {
         // Uses document ready, because the script is added before the body
-        $(document).ready(function (){
-            var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-            if (isSafari) {
-                var observer = new WebKitMutationObserver(function(mutations) {
-                    mutations.forEach(function (mutation) {
-                        if (mutation.type === "childList") {
-                            // Changes in HTMLHtmlElement can be just hovering over elements, which should not trigger applyFilter
-                            if (changedDOMFlag === false && mutation.target != "[object HTMLHtmlElement]") {
-                                changedDOMFlag = true;
-                                applyFilter();
-                            }
+        var changedDOMFlag = false;
+        $(document).ready(function () {
+            var observer = new MutationObserver(function (mutations) {
+                fluid.each(mutations,(function (mutation) {
+                    if (mutation.type === "childList") {
+                        // Changes in HTMLHtmlElement can be just hovering over elements, which should not trigger applyFilter
+                        if (changedDOMFlag === false && mutation.target !== "[object HTMLHtmlElement]") {
+                            changedDOMFlag = true;
+                            applyFilter(that);
                         }
-                    });
-                    changedDOMFlag = false;
-                });
-            }
-            else {
-                var observer = new MutationObserver(function(mutations) {
-                    mutations.forEach(function (mutation) {
-                        if (mutation.type === "childList") {
-                            // Changes in HTMLHtmlElement can be just hovering over elements, which should not trigger applyFilter
-                            if (changedDOMFlag === false && mutation.target != "[object HTMLHtmlElement]") {
-                                changedDOMFlag = true;
-                                applyFilter();
-                            }
-                        }
-                    });
-                    changedDOMFlag = false;
-                });
-            }
+                    }
+                }));
+                changedDOMFlag = false;
+            });
 
             var target = document.body;
             var config = {
@@ -631,33 +604,15 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     /* Add a mutationObserver to track when the UI panel in its responsive version is opened.
        It then adds and removes a class to the hide/show button to style it properly. */
-    $(document).ready(function (){
-        var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-        function observerFunction() {
-            var openedResponsivePanelCheck = $(".flc-slidingPanel-panel.flc-prefsEditor-iframe").attr("aria-expanded");
-            var panelButtons = $(".fl-prefsEditor-buttons");
-            if (openedResponsivePanelCheck == "true" && $(window).width() < 640) {
-                panelButtons.addClass("flc-prefsEditor-opened-panel-buttons");
-            }
-            else {
-                panelButtons.removeClass("flc-prefsEditor-opened-panel-buttons")
-            }
-        }
-
-        if (isSafari) {
-            var observer = new WebKitMutationObserver(function(mutations) {
-                mutations.forEach(function (mutation) {
-                    observerFunction();
-                });
-            });
-        }
-        else {
-            var observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function (mutation) {
-                    observerFunction();
-                });
-            });
-        }
+    $(document).ready(function () {
+        var observer = new MutationObserver(function (mutations) {
+            fluid.each(mutations,(function (mutation) {
+                var openedResponsivePanelCheck = $(".flc-slidingPanel-panel.flc-prefsEditor-iframe").attr("aria-expanded");
+                var panelButtons = $(".fl-prefsEditor-buttons");
+                var isMobile = openedResponsivePanelCheck === "true" && $(window).width() < 640 && mutation.type === "attributes";
+                panelButtons[isMobile ? "addClass" : "removeClass"]("flc-prefsEditor-opened-panel-buttons");
+            }));
+        });
 
         var target = document.querySelector(".flc-slidingPanel-panel.flc-prefsEditor-iframe");
         var config = {

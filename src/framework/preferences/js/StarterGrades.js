@@ -187,7 +187,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 container: "{uiEnhancer}.container",
                 options: {
                     model: {
-                        muteAudi: "{uiEnhancer}.model.muteAudio"
+                        muteAudio: "{uiEnhancer}.model.muteAudio"
                     }
                 }
             }
@@ -250,7 +250,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 options: {
                     gradeNames: "fluid.prefs.prefsEditorConnections",
                     model: {
-                        lineSpace: "{prefsEditor}.model.preferences.blueColorFilter"
+                        blueColorFilter: "{prefsEditor}.model.preferences.blueColorFilter"
                     },
                     messageBase: "{messageLoader}.resources.blueColorFilter.resourceText",
                     resources: {
@@ -312,7 +312,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 options: {
                     gradeNames: "fluid.prefs.prefsEditorConnections",
                     model: {
-                        toc: "{prefsEditor}.model.preferences.muteAudio"
+                        muteAudio: "{prefsEditor}.model.preferences.muteAudio"
                     },
                     messageBase: "{messageLoader}.resources.muteAudio.resourceText",
                     resources: {
@@ -452,7 +452,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             textSize: "%messagePrefix/textSize.json",
             textFont: "%messagePrefix/textFont.json",
             lineSpace: "%messagePrefix/lineSpace.json",
-            blueColorFilter: "%messagePrefix/blueColorFilterjson",
+            blueColorFilter: "%messagePrefix/blueColorFilter.json",
             contrast: "%messagePrefix/contrast.json",
             layoutControls: "%messagePrefix/tableOfContents.json",
             linksControls: "%messagePrefix/linksControls.json",

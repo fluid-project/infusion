@@ -299,9 +299,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             var attrs = {height: height + 15}; // TODO: Configurable padding here
             var panel = separatedPanel.slidingPanel.locate("panel");
             panel.css({height: ""});
-            if ($(window).width()< "640") {
+            if ($(window).width() < "640") {
                 iframe.removeAttr("style");
-                
+
                 //The rest of the if make the scroll go to the next tool
                 var jqueryDokkument = $(dokkument);
                 var scrollStep = iframe.height();
@@ -310,11 +310,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     var scrollPosition = jqueryDokkument.scrollTop();
                     //Scroll down
                     if (lastPosition > scrollPosition) {
-                        jqueryDokkument.scrollTop((Math.floor(scrollPosition/scrollStep))*scrollStep);
+                        jqueryDokkument.scrollTop((Math.floor(scrollPosition / scrollStep)) * scrollStep);
                     }
                     //Scroll up
                     else if (lastPosition < scrollPosition) {
-                        jqueryDokkument.scrollTop((Math.ceil(scrollPosition/scrollStep))*scrollStep);
+                        jqueryDokkument.scrollTop((Math.ceil(scrollPosition / scrollStep)) * scrollStep);
                     }
                     lastPosition = jqueryDokkument.scrollTop();
                 });

@@ -22,9 +22,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      *******************************************************************************/
 
     var check;
-    var widthCheck = function() {
+    var widthCheck = function () {
         var width = $(window).width();
-        check = (width<640);
+        check = (width < 640);
         if (check) {
             fluid.contextAware.makeChecks({
                 "fluid.responsiveCheck": true
