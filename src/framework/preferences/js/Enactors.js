@@ -601,25 +601,4 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             observer.observe(target, config);
         });
     };
-
-    /* Add a mutationObserver to track when the UI panel in its responsive version is opened.
-       It then adds and removes a class to the hide/show button to style it properly. */
-    $(document).ready(function () {
-        var observer = new MutationObserver(function (mutations) {
-            fluid.each(mutations,(function (mutation) {
-                var openedResponsivePanelCheck = $(".flc-slidingPanel-panel.flc-prefsEditor-iframe").attr("aria-expanded");
-                var panelButtons = $(".fl-prefsEditor-buttons");
-                var isMobile = openedResponsivePanelCheck === "true" && $(window).width() < 640 && mutation.type === "attributes";
-                panelButtons[isMobile ? "addClass" : "removeClass"]("flc-prefsEditor-opened-panel-buttons");
-            }));
-        });
-
-        var target = document.querySelector(".flc-slidingPanel-panel.flc-prefsEditor-iframe");
-        var config = {
-            subtree : true,
-            attributeFilter: ["aria-expanded"]
-        };
-
-        observer.observe(target, config);
-    });
 })(jQuery, fluid_2_0_0);
