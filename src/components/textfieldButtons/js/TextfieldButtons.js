@@ -89,7 +89,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             },
             calculateValue: {
                 funcName: "fluid.stepper.button.buttonCalculateValue",
-                args: ["{that}.options.incrementCoefficient", "{that}.options.buttonOptions.stepMultiplier", "{that}.model.value", "{that}.options.range.min", "{that}.options.range.max"]
+                args: ["{that}.options.incrementCoefficient", "{that}.options.buttonOptions.stepMultiplier", "{that}.model.value"]
             }
         },
         listeners: {
@@ -105,19 +105,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    fluid.stepper.button.buttonCalculateValue = function (value, stepMultiplier, modelValue, min, max) {
-        modelValue = Math.round(modelValue * stepMultiplier);
-        min = Math.round(min * stepMultiplier);
-        max = Math.round(max * stepMultiplier);
-        if ((modelValue + value) < min) {
-            return min / stepMultiplier;
-        }
-        else if ((modelValue + value) > max) {
-            return max / stepMultiplier;
-        }
-        else {
-            return (modelValue + value) / stepMultiplier;
-        }
+    fluid.stepper.button.buttonCalculateValue = function (incrementCoefficient, stepMultiplier, modelValue) {
+        return (Math.round(modelValue * stepMultiplier + incrementCoefficient)) / stepMultiplier;
     };
 
 })(jQuery, fluid_2_0_0);
