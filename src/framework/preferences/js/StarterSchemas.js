@@ -21,11 +21,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * contrast, table of contents, inputs larger and emphasize links
      *******************************************************************************/
 
-    var check;
-    var widthCheck = function () {
+    function widthCheck() {
         var width = $(window).width();
-        check = (width < 640);
-        if (check) {
+        var isSmallScreen = (width < 640);
+        if (isSmallScreen) {
             fluid.contextAware.makeChecks({
                 "fluid.responsiveCheck": true
             });
@@ -48,9 +47,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 }
             });
         }
-    };
+    }
     widthCheck();
-    $(window).resize(widthCheck);
 
     fluid.defaults("fluid.prefs.termsAware");
 

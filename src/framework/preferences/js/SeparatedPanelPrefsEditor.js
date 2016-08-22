@@ -301,28 +301,31 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             panel.css({height: ""});
             if ($(window).width() < "640") {
                 iframe.removeAttr("style");
-
-                //The rest of the if make the scroll go to the next tool
-                var jqueryDokkument = $(dokkument);
-                var scrollStep = iframe.height();
-                var lastPosition = 0;
-                jqueryDokkument.on("scroll", function () {
-                    var scrollPosition = jqueryDokkument.scrollTop();
-                    //Scroll down
-                    if (lastPosition > scrollPosition) {
-                        jqueryDokkument.scrollTop((Math.floor(scrollPosition / scrollStep)) * scrollStep);
-                    }
-                    //Scroll up
-                    else if (lastPosition < scrollPosition) {
-                        jqueryDokkument.scrollTop((Math.ceil(scrollPosition / scrollStep)) * scrollStep);
-                    }
-                    lastPosition = jqueryDokkument.scrollTop();
-                });
+                separatedPanel.addStepperScroll(dokkument, iframe);
             }
             else {
                 iframe.animate(attrs, 400);
             }
         });
+
+        // A function that makes the scroll go to the next tool in steps
+        separatedPanel.addStepperScroll = function (dokkument, iframe) {
+            var jqueryDokkument = $(dokkument);
+            var scrollStep = iframe.height(); // height of a UI component
+            var lastPosition = 0;
+            jqueryDokkument.on("scroll", function () {
+                var scrollPosition = jqueryDokkument.scrollTop();
+                //Scroll down
+                if (lastPosition > scrollPosition + 10) { //the 10 px are to prevent multiple jumps on touch screens
+                    jqueryDokkument.scrollTop((Math.floor(scrollPosition / scrollStep)) * scrollStep); // go to next panel
+                }
+                //Scroll up
+                else if (lastPosition < scrollPosition - 10) { //the 10 px are to prevent multiple jumps on touch screens
+                    jqueryDokkument.scrollTop((Math.ceil(scrollPosition / scrollStep)) * scrollStep); // go to next panel
+                }
+                lastPosition = jqueryDokkument.scrollTop();
+            });
+        };
 
         separatedPanel.slidingPanel.events.afterPanelHide.addListener(function () {
             separatedPanel.iframeRenderer.iframe.height(0);

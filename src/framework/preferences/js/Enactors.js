@@ -525,9 +525,17 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         blueColorFilterValue[0] = times;
 
         var elements = $("body *");
-        var index;
-        var noMatchFlag = true;
         var initialColorsDictionary = that.options.members.initialColorsDictionary;
+
+        fluid.prefs.enactor.blueColorFilter.storeInitialColors(times, that, elements, initialColorsDictionary);
+        fluid.prefs.enactor.blueColorFilter.changeColors(times, that, elements, initialColorsDictionary);
+    };
+
+    // A function that gets all the elements in the body and stores their initial colors in an array that is an
+    // implementation of a dictionary data structure. The key is the element and the two other properties are the
+    // color and the background color stored as an array with rgba or rgb components.
+    fluid.prefs.enactor.blueColorFilter.storeInitialColors = function (times, that, elements, initialColorsDictionary) {
+        var noMatchFlag = true;
         fluid.each(elements, (function (element) {
             // Checks if the element exists in the dictionary with keys the elements and values the colors
             for (var count in initialColorsDictionary) {
@@ -553,7 +561,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
             noMatchFlag = true;
         }));
+    };
 
+    // A function that finds every element in the body in the dictionary and then changes its color and background color.
+    fluid.prefs.enactor.blueColorFilter.changeColors = function (times, that, elements, initialColorsDictionary) {
+        var index;
         var initialColors = $.extend(true, [], initialColorsDictionary);  // make a deep copy of the original array in order to prevent changes in the initial array
         fluid.each(elements, (function (element) {
             // Finds the element in the dictionary
