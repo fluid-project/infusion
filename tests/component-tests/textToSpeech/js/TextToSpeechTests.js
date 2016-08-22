@@ -184,15 +184,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // next test set, which can cause errors various contexts including the
     // all-tests runner.
     //
-    // wrapperMessage, promise, resolveFunc, rejectFunc: required
-    // resolveMessage, rejectMessage: optional string, passed to test function
-    fluid.tests.textToSpeech.chooseTestByPromiseTask = function (wrapperMessage, promise, resolveFunc, rejectFunc, resolveMessage, rejectMessage) {
+    // wrapperMessage, task, resolveFunc, rejectFunc: required
+    // "task" must be a function returning a promise
+    // resolveMessage, rejectMessage: optional strings, passed to the test
+    // functions
+    fluid.tests.textToSpeech.chooseTestByPromiseResult = function (wrapperMessage, task, resolveFunc, rejectFunc, resolveMessage, rejectMessage) {
         resolveMessage = resolveMessage || "Promise resolved, running resolve test.";
         rejectMessage = rejectMessage || "Promise rejected, running reject test.";
         jqUnit.asyncTest(wrapperMessage, function () {
             jqUnit.expect(0);
-            promise = promise();
-            promise.then(function () {
+            task().then(function () {
                 jqUnit.start();
                 resolveFunc(resolveMessage);
             }, function () {
@@ -202,6 +203,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
-    fluid.tests.textToSpeech.chooseTestByPromiseTask("Confirming if TTS is available", fluid.textToSpeech.checkTTSSupport, fluid.tests.textToSpeech.ttsTestEnvironment, fluid.tests.textToSpeech.bypassTest, "Browser appears to support TTS", "Browser does not appear to support TTS");
+    fluid.tests.textToSpeech.chooseTestByPromiseResult("Confirming if TTS is available", fluid.textToSpeech.checkTTSSupport, fluid.tests.textToSpeech.ttsTestEnvironment, fluid.tests.textToSpeech.bypassTest, "Browser appears to support TTS", "Browser does not appear to support TTS");
 
 })();
