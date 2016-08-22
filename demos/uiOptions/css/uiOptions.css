@@ -52,6 +52,13 @@ main {
     break-inside: avoid;
 }
 
+@media only screen and (max-width: 790px), only screen and (max-device-width: 790px) {
+    .demo-video {
+        width: 100vw;
+        height: auto;
+    }
+}
+
 .content h2 {
     margin-bottom: 0.5em;
     font-weight: normal;
