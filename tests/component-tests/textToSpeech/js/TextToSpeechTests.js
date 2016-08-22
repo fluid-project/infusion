@@ -172,34 +172,33 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.textToSpeech.bypassTest = function (bypassMessage) {
-        console.log(bypassMessage);
         jqUnit.test("Tests were skipped.", function () {
             jqUnit.assert(bypassMessage);
         });
     };
 
     // Chooses which test function to execute based on the results of a
-    // promise; wraps the promise in an asyncTest for good behaviour
-    // within the all-tests runner context
+    // promise; wraps the promise in an asyncTest to cause QUnit's test
+    // runner to suspend while the decision is being made by the promise.
     //
-    // wrapperMessage, promise, resolveTestFunc, rejectTestFunc: required
+    // wrapperMessage, promise, resolveFunc, rejectFunc: required
     // resolveMessage, rejectMessage: optional string, passed to test function
-    fluid.tests.textToSpeech.chooseTestByPromiseResult = function (wrapperMessage, promise, resolveTestFunc, rejectTestFunc, resolveMessage, rejectMessage) {
-        resolveMessage = resolveMessage || null;
-        rejectMessage = rejectMessage || null;
+    fluid.tests.textToSpeech.chooseTestByPromiseTask = function (wrapperMessage, promise, resolveFunc, rejectFunc, resolveMessage, rejectMessage) {
+        resolveMessage = resolveMessage || "Promise resolved, running resolve test.";
+        rejectMessage = rejectMessage || "Promise rejected, running reject test.";
         jqUnit.asyncTest(wrapperMessage, function () {
             jqUnit.expect(0);
             promise = promise();
             promise.then(function () {
                 jqUnit.start();
-                resolveTestFunc(resolveMessage);
+                resolveFunc(resolveMessage);
             }, function () {
                 jqUnit.start();
-                rejectTestFunc(rejectMessage);
+                rejectFunc(rejectMessage);
             });
         });
     };
 
-    fluid.tests.textToSpeech.chooseTestByPromiseResult("Confirming if TTS is available", fluid.textToSpeech.checkTTSSupport, fluid.tests.textToSpeech.ttsTestEnvironment, fluid.tests.textToSpeech.bypassTest, null, "Browser does not appear to support TTS.");
+    fluid.tests.textToSpeech.chooseTestByPromiseTask("Confirming if TTS is available", fluid.textToSpeech.checkTTSSupport, fluid.tests.textToSpeech.ttsTestEnvironment, fluid.tests.textToSpeech.bypassTest, "Browser appears to support TTS", "Browser does not appear to support TTS");
 
 })();
