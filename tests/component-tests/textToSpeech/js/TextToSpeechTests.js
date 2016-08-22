@@ -179,7 +179,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     // Chooses which test function to execute based on the results of a
     // promise; wraps the promise in an asyncTest to cause QUnit's test
-    // runner to suspend while the decision is being made by the promise.
+    // runner to suspend while the decision is being made asynchronously by
+    // the promise. Without this, QUnit will merrily proceed along to the
+    // next test set, which can cause errors various contexts including the
+    // all-tests runner.
     //
     // wrapperMessage, promise, resolveFunc, rejectFunc: required
     // resolveMessage, rejectMessage: optional string, passed to test function
