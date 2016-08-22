@@ -38,6 +38,12 @@ var upPath = path.resolve(__dirname, "../../../../..");
 var upInfusionPath = resolveModuleSync("infusion", upPath);
 if (upInfusionPath) {
     upInfusion = require(upInfusionPath);
+}
+
+// Fix for FLUID-5940, when Infusion is a dependency of a Node.js project that is located in the
+// root of a filesystem we were resolving to the current version of Infusion. Doing a 'require'
+// on the same version of Infusion results in an empty object.
+if (upInfusion && upInfusion.module) {
     upInfusion.log("Resolved infusion from path " + __dirname + " to " + upInfusion.module.modules.infusion.baseDir);
     module.exports = upInfusion;
     return;
