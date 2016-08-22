@@ -15,7 +15,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var fs = require("fs"),
     path = require("path"),
     vm = require("vm"),
-    resolve = require("resolve");
+    // We use a forked version of this dependency to resolve FLUID-5940
+    // This can be removed once resolve's issue #106 is resolved
+    resolve = require("fluid-resolve");
 
 // Version of resolve.sync which does not throw when module is not found
 var resolveModuleSync = function (moduleId, fromPath) {

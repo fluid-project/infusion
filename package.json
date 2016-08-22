@@ -6,7 +6,7 @@
     "bugs": "http://issues.fluidproject.org/browse/FLUID",
     "homepage": "http://www.fluidproject.org/",
     "dependencies": {
-        "resolve": "1.1.6"
+        "fluid-resolve": "1.2.0"
     },
     "license": "(BSD-3-Clause OR ECL-2.0)",
     "keywords": [
