@@ -223,128 +223,114 @@ var fluid = fluid || fluid_2_0_0;
         collectInputPaths: "fluid.transforms.valueMapper.collect"
     });
 
-    // unsupported, NON-API function
+    /* unsupported, NON-API function
+     * sorts by the object's 'matchValue' property, where higher is better.
+     * Tiebreaking is done via the `index` property, where a lower index takes priority
+     */
     fluid.model.transform.compareMatches = function (speca, specb) {
-        return specb.matchValue - speca.matchValue;
-    };
-
-    // unsupported, NON-API function
-    fluid.model.transform.matchValueMapperFull = function (outerValue, transformSpec, transformer) {
-        var o = transformSpec.options;
-        if (o.length === 0) {
-            fluid.fail("valueMapper supplied empty list of options: ", transformSpec);
-        }
-        var matchPower = [];
-        for (var i = 0; i < o.length; ++i) {
-            var option = o[i];
-            var value = fluid.firstDefined(fluid.model.transform.getValue(option.inputPath, undefined, transformer),
-                outerValue);
-            var matchValue = fluid.model.transform.matchValue(option.undefinedInputValue ? undefined :
-                (option.inputValue === undefined ? transformSpec.defaultInputValue : option.inputValue), value, transformSpec.partialMatches || option.partialMatches);
-            matchPower[i] = {index: i, matchValue: matchValue};
-        }
-        matchPower.sort(fluid.model.transform.compareMatches);
-        return (matchPower[0].matchValue <= 0 || o.length > 1 && matchPower[0].matchValue === matchPower[1].matchValue) ? -1 : matchPower[0].index;
+        var matchDiff = specb.matchValue - speca.matchValue;
+        return matchDiff === 0 ? speca.index - specb.index : matchDiff; // tiebreak using 'index'
     };
 
     fluid.transforms.valueMapper = function (transformSpec, transformer) {
-        if (!transformSpec.options) {
-            fluid.fail("valueMapper requires a list or hash of options at path named \"options\", supplied ", transformSpec);
+        if (!transformSpec.match) {
+            fluid.fail("valueMapper requires an array or hash of matches at path named \"matches\", supplied ", transformSpec);
         }
-        var value = fluid.model.transform.getValue(transformSpec.inputPath, undefined, transformer);
-        var deref = fluid.isArrayable(transformSpec.options) ? // long form with list of records
-            function (testVal) {
-                var index = fluid.model.transform.matchValueMapperFull(testVal, transformSpec, transformer);
-                return index === -1 ? null : transformSpec.options[index];
-            } :
-            function (testVal) {
-                return transformSpec.options[testVal];
-            };
+        var value = fluid.model.transform.getValue(transformSpec.defaultInputPath, undefined, transformer);
 
-        var indexed = deref(value);
-        if (!indexed) {
-            // if no branch matches, try again using this value - WARNING, this seriously
-            // threatens invertibility
-            indexed = deref(transformSpec.defaultInputValue);
+        var matchedEntry = (fluid.isArrayable(transformSpec.match)) ? // long form with array of records?
+            fluid.transforms.valueMapper.longFormMatch(value, transformSpec, transformer) :
+            transformSpec.match[value];
+
+        if (matchedEntry === undefined) { // if no matches found, default to noMatch
+            matchedEntry = transformSpec.noMatch;
         }
-        if (!indexed) {
+
+        if (matchedEntry === undefined) { // if there was no noMatch directive, return undefined
             return;
         }
 
-        var outputPath = indexed.outputPath === undefined ? transformSpec.defaultOutputPath : indexed.outputPath;
+        var outputPath = matchedEntry.outputPath === undefined ? transformSpec.defaultOutputPath : matchedEntry.outputPath;
         transformer.outputPrefixOp.push(outputPath);
+
         var outputValue;
-        if (fluid.isPrimitive(indexed)) {
-            outputValue = indexed;
+        if (fluid.isPrimitive(matchedEntry)) {
+            outputValue = matchedEntry;
+        } else if (matchedEntry.outputUndefinedValue) { // if outputUndefinedValue is set, outputValue `undefined`
+            outputValue = undefined;
         } else {
-            // if undefinedOutputValue is set, outputValue should be undefined
-            if (indexed.undefinedOutputValue) {
-                outputValue = undefined;
-            } else {
-                // get value from outputValue or outputValuePath. If none is found set the outputValue to be that of defaultOutputValue (or undefined)
-                outputValue = fluid.model.transform.resolveParam(indexed, transformer, "outputValue", undefined);
-                outputValue = (outputValue === undefined) ? transformSpec.defaultOutputValue : outputValue;
-            }
+            // get value from outputValue. If none is found set the outputValue to be that of defaultOutputValue (or undefined)
+            outputValue = fluid.model.transform.resolveParam(matchedEntry, transformer, "outputValue", undefined);
+            outputValue = (outputValue === undefined) ? transformSpec.defaultOutputValue : outputValue;
         }
-        // output if outputPath or defaultOutputPath have been specified and the relevant child hasn't done the outputting
+        // output if we have a path and something to output
         if (typeof(outputPath) === "string" && outputValue !== undefined) {
             fluid.model.transform.setValue(undefined, outputValue, transformer, transformSpec.merge);
-            outputValue = undefined;
+            outputValue = undefined; // make sure we don't also return value
         }
         transformer.outputPrefixOp.pop();
         return outputValue;
     };
 
+    // unsupported, NON-API function
+    fluid.transforms.valueMapper.longFormMatch = function (valueFromDefaultPath, transformSpec, transformer) {
+        var o = transformSpec.match;
+        if (o.length === 0) {
+            fluid.fail("valueMapper supplied empty list of matches: ", transformSpec);
+        }
+        var matchPower = [];
+        for (var i = 0; i < o.length; ++i) {
+            var option = o[i];
+            var value = option.inputPath ?
+                fluid.model.transform.getValue(option.inputPath, undefined, transformer) : valueFromDefaultPath;
+
+            var matchValue = fluid.model.transform.matchValue(option.inputValue, value, option.partialMatches);
+            matchPower[i] = {index: i, matchValue: matchValue};
+        }
+        matchPower.sort(fluid.model.transform.compareMatches);
+        return matchPower[0].matchValue <= 0 ? undefined : o[matchPower[0].index];
+    };
+
     fluid.transforms.valueMapper.invert = function (transformSpec, transformer) {
-        var options = [];
+        var match = [];
         var togo = {
             type: "fluid.transforms.valueMapper",
-            options: options
+            match: match
         };
-        var isArray = fluid.isArrayable(transformSpec.options);
-        var findCustom = function (name) {
-            return fluid.find(transformSpec.options, function (option) {
-                if (option[name]) {
-                    return true;
-                }
-            });
-        };
-        var anyCustomOutput = findCustom("outputPath");
-        var anyCustomInput = findCustom("inputPath");
-        if (!anyCustomOutput) {
-            togo.inputPath = fluid.model.composePaths(transformer.outputPrefix, transformSpec.defaultOutputPath);
-        }
-        if (!anyCustomInput) {
-            togo.defaultOutputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.inputPath);
-        }
+        var isArray = fluid.isArrayable(transformSpec.match);
+
+        togo.defaultInputPath = fluid.model.composePaths(transformer.outputPrefix, transformSpec.defaultOutputPath);
+        togo.defaultOutputPath = fluid.model.composePaths(transformer.inputPrefix, transformSpec.defaultInputPath);
+
         var def = fluid.firstDefined;
-        fluid.each(transformSpec.options, function (option, key) {
+        fluid.each(transformSpec.match, function (option, key) {
+            if (option.outputUndefinedValue === true) {
+                return; // don't attempt to invert undefined output value entries
+            }
             var outOption = {};
             var origInputValue = def(isArray ? option.inputValue : key, transformSpec.defaultInputValue);
             if (origInputValue === undefined) {
                 fluid.fail("Failure inverting configuration for valueMapper - inputValue could not be resolved for record " + key + ": ", transformSpec);
             }
-            outOption.outputValue = fluid.model.transform.literaliseValue(origInputValue);
-            var origOutputValue = def(option.outputValue, transformSpec.defaultOutputValue);
-            outOption.inputValue = fluid.model.transform.getValue(option.outputValuePath, origOutputValue, transformer);
-            if (anyCustomOutput) {
+            outOption.outputValue = origInputValue;
+            outOption.inputValue = !isArray && fluid.isPrimitive(option) ?
+                option : def(option.outputValue, transformSpec.defaultOutputValue);
+
+            if (option.outputPath) {
                 outOption.inputPath = fluid.model.composePaths(transformer.outputPrefix, def(option.outputPath, transformSpec.outputPath));
             }
-            if (anyCustomInput) {
+            if (option.inputPath) {
                 outOption.outputPath = fluid.model.composePaths(transformer.inputPrefix, def(option.inputPath, transformSpec.inputPath));
             }
-            if (option.outputValuePath) {
-                outOption.inputValuePath = option.outputValuePath;
-            }
-            options.push(outOption);
+            match.push(outOption);
         });
         return togo;
     };
 
     fluid.transforms.valueMapper.collect = function (transformSpec, transformer) {
         var togo = [];
-        fluid.model.transform.accumulateInputPath(transformSpec.inputPath, transformer, togo);
-        fluid.each(transformSpec.options, function (option) {
+        fluid.model.transform.accumulateInputPath(transformSpec.defaultInputPath, transformer, togo);
+        fluid.each(transformSpec.match, function (option) {
             fluid.model.transform.accumulateInputPath(option.inputPath, transformer, togo);
         });
         return togo;
