@@ -14,6 +14,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 (function (fluid) {
     "use strict";
 
+    /* A function that checks if the screen is small (width < 640px).
+    If so it creates a context aware check. If it is large it removes the check
+    and defines a non-responsive grades */
     function widthCheck() {
         var width = $(window).width();
         var isSmallScreen = (width < 640);
