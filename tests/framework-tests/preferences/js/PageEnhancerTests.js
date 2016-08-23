@@ -63,7 +63,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.testInitialState = function () {
         jqUnit.assertEquals("Initially white on black class exists", 1, $(".fl-theme-wb").length);
-        jqUnit.assertEquals("Initially font-sans class exists", 1, $(".fl-font-sans").length);
+        jqUnit.assertEquals("Initially font-times class exists", 1, $(".fl-font-times").length);
         jqUnit.assertEquals("Initially font-arial class exists", 1, $(".fl-font-arial").length);
     };
 
