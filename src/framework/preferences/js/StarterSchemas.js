@@ -21,35 +21,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * contrast, table of contents, inputs larger and emphasize links
      *******************************************************************************/
 
-    function widthCheck() {
-        var width = $(window).width();
-        var isSmallScreen = (width < 640);
-        if (isSmallScreen) {
-            fluid.contextAware.makeChecks({
-                "fluid.responsiveCheck": true
-            });
-        }
-        else {
-            fluid.contextAware.forgetChecks("fluid.responsiveCheck");
-            fluid.defaults("fluid.prefs.auxSchema.starter.default", {
-                gradeNames: ["fluid.contextAware"],
-                contextAwareness: {
-                    sliderVariety: {
-                        checks: {
-                            jQueryUI: {
-                                contextValue: "{fluid.prefsWidgetType}",
-                                equals: "jQueryUI",
-                                gradeNames: ["fluid.prefs.auxSchema.starter.textSize.jQueryUI", "fluid.prefs.auxSchema.starter.lineSpace.jQueryUI", "fluid.prefs.auxSchema.starter.blueColorFilter.jQueryUI"]
-                            }
-                        },
-                        defaultGradeNames: ["fluid.prefs.auxSchema.starter.textSize.nativeHTML", "fluid.prefs.auxSchema.starter.lineSpace.nativeHTML", "fluid.prefs.auxSchema.starter.blueColorFilter.nativeHTML"]
-                    }
-                }
-            });
-        }
-    }
-    widthCheck();
-
     fluid.defaults("fluid.prefs.termsAware");
 
     // textSize mixin (base)
