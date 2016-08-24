@@ -21,6 +21,8 @@ var getFromExec = function (command) {
     try {
         result = execSync(command);
     } catch (e) {
+        console.log("Error executing command: " + command);
+        console.log(e.stack);
         result = "unknown\n";
     }
     return result;
