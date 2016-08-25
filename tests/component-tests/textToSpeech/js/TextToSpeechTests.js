@@ -137,6 +137,42 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             args: ["{tts}"],
                             event: "{tts}.events.onResume"
                         },
+                        // Issue rapid back and forth resume/pause commands;
+                        // the queining behaviour shouuld make this safe and
+                        // prevent potential race conditions
+                        {
+                            func: "{tts}.resume"
+                        },{
+                            func: "{tts}.pause"
+                        },
+                        {
+                            func: "{tts}.resume"
+                        },
+                        {
+                            func: "{tts}.pause"
+                        },
+                        {
+                            func: "{tts}.resume"
+                        },{
+                            func: "{tts}.pause"
+                        },
+                        {
+                            func: "{tts}.resume"
+                        },
+                        {
+                            func: "{tts}.pause"
+                        },
+                        {
+                            func: "{tts}.resume"
+                        },{
+                            func: "{tts}.pause"
+                        },
+                        {
+                            func: "{tts}.resume"
+                        },
+                        {
+                            func: "{tts}.pause"
+                        },
                         // Test on stop to make sure IoC harness doesn't try
                         // and destroy too early for the asynchronous onStop
                         // event to fire and cause issues
