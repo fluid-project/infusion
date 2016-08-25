@@ -105,12 +105,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 args: ["{that}"]
             },
             pause: {
-                funcName: "fluid.textToSpeech.requestPause",
-                args: ["{that}"]
+                funcName: "fluid.textToSpeech.issueControlRequest",
+                args: ["{that}", "pauseRequested", "pause", false]
             },
             resume: {
-                funcName: "fluid.textToSpeech.requestResume",
-                args: ["{that}"]
+                funcName: "fluid.textToSpeech.issueControlRequest",
+                args: ["{that}", "resumeRequested", "resume", true]
             },
             getVoices: {
                 "this": "speechSynthesis",
@@ -151,12 +151,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         that.events[speaking ? "onStart" : "onStop"].fire();
     };
 
-    fluid.textToSpeech.requestPause = function (that) {
-        if(that.model.paused) {
-            that.applier.change("pauseRequested", true);
-        } else fluid.textToSpeech.asyncSpeechSynthesisControl("pause", 10);
-    };
-
     fluid.textToSpeech.handlePause = function (that) {
         that.applier.change("paused", true);
         that.events.onPause.fire();
@@ -172,15 +166,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.textToSpeech.issueControlRequest = function (that, modelBoolPath, controlName, invert) {
-        if(invert ? !fluid.get(that.model, modelBoolPath) : fluid.get(that.model, modelBoolPath)) {
+        if(invert ? !that.model.paused : that.model.paused) {
             that.applier.change(modelBoolPath, true);
         } else fluid.textToSpeech.asyncSpeechSynthesisControl(controlName, 10);
-    };
-
-    fluid.textToSpeech.requestResume = function (that) {
-        if(!that.model.paused) {
-            that.applier.change("resumeRequested", true);
-        } else fluid.textToSpeech.asyncSpeechSynthesisControl("resume", 10);
     };
 
     fluid.textToSpeech.handleResume = function (that) {
