@@ -138,7 +138,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    // Issue functions to the speechSynthesis interface after a delay; this
+    // Issue commands to the speechSynthesis interface after a delay; this
     // makes the wrapper behave somewhat better when issuing commands, especially
     // play and pause
     fluid.textToSpeech.asyncSpeechSynthesisControl = function (control, delay, args) {
@@ -154,8 +154,15 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.textToSpeech.handlePause = function (that) {
         that.applier.change("paused", true);
         that.events.onPause.fire();
-        // Clear to issue a resume command
+        // Clear to issue any waiting resume command
         fluid.textToSpeech.clearControlRequest(that, "resumeRequested", "resume");
+    };
+
+    fluid.textToSpeech.handleResume = function (that) {
+        that.applier.change("paused", false);
+        that.events.onResume.fire();
+        // Clear to issue any waiting pause command
+        fluid.textToSpeech.clearControlRequest(that, "pauseRequested", "pause");
     };
 
     fluid.textToSpeech.clearControlRequest = function (that, modelBoolPath, controlName) {
@@ -169,20 +176,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         if(invert ? !that.model.paused : that.model.paused) {
             that.applier.change(modelBoolPath, true);
         } else fluid.textToSpeech.asyncSpeechSynthesisControl(controlName, 10);
-    };
-
-    fluid.textToSpeech.handleResume = function (that) {
-        that.applier.change("paused", false);
-        that.events.onResume.fire();
-        // Clear to issue a pause command
-        fluid.textToSpeech.clearControlRequest(that, "pauseRequested", "pause");
-    };
-
-    fluid.textToSpeech.clearPauseRequest = function (that) {
-        if(that.model.pauseRequested) {
-            that.applier.change("pauseRequested", false);
-            fluid.textToSpeech.asyncSpeechSynthesisControl("pause", 10);
-        }
     };
 
     fluid.textToSpeech.handleStart = function (that) {
