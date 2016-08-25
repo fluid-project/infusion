@@ -139,7 +139,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     });
 
     // Issue functions to the speechSynthesis interface after a delay; this
-    // makes the wrapper behave better when issuing commands
+    // makes the wrapper behave somewhat better when issuing commands, especially
+    // play and pause
     fluid.textToSpeech.asyncSpeechSynthesisControl = function (control, delay, args) {
         setTimeout(function () {
             speechSynthesis[control](args);
@@ -160,14 +161,20 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         that.applier.change("paused", true);
         that.events.onPause.fire();
         // Clear to issue a resume command
-        fluid.textToSpeech.clearResumeRequest(that);
+        fluid.textToSpeech.clearControlRequest(that, "resumeRequested", "resume");
     };
 
-    fluid.textToSpeech.clearResumeRequest = function (that) {
-        if(that.model.resumeRequested) {
-            that.applier.change("resumeRequested", false);
-            fluid.textToSpeech.asyncSpeechSynthesisControl("resume", 10);
+    fluid.textToSpeech.clearControlRequest = function (that, modelBoolPath, controlName) {
+        if(fluid.get(that.model, modelBoolPath)) {
+            that.applier.change(modelBoolPath, false);
+            fluid.textToSpeech.asyncSpeechSynthesisControl(controlName, 10);
         }
+    };
+
+    fluid.textToSpeech.issueControlRequest = function (that, modelBoolPath, controlName, invert) {
+        if(invert ? !fluid.get(that.model, modelBoolPath) : fluid.get(that.model, modelBoolPath)) {
+            that.applier.change(modelBoolPath, true);
+        } else fluid.textToSpeech.asyncSpeechSynthesisControl(controlName, 10);
     };
 
     fluid.textToSpeech.requestResume = function (that) {
@@ -180,7 +187,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         that.applier.change("paused", false);
         that.events.onResume.fire();
         // Clear to issue a pause command
-        fluid.textToSpeech.clearPauseRequest(that);
+        fluid.textToSpeech.clearControlRequest(that, "pauseRequested", "pause");
     };
 
     fluid.textToSpeech.clearPauseRequest = function (that) {
