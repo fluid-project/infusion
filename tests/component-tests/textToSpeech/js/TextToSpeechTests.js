@@ -22,7 +22,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         model: {
             utteranceOpts: {
                 // not all speech synthesizers will respect this setting
-                volume: 0
+                volume: 100
             }
         },
         listeners: {
@@ -88,7 +88,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             {
                 name: "Test Including Pause and Resume Events",
                 tests: [{
-                    expect: 13,
+                    expect: 21,
                     name: "Test Including Pause and Resume Events",
                     sequence:
                     [
@@ -103,6 +103,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             listener: "{tts}.pause",
                             event: "{tts}.events.onStart"
                         },
+                        // Tests on pause / resume requests issued close together
+                        // the queueing behaviour needs to handle these gracefully
                         {
                             listener: "fluid.tests.textToSpeech.testPause",
                             args: ["{tts}"],
@@ -111,6 +113,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         {
                             func: "{tts}.resume"
                         }, {
+                            listener: "fluid.tests.textToSpeech.testResume",
+                            args: ["{tts}"],
+                            event: "{tts}.events.onResume"
+                        },
+                        // Test on pause issued after a short delay,
+                        {
+                            funcName: "fluid.tests.textToSpeech.doAfterDelay",
+                            args: ["{tts}.pause", 200]
+                        },
+                        {
+                            listener: "fluid.tests.textToSpeech.testPause",
+                            args: ["{tts}"],
+                            event: "{tts}.events.onPause"
+                        },
+                        // Test on resume issued after a short delay,
+                        {
+                            funcName: "fluid.tests.textToSpeech.doAfterDelay",
+                            args: ["{tts}.resume", 200]
+                        },
+                        {
                             listener: "fluid.tests.textToSpeech.testResume",
                             args: ["{tts}"],
                             event: "{tts}.events.onResume"
@@ -127,6 +149,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }]
             }]
     });
+
+    fluid.tests.textToSpeech.doAfterDelay = function (delayedFunc, delay) {
+        setTimeout(function () {
+            delayedFunc();
+        }, delay);
+    };
 
     fluid.tests.textToSpeech.testInitialization = function (tts) {
         var that = tts;

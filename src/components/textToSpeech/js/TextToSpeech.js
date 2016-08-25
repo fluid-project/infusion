@@ -45,15 +45,15 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             var toSpeak = new SpeechSynthesisUtterance(" "); // short text to attempt to speak
             toSpeak.volume = 0; // mutes the Speech Synthesizer
             var timeout = setTimeout(function () {
-                speechSynthesis.cancel();
+                fluid.textToSpeech.asyncSpeechSynthesisControl("cancel", 10);
                 promise.reject();
             }, delay || 1000);
             toSpeak.onend = function () {
                 clearTimeout(timeout);
-                speechSynthesis.cancel();
+                fluid.textToSpeech.asyncSpeechSynthesisControl("cancel", 10);
                 promise.resolve();
             };
-            speechSynthesis.speak(toSpeak);
+            fluid.textToSpeech.asyncSpeechSynthesisControl("speak", 10, toSpeak);
         } else {
             setTimeout(promise.reject, 0);
         }
@@ -74,7 +74,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         members: {
             queue: []
         },
-        // Model paths: speaking, pending, paused, utteranceOpts
+        // Model paths: speaking, pending, paused, utteranceOpts, pauseRequested, resumeRequested
         model: {
             // Changes to the utteranceOpts will only text that is queued after the change.
             // All of these options can be overriden in the queueSpeech method by passing in
@@ -93,10 +93,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             "speaking": {
                 listener: "fluid.textToSpeech.speak",
                 args: ["{that}", "{change}.value"]
-            },
-            "paused": {
-                listener: "fluid.textToSpeech.pause",
-                args: ["{that}", "{change}.value"]
             }
         },
         invokers: {
@@ -109,16 +105,16 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 args: ["{that}"]
             },
             pause: {
-                funcName: "fluid.textToSpeech.asyncSpeechSynthesisControl",
-                args: ["pause", 10]
+                funcName: "fluid.textToSpeech.requestPause",
+                args: ["{that}"]
             },
             resume: {
-                funcName: "fluid.textToSpeech.asyncSpeechSynthesisControl",
-                args: ["resume", 10]
+                funcName: "fluid.textToSpeech.requestResume",
+                args: ["{that}"]
             },
             getVoices: {
-                funcName: "fluid.textToSpeech.asyncSpeechSynthesisControl",
-                args: ["getVoices", 10]
+                "this": "speechSynthesis",
+                "method": "getVoices"
             },
             handleStart: {
                 funcName: "fluid.textToSpeech.handleStart",
@@ -132,21 +128,21 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             },
             handleError: "{that}.events.onError.fire",
             handlePause: {
-                changePath: "paused",
-                value: true
+                funcName: "fluid.textToSpeech.handlePause",
+                args: ["{that}"]
             },
             handleResume: {
-                changePath: "paused",
-                value: false
+                funcName: "fluid.textToSpeech.handleResume",
+                args: ["{that}"]
             }
         }
     });
 
     // Issue functions to the speechSynthesis interface after a delay; this
-    // makes the wrapper behave better when issuing commands in rapid succession
-    fluid.textToSpeech.asyncSpeechSynthesisControl = function (control, delay) {
+    // makes the wrapper behave better when issuing commands
+    fluid.textToSpeech.asyncSpeechSynthesisControl = function (control, delay, args) {
         setTimeout(function () {
-            speechSynthesis[control]();
+            speechSynthesis[control](args);
         }, delay);
     };
 
@@ -154,11 +150,43 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         that.events[speaking ? "onStart" : "onStop"].fire();
     };
 
-    fluid.textToSpeech.pause = function (that, paused) {
-        if (paused) {
-            that.events.onPause.fire();
-        } else if (that.model.speaking) {
-            that.events.onResume.fire();
+    fluid.textToSpeech.requestPause = function (that) {
+        if(that.model.paused) {
+            that.applier.change("pauseRequested", true);
+        } else fluid.textToSpeech.asyncSpeechSynthesisControl("pause", 10);
+    };
+
+    fluid.textToSpeech.handlePause = function (that) {
+        that.applier.change("paused", true);
+        that.events.onPause.fire();
+        // Clear to issue a resume command
+        fluid.textToSpeech.clearResumeRequest(that);
+    };
+
+    fluid.textToSpeech.clearResumeRequest = function (that) {
+        if(that.model.resumeRequested) {
+            that.applier.change("resumeRequested", false);
+            fluid.textToSpeech.asyncSpeechSynthesisControl("resume", 10);
+        }
+    };
+
+    fluid.textToSpeech.requestResume = function (that) {
+        if(!that.model.paused) {
+            that.applier.change("resumeRequested", true);
+        } else fluid.textToSpeech.asyncSpeechSynthesisControl("resume", 10);
+    };
+
+    fluid.textToSpeech.handleResume = function (that) {
+        that.applier.change("paused", false);
+        that.events.onResume.fire();
+        // Clear to issue a pause command
+        fluid.textToSpeech.clearPauseRequest(that);
+    };
+
+    fluid.textToSpeech.clearPauseRequest = function (that) {
+        if(that.model.pauseRequested) {
+            that.applier.change("pauseRequested", false);
+            fluid.textToSpeech.asyncSpeechSynthesisControl("pause", 10);
         }
     };
 
@@ -205,12 +233,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
         that.queue.push(text);
         that.events.onSpeechQueued.fire(text);
-        speechSynthesis.speak(toSpeak);
+        fluid.textToSpeech.asyncSpeechSynthesisControl("speak", 10, toSpeak);
     };
 
     fluid.textToSpeech.cancel = function (that) {
         that.queue = [];
-        speechSynthesis.cancel();
+        fluid.textToSpeech.asyncSpeechSynthesisControl("cancel", 10);
     };
 
 })(jQuery, fluid_2_0_0);
