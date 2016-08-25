@@ -173,9 +173,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         {
                             func: "{tts}.pause"
                         },
-                        // Test on stop to make sure IoC harness doesn't try
-                        // and destroy too early for the asynchronous onStop
-                        // event to fire and cause issues
+                        {
+                            func: "{tts}.resume"
+                        },
+                        // Test on stop to make sure the speech
+                        // completes despite the rapid resume/pause
                         {
                             listener: "fluid.tests.textToSpeech.testStop",
                             args: ["{tts}"],
