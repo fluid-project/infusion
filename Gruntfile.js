@@ -16,14 +16,24 @@ var _ = require("lodash");
 var path = require("path");
 var execSync = require("child_process").execSync;
 
-var getFromExec = function (command) {
-    var result;
+/**
+ * Returns a string result from executing a supplied command.
+ * The command is executed synchronosly.
+ *
+ * @param {String} command - the command to execute
+ * @param {Object} options - optional arguments "verbose" will output a full stack trace when an error occurs,
+ *                           "defaultValue" will set the default return value, useful in case of errors or when a result may be an empty string.
+ * @returns {String} - returns a string representation of the result of the command or the defaultValue.
+ */
+var getFromExec = function (command, options) {
+    var result = options.defaultValue;
+    var stdio = options.verbose ? "pipe" : "ignore";
+
     try {
-        result = execSync(command);
+        result = execSync(command, {stdio: stdio });
     } catch (e) {
         console.log("Error executing command: " + command);
         console.log(e.stack);
-        result = "unknown\n";
     }
     return result;
 };
@@ -33,8 +43,8 @@ module.exports = function (grunt) {
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
-        revision: getFromExec("git rev-parse --verify --short HEAD"),
-        branch: getFromExec("git rev-parse --abbrev-ref HEAD"),
+        revision: getFromExec("git rev-parse --verify --short HEAD", {defaultValue: "Unknown revision, not within a git repository"}),
+        branch: getFromExec("git rev-parse --abbrev-ref HEAD", {defaultValue: "Unknown branch, not within a git repository"}),
         allBuildName: "<%= pkg.name %>-all",
         customBuildName: "<%= pkg.name %>-" + (grunt.option("name") || "custom"),
         isCompressed: !grunt.option("source"),
