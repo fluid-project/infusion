@@ -72,7 +72,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             onSpeechQueued: null
         },
         members: {
-            queue: []
+            queue: [],
+            //
+            currentUtterance: {}
         },
         // Model paths: speaking, pending, paused, utteranceOpts, pauseRequested, resumeRequested
         model: {
@@ -83,7 +85,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             utteranceOpts: {
                 // text: "", // text to synthesize. avoid as it will override any other text passed in
                 // lang: "", // the language of the synthesized text
-                // voiceURI: "" // a uri pointing at a voice synthesizer to use. If not set, will use the default one provided by the browser
+                // voice: {} // a WebSpeechSynthesis object; if not set, will use the default one provided by the browser
                 // volume: 1, // a value between 0 and 1
                 // rate: 1, // a value from 0.1 to 10 although different synthesizers may have a smaller range
                 // pitch: 1, // a value from 0 to 2
@@ -175,7 +177,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.textToSpeech.issueControlRequest = function (that, modelBoolPath, controlName, invert) {
         if(invert ? !that.model.paused : that.model.paused) {
             that.applier.change(modelBoolPath, true);
-        } else fluid.textToSpeech.asyncSpeechSynthesisControl(controlName, 10);
+        } else {
+            fluid.textToSpeech.asyncSpeechSynthesisControl(controlName, 10);
+        }
     };
 
     fluid.textToSpeech.handleStart = function (that) {
@@ -210,6 +214,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         };
 
         var toSpeak = new SpeechSynthesisUtterance(text);
+        // Store toSpeak additional on the currentUtterance member to help deal with the issue
+        // with premature garbage collection described at https://bugs.chromium.org/p/chromium/issues/detail?id=509488#c11
+        // this makes the speech synthesis behave much better in Safari in
+        // particular
+        // that.currentUtterance = toSpeak;
+
         var eventBinding = {
             onstart: that.handleStart,
             onend: that.handleEnd,
