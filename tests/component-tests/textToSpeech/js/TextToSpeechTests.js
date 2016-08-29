@@ -22,7 +22,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         model: {
             utteranceOpts: {
                 // not all speech synthesizers will respect this setting
-                volume: 100
+                volume: 0
             }
         },
         listeners: {
