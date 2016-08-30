@@ -94,6 +94,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             "speaking": {
                 listener: "fluid.textToSpeech.speak",
                 args: ["{that}", "{change}.value"]
+            },
+            "paused": {
+                listener: "fluid.textToSpeech.pauseResume",
+                args: ["{that}", "{change}.value"]
             }
         },
         invokers: {
@@ -129,12 +133,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             },
             handleError: "{that}.events.onError.fire",
             handlePause: {
-                funcName: "fluid.textToSpeech.handlePause",
-                args: ["{that}"]
+                changePath: "paused",
+                value: true
             },
             handleResume: {
-                funcName: "fluid.textToSpeech.handleResume",
-                args: ["{that}"]
+                changePath: "paused",
+                value: false
             }
         }
     });
@@ -152,16 +156,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         that.events[speaking ? "onStart" : "onStop"].fire();
     };
 
-    fluid.textToSpeech.handlePause = function (that) {
-        that.applier.change("paused", true);
-        // Clear to issue any waiting resume command
-        fluid.textToSpeech.clearControlRequest(that, "resumeRequested", "resume");
-    };
-
-    fluid.textToSpeech.handleResume = function (that) {
-        that.applier.change("paused", false);
-        // Clear to issue any waiting pause command
-        fluid.textToSpeech.clearControlRequest(that, "pauseRequested", "pause");
+    fluid.textToSpeech.pauseResume = function (that, paused) {
+        // If we're paused, it's safe to clear resume commands
+        // If we're not paused, it's safe to clear pause commands
+        var boolPath = paused ? "resumeRequested" : "pauseRequested";
+        var control = paused ? "resume" : "pause";
+        fluid.textToSpeech.clearControlRequest(that, boolPath, control);
     };
 
     fluid.textToSpeech.clearControlRequest = function (that, modelBoolPath, controlName) {
