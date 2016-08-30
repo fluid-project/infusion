@@ -68,7 +68,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             {
                 name: "Start and Stop Events",
                 tests: [{
-                    expect: 10,
+                    expect: 13,
                     name: "Test Start and Stop Events",
                     sequence:
                     [{
@@ -88,7 +88,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             {
                 name: "Test Including Pause and Resume Events",
                 tests: [{
-                    expect: 21,
+                    expect: 22,
                     name: "Test Including Pause and Resume Events",
                     sequence:
                     [
@@ -209,6 +209,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertFalse("Nothing should be pending", that.model.pending);
         jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
         jqUnit.assertDeepEq("The queue of texts should be empty", [], that.queue.texts);
+        jqUnit.assertTrue("A currentUtterance is present in the queue", that.queue.currentUtterance);
+        jqUnit.assertTrue("The currentUtterance is a SpeechSynthesisUtterance object", "SpeechSynthesisUtterance", that.queue.currentUtterance.constructor.name);
+
     };
 
     fluid.tests.textToSpeech.testStop = function (tts) {
@@ -218,6 +221,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertFalse("Nothing should be pending", that.model.pending);
         jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
         jqUnit.assertDeepEq("The queue of texts should be empty", [], that.queue.texts);
+        jqUnit.assertFalse("No currentUtterance is present in the queue", that.queue.currentUtterance);
         that.cancel();
     };
 

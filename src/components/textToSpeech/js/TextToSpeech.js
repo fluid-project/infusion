@@ -73,8 +73,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         },
         members: {
             queue: {
-                texts: [],
-                currentUtterance: {}
+                texts: []
+                // currentUtterance:
             }
         },
         // Model paths: speaking, pending, paused, utteranceOpts, pauseRequested, resumeRequested
@@ -198,6 +198,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             pending: false,
             paused: false
         };
+
+        if (that.queue.currentUtterance) {
+            that.queue.currentUtterance = undefined;
+        }
 
         if (!that.queue.texts.length) {
             var newModel = $.extend({}, that.model, resetValues);
