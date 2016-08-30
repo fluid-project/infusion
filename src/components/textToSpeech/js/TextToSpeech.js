@@ -218,7 +218,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         // with premature garbage collection described at https://bugs.chromium.org/p/chromium/issues/detail?id=509488#c11
         // this makes the speech synthesis behave much better in Safari in
         // particular
-        // that.currentUtterance = toSpeak;
+        that.currentUtterance = toSpeak;
 
         var eventBinding = {
             onstart: that.handleStart,
