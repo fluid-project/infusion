@@ -208,7 +208,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertTrue("Should be speaking", that.model.speaking);
         jqUnit.assertFalse("Nothing should be pending", that.model.pending);
         jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
-        jqUnit.assertDeepEq("The queue should be empty", [], that.queue);
+        jqUnit.assertDeepEq("The queue of texts should be empty", [], that.queue.texts);
     };
 
     fluid.tests.textToSpeech.testStop = function (tts) {
@@ -217,7 +217,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertFalse("Should not be speaking", that.model.speaking);
         jqUnit.assertFalse("Nothing should be pending", that.model.pending);
         jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
-        jqUnit.assertDeepEq("The queue should be empty", [], that.queue);
+        jqUnit.assertDeepEq("The queue of texts should be empty", [], that.queue.texts);
         that.cancel();
     };
 

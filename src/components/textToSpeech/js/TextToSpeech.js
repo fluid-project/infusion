@@ -72,9 +72,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             onSpeechQueued: null
         },
         members: {
-            queue: [],
-            //
-            currentUtterance: {}
+            queue: {
+                texts: [],
+                currentUtterance: {}
+            }
         },
         // Model paths: speaking, pending, paused, utteranceOpts, pauseRequested, resumeRequested
         model: {
@@ -183,10 +184,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.textToSpeech.handleStart = function (that) {
-        that.queue.shift();
+        that.queue.texts.shift();
         that.applier.change("speaking", true);
 
-        if (that.queue.length) {
+        if (that.queue.texts.length) {
             that.applier.change("pending", true);
         }
     };
@@ -198,7 +199,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             paused: false
         };
 
-        if (!that.queue.length) {
+        if (!that.queue.texts.length) {
             var newModel = $.extend({}, that.model, resetValues);
             that.applier.change("", newModel);
         }
@@ -214,11 +215,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         };
 
         var toSpeak = new SpeechSynthesisUtterance(text);
-        // Store toSpeak additional on the currentUtterance member to help deal with the issue
+        // Store toSpeak additionally on the queue.currentUtterance member to help deal with the issue
         // with premature garbage collection described at https://bugs.chromium.org/p/chromium/issues/detail?id=509488#c11
         // this makes the speech synthesis behave much better in Safari in
         // particular
-        that.currentUtterance = toSpeak;
+        that.queue.currentUtterance = toSpeak;
 
         var eventBinding = {
             onstart: that.handleStart,
@@ -229,13 +230,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         };
         $.extend(toSpeak, that.model.utteranceOpts, options, eventBinding);
 
-        that.queue.push(text);
+        that.queue.texts.push(text);
         that.events.onSpeechQueued.fire(text);
         fluid.textToSpeech.asyncSpeechSynthesisControl("speak", 10, toSpeak);
     };
 
     fluid.textToSpeech.cancel = function (that) {
-        that.queue = [];
+        that.queue.texts = [];
         fluid.textToSpeech.asyncSpeechSynthesisControl("cancel", 10);
     };
 
