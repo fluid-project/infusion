@@ -59,11 +59,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             },
             "theme": {
                 "default": "fl-theme-prefsEditor-default",
-                "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
-                "wb": "fl-theme-prefsEditor-wb fl-theme-wb",
-                "by": "fl-theme-prefsEditor-by fl-theme-by",
-                "yb": "fl-theme-prefsEditor-yb fl-theme-yb",
-                "lgdg": "fl-theme-prefsEditor-lgdg fl-theme-lgdg"
+                "bw": "fl-theme-bw",
+                "wb": "fl-theme-wb",
+                "by": "fl-theme-by",
+                "yb": "fl-theme-yb",
+                "lgdg": "fl-theme-lgdg"
             },
             "links": "fl-link-enhanced",
             "inputsLarger": "fl-text-larger"
