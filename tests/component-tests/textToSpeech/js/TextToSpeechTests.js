@@ -31,7 +31,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.textToSpeech.cleanUp = function () {
-        if(fluid.textToSpeech.isSupported()) {
+        if (fluid.textToSpeech.isSupported()) {
             speechSynthesis.cancel();
         }
     };

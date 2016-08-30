@@ -168,14 +168,14 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.textToSpeech.clearControlRequest = function (that, modelBoolPath, controlName) {
-        if(fluid.get(that.model, modelBoolPath)) {
+        if (fluid.get(that.model, modelBoolPath)) {
             that.applier.change(modelBoolPath, false);
             fluid.textToSpeech.asyncSpeechSynthesisControl(controlName, 10);
         }
     };
 
     fluid.textToSpeech.issueControlRequest = function (that, modelBoolPath, controlName, invert) {
-        if(invert ? !that.model.paused : that.model.paused) {
+        if (invert ? !that.model.paused : that.model.paused) {
             that.applier.change(modelBoolPath, true);
         } else {
             fluid.textToSpeech.asyncSpeechSynthesisControl(controlName, 10);
