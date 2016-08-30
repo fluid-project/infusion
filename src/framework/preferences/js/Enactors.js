@@ -387,7 +387,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                         }
                     },
                     listeners: {
-                        afterRender: "{fluid.prefs.enactor.tableOfContents}.events.afterTocRender"
+                        "afterRender.boilAfterTocRender": "{fluid.prefs.enactor.tableOfContents}.events.afterTocRender"
                     }
                 }
             }
