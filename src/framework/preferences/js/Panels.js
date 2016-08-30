@@ -440,7 +440,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      */
     fluid.prefs.compositePanel.hideInactive = function (that) {
         fluid.each(that.options.components, function (componentOpts, componentName) {
-            if(fluid.prefs.compositePanel.isPanel(componentOpts.type, componentOpts.options) && !fluid.prefs.compositePanel.isActivePanel(that[componentName])) {
+            if (fluid.prefs.compositePanel.isPanel(componentOpts.type, componentOpts.options) && !fluid.prefs.compositePanel.isActivePanel(that[componentName])) {
                 that.locate(componentName).hide();
             }
         });

@@ -28,6 +28,7 @@
       "allow-null"
     ],
     "indent": ["error", 4],
+    "keyword-spacing": "error",
     "new-cap": ["error", { "properties": false }],
     "no-caller": "error",
     "no-cond-assign": [
