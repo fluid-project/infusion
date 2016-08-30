@@ -66,8 +66,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         events: {
             onStart: null,
             onStop: null,
-            onPause: null,
-            onResume: null,
             onError: null,
             onSpeechQueued: null
         },
@@ -156,14 +154,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.textToSpeech.handlePause = function (that) {
         that.applier.change("paused", true);
-        that.events.onPause.fire();
         // Clear to issue any waiting resume command
         fluid.textToSpeech.clearControlRequest(that, "resumeRequested", "resume");
     };
 
     fluid.textToSpeech.handleResume = function (that) {
         that.applier.change("paused", false);
-        that.events.onResume.fire();
         // Clear to issue any waiting pause command
         fluid.textToSpeech.clearControlRequest(that, "pauseRequested", "pause");
     };

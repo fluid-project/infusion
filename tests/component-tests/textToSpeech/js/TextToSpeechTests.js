@@ -108,14 +108,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         {
                             listener: "fluid.tests.textToSpeech.testPause",
                             args: ["{tts}"],
-                            event: "{tts}.events.onPause"
+                            changeEvent: "{tts}.applier.modelChanged",
+                            path: "paused"
                         },
                         {
                             func: "{tts}.resume"
                         }, {
                             listener: "fluid.tests.textToSpeech.testResume",
                             args: ["{tts}"],
-                            event: "{tts}.events.onResume"
+                            changeEvent: "{tts}.applier.modelChanged",
+                            path: "paused"
                         },
                         // Test on pause issued after a short delay,
                         {
@@ -125,7 +127,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         {
                             listener: "fluid.tests.textToSpeech.testPause",
                             args: ["{tts}"],
-                            event: "{tts}.events.onPause"
+                            changeEvent: "{tts}.applier.modelChanged",
+                            path: "paused"
                         },
                         // Test on resume issued after a short delay,
                         {
@@ -135,7 +138,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         {
                             listener: "fluid.tests.textToSpeech.testResume",
                             args: ["{tts}"],
-                            event: "{tts}.events.onResume"
+                            changeEvent: "{tts}.applier.modelChanged",
+                            path: "paused"
                         },
                         // Issue rapid back and forth resume/pause commands;
                         // the queining behaviour shouuld make this safe and
