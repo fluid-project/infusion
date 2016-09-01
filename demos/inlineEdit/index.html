@@ -58,7 +58,12 @@
             <figure>
 
             <script type="text/javascript">
-                demo.initInlineEdit();
+                demo.inlineEdit(".demoSelector-inlineEdit-container-title", {
+                    styles: {
+                        edit: "demo-inlineEdit-title-edit demo-inlineEdit-edit"
+                    }
+                });
+                demo.inlineEdit(".demoSelector-inlineEdit-container-caption");
             </script>
         </div>
     </section>
