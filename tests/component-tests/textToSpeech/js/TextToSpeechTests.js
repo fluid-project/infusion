@@ -141,12 +141,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             changeEvent: "{tts}.applier.modelChanged",
                             path: "paused"
                         },
-                        // Issue rapid back and forth resume/pause commands;
-                        // the queining behaviour shouuld make this safe and
+                        // Issue rapid back and forth resume/pause commands,
+                        // including doubles
+                        // the throttling behaviour shouuld make this safe and
                         // prevent potential race conditions
                         {
                             func: "{tts}.resume"
                         },{
+                            func: "{tts}.resume"
+                        },{
                             func: "{tts}.pause"
                         },
                         {
@@ -162,6 +165,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         },
                         {
                             func: "{tts}.resume"
+                        },
+                        {
+                            func: "{tts}.pause"
                         },
                         {
                             func: "{tts}.pause"
