@@ -121,7 +121,23 @@
         </main>
 
         <script type="text/javascript">
-            fluid.demo.initTableOfContents();
+            fluid.tableOfContents("body", {
+                ignoreForToC: {
+                    trees: ".demo-toc-trees"
+                },
+                distributeOptions: {
+                    record: {
+                        resources: {
+                            template: {
+                                forceCache: true,
+                                // Path to Table of Contents template
+                                url: "../../src/components/tableOfContents/html/TableOfContents.html"
+                            }
+                        }
+                    },
+                    target: "{that fluid.tableOfContents.levels}.options"
+                }
+            });
         </script>
     </body>
 </html>
