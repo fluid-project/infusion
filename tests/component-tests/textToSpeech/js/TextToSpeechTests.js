@@ -68,7 +68,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             {
                 name: "Start and Stop Events",
                 tests: [{
-                    expect: 13,
+                    expect: 10,
                     name: "Test Start and Stop Events",
                     sequence:
                     [{
@@ -88,7 +88,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             {
                 name: "Test Including Pause and Resume Events",
                 tests: [{
-                    expect: 22,
+                    expect: 13,
                     name: "Test Including Pause and Resume Events",
                     sequence:
                     [
@@ -114,28 +114,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         {
                             func: "{tts}.resume"
                         }, {
-                            listener: "fluid.tests.textToSpeech.testResume",
-                            args: ["{tts}"],
-                            changeEvent: "{tts}.applier.modelChanged",
-                            path: "paused"
-                        },
-                        // Test on pause issued after a short delay,
-                        {
-                            funcName: "fluid.tests.textToSpeech.doAfterDelay",
-                            args: ["{tts}.pause", 200]
-                        },
-                        {
-                            listener: "fluid.tests.textToSpeech.testPause",
-                            args: ["{tts}"],
-                            changeEvent: "{tts}.applier.modelChanged",
-                            path: "paused"
-                        },
-                        // Test on resume issued after a short delay,
-                        {
-                            funcName: "fluid.tests.textToSpeech.doAfterDelay",
-                            args: ["{tts}.resume", 200]
-                        },
-                        {
                             listener: "fluid.tests.textToSpeech.testResume",
                             args: ["{tts}"],
                             changeEvent: "{tts}.applier.modelChanged",
@@ -198,12 +176,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }]
     });
 
-    fluid.tests.textToSpeech.doAfterDelay = function (delayedFunc, delay) {
-        setTimeout(function () {
-            delayedFunc();
-        }, delay);
-    };
-
     fluid.tests.textToSpeech.testInitialization = function (tts) {
         var that = tts;
         jqUnit.assertTrue("The Text to Speech component should have initialized", that);
@@ -218,9 +190,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertTrue("Should be speaking", that.model.speaking);
         jqUnit.assertFalse("Nothing should be pending", that.model.pending);
         jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
-        jqUnit.assertDeepEq("The queue of texts should be empty", [], that.queue.texts);
-        jqUnit.assertTrue("A currentUtterance is present in the queue", that.queue.currentUtterance);
-        jqUnit.assertTrue("The currentUtterance is a SpeechSynthesisUtterance object", "SpeechSynthesisUtterance", that.queue.currentUtterance.constructor.name);
+        jqUnit.assertDeepEq("The queue should be empty", [], that.queue);
+        // jqUnit.assertTrue("A currentUtterance is present in the queue", that.queue.currentUtterance);
+        // jqUnit.assertTrue("The currentUtterance is a SpeechSynthesisUtterance object", "SpeechSynthesisUtterance", that.queue.currentUtterance.constructor.name);
 
     };
 
@@ -230,8 +202,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertFalse("Should not be speaking", that.model.speaking);
         jqUnit.assertFalse("Nothing should be pending", that.model.pending);
         jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
-        jqUnit.assertDeepEq("The queue of texts should be empty", [], that.queue.texts);
-        jqUnit.assertFalse("No currentUtterance is present in the queue", that.queue.currentUtterance);
+        jqUnit.assertDeepEq("The queue should be empty", [], that.queue);
+        // jqUnit.assertFalse("No currentUtterance is present in the queue", that.queue.currentUtterance);
         that.cancel();
     };
 

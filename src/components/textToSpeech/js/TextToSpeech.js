@@ -76,13 +76,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             onSpeechQueued: null
         },
         members: {
-            queue: {
-                texts: []
-                // out-of-function-scope storage for the currently spoken utterance
-                // prevents issues with premature garbage collection in
-                // some browsers
-                // currentUtterance:
-            }
+            queue: []
         },
         // Model paths: speaking, pending, paused, utteranceOpts, pauseRequested, resumeRequested
         model: {
@@ -171,43 +165,51 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     // every "wait" MS
     fluid.textToSpeech.throttle = function (func, wait, options) {
         var timeout, context, args, result;
-            var previous = 0;
-            if (!options) options = {};
+        var previous = 0;
+        if (!options) {
+            options = {};
+        }
 
-            var later = function() {
-              previous = options.leading === false ? 0 : new Date().getTime();
-              timeout = null;
-              result = func.apply(context, args);
-              if (!timeout) context = args = null;
-            };
+        var later = function () {
+            previous = options.leading === false ? 0 : new Date().getTime();
+            timeout = null;
+            result = func.apply(context, args);
+            if (!timeout) {
+                context = args = null;
+            }
+        };
 
-            var throttled = function() {
-              var now = new Date().getTime();
-              if (!previous && options.leading === false) previous = now;
-              var remaining = wait - (now - previous);
-              context = this;
-              args = arguments;
-              if (remaining <= 0 || remaining > wait) {
+        var throttled = function () {
+            var now = new Date().getTime();
+            if (!previous && options.leading === false) {
+                previous = now;
+            }
+            var remaining = wait - (now - previous);
+            context = this;
+            args = arguments;
+            if (remaining <= 0 || remaining > wait) {
                 if (timeout) {
-                  clearTimeout(timeout);
-                  timeout = null;
+                    clearTimeout(timeout);
+                    timeout = null;
                 }
                 previous = now;
 
                 result = func.apply(context, args);
-                if (!timeout) context = args = null;
-              } else if (!timeout && options.trailing !== false) {
+                if (!timeout) {
+                    context = args = null;
+                }
+            } else if (!timeout && options.trailing !== false) {
                 timeout = setTimeout(later, remaining);
-              }
-              return result;
-            };
+            }
+            return result;
+        };
 
-            throttled.cancel = function() {
-              clearTimeout(timeout);
-              previous = 0;
-              timeout = context = args = null;
-            };
-            return throttled;
+        throttled.cancel = function () {
+            clearTimeout(timeout);
+            previous = 0;
+            timeout = context = args = null;
+        };
+        return throttled;
     };
 
     // Throttled version of deferred speech synthesis control
@@ -220,17 +222,17 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.textToSpeech.requestControl = function (that, control, change) {
         // If there's a control request (value change to true), clear and
         // execute it
-        if(change.value) {
+        if (change.value) {
             that.applier.change(change.path, false);
             fluid.textToSpeech.throttleControl(control);
         }
     };
 
     fluid.textToSpeech.handleStart = function (that) {
-        that.queue.texts.shift();
+        that.queue.shift();
         that.applier.change("speaking", true);
 
-        if (that.queue.texts.length) {
+        if (that.queue.length) {
             that.applier.change("pending", true);
         }
     };
@@ -242,11 +244,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             paused: false
         };
 
-        if (that.queue.currentUtterance) {
-            that.queue.currentUtterance = undefined;
-        }
-
-        if (!that.queue.texts.length) {
+        if (!that.queue.length) {
             var newModel = $.extend({}, that.model, resetValues);
             that.applier.change("", newModel);
         }
@@ -262,11 +260,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         };
 
         var toSpeak = new SpeechSynthesisUtterance(text);
-        // Store toSpeak additionally on the queue.currentUtterance member to help deal with the issue
-        // with premature garbage collection described at https://bugs.chromium.org/p/chromium/issues/detail?id=509488#c11
-        // this makes the speech synthesis behave much better in Safari in
-        // particular
-        that.queue.currentUtterance = toSpeak;
+
 
         var eventBinding = {
             onstart: that.handleStart,
@@ -277,13 +271,18 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         };
         $.extend(toSpeak, that.model.utteranceOpts, options, eventBinding);
 
-        that.queue.texts.push(text);
+        // Store toSpeak additionally on the queue to help deal
+        // with premature garbage collection described at https://bugs.chromium.org/p/chromium/issues/detail?id=509488#c11
+        // this makes the speech synthesis behave much better in Safari in
+        // particular
+        that.queue.push({text: text, utterance: toSpeak});
+
         that.events.onSpeechQueued.fire(text);
         fluid.textToSpeech.deferredSpeechSynthesisControl("speak", toSpeak);
     };
 
     fluid.textToSpeech.cancel = function (that) {
-        that.queue.texts = [];
+        that.queue = [];
         fluid.textToSpeech.deferredSpeechSynthesisControl("cancel");
     };
 
