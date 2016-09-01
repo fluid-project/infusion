@@ -37,8 +37,6 @@
         <script type="text/javascript" src="../../../src/components/overviewPanel/js/OverviewPanel.js"></script>
         <script type="text/javascript" src="../../shared/js/overviewWrapper.js"></script>
 
-        <script type="text/javascript" src="js/gridReordererDemo.js"></script>
-
     </head>
     <body>
         <div class="flc-overviewPanel fl-overviewPanel-container"></div>
@@ -65,7 +63,15 @@
             </div>
         </section>
         <script type="text/javascript">
-            demo.gridReorderer(".demoSelector-gridReorderer-alphabetGrid");
+            fluid.reorderGrid(".demoSelector-gridReorderer-alphabetGrid", {
+                styles: {
+                    dragging: "demo-gridReorderer-dragging",
+                    avatar: "demo-gridReorderer-avatar",
+                    selected: "demo-gridReorderer-selected",
+                    dropMarker: "demo-gridReorderer-dropMarker"
+                },
+                disableWrap: true
+            });
         </script>
     </body>
 </html>
