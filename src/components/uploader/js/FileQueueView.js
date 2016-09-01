@@ -394,7 +394,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
         strings: {
             progress: {
-                toUploadLabel: "To upload: %fileCount %fileLabel (%totalBytes)",
                 singleFile: "file",
                 pluralFiles: "files"
             },
