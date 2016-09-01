@@ -68,7 +68,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             {
                 name: "Start and Stop Events",
                 tests: [{
-                    expect: 10,
+                    expect: 13,
                     name: "Test Start and Stop Events",
                     sequence:
                     [{
@@ -190,9 +190,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertTrue("Should be speaking", that.model.speaking);
         jqUnit.assertFalse("Nothing should be pending", that.model.pending);
         jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
-        jqUnit.assertDeepEq("The queue should be empty", [], that.queue);
-        // jqUnit.assertTrue("A currentUtterance is present in the queue", that.queue.currentUtterance);
-        // jqUnit.assertTrue("The currentUtterance is a SpeechSynthesisUtterance object", "SpeechSynthesisUtterance", that.queue.currentUtterance.constructor.name);
+        jqUnit.assertEquals("The queue should contain one item", 1, that.queue.length);
+        jqUnit.assertTrue("A text is present in the queue's first item", that.queue[0].text);
+        jqUnit.assertTrue("An utterance is present in the queue's first item", that.queue[0].utterance);
+        jqUnit.assertTrue("The utterance is a SpeechSynthesisUtterance object", "SpeechSynthesisUtterance", that.queue[0].utterance.constructor.name);
 
     };
 

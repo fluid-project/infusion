@@ -129,8 +129,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 "method": "getVoices"
             },
             handleStart: {
-                funcName: "fluid.textToSpeech.handleStart",
-                args: ["{that}"]
+                changePath: "speaking",
+                value: true
             },
             // The handleEnd method is assumed to be triggered asynchronously
             // as it is processed/triggered by the mechanism voicing the utterance.
@@ -228,23 +228,19 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     };
 
-    fluid.textToSpeech.handleStart = function (that) {
-        that.queue.shift();
-        that.applier.change("speaking", true);
-
-        if (that.queue.length) {
-            that.applier.change("pending", true);
-        }
-    };
-
     fluid.textToSpeech.handleEnd = function (that) {
+
+        that.queue.shift();
+
         var resetValues = {
             speaking: false,
             pending: false,
             paused: false
         };
 
-        if (!that.queue.length) {
+        if (that.queue.length) {
+            that.applier.change("pending", true);
+        } else if (!that.queue.length) {
             var newModel = $.extend({}, that.model, resetValues);
             that.applier.change("", newModel);
         }
