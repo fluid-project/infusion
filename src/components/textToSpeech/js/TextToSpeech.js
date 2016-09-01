@@ -217,14 +217,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         that.events[speaking ? "onStart" : "onStop"].fire();
     };
 
-    fluid.textToSpeech.pauseResume = function (that, paused) {
-        // If we're paused, it's safe to clear resume commands
-        // If we're not paused, it's safe to clear pause commands
-        var boolPath = paused ? "resumeRequested" : "pauseRequested";
-        var control = paused ? "resume" : "pause";
-        // fluid.textToSpeech.clearControlRequest(that, boolPath, control);
-    };
-
     fluid.textToSpeech.requestControl = function (that, control, change) {
         // If there's a control request (value change to true), clear and
         // execute it
