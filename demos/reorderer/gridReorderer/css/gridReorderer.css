@@ -33,11 +33,6 @@ div.demo-gridReorderer-dragging,
 }
 
 .demo-gridReorderer-container div.demo-gridReorderer-dropMarker {
-    background-color : #008800;
-    padding          : 0 3px;
-    border-width     : 0;
-    margin           : 10px -3px;
-    list-style-type  : none;
-    overflow         : hidden;
+    outline: 3px solid #008800;
     width            : 0;
 }
