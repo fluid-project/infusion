@@ -32,8 +32,10 @@ var getFromExec = function (command, options) {
     try {
         result = execSync(command, {stdio: stdio });
     } catch (e) {
-        console.log("Error executing command: " + command);
-        console.log(e.stack);
+        if (options.verbose) {
+            console.log("Error executing command: " + command);
+            console.log(e.stack);
+        }
     }
     return result;
 };
