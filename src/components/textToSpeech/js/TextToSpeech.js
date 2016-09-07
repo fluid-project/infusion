@@ -41,19 +41,22 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * event within a timeout, this API's behaviour is to return a promise which rejects.
      *
      * @param delay {Number} A time in milliseconds to wait for the speechSynthesis to fire its onStart event
-     * by default it is 1000ms (1s). This is crux of the test, as it needs time to attempt to run the speechSynthesis.
+     * by default it is 5000ms (5s). This is crux of the test, as it needs time to attempt to run the speechSynthesis.
      * @return {fluid.promise} A promise which will resolve if the TTS is supported (the onstart event is fired within the delay period)
      * or be rejected otherwise.
      */
     fluid.textToSpeech.checkTTSSupport = function (delay) {
         var promise = fluid.promise();
         if (fluid.textToSpeech.isSupported()) {
-            var toSpeak = new SpeechSynthesisUtterance(" "); // short text to attempt to speak
+            // MS Edge speech synthesizer won't speak if the text string is blank,
+            // so this must contain actual text
+            var toSpeak = new SpeechSynthesisUtterance("short"); // short text to attempt to speak
             toSpeak.volume = 0; // mutes the Speech Synthesizer
+            // Same timeout as the timeout in the IoC testing framework
             var timeout = setTimeout(function () {
                 fluid.textToSpeech.deferredSpeechSynthesisControl("cancel");
                 promise.reject();
-            }, delay || 1000);
+            }, delay || 5000);
             toSpeak.onend = function () {
                 clearTimeout(timeout);
                 fluid.textToSpeech.deferredSpeechSynthesisControl("cancel");
