@@ -26,7 +26,8 @@ module.exports = function (grunt) {
         clean: {
             build: "build",
             products: "products",
-            stylus: "src/framework/preferences/css/*.css"
+            stylus: "src/framework/preferences/css/*.css",
+            ciArtifacts: ["*.tap"]
         },
         copy: {
             all: {
@@ -224,7 +225,8 @@ module.exports = function (grunt) {
             "uglify:" + target,
             "concat:" + target,
             "compress:" + target,
-            "clean:build"
+            "clean:build",
+            "clean:ciArtifacts"
         ];
         // remove the uglify task when creating a source build
         if (grunt.option("source")) {
