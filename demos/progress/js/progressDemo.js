@@ -1,6 +1,6 @@
 /*
 Copyright 2009 University of California, Berkeley
-Copyright 2010 OCAD University
+Copyright 2010-2016 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
