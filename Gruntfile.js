@@ -225,8 +225,7 @@ module.exports = function (grunt) {
             "uglify:" + target,
             "concat:" + target,
             "compress:" + target,
-            "clean:build",
-            "clean:ciArtifacts"
+            "clean:build"
         ];
         // remove the uglify task when creating a source build
         if (grunt.option("source")) {
