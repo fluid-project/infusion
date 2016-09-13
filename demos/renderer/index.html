@@ -34,60 +34,73 @@
 
     <body class="fl-focus">
         <div class="flc-overviewPanel fl-overviewPanel-container"></div>
-        <p class="info"></p>
 
-        <p class="render-button">
-            <input id="render" type="button" value="Render"/>
-        </p>
+        <main class="demo-banquet-form">
+            <p class="render-button">
+                <input id="render" type="button" value="Render"/>
+            </p>
 
-    <hr/>
-    <div class="demo-container row">
-        <div class="large-6 columns">
-            <p id="intro-paragraph">Template for the intro text</p>
+            <hr/>
+            <div class="demo-container row">
+                <div class="large-6 columns">
+                    <p id="intro-paragraph">
+                        <span class="intro">Template for the intro text</span>
+                    </p>
 
-            <div id="location-block" class="info-block">
-                <label for="location-list">label</label>
-                <select id="location-list" class="location-list">
-                    <option value="Location">Location</option>
-                </select>
-            </div>
+                    <div id="location-block" class="info-block">
+                        <label for="location-list">label</label>
+                        <select id="location-list" class="location-list">
+                            <option value="Location">Location</option>
+                        </select>
+                    </div>
 
-            <div id="wine-block" class="info-block">
-                <span id="wine-list-label">label</span>
-                <div class="wine" id="wine-list" aria-labelledby="wine-list-label">
-                    <input class="wine-button" type="radio" id="wine-butt" value="Wine"/>
-                    <label class="wine-name" for="wine-butt">Template for wine list</label>
+                    <div id="wine-block" class="info-block">
+                        <span id="wine-list-label">label</span>
+                        <div class="wine" id="wine-list" aria-labelledby="wine-list-label">
+                            <input class="wine-button" type="radio" id="wine-button" value="Wine"/>
+                            <label class="wine-name" for="wine-button">Template for wine list</label>
+                        </div>
+                    </div>
+
+                    <div id="food-block" class="info-block">
+                        <span id="canape-list-label">label</span>
+                        <table id="canape-list" aria-labelledby="canape-list-label">
+                            <tr>
+                                <th class="plate">header</th>
+                                <th class="price">header</th>
+                                <th class="include">header</th>
+                            </tr>
+                            <tr class="canape">
+                                <td><label class="canape-name" for="canape-button">name</label></td>
+                                <td class="canape-price">price</td>
+                                <td><input class="canape-button" type="checkbox" id="canape-button" value="Canape"/></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="large-6 columns">
+                    <p>Model:</p>
+                    <div>
+                        <pre id="autobound-model" class="model-dump">
+                        This is where the auto-bound model will be displayed.
+                        </pre>
+                    </div>
                 </div>
             </div>
-
-            <div id="food-block" class="info-block">
-                <span id="canape-list-label">label</span>
-                <table id="canape-list" aria-labelledby="canape-list-label">
-                    <tr>
-                        <th class="plate">header</th>
-                        <th class="price">header</th>
-                        <th class="include">header</th>
-                    </tr>
-                    <tr class="canape">
-                        <td><label class="canape-name" for="canape-butt">name</label></td>
-                        <td class="canape-price">price</td>
-                        <td><input class="canape-button" type="checkbox" id="canape-butt" value="Canape"/></td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        <div class="large-6 columns">
-            <p>Model:</p>
-            <div>
-                <pre id="autobound-model" class="model-dump">
-                This is where the auto-bound model will be displayed.
-                </pre>
-            </div>
-        </div>
-    </div>
+        </main>
 
         <script type="text/javascript">
-            demo.render();
+            demo.banquet.form(".demo-banquet-form", {
+                strings: demo.data.strings,
+                locations: demo.data.locations,
+                wineList: demo.data.wineList,
+                canapeList: demo.data.canapeList,
+                model: {
+                    location: demo.data.locations.choice,
+                    wine: demo.data.wineList.choice,
+                    canapes: demo.data.canapeList.choices
+                }
+            });
         </script>
     </body>
 </html>
