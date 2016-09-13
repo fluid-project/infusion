@@ -1566,7 +1566,7 @@
             }
         };
 
-        jqUnit.test("Renderer performance test - FLUID-3684", function () {
+        jqUnit.asyncTest("Renderer performance test - FLUID-3684", function () {
             jqUnit.expect(0);
             fluid.setLogging(true);
             var renderit = function (specs) {
@@ -1577,6 +1577,7 @@
                 fluid.log("Templates parsed - begin render");
                 fluid.renderer(templates, data.tree, data.renderOpts).renderTemplates();
                 fluid.log("Render complete");
+                jqUnit.start();
             };
             fluid.fetchResources(resourceSpec3, renderit);
         });
