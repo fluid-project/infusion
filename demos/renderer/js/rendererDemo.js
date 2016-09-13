@@ -18,7 +18,7 @@ var demo = demo || {};
     fluid.defaults("demo.banquet.intro", {
         gradeNames: ["fluid.rendererComponent"],
         selectors: {
-            intro: ".intro"
+            intro: ".demo-intro"
         },
         protoTree: {
             "intro": {messagekey: "intro"}
@@ -28,8 +28,8 @@ var demo = demo || {};
     fluid.defaults("demo.banquet.locations", {
         gradeNames: ["fluid.rendererComponent"],
         selectors: {
-            "location-label": "label",
-            "locations": ".location-list",
+            "location-label": ".demo-location-label",
+            "locations": ".demo-location-list",
         },
         model: {
             location: ""
@@ -47,10 +47,10 @@ var demo = demo || {};
     fluid.defaults("demo.banquet.wines", {
         gradeNames: ["fluid.rendererComponent"],
         selectors: {
-            "wine-label": "#wine-list-label",
-            "wine-row": ".wine",
-            "wine": ".wine-button",
-            "wine-name": ".wine-name"
+            "wine-label": ".demo-wine-list-label",
+            "wine-row": ".demo-wine-list",
+            "wine": ".demo-wine-selection",
+            "wine-name": ".demo-wine-name"
         },
         repeatingSelectors: ["wine-row"],
         model: {
@@ -76,14 +76,14 @@ var demo = demo || {};
     fluid.defaults("demo.banquet.canapes", {
         gradeNames: ["fluid.rendererComponent"],
         selectors: {
-            "canape-label": "#canape-list-label",
-            "canape-header": "th.plate",
-            "price-header": "th.price",
-            "choose-header": "th.include",
-            "canape-row": ".canape",
-            "canape": ".canape-button",
-            "canape-name": ".canape-name",
-            "canape-price": ".canape-price"
+            "canape-label": ".demo-canape-list-label",
+            "canape-header": ".demo-canape-plate-header",
+            "price-header": ".demo-canape-price-header",
+            "choose-header": ".demo-canape-include-header",
+            "canape-row": ".demo-canapes",
+            "canape": ".demo-canape-selection",
+            "canape-name": ".demo-canape-name",
+            "canape-price": ".demo-canape-price"
         },
         repeatingSelectors: ["canape-row"],
         model: {
@@ -136,12 +136,12 @@ var demo = demo || {};
     fluid.defaults("demo.banquet.form", {
         gradeNames: ["fluid.viewComponent"],
         selectors: {
-            "render": "#render",
-            "modelView": "#autobound-model",
-            "locations": "#location-block",
-            "wines": "#wine-block",
-            "canapes": "#food-block",
-            "intro": "#intro-paragraph"
+            "render": ".demo-banquet-form-renderButton",
+            "modelView": ".demo-banquet-form-modelView",
+            "locations": ".demo-location-block",
+            "wines": ".demo-wine-block",
+            "canapes": ".demo-canape-block",
+            "intro": ".demo-intro-block"
         },
         model: {
             location: "",
