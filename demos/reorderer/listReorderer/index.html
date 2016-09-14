@@ -35,8 +35,6 @@
 
         <script type="text/javascript" src="../../../src/components/overviewPanel/js/OverviewPanel.js"></script>
         <script type="text/javascript" src="../../shared/js/overviewWrapper.js"></script>
-
-        <script type="text/javascript" src="js/listReordererDemo.js"></script>
     </head>
 
     <body>
@@ -76,7 +74,17 @@
             </ol>
         </div>
         <script type="text/javascript">
-            demo.initListReorderer();
+            fluid.reorderList("#demo-selector-listReorderer", {
+                styles: {
+                    defaultStyle: "demo-listReorderer-movable-default",
+                    selected: "demo-listReorderer-movable-selected",
+                    dragging: "demo-listReorderer-movable-dragging",
+                    mouseDrag: "demo-listReorderer-movable-mousedrag",
+                    hover: "demo-listReorderer-movable-hover",
+                    dropMarker: "demo-listReorderer-dropMarker",
+                    avatar: "demo-listReorderer-avatar"
+                }
+            });
         </script>
     </body>
 </html>

@@ -440,7 +440,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      */
     fluid.prefs.compositePanel.hideInactive = function (that) {
         fluid.each(that.options.components, function (componentOpts, componentName) {
-            if(fluid.prefs.compositePanel.isPanel(componentOpts.type, componentOpts.options) && !fluid.prefs.compositePanel.isActivePanel(that[componentName])) {
+            if (fluid.prefs.compositePanel.isPanel(componentOpts.type, componentOpts.options) && !fluid.prefs.compositePanel.isActivePanel(that[componentName])) {
                 that.locate(componentName).hide();
             }
         });
@@ -810,7 +810,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
         },
         listeners: {
-            afterRender: "{that}.style"
+            "afterRender.style": "{that}.style"
         },
         selectors: {
             themeRow: ".flc-prefsEditor-themeRow",
@@ -984,7 +984,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.defaults("fluid.prefs.selectDecorator", {
         gradeNames: ["fluid.viewComponent"],
         listeners: {
-            onCreate: "fluid.prefs.selectDecorator.decorateOptions"
+            "onCreate.decorateOptions": "fluid.prefs.selectDecorator.decorateOptions"
         },
         styles: {
             preview: "fl-preview-theme"

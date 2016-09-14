@@ -234,7 +234,7 @@ var fluid = fluid || fluid_2_0_0;
 
     fluid.transforms.valueMapper = function (transformSpec, transformer) {
         if (!transformSpec.match) {
-            fluid.fail("valueMapper requires an array or hash of matches at path named \"matches\", supplied ", transformSpec);
+            fluid.fail("valueMapper requires an array or hash of matches at path named \"match\", supplied ", transformSpec);
         }
         var value = fluid.model.transform.getValue(transformSpec.defaultInputPath, undefined, transformer);
 

@@ -62,11 +62,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             iframe: ".flc-prefsEditor-iframe"
         },
         listeners: {
-            onReady: {
+            "onReady.bindEvents": {
                 listener: "fluid.prefs.separatedPanel.bindEvents",
                 args: ["{separatedPanel}.prefsEditor", "{iframeRenderer}.iframeEnhancer", "{separatedPanel}"]
             },
-            onCreate: {
+            "onCreate.hideReset": {
                 listener: "fluid.prefs.separatedPanel.hideReset",
                 args: ["{separatedPanel}"]
             }
@@ -150,13 +150,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                         updateEnhancerModel: "{that}.events.modelChanged"
                     },
                     listeners: {
-                        modelChanged: "{that}.save",
-                        onCreate: {
+                        "modelChanged.save": "{that}.save",
+                        "onCreate.bindReset": {
                             listener: "{separatedPanel}.bindReset",
                             args: ["{that}.reset"]
                         },
-                        afterReset: "{that}.applyChanges",
-                        onReady: {
+                        "afterReset.applyChanges": "{that}.applyChanges",
+                        "onReady.boilOnReady": {
                             listener: "{separatedPanel}.events.onReady",
                             args: "{separatedPanel}"
                         }

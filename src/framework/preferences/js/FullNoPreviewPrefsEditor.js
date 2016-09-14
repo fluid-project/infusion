@@ -26,12 +26,14 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 container: "{that}.container",
                 options: {
                     listeners: {
-                        afterReset: [{
+                        "afterReset.applyChanges": {
                             listener: "{that}.applyChanges"
-                        }, {
-                            listener: "{that}.save"
-                        }],
-                        onReady: {
+                        },
+                        "afterReset.save": {
+                            listener: "{that}.save",
+                            priority: "after:applyChanges"
+                        },
+                        "onReady.boilOnReady": {
                             listener: "{fullNoPreview}.events.onReady",
                             args: "{fullNoPreview}"
                         }

@@ -1,7 +1,7 @@
 /*
 Copyright 2008-2009 University of Cambridge
 Copyright 2008-2009 University of Toronto
-Copyright 2010-2014 OCAD University
+Copyright 2010-2016 OCAD University
 Copyright 2010 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -19,86 +19,94 @@ var demo = demo || {};
 (function ($, fluid) {
     "use strict";
 
-    /**
-     * Main demo initialization
-     */
-    demo.initPager = function () {
-        var resources = {
+    fluid.defaults("demo.pager", {
+        gradeNames: ["fluid.viewComponent"],
+        events: {
+            onDataReady: null
+        },
+        listeners: {
+            "onCreate.loadData": "{that}.loadData"
+        },
+        resources: {
             users: {
                 href: "data/pager.json",
                 options: {
                     dataType: "json"
                 }
             }
-        };
-
-        function initPager(resourceSpecs) {
-
-            var model = resourceSpecs.users.resourceText;
-            var columnDefs = [
-                {
-                    key: "user-link",
-                    valuebinding: "*.userDisplayName",
-                    sortable: true
-                },
-                {
-                    key: "user-email",
-                    valuebinding: "*.userEmail",
-                    sortable: true
-                },
-                {
-                    key: "user-role",
-                    valuebinding: "*.memberRole",
-                    sortable: true
-                },
-                {
-                    key: "user-comment",
-                    valuebinding: "*.userComment",
-                    sortable: false
-                }
-            ];
-
-            demo.pager = fluid.pagedTable(".demo-pager-container", {
-                dataModel: model,
-                model: {
-                    pageSize: 20
-                },
-                dataOffset: "membership_collection",
-                columnDefs: columnDefs,
-                annotateColumnRange: "user-link",
-                components: {
-                    bodyRenderer: {
-                        type: "fluid.table.selfRender",
-                        options: {
-                            selectors: {
-                                root: ".demo-pager-table-data",
-                                "user-link": ".demo-user-link",
-                                "user-comment": ".demo-user-comment",
-                                "user-role": ".demo-user-role",
-                                "user-email": ".demo-user-email"
-                            },
-                            rendererOptions: {debugMode: false} // Change this to true to diagnose rendering issues
-                        }
-                    }
-                },
-                decorators: {
-                    unsortableHeader: [
+        },
+        invokers: {
+            loadData: {
+                funcName: "fluid.fetchResources",
+                args: ["{that}.options.resources", "{that}.events.onDataReady.fire"]
+            }
+        },
+        components: {
+            // Configuration for the actual Paged Table component
+            pagedTable: {
+                type: "fluid.pagedTable",
+                container: "{that}.container",
+                createOnEvent: "onDataReady",
+                options: {
+                    dataModel: "{demo.pager}.options.resources.users.resourceText",
+                    model: {
+                        pageSize: 20
+                    },
+                    dataOffset: "membership_collection",
+                    columnDefs: [
                         {
-                            type: "attrs",
-                            attributes: {
-                                title: null
-                            }
+                            key: "user-link",
+                            valuebinding: "*.userDisplayName",
+                            sortable: true
                         },
                         {
-                            type: "addClass",
-                            classes: "fl-pager-disabled"
+                            key: "user-email",
+                            valuebinding: "*.userEmail",
+                            sortable: true
+                        },
+                        {
+                            key: "user-role",
+                            valuebinding: "*.memberRole",
+                            sortable: true
+                        },
+                        {
+                            key: "user-comment",
+                            valuebinding: "*.userComment",
+                            sortable: false
                         }
-                    ]
+                    ],
+                    annotateColumnRange: "user-link",
+                    components: {
+                        bodyRenderer: {
+                            type: "fluid.table.selfRender",
+                            options: {
+                                selectors: {
+                                    root: ".demo-pager-table-data",
+                                    "user-link": ".demo-user-link",
+                                    "user-comment": ".demo-user-comment",
+                                    "user-role": ".demo-user-role",
+                                    "user-email": ".demo-user-email"
+                                },
+                                rendererOptions: {debugMode: false} // Change this to true to diagnose rendering issues
+                            }
+                        }
+                    },
+                    decorators: {
+                        unsortableHeader: [
+                            {
+                                type: "attrs",
+                                attributes: {
+                                    title: null
+                                }
+                            },
+                            {
+                                type: "addClass",
+                                classes: "fl-pager-disabled"
+                            }
+                        ]
+                    }
                 }
-            });
+            }
         }
-
-        fluid.fetchResources(resources, initPager);
-
-    };
+    });
 })(jQuery, fluid);
