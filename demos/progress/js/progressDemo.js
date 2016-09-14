@@ -97,9 +97,19 @@ var demo = demo || {};
                 method: "text",
                 args: ["{that}.options.strings.confirmStatus"]
             },
-            "onCreate.setAria": {
-                funcName: "demo.shoppingDemo.setAriaAttr",
-                args: ["{that}.dom.liveRegion", "{that}.dom.submitButton", "{that}.containerID"]
+            "onCreate.setLiveRegionAria": {
+                "this": "{that}.dom.liveRegion",
+                method: "attr",
+                args: [{
+                    "aria-relevant": "additions text",
+                    "aria-atomic": "false",
+                    "role": "status"
+                }]
+            },
+            "onCreate.setAriaControls": {
+                "this": "{that}.dom.submitButton",
+                method: "attr",
+                args: ["aria-controls", "{that}.containerID"]
             },
             "onCreate.bindSubmitEvents": {
                 "this": "{that}.dom.submitButton",
@@ -155,16 +165,6 @@ var demo = demo || {};
             }
         }
     });
-
-    demo.shoppingDemo.setAriaAttr = function (liveRegion, submitButton, controlsID) {
-        // set the aria live region attributes
-        liveRegion.attr("aria-relevant", "additions text");
-        liveRegion.attr("aria-atomic", "false");
-        liveRegion.attr("role", "status");
-
-        // set default aria-controls to one of the container
-        submitButton.attr("aria-controls", controlsID);
-    };
 
     demo.shoppingDemo.verifyInventory = function (that) {
         var submitButton = that.locate("submitButton");
