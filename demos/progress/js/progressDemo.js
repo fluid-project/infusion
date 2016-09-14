@@ -25,7 +25,10 @@ var demo = demo || {};
         },
         model: {
             percent: 0,
-            steps: 100
+            // The number of recursive steps to use for the simulated progress
+            // note: because of some randomness inserted into the simulation
+            // for realism, the number of steps will actually be much less
+            steps: 200
         },
         invokers: {
             start: {
@@ -120,12 +123,13 @@ var demo = demo || {};
                 }
             }
         },
+        animationSpeed: 1000, // speed in milliseconds
         components: {
             progress: {
                 type: "fluid.progress",
                 container: "{that}.dom.progress",
                 options: {
-                    speed: 1000,
+                    speed: "{demo.shoppingDemo}.options.animationSpeed",
                     listeners: {
                         "afterProgressHidden.myProgressHide": "{shoppingDemo}.events.afterOrderSubmitted"
                     }
@@ -134,13 +138,10 @@ var demo = demo || {};
             timer: {
                 type: "demo.timer",
                 options: {
-                    model: {
-                        steps: 200
-                    },
                     listeners: {
                         "afterFinish.hideProgress": {
                             func: "{progress}.hide",
-                            args: [1000]
+                            args: ["{demo.shoppingDemo}.options.animationSpeed"]
                         }
                     },
                     modelListeners: {
