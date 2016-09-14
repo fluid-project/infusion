@@ -139,18 +139,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.uploader.renderUploadTotalMessage = function (that) {
-        // Preservered for backwards compatibility, should be refactored post v1.5
-        var numReadyFiles = that.queue.getReadyFiles().length;
-        var bytesReadyFiles = that.queue.sizeOfReadyFiles();
-        var fileLabelStr = fluid.uploader.fileOrFiles(that, numReadyFiles);
-
         var totalCount = that.queue.files.length;
         var noFilesMsg = that.options.strings.progress.noFiles;
-
         var totalStateStr = fluid.stringTemplate(that.options.strings.progress.toUploadLabel, {
-            fileCount: numReadyFiles,
-            fileLabel: fileLabelStr,
-            totalBytes: fluid.uploader.formatFileSize(bytesReadyFiles),
             uploadedCount: that.queue.getUploadedFiles().length,
             uploadedSize: fluid.uploader.formatFileSize(that.queue.sizeOfUploadedFiles()),
             totalCount: totalCount,
@@ -200,20 +191,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.uploader.updateTotalProgress = function (that) {
-        // Preservered for backwards compatibility, should be refactored post v1.5
         var batch = that.queue.currentBatch;
         var totalPercent = fluid.uploader.derivePercent(batch.totalBytesUploaded, batch.totalBytes);
-        var numFilesInBatch = batch.files.length;
-        var fileLabelStr = fluid.uploader.fileOrFiles(that, numFilesInBatch);
-
         var uploadingSize = batch.totalBytesUploaded + that.queue.sizeOfUploadedFiles();
 
         var totalProgressStr = fluid.stringTemplate(that.options.strings.progress.totalProgressLabel, {
-            curFileN: batch.fileIdx,
-            totalFilesN: numFilesInBatch,
-            fileLabel: fileLabelStr,
-            currBytes: fluid.uploader.formatFileSize(batch.totalBytesUploaded),
-            totalBytes: fluid.uploader.formatFileSize(batch.totalBytes),
             uploadedCount: that.queue.getUploadedFiles().length,
             uploadedSize: fluid.uploader.formatFileSize(uploadingSize),
             totalCount: that.queue.files.length,
@@ -224,10 +206,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.uploader.updateTotalAtCompletion = function (that) {
-        // Preservered for backwards compatibility, should be refactored post v1.5
         var numErroredFiles = that.queue.getErroredFiles().length;
-        var numTotalFiles = that.queue.files.length;
-        var fileLabelStr = fluid.uploader.fileOrFiles(that, numTotalFiles);
         var errorStr = "";
 
         // if there are errors then change the total progress bar
@@ -243,11 +222,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
 
         var totalProgressStr = fluid.stringTemplate(that.options.strings.progress.completedLabel, {
-            curFileN: that.queue.getUploadedFiles().length,
-            totalFilesN: numTotalFiles,
             errorString: errorStr,
-            fileLabel: fileLabelStr,
-            totalCurrBytes: fluid.uploader.formatFileSize(that.queue.sizeOfUploadedFiles()),
             uploadedCount: that.queue.getUploadedFiles().length,
             uploadedSize: fluid.uploader.formatFileSize(that.queue.sizeOfUploadedFiles()),
             totalCount: that.queue.files.length,

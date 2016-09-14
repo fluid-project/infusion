@@ -394,7 +394,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
         strings: {
             progress: {
-                toUploadLabel: "To upload: %fileCount %fileLabel (%totalBytes)",
                 singleFile: "file",
                 pluralFiles: "files"
             },
@@ -404,8 +403,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 remove: "Press Delete key to remove file"
             },
             errors: {
-                HTTP_ERROR: "File upload error: a network error occured or the file was rejected (reason unknown).",
-                IO_ERROR: "File upload error: a network error occured.",
+                HTTP_ERROR: "File upload error: a network error occurred or the file was rejected (reason unknown).",
+                IO_ERROR: "File upload error: a network error occurred.",
                 UPLOAD_LIMIT_EXCEEDED: "File upload error: you have uploaded as many files as you are allowed during this session",
                 UPLOAD_FAILED: "File upload error: the upload failed for an unknown reason.",
                 QUEUE_LIMIT_EXCEEDED: "You have as many files in the queue as can be added at one time. Removing files from the queue may allow you to add different files.",
