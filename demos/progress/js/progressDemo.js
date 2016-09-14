@@ -47,8 +47,8 @@ var demo = demo || {};
     /**
      * Used to simulate an application that would call Progress.
      * @param {Object} that             the component to source the model and applier from
-     * @param {Function} stepFunction   the stepFunction update the progress component
-     * @param {Function} finishFunction the finishFunction enables the submit button, hides the progress simulation and update the text
+     * @param {Function} stepFunction   the function to update the progress component
+     * @param {Function} finishFunction the function to enable the submit button, hide the progress simulation and update the text
      */
     demo.timer.simulateTime = function (that, stepFunction, finishFunction) {
         var steps = that.model.steps;
