@@ -103,7 +103,7 @@ var demo = demo || {};
                 "method": "on",
                 args: ["click", "{that}.events.onSubmit.fire"]
             },
-            "onSubmit.": {
+            "onSubmit.verifyInventory": {
                 funcName: "demo.shoppingDemo.verifyInventory",
                 args: ["{that}"]
             },
