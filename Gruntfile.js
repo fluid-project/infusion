@@ -54,7 +54,8 @@ module.exports = function (grunt) {
         clean: {
             build: "build",
             products: "products",
-            stylus: "src/framework/preferences/css/*.css"
+            stylus: "src/framework/preferences/css/*.css",
+            ciArtifacts: ["*.tap"]
         },
         copy: {
             all: {
