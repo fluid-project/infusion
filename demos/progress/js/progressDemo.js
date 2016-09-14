@@ -1,6 +1,6 @@
 /*
 Copyright 2009 University of California, Berkeley
-Copyright 2010 OCAD University
+Copyright 2010-2016 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -18,135 +18,170 @@ var demo = demo || {};
 (function ($, fluid) {
     "use strict";
 
+    fluid.defaults("demo.timer", {
+        gradeNames: ["fluid.modelComponent"],
+        events: {
+            afterFinish: null
+        },
+        model: {
+            percent: 0,
+            // The number of recursive steps to use for the simulated progress
+            // note: because of some randomness inserted into the simulation
+            // for realism, the number of steps will actually be much less
+            steps: 200
+        },
+        invokers: {
+            start: {
+                funcName: "demo.timer.simulateTime",
+                args: ["{that}", "{that}.events.onStep.fire", "{that}.events.afterFinish.fire"]
+            }
+        }
+    });
+
+    demo.timer.invokeAfterRandomDelay = function (fn) {
+        var delay = Math.floor(Math.random() * 1000 + 100);
+        setTimeout(fn, delay);
+    };
+
+    demo.timer.getSmallRandomNumber = function () {
+        return Math.floor(Math.random() * 10);
+    };
+
     /**
      * Used to simulate an application that would call Progress.
-     * @param {Integer} percent         the starting percentage when first called and then the current percentage when called recursively
-     * @param {Integer} steps           the number of recursive steps to use for the simulated progress
-     *                                  note: because of some randomness inserted into the simulation
-     *                                  for realism, the number of steps will actually be much less
-     * @param {Function} stepFunction   the stepFunction update the progress component
-     * @param {Function} finishFunction the finishFunction enables the submit button, hides the progress simulation and update the text
+     * @param {Object} that             the component to source the model and applier from
+     * @param {Function} stepFunction   the function to update the progress component
+     * @param {Function} finishFunction the function to enable the submit button, hide the progress simulation and update the text
      */
-    var simulateTime = function (percent, steps, stepFunction, finishFunction) {
-
-        var invokeAfterRandomDelay = function (fn) {
-            var delay = Math.floor(Math.random() * 1000 + 100);
-            setTimeout(fn, delay);
-        };
-
-        var aSmallRandomNumber = function () {
-            return Math.floor(Math.random() * 10);
-        };
-
+    demo.timer.simulateTime = function (that, stepFunction, finishFunction) {
+        var steps = that.model.steps;
+        var percent = that.model.percent;
         var increment = (steps) ? (100 / steps) : 10;
 
         if (percent < 100) {
             // bump up the current percentage
-            percent = Math.round(Math.min(percent + increment + aSmallRandomNumber(), 100));
-
-            // update the progress component
-            stepFunction(percent);
+            percent = Math.round(Math.min(percent + increment + demo.timer.getSmallRandomNumber(), 100));
+            that.applier.change("percent", percent);
 
             // after a random delay, do it all over again
-            invokeAfterRandomDelay(function () {
-                simulateTime(percent, steps, stepFunction, finishFunction);
+            demo.timer.invokeAfterRandomDelay(function () {
+                demo.timer.simulateTime(that, stepFunction, finishFunction);
             });
         } else {
             finishFunction();
         }
-
     };
 
-    var timeSimulator = function (percent, steps) {
-        var that = {};
-
-        that.start = function (stepFunction, finishFunction) {
-            // simulate time
-            simulateTime(percent, steps, stepFunction, finishFunction);
-        };
-
-        return that;
-    };
-
-    var setAriaAttr = function (liveRegion, submitButton) {
-        // set the aria live region attributes
-        liveRegion.attr("aria-relevant", "additions text");
-        liveRegion.attr("aria-atomic", "false");
-        liveRegion.attr("role", "status");
-
-        // set default aria-controls to one of the container
-        submitButton.attr("aria-controls", "demo-status-message");
-    };
-
-    demo.initShoppingDemo = function (percent, steps) {
-
-        var submitButton = $(".progress-demo-submit button");
-        var statusText = $(".demoSelector-progress-status-text");
-        var restartDemo = $(".demoSelector-progress-restart");
-        var liveRegion = $(".demoSelector-liveRegion");
-
-        var timer = timeSimulator(percent, steps);
-
-        // hide link to the demo page
-        restartDemo.hide();
-
-        // initialize text on element with the class status-text
-        statusText.text(demo.initShoppingDemo.strings.confirmStatus);
-
-        // set the live region attributes
-        setAriaAttr(liveRegion, submitButton);
-
-        var myProgressHide = function () {
-             // change text on element with class status-text after  progress simulation is complete
-            statusText.text(demo.initShoppingDemo.strings.orderSubmitted);
-            statusText.show();
-            // re-enable the link to restart the demo
-            restartDemo.show();
-        };
-
-        // here's where we create the progress component
-        var myProgress = fluid.progress("#demoSelector-progress-theComponent", {
-            speed: 1000,
-            listeners: {
-                afterProgressHidden: myProgressHide
+    fluid.defaults("demo.shoppingDemo", {
+        gradeNames: ["fluid.viewComponent"],
+        selectors: {
+            submitButton: ".progress-demo-submit button",
+            statusText: ".demoSelector-progress-status-text",
+            restartDemo: ".demoSelector-progress-restart",
+            liveRegion: ".demoSelector-liveRegion",
+            progress: ".demoSelector-progress-theComponent"
+        },
+        strings: {
+            confirmStatus: "Confirm and submit your order.",
+            orderSubmitted: "Order Submitted. Demo finished.",
+            percentCompleted: "%percent% Complete",
+            progressTitle: "Checking inventory, please wait."
+        },
+        events: {
+            afterOrderSubmitted: null,
+            onSubmit: null
+        },
+        listeners: {
+            "onCreate.setInitialStatus": {
+                "this": "{that}.dom.statusText",
+                method: "text",
+                args: ["{that}.options.strings.confirmStatus"]
+            },
+            "onCreate.setLiveRegionAria": {
+                "this": "{that}.dom.liveRegion",
+                method: "attr",
+                args: [{
+                    "aria-relevant": "additions text",
+                    "aria-atomic": "false",
+                    "role": "status"
+                }]
+            },
+            "onCreate.setAriaControls": {
+                "this": "{that}.dom.submitButton",
+                method: "attr",
+                args: ["aria-controls", "{that}.containerID"]
+            },
+            "onCreate.bindSubmitEvents": {
+                "this": "{that}.dom.submitButton",
+                "method": "on",
+                args: ["click", "{that}.events.onSubmit.fire"]
+            },
+            "onSubmit.verifyInventory": {
+                funcName: "demo.shoppingDemo.verifyInventory",
+                args: ["{that}"]
+            },
+            "afterOrderSubmitted.confirm": {
+                funcName: "demo.shoppingDemo.confirmOrder",
+                args: ["{that}.dom.statusText", "{that}.options.strings.orderSubmitted", "{that}.dom.restartDemo"]
             }
-        });
+        },
+        members: {
+            containerID: {
+                expander: {
+                    funcName: "fluid.allocateSimpleId",
+                    args: ["{that}.container"]
+                }
+            }
+        },
+        animationSpeed: 1000, // speed in milliseconds
+        components: {
+            progress: {
+                type: "fluid.progress",
+                container: "{that}.dom.progress",
+                options: {
+                    speed: "{demo.shoppingDemo}.options.animationSpeed",
+                    listeners: {
+                        "afterProgressHidden.myProgressHide": "{shoppingDemo}.events.afterOrderSubmitted"
+                    }
+                }
+            },
+            timer: {
+                type: "demo.timer",
+                options: {
+                    listeners: {
+                        "afterFinish.hideProgress": {
+                            func: "{progress}.hide",
+                            args: ["{demo.shoppingDemo}.options.animationSpeed"]
+                        }
+                    },
+                    modelListeners: {
+                        "percent": {
+                            func: "{progress}.update",
+                            args: ["{change}.value"],
+                            excludeSource: "init"
+                        }
+                    }
+                }
+            }
+        }
+    });
 
-        var myFinishFunction = function () {
-            myProgress.hide(1000);
-        };
+    demo.shoppingDemo.verifyInventory = function (that) {
+        var submitButton = that.locate("submitButton");
+        that.timer.start();
+        submitButton.blur();
 
-        // progress component specific
-        var stepFunction = function (percent) {
-            // create a label for the progress
-            var currentProgressLabel = fluid.stringTemplate(demo.initShoppingDemo.strings.percentCompleted, {
-                percent: percent
-            });
-            // tell progress to update
-            myProgress.update(percent, currentProgressLabel);
-        };
+        // disable the button
+        submitButton.prop("disabled", true);
 
-        submitButton.click(function () {
-            timer.start(stepFunction, myFinishFunction);
-            submitButton.blur();
-
-            // disable the button
-            submitButton.removeClass("enabled");
-            submitButton.addClass("disabled");
-            submitButton.prop("disabled", true);
-
-            // add area role to the progress title
-            statusText.text(demo.initShoppingDemo.strings.progressTitle).show();
-
-        });
+        // add area role to the progress title
+        that.locate("statusText").text(that.options.strings.progressTitle).show();
     };
 
-    // Strings which are used in the html to give user feedback
-    demo.initShoppingDemo.strings = {
-        confirmStatus: "Confirm and submit your order.",
-        orderSubmitted: "Order Submitted. Demo finished.",
-        percentCompleted: "%percent% Complete",
-        progressTitle: "Checking inventory, please wait."
+    demo.shoppingDemo.confirmOrder = function (statusElm, confirmation, restartDemo) {
+        statusElm.text(confirmation);
+        statusElm.show();
+        restartDemo.show();
     };
 
 })(jQuery, fluid);
