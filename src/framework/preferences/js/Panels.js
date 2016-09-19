@@ -150,8 +150,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         // in order to reset the dom binder when panels are in an iframe.
         // It can be be eliminated once we have the new renderer.
         var userJQuery = that.container.constructor;
-        var oldContainer = that.container;
-        that.container = userJQuery(that.container.selector, oldContainer[0].ownerDocument);
+        var context = that.container[0].ownerDocument;
+        var selector = that.container.selector;
+        that.container = userJQuery(selector, context);
+        that.container.selector = selector;
+        that.container.context = context;
         if (that.container.length === 0) {
             fluid.fail("resetDomBinder got no elements in DOM for container searching for selector " + that.container.selector);
         }

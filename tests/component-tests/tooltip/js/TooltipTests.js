@@ -212,7 +212,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.tooltip.FLUID5846.setupIframe = function (that, iframeSrc, iframe) {
-        $(iframe).load(function () {
+        $(iframe).on("load", function () {
             // DO NOT MOVE this property access outside this function!
             var dokkument = iframe.contentDocument;
             var iframeWindow = dokkument.defaultView;

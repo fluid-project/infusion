@@ -99,6 +99,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * @return a single-element jQuery of container
      */
     fluid.container = function (containerSpec, fallible, userJQuery) {
+        var selector = fluid.get(containerSpec, "selector") || containerSpec;
         if (userJQuery) {
             containerSpec = fluid.unwrap(containerSpec);
         }
@@ -118,6 +119,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         if (!fluid.isDOMNode(container[0])) {
             fluid.fail("fluid.container was supplied a non-jQueryable element");
         }
+
+        container.selector = selector;
+        container.context = container.context || containerSpec.ownerDocument || document;
 
         return container;
     };
