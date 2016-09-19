@@ -645,14 +645,14 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         fluid.each(that.options.exclusions, function (exclusion) {
             exclusion = $(exclusion);
             fluid.each(exclusion, function (excludeEl) {
-                $(excludeEl).bind("focusin", that.canceller).
-                    bind("fluid-focus", that.canceller).
+                $(excludeEl).on("focusin", that.canceller).
+                    on("fluid-focus", that.canceller).
                     click(that.canceller).mousedown(that.canceller);
     // Mousedown is added for FLUID-4212, as a result of Chrome bug 6759, 14204
             });
         });
         if (!that.options.cancelByDefault) {
-            $(control).bind("focusout", function (event) {
+            $(control).on("focusout", function (event) {
                 fluid.log("Starting blur timer for element " + fluid.dumpEl(event.target));
                 var now = fluid.now();
                 fluid.log("back delay: " + (now - that.lastCancel));

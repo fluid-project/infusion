@@ -250,7 +250,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             },
             "onCreate.bindSlideEvt": {
                 "this": "{that}.slider",
-                "method": "bind",
+                "method": "on",
                 "args": ["slide", "{that}.setModel"]
             }
         },
