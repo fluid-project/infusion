@@ -103,8 +103,8 @@ categorized by license:
 ### MIT License ###
 * [Foundation v5.4.5](http://foundation.zurb.com/index.html)
 * [HTML5 Boilerplate v4.3](http://html5boilerplate.com/)
-* [jQuery javascript library v1.11.0](http://jquery.com/)
-* [jQuery UI button, dialog, draggable, mouse, position, resizable, slider, tabs, and tooltip javascript widgets v1.10.4](http://ui.jquery.com/)
+* [jQuery v3.1.0](http://jquery.com/)
+* [jQuery UI (Core; Interactions: draggable, resizable; Widgets: button, checkboxradio, controlgroup, dialog, mouse, slider, tabs, and tooltip) v1.12.1](http://ui.jquery.com/)
 * [jQuery QUnit v1.12.0](http://qunitjs.com)
 * [jQuery QUnit Composite v1.0.1](https://github.com/jquery/qunit-composite)
 * [jQuery Mockjax v1.5.3](https://github.com/appendto/jquery-mockjax)
