@@ -1676,7 +1676,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
         return function invokeInvoker() {
             if (fluid.defeatLogging === false) {
-                fluid.pushActivity("invokeInvoker", "invoking invoker with name %name and record %record from component %that", {name: name, record: invokerec, that: that});
+                fluid.pushActivity("invokeInvoker", "invoking invoker with name %name and record %record from path %path holding component %that",
+                    {name: name, record: invokerec, path: fluid.pathForComponent(that).join("."), that: that});
             }
             var togo, finalArgs;
             if (that.lifecycleStatus === "destroyed") {
