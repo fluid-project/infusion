@@ -1757,7 +1757,7 @@ var fluid = fluid || fluid_2_0_0;
                 lastTick = Math.max(lastTick, gradeTickStore[searchGrades[i]] || 0);
             }
             if (lastTick > mergedDefaults.lastTick) {
-                fluid.log("Clearing cache for component " + defaultName + " with gradeNames ", searchGrades);
+                fluid.log(fluid.logLevel.TRACE, "Clearing cache for component " + defaultName + " with gradeNames ", searchGrades);
                 mergedDefaults = null;
             }
         }

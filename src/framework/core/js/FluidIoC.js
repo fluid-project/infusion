@@ -820,6 +820,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         return togo.join("\n");
     };
 
+    fluid.dumpComponentPath = function (that) {
+        var path = fluid.pathForComponent(that);
+        return path ? fluid.pathUtil.composeSegments(path) : "** no path registered for component **";
+    };
+
     fluid.resolveContext = function (context, that, fast) {
         if (context === "that") {
             return that;
@@ -854,7 +859,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.triggerMismatchedPathError = function (parsed, parentThat) {
         var ref = fluid.renderContextReference(parsed);
         fluid.fail("Failed to resolve reference " + ref + " - could not match context with name " +
-            parsed.context + " from component " + fluid.dumpThat(parentThat) + " at path " + fluid.pathForComponent(parentThat).join(".") + " component: " , parentThat);
+            parsed.context + " from component " + fluid.dumpThat(parentThat) + " at path " + fluid.dumpComponentPath(parentThat) + " component: " , parentThat);
     };
 
     fluid.makeStackFetcher = function (parentThat, localRecord, fast) {
@@ -1446,11 +1451,16 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     /** BEGIN NEXUS METHODS **/
 
+    /** Given a component reference, returns the path of that component within its component tree
+     * @param component {Component} A reference to a component
+     * @param instantiator {Instantiator} (optional) An instantiator to use for the lookup
+     * @return {Array of String} An array of path segments of the component within its tree, or `null` if the reference does not hold a live component
+     */
     fluid.pathForComponent = function (component, instantiator) {
-        instantiator = instantiator || fluid.getInstantiator(component);
+        instantiator = instantiator || fluid.getInstantiator(component) || fluid.globalInstantiator;
         var shadow = instantiator.idToShadow[component.id];
         if (!shadow) {
-            fluid.fail("Cannot get path for ", component, " which is not a component");
+            return null;
         }
         return instantiator.parseEL(shadow.path);
     };
@@ -1677,7 +1687,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         return function invokeInvoker() {
             if (fluid.defeatLogging === false) {
                 fluid.pushActivity("invokeInvoker", "invoking invoker with name %name and record %record from path %path holding component %that",
-                    {name: name, record: invokerec, path: fluid.pathForComponent(that).join("."), that: that});
+                    {name: name, record: invokerec, path: fluid.dumpComponentPath(that), that: that});
             }
             var togo, finalArgs;
             if (that.lifecycleStatus === "destroyed") {
