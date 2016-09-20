@@ -107,7 +107,7 @@ categorized by license:
 * [jQuery UI (Core; Interactions: draggable, resizable; Widgets: button, checkboxradio, controlgroup, dialog, mouse, slider, tabs, and tooltip) v1.12.1](http://ui.jquery.com/)
 * [jQuery QUnit v1.12.0](http://qunitjs.com)
 * [jQuery QUnit Composite v1.0.1](https://github.com/jquery/qunit-composite)
-* [jQuery Mockjax v1.5.3](https://github.com/appendto/jquery-mockjax)
+* [jQuery Mockjax v2.2.1](https://github.com/jakerella/jquery-mockjax)
 * [jQuery scrollTo v1.4.2](http://flesler.blogspot.com/2007/10/jqueryscrollto.html)
 * [jQuery Touch Punch v0.2.2](http://touchpunch.furf.com/)
 * [jquery.simulate](https://github.com/eduardolundgren/jquery-simulate)
