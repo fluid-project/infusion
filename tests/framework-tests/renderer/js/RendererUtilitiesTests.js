@@ -1493,7 +1493,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
             tryLoad();
             if (!that.jQuery) {
-                that.iframe.load(tryLoad);
+                that.iframe.on("load", tryLoad);
             }
         };
 
