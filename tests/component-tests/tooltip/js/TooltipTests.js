@@ -43,7 +43,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 contentToNode(tooltip, key);
             }
         });
-        var actuallyVisible = $("[id^=ui-tooltip]").filter(":visible");
+        var actuallyVisible = $(".ui-tooltip").filter(":visible");
         jqUnit.assertEquals("Actually visible tooltips in the document", expectedKeys.length, actuallyVisible.length);
     };
 
@@ -327,7 +327,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             tt.open();
             var uiTTOptions = $(".testTooltip").tooltip("option");
 
-            var ttELM = $("[id^=ui-tooltip]");
+            var ttELM = $(".ui-tooltip");
 
             jqUnit.assertEquals("The \"content\" option is set correctly", testOptions.content(), ttELM.text());
             jqUnit.assertEquals("The \"items\" option is set correctly", testOptions.items, uiTTOptions.items);
@@ -344,7 +344,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
             tt.open();
-            var tooltip = $("[id^=ui-tooltip]");
+            var tooltip = $(".ui-tooltip");
 
             jqUnit.assertTrue("The css class is applied to the tooltip element", tooltip.hasClass(style));
             tt.destroy();
@@ -352,7 +352,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.test("Tooltip element tests", function () {
             var tt = fluid.tooltip(".testTooltip");
-            var ttELM = $("[id^=ui-tooltip]");
+            var ttELM = $(".ui-tooltip");
             var newContent = "New Content";
 
             //jQuery UI no longer exposes the implementing markup programmatically
@@ -370,11 +370,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 duration: 0,
                 listeners: {
                     afterOpen: function () {
-                        jqUnit.assertTrue("The tooltip should be visible", $("[id^=ui-tooltip]").is(":visible"));
+                        jqUnit.assertTrue("The tooltip should be visible", $(".ui-tooltip").is(":visible"));
                         tt.close();
                     },
                     afterClose: function () {
-                        jqUnit.assertFalse("The tooltip should not be visible", $("[id^=ui-tooltip]").is(":visible"));
+                        jqUnit.assertFalse("The tooltip should not be visible", $(".ui-tooltip").is(":visible"));
                         jqUnit.start();
                     }
                 }
@@ -387,14 +387,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.test("Tooltip destroy tests", function () {
             var tt = fluid.tooltip(".testTooltip", {content: "Tooltip"});
             tt.open();
-            jqUnit.assertEquals("There should be a tooltip element present", 1, $("[id^=ui-tooltip]").length);
+            jqUnit.assertEquals("There should be a tooltip element present", 1, $(".ui-tooltip").length);
             tt.destroy();
-            jqUnit.assertEquals("There should no longer be a tooltip element", 0, $("[id^=ui-tooltip]").length);
+            jqUnit.assertEquals("There should no longer be a tooltip element", 0, $(".ui-tooltip").length);
         });
 
         var testThatTooltipContentChanges = function (tt, update, expected1, expected2) {
             jqUnit.expect(3);
-            var tipEl = $("[id^=ui-tooltip]");
+            var tipEl = $(".ui-tooltip");
             jqUnit.assertTrue("The tooltip should be visible", tipEl.is(":visible"));
             jqUnit.assertEquals("Initially, the tooltip should contain first text", expected1, tipEl.text());
             tt.updateContent(update);
