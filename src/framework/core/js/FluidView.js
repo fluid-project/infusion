@@ -99,7 +99,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * @return a single-element jQuery of container
      */
     fluid.container = function (containerSpec, fallible, userJQuery) {
-        var selector = fluid.get(containerSpec, "selector") || containerSpec;
+        var selector = containerSpec.selector || containerSpec;
         if (userJQuery) {
             containerSpec = fluid.unwrap(containerSpec);
         }
@@ -120,6 +120,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             fluid.fail("fluid.container was supplied a non-jQueryable element");
         }
 
+        // To address FLUID-5966, manually adding back the selector and context properties that were removed from jQuery v3.0.
+        // ( see: https://jquery.com/upgrade-guide/3.0/#breaking-change-deprecated-context-and-selector-properties-removed )
+        // In most cases the "selector" property will already be restored through the DOM binder;
+        // however, when a selector or pure jQuery element is supplied directly as a components container, we need to add them.
         container.selector = selector;
         container.context = container.context || containerSpec.ownerDocument || document;
 

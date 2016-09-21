@@ -153,6 +153,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var context = that.container[0].ownerDocument;
         var selector = that.container.selector;
         that.container = userJQuery(selector, context);
+        // To address FLUID-5966, manually adding back the selector and context properties that were removed from jQuery v3.0.
+        // ( see: https://jquery.com/upgrade-guide/3.0/#breaking-change-deprecated-context-and-selector-properties-removed )
+        // In most cases the "selector" property will already be restored through the DOM binder or fluid.container.
+        // However, in this case we are manually recreating the container to ensure that it is referencing an element currently added
+        // to the correct Document ( e.g. iframe ) (also see: FLUID-4536). This manual recreation or the container requires us to
+        // manually add back the selector and context from the original container.
         that.container.selector = selector;
         that.container.context = context;
         if (that.container.length === 0) {
