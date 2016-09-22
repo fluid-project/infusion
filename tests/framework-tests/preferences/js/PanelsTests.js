@@ -477,14 +477,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         selectors: {
             textSize: ".flc-prefsEditor-min-val",
             label: ".flc-prefsEditor-min-val-label",
-            smallIcon: ".flc-prefsEditor-min-val-smallIcon",
-            largeIcon: ".flc-prefsEditor-min-val-largeIcon",
             multiplier: ".flc-prefsEditor-multiplier"
         },
         protoTree: {
             label: {messagekey: "textSizeLabel"},
-            smallIcon: {messagekey: "textSizeSmallIcon"},
-            largeIcon: {messagekey: "textSizeLargeIcon"},
             multiplier: {messagekey: "multiplier"},
             textSize: {
                 decorators: {
@@ -790,8 +786,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         selectors: {
             textSize: ".flc-prefsEditor-min-val",
             label: ".flc-prefsEditor-min-val-label",
-            smallIcon: ".flc-prefsEditor-min-val-smallIcon",
-            largeIcon: ".flc-prefsEditor-min-val-largeIcon",
             multiplier: ".flc-prefsEditor-multiplier"
         },
         selectorsToIgnore: ["textSize"],
@@ -815,8 +809,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         protoTree: {
             label: {messagekey: "textSizeLabel"},
-            smallIcon: {messagekey: "textSizeSmallIcon"},
-            largeIcon: {messagekey: "textSizeLargeIcon"},
             multiplier: {messagekey: "multiplier"}
         }
     });
@@ -826,8 +818,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         selectors: {
             textSize: ".flc-prefsEditor-min-val",
             label: ".flc-prefsEditor-min-val-label",
-            smallIcon: ".flc-prefsEditor-min-val-smallIcon",
-            largeIcon: ".flc-prefsEditor-min-val-largeIcon",
             multiplier: ".flc-prefsEditor-multiplier"
         },
         selectorsToIgnore: ["textSize"],
@@ -851,8 +841,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         protoTree: {
             label: {messagekey: "textSizeLabel"},
-            smallIcon: {messagekey: "textSizeSmallIcon"},
-            largeIcon: {messagekey: "textSizeLargeIcon"},
             multiplier: {messagekey: "multiplier"}
         }
     });
@@ -1130,11 +1118,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         classnameMap: {
             "theme": {
                 "default": "fl-prefsEditor-default-theme",
-                "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
-                "wb": "fl-theme-prefsEditor-wb fl-theme-wb",
-                "by": "fl-theme-prefsEditor-by fl-theme-by",
-                "yb": "fl-theme-prefsEditor-yb fl-theme-yb",
-                "lgdg": "fl-theme-prefsEditor-lgdg fl-theme-lgdg"
+                "bw": "fl-theme-bw",
+                "wb": "fl-theme-wb",
+                "by": "fl-theme-by",
+                "yb": "fl-theme-yb",
+                "lgdg": "fl-theme-lgdg"
             }
         }
     });
@@ -1381,8 +1369,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         messageBase: {
             "lineSpaceLabel": "Line Spacing",
-            "lineSpaceNarrowIcon": "icon of 3 horizontal lines with narrow spacing",
-            "lineSpaceWideIcon": "icon of 3 horizontal lines with wide spacing",
             "multiplier": "times",
             "lineSpaceDescr": "Adjust the spacing between lines of text"
         }
@@ -1727,7 +1713,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         resources: {
             template: {
-                resourceText: "<h2><span class=\"fl-icon-links\"></span><span class=\"flc-prefsEditor-linksControls-label heading-text\"></span></h2><p class=\"flc-prefsEditor-emphasizeLinks-descr\"></p><ul class=\"fl-inputs fl-links-buttons-options\"><li class=\"flc-prefsEditor-emphasizeLinks\"></li><li class=\"flc-prefsEditor-inputsLarger\"></li></ul>"
+                resourceText: "<h2><span class=\"fl-icon-links\"></span><span class=\"flc-prefsEditor-linksControls-label fl-heading-text\"></span></h2><ul class=\"fl-inputs fl-links-buttons-options\"><li class=\"flc-prefsEditor-emphasizeLinks\"></li><li class=\"flc-prefsEditor-inputsLarger\"></li></ul>"
             },
             emphasizeLinks: {
                 resourceText: "<input type=\"checkbox\" id=\"links-choice\" class=\"flc-prefsEditor-links fl-force-left\" /><label class=\"flc-prefsEditor-links-choice-label\" for=\"links-choice\"></label>"

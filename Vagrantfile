@@ -24,7 +24,7 @@ ram = ENV["VM_RAM"] || 2048
 
 Vagrant.configure(2) do |config|
 
-  config.vm.box = "inclusivedesign/fedora23"
+  config.vm.box = "inclusivedesign/fedora24"
 
   # Your working directory will be synced to /home/vagrant/sync in the VM.
   config.vm.synced_folder ".", "#{app_directory}"
@@ -47,8 +47,8 @@ Vagrant.configure(2) do |config|
   config.vm.provider :virtualbox do |vm|
     vm.customize ["modifyvm", :id, "--memory", ram]
     vm.customize ["modifyvm", :id, "--cpus", cpus]
-    vm.customize ["modifyvm", :id, "--vram", "128"]
-    vm.customize ["modifyvm", :id, "--accelerate3d", "on"]
+    vm.customize ["modifyvm", :id, "--vram", "256"]
+    vm.customize ["modifyvm", :id, "--accelerate3d", "off"]
     vm.customize ["modifyvm", :id, "--audio", "null", "--audiocontroller", "ac97"]
     vm.customize ["modifyvm", :id, "--ioapic", "on"]
     vm.customize ["setextradata", "global", "GUI/SuppressMessages", "all"]

@@ -4,3 +4,4 @@
 /src/framework/preferences/css/*.css
 /.bundle/
 /.vagrant/
+report.tap

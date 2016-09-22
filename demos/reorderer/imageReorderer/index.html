@@ -40,8 +40,6 @@
 
         <script type="text/javascript" src="../../../src/components/overviewPanel/js/OverviewPanel.js"></script>
         <script type="text/javascript" src="../../shared/js/overviewWrapper.js"></script>
-
-        <script type="text/javascript" src="js/imageReordererDemo.js"></script>
     </head>
 
   <body class="demo-imageReorderer-container">
@@ -93,7 +91,15 @@
             </form>
 
             <script type="text/javascript">
-                demo.formBasedImageReorderer();
+                fluid.reorderImages(".flc-imageReorderer", {
+                    selectors: {
+                        movables: ".flc-imageReorderer-item"
+                    },
+                    disableWrap: true,
+                    listeners: {
+                        "afterMove.postModel": "fluid.identity" // disable the default post action
+                    }
+                });
             </script>
          </div>
      </section>

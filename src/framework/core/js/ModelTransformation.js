@@ -428,15 +428,6 @@ var fluid = fluid || fluid_2_0_0;
         return { defaults: defaults, typeName: typeName};
     };
 
-    // A utility which is helpful in computing inverses involving compound values.
-    // For example, with the valueMapper, compound input values are accepted as literals implicitly,
-    // whereas as output values they must be escaped. This utility escapes a value if it is not primitive.
-    fluid.model.transform.literaliseValue = function (value) {
-        return fluid.isPrimitive(value) ? value : {
-            literalValue: value
-        };
-    };
-
     // unsupported, NON-API function
     fluid.model.transform.processRule = function (rule, transformer) {
         if (typeof(rule) === "string") {
@@ -474,7 +465,7 @@ var fluid = fluid || fluid_2_0_0;
             if (key !== "transform") {
                 transformer.outputPrefixOp.push(key);
                 var togo = transformer.expand(value, transformer);
-                // Value expanders and arrays as rules implicitly outputs, unless they have nothing (undefined) to output
+                // Value expanders and arrays as rules implicitly output, unless they have nothing (undefined) to output
                 if (togo !== undefined) {
                     fluid.model.transform.setValue(null, togo, transformer);
                     // ensure that expanders further up does not try to output this value as well.

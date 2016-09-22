@@ -29,9 +29,6 @@
         <script type="text/javascript" src="../../src/components/overviewPanel/js/OverviewPanel.js"></script>
         <script type="text/javascript" src="../shared/js/overviewWrapper.js"></script>
 
-        <!-- The Table of Contents demo -->
-        <script type="text/javascript" src="js/tableOfContentsDemo.js"></script>
-
     </head>
     <body>
         <div class="flc-overviewPanel fl-overviewPanel-container"></div>
@@ -121,7 +118,23 @@
         </main>
 
         <script type="text/javascript">
-            fluid.demo.initTableOfContents();
+            fluid.tableOfContents("body", {
+                ignoreForToC: {
+                    trees: ".demo-toc-trees"
+                },
+                distributeOptions: {
+                    record: {
+                        resources: {
+                            template: {
+                                forceCache: true,
+                                // Path to Table of Contents template
+                                url: "../../src/components/tableOfContents/html/TableOfContents.html"
+                            }
+                        }
+                    },
+                    target: "{that fluid.tableOfContents.levels}.options"
+                }
+            });
         </script>
     </body>
 </html>
