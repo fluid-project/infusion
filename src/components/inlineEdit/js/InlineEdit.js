@@ -25,36 +25,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         control.dispatchEvent(kE);
     };
 
-    /** Set the caret position to the end of a text field's value, also taking care
-     * to scroll the field so that this position is visible.
-     * @param {DOM node} control The control to be scrolled (input, or possibly textarea)
-     * @param value The current value of the control
-     */
-    fluid.setCaretToEnd = function (control, value) {
-        var pos = value ? value.length : 0;
-
-        try {
-            control.focus();
-        // see http://www.quirksmode.org/dom/range_intro.html - in Opera, must detect setSelectionRange first,
-        // since its support for Microsoft TextRange is buggy
-            if (control.setSelectionRange) {
-
-                control.setSelectionRange(pos, pos);
-                if ($.browser.mozilla && pos > 0) {
-                  // ludicrous fix for Firefox failure to scroll to selection position, inspired by
-                  // http://bytes.com/forum/thread496726.html
-                    fluid.inlineEdit.sendKey(control, "keypress", 92, 92); // type in a junk character
-                    fluid.inlineEdit.sendKey(control, "keydown", 8, 0); // delete key must be dispatched exactly like this
-                    fluid.inlineEdit.sendKey(control, "keypress", 8, 0);
-                }
-            } else if (control.createTextRange) {
-                var range = control.createTextRange();
-                range.move("character", pos);
-                range.select();
-            }
-        } catch (e) {}
-    };
-
     fluid.inlineEdit.switchToViewMode = function (that) {
         that.editContainer.hide();
         that.displayModeRenderer.show();
@@ -178,7 +148,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         // Work around for FLUID-726
         // Without 'setTimeout' the finish handler gets called with the event and the edit field is inactivated.
         setTimeout(function () {
-            fluid.setCaretToEnd(that.editField[0], that.editView.value());
+            that.editField.focus();
             if (that.options.selectOnEdit) {
                 that.editField[0].select();
             }

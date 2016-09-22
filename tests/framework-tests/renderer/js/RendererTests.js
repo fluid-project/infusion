@@ -2,6 +2,7 @@
  Copyright 2008-2010 University of Cambridge
  Copyright 2008-2009 University of Toronto
  Copyright 2010-2011 Lucendo Development Ltd.
+ Copyright 2016 OCAD University
 
  Licensed under the Educational Community License (ECL), Version 2.0 or the New
  BSD license. You may not use this file except in compliance with one these
@@ -1566,7 +1567,7 @@
             }
         };
 
-        jqUnit.test("Renderer performance test - FLUID-3684", function () {
+        jqUnit.asyncTest("Renderer performance test - FLUID-3684", function () {
             jqUnit.expect(0);
             fluid.setLogging(true);
             var renderit = function (specs) {
@@ -1577,6 +1578,7 @@
                 fluid.log("Templates parsed - begin render");
                 fluid.renderer(templates, data.tree, data.renderOpts).renderTemplates();
                 fluid.log("Render complete");
+                jqUnit.start();
             };
             fluid.fetchResources(resourceSpec3, renderit);
         });

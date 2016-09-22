@@ -41,8 +41,6 @@
         <script type="text/javascript" src="../../../src/components/overviewPanel/js/OverviewPanel.js"></script>
         <script type="text/javascript" src="../../shared/js/overviewWrapper.js"></script>
 
-        <script type="text/javascript" src="js/layoutReordererDemo.js"></script>
-
     </head>
     <body>
         <div class="flc-overviewPanel fl-overviewPanel-container"></div>
@@ -145,7 +143,21 @@
             </div>
         </div>
         <script type="text/javascript">
-            demo.initlayoutReorderer();
+            fluid.reorderLayout("#demo-layoutReorderer", {
+                selectors: {
+                    lockedModules: ".demoSelector-layoutReorderer-locked",
+                    grabHandle: ".demoSelector-layoutReorderer"
+                },
+                styles: {
+                    defaultStyle: "demo-layoutReorderer-movable-default",
+                    selected: "demo-layoutReorderer-movable-selected",
+                    dragging: "demo-layoutReorderer-movable-dragging",
+                    mouseDrag: "demo-layoutReorderer-movable-mousedrag",
+                    dropMarker: "demo-layoutReorderer-dropMarker",
+                    avatar: "demo-layoutReorderer-avatar"
+                },
+                disableWrap: true
+            });
         </script>
     </body>
 </html>

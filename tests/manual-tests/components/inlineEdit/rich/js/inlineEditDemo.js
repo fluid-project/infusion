@@ -39,7 +39,7 @@ var demo = demo || {};
         var tinyMCEOptions = {
             tinyMCE: {
                 width: 1024,
-                theme: "advanced",
+                theme: "modern",
                 theme_advanced_toolbar_location : "top"
             },
             componentDecorators: {
