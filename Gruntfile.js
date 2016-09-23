@@ -184,7 +184,7 @@ module.exports = function (grunt) {
             }
         },
         eslint: {
-            all: ["src/**/*.js", "tests/**/*.js", "demos/**/*.js", "examples/**/*.js", "*.js"],
+            all: ["src/**/*.js", "tests/**/*.js", "demos/**/*.js", "examples/**/*.js", "*.js"]
         },
         jsonlint: {
             all: ["src/**/*.json", "tests/**/*.json", "demos/**/*.json", "examples/**/*.json"]
