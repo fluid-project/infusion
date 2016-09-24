@@ -127,8 +127,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.test.makeExpander = function (that) {
-        return function (toExpand) {
-            return fluid.expandOptions(toExpand, that);
+        return function (toExpand, localRecord) {
+            return fluid.expandOptions(toExpand, that, {}, localRecord);
         };
     };
 
@@ -160,14 +160,14 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.test.testEnvironment.runTests = function (that) {
-        var visitOptions = {};
         that.testCaseHolders = [];
         var visitor = function (component) {
-            if (fluid.hasGrade(component.options, "fluid.test.testCaseHolder")) {
+            if (fluid.componentHasGrade(component, "fluid.test.testCaseHolder")) {
                 that.testCaseHolders.push(component);
             }
         };
-        fluid.visitComponentChildren(that, visitor, visitOptions);
+        visitor(that); // FLUID-5753
+        fluid.visitComponentChildren(that, visitor, {});
         // This structure is constructed here, reused for each "TestCaseHolder" but is given a shallow
         // clone in "sequenceExecutor".
         var testCaseState = {
@@ -242,9 +242,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             fluid.fail("Unable to decode entry " + member + " of fixture ", fixture, " to a function - record is ", listener);
         }
         var togo;
-        if (fixture.args) {
+        if (fixture.args !== undefined) {
             togo = function () {
-                var expandedArgs = fluid.expandOptions(fixture.args, testCaseState.testCaseHolder, {}, {"arguments": arguments});
+                var expandedArgs = testCaseState.expand(fixture.args, {"arguments": arguments});
                 return listener.apply(null, fluid.makeArray(expandedArgs));
             };
         } else {
@@ -266,27 +266,72 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.test.decoders.func = function (testCaseState, fixture) {
         return {
-            execute: function () {
+            execute: function (executeDone) {
                 var testFunc = testCaseState.expandFunction(fixture.func || fixture.funcName);
                 var args = testCaseState.expand(fixture.args);
                 if (typeof(testFunc) !== "function") {
                     fluid.fail("Unable to decode entry func or funcName of fixture ", fixture, " to a function - got ", testFunc);
                 }
                 testFunc.apply(null, fluid.makeArray(args));
+                executeDone();
             }
         };
     };
 
     fluid.test.decoders.funcName = fluid.test.decoders.func;
 
+    fluid.test.decoders.task = function (testCaseState, fixture) {
+        if ((fixture.resolve === undefined) === (fixture.reject === undefined)) {
+            fluid.fail("Error in task fixture ", fixture, ": exactly one out of \"resolve\" and \"reject\" members must be set");
+        }
+        return {
+            execute: function (executeDone) {
+                var task = testCaseState.expandFunction(fixture.task);
+                var args = fluid.makeArray(testCaseState.expand(fixture.args));
+                var promise = task.apply(null, args);
+                var handlers = fixture.resolve ?
+                    [fluid.test.decoders.task.makePromiseBinder(testCaseState, fixture, executeDone, "resolve"),
+                     fluid.test.decoders.task.makeMismatchedBinder(fixture, executeDone, "reject", "resolve")] :
+                    [fluid.test.decoders.task.makeMismatchedBinder(fixture, executeDone, "resolve", "reject"),
+                     fluid.test.decoders.task.makePromiseBinder(testCaseState, fixture, executeDone, "reject")];
+                promise.then(handlers[0], handlers[1]);
+            }
+        };
+    };
+
+    fluid.test.decoders.task.makePromiseBinder = function (testCaseState, fixture, executeDone, method) {
+        return function (payload) {
+            var func = testCaseState.expandFunction(fixture[method]);
+            var args = testCaseState.expand(fluid.firstDefined(fixture[method + "Args"], "{arguments}.0"), {arguments: [payload]});
+            func.apply(null, fluid.makeArray(args));
+            executeDone();
+        };
+    };
+
+    fluid.test.renderErrorAsString = function (error) {
+        return fluid.transform(error, function (arg) {
+            return fluid.isPrimitive(arg) ? arg : JSON.stringify(arg, null, 2);
+        }).join("");
+    };
+
+    fluid.test.decoders.task.makeMismatchedBinder = function (fixture, executeDone, method, otherMethod) {
+        return function (payload) {
+            var error = ["Failure in task fixture ", fixture, ": promise has received disposition \"" + method + "\" with payload ", payload, " when \"" + otherMethod + "\" was expected"];
+            fluid.log.apply(null, [fluid.logLevel.WARN].concat(error));
+            jqUnit.fail(fluid.test.renderErrorAsString(error));
+            executeDone();
+        };
+    };
+
     fluid.test.decoders.jQueryTrigger = function (testCaseState, fixture) {
         var event = fixture.jQueryTrigger;
         return {
-            execute: function () {
+            execute: function (executeDone) {
                 var args = fluid.makeArray(testCaseState.expand(fixture.args));
                 args.unshift(event);
                 var element = fluid.test.decodeElement(testCaseState, fixture);
                 element.trigger.apply(element, args);
+                executeDone();
             }
         };
     };
@@ -410,7 +455,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         return that;
     };
 
-    fluid.test.decoderDucks = ["func", "funcName", "event", "changeEvent", "jQueryTrigger", "jQueryBind"];
+    fluid.test.decoderDucks = ["func", "funcName", "event", "changeEvent", "task", "jQueryTrigger", "jQueryBind"];
 
     fluid.test.decodeFixture = function (testCaseState, fixture) {
         var ducks = fluid.test.decoderDucks;
@@ -429,12 +474,22 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     };
 
-    fluid.test.execExecutor = function (executor, sequenceText) {
+    fluid.test.execExecutor = function (executor, sequenceText, executeDone) {
         jqUnit.setMessageSuffix(" - at sequence position " + sequenceText);
-        executor.execute();
+        executor.execute(executeDone);
         jqUnit.setMessageSuffix("");
     };
 
+    /** Operate the `bind` action of an bind-type executor (a decoded sequence element) which acts either
+      * i) After an exec-type executor has concluded, OR
+      * ii) After a bind-type executor has just begun its "fire" action
+      * Note that the executor itself will have been constructed by `fluid.test.makeBinder` which operates the unbind/bind
+      * logic within the wrapper it constructs for the listener to be fired
+      * @param binder {Binder} An object with a member `bind` accepting two nullary functions as dispensed from `fluid.test.makeBinder`
+      * @param preWrap {Function()} A nullary function to be invoked before the binding action
+      * @param postWrap {Function()} A nullary function to be invoked before the unbinding action
+      * @param sequenceText {String} A string representing the sequence position that the binder occupies
+      */
 
     fluid.test.bindExecutor = function (binder, preWrap, postWrap, sequenceText) {
         function preFunc() {
@@ -498,8 +553,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             var last = pos === that.count;
             if (last) {
                 if (thisExec.execute) {
-                    fluid.test.execExecutor(thisExec, thisText);
-                    finishSequence();
+                    fluid.test.execExecutor(thisExec, thisText, finishSequence);
+                    //finishSequence();
                 }
                 else {
                     fluid.test.bindExecutor(thisExec, fluid.identity, finishSequence, thisText);
@@ -519,11 +574,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             if (thisExec.execute) {
                 if (nextExec.bind) {
                     that.execute(); // bind first [ODD]
-                    fluid.test.execExecutor(thisExec, thisText);
+                    fluid.test.execExecutor(thisExec, thisText, fluid.identity);
                 }
                 else {
-                    fluid.test.execExecutor(thisExec, thisText);
-                    that.execute();
+                    fluid.test.execExecutor(thisExec, thisText, that.execute);
+                    //that.execute();
                 }
             }
         };
@@ -607,8 +662,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 else {
                     var decoded = fluid.test.decodeFixture(testCaseState, fixture);
                     if (decoded.execute) {
-                        decoded.execute();
-                        testCaseState.finisher();
+                        decoded.execute(testCaseState.finisher);
                     }
                 }
             };
