@@ -133,20 +133,30 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.test.makeFuncExpander = function (expander) {
-        return function (toExpand) {
-            var testFunc = expander(toExpand);
-            if (typeof(testFunc) === "string") {
-                testFunc = fluid.getGlobalValue(testFunc);
+        return function (toExpand, type, args, localRecord) {
+            var togo = fluid.compactStringToRec(toExpand, type);
+            if (typeof(togo) === "string") {
+                togo = fluid.upgradePrimitiveFunc(prefix, null);
             }
-            return testFunc;
+            if (expanded.args === fluid.NO_VALUE) {
+                expanded.args = args;
+            }
+            var expanded = expander(toExpand, localRec);
+            if (typeof(expanded.funcName === "string")) {
+                expanded.func = fluid.getGlobalValue(expanded.funcName);
+            }
+            expanded.args = fluid.makeArray(expanded.args);
+            expanded.apply = function () {
+                return expanded.func.apply(null, expanded.args);
+            }
+            return expanded;
         };
     };
 
     fluid.test.expandModuleSource = function (moduleSource, testCaseState) {
         var funcSpec = moduleSource.func || moduleSource.funcName;
-        var func = testCaseState.expandFunction(funcSpec);
-        var args = testCaseState.expand(fluid.makeArray(moduleSource.args));
-        return func.apply(null, args);
+        var record = testCaseState.expandFunction(funcSpec, "moduleSource", moduleSource.args);
+        return record.apply();
     };
 
     fluid.test.captureMarkup = function (markupFixture) {
@@ -225,11 +235,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var listener, member;
         if (fixture.listener) {
             member = "listener";
-            listener = testCaseState.expandFunction(fixture.listener);
+            // We don't use most of the workflow of expandFunction since listener argument resolution must be lazy
+            listener = testCaseState.expandFunction(fixture.listener).func;
         }
         else if (fixture.listenerMaker) {
             member = "listenerMaker";
-            var maker = testCaseState.expandFunction(fixture.listenerMaker);
+            var maker = testCaseState.expandFunction(fixture.listenerMaker).func;
             if (!maker || !maker.apply) {
                 fluid.fail("Unable to decode entry " + fixture.listenerMaker + " of fixture ", fixture, " to a function - got ", maker);
             }
@@ -267,12 +278,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.test.decoders.func = function (testCaseState, fixture) {
         return {
             execute: function (executeDone) {
-                var testFunc = testCaseState.expandFunction(fixture.func || fixture.funcName);
-                var args = testCaseState.expand(fixture.args);
-                if (typeof(testFunc) !== "function") {
+                var record = testCaseState.expandFunction(fixture.func || fixture.funcName, "function executor", fixture.args);
+                if (typeof(testFunc.func) !== "function") {
                     fluid.fail("Unable to decode entry func or funcName of fixture ", fixture, " to a function - got ", testFunc);
                 }
-                testFunc.apply(null, fluid.makeArray(args));
+                record.apply();
                 executeDone();
             }
         };
@@ -286,9 +296,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
         return {
             execute: function (executeDone) {
-                var task = testCaseState.expandFunction(fixture.task);
-                var args = fluid.makeArray(testCaseState.expand(fixture.args));
-                var promise = task.apply(null, args);
+                var task = testCaseState.expandFunction(fixture.task, "task executor", fixture.args);
+                var promise = task.apply(null);
                 var handlers = fixture.resolve ?
                     [fluid.test.decoders.task.makePromiseBinder(testCaseState, fixture, executeDone, "resolve"),
                      fluid.test.decoders.task.makeMismatchedBinder(fixture, executeDone, "reject", "resolve")] :
@@ -301,9 +310,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.test.decoders.task.makePromiseBinder = function (testCaseState, fixture, executeDone, method) {
         return function (payload) {
-            var func = testCaseState.expandFunction(fixture[method]);
-            var args = testCaseState.expand(fluid.firstDefined(fixture[method + "Args"], "{arguments}.0"), {arguments: [payload]});
-            func.apply(null, fluid.makeArray(args));
+            var record = testCaseState.expandFunction(fixture[method], "promise " + method + " binder",
+                fluid.firstDefined(fixture[method + "Args"], "{arguments}.0"), {arguments: [payload]});
+            record.apply();
             executeDone();
         };
     };
@@ -642,6 +651,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         fluid.test.iocTestState.append(envs);
     };
 
+    fluid.defaults("fluid.test.sequenceElement", {
+        gradeNames: "fluid.component",
+        mergePolicy: {
+            elements: "noexpand"
+        }
+    });
+
     fluid.test.processTestCase = function (testCaseState) {
         var testCase = testCaseState.testCase;
         if (!testCase.name) {
@@ -656,7 +672,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 if (fixture.expect !== undefined) {
                     jqUnit.expect(fixture.expect);
                 }
-                if (fixture.sequence) {
+                if (fixture.sequence || fixture.sequenceGrade) {
                     fluid.test.sequenceExecutor(testCaseState, fixture).execute();
                 }
                 else {

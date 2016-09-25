@@ -487,6 +487,92 @@ fluid.tests.promiseDispenser = function (arg, method) {
     return togo;
 };
 
+/** FLUID-5903: Priority-driven "grade budding system" **/
+
+fluid.defaults("fluid.tests.elementPriority.beginning", {
+    gradeNames: "fluid.test.sequenceElement",
+    elements: {
+        beginning: {
+            sequence: [{
+                func: "{testCaseHolder}.pushRecord(beginning)"
+            }],
+            priority: "before:sequence"
+        }
+    }
+});
+
+fluid.defaults("fluid.tests.elementPriority.postBeginning", {
+    gradeNames: "fluid.test.sequenceElement",
+    elements: {
+        beginning: {
+            sequence: [{
+                func: "{testCaseHolder}.pushRecord(postBeginning)"
+            }],
+            priority: "after:beginning"
+        }
+    }
+});
+
+
+fluid.defaults("fluid.tests.elementPriority.end", {
+    gradeNames: "fluid.test.sequenceElement",
+    elements: {
+        end: {
+            sequence: [{
+                func: "{testCaseHolder}.pushRecord(end)"
+            }],
+            priority: "end:sequence"
+        }
+    }
+});
+
+fluid.defaults("fluid.tests.elementPriority.check", {
+    gradeNames: "fluid.test.sequenceElement",
+    elements: {
+        check: {
+            sequence: [{
+                func: "fluid.tests.elementPriority.checkSequence({testCaseHolder}.record)"
+            }],
+            priority: "after:end"
+        }
+    }
+});
+
+fluid.tests.elementPriority.checkSequence = function (record) {
+    jqUnit.assertDeepEq("Sequence elements executed in correct order",
+        ["beginning", "postBeginning", "sequence", "end"], record);
+};
+
+fluid.defaults("fluid.tests.elementPrioritySequence", {
+    gradeNames: ["fluid.tests.elementPriority.end", "fluid.tests.elementPriority.beginning", 
+        "fluid.tests.elementPriority.postBeginning"]
+});
+
+fluid.tests.elementPriority.pushRecord = function (record, toPush) {
+    record.push(toPush);
+};
+
+fluid.defaults("fluid.tests.elementPriority", {
+    gradeNames: ["fluid.test.testEnvironment", "fluid.test.testCaseHolder"],
+    members: {
+        record: []
+    },
+    invokers: {
+        pushRecord: "fluid.tests.elementPriority.pushRecord({testCaseHolder}.record, {arguments}.0)"
+    },
+    modules: [{
+        name: "Priority-driven grade budding",
+        tests: [{
+            expect: 3,
+            sequenceGrade: "fluid.tests.elementPrioritySequence",
+            sequence: [{
+                func: "{testCaseHolder}.pushRecord(sequence)",
+            }]
+        }
+        ]
+    }]
+});
+
 /** Global driver function **/
 
 fluid.tests.IoCTestingTests = function () {

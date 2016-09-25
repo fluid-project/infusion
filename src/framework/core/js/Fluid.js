@@ -1782,6 +1782,12 @@ var fluid = fluid || fluid_2_0_0;
     };
 
     // unsupported, NON-API function
+    /** Upgrades an element of an IoC record which designates a function to prepare for a {func, args} representation.
+     * @param rec {Any} If the record is of a primitive type,
+     * @param key {String} The key in the returned record to hold the function, this will default to `funcName` if `rec` is a `string` *not*
+     * holding an IoC reference, or `func` otherwise
+     * @return {Object} The original `rec` if it was not of primitive type, else a record holding { key : rec } if it was of primitive type.  
+     */
     fluid.upgradePrimitiveFunc = function (rec, key) {
         if (rec && fluid.isPrimitive(rec)) {
             var togo = {};
