@@ -504,7 +504,7 @@ fluid.defaults("fluid.tests.elementPriority.beginning", {
 fluid.defaults("fluid.tests.elementPriority.postBeginning", {
     gradeNames: "fluid.test.sequenceElement",
     elements: {
-        beginning: {
+        postBeginning: {
             sequence: [{
                 func: "{testCaseHolder}.pushRecord(postBeginning)"
             }],
@@ -521,7 +521,7 @@ fluid.defaults("fluid.tests.elementPriority.end", {
             sequence: [{
                 func: "{testCaseHolder}.pushRecord(end)"
             }],
-            priority: "end:sequence"
+            priority: "after:sequence"
         }
     }
 });
@@ -544,8 +544,8 @@ fluid.tests.elementPriority.checkSequence = function (record) {
 };
 
 fluid.defaults("fluid.tests.elementPrioritySequence", {
-    gradeNames: ["fluid.tests.elementPriority.end", "fluid.tests.elementPriority.beginning", 
-        "fluid.tests.elementPriority.postBeginning"]
+    gradeNames: ["fluid.tests.elementPriority.end", "fluid.tests.elementPriority.check", 
+        "fluid.tests.elementPriority.beginning", "fluid.tests.elementPriority.postBeginning"]
 });
 
 fluid.tests.elementPriority.pushRecord = function (record, toPush) {
@@ -563,7 +563,8 @@ fluid.defaults("fluid.tests.elementPriority", {
     modules: [{
         name: "Priority-driven grade budding",
         tests: [{
-            expect: 3,
+            expect: 1,
+            name: "Simple sequence of 4 active elements",
             sequenceGrade: "fluid.tests.elementPrioritySequence",
             sequence: [{
                 func: "{testCaseHolder}.pushRecord(sequence)",
@@ -589,7 +590,8 @@ fluid.tests.IoCTestingTests = function () {
             "fluid.tests.fluid5575Tree.singleActive",
             "fluid.tests.fluid5575Tree.doubleActive",
             "fluid.tests.fluid5575Tree.activePassive",
-            "fluid.tests.taskTester"
+            "fluid.tests.taskTester",
+            "fluid.tests.elementPriority"
         ]);
     });
 };
