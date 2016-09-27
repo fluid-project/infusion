@@ -30,7 +30,7 @@ var demo = demo || {};
         gradeNames: ["fluid.rendererComponent"],
         selectors: {
             "location-label": ".demo-location-label",
-            "locations": ".demo-location-list",
+            "locations": ".demo-location-list"
         },
         model: {
             location: ""
@@ -158,7 +158,7 @@ var demo = demo || {};
                 method: "on",
                 args: ["click", "{that}.render"]
             },
-            "onCreate.outputData": "{that}.outputData",
+            "onCreate.outputData": "{that}.outputData"
         },
         modelListeners: {
             "": "{that}.outputData"
