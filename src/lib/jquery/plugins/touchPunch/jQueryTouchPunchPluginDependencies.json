@@ -7,7 +7,7 @@
         ],
         "dependencies": [
             "jQuery",
-            "jQueryUICore"
+            "jQueryUI"
         ]
     }
 }

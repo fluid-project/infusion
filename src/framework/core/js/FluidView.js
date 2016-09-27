@@ -99,6 +99,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * @return a single-element jQuery of container
      */
     fluid.container = function (containerSpec, fallible, userJQuery) {
+        var selector = containerSpec.selector || containerSpec;
         if (userJQuery) {
             containerSpec = fluid.unwrap(containerSpec);
         }
@@ -118,6 +119,15 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         if (!fluid.isDOMNode(container[0])) {
             fluid.fail("fluid.container was supplied a non-jQueryable element");
         }
+
+        // To address FLUID-5966, manually adding back the selector and context properties that were removed from jQuery v3.0.
+        // ( see: https://jquery.com/upgrade-guide/3.0/#breaking-change-deprecated-context-and-selector-properties-removed )
+        // In most cases the "selector" property will already be restored through the DOM binder;
+        // however, when a selector or pure jQuery element is supplied directly as a component's container, we need to add them
+        // if it is possible to infer them. This feature is rarely used but is crucial for the prefs framework infrastructure
+        // in Panels.js fluid.prefs.subPanel.resetDomBinder
+        container.selector = selector;
+        container.context = container.context || containerSpec.ownerDocument || document;
 
         return container;
     };
@@ -645,14 +655,14 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         fluid.each(that.options.exclusions, function (exclusion) {
             exclusion = $(exclusion);
             fluid.each(exclusion, function (excludeEl) {
-                $(excludeEl).bind("focusin", that.canceller).
-                    bind("fluid-focus", that.canceller).
+                $(excludeEl).on("focusin", that.canceller).
+                    on("fluid-focus", that.canceller).
                     click(that.canceller).mousedown(that.canceller);
     // Mousedown is added for FLUID-4212, as a result of Chrome bug 6759, 14204
             });
         });
         if (!that.options.cancelByDefault) {
-            $(control).bind("focusout", function (event) {
+            $(control).on("focusout", function (event) {
                 fluid.log("Starting blur timer for element " + fluid.dumpEl(event.target));
                 var now = fluid.now();
                 fluid.log("back delay: " + (now - that.lastCancel));

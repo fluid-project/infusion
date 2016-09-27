@@ -150,8 +150,18 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         // in order to reset the dom binder when panels are in an iframe.
         // It can be be eliminated once we have the new renderer.
         var userJQuery = that.container.constructor;
-        var oldContainer = that.container;
-        that.container = userJQuery(that.container.selector, oldContainer[0].ownerDocument);
+        var context = that.container[0].ownerDocument;
+        var selector = that.container.selector;
+        that.container = userJQuery(selector, context);
+        // To address FLUID-5966, manually adding back the selector and context properties that were removed from jQuery v3.0.
+        // ( see: https://jquery.com/upgrade-guide/3.0/#breaking-change-deprecated-context-and-selector-properties-removed )
+        // In most cases the "selector" property will already be restored through the DOM binder or fluid.container.
+        // However, in this case we are manually recreating the container to ensure that it is referencing an element currently added
+        // to the correct Document ( e.g. iframe ) (also see: FLUID-4536). This manual recreation of the container requires us to
+        // manually add back the selector and context from the original container. This code and fix parallels that in
+        // FluidView.js fluid.container line 129
+        that.container.selector = selector;
+        that.container.context = context;
         if (that.container.length === 0) {
             fluid.fail("resetDomBinder got no elements in DOM for container searching for selector " + that.container.selector);
         }

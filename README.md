@@ -40,7 +40,7 @@ For simplicity and performance reasons, you may wish to create a concatenated, m
 
 ### Source Maps ###
 
-Source maps are supported in all of the major browsers: [Chrome](https://developer.chrome.com/devtools/docs/javascript-debugging#source-maps), [Firefox](https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map), 
+Source maps are supported in all of the major browsers: [Chrome](https://developer.chrome.com/devtools/docs/javascript-debugging#source-maps), [Firefox](https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map),
 [IE 11](https://msdn.microsoft.com/library/dn255007#source_maps), and Safari. To make use of them, enable source maps in your debugging environment, and ensure that the source maps are hosted adjacent to the file they are associated with.
 
 #### Source Map Example ####
@@ -167,10 +167,9 @@ When this VM is first created Chrome and Firefox will be upgraded to the latest 
 
 * fastXmlPull
 * jQuery
+* jQueryUI
 * jQueryScrollToPlugin
 * jQueryTouchPunchPlugin
-* jQueryUICore
-* jQueryUIWidgets
 * normalize
 
 All of these libraries are already bundled within the Infusion image.
