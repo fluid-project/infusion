@@ -422,7 +422,7 @@ fluid.defaults("fluid.tests.taskTester", {
     gradeNames: ["fluid.test.testEnvironment", "fluid.test.testCaseHolder"],
     invokers: {
         resolvedPromiseDispenser: "fluid.tests.promiseDispenser({arguments}.0, resolve)",
-        rejectedPromiseDispenser: "fluid.tests.promiseDispenser({arguments}.0, reject)",
+        rejectedPromiseDispenser: "fluid.tests.promiseDispenser({arguments}.0, reject)"
     },
     modules: [{
         name: "FLUID-5949 Task/promise-based testing",
@@ -491,51 +491,31 @@ fluid.tests.promiseDispenser = function (arg, method) {
 
 fluid.defaults("fluid.tests.elementPriority.beginning", {
     gradeNames: "fluid.test.sequenceElement",
-    elements: {
-        beginning: {
-            sequence: [{
-                func: "{testCaseHolder}.pushRecord(beginning)"
-            }],
-            priority: "before:sequence"
-        }
-    }
+    sequence: [{
+        func: "{testCaseHolder}.pushRecord(beginning)"
+    }]
 });
 
 fluid.defaults("fluid.tests.elementPriority.postBeginning", {
     gradeNames: "fluid.test.sequenceElement",
-    elements: {
-        postBeginning: {
-            sequence: [{
-                func: "{testCaseHolder}.pushRecord(postBeginning)"
-            }],
-            priority: "after:beginning"
-        }
-    }
+    sequence: [{
+        func: "{testCaseHolder}.pushRecord(postBeginning)"
+    }]
 });
 
 
 fluid.defaults("fluid.tests.elementPriority.end", {
     gradeNames: "fluid.test.sequenceElement",
-    elements: {
-        end: {
-            sequence: [{
-                func: "{testCaseHolder}.pushRecord(end)"
-            }],
-            priority: "after:sequence"
-        }
-    }
+    sequence: [{
+        func: "{testCaseHolder}.pushRecord(end)"
+    }]
 });
 
 fluid.defaults("fluid.tests.elementPriority.check", {
     gradeNames: "fluid.test.sequenceElement",
-    elements: {
-        check: {
-            sequence: [{
-                func: "fluid.tests.elementPriority.checkSequence({testCaseHolder}.record)"
-            }],
-            priority: "after:end"
-        }
-    }
+    sequence: [{
+        func: "fluid.tests.elementPriority.checkSequence({testCaseHolder}.record)"
+    }]
 });
 
 fluid.tests.elementPriority.checkSequence = function (record) {
@@ -544,8 +524,25 @@ fluid.tests.elementPriority.checkSequence = function (record) {
 };
 
 fluid.defaults("fluid.tests.elementPrioritySequence", {
-    gradeNames: ["fluid.tests.elementPriority.end", "fluid.tests.elementPriority.check", 
-        "fluid.tests.elementPriority.beginning", "fluid.tests.elementPriority.postBeginning"]
+    gradeNames: "fluid.test.sequence",
+    elements: {
+        check: {
+            gradeNames: "fluid.tests.elementPriority.check",
+            priority: "after:end"
+        },
+        end: {
+            gradeNames: "fluid.tests.elementPriority.end",
+            priority: "after:sequence"
+        },
+        postBeginning: {
+            gradeNames: "fluid.tests.elementPriority.postBeginning",
+            priority: "after:beginning"
+        },
+        beginning: {
+            gradeNames: "fluid.tests.elementPriority.beginning",
+            priority: "before:sequence"
+        }
+    }
 });
 
 fluid.tests.elementPriority.pushRecord = function (record, toPush) {
@@ -567,7 +564,7 @@ fluid.defaults("fluid.tests.elementPriority", {
             name: "Simple sequence of 4 active elements",
             sequenceGrade: "fluid.tests.elementPrioritySequence",
             sequence: [{
-                func: "{testCaseHolder}.pushRecord(sequence)",
+                func: "{testCaseHolder}.pushRecord(sequence)"
             }]
         }
         ]

@@ -467,16 +467,26 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     };
 
+    fluid.test.fetchGradeExpected = function (gradeNames, expectedGrade, name, record) {
+        var defaults = fluid.getMergedDefaults("fluid.component", gradeNames);
+        if (!fluid.hasGrade(defaults, expectedGrade)) {
+            fluid.fail("Unable to look up " + name + " ", gradeNames, " to a component descended from \"" + expectedGrade + "\" - got defaults ", defaults, " from fixture ", record);
+        }
+        return defaults;
+    };
+
     fluid.test.resolveSequence = function (fixture) {
         if (fixture.sequenceGrade) {
             // TODO: In future, it might be worth mounting this as a genuine subcomponent if there is a possibility
             // it might contain material which could be usefully contextualised
-            var sequenceGrade = fluid.invokeGlobalFunction(fixture.sequenceGrade);
-            var defaults = fluid.defaults(fixture.sequenceGrade);
-            if (!fluid.hasGrade(defaults, "fluid.test.sequenceElement")) {
-                fluid.fail("Unable to look up sequenceGrade " + sequenceGrade + " to a component descended from \"fluid.test.sequenceElement\ - got defaults ", defaults, " from fixture ", fixture);
-            }
-            var elements = fluid.extend({}, defaults.elements);
+            var defaults = fluid.test.fetchGradeExpected(fixture.sequenceGrade, "fluid.test.sequence", "sequenceGrade", fixture);
+            var elements = fluid.transform(defaults.elements, function (element) {
+                var elementDefaults = fluid.test.fetchGradeExpected(element.gradeNames, "fluid.test.sequenceElement", "sequence element gradeNames", element);
+                return {
+                    sequence: elementDefaults.sequence,
+                    priority: element.priority
+                };
+            });
             elements.sequence = {
                 sequence: fluid.makeArray(fixture.sequence)
             };
@@ -568,20 +578,15 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * and testCaseHolder components
      */
 
-    fluid.test.elementsMergePolicy = function (target, source) {
-        target = target || {};
-        fluid.extend(target, source);
-        return target;
-    };
-
     fluid.defaults("fluid.test.sequenceElement", {
         gradeNames: "fluid.component",
         mergePolicy: {
-            elements: {
-                noexpand: true,
-                func: fluid.test.elementsMergePolicy
-            }
+            sequence: "noexpand, replace"
         }
+    });
+
+    fluid.defaults("fluid.test.sequence", {
+        gradeNames: "fluid.component"
     });
 
     fluid.test.noteTest = function (root, count) {
@@ -733,6 +738,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     fluid.fail("Error in IoC Testing fixture - required member \"type\" was not found - fixture was ", env);
                 }
                 // Constructs a component of type fluid.test.testEnvironment whose onCreate will then execute fluid.test.testEnvironment.runTests
+                // and whose afterDestroy (scheduled internally) will invoke our nextLater
                 fluid.invokeGlobalFunction(env.type, [options]);
                 that.index++;
             } else {
