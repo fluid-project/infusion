@@ -242,7 +242,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
         // update the click event and the styling for the file delete button
         var removeRowBtn = that.locate("fileIconBtn", row);
-        removeRowBtn.unbind("click");
+        removeRowBtn.off("click");
         removeRowBtn.removeClass(that.options.styles.remove);
         removeRowBtn.attr("title", that.options.strings.status.success);
     };

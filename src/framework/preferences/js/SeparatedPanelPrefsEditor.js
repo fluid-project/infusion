@@ -248,7 +248,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
         // Create iframe and append to container
         that.iframe = $("<iframe/>");
-        that.iframe.load(function () {
+        that.iframe.on("load", function () {
             var iframeWindow = that.iframe[0].contentWindow;
             that.iframeDocument = iframeWindow.document;
             // The iframe should prefer its own version of jQuery if a separate

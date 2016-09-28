@@ -33,8 +33,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.pager.bindLinkClick = function (link, initiatePageChange, eventArg) {
-        link.unbind("click.fluid.pager");
-        link.bind("click.fluid.pager", function () {
+        link.off("click.fluid.pager");
+        link.on("click.fluid.pager", function () {
             initiatePageChange.fire(eventArg);
             return false;
         });

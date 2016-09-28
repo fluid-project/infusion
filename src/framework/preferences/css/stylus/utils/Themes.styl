@@ -32,13 +32,15 @@ build-themes-prefsEditor(contrastThemes) {
         {themeName} {
             .fl-prefsEditor {
                 // slider
-                &.fl-slider {
+                & .fl-slider {
                     background: none;
                     background-color: fColor;
 
-                    a, a:hover {
+                    a, a:hover,
+                    .fl-slider-handle, .fl-slider-handle:hover {
                         border:1px solid fColor;
                         background-color: bColor;
+                        background-image: none;
                     }
                 }
 

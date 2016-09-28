@@ -37,7 +37,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.setMock = function (responseTime, url, callback) {
-        $.mockjaxClear();
+        $.mockjax.clear();
         $.mockjax(function (settings) {
             if (settings.url === url) {
                 callback();

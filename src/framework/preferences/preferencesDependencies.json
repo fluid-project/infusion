@@ -31,7 +31,7 @@
         "dependencies": [
             "fonts",
             "jQuery",
-            "jQueryUICore",
+            "jQueryUI",
             "normalize",
             "framework",
             "enhancement",
