@@ -112,7 +112,7 @@ categorized by license:
 * [jQuery Touch Punch v0.2.2](http://touchpunch.furf.com/)
 * [jquery.simulate](https://github.com/eduardolundgren/jquery-simulate)
 * [Micro Clearfix](http://nicolasgallagher.com/micro-clearfix-hack/)
-* [Normalize v3.0.1](https://necolas.github.io/normalize.css/)
+* [Normalize v4.1.1](https://necolas.github.io/normalize.css/)
 * [Buzz v1.1.0](http://buzz.jaysalvat.com)
 * [html5shiv v3.7.2](https://code.google.com/p/html5shiv/)
 
