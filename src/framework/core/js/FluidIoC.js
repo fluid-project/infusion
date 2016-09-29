@@ -2050,13 +2050,32 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         return EL ? {path: EL} : EL;
     };
 
+    /** Parse the string form of a contextualised IoC reference into an object.
+     * @param reference {String} The reference to be parsed. The character at position `index` is assumed to be `{`
+     * @param index {String} [optional] The index into the string to start parsing at, if omitted, defaults to 0
+     * @param delimiter {Character} [optional] A character which will delimit the end of the context expression. If omitted, the expression continues to the end of the string.
+     * @return {ParsedContext} A structure holding the parsed structure, with members 
+     *    context {String|ParsedContext} The context portion of the reference. This will be a `string` for a flat reference, or a further `ParsedContext` for a recursive reference
+     *    path {String} The string portion of the reference
+     *    endpos {Integer} The position in the string where parsing stopped [this member is not supported and will be removed in a future release]
+     */
     fluid.parseContextReference = function (reference, index, delimiter) {
         index = index || 0;
-        var endcpos = reference.indexOf("}", index + 1);
+        var isNested = reference.charAt(index + 1) === "{", endcpos, context;
+        if (isNested) {
+            var nested = fluid.parseContextReference(reference, index + 1, "}");
+            endcpos = nested.endpos;
+        } else {
+            endcpos = reference.indexOf("}", index + 1);
+        }
         if (endcpos === -1) {
             fluid.fail("Cannot parse context reference \"" + reference + "\": Malformed context reference without }");
         }
-        var context = reference.substring(index + 1, endcpos);
+        if (isNested) {
+            context = nested;
+        } else {
+            context = reference.substring(index + 1, endcpos);
+        }
         var endpos = delimiter ? reference.indexOf(delimiter, endcpos + 1) : reference.length;
         var path = reference.substring(endcpos + 1, endpos);
         if (path.charAt(0) === ".") {
@@ -2066,10 +2085,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.renderContextReference = function (parsed) {
-        return "{" + parsed.context + "}" + (parsed.path ? "." + parsed.path : "");
+        var context = parsed.context;
+        return "{" + (typeof(context) === "string" ? context : fluid.renderContextReference(context)) + "}" + (parsed.path ? "." + parsed.path : "");
     };
 
-    // TODO: Once we eliminate expandSource, all of this tree of functions can be hived off to RendererUtilities
+    // TODO: Once we eliminate expandSource (in favour of fluid.expander.fetch), all of this tree of functions can be hived off to RendererUtilities
     fluid.resolveContextValue = function (string, options) {
         function fetch(parsed) {
             fluid.pushActivity("resolveContextValue", "resolving context value %string", {string: string});
@@ -2334,8 +2354,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.registerNamespace("fluid.expander");
 
+    // "deliverer" is null in the new (fast) pathway, this is a relic of the old "source expander" signature. It appears we can already globally remove this
     fluid.expander.fetch = function (deliverer, source, options) {
         var localRecord = options.localRecord, context = source.expander.context, segs = source.expander.segs;
+        // TODO: Either type-check on context as string or else create fetchSlow
         var inLocal = localRecord[context] !== undefined;
         // somewhat hack to anticipate "fits" for FLUID-4925 - we assume that if THIS component is in construction, its reference target might be too
         var component = inLocal ? localRecord[context] : fluid.resolveContext(context, options.contextThat, options.contextThat.lifecycleStatus === "treeConstructed");
