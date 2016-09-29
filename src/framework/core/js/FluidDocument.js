@@ -100,7 +100,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     var lastFocusedElement = null;
 
-    $(document).bind("focusin", function (event) {
+    $(document).on("focusin", function (event) {
         lastFocusedElement = event.target;
     });
 

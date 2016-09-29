@@ -75,7 +75,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         func: "fluid.tests.textToSpeech.testInitialization",
                         args: ["{tts}"]
                     }]
-                }],
+                }]
 
             },
             {
