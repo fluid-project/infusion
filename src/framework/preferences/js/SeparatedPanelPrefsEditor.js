@@ -350,14 +350,14 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * sliding panel tab.
      *
      * fluid.prefs.separatedPanel.lazyLoad modifies the typical separatedPanel workflow
-     * by delaying the instantiation and loading of resources for the prefsEditor until
+     * by delaying the instantiation and loading of resources for the prefs editor until
      * the first time it is opened.
      *
      * Lazy Load Workflow:
      *
      * - On instantiation of the prefsEditorLoader only the messageLoader and slidingPanel are instantiated
      * - On instantiation, the messageLoader only loads preLoadResources, these are the messages required by
-     *   the slidingPanel. The remained of the message bundles will not be loaded until the "onLazyLoad" event is fired.
+     *   the slidingPanel. The remaining message bundles will not be loaded until the "onLazyLoad" event is fired.
      * - After the preLoadResources have been loaded, the onPrefsEditorMessagesPreloaded event is fired, and triggers the
      *   sliding panel to instantiate.
      * - When a user opens the separated panel prefs editor / UI Options, it checks to see if the prefs editor has been
@@ -432,7 +432,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     /**
      * Used to override the standard "onCreate.loadResources" listener for fluid.resourceLoader component,
-     * allowing for pre-loading of a subset of resources. This is requried for the lazyLoading workflow
+     * allowing for pre-loading of a subset of resources. This is required for the lazyLoading workflow
      * for the "fluid.prefs.separatedPanel.lazyLoad".
      *
      * @param {Object} that - the component
@@ -450,6 +450,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             preloadResources[resourceName] = resources[resourceName];
         });
 
+        // This portion of code was copied from fluid.resourceLoader.loadResources
+        // and will likely need to track any changes made there.
         fluid.fetchResources(preloadResources, function () {
             that.resources = preloadResources;
             that.events.onResourcesPreloaded.fire(preloadResources);
