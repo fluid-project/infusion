@@ -246,7 +246,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     var platformIsNotLinux = !fluid.tests.isPlatform("Linux");
 
-    fluid.tests.conditionalTestUtils.chooseTestByBooleanResult(platformIsNotLinux, function (){
+    fluid.tests.conditionalTestUtils.chooseTestByBooleanResult(platformIsNotLinux, function () {
         fluid.tests.conditionalTestUtils.chooseTestByPromiseResult("Confirming if TTS is available for pause and resume tests", fluid.textToSpeech.checkTTSSupport, fluid.tests.textToSpeech.ttsPauseResumeTestEnvironment, fluid.tests.conditionalTestUtils.bypassTest, "Browser appears to support TTS", "Browser does not appear to support TTS");
     }, function () {
         fluid.tests.conditionalTestUtils.bypassTest("Skipped play/pause tests on Linux platform due to lack of browser support.");

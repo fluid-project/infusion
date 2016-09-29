@@ -10,7 +10,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 */
 
-/* global fluid */
+/* global fluid, jqUnit */
 
 (function () {
     "use strict";
@@ -26,7 +26,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var isPlatform = false;
         if (fluid.isArrayable (platformArg) ) {
             fluid.each(platformArg, function (currentPlatform) {
-                if(detectedPlatform.indexOf(currentPlatform) >= 0) {
+                if (detectedPlatform.indexOf(currentPlatform) >= 0) {
                     isPlatform = true;
                 }
             });
@@ -67,13 +67,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // Chooses which test function to execute based on a boolean, displaying
     // messages accordingly
     fluid.tests.conditionalTestUtils.chooseTestByBooleanResult = function (boolean, trueFunc, falseFunc, trueMessage, falseMessage) {
-            trueMessage = trueMessage || "Boolean is true, running true test.";
-            falseMessage = falseMessage || "Boolean is false, running false test.";
-            if(boolean) {
-                trueFunc(trueMessage);
-            } else {
-                falseFunc(falseMessage);
-            }
+        trueMessage = trueMessage || "Boolean is true, running true test.";
+        falseMessage = falseMessage || "Boolean is false, running false test.";
+        if (boolean) {
+            trueFunc(trueMessage);
+        } else {
+            falseFunc(falseMessage);
+        }
     };
 
     // Convenience function for skipping a test and displaying an explanatory
