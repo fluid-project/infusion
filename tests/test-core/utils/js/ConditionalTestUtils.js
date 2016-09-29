@@ -21,7 +21,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // This returns a boolean based on whether or not the string is
     // present in the navigator.platform string
 
-    fluid.tests.isPlatform = function (platformArg) {
+    fluid.tests.conditionalTestUtils.isPlatform = function (platformArg) {
         var detectedPlatform = navigator.platform;
         var isPlatform = false;
         if (fluid.isArrayable (platformArg) ) {
