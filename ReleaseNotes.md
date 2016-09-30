@@ -101,7 +101,7 @@ This is a list of publicly available software that is redistributed with Fluid I
 categorized by license:
 
 ### MIT License ###
-* [Foundation v5.4.5](http://foundation.zurb.com/index.html)
+* [Foundation v6.2.3](http://foundation.zurb.com/index.html)
 * [HTML5 Boilerplate v4.3](http://html5boilerplate.com/)
 * [jQuery v3.1.0](http://jquery.com/)
 * [jQuery UI (Core; Interactions: draggable, resizable; Widgets: button, checkboxradio, controlgroup, dialog, mouse, slider, tabs, and tooltip) v1.12.1](http://ui.jquery.com/)
