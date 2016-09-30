@@ -22,7 +22,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // present in the navigator.platform string
 
     fluid.tests.conditionalTestUtils.isPlatform = function (platformArg) {
-        var detectedPlatform = navigator.platform;
+        var detectedPlatform = fluid.contextAware.getPlatformName();
         var isPlatform = false;
         if (fluid.isArrayable (platformArg) ) {
             fluid.each(platformArg, function (currentPlatform) {
