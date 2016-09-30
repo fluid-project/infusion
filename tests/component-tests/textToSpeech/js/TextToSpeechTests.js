@@ -242,14 +242,50 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
     };
 
-    fluid.tests.conditionalTestUtils.chooseTestByPromiseResult("Confirming if TTS is available for initialization and start/stop tests", fluid.textToSpeech.checkTTSSupport, fluid.tests.textToSpeech.ttsTestEnvironment, fluid.tests.conditionalTestUtils.bypassTest, "Browser appears to support TTS", "Browser does not appear to support TTS");
+    fluid.tests.textToSpeech.baseTests = function () {
+        fluid.tests.conditionalTestUtils.chooseTestByPromiseResult("Confirming if TTS is available for initialization and start/stop tests", fluid.textToSpeech.checkTTSSupport, fluid.tests.textToSpeech.ttsTestEnvironment, fluid.tests.conditionalTestUtils.bypassTest, "Browser appears to support TTS", "Browser does not appear to support TTS");
+    };
 
-    var platformIsNotLinux = !fluid.tests.conditionalTestUtils.isPlatform("Linux");
-
-    fluid.tests.conditionalTestUtils.chooseTestByBooleanResult(platformIsNotLinux, function () {
+    fluid.tests.textToSpeech.notLinuxTests = function () {
         fluid.tests.conditionalTestUtils.chooseTestByPromiseResult("Confirming if TTS is available for pause and resume tests", fluid.textToSpeech.checkTTSSupport, fluid.tests.textToSpeech.ttsPauseResumeTestEnvironment, fluid.tests.conditionalTestUtils.bypassTest, "Browser appears to support TTS", "Browser does not appear to support TTS");
-    }, function () {
-        fluid.tests.conditionalTestUtils.bypassTest("Skipped play/pause tests on Linux platform due to lack of browser support.");
+    };
+
+    fluid.tests.textToSpeech.runTests = function (that) {
+        fluid.each(that.options.tests, function (test) {
+            fluid.invokeGlobalFunction(test);
+        });
+    };
+
+    fluid.defaults("fluid.tests.textToSpeech.testRunner", {
+        gradeNames: ["fluid.component", "fluid.contextAware"],
+        contextAwareness: {
+            notLinux: {
+                checks: {
+                    notLinux: {
+                        contextValue: "{fluid.platform.isLinux}",
+                        equals: false,
+                        gradeNames: ["fluid.tests.textToSpeech.notLinux"]
+                    }
+                }
+            }
+        },
+        listeners: {
+            "onCreate.runTests": {
+                funcName: "fluid.tests.textToSpeech.runTests",
+                args: ["{that}"]
+            }
+        },
+        tests: {
+            base: "fluid.tests.textToSpeech.ttsTestEnvironment"
+        }
     });
+
+    fluid.defaults("fluid.tests.textToSpeech.notLinux", {
+        tests: {
+            notLinux: "fluid.tests.textToSpeech.notLinuxTests"
+        }
+    });
+
+    fluid.tests.textToSpeech.testRunner();
 
 })();

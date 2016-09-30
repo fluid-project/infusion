@@ -17,25 +17,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests.conditionalTestUtils");
 
-    // "platformArg" is a string or array of strings of platform names to detect
-    // This returns a boolean based on whether or not the string is
-    // present in the navigator.platform string
+    // "platformArg" is a string to check against navigator.platform
 
     fluid.tests.conditionalTestUtils.isPlatform = function (platformArg) {
-        var detectedPlatform = fluid.contextAware.getPlatformName();
-        var isPlatform = false;
-        if (fluid.isArrayable (platformArg) ) {
-            fluid.each(platformArg, function (currentPlatform) {
-                if (detectedPlatform.indexOf(currentPlatform) >= 0) {
-                    isPlatform = true;
-                }
-            });
-        } else if (detectedPlatform.indexOf(platformArg) >= 0) {
-            isPlatform = true;
-        }
+        var detectedPlatform = navigator.platform ? navigator.platform : undefined;
 
-        return isPlatform;
+        return detectedPlatform.indexOf(platformArg) >= 0;
     };
+
+    fluid.tests.conditionalTestUtils.isLinux = function () {
+        return fluid.tests.conditionalTestUtils.isPlatform("Linux");
+    };
+
+    fluid.tests.conditionalTestUtils.isMac = function () {
+        return fluid.tests.conditionalTestUtils.isPlatform("Mac");
+    };
+
+    fluid.tests.conditionalTestUtils.isWindows = function () {
+        return fluid.tests.conditionalTestUtils.isPlatform("Windows");
+    };
+
+    fluid.contextAware.makeChecks({
+        "fluid.platform.isLinux": "fluid.tests.conditionalTestUtils.isLinux",
+        "fluid.platform.isMac": "fluid.tests.conditionalTestUtils.isMac",
+        "fluid.platform.isWindows": "fluid.tests.conditionalTestUtils.isWindows"
+    });
 
     // Chooses which test function to execute based on the results of a
     // promise; wraps the promise in an asyncTest to cause QUnit's test
