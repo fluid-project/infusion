@@ -76,9 +76,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
-    // grade for executing context-aware tests outside the IoC testing framework
+    // grade for executing context-aware tests
     fluid.defaults("fluid.test.conditionalTestUtils.contextAwareTestRunner", {
         gradeNames: ["fluid.component", "fluid.contextAware"],
+        // should contain one or more contextAwareness checks
+        // see fluid.tests.textToSpeech for a concrete example
         // contextAwareness: {
         // },
         listeners: {
@@ -86,9 +88,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 funcName: "fluid.tests.textToSpeech.runTests",
                 args: ["{that}"]
             }
-        },
+        }
+        // key-value pairs; values are zero-arg test funcNames, will be run
+        // by onCreate listener above
         // tests: {
-        //     base: "fluid.tests.textToSpeech.ttsTestEnvironment"
         // }
     });
 
