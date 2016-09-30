@@ -20,9 +20,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // "platformArg" is a string to check against navigator.platform
 
     fluid.test.conditionalTestUtils.isPlatform = function (platformArg) {
-        var detectedPlatform = navigator.platform ? navigator.platform : undefined;
+        var detectedPlatform = fluid.contextAware.getCheckValue(fluid.rootComponent, "{fluid.platform}");
 
         return detectedPlatform.indexOf(platformArg) >= 0;
+    };
+
+    fluid.test.conditionalTestUtils.getPlatformName = function () {
+        return navigator.platform ? navigator.platform : undefined;
     };
 
     fluid.test.conditionalTestUtils.isLinux = function () {
@@ -36,6 +40,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.test.conditionalTestUtils.isWindows = function () {
         return fluid.test.conditionalTestUtils.isPlatform("Windows");
     };
+
+    fluid.contextAware.makeChecks({
+        "fluid.platform": "fluid.test.conditionalTestUtils.getPlatformName"
+    });
 
     fluid.contextAware.makeChecks({
         "fluid.platform.isLinux": "fluid.test.conditionalTestUtils.isLinux",
@@ -87,6 +95,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "onCreate.runTests": {
                 funcName: "fluid.tests.textToSpeech.runTests",
                 args: ["{that}"]
+            }
+        },
+        invokers: {
+            "getCheckValue": {
+                funcName: "fluid.contextAware.getCheckValue",
+                args: ["{that}", "{arguments}.0"]
             }
         }
         // key-value pairs; values are zero-arg test funcNames, will be run
