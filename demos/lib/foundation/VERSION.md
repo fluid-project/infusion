@@ -1,4 +1,4 @@
-The instance of [Foundation v5.4.5](http://foundation.zurb.com/develop/download.html) included in this directory is from an **Essentials** build,
+The instance of [Foundation v6.2.3](http://foundation.zurb.com/develop/download.html) included in this directory is from an **Essentials** build,
 with the following **removed**:
 
 * css/app.css

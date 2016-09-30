@@ -4,6 +4,10 @@
     width:95%;
 }
 
+.demo-pager-container a {
+    color: #343499;
+}
+
 .demo-pager-container input {
     width: 3em;
 }
