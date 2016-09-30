@@ -243,11 +243,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.textToSpeech.baseTests = function () {
-        fluid.test.conditionalTestUtils.chooseTestByPromiseResult("Confirming if TTS is available for initialization and start/stop tests", fluid.textToSpeech.checkTTSSupport, fluid.tests.textToSpeech.ttsTestEnvironment, fluid.test.conditionalTestUtils.bypassTest, "Browser appears to support TTS", "Browser does not appear to support TTS");
+        fluid.test.conditionalTestUtils.chooseTestByPromiseResult("Confirming if TTS is available for initialization and start/stop tests",
+         fluid.textToSpeech.checkTTSSupport,
+          fluid.tests.textToSpeech.ttsTestEnvironment,
+           fluid.test.conditionalTestUtils.bypassTest,
+           "Browser appears to support TTS", "Browser does not appear to support TTS");
     };
 
     fluid.tests.textToSpeech.notLinuxTests = function () {
-        fluid.test.conditionalTestUtils.chooseTestByPromiseResult("Confirming if TTS is available for pause and resume tests", fluid.textToSpeech.checkTTSSupport, fluid.tests.textToSpeech.ttsPauseResumeTestEnvironment, fluid.test.conditionalTestUtils.bypassTest, "Browser appears to support TTS", "Browser does not appear to support TTS");
+        fluid.test.conditionalTestUtils.chooseTestByPromiseResult("Confirming if TTS is available for pause and resume tests",
+         fluid.textToSpeech.checkTTSSupport,
+          fluid.tests.textToSpeech.ttsPauseResumeTestEnvironment,
+           fluid.test.conditionalTestUtils.bypassTest, "Browser appears to support TTS", "Browser does not appear to support TTS");
     };
 
     fluid.tests.textToSpeech.runTests = function (that) {
