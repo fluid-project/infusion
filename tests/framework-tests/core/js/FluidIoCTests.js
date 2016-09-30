@@ -57,7 +57,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     }
     ];
-    
+
     fluid.tests.filterContext = function (parsed) {
         var togo = fluid.filterKeys(parsed, ["context", "path"]);
         if (typeof(togo.context) === "object") {
@@ -70,7 +70,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.each(fluid.tests.parseContext, function (fixture, i) {
             var parsed = fluid.parseContextReference(fixture.ref);
             parsed = fluid.tests.filterContext(parsed);
-            jqUnit.assertDeepEq("Expected parsed context index " + i, fixture.expected, parsed); 
+            jqUnit.assertDeepEq("Expected parsed context index " + i, fixture.expected, parsed);
         });
     });
 

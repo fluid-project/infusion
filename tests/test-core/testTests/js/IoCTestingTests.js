@@ -513,8 +513,13 @@ fluid.defaults("fluid.tests.elementPriority.end", {
 
 fluid.defaults("fluid.tests.elementPriority.check", {
     gradeNames: "fluid.test.sequenceElement",
+    mergePolicy: {
+        targetComponent: "noexpand"
+    },
+    // A placeholder reference to test possibility for recursive context references
+    targetComponent: "{placeHolder}",
     sequence: [{
-        func: "fluid.tests.elementPriority.checkSequence({testCaseHolder}.record)"
+        func: "fluid.tests.elementPriority.checkSequence({{that}.options.targetComponent}.record)"
     }]
 });
 
@@ -528,6 +533,9 @@ fluid.defaults("fluid.tests.elementPrioritySequence", {
     elements: {
         check: {
             gradeNames: "fluid.tests.elementPriority.check",
+            options: {
+                targetComponent: "{testCaseHolder}"
+            },
             priority: "after:end"
         },
         end: {

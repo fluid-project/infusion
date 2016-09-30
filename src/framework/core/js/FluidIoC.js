@@ -824,30 +824,46 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         if (context === "that") {
             return that;
         }
-        var foundComponent;
-        var instantiator = fluid.globalInstantiator; // fluid.getInstantiator(that); // this hash lookup takes over 1us!
-        if (fast) {
-            var shadow = instantiator.idToShadow[that.id];
-            return shadow.ownScope[context];
+        // TODO: Check performance impact of this type check introduced for FLUID-5903 in a very sensitive corner
+        if (typeof(context) === "object") {
+            var innerContext = fluid.resolveContext(context.context, that, fast);
+            if (!fluid.isComponent(innerContext)) {
+                fluid.triggerMismatchedPathError(context.context, that);
+            }
+            var rawValue = fluid.getForComponent(innerContext, context.path);
+            // TODO: Terrible, slow dispatch for this route
+            var expanded = fluid.expandOptions(rawValue, that);
+            if (!fluid.isComponent(expanded)) {
+                fluid.fail("Unable to resolve recursive context expression " + fluid.renderContextReference(context) + ": the directly resolved value of " + rawValue +
+                     " did not resolve to a component in the scope of component ", that, ": got ", expanded);
+            }
+            return expanded;
         } else {
-            var thatStack = instantiator.getFullStack(that);
-            fluid.visitComponentsForVisibility(instantiator, thatStack, function (component, name) {
-                var shadow = fluid.shadowForComponent(component);
-                // TODO: Some components, e.g. the static environment and typeTags do not have a shadow, which slows us down here
-                if (context === name || shadow && shadow.contextHash && shadow.contextHash[context] || context === component.typeName) {
-                    foundComponent = component;
-                    return true; // YOUR VISIT IS AT AN END!!
-                }
-                if (fluid.getForComponent(component, ["options", "components", context]) && !component[context]) {
-      // This is an expensive guess since we make it for every component up the stack - must apply the WAVE OF EXPLOSIONS (FLUID-4925) to discover all components first
-      // This line attempts a hopeful construction of components that could be guessed by nickname through finding them unconstructed
-      // in options. In the near future we should eagerly BEGIN the process of constructing components, discovering their
-      // types and then attaching them to the tree VERY EARLY so that we get consistent results from different strategies.
-                    foundComponent = fluid.getForComponent(component, context);
-                    return true;
-                }
-            });
-            return foundComponent;
+            var foundComponent;
+            var instantiator = fluid.globalInstantiator; // fluid.getInstantiator(that); // this hash lookup takes over 1us!
+            if (fast) {
+                var shadow = instantiator.idToShadow[that.id];
+                return shadow.ownScope[context];
+            } else {
+                var thatStack = instantiator.getFullStack(that);
+                fluid.visitComponentsForVisibility(instantiator, thatStack, function (component, name) {
+                    var shadow = fluid.shadowForComponent(component);
+                    // TODO: Some components, e.g. the static environment and typeTags do not have a shadow, which slows us down here
+                    if (context === name || shadow && shadow.contextHash && shadow.contextHash[context] || context === component.typeName) {
+                        foundComponent = component;
+                        return true; // YOUR VISIT IS AT AN END!!
+                    }
+                    if (fluid.getForComponent(component, ["options", "components", context]) && !component[context]) {
+          // This is an expensive guess since we make it for every component up the stack - must apply the WAVE OF EXPLOSIONS (FLUID-4925) to discover all components first
+          // This line attempts a hopeful construction of components that could be guessed by nickname through finding them unconstructed
+          // in options. In the near future we should eagerly BEGIN the process of constructing components, discovering their
+          // types and then attaching them to the tree VERY EARLY so that we get consistent results from different strategies.
+                        foundComponent = fluid.getForComponent(component, context);
+                        return true;
+                    }
+                });
+                return foundComponent;
+            }
         }
     };
 
@@ -2054,16 +2070,16 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * @param reference {String} The reference to be parsed. The character at position `index` is assumed to be `{`
      * @param index {String} [optional] The index into the string to start parsing at, if omitted, defaults to 0
      * @param delimiter {Character} [optional] A character which will delimit the end of the context expression. If omitted, the expression continues to the end of the string.
-     * @return {ParsedContext} A structure holding the parsed structure, with members 
+     * @return {ParsedContext} A structure holding the parsed structure, with members
      *    context {String|ParsedContext} The context portion of the reference. This will be a `string` for a flat reference, or a further `ParsedContext` for a recursive reference
      *    path {String} The string portion of the reference
      *    endpos {Integer} The position in the string where parsing stopped [this member is not supported and will be removed in a future release]
      */
     fluid.parseContextReference = function (reference, index, delimiter) {
         index = index || 0;
-        var isNested = reference.charAt(index + 1) === "{", endcpos, context;
+        var isNested = reference.charAt(index + 1) === "{", endcpos, context, nested;
         if (isNested) {
-            var nested = fluid.parseContextReference(reference, index + 1, "}");
+            nested = fluid.parseContextReference(reference, index + 1, "}");
             endcpos = nested.endpos;
         } else {
             endcpos = reference.indexOf("}", index + 1);
@@ -2092,9 +2108,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     // TODO: Once we eliminate expandSource (in favour of fluid.expander.fetch), all of this tree of functions can be hived off to RendererUtilities
     fluid.resolveContextValue = function (string, options) {
         function fetch(parsed) {
-            fluid.pushActivity("resolveContextValue", "resolving context value %string", {string: string});
+            fluid.pushActivity("resolveContextValue", "resolving context value %parsed", {parsed: parsed});
             var togo = options.fetcher(parsed);
-            fluid.pushActivity("resolvedContextValue", "resolved value %string to value %value", {string: string, value: togo});
+            fluid.pushActivity("resolvedContextValue", "resolved value %parsed to value %value", {parsed: parsed, value: togo});
             fluid.popActivity(2);
             return togo;
         }

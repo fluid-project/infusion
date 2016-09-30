@@ -145,13 +145,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      */
 
     fluid.test.makeExpander = function (that) {
-        return function (toExpand, localRecord) {
-            return fluid.expandOptions(toExpand, that, {}, localRecord);
+        return function (toExpand, localRecord, contextThat) {
+            return fluid.expandOptions(toExpand, contextThat || that, {}, localRecord);
         };
     };
 
     fluid.test.makeFuncExpander = function (expander) {
-        return function (toExpand, type, args, localRecord) {
+        return function (toExpand, type, args, localRecord, contextThat) {
             var rec = fluid.compactStringToRec(toExpand, type);
             if (typeof(rec) === "string") {
                 rec = fluid.upgradePrimitiveFunc(rec, null);
@@ -159,7 +159,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             if (rec.args === fluid.NO_VALUE) {
                 rec.args = args;
             }
-            var expanded = expander(rec, localRecord);
+            var expanded = expander(rec, localRecord, contextThat);
             if (typeof(expanded.funcName) === "string") {
                 expanded.func = fluid.getGlobalValue(expanded.funcName);
             }
@@ -195,7 +195,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var togo;
         if (fixture.args !== undefined) {
             togo = function () {
-                var expandedArgs = testCaseState.expand(fixture.args, {"arguments": arguments});
+                var expandedArgs = testCaseState.expand(fixture.args, {"arguments": arguments}, fixture.contextThat);
                 return listener.apply(null, fluid.makeArray(expandedArgs));
             };
         } else {
@@ -218,7 +218,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.test.decoders.func = function (testCaseState, fixture) {
         return {
             execute: function (executeDone) {
-                var record = testCaseState.expandFunction(fixture.func || fixture.funcName, "function executor", fixture.args);
+                var record = testCaseState.expandFunction(fixture.func || fixture.funcName, "function executor", fixture.args, null, fixture.contextThat);
                 if (typeof(record.func) !== "function") {
                     fluid.fail("Unable to decode entry func or funcName of fixture ", fixture, " to a function - got ", record);
                 }
@@ -236,7 +236,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
         return {
             execute: function (executeDone) {
-                var task = testCaseState.expandFunction(fixture.task, "task executor", fixture.args);
+                var task = testCaseState.expandFunction(fixture.task, "task executor", fixture.args, null, fixture.contextThat);
                 var promise = task.apply(null);
                 var handlers = fixture.resolve ?
                     [fluid.test.decoders.task.makePromiseBinder(testCaseState, fixture, executeDone, "resolve"),
@@ -251,7 +251,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.test.decoders.task.makePromiseBinder = function (testCaseState, fixture, executeDone, method) {
         return function (payload) {
             var record = testCaseState.expandFunction(fixture[method], "promise " + method + " binder",
-                fluid.firstDefined(fixture[method + "Args"], "{arguments}.0"), {arguments: [payload]});
+                fluid.firstDefined(fixture[method + "Args"], "{arguments}.0"), {arguments: [payload]}, fixture.contextThat);
             record.apply();
             executeDone();
         };
@@ -467,23 +467,31 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     };
 
-    fluid.test.fetchGradeExpected = function (gradeNames, expectedGrade, name, record) {
-        var defaults = fluid.getMergedDefaults("fluid.component", gradeNames);
-        if (!fluid.hasGrade(defaults, expectedGrade)) {
-            fluid.fail("Unable to look up " + name + " ", gradeNames, " to a component descended from \"" + expectedGrade + "\" - got defaults ", defaults, " from fixture ", record);
+    fluid.test.checkComponentGrade = function (component, gradeNames, expectedGrade, name, record) {
+        if (!fluid.componentHasGrade(component, expectedGrade)) {
+            fluid.fail("Unable to look up " + name + " ", gradeNames, " to a component descended from \"" + expectedGrade + "\" - got component ", component, " from fixture ", record);
         }
-        return defaults;
     };
 
-    fluid.test.resolveSequence = function (fixture) {
+    fluid.test.resolveSequence = function (fixture, testCaseHolder) {
         if (fixture.sequenceGrade) {
-            // TODO: In future, it might be worth mounting this as a genuine subcomponent if there is a possibility
-            // it might contain material which could be usefully contextualised
-            var defaults = fluid.test.fetchGradeExpected(fixture.sequenceGrade, "fluid.test.sequence", "sequenceGrade", fixture);
-            var elements = fluid.transform(defaults.elements, function (element) {
-                var elementDefaults = fluid.test.fetchGradeExpected(element.gradeNames, "fluid.test.sequenceElement", "sequence element gradeNames", element);
+            var path = fluid.pathForComponent(testCaseHolder);
+            var seqPath = path.concat(["sequenceComponent"]);
+            var sequenceComponent = fluid.construct(seqPath, {type: fixture.sequenceGrade});
+
+            fluid.test.checkComponentGrade(sequenceComponent, fixture.sequenceGrade, "fluid.test.sequence", "sequenceGrade", fixture);
+            var elements = fluid.transform(sequenceComponent.options.elements, function (element, i) {
+                var elementPath = seqPath.concat(["sequenceElement-" + i]);
+                var constructOptions = fluid.extend({type: element.gradeNames}, element.options);
+                var elementComponent = fluid.construct(elementPath, constructOptions);
+                fluid.test.checkComponentGrade(elementComponent, element.gradeNames, "fluid.test.sequenceElement", "sequence element gradeNames", element);
+                var innerSequence = fluid.makeArray(fluid.copy(elementComponent.options.sequence));
+                fluid.each(innerSequence, function (oneInnerSequence) {
+                    oneInnerSequence.contextThat = elementComponent;
+                });
                 return {
-                    sequence: elementDefaults.sequence,
+                    sequence: innerSequence,
+                    contextThat: elementComponent,
                     priority: element.priority
                 };
             });
@@ -498,7 +506,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.test.sequenceExecutor = function (testCaseState, fixture) {
-        var sequence = fluid.flatten(fluid.test.resolveSequence(fixture));
+        var sequence = fluid.flatten(fluid.test.resolveSequence(fixture, testCaseState.testCaseHolder));
         if (sequence.length === 0) {
             fluid.fail("Error in test fixture ", fixture, ": no elements in sequence");
         }
