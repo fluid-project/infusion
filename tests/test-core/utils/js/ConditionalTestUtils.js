@@ -17,12 +17,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.test.conditionalTestUtils");
 
-    // "platformArg" is a string to check against navigator.platform
-
-    fluid.test.conditionalTestUtils.isPlatform = function (platformArg) {
-        var detectedPlatform = fluid.contextAware.getCheckValue(fluid.rootComponent, "{fluid.platform}");
-
-        return detectedPlatform.indexOf(platformArg) >= 0;
+    fluid.test.conditionalTestUtils.contextValueContains = function (searchValue, checkValue) {
+        var value = fluid.contextAware.getCheckValue(fluid.rootComponent, checkValue);
+        return value.indexOf(searchValue) >= 0;
     };
 
     fluid.test.conditionalTestUtils.getPlatformName = function () {
@@ -30,15 +27,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.test.conditionalTestUtils.isLinux = function () {
-        return fluid.test.conditionalTestUtils.isPlatform("Linux");
+        return fluid.test.conditionalTestUtils.contextValueContains("Linux", "{fluid.platform}");
     };
 
     fluid.test.conditionalTestUtils.isMac = function () {
-        return fluid.test.conditionalTestUtils.isPlatform("Mac");
+        return fluid.test.conditionalTestUtils.contextValueContains("Mac", "{fluid.platform}");
     };
 
     fluid.test.conditionalTestUtils.isWindows = function () {
-        return fluid.test.conditionalTestUtils.isPlatform("Windows");
+        return fluid.test.conditionalTestUtils.contextValueContains("Windows", "{fluid.platform}");
     };
 
     fluid.contextAware.makeChecks({
@@ -78,12 +75,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
-    fluid.test.conditionalTestUtils.runTests = function (that) {
-        fluid.each(that.options.tests, function (test) {
-            fluid.invokeGlobalFunction(test);
-        });
-    };
-
     // grade for executing context-aware tests
     fluid.defaults("fluid.test.conditionalTestUtils.contextAwareTestRunner", {
         gradeNames: ["fluid.component", "fluid.contextAware"],
@@ -108,6 +99,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // tests: {
         // }
     });
+
+    fluid.test.conditionalTestUtils.runTests = function (that) {
+        fluid.each(that.options.tests, function (test) {
+            fluid.invokeGlobalFunction(test);
+        });
+    };
+
 
     // Convenience function for skipping a test and displaying an explanatory
     // message

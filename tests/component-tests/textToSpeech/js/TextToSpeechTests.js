@@ -250,7 +250,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
            "Browser appears to support TTS", "Browser does not appear to support TTS");
     };
 
-    fluid.tests.textToSpeech.notLinuxTests = function () {
+    fluid.tests.textToSpeech.supportsPauseResumeTests = function () {
         fluid.test.conditionalTestUtils.chooseTestByPromiseResult("Confirming if TTS is available for pause and resume tests",
          fluid.textToSpeech.checkTTSSupport,
           fluid.tests.textToSpeech.ttsPauseResumeTestEnvironment,
@@ -266,12 +266,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.textToSpeech.contextAwareTestRunner", {
         gradeNames: ["fluid.test.conditionalTestUtils.contextAwareTestRunner"],
         contextAwareness: {
-            notLinux: {
+            supportsPauseResume: {
                 checks: {
-                    notLinux: {
+                    supportsPauseResume: {
                         contextValue: "{fluid.platform.isLinux}",
                         equals: false,
-                        gradeNames: ["fluid.tests.textToSpeech.notLinux"]
+                        gradeNames: ["fluid.tests.textToSpeech.supportsPauseResume"]
                     }
                 }
             }
@@ -281,9 +281,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.defaults("fluid.tests.textToSpeech.notLinux", {
+    fluid.defaults("fluid.tests.textToSpeech.supportsPauseResume", {
         tests: {
-            notLinux: "fluid.tests.textToSpeech.notLinuxTests"
+            supportsPauseResume: "fluid.tests.textToSpeech.supportsPauseResumeTests"
         }
     });
 
