@@ -263,8 +263,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
-    fluid.defaults("fluid.tests.textToSpeech.testRunner", {
-        gradeNames: ["fluid.component", "fluid.contextAware"],
+    fluid.defaults("fluid.tests.textToSpeech.contextAwareTestRunner", {
+        gradeNames: ["fluid.test.conditionalTestUtils.contextAwareTestRunner"],
         contextAwareness: {
             notLinux: {
                 checks: {
@@ -276,14 +276,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         },
-        listeners: {
-            "onCreate.runTests": {
-                funcName: "fluid.tests.textToSpeech.runTests",
-                args: ["{that}"]
-            }
-        },
         tests: {
-            base: "fluid.tests.textToSpeech.ttsTestEnvironment"
+            base: "fluid.tests.textToSpeech.baseTests"
         }
     });
 
@@ -293,6 +287,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.textToSpeech.testRunner();
+    fluid.tests.textToSpeech.contextAwareTestRunner();
 
 })();

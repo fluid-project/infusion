@@ -70,6 +70,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
+    fluid.test.conditionalTestUtils.runTests = function (that) {
+        fluid.each(that.options.tests, function (test) {
+            fluid.invokeGlobalFunction(test);
+        });
+    };
+
+    // grade for executing context-aware tests outside the IoC testing framework
+    fluid.defaults("fluid.test.conditionalTestUtils.contextAwareTestRunner", {
+        gradeNames: ["fluid.component", "fluid.contextAware"],
+        // contextAwareness: {
+        // },
+        listeners: {
+            "onCreate.runTests": {
+                funcName: "fluid.tests.textToSpeech.runTests",
+                args: ["{that}"]
+            }
+        },
+        // tests: {
+        //     base: "fluid.tests.textToSpeech.ttsTestEnvironment"
+        // }
+    });
+
     // Convenience function for skipping a test and displaying an explanatory
     // message
     fluid.test.conditionalTestUtils.bypassTest = function (bypassMessage) {
