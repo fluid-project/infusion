@@ -15,32 +15,32 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function () {
     "use strict";
 
-    fluid.registerNamespace("fluid.tests.conditionalTestUtils");
+    fluid.registerNamespace("fluid.test.conditionalTestUtils");
 
     // "platformArg" is a string to check against navigator.platform
 
-    fluid.tests.conditionalTestUtils.isPlatform = function (platformArg) {
+    fluid.test.conditionalTestUtils.isPlatform = function (platformArg) {
         var detectedPlatform = navigator.platform ? navigator.platform : undefined;
 
         return detectedPlatform.indexOf(platformArg) >= 0;
     };
 
-    fluid.tests.conditionalTestUtils.isLinux = function () {
-        return fluid.tests.conditionalTestUtils.isPlatform("Linux");
+    fluid.test.conditionalTestUtils.isLinux = function () {
+        return fluid.test.conditionalTestUtils.isPlatform("Linux");
     };
 
-    fluid.tests.conditionalTestUtils.isMac = function () {
-        return fluid.tests.conditionalTestUtils.isPlatform("Mac");
+    fluid.test.conditionalTestUtils.isMac = function () {
+        return fluid.test.conditionalTestUtils.isPlatform("Mac");
     };
 
-    fluid.tests.conditionalTestUtils.isWindows = function () {
-        return fluid.tests.conditionalTestUtils.isPlatform("Windows");
+    fluid.test.conditionalTestUtils.isWindows = function () {
+        return fluid.test.conditionalTestUtils.isPlatform("Windows");
     };
 
     fluid.contextAware.makeChecks({
-        "fluid.platform.isLinux": "fluid.tests.conditionalTestUtils.isLinux",
-        "fluid.platform.isMac": "fluid.tests.conditionalTestUtils.isMac",
-        "fluid.platform.isWindows": "fluid.tests.conditionalTestUtils.isWindows"
+        "fluid.platform.isLinux": "fluid.test.conditionalTestUtils.isLinux",
+        "fluid.platform.isMac": "fluid.test.conditionalTestUtils.isMac",
+        "fluid.platform.isWindows": "fluid.test.conditionalTestUtils.isWindows"
     });
 
     // Chooses which test function to execute based on the results of a
@@ -55,7 +55,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // resolveMessage, rejectMessage: optional strings, passed to the test
     // functions
 
-    fluid.tests.conditionalTestUtils.chooseTestByPromiseResult = function (wrapperMessage, task, resolveFunc, rejectFunc, resolveMessage, rejectMessage) {
+    fluid.test.conditionalTestUtils.chooseTestByPromiseResult = function (wrapperMessage, task, resolveFunc, rejectFunc, resolveMessage, rejectMessage) {
         resolveMessage = resolveMessage || "Promise resolved, running resolve test.";
         rejectMessage = rejectMessage || "Promise rejected, running reject test.";
         jqUnit.asyncTest(wrapperMessage, function () {
@@ -70,21 +70,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
-    // Chooses which test function to execute based on a boolean, displaying
-    // messages accordingly
-    fluid.tests.conditionalTestUtils.chooseTestByBooleanResult = function (boolean, trueFunc, falseFunc, trueMessage, falseMessage) {
-        trueMessage = trueMessage || "Boolean is true, running true test.";
-        falseMessage = falseMessage || "Boolean is false, running false test.";
-        if (boolean) {
-            trueFunc(trueMessage);
-        } else {
-            falseFunc(falseMessage);
-        }
-    };
-
     // Convenience function for skipping a test and displaying an explanatory
     // message
-    fluid.tests.conditionalTestUtils.bypassTest = function (bypassMessage) {
+    fluid.test.conditionalTestUtils.bypassTest = function (bypassMessage) {
         jqUnit.test("Tests were skipped.", function () {
             jqUnit.assert(bypassMessage);
         });
