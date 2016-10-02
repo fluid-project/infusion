@@ -359,6 +359,66 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
+    /*******************************************************************************
+     * PrefsEditor separatedPanel lazy load integration tests
+     *******************************************************************************/
+
+    fluid.defaults("fluid.tests.separatedPanelLazyLoadIntegration", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        components: {
+            prefsEditor: {
+                type: "fluid.tests.composite.separatedPanel.lazyLoad.prefsEditor",
+                container: ".flc-prefsEditor-separatedPanel",
+                createOnEvent: "{prefsTester}.events.onTestCaseStart",
+            },
+            prefsTester: {
+                type: "fluid.tests.separatedPanelLazyLoadIntegrationTester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.separatedPanelLazyLoadIntegrationTester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [{
+            name: "Lazy Loaded Prefs Editor",
+            tests: [{
+                name: "Initialization",
+                expect: 6,
+                sequence: [{
+                    listener: "fluid.tests.separatedPanelLazyLoadIntegrationTester.assertPreload",
+                    event: "{separatedPanelLazyLoadIntegration prefsEditorLoader slidingPanel}.events.onCreate",
+                    args: ["{prefsEditor}.prefsEditorLoader"],
+                    priority: "last:testing"
+                }, {
+                    func: "{prefsEditor}.prefsEditorLoader.slidingPanel.showPanel"
+                }, {
+                    listener: "fluid.tests.separatedPanelLazyLoadIntegrationTester.assertLazyLoad",
+                    event: "{separatedPanelLazyLoadIntegration}.prefsEditor.prefsEditorLoader.slidingPanel.events.afterPanelShow",
+                    args: ["{prefsEditor}.prefsEditorLoader"],
+                    priority: "last:testing"
+                }]
+            }]
+        }]
+    });
+
+    fluid.tests.separatedPanelLazyLoadIntegrationTester.assertPreload = function (prefsEditorLoader) {
+        jqUnit.assertUndefined("The prefsEditor should not have been instantiated", prefsEditorLoader.prefsEditor);
+        jqUnit.assertUndefined("The templateLoader should not have been instantiated", prefsEditorLoader.templateLoader);
+
+        var expectedPreloadedResources = fluid.makeArray(prefsEditorLoader.messageLoader.options.preloadResources);
+        var actualPreloadedResources = fluid.keys(prefsEditorLoader.messageLoader.resources);
+        jqUnit.assertDeepEq("Only the preloaded resources should have loaded", expectedPreloadedResources, actualPreloadedResources);
+    };
+
+    fluid.tests.separatedPanelLazyLoadIntegrationTester.assertLazyLoad = function (prefsEditorLoader) {
+        jqUnit.assertNotUndefined("The prefsEditor should have been instantiated", prefsEditorLoader.prefsEditor);
+        jqUnit.assertNotUndefined("The templateLoader should have been instantiated", prefsEditorLoader.templateLoader);
+
+        var expectedResources = fluid.keys(prefsEditorLoader.messageLoader.options.resources);
+        var actualResources = fluid.keys(prefsEditorLoader.messageLoader.resources);
+        jqUnit.assertDeepEq("All of the resources should have loaded", expectedResources, actualResources);
+    };
+
     $(document).ready(function () {
 
         fluid.tests.prefs.globalSettingsStore();
@@ -367,7 +427,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.test.runTests([
             "fluid.tests.separatedPanelIntegration",
             "fluid.tests.separatedPanelMungingIntegration",
-            "fluid.tests.separatedPanelConditionalPanelIntegration"
+            "fluid.tests.separatedPanelConditionalPanelIntegration",
+            "fluid.tests.separatedPanelLazyLoadIntegration"
         ]);
     });
 
