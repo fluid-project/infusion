@@ -48,7 +48,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.test.conditionalTestUtils.contextAwareTestRunner", {
         gradeNames: ["fluid.component", "fluid.contextAware"],
         // should contain one or more contextAwareness checks
-        // see fluid.tests.textToSpeech for a concrete example
+        // see TestToSpeechTests or TestingTests for concrete usage examples,
         // contextAwareness: {
         // },
         listeners: {
@@ -63,8 +63,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 args: ["{that}", "{arguments}.0"]
             }
         }
-        // key-value pairs; values are zero-arg test funcNames, will be run
-        // by onCreate listener above
+        // key-value pairs; values are zero-arg test funcNames to be run
+        // by the onCreate listener after contextAware grade merging
         // tests: {
         // }
     });
@@ -74,7 +74,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.invokeGlobalFunction(test);
         });
     };
-
 
     // Convenience function for skipping a test and displaying an explanatory
     // message
@@ -100,6 +99,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return navigator.platform ? navigator.platform : undefined;
     };
 
+    // Functions for platform reporting for makeChecks
     fluid.test.conditionalTestUtils.isLinux = function () {
         return fluid.test.conditionalTestUtils.contextValueContains("Linux", "{fluid.platform}");
     };
