@@ -650,6 +650,42 @@
     /** Tests for the conditional test utilities **/
 
     // test fluid.test.conditionalTestUtils.chooseTestByPromiseResult
+    fluid.tests.testTests.configurableTestPromise = function (shouldResolve) {
+        var promise = fluid.promise();
+        if (shouldResolve) {
+            promise.resolve();
+        } else {
+            promise.reject();
+        }
+        return promise;
+    };
+
+    fluid.tests.testTests.testOnPromiseResolve = function (message) {
+        jqUnit.expect(1);
+        jqUnit.assertEquals("Message indicates this is the test run for a resolved promise", "Promise resolved", message);
+    };
+
+    fluid.tests.testTests.testOnPromiseReject = function (message) {
+        jqUnit.expect(1);
+        jqUnit.assertEquals("Message indicates this is the test run for a rejected promise", "Promise rejected", message);
+    };
+
+    fluid.tests.testTests.testChooseTestByPromiseResult = function (message, shouldResolve) {
+        fluid.test.conditionalTestUtils.chooseTestByPromiseResult(message,
+        function () {
+            return fluid.tests.testTests.configurableTestPromise(shouldResolve);
+        },
+          fluid.tests.testTests.testOnPromiseResolve,
+           fluid.tests.testTests.testOnPromiseReject,
+           "Promise resolved",
+           "Promise rejected");
+    };
+
+    // This should result in testOnPromiseResolve being run
+    fluid.tests.testTests.testChooseTestByPromiseResult("Choose test by promise result - promise resolved case.", true);
+
+    // This should result in testOnPromiseReject being run
+    fluid.tests.testTests.testChooseTestByPromiseResult("Choose test by promise result - promise rejected case.", false);
 
     // test context-aware test runner
 
@@ -688,7 +724,7 @@
     });
 
     fluid.tests.testTests.contextTrueTest = function () {
-        jqUnit.assert("This assertion should only be run if the  'fluid.runAdditionalTests' context value is true.");
+        jqUnit.assert("This assertion should only be run if the  'fluid.runAdditionalTests' context value is boolean TRUE.");
     };
 
     fluid.defaults("fluid.tests.testTests.runAdditionalTestsFalse", {
@@ -698,7 +734,7 @@
     });
 
     fluid.tests.testTests.contextFalseTest = function () {
-        jqUnit.assert("This assertion should only be run if the  'fluid.runAdditionalTests' context value is false.");
+        jqUnit.assert("This assertion should only be run if the  'fluid.runAdditionalTests' context value is boolean FALSE.");
     };
 
     fluid.defaults("fluid.tests.testTests.runAdditionalTestsDefault", {
