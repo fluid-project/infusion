@@ -111,6 +111,7 @@ categorized by license:
 * [jQuery scrollTo v1.4.2](http://flesler.blogspot.com/2007/10/jqueryscrollto.html)
 * [jQuery Touch Punch v0.2.2](http://touchpunch.furf.com/)
 * [jquery.simulate](https://github.com/eduardolundgren/jquery-simulate)
+* [jquery.selectbox v0.5 (forked)](https://github.com/fluid-project/jquery.selectbox)
 * [Micro Clearfix](http://nicolasgallagher.com/micro-clearfix-hack/)
 * [Normalize v4.1.1](https://necolas.github.io/normalize.css/)
 * [Buzz v1.1.0](http://buzz.jaysalvat.com)
