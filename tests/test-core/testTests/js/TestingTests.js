@@ -714,7 +714,7 @@
     });
 
     fluid.tests.testTests.contextBasicTest = function () {
-        jqUnit.assert("This assertion should get run because it's not context-dependent");
+        jqUnit.assert("This assertion should always be run because it's not context-dependent");
     };
 
     fluid.defaults("fluid.tests.testTests.runAdditionalTestsTrue", {

@@ -17,7 +17,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.test.conditionalTestUtils");
 
-    // Checks string-based contextAwareness check values for contains
+    // Checks string-based contextAwareness check values to see if they
+    // contain the searchValue string
     fluid.test.conditionalTestUtils.contextValueContains = function (searchValue, checkValue) {
         var value = fluid.contextAware.getCheckValue(fluid.rootComponent, checkValue);
         return value.indexOf(searchValue) >= 0;
