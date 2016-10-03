@@ -653,4 +653,90 @@
 
     // test context-aware test runner
 
+    fluid.defaults("fluid.tests.testTests.contextAwareTestRunner", {
+        gradeNames: ["fluid.test.conditionalTestUtils.contextAwareTestRunner"],
+        contextAwareness: {
+            runAdditionalTests: {
+                checks: {
+                    runAdditionalTestsTrue: {
+                        contextValue: "{fluid.runAdditionalTests}",
+                        equals: true,
+                        gradeNames: ["fluid.tests.testTests.runAdditionalTestsTrue"]
+                    },
+                    runAdditionalTestsFalse: {
+                        contextValue: "{fluid.runAdditionalTests}",
+                        equals: false,
+                        gradeNames: ["fluid.tests.testTests.runAdditionalTestsFalse"]
+                    }
+                },
+                defaultGradeNames: "fluid.tests.testTests.runAdditionalTestsDefault"
+            }
+        },
+        tests: {
+            base: "fluid.tests.testTests.contextBasicTest"
+        }
+    });
+
+    fluid.tests.testTests.contextBasicTest = function () {
+        jqUnit.assert("This assertion should get run because it's not context-dependent");
+    };
+
+    fluid.defaults("fluid.tests.testTests.runAdditionalTestsTrue", {
+        tests: {
+            true: "fluid.tests.testTests.contextTrueTest"
+        }
+    });
+
+    fluid.tests.testTests.contextTrueTest = function () {
+        jqUnit.assert("This assertion should only be run if the  'fluid.runAdditionalTests' context value is true.");
+    };
+
+    fluid.defaults("fluid.tests.testTests.runAdditionalTestsFalse", {
+        tests: {
+            false: "fluid.tests.testTests.contextFalseTest"
+        }
+    });
+
+    fluid.tests.testTests.contextFalseTest = function () {
+        jqUnit.assert("This assertion should only be run if the  'fluid.runAdditionalTests' context value is false.");
+    };
+
+    fluid.defaults("fluid.tests.testTests.runAdditionalTestsDefault", {
+        tests: {
+            default: "fluid.tests.testTests.contextDefaultTest"
+        }
+    });
+
+    fluid.tests.testTests.contextDefaultTest = function () {
+        jqUnit.assert("This assertion should only be run if the  'fluid.runAdditionalTests' context is something other than false or true.");
+    };
+
+    fluid.tests.testTests.testRunnerContainsExpectedGradeName = function (runner, expectedGradeName) {
+        jqUnit.assertTrue("testRunner grade contains the expected gradeName of " + expectedGradeName, fluid.contains(runner.options.gradeNames, expectedGradeName));
+    };
+
+    fluid.tests.testTests.testContextAwareTestRunner = function (message, checkValue, expectedGradeName) {
+        jqUnit.test(message, function () {
+            jqUnit.expect(3);
+
+            // Register a context
+            fluid.contextAware.makeChecks({
+                "fluid.runAdditionalTests": {
+                    value: checkValue
+                }
+            });
+
+            // Create test component
+            var testRunner = fluid.tests.testTests.contextAwareTestRunner();
+
+            fluid.tests.testTests.testRunnerContainsExpectedGradeName(testRunner, expectedGradeName);
+        });
+    };
+
+    fluid.tests.testTests.testContextAwareTestRunner("Test context-aware test runner - context value is TRUE (expecting context-aware TRUE grade)", true, "fluid.tests.testTests.runAdditionalTestsTrue");
+
+    fluid.tests.testTests.testContextAwareTestRunner("Test context-aware test runner - context value is FALSE (expecting context-aware FALSE grade)", false, "fluid.tests.testTests.runAdditionalTestsFalse");
+
+    fluid.tests.testTests.testContextAwareTestRunner("Test context-aware test runner - context value is 'hello world' (expecting context-aware default grade when value is not TRUE or FALSE)", "Hello", "fluid.tests.testTests.runAdditionalTestsDefault");
+
 })();
