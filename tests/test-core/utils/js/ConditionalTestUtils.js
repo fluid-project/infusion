@@ -17,39 +17,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.test.conditionalTestUtils");
 
-    // Checks string-based contextAwareness check values to see if they
-    // contain the searchValue string
-    fluid.test.conditionalTestUtils.contextValueContains = function (searchValue, checkValue) {
-        var value = fluid.contextAware.getCheckValue(fluid.rootComponent, checkValue);
-        return value.indexOf(searchValue) >= 0;
-    };
-
-    fluid.test.conditionalTestUtils.getPlatformName = function () {
-        return navigator.platform ? navigator.platform : undefined;
-    };
-
-    fluid.test.conditionalTestUtils.isLinux = function () {
-        return fluid.test.conditionalTestUtils.contextValueContains("Linux", "{fluid.platform}");
-    };
-
-    fluid.test.conditionalTestUtils.isMac = function () {
-        return fluid.test.conditionalTestUtils.contextValueContains("Mac", "{fluid.platform}");
-    };
-
-    fluid.test.conditionalTestUtils.isWindows = function () {
-        return fluid.test.conditionalTestUtils.contextValueContains("Windows", "{fluid.platform}");
-    };
-
-    fluid.contextAware.makeChecks({
-        "fluid.platform": "fluid.test.conditionalTestUtils.getPlatformName"
-    });
-
-    fluid.contextAware.makeChecks({
-        "fluid.platform.isLinux": "fluid.test.conditionalTestUtils.isLinux",
-        "fluid.platform.isMac": "fluid.test.conditionalTestUtils.isMac",
-        "fluid.platform.isWindows": "fluid.test.conditionalTestUtils.isWindows"
-    });
-
     // Chooses which test function to execute based on the results of a
     // promise; wraps the promise in an asyncTest to cause QUnit's test
     // runner to suspend while the decision is being made asynchronously by
@@ -77,7 +44,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
-    // grade for executing context-aware tests
+    // a grade for executing context-aware tests
     fluid.defaults("fluid.test.conditionalTestUtils.contextAwareTestRunner", {
         gradeNames: ["fluid.component", "fluid.contextAware"],
         // should contain one or more contextAwareness checks
@@ -116,5 +83,43 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assert(bypassMessage);
         });
     };
+
+    // Adds context awarenes of the browser's reported platform (operating
+    // system) for aiding in executing platform-specific tests, or skipping
+    // those known to fail on a particular platform due to lack of browser
+    // support for features
+
+    // Checks string-based contextAwareness check values to see if they
+    // contain the searchValue string
+    fluid.test.conditionalTestUtils.contextValueContains = function (searchValue, checkValue) {
+        var value = fluid.contextAware.getCheckValue(fluid.rootComponent, checkValue);
+        return value.indexOf(searchValue) >= 0;
+    };
+
+    fluid.test.conditionalTestUtils.getPlatformName = function () {
+        return navigator.platform ? navigator.platform : undefined;
+    };
+
+    fluid.test.conditionalTestUtils.isLinux = function () {
+        return fluid.test.conditionalTestUtils.contextValueContains("Linux", "{fluid.platform}");
+    };
+
+    fluid.test.conditionalTestUtils.isMac = function () {
+        return fluid.test.conditionalTestUtils.contextValueContains("Mac", "{fluid.platform}");
+    };
+
+    fluid.test.conditionalTestUtils.isWindows = function () {
+        return fluid.test.conditionalTestUtils.contextValueContains("Windows", "{fluid.platform}");
+    };
+
+    fluid.contextAware.makeChecks({
+        "fluid.platform": "fluid.test.conditionalTestUtils.getPlatformName"
+    });
+
+    fluid.contextAware.makeChecks({
+        "fluid.platform.isLinux": "fluid.test.conditionalTestUtils.isLinux",
+        "fluid.platform.isMac": "fluid.test.conditionalTestUtils.isMac",
+        "fluid.platform.isWindows": "fluid.test.conditionalTestUtils.isWindows"
+    });
 
 })();
