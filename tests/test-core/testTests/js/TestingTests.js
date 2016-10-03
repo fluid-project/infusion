@@ -646,4 +646,11 @@
             ]);
         });
     };
+
+    /** Tests for the conditional test utilities **/
+
+    // test fluid.test.conditionalTestUtils.chooseTestByPromiseResult
+
+    // test context-aware test runner
+
 })();
