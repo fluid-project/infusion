@@ -461,7 +461,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.prefs.preview.startLoadingContainer = function (that) {
         var templateUrl = that.templateLoader.transformURL(that.options.templateUrl);
-        that.container.load(function () {
+        that.container.on("load", function () {
             that.enhancerContainer = $("body", that.container.contents());
             that.events.onReady.fire();
         });

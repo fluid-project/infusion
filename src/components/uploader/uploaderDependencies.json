@@ -14,7 +14,7 @@
         ],
         "dependencies": [
             "jQuery",
-            "jQueryUICore",
+            "jQueryUI",
             "jQueryScrollToPlugin",
             "normalize",
             "framework",

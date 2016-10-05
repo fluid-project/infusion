@@ -90,10 +90,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.test("fluid.container: bind to an selector", function () {
-            jqUnit.expect(1);
+            jqUnit.expect(3);
             // Give it a valid id selector.
+            var selector = "#main-container";
             var result = fluid.container("#main-container");
             jqUnit.assertTrue("One element should be returned when specifying a selector", 1, result.length);
+            jqUnit.assertEquals("The selector property should be set", selector, result.selector);
+            jqUnit.assertEquals("The context property should be set", document.URL, result.context.URL);
 
             jqUnit.expectFrameworkDiagnostic("Selector matching two elements for container", function () {
                 result = fluid.container(".container");
