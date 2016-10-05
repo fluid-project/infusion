@@ -422,7 +422,7 @@ fluid.defaults("fluid.tests.taskTester", {
     gradeNames: ["fluid.test.testEnvironment", "fluid.test.testCaseHolder"],
     invokers: {
         resolvedPromiseDispenser: "fluid.tests.promiseDispenser({arguments}.0, resolve)",
-        rejectedPromiseDispenser: "fluid.tests.promiseDispenser({arguments}.0, reject)",
+        rejectedPromiseDispenser: "fluid.tests.promiseDispenser({arguments}.0, reject)"
     },
     modules: [{
         name: "FLUID-5949 Task/promise-based testing",

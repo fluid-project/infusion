@@ -554,7 +554,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             if (last) {
                 if (thisExec.execute) {
                     fluid.test.execExecutor(thisExec, thisText, finishSequence);
-                    //finishSequence();
                 }
                 else {
                     fluid.test.bindExecutor(thisExec, fluid.identity, finishSequence, thisText);
@@ -578,7 +577,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 }
                 else {
                     fluid.test.execExecutor(thisExec, thisText, that.execute);
-                    //that.execute();
                 }
             }
         };
