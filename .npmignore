@@ -2,6 +2,7 @@
 .gitignore
 .npmignore
 .project
+report.tap
 build/
 demos/
 examples/
