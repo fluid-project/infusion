@@ -369,7 +369,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             prefsEditor: {
                 type: "fluid.tests.composite.separatedPanel.lazyLoad.prefsEditor",
                 container: ".flc-prefsEditor-separatedPanel",
-                createOnEvent: "{prefsTester}.events.onTestCaseStart",
+                createOnEvent: "{prefsTester}.events.onTestCaseStart"
             },
             prefsTester: {
                 type: "fluid.tests.separatedPanelLazyLoadIntegrationTester"
