@@ -13,7 +13,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 "use strict";
 
 var _ = require("lodash");
-var path = require("path");
 var execSync = require("child_process").execSync;
 
 /**
@@ -107,6 +106,14 @@ module.exports = function (grunt) {
                     cwd: "build/",
                     src: "<%= customBuildName %>.*",
                     dest: "dist/"
+                }]
+            },
+            distAssets: {
+                files: [{
+                    expand: true,
+                    cwd: "build/",
+                    src: ["src/lib/fonts/**", "src/framework/preferences/fonts/**", "src/framework/preferences/images/**"],
+                    dest: "dist/assets/"
                 }]
             }
         },
@@ -203,18 +210,25 @@ module.exports = function (grunt) {
         stylus: {
             compile: {
                 options: {
-                    compress: "<%= buildSettings.compress %>"
+                    compress: "<%= buildSettings.compress %>",
+                    relativeDest: ".."
+                },
+                files: [{
+                    expand: true,
+                    src: ["src/**/css/stylus/*.styl"],
+                    ext: ".css"
+                }]
+            },
+            dist: {
+                options: {
+                    compress: "<%= buildSettings.compress %>",
+                    relativeDest: ".."
                 },
                 files: [{
                     expand: true,
                     src: ["src/**/css/stylus/*.styl"],
                     ext: ".css",
-                    rename: function (dest, src) {
-                        // Move the generated css files one level up out of the stylus directory
-                        var dir = path.dirname(src);
-                        var filename = path.basename(src);
-                        return path.join(dir, "..", filename);
-                    }
+                    dest: "dist/assets/"
                 }]
             }
         },
@@ -283,7 +297,7 @@ module.exports = function (grunt) {
         var concatTask = grunt.config.get("buildSettings.compress") ? "uglify:" : "concat:";
         var tasks = [
             "clean",
-            "stylus",
+            "stylus:dist",
             "modulefiles:" + target,
             "pathMap:" + target,
             "copy:" + target,
@@ -321,7 +335,8 @@ module.exports = function (grunt) {
             "copy:" + options.target,
             "copy:necessities",
             concatTask + options.target,
-            "copy:distJS"
+            "copy:distJS",
+            "copy:distAssets"
         ];
         grunt.task.run(tasks);
     });
@@ -335,7 +350,7 @@ module.exports = function (grunt) {
         grunt.task.run(tasks);
     });
 
-    grunt.registerTask("buildStylus", ["clean:stylus", "stylus"]);
+    grunt.registerTask("buildStylus", ["clean:stylus", "stylus:compile"]);
 
     grunt.registerTask("default", ["build:all"]);
     grunt.registerTask("custom", ["build:custom"]);
