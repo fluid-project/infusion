@@ -43,11 +43,60 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Ancestor should be 'top1'", "top1", fluid.findAncestor($("#page-link-1"), testFunc).id);
         });
 
+
+        fluid.registerNamespace("fluid.tests.fluid5821");
+
+        fluid.tests.fluid5821.isEmptyJquery = function (message, element, checkSelector) {
+            jqUnit.assertEquals(message + ": The element should have a length of zero...", 0, element.length);
+            var fieldsToCheck = ["context", "selectorName"];
+            if (checkSelector) {
+                fieldsToCheck.push("selector");
+            }
+            fluid.each(fieldsToCheck, function (field) {
+                jqUnit.assertNotUndefined(message + ": The field '" + field + "' should not be undefined...", element[field]);
+                jqUnit.assertNotNull(message + ": The field '" + field + "' should not be null...", element[field]);
+            });
+        };
+
+        fluid.defaults("fluid.tests.fluid5821", {
+            gradeNames: ["fluid.viewComponent"],
+            selectors: {
+                bad:  ".notGonnaFindIt",
+                emptyString: ""
+            }
+        });
+
+        fluid.tests.assertJQuery = function (message, node) {
+            jqUnit.assertValue(message, node.jquery);
+        };
+
+        jqUnit.test("FLUID-5821: DOM binder missing/empty selector tests", function () {
+            var that = fluid.tests.fluid5821("body");
+            function expectContainer(message, container) {
+                jqUnit.assertEquals(message + " - located container with empty string ", fluid.unwrap(that.container), fluid.unwrap(container));
+                fluid.tests.assertJQuery(message + " - located container should be a jQuery", container);
+            }
+            var missingElement = that.locate("missing");
+            fluid.tests.fluid5821.isEmptyJquery("Locate a non-existent selector key", missingElement);
+            var badElement = that.locate("bad");
+            fluid.tests.fluid5821.isEmptyJquery("Locate a selector which matches nothing", badElement, true);
+            var container = that.locate("emptyString");
+            expectContainer("Original locate", container);
+            var rawContainer = fluid.unwrap(that.container);
+            var container2 = that.locate("emptyString", rawContainer);
+            expectContainer("locate with raw container", container2);
+            var container3 = that.dom.fastLocate("emptyString", that.container);
+            expectContainer("fastLocate after cached raw container", container3);
+        });
+
         jqUnit.test("fluid.container: bind to an selector", function () {
-            jqUnit.expect(1);
+            jqUnit.expect(3);
             // Give it a valid id selector.
+            var selector = "#main-container";
             var result = fluid.container("#main-container");
             jqUnit.assertTrue("One element should be returned when specifying a selector", 1, result.length);
+            jqUnit.assertEquals("The selector property should be set", selector, result.selector);
+            jqUnit.assertEquals("The context property should be set", document.URL, result.context.URL);
 
             jqUnit.expectFrameworkDiagnostic("Selector matching two elements for container", function () {
                 result = fluid.container(".container");
@@ -122,7 +171,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The element ID should be set after allocateSimpleId is called with element.", fluidId, elementWithoutId.prop("id"));
         });
 
-
         // FLUID-5277: Improve the error message when an nonexistent container is provided for fluid.viewComponent and fluid.rendererComponent
         fluid.defaults("fluid.tests.fluid5277", {
             gradeNames: ["fluid.viewComponent"]
@@ -165,7 +213,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
 
         function blurTest(message, provokeTarget, provokeOp, shouldBlur, excludeMaker) {
-            jqUnit.test("Dead man's blur test - " + message, function () {
+            jqUnit.asyncTest("Dead man's blur test - " + message, function () {
 
                 noteTime();
 
@@ -204,14 +252,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     var element = blurTester.locate(provokeTarget);
                     if (provokeOp === "click") {
                         element.click();
-                    } else{
+                    } else {
                         fluid[provokeOp](element);
                     }
                 }, blurrer.options.delay - 100);
 
                 window.setTimeout(blurOutwaiter, blurrer.options.delay + 300);
-
-                jqUnit.stop();
             });
         }
 

@@ -330,7 +330,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     // TODO: This will eventually go into the core framework for "Luke Skywalker Event Binding"
     fluid.analyseTarget = function (testCaseState, material, expectedPrefix) {
-        if (typeof(material) === "string" && material.charAt(0) === "{") {
+        if (fluid.isIoCReference(material)) {
             var parsed = fluid.parseContextReference(material);
             if (fluid.isIoCSSSelector(parsed.context)) {
                 var selector = fluid.parseSelector(parsed.context, fluid.IoCSSMatcher);
@@ -375,7 +375,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     namespace: fixture.namespace,
                     priority: fixture.priority
                 });
-                id = fluid.pushDistributions(analysed.head, analysed.selector,
+                id = fluid.pushDistributions(analysed.head, analysed.selector, fixture.event,
                     [{options: options, recordType: "distribution", priority: fluid.mergeRecordTypes.distribution}]
                 );
             };
@@ -391,20 +391,21 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.test.decoders.changeEvent = function (testCaseState, fixture) {
         var event = testCaseState.expand(fixture.changeEvent);
         var listener = fluid.test.decodeListener(testCaseState, fixture);
-        var that = fluid.test.makeBinder(listener,
-           function (wrapped) {
+        var listenerId = fluid.allocateGuid();
+        var that = fluid.test.makeBinder(listener, function (wrapped) {
             var spec = fixture.path === undefined ? fixture.spec : {path: fixture.path};
             if (spec === undefined || spec.path === undefined) {
                 fluid.fail("Error in changeEvent fixture ", fixture,
                    ": could not find path specification named \"path\" or \"spec\"");
             }
+            spec.listenerId = listenerId;
             spec.transactional = true;
             if (spec.priority === undefined) {
                 spec.priority = "last:testing";
             }
             event.addListener(spec, wrapped, fixture.namespace);
-        }, function (wrapped) {
-            event.removeListener(wrapped);
+        }, function () {
+            event.removeListener(listenerId);
         });
         return that;
     };
@@ -555,6 +556,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 that.index++;
             } else {
                 that.stopped = true;
+                QUnit.config.testsArriving = false;
             }
         };
         that.nextLater = function () {
@@ -566,6 +568,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 that.next();
             }
         };
+        // FLUID-5810: Support our patched option for QUnit to prevent premature test termination
+        QUnit.config.testsArriving = true;
         return that;
     };
 
@@ -585,9 +589,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.test.processTestCase = function (testCaseState) {
         var testCase = testCaseState.testCase;
+        if (!testCase.name) {
+            fluid.fail("Error in configuration of testCase - required field \"name\" is missing in ", testCase);
+        }
         jqUnit.module(testCase.name);
         var fixtures = fluid.makeArray(testCase.tests);
-        fluid.each(fixtures, function (fixture) {
+        fluid.each(fixtures, function (fixture, index) {
             var testType = "asyncTest";
 
             var testFunc = function () {
@@ -611,6 +618,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             // might enter the queue and immediately leave it as a result of only ever issuing
             // asynchronous tests
             var oldLength = QUnit.config.queue.length;
+            if (!fixture.name) {
+                fluid.fail("Error in configuration of test fixture - required field \"name\" is missing in ", fixture, " at index " + index + " of test case ", testCase);
+            }
             jqUnit[testType](fixture.name, testFunc);
             if (QUnit.config.queue.length === oldLength) {
                 fluid.log(fluid.logLevel.IMPORTANT, "Skipped test " + fixture.name);

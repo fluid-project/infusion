@@ -29,9 +29,10 @@
         border-bottom: 1px solid #ccc;
 
         .fl-prefsEditor-buttons {
-            box-shadow: 2px 2px 3px 0px #6f6f6f;
+            box-shadow: 2px 2px 3px 0 #6f6f6f;
             border-bottom: 1px solid #ccc;
             border-left: 1px solid #ccc;
+            border-right: 1px solid #ccc; //FLUID-4991: The shadow effect around the hide/show preferences bug fix. (Border right added)
             border-bottom-left-radius:8px;
             border-bottom-right-radius:8px;
             background-color: white;
@@ -63,8 +64,8 @@
         border-right: 1px solid #ccc;
     }
 
-    // Font icons for reset/save tabs
-    .fl-icon-undo, .fl-icon-preferences {
+    // Font icon for reset tab
+    .fl-icon-undo {
         font-family: 'InfusionIcons' !important;
         speak: none;
         font-style: normal;
@@ -80,10 +81,6 @@
 
     .fl-icon-undo:before {
         content: "\e008";
-    }
-
-    .fl-icon-preferences:before {
-        content: "\e00f";
     }
 }
 

@@ -76,7 +76,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * Gets stored state from the jQuery instance's data map.
      * This function is unsupported: It is not really intended for use by implementors.
      */
-    fluid.getScopedData = function(target, key) {
+    fluid.getScopedData = function (target, key) {
         var data = $(target).data(NAMESPACE_KEY);
         return data ? data[key] : undefined;
     };
@@ -86,8 +86,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * accepts multiple-element jQueries.
      * This function is unsupported: It is not really intended for use by implementors.
      */
-    fluid.setScopedData = function(target, key, value) {
-        $(target).each(function() {
+    fluid.setScopedData = function (target, key, value) {
+        $(target).each(function () {
             var data = $.data(this, NAMESPACE_KEY) || {};
             data[key] = value;
 
@@ -100,7 +100,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     var lastFocusedElement = null;
 
-    $(document).bind("focusin", function (event){
+    $(document).on("focusin", function (event) {
         lastFocusedElement = event.target;
     });
 
@@ -117,13 +117,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * This function is unsupported: It is not really intended for use by implementors.
      */
 
-    fluid.enabled = function(target, state) {
+    fluid.enabled = function (target, state) {
         target = $(target);
         if (state === undefined) {
             return fluid.getScopedData(target, ENABLEMENT_KEY) !== false;
         }
         else {
-            $("*", target).add(target).each(function() {
+            $("*", target).add(target).each(function () {
                 if (fluid.getScopedData(this, ENABLEMENT_KEY) !== undefined) {
                     fluid.setScopedData(this, ENABLEMENT_KEY, state);
                 }
@@ -135,7 +135,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     };
 
-    fluid.initEnablement = function(target) {
+    fluid.initEnablement = function (target) {
         fluid.setScopedData(target, ENABLEMENT_KEY, true);
     };
 
@@ -162,14 +162,14 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     function applyOp(node, func) {
         node = $(node);
-        node.trigger("fluid-"+func);
+        node.trigger("fluid-" + func);
         node.triggerHandler(func);
         node[func]();
         return node;
     }
 
-    $.each(["focus", "blur"], function(i, name) {
-        fluid[name] = function(elem) {
+    $.each(["focus", "blur"], function (i, name) {
+        fluid[name] = function (elem) {
             return applyOp(elem, name);
         };
     });

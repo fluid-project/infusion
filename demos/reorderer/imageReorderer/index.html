@@ -15,10 +15,7 @@
 
         <!--  Required javascript modules for the Image Reorderer. These can be replaced by Infusion-all.js -->
         <script type="text/javascript" src="../../../src/lib/jquery/core/js/jquery.js"></script>
-        <script type="text/javascript" src="../../../src/lib/jquery/ui/js/jquery.ui.core.js"></script>
-        <script type="text/javascript" src="../../../src/lib/jquery/ui/js/jquery.ui.widget.js"></script>
-        <script type="text/javascript" src="../../../src/lib/jquery/ui/js/jquery.ui.mouse.js"></script>
-        <script type="text/javascript" src="../../../src/lib/jquery/ui/js/jquery.ui.draggable.js"></script>
+        <script type="text/javascript" src="../../../src/lib/jquery/ui/js/jquery-ui.js"></script>
         <script type="text/javascript" src="../../../src/framework/core/js/FluidDocument.js"></script>
         <script type="text/javascript" src="../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
         <script type="text/javascript" src="../../../src/framework/core/js/Fluid.js"></script>
@@ -40,8 +37,6 @@
 
         <script type="text/javascript" src="../../../src/components/overviewPanel/js/OverviewPanel.js"></script>
         <script type="text/javascript" src="../../shared/js/overviewWrapper.js"></script>
-
-        <script type="text/javascript" src="js/imageReordererDemo.js"></script>
     </head>
 
   <body class="demo-imageReorderer-container">
@@ -54,8 +49,6 @@
              <p><strong>Keyboard instructions:</strong> Direction keys (arrow keys or i-j-k-m) move focus. CTRL + direction keys move the item. View an image by using the 'Return' or 'Enter' key.</p>
 
             <form action="#" id="reorder-images-form" class="flc-imageReorderer fl-imageReorderer fl-reorderer-horizontalLayout fl-focus">
-
-                <div>
                     <a href="images/Dragonfruit.jpg" class="flc-imageReorderer-item fl-imageReorderer-item">
                         <img src="images/Dragonfruit.jpg" alt="Dragonfruit thumbnail" />
                         <span class="flc-reorderer-imageTitle  fl-imageReorderer-caption">Dragonfruit</span>
@@ -92,11 +85,18 @@
                         <span class="flc-reorderer-imageTitle  fl-imageReorderer-caption">Grapes</span>
                         <input name="Grapes" value="0" type="hidden" />
                     </a>
-               </div>
             </form>
 
             <script type="text/javascript">
-                demo.formBasedImageReorderer();
+                fluid.reorderImages(".flc-imageReorderer", {
+                    selectors: {
+                        movables: ".flc-imageReorderer-item"
+                    },
+                    disableWrap: true,
+                    listeners: {
+                        "afterMove.postModel": "fluid.identity" // disable the default post action
+                    }
+                });
             </script>
          </div>
      </section>

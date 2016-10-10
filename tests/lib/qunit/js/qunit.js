@@ -1,9 +1,13 @@
 /**
  * QUnit v1.12.0 - A JavaScript Unit Testing Framework
+ * Includes patch for FLUID-5810 intermittent test failure issue, supporting new
+ * config option "testsArriving" to prevent premature termination of test run
+ * at lines 1465-1471
  *
  * http://qunitjs.com
  *
  * Copyright 2013 jQuery Foundation and other contributors
+ * Copyright 2016 Raising the Floor (International)
  * Released under the MIT license.
  * https://jquery.org/license/
  */
@@ -1458,7 +1462,13 @@ function process( last ) {
 	}
 	config.depth--;
 	if ( last && !config.blocking && !config.queue.length && config.depth === 0 ) {
-		done();
+		// BEGIN PATCH FLUID-5810
+		if (config.testsArriving) {
+			setTimeout( next, 13);
+		} else {
+			done();
+		}
+		// END PATCH FLUID-5810
 	}
 }
 

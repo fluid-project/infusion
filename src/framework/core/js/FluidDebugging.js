@@ -42,7 +42,7 @@ var fluid = fluid || fluid_2_0_0;
     fluid.tracing.summarisePathCount = function (pathCount) {
         pathCount = pathCount || fluid.tracing.pathCount;
         var togo = {};
-        for (var i = 0; i < pathCount.length; ++ i) {
+        for (var i = 0; i < pathCount.length; ++i) {
             var path = pathCount[i];
             if (!togo[path]) {
                 togo[path] = 1;
@@ -62,13 +62,13 @@ var fluid = fluid || fluid_2_0_0;
     fluid.tracing.condensePathCount = function (prefixes, pathCount) {
         prefixes = fluid.makeArray(prefixes);
         var prefixCount = {};
-        fluid.each(prefixes, function(prefix) {
+        fluid.each(prefixes, function (prefix) {
             prefixCount[prefix] = 0;
         });
         var togo = [];
         fluid.each(pathCount, function (el) {
             var path = el.path;
-            if (!fluid.find(prefixes, function(prefix) {
+            if (!fluid.find(prefixes, function (prefix) {
                 if (path.indexOf(prefix) === 0) {
                     prefixCount[prefix] += el.count;
                     return true;
@@ -77,7 +77,7 @@ var fluid = fluid || fluid_2_0_0;
                 togo.push(el);
             }
         });
-        fluid.each(prefixCount, function(count, path) {
+        fluid.each(prefixCount, function (count, path) {
             togo.unshift({path: path, count: count});
         });
         return togo;
@@ -91,14 +91,14 @@ var fluid = fluid || fluid_2_0_0;
         var stackStyle = {
             offset: 0
         };
-        if (e["arguments"]) {
+        if (e.arguments) {
             style = "chrome";
         } else if (typeof window !== "undefined" && window.opera && e.stacktrace) {
             style = "opera10";
         } else if (e.stack) {
             style = "firefox";
             // Detect FireFox 4-style stacks which are 1 level less deep
-            stackStyle.offset = e.stack.indexOf("Trace exception") === -1? 1 : 0;
+            stackStyle.offset = e.stack.indexOf("Trace exception") === -1 ? 1 : 0;
         } else if (typeof window !== "undefined" && window.opera && !("stacktrace" in e)) { //Opera 9-
             style = "opera";
         }
@@ -133,7 +133,7 @@ var fluid = fluid || fluid_2_0_0;
         return fluid.transform(lines, function (line) {
             line = line.replace(/\)/g, "");
             var atind = line.indexOf(delimiter);
-            return atind === -1? [line] : [line.substring(atind + delimiter.length), line.substring(0, atind)];
+            return atind === -1 ? [line] : [line.substring(atind + delimiter.length), line.substring(0, atind)];
         });
     };
 
@@ -166,7 +166,7 @@ var fluid = fluid || fluid_2_0_0;
     // UNOPTIMISED
     fluid.generatePadding = function (c, count) {
         var togo = "";
-        for (var i = 0; i < count; ++ i) {
+        for (var i = 0; i < count; ++i) {
             togo += c;
         }
         return togo;
@@ -181,7 +181,7 @@ var fluid = fluid || fluid_2_0_0;
         return desc && !desc.get ? obj[key] : fluid.SYNTHETIC_PROPERTY;
     };
 
-    function printImpl (obj, small, options) {
+    function printImpl(obj, small, options) {
         function out(str) {
             options.output += str;
         }
@@ -210,7 +210,7 @@ var fluid = fluid || fluid_2_0_0;
                     out("[]");
                 } else {
                     out("[\n" + big);
-                    for (i = 0; i < obj.length; ++ i) {
+                    for (i = 0; i < obj.length; ++i) {
                         if (printImpl(obj[i], big, options)) {
                             return true;
                         }
@@ -224,7 +224,7 @@ var fluid = fluid || fluid_2_0_0;
             else {
                 out("{" + (isFunction ? " Function" : "") + "\n" + big); // NB - Function object invalid for JSON interchange
                 var keys = fluid.keys(obj);
-                for (i = 0; i < keys.length; ++ i) {
+                for (i = 0; i < keys.length; ++i) {
                     var key = keys[i];
                     var value = fluid.getSafeProperty(obj, key);
                     out(JSON.stringify(key) + ": ");
@@ -276,7 +276,7 @@ var fluid = fluid || fluid_2_0_0;
         }
         if (!element.nodeType && fluid.isArrayable(element)) {
             togo = "[";
-            for (var i = 0; i < element.length; ++ i) {
+            for (var i = 0; i < element.length; ++i) {
                 togo += fluid.dumpEl(element[i]);
                 if (i < element.length - 1) {
                     togo += ", ";

@@ -26,7 +26,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     // Real data binding would be nice to replace these two pairs.
     fluid.uploader.fileQueueView.rowForFile = function (that, file) {
-        return that.locate("fileQueue").find("#" + file.id);
+        return that.container.find("#" + file.id);
     };
 
     fluid.uploader.fileQueueView.errorRowForFile = function (that, file) {
@@ -242,7 +242,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
         // update the click event and the styling for the file delete button
         var removeRowBtn = that.locate("fileIconBtn", row);
-        removeRowBtn.unbind("click");
+        removeRowBtn.off("click");
         removeRowBtn.removeClass(that.options.styles.remove);
         removeRowBtn.attr("title", that.options.strings.status.success);
     };

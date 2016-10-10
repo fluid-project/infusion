@@ -15,11 +15,12 @@
             "./js/ModelTransformationTransforms.js",
             "./js/jquery.keyboard-a11y.js",
             "./js/FluidView.js",
-            "./js/FluidRequests.js"
+            "./js/FluidRequests.js",
+            "./js/ResourceLoader.js"
         ],
         "dependencies": [
             "jQuery",
-            "jQueryUICore"
+            "jQueryUI"
         ]
     }
 }

@@ -93,8 +93,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.tooltip.closeAll = function (that) {
+        var dokkument = fluid.getDocument(that.container);
         fluid.each(that.openIdMap, function (value, key) {
-            var target = fluid.byId(key);
+            var target = fluid.byId(key, dokkument);
             // "white-box" behaviour - fabricating this fake event shell triggers the standard "close" sequence including notifying
             // our own handler. This will be very fragile to changes in jQuery UI and the underlying widget code
             that.container.tooltip("close", {
@@ -121,10 +122,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.tooltip.doDestroy = function (that) {
         if (that.initialised) {
-            fluid.tooltip.closeAll(that);
+            fluid.tooltip.closeAll(that, true);
+            var dokkument = fluid.getDocument(that.container),
+                container = that.container[0];
             // jQuery UI framework will throw a fit if we have instantiated a widget on a DOM element and then
             // removed it from the DOM. This apparently can't be detected via the jQuery UI API itself.
-            if ($.contains(document, that.container[0])) {
+            if ($.contains(dokkument, container) || dokkument === container) {
                 that.container.tooltip("destroy");
             }
             that.initialised = false; // TODO: proper framework facility for this coming with FLUID-4890

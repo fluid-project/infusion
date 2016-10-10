@@ -622,7 +622,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.test("FLUID-5280: The relayed new value takes precedence over the default model value", function () {
             var that = fluid.tests.fluid5280(".flc-fluid5280-main");
-            that.applier.requestChange("audio", fluid.tests.fluid5280.newValue);
+            that.applier.change("audio", fluid.tests.fluid5280.newValue);
             that.refreshView();
         });
 
@@ -1479,7 +1479,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         });
 
-        fluid.tests.FLUID4536.tryLoad = function(that) {
+        fluid.tests.FLUID4536.tryLoad = function (that) {
             that.iframe = that.dom.locate("iframe");
             function tryLoad() {
                 var iframeWindow = that.iframe[0].contentWindow;
@@ -1493,7 +1493,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
             tryLoad();
             if (!that.jQuery) {
-                that.iframe.load(tryLoad);
+                that.iframe.on("load", tryLoad);
             }
         };
 
@@ -1524,14 +1524,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             renderOnInit: true
         });
 
-        jqUnit.asyncTest("FLUID-4536 iframe propagation test", function() {
+        jqUnit.asyncTest("FLUID-4536 iframe propagation test", function () {
             jqUnit.expect(4);
             fluid.tests.FLUID4536("#qunit-fixture", {
                 listeners: {
                     iframeLoad: {
                         priority: "last",
                         listener:
-                        function(that) {
+                        function (that) {
                             jqUnit.assertValue("Inner component constructed", that.iframeHead.iframeChild);
                             var outerExpando = $.expando;
                             var innerExpando = that.iframeContainer.constructor.expando;
@@ -1726,8 +1726,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var that = fluid.tests.fluid5099("#FLUID-5099");
             var test = that.locate("test");
             jqUnit.assertEquals("Original value is correct", "TEST", test.val());
-            // TODO: Source tracking is not supported in current applier
-            fluid.addSourceGuardedListener(that.applier, "test", "test", function () {
+            // TODO: The renderer does not fire sourced changes automatically
+            that.applier.modelChanged.addListener({excludeSource: "test", path: "test"}, function () {
                 jqUnit.assert("Listener is applied correctly.");
             });
             fluid.changeElementValue(test, "NEW VALUE");

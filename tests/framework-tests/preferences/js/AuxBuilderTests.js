@@ -80,10 +80,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "type": "fluid.prefs.contrast",
             "classes": {
                 "default": "fl-theme-prefsEditor-default",
-                "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
-                "wb": "fl-theme-prefsEditor-wb fl-theme-wb",
-                "by": "fl-theme-prefsEditor-by fl-theme-by",
-                "yb": "fl-theme-prefsEditor-yb fl-theme-yb"
+                "bw": "fl-theme-bw",
+                "wb": "fl-theme-wb",
+                "by": "fl-theme-by",
+                "yb": "fl-theme-yb"
             }
         },
         "enactors": [{
@@ -126,10 +126,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "type": "fluid.prefs.contrast",
             "classes": {
                 "default": "fl-theme-prefsEditor-default",
-                "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
-                "wb": "fl-theme-prefsEditor-wb fl-theme-wb",
-                "by": "fl-theme-prefsEditor-by fl-theme-by",
-                "yb": "fl-theme-prefsEditor-yb fl-theme-yb"
+                "bw": "fl-theme-bw",
+                "wb": "fl-theme-wb",
+                "by": "fl-theme-by",
+                "yb": "fl-theme-yb"
             }
         },
         "enactors": [{
@@ -145,10 +145,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "type": "fluid.prefs.enactor.contrast",
             "classes": {
                 "default": "fl-theme-prefsEditor-default",
-                "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
-                "wb": "fl-theme-prefsEditor-wb fl-theme-wb",
-                "by": "fl-theme-prefsEditor-by fl-theme-by",
-                "yb": "fl-theme-prefsEditor-yb fl-theme-yb"
+                "bw": "fl-theme-bw",
+                "wb": "fl-theme-wb",
+                "by": "fl-theme-by",
+                "yb": "fl-theme-yb"
             }
         }, {
             "type": "fluid.prefs.enactor.tableOfContents",
@@ -171,10 +171,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "container": ".flc-prefsEditor-contrast",
             "classnameMap": {
                 "default": "fl-theme-prefsEditor-default",
-                "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
-                "wb": "fl-theme-prefsEditor-wb fl-theme-wb",
-                "by": "fl-theme-prefsEditor-by fl-theme-by",
-                "yb": "fl-theme-prefsEditor-yb fl-theme-yb"
+                "bw": "fl-theme-bw",
+                "wb": "fl-theme-wb",
+                "by": "fl-theme-by",
+                "yb": "fl-theme-yb"
             },
             "template": "templates/contrast"
         }]
@@ -272,10 +272,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "type": "fluid.prefs.contrast",
                     "classes": {
                         "default": "fl-theme-prefsEditor-default",
-                        "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
-                        "wb": "fl-theme-prefsEditor-wb fl-theme-wb",
-                        "by": "fl-theme-prefsEditor-by fl-theme-by",
-                        "yb": "fl-theme-prefsEditor-yb fl-theme-yb"
+                        "bw": "fl-theme-bw",
+                        "wb": "fl-theme-wb",
+                        "by": "fl-theme-by",
+                        "yb": "fl-theme-yb"
                     },
                     "panel": {
                         "type": "fluid.prefs.panel.contrast",
@@ -283,10 +283,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         "gradeNames": ["fluid.tests.panelGrade"],
                         "classnameMap": {
                             "default": "fl-theme-prefsEditor-default",
-                            "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
-                            "wb": "fl-theme-prefsEditor-wb fl-theme-wb",
-                            "by": "fl-theme-prefsEditor-by fl-theme-by",
-                            "yb": "fl-theme-prefsEditor-yb fl-theme-yb"
+                            "bw": "fl-theme-bw",
+                            "wb": "fl-theme-wb",
+                            "by": "fl-theme-by",
+                            "yb": "fl-theme-yb"
                         },
                         "template": "templates/contrast",
                         "message": "messages/contrast"
@@ -308,10 +308,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "type": "fluid.prefs.contrast",
                     "classes": {
                         "default": "fl-theme-prefsEditor-default",
-                        "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
-                        "wb": "fl-theme-prefsEditor-wb fl-theme-wb",
-                        "by": "fl-theme-prefsEditor-by fl-theme-by",
-                        "yb": "fl-theme-prefsEditor-yb fl-theme-yb"
+                        "bw": "fl-theme-bw",
+                        "wb": "fl-theme-wb",
+                        "by": "fl-theme-by",
+                        "yb": "fl-theme-yb"
                     },
                     "panel": {
                         "type": "fluid.prefs.panel.contrast",
@@ -319,10 +319,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         "gradeNames": ["fluid.tests.panelGrade"],
                         "classnameMap": {
                             "default": "fl-theme-prefsEditor-default",
-                            "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
-                            "wb": "fl-theme-prefsEditor-wb fl-theme-wb",
-                            "by": "fl-theme-prefsEditor-by fl-theme-by",
-                            "yb": "fl-theme-prefsEditor-yb fl-theme-yb"
+                            "bw": "fl-theme-bw",
+                            "wb": "fl-theme-wb",
+                            "by": "fl-theme-by",
+                            "yb": "fl-theme-yb"
                         },
                         "template": "templates/contrast",
                         "message": "messages/contrast"
@@ -341,10 +341,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 gradeNames: ["fluid.tests.panelGrade", "fluid.prefs.prefsEditorConnections"],
                                 classnameMap: {
                                     "default": "fl-theme-prefsEditor-default",
-                                    "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
-                                    "wb": "fl-theme-prefsEditor-wb fl-theme-wb",
-                                    "by": "fl-theme-prefsEditor-by fl-theme-by",
-                                    "yb": "fl-theme-prefsEditor-yb fl-theme-yb"
+                                    "bw": "fl-theme-bw",
+                                    "wb": "fl-theme-wb",
+                                    "by": "fl-theme-by",
+                                    "yb": "fl-theme-yb"
                                 },
                                 model: {
                                     value: "prefsEditor.model.preferences.fluid_prefs_contrast"
@@ -487,7 +487,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "panel": {
                 "type": "fluid.prefs.panel.textSize",
                 "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
-                "template": "%templatePrefix/PrefsEditorTemplate-textSize.html",
+                "template": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html",
                 "message": "%messagePrefix/PrefsEditorTemplate-textSize.json"
             }
         }
@@ -544,7 +544,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "panel": {
                 "type": "fluid.prefs.panel.textSize",
                 "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
-                "template": "%templatePrefix/PrefsEditorTemplate-textSize.html",
+                "template": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html",
                 "message": "%messagePrefix/PrefsEditorTemplate-textSize.json"
             }
         },
@@ -640,11 +640,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         messageLoader: {
-            gradeNames: ["fluid.prefs.resourceLoader"],
+            gradeNames: ["fluid.resourceLoader"],
             resources: {}
         },
         templateLoader: {
-            gradeNames: ["fluid.prefs.resourceLoader"],
+            gradeNames: ["fluid.resourceLoader"],
             resources: {}
         }
     };
@@ -657,7 +657,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "panel": {
                 "type": "fluid.prefs.panel.textSize",
                 "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
-                "template": "%templatePrefix/PrefsEditorTemplate-textSize.html",
+                "template": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html",
                 "message": "%messagePrefix/PrefsEditorTemplate-textSize.json"
             }
         },
@@ -689,13 +689,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         templateLoader: {
-            gradeNames: ["fluid.prefs.resourceLoader"],
+            gradeNames: ["fluid.resourceLoader"],
             resources: {
-                "fluid_prefs_panel_textSize": "%templatePrefix/PrefsEditorTemplate-textSize.html"
+                "fluid_prefs_panel_textSize": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html"
             }
         },
         messageLoader: {
-            gradeNames: ["fluid.prefs.resourceLoader"],
+            gradeNames: ["fluid.resourceLoader"],
             resources: {
                 "fluid_prefs_panel_textSize": "%messagePrefix/PrefsEditorTemplate-textSize.json"
             }
@@ -794,7 +794,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "panel": {
                         "type": "fluid.prefs.panel.textSize",
                         "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
-                        "template": "%templatePrefix/PrefsEditorTemplate-textSize.html",
+                        "template": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html",
                         "message": "%messagePrefix/PrefsEditorTemplate-textSize.json"
                     }
                 },
@@ -855,14 +855,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 templateLoader: {
-                    gradeNames: ["fluid.prefs.resourceLoader"],
+                    gradeNames: ["fluid.resourceLoader"],
                     resources: {
-                        "fluid_prefs_panel_textSize": "%templatePrefix/PrefsEditorTemplate-textSize.html",
+                        "fluid_prefs_panel_textSize": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html",
                         "fluid_prefs_panel_otherTextSize": "%templatePrefix/PrefsEditorTemplate-otherTextSize.html"
                     }
                 },
                 messageLoader: {
-                    gradeNames: ["fluid.prefs.resourceLoader"],
+                    gradeNames: ["fluid.resourceLoader"],
                     resources: {
                         "fluid_prefs_panel_textSize": "%messagePrefix/PrefsEditorTemplate-textSize.json",
                         "fluid_prefs_panel_otherTextSize": "%messagePrefix/PrefsEditorTemplate-otherTextSize.json"
@@ -929,13 +929,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 templateLoader: {
-                    gradeNames: ["fluid.prefs.resourceLoader"],
+                    gradeNames: ["fluid.resourceLoader"],
                     resources: {
                         "fluid_prefs_panel_oneForManyPrefs": "%templatePrefix/PrefsEditorTemplate-linksControls.html"
                     }
                 },
                 messageLoader: {
-                    gradeNames: ["fluid.prefs.resourceLoader"],
+                    gradeNames: ["fluid.resourceLoader"],
                     resources: {
                         "fluid_prefs_panel_oneForManyPrefs": "%messagePrefix/PrefsEditorTemplate-linksControls.json"
                     }
@@ -967,7 +967,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "panel": {
                         "type": "fluid.prefs.panel.textSize",
                         "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
-                        "template": "%templatePrefix/PrefsEditorTemplate-textSize.html",
+                        "template": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html",
                         "message": "%messagePrefix/PrefsEditorTemplate-textSize.json"
                     },
                     "enactor": {
@@ -1002,14 +1002,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 templateLoader: {
-                    gradeNames: ["fluid.prefs.resourceLoader"],
+                    gradeNames: ["fluid.resourceLoader"],
                     resources: {
                         "prefsEditor": "%templatePrefix/SeparatedPanelPrefsEditor.html",
-                        "fluid_prefs_panel_textSize": "%templatePrefix/PrefsEditorTemplate-textSize.html"
+                        "fluid_prefs_panel_textSize": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html"
                     }
                 },
                 messageLoader: {
-                    gradeNames: ["fluid.prefs.resourceLoader"],
+                    gradeNames: ["fluid.resourceLoader"],
                     resources: {
                         "fluid_prefs_panel_textSize": "%messagePrefix/PrefsEditorTemplate-textSize.json",
                         "prefsEditor": "%messagePrefix/PrefsEditorTemplate-prefsEditor.json"
@@ -1980,13 +1980,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "selectors": {}
         },
         templateLoader: {
-            gradeNames: ["fluid.prefs.resourceLoader"],
+            gradeNames: ["fluid.resourceLoader"],
             resources: {
                 "prefsEditor": "%templatePrefix/prefs.html"
             }
         },
         messageLoader: {
-            gradeNames: ["fluid.prefs.resourceLoader"],
+            gradeNames: ["fluid.resourceLoader"],
             resources: {
                 "prefsEditor": "%messagePrefix/prefs.json"
             }

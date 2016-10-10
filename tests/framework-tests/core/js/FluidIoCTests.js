@@ -10,7 +10,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global fluid, jqUnit, Float32Array */
 
 (function ($) {
     "use strict";
@@ -170,7 +170,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.expanderMemberTiming();
     });
 
-    /** FLUID-5758 - expanders in listener args which refer to {arguments} **/
+    /** FLUID-5758: expanders in listener args which refer to {arguments} **/
 
     fluid.defaults("fluid.tests.FLUID5758test", {
         gradeNames: "fluid.component",
@@ -198,6 +198,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var comp = fluid.tests.FLUID5758test();
         comp.events.onDoIt.fire("Hugo");
         jqUnit.assertEquals("Resolved value from {arguments}", "Hugo", comp.recorded);
+    });
+
+    /** FLUID-5898: Diagnostic when expanding pathed "fast path" references with mismatched context **/
+
+    fluid.defaults("fluid.tests.FLUID5898test", {
+        gradeNames: "fluid.component",
+        events: {
+            onDoIt: null
+        },
+        listeners: {
+            onDoIt: "fluid.identity({fluid.mismatched}.member)"
+        }
+    });
+
+    jqUnit.test("FLUID-5898: diagnostic for pathed reference with mismatched context", function () {
+        var that = fluid.tests.FLUID5898test();
+        jqUnit.expectFrameworkDiagnostic("Received framework diagnostic", function () {
+            that.events.onDoIt.fire();
+        }, ["could not match context", "fluid.mismatched"]);
     });
 
     /** Preservation of material with "exotic types" (with constructor) for FLUID-5089 **/
@@ -701,7 +720,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         jqUnit.assertLeftHand("Merged grades in correct left-to-right order with direct grade arguments", expected, merged2.options);
     });
-    
+
+    /** FLUID-5800 - grade hierarchy resolution algorithm **/
+
     fluid.defaults("fluid.tests.FLUID5800base", {
         events: {
             onUserToken: null
@@ -720,9 +741,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             getDeviceContext: "fluid.tests.fluid5800count"
         }
     });
-    
+
     fluid.tests.fluid5800count = function (that) {
-        ++ that.eventCount;
+        ++that.eventCount;
     };
 
     fluid.defaults("fluid.tests.FLUID5800mid", { // this used to throw on registration
@@ -731,11 +752,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             onUserToken: "{that}.getDeviceContext"
         }
     });
-    
+
     fluid.defaults("fluid.tests.FLUID5800", {
         gradeNames: ["fluid.component", "fluid.tests.FLUID5800mid"]
     });
-    
+
     jqUnit.test("FLUID-5800 merge corruption", function () {
         jqUnit.expect(2);
 
@@ -747,6 +768,79 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // See FLUID-5800 JIRA comment
         // var midDefaults = fluid.defaults("fluid.tests.FLUID5800mid");
         // jqUnit.assertEquals("Listeners were designated correctly in abstract grade", 3, midDefaults.listeners.onUserToken.length);
+    });
+
+    fluid.defaults("fluid.tests.FLUID5800base2", {
+        gradeNames: "fluid.component",
+        members: {
+            expanderCount: 0
+        },
+        mergePolicy: {
+            expanderOption: fluid.arrayConcatPolicy
+        },
+        expanderOption: "@expand:fluid.tests.FLUID5800expand({that}, {that}.expanderCount)"
+    });
+
+    fluid.defaults("fluid.tests.FLUID5800mid2", {
+        gradeNames: "fluid.tests.FLUID5800base2"
+    });
+
+    fluid.defaults("fluid.tests.FLUID5800mid3", {
+        gradeNames: "fluid.tests.FLUID5800base2"
+    });
+    // NB this grade just here for reference purposes, not used in test
+    fluid.defaults("fluid.tests.FLUID5800leaf", {
+        gradeNames: ["fluid.tests.FLUID5800mid2", "fluid.tests.FLUID5800mid3"]
+    });
+
+    fluid.tests.FLUID5800expand = function (that) {
+        return that.expanderCount++;
+    };
+
+    jqUnit.test("FLUID-5800 repeated expander evaluation", function () {
+        // Note that, obnoxiously, this failure cannot be observed via fluid.tests.FLUID5800leaf since defaults really DO just accumulate
+        // non-accumulatively
+        var that = fluid.tests.FLUID5800mid2({gradeNames: "fluid.tests.FLUID5800mid3"});
+        jqUnit.assertEquals("Expander evaluated only once", 1, that.expanderCount);
+    });
+
+    /** FLUID-5615: Base grades of subcomponents should be weaker than dynamic **/
+
+    fluid.defaults("fluid.tests.FLUID5615sub", {
+        gradeNames: ["fluid.component", "fluid.tests.FLUID5615subBase"],
+        value: "fromSub"
+    });
+
+    fluid.defaults("fluid.tests.FLUID5615subBase", {
+        gradeNames: "fluid.component",
+        value: "fromSubBase"
+    });
+
+    fluid.defaults("fluid.tests.FLUID5615dyn", {
+        gradeNames: "fluid.component",
+        value: "fromDyn"
+    });
+
+    fluid.defaults("fluid.tests.FLUID5615base", {
+        gradeNames: "fluid.component",
+        distributeOptions: {
+            record: "fluid.tests.FLUID5615dyn",
+            target: "{that sub}.options.gradeNames"
+        },
+        components: {
+            sub: {
+                type: "fluid.component",
+                options: {
+                    gradeNames: "fluid.tests.FLUID5615sub"
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5615 sub vs dynamic", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.FLUID5615base();
+        jqUnit.assertEquals("Distribution should beat subcomponent base", "fromDyn", that.sub.options.value);
     });
 
     /** Listener merging tests **/
@@ -1167,7 +1261,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 fetcher: expandFetcher,
                 mergePolicy: fluid.compileMergePolicy({ "unexpandable" : "noexpand", "unexpandableString" : "noexpand"}).builtins
             };
-            var allExpandOptions = fluid.transform(blocks, function(block) {
+            var allExpandOptions = fluid.transform(blocks, function (block) {
                 var thisOptions = $.extend(true, {}, baseExpandOptions);
                 return fluid.makeExpandOptions(block, thisOptions);
             });
@@ -1177,7 +1271,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
             var mergeOptions = fluid.makeMergeOptions({}, fluid.getMembers(allExpandOptions, "target"), baseMergeOptions);
             ultimateStrategy = mergeOptions.strategy;
-            fluid.each(allExpandOptions, function(expandOption) { expandOption.initter();});
+            fluid.each(allExpandOptions, function (expandOption) { expandOption.initter();});
             mergeOptions.initter();
             jqUnit.assertDeepEq("Properly merged and expanded self-referential structure", entry.expected, target);
         });
@@ -1283,6 +1377,82 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Resolved injected component by member name", that.chaundleTileManager, resolved);
     });
 
+    /** FLUID-5818 - ginger reference from distant construct descendent of incomplete parent **/
+
+    fluid.defaults("fluid.tests.FLUID5818root", {
+        gradeNames: "fluid.component",
+        components: {
+            child1: {
+                type: "fluid.component",
+                options: {
+                    components: {
+                        child3: {
+                            type: "fluid.component",
+                            options: {
+                                listeners: {
+                                    onCreate: {
+                                        funcName: "fluid.tests.fluid5818fetch",
+                                        args: "{child2}"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            child2: {
+                type: "fluid.component"
+            }
+        }
+    });
+
+    fluid.tests.fluid5818fetch = function (child2) {
+        jqUnit.assertValue("Should have caused fetch of child of unconstructed parent", child2);
+    };
+
+    jqUnit.test("FLUID-5818 ginger reference to child of unconstructed parent", function () {
+        jqUnit.expect(5);
+        var that = fluid.tests.FLUID5818root();
+        // White-box testing of lifecycle status
+        fluid.each([that, that.child1, that.child2, that.child1.child3], function (component) {
+            jqUnit.assertEquals("All components should have \"treeConstructed\" state", "treeConstructed", component.lifecycleStatus);
+        });
+    });
+
+    /** FLUID-5820 - scope chain reference to injected component **/
+
+    fluid.defaults("fluid.tests.FLUID5820root", {
+        gradeNames: "fluid.component",
+        components: {
+            child1: {
+                type: "fluid.component",
+                options: {
+                    components: {
+                        child2: {
+                            type: "fluid.component"
+                        }
+                    }
+                }
+            },
+            child3: {
+                type: "fluid.component",
+                options: {
+                    components: {
+                        child2: "{child1}.child2"
+                    },
+                    invokers: {
+                        get: "fluid.identity({child2})"
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5820 scope chain reference to injected component", function () {
+        var root = fluid.tests.FLUID5820root();
+        var child = root.child3.get();
+        jqUnit.assertEquals("Got resolved injected value via scope chain", root.child1.child2, child);
+    });
 
     /** FLUID-4135 - event injection and boiling test **/
 
@@ -1428,7 +1598,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("FLUID-4398 event and listener boiling", function () {
         var that = fluid.tests.eventParent3();
         var received = {};
-        that.eventChild.events.relayEvent.addListener(function(arg) {
+        that.eventChild.events.relayEvent.addListener(function (arg) {
             received.arg = arg;
         });
         that.events.parentEvent1.fire(that); // first event only fires to invoker
@@ -1465,7 +1635,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // Tests i) inter-event reference using unqualified local names
         // ii) listener reference to a non-composite boiled event without using "fire" suffix
         var baseListener = function () {
-            ++ count;
+            ++count;
         };
         var that = fluid.tests.eventBoiling2({
             listeners: {
@@ -1713,6 +1883,83 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.initDependent(reins.child1, "child2", instantiator);
         jqUnit.assertNotEquals("Child2 reinstantiated", origID, reins.child1.child2.id);
         checkValue("Changed value", reins, "headValue2", expectedPaths);
+    });
+
+    /** FLUID-5812 - corruption in clear in cases of partial clear **/
+
+    fluid.defaults("fluid.tests.FLUID5812root", {
+        gradeNames: "fluid.component",
+        components: {
+            child1: {
+                type: "fluid.component"
+            },
+            child2: {
+                type: "fluid.component",
+                options: {
+                    components: {
+                        child3: {
+                            type: "fluid.component",
+                            options: {
+                                components: {
+                                    inject1: "{FLUID5812root}.child1"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5812 mis-clear test I", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.FLUID5812root();
+        that.child2.destroy();
+        that.child1.destroy();
+        jqUnit.assertNoValue("Successfully cleared child1 from injected site before root site", that.child1);
+    });
+
+    jqUnit.test("FLUID-5812 mis-clear test II", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.FLUID5812root();
+        that.manualInject = that.child2.child3;
+        that.child2.destroy();
+        that.destroy();
+        jqUnit.assert("No error on clearing with manually injected, destroyed component");
+    });
+
+    /** FLUID-5904 - corruption when throwing during expander resolution **/
+
+    fluid.defaults("fluid.tests.FLUID5904root", {
+        gradeNames: "fluid.component",
+        events: {
+            createIt: null
+        },
+        components: {
+            child: {
+                type: "fluid.component",
+                createOnEvent: "createIt",
+                options: {
+                    explodingMember: "@expand:fluid.tests.FLUID5904explode()"
+                }
+            }
+        }
+    });
+
+    fluid.tests.FLUID5904explode = function () {
+        throw new Error("explode");
+    };
+
+    jqUnit.test("FLUID-5904: corruption when throwing from expander", function () {
+        jqUnit.expect(2);
+        var that = fluid.tests.FLUID5904root();
+        try {
+            that.events.createIt.fire();
+        } catch (e) {
+            jqUnit.assert("Exception received during construction");
+        }
+        that.destroy();
+        jqUnit.assert("Successfully destroyed root");
     });
 
     /** FLUID-4711 - corruption in clear with injected material of longer scope **/
@@ -2019,7 +2266,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         parentThat.records.push(arg);
     };
 
-    jqUnit.test("FLUID-4257 test: removal of injected listeners", function() {
+    jqUnit.test("FLUID-4257 test: removal of injected listeners", function () {
         var that = fluid.tests.head4257();
         that.events.parentEvent.fire(3);
         that.events.parentEvent2.fire(4);
@@ -2353,7 +2600,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("Invoker resolution tests", function () {
         var that = fluid.tests.invokerGrandParent();
         var newValue = 2;
-        that.invokerwrapper.parent2.applier.requestChange("testValue", newValue);
+        that.invokerwrapper.parent2.applier.change("testValue", newValue);
         jqUnit.assertEquals("The invoker for second subcomponent should return the value from its parent",
             newValue, that.invokerwrapper.parent2.checkTestValue());
     });
@@ -2394,14 +2641,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("Invoker contextualisation tests", function() {
-        jqUnit.expect(3);
+    jqUnit.test("Invoker contextualisation tests", function () {
+        jqUnit.expect(2);
         var that = fluid.tests.test4712parent();
         jqUnit.assertEquals("Child component should be properly instantiated", 3, that.refChild.refChild2.ref3.options.refOption);
         jqUnit.assertEquals("Invoker should resolve on startup", 3, that.refChild.invoker());
         that.refChild.refChild2.destroy();
-        var resolved = that.refChild.invoker();
-        jqUnit.assertEquals("No ginger construction outside fit", undefined, resolved); // Change in behaviour for 2.0 framework - old framework would reconstruct this
+        jqUnit.expectFrameworkDiagnostic("No ginger construction outside fit", function () {
+            // Change in behaviour for 2.0 framework - old framework would reconstruct this
+            that.refChild.invoker();
+        }, ["could not match context", "refChild2"]);
     });
 
     /** FLUID-4285 - prevent attempts to refer to options outside options block **/
@@ -2464,11 +2713,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    jqUnit.test("FLUID-4626 test - cross-island use of instantiators", function() {
+    jqUnit.test("FLUID-4626 test - cross-island use of instantiators", function () {
         jqUnit.expect(1);
         var island1 = fluid.tests.island1();
         var island2 = fluid.tests.island2();
-        island1.events.outEvent2.addListener(function() {
+        island1.events.outEvent2.addListener(function () {
             island2.events.inEvent.fire();
         });
         island1.events.outEvent2.fire();
@@ -2512,6 +2761,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /** FLUID-5012: IoCSS doesn't apply the gradeNames option onto the target component **/
+
     fluid.defaults("fluid.tests.prefsEditor", {
         gradeNames: ["fluid.component"],
         components: {
@@ -2851,6 +3101,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Second component source transmitted: ", 3, head["dynamic-1"].options.source);
     });
 
+    /** FLUID-5893 - Dynamic components with grades sourced from single reference **/
+
+    fluid.defaults("fluid.tests.fluid5893root", {
+        gradeNames: "fluid.component",
+        events: {
+            createIt: null
+        },
+        dynamicComponents: {
+            dynamic: {
+                createOnEvent: "createIt",
+                type: "fluid.component",
+                options: "{arguments}.0"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5893: Dynamic component creation with grades sourced from single reference", function () {
+        var that = fluid.tests.fluid5893root();
+        that.events.createIt.fire({gradeNames: "fluid.resolveRoot"});
+        jqUnit.assertTrue("Dynamic grade applied to dynamic component", fluid.componentHasGrade(that.dynamic, "fluid.resolveRoot"));
+    });
+
     /** FLUID-5029 - Child selector ">" in IoCSS selector should not select an indirect child **/
 
     fluid.defaults("fluid.tests.fluid5029root", {
@@ -2986,7 +3258,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Args changed", 6, that.argsInvoker(2, 2));
     });
 
-    /** FLUID-5127 - Test cases for compact invokers, listeners and expandesr **/
+    /** FLUID-5127 - Test cases for compact invokers, listeners and expanders **/
 
     fluid.tests.fluid5127listener = function (value1, value2, that) {
         that.fireValue = value1 + value2;
@@ -3053,6 +3325,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Multiple compact listeners", 4, that.fireValue);
 
         jqUnit.assertEquals("Invoker", 3, that.addOne(1));
+    });
+
+    /** Unresolvable expander function **/
+
+    fluid.defaults("fluid.tests.unresolvableExpander", {
+        gradeNames: "fluid.component",
+        badExpander: "@expand:fluid.tests.nonexistent()"
+    });
+
+    jqUnit.test("Unresolvable expander function", function () {
+        jqUnit.expectFrameworkDiagnostic("Unresolvable expander function", function () {
+            fluid.tests.unresolvableExpander();
+        }, ["expander record", "fluid.tests.nonexistent"]);
     });
 
     /** FLUID-5663 - Malformed syntax in compact invokers **/
@@ -3132,7 +3417,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("FLUID-5036, Case 2 - An IoCSS source that is fetched from the static environment is not resolved correctly - and displacement using fluid.resolveRootSingle", function () {
-        function issueRootAndReference (targetOption) {
+        function issueRootAndReference(targetOption) {
             var optionHolder = fluid.component({
                 gradeNames: ["fluid5036_2UserOption", "fluid.resolveRootSingle"],
                 singleRootType: "fluid5036_2UserOption",
@@ -3250,6 +3535,38 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             protect: "{instantiator}"
         });
         jqUnit.assertValue("Constructed dynamic component", that);
+    });
+
+    /** FLUID-5615: Raw dynamic grades should be last-ditch **/
+
+    fluid.makeGradeLinkage("fluid.tests.FLUID5615linkage", ["fluid.tests.FLUID5615", "fluid.tests.FLUID5615.writable"], "fluid.tests.FLUID5615.linkage.writable");
+
+    fluid.constructSingle([], "fluid.tests.FLUID5615linkage");
+
+    fluid.defaults("fluid.tests.FLUID5615", {
+        gradeNames: ["fluid.component", "{that}.getWritableGrade"],
+        invokers: {
+            getWritableGrade: {
+                funcName: "fluid.tests.FLUID5615.getWritableGrade",
+                args: ["{that}.options.writable"]
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.FLUID5615derived", {
+        writable: true
+    });
+
+    fluid.tests.FLUID5615.getWritableGrade = function (writable) {
+        return writable ? "fluid.tests.FLUID5615.writable" : [];
+    };
+
+    jqUnit.test("FLUID-5615: Resolve dynamic grade material from raw dynamic grade", function () {
+        var that = fluid.tests.FLUID5615({
+            gradeNames: "fluid.tests.FLUID5615derived"
+        });
+        jqUnit.assertTrue("Dynamic config hoisted to raw dynamic grade", fluid.componentHasGrade(that, "fluid.tests.FLUID5615.writable"));
+        jqUnit.assertTrue("Dynamic config led to linkage resolution", fluid.componentHasGrade(that, "fluid.tests.FLUID5615.linkage.writable"));
     });
 
     /** FLUID-5094: Dynamic grade merging takes an undefined source passed in from IoCSS into account rather than ignoring it **/
@@ -3794,6 +4111,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Subcomponent with joint grades should not have been decorated after destruction of distributor", [false, false, false], hasGrade2);
     });
 
+    /** FLUID-5587 tests - namespaces for distributions **/
+
     fluid.defaults("fluid.tests.fluid5587root", {
         gradeNames: ["fluid.component"],
         distributeOptions: {
@@ -3825,12 +4144,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Options distribution should have been overwritten by namespaced grade definition", "gradeDistribution", that.subComponent.options.distributed);
     });
 
-    fluid.defaults("fluid.tests.fluid5621root", {
+    /** FLUID-5621 tests - priorities and distances for distributions **/
+
+    fluid.defaults("fluid.tests.fluid5621common", {
         gradeNames: ["fluid.component"],
-        distributeOptions: {
-            target: "{that fluid5621advised}.options.target",
-            record: "root"
-        },
         components: {
             child1: {
                 type: "fluid.component",
@@ -3867,6 +4184,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    fluid.defaults("fluid.tests.fluid5621root", {
+        gradeNames: ["fluid.tests.fluid5621common"],
+        distributeOptions: {
+            target: "{that fluid5621advised}.options.target",
+            record: "root"
+        }
+    });
+
     fluid.defaults("fluid.tests.fluid5621global", {
         gradeNames: ["fluid.component"],
         distributeOptions: {
@@ -3879,10 +4204,150 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("Test FLUID-5621 distributeOptions priority arbitration", function () {
         var advisor = fluid.tests.fluid5621global();
         var that = fluid.tests.fluid5621root();
-        var expected = ["root", "global", "middle", "closest"];
+        // all things being equal, the furthest away distribution source merges on top
+        var expected = ["closest", "global", "middle", "root"];
+        var options = that.child1.child2.child3.options.target;
+        jqUnit.assertDeepEq("Distributed options resolved in required priority order", expected, options);
+        that.destroy(); // it contains a global distribution!
+        advisor.destroy();
+    });
+
+    /** FLUID-5824 tests - distances and namespace overriding for distributions **/
+
+    fluid.defaults("fluid.tests.fluid5824root", {
+        gradeNames: "fluid.tests.fluid5621common",
+        distributeOptions: {
+            target: "{that fluid5621advised}.options.target",
+            record: "root",
+            namespace: "fluid5621middle"
+        }
+    });
+
+    jqUnit.test("Test FLUID-5824 distributeOptions priority + namespace arbitration", function () {
+        var advisor = fluid.tests.fluid5621global();
+        var that = fluid.tests.fluid5824root();
+        // "root" should now displace "middle"
+        var expected = ["closest", "global", "root"];
         var options = that.child1.child2.child3.options.target;
         jqUnit.assertDeepEq("Distributed options resolved in required priority order", expected, options);
         advisor.destroy();
+    });
+
+    /** FLUID-5835 test - uniquifying of multiple distribution blocks **/
+
+    fluid.defaults("fluid.tests.fluid5835increase", {
+        gradeNames: "fluid.component",
+        messageBase: {
+            increaseHeader: "increase"
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid5835panel", {
+        gradeNames: "fluid.component",
+        components: {
+            msgResolver: {
+                type: "fluid.component"
+            }
+        },
+        distributeOptions: {
+            source: "{that}.options.messageBase",
+            target: "{that > msgResolver}.options.messageBase"
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid5835root", {
+        gradeNames: "fluid.component",
+        components: {
+            increasing: {
+                type: "fluid.tests.fluid5835panel",
+                options: {
+                    messageBase: "{fluid5835root}.nothing"
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5835: Uniquifying multiple distribution blocks", function () {
+        var options = {};
+        fluid.set(options, "components.increasing.options.gradeNames", "fluid.tests.fluid5835increase");
+        var that = fluid.tests.fluid5835root(options);
+        jqUnit.assertEquals("Correctly distributed", "increase", that.increasing.msgResolver.options.messageBase.increaseHeader);
+    });
+
+    /** FLUID-5813: namespaces and priority for distributeOptions early route **/
+
+    fluid.makeComponents({
+        "fluid.tests.FLUID5813far":        "fluid.component",
+        "fluid.tests.FLUID5813near":       "fluid.component"
+    });
+
+    fluid.defaults("fluid.tests.FLUID5813root", {
+        gradeNames: "fluid.component",
+        distributeOptions: {
+            farDistribute: {
+                target: "{that target}.type",
+                record: "fluid.tests.FLUID5813far",
+                priority: "after:nearDistribute"
+            }
+        },
+        components: {
+            child1: {
+                type: "fluid.component",
+                options: {
+                    distributeOptions: {
+                        nearDistribute: {
+                            target: "{that target}.type",
+                            record: "fluid.tests.FLUID5813near"
+                        }
+                    },
+                    components: {
+                        target: {
+                            type: "fluid.component"
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5813 - namespaces and priority for distributeOptions early route", function () {
+        var that = fluid.tests.FLUID5813root();
+        jqUnit.assertEquals("Successfully overridden near distribution to type ", "fluid.tests.FLUID5813far", that.child1.target.typeName);
+    });
+
+    /** FLUID-5824 variant of FLUID-5813: namespaces and priority for distributeOptions early route **/
+
+    fluid.defaults("fluid.tests.FLUID5824earlyroot", {
+        gradeNames: "fluid.component",
+        distributeOptions: {
+            nameDistribute: {
+                target: "{that target}.type",
+                record: "fluid.tests.FLUID5813far"
+            }
+        },
+        components: {
+            child1: {
+                type: "fluid.component",
+                options: {
+                    distributeOptions: {
+                        nameDistribute: {
+                            target: "{that target}.type",
+                            record: "fluid.tests.FLUID5813near"
+                        }
+                    },
+                    components: {
+                        target: {
+                            type: "fluid.component"
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5824 variant of FLUID-5813 - namespaces and priority for distributeOptions early route", function () {
+        var that = fluid.tests.FLUID5824earlyroot();
+        jqUnit.assertEquals("Successfully overridden near distribution to type ", "fluid.tests.FLUID5813far", that.child1.target.typeName);
     });
 
     /** Test nexus methods and global instantiator machinery **/
@@ -3891,13 +4356,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.component"]
     });
 
-    jqUnit.test("Test nexus methods fluid.construct and fluid.destroy", function () {
+    jqUnit.test("Test nexus methods fluid.construct, fluid.componentForPath, and fluid.destroy", function () {
         fluid.construct("fluid_tests_nexusRoot", {
             type: "fluid.tests.nexusComponent",
             value: 53
         });
 
         jqUnit.assertEquals("Constructed nexus component with options", 53, fluid.rootComponent.fluid_tests_nexusRoot.options.value);
+        jqUnit.assertEquals("fluid.componentForPath returns the newly constructed component", 53, fluid.componentForPath("fluid_tests_nexusRoot").options.value);
+
         fluid.construct("fluid_tests_nexusRoot.child", {
             type: "fluid.tests.nexusComponent",
             value: 64
@@ -3911,10 +4378,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var globalPath = "fluid_tests_nexusRoot.child";
         var child = fluid.globalInstantiator.pathToComponent[globalPath];
         jqUnit.assertEquals("Constructed a valid global instantiator component at child path", child, globalChild);
+        jqUnit.assertEquals("fluid.componentForPath returns the child component (string)", globalChild, fluid.componentForPath(globalPath));
+        jqUnit.assertEquals("fluid.componentForPath returns the child component (array path)", globalChild, fluid.componentForPath(globalPath.split(".")));
+
         var arrayPath = fluid.pathForComponent(child);
         jqUnit.assertDeepEq("Got array path for component", globalPath.split("."), arrayPath);
         fluid.destroy(arrayPath);
         jqUnit.assertNoValue("Destroyed nexus component via array path", fluid.rootComponent.fluid_tests_nexusRoot.child);
         fluid.destroy("fluid_tests_nexusRoot");
+
+        jqUnit.assertUndefined("fluid.componentForPath returns undefined for destroyed component", fluid.componentForPath(globalPath));
     });
 })(jQuery);

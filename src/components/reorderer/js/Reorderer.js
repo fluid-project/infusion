@@ -444,9 +444,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var activeItem = $(thatReorderer.activeItem);
 
         // Fixes FLUID-3288.
-        // Need to unbind the blur event as safari will call blur on movements.
+        // Need to remove the blur event as safari will call blur on movements.
         // This caused the user to have to double tap the arrow keys to move.
-        activeItem.unbind("blur.fluid.reorderer");
+        activeItem.off("blur.fluid.reorderer");
 
         thatReorderer.events.onMove.fire(item, requestedPosition);
         thatReorderer.dropManager.geometricMove(item, requestedPosition.element, requestedPosition.position);
@@ -522,7 +522,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             if (!$.data(selectable[0], "fluid.reorderer.selectable-initialised")) {
                 selectable.addClass(thatReorderer.options.styles.defaultStyle);
 
-                selectable.bind("blur.fluid.reorderer", handleBlur);
+                selectable.on("blur.fluid.reorderer", handleBlur);
                 selectable.focus(handleFocus);
                 selectable.click(handleClick);
 
@@ -628,7 +628,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             },
             // This explicit detection is now required for jQuery UI after version 1.10.2 since the upstream API has been broken permanently.
             // See https://github.com/jquery/jquery-ui/pull/963
-            handle: handle === item ? null : handle
+            handle: fluid.unwrap(handle) === fluid.unwrap(item) ? null : handle
         });
     };
 
@@ -915,9 +915,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     // unsupported, NON-API function
     fluid.reorderer.labeller.onMove = function (that, item) {
         fluid.clear(that.movedMap); // if we somehow were fooled into missing a defocus, at least clear the map on a 2nd move
-        // This unbind is needed for FLUID-4693 with Chrome 18, which generates a focusOut when
+        // This "off" is needed for FLUID-4693 with Chrome 18, which generates a focusOut when
         // simply doing the DOM manipulation to move the element to a new position.
-        $(item).unbind("focusout.ariaLabeller");
+        $(item).off("focusout.ariaLabeller");
         var movingId = fluid.allocateSimpleId(item);
         that.movedMap[movingId] = {
             oldRender: that.renderLabel(item)

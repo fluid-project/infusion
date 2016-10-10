@@ -43,7 +43,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 contentToNode(tooltip, key);
             }
         });
-        var actuallyVisible = $("[id^=ui-tooltip]").filter(":visible");
+        var actuallyVisible = $(".ui-tooltip").filter(":visible");
         jqUnit.assertEquals("Actually visible tooltips in the document", expectedKeys.length, actuallyVisible.length);
     };
 
@@ -194,10 +194,113 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    // FLUID-5846 tests for when tooltip is run on content in an iframe
+
+    fluid.defaults("fluid.tests.tooltip.FLUID5846", {
+        gradeNames: ["fluid.tooltip"],
+        selectors: {
+            item1: "#tooltip-item-1",
+            item2: "#tooltip-item-2"
+        },
+        model: {
+            idToContent: {
+                "tooltip-item-1": "item 1",
+                "tooltip-item-2": "item 2"
+            }
+        }
+
+    });
+
+    fluid.tests.tooltip.FLUID5846.setupIframe = function (that, iframeSrc, iframe) {
+        $(iframe).on("load", function () {
+            // DO NOT MOVE this property access outside this function!
+            var dokkument = iframe.contentDocument;
+            var iframeWindow = dokkument.defaultView;
+            var iframejQuery = iframeWindow.jQuery;
+            that.iframeBody = iframejQuery("body", dokkument);
+            that.events.iframeReady.fire();
+        });
+
+        // Programmatically setting the iframe src to ensure that the load event
+        // is triggered after we have bound our listener.
+        // see: https://issues.fluidproject.org/browse/FLUID-5872
+        $(iframe).attr("src", iframeSrc);
+    };
+
+    fluid.defaults("fluid.tests.tooltip.FLUID5846.parent", {
+        gradeNames: ["fluid.viewComponent"],
+        selectors: {
+            iframe: ".FLUID-5846-iframe"
+        },
+        events: {
+            iframeReady: null,
+            onReady: null,
+            afterOpen: null,
+            afterClose: null
+        },
+        listeners: {
+            "onCreate.setupIframe": "fluid.tests.tooltip.FLUID5846.setupIframe({that}, {that}.options.iframeSrc, {that}.dom.iframe.0)"
+        },
+        iframeSrc: "iframe.html",
+        components: {
+            tooltip: {
+                type: "fluid.tests.tooltip.FLUID5846",
+                container: "{that}.iframeBody",
+                createOnEvent: "iframeReady",
+                options: {
+                    listeners: {
+                        "onCreate.boil": "{parent}.events.onReady",
+                        "afterOpen.boil": "{parent}.events.afterOpen",
+                        "afterClose.boil": "{parent}.events.afterClose"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.tooltip.FLUID5846TestCases", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [ {
+            name: "FLUID-5846 tooltip in iframe tests",
+            tests: [{
+                name: "FLUID-5846 sequence",
+                expect: 1,
+                sequence: [{
+                    event: "{FLUID5846Env tree}.events.onReady",
+                    listener: "fluid.identity"
+                }, {
+                    func: "fluid.focus",
+                    args: ["{tree}.tooltip.dom.item1"]
+                }, {
+                    event: "{tree}.events.afterOpen",
+                    listener: "jqUnit.assert",
+                    args: ["The afterOpen event should have fired"]
+                }]
+            }]
+        }]
+    });
+
+    fluid.defaults("fluid.tests.tooltip.FLUID5846Env", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        markupFixture: "#ioc-fixture",
+        components: {
+            tree: {
+                type: "fluid.tests.tooltip.FLUID5846.parent",
+                container: ".FLUID-5846",
+                createOnEvent: "{fixtures}.events.onTestCaseStart"
+            },
+            fixtures: {
+                type: "fluid.tests.tooltip.FLUID5846TestCases"
+            }
+        }
+    });
+
+
     fluid.tests.tooltip.runTests = function () {
 
         fluid.test.runTests(["fluid.tests.tooltip.delegateEnv"]);
         fluid.test.runTests(["fluid.tests.tooltip.FLUID5673Env"]);
+        fluid.test.runTests(["fluid.tests.tooltip.FLUID5846Env"]);
 
         jqUnit.module("Standard Tooltip Tests");
 
@@ -224,7 +327,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             tt.open();
             var uiTTOptions = $(".testTooltip").tooltip("option");
 
-            var ttELM = $("[id^=ui-tooltip]");
+            var ttELM = $(".ui-tooltip");
 
             jqUnit.assertEquals("The \"content\" option is set correctly", testOptions.content(), ttELM.text());
             jqUnit.assertEquals("The \"items\" option is set correctly", testOptions.items, uiTTOptions.items);
@@ -241,7 +344,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
             tt.open();
-            var tooltip = $("[id^=ui-tooltip]");
+            var tooltip = $(".ui-tooltip");
 
             jqUnit.assertTrue("The css class is applied to the tooltip element", tooltip.hasClass(style));
             tt.destroy();
@@ -249,7 +352,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.test("Tooltip element tests", function () {
             var tt = fluid.tooltip(".testTooltip");
-            var ttELM = $("[id^=ui-tooltip]");
+            var ttELM = $(".ui-tooltip");
             var newContent = "New Content";
 
             //jQuery UI no longer exposes the implementing markup programmatically
@@ -267,11 +370,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 duration: 0,
                 listeners: {
                     afterOpen: function () {
-                        jqUnit.assertTrue("The tooltip should be visible", $("[id^=ui-tooltip]").is(":visible"));
+                        jqUnit.assertTrue("The tooltip should be visible", $(".ui-tooltip").is(":visible"));
                         tt.close();
                     },
                     afterClose: function () {
-                        jqUnit.assertFalse("The tooltip should not be visible", $("[id^=ui-tooltip]").is(":visible"));
+                        jqUnit.assertFalse("The tooltip should not be visible", $(".ui-tooltip").is(":visible"));
                         jqUnit.start();
                     }
                 }
@@ -284,14 +387,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.test("Tooltip destroy tests", function () {
             var tt = fluid.tooltip(".testTooltip", {content: "Tooltip"});
             tt.open();
-            jqUnit.assertEquals("There should be a tooltip element present", 1, $("[id^=ui-tooltip]").length);
+            jqUnit.assertEquals("There should be a tooltip element present", 1, $(".ui-tooltip").length);
             tt.destroy();
-            jqUnit.assertEquals("There should no longer be a tooltip element", 0, $("[id^=ui-tooltip]").length);
+            jqUnit.assertEquals("There should no longer be a tooltip element", 0, $(".ui-tooltip").length);
         });
 
         var testThatTooltipContentChanges = function (tt, update, expected1, expected2) {
             jqUnit.expect(3);
-            var tipEl = $("[id^=ui-tooltip]");
+            var tipEl = $(".ui-tooltip");
             jqUnit.assertTrue("The tooltip should be visible", tipEl.is(":visible"));
             jqUnit.assertEquals("Initially, the tooltip should contain first text", expected1, tipEl.text());
             tt.updateContent(update);

@@ -111,22 +111,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var child2 = root.child2;
         child2.events.createIt.fire();
         var acc;
-        for (var j = 0; j < 5; ++ j) {
+        for (var j = 0; j < 5; ++j) {
 
             var now = Date.now();
             var its = 50000;
             acc = 0;
 
-            for (var i = 0; i < its; ++ i) {
+            for (var i = 0; i < its; ++i) {
                 // acc = fluid.tests.addFunc(acc, 1, 2, 3, 4);
-                // acc = child2.child3.addit(acc, 4);
-                child2.child3.events.fireIt.fire(4);
+                acc = child2.child3.addit(acc, 4);
+                // child2.child3.events.fireIt.fire(4);
                 // root.child2.events.createIt.fire();
             }
 
             var delay = (Date.now() - now);
 
-            results.push(its + " iterations concluded in " + delay + " ms: " + 1000*(delay/its) + " us/it");
+            results.push(its + " iterations concluded in " + delay + " ms: " + 1000 * (delay / its) + " us/it");
         }
 
         // results.push("Accumulated: " + acc);

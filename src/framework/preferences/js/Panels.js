@@ -150,7 +150,21 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         // in order to reset the dom binder when panels are in an iframe.
         // It can be be eliminated once we have the new renderer.
         var userJQuery = that.container.constructor;
-        that.container = userJQuery(that.container.selector);
+        var context = that.container[0].ownerDocument;
+        var selector = that.container.selector;
+        that.container = userJQuery(selector, context);
+        // To address FLUID-5966, manually adding back the selector and context properties that were removed from jQuery v3.0.
+        // ( see: https://jquery.com/upgrade-guide/3.0/#breaking-change-deprecated-context-and-selector-properties-removed )
+        // In most cases the "selector" property will already be restored through the DOM binder or fluid.container.
+        // However, in this case we are manually recreating the container to ensure that it is referencing an element currently added
+        // to the correct Document ( e.g. iframe ) (also see: FLUID-4536). This manual recreation of the container requires us to
+        // manually add back the selector and context from the original container. This code and fix parallels that in
+        // FluidView.js fluid.container line 129
+        that.container.selector = selector;
+        that.container.context = context;
+        if (that.container.length === 0) {
+            fluid.fail("resetDomBinder got no elements in DOM for container searching for selector " + that.container.selector);
+        }
         fluid.initDomBinder(that, that.options.selectors);
         that.events.onDomBind.fire(that);
     };
@@ -281,8 +295,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * Only use in cases where the instatiated component cannot be used.
      */
     fluid.prefs.compositePanel.prefetchComponentOptions = function (type, options) {
-        var baseOptions = fluid.getGradedDefaults(type, fluid.get(options, "gradeNames"));
-        return fluid.merge(baseOptions.mergePolicy, baseOptions, options);
+        var baseOptions = fluid.getMergedDefaults(type, fluid.get(options, "gradeNames"));
+        // TODO: awkwardly, fluid.merge is destructive on each argument!
+        return fluid.merge(baseOptions.mergePolicy, fluid.copy(baseOptions), options);
     };
     /*
      * Should only be used when fluid.prefs.compositePanel.isActivatePanel cannot.
@@ -435,7 +450,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      */
     fluid.prefs.compositePanel.hideInactive = function (that) {
         fluid.each(that.options.components, function (componentOpts, componentName) {
-            if(fluid.prefs.compositePanel.isPanel(componentOpts.type, componentOpts.options) && !fluid.prefs.compositePanel.isActivePanel(that[componentName])) {
+            if (fluid.prefs.compositePanel.isPanel(componentOpts.type, componentOpts.options) && !fluid.prefs.compositePanel.isActivePanel(that[componentName])) {
                 that.locate(componentName).hide();
             }
         });
@@ -658,8 +673,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         selectors: {
             textSize: ".flc-prefsEditor-min-text-size",
             label: ".flc-prefsEditor-min-text-size-label",
-            smallIcon: ".flc-prefsEditor-min-text-size-smallIcon",
-            largeIcon: ".flc-prefsEditor-min-text-size-largeIcon",
             multiplier: ".flc-prefsEditor-multiplier",
             textSizeDescr: ".flc-prefsEditor-text-size-descr"
         },
@@ -680,8 +693,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         },
         protoTree: {
             label: {messagekey: "textSizeLabel"},
-            smallIcon: {messagekey: "textSizeSmallIcon"},
-            largeIcon: {messagekey: "textSizeLargeIcon"},
             multiplier: {messagekey: "multiplier"},
             textSizeDescr: {messagekey: "textSizeDescr"}
         },
@@ -763,8 +774,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         selectors: {
             lineSpace: ".flc-prefsEditor-line-space",
             label: ".flc-prefsEditor-line-space-label",
-            narrowIcon: ".flc-prefsEditor-line-space-narrowIcon",
-            wideIcon: ".flc-prefsEditor-line-space-wideIcon",
             multiplier: ".flc-prefsEditor-multiplier",
             lineSpaceDescr: ".flc-prefsEditor-line-space-descr"
         },
@@ -785,8 +794,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         },
         protoTree: {
             label: {messagekey: "lineSpaceLabel"},
-            narrowIcon: {messagekey: "lineSpaceNarrowIcon"},
-            wideIcon: {messagekey: "lineSpaceWideIcon"},
             multiplier: {messagekey: "multiplier"},
             lineSpaceDescr: {messagekey: "lineSpaceDescr"}
         },
@@ -813,7 +820,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
         },
         listeners: {
-            afterRender: "{that}.style"
+            "afterRender.style": "{that}.style"
         },
         selectors: {
             themeRow: ".flc-prefsEditor-themeRow",
@@ -987,7 +994,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.defaults("fluid.prefs.selectDecorator", {
         gradeNames: ["fluid.viewComponent"],
         listeners: {
-            onCreate: "fluid.prefs.selectDecorator.decorateOptions"
+            "onCreate.decorateOptions": "fluid.prefs.selectDecorator.decorateOptions"
         },
         styles: {
             preview: "fl-preview-theme"

@@ -188,5 +188,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         checkChildContainer(parent, parent.defaultedChildView, "defaultedChildContainer", "defaults");
     });
 
+    /** FLUID-5908 - failure when adding this-ist record as event listener **/
+
+    fluid.defaults("fluid.tests.FLUID5908root", {
+        gradeNames: "fluid.viewComponent",
+        listeners: {
+            "onDestroy.emptyContainer": {
+                "this": "{that}.container",
+                method: "empty"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5908: this-ist listener", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.FLUID5908root(".FLUID5908-container");
+        jqUnit.assertValue("Successfully constructed component with this-ist listener", that);
+    });
 
 })();

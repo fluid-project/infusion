@@ -18,48 +18,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.registerNamespace("fluid.contextAware");
 
-    /** Construct an instance of a component as a child of the specified parent, with a well-known, unique name derived from its typeName
-    * @param parentPath {String|Array of String} Parent of path where the new component is to be constructed, represented as a string or array of segments
-    * @param options {String|Object} Options encoding the component to be constructed. If this is of type String, it is assumed to represent the component's typeName with no options
-    * @param instantiator {Instantiator} [optional] The instantiator holding the component to be created - if blank, the global instantiator will be used
-    */
-    fluid.constructSingle = function (parentPath, options, instantiator) {
-        instantiator = instantiator || fluid.globalInstantiator;
-        parentPath = parentPath || "";
-        var segs = fluid.model.parseToSegments(parentPath, instantiator.parseEL, true);
-        if (typeof(options) === "string") {
-            options = {type: options};
-        }
-        var type = options.type;
-        if (!type) {
-            fluid.fail("Cannot construct singleton object without a type entry");
-        }
-        options = $.extend({}, options);
-        var gradeNames = options.gradeNames = fluid.makeArray(options.gradeNames);
-        gradeNames.unshift(type); // principal type may be noninstantiable
-        options.type = "fluid.component";
-        var root = segs.length === 0;
-        if (root) {
-            gradeNames.push("fluid.resolveRoot");
-        }
-        var memberName = fluid.typeNameToMemberName(options.singleRootType || type);
-        segs.push(memberName);
-        fluid.construct(segs, options, instantiator);
-    };
-
-    /** Destroy an instance created by `fluid.constructSingle`
-     * @param parentPath {String|Array of String} Parent of path where the new component is to be constructed, represented as a string or array of segments
-     * @param typeName {String} The type name used to construct the component (either `type` or `singleRootType` of the `options` argument to `fluid.constructSingle`
-     * @param instantiator {Instantiator} [optional] The instantiator holding the component to be created - if blank, the global instantiator will be used
-    */
-    fluid.destroySingle = function (parentPath, typeName, instantiator) {
-        instantiator = instantiator || fluid.globalInstantiator;
-        var segs = fluid.model.parseToSegments(parentPath, instantiator.parseEL, true);
-        var memberName = fluid.typeNameToMemberName(typeName);
-        segs.push(memberName);
-        fluid.destroy(segs, instantiator);
-    };
-
     fluid.defaults("fluid.contextAware.marker", {
         gradeNames: ["fluid.component"]
     });
@@ -187,11 +145,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         if (contextAwareRecord.checks && contextAwareRecord.checks.contextValue) {
             fluid.fail("Nesting error in contextAwareness record ", contextAwareRecord, " - the \"checks\" entry must contain a hash and not a contextValue/gradeNames record at top level");
         }
-        var checkList = fluid.hashToArray(contextAwareRecord.checks, "namespace", function (newElement, oldElement, index) {
-            $.extend(newElement, oldElement);
-            newElement.priority = fluid.parsePriority(oldElement.priority, index);
-        });
-        fluid.sortByPriority(checkList);
+        var checkList = fluid.parsePriorityRecords(contextAwareRecord.checks, "contextAwareness checkRecord");
         return fluid.find(checkList, function (check) {
             if (!check.contextValue) {
                 fluid.fail("Cannot perform check for contextAwareness record ", check, " without a valid field named \"contextValue\"");
@@ -206,11 +160,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     // unsupported, NON-API function
     fluid.contextAware.check = function (that, contextAwarenessOptions) {
         var gradeNames = [];
-        var contextAwareList = fluid.hashToArray(contextAwarenessOptions, "namespace", function (newElement, oldElement, index) {
-            $.extend(newElement, oldElement);
-            newElement.priority = fluid.parsePriority(oldElement.priority, index, false, "context awareness records");
-        });
-        fluid.sortByPriority(contextAwareList);
+        var contextAwareList = fluid.parsePriorityRecords(contextAwarenessOptions, "contextAwareness adaptationRecord");
         fluid.each(contextAwareList, function (record) {
             var matched = fluid.contextAware.checkOne(that, record);
             gradeNames = gradeNames.concat(fluid.makeArray(matched));

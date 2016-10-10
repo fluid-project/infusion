@@ -59,11 +59,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             },
             "theme": {
                 "default": "fl-theme-prefsEditor-default",
-                "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
-                "wb": "fl-theme-prefsEditor-wb fl-theme-wb",
-                "by": "fl-theme-prefsEditor-by fl-theme-by",
-                "yb": "fl-theme-prefsEditor-yb fl-theme-yb",
-                "lgdg": "fl-theme-prefsEditor-lgdg fl-theme-lgdg"
+                "bw": "fl-theme-bw",
+                "wb": "fl-theme-wb",
+                "by": "fl-theme-by",
+                "yb": "fl-theme-yb",
+                "lgdg": "fl-theme-lgdg"
             },
             "links": "fl-link-enhanced",
             "inputsLarger": "fl-text-larger"
@@ -323,16 +323,40 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      */
 
     fluid.defaults("fluid.prefs.starterTemplateLoader", {
-        gradeNames: ["fluid.prefs.resourceLoader"],
+        gradeNames: ["fluid.resourceLoader", "fluid.contextAware"],
         resources: {
-            textSize: "%templatePrefix/PrefsEditorTemplate-textSize.html",
             textFont: "%templatePrefix/PrefsEditorTemplate-textFont.html",
-            lineSpace: "%templatePrefix/PrefsEditorTemplate-lineSpace.html",
             contrast: "%templatePrefix/PrefsEditorTemplate-contrast.html",
             layoutControls: "%templatePrefix/PrefsEditorTemplate-layout.html",
             linksControls: "%templatePrefix/PrefsEditorTemplate-linksControls.html",
             emphasizeLinks: "%templatePrefix/PrefsEditorTemplate-emphasizeLinks.html",
             inputsLarger: "%templatePrefix/PrefsEditorTemplate-inputsLarger.html"
+        },
+        contextAwareness: {
+            startTemplateLoaderPrefsWidgetType: {
+                checks: {
+                    jQueryUI: {
+                        contextValue: "{fluid.prefsWidgetType}",
+                        equals: "jQueryUI",
+                        gradeNames: "fluid.prefs.starterTemplateLoader.jQuery"
+                    }
+                },
+                defaultGradeNames: "fluid.prefs.starterTemplateLoader.native"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.starterTemplateLoader.native", {
+        resources: {
+            textSize: "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html",
+            lineSpace: "%templatePrefix/PrefsEditorTemplate-lineSpace-nativeHTML.html"
+        }
+    });
+
+    fluid.defaults("fluid.prefs.starterTemplateLoader.jQuery", {
+        resources: {
+            textSize: "%templatePrefix/PrefsEditorTemplate-textSize-jQueryUI.html",
+            lineSpace: "%templatePrefix/PrefsEditorTemplate-lineSpace-jQueryUI.html"
         }
     });
 
@@ -368,7 +392,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      */
 
     fluid.defaults("fluid.prefs.starterMessageLoader", {
-        gradeNames: ["fluid.prefs.resourceLoader"],
+        gradeNames: ["fluid.resourceLoader"],
         resources: {
             prefsEditor: "%messagePrefix/prefsEditor.json",
             textSize: "%messagePrefix/textSize.json",

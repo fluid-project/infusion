@@ -1,5 +1,5 @@
 /*
-Copyright 2010 OCAD University
+Copyright 2010-2016 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -26,55 +26,25 @@ var demo = demo || {};
         return markupNode;
     };
 
-    /**
-     * Initialize all simple inline edit components present on the inline-edit
-     * demo.
-     */
-    demo.initInlineEdit = function () {
-
-        /**
-         * Simple inline edits example.
-         */
-        fluid.inlineEdit(".demoSelector-inlineEdit-container-title", {
-            components: {
-                undo: {
-                    type: "fluid.undo",
-                    options: {
-                        selectors: demo.initInlineEdit.selectors,
-                        renderer: demo.undoRenderer
-                    }
+    fluid.defaults("demo.inlineEdit", {
+        gradeNames: ["fluid.inlineEdit"],
+        strings: {
+            defaultViewText: "Edit this",
+            defaultFocussedViewText: "Edit this (click or press enter)"
+        },
+        components: {
+            undo: {
+                type: "fluid.undo",
+                options: {
+                    selectors: {
+                        undoContainer: ".demo-undoContainer",
+                        undoControl: ".demo-undoControl",
+                        redoContainer: ".demo-redoContainer",
+                        redoControl: ".demo-redoControl"
+                    },
+                    renderer: demo.undoRenderer
                 }
-            },
-            styles: {
-                edit: "demo-inlineEdit-title-edit demo-inlineEdit-edit"
-            },
-            strings: {
-                defaultViewText: "Edit this",
-                defaultFocussedViewText: "Edit this (click or press enter)"
             }
-        });
-
-        fluid.inlineEdit(".demoSelector-inlineEdit-container-caption", {
-            components: {
-                undo: {
-                    type: "fluid.undo",
-                    options: {
-                        selectors: demo.initInlineEdit.selectors,
-                        renderer: demo.undoRenderer
-                    }
-                }
-            },
-            strings: {
-                defaultViewText: "Edit this",
-                defaultFocussedViewText: "Edit this (click or press enter)"
-            }
-        });
-    };
-
-    demo.initInlineEdit.selectors = {
-        undoContainer: ".demo-undoContainer",
-        undoControl: ".demo-undoControl",
-        redoContainer: ".demo-redoContainer",
-        redoControl: ".demo-redoControl"
-    };
+        }
+    });
 })(jQuery, fluid);

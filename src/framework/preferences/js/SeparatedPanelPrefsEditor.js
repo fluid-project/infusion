@@ -27,7 +27,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      *******************************************************/
 
     fluid.defaults("fluid.prefs.separatedPanel", {
-        gradeNames: ["fluid.prefs.prefsEditorLoader"],
+        gradeNames: ["fluid.prefs.prefsEditorLoader", "fluid.contextAware"],
         events: {
             afterRender: null,
             onReady: null,
@@ -45,19 +45,40 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 }
             }
         },
-        listeners: {
-            onReady: {
-                listener: "fluid.prefs.separatedPanel.bindEvents",
-                args: ["{separatedPanel}.prefsEditor", "{iframeRenderer}.iframeEnhancer", "{separatedPanel}"]
+        lazyLoad: false,
+        contextAwareness: {
+            lazyLoad: {
+                checks: {
+                    lazyLoad: {
+                        contextValue: "{fluid.prefs.separatedPanel}.options.lazyLoad",
+                        gradeNames: "fluid.prefs.separatedPanel.lazyLoad"
+                    }
+                }
             },
-            onCreate: {
-                listener: "fluid.prefs.separatedPanel.hideReset",
-                args: ["{separatedPanel}"]
+            separatedPanelPrefsWidgetType: {
+                checks: {
+                    jQueryUI: {
+                        contextValue: "{fluid.prefsWidgetType}",
+                        equals: "jQueryUI",
+                        gradeNames: "fluid.prefs.separatedPanel.jQueryUI"
+                    }
+                },
+                defaultGradeNames: "fluid.prefs.separatedPanel.nativeHTML"
             }
         },
         selectors: {
             reset: ".flc-prefsEditor-reset",
             iframe: ".flc-prefsEditor-iframe"
+        },
+        listeners: {
+            "onReady.bindEvents": {
+                listener: "fluid.prefs.separatedPanel.bindEvents",
+                args: ["{separatedPanel}.prefsEditor", "{iframeRenderer}.iframeEnhancer", "{separatedPanel}"]
+            },
+            "onCreate.hideReset": {
+                listener: "fluid.prefs.separatedPanel.hideReset",
+                args: ["{separatedPanel}"]
+            }
         },
         invokers: {
             bindReset: {
@@ -74,7 +95,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     gradeNames: ["fluid.prefs.msgLookup"],
                     strings: {
                         showText: "{that}.msgLookup.slidingPanelShowText",
-                        hideText: "{that}.msgLookup.slidingPanelHideText"
+                        hideText: "{that}.msgLookup.slidingPanelHideText",
+                        showTextAriaLabel: "{that}.msgLookup.showTextAriaLabel",
+                        hideTextAriaLabel: "{that}.msgLookup.hideTextAriaLabel",
+                        panelLabel: "{that}.msgLookup.slidingPanelPanelLabel"
                     },
                     invokers: {
                         operateShow: {
@@ -106,9 +130,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 type: "fluid.prefs.separatedPanel.renderIframe",
                 container: "{separatedPanel}.dom.iframe",
                 options: {
-                    markupProps: {
-                        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame.html"
-                    },
                     events: {
                         afterRender: "{separatedPanel}.events.afterRender"
                     },
@@ -138,13 +159,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                         updateEnhancerModel: "{that}.events.modelChanged"
                     },
                     listeners: {
-                        modelChanged: "{that}.save",
-                        onCreate: {
+                        "modelChanged.save": "{that}.save",
+                        "onCreate.bindReset": {
                             listener: "{separatedPanel}.bindReset",
                             args: ["{that}.reset"]
                         },
-                        afterReset: "{that}.applyChanges",
-                        onReady: {
+                        "afterReset.applyChanges": "{that}.applyChanges",
+                        "onReady.boilOnReady": {
                             listener: "{separatedPanel}.events.onReady",
                             args: "{separatedPanel}"
                         }
@@ -173,6 +194,32 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             source: "{that}.options.terms",
             target: "{that > iframeRenderer}.options.terms"
         }]
+    });
+
+    // Used for context-awareness behaviour
+    fluid.defaults("fluid.prefs.separatedPanel.nativeHTML", {
+        components: {
+            iframeRenderer: {
+                options: {
+                    markupProps: {
+                        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame-nativeHTML.html"
+                    }
+                }
+            }
+        }
+    });
+
+    // Used for context-awareness behaviour
+    fluid.defaults("fluid.prefs.separatedPanel.jQueryUI", {
+        components: {
+            iframeRenderer: {
+                options: {
+                    markupProps: {
+                        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame-jQueryUI.html"
+                    }
+                }
+            }
+        }
     });
 
     fluid.prefs.separatedPanel.hideReset = function (separatedPanel) {
@@ -210,11 +257,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
         // Create iframe and append to container
         that.iframe = $("<iframe/>");
-        that.iframe.load(function () {
+        that.iframe.on("load", function () {
             var iframeWindow = that.iframe[0].contentWindow;
             that.iframeDocument = iframeWindow.document;
+            // The iframe should prefer its own version of jQuery if a separate
+            // one is loaded
+            that.jQuery = iframeWindow.jQuery || $;
 
-            that.jQuery = iframeWindow.jQuery;
             that.renderPrefsEditorContainer = that.jQuery("body", that.iframeDocument);
             that.jQuery(that.iframeDocument).ready(that.events.afterRender.fire);
         });
@@ -231,9 +280,17 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         prefsEditor.events.onSignificantDOMChange.fire();
     };
 
+
     fluid.prefs.separatedPanel.bindEvents = function (prefsEditor, iframeEnhancer, separatedPanel) {
-        // TODO: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
+        // FLUID-5740: This binding should be done declaratively - needs ginger world in order to bind onto slidingPanel
         // which is a child of this component
+
+        var separatedPanelId = separatedPanel.slidingPanel.panelId;
+        separatedPanel.locate("reset").attr({
+            "aria-controls": separatedPanelId,
+            "role": "button"
+        });
+
         separatedPanel.slidingPanel.events.afterPanelShow.addListener(function () {
             fluid.prefs.separatedPanel.updateView(prefsEditor);
         });
@@ -260,7 +317,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             // Prevent the hidden Preferences Editorpanel from being keyboard and screen reader accessible
             separatedPanel.iframeRenderer.iframe.hide();
         });
-        separatedPanel.slidingPanel.events.onPanelShow.addListener(function () {
+        separatedPanel.slidingPanel.events.afterPanelShow.addListener(function () {
             separatedPanel.iframeRenderer.iframe.show();
             separatedPanel.locate("reset").show();
         });
@@ -282,7 +339,123 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.prefs.separatedPanel.showPanel = function (panel, callback) {
         // A bizarre race condition has emerged under FF where the iframe held within the panel does not
         // react synchronously to being shown
-        setTimeout(callback, 1);
+        fluid.invokeLater(callback);
+    };
+
+    /**
+     * FLUID-5926: Some of our users have asked for ways to improve the initial page load
+     * performance when using the separated panel prefs editor / UI Options. One option,
+     * provided here, is to implement a scheme for lazy loading the instantiation of the
+     * prefs editor, only instantiating enough of the workflow to allow display the
+     * sliding panel tab.
+     *
+     * fluid.prefs.separatedPanel.lazyLoad modifies the typical separatedPanel workflow
+     * by delaying the instantiation and loading of resources for the prefs editor until
+     * the first time it is opened.
+     *
+     * Lazy Load Workflow:
+     *
+     * - On instantiation of the prefsEditorLoader only the messageLoader and slidingPanel are instantiated
+     * - On instantiation, the messageLoader only loads preLoadResources, these are the messages required by
+     *   the slidingPanel. The remaining message bundles will not be loaded until the "onLazyLoad" event is fired.
+     * - After the preLoadResources have been loaded, the onPrefsEditorMessagesPreloaded event is fired, and triggers the
+     *   sliding panel to instantiate.
+     * - When a user opens the separated panel prefs editor / UI Options, it checks to see if the prefs editor has been
+     *   instantiated. If it hasn't, a listener is temporarily bound to the onReady event, which gets fired
+     *   after the prefs editor is ready. This is used to continue the process of opening the sliding panel for the first time.
+     *   Additionally the onLazyLoad event is fired, which kicks off the remainder of the instantiation process.
+     * - onLazyLoad triggers the templateLoader to fetch all of the templates and the messageLoader to fetch the remaining
+     *   message bundles. From here the standard instantiation workflow takes place.
+     */
+    fluid.defaults("fluid.prefs.separatedPanel.lazyLoad", {
+        events: {
+            onLazyLoad: null,
+            onPrefsEditorMessagesPreloaded: null,
+            onCreateSlidingPanelReady: {
+                events: {
+                    onPrefsEditorMessagesLoaded: "onPrefsEditorMessagesPreloaded"
+                }
+            },
+            templatesAndIframeReady: {
+                events: {
+                    onLazyLoad: "onLazyLoad"
+                }
+            }
+        },
+        components: {
+            templateLoader: {
+                createOnEvent: "onLazyLoad"
+            },
+            messageLoader: {
+                options: {
+                    events: {
+                        onResourcesPreloaded: "{separatedPanel}.events.onPrefsEditorMessagesPreloaded"
+                    },
+                    preloadResources: "prefsEditor",
+                    listeners: {
+                        "onCreate.loadResources": {
+                            listener: "fluid.prefs.separatedPanel.lazyLoad.preloadResources",
+                            args: ["{that}", {expander: {func: "{that}.resolveResources"}}, "{that}.options.preloadResources"]
+                        },
+                        "{separatedPanel}.events.onLazyLoad": {
+                            listener: "fluid.resourceLoader.loadResources",
+                            args: ["{messageLoader}", {expander: {func: "{messageLoader}.resolveResources"}}]
+                        }
+                    }
+                }
+            },
+            slidingPanel: {
+                options: {
+                    invokers: {
+                        operateShow: {
+                            funcName: "fluid.prefs.separatedPanel.lazyLoad.showPanel",
+                            args: ["{separatedPanel}", "{that}.events.afterPanelShow.fire"]
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.prefs.separatedPanel.lazyLoad.showPanel = function (separatedPanel, callback) {
+        if (separatedPanel.prefsEditor) {
+            fluid.invokeLater(callback);
+        } else {
+            separatedPanel.events.onReady.addListener(function (that) {
+                that.events.onReady.removeListener("showPanelCallBack");
+                fluid.invokeLater(callback);
+            }, "showPanelCallBack");
+            separatedPanel.events.onLazyLoad.fire();
+        }
+
+    };
+
+    /**
+     * Used to override the standard "onCreate.loadResources" listener for fluid.resourceLoader component,
+     * allowing for pre-loading of a subset of resources. This is required for the lazyLoading workflow
+     * for the "fluid.prefs.separatedPanel.lazyLoad".
+     *
+     * @param {Object} that - the component
+     * @param {Object} resource - all of the resourceSpecs to load, including preload and others.
+     *                            see: fluid.fetchResources
+     * @param {Array/String} toPreload - a String or an Array of Strings corresponding to the names
+     *                                   of the resources, supplied in the resource argument, that
+     *                                   should be loaded. Only these resources will be loaded.
+     */
+    fluid.prefs.separatedPanel.lazyLoad.preloadResources = function (that, resources, toPreload) {
+        toPreload = fluid.makeArray(toPreload);
+        var preloadResources = {};
+
+        fluid.each(toPreload, function (resourceName) {
+            preloadResources[resourceName] = resources[resourceName];
+        });
+
+        // This portion of code was copied from fluid.resourceLoader.loadResources
+        // and will likely need to track any changes made there.
+        fluid.fetchResources(preloadResources, function () {
+            that.resources = preloadResources;
+            that.events.onResourcesPreloaded.fire(preloadResources);
+        });
     };
 
 })(jQuery, fluid_2_0_0);

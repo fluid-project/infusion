@@ -55,7 +55,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.prefs.enactor.styleElements.resetStyle = function (elements, cssClass) {
-        $(elements, "." + cssClass).andSelf().removeClass(cssClass);
+        $(elements, "." + cssClass).addBack().removeClass(cssClass);
     };
 
     fluid.prefs.enactor.styleElements.handleStyle = function (value, elements, cssClass, applyStyleFunc, resetStyleFunc) {
@@ -387,7 +387,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                         }
                     },
                     listeners: {
-                        afterRender: "{fluid.prefs.enactor.tableOfContents}.events.afterTocRender"
+                        "afterRender.boilAfterTocRender": "{fluid.prefs.enactor.tableOfContents}.events.afterTocRender"
                     }
                 }
             }

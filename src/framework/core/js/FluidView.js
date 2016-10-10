@@ -99,6 +99,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * @return a single-element jQuery of container
      */
     fluid.container = function (containerSpec, fallible, userJQuery) {
+        var selector = containerSpec.selector || containerSpec;
         if (userJQuery) {
             containerSpec = fluid.unwrap(containerSpec);
         }
@@ -118,6 +119,15 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         if (!fluid.isDOMNode(container[0])) {
             fluid.fail("fluid.container was supplied a non-jQueryable element");
         }
+
+        // To address FLUID-5966, manually adding back the selector and context properties that were removed from jQuery v3.0.
+        // ( see: https://jquery.com/upgrade-guide/3.0/#breaking-change-deprecated-context-and-selector-properties-removed )
+        // In most cases the "selector" property will already be restored through the DOM binder;
+        // however, when a selector or pure jQuery element is supplied directly as a component's container, we need to add them
+        // if it is possible to infer them. This feature is rarely used but is crucial for the prefs framework infrastructure
+        // in Panels.js fluid.prefs.subPanel.resetDomBinder
+        container.selector = selector;
+        container.context = container.context || containerSpec.ownerDocument || document;
 
         return container;
     };
@@ -148,23 +158,24 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             var selector, thisContainer, togo;
 
             selector = selectors[name];
-            thisContainer = localContainer ? localContainer : container;
+            thisContainer = localContainer ? $(localContainer) : container;
             if (!thisContainer) {
                 fluid.fail("DOM binder invoked for selector " + name + " without container");
             }
-
-            if (!selector) {
-                return thisContainer;
+            if (selector === "") {
+                togo = thisContainer;
+            }
+            else if (!selector) {
+                togo = userJQuery();
+            }
+            else {
+                if (typeof (selector) === "function") {
+                    togo = userJQuery(selector.call(null, fluid.unwrap(thisContainer)));
+                } else {
+                    togo = userJQuery(selector, thisContainer);
+                }
             }
 
-            if (typeof (selector) === "function") {
-                togo = userJQuery(selector.call(null, fluid.unwrap(thisContainer)));
-            } else {
-                togo = userJQuery(selector, thisContainer);
-            }
-            if (togo.get(0) === document) {
-                togo = [];
-            }
             if (!togo.selector) {
                 togo.selector = selector;
                 togo.context = thisContainer;
@@ -474,6 +485,18 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         return element.id;
     };
 
+    /**
+     * Returns the document to which an element belongs, or the element itself if it is already a document
+     *
+     * @param {jQuery||Element} element The element to return the document for
+     * @return {Document} dokkument The document in which it is to be found
+     */
+    fluid.getDocument = function (element) {
+        var node = fluid.unwrap(element);
+        // DOCUMENT_NODE - guide to node types at https://developer.mozilla.org/en/docs/Web/API/Node/nodeType
+        return node.nodeType === 9 ? node : node.ownerDocument;
+    };
+
     fluid.defaults("fluid.ariaLabeller", {
         gradeNames: ["fluid.viewComponent"],
         labelAttribute: "aria-label",
@@ -575,7 +598,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
           // Don't bother to use the real id if it is from a foreign document - we will never receive events
           // from it directly in any case - and foreign documents may be under the control of malign fiends
           // such as tinyMCE who allocate the same id to everything
-            var id = fluid.unwrap(node).ownerDocument === document? fluid.allocateSimpleId(node) : fluid.allocateGuid();
+            var id = fluid.unwrap(node).ownerDocument === document ? fluid.allocateSimpleId(node) : fluid.allocateGuid();
             if (dismissFunc) {
                 dismissList[id] = dismissFunc;
             }
@@ -632,14 +655,14 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         fluid.each(that.options.exclusions, function (exclusion) {
             exclusion = $(exclusion);
             fluid.each(exclusion, function (excludeEl) {
-                $(excludeEl).bind("focusin", that.canceller).
-                    bind("fluid-focus", that.canceller).
+                $(excludeEl).on("focusin", that.canceller).
+                    on("fluid-focus", that.canceller).
                     click(that.canceller).mousedown(that.canceller);
     // Mousedown is added for FLUID-4212, as a result of Chrome bug 6759, 14204
             });
         });
         if (!that.options.cancelByDefault) {
-            $(control).bind("focusout", function (event) {
+            $(control).on("focusout", function (event) {
                 fluid.log("Starting blur timer for element " + fluid.dumpEl(event.target));
                 var now = fluid.now();
                 fluid.log("back delay: " + (now - that.lastCancel));

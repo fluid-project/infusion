@@ -23,17 +23,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.defaults("fluid.prefs.termsAware");
 
-    fluid.defaults("fluid.prefs.auxSchema.starter", {
-        gradeNames: ["fluid.prefs.auxSchema"],
+    // textSize mixin (base)
+    fluid.defaults("fluid.prefs.auxSchema.starter.textSize", {
+        gradeNames: ["fluid.contextAware"],
         auxiliarySchema: {
-            "loaderGrades": ["fluid.prefs.separatedPanel"],
-            "namespace": "fluid.prefs.constructed", // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed PrefsEditor.
-            "terms": {
-                "templatePrefix": "../../framework/preferences/html",  // Must match the keyword used below to identify the common path to settings panel templates.
-                "messagePrefix": "../../framework/preferences/messages"  // Must match the keyword used below to identify the common path to message files.
-            },
-            "template": "%templatePrefix/SeparatedPanelPrefsEditor.html",
-            "message": "%messagePrefix/prefsEditor.json",
             "textSize": {
                 "type": "fluid.prefs.textSize",
                 "enactor": {
@@ -42,10 +35,48 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 "panel": {
                     "type": "fluid.prefs.panel.textSize",
                     "container": ".flc-prefsEditor-text-size",  // the css selector in the template where the panel is rendered
-                    "template": "%templatePrefix/PrefsEditorTemplate-textSize.html",
                     "message": "%messagePrefix/textSize.json"
                 }
-            },
+            }
+        },
+        contextAwareness: {
+            textSizeSliderVariety: {
+                checks: {
+                    jQueryUI: {
+                        contextValue: "{fluid.prefsWidgetType}",
+                        equals: "jQueryUI",
+                        gradeNames: "fluid.prefs.auxSchema.starter.textSize.jQueryUI"
+                    }
+                },
+                defaultGradeNames: "fluid.prefs.auxSchema.starter.textSize.nativeHTML"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.auxSchema.starter.textSize.nativeHTML", {
+        auxiliarySchema: {
+            "textSize": {
+                "panel": {
+                    "template": "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html"
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.auxSchema.starter.textSize.jQueryUI", {
+        auxiliarySchema: {
+            "textSize": {
+                "panel": {
+                    "template": "%templatePrefix/PrefsEditorTemplate-textSize-jQueryUI.html"
+                }
+            }
+        }
+    });
+
+    // lineSpace mixin (base)
+    fluid.defaults("fluid.prefs.auxSchema.starter.lineSpace", {
+        gradeNames: ["fluid.contextAware"],
+        auxiliarySchema: {
             "lineSpace": {
                 "type": "fluid.prefs.lineSpace",
                 "enactor": {
@@ -63,10 +94,55 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 "panel": {
                     "type": "fluid.prefs.panel.lineSpace",
                     "container": ".flc-prefsEditor-line-space",  // the css selector in the template where the panel is rendered
-                    "template": "%templatePrefix/PrefsEditorTemplate-lineSpace.html",
                     "message": "%messagePrefix/lineSpace.json"
                 }
+            }
+        },
+        contextAwareness: {
+            lineSpaceSliderVariety: {
+                checks: {
+                    jQueryUI: {
+                        contextValue: "{fluid.prefsWidgetType}",
+                        equals: "jQueryUI",
+                        gradeNames: "fluid.prefs.auxSchema.starter.lineSpace.jQueryUI"
+                    }
+                },
+                defaultGradeNames: "fluid.prefs.auxSchema.starter.lineSpace.nativeHTML"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.auxSchema.starter.lineSpace.nativeHTML", {
+        auxiliarySchema: {
+            "lineSpace": {
+                "panel": {
+                    "template": "%templatePrefix/PrefsEditorTemplate-lineSpace-nativeHTML.html"
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.auxSchema.starter.lineSpace.jQueryUI", {
+        auxiliarySchema: {
+            "lineSpace": {
+                "panel": {
+                    "template": "%templatePrefix/PrefsEditorTemplate-lineSpace-jQueryUI.html"
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.prefs.auxSchema.starter", {
+        gradeNames: ["fluid.prefs.auxSchema", "fluid.prefs.auxSchema.starter.lineSpace", "fluid.prefs.auxSchema.starter.textSize"],
+        auxiliarySchema: {
+            "loaderGrades": ["fluid.prefs.separatedPanel"],
+            "namespace": "fluid.prefs.constructed", // The author of the auxiliary schema will provide this and will be the component to call to initialize the constructed PrefsEditor.
+            "terms": {
+                "templatePrefix": "../../framework/preferences/html",  // Must match the keyword used below to identify the common path to settings panel templates.
+                "messagePrefix": "../../framework/preferences/messages"  // Must match the keyword used below to identify the common path to message files.
             },
+            "template": "%templatePrefix/SeparatedPanelPrefsEditor.html",
+            "message": "%messagePrefix/prefsEditor.json",
             "textFont": {
                 "type": "fluid.prefs.textFont",
                 "classes": {
@@ -92,11 +168,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 "type": "fluid.prefs.contrast",
                 "classes": {
                     "default": "fl-theme-prefsEditor-default",
-                    "bw": "fl-theme-prefsEditor-bw fl-theme-bw",
-                    "wb": "fl-theme-prefsEditor-wb fl-theme-wb",
-                    "by": "fl-theme-prefsEditor-by fl-theme-by",
-                    "yb": "fl-theme-prefsEditor-yb fl-theme-yb",
-                    "lgdg": "fl-theme-prefsEditor-lgdg fl-theme-lgdg"
+                    "bw": "fl-theme-bw",
+                    "wb": "fl-theme-wb",
+                    "by": "fl-theme-by",
+                    "yb": "fl-theme-yb",
+                    "lgdg": "fl-theme-lgdg"
 
                 },
                 "enactor": {
