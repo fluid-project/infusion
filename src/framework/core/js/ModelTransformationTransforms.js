@@ -681,4 +681,150 @@ var fluid = fluid || fluid_2_0_0;
         return fluid.invokeGlobalFunction(transformSpec.func, args);
     };
 
+    /**
+     *
+     * Convert a string to a Boolean.
+     *
+     * The following are all `false`: `undefined`, `null`, "", "0", "false"
+     *
+     * Everything else is `true`.
+     *
+     * @param value {String} The value to be interpreted.
+     * @returns {Boolean} The interpreted value.
+     */
+    fluid.transforms.stringToBoolean = function (value) {
+        return !Boolean(value === undefined || value === null || value === "" || value === "0" || value === "false");
+    };
+
+    fluid.defaults("fluid.transforms.stringToBoolean", {
+        gradeNames: ["fluid.standardTransformFunction"]
+    });
+
+    /**
+     *
+     * Convert any value into a stringified boolean, i. e. either "true" or "false".  Anything that evaluates to
+     * `true` (1, `true`, "non empty string", {}, et. cetera) returns "true".  Anything else (0, `false`, `null`)
+     * returns "false".
+     *
+     * @param value - The value to be converted to a stringified Boolean.
+     * @returns {string} - A stringified boolean representation of the value.
+     */
+    fluid.transforms.booleanToString = function (value) {
+        return value ? "true": "false";
+    };
+
+    fluid.defaults("fluid.transforms.booleanToString", {
+        gradeNames: ["fluid.standardTransformFunction"]
+    });
+
+    /**
+     *
+     * Transform stringified JSON to an object using `JSON.parse`.  Returns `undefined` if the JSON string is invalid.
+     *
+     * @param value {String} - The stringified JSON to be converted to an object.
+     */
+    fluid.transforms.JSONstringToObject = function (value) {
+        try {
+           return JSON.parse(value);
+        }
+        catch (e) {
+            return undefined;
+        }
+    };
+
+    fluid.defaults("fluid.transforms.JSONstringToObject", {
+        gradeNames: ["fluid.standardTransformFunction"]
+    });
+
+    /**
+     *
+     * Transform an object to a string using `JSON.stringify`.  You can pass the `space` option to be used
+     * as part of your transform, as in:
+     *
+     * ```
+     * "": {
+     *   transform: {
+     *     funcName: "fluid.transforms.objectToString",
+     *     inputPath: "",
+     *     space: 2
+     *   }
+     * }
+     * ```
+     *
+     * The default value for `space` is 0, which disabled spacing and line breaks.
+     *
+     * @param value {Object} - An object to be converted to stringified JSON.
+     *
+     */
+    fluid.transforms.objectToJSONString = function (value, transformSpec) {
+        var space   = transformSpec.space || 0;
+        return JSON.stringify(value, null, space);
+    };
+
+    fluid.defaults("fluid.transforms.objectToJSONString", {
+        gradeNames: ["fluid.standardTransformFunction"]
+    });
+
+    /**
+     *
+     * Transform a string to a date using the Date constructor.  Accepts (among other things) the date and dateTime values
+     * returned by HTML5 date and dateTime inputs.
+     *
+     * A string that cannot be parsed will be treated as `undefined`.
+     *
+     * @param value - The String value to be transformed into a Date object.
+     * @returns {Date} - A date object, or `undefined`.
+     */
+    fluid.transforms.stringToDate = function (value) {
+        var date = new Date(value);
+        return isNaN(date.getTime()) ? undefined : date;
+    };
+
+    fluid.defaults("fluid.transforms.stringToDate", {
+        gradeNames: ["fluid.standardTransformFunction"]
+    });
+
+    /**
+     *
+     * Transform a Date object into a date string using its toISOString method.  Results in date strings that are suitable
+     * for use with both HTML5 "date" inputs and JSON Schema "date" format string validation.
+     *
+     * A non-date object will be treated as `undefined`.
+     *
+     * @param value - The Date object to be transformed into an ISO 8601 string.
+     * @returns {String} - A {String} value representing the date, or `undefined` if the date is invalid.
+     *
+     */
+    fluid.transforms.dateToString = function (value) {
+        if (value instanceof Date) {
+            var isoString = value.toISOString(); // A string like "2016-09-26T08:05:57.462Z"
+            var dateString = isoString.substring(0, isoString.indexOf("T")); // A string like "2016-09-26"
+            return dateString;
+        }
+        else {
+            return undefined;
+        }
+    };
+
+    fluid.defaults("fluid.transforms.dateToString", {
+        gradeNames: ["fluid.standardTransformFunction"]
+    });
+
+    /**
+     *
+     * Transform a Date object into a date/time string using its toISOString method.  Results in date strings that are
+     * suitable for use with both HTML5 "dateTime" inputs and JSON Schema "date-time" format string validation.
+     *
+     * A non-date object will be treated as `undefined`.
+     *
+     * @param value - The Date object to be transformed into an ISO 8601 string.
+     * @returns {String} - A {String} value representing the date and time, or `undefined` if the date/time are invalid.
+     */
+    fluid.transforms.dateTimeToString = function (value) {
+        return value instanceof Date ? value.toISOString() : undefined;
+    };
+
+    fluid.defaults("fluid.transforms.dateTimeToString", {
+        gradeNames: ["fluid.standardTransformFunction"]
+    });
 })(jQuery, fluid_2_0_0);

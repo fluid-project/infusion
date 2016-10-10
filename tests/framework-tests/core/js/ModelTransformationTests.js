@@ -3122,4 +3122,211 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
+    fluid.tests.transforms.objectStringTests = [
+        {
+            message: "An object should be converted to stringified JSON correctly...",
+            transform: {
+                type: "fluid.transforms.objectToJSONString",
+                inputPath: ""
+            },
+            expected: "{\"foo\":\"bar\"}",
+            method: "assertEquals",
+            model: { foo: "bar" }
+        },
+        {
+            message: "The object -> stringified JSON transform should support spaces...",
+            transform: {
+                type: "fluid.transforms.objectToJSONString",
+                inputPath: "",
+                space: 2
+            },
+            expected: "{\n  \"foo\": \"bar\"\n}",
+            method: "assertEquals",
+            model: { foo: "bar" }
+        },
+        {
+            message: "Stringified JSON should be converted to an object correctly...",
+            transform: {
+                type: "fluid.transforms.JSONstringToObject",
+                inputPath: ""
+            },
+            expected: { foo: "bar" },
+            method: "assertDeepEq",
+            model: "{\n  \"foo\":\"bar\"\n}"
+        },
+        {
+            message: "Invalid JSON strings should be result in undefined values...",
+            transform: {
+                type: "fluid.transforms.JSONstringToObject",
+                inputPath: ""
+            },
+            expected: {},
+            method: "assertDeepEq",
+            model: "stuff and nonsense."
+        }
+    ];
+
+    jqUnit.test("Object <-> JSON String transforms...", function () {
+        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.objectStringTests, {
+            transformWrap: true
+        });
+    });
+
+    fluid.tests.transforms.stringBooleanTests = [
+        {
+            message: "A `false` boolean value should be converted to a string correctly...",
+            transform: {
+                type: "fluid.transforms.booleanToString",
+                inputPath: "falseValue"
+            },
+            expected: "false",
+            method: "assertEquals",
+            model: { falseValue: false }
+        },
+        {
+            message: "`null` should be converted to a string correctly...",
+            transform: {
+                type: "fluid.transforms.booleanToString",
+                inputPath: "undefinedValue"
+            },
+            expected: "false",
+            method: "assertEquals",
+            model: { undefinedValue: null }
+        },
+        {
+            message: "Zero should be converted to a stringified boolean correctly...",
+            transform: {
+                type: "fluid.transforms.booleanToString",
+                inputPath: "zeroValue"
+            },
+            expected: "false",
+            method: "assertEquals",
+            model: { zeroValue: 0 }
+        },
+        {
+            message: "A `true` boolean value should be converted to a string correctly...",
+            transform: {
+                type: "fluid.transforms.booleanToString",
+                inputPath: "trueValue"
+            },
+            expected: "true",
+            method: "assertEquals",
+            model: { trueValue: true }
+        },
+        {
+            message: "A non-empty string should be converted to a stringified boolean correctly...",
+            transform: {
+                type: "fluid.transforms.booleanToString",
+                inputPath: "stringValue"
+            },
+            expected: "true",
+            method: "assertEquals",
+            model: { stringValue: "something truthy this way comes" }
+        },
+        {
+            message: "One should be converted to a stringified boolean correctly...",
+            transform: {
+                type: "fluid.transforms.booleanToString",
+                inputPath: "oneValue"
+            },
+            expected: "true",
+            method: "assertEquals",
+            model: { oneValue: 1 }
+        },
+        {
+            message: "An empty string should be converted to a boolean correctly...",
+            transform: {
+                type: "fluid.transforms.stringToBoolean",
+                inputPath: "emptyString"
+            },
+            expected: false,
+            method: "assertEquals",
+            model: { emptyString: "" }
+        },
+        {
+            message: "The string 'true' should be converted to a boolean correctly...",
+            transform: {
+                type: "fluid.transforms.stringToBoolean",
+                inputPath: ""
+            },
+            expected: true,
+            method: "assertEquals",
+            model: "true"
+        },
+        {
+            message: "The string 'false' should be converted to a boolean correctly...",
+            transform: {
+                type: "fluid.transforms.stringToBoolean",
+                inputPath: ""
+            },
+            expected: false,
+            method: "assertEquals",
+            model: "false"
+        },
+        {
+            message: "A non-empty string should be converted to a boolean correctly...",
+            transform: {
+                type: "fluid.transforms.stringToBoolean",
+                inputPath: ""
+            },
+            expected: true,
+            method: "assertEquals",
+            model: "something truthy this way comes"
+        }
+    ];
+
+    jqUnit.test("String <-> Boolean transforms...", function () {
+        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.stringBooleanTests, {
+            transformWrap: true
+        });
+    });
+
+    fluid.tests.transforms.stringDateTests = [
+        {
+            message: "A stringified date should be correctly decoded..",
+            transform: {
+                type: "fluid.transforms.stringToDate",
+                inputPath: "dateString"
+            },
+            expected: new Date("1972-02-05"),
+            method: "assertDeepEq",
+            model: { dateString: "1972-02-05" }
+        },
+        {
+            message: "A meaningless string should result in an undefined date value...",
+            transform: {
+                type: "fluid.transforms.stringToDate",
+                inputPath: "meaninglessDate"
+            },
+            expected: {},
+            method: "assertDeepEq",
+            model: { meaninglessDate: "whenever I feel like it" }
+        },
+        {
+            message: "A date should be correctly converted to a string...",
+            transform: {
+                type: "fluid.transforms.dateToString",
+                inputPath: "date"
+            },
+            expected: "2014-01-17",
+            method: "assertDeepEq",
+            model: { date: new Date("2014-01-17") }
+        },
+        {
+            message: "A date/time should be correctly converted to a string...",
+            transform: {
+                type: "fluid.transforms.dateTimeToString",
+                inputPath: "dateTime"
+            },
+            expected: "2011-04-22T17:14:25.000Z",
+            method: "assertDeepEq",
+            model: { dateTime: new Date("2011-04-22T17:14:25") }
+        }
+    ];
+
+    jqUnit.test("String <-> Date transforms...", function () {
+        fluid.tests.transforms.testOneStructure(fluid.tests.transforms.stringDateTests, {
+            transformWrap: true
+        });
+    });
 })(jQuery);
