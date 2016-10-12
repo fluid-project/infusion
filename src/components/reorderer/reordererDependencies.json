@@ -17,6 +17,7 @@
         "dependencies": [
             "jQuery",
             "jQueryUI",
+            "jQueryTouchPunchPlugin",
             "normalize",
             "framework"
         ]
