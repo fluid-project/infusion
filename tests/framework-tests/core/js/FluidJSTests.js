@@ -52,6 +52,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Array is nonplain in strict", false, fluid.isPlainObject([], true));
     });
 
+    fluid.tests.firstDefinedTests = [
+        {a: undefined, b: 3, expected: 3},
+        {a: 0, b: 5, expected: 0},
+        {a: null, b: 4, expected: null},
+        {a: "thing", b: undefined, expected: "thing"},
+        {a: undefined, b: undefined, expected: undefined}
+    ];
+
+    jqUnit.test("fluid.firstDefined tests", function () {
+        fluid.each(fluid.tests.firstDefinedTests, function (fixture, i) {
+            jqUnit.assertEquals("fluid.firstDefined fixture " + i, fixture.expected, fluid.firstDefined(fixture.a, fixture.b));
+        });
+    });
+
     jqUnit.test("fluid.makeArray tests", function () {
         jqUnit.assertDeepEq("fluid.makeArray on non-array", [1], fluid.makeArray(1));
         jqUnit.assertDeepEq("fluid.makeArray on null", [], fluid.makeArray(null));

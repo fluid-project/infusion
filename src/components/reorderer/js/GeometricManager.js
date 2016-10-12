@@ -310,7 +310,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             lastClosest = null;
             displacementX = dX;
             displacementY = dY;
-            $("body").bind("mousemove.fluid-dropManager", that.mouseMove);
+            $("body").on("mousemove.fluid-dropManager", that.mouseMove);
         };
 
         that.lastPosition = function () {
@@ -318,7 +318,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         };
 
         that.endDrag = function () {
-            $("body").unbind("mousemove.fluid-dropManager");
+            $("body").off("mousemove.fluid-dropManager");
         };
 
         that.mouseMove = function (evt) {

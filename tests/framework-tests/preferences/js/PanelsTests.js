@@ -1165,7 +1165,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.contrastPanel.changeChecked = function (inputs, newValue) {
-        inputs.removeAttr("checked");
+        inputs.prop("checked", false);
         var matchingInput = inputs.filter("[value='" + newValue + "']");
         matchingInput.prop("checked", "checked").change();
     };

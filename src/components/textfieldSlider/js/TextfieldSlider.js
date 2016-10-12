@@ -205,6 +205,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         selectors: {
             thumb: ".ui-slider-handle"
         },
+        styles: {
+            handle: "fl-slider-handle",
+            range: "fl-slider-range"
+        },
         members: {
             slider: {
                 expander: {
@@ -218,6 +222,14 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     funcName: "fluid.slider.combineSliderOptions",
                     args: ["{that}.options.sliderOptions", "{that}.options.range"]
                 }
+            }
+        },
+        sliderOptions: {
+            orientation: "horizontal",
+            step: 1.0,
+            classes: {
+                "ui-slider-handle": "{that}.options.styles.handle",
+                "ui-slider-range": "{that}.options.styles.range"
             }
         },
         invokers: {
@@ -250,7 +262,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             },
             "onCreate.bindSlideEvt": {
                 "this": "{that}.slider",
-                "method": "bind",
+                "method": "on",
                 "args": ["slide", "{that}.setModel"]
             }
         },

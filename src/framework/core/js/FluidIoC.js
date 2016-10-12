@@ -1104,6 +1104,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      */
 
 // TODO: Can we move outerExpandOptions to 2nd place? only user of 3 and 4 is fluid.makeExpandBlock
+// TODO: Actually we want localRecord in 2nd place since outerExpandOptions is now almost disused
     fluid.expandOptions = function (args, that, mergePolicy, localRecord, outerExpandOptions) {
         if (!args) {
             return args;

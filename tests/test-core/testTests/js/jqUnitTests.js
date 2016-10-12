@@ -8,7 +8,7 @@
  https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
  */
 
-/* global fluid, jqUnit, QUnit */
+/* global fluid, jqUnit */
 
 (function () {
     "use strict";
@@ -16,19 +16,6 @@
     fluid.registerNamespace("fluid.tests.jqUnit");
 
     jqUnit.module("Conventional jqUnit tests");
-
-    fluid.tests.jqUnit.failIsPass = false;
-
-    // Insanely, we need both the teardown function and the log subversion because qunit-composite.js uses a completely
-    // different strategy to the standard QUnit UI for accounting for test failures:
-    // https://github.com/fluid-project/infusion/blob/master/tests/lib/qunit/addons/composite/qunit-composite.js#L79 .
-    // If we just use failingTeardown, the main QUnit UI works fine, but the "failures" are rendered as real failures in the iframe-based all-tests.html driver.
-    // When will the "industry" learn that integration is the first priority?
-    QUnit.log(function (data) {
-        if (fluid.tests.jqUnit.failIsPass) {
-            data.result = !data.result;
-        }
-    });
 
     jqUnit.test("Simple Deep Equivalence Tests", function () {
         jqUnit.expect(12);
@@ -57,24 +44,9 @@
 
     /** From here on, EVERY TEST MUST FAIL **/
 
-    fluid.tests.failingSetup = function () {
-        // Ensure that the "data" argument sent to QUnit.log() callbacks is subverted too
-        fluid.tests.jqUnit.failIsPass = true;
-    };
-
-    fluid.tests.failingTeardown = function () {
-        // Subvert QUnit's records by converting every failing test to a passing test and vice versa
-        var current = QUnit.config.current;
-        fluid.each(current.assertions, function (assertion) {
-            assertion.result = !assertion.result;
-        });
-        // Undo subversion of QUnit.log() callbacks at the end of the test
-        fluid.tests.jqUnit.failIsPass = false;
-    };
-
     jqUnit.module("jqUnit tests which must each fail", {
-        setup: fluid.tests.failingSetup,
-        teardown: fluid.tests.failingTeardown
+        setup: fluid.test.failingSetup,
+        teardown: fluid.test.failingTeardown
     });
 
     jqUnit.test("jqUnit.assertDeepEq failing tests (FLUID-5901)", function () {
