@@ -10,10 +10,10 @@
  *
  * Revision: $Id$
  * Version: 0.5
- * 
+ *
  * Changelog :
- *  Version 0.5 
- *  - separate css style for current selected element and hover element which solve the highlight issue 
+ *  Version 0.5
+ *  - separate css style for current selected element and hover element which solve the highlight issue
  *  Version 0.4
  *  - Fix width when the select is in a hidden div   @Pawel Maziarz
  *  - Add a unique id for generated li to avoid conflict with other selects and empty values @Pawel Maziarz
@@ -30,21 +30,21 @@ jQuery.fn.extend({
 /* pawel maziarz: work around for ie logging */
 if (!window.console) {
 	var console = {
-		log: function(msg) { 
+		log: function(msg) {
 	 }
 	}
 }
 /* */
 
 jQuery.SelectBox = function(selectobj, options) {
-	
+
 	var opt = options || {};
 	opt.inputClass = opt.inputClass || "selectbox";
 	opt.containerClass = opt.containerClass || "selectbox-wrapper";
 	opt.hoverClass = opt.hoverClass || "current";
 	opt.currentClass = opt.selectedClass || "selected"
 	opt.debug = opt.debug || false;
-	
+
 	var elm_id = selectobj.id;
 	var active = -1;
 	var inFocus = false;
@@ -53,14 +53,14 @@ jQuery.SelectBox = function(selectobj, options) {
 	var $select = $(selectobj);
 	// jquery container object
 	var $container = setupContainer(opt);
-	//jquery input object 
+	//jquery input object
 	var $input = setupInput(opt);
 	// hide select and append newly created elements
 	$select.hide().before($input).before($container);
-	
-	
+
+
 	init();
-	
+
 	$input
 	.click(function(){
     if (!inFocus) {
@@ -73,7 +73,7 @@ jQuery.SelectBox = function(selectobj, options) {
 	       $container.show();
 	   }
 	})
-	.keydown(function(event) {	   
+	.keydown(function(event) {
 		switch(event.keyCode) {
 			case 38: // up
 				event.preventDefault();
@@ -83,7 +83,7 @@ jQuery.SelectBox = function(selectobj, options) {
 				event.preventDefault();
 				moveSelect(1);
 				break;
-			//case 9:  // tab 
+			//case 9:  // tab
 			case 13: // return
 				event.preventDefault(); // seems not working in mac !
 				$('li.'+opt.hoverClass).trigger('click');
@@ -97,34 +97,34 @@ jQuery.SelectBox = function(selectobj, options) {
 		if ($container.is(':visible') && hasfocus > 0 ) {
 			if(opt.debug) console.log('container visible and has focus')
 		} else {
-			hideMe();	
+			hideMe();
 		}
 	});
 
 
-	function hideMe() { 
+	function hideMe() {
 		hasfocus = 0;
 		$container.hide();
 		if (opt.finishHandler) {
 		  opt.finishHandler();
 		}
 	}
-	
+
 	function init() {
 		$container.append(getSelectOptions($input.attr('id'))).hide();
 		var width = $input.css('width');
 		$container.width(width);
     }
-	
+
 	function setupContainer(options) {
 		var container = document.createElement("div");
 		$container = $(container);
 		$container.attr('id', elm_id+'_container');
 		$container.addClass(options.containerClass);
-		
+
 		return $container;
 	}
-	
+
 	function setupInput(options) {
 		var input = document.createElement("input");
 		var $input = $(input);
@@ -134,10 +134,10 @@ jQuery.SelectBox = function(selectobj, options) {
 		$input.attr("autocomplete", "off");
 		$input.attr("readonly", "readonly");
 		$input.attr("tabIndex", $select.attr("tabindex")); // "I" capital is important for ie
-		
-		return $input;	
+
+		return $input;
 	}
-	
+
 	function moveSelect(step) {
 		var lis = $("li", $container);
 		if (!lis) return;
@@ -146,16 +146,16 @@ jQuery.SelectBox = function(selectobj, options) {
 
 		if (active < 0) {
 			active = 0;
-		} else if (active >= lis.size()) {
-			active = lis.size() - 1;
+		} else if (active >= lis.length) {
+			active = lis.length - 1;
 		}
 
 		lis.removeClass(opt.hoverClass);
 
 		$(lis[active]).addClass(opt.hoverClass);
 	}
-	
-	function setCurrent() {	
+
+	function setCurrent() {
 		var li = $("li."+opt.currentClass, $container).get(0);
 		var ar = (''+li.id).split('_');
 		var el = ar[ar.length-1];
@@ -163,17 +163,17 @@ jQuery.SelectBox = function(selectobj, options) {
 		$input.val($(li).html());
 		return true;
 	}
-	
+
 	// select value
 	function getCurrentSelected() {
 		return $select.val();
 	}
-	
+
 	// input value
 	function getCurrentValue() {
 		return $input.val();
 	}
-	
+
 	function getSelectOptions(parentid) {
 		var select_options = new Array();
 		var ul = document.createElement('ul');
@@ -200,7 +200,7 @@ jQuery.SelectBox = function(selectobj, options) {
 			.click(function(event) {
 			  var fl = $('li.'+opt.hoverClass, $container).get(0);
 				if (opt.debug) console.log('click on :'+this.id);
-				$('li.'+opt.currentClass).removeClass(opt.currentClass); 
+				$('li.'+opt.currentClass).removeClass(opt.currentClass);
 				$(this).addClass(opt.currentClass);
 				setCurrent();
 				hideMe();
@@ -208,5 +208,5 @@ jQuery.SelectBox = function(selectobj, options) {
 		});
 		return ul;
 	}
-	
+
 };

@@ -366,6 +366,14 @@ var fluid = fluid || fluid_2_0_0;
         return obj && obj.constructor === fluid.componentConstructor;
     };
 
+    fluid.isUncopyable = function (totest) {
+        return fluid.isPrimitive(totest) || !fluid.isPlainObject(totest);
+    };
+
+    fluid.isApplicable = function (totest) {
+        return totest.apply && typeof(totest.apply) === "function";
+    };
+
     /** A basic utility that returns its argument unchanged */
 
     fluid.identity = function (arg) {
@@ -378,18 +386,20 @@ var fluid = fluid || fluid_2_0_0;
         fluid.fail("This operation is not implemented");
     };
 
+    /** Returns the first of its arguments if it is not `undefined`, otherwise returns the second.
+     * @param a {Any} The first argument to be tested for being `undefined`
+     * @param b {Any} The fallback argument, to be returned if `a` is `undefined`
+     * @return {Any} `a` if it is not `undefined`, else `b`.
+     */
+
+    fluid.firstDefined = function (a, b) {
+        return a === undefined ? b : a;
+    };
+
     /** Return an empty container as the same type as the argument (either an
      * array or hash */
     fluid.freshContainer = function (tocopy) {
         return fluid.isArrayable(tocopy) ? [] : {};
-    };
-
-    fluid.isUncopyable = function (totest) {
-        return fluid.isPrimitive(totest) || !fluid.isPlainObject(totest);
-    };
-
-    fluid.isApplicable = function (totest) {
-        return totest.apply && typeof(totest.apply) === "function";
     };
 
     fluid.copyRecurse = function (tocopy, segs) {

@@ -59,6 +59,10 @@
     transition: all 0.2s linear;
 }
 
+.fl-overviewPanel-container * {
+    font-family: inherit;
+}
+
 .fl-overviewPanel .fl-overviewPanel-title {
     background-color: #333;
     font-family: 'RobotoSlab', serif;
@@ -69,6 +73,10 @@
     top: 0;
     left: 0;
     line-height: 2em;
+}
+
+.fl-overviewPanel .fl-overviewPanel-title * {
+    font-family: inherit;
 }
 
 .fl-overviewPanel .fl-overviewPanel-contents {

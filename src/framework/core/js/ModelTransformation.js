@@ -154,10 +154,6 @@ var fluid = fluid || fluid_2_0_0;
             (stats.changes ? 0 : 0xffffff000000 + stats.unchanged));
     };
 
-    fluid.firstDefined = function (a, b) {
-        return a === undefined ? b : a;
-    };
-
     fluid.model.transform.invertPaths = function (transformSpec, transformer) {
         // TODO: this will not behave correctly in the face of compound "input" which contains
         // further transforms

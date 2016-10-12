@@ -20,7 +20,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.defaults("fluid.uiOptions.prefsEditor", {
         gradeNames: ["fluid.prefs.constructed.prefsEditor"],
+        lazyLoad: false,
         distributeOptions: [{
+            record: "{that}.options.lazyLoad",
+            target: "{that separatedPanel}.options.lazyLoad"
+        }, {
             source: "{that}.options.tocTemplate",
             target: "{that uiEnhancer}.options.tocTemplate"
         }, {
