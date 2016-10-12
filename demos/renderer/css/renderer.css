@@ -4,11 +4,20 @@
 .info-block > label {
     font-weight: bold;
 }
-.render-button {
+.renderButton-container {
     text-align: center;
 }
 .model-dump {
     border: solid 1px;
     font-family: monospace;
     padding: 10px;
+}
+
+td, th {
+    border: 1px solid #000000;
+    padding: 5px;
+}
+
+ul {
+    list-style: none;
 }

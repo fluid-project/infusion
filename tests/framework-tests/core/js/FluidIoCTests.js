@@ -4356,13 +4356,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.component"]
     });
 
-    jqUnit.test("Test nexus methods fluid.construct and fluid.destroy", function () {
+    jqUnit.test("Test nexus methods fluid.construct, fluid.componentForPath, and fluid.destroy", function () {
         fluid.construct("fluid_tests_nexusRoot", {
             type: "fluid.tests.nexusComponent",
             value: 53
         });
 
         jqUnit.assertEquals("Constructed nexus component with options", 53, fluid.rootComponent.fluid_tests_nexusRoot.options.value);
+        jqUnit.assertEquals("fluid.componentForPath returns the newly constructed component", 53, fluid.componentForPath("fluid_tests_nexusRoot").options.value);
+
         fluid.construct("fluid_tests_nexusRoot.child", {
             type: "fluid.tests.nexusComponent",
             value: 64
@@ -4376,10 +4378,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var globalPath = "fluid_tests_nexusRoot.child";
         var child = fluid.globalInstantiator.pathToComponent[globalPath];
         jqUnit.assertEquals("Constructed a valid global instantiator component at child path", child, globalChild);
+        jqUnit.assertEquals("fluid.componentForPath returns the child component (string)", globalChild, fluid.componentForPath(globalPath));
+        jqUnit.assertEquals("fluid.componentForPath returns the child component (array path)", globalChild, fluid.componentForPath(globalPath.split(".")));
+
         var arrayPath = fluid.pathForComponent(child);
         jqUnit.assertDeepEq("Got array path for component", globalPath.split("."), arrayPath);
         fluid.destroy(arrayPath);
         jqUnit.assertNoValue("Destroyed nexus component via array path", fluid.rootComponent.fluid_tests_nexusRoot.child);
         fluid.destroy("fluid_tests_nexusRoot");
+
+        jqUnit.assertUndefined("fluid.componentForPath returns undefined for destroyed component", fluid.componentForPath(globalPath));
     });
 })(jQuery);

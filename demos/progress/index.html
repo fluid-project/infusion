@@ -33,14 +33,14 @@
     </head>
     <body>
         <div class="flc-overviewPanel fl-overviewPanel-container"></div>
-        <div class="demo-progress-container fl-centered fl-focus">
+        <div class="demoSelector-shoppingDemo demo-progress-container fl-centered fl-focus">
 
             <h1>Zip Grocery Delivery</h1>
 
             <!-- The area that displays dynamic status messages and the progress bar. -->
             <div id="demo-status-message" class="demo-progress-status-container">
 
-                <div class='demoSelector-liveRegion'>
+                <div class='demoSelector-liveRegion demo-progress-liveRegion'>
                     <!-- status text for progress -->
                     <p class='demoSelector-progress-status-text demo-progress-status-text'></p>
                     <!-- links to the demo page -->
@@ -48,7 +48,7 @@
                 </div>
 
                 <!-- progress simulation -->
-                <div id="demoSelector-progress-theComponent">
+                <div class="demoSelector-progress-theComponent">
                     <div class="flc-progress demo-progress-popUp">
                         <div class="flc-progress-bar demo-progress-theBar">
                             <div class="flc-progress-indicator demo-progress-indicator">
@@ -125,12 +125,12 @@
 
         <!-- The Submit button -->
         <div class="progress-demo-submit">
-            <button class="enabled" title="Submit your order">Submit</button>
+            <button title="Submit your order">Submit</button>
         </div>
     </div>
 
     <script type="text/javascript">
-        demo.initShoppingDemo(0,200);
+        demo.shoppingDemo(".demoSelector-shoppingDemo");
     </script>
 
     </body>

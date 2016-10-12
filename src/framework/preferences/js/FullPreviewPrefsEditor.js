@@ -34,13 +34,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                             container: "{prefsEditor}.dom.previewFrame",
                             options: {
                                 listeners: {
-                                    onReady: "{fullPreview}.events.onPreviewReady"
+                                    "onReady.boilOnPreviewReady": "{fullPreview}.events.onPreviewReady"
                                 }
                             }
                         }
                     },
                     listeners: {
-                        onReady: "{fullPreview}.events.onPrefsEditorReady"
+                        "onReady.boilOnPrefsEditorReady": "{fullPreview}.events.onPrefsEditorReady"
                     },
                     distributeOptions: {
                         source: "{that}.options.preview",
