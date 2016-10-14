@@ -1,5 +1,5 @@
 /*
-Copyright 2015 OCAD University
+Copyright 2015-2016 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -49,6 +49,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
+    fluid.defaults("fluid.tests.textToSpeech.ttsPauseResumeTestEnvironment", {
+        gradeNames: "fluid.test.testEnvironment",
+        components: {
+            tts: {
+                type: "fluid.tests.textToSpeech",
+                createOnEvent: "{ttsTester}.events.onTestCaseStart"
+            },
+            ttsTester: {
+                type: "fluid.tests.textToSpeech.ttsTesterPauseResume"
+            }
+        }
+    });
+
     fluid.defaults("fluid.tests.textToSpeech.ttsTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         modules: [
@@ -84,7 +97,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         event: "{tts}.events.onStop"
                     }]
                 }]
-            },
+            }]
+    });
+
+    fluid.defaults("fluid.tests.textToSpeech.ttsTesterPauseResume", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [
             {
                 name: "Test Including Pause and Resume Events",
                 tests: [{
@@ -224,38 +242,45 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertFalse("Shouldn't be paused", that.model.paused);
     };
 
-    fluid.tests.textToSpeech.bypassTest = function (bypassMessage) {
-        jqUnit.test("Tests were skipped.", function () {
-            jqUnit.assert(bypassMessage);
-        });
+    fluid.tests.textToSpeech.baseTests = function () {
+        fluid.test.conditionalTestUtils.chooseTestByPromiseResult("Confirming if TTS is available for initialization and start/stop tests",
+         fluid.textToSpeech.checkTTSSupport,
+          fluid.tests.textToSpeech.ttsTestEnvironment,
+           fluid.test.conditionalTestUtils.bypassTest,
+           "Browser appears to support TTS", "Browser does not appear to support TTS");
     };
 
-    // Chooses which test function to execute based on the results of a
-    // promise; wraps the promise in an asyncTest to cause QUnit's test
-    // runner to suspend while the decision is being made asynchronously by
-    // the promise. Without this, QUnit will merrily proceed along to the
-    // next test set, which can cause errors various contexts including the
-    // all-tests runner.
-    //
-    // wrapperMessage, task, resolveFunc, rejectFunc: required
-    // "task" must be a function returning a promise
-    // resolveMessage, rejectMessage: optional strings, passed to the test
-    // functions
-    fluid.tests.textToSpeech.chooseTestByPromiseResult = function (wrapperMessage, task, resolveFunc, rejectFunc, resolveMessage, rejectMessage) {
-        resolveMessage = resolveMessage || "Promise resolved, running resolve test.";
-        rejectMessage = rejectMessage || "Promise rejected, running reject test.";
-        jqUnit.asyncTest(wrapperMessage, function () {
-            jqUnit.expect(0);
-            task().then(function () {
-                jqUnit.start();
-                resolveFunc(resolveMessage);
-            }, function () {
-                jqUnit.start();
-                rejectFunc(rejectMessage);
-            });
-        });
+    fluid.tests.textToSpeech.supportsPauseResumeTests = function () {
+        fluid.test.conditionalTestUtils.chooseTestByPromiseResult("Confirming if TTS is available for pause and resume tests",
+         fluid.textToSpeech.checkTTSSupport,
+          fluid.tests.textToSpeech.ttsPauseResumeTestEnvironment,
+           fluid.test.conditionalTestUtils.bypassTest, "Browser appears to support TTS", "Browser does not appear to support TTS");
     };
 
-    fluid.tests.textToSpeech.chooseTestByPromiseResult("Confirming if TTS is available", fluid.textToSpeech.checkTTSSupport, fluid.tests.textToSpeech.ttsTestEnvironment, fluid.tests.textToSpeech.bypassTest, "Browser appears to support TTS", "Browser does not appear to support TTS");
+    fluid.defaults("fluid.tests.textToSpeech.contextAwareTestRunner", {
+        gradeNames: ["fluid.test.conditionalTestUtils.contextAwareTestRunner"],
+        contextAwareness: {
+            supportsPauseResume: {
+                checks: {
+                    supportsPauseResume: {
+                        contextValue: "{fluid.platform.isLinux}",
+                        equals: false,
+                        gradeNames: ["fluid.tests.textToSpeech.supportsPauseResume"]
+                    }
+                }
+            }
+        },
+        tests: {
+            base: "fluid.tests.textToSpeech.baseTests"
+        }
+    });
+
+    fluid.defaults("fluid.tests.textToSpeech.supportsPauseResume", {
+        tests: {
+            supportsPauseResume: "fluid.tests.textToSpeech.supportsPauseResumeTests"
+        }
+    });
+
+    fluid.tests.textToSpeech.contextAwareTestRunner();
 
 })();

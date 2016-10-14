@@ -101,7 +101,7 @@ This is a list of publicly available software that is redistributed with Fluid I
 categorized by license:
 
 ### MIT License ###
-* [Foundation v5.4.5](http://foundation.zurb.com/index.html)
+* [Foundation v6.2.3](http://foundation.zurb.com/index.html)
 * [HTML5 Boilerplate v4.3](http://html5boilerplate.com/)
 * [jQuery v3.1.0](http://jquery.com/)
 * [jQuery UI (Core; Interactions: draggable, resizable; Widgets: button, checkboxradio, controlgroup, dialog, mouse, slider, tabs, and tooltip) v1.12.1](http://ui.jquery.com/)
@@ -111,8 +111,9 @@ categorized by license:
 * [jQuery scrollTo v1.4.2](http://flesler.blogspot.com/2007/10/jqueryscrollto.html)
 * [jQuery Touch Punch v0.2.2](http://touchpunch.furf.com/)
 * [jquery.simulate](https://github.com/eduardolundgren/jquery-simulate)
+* [jquery.selectbox v0.5 (forked)](https://github.com/fluid-project/jquery.selectbox)
 * [Micro Clearfix](http://nicolasgallagher.com/micro-clearfix-hack/)
-* [Normalize v3.0.1](https://necolas.github.io/normalize.css/)
+* [Normalize v4.1.1](https://necolas.github.io/normalize.css/)
 * [Buzz v1.1.0](http://buzz.jaysalvat.com)
 * [html5shiv v3.7.2](https://code.google.com/p/html5shiv/)
 
