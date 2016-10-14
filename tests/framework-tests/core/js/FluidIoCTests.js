@@ -298,6 +298,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var that = fluid.tests.retrunking();
         var expected = {
             length: 100,
+            width: 10,
             headWidth: 20,
             headHeight: 20,
             angle: Math.PI / 2,
