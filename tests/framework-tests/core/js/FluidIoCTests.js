@@ -3028,6 +3028,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             that, that.child);
     });
 
+    /** FLUID-5982 - Injected component designated by expander **/
+
+    fluid.defaults("fluid.tests.FLUID5982root", {
+        gradeNames: "fluid.component",
+        components: {
+            sourceComponent: {
+                type: "fluid.component",
+                options: {
+                    sourceComponent: true
+                }
+            },
+            targetComponent: {
+                expander: {
+                    func: "fluid.identity",
+                    args: "{FLUID5982root}.sourceComponent"
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5982: Designate injected component via expander", function () {
+        var that = fluid.tests.FLUID5982root();
+        jqUnit.assertEquals("Injected component resolved via expander", true, that.targetComponent.options.sourceComponent);
+    });
+
     /** FLUID-5022 - Designation of dynamic components **/
 
     fluid.tests.fluid5022add = function (that) {
