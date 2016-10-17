@@ -455,8 +455,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
-=======
->>>>>>> master
      * Unit tests for fluid.prefs.auxbuilder
      *******************************************************************************/
 
