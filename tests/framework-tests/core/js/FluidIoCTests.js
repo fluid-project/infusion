@@ -270,6 +270,44 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertUndefined("Event returned to nonpreventable through merge", result);
     });
 
+    /** FLUID-4930 retrunking test taken from fluid-authoring arrow rendering **/
+
+    fluid.tests.vectorToPolar = function (start, end) {
+        var dx = end[0] - start[0], dy = end[1] - start[1];
+        return {
+            length: Math.sqrt(dx * dx + dy * dy),
+            angle: Math.atan2(dy, dx)
+        };
+    };
+
+    fluid.defaults("fluid.tests.retrunking", {
+        gradeNames: "fluid.component",
+        arrowGeometry: {
+            length: "{that}.options.polar.length",
+            width: 10,
+            headWidth: 20,
+            headHeight: 20,
+            angle: "{that}.options.polar.angle",
+            start: [100, 100],
+            end: [100, 200]
+        },
+        polar: "@expand:fluid.tests.vectorToPolar({that}.options.arrowGeometry.start, {that}.options.arrowGeometry.end)"
+    });
+
+    jqUnit.test("FLUID-4930: Options retrunking test", function () {
+        var that = fluid.tests.retrunking();
+        var expected = {
+            length: 100,
+            width: 10,
+            headWidth: 20,
+            headHeight: 20,
+            angle: Math.PI / 2,
+            start: [100, 100],
+            end: [100, 200]
+        };
+        jqUnit.assertDeepEq("Successfully evaluated all options", expected, that.options.arrowGeometry);
+    });
+
     /** FLUID-5755 - another "exotic types" test - this time a native array **/
 
     fluid.defaults("fluid.tests.componentWithTypedArrayOption", {

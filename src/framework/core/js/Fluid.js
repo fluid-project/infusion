@@ -1730,7 +1730,9 @@ var fluid = fluid || fluid_2_0_0;
     // unsupported, NON-API function
     fluid.resolveGrade = function (defaults, defaultName, gradeNames) {
         var gradeStruct = fluid.resolveGradeStructure(defaultName, gradeNames);
-        var mergeArgs = fluid.transform(gradeStruct.gradeChain, fluid.rawDefaults);
+        // TODO: Fault in the merging algorithm does not actually treat arguments as immutable - failure in FLUID-5082 tests
+        // due to listeners mergePolicy
+        var mergeArgs = fluid.transform(gradeStruct.gradeChain, fluid.rawDefaults, fluid.copy);
         fluid.remove_if(mergeArgs, function (options) {
             return !options;
         });
@@ -1922,10 +1924,10 @@ var fluid = fluid || fluid_2_0_0;
         fluid.setGlobalValue(componentName, creator);
     };
 
-    var emptyPolicy = {};
+    fluid.emptyPolicy = fluid.freezeRecursive({});
     // unsupported, NON-API function
     fluid.derefMergePolicy = function (policy) {
-        return (policy ? policy["*"] : emptyPolicy) || emptyPolicy;
+        return (policy ? policy["*"] : fluid.emptyPolicy) || fluid.emptyPolicy;
     };
 
     // unsupported, NON-API function
@@ -2032,11 +2034,14 @@ var fluid = fluid || fluid_2_0_0;
             // traversal of concrete properties to do the final merge.
             if (source !== undefined) {
                 fluid.each(source, function (newSource, name) {
-                    if (!(name in target)) { // only request each new target key once -- all sources will be queried per strategy
+                    var childPolicy = fluid.concreteTrundler(mergePolicy, name);
+                    // 2nd arm of condition is an Outrageous bodge to fix FLUID-4930 further. See fluid.tests.retrunking in FluidIoCTests.js
+                    // We make extra use of the old "evaluateFully" flag and ensure to flood any trunk objects again during final "initter" phase of merging.
+                    // The problem is that a custom mergePolicy may have replaced the system generated trunk with a differently structured object which we must not
+                    // corrupt. This work should properly be done with a set of dedicated provenance/progress records in a separate structure
+                    if (!(name in target) || (options.evaluateFully && childPolicy === undefined && !fluid.isPrimitive(target[name]))) { // only request each new target key once -- all sources will be queried per strategy
                         segs[i] = name;
-                        if (!fluid.getImmediate(options.exceptions, segs, i)) {
-                            options.strategy(target, name, i + 1, segs, sources, mergePolicy);
-                        }
+                        options.strategy(target, name, i + 1, segs, sources, mergePolicy);
                     }
                 });
                 if (thisPolicy.replace) { // this branch primarily deals with a policy of replace at the root
@@ -2089,7 +2094,6 @@ var fluid = fluid || fluid_2_0_0;
                 sources = regenerateSources(options.sources, segs, i - 1, options.sourceStrategies);
                 policy = regenerateCursor(options.mergePolicy, segs, i - 1, fluid.concreteTrundler);
             }
-            // var thisPolicy = fluid.derefMergePolicy(policy);
             var newPolicyHolder = fluid.concreteTrundler(policy, name);
             var newPolicy = fluid.derefMergePolicy(newPolicyHolder);
 
@@ -2107,7 +2111,9 @@ var fluid = fluid || fluid_2_0_0;
                 var k = mul * j;
                 var thisSource = options.sourceStrategies[k](sources[k], name, i, segs); // Run the RH algorithm in "driving" mode
                 if (thisSource !== undefined) {
-                    newSources[k] = thisSource;
+                    if (!fluid.isPrimitive(thisSource)) {
+                        newSources[k] = thisSource;
+                    }
                     if (oldTarget === undefined) {
                         if (mul === -1) { // if we are going backwards, it is "replace"
                             thisTarget = target[name] = thisSource;
