@@ -353,8 +353,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             editModeInstruction.show();
 
             var editFieldPosition = editField.offset();
+            var editFieldHeight = parseInt(editField.css("height"), 10);
             editModeInstruction.css({left: editFieldPosition.left});
-            editModeInstruction.css({top: editFieldPosition.top + editField.height() + 5});
+            editModeInstruction.css({top: editFieldPosition.top + editFieldHeight + 5});
         });
     };
 
