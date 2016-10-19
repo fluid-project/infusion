@@ -221,8 +221,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             content: that.options.tooltipText,
             position: {
                 my: "left top",
-                at: "left bottom",
-                offset: "0 5"
+                at: "left bottom+25%", // add a 25% offset to keep the tooltip from overlapping the element it is for
+                // setting the "of" property to ensure that the tooltip is positioned relative to that.viewEl
+                // even when keyboard focus is on that.textEditButton
+                of: that.viewEl
             },
             target: "*",
             delay: that.options.tooltipDelay,
