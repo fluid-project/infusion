@@ -10,7 +10,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -136,14 +135,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.registerNamespace("fluid.testUtils.reorderer");
 
         fluid.testUtils.reorderer.offsetGridTestRects = [
-            // column 1, 3x3 squares spaced by 1, middle skew 1 to the right
-                {left: 1, top: 1, right: 4, bottom: 4},
-                {left: 2, top: 5, right: 5, bottom: 8},
-                {left: 1, top: 9, right: 4, bottom: 12},
-            // column 2, same dimensions but offset down by 1
-                {left: 6, top: 2, right: 9, bottom: 5},
-                {left: 6, top: 6, right: 9, bottom: 9}
-            ];
+        // column 1, 3x3 squares spaced by 1, middle skew 1 to the right
+            {left: 1, top: 1, right: 4, bottom: 4},
+            {left: 2, top: 5, right: 5, bottom: 8},
+            {left: 1, top: 9, right: 4, bottom: 12},
+        // column 2, same dimensions but offset down by 1
+            {left: 6, top: 2, right: 9, bottom: 5},
+            {left: 6, top: 6, right: 9, bottom: 9}
+        ];
 
         fluid.testUtils.reorderer.offsetGridTestAssertions = [
             ["Right0", 0, "RIGHT", 3, false],
@@ -179,7 +178,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
 
-            for (var i = 0; i < assertions.length; ++ i) {
+            for (var i = 0; i < assertions.length; ++i) {
                 assertProject.apply(null, assertions[i]);
             }
 
@@ -200,14 +199,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         // To test FLUID-4692
         fluid.testUtils.reorderer.NickMayneTestRects = [
-            // Two full rows, a row of three squares, and then another full row
-                {left: 0, top: 0, right: 5, bottom: 1},
-                {left: 0, top: 2, right: 5, bottom: 3},
-                {left: 0, top: 4, right: 1, bottom: 5},
-                {left: 2, top: 4, right: 3, bottom: 5},
-                {left: 4, top: 4, right: 5, bottom: 5},
-                {left: 0, top: 6, right: 5, bottom: 7}
-            ];
+        // Two full rows, a row of three squares, and then another full row
+            {left: 0, top: 0, right: 5, bottom: 1},
+            {left: 0, top: 2, right: 5, bottom: 3},
+            {left: 0, top: 4, right: 1, bottom: 5},
+            {left: 2, top: 4, right: 3, bottom: 5},
+            {left: 4, top: 4, right: 5, bottom: 5},
+            {left: 0, top: 6, right: 5, bottom: 7}
+        ];
 
         fluid.testUtils.reorderer.NickMayneKeyTestAssertions = [
             ["Down0", 0, "DOWN", 1, false],
@@ -234,7 +233,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         ];
 
         var elementToIndex = function (element) {
-            return element.id.substring(3); // remove "el-" prefix
+            return +element.id.substring(3); // remove "el-" prefix
         };
 
         var testGeometryComputor = function (rects) {
@@ -255,7 +254,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var dropManager = fluid.dropManager();
 
             var zones = $(".zone", "#FLUID-4692-test");
-            var extents = fluid.transform(zones, function(zone) {
+            var extents = fluid.transform(zones, function (zone) {
                 return {
                     orientation: fluid.orientation.VERTICAL,
                     elements: [],
@@ -274,7 +273,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.expect(as.length);
 
             var i;
-            for (i = 0; i < as.length; ++ i) {
+            for (i = 0; i < as.length; ++i) {
                 var a = as[i];
                 var res = dropManager.projectFrom(zones[a[1]], fluid.direction[a[2]], false, a[4]);
                 jqUnit.assertEquals(a[0], a[3], elementToIndex(res.element));
@@ -283,7 +282,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var ms = fluid.testUtils.reorderer.NickMayneMouseTestAssertions;
             jqUnit.expect(ms.length);
 
-            for (i = 0; i < ms.length; ++ i) {
+            for (i = 0; i < ms.length; ++i) {
                 var m = ms[i];
                 var closest = dropManager.closestTarget(m[0], m[1]);
                 jqUnit.assertEquals("Mouse test " + i, m[2], elementToIndex(closest.element));

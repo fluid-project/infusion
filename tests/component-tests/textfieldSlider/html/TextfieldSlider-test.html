@@ -8,11 +8,9 @@
         <link rel="Stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
 
         <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
-        <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery.ui.core.js"></script>
-        <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery.ui.widget.js"></script>
-        <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery.ui.mouse.js"></script>
-        <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery.ui.slider.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery-ui.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/FluidRequests.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformation.js"></script>
@@ -23,6 +21,7 @@
         <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidParser.js"></script>
         <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
         <script type="text/javascript" src="../../../../src/framework/renderer/js/RendererUtilities.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
         <script type="text/javascript" src="../../../../src/components/textfieldSlider/js/TextfieldSlider.js"></script>
 
         <!--  These are the jqUnit test js files -->
@@ -42,10 +41,16 @@
 
     <!-- Test HTML -->
     <div id="qunit-fixture" class="container">
-        <div class="fl-textfield-slider">
-            <p class="flc-textfieldSlider-slider fl-horz-slider"><a></a> </p>
+        <div class="fl-textfield-slider-native">
+            <input class="flc-textfieldSlider-slider" />
             <input class="flc-textfieldSlider-field" type="text" />
         </div>
+
+        <div class="fl-textfield-slider-jQuery">
+            <div class="flc-textfieldSlider-slider" />
+            <input class="flc-textfieldSlider-field" type="text" />
+        </div>
+
     </div>
 
     </body>

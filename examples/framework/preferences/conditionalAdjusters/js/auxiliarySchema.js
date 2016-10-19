@@ -1,5 +1,5 @@
 /*
-Copyright 2013 OCAD University
+Copyright 2013-2016 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid */
 
 var example = example || {};
@@ -20,15 +19,27 @@ var example = example || {};
      * Auxiliary Schema
      */
     fluid.defaults("example.auxSchema", {
-        gradeNames: ["fluid.prefs.auxSchema", "autoInit"],
+        gradeNames: ["fluid.prefs.auxSchema", "fluid.contextAware"],
+        contextAwareness: {
+            sliderVariety: {
+                checks: {
+                    jQueryUI: {
+                        contextValue: "{fluid.prefsWidgetType}",
+                        equals: "jQueryUI",
+                        gradeNames: "example.auxSchema.jQueryUI"
+                    }
+                },
+                defaultGradeNames: "example.auxSchema.nativeHTML"
+            }
+        },
         auxiliarySchema: {
             template: "html/prefsEditor.html",
-            message: "%prefix/prefsEditor.json",
+            message: "%messagePrefix/prefsEditor.json",
             groups: {
                 speaking: {
                     "container": ".mpe-speaking",
-                    "template": "%prefix/speaking.html",
-                    "message": "%prefix/speaking.json",
+                    "template": "%templatePrefix/speaking.html",
+                    "message": "%messagePrefix/speaking.json",
                     "type": "example.panels.speaking",
                     "panels": {
                         "always": ["speak"],
@@ -37,8 +48,8 @@ var example = example || {};
                 },
                 increasing: {
                     "container": ".mpe-increasing",
-                    "template": "%prefix/increasing.html",
-                    "message": "%prefix/increasing.json",
+                    "template": "%templatePrefix/increasing.html",
+                    "message": "%messagePrefix/increasing.json",
                     "type": "example.panels.increasing",
                     "panels": {
                         "always": ["incSize"],
@@ -54,8 +65,8 @@ var example = example || {};
                 panel: {
                     type: "example.panels.speak",
                     container: ".mpe-speaking-onOff",
-                    template: "%prefix/speak-template.html",
-                    message: "%prefix/speaking.json"
+                    template: "%templatePrefix/speak-template.html",
+                    message: "%messagePrefix/speaking.json"
                 }
             },
             vol: {
@@ -66,8 +77,7 @@ var example = example || {};
                 panel: {
                     type: "example.panels.vol",
                     container: ".mpe-speaking-vol",
-                    template: "%prefix/slider-template.html",
-                    message: "%prefix/speaking.json"
+                    message: "%messagePrefix/speaking.json"
                 }
             },
             wpm: {
@@ -78,8 +88,7 @@ var example = example || {};
                 panel: {
                     type: "example.panels.wpm",
                     container: ".mpe-speaking-wpm",
-                    template: "%prefix/slider-template.html",
-                    message: "%prefix/speaking.json"
+                    message: "%messagePrefix/speaking.json"
                 }
             },
             incSize: {
@@ -90,8 +99,8 @@ var example = example || {};
                 panel: {
                     type: "example.panels.incSize",
                     container: ".mpe-increasing-onOff",
-                    template: "%prefix/incSize-template.html",
-                    message: "%prefix/increasing.json"
+                    template: "%templatePrefix/incSize-template.html",
+                    message: "%messagePrefix/increasing.json"
                 }
             },
             cursor: {
@@ -102,8 +111,7 @@ var example = example || {};
                 panel: {
                     type: "example.panels.cursor",
                     container: ".mpe-increasing-cursor",
-                    template: "%prefix/slider-template.html",
-                    message: "%prefix/increasing.json"
+                    message: "%messagePrefix/increasing.json"
                 }
             },
             magFactor: {
@@ -114,8 +122,7 @@ var example = example || {};
                 panel: {
                     type: "example.panels.magFactor",
                     container: ".mpe-increasing-magFactor",
-                    template: "%prefix/slider-template.html",
-                    message: "%prefix/increasing.json"
+                    message: "%messagePrefix/increasing.json"
                 }
             },
             magPos: {
@@ -126,12 +133,11 @@ var example = example || {};
                 panel: {
                     type: "example.panels.magPos",
                     container: ".mpe-increasing-magPos",
-                    template: "%prefix/radioButton-template.html",
-                    message: "%prefix/increasing.json"
+                    template: "%templatePrefix/radioButton-template.html",
+                    message: "%messagePrefix/increasing.json"
                 }
             }
         }
     });
-
 
 })(jQuery, fluid);

@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid */
 
 var assortedContent = assortedContent || {};
@@ -19,7 +18,7 @@ var assortedContent = assortedContent || {};
     /* Our demo script */
     assortedContent.slidingPrefsEditor = function () {
         // First, start up Settings Store and Page Enhancer
-        fluid.globalSettingsStore();
+        fluid.prefs.globalSettingsStore();
         fluid.pageEnhancer({
             uiEnhancer: {
                 gradeNames: ["fluid.uiEnhancer.starterEnactors"],
@@ -32,11 +31,29 @@ var assortedContent = assortedContent || {};
             }
         });
 
+        fluid.defaults("fluid.assortedContent.native", {
+            iframeRenderer: {
+                markupProps: {
+                    src: "../../../../../src/framework/preferences/html/SeparatedPanelPrefsEditorFrame-nativeHTML.html"
+                }
+            }
+        });
+
+        fluid.defaults("fluid.assortedContent.jQueryUI", {
+            iframeRenderer: {
+                markupProps: {
+                    src: "../../../../../src/framework/preferences/html/SeparatedPanelPrefsEditorFrame-jQueryUI.html"
+                }
+            }
+        });
+
         // Next, start up Preferences Editor
         fluid.prefs.separatedPanel(".flc-prefsEditor-separatedPanel", {
-            gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
-            templatePrefix: "../../../../../src/framework/preferences/html/",
-            messagePrefix: "../../../../../src/framework/preferences/messages/",
+            gradeNames: ["fluid.prefs.transformDefaultPanelsOptions", "fluid.prefs.initialModel.starter", "fluid.contextAware"],
+            terms: {
+                templatePrefix: "../../../../../src/framework/preferences/html/",
+                messagePrefix: "../../../../../src/framework/preferences/messages/"
+            },
             messageLoader: {
                 gradeNames: ["fluid.prefs.starterMessageLoader"]
             },
@@ -44,11 +61,18 @@ var assortedContent = assortedContent || {};
                 gradeNames: ["fluid.prefs.starterSeparatedPanelTemplateLoader"]
             },
             prefsEditor: {
-                gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.initialModel.starter", "fluid.prefs.uiEnhancerRelay"]
+                gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.uiEnhancerRelay"]
             },
-            iframeRenderer: {
-                markupProps: {
-                    src: "../../../../../src/framework/preferences/html/SeparatedPanelPrefsEditorFrame.html"
+            contextAwareness: {
+                sliderVariety: {
+                    checks: {
+                        jQueryUI: {
+                            contextValue: "{fluid.prefsWidgetType}",
+                            equals: "jQueryUI",
+                            gradeNames: "fluid.assortedContent.jQueryUI"
+                        }
+                    },
+                    defaultGradeNames: "fluid.assortedContent.native"
                 }
             }
         });

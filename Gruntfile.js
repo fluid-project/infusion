@@ -1,5 +1,5 @@
 /*
-Copyright 2013-2014 OCAD University
+Copyright 2013-2016 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -9,26 +9,53 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/* global require, module */
+/* eslint-env node */
+"use strict";
 
 var _ = require("lodash");
 var path = require("path");
+var execSync = require("child_process").execSync;
 
-module.exports = function(grunt) {
-    "use strict";
+/**
+ * Returns a string result from executing a supplied command.
+ * The command is executed synchronosly.
+ *
+ * @param {String} command - the command to execute
+ * @param {Object} options - optional arguments "verbose" will output a full stack trace when an error occurs,
+ *                           "defaultValue" will set the default return value, useful in case of errors or when a result may be an empty string.
+ * @returns {String} - returns a string representation of the result of the command or the defaultValue.
+ */
+var getFromExec = function (command, options) {
+    var result = options.defaultValue;
+    var stdio = options.verbose ? "pipe" : "ignore";
+
+    try {
+        result = execSync(command, {stdio: stdio });
+    } catch (e) {
+        if (options.verbose) {
+            console.log("Error executing command: " + command);
+            console.log(e.stack);
+        }
+    }
+    return result;
+};
+
+module.exports = function (grunt) {
 
     // Project configuration.
     grunt.initConfig({
-        // Project package file destination.
         pkg: grunt.file.readJSON("package.json"),
+        revision: getFromExec("git rev-parse --verify --short HEAD", {defaultValue: "Unknown revision, not within a git repository"}),
+        branch: getFromExec("git rev-parse --abbrev-ref HEAD", {defaultValue: "Unknown branch, not within a git repository"}),
         allBuildName: "<%= pkg.name %>-all",
         customBuildName: "<%= pkg.name %>-" + (grunt.option("name") || "custom"),
-        stylusCompress: !grunt.option("source"),
+        isCompressed: !grunt.option("source"),
+        banner: "/*!\n <%= pkg.name %> - v<%= pkg.version %>\n <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %>\n branch: <%= branch %> revision: <%= revision %>*/\n",
         clean: {
             build: "build",
             products: "products",
-            stylus: "src/framework/preferences/css/*.css"
+            stylus: "src/framework/preferences/css/*.css",
+            ciArtifacts: ["*.tap"]
         },
         copy: {
             all: {
@@ -55,7 +82,7 @@ module.exports = function(grunt) {
                     // that have individual dependencies.json files.
                     src: "src/lib/jQuery/jQuery-LICENSE.txt",
                     dest: "build/lib/jQuery/jQuery-LICENSE.txt",
-                    filter: function() {
+                    filter: function () {
                         return grunt.file.exists("build/lib/jQuery/");
                     }
                 }]
@@ -63,22 +90,21 @@ module.exports = function(grunt) {
         },
         uglify: {
             options: {
-                mangle: false
+                banner: "<%= banner %>",
+                mangle: false,
+                sourceMap: true,
+                sourceMapIncludeSources: true
             },
             all: {
                 files: [{
-                    expand: true,     // Enable dynamic expansion.
-                    cwd: "./build/",      // Src matches are relative to this path.
-                    src: ["src/components/**/*.js", "src/framework/**/*.js", "src/lib/**/*.js"], // Actual pattern(s) to match.
-                    dest: "./build/"   // Destination path prefix.
+                    src: "<%= modulefiles.all.output.files %>",
+                    dest: "./build/<%= allBuildName %>.js"
                 }]
             },
             custom: {
                 files: [{
-                    expand: true,     // Enable dynamic expansion.
-                    cwd: "./build",      // Src matches are relative to this path.
-                    src: ["src/**/*.js"], // Actual pattern(s) to match.
-                    dest: "./build"   // Destination path prefix.
+                    src: "<%= modulefiles.custom.output.files %>",
+                    dest: "./build/<%= customBuildName %>.js"
                 }]
             }
         },
@@ -121,10 +147,13 @@ module.exports = function(grunt) {
                 }
             }
         },
+        // Still need the concat task as uglify does not honour the {compress: false} option
+        // see: https://github.com/mishoo/UglifyJS2/issues/696
         concat: {
             options: {
-                separator: ";",
-                banner: "/*! <%= pkg.name %> - v<%= pkg.version %> <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %>*/\n"
+                separator: ";\n",
+                banner: "<%= banner %>",
+                sourceMap: true
             },
             all: {
                 src: "<%= modulefiles.all.output.files %>",
@@ -154,23 +183,22 @@ module.exports = function(grunt) {
                 files: "<%= compress.all.files %>"
             }
         },
-        jshint: {
-            all: ["**/*.js"],
-            buildScripts: ["Gruntfile.js"],
-            options: {
-                jshintrc: true
-            }
+        eslint: {
+            all: ["src/**/*.js", "tests/**/*.js", "demos/**/*.js", "examples/**/*.js", "*.js"]
+        },
+        jsonlint: {
+            all: ["src/**/*.json", "tests/**/*.json", "demos/**/*.json", "examples/**/*.json"]
         },
         stylus: {
             compile: {
                 options: {
-                    compress: "<%= stylusCompress %>"
+                    compress: "<%= isCompressed %>"
                 },
                 files: [{
                     expand: true,
                     src: ["src/**/css/stylus/*.styl"],
                     ext: ".css",
-                    rename: function(dest, src) {
+                    rename: function (dest, src) {
                         // Move the generated css files one level up out of the stylus directory
                         var dir = path.dirname(src);
                         var filename = path.basename(src);
@@ -179,21 +207,24 @@ module.exports = function(grunt) {
                 }]
             }
         },
-        jsonlint: {
-            all: ["src/**/*.json", "tests/**/*.json", "demos/**/*.json", "examples/**/*.json"]
+        shell: {
+            runTests: {
+                command: "vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 testem ci --file tests/testem.json'"
+            }
         }
     });
 
-    // Load the plugin(s):
+    // Load the plugins:
     grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-contrib-clean");
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-compress");
-    grunt.loadNpmTasks("grunt-contrib-jshint");
+    grunt.loadNpmTasks("fluid-grunt-eslint");
     grunt.loadNpmTasks("grunt-jsonlint");
     grunt.loadNpmTasks("grunt-modulefiles");
     grunt.loadNpmTasks("grunt-contrib-stylus");
+    grunt.loadNpmTasks("grunt-shell");
 
     // Custom tasks:
 
@@ -213,6 +244,8 @@ module.exports = function(grunt) {
 
     // Task for organizing the build
     grunt.registerTask("build", "Generates a minified or source distribution for the specified build target", function (target) {
+        target = target || "all";
+        var concatTask = grunt.option("source") ? "concat:" : "uglify:";
         var tasks = [
             "clean",
             "stylus",
@@ -220,15 +253,9 @@ module.exports = function(grunt) {
             "pathMap:" + target,
             "copy:" + target,
             "copy:necessities",
-            "uglify:" + target,
-            "concat:" + target,
-            "compress:" + target,
-            "clean:build"
+            concatTask + target,
+            "compress:" + target
         ];
-        // remove the uglify task when creating a source build
-        if (grunt.option("source")) {
-            _.pull(tasks, "uglify:" + target);
-        }
         grunt.task.run(tasks);
     });
 
@@ -237,5 +264,7 @@ module.exports = function(grunt) {
     grunt.registerTask("default", ["build:all"]);
     grunt.registerTask("custom", ["build:custom"]);
 
-    grunt.registerTask("lint", "Apply jshint and jsonlint", ["jshint", "jsonlint"]);
+    grunt.registerTask("lint", "Apply eslint and jsonlint", ["eslint", "jsonlint"]);
+
+    grunt.registerTask("tests", "Run tests", ["shell:runTests"]);
 };

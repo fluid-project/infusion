@@ -10,7 +10,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
 
@@ -27,7 +27,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.overviewPanel", {
-        gradeNames: ["fluid.rendererComponent", "autoInit"],
+        gradeNames: ["fluid.rendererComponent"],
         resources: {
             template: {
                 href: "../html/overviewPanelTemplate.html"
@@ -195,4 +195,4 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

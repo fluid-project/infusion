@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid */
 
 var example = example || {};
@@ -25,7 +24,7 @@ var example = example || {};
      * The "speak text" preference is a boolean, rendered as an on/off switch.
      */
     fluid.defaults("example.panels.speak", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "example.speakText": {
                 "model.speakText": "default"
@@ -33,10 +32,10 @@ var example = example || {};
         },
         selectors: {
             bool: ".mpe-speakText",
-            choiceLabel: ".mpe-speakText-choice-label"
+            speakTextDescr: ".mpe-speakText-descr"
         },
         protoTree: {
-            choiceLabel: {messagekey: "speakText"},
+            speakTextDescr: {messagekey: "speakText"},
             bool: "${speakText}"
         }
     });
@@ -45,7 +44,7 @@ var example = example || {};
      * The "increase size" preference is a boolean, rendered as an on/off switch.
      */
     fluid.defaults("example.panels.incSize", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "example.increaseSize": {
                 "model.incSize": "default"
@@ -54,10 +53,10 @@ var example = example || {};
         selectors: {
             bool: ".mpe-incSize",
             label: ".mpe-incSize-label",
-            choiceLabel: ".mpe-incSize-choice-label"
+            incSizeDescr: ".mpe-incSize-descr"
         },
         protoTree: {
-            choiceLabel: {messagekey: "incSize"},
+            incSizeDescr: {messagekey: "incSize"},
             bool: "${incSize}"
         }
     });
@@ -66,7 +65,7 @@ var example = example || {};
      * The "volume" preference is a range, rendered as a slider.
      */
     fluid.defaults("example.panels.vol", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "example.volume": {
                 "model.volume": "default",
@@ -104,7 +103,7 @@ var example = example || {};
      * The "words per minute" preference is a range, rendered as a slider.
      */
     fluid.defaults("example.panels.wpm", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "example.wordsPerMinute": {
                 "model.wordsPerMin": "default",
@@ -142,7 +141,7 @@ var example = example || {};
      * The "cursor size" preference is a range, rendered as a slider.
      */
     fluid.defaults("example.panels.cursor", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "example.cursorSize": {
                 "model.cursorMult": "default",
@@ -180,7 +179,7 @@ var example = example || {};
      * The "magnification factor" preference is a range, rendered as a slider.
      */
     fluid.defaults("example.panels.magFactor", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "example.magnification": {
                 "model.mag": "default",
@@ -218,7 +217,7 @@ var example = example || {};
      * The "magnifier position" preference is an enumeration, rendered as a set of radio buttons.
      */
     fluid.defaults("example.panels.magPos", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         rendererOptions: {
             debugMode: true
         },

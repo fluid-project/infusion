@@ -1,5 +1,5 @@
 /*
-Copyright 2013 OCAD University
+Copyright 2013-2015 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -9,7 +9,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 
 (function ($, fluid) {
@@ -18,7 +18,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.registerNamespace("fluid.prefs");
 
     fluid.defaults("fluid.prefs.builder", {
-        gradeNames: ["fluid.eventedComponent", "fluid.prefs.auxBuilder", "autoInit"],
+        gradeNames: ["fluid.component", "fluid.prefs.auxBuilder"],
         mergePolicy: {
             auxSchema: "expandedAuxSchema"
         },
@@ -26,8 +26,9 @@ var fluid_2_0 = fluid_2_0 || {};
             expander: {
                 func: "fluid.prefs.builder.generateGrade",
                 args: ["prefsEditor", "{that}.options.auxSchema.namespace", {
-                    gradeNames: ["fluid.viewRelayComponent", "autoInit", "fluid.prefs.assembler.prefsEd"],
-                    componentGrades: "{that}.options.constructedGrades"
+                    gradeNames: ["fluid.prefs.assembler.prefsEd", "fluid.viewComponent"],
+                    componentGrades: "{that}.options.constructedGrades",
+                    loaderGrades: "{that}.options.auxSchema.loaderGrades"
                 }]
             }
         },
@@ -35,7 +36,7 @@ var fluid_2_0 = fluid_2_0 || {};
             expander: {
                 func: "fluid.prefs.builder.generateGrade",
                 args: ["uie", "{that}.options.auxSchema.namespace", {
-                    gradeNames: ["fluid.viewRelayComponent", "autoInit", "fluid.prefs.assembler.uie"],
+                    gradeNames: ["fluid.viewComponent", "fluid.prefs.assembler.uie"],
                     componentGrades: "{that}.options.constructedGrades"
                 }]
             }
@@ -43,7 +44,7 @@ var fluid_2_0 = fluid_2_0 || {};
         constructedGrades: {
             expander: {
                 func: "fluid.prefs.builder.constructGrades",
-                args: ["{that}.options.auxSchema", ["enactors", "messages", "panels", "initialModel", "templateLoader", "messageLoader", "templatePrefix", "messagePrefix"]]
+                args: ["{that}.options.auxSchema", ["enactors", "messages", "panels", "initialModel", "templateLoader", "messageLoader", "terms"]]
             }
         },
         mappedDefaults: "{primaryBuilder}.options.schema.properties",
@@ -68,17 +69,23 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.defaults("fluid.prefs.assembler.uie", {
-        gradeNames: ["autoInit", "fluid.viewRelayComponent"],
+        gradeNames: ["fluid.viewComponent"],
         components: {
+            // These two components become global
             store: {
-                type: "fluid.littleComponent",
+                type: "fluid.prefs.globalSettingsStore",
                 options: {
-                    gradeNames: ["{that}.options.storeType"],
-                    storeType: "fluid.globalSettingsStore"
+                    distributeOptions: {
+                        target: "{that fluid.prefs.store}.options.contextAwareness.strategy.checks.user",
+                        record: {
+                            contextValue: "{fluid.prefs.assembler.uie}.options.storeType",
+                            gradeNames: "{fluid.prefs.assembler.uie}.options.storeType"
+                        }
+                    }
                 }
             },
             enhancer: {
-                type: "fluid.littleComponent",
+                type: "fluid.component",
                 options: {
                     gradeNames: "{that}.options.enhancerType",
                     enhancerType: "fluid.pageEnhancer",
@@ -94,33 +101,31 @@ var fluid_2_0 = fluid_2_0 || {};
         },
         distributeOptions: [{
             source: "{that}.options.enhancer",
-            removeSource: true,
-            target: "{that uiEnhancer}.options"
-        }, {
+            target: "{that uiEnhancer}.options",
+            removeSource: true
+        }, { // TODO: not clear that this hits anything since settings store is not a subcomponent
             source: "{that}.options.store",
-            removeSource: true,
-            target: "{that settingsStore}.options"
-        }, {
-            source: "{that}.options.storeType",
-            removeSource: true,
-            target: "{that > store}.options.storeType"
+            target: "{that fluid.prefs.store}.options"
         }, {
             source: "{that}.options.enhancerType",
-            removeSource: true,
             target: "{that > enhancer}.options.enhancerType"
         }]
     });
 
     fluid.defaults("fluid.prefs.assembler.prefsEd", {
-        gradeNames: ["autoInit", "fluid.viewRelayComponent", "fluid.prefs.assembler.uie"],
+        gradeNames: ["fluid.viewComponent", "fluid.prefs.assembler.uie"],
         components: {
             prefsEditorLoader: {
-                type: "fluid.viewRelayComponent",
+                type: "fluid.viewComponent",
                 container: "{fluid.prefs.assembler.prefsEd}.container",
                 priority: "last",
                 options: {
-                    gradeNames: ["{fluid.prefs.assembler.prefsEd}.options.componentGrades.templatePrefix", "{fluid.prefs.assembler.prefsEd}.options.componentGrades.messagePrefix", "{fluid.prefs.assembler.prefsEd}.options.componentGrades.messages", "{that}.options.prefsEditorType"],
-                    prefsEditorType: "fluid.prefs.separatedPanel",
+                    gradeNames: [
+                        "{fluid.prefs.assembler.prefsEd}.options.componentGrades.terms",
+                        "{fluid.prefs.assembler.prefsEd}.options.componentGrades.messages",
+                        "{fluid.prefs.assembler.prefsEd}.options.componentGrades.initialModel",
+                        "{that}.options.loaderGrades"
+                    ],
                     templateLoader: {
                         gradeNames: ["{fluid.prefs.assembler.prefsEd}.options.componentGrades.templateLoader"]
                     },
@@ -128,7 +133,7 @@ var fluid_2_0 = fluid_2_0 || {};
                         gradeNames: ["{fluid.prefs.assembler.prefsEd}.options.componentGrades.messageLoader"]
                     },
                     prefsEditor: {
-                        gradeNames: ["{fluid.prefs.assembler.prefsEd}.options.componentGrades.panels", "{fluid.prefs.assembler.prefsEd}.options.componentGrades.initialModel", "fluid.prefs.uiEnhancerRelay"]
+                        gradeNames: ["{fluid.prefs.assembler.prefsEd}.options.componentGrades.panels", "fluid.prefs.uiEnhancerRelay"]
                     },
                     events: {
                         onReady: "{fluid.prefs.assembler.prefsEd}.events.onPrefsEditorReady"
@@ -147,21 +152,17 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         },
         distributeOptions: [{
-            source: "{that}.options.prefsEditorType",
+            source: "{that}.options.loaderGrades",
             removeSource: true,
-            target: "{that > prefsEditorLoader}.options.prefsEditorType"
+            target: "{that > prefsEditorLoader}.options.loaderGrades"
         }, {
             source: "{that}.options.prefsEditor",
             removeSource: true,
             target: "{that prefsEditor}.options"
         }, {
-            source: "{that}.options.templatePrefix",
+            source: "{that}.options.terms",
             removeSource: true,
-            target: "{that prefsEditorLoader}.options.templatePrefix"
-        }, {
-            source: "{that}.options.messagePrefix",
-            removeSource: true,
-            target: "{that prefsEditorLoader}.options.messagePrefix"
+            target: "{that prefsEditorLoader}.options.terms"
         }]
     });
 
@@ -203,4 +204,4 @@ var fluid_2_0 = fluid_2_0 || {};
         return fluid.invokeGlobalFunction(builder.options.assembledPrefsEditorGrade, [container, options.prefsEditor]);
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

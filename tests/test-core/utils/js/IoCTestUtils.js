@@ -9,10 +9,9 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global jqUnit, QUnit */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -20,7 +19,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.registerNamespace("fluid.test");
 
     fluid.defaults("fluid.test.testEnvironment", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         components: {
             sequenceListener: {
                 type: "fluid.test.sequenceListener"
@@ -62,9 +61,9 @@ var fluid_2_0 = fluid_2_0 || {};
             }
         }
     });
-    
+
     fluid.registerNamespace("fluid.test.checkHang");
-    
+
     fluid.test.checkHang.beginStep = function (sequenceState, testEnvironment) {
         clearTimeout(sequenceState.hangTimer);
         sequenceState.hangTimer = setTimeout(
@@ -72,24 +71,35 @@ var fluid_2_0 = fluid_2_0 || {};
                 testEnvironment.events.onSequenceHang.fire(sequenceState);
             }, testEnvironment.options.hangWait);
     };
-    
+
     fluid.test.checkHang.endSequence = function (sequenceState) {
         clearTimeout(sequenceState.hangTimer);
     };
-    
+
     fluid.test.checkHang.reportHang = function (sequenceState, testEnvironment) {
         fluid.log(fluid.logLevel.IMPORTANT, "Test case listener has not responded after " + testEnvironment.options.hangWait + "ms - at sequence pos " +
             sequenceState.sequenceText() + " sequence element ", sequenceState.fixture.sequence[sequenceState.sequencePos - 1], " of fixture " + sequenceState.fixture.name);
     };
 
-    fluid.demands("fluid.test.sequenceListener", [], {funcName: "fluid.emptySubcomponent"});
+    fluid.defaults("fluid.test.sequenceListener", { // TODO: this used to be "fluid.emptySubcomponent" in the fluid.demands era - review and improve support for this
+        gradeNames: ["fluid.component", "fluid.contextAware"]
+    });
 
     /** In the browser only, hijack a piece of the QUnit UI in order to show the running sequence number **/
 
-    fluid.demands("fluid.test.sequenceListener", "fluid.browser", {funcName: "fluid.test.browserSequenceListener"});
+    fluid.contextAware.makeAdaptation({
+        distributionName: "fluid.test.browserSequenceDistribution",
+        targetName: "fluid.test.sequenceListener",
+        adaptationName: "browserSequence",
+        checkName: "browserSequence",
+        record: {
+            contextValue: "{fluid.browser}",
+            gradeNames: "fluid.test.browserSequenceListener"
+        }
+    });
 
     fluid.defaults("fluid.test.browserSequenceListener", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         listeners: {
             "{testEnvironment}.events.onBeginSequence": {
                 listener: "fluid.test.browserSequenceListener.onBeginSequence",
@@ -117,8 +127,8 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.test.makeExpander = function (that) {
-        return function (toExpand) {
-            return fluid.expandOptions(toExpand, that);
+        return function (toExpand, localRecord) {
+            return fluid.expandOptions(toExpand, that, {}, localRecord);
         };
     };
 
@@ -150,14 +160,14 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.test.testEnvironment.runTests = function (that) {
-        var visitOptions = {};
         that.testCaseHolders = [];
         var visitor = function (component) {
-            if (fluid.hasGrade(component.options, "fluid.test.testCaseHolder")) {
+            if (fluid.componentHasGrade(component, "fluid.test.testCaseHolder")) {
                 that.testCaseHolders.push(component);
             }
         };
-        fluid.visitComponentChildren(that, visitor, visitOptions, "");
+        visitor(that); // FLUID-5753
+        fluid.visitComponentChildren(that, visitor, {});
         // This structure is constructed here, reused for each "TestCaseHolder" but is given a shallow
         // clone in "sequenceExecutor".
         var testCaseState = {
@@ -186,7 +196,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.test.testCaseHolder", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         mergePolicy: {
             modules: "noexpand",
             moduleSource: "noexpand"
@@ -232,10 +242,10 @@ var fluid_2_0 = fluid_2_0 || {};
             fluid.fail("Unable to decode entry " + member + " of fixture ", fixture, " to a function - record is ", listener);
         }
         var togo;
-        if (fixture.args) {
+        if (fixture.args !== undefined) {
             togo = function () {
-                var expandedArgs = fluid.expandOptions(fixture.args, testCaseState.testCaseHolder, {}, {"arguments": arguments});
-                return listener.apply(null, expandedArgs);
+                var expandedArgs = testCaseState.expand(fixture.args, {"arguments": arguments});
+                return listener.apply(null, fluid.makeArray(expandedArgs));
             };
         } else {
             togo = listener;
@@ -256,27 +266,72 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.test.decoders.func = function (testCaseState, fixture) {
         return {
-            execute: function () {
+            execute: function (executeDone) {
                 var testFunc = testCaseState.expandFunction(fixture.func || fixture.funcName);
                 var args = testCaseState.expand(fixture.args);
                 if (typeof(testFunc) !== "function") {
                     fluid.fail("Unable to decode entry func or funcName of fixture ", fixture, " to a function - got ", testFunc);
                 }
                 testFunc.apply(null, fluid.makeArray(args));
+                executeDone();
             }
         };
     };
 
     fluid.test.decoders.funcName = fluid.test.decoders.func;
 
+    fluid.test.decoders.task = function (testCaseState, fixture) {
+        if ((fixture.resolve === undefined) === (fixture.reject === undefined)) {
+            fluid.fail("Error in task fixture ", fixture, ": exactly one out of \"resolve\" and \"reject\" members must be set");
+        }
+        return {
+            execute: function (executeDone) {
+                var task = testCaseState.expandFunction(fixture.task);
+                var args = fluid.makeArray(testCaseState.expand(fixture.args));
+                var promise = task.apply(null, args);
+                var handlers = fixture.resolve ?
+                    [fluid.test.decoders.task.makePromiseBinder(testCaseState, fixture, executeDone, "resolve"),
+                     fluid.test.decoders.task.makeMismatchedBinder(fixture, executeDone, "reject", "resolve")] :
+                    [fluid.test.decoders.task.makeMismatchedBinder(fixture, executeDone, "resolve", "reject"),
+                     fluid.test.decoders.task.makePromiseBinder(testCaseState, fixture, executeDone, "reject")];
+                promise.then(handlers[0], handlers[1]);
+            }
+        };
+    };
+
+    fluid.test.decoders.task.makePromiseBinder = function (testCaseState, fixture, executeDone, method) {
+        return function (payload) {
+            var func = testCaseState.expandFunction(fixture[method]);
+            var args = testCaseState.expand(fluid.firstDefined(fixture[method + "Args"], "{arguments}.0"), {arguments: [payload]});
+            func.apply(null, fluid.makeArray(args));
+            executeDone();
+        };
+    };
+
+    fluid.test.renderErrorAsString = function (error) {
+        return fluid.transform(error, function (arg) {
+            return fluid.isPrimitive(arg) ? arg : JSON.stringify(arg, null, 2);
+        }).join("");
+    };
+
+    fluid.test.decoders.task.makeMismatchedBinder = function (fixture, executeDone, method, otherMethod) {
+        return function (payload) {
+            var error = ["Failure in task fixture ", fixture, ": promise has received disposition \"" + method + "\" with payload ", payload, " when \"" + otherMethod + "\" was expected"];
+            fluid.log.apply(null, [fluid.logLevel.WARN].concat(error));
+            jqUnit.fail(fluid.test.renderErrorAsString(error));
+            executeDone();
+        };
+    };
+
     fluid.test.decoders.jQueryTrigger = function (testCaseState, fixture) {
         var event = fixture.jQueryTrigger;
         return {
-            execute: function () {
+            execute: function (executeDone) {
                 var args = fluid.makeArray(testCaseState.expand(fixture.args));
                 args.unshift(event);
                 var element = fluid.test.decodeElement(testCaseState, fixture);
                 element.trigger.apply(element, args);
+                executeDone();
             }
         };
     };
@@ -296,7 +351,7 @@ var fluid_2_0 = fluid_2_0 || {};
         );
         return that;
     };
-    
+
     fluid.test.composeSimple = function (f1, f2) {
         return function () {
             f1();
@@ -320,7 +375,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // TODO: This will eventually go into the core framework for "Luke Skywalker Event Binding"
     fluid.analyseTarget = function (testCaseState, material, expectedPrefix) {
-        if (typeof(material) === "string" && material.charAt(0) === "{") {
+        if (fluid.isIoCReference(material)) {
             var parsed = fluid.parseContextReference(material);
             if (fluid.isIoCSSSelector(parsed.context)) {
                 var selector = fluid.parseSelector(parsed.context, fluid.IoCSSMatcher);
@@ -343,11 +398,12 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.test.decoders.event = function (testCaseState, fixture) {
         var analysed = fluid.analyseTarget(testCaseState, fixture.event, "events");
         var listener = fluid.test.decodeListener(testCaseState, fixture);
+        var priority = fixture.priority === undefined ? "last:testing" : fixture.priority;
         var bind, unbind;
         if (analysed.resolved) {
             var event = analysed.resolved;
             bind = function (wrapped) {
-                event.addListener(wrapped, fixture.namespace, null, fixture.priority);
+                event.addListener(wrapped, fixture.namespace, priority);
             };
             unbind = function (wrapped) {
                 event.removeListener(wrapped);
@@ -364,12 +420,12 @@ var fluid_2_0 = fluid_2_0 || {};
                     namespace: fixture.namespace,
                     priority: fixture.priority
                 });
-                id = fluid.pushDistributions(analysed.head, analysed.selector,
+                id = fluid.pushDistributions(analysed.head, analysed.selector, fixture.event,
                     [{options: options, recordType: "distribution", priority: fluid.mergeRecordTypes.distribution}]
                 );
             };
             unbind = function () {
-                fluid.clearDistributions(analysed.head, id);
+                fluid.clearDistribution(analysed.head, id);
             };
         } else {
             fluid.fail("Error decoding event fixture ", fixture, ": must be able to look up member \"event\" to one or more events");
@@ -380,27 +436,26 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.test.decoders.changeEvent = function (testCaseState, fixture) {
         var event = testCaseState.expand(fixture.changeEvent);
         var listener = fluid.test.decodeListener(testCaseState, fixture);
-        var that = fluid.test.makeBinder(listener,
-           function (wrapped) {
+        var listenerId = fluid.allocateGuid();
+        var that = fluid.test.makeBinder(listener, function (wrapped) {
             var spec = fixture.path === undefined ? fixture.spec : {path: fixture.path};
             if (spec === undefined || spec.path === undefined) {
                 fluid.fail("Error in changeEvent fixture ", fixture,
                    ": could not find path specification named \"path\" or \"spec\"");
             }
-            if (event.isRelayEvent) { // special support for new-style change listeners
-                spec.transactional = true;
-                if (spec.priority === undefined) {
-                    spec.priority = "last";
-                }
+            spec.listenerId = listenerId;
+            spec.transactional = true;
+            if (spec.priority === undefined) {
+                spec.priority = "last:testing";
             }
             event.addListener(spec, wrapped, fixture.namespace);
-        }, function (wrapped) {
-            event.removeListener(wrapped);
+        }, function () {
+            event.removeListener(listenerId);
         });
         return that;
     };
 
-    fluid.test.decoderDucks = ["func", "funcName", "event", "changeEvent", "jQueryTrigger", "jQueryBind"];
+    fluid.test.decoderDucks = ["func", "funcName", "event", "changeEvent", "task", "jQueryTrigger", "jQueryBind"];
 
     fluid.test.decodeFixture = function (testCaseState, fixture) {
         var ducks = fluid.test.decoderDucks;
@@ -419,12 +474,22 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     };
 
-    fluid.test.execExecutor = function (executor, sequenceText) {
+    fluid.test.execExecutor = function (executor, sequenceText, executeDone) {
         jqUnit.setMessageSuffix(" - at sequence position " + sequenceText);
-        executor.execute();
+        executor.execute(executeDone);
         jqUnit.setMessageSuffix("");
     };
 
+    /** Operate the `bind` action of an bind-type executor (a decoded sequence element) which acts either
+      * i) After an exec-type executor has concluded, OR
+      * ii) After a bind-type executor has just begun its "fire" action
+      * Note that the executor itself will have been constructed by `fluid.test.makeBinder` which operates the unbind/bind
+      * logic within the wrapper it constructs for the listener to be fired
+      * @param binder {Binder} An object with a member `bind` accepting two nullary functions as dispensed from `fluid.test.makeBinder`
+      * @param preWrap {Function()} A nullary function to be invoked before the binding action
+      * @param postWrap {Function()} A nullary function to be invoked before the unbinding action
+      * @param sequenceText {String} A string representing the sequence position that the binder occupies
+      */
 
     fluid.test.bindExecutor = function (binder, preWrap, postWrap, sequenceText) {
         function preFunc() {
@@ -466,7 +531,7 @@ var fluid_2_0 = fluid_2_0 || {};
             return (pos === undefined ? that.sequencePos : pos) + " of " + that.count;
         };
         testCaseState.events.onBeginSequence.fire(testCaseState, that);
-        
+
         var finishSequence = function () {
             testCaseState.events.onEndSequence.fire(testCaseState, that);
             testCaseState.finisher();
@@ -488,8 +553,7 @@ var fluid_2_0 = fluid_2_0 || {};
             var last = pos === that.count;
             if (last) {
                 if (thisExec.execute) {
-                    fluid.test.execExecutor(thisExec, thisText);
-                    finishSequence();
+                    fluid.test.execExecutor(thisExec, thisText, finishSequence);
                 }
                 else {
                     fluid.test.bindExecutor(thisExec, fluid.identity, finishSequence, thisText);
@@ -509,11 +573,10 @@ var fluid_2_0 = fluid_2_0 || {};
             if (thisExec.execute) {
                 if (nextExec.bind) {
                     that.execute(); // bind first [ODD]
-                    fluid.test.execExecutor(thisExec, thisText);
+                    fluid.test.execExecutor(thisExec, thisText, fluid.identity);
                 }
                 else {
-                    fluid.test.execExecutor(thisExec, thisText);
-                    that.execute();
+                    fluid.test.execExecutor(thisExec, thisText, that.execute);
                 }
             }
         };
@@ -546,6 +609,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 that.index++;
             } else {
                 that.stopped = true;
+                QUnit.config.testsArriving = false;
             }
         };
         that.nextLater = function () {
@@ -557,6 +621,8 @@ var fluid_2_0 = fluid_2_0 || {};
                 that.next();
             }
         };
+        // FLUID-5810: Support our patched option for QUnit to prevent premature test termination
+        QUnit.config.testsArriving = true;
         return that;
     };
 
@@ -576,9 +642,12 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.test.processTestCase = function (testCaseState) {
         var testCase = testCaseState.testCase;
+        if (!testCase.name) {
+            fluid.fail("Error in configuration of testCase - required field \"name\" is missing in ", testCase);
+        }
         jqUnit.module(testCase.name);
         var fixtures = fluid.makeArray(testCase.tests);
-        fluid.each(fixtures, function (fixture) {
+        fluid.each(fixtures, function (fixture, index) {
             var testType = "asyncTest";
 
             var testFunc = function () {
@@ -591,8 +660,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 else {
                     var decoded = fluid.test.decodeFixture(testCaseState, fixture);
                     if (decoded.execute) {
-                        decoded.execute();
-                        testCaseState.finisher();
+                        decoded.execute(testCaseState.finisher);
                     }
                 }
             };
@@ -602,6 +670,9 @@ var fluid_2_0 = fluid_2_0 || {};
             // might enter the queue and immediately leave it as a result of only ever issuing
             // asynchronous tests
             var oldLength = QUnit.config.queue.length;
+            if (!fixture.name) {
+                fluid.fail("Error in configuration of test fixture - required field \"name\" is missing in ", fixture, " at index " + index + " of test case ", testCase);
+            }
             jqUnit[testType](fixture.name, testFunc);
             if (QUnit.config.queue.length === oldLength) {
                 fluid.log(fluid.logLevel.IMPORTANT, "Skipped test " + fixture.name);
@@ -629,4 +700,4 @@ var fluid_2_0 = fluid_2_0 || {};
         });
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

@@ -13,15 +13,15 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
-var fluid = fluid || fluid_2_0;
+var fluid_2_0_0 = fluid_2_0_0 || {};
+var fluid = fluid || fluid_2_0_0;
 
 (function ($, fluid) {
     "use strict";
 
     /** Render a timestamp from a Date object into a helpful fixed format for debug logs to millisecond accuracy
      * @param date {Date} The date to be rendered
-     * @return {String} A string format consisting of hours:minutes:seconds.millis for the datestamp padded to fixed with 
+     * @return {String} A string format consisting of hours:minutes:seconds.millis for the datestamp padded to fixed with
      */
 
     fluid.renderTimestamp = function (date) {
@@ -42,7 +42,7 @@ var fluid = fluid || fluid_2_0;
     fluid.tracing.summarisePathCount = function (pathCount) {
         pathCount = pathCount || fluid.tracing.pathCount;
         var togo = {};
-        for (var i = 0; i < pathCount.length; ++ i) {
+        for (var i = 0; i < pathCount.length; ++i) {
             var path = pathCount[i];
             if (!togo[path]) {
                 togo[path] = 1;
@@ -62,13 +62,13 @@ var fluid = fluid || fluid_2_0;
     fluid.tracing.condensePathCount = function (prefixes, pathCount) {
         prefixes = fluid.makeArray(prefixes);
         var prefixCount = {};
-        fluid.each(prefixes, function(prefix) {
+        fluid.each(prefixes, function (prefix) {
             prefixCount[prefix] = 0;
         });
         var togo = [];
         fluid.each(pathCount, function (el) {
             var path = el.path;
-            if (!fluid.find(prefixes, function(prefix) {
+            if (!fluid.find(prefixes, function (prefix) {
                 if (path.indexOf(prefix) === 0) {
                     prefixCount[prefix] += el.count;
                     return true;
@@ -77,7 +77,7 @@ var fluid = fluid || fluid_2_0;
                 togo.push(el);
             }
         });
-        fluid.each(prefixCount, function(count, path) {
+        fluid.each(prefixCount, function (count, path) {
             togo.unshift({path: path, count: count});
         });
         return togo;
@@ -91,14 +91,14 @@ var fluid = fluid || fluid_2_0;
         var stackStyle = {
             offset: 0
         };
-        if (e["arguments"]) {
+        if (e.arguments) {
             style = "chrome";
         } else if (typeof window !== "undefined" && window.opera && e.stacktrace) {
             style = "opera10";
         } else if (e.stack) {
             style = "firefox";
             // Detect FireFox 4-style stacks which are 1 level less deep
-            stackStyle.offset = e.stack.indexOf("Trace exception") === -1? 1 : 0;
+            stackStyle.offset = e.stack.indexOf("Trace exception") === -1 ? 1 : 0;
         } else if (typeof window !== "undefined" && window.opera && !("stacktrace" in e)) { //Opera 9-
             style = "opera";
         }
@@ -128,19 +128,34 @@ var fluid = fluid || fluid_2_0;
     };
 
     fluid.exceptionDecoders.firefox = function (e) {
+        var delimiter = "at ";
         var lines = e.stack.replace(/(?:\n@:0)?\s+$/m, "").replace(/^\(/gm, "{anonymous}(").split("\n");
         return fluid.transform(lines, function (line) {
-            var atind = line.indexOf("@");
-            return atind === -1? [line] : [line.substring(atind + 1), line.substring(0, atind)];
+            line = line.replace(/\)/g, "");
+            var atind = line.indexOf(delimiter);
+            return atind === -1 ? [line] : [line.substring(atind + delimiter.length), line.substring(0, atind)];
         });
     };
 
-    // Main entry point for callers. 
-    // TODO: This infrastructure is several years old and probably still only works on Firefox if there
+    // Main entry point for callers.
     fluid.getCallerInfo = function (atDepth) {
         atDepth = (atDepth || 3) - stackStyle.offset;
         var stack = fluid.decodeStack();
-        return stack? stack[atDepth][0] : null;
+        var element = stack && stack[atDepth][0];
+        if (element) {
+            var lastslash = element.lastIndexOf("/");
+            if (lastslash === -1) {
+                lastslash = 0;
+            }
+            var nextColon = element.indexOf(":", lastslash);
+            return {
+                path: element.substring(0, lastslash),
+                filename: element.substring(lastslash + 1, nextColon),
+                index: element.substring(nextColon + 1)
+            };
+        } else {
+            return null;
+        }
     };
 
     /** Generates a string for padding purposes by replicating a character a given number of times
@@ -148,76 +163,96 @@ var fluid = fluid || fluid_2_0;
      * @param count {Integer} The number of times to repeat the character
      * @return A string of length <code>count</code> consisting of repetitions of the supplied character
      */
-    // UNOPTIMISED 
+    // UNOPTIMISED
     fluid.generatePadding = function (c, count) {
         var togo = "";
-        for (var i = 0; i < count; ++ i) {
+        for (var i = 0; i < count; ++i) {
             togo += c;
         }
         return togo;
     };
-     
+
     // Marker so that we can render a custom string for properties which are not direct and concrete
     fluid.SYNTHETIC_PROPERTY = {};
 
-    // utility to avoid triggering custom getter code which could throw an exception - e.g. express 3.x's request object 
+    // utility to avoid triggering custom getter code which could throw an exception - e.g. express 3.x's request object
     fluid.getSafeProperty = function (obj, key) {
         var desc = Object.getOwnPropertyDescriptor(obj, key); // supported on all of our environments - is broken on IE8
         return desc && !desc.get ? obj[key] : fluid.SYNTHETIC_PROPERTY;
     };
 
-    function printImpl (obj, small, options) {
-        var big = small + options.indentChars, togo, isFunction = typeof(obj) === "function";
+    function printImpl(obj, small, options) {
+        function out(str) {
+            options.output += str;
+        }
+        var big = small + options.indentChars, isFunction = typeof(obj) === "function";
+        if (options.maxRenderChars !== undefined && options.output.length > options.maxRenderChars) {
+            return true;
+        }
         if (obj === null) {
-            togo = "null";
+            out("null");
         } else if (obj === undefined) {
-            togo = "undefined"; // NB - object invalid for JSON interchange
+            out("undefined"); // NB - object invalid for JSON interchange
         } else if (obj === fluid.SYNTHETIC_PROPERTY) {
-            togo = "[Synthetic property]";
+            out("[Synthetic property]");
         } else if (fluid.isPrimitive(obj) && !isFunction) {
-            togo = JSON.stringify(obj);
+            out(JSON.stringify(obj));
         }
         else {
-            if ($.inArray(obj, options.stack) !== -1) {
-                return "(CIRCULAR)"; // NB - object invalid for JSON interchange
+            if (options.stack.indexOf(obj) !== -1) {
+                out("(CIRCULAR)"); // NB - object invalid for JSON interchange
+                return;
             }
             options.stack.push(obj);
-            var j = [];
             var i;
             if (fluid.isArrayable(obj)) {
                 if (obj.length === 0) {
-                    togo = "[]";
+                    out("[]");
                 } else {
-                    for (i = 0; i < obj.length; ++ i) {
-                        j[i] = printImpl(obj[i], big, options);
+                    out("[\n" + big);
+                    for (i = 0; i < obj.length; ++i) {
+                        if (printImpl(obj[i], big, options)) {
+                            return true;
+                        }
+                        if (i !== obj.length - 1) {
+                            out(",\n" + big);
+                        }
                     }
-                    togo = "[\n" + big + j.join(",\n" + big) + "\n" + small + "]";
+                    out("\n" + small + "]");
                 }
             }
             else {
-                i = 0;
-                togo = "{" + (isFunction ? " Function" : "") + "\n"; // NB - Function object invalid for JSON interchange
-                for (var key in obj) {
+                out("{" + (isFunction ? " Function" : "") + "\n" + big); // NB - Function object invalid for JSON interchange
+                var keys = fluid.keys(obj);
+                for (i = 0; i < keys.length; ++i) {
+                    var key = keys[i];
                     var value = fluid.getSafeProperty(obj, key);
-                    j[i++] = JSON.stringify(key) + ": " + printImpl(value, big, options);
+                    out(JSON.stringify(key) + ": ");
+                    if (printImpl(value, big, options)) {
+                        return true;
+                    }
+                    if (i !== keys.length - 1) {
+                        out(",\n" + big);
+                    }
                 }
-                togo += big + j.join(",\n" + big) + "\n" + small + "}";
+                out("\n" + small + "}");
             }
             options.stack.pop();
         }
-        return togo;
+        return;
     }
 
     /** Render a complex JSON object into a nicely indented format suitable for human readability.
      * @param obj {Object} The object to be rendered
-     * @param options {Object} An options structure governing the rendering process. The only option which
-     * is currently supported is <code>indent</code> holding the number of space characters to be used to
-     * indent each level of containment.
+     * @param options {Object} An options structure governing the rendering process. This supports the following options:
+     *     <code>indent</code> {Integer} the number of space characters to be used to indent each level of containment (default value: 4)
+     *     <code>maxRenderChars</code> {Integer} rendering the object will cease once this number of characters has been generated
      */
     fluid.prettyPrintJSON = function (obj, options) {
-        options = $.extend({indent: 4, stack: []}, options);
+        options = $.extend({indent: 4, stack: [], output: ""}, options);
         options.indentChars = fluid.generatePadding(" ", options.indent);
-        return printImpl(obj, "", options);
+        printImpl(obj, "", options);
+        return options.output;
     };
 
     /**
@@ -241,7 +276,7 @@ var fluid = fluid || fluid_2_0;
         }
         if (!element.nodeType && fluid.isArrayable(element)) {
             togo = "[";
-            for (var i = 0; i < element.length; ++ i) {
+            for (var i = 0; i < element.length; ++i) {
                 togo += fluid.dumpEl(element[i]);
                 if (i < element.length - 1) {
                     togo += ", ";
@@ -260,4 +295,4 @@ var fluid = fluid || fluid_2_0;
         return togo;
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

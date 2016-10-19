@@ -3,6 +3,7 @@ Copyright 2008-2009 University of Cambridge
 Copyright 2008-2010 University of Toronto
 Copyright 2010-2011 OCAD University
 Copyright 2010-2011 Lucendo Development Ltd.
+Copyright 2016 Dinuka De Silva
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -25,9 +26,10 @@ var jqUnit = jqUnit || {};
 
     if (url && url.indexOf("http") === 0) {
         var injectPath = window.location.protocol + "//" + window.location.host + "/js/inject.js";
-        document.write("<scr" + "ipt src='" + injectPath + "?" + (new Date()).getTime() + "'></scr" + "ipt>"); /* from testswarm setup */ // jshint ignore:line
+        document.write("<scr" + "ipt src='" + injectPath + "?" + (new Date()).getTime() + "'></scr" + "ipt>"); /* from testswarm setup */
     }
 
+    // TODO: None of the contents of this file possess any test cases of their own
 
     /*******************************************
      * Browser-dependent jqUnit test functions *
@@ -42,11 +44,11 @@ var jqUnit = jqUnit || {};
             jqUnit.okWithPrefix($(selector).is(":hidden"), msg);
         },
 
-        exists: function (msg, selector) {
-            jqUnit.okWithPrefix((selector)[0], msg);
+        assertNodeExists: function (msg, selector) {
+            jqUnit.okWithPrefix($(selector)[0], msg);
         },
 
-        notExists: function (msg, selector) {
+        assertNodeNotExists: function (msg, selector) {
             jqUnit.okWithPrefix(!$(selector)[0], msg);
         },
 
@@ -96,7 +98,7 @@ var jqUnit = jqUnit || {};
         tn.modKeyEvent = function (modifier, keyCode, target) {
             var togo = tn.keyEvent(keyCode, target);
             modifier = jQuery.makeArray(modifier);
-            for (var i = 0; i < modifier.length; ++ i) {
+            for (var i = 0; i < modifier.length; ++i) {
                 var mod = modifier[i];
                 if (mod === "CTRL") {
                     togo.ctrlKey = true;
@@ -133,8 +135,8 @@ var jqUnit = jqUnit || {};
                 node = node[0];
             }
             else if (node.length !== undefined) {
-                jqUnit.assertEquals("Expected number of nodes " + message, expected.length, node.length);
-                for (var i = 0; i < node.length; ++ i) {
+                jqUnit.assertEquals(message + ": Expected number of nodes ", expected.length, node.length);
+                for (var i = 0; i < node.length; ++i) {
                     jqUnit.assertNode(message + ": node " + i + ": ", expected[i], node[i]);
                 }
                 return;
@@ -157,7 +159,7 @@ var jqUnit = jqUnit || {};
             var evalue = expected[key];
             var pass = evalue === attr;
             if (attr === false || attr === true) { // support for IE refusing to honour XHTML values
-                pass = !!evalue === attr; /* convert evalue to boolean */ // jshint ignore:line
+                pass = !!evalue === attr;
             }
             if (key !== "children") {
                 jqUnit.assertTrue(message + messageExt + " expected value: " + evalue + " actual: " + attr, pass);
@@ -169,4 +171,4 @@ var jqUnit = jqUnit || {};
         }
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

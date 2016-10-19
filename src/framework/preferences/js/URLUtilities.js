@@ -10,7 +10,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -19,7 +19,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.registerNamespace("fluid.url");
 
-    fluid.url.generateDepth = function(depth) {
+    fluid.url.generateDepth = function (depth) {
         return fluid.generate(depth, "../").join("");
     };
 
@@ -50,7 +50,7 @@ var fluid_2_0 = fluid_2_0 || {};
      * segment index - this will not terminate with a slash, unless the final segment
      * is the empty string
      */
-    fluid.url.collapseSegs = function(segs, from, to) {
+    fluid.url.collapseSegs = function (segs, from, to) {
         var togo = "";
         if (from === undefined) {
             from = 0;
@@ -58,7 +58,7 @@ var fluid_2_0 = fluid_2_0 || {};
         if (to === undefined) {
             to = segs.length;
         }
-        for (var i = from; i < to - 1; ++ i) {
+        for (var i = from; i < to - 1; ++i) {
             togo += segs[i] + "/";
         }
         if (to > from) { // TODO: bug in Kettle version
@@ -67,7 +67,7 @@ var fluid_2_0 = fluid_2_0 || {};
         return togo;
     };
 
-    fluid.url.makeRelPath = function(parsed, index) {
+    fluid.url.makeRelPath = function (parsed, index) {
         var togo = fluid.kettle.collapseSegs(parsed.pathInfo, index);
         if (parsed.extension) {
             togo += "." + parsed.extension;
@@ -78,14 +78,14 @@ var fluid_2_0 = fluid_2_0 || {};
     /** Canonicalise IN PLACE the supplied segment array derived from parsing a
      * pathInfo structure. Warning, this destructively modifies the argument.
      */
-    fluid.url.cononocolosePath = function(pathInfo) {
+    fluid.url.cononocolosePath = function (pathInfo) {
         var consume = 0;
-        for (var i = 0; i < pathInfo.length; ++ i) {
+        for (var i = 0; i < pathInfo.length; ++i) {
             if (pathInfo[i] === "..") {
                 ++consume;
             }
             else if (consume !== 0) {
-                pathInfo.splice(i - consume*2, consume*2);
+                pathInfo.splice(i - consume * 2, consume * 2);
                 i -= consume * 2;
                 consume = 0;
             }
@@ -99,9 +99,9 @@ var fluid_2_0 = fluid_2_0 || {};
 
     fluid.url.parseUri = function (str) {
         var o  = fluid.url.parseUri.options,
-          m   = o.parser[o.strictMode ? "strict" : "loose"].exec(str),
-          uri = {},
-          i   = 14;
+            m   = o.parser[o.strictMode ? "strict" : "loose"].exec(str),
+            uri = {},
+            i   = 14;
 
         while (i--) { uri[o.key[i]] = m[i] || ""; }
 
@@ -126,18 +126,18 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     };
 
-    fluid.url.parseSegs = function(url) {
+    fluid.url.parseSegs = function (url) {
         var parsed = fluid.url.parseUri(url);
         var parsedSegs = fluid.url.parsePathInfoTrim(parsed.directory);
         return parsedSegs.pathInfo;
     };
 
-    fluid.url.isAbsoluteUrl = function(url) {
+    fluid.url.isAbsoluteUrl = function (url) {
         var parseRel = fluid.url.parseUri(url);
         return (parseRel.host || parseRel.protocol || parseRel.directory.charAt(0) === "/");
     };
 
-    fluid.url.computeRelativePrefix = function(outerLocation, iframeLocation, relPath) {
+    fluid.url.computeRelativePrefix = function (outerLocation, iframeLocation, relPath) {
         if (fluid.url.isAbsoluteUrl(relPath)) {
             return relPath;
         }
@@ -147,7 +147,7 @@ var fluid_2_0 = fluid_2_0 || {};
         fluid.url.cononocolosePath(parsedRel);
         var parsedInner = fluid.url.parseSegs(iframeLocation);
         var seg = 0;
-        for (; seg < parsedRel.length; ++ seg) {
+        for (; seg < parsedRel.length; ++seg) {
             if (parsedRel[seg] !== parsedInner[seg]) { break; }
         }
         var excess = parsedInner.length - seg;
@@ -156,4 +156,4 @@ var fluid_2_0 = fluid_2_0 || {};
         return back + front;
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

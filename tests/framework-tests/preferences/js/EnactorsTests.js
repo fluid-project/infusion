@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -37,7 +36,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.styleElementsTests", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         expectedCssClass: "fl-style-test",
         expectedDefaultFlag: false,
         container: ".flc-styleElements",
@@ -68,7 +67,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.styleElementsTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "Test style element component",
             tests: [{
@@ -86,7 +85,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.emphasizeLinksTests", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         container: ".flc-emphasizeLinks",
         expectedEmphasizeLinksClass: "fl-emphasizeLinks-test",
         expectedDefaultFlag: false,
@@ -108,7 +107,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.emphasizeLinksTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "Test emphasize links enactor",
             tests: [{
@@ -126,7 +125,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.inputsLargerTests", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         container: ".flc-inputsLarger",
         expectedDefaultFlag: false,
         expectedInputsLargerClass: "fl-text-larger",
@@ -148,7 +147,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.inputsLargerTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "Test inputs larger enactor",
             tests: [{
@@ -166,7 +165,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.classSwapperTests", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         expectedClass: "fl-test",
         components: {
             classSwapper: {
@@ -193,15 +192,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.assertEquals("The style class is not applied by default", defaultStyle, that.container.attr("class"));
 
-        that.applier.requestChange("value", "test");
+        that.applier.change("value", "test");
         jqUnit.assertEquals("The style class has been applied", defaultStyle + " " + expectedClass, that.container.attr("class"));
 
-        that.applier.requestChange("value", "");
+        that.applier.change("value", "");
         jqUnit.assertEquals("The style class has been removed", defaultStyle, that.container.attr("class"));
     };
 
     fluid.defaults("fluid.tests.classSwapperTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "Test class swapper enactor",
             tests: [{
@@ -233,7 +232,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.textSizeTests", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             textSize: {
                 type: "fluid.prefs.enactor.textSize",
@@ -258,7 +257,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var initialREMSize = fluid.prefs.enactor.getTextSizeInPx(remTestElm, fontSizeMap);
 
         jqUnit.assertEquals("Check that the size is pulled from the container correctly", expectedInitialSize, that.initialSize);
-        that.applier.requestChange("value", muliplier);
+        that.applier.change("value", muliplier);
         jqUnit.assertEquals("The size should be doubled", (expectedInitialSize * muliplier) + "px", that.root.css("fontSize"));
         jqUnit.assertEquals("The font size specified in rem units should be doubled", initialREMSize * muliplier, fluid.prefs.enactor.getTextSizeInPx(remTestElm, fontSizeMap));
 
@@ -267,7 +266,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.textSizeTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "Test text size enactor",
             tests: [{
@@ -285,7 +284,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.getLineHeightTests", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         container: ".flc-lineSpace",
         fontSizeMap: fontSizeMap,
         expectedTestSize: 8,
@@ -328,7 +327,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.getLineHeightTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "Test getLineHeight",
             tests: [{
@@ -353,7 +352,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.lineSpaceTests", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             lineSpace: {
                 type: "fluid.prefs.enactor.lineSpace",
@@ -384,12 +383,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.testLineSpace = function (that) {
         jqUnit.assertEquals("Check that the size is pulled from the container correctly", 2, Math.round(that.initialSize));
         jqUnit.assertEquals("Check the line spacing size in pixels", "12px", convertLineHeightFactor(that.container.css("lineHeight"), that.container.css("fontSize")));
-        that.applier.requestChange("value", 2);
+        that.applier.change("value", 2);
         jqUnit.assertEquals("The size should be doubled", "24px", convertLineHeightFactor(that.container.css("lineHeight"), that.container.css("fontSize")));
     };
 
     fluid.defaults("fluid.tests.lineSpaceTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "Test line space enactor",
             tests: [{
@@ -407,7 +406,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.tableOfContentsTests", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             toc: {
                 type: "fluid.prefs.enactor.tableOfContents",
@@ -435,7 +434,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.tableOfContentsTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
             tocContainer: ".flc-toc-tocContainer",
             expectedNoTocLevels: 0,

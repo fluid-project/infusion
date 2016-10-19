@@ -12,7 +12,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid */
 
 var demo = demo || {};
@@ -40,7 +39,7 @@ var demo = demo || {};
         var tinyMCEOptions = {
             tinyMCE: {
                 width: 1024,
-                theme: "advanced",
+                theme: "modern",
                 theme_advanced_toolbar_location : "top"
             },
             componentDecorators: {

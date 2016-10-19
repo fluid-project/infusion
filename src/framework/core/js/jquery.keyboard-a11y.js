@@ -12,8 +12,8 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
-var fluid = fluid || fluid_2_0;
+var fluid_2_0_0 = fluid_2_0_0 || {};
+var fluid = fluid || fluid_2_0_0;
 
 (function ($, fluid) {
     "use strict";
@@ -64,7 +64,7 @@ var fluid = fluid || fluid_2_0;
     };
 
     fluid.thatistBridge("fluid", fluid);
-    fluid.thatistBridge("fluid_2_0", fluid_2_0);
+    fluid.thatistBridge("fluid_2_0_0", fluid_2_0_0);
 
 /*************************************************************************
  * Tabindex normalization - compensate for browser differences in naming
@@ -423,13 +423,13 @@ var fluid = fluid || fluid_2_0;
             if (typeof(that.options.selectablesTabindex) === "number") {
                 that.selectables.fluid("tabindex", that.options.selectablesTabindex);
             }
-            that.selectables.unbind("focus." + CONTEXT_KEY);
-            that.selectables.unbind("blur." + CONTEXT_KEY);
-            that.selectables.bind("focus." + CONTEXT_KEY, selectableFocusHandler(that));
-            that.selectables.bind("blur."  + CONTEXT_KEY, selectableBlurHandler(that));
+            that.selectables.off("focus." + CONTEXT_KEY);
+            that.selectables.off("blur." + CONTEXT_KEY);
+            that.selectables.on("focus." + CONTEXT_KEY, selectableFocusHandler(that));
+            that.selectables.on("blur."  + CONTEXT_KEY, selectableBlurHandler(that));
             if (keyMap && that.options.noBubbleListeners) {
-                that.selectables.unbind("keydown." + CONTEXT_KEY);
-                that.selectables.bind("keydown." + CONTEXT_KEY, arrowKeyHandler(that, keyMap));
+                that.selectables.off("keydown." + CONTEXT_KEY);
+                that.selectables.on("keydown." + CONTEXT_KEY, arrowKeyHandler(that, keyMap));
             }
             if (focusedItem) {
                 selectElement(focusedItem, that);
@@ -591,7 +591,7 @@ var fluid = fluid || fluid_2_0;
             var binding = bindings[i];
             elements.keydown(makeActivationHandler(binding));
         }
-        elements.bind("fluid-activate", function (evt, handler) {
+        elements.on("fluid-activate", function (evt, handler) {
             handler = handler || onActivateHandler;
             return handler ? handler(evt) : null;
         });
@@ -620,4 +620,4 @@ var fluid = fluid || fluid_2_0;
     };
 
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

@@ -5,6 +5,7 @@
 
         <link rel="stylesheet" type="text/css" href="../../src/lib/normalize/css/normalize.css" />
         <link rel="stylesheet" type="text/css" href="../../src/framework/core/css/fluid.css" />
+        <link rel="stylesheet" type="text/css" href="../../src/framework/core/css/fluidDebugging.css" />
 
         <link rel="stylesheet" type="text/css" href="../../src/framework/preferences/css/Enactors.css" />
         <link rel="stylesheet" type="text/css" href="../../src/framework/preferences/css/PrefsEditor.css" />
@@ -14,11 +15,7 @@
 
         <title>Preferences Editor Demo: Using Schemas</title>
         <script type="text/javascript" src="../../src/lib/jquery/core/js/jquery.js"></script>
-        <script type="text/javascript" src="../../src/lib/jquery/ui/js/jquery.ui.core.js"></script>
-        <script type="text/javascript" src="../../src/lib/jquery/ui/js/jquery.ui.widget.js"></script>
-        <script type="text/javascript" src="../../src/lib/jquery/ui/js/jquery.ui.mouse.js"></script>
-        <script type="text/javascript" src="../../src/lib/jquery/ui/js/jquery.ui.slider.js"></script>
-        <script type="text/javascript" src="../../src/lib/json/js/json2.js"></script>
+        <script type="text/javascript" src="../../src/lib/jquery/ui/js/jquery-ui.js"></script>
 
         <script type="text/javascript" src="../../src/framework/core/js/FluidDocument.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
@@ -30,10 +27,18 @@
         <script type="text/javascript" src="../../src/framework/core/js/ModelTransformation.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/ModelTransformationTransforms.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/ResourceLoader.js"></script>
         <script type="text/javascript" src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
         <script type="text/javascript" src="../../src/framework/renderer/js/fluidParser.js"></script>
         <script type="text/javascript" src="../../src/framework/renderer/js/fluidRenderer.js"></script>
         <script type="text/javascript" src="../../src/framework/renderer/js/RendererUtilities.js"></script>
+        <script type="text/javascript" src="../../src/framework/enhancement/js/ContextAwareness.js"></script>
+        <script type="text/javascript" src="../../src/framework/enhancement/js/ProgressiveEnhancement.js"></script>
+
+        <!-- For the IoC Inspector UI -->
+        <script type="text/javascript" src="../../src/framework/core/js/FluidDebugging.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/FluidViewDebugging.js"></script>
+        <script type="text/javascript" src="../../src/components/tooltip/js/Tooltip.js"></script>
 
         <script type="text/javascript" src="../../src/framework/preferences/js/URLUtilities.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/Store.js"></script>
@@ -59,9 +64,15 @@
         <script type="text/javascript">
             $(document).ready(function () {
                 fluid.uiOptions.prefsEditor(".flc-prefsEditor-separatedPanel", {
-                    "templatePrefix": "../../src/framework/preferences/html/",
-                    "messagePrefix": "../../src/framework/preferences/messages/",
-                    "tocTemplate": "../../src/components/tableOfContents/html/TableOfContents.html"
+                    lazyLoad: true,
+                    terms: {
+                        "templatePrefix": "../../src/framework/preferences/html",
+                        "messagePrefix": "../../src/framework/preferences/messages"
+                    },
+                    "tocTemplate": "../../src/components/tableOfContents/html/TableOfContents.html",
+                    "ignoreForToC": {
+                        "overviewPanel": ".flc-overviewPanel"
+                    }
                 });
             });
         </script>

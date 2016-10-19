@@ -69,11 +69,18 @@
     padding:1em;
 }
 
-.demo-progress-status-text, .demo-progress-restart{
+.demo-progress-liveRegion {
     text-align: center;
-    display: block;
+}
+
+.demo-progress-liveRegion > * {
     border:0;
     margin-top:1em;
+}
+
+/* hide on start */
+.demo-progress-restart {
+    display: none;
 }
 
 /* table styles */
@@ -113,14 +120,14 @@
     clear:both;
 }
 
-.progress-demo-submit button.enabled {
+.progress-demo-submit button {
     background-color: #8bc5eb;
     border: 1px solid black;
     padding:3px 15px 3px 15px;
     color: black;
 }
 
-.progress-demo-submit button.disabled {
+.progress-demo-submit button:disabled {
     background-color: #cbe5f6;
     border: 1px solid #cdcccc;
     padding:3px 15px 3px 15px;

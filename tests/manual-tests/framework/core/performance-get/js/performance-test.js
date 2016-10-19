@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid */
 
 (function ($, fluid) {
@@ -19,8 +18,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     var generateModel = function (depth) {
         var togo = {};
-        togo.thing0 = depth === 0? count++ : generateModel(depth - 1);
-        togo.thing1 = depth === 0? count++ : generateModel(depth - 1);
+        togo.thing0 = depth === 0 ? count++ : generateModel(depth - 1);
+        togo.thing1 = depth === 0 ? count++ : generateModel(depth - 1);
         return togo;
     };
 
@@ -31,7 +30,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var togo = [];
         while (true) {
             var bit = mod & 1;
-            togo.push(bit? "thing1" : "thing0");
+            togo.push(bit ? "thing1" : "thing0");
             if (mod < 2) {
                 break;
             }
@@ -42,7 +41,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     var makePaths = function () {
         var togo = [];
-        for (var i = 0; i < 64; ++ i) {
+        for (var i = 0; i < 64; ++i) {
             var segs = getPath(i);
             togo.push(segs.join("."));
         }
@@ -52,11 +51,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     var paths = makePaths();
     var results = [];
 
-    for (var j = 0; j < 5; ++ j) {
+    for (var j = 0; j < 5; ++j) {
 
         var now = Date.now();
 
-        for (var i = 0; i < 200000; ++ i) {
+        for (var i = 0; i < 200000; ++i) {
             var path = paths[i % 64];
             fluid.get(model, path);
         }

@@ -9,7 +9,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
@@ -19,17 +19,27 @@ var fluid_2_0 = fluid_2_0 || {};
     });
 
     fluid.defaults("fluid.uiOptions.prefsEditor", {
-        gradeNames: ["fluid.prefs.constructed.prefsEditor", "autoInit"],
-        distributeOptions: {
+        gradeNames: ["fluid.prefs.constructed.prefsEditor"],
+        lazyLoad: false,
+        distributeOptions: [{
+            record: "{that}.options.lazyLoad",
+            target: "{that separatedPanel}.options.lazyLoad"
+        }, {
             source: "{that}.options.tocTemplate",
             target: "{that uiEnhancer}.options.tocTemplate"
-        },
+        }, {
+            source: "{that}.options.ignoreForToC",
+            target: "{that uiEnhancer}.options.ignoreForToC"
+        }],
         enhancer: {
-            distributeOptions: {
+            distributeOptions: [{
                 source: "{that}.options.tocTemplate",
                 target: "{that > fluid.prefs.enactor.tableOfContents}.options.tocTemplate"
-            }
+            }, {
+                source: "{that}.options.ignoreForToC",
+                target: "{that > fluid.prefs.enactor.tableOfContents}.options.ignoreForToC"
+            }]
         }
     });
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

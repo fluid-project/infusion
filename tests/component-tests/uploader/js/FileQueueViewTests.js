@@ -4,6 +4,7 @@ Copyright 2008-2009 University of California, Berkeley
 Copyright 2008-2009 University of Cambridge
 Copyright 2010-2011 OCAD University
 Copyright 2011 Lucendo Development Ltd.
+Copyright 2015 Raising the Floor (International)
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -13,7 +14,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
@@ -22,14 +22,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     $(function () {
 
         var removedFile = null;
-        fluid.defaults("fluid.uploader.tests.multiFileUploader", {
-            gradeNames: ["fluid.eventedComponent", "autoInit"],
+
+        fluid.defaults("fluid.tests.uploader.multiFileUploader", {
+            gradeNames: ["fluid.component"],
             components: {
                 fileQueueView: {
                     type: "fluid.uploader.fileQueueView",
+                    container: "#qunit-fixture .flc-uploader-queue",
                     options: {
                         model: fluid.uploader.fileQueue().files,
-                        uploaderContainer: "#qunit-fixture"
+                        uploaderContainer: "#qunit-fixture",
+                        events: {
+                            onFileRemoved: "{multiFileUploader}.events.onFileRemoved"
+                        }
                     }
                 }
             },
@@ -39,16 +44,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             listeners: {
                 onFileRemoved: function (file) {
                     removedFile = file;
-                }
-            }
-        });
-
-        fluid.demands("fluid.uploader.fileQueueView", "fluid.uploader.tests.multiFileUploader", {
-            type: "fluid.uploader.fileQueueView",
-            container: "#qunit-fixture .flc-uploader-queue",
-            options: {
-                events: {
-                    onFileRemoved: "{multiFileUploader}.events.onFileRemoved"
                 }
             }
         });
@@ -103,7 +98,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         var createFileQueue = function () {
-            var uploader = fluid.initComponent("fluid.uploader.tests.multiFileUploader");
+            var uploader = fluid.tests.uploader.multiFileUploader();
             return uploader.fileQueueView;
         };
 
@@ -240,7 +235,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 q.fileProgressors[mountainTestFile.id + "_progress"].storedPercent);
 
             jqUnit.assertTrue("Row state should be changed when row is marked as completed. ",
-                                q.locate("fileQueue").find("#" + mountainTestFile.id).hasClass(q.options.styles.uploaded));
+                                q.container.find("#" + mountainTestFile.id).hasClass(q.options.styles.uploaded));
         });
 
         jqUnit.test("Show error for files", function () {
@@ -256,7 +251,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 q.locate("errorText").text());
 
             jqUnit.assertTrue("Row state should be changed when we have an error. ",
-                                q.locate("fileQueue").find("#" + mountainTestFile.id).hasClass(q.options.styles.error));
+                                q.container.find("#" + mountainTestFile.id).hasClass(q.options.styles.error));
         });
 
         jqUnit.test("Hide file progress", function () {
@@ -267,7 +262,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             q.addFile(mountainTestFile);
             q.hideFileProgress(mountainTestFile);
             jqUnit.assertFalse("the dim class should be removed on hidden. ",
-                                q.locate("fileIconBtn", q.locate("fileQueue").find("#" + mountainTestFile.id)).hasClass(q.options.styles.dim));
+                                q.locate("fileIconBtn", q.container.find("#" + mountainTestFile.id)).hasClass(q.options.styles.dim));
         });
 
         jqUnit.test("Keyboard navigation", function () {

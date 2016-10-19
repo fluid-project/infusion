@@ -11,25 +11,24 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid, jqUnit */
 
 (function ($) {
     "use strict";
 
     fluid.defaults("fluid.tests.pageEnhancerTest", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         events: {
             createPageEnhancer: null
         },
         components: {
             settingsStore: {
-                type: "fluid.tempStore"
+                type: "fluid.prefs.tempStore"
             },
             pageEnhancer: {
                 type: "fluid.pageEnhancer",
                 options: {
-                    creatOnEvent: "createPageEnhancer",
+                    creatOnEvent: "createPageEnhancer", // TODO: HORRIBLE typo here
                     uiEnhancer: {
                         options: {
                             gradeNames: ["fluid.uiEnhancer.starterEnactors"],
@@ -45,7 +44,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.pageEnhancerTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "Page Enhancer Tests",
             tests: [{
@@ -64,7 +63,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.testInitialState = function () {
         jqUnit.assertEquals("Initially white on black class exists", 1, $(".fl-theme-wb").length);
-        jqUnit.assertEquals("Initially font-sans class exists", 1, $(".fl-font-sans").length);
+        jqUnit.assertEquals("Initially font-times class exists", 1, $(".fl-font-times").length);
         jqUnit.assertEquals("Initially font-arial class exists", 1, $(".fl-font-arial").length);
     };
 

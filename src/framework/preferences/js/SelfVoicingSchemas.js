@@ -9,7 +9,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function (fluid) {
     "use strict";
@@ -23,13 +23,15 @@ var fluid_2_0 = fluid_2_0 || {};
 
     // Fine-tune the starter aux schema and add speak panel
     fluid.defaults("fluid.prefs.auxSchema.speak", {
-        gradeNames: ["fluid.prefs.auxSchema", "autoInit"],
+        gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
             "namespace": "fluid.prefs.constructed",
-            "templatePrefix": "../../framework/preferences/html/",
-            "template": "%prefix/SeparatedPanelPrefsEditor.html",
-            "messagePrefix": "../../framework/preferences/messages/",
-            "message": "%prefix/prefsEditor.json",
+            "terms": {
+                "templatePrefix": "../../framework/preferences/html/",
+                "messagePrefix": "../../framework/preferences/messages/"
+            },
+            "template": "%templatePrefix/SeparatedPanelPrefsEditor.html",
+            "message": "%messagePrefix/prefsEditor.json",
 
             speak: {
                 type: "fluid.prefs.speak",
@@ -40,8 +42,8 @@ var fluid_2_0 = fluid_2_0 || {};
                 panel: {
                     type: "fluid.prefs.panel.speak",
                     container: ".flc-prefsEditor-speak",
-                    template: "%prefix/PrefsEditorTemplate-speak.html",
-                    message: "%prefix/speak.json"
+                    template: "%templatePrefix/PrefsEditorTemplate-speak.html",
+                    message: "%messagePrefix/speak.json"
                 }
             }
         }
@@ -55,7 +57,7 @@ var fluid_2_0 = fluid_2_0 || {};
     // add extra prefs to the starter primary schemas
 
     fluid.defaults("fluid.prefs.schemas.speak", {
-        gradeNames: ["autoInit", "fluid.prefs.schemas"],
+        gradeNames: ["fluid.prefs.schemas"],
         schema: {
             "fluid.prefs.speak": {
                 "type": "boolean",
@@ -64,4 +66,4 @@ var fluid_2_0 = fluid_2_0 || {};
         }
     });
 
-})(fluid_2_0);
+})(fluid_2_0_0);

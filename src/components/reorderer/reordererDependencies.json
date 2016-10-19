@@ -16,11 +16,10 @@
         ],
         "dependencies": [
             "jQuery",
-            "jQueryUICore",
-            "jQueryUIWidgets",
+            "jQueryUI",
+            "jQueryTouchPunchPlugin",
             "normalize",
-            "framework",
-            "json"
+            "framework"
         ]
     }
 }

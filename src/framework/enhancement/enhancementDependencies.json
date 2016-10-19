@@ -3,6 +3,7 @@
         "name": "Progressive Enhancement",
         "description": "Provides support for progressively enhancing components based on the capabilities of the browser.",
         "files": [
+            "./js/ContextAwareness.js",
             "./js/ProgressiveEnhancement.js"
         ],
         "dependencies": [

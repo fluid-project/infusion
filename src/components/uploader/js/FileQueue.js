@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -19,7 +19,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.registerNamespace("fluid.uploader");
 
     fluid.defaults("fluid.uploader.fileQueue", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         members: {
             files: [],
             isUploading: false
@@ -34,13 +34,11 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             startFile: {
                 funcName: "fluid.uploader.fileQueue.startFile",
-                args: "{that}.currentBatch",
-                dynamic: true
+                args: "{that}.currentBatch"
             },
             finishFile: {
                 funcName: "fluid.uploader.fileQueue.finishFile",
-                args: "{that}.currentBatch",
-                dynamic: true
+                args: "{that}.currentBatch"
             },
             shouldUploadNextFile: {
                 funcName: "fluid.uploader.fileQueue.shouldUploadNextFile",
@@ -97,13 +95,11 @@ var fluid_2_0 = fluid_2_0 || {};
             },
             updateCurrentBatch:  {
                 funcName: "fluid.uploader.fileQueue.updateCurrentBatch",
-                args: [{expander: {func: "{that}.getReadyFiles"}}, "{that}.currentBatch"],
-                dynamic: true
+                args: [{expander: {func: "{that}.getReadyFiles"}}, "{that}.currentBatch"]
             },
             updateBatchStatus:  {
                 funcName: "fluid.uploader.fileQueue.updateBatchStatus",
-                args: ["{arguments}.0", "{that}.currentBatch"],
-                dynamic: true
+                args: ["{arguments}.0", "{that}.currentBatch"]
             }
         }
     });
@@ -197,4 +193,4 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

@@ -1,5 +1,5 @@
 /*
-Copyright 2013 OCAD University
+Copyright 2013-2015 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -9,7 +9,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid */
 
 var demo = demo || {};
@@ -17,14 +16,16 @@ var demo = demo || {};
     "use strict";
 
     demo.initFullWithPreview = function (container, options) {
-        var prefsEditorOpts = $.extend(true, {prefsEditorType: "fluid.prefs.fullPreview"}, options);
         return fluid.prefs.create(container, {
             build: {
                 gradeNames: ["fluid.prefs.auxSchema.starter"],
                 auxiliarySchema: {
-                    "template": "%prefix/FullPreviewPrefsEditor.html",
-                    "templatePrefix": "../../../../../src/framework/preferences/html/",
-                    "messagePrefix": "../../../../../src/framework/preferences/messages/",
+                    "loaderGrades": ["fluid.prefs.fullPreview"],
+                    "terms": {
+                        "templatePrefix": "../../../../../src/framework/preferences/html/",
+                        "messagePrefix": "../../../../../src/framework/preferences/messages/"
+                    },
+                    "template": "%templatePrefix/FullPreviewPrefsEditor.html",
                     "tableOfContents": {
                         "enactor": {
                             "tocTemplate": "../../../../../src/components/tableOfContents/html/TableOfContents.html"
@@ -32,7 +33,7 @@ var demo = demo || {};
                     }
                 }
             },
-            prefsEditor: prefsEditorOpts
+            prefsEditor: options
         });
     };
 

@@ -11,7 +11,6 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global fluid */
 
 var demo = demo || {};
@@ -28,7 +27,7 @@ var demo = demo || {};
         });
 
         // Create new reorderable elements
-        jQuery("#newElm").click(function() {
+        jQuery("#newElm").click(function () {
             var orderables = jQuery(".myorderable");
             var nextOrderableNum = orderables.length + 1;
             var nextOrderable = orderables.eq(0).clone();

@@ -9,23 +9,25 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
 
-    fluid.uploader = fluid.uploader || {};
-
     fluid.defaults("fluid.uploader.errorPanel", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
-        preInitFunction: "fluid.uploader.errorPanel.preInit",
-        postInitFunction: "fluid.uploader.errorPanel.renderSectionTemplates",
-        finalInitFunction: "fluid.uploader.errorPanel.finalInit",
+        gradeNames: ["fluid.viewComponent", "fluid.contextAware"],
+        invokers: {
+            refreshView: "fluid.uploader.errorPanel.refreshView({that})"
+        },
+        events: {
+            afterRender: null
+        },
 
         components: {
             // TODO: This won't scale nicely with more types of errors.
             fileSizeErrorSection: {
                 type: "fluid.uploader.errorPanel.section",
+                createOnEvent: "afterRender",
                 container: "{errorPanel}.dom.fileSizeErrorSection",
                 options: {
                     model: {
@@ -39,6 +41,7 @@ var fluid_2_0 = fluid_2_0 || {};
 
             numFilesErrorSection: {
                 type: "fluid.uploader.errorPanel.section",
+                createOnEvent: "afterRender",
                 container: "{errorPanel}.dom.numFilesErrorSection",
                 options: {
                     model: {
@@ -63,51 +66,66 @@ var fluid_2_0 = fluid_2_0 || {};
             exceedsNumFilesLimit: "Too many files were selected. %numFiles were not added to the queue.",
             exceedsFileSize: "%numFiles files were too large and were not added to the queue."
         },
+        listeners: {
+            "onCreate.renderSectionTemplates": {
+                funcName: "fluid.uploader.errorPanel.renderSectionTemplates",
+                args: "{that}",
+                priority: "before:domComplete"
+            },
+            "onCreate.domComplete": {
+                funcName: "fluid.uploader.errorPanel.domComplete",
+                args: "{that}"
+            }
+        },
 
         styles: {
             hiddenTemplate: "fl-hidden-templates"
         }
     });
 
-    fluid.uploader.errorPanel.preInit = function (that) {
-        that.refreshView = function () {
-            for (var i = 0; i < that.sections.length; i++) {
-                if (that.sections[i].model.files.length > 0) {
-                    // One of the sections has errors. Show them and bail immediately.
-                    that.container.show();
-                    return;
-                }
+    fluid.uploader.errorPanel.refreshView = function (that) {
+        for (var i = 0; i < that.sections.length; i++) {
+            if (that.sections[i].model.files.length > 0) {
+                // One of the sections has errors. Show them and bail immediately.
+                that.container.show();
+                return;
             }
-            that.container.hide();
-        };
+        }
+        that.container.hide();
     };
 
     fluid.uploader.errorPanel.renderSectionTemplates = function (that) {
         var sectionTmpl = that.locate("sectionTemplate").remove().removeClass(that.options.styles.hiddenTemplate);
         that.locate("fileSizeErrorSection").append(sectionTmpl.clone());
         that.locate("numFilesErrorSection").append(sectionTmpl.clone());
+        that.events.afterRender.fire(that);
     };
 
-    fluid.uploader.errorPanel.finalInit = function (that) {
+    fluid.uploader.errorPanel.domComplete = function (that) {
         that.sections = [that.fileSizeErrorSection, that.numFilesErrorSection];
         that.locate("header").text(that.options.strings.headerText);
         that.container.hide();
     };
 
-    fluid.demands("fluid.uploader.errorPanel", "fluid.uploader.multiFileUploader", {
-        container: "{multiFileUploader}.dom.errorsPanel",
-        options: {
-            listeners: {
-                "{multiFileUploader}.events.afterFileDialog": "{errorPanel}.refreshView"
+    // An "interactional mixin" - a courtesy to dream of a possibility that an "errorPanel" could conceivably be deployed separately
+    // from an "uploader"
+    fluid.defaults("fluid.uploader.errorPanel.bindUploader", {
+        listeners: {
+            "{uploader}.events.afterFileDialog": "{errorPanel}.refreshView"
+        },
+        distributeOptions: {
+            target: "{that fluid.uploader.errorPanel.section}.options.listeners",
+            record: {
+                "{uploader}.events.onQueueError": "{section}.addFile",
+                "{uploader}.events.onFilesSelected": "{section}.clear",
+                "{uploader}.events.onUploadStart": "{section}.clear",
+                "{section}.events.afterErrorsCleared": "{errorPanel}.refreshView"
             }
         }
     });
 
     fluid.defaults("fluid.uploader.errorPanel.section", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
-        preInitFunction: "fluid.uploader.errorPanel.section.preInit",
-        finalInitFunction: "fluid.uploader.errorPanel.section.finalInit",
-
+        gradeNames: ["fluid.viewComponent"],
         model: {
             errorCode: undefined,
             files: [],
@@ -130,61 +148,72 @@ var fluid_2_0 = fluid_2_0 || {};
             hideFiles: "Hide files",
             showFiles: "Show files",
             fileListDelimiter: ", "
+        },
+        invokers: {
+            toggleDetails: "fluid.uploader.errorPanel.section.toggleDetails({that})",
+            showDetails: "fluid.uploader.errorPanel.section.showDetails({that})",
+            hideDetails: "fluid.uploader.errorPanel.section.hideDetails({that})",
+            addFile: "fluid.uploader.errorPanel.section.addFile({that}, {arguments}.0, {arguments}.1)", // file, errorCode
+            clear: "fluid.uploader.errorPanel.section.clear({that})",
+            refreshView: "fluid.uploader.errorPanel.section.refreshView({that})"
+        },
+        listeners: {
+            "onCreate.bindHandlers": {
+                funcName: "fluid.uploader.errorPanel.section.bindHandlers",
+                priority: "after:refreshView"
+            },
+            "onCreate.refreshView": "{that}.refreshView"
         }
     });
 
-    fluid.uploader.errorPanel.section.preInit = function (that) {
-        that.toggleDetails = function () {
-            var detailsAction = that.model.showingDetails ? that.hideDetails : that.showDetails;
-            detailsAction();
-        };
-
-        that.showDetails = function () {
-            that.locate("errorDetails").show();
-            that.locate("showHideFilesToggle").text(that.options.strings.hideFiles);
-            that.model.showingDetails = true;
-        };
-
-        that.hideDetails = function () {
-            that.locate("errorDetails").hide();
-            that.locate("showHideFilesToggle").text(that.options.strings.showFiles);
-            that.model.showingDetails = false;
-        };
-
-        that.addFile = function (file, errorCode) {
-            if (errorCode === that.model.errorCode) {
-                that.model.files.push(file.name);
-                that.refreshView();
-            }
-        };
-
-        that.clear = function () {
-            that.model.files = [];
-            that.refreshView();
-            that.events.afterErrorsCleared.fire();
-        };
-
-        that.refreshView = function () {
-            fluid.uploader.errorPanel.section.renderHeader(that);
-            fluid.uploader.errorPanel.section.renderErrorDetails(that);
-            that.hideDetails();
-
-            if (that.model.files.length <= 0) {
-                that.container.hide();
-            } else {
-                that.container.show();
-            }
-        };
+    fluid.uploader.errorPanel.section.toggleDetails = function (that) {
+        var detailsAction = that.model.showingDetails ? that.hideDetails : that.showDetails;
+        detailsAction();
     };
 
-    fluid.uploader.errorPanel.section.finalInit = function (that) {
+    fluid.uploader.errorPanel.section.showDetails = function (that) {
+        that.locate("errorDetails").show();
+        that.locate("showHideFilesToggle").text(that.options.strings.hideFiles);
+        that.model.showingDetails = true; // TODO: model abuse
+    };
+
+    fluid.uploader.errorPanel.section.hideDetails = function (that) {
+        that.locate("errorDetails").hide();
+        that.locate("showHideFilesToggle").text(that.options.strings.showFiles);
+        that.model.showingDetails = false;
+    };
+
+    fluid.uploader.errorPanel.section.addFile = function (that, file, errorCode) {
+        if (errorCode === that.model.errorCode) {
+            that.model.files.push(file.name);
+            that.refreshView();
+        }
+    };
+
+    fluid.uploader.errorPanel.section.clear = function (that) {
+        that.model.files = [];
+        that.refreshView();
+        that.events.afterErrorsCleared.fire();
+    };
+
+    fluid.uploader.errorPanel.section.refreshView = function (that) {
+        fluid.uploader.errorPanel.section.renderHeader(that);
+        fluid.uploader.errorPanel.section.renderErrorDetails(that);
+        that.hideDetails();
+
+        if (that.model.files.length <= 0) { // TODO: use model relay and "visibility model"
+            that.container.hide();
+        } else {
+            that.container.show();
+        }
+    };
+
+    fluid.uploader.errorPanel.section.bindHandlers = function (that) {
         // Bind delete button
         that.locate("deleteErrorButton").click(that.clear);
 
         // Bind hide/show error details link
         that.locate("showHideFilesToggle").click(that.toggleDetails);
-
-        that.refreshView();
     };
 
     fluid.uploader.errorPanel.section.renderHeader = function (that) {
@@ -201,17 +230,5 @@ var fluid_2_0 = fluid_2_0 || {};
         that.locate("erroredFiles").text(filesList);
     };
 
-    fluid.demands("fluid.uploader.errorPanel.section", [
-        "fluid.uploader.errorPanel",
-        "fluid.uploader.multiFileUploader"
-    ], {
-        options: {
-            listeners: {
-                "{multiFileUploader}.events.onQueueError": "{section}.addFile",
-                "{multiFileUploader}.events.onFilesSelected": "{section}.clear",
-                "{multiFileUploader}.events.onUploadStart": "{section}.clear",
-                "{section}.events.afterErrorsCleared": "{errorPanel}.refreshView"
-            }
-        }
-    });
-})(jQuery, fluid_2_0);
+
+})(jQuery, fluid_2_0_0);

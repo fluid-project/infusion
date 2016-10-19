@@ -12,7 +12,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -23,36 +23,6 @@ var fluid_2_0 = fluid_2_0 || {};
         var kE = document.createEvent("KeyEvents");
         kE.initKeyEvent(event, 1, 1, null, 0, 0, 0, 0, virtualCode, charCode);
         control.dispatchEvent(kE);
-    };
-
-    /** Set the caret position to the end of a text field's value, also taking care
-     * to scroll the field so that this position is visible.
-     * @param {DOM node} control The control to be scrolled (input, or possibly textarea)
-     * @param value The current value of the control
-     */
-    fluid.setCaretToEnd = function (control, value) {
-        var pos = value ? value.length : 0;
-
-        try {
-            control.focus();
-        // see http://www.quirksmode.org/dom/range_intro.html - in Opera, must detect setSelectionRange first,
-        // since its support for Microsoft TextRange is buggy
-            if (control.setSelectionRange) {
-
-                control.setSelectionRange(pos, pos);
-                if ($.browser.mozilla && pos > 0) {
-                  // ludicrous fix for Firefox failure to scroll to selection position, inspired by
-                  // http://bytes.com/forum/thread496726.html
-                    fluid.inlineEdit.sendKey(control, "keypress", 92, 92); // type in a junk character
-                    fluid.inlineEdit.sendKey(control, "keydown", 8, 0); // delete key must be dispatched exactly like this
-                    fluid.inlineEdit.sendKey(control, "keypress", 8, 0);
-                }
-            } else if (control.createTextRange) {
-                var range = control.createTextRange();
-                range.move("character", pos);
-                range.select();
-            }
-        } catch (e) {}
     };
 
     fluid.inlineEdit.switchToViewMode = function (that) {
@@ -178,7 +148,7 @@ var fluid_2_0 = fluid_2_0 || {};
         // Work around for FLUID-726
         // Without 'setTimeout' the finish handler gets called with the event and the edit field is inactivated.
         setTimeout(function () {
-            fluid.setCaretToEnd(that.editField[0], that.editView.value());
+            that.editField.focus();
             if (that.options.selectOnEdit) {
                 that.editField[0].select();
             }
@@ -601,7 +571,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.inlineEdit.standardAccessor", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         members: {
             nodeName: {
                 expander: {
@@ -623,7 +593,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.inlineEdit.standardDisplayView", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         invokers: {
             refreshView: {
                 funcName: "fluid.inlineEdit.standardDisplayView.refreshView",
@@ -651,7 +621,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.inlineEdit.standardEditView", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         invokers: {
             refreshView: {
                 funcName: "fluid.inlineEdit.standardEditView.refreshView",
@@ -712,7 +682,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.inlineEdit", {
-        gradeNames: ["fluid.viewComponent", "fluid.undoable", "autoInit"],
+        gradeNames: ["fluid.undoable", "fluid.viewComponent"],
         mergePolicy: {
             "strings.defaultViewText": "defaultViewText"
         },
@@ -748,8 +718,7 @@ var fluid_2_0 = fluid_2_0 || {};
               */
             isEditing: {
                 funcName: "fluid.identity",
-                args: "{that}.isEditingState",
-                dynamic: true
+                args: "{that}.isEditingState"
             },
             /** Finishes editing, switching back to view mode. */
             finish: {
@@ -949,11 +918,15 @@ var fluid_2_0 = fluid_2_0 || {};
         });
     };
 
-    fluid.defaults("fluid.inlineEdits", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+    fluid.defaults("fluid.inlineEditsComponent", {
+        gradeNames: ["fluid.viewComponent"],
         distributeOptions: {
             source: "{that}.options",
-            exclusions: ["members.inlineEdits", "selectors.editables"],
+            // TODO: Appalling requirement to evade FLUID-5887 check - otherwise all of this fluid.modelComponent material is broadcast down to each component.
+            // "source" distributions are silly and dangerous in any case, but they have become fairly widely used, together with the expectation that the
+            // material from "defaults" can be broadcast too. But clearly material that is from base grade defaults is unwelcome to be distributed.
+            // This seems to imply that we've got no option but to start supporting "provenance" in options and defaults - highly expensive.
+            exclusions: ["members.inlineEdits", "members.modelRelay", "members.applier", "members.model", "selectors.editables", "events"],
             removeSource: true,
             target: "{that > fluid.inlineEdit}.options"
         },
@@ -965,9 +938,14 @@ var fluid_2_0 = fluid_2_0 || {};
                 }
             }
         },
-        returnedPath: "inlineEdits", // courtesy for manual creation
         selectors: {
             editables: ".flc-inlineEditable"
         }
     });
-})(jQuery, fluid_2_0);
+
+    fluid.inlineEdits = function (container, options) {
+        var that = fluid.inlineEditsComponent(container, options);
+        return that.inlineEdits;
+    };
+
+})(jQuery, fluid_2_0_0);

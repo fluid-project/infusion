@@ -31,7 +31,7 @@
         "dependencies": [
             "fonts",
             "jQuery",
-            "jQueryUICore",
+            "jQueryUI",
             "normalize",
             "framework",
             "enhancement",
@@ -39,8 +39,7 @@
             "slidingPanel",
             "textfieldSlider",
             "tableOfContents",
-            "textToSpeech",
-            "json"
+            "textToSpeech"
         ]
     }
 }

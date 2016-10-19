@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -154,7 +154,7 @@ var fluid_2_0 = fluid_2_0 || {};
     */
 
     fluid.defaults("fluid.progress", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         members: {
             displayElement: "{that}.dom.displayElement",
             progressBar: "{that}.dom.progressBar",
@@ -180,12 +180,10 @@ var fluid_2_0 = fluid_2_0 || {};
                 args: ["{that}.ariaElement", "{that}.options.strings.ariaBusyText"]
             }],
             onProgressBegin: {
-                // Note: callback deprecated as of 1.5, use onProgressBegin event
-                func: "{that}.options.showAnimation.callback"
+                func: "{that}.options.showAnimation.onProgressBegin"
             },
             afterProgressHidden: {
-                // Note: callback deprecated as of 1.5, use afterProgressHidden event
-                func: "{that}.options.hideAnimation.callback"
+                func: "{that}.options.hideAnimation.afterProgressHidden"
             }
         },
         invokers: {
@@ -245,8 +243,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 opacity: "show"
             },
             duration: "slow",
-            //callback has been deprecated and will be removed as of 1.5, instead use onProgressBegin event
-            callback: fluid.identity
+            onProgressBegin: fluid.identity
         }, // equivalent of $().fadeIn("slow")
 
         hideAnimation: {
@@ -254,8 +251,7 @@ var fluid_2_0 = fluid_2_0 || {};
                 opacity: "hide"
             },
             duration: "slow",
-            //callback has been deprecated and will be removed as of 1.5, instead use afterProgressHidden event
-            callback: fluid.identity
+            afterProgressHidden: fluid.identity
         }, // equivalent of $().fadeOut("slow")
 
         minWidth: 5, // 0 length indicators can look broken if there is a long pause between updates
@@ -266,4 +262,4 @@ var fluid_2_0 = fluid_2_0 || {};
         updatePosition: false
     });
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

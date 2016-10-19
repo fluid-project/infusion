@@ -32,13 +32,15 @@ build-themes-prefsEditor(contrastThemes) {
         {themeName} {
             .fl-prefsEditor {
                 // slider
-                &.fl-slider {
+                & .fl-slider {
                     background: none;
                     background-color: fColor;
 
-                    a, a:hover {
+                    a, a:hover,
+                    .fl-slider-handle, .fl-slider-handle:hover {
                         border:1px solid fColor;
                         background-color: bColor;
+                        background-image: none;
                     }
                 }
 
@@ -89,8 +91,11 @@ build-themes-separatedPanelPrefsEditor(contrastThemes) {
             get-colors-for-separatedPanelPrefsEditor(fColor, bColor);
 
             .fl-prefsEditor-separatedPanel {
-                .fl-panelBar, .fl-toggleButton, .fl-prefsEditor-reset {
+                .fl-panelBar, .fl-prefsEditor-reset {
                     get-colors-for-separatedPanelPrefsEditor(fColor, bColor);
+                }
+                .fl-prefsEditor-buttons { //FLUID-4991: The shadow effect around the hide/show preferences bug fix.
+                    box-shadow:none;
                 }
             }
         }

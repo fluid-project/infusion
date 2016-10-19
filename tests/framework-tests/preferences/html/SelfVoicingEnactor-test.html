@@ -7,7 +7,6 @@
         <!--  This is the jqUnit test css file -->
         <link rel="stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
 
-        <script type="text/javascript" src="../../../../src/lib/json/js/json2.js"></script>
         <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
@@ -16,12 +15,15 @@
         <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/ResourceLoader.js"></script>
         <script type="text/javascript" src="../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
         <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidParser.js"></script>
         <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
         <script type="text/javascript" src="../../../../src/framework/renderer/js/RendererUtilities.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
         <script type="text/javascript" src="../../../../src/framework/enhancement/js/ProgressiveEnhancement.js"></script>
         <script type="text/javascript" src="../../../../src/components/textToSpeech/js/TextToSpeech.js"></script>
+        <script type="text/javascript" src="../../../../src/components/textToSpeech/js/MockTTS.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/UIEnhancer.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/PrefsEditor.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/Enactors.js"></script>
@@ -44,11 +46,9 @@
         <div id="qunit-testrunner-toolbar"></div>
         <h2 id="qunit-userAgent"></h2>
         <ol id="qunit-tests"></ol>
-        <div id="qunit-fixture">
-            <p class="flc-selfVoicing">
-                Reading text from DOM
-                <img src="" alt="no image" />
-            </p>
-        </div>
+        <p class="flc-selfVoicing" style="display: none">
+            Reading text from DOM
+            <img src="" alt="no image" />
+        </p>
     </body>
 </html>

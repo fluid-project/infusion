@@ -11,10 +11,9 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /* global CKEDITOR, tinyMCE */
 
-var fluid_2_0 = fluid_2_0 || {};
+var fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -24,7 +23,7 @@ var fluid_2_0 = fluid_2_0 || {};
      *************************************/
 
     fluid.defaults("fluid.inlineEdit.editorViewAccessor", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         invokers: {
             value: {
                 funcName: "fluid.inlineEdit.editorViewAccessor.value",
@@ -49,7 +48,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.inlineEdit.richTextViewAccessor", {
-        gradeNames: ["fluid.viewComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         invokers: {
             value: {
                 funcName: "fluid.inlineEdit.richTextViewAccessor.value",
@@ -150,7 +149,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.inlineEdit.tinyMCE.viewAccessor", {
-        gradeNames: ["fluid.inlineEdit.editorViewAccessor", "autoInit"],
+        gradeNames: ["fluid.inlineEdit.editorViewAccessor"],
         editorGetFn: flTinyMCE.getEditor,
         setValueFn: flTinyMCE.setValue,
         getValueFn: flTinyMCE.getValue
@@ -173,24 +172,10 @@ var fluid_2_0 = fluid_2_0 || {};
             // are delivered to the actual body - however, on recent TinyMCE, the
             // "focusEditor" call DOES deliver a blur which causes FLUID-4681
             that.deadMansBlur = fluid.deadMansBlur(that.editField, {
-                    cancelByDefault: true,
-                    exclusions: {body: $(editorBody), container: that.container},
-                    handler: function () {
-                        that[that.options.onBlur]();
-                    }
-                });
-            // Ridiculous drilling down functions on 3.4.9 to track dynamic creation of
-            // menu dropdowns which otherwise causes an undetectable focus transfer
-            // away from editor (they are appended to the end of the document rather than
-            // nested within the editor).
-            editor.controlManager.onAdd.add(function(e) {
-                if (e.onShowMenu) {
-                    e.onShowMenu.add(function() {
-                        var el = fluid.byId(e.element.id);
-                        if (el) {
-                            that.deadMansBlur.addExclusion({id: el});
-                        }
-                    });
+                cancelByDefault: true,
+                exclusions: {body: $(editorBody), container: that.container},
+                handler: function () {
+                    that[that.options.onBlur]();
                 }
             });
         });
@@ -225,7 +210,7 @@ var fluid_2_0 = fluid_2_0 || {};
         // its afterInitEdit listener is registered in time. All of this architecture
         // is unsatisfactory, but can't be easily fixed until the whole component is
         // migrated over to IoC with declarative listener registration.
-        setTimeout(function() {
+        setTimeout(function () {
             tinyMCE.init(options);
         }, 1);
     };
@@ -238,7 +223,7 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.inlineEdit.tinyMCE", {
-        gradeNames: ["fluid.inlineEdit", "autoInit"],
+        gradeNames: ["fluid.inlineEdit"],
         tinyMCE : {
             mode: "exact",
             theme: "simple"
@@ -299,7 +284,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.inlineEdit.CKEditor.viewAccessor", {
-        gradeNames: ["fluid.inlineEdit.editorViewAccessor", "autoInit"],
+        gradeNames: ["fluid.inlineEdit.editorViewAccessor"],
         editorGetFn: flCKEditor.getEditor,
         setValueFn: flCKEditor.setValue,
         getValueFn: flCKEditor.getValue
@@ -351,7 +336,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.inlineEdit.CKEditor", {
-        gradeNames: ["fluid.inlineEdit", "autoInit"],
+        gradeNames: ["fluid.inlineEdit"],
         selectors: {
             edit: "textarea"
         },
@@ -417,9 +402,9 @@ var fluid_2_0 = fluid_2_0 || {};
      */
 
     fluid.defaults("fluid.inlineEdit.dropdown", {
-        gradeNames: ["fluid.inlineEdit", "autoInit"],
+        gradeNames: ["fluid.inlineEdit"],
         applyEditPadding: false,
         blurHandlerBinder: fluid.inlineEdit.dropdown.blurHandlerBinder,
         editModeRenderer: fluid.inlineEdit.dropdown.editModeRenderer
     });
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);

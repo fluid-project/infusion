@@ -12,31 +12,39 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
-/* global fluid, QUnit */
+/* global fluid_2_0_0, QUnit */
 
 var jqUnit = jqUnit || {};
 
-(function ($) {
+(function ($, fluid) {
     "use strict";
 
     var QUnitPassthroughs = ["module", "test", "asyncTest", "throws", "raises", "start", "stop", "expect"];
     QUnit.config.reorder = false; // defeat this QUnit feature which frequently just causes confusion
 
-    for (var i = 0; i < QUnitPassthroughs.length; ++ i) {
+    for (var i = 0; i < QUnitPassthroughs.length; ++i) {
         var method = QUnitPassthroughs[i];
         jqUnit[method] = QUnit[method];
         window[method] = undefined; // work around IE8 bug http://stackoverflow.com/questions/1073414/deleting-a-window-property-in-ie
     }
-    
-    jqUnit.failureHandler = function (args, activity) {
+
+    jqUnit.failureHandler = function (args/*, activity*/) {
         if (QUnit.config.current) {
             QUnit.ok(false, "Assertion failure (see console.log for expanded message): ".concat(args));
         }
-        fluid.builtinFail(false, args, activity);
     };
 
-    fluid.pushSoftFailure(jqUnit.failureHandler);
+    fluid.failureEvent.addListener(jqUnit.failureHandler, "jqUnit", "before:fail");
+
+    // Helpful utility for creating multiple test target components compactly
+    fluid.makeComponents = function (components) {
+        fluid.each(components, function (value, key) {
+            var options = {
+                gradeNames: fluid.makeArray(value)
+            };
+            fluid.defaults(key, options);
+        });
+    };
 
     /**
      * Keeps track of the order of function invocations. The transcript contains information about
@@ -124,11 +132,11 @@ var jqUnit = jqUnit || {};
         },
 
         assertEquals: function (msg, expected, actual) {
-            QUnit.equal(actual, expected, processMessage(msg));
+            QUnit.strictEqual(actual, expected, processMessage(msg));
         },
 
-        assertNotEquals: function (msg, value1, value2) {
-            pok(value1 !== value2, msg);
+        assertNotEquals: function (msg, unexpected, actual) {
+            QUnit.notStrictEqual(actual, unexpected, msg);
         },
 
         assertTrue: function (msg, value) {
@@ -164,11 +172,19 @@ var jqUnit = jqUnit || {};
         },
 
         assertDeepEq: function (msg, expected, actual) {
-            QUnit.propEqual(actual, expected, processMessage(msg));
+            if (fluid.isPrimitive(expected) || fluid.isPrimitive(actual)) {
+                jqUnit.assertEquals(msg, expected, actual);
+            } else {
+                QUnit.propEqual(actual, expected, processMessage(msg));
+            }
         },
 
         assertDeepNeq: function (msg, unexpected, actual) {
-            QUnit.notPropEqual(actual, unexpected, processMessage(msg));
+            if (fluid.isPrimitive(unexpected) || fluid.isPrimitive(actual)) {
+                jqUnit.assertNotEquals(msg, unexpected, actual);
+            } else {
+                QUnit.notPropEqual(actual, unexpected, processMessage(msg));
+            }
         },
         // This version of "expect" offers the cumulative semantic we desire
         expect: function (number) {
@@ -231,19 +247,19 @@ var jqUnit = jqUnit || {};
         jqUnit.assertDeepEq(message, expected2, actual2);
     };
 
-    /** Assert that the actual value object is a subset (considered in terms of shallow key coincidence) of the
-     * expected value object (this method is the one that will be most often used in practice) **/
+    /** Assert that the actual value object is a superset (considered in terms of shallow key coincidence) of the
+     * expected value object (this method is the one that will be most often used in practice). "Left hand" (expected) is a subset of actual. **/
 
     jqUnit.assertLeftHand = function (message, expected, actual) {
         jqUnit.assertDeepEq(message, expected, fluid.filterKeys(actual, fluid.keys(expected)));
     };
 
-    /** Assert that the actual value object is a superset of the expected value object **/
+    /** Assert that the actual value object is a subset of the expected value object **/
 
     jqUnit.assertRightHand = function (message, expected, actual) {
         jqUnit.assertDeepEq(message, fluid.filterKeys(expected, fluid.keys(actual)), actual);
     };
-    
+
     /** Assert that the supplied callback will produce a framework diagnostic, containing the supplied text
      * somewhere in its error message - that is, the framework will invoke fluid.fail with a message containing
      * <code>errorText</code>.
@@ -252,21 +268,29 @@ var jqUnit = jqUnit || {};
      * @param errorTexts {String} or {Array of String} Either a single string or array of strings which the <code>message</code> field
      * of the thrown exception will be tested against - each string must appear as a substring in the text
      */
-     
+
     jqUnit.expectFrameworkDiagnostic = function (message, toInvoke, errorTexts) {
         errorTexts = fluid.makeArray(errorTexts);
+        var gotFailure;
         try {
-            fluid.pushSoftFailure(true);
-            jqUnit.expect(1 + errorTexts.length);
+            fluid.failureEvent.addListener(fluid.identity, "jqUnit");
+            jqUnit.expect(errorTexts.length);
             toInvoke();
         } catch (e) {
-            jqUnit.assertTrue(message, e instanceof fluid.FluidError);
+            gotFailure = true;
+            if (!(e instanceof fluid.FluidError)) {
+                jqUnit.fail(message + " - received non-framework exception");
+                throw e;
+            }
             fluid.each(errorTexts, function (errorText) {
-                jqUnit.assertTrue(message + " - message text", e.message.indexOf(errorText) >= 0);
+                jqUnit.assertTrue(message + " - message text must contain " + errorText, e.message.indexOf(errorText) >= 0);
             });
         } finally {
-            fluid.pushSoftFailure(-1);
+            if (!gotFailure) {
+                jqUnit.fail("No failure received for test " + message);
+            }
+            fluid.failureEvent.removeListener("jqUnit");
         }
     };
 
-})(jQuery);
+})(jQuery, fluid_2_0_0);

@@ -11,10 +11,75 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-fluid_2_0 = fluid_2_0 || {};
+fluid_2_0_0 = fluid_2_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
+
+
+    fluid.defaults("fluid.messageResolver", {
+        gradeNames: ["fluid.component"],
+        mergePolicy: {
+            messageBase: "nomerge",
+            parents: "nomerge"
+        },
+        resolveFunc: fluid.stringTemplate,
+        parseFunc: fluid.identity,
+        messageBase: {},
+        members: {
+            messageBase: "@expand:{that}.options.parseFunc({that}.options.messageBase)"
+        },
+        invokers: {
+            lookup: "fluid.messageResolver.lookup({that}, {arguments}.0)", // messagecodes
+            resolve: "fluid.messageResolver.resolve({that}, {arguments}.0, {arguments}.1)" // messagecodes, args
+        },
+        parents: []
+    });
+
+    fluid.messageResolver.lookup = function (that, messagecodes) {
+        var resolved = fluid.messageResolver.resolveOne(that.messageBase, messagecodes);
+        if (resolved === undefined) {
+            return fluid.find(that.options.parents, function (parent) {
+                return parent ? parent.lookup(messagecodes) : undefined;
+            });
+        } else {
+            return {template: resolved, resolveFunc: that.options.resolveFunc};
+        }
+    };
+
+    fluid.messageResolver.resolve = function (that, messagecodes, args) {
+        if (!messagecodes) {
+            return "[No messagecodes provided]";
+        }
+        messagecodes = fluid.makeArray(messagecodes);
+        var looked = that.lookup(messagecodes);
+        return looked ? looked.resolveFunc(looked.template, args) :
+            "[Message string for key " + messagecodes[0] + " not found]";
+    };
+
+
+    // unsupported, NON-API function
+    fluid.messageResolver.resolveOne = function (messageBase, messagecodes) {
+        for (var i = 0; i < messagecodes.length; ++i) {
+            var code = messagecodes[i];
+            var message = messageBase[code];
+            if (message !== undefined) {
+                return message;
+            }
+        }
+    };
+
+    /** Converts a data structure consisting of a mapping of keys to message strings,
+     * into a "messageLocator" function which maps an array of message codes, to be
+     * tried in sequence until a key is found, and an array of substitution arguments,
+     * into a substituted message string.
+     */
+    fluid.messageLocator = function (messageBase, resolveFunc) {
+        var resolver = fluid.messageResolver({messageBase: messageBase, resolveFunc: resolveFunc});
+        return function (messagecodes, args) {
+            return resolver.resolve(messagecodes, args);
+        };
+    };
 
     function debugPosition(component) {
         return "as child of " + (component.parent.fullID ? "component with full ID " + component.parent.fullID : "root");
@@ -99,10 +164,6 @@ fluid_2_0 = fluid_2_0 || {};
 
     function fixupValue(uibound, model, resolverGetConfig) {
         if (uibound.value === undefined && uibound.valuebinding !== undefined) {
-            if (!model) {
-                fluid.fail("Cannot perform value fixup for valuebinding " +
-                    uibound.valuebinding + " since no model was supplied to rendering");
-            }
             uibound.value = fluid.get(model, uibound.valuebinding, resolverGetConfig);
         }
     }
@@ -223,7 +284,7 @@ fluid_2_0 = fluid_2_0 || {};
                 }
                 else if (componentType === "UIInitBlock") {
                     var call = child.functionname + "(";
-                    var childArgs = child["arguments"];
+                    var childArgs = child.arguments;
                     for (var j = 0; j < childArgs.length; ++j) {
                         if (childArgs[j] instanceof fluid.ComponentReference) {
                             // TODO: support more forms of id reference
@@ -264,22 +325,21 @@ fluid_2_0 = fluid_2_0 || {};
 
     renderer.decoratorComponentPrefix = "**-renderer-";
 
-    renderer.IDtoComponentName = function(ID, num) {
+    renderer.IDtoComponentName = function (ID, num) {
         return renderer.decoratorComponentPrefix + ID.replace(/\./g, "") + "-" + num;
     };
 
-    renderer.invokeFluidDecorator = function(func, args, ID, num, options) {
+    renderer.invokeFluidDecorator = function (func, args, ID, num, options) {
         var that;
         if (options.parentComponent) {
             var parent = options.parentComponent;
             var name = renderer.IDtoComponentName(ID, num);
-            // TODO: The best we can do here without GRADES is to wildly guess
-            // that it is a view component with options in the 2nd place and container in first place
-            fluid.set(parent, fluid.path("options", "components", name), {type: func});
-            // This MIGHT really be a variant of fluid.invoke... only we often probably DO want the component
-            // itself to be inserted into the that stack. This *ALSO* requires GRADES to resolve. A
-            // "function" is that which has no grade. The gradeless grade.
-            that = fluid.initDependent(options.parentComponent, name, args);
+            fluid.set(parent, ["options", "components", name], {
+                type: func,
+                container: args[0],
+                options: args[1]
+            });
+            that = fluid.initDependent(options.parentComponent, name);
         }
         else {
             that = fluid.invokeGlobalFunction(func, args);
@@ -319,7 +379,7 @@ fluid_2_0 = fluid_2_0 || {};
         // returns: lump
         function resolveInScope(searchID, defprefix, scope) {
             var deflump;
-            var scopelook = scope? scope[searchID] : null;
+            var scopelook = scope ? scope[searchID] : null;
             if (scopelook) {
                 for (var i = 0; i < scopelook.length; ++i) {
                     var scopelump = scopelook[i];
@@ -335,7 +395,7 @@ fluid_2_0 = fluid_2_0 || {};
         }
         // returns: lump
         function resolveCall(sourcescope, child) {
-            var searchID = child.jointID? child.jointID : child.ID;
+            var searchID = child.jointID ? child.jointID : child.ID;
             var split = fluid.SplitID(searchID);
             var defprefix = split.prefix + ":";
             var match = resolveInScope(searchID, defprefix, sourcescope.downmap, child);
@@ -430,7 +490,7 @@ fluid_2_0 = fluid_2_0 || {};
                 }
                 if (lump.rsfID !== undefined) {
                     if (!insideleaf) {break;}
-                    if (insideleaf && lump.nestingdepth > basedepth + (closeparent? 0 : 1)) {
+                    if (insideleaf && lump.nestingdepth > basedepth + (closeparent ? 0 : 1)) {
                         fluid.log("Error in component tree - leaf component found to contain further components - at " +
                             lump.toString());
                     }
@@ -521,7 +581,7 @@ fluid_2_0 = fluid_2_0 || {};
                 // TODO: the parser does not ever produce empty tags
                 out += selfClose ? "/>" : ">";
 
-                trc.nextpos = selfClose? trc.close.lumpindex + 1 : trc.endopen.lumpindex;
+                trc.nextpos = selfClose ? trc.close.lumpindex + 1 : trc.endopen.lumpindex;
             }
         }
 
@@ -583,7 +643,7 @@ fluid_2_0 = fluid_2_0 || {};
             out += "<input type=\"hidden\" ";
             var isvirtual = todump.virtual;
             var outattrs = {};
-            outattrs[isvirtual? "id" : "name"] = todump.name;
+            outattrs[isvirtual ? "id" : "name"] = todump.name;
             outattrs.value = todump.value;
             out += fluid.dumpAttributes(outattrs);
             out += " />\n";
@@ -611,14 +671,14 @@ fluid_2_0 = fluid_2_0 || {};
                 if ($.browser.safari && tagname === "input" && trc.attrcopy.type === "radio") {
                     decorators.push({jQuery: ["keyup", applyFunc]});
                 }
-                outDecoratorsImpl(torender, decorators, trc.attrcopy, finalID); // jslint:ok - forward reference
+                outDecoratorsImpl(torender, decorators, trc.attrcopy, finalID);
             }
         }
 
-        function dumpBoundFields(/** UIBound**/ torender, parent) { // jslint:ok - whitespace
+        function dumpBoundFields(/** UIBound**/ torender, parent) {
             if (torender) {
-                var holder = parent? parent : torender;
-                if (renderOptions.fossils && holder.valuebinding) {
+                var holder = parent ? parent : torender;
+                if (renderOptions.fossils && holder.valuebinding !== undefined) {
                     var fossilKey = holder.submittingname || torender.finalID;
                   // TODO: this will store multiple times for each member of a UISelect
                     renderOptions.fossils[fossilKey] = {
@@ -649,9 +709,7 @@ fluid_2_0 = fluid_2_0 || {};
 
         function isSelectedValue(torender, value) {
             var selection = torender.selection;
-            return selection.value && typeof(selection.value) !== "string" && typeof(selection.value.length) === "number" ?
-                $.inArray(value, selection.value) !== -1 :
-                selection.value === value;
+            return fluid.isArrayable(selection.value) ? selection.value.indexOf(value) !== -1 : selection.value === value;
         }
 
         function getRelativeComponent(component, relativeID) {
@@ -666,7 +724,7 @@ fluid_2_0 = fluid_2_0 || {};
         // TODO: This mechanism inefficiently handles the rare case of a target document
         // id collision requiring a rewrite for FLUID-5048. In case it needs improving, we
         // could hold an inverted index - however, these cases will become even rarer with FLUID-5047
-        function rewriteRewriteMap (from, to) {
+        function rewriteRewriteMap(from, to) {
             fluid.each(rewritemap, function (value, key) {
                 if (value === from) {
                     rewritemap[key] = to;
@@ -744,9 +802,9 @@ fluid_2_0 = fluid_2_0 || {};
             return togo;
         }
 
-        outDecoratorsImpl = function(torender, decorators, attrcopy, finalID) {
+        outDecoratorsImpl = function (torender, decorators, attrcopy, finalID) {
             var id;
-            var sanitizeAttrs = function(value, key) {
+            var sanitizeAttrs = function (value, key) {
                 if (value === null || value === undefined) {
                     delete attrcopy[key];
                 }
@@ -777,10 +835,9 @@ fluid_2_0 = fluid_2_0 || {};
                     fluid.each(decorator.attributes, sanitizeAttrs);
                 }
                 else if (type === "addClass" || type === "removeClass") {
-                    var fakeNode = {
-                        nodeType: 1,
-                        className: attrcopy["class"] || ""
-                    };
+                    // Using an unattached DOM node because jQuery will use the
+                    // node's setAttribute method to add the class.
+                    var fakeNode = $("<div>", {class: attrcopy["class"]})[0];
                     renderOptions.jQuery(fakeNode)[type](decorator.classes);
                     attrcopy["class"] = fakeNode.className;
                 }
@@ -808,7 +865,7 @@ fluid_2_0 = fluid_2_0 || {};
             }
             var attrcopy = {};
             $.extend(true, attrcopy, targetlump.attributemap);
-            adjustForID(attrcopy, branch); // jslint:ok - forward reference
+            adjustForID(attrcopy, branch);
             outDecorators(branch, attrcopy);
             out += "<" + targetlump.tagname + " ";
             out += fluid.dumpAttributes(attrcopy);
@@ -870,7 +927,7 @@ fluid_2_0 = fluid_2_0 || {};
                     dumpSelectionBindings(parent);
                 }
 
-                var submittingname = parent? parent.selection.submittingname : torender.submittingname;
+                var submittingname = parent ? parent.selection.submittingname : torender.submittingname;
                 if (!parent && torender.valuebinding) {
                     // Do this for all bound fields even if non submitting so that finalID is set in order to track fossils (FLUID-3387)
                     submittingname = assignSubmittingName(attrcopy, torender);
@@ -883,7 +940,7 @@ fluid_2_0 = fluid_2_0 || {};
                 // this needs to happen early on the client, since it may cause the allocation of the
                 // id in the case of a "deferred decorator". However, for server-side bindings, this
                 // will be an inappropriate time, unless we shift the timing of emitting the opening tag.
-                dumpBoundFields(torender, parent? parent.selection : null);
+                dumpBoundFields(torender, parent ? parent.selection : null);
 
                 if (typeof(torender.value) === "boolean" || attrcopy.type === "radio" || attrcopy.type === "checkbox") {
                     var underlyingValue;
@@ -904,7 +961,7 @@ fluid_2_0 = fluid_2_0 || {};
                             delete attrcopy.checked;
                         }
                     }
-                    attrcopy.value = fluid.XMLEncode(underlyingValue? underlyingValue : "true");
+                    attrcopy.value = fluid.XMLEncode(underlyingValue ? underlyingValue : "true");
                     rewriteLeaf(null);
                 }
                 else if (fluid.isArrayable(torender.value)) {
@@ -912,9 +969,9 @@ fluid_2_0 = fluid_2_0 || {};
                     renderUnchanged();
                 }
                 else { // String value
-                    value = parent?
+                    value = parent ?
                         parent[tagname === "textarea" || tagname === "input" ? "optionlist" : "optionnames"].value[torender.choiceindex] :
-                            torender.value; // jslint:ok - whitespace
+                            torender.value;
                     if (tagname === "textarea") {
                         if (isPlaceholder(value) && torender.willinput) {
                             // FORCE a blank value for input components if nothing from
@@ -938,7 +995,7 @@ fluid_2_0 = fluid_2_0 || {};
             else if (componentType === "UISelect") {
 
                 var ishtmlselect = tagname === "select";
-                var ismultiple = false;
+                var ismultiple = false; // eslint-disable-line no-unused-vars
 
                 if (fluid.isArrayable(torender.selection.value)) {
                     ismultiple = true;
@@ -964,7 +1021,7 @@ fluid_2_0 = fluid_2_0 || {};
                 if (ishtmlselect) {
                     out += ">";
                     var values = torender.optionlist.value;
-                    var names = torender.optionnames === null || torender.optionnames === undefined || !torender.optionnames.value? values : torender.optionnames.value;
+                    var names = torender.optionnames === null || torender.optionnames === undefined || !torender.optionnames.value ? values : torender.optionnames.value;
                     if (!names || !names.length) {
                         fluid.fail("Error in component tree - UISelect component with fullID " +
                             torender.fullID + " does not have optionnames set");
@@ -1006,7 +1063,7 @@ fluid_2_0 = fluid_2_0 || {};
                 value = undefined;
                 if (torender.linktext) {
                     degradeMessage(torender.linktext);
-                    value = torender.linktext.value; // jslint:ok - scoping
+                    value = torender.linktext.value;
                 }
                 if (!isValue(value)) {
                     replaceAttributesOpen();
@@ -1071,7 +1128,7 @@ fluid_2_0 = fluid_2_0 || {};
             out += "</span><br/>";
         }
 
-        function reportPath(/*UIComponent*/ branch) { // jslint:ok - whitespace
+        function reportPath(/*UIComponent*/ branch) {
             var path = branch.fullID;
             return !path ? "component tree root" : "full path " + path;
         }
@@ -1085,8 +1142,8 @@ fluid_2_0 = fluid_2_0 || {};
 
             nextpos = outerclose.lumpindex + 1;
 
-            var payloadlist = lump.downmap? lump.downmap["payload-component"] : null;
-            var payload = payloadlist? payloadlist[0] : null;
+            var payloadlist = lump.downmap ? lump.downmap["payload-component"] : null;
+            var payload = payloadlist ? payloadlist[0] : null;
 
             var iselide = lump.rsfID.charCodeAt(0) === 126; // "~"
 
@@ -1094,7 +1151,7 @@ fluid_2_0 = fluid_2_0 || {};
             var close = outerclose;
             var uselump = lump;
             var attrcopy = {};
-            $.extend(true, attrcopy, (payload === null? lump : payload).attributemap);
+            $.extend(true, attrcopy, (payload === null ? lump : payload).attributemap);
 
             trc.attrcopy = attrcopy;
             trc.uselump = uselump;
@@ -1106,8 +1163,8 @@ fluid_2_0 = fluid_2_0 || {};
             rewriteIDRelation(context);
 
             if (torendero === null) {
-                if (lump.rsfID.indexOf("scr=") === (iselide? 1 : 0)) {
-                    var scrname = lump.rsfID.substring(4 + (iselide? 1 : 0));
+                if (lump.rsfID.indexOf("scr=") === (iselide ? 1 : 0)) {
+                    var scrname = lump.rsfID.substring(4 + (iselide ? 1 : 0));
                     if (scrname === "ignore") {
                         nextpos = trc.close.lumpindex + 1;
                     }
@@ -1165,7 +1222,7 @@ fluid_2_0 = fluid_2_0 || {};
             renderRecurse(child, targetlump, firstchild);
         }
 
-        fetchComponent = function(basecontainer, id) {
+        fetchComponent = function (basecontainer, id) {
             if (id.indexOf("msg=") === 0) {
                 var key = id.substring(4);
                 return {componentType: "UIMessage", messagekey: key};
@@ -1198,10 +1255,10 @@ fluid_2_0 = fluid_2_0 || {};
             if (!headlumps) {
                 headlumps = sourcescope.downmap[split.prefix + ":"];
             }
-            return headlumps? headlumps[0] : null;
+            return headlumps ? headlumps[0] : null;
         }
 
-        renderRecurse = function(basecontainer, parentlump, baselump) {
+        renderRecurse = function (basecontainer, parentlump, baselump) {
             var children;
             var targetlump;
             var child;
@@ -1279,7 +1336,7 @@ fluid_2_0 = fluid_2_0 || {};
                                 }
                                 var renderend = renderComponentSystem(basecontainer, child, targetlump);
                                 var wasopentag = renderend < t1.lumps.lengtn && t1.lumps[renderend].nestingdepth >= targetlump.nestingdepth;
-                                var newbase = child.children? child : basecontainer;
+                                var newbase = child.children ? child : basecontainer;
                                 if (wasopentag) {
                                     renderRecurse(newbase, targetlump, t1.lumps[renderend]);
                                     renderend = targetlump.close_tag.lumpindex + 1;
@@ -1587,4 +1644,4 @@ fluid_2_0 = fluid_2_0 || {};
         return fluid.render({node: node, armouring: options.armouring}, node, tree, options);
     };
 
-})(jQuery, fluid_2_0);
+})(jQuery, fluid_2_0_0);
