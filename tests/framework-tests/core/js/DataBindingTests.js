@@ -2242,7 +2242,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     moduleSource: {
                         funcName: "fluid.tests.fluid5659source",
-                        args: "{fluid5659relay}.options.lang"
+                        args: ["{fluid5659relay}.options.lang"]
                     }
                 }
             }
