@@ -83,11 +83,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
-    // Adds context awarenes of the browser's reported platform (operating
-    // system) for aiding in executing platform-specific tests, or skipping
-    // those known to fail on a particular platform due to lack of browser
-    // support for features
-
     // Checks string-based contextAwareness check values to see if they
     // contain the searchValue string
     fluid.test.conditionalTestUtils.contextValueContains = function (searchValue, checkValue) {
@@ -95,7 +90,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return value.indexOf(searchValue) >= 0;
     };
 
-    // Functions for platform reporting for makeChecks
+    // Functions for browser platform reporting for makeChecks
     fluid.test.conditionalTestUtils.isLinux = function () {
         return fluid.test.conditionalTestUtils.contextValueContains("Linux", "{fluid.platformName}");
     };

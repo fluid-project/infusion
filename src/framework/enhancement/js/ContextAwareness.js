@@ -204,14 +204,19 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    // Context awareness for the platform (operating system)
+    // Context awareness for the reported platform name (operating system)
+    // Note that navigator.platform (in-browser) and os.platform()
+    // have different return values - this simply registers the
+    // reported value as a string rather than doing any more 
+    // sophisticated detection
 
     fluid.contextAware.getPlatformName = function () {
         // Gets platform name in browser contexts
-        if (navigator) {
+        if (typeof(navigator) !== "undefined" && navigator) {
             return navigator.platform ? navigator.platform : undefined;
-        // Gets platform name in node contexts    
-        } else if (os.platform) {
+        // Gets platform name in node contexts
+        } else {
+            var os = require('os');
             return os.platform();
         }
     };
