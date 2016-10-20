@@ -2229,6 +2229,91 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Expected initialisation sequence", expected, testComp.listenerRecord);
     });
 
+    /** FLUID-5930 - presence of injected components during onDestroy **/
+
+    fluid.defaults("fluid.tests.fluid5930.root", {
+        gradeNames: "fluid.component",
+        components: {
+            toInject: {
+                type: "fluid.component"
+            },
+            middle: {
+                type: "fluid.component",
+                options: {
+                    components: {
+                        injectSite: "{toInject}"
+                    },
+                    listeners: {
+                        onDestroy: "fluid.tests.fluid5930.checkInjection"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid5930.checkInjection = function (middle) {
+        jqUnit.assertValue("Injected component reference should still be present during onDestroy", middle.injectSite);
+    };
+
+    jqUnit.test("Component lifecycle test - FLUID-5930 injection clearing", function () {
+        jqUnit.expect(2);
+        var that = fluid.tests.fluid5930.root();
+        jqUnit.assertValue("Check correct injection on startup", that.middle.injectSite);
+        that.destroy();
+    });
+
+    /** FLUID-5931 - full clearance of records during afterDestroy **/
+
+    fluid.defaults("fluid.tests.fluid5931.root", {
+        gradeNames: "fluid.component",
+        events: {
+            createIt: null
+        },
+        components: {
+            recreate: {
+                type: "fluid.component",
+                createOnEvent: "createIt",
+                options: {
+                    creationValue: "{arguments}.0",
+                    listeners: {
+                        afterDestroy: "fluid.tests.fluid5931.recreate({root})"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid5931.recreate = function (root) {
+        // In the future framework, this will not start construction immediately
+        root.events.createIt.fire(2);
+    };
+
+    jqUnit.test("Component lifecycle test - FLUID-5931 afterDestroy clearance", function () {
+        jqUnit.expect(2);
+        var that = fluid.tests.fluid5931.root();
+        that.events.createIt.fire(1);
+        jqUnit.assertEquals("Correct instance on first firing", 1, that.recreate.options.creationValue);
+        that.recreate.destroy();
+        jqUnit.assertEquals("Correct instance on second firing", 2, that.recreate.options.creationValue);
+    });
+
+    /** FLUID-5790 - neutering invoker support **/
+
+    fluid.defaults("fluid.tests.fluid5790.root", {
+        gradeNames: "fluid.component",
+        invokers: {
+            explode: "fluid.fail"
+        }
+    });
+
+    jqUnit.test("Neutering invoker test", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.fluid5790.root();
+        that.destroy();
+        that.explode();
+        jqUnit.assert("Harmless explosion after component is destroyed");
+    });
+
     /** FLUID-5268 - direct root "afterDestroy" listener **/
 
     fluid.defaults("fluid.tests.fluid5268", {
