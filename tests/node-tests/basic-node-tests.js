@@ -39,8 +39,23 @@ fluid.require("test-module", require, "test-module");
 
 fluid.setLogging(true);
 
+// Set boolean for the  presence of the --tap command line option to output a
+// TAP report for consumption by testem when used as a custom launcher
+var shouldOutputTAP = process.argv.findIndex(function (argument) {
+    return argument.indexOf("--tap") > -1;
+}) > -1;
+
+// For accumulating TAP messages for parsing by testem custom launcher
+var tapOutput = "";
+
 QUnit.testDone(function (data) {
-    fluid.log("Test concluded - " + data.name + ": " + data.passed + " passed, " + data.failed + " failed");
+    var testMessage = "Test concluded - " + data.name + ": " + data.passed + " passed, " + data.failed + " failed";
+    fluid.log(testMessage);
+    if (shouldOutputTAP) {
+        var tapResult = data.failed === 0 ? "ok" : "not ok";
+        var tapMessage = tapResult + " " + testMessage;
+        tapOutput = tapOutput + tapMessage + "\n";
+    }
 });
 
 var expected = 20;
@@ -57,6 +72,10 @@ QUnit.done(function (data) {
         process.exitCode = 1;
     }
 
+    if (shouldOutputTAP) {
+        // Output the TAP result
+        console.log(tapOutput);
+    }
 });
 
 QUnit.log(function (details) {

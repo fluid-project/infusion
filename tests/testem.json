@@ -4,8 +4,9 @@
     "reporter": "tap",
     "report_file": "report.tap",
     "launchers": {
-        "Node Basic Packaging Tests": {
-            "command": "node tests/node-tests/basic-node-tests.js"
+        "Node Module Basic Packaging Tests": {
+            "command": "node tests/node-tests/basic-node-tests.js --tap",
+            "protocol": "tap"
         }
     }
 }
