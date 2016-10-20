@@ -91,22 +91,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     // Functions for browser platform reporting for makeChecks
-    fluid.test.conditionalTestUtils.isLinux = function () {
-        return fluid.test.conditionalTestUtils.contextValueContains("Linux", "{fluid.platformName}");
+    fluid.test.conditionalTestUtils.isBrowserLinux = function () {
+        return fluid.test.conditionalTestUtils.contextValueContains("Linux", "{fluid.browserPlatformName}");
     };
 
-    fluid.test.conditionalTestUtils.isMac = function () {
-        return fluid.test.conditionalTestUtils.contextValueContains("Mac", "{fluid.platformName}");
+    fluid.test.conditionalTestUtils.isBrowserMac = function () {
+        return fluid.test.conditionalTestUtils.contextValueContains("Mac", "{fluid.browserPlatformName}");
     };
 
-    fluid.test.conditionalTestUtils.isWindows = function () {
-        return fluid.test.conditionalTestUtils.contextValueContains("Windows", "{fluid.platformName}");
+    fluid.test.conditionalTestUtils.isBrowserWindows = function () {
+        return fluid.test.conditionalTestUtils.contextValueContains("Windows", "{fluid.browserPlatformName}");
     };
 
     fluid.contextAware.makeChecks({
-        "fluid.platform.isLinux": "fluid.test.conditionalTestUtils.isLinux",
-        "fluid.platform.isMac": "fluid.test.conditionalTestUtils.isMac",
-        "fluid.platform.isWindows": "fluid.test.conditionalTestUtils.isWindows"
+        "fluid.platform.isBrowserLinux": "fluid.test.conditionalTestUtils.isBrowserLinux",
+        "fluid.platform.isBrowserMac": "fluid.test.conditionalTestUtils.isBrowserMac",
+        "fluid.platform.isBrowserWindows": "fluid.test.conditionalTestUtils.isBrowserWindows"
     });
 
 })();
