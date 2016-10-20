@@ -206,16 +206,15 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     // Context awareness for the reported browser platform name (operating system)
 
-    fluid.contextAware.getBrowserPlatformName = function () {
-        // Gets platform name in browser contexts
-        if (typeof(navigator) !== "undefined" && navigator) {
-            return navigator.platform ? navigator.platform : undefined;
-        }
+    fluid.registerNamespace("fluid.contextAware.browser");
+
+    fluid.contextAware.browser.getPlatformName = function () {
+        return typeof(navigator) !== "undefined" && navigator.platform ? navigator.platform : undefined;
     };
 
     fluid.contextAware.makeChecks({
-        "fluid.browserPlatformName": {
-            funcName: "fluid.contextAware.getBrowserPlatformName"
+        "fluid.browser.platformName": {
+            funcName: "fluid.contextAware.browser.getPlatformName"
         }
     });
 
