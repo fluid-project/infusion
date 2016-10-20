@@ -83,11 +83,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
-    // Adds context awarenes of the browser's reported platform (operating
-    // system) for aiding in executing platform-specific tests, or skipping
-    // those known to fail on a particular platform due to lack of browser
-    // support for features
-
     // Checks string-based contextAwareness check values to see if they
     // contain the searchValue string
     fluid.test.conditionalTestUtils.contextValueContains = function (searchValue, checkValue) {
@@ -95,31 +90,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return value.indexOf(searchValue) >= 0;
     };
 
-    fluid.test.conditionalTestUtils.getPlatformName = function () {
-        return navigator.platform ? navigator.platform : undefined;
+    // Functions for browser platform reporting for makeChecks
+    fluid.test.conditionalTestUtils.isBrowserOnLinux = function () {
+        return fluid.test.conditionalTestUtils.contextValueContains("Linux", "{fluid.browser.platformName}");
     };
 
-    // Functions for platform reporting for makeChecks
-    fluid.test.conditionalTestUtils.isLinux = function () {
-        return fluid.test.conditionalTestUtils.contextValueContains("Linux", "{fluid.platform}");
+    fluid.test.conditionalTestUtils.isBrowserOnMac = function () {
+        return fluid.test.conditionalTestUtils.contextValueContains("Mac", "{fluid.browser.platformName}");
     };
 
-    fluid.test.conditionalTestUtils.isMac = function () {
-        return fluid.test.conditionalTestUtils.contextValueContains("Mac", "{fluid.platform}");
-    };
-
-    fluid.test.conditionalTestUtils.isWindows = function () {
-        return fluid.test.conditionalTestUtils.contextValueContains("Windows", "{fluid.platform}");
+    fluid.test.conditionalTestUtils.isBrowserOnWindows = function () {
+        return fluid.test.conditionalTestUtils.contextValueContains("Windows", "{fluid.browser.platformName}");
     };
 
     fluid.contextAware.makeChecks({
-        "fluid.platform": "fluid.test.conditionalTestUtils.getPlatformName"
-    });
-
-    fluid.contextAware.makeChecks({
-        "fluid.platform.isLinux": "fluid.test.conditionalTestUtils.isLinux",
-        "fluid.platform.isMac": "fluid.test.conditionalTestUtils.isMac",
-        "fluid.platform.isWindows": "fluid.test.conditionalTestUtils.isWindows"
+        "fluid.browser.platform.isLinux": "fluid.test.conditionalTestUtils.isBrowserOnLinux",
+        "fluid.browser.platform.isMac": "fluid.test.conditionalTestUtils.isBrowserOnMac",
+        "fluid.browser.platform.isWindows": "fluid.test.conditionalTestUtils.isBrowserOnWindows"
     });
 
 })();

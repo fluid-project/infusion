@@ -204,15 +204,17 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    // Context awareness for the platform (operating system)
+    // Context awareness for the reported browser platform name (operating system)
 
-    fluid.contextAware.getPlatformName = function () {
-        return navigator.platform ? navigator.platform : undefined;
+    fluid.registerNamespace("fluid.contextAware.browser");
+
+    fluid.contextAware.browser.getPlatformName = function () {
+        return typeof(navigator) !== "undefined" && navigator.platform ? navigator.platform : undefined;
     };
 
     fluid.contextAware.makeChecks({
-        "fluid.platformName": {
-            funcName: "fluid.contextAware.getPlatformName"
+        "fluid.browser.platformName": {
+            funcName: "fluid.contextAware.browser.getPlatformName"
         }
     });
 

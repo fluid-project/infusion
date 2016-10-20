@@ -263,7 +263,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             supportsPauseResume: {
                 checks: {
                     supportsPauseResume: {
-                        contextValue: "{fluid.platform.isLinux}",
+                        contextValue: "{fluid.browser.platform.isLinux}",
                         equals: false,
                         gradeNames: ["fluid.tests.textToSpeech.supportsPauseResume"]
                     }
