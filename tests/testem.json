@@ -2,5 +2,10 @@
     "test_page": "tests/all-tests.html",
     "timeout": 300,
     "reporter": "tap",
-    "report_file": "report.tap"
+    "report_file": "report.tap",
+    "launchers": {
+        "Node Basic Packaging Tests": {
+            "command": "node tests/node-tests/basic-node-tests.js"
+        }
+    }
 }

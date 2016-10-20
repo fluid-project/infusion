@@ -49,6 +49,14 @@ QUnit.done(function (data) {
     fluid.log("Infusion node.js internal tests " +
         (expected === data.passed && data.failed === 0 ? "PASSED" : "FAILED") +
         " - " + data.passed + "/" + (expected + data.failed) + " tests passed");
+
+    // Set the process to return a non-0 exit code if any tests failed,
+    // or the number of expected tests is not the same as the number of passed
+    // tests; this allows basic usage in CI
+    if (data.failed > 0 || data.passed < expected) {
+        process.exitCode = 1;
+    }
+
 });
 
 QUnit.log(function (details) {
