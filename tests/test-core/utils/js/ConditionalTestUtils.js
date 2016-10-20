@@ -95,26 +95,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return value.indexOf(searchValue) >= 0;
     };
 
-    fluid.test.conditionalTestUtils.getPlatformName = function () {
-        return navigator.platform ? navigator.platform : undefined;
-    };
-
     // Functions for platform reporting for makeChecks
     fluid.test.conditionalTestUtils.isLinux = function () {
-        return fluid.test.conditionalTestUtils.contextValueContains("Linux", "{fluid.platform}");
+        return fluid.test.conditionalTestUtils.contextValueContains("Linux", "{fluid.platformName}");
     };
 
     fluid.test.conditionalTestUtils.isMac = function () {
-        return fluid.test.conditionalTestUtils.contextValueContains("Mac", "{fluid.platform}");
+        return fluid.test.conditionalTestUtils.contextValueContains("Mac", "{fluid.platformName}");
     };
 
     fluid.test.conditionalTestUtils.isWindows = function () {
-        return fluid.test.conditionalTestUtils.contextValueContains("Windows", "{fluid.platform}");
+        return fluid.test.conditionalTestUtils.contextValueContains("Windows", "{fluid.platformName}");
     };
-
-    fluid.contextAware.makeChecks({
-        "fluid.platform": "fluid.test.conditionalTestUtils.getPlatformName"
-    });
 
     fluid.contextAware.makeChecks({
         "fluid.platform.isLinux": "fluid.test.conditionalTestUtils.isLinux",

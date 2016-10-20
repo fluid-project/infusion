@@ -207,7 +207,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     // Context awareness for the platform (operating system)
 
     fluid.contextAware.getPlatformName = function () {
-        return navigator.platform ? navigator.platform : undefined;
+        // Gets platform name in browser contexts
+        if (navigator) {
+            return navigator.platform ? navigator.platform : undefined;
+        // Gets platform name in node contexts    
+        } else if (os.platform) {
+            return os.platform();
+        }
     };
 
     fluid.contextAware.makeChecks({
