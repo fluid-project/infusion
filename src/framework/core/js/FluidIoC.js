@@ -1322,7 +1322,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         fluid.pushActivity("initDependent", "instantiating dependent component at path \"%path\" with record %record as child of %parent",
             {path: shadow.path + "." + name, record: component, parent: that});
 
-        if (typeof(component) === "string") {
+        if (typeof(component) === "string" || component.expander) {
             that[name] = fluid.inEvaluationMarker;
             instance = fluid.expandImmediate(component, that);
             if (instance) {
