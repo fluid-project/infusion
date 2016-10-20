@@ -204,4 +204,16 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
+    // Context awareness for the platform (operating system)
+
+    fluid.contextAware.getPlatformName = function () {
+        return navigator.platform ? navigator.platform : undefined;
+    };
+
+    fluid.contextAware.makeChecks({
+        "fluid.platformName": {
+            funcName: "fluid.contextAware.getPlatformName"
+        }
+    });
+
 })(jQuery, fluid_2_0_0);
