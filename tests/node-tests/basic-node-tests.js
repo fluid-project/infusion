@@ -48,15 +48,22 @@ var shouldOutputTAP = process.argv.findIndex(function (argument) {
 // For accumulating TAP messages for parsing by testem custom launcher
 var tapOutput = "";
 
+var getTestMessage = function (data) {
+    return "Test concluded - " + data.name + ": " + data.passed + " passed, " + data.failed + " failed";
+};
+
 QUnit.testDone(function (data) {
-    var testMessage = "Test concluded - " + data.name + ": " + data.passed + " passed, " + data.failed + " failed";
-    fluid.log(testMessage);
-    if (shouldOutputTAP) {
-        var tapResult = data.failed === 0 ? "ok" : "not ok";
-        var tapMessage = tapResult + " " + testMessage;
-        tapOutput = tapOutput + tapMessage + "\n";
-    }
+    fluid.log(getTestMessage(data));
 });
+
+// Additional handler for accumulating TAP output
+if (shouldOutputTAP) {
+    QUnit.testDone(function (data) {
+        var tapResult = data.failed === 0 ? "ok" : "not ok";
+        var tapMessage = tapResult + " " + getTestMessage(data);
+        tapOutput = tapOutput + tapMessage + "\n";
+    });
+}
 
 var expected = 20;
 
@@ -71,12 +78,14 @@ QUnit.done(function (data) {
     if (data.failed > 0 || data.passed < expected) {
         process.exitCode = 1;
     }
-
-    if (shouldOutputTAP) {
-        // Output the TAP result
-        console.log(tapOutput);
-    }
 });
+
+// Additional handler for outputting TAP
+if (shouldOutputTAP) {
+    QUnit.done(function () {
+        console.log(tapOutput);
+    });
+}
 
 QUnit.log(function (details) {
     if (details.source) { // "white-box" inspection of qunit.js shows that it sets this field on error
