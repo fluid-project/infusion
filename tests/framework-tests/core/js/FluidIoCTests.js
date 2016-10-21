@@ -1457,6 +1457,72 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
+    /** FLUID-5925 - ginger reference from IoC-qualified listener key **/
+
+    fluid.defaults("fluid.tests.FLUID5925root1", {
+        gradeNames: "fluid.component",
+        components: {
+            referrer: {
+                type: "fluid.modelComponent",
+                options: {
+                    listeners: {
+                        "{eventHolder}.events.targetEvent": {
+                            changePath: "value",
+                            value: "{arguments}.0"
+                        }
+                    }
+                }
+            },
+            eventHolder: {
+                type: "fluid.component",
+                options: {
+                    events: {
+                        targetEvent: null
+                    }
+                }
+            },
+        }
+    });
+
+    jqUnit.test("FLUID-5925 ginger reference from IoC-qualified listener key", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.FLUID5925root1();
+        that.eventHolder.events.targetEvent.fire(1);
+        jqUnit.assertEquals("Ginger reference successfully registered model listener", 1, that.referrer.model.value);
+    });
+
+    fluid.defaults("fluid.tests.FLUID5925root2", {
+        gradeNames: "fluid.component",
+        events: {
+            localEvent: null
+        },
+        listeners: {
+            localEvent: {
+                listener: "{invokerHolder}.record"
+            }
+        },
+        components: {
+            invokerHolder: {
+                type: "fluid.modelComponent",
+                options: {
+                    invokers: {
+                        record: {
+                            changePath: "value",
+                            value: 1
+                        }
+                    }
+                }
+            },
+        }
+    });
+
+    jqUnit.test("FLUID-5925 ginger reference from IoC-qualified listener function", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.FLUID5925root2();
+        that.events.localEvent.fire(1);
+        jqUnit.assertEquals("Ginger reference successfully registered model listener", 1, that.invokerHolder.model.value);
+    });
+
     /** FLUID-5820 - scope chain reference to injected component **/
 
     fluid.defaults("fluid.tests.FLUID5820root", {
@@ -2227,6 +2293,91 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "eventTimeComponent.onCreate"
         ];
         jqUnit.assertDeepEq("Expected initialisation sequence", expected, testComp.listenerRecord);
+    });
+
+    /** FLUID-5930 - presence of injected components during onDestroy **/
+
+    fluid.defaults("fluid.tests.fluid5930.root", {
+        gradeNames: "fluid.component",
+        components: {
+            toInject: {
+                type: "fluid.component"
+            },
+            middle: {
+                type: "fluid.component",
+                options: {
+                    components: {
+                        injectSite: "{toInject}"
+                    },
+                    listeners: {
+                        onDestroy: "fluid.tests.fluid5930.checkInjection"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid5930.checkInjection = function (middle) {
+        jqUnit.assertValue("Injected component reference should still be present during onDestroy", middle.injectSite);
+    };
+
+    jqUnit.test("Component lifecycle test - FLUID-5930 injection clearing", function () {
+        jqUnit.expect(2);
+        var that = fluid.tests.fluid5930.root();
+        jqUnit.assertValue("Check correct injection on startup", that.middle.injectSite);
+        that.destroy();
+    });
+
+    /** FLUID-5931 - full clearance of records during afterDestroy **/
+
+    fluid.defaults("fluid.tests.fluid5931.root", {
+        gradeNames: "fluid.component",
+        events: {
+            createIt: null
+        },
+        components: {
+            recreate: {
+                type: "fluid.component",
+                createOnEvent: "createIt",
+                options: {
+                    creationValue: "{arguments}.0",
+                    listeners: {
+                        afterDestroy: "fluid.tests.fluid5931.recreate({root})"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid5931.recreate = function (root) {
+        // In the future framework, this will not start construction immediately
+        root.events.createIt.fire(2);
+    };
+
+    jqUnit.test("Component lifecycle test - FLUID-5931 afterDestroy clearance", function () {
+        jqUnit.expect(2);
+        var that = fluid.tests.fluid5931.root();
+        that.events.createIt.fire(1);
+        jqUnit.assertEquals("Correct instance on first firing", 1, that.recreate.options.creationValue);
+        that.recreate.destroy();
+        jqUnit.assertEquals("Correct instance on second firing", 2, that.recreate.options.creationValue);
+    });
+
+    /** FLUID-5790 - neutering invoker support **/
+
+    fluid.defaults("fluid.tests.fluid5790.root", {
+        gradeNames: "fluid.component",
+        invokers: {
+            explode: "fluid.fail"
+        }
+    });
+
+    jqUnit.test("Neutering invoker test", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.fluid5790.root();
+        that.destroy();
+        that.explode();
+        jqUnit.assert("Harmless explosion after component is destroyed");
     });
 
     /** FLUID-5268 - direct root "afterDestroy" listener **/
@@ -3064,6 +3215,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var that = fluid.tests.FLUID5771root();
         jqUnit.assertEquals("FLUID-5771: Distributed injected component reference to child component",
             that, that.child);
+    });
+
+    /** FLUID-5982 - Injected component designated by expander **/
+
+    fluid.defaults("fluid.tests.FLUID5982root", {
+        gradeNames: "fluid.component",
+        components: {
+            sourceComponent: {
+                type: "fluid.component",
+                options: {
+                    sourceComponent: true
+                }
+            },
+            targetComponent: {
+                expander: {
+                    func: "fluid.identity",
+                    args: "{FLUID5982root}.sourceComponent"
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5982: Designate injected component via expander", function () {
+        var that = fluid.tests.FLUID5982root();
+        jqUnit.assertEquals("Injected component resolved via expander", true, that.targetComponent.options.sourceComponent);
     });
 
     /** FLUID-5022 - Designation of dynamic components **/
