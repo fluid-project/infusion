@@ -63,7 +63,10 @@ module.exports = function (grunt) {
             products: "products",
             stylus: "src/framework/preferences/css/*.css",
             ciArtifacts: ["*.tap"],
-            dist: "dist"
+            dist: "dist",
+            postBuild: {
+                files: [{}]
+            }
         },
         copy: {
             all: {
@@ -158,6 +161,14 @@ module.exports = function (grunt) {
                 prop: "copy.custom.files.0.src",
                 fn: function (str) {
                     return str + "/**";
+                }
+            },
+            postBuildClean: {
+                files: "<%= clean.postBuild.files %>",
+                prop: "clean.postBuild.files.0.src",
+                fn: function (str) {
+                    var buildPath = "build/";
+                    return str.startsWith(buildPath) ? str : buildPath + str;
                 }
             }
         },
@@ -279,9 +290,14 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask("pathMap", "Triggers the map task for the specified build target", function (target) {
+        grunt.task.run("map:postBuildClean");
         if (target === "custom") {
             grunt.task.run("map:copyDirs");
         }
+    });
+
+    grunt.registerTask("setPostBuildCleanUp", "Sets the file source for post build cleanup", function (target) {
+        grunt.config.set("clean.postBuild.files.0.src", "<%= modulefiles." + target + ".output.files %>");
     });
 
     // Task for organizing the build
@@ -297,13 +313,16 @@ module.exports = function (grunt) {
         var concatTask = grunt.config.get("buildSettings.compress") ? "uglify:" : "concat:";
         var tasks = [
             "clean",
+            "lint",
             "stylus:dist",
             "modulefiles:" + target,
+            "setPostBuildCleanUp:" + target,
             "pathMap:" + target,
             "copy:" + target,
             "copy:necessities",
             concatTask + target,
-            "compress:" + target
+            "compress:" + target,
+            "clean:postBuild"
         ];
         grunt.task.run(tasks);
     });
@@ -325,10 +344,7 @@ module.exports = function (grunt) {
 
         var concatTask = options.compress ? "uglify:" : "concat:";
         var tasks = [
-            "clean:build",
-            "clean:products",
-            "clean:stylus",
-            "clean:ciArtifacts",
+            "cleanForDist",
             "stylus",
             "modulefiles:" + options.target,
             "pathMap:" + options.target,
@@ -345,11 +361,13 @@ module.exports = function (grunt) {
         var tasks = [
             "clean",
             "lint",
-            "distributions" + ( target ? ":" + target : "" )
+            "distributions" + ( target ? ":" + target : "" ),
+            "cleanForDist"
         ];
         grunt.task.run(tasks);
     });
 
+    grunt.registerTask("cleanForDist", ["clean:build", "clean:products", "clean:stylus", "clean:ciArtifacts"]);
     grunt.registerTask("buildStylus", ["clean:stylus", "stylus:compile"]);
 
     grunt.registerTask("default", ["build:all"]);
