@@ -22,6 +22,7 @@
     "repository": "git://github.com/fluid-project/infusion.git",
     "main": "./src/module/fluid.js",
     "scripts": {
+        "prepublish": "grunt buildDists",
         "test": "node tests/node-tests/basic-node-tests.js"
     },
     "engines": {
