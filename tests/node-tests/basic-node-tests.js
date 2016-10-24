@@ -1,5 +1,6 @@
 /*
 Copyright 2014 Lucendo Development Ltd.
+Copyright 2016 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -55,7 +56,7 @@ QUnit.testDone(function (data) {
     fluid.log(fluid.tests.getTestMessage(data));
 });
 
-var tapReporting = require('./tap-reporting');
+require("./tap-reporting");
 
 QUnit.done(function (data) {
     fluid.log("Infusion node.js internal tests " +

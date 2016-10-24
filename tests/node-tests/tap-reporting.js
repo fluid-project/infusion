@@ -1,7 +1,22 @@
+/*
+Copyright 2016 OCAD University
+
+Licensed under the Educational Community License (ECL), Version 2.0 or the New
+BSD license. You may not use this file except in compliance with one these
+Licenses.
+
+You may obtain a copy of the ECL 2.0 License and BSD License at
+https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+*/
+
+/* eslint-env node */
+/* global fluid */
+
+"use strict";
+
 // Expected to be available as a result of fluid.loadTestingSupport();
 // in basic-node-tests.js
 var QUnit = fluid.registerNamespace("QUnit");
-var jqUnit = fluid.registerNamespace("jqUnit");
 
 // Set boolean for the  presence of the --tap command line option to output a
 // TAP report for consumption by testem when used as a custom launcher
