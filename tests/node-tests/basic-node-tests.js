@@ -196,17 +196,17 @@ var runTests = function () {
     });
 
     QUnit.load();
-}
+};
 
 // Wrapper to ensure TAP report outputs failures if there's a failure in the fixtures
 if (shouldOutputTAP) {
     try {
         runTests();
-        }
+    }
     catch (e) {
         if (shouldOutputTAP) {
             console.log("1.." + expectedTestCases);
-            for(var i = 0; i < expectedTestCases; i++) {
+            for (var i = 0; i < expectedTestCases; i++) {
                 console.log("not ok - uncaught exception occured in test fixture " + e);
             }
         }
