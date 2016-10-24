@@ -55,7 +55,7 @@ var runTests = function () {
     fluid.setLogging(true);
 
     var getTestMessage = function (data) {
-        return "Test concluded - " + data.name + ": " + data.passed + " passed, " + data.failed + " failed";
+        return "Test concluded - " + data.name + ": " + data.passed + " assertion(s) passed, " + data.failed + " assertion(s) failed";
     };
 
     QUnit.testDone(function (data) {
