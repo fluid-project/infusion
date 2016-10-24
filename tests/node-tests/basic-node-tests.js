@@ -15,11 +15,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var fluid = require("../../src/module/fluid.js"),
     path = require("path");
 
-// Number of expected assertions
-var expectedAsserts = 20;
-// Number of expected test cases
-var expectedTestCases = 10;
-
 fluid.loadTestingSupport();
 
 var QUnit = fluid.registerNamespace("QUnit");
@@ -28,6 +23,11 @@ var jqUnit = fluid.registerNamespace("jqUnit");
 fluid.registerNamespace("fluid.tests");
 
 fluid.registerNamespace("fluid.tests.tapOutput");
+
+// Number of expected assertions
+fluid.tests.expectedAsserts = 20;
+// Number of expected test cases
+fluid.tests.expectedTestCases = 10;
 
 fluid.loadInContext("../../tests/test-core/testTests/js/IoCTestingTests.js");
 
@@ -47,61 +47,25 @@ fluid.require("test-module", require, "test-module");
 
 fluid.setLogging(true);
 
-var getTestMessage = function (data) {
+fluid.tests.getTestMessage = function (data) {
     return "Test concluded - " + data.name + ": " + data.passed + " assertion(s) passed, " + data.failed + " assertion(s) failed";
 };
 
 QUnit.testDone(function (data) {
-    fluid.log(getTestMessage(data));
+    fluid.log(fluid.tests.getTestMessage(data));
 });
 
-// Set boolean for the  presence of the --tap command line option to output a
-// TAP report for consumption by testem when used as a custom launcher
-fluid.tests.tapOutput.shouldOutputTAP = process.argv.findIndex(function (argument) {
-    return argument.indexOf("--tap") > -1;
-}) > -1;
-
-// For accumulating TAP messages for parsing by testem custom launcher
-var tapOutput = "";
-
-// Function to output a TAP  failure report
-// Assumed to be used with fluid.onUncaughtException.addListener
-fluid.tests.tapOutput.outputTAPFailure = function (message) {
-    if (!fluid.tests.expectFailure) {
-        console.log("not ok -  " + message);
-    }
-};
-
-if (fluid.tests.tapOutput.shouldOutputTAP) {
-    // Register listener to output TAP failure report
-    fluid.onUncaughtException.addListener(fluid.tests.tapOutput.outputTAPFailure, "outputTAPFailure",
-        fluid.handlerPriorities.uncaughtException.log);
-
-    // Additional handler for accumulating TAP output
-    QUnit.testDone(function (data) {
-        var tapResult = data.failed === 0 ? "ok" : "not ok";
-        var tapMessage = tapResult + " " + getTestMessage(data);
-        tapOutput = tapOutput + tapMessage + "\n";
-    });
-
-    // Additional handler for outputting TAP
-    QUnit.done(function () {
-        // Output the TAP header
-        console.log("1.." + expectedTestCases);
-        // Output the TAP report
-        console.log(tapOutput);
-    });
-}
+var tapReporting = require('./tap-reporting');
 
 QUnit.done(function (data) {
     fluid.log("Infusion node.js internal tests " +
-        (expectedAsserts === data.passed && data.failed === 0 ? "PASSED" : "FAILED") +
-        " - " + data.passed + "/" + (expectedAsserts + data.failed) + " assertions passed");
+        (fluid.tests.expectedAsserts === data.passed && data.failed === 0 ? "PASSED" : "FAILED") +
+        " - " + data.passed + "/" + (fluid.tests.expectedAsserts + data.failed) + " assertions passed");
 
     // Set the process to return a non-0 exit code if any tests failed,
     // or the number of expected tests is not the same as the number of passed
     // tests; this allows basic usage in CI
-    if (data.failed > 0 || data.passed < expectedAsserts) {
+    if (data.failed > 0 || data.passed < fluid.tests.expectedAsserts) {
         process.exitCode = 1;
     }
 });
