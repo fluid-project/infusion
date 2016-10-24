@@ -291,10 +291,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             "role": "button"
         });
 
-        separatedPanel.slidingPanel.events.afterPanelShow.addListener(function () {
-            fluid.prefs.separatedPanel.updateView(prefsEditor);
-        });
-
         prefsEditor.events.onPrefsEditorRefresh.addListener(function () {
             iframeEnhancer.updateModel(prefsEditor.model.preferences);
         });
@@ -320,6 +316,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         separatedPanel.slidingPanel.events.afterPanelShow.addListener(function () {
             separatedPanel.iframeRenderer.iframe.show();
             separatedPanel.locate("reset").show();
+            fluid.prefs.separatedPanel.updateView(prefsEditor);
         });
         separatedPanel.slidingPanel.events.onPanelHide.addListener(function () {
             separatedPanel.locate("reset").hide();
