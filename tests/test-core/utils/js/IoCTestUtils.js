@@ -16,8 +16,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
-    fluid.registerNamespace("fluid.test");
-
     fluid.defaults("fluid.test.testEnvironment", {
         gradeNames: ["fluid.component"],
         components: {
@@ -62,6 +60,17 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
+    fluid.defaults("fluid.test.testCaseHolder", {
+        gradeNames: ["fluid.component"],
+        mergePolicy: {
+            modules: "noexpand",
+            moduleSource: "noexpand"
+        },
+        events: {
+            onTestCaseStart: null
+        }
+    });
+
     fluid.registerNamespace("fluid.test.checkHang");
 
     fluid.test.checkHang.beginStep = function (sequenceState, testEnvironment) {
@@ -78,10 +87,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.test.checkHang.reportHang = function (sequenceState, testEnvironment) {
         fluid.log(fluid.logLevel.IMPORTANT, "Test case listener has not responded after " + testEnvironment.options.hangWait + "ms - at sequence pos " +
-            sequenceState.sequenceText() + " sequence element ", sequenceState.fixture.sequence[sequenceState.sequencePos - 1], " of fixture " + sequenceState.fixture.name);
+            sequenceState.sequenceText() + " sequence element ", sequenceState.sequence[sequenceState.sequencePos - 1], " of fixture " + sequenceState.fixture.name);
     };
 
-    fluid.defaults("fluid.test.sequenceListener", { // TODO: this used to be "fluid.emptySubcomponent" in the fluid.demands era - review and improve support for this
+    fluid.defaults("fluid.test.sequenceListener", {
         gradeNames: ["fluid.component", "fluid.contextAware"]
     });
 
@@ -126,110 +135,52 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         that.renderSequence();
     };
 
+    /** DECODER INFRASTRUCTURE
+     * This operates a set of duck-typed records defined in fluid.test.decoderDucks.
+     * These define a set of records of two types:
+     *   - an "executor", an active record which, for example calls function or launches a task,
+     *   - a "binder", a passive record which registers a listener for a one-shot activity.
+     * These records are decoded from JSON, IoC-expanded and turned into binder or executor "mini-thats"
+     * which are then operated by the sequence executor
+     */
+
     fluid.test.makeExpander = function (that) {
-        return function (toExpand, localRecord) {
-            return fluid.expandOptions(toExpand, that, {}, localRecord);
+        return function (toExpand, localRecord, contextThat) {
+            return fluid.expandOptions(toExpand, contextThat || that, {}, localRecord);
         };
     };
 
     fluid.test.makeFuncExpander = function (expander) {
-        return function (toExpand) {
-            var testFunc = expander(toExpand);
-            if (typeof(testFunc) === "string") {
-                testFunc = fluid.getGlobalValue(testFunc);
+        return function (toExpand, type, args, localRecord, contextThat) {
+            var rec = fluid.compactStringToRec(toExpand, type);
+            if (typeof(rec) === "string") {
+                rec = fluid.upgradePrimitiveFunc(rec, null);
             }
-            return testFunc;
-        };
-    };
-
-    fluid.test.expandModuleSource = function (moduleSource, testCaseState) {
-        var funcSpec = moduleSource.func || moduleSource.funcName;
-        var func = testCaseState.expandFunction(funcSpec);
-        var args = testCaseState.expand(fluid.makeArray(moduleSource.args));
-        return func.apply(null, args);
-    };
-
-    fluid.test.captureMarkup = function (markupFixture) {
-        if (markupFixture) {
-            var markupContainer = fluid.container(markupFixture, false);
-            return {
-                container: markupContainer,
-                markup: markupContainer[0].innerHTML
+            if (rec.args === fluid.NO_VALUE) {
+                rec.args = args;
+            }
+            var expanded = expander(rec, localRecord, contextThat);
+            if (typeof(expanded.funcName) === "string") {
+                expanded.func = fluid.getGlobalValue(expanded.funcName);
+            }
+            expanded.args = fluid.makeArray(expanded.args);
+            expanded.apply = function () {
+                return expanded.func.apply(null, expanded.args);
             };
-        }
-    };
-
-    fluid.test.testEnvironment.runTests = function (that) {
-        that.testCaseHolders = [];
-        var visitor = function (component) {
-            if (fluid.componentHasGrade(component, "fluid.test.testCaseHolder")) {
-                that.testCaseHolders.push(component);
-            }
+            return expanded;
         };
-        visitor(that); // FLUID-5753
-        fluid.visitComponentChildren(that, visitor, {});
-        // This structure is constructed here, reused for each "TestCaseHolder" but is given a shallow
-        // clone in "sequenceExecutor".
-        var testCaseState = {
-            root: that,
-            events: that.events,
-            hangWait: that.options.hangWait
-        };
-        if (that.options.markupFixture) {
-            that.events.afterDestroy.addListener(function () {
-                that.capturedMarkup.container[0].innerHTML = that.capturedMarkup.markup;
-            });
-        }
-        fluid.each(that.testCaseHolders, function (testCaseHolder) {
-            testCaseState.started = false;
-            testCaseState.testCaseHolder = testCaseHolder;
-            testCaseState.expand = fluid.test.makeExpander(testCaseHolder);
-            testCaseState.expandFunction = fluid.test.makeFuncExpander(testCaseState.expand);
-            if (testCaseHolder.options.moduleSource) {
-                testCaseHolder.options.modules = fluid.test.expandModuleSource(testCaseHolder.options.moduleSource, testCaseState, testCaseHolder);
-            }
-            fluid.test.processTestCaseHolder(testCaseState);
-        });
-        // Fire this event so that environments which registered no tests (due to qunit filtering)
-        // will terminate immediately
-        fluid.test.noteTest(testCaseState.root, 0);
-    };
-
-    fluid.defaults("fluid.test.testCaseHolder", {
-        gradeNames: ["fluid.component"],
-        mergePolicy: {
-            modules: "noexpand",
-            moduleSource: "noexpand"
-        },
-        events: {
-            onTestCaseStart: null
-        }
-    });
-
-    fluid.test.noteTest = function (root, count) {
-        if (root.activeTests === "destroyed") {
-            return;
-        }
-        root.activeTests += count;
-        if (count === -1) {
-            fluid.log(fluid.logLevel.TRACE, "Restarting QUnit for new fixture from environment ", root);
-            QUnit.start();
-        }
-        if (root.activeTests === 0) {
-            root.destroy();
-            root.activeTests = "destroyed";
-        }
     };
 
     fluid.test.decodeListener = function (testCaseState, fixture) {
         var listener, member;
         if (fixture.listener) {
             member = "listener";
-            listener = testCaseState.expandFunction(fixture.listener);
+            // We don't use most of the workflow of expandFunction since listener argument resolution must be lazy
+            listener = testCaseState.expandFunction(fixture.listener).func;
         }
         else if (fixture.listenerMaker) {
             member = "listenerMaker";
-            var maker = testCaseState.expandFunction(fixture.listenerMaker);
+            var maker = testCaseState.expandFunction(fixture.listenerMaker).func;
             if (!maker || !maker.apply) {
                 fluid.fail("Unable to decode entry " + fixture.listenerMaker + " of fixture ", fixture, " to a function - got ", maker);
             }
@@ -244,7 +195,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var togo;
         if (fixture.args !== undefined) {
             togo = function () {
-                var expandedArgs = testCaseState.expand(fixture.args, {"arguments": arguments});
+                var expandedArgs = testCaseState.expand(fixture.args, {"arguments": arguments}, fixture.contextThat);
                 return listener.apply(null, fluid.makeArray(expandedArgs));
             };
         } else {
@@ -267,12 +218,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.test.decoders.func = function (testCaseState, fixture) {
         return {
             execute: function (executeDone) {
-                var testFunc = testCaseState.expandFunction(fixture.func || fixture.funcName);
-                var args = testCaseState.expand(fixture.args);
-                if (typeof(testFunc) !== "function") {
-                    fluid.fail("Unable to decode entry func or funcName of fixture ", fixture, " to a function - got ", testFunc);
+                var record = testCaseState.expandFunction(fixture.func || fixture.funcName, "function executor", fixture.args, null, fixture.contextThat);
+                if (typeof(record.func) !== "function") {
+                    fluid.fail("Unable to decode entry func or funcName of fixture ", fixture, " to a function - got ", record);
                 }
-                testFunc.apply(null, fluid.makeArray(args));
+                record.apply();
                 executeDone();
             }
         };
@@ -286,9 +236,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
         return {
             execute: function (executeDone) {
-                var task = testCaseState.expandFunction(fixture.task);
-                var args = fluid.makeArray(testCaseState.expand(fixture.args));
-                var promise = task.apply(null, args);
+                var task = testCaseState.expandFunction(fixture.task, "task executor", fixture.args, null, fixture.contextThat);
+                var promise = task.apply(null);
                 var handlers = fixture.resolve ?
                     [fluid.test.decoders.task.makePromiseBinder(testCaseState, fixture, executeDone, "resolve"),
                      fluid.test.decoders.task.makeMismatchedBinder(fixture, executeDone, "reject", "resolve")] :
@@ -301,9 +250,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     fluid.test.decoders.task.makePromiseBinder = function (testCaseState, fixture, executeDone, method) {
         return function (payload) {
-            var func = testCaseState.expandFunction(fixture[method]);
-            var args = testCaseState.expand(fluid.firstDefined(fixture[method + "Args"], "{arguments}.0"), {arguments: [payload]});
-            func.apply(null, fluid.makeArray(args));
+            var record = testCaseState.expandFunction(fixture[method], "promise " + method + " binder",
+                fluid.firstDefined(fixture[method + "Args"], "{arguments}.0"), {arguments: [payload]}, fixture.contextThat);
+            record.apply();
             executeDone();
         };
     };
@@ -474,6 +423,14 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     };
 
+    /** EXECUTOR APPARATUS
+     * Operates on a stream of the "mini-thats" decoded from the sequence by the decoder infrastructure.
+     * These need to be bound in a slightly odd way because of the nature of the passive "binder" records.
+     * These require a listener to be registered on the target at the latest possible time before the
+     * event might fire, and then unregistered at the earliest possible time after the event has fired.
+     * This requires lots of juggling with callbacks and wrappers.
+     */
+
     fluid.test.execExecutor = function (executor, sequenceText, executeDone) {
         jqUnit.setMessageSuffix(" - at sequence position " + sequenceText);
         executor.execute(executeDone);
@@ -510,21 +467,62 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     };
 
+    fluid.test.checkComponentGrade = function (component, gradeNames, expectedGrade, name, record) {
+        if (!fluid.componentHasGrade(component, expectedGrade)) {
+            fluid.fail("Unable to look up " + name + " ", gradeNames, " to a component descended from \"" + expectedGrade + "\" - got component ", component, " from fixture ", record);
+        }
+    };
+
+    fluid.test.resolveSequence = function (fixture, testCaseHolder) {
+        if (fixture.sequenceGrade) {
+            var path = fluid.pathForComponent(testCaseHolder);
+            var seqPath = path.concat(["sequenceComponent"]);
+            var sequenceComponent = fluid.construct(seqPath, {type: fixture.sequenceGrade});
+
+            fluid.test.checkComponentGrade(sequenceComponent, fixture.sequenceGrade, "fluid.test.sequence", "sequenceGrade", fixture);
+            var elements = fluid.transform(sequenceComponent.options.elements, function (element, i) {
+                var elementPath = seqPath.concat(["sequenceElement-" + i]);
+                var constructOptions = fluid.extend({type: element.gradeNames}, element.options);
+                var elementComponent = fluid.construct(elementPath, constructOptions);
+                fluid.test.checkComponentGrade(elementComponent, element.gradeNames, "fluid.test.sequenceElement", "sequence element gradeNames", element);
+                var innerSequence = fluid.makeArray(fluid.copy(elementComponent.options.sequence));
+                fluid.each(innerSequence, function (oneInnerSequence) {
+                    oneInnerSequence.contextThat = elementComponent;
+                });
+                return {
+                    sequence: innerSequence,
+                    contextThat: elementComponent,
+                    priority: element.priority
+                };
+            });
+            elements.sequence = {
+                sequence: fluid.makeArray(fixture.sequence)
+            };
+            var sortedSequence = fluid.parsePriorityRecords(elements, "testing sequence element");
+            return fluid.getMembers(sortedSequence, "sequence");
+        } else {
+            return fixture.sequence;
+        }
+    };
+
     fluid.test.sequenceExecutor = function (testCaseState, fixture) {
-        // lightweight pseudocomponent "that" holding per-sequence state
+        var sequence = fluid.flatten(fluid.test.resolveSequence(fixture, testCaseState.testCaseHolder));
+        if (sequence.length === 0) {
+            fluid.fail("Error in test fixture ", fixture, ": no elements in sequence");
+        }
+        // lightweight pseudocomponent "that" holding per-sequence state - named "sequenceState" by users
         // TODO: Why on earth did we not use the IoC system itself for this?
         var that = {
             testCaseState: $.extend({}, testCaseState),
-            count: fixture.sequence.length,
+            count: sequence.length,
             fixture: fixture,
+            sequence: sequence,
             sequencePos: 0,
             executors: []
         };
-        if (fixture.sequence.length === 0) {
-            fluid.fail("Error in test fixture ", fixture, ": no elements in sequence");
-        }
+
         that.decode = function (pos) {
-            that.executors[pos] = fluid.test.decodeFixture(that.testCaseState, that.fixture.sequence[pos]);
+            that.executors[pos] = fluid.test.decodeFixture(that.testCaseState, that.sequence[pos]);
             return that.executors[pos];
         };
         that.sequenceText = function (pos) {
@@ -584,60 +582,34 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         return that;
     };
 
-    fluid.test.makeTestRunner = function () {
-        var that = {
-            index: 0,
-            stopped: true,
-            envs: []
-        };
-        that.next = function () {
-            if (that.index < that.envs.length) {
-                that.stopped = false;
-                var env = that.envs[that.index];
-                if (typeof(env) === "string") {
-                    env = {type: env};
-                }
-                var options = $.extend(true, {}, env.options, {
-                    listeners: {
-                        afterDestroy: that.nextLater
-                    }
-                });
-                if (!env.type) {
-                    fluid.fail("Error in IoC Testing fixture - required member \"type\" was not found - fixture was ", env);
-                }
-                fluid.invokeGlobalFunction(env.type, [options]);
-                that.index++;
-            } else {
-                that.stopped = true;
-                QUnit.config.testsArriving = false;
-            }
-        };
-        that.nextLater = function () {
-            fluid.invokeLater(that.next);
-        };
-        that.append = function (envs) {
-            that.envs = that.envs.concat(envs);
-            if (that.stopped) {
-                that.next();
-            }
-        };
-        // FLUID-5810: Support our patched option for QUnit to prevent premature test termination
-        QUnit.config.testsArriving = true;
-        return that;
-    };
-
-    /** Top-level driver function for users. Supply an array of grade names holding the
-     *  list of the testing environments to be executed in sequence
-     *  @param envs (Array of string/object) The testing environments to be executed - either a simple
-     *  string holding the testing environment's name, or a record {type: typeName, options: options} holding
-     *  IoC configuration for the environment as if for a subcomponent.
+    /** MAIN IMPLEMENTATION of the logic for constructing, scanning, and destroying testEnvironment
+     * and testCaseHolder components
      */
 
-    fluid.test.runTests = function (envs) {
-        if (!fluid.test.iocTestState) {
-            fluid.test.iocTestState = fluid.test.makeTestRunner();
+    fluid.defaults("fluid.test.sequenceElement", {
+        gradeNames: "fluid.component",
+        mergePolicy: {
+            sequence: "noexpand, replace"
         }
-        fluid.test.iocTestState.append(envs);
+    });
+
+    fluid.defaults("fluid.test.sequence", {
+        gradeNames: "fluid.component"
+    });
+
+    fluid.test.noteTest = function (root, count) {
+        if (root.activeTests === "destroyed") {
+            return;
+        }
+        root.activeTests += count;
+        if (count === -1) {
+            fluid.log(fluid.logLevel.TRACE, "Restarting QUnit for new fixture from environment ", root);
+            QUnit.start();
+        }
+        if (root.activeTests === 0) {
+            root.destroy();
+            root.activeTests = "destroyed";
+        }
     };
 
     fluid.test.processTestCase = function (testCaseState) {
@@ -654,7 +626,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 if (fixture.expect !== undefined) {
                     jqUnit.expect(fixture.expect);
                 }
-                if (fixture.sequence) {
+                if (fixture.sequence || fixture.sequenceGrade) {
                     fluid.test.sequenceExecutor(testCaseState, fixture).execute();
                 }
                 else {
@@ -698,6 +670,116 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             };
             fluid.test.processTestCase(testCaseState);
         });
+    };
+
+    fluid.test.expandModuleSource = function (moduleSource, testCaseState) {
+        var funcSpec = moduleSource.func || moduleSource.funcName;
+        var record = testCaseState.expandFunction(funcSpec, "moduleSource", moduleSource.args);
+        return record.apply();
+    };
+
+    fluid.test.captureMarkup = function (markupFixture) {
+        if (markupFixture) {
+            var markupContainer = fluid.container(markupFixture, false);
+            return {
+                container: markupContainer,
+                markup: markupContainer[0].innerHTML
+            };
+        }
+    };
+
+    fluid.test.testEnvironment.runTests = function (that) {
+        that.testCaseHolders = [];
+        var visitor = function (component) {
+            if (fluid.componentHasGrade(component, "fluid.test.testCaseHolder")) {
+                that.testCaseHolders.push(component);
+            }
+        };
+        visitor(that); // FLUID-5753
+        fluid.visitComponentChildren(that, visitor, {});
+        // This structure is constructed here, reused for each "TestCaseHolder" but is given a shallow
+        // clone in "sequenceExecutor".
+        var testCaseState = {
+            root: that,
+            events: that.events,
+            hangWait: that.options.hangWait
+        };
+        if (that.options.markupFixture) {
+            that.events.afterDestroy.addListener(function () {
+                that.capturedMarkup.container[0].innerHTML = that.capturedMarkup.markup;
+            });
+        }
+        fluid.each(that.testCaseHolders, function (testCaseHolder) {
+            testCaseState.started = false;
+            testCaseState.testCaseHolder = testCaseHolder;
+            testCaseState.expand = fluid.test.makeExpander(testCaseHolder);
+            testCaseState.expandFunction = fluid.test.makeFuncExpander(testCaseState.expand);
+            if (testCaseHolder.options.moduleSource) {
+                testCaseHolder.options.modules = fluid.test.expandModuleSource(testCaseHolder.options.moduleSource, testCaseState, testCaseHolder);
+            }
+            fluid.test.processTestCaseHolder(testCaseState);
+        });
+        // Fire this event so that environments which registered no tests (due to qunit filtering)
+        // will terminate immediately
+        fluid.test.noteTest(testCaseState.root, 0);
+    };
+
+    fluid.test.makeTestRunner = function () {
+        var that = {
+            index: 0,
+            stopped: true,
+            envs: []
+        };
+        that.next = function () {
+            if (that.index < that.envs.length) {
+                that.stopped = false;
+                var env = that.envs[that.index];
+                if (typeof(env) === "string") {
+                    env = {type: env};
+                }
+                var options = $.extend(true, {}, env.options, {
+                    listeners: {
+                        afterDestroy: that.nextLater
+                    }
+                });
+                if (!env.type) {
+                    fluid.fail("Error in IoC Testing fixture - required member \"type\" was not found - fixture was ", env);
+                }
+                // Constructs a component of type fluid.test.testEnvironment whose onCreate will then execute fluid.test.testEnvironment.runTests
+                // and whose afterDestroy (scheduled internally) will invoke our nextLater
+                fluid.invokeGlobalFunction(env.type, [options]);
+                that.index++;
+            } else {
+                that.stopped = true;
+                QUnit.config.testsArriving = false;
+            }
+        };
+        that.nextLater = function () {
+            fluid.invokeLater(that.next);
+        };
+        that.append = function (envs) {
+            that.envs = that.envs.concat(envs);
+            if (that.stopped) {
+                that.next();
+            }
+        };
+        // FLUID-5810: Support our patched option for QUnit to prevent premature test termination
+        QUnit.config.testsArriving = true;
+        return that;
+    };
+
+    /** Top-level driver function for users. Supply an array of grade names holding the
+     *  list of the testing environments to be executed in sequence
+     *  @param envs (Array of string/object) The testing environments to be executed - either a simple
+     *  string holding the testing environment's name, or a record {type: typeName, options: options} holding
+     *  IoC configuration for the environment as if for a subcomponent.
+     */
+
+    fluid.test.runTests = function (envs) {
+        if (!fluid.test.iocTestState) {
+            fluid.test.iocTestState = fluid.test.makeTestRunner();
+        }
+        fluid.test.iocTestState.append(envs);
     };
 
 })(jQuery, fluid_2_0_0);
