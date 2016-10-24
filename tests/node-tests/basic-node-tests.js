@@ -172,7 +172,9 @@ fluid.tests.onUncaughtException = function () {
         true, fluid.tests.expectFailure);
     fluid.onUncaughtException.removeListener("test-uncaught");
     fluid.onUncaughtException.removeListener("log");
-    fluid.onUncaughtException.removeListener("outputTAPFailure");
+    if (fluid.tests.tapOutput.shouldOutputTAP) {
+        fluid.onUncaughtException.removeListener("outputTAPFailure");
+    }
     fluid.tests.addLogListener(fluid.identity);
     fluid.tests.expectFailure = false;
     fluid.invokeLater(function () { // apply this later to avoid nesting uncaught exception handler
@@ -199,7 +201,9 @@ jqUnit.asyncTest("Test uncaught exception handler registration and deregistratio
     jqUnit.expect(2);
     fluid.onUncaughtException.addListener(fluid.tests.onUncaughtException, "test-uncaught");
     fluid.tests.addLogListener(fluid.tests.benignLogger);
-    fluid.onUncaughtException.removeListener("outputTAPFailure");
+    if (fluid.tests.tapOutput.shouldOutputTAP) {
+        fluid.onUncaughtException.removeListener("outputTAPFailure");
+    }
     fluid.tests.expectFailure = true;
     fluid.invokeLater(function () { // put this in a timeout to avoid bombing QUnit's exception handler
         "string".fail(); // provoke a global uncaught error
