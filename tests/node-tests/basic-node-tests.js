@@ -24,8 +24,8 @@ var shouldOutputTAP = process.argv.findIndex(function (argument) {
     return argument.indexOf("--tap") > -1;
 }) > -1;
 
-// Test fixtures here
-try {
+// Test runner function
+var runTests = function () {
     var fluid = require("../../src/module/fluid.js"),
         path = require("path");
 
@@ -74,7 +74,7 @@ try {
     QUnit.done(function (data) {
         fluid.log("Infusion node.js internal tests " +
             (expectedAsserts === data.passed && data.failed === 0 ? "PASSED" : "FAILED") +
-            " - " + data.passed + "/" + (expectedAsserts + data.failed) + " tests passed");
+            " - " + data.passed + "/" + (expectedAsserts + data.failed) + " assertions passed");
 
         // Set the process to return a non-0 exit code if any tests failed,
         // or the number of expected tests is not the same as the number of passed
@@ -198,13 +198,19 @@ try {
     QUnit.load();
 }
 
-catch (e) {
-    console.log(e);
-    // On an uncaught exception in the fixtures, dump a parseable TAP failure
-    if (shouldOutputTAP) {
-        console.log("1..10");
-        for(var i = 0; i < expectedTestCases; i++) {
-            console.log("not ok - uncaught exception occured in test fixture");
+// Wrapper to ensure TAP report outputs failures if there's a failure in the fixtures
+if (shouldOutputTAP) {
+    try {
+        runTests();
+        }
+    catch (e) {
+        if (shouldOutputTAP) {
+            console.log("1.." + expectedTestCases);
+            for(var i = 0; i < expectedTestCases; i++) {
+                console.log("not ok - uncaught exception occured in test fixture " + e);
+            }
         }
     }
+} else {
+    runTests();
 }
