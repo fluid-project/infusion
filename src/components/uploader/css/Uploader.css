@@ -340,7 +340,7 @@ html>body .fl-uploader span.fl-uploader-browse {
 
 /* disabled button */
 .fl-uploader-buttons .fl-uploader-dim, .fl-uploader-buttons .fl-uploader-dim:hover {
-    background-color: #999;
+    background-color: #767676;
     border-color: #666666;
     cursor: auto;
 }
