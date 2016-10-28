@@ -276,7 +276,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // To address IE7 problem, http://bugs.jquery.com/ticket/7117
             // To fix, strip it URI if the windows.location is in href. Otherwise, do nothing.
             var eleHref = elm.attr("href").replace($(location).attr("href"), "");
-            jqUnit.assertTrue("ToC anchor set correctly", hInfo.url ? eleHref === hInfo.url : eleHref.indexOf(fluid.fluidInstance) === 1);
+            jqUnit.assertTrue("ToC anchor set correctly", hInfo.url ? eleHref === hInfo.url : eleHref.indexOf("fluid-id-" + fluid.fluidInstance) === 1);
         });
     };
 
@@ -428,17 +428,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.module("Table of Contents Tests");
         // fluid tableOfContents" tests
 
-        jqUnit.test("insertAnchor", function () {
-            var tocTestAnchorName = "tocTestAnchor";
-            var tocInsertAnchorElement = $("#tocInsertAnchor");
-            fluid.tableOfContents.insertAnchor(tocTestAnchorName, tocInsertAnchorElement);
-            // check if the anchor is inserted before the element, in that case, index 0 should be the anchor
-            // the first-child test below assumes that there is only 2 element in the wrapper, including the inserted anchor element.
-            var tocInsertAnchorWrapperFirstChild = $("#tocInsertAnchorWrapper :first-child");
-            jqUnit.assertEquals("ToC insert anchor correctly: id", tocTestAnchorName, tocInsertAnchorWrapperFirstChild.prop("id"));
-            jqUnit.assertEquals("ToC insert anchor correctly: name", tocTestAnchorName, tocInsertAnchorWrapperFirstChild.attr("name"));
-        });
-
         jqUnit.test("public function: headingTextToAnchorInfo", function () {
             // set up and init the ToC component
             var toc = renderTOCComponent();
@@ -482,16 +471,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 headingInfo : []
             };
             var headings = $("#flc-toc").children(":header");
-            var serializeHeading = function (level, text) {
-                // macro to serialize heading elements, level, text
-                return {"level": level, "text": text};
-            };
-            headings.each(function (headingsIndex) {
-                var currLink = headings.eq(headingsIndex);
-                testHeadings.headingInfo.push(serializeHeading(
-                    currLink.prop("tagName").substr(currLink.prop("tagName").length - 1),
-                    currLink.text()
-                ));
+
+            fluid.each(headings, function (heading) {
+                heading = $(heading);
+                var headingID = heading.attr("id");
+                testHeadings.headingInfo.push({
+                    level: heading.prop("tagName").substr(heading.prop("tagName").length - 1),
+                    text: heading.text(),
+                    url: headingID ? "#" + headingID : undefined
+                });
             });
             renderTOCComponent("#flc-toc", {
                 listeners: {
@@ -573,9 +561,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                 jqUnit.assert("The onRefresh event should have fired");
                                 renderTOCTest(levels, testHeadingRefreshed);
                                 renderTOCAnchorTest();
-                                var numHeadings = testHeadingRefreshed.headingInfo.length;
-
-                                jqUnit.assertEquals("The correct number of anchors should be present", numHeadings, that.locate("tocAnchors").length);
                                 jqUnit.start();
                             }, "inTestCase", "last");
 
@@ -630,9 +615,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         listener: function (that, levels) {
                             renderTOCTest(levels, testHeadings);
                             renderTOCAnchorTest();
-                            var numHeadings = testHeadings.headingInfo.length;
-
-                            jqUnit.assertEquals("The correct number of anchors should be present", numHeadings, that.locate("tocAnchors").length);
                             jqUnit.start();
                         },
                         args: ["{that}", "{that}.levels"]
