@@ -29,10 +29,10 @@
 .demo-content a {
     font-weight: normal;
     text-decoration:none;
-    color:#00a3e3;
+    color: #0079ab;
 }
-.demo-content a:link { color:  #00a3e3; }
-.demo-content a:visited { color: #00a3e3; }
+.demo-content a:link { color: #0079ab; }
+.demo-content a:visited { color: #0079ab; }
 .demo-content a:hover { color: #ffbf00; }
 
 
@@ -157,6 +157,10 @@ em {
     position: absolute;
     right: 0;
     top: 0;
+}
+
+#searchlabel {
+    color: #0079aa;
 }
 
 /* MIDDLE-LEFT ITEMS */
@@ -418,6 +422,7 @@ img.icon {
     background:url(../images/tab_middle_side.png);
     background-repeat:repeat-x;
     background-size: contain;
+    background-color: #0080aa;
 }
 #left_box .right_tab {
     float:left;
@@ -438,6 +443,7 @@ img.icon {
 #breadcrumbs a {
     text-decoration:none;
     padding-bottom: 2px;
+    color: #0079ab;
 }
 
 .article {
@@ -486,6 +492,7 @@ h5 {
     background-repeat: repeat-x;
     height: 2.3em;
     background-size: contain;
+    background-color:#0080aa;
 }
 .fl-theme-yb #mainBlock {
     background-image: none;
