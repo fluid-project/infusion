@@ -260,13 +260,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return set;
     };
 
-    var renderTOCTest = function (that, testHeadings, anchorInfo) {
-        var tocLinks = locateSet(that, ["link1", "link2", "link3", "link4", "link5", "link6"]);
-        jqUnit.assertEquals("The toc header is rendered correctly", that.options.strings.tocHeader, that.locate("tocHeader").text());
+    /**
+     * @param {fluid.tableOfContents.levels} levels - An instance of fluid.tableOfContents.levels component
+     * @param {Object} testHeadings - expected heading info data
+     * @param {Object} anchorInfo - optional. An array of anchor info objects
+     *                              these should include at least the url like {url: "#url"}.
+     *                              Typically this will come from the "anchorInfo" member of a
+     *                              fluid.tableOfContents component.
+     *
+     */
+    var renderTOCTest = function (levels, testHeadings, anchorInfo) {
+        var tocLinks = locateSet(levels, ["link1", "link2", "link3", "link4", "link5", "link6"]);
+        jqUnit.assertEquals("The toc header is rendered correctly", levels.options.strings.tocHeader, levels.locate("tocHeader").text());
         jqUnit.assertEquals("The correct number of links are rendered", testHeadings.headingInfo.length, tocLinks.length);
         // #FLUID-4352: check if <ul> exists when there is no tocLinks
         if (tocLinks.length === 0) {
-            jqUnit.assertEquals("<ul> should not be defined when no headers are found", 0, $("ul", that.locate("flc-toc-tocContainer")).length);
+            jqUnit.assertEquals("<ul> should not be defined when no headers are found", 0, $("ul", levels.locate("flc-toc-tocContainer")).length);
         }
         fluid.each(tocLinks, function (elm, idx) {
             var hInfo = testHeadings.headingInfo[idx];
@@ -277,7 +286,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // To address IE7 problem, http://bugs.jquery.com/ticket/7117
             // To fix, strip it URI if the windows.location is in href. Otherwise, do nothing.
             var eleHref = elm.attr("href").replace($(location).attr("href"), "");
-            jqUnit.assertEquals("ToC anchor set correctly", eleHref, headingURL);
+            jqUnit.assertEquals("ToC anchor set correctly", headingURL, eleHref);
         });
     };
 
