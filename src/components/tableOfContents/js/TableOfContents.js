@@ -20,25 +20,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     *******/
     fluid.registerNamespace("fluid.tableOfContents");
 
-
-    fluid.tableOfContents.insertAnchor = function (name, element, anchorClass) {
-       // In order to resolve FLUID-4453, we need to make sure that the owner document is correctly
-       // taken from the target element (the preview may be in an iframe)
-        var anchor = $("<a></a>", element.ownerDocument);
-        anchor.prop({
-            "class": anchorClass,
-            name: name,
-            id: name
-        });
-        anchor.insertBefore(element);
-    };
-
-    fluid.tableOfContents.headingTextToAnchorInfo = function (heading, guidFunc) {
-        var guid = guidFunc();
+    fluid.tableOfContents.headingTextToAnchorInfo = function (heading) {
+        var id = fluid.allocateSimpleId(heading);
 
         var anchorInfo = {
-            id: guid,
-            url: "#" + guid
+            id: id,
+            url: "#" + id
         };
 
         return anchorInfo;
@@ -57,13 +44,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     fluid.tableOfContents.refreshView = function (that) {
         var headings = that.locateHeadings();
 
-        // remove existing toc anchors from the the DOM, before adding any new ones.
-        that.locate("tocAnchors").remove();
-
         that.anchorInfo = fluid.transform(headings, function (heading) {
-            var info = that.headingTextToAnchorInfo(heading);
-            that.insertAnchor(info.id, heading, that.options.anchorClass);
-            return info;
+            return that.headingTextToAnchorInfo(heading);
         });
 
         var headingsModel = that.modelBuilder.assembleModel(headings, that.anchorInfo);
@@ -98,12 +80,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         },
         model: [],
         invokers: {
-            headingTextToAnchorInfo: {
-                funcName: "fluid.tableOfContents.headingTextToAnchorInfo",
-                args: ["{arguments}.0", "{that}.generateGUID"]
-            },
-            insertAnchor: "fluid.tableOfContents.insertAnchor",
-            generateGUID: "fluid.allocateGuid",
+            headingTextToAnchorInfo: "fluid.tableOfContents.headingTextToAnchorInfo",
             locateHeadings: {
                 funcName: "fluid.tableOfContents.locateHeadings",
                 args: ["{that}"]
@@ -127,13 +104,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         },
         selectors: {
             headings: ":header:visible",
-            tocContainer: ".flc-toc-tocContainer",
-            tocAnchors: ".flc-toc-anchors"
+            tocContainer: ".flc-toc-tocContainer"
         },
         ignoreForToC: {
             tocContainer: "{that}.options.selectors.tocContainer"
         },
-        anchorClass: "flc-toc-anchors",
         events: {
             onRefresh: null,
             afterRender: null,
