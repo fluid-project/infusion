@@ -38,7 +38,7 @@ var demo = demo || {};
         templateURL: "../../src/components/uploader/html/Uploader.html",
         // Because the template is an actual standalone Web page, we also need to
         // specify a selector that points to the part of the page we're interested in.
-        fragmentSelector: ".flc-uploader",
+        fragmentSelector: ".flc-uploader-container",
         components: {
             // Configuration for the actual Uploader component
             uploader: {
