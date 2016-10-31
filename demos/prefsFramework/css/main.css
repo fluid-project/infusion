@@ -55,7 +55,7 @@
     color: black;
 }
 
-h2 {
+h3 {
     font-weight: bold;
     font-size:1em;
     color: #0057a5;
@@ -361,14 +361,6 @@ img.icon {
     width: 19.1em;
 }
 
-.h1_middle_text {
-    color: #ffffff;
-    font-weight:bold;
-    font-family:Arial, Helvetica, sans-serif;
-    margin-left: 6px;
-    font-size: 15px;
-}
-
 .box {
     padding: 4px 5px;
     margin-top: 5px;
@@ -380,7 +372,9 @@ img.icon {
     color: #ffffff;
     font-family:Arial, Helvetica, sans-serif;
     margin-left: 6px;
+    font-weight:bold;
     font-size: 1.08em;
+    display: inline;
 }
 
 .theme_image_caption {
