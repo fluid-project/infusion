@@ -42,10 +42,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "method": "val",
                     args: ["{arguments}.0"]
                 },
-                "getSliderAriaLabel": {
+                "getSliderAttr": {
                     "this": "{that}.slider.container",
                     "method": "attr",
-                    "args": "aria-label"
+                    "args": "{arguments}.0"
                 }
             }
         });
@@ -66,10 +66,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "method": "setSliderValue",
                     args: ["{arguments}.0"]
                 },
-                "getSliderAriaLabel": {
+                "getSliderAttr": {
                     "this": "{that}.slider.dom.thumb",
                     "method": "attr",
-                    "args": "aria-label"
+                    "args": "{arguments}.0"
                 }
             }
         });
@@ -104,12 +104,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Min should be the default", 0, that.options.range.min);
             jqUnit.assertEquals("Max should be the default", 100, that.options.range.max);
 
-            jqUnit.assertEquals("Slider has configured aria-label value", textfieldSlider.options.strings["aria-label"], textfieldSlider.getSliderAriaLabel());
+            jqUnit.assertEquals("Slider has user-supplied aria-label value", textfieldSlider.options.strings["aria-label"], textfieldSlider.getSliderAttr("aria-label"));
+
+            jqUnit.assertEquals("Slider has user-supplied aria-labelled value", textfieldSlider.options.ariaOptions["aria-labelledby"], textfieldSlider.getSliderAttr("aria-labelledby"));
 
         };
 
         jqUnit.test("Test Init (native HTML slider)", function () {
-            jqUnit.expect(9);
+            jqUnit.expect(10);
             var that = fluid.tests.textfieldSlider.createTextfieldSliderNativeHTML({model: {value: 15}});
 
             fluid.tests.textfieldSlider.testCommonInit(that);
@@ -124,7 +126,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.test("Test Init (jQuery UI slider)", function () {
-            jqUnit.expect(9);
+            jqUnit.expect(10);
             var that = fluid.tests.textfieldSlider.createTextfieldSliderJQueryUI({model: {value: 15}});
 
             fluid.tests.textfieldSlider.testCommonInit(that);
