@@ -48,24 +48,24 @@ var example = example || {};
         auxiliarySchema: {
             vol: {
                 panel: {
-                    template: "%templatePrefix/slider-template-nativeHTML-vol.html"
+                    template: "%templatePrefix/slider-template-nativeHTML.html"
                 }
             },
             wpm: {
                 panel: {
-                    template: "%templatePrefix/slider-template-nativeHTML-wpm.html"
+                    template: "%templatePrefix/slider-template-nativeHTML.html"
                 }
             },
             cursor: {
                 type: "example.cursorSize",
                 panel: {
-                    template: "%templatePrefix/slider-template-nativeHTML-cursor.html"
+                    template: "%templatePrefix/slider-template-nativeHTML.html"
                 }
             },
             magFactor: {
                 type: "example.magnification",
                 panel: {
-                    template: "%templatePrefix/slider-template-nativeHTML-magFactor.html"
+                    template: "%templatePrefix/slider-template-nativeHTML.html"
                 }
             }
         }
