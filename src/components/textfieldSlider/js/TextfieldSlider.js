@@ -149,8 +149,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 method: "attr",
                 args: [{
                     "aria-labelledby": "{that}.options.ariaOptions.aria-labelledby",
-                    "aria-label":
-                    "{that}.options.strings.aria-label"
+                    "aria-label": "{that}.options.strings.aria-label"
                 }]
             }
         },
