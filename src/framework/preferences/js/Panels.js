@@ -695,7 +695,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                                     "onCreate.setAriaLabelledBy": {
                                         "this": "{that}.container",
                                         "method": "attr",
-                                        "args": ["aria-labelledby", "{textfieldSlider}.options.sliderOptions.labelId"]
+                                        "args": ["aria-labelledby", "{textSize}.options.panelOptions.labelId"]
                                     }
                                 }
                             }
@@ -707,7 +707,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                                     "onCreate.setAriaLabelledBy": {
                                         "this": "{that}.container",
                                         "method": "attr",
-                                        "args": ["aria-labelledby", "{textfieldSlider}.options.sliderOptions.labelId"]
+                                        "args": ["aria-labelledby", "{textSize}.options.panelOptions.labelId"]
                                     }
                                 }
                             }
@@ -720,7 +720,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             label: {
                 messagekey: "textSizeLabel",
                 decorators: {
-                    attrs: {id: "{that}.options.sliderOptions.labelId"}
+                    attrs: {id: "{that}.options.panelOptions.labelId"}
                 }
             },
             multiplier: {messagekey: "multiplier"},
@@ -729,7 +729,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         sliderOptions: {
             orientation: "horizontal",
             step: 0.1,
-            range: "min",
+            range: "min"
+        },
+        panelOptions: {
             labelId: "textSize-label-" + fluid.allocateGuid()
         }
     });
@@ -827,7 +829,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                                     "onCreate.setAriaLabelledBy": {
                                         "this": "{that}.container",
                                         "method": "attr",
-                                        "args": ["aria-labelledby", "{textfieldSlider}.options.sliderOptions.labelId"]
+                                        "args": ["aria-labelledby", "{lineSpace}.options.panelOptions.labelId"]
                                     }
                                 }
                             }
@@ -839,7 +841,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                                     "onCreate.setAriaLabelledBy": {
                                         "this": "{that}.container",
                                         "method": "attr",
-                                        "args": ["aria-labelledby", "{textfieldSlider}.options.sliderOptions.labelId"]
+                                        "args": ["aria-labelledby", "{lineSpace}.options.panelOptions.labelId"]
                                     }
                                 }
                             }
@@ -852,7 +854,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             label: {
                 messagekey: "lineSpaceLabel",
                 decorators: {
-                    attrs: {id: "{that}.options.sliderOptions.labelId"}
+                    attrs: {id: "{that}.options.panelOptions.labelId"}
                 }
             },
             multiplier: {messagekey: "multiplier"},
@@ -861,7 +863,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         sliderOptions: {
             orientation: "horizontal",
             step: 0.1,
-            range: "min",
+            range: "min"
+        },
+        panelOptions: {
             labelId: "lineSpace-label-" + fluid.allocateGuid()
         }
     });
