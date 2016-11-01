@@ -199,8 +199,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     "type": "range",
                     "value": "{that}.model.value",
                     "aria-labelledby": "{that}.options.ariaOptions.aria-labelledby",
-                    "aria-label":
-                    "{that}.options.strings.aria-label"
+                    "aria-label": "{that}.options.strings.aria-label"
                 }]
             },
             "onCreate.bindSlideEvt": {
@@ -248,7 +247,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             combinedSliderOptions: {
                 expander: {
                     funcName: "fluid.slider.combineSliderOptions",
-                    args: ["{that}.options.sliderOptions", "{that}.options.range", "{that}.options.ariaOptions", "{that}.options.strings"]
+                    args: ["{that}.options.sliderOptions", "{that}.options.range"]
                 }
             }
         },
@@ -286,8 +285,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     "aria-valuenow": "{that}.combinedSliderOptions.value",
                     "aria-valuemin": "{that}.combinedSliderOptions.min",
                     "aria-valuemax": "{that}.combinedSliderOptions.max",
-                    "aria-labelledby": "{that}.combinedSliderOptions.aria-labelledby",
-                    "aria-label": "{that}.combinedSliderOptions.aria-label"
+                    "aria-labelledby": "{that}.options.ariaOptions.aria-labelledby",
+                    "aria-label": "{that}.options.strings.aria-label"
                 }]
             },
             "onCreate.bindSlideEvt": {
@@ -307,8 +306,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    fluid.slider.combineSliderOptions = function (sliderOptions, model, range, ariaOptions, strings) {
-        return $.extend(true, {}, sliderOptions, model, range, ariaOptions, strings);
+    fluid.slider.combineSliderOptions = function (sliderOptions, model, range) {
+        return $.extend(true, {}, sliderOptions, model, range);
     };
 
 })(jQuery, fluid_2_0_0);
