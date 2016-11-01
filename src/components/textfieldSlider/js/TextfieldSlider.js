@@ -26,7 +26,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 container: "{textfieldSlider}.dom.textfield",
                 options: {
                     model: "{textfieldSlider}.model",
-                    range: "{textfieldSlider}.options.range"
+                    range: "{textfieldSlider}.options.range",
+                    ariaOptions: "{fluid.textfieldSlider}.options.ariaOptions"
                 }
             },
             slider: {
@@ -34,7 +35,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 options: {
                     model: "{fluid.textfieldSlider}.model",
                     range: "{fluid.textfieldSlider}.options.range",
-                    sliderOptions: "{fluid.textfieldSlider}.options.sliderOptions"
+                    sliderOptions: "{fluid.textfieldSlider}.options.sliderOptions",
+                    ariaOptions: "{fluid.textfieldSlider}.options.ariaOptions"
                 }
             }
         },
@@ -70,9 +72,21 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             min: 0,
             max: 100
         },
+        ariaOptions: {
+            // Specified by implementor
+            // ID of an external label to refer to with aria-labelledby
+            // attribute
+            // "aria-labelledby": ""
+        },
         sliderOptions: {
             orientation: "horizontal",
-            step: 1.0
+            step: 1.0,
+        },
+        strings: {
+            // Specified by implementor
+            // text of label to apply to both textfield and slider input
+            // via aria-label attribute
+            // "aria-label": ""
         }
     });
 
@@ -127,6 +141,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 "this": "{that}.container",
                 "method": "change",
                 "args": ["{that}.setModel"]
+            },
+            "onCreate.initTextfieldAttributes": {
+                "this": "{that}.container",
+                method: "attr",
+                args: [{
+                    "aria-labelledby": "{that}.options.ariaOptions.aria-labelledby"
+                }]
             }
         },
         invokers: {
@@ -172,7 +193,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     "max": "{that}.options.range.max",
                     "step": "{that}.options.sliderOptions.step",
                     "type": "range",
-                    "value": "{that}.model.value"
+                    "value": "{that}.model.value",
+                    "aria-labelledby": "{that}.options.ariaOptions.aria-labelledby"
                 }]
             },
             "onCreate.bindSlideEvt": {
@@ -220,7 +242,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             combinedSliderOptions: {
                 expander: {
                     funcName: "fluid.slider.combineSliderOptions",
-                    args: ["{that}.options.sliderOptions", "{that}.options.range"]
+                    args: ["{that}.options.sliderOptions", "{that}.options.range", "{that}.options.ariaOptions"]
                 }
             }
         },
@@ -257,7 +279,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     role: "slider",
                     "aria-valuenow": "{that}.combinedSliderOptions.value",
                     "aria-valuemin": "{that}.combinedSliderOptions.min",
-                    "aria-valuemax": "{that}.combinedSliderOptions.max"
+                    "aria-valuemax": "{that}.combinedSliderOptions.max",
+                    "aria-labelledby": "{that}.combinedSliderOptions.aria-labelledby"
                 }]
             },
             "onCreate.bindSlideEvt": {
@@ -277,8 +300,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    fluid.slider.combineSliderOptions = function (sliderOptions, model, range) {
-        return $.extend(true, {}, sliderOptions, model, range);
+    fluid.slider.combineSliderOptions = function (sliderOptions, model, range, ariaOptions) {
+        return $.extend(true, {}, sliderOptions, model, range, ariaOptions);
     };
 
 })(jQuery, fluid_2_0_0);

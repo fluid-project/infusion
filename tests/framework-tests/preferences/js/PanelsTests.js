@@ -1505,8 +1505,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // the textfieldSlider component, which needs to apply a single
     // label to both the slider and the textfield
     fluid.tests.testTextFieldSliderAriaLabelledBy = function (panel) {
+
+        var currentWidgetType = fluid.contextAware.getCheckValue(fluid.rootComponent, "{fluid.prefsWidgetType}");
+
         var labelId = panel.locate("label").attr("id");
-        var sliderAriaLabelledby = panel.textfieldSlider.slider.container.attr("aria-labelledby");
+
+        var sliderAriaLabelledby = currentWidgetType === "nativeHTML" ?  panel.textfieldSlider.slider.container.attr("aria-labelledby") :
+        panel.textfieldSlider.slider.locate("thumb").attr("aria-labelledby");
+
         var textfieldAriaLabelledby = panel.textfieldSlider.textfield.container.attr("aria-labelledby");
 
         jqUnit.assertEquals("textfieldSlider slider element has aria-labelledby attribute matching the panel label", labelId, sliderAriaLabelledby);

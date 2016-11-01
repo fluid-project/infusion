@@ -688,30 +688,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     },
                     range: "{fluid.prefs.panel.textSize}.options.range",
                     sliderOptions: "{fluid.prefs.panel.textSize}.options.sliderOptions",
-                    components: {
-                        slider: {
-                            options: {
-                                listeners: {
-                                    "onCreate.setAriaLabelledBy": {
-                                        "this": "{that}.container",
-                                        "method": "attr",
-                                        "args": ["aria-labelledby", "{textSize}.options.panelOptions.labelId"]
-                                    }
-                                }
-                            }
-
-                        },
-                        textfield: {
-                            options: {
-                                listeners: {
-                                    "onCreate.setAriaLabelledBy": {
-                                        "this": "{that}.container",
-                                        "method": "attr",
-                                        "args": ["aria-labelledby", "{textSize}.options.panelOptions.labelId"]
-                                    }
-                                }
-                            }
-                        }
+                    ariaOptions: {
+                        "aria-labelledby": "{textSize}.options.panelOptions.labelId"
                     }
                 }
             }
@@ -822,30 +800,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     },
                     range: "{fluid.prefs.panel.lineSpace}.options.range",
                     sliderOptions: "{fluid.prefs.panel.lineSpace}.options.sliderOptions",
-                    components: {
-                        slider: {
-                            options: {
-                                listeners: {
-                                    "onCreate.setAriaLabelledBy": {
-                                        "this": "{that}.container",
-                                        "method": "attr",
-                                        "args": ["aria-labelledby", "{lineSpace}.options.panelOptions.labelId"]
-                                    }
-                                }
-                            }
-
-                        },
-                        textfield: {
-                            options: {
-                                listeners: {
-                                    "onCreate.setAriaLabelledBy": {
-                                        "this": "{that}.container",
-                                        "method": "attr",
-                                        "args": ["aria-labelledby", "{lineSpace}.options.panelOptions.labelId"]
-                                    }
-                                }
-                            }
-                        }
+                    ariaOptions: {
+                        "aria-labelledby": "{lineSpace}.options.panelOptions.labelId"
                     }
                 }
             }
