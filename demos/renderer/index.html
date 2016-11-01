@@ -55,29 +55,36 @@
                     </div>
 
                     <div class="demo-wine-block info-block">
-                        <span id="demo-wine-list-label" class="demo-wine-list-label">label</span>
-                        <ul>
-                            <li class="demo-wine-list" aria-labelledby="demo-wine-list-label">
-                                <input class="demo-wine-selection" type="radio" id="demo-wine-button" value="Wine"/>
-                                <label class="demo-wine-name" for="demo-wine-button">Template for wine list</label>
-                            </li>
-                        </ul>
+                        <fieldset>
+                            <legend>
+                                <span id="demo-wine-list-label" class="demo-wine-list-label">label</span>
+                            </legend>
+                            <ul>
+                                <li class="demo-wine-list">
+                                    <input class="demo-wine-selection" type="radio" id="demo-wine-button" value="Wine"/>
+                                    <label class="demo-wine-name" for="demo-wine-button">Template for wine list</label>
+                                </li>
+                            </ul>
+                        </fieldset>
                     </div>
 
                     <div class="demo-canape-block info-block">
-                        <span id="demo-canape-list-label" class="demo-canape-list-label">label</span>
-                        <table class="demo-canape-list" aria-labelledby="demo-canape-list-label">
-                            <tr>
-                                <th class="demo-canape-plate-header">header</th>
-                                <th class="demo-canape-price-header">header</th>
-                                <th class="demo-canape-include-header">header</th>
-                            </tr>
-                            <tr class="demo-canapes">
-                                <td><label class="demo-canape-name" for="demo-canape-button">name</label></td>
-                                <td class="demo-canape-price">price</td>
-                                <td><input id="demo-canape-button" class="demo-canape-selection" type="checkbox" value="Canape"/></td>
-                            </tr>
-                        </table>
+                        <fieldset>
+                            <legend>
+                            <span id="demo-canape-list-label" class="demo-canape-list-label">label</span></legend>
+                            <table class="demo-canape-list">
+                                <tr>
+                                    <th class="demo-canape-plate-header">header</th>
+                                    <th class="demo-canape-price-header">header</th>
+                                    <th class="demo-canape-include-header">header</th>
+                                </tr>
+                                <tr class="demo-canapes">
+                                    <td><label class="demo-canape-name" for="demo-canape-button">name</label></td>
+                                    <td class="demo-canape-price">price</td>
+                                    <td><input id="demo-canape-button" class="demo-canape-selection" type="checkbox" value="Canape"/></td>
+                                </tr>
+                            </table>
+                        </fieldset>
                     </div>
                 </div>
                 <div class="large-6 columns">

@@ -687,12 +687,20 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                         value: "{fluid.prefs.panel.textSize}.model.textSize"
                     },
                     range: "{fluid.prefs.panel.textSize}.options.range",
-                    sliderOptions: "{fluid.prefs.panel.textSize}.options.sliderOptions"
+                    sliderOptions: "{fluid.prefs.panel.textSize}.options.sliderOptions",
+                    ariaOptions: {
+                        "aria-labelledby": "{textSize}.options.panelOptions.labelId"
+                    }
                 }
             }
         },
         protoTree: {
-            label: {messagekey: "textSizeLabel"},
+            label: {
+                messagekey: "textSizeLabel",
+                decorators: {
+                    attrs: {id: "{that}.options.panelOptions.labelId"}
+                }
+            },
             multiplier: {messagekey: "multiplier"},
             textSizeDescr: {messagekey: "textSizeDescr"}
         },
@@ -700,6 +708,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             orientation: "horizontal",
             step: 0.1,
             range: "min"
+        },
+        panelOptions: {
+            labelId: "textSize-label-" + fluid.allocateGuid()
         }
     });
 
@@ -788,12 +799,20 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                         value: "{fluid.prefs.panel.lineSpace}.model.lineSpace"
                     },
                     range: "{fluid.prefs.panel.lineSpace}.options.range",
-                    sliderOptions: "{fluid.prefs.panel.lineSpace}.options.sliderOptions"
+                    sliderOptions: "{fluid.prefs.panel.lineSpace}.options.sliderOptions",
+                    ariaOptions: {
+                        "aria-labelledby": "{lineSpace}.options.panelOptions.labelId"
+                    }
                 }
             }
         },
         protoTree: {
-            label: {messagekey: "lineSpaceLabel"},
+            label: {
+                messagekey: "lineSpaceLabel",
+                decorators: {
+                    attrs: {id: "{that}.options.panelOptions.labelId"}
+                }
+            },
             multiplier: {messagekey: "multiplier"},
             lineSpaceDescr: {messagekey: "lineSpaceDescr"}
         },
@@ -801,6 +820,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             orientation: "horizontal",
             step: 0.1,
             range: "min"
+        },
+        panelOptions: {
+            labelId: "lineSpace-label-" + fluid.allocateGuid()
         }
     });
 

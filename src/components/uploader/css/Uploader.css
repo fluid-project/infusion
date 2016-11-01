@@ -319,18 +319,18 @@ html>body .fl-uploader span.fl-uploader-browse {
 
 /* upload button */
 .fl-uploader-buttons .fl-uploader-button-upload {
-    background-color: #74B74A;
+    background-color: #468600;
     border-color: #006838;
 }
 
 .fl-uploader-buttons .fl-uploader-button-upload:hover {
-    background-color: #519325;
+    background-color: #438600;
     border-color: #142B8C;
 }
 
 /* stop upload button */
 .fl-uploader-buttons .fl-uploader-button-stop {
-    background-color: #4F99D3;
+    background-color: #007dba;
     border-color: #2A3990;
 }
 
@@ -340,7 +340,7 @@ html>body .fl-uploader span.fl-uploader-browse {
 
 /* disabled button */
 .fl-uploader-buttons .fl-uploader-dim, .fl-uploader-buttons .fl-uploader-dim:hover {
-    background-color: #999;
+    background-color: #767676;
     border-color: #666666;
     cursor: auto;
 }
