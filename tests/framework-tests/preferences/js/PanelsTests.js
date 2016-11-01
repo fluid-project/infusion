@@ -1329,7 +1329,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test the text sizer settings panel",
             tests: [{
-                expect: 4,
+                expect: 6,
                 name: "Test the rendering of the text size panel",
                 sequence: [{
                     func: "fluid.tests.switchWidgetType",
@@ -1351,6 +1351,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     spec: {path: "textSize", priority: "last"},
                     changeEvent: "{textSize}.applier.modelChanged"
                 }, {
+                    func: "fluid.tests.testTextFieldSliderAriaLabelledBy",
+                    args: ["{textSize}"]
+                },
+                {
                     func: "fluid.contextAware.forgetChecks",
                     args: ["fluid.prefsWidgetType"]
                 }]
@@ -1460,34 +1464,58 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test the line space settings panel (native slider)",
             tests: [{
-                expect: 4,
+                expect: 6,
                 name: "Test the rendering of the line space panel",
-                sequence: [{
-                    func: "fluid.tests.switchWidgetType",
-                    args: ["{that}.options.testOptions.widgetType", "{lineSpacePanel}"]
-                }, {
-                    listener: "fluid.tests.testDefault",
-                    event: "{lineSpacePanel lineSpace}.events.afterRender",
-                    priority: "last",
-                    args: ["{lineSpace}", {
-                        label: "lineSpaceLabel",
-                        lineSpaceDescr: "lineSpaceDescr"
-                    }]
-                }, {
-                    func: "fluid.tests.changeInput",
-                    args: ["{lineSpace}.dom.lineSpace", "{that}.options.testOptions.newValue"]
-                }, {
-                    listener: "fluid.tests.panels.utils.checkModel",
-                    args: ["lineSpace", "{lineSpace}.model", "{that}.options.testOptions.newValue"],
-                    spec: {path: "lineSpace", priority: "last"},
-                    changeEvent: "{lineSpace}.applier.modelChanged"
-                }, {
-                    func: "fluid.contextAware.forgetChecks",
-                    args: ["fluid.prefsWidgetType"]
-                }]
+                sequence: [
+                    {
+                        func: "fluid.tests.switchWidgetType",
+                        args: ["{that}.options.testOptions.widgetType", "{lineSpacePanel}"]
+                    },
+                    {
+                        listener: "fluid.tests.testDefault",
+                        event: "{lineSpacePanel lineSpace}.events.afterRender",
+                        priority: "last",
+                        args: ["{lineSpace}", {
+                            label: "lineSpaceLabel",
+                            lineSpaceDescr: "lineSpaceDescr"
+                        }]
+                    }, {
+                        func: "fluid.tests.changeInput",
+                        args: ["{lineSpace}.dom.lineSpace", "{that}.options.testOptions.newValue"]
+                    }, {
+                        listener: "fluid.tests.panels.utils.checkModel",
+                        args: ["lineSpace", "{lineSpace}.model", "{that}.options.testOptions.newValue"],
+                        spec: {path: "lineSpace", priority: "last"},
+                        changeEvent: "{lineSpace}.applier.modelChanged"
+                    },
+                    {
+                        func: "fluid.tests.testTextFieldSliderAriaLabelledBy",
+                        args: ["{lineSpace}"]
+                    },
+                    {
+                        func: "fluid.contextAware.forgetChecks",
+                        args: ["fluid.prefsWidgetType"]
+                    }
+                ]
             }]
         }]
     });
+
+    // Used for testing aria-labelledby application of panels using
+    // the textfieldSlider component, which needs to apply a single
+    // label to both the slider and the textfield
+    fluid.tests.testTextFieldSliderAriaLabelledBy = function (panel) {
+        var labelId = panel.locate("label").attr("id");
+        // console.log(labelId);
+
+        var sliderAriaLabelledby = panel.textfieldSlider.slider.container.attr("aria-labelledby");
+
+        var textfieldAriaLabelledby = panel.textfieldSlider.textfield.container.attr("aria-labelledby");
+
+        jqUnit.assertEquals("textfieldSlider slider element has aria-labelledby attribute matching the panel label", labelId, sliderAriaLabelledby);
+
+        jqUnit.assertEquals("textfieldSlider textfield element has aria-labelledby attribute matching the panel label", labelId, textfieldAriaLabelledby);
+    };
 
     /*******************************************************************************
      * layoutPanel

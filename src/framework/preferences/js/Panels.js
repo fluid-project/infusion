@@ -687,19 +687,50 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                         value: "{fluid.prefs.panel.textSize}.model.textSize"
                     },
                     range: "{fluid.prefs.panel.textSize}.options.range",
-                    sliderOptions: "{fluid.prefs.panel.textSize}.options.sliderOptions"
+                    sliderOptions: "{fluid.prefs.panel.textSize}.options.sliderOptions",
+                    components: {
+                        slider: {
+                            options: {
+                                listeners: {
+                                    "onCreate.setAriaLabelledBy": {
+                                        "this": "{that}.container",
+                                        "method": "attr",
+                                        "args": ["aria-labelledby", "{textfieldSlider}.options.sliderOptions.labelId"]
+                                    }
+                                }
+                            }
+
+                        },
+                        textfield: {
+                            options: {
+                                listeners: {
+                                    "onCreate.setAriaLabelledBy": {
+                                        "this": "{that}.container",
+                                        "method": "attr",
+                                        "args": ["aria-labelledby", "{textfieldSlider}.options.sliderOptions.labelId"]
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         },
         protoTree: {
-            label: {messagekey: "textSizeLabel"},
+            label: {
+                messagekey: "textSizeLabel",
+                decorators: {
+                    attrs: {id: "{that}.options.sliderOptions.labelId"}
+                }
+            },
             multiplier: {messagekey: "multiplier"},
             textSizeDescr: {messagekey: "textSizeDescr"}
         },
         sliderOptions: {
             orientation: "horizontal",
             step: 0.1,
-            range: "min"
+            range: "min",
+            labelId: "textSize-label-" + fluid.allocateGuid()
         }
     });
 
@@ -788,19 +819,50 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                         value: "{fluid.prefs.panel.lineSpace}.model.lineSpace"
                     },
                     range: "{fluid.prefs.panel.lineSpace}.options.range",
-                    sliderOptions: "{fluid.prefs.panel.lineSpace}.options.sliderOptions"
+                    sliderOptions: "{fluid.prefs.panel.lineSpace}.options.sliderOptions",
+                    components: {
+                        slider: {
+                            options: {
+                                listeners: {
+                                    "onCreate.setAriaLabelledBy": {
+                                        "this": "{that}.container",
+                                        "method": "attr",
+                                        "args": ["aria-labelledby", "{textfieldSlider}.options.sliderOptions.labelId"]
+                                    }
+                                }
+                            }
+
+                        },
+                        textfield: {
+                            options: {
+                                listeners: {
+                                    "onCreate.setAriaLabelledBy": {
+                                        "this": "{that}.container",
+                                        "method": "attr",
+                                        "args": ["aria-labelledby", "{textfieldSlider}.options.sliderOptions.labelId"]
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         },
         protoTree: {
-            label: {messagekey: "lineSpaceLabel"},
+            label: {
+                messagekey: "lineSpaceLabel",
+                decorators: {
+                    attrs: {id: "{that}.options.sliderOptions.labelId"}
+                }
+            },
             multiplier: {messagekey: "multiplier"},
             lineSpaceDescr: {messagekey: "lineSpaceDescr"}
         },
         sliderOptions: {
             orientation: "horizontal",
             step: 0.1,
-            range: "min"
+            range: "min",
+            labelId: "lineSpace-label-" + fluid.allocateGuid()
         }
     });
 
