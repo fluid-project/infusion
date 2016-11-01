@@ -27,7 +27,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 options: {
                     model: "{textfieldSlider}.model",
                     range: "{textfieldSlider}.options.range",
-                    ariaOptions: "{fluid.textfieldSlider}.options.ariaOptions"
+                    ariaOptions: "{fluid.textfieldSlider}.options.ariaOptions",
+                    strings: "{fluid.textfieldSlider}.options.strings"
                 }
             },
             slider: {
@@ -36,7 +37,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     model: "{fluid.textfieldSlider}.model",
                     range: "{fluid.textfieldSlider}.options.range",
                     sliderOptions: "{fluid.textfieldSlider}.options.sliderOptions",
-                    ariaOptions: "{fluid.textfieldSlider}.options.ariaOptions"
+                    ariaOptions: "{fluid.textfieldSlider}.options.ariaOptions",
+                    strings: "{fluid.textfieldSlider}.options.strings"
                 }
             }
         },
@@ -80,7 +82,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         },
         sliderOptions: {
             orientation: "horizontal",
-            step: 1.0,
+            step: 1.0
         },
         strings: {
             // Specified by implementor
@@ -146,7 +148,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 "this": "{that}.container",
                 method: "attr",
                 args: [{
-                    "aria-labelledby": "{that}.options.ariaOptions.aria-labelledby"
+                    "aria-labelledby": "{that}.options.ariaOptions.aria-labelledby",
+                    "aria-label":
+                    "{that}.options.strings.aria-label"
                 }]
             }
         },
@@ -194,7 +198,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     "step": "{that}.options.sliderOptions.step",
                     "type": "range",
                     "value": "{that}.model.value",
-                    "aria-labelledby": "{that}.options.ariaOptions.aria-labelledby"
+                    "aria-labelledby": "{that}.options.ariaOptions.aria-labelledby",
+                    "aria-label":
+                    "{that}.options.strings.aria-label"
                 }]
             },
             "onCreate.bindSlideEvt": {
@@ -242,7 +248,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             combinedSliderOptions: {
                 expander: {
                     funcName: "fluid.slider.combineSliderOptions",
-                    args: ["{that}.options.sliderOptions", "{that}.options.range", "{that}.options.ariaOptions"]
+                    args: ["{that}.options.sliderOptions", "{that}.options.range", "{that}.options.ariaOptions", "{that}.options.strings"]
                 }
             }
         },
@@ -280,7 +286,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     "aria-valuenow": "{that}.combinedSliderOptions.value",
                     "aria-valuemin": "{that}.combinedSliderOptions.min",
                     "aria-valuemax": "{that}.combinedSliderOptions.max",
-                    "aria-labelledby": "{that}.combinedSliderOptions.aria-labelledby"
+                    "aria-labelledby": "{that}.combinedSliderOptions.aria-labelledby",
+                    "aria-label": "{that}.combinedSliderOptions.aria-label"
                 }]
             },
             "onCreate.bindSlideEvt": {
@@ -300,8 +307,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
-    fluid.slider.combineSliderOptions = function (sliderOptions, model, range, ariaOptions) {
-        return $.extend(true, {}, sliderOptions, model, range, ariaOptions);
+    fluid.slider.combineSliderOptions = function (sliderOptions, model, range, ariaOptions, strings) {
+        return $.extend(true, {}, sliderOptions, model, range, ariaOptions, strings);
     };
 
 })(jQuery, fluid_2_0_0);
