@@ -1506,10 +1506,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // label to both the slider and the textfield
     fluid.tests.testTextFieldSliderAriaLabelledBy = function (panel) {
         var labelId = panel.locate("label").attr("id");
-        // console.log(labelId);
-
         var sliderAriaLabelledby = panel.textfieldSlider.slider.container.attr("aria-labelledby");
-
         var textfieldAriaLabelledby = panel.textfieldSlider.textfield.container.attr("aria-labelledby");
 
         jqUnit.assertEquals("textfieldSlider slider element has aria-labelledby attribute matching the panel label", labelId, sliderAriaLabelledby);
