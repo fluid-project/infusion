@@ -21,8 +21,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.module("TextfieldSlider Tests");
 
+        fluid.defaults("fluid.tests.textfieldSlider", {
+            strings: {
+                "aria-label": "Aria self-labeling"
+            }
+        });
+
         fluid.defaults("fluid.tests.textfieldSlider.nativeHTML", {
-            gradeNames: ["fluid.textfieldSlider"],
+            gradeNames: ["fluid.tests.textfieldSlider", "fluid.textfieldSlider"],
+            ariaOptions: {
+                "aria-labelledby": "label-nativeHTML"
+            },
             invokers: {
                 "getSliderValue": {
                     "this": "{that}.slider.container",
@@ -32,12 +41,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "this": "{that}.slider.container",
                     "method": "val",
                     args: ["{arguments}.0"]
+                },
+                "getSliderAriaLabel": {
+                    "this": "{that}.slider.container",
+                    "method": "attr",
+                    "args": "aria-label"
                 }
             }
         });
 
         fluid.defaults("fluid.tests.textfieldSlider.jQueryUI", {
-            gradeNames: ["fluid.textfieldSlider"],
+            gradeNames: ["fluid.tests.textfieldSlider", "fluid.textfieldSlider"],
+            ariaOptions: {
+                "aria-labelledby": "label-jQueryUI"
+            },
             invokers: {
                 "getSliderValue": {
                     "this": "{that}.slider.slider",
@@ -48,6 +65,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     "this": "{that}.slider",
                     "method": "setSliderValue",
                     args: ["{arguments}.0"]
+                },
+                "getSliderAriaLabel": {
+                    "this": "{that}.slider.dom.thumb",
+                    "method": "attr",
+                    "args": "aria-label"
                 }
             }
         });
@@ -81,10 +103,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The model should be set", 15, that.model.value);
             jqUnit.assertEquals("Min should be the default", 0, that.options.range.min);
             jqUnit.assertEquals("Max should be the default", 100, that.options.range.max);
+
+            jqUnit.assertEquals("Slider has configured aria-label value", textfieldSlider.options.strings["aria-label"], textfieldSlider.getSliderAriaLabel());
+
         };
 
         jqUnit.test("Test Init (native HTML slider)", function () {
-            jqUnit.expect(8);
+            jqUnit.expect(9);
             var that = fluid.tests.textfieldSlider.createTextfieldSliderNativeHTML({model: {value: 15}});
 
             fluid.tests.textfieldSlider.testCommonInit(that);
@@ -99,7 +124,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.test("Test Init (jQuery UI slider)", function () {
-            jqUnit.expect(8);
+            jqUnit.expect(9);
             var that = fluid.tests.textfieldSlider.createTextfieldSliderJQueryUI({model: {value: 15}});
 
             fluid.tests.textfieldSlider.testCommonInit(that);
