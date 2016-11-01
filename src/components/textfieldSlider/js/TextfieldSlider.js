@@ -27,18 +27,18 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 options: {
                     model: "{textfieldSlider}.model",
                     range: "{textfieldSlider}.options.range",
-                    ariaOptions: "{fluid.textfieldSlider}.options.ariaOptions",
-                    strings: "{fluid.textfieldSlider}.options.strings"
+                    ariaOptions: "{textfieldSlider}.options.ariaOptions",
+                    strings: "{textfieldSlider}.options.strings"
                 }
             },
             slider: {
                 container: "{textfieldSlider}.dom.slider",
                 options: {
-                    model: "{fluid.textfieldSlider}.model",
-                    range: "{fluid.textfieldSlider}.options.range",
-                    sliderOptions: "{fluid.textfieldSlider}.options.sliderOptions",
-                    ariaOptions: "{fluid.textfieldSlider}.options.ariaOptions",
-                    strings: "{fluid.textfieldSlider}.options.strings"
+                    model: "{textfieldSlider}.model",
+                    range: "{textfieldSlider}.options.range",
+                    sliderOptions: "{textfieldSlider}.options.sliderOptions",
+                    ariaOptions: "{textfieldSlider}.options.ariaOptions",
+                    strings: "{textfieldSlider}.options.strings"
                 }
             }
         },
