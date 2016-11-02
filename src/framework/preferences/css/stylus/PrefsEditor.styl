@@ -9,6 +9,21 @@
          url('../fonts/InfusionIcons-PrefsEditor.eot');
 }
 
+// Mixin for common styles of the "thumb" (slider control)
+// used by both the jQuery and native HTML sliders
+slider-thumb-common()
+    height: 1.5em;
+    width: 1.5em;
+    background-color: #fff;
+    border: 1px solid #b3b3b3;
+    border-radius: 2em;
+    box-shadow: 4px 2px 3px rgba(0,0,0,0.3);
+    background-image: -webkit-linear-gradient(right top, #fff 46%, #e9eaea 73%);
+    background-image: -moz-linear-gradient(right top, #fff 46%, #e9eaea 73%);
+    background-image: -o-linear-gradient(right top, #fff 46%, #e9eaea 73%);
+    background-image: -ms-linear-gradient(right top, #fff 46%, #e9eaea 73%);
+    background-image: linear-gradient(right top, #fff 46%, #e9eaea 73%);
+
 .fl-prefsEditor {
     font-family: "Myriad Pro", Helvetica, Arial, sans-serif;
 
@@ -108,15 +123,9 @@
             display:block;
             top:0;
             left:0;
-            height: 1.5em;
-            width: 1.5em;
             margin-top: -0.4em;
             margin-left: -0.4em;
-            background-color: #fff;
-            border: 1px solid #b3b3b3;
-            border-radius: 2em;
-            box-shadow: 4px 2px 3px rgba(0,0,0,0.3);
-            background-image: linear-gradient(right top, rgb(255,255,255) 46%, rgb(233,234,234) 73%);
+            slider-thumb-common()
 
             &:active {
                 outline: none;
@@ -132,45 +141,15 @@
 
     input[type=range].fl-slider::-webkit-slider-thumb {
         -webkit-appearance: none;
-        height: 1.5em;
-        width: 1.5em;
-        background-color: #fff;
-        border: 1px solid #b3b3b3;
-        border-radius: 2em;
-        box-shadow: 4px 2px 3px rgba(0,0,0,0.3);
-        background-image: -webkit-linear-gradient(right top, #fff 46%, #e9eaea 73%);
-        background-image: -moz-linear-gradient(right top, #fff 46%, #e9eaea 73%);
-        background-image: -o-linear-gradient(right top, #fff 46%, #e9eaea 73%);
-        background-image: -ms-linear-gradient(right top, #fff 46%, #e9eaea 73%);
-        background-image: linear-gradient(right top, #fff 46%, #e9eaea 73%);
+        slider-thumb-common()
     }
 
     input[type=range].fl-slider::-moz-range-thumb {
-        height: 1.5em;
-        width: 1.5em;
-        background-color: #fff;
-        border: 1px solid #b3b3b3;
-        border-radius: 2em;
-        box-shadow: 4px 2px 3px rgba(0,0,0,0.3);
-        background-image: -webkit-linear-gradient(right top, #fff 46%, #e9eaea 73%);
-        background-image: -moz-linear-gradient(right top, #fff 46%, #e9eaea 73%);
-        background-image: -o-linear-gradient(right top, #fff 46%, #e9eaea 73%);
-        background-image: -ms-linear-gradient(right top, #fff 46%, #e9eaea 73%);
-        background-image: linear-gradient(right top, #fff 46%, #e9eaea 73%);
+        slider-thumb-common()
     }
 
     .fl-prefsEditor input[type=range].fl-slider::-mms-thumb {
-        height: 1.5em;
-        width: 1.5em;
-        background-color: #fff;
-        border: 1px solid #b3b3b3;
-        border-radius: 2em;
-        box-shadow: 4px 2px 3px rgba(0,0,0,0.3);
-        background-image: -webkit-linear-gradient(right top, #fff 46%, #e9eaea 73%);
-        background-image: -moz-linear-gradient(right top, #fff 46%, #e9eaea 73%);
-        background-image: -o-linear-gradient(right top, #fff 46%, #e9eaea 73%);
-        background-image: -ms-linear-gradient(right top, #fff 46%, #e9eaea 73%);
-        background-image: linear-gradient(right top, #fff 46%, #e9eaea 73%);
+        slider-thumb-common()
     }
 
     .fl-slider-horz {
