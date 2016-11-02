@@ -139,6 +139,8 @@ slider-thumb-common()
         -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
     }
 
+    // Native slider thumb appearance
+
     input[type=range].fl-slider::-webkit-slider-thumb {
         -webkit-appearance: none;
         slider-thumb-common()
@@ -148,8 +150,26 @@ slider-thumb-common()
         slider-thumb-common()
     }
 
-    .fl-prefsEditor input[type=range].fl-slider::-mms-thumb {
+    .fl-prefsEditor input[type=range].fl-slider::-ms-thumb {
         slider-thumb-common()
+    }
+
+    // Native slider track appearance
+    // We hide any inherent track styling
+
+    input[type=range].fl-slider::-webkit-slider-runnable-track {
+        background: transparent;
+        border: 0px;
+    }
+
+    input[type=range].fl-slider::-moz-range-track {
+        background: transparent;
+        border: 0px;
+    }
+
+    .fl-prefsEditor input[type=range].fl-slider::-ms-track {
+        background: transparent;
+        border: 0px;
     }
 
     .fl-slider-horz {
