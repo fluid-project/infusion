@@ -170,7 +170,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         row.prop("id", file.id);
         row.addClass(that.options.styles.ready);
         fluid.uploader.fileQueueView.bindRowHandlers(that, row);
-        fluid.updateAriaLabel(row, fileName + " " + fileSize + " " + that.options.strings.status.remove);
+        fluid.updateAriaLabel(row, fileName + " " + fileSize);
         return row;
     };
 
