@@ -136,7 +136,7 @@
 
     input[type=range].fl-slider {
         -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
-        // Native slider thumb appearance    
+        // Native slider thumb appearance
         &::-webkit-slider-thumb {
             -webkit-appearance: none;
             slider-thumb-common()
@@ -165,6 +165,19 @@
         &::-ms-track {
             slider-native-track-common()
         }
+
+        &::-ms-fill-lower {
+            background: none;
+            background-color: transparent;
+            border: 0;
+        }
+
+        &::-ms-fill-upper {
+            background: none;
+            background-color: transparent;
+            border: 0;
+        }
+
     }
 
     .fl-slider-horz {
