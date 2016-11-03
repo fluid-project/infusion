@@ -122,38 +122,35 @@
 
     input[type=range].fl-slider {
         -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
-    }
+        // Native slider thumb appearance    
+        &::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            slider-thumb-common()
+        }
 
-    // Native slider thumb appearance
+        &::-moz-range-thumb {
+            slider-thumb-common()
+        }
 
-    input[type=range].fl-slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        slider-thumb-common()
-    }
+        &::-ms-thumb {
+            slider-thumb-common()
+        }
+        // Native slider track appearance
+        // We hide any inherent track styling and let the styles
+        // set with the fl-slider class be used without interference
+        // from native widget styling
 
-    input[type=range].fl-slider::-moz-range-thumb {
-        slider-thumb-common()
-    }
+        &::-webkit-slider-runnable-track {
+            slider-native-track-common()
+        }
 
-    .fl-prefsEditor input[type=range].fl-slider::-ms-thumb {
-        slider-thumb-common()
-    }
+        &::-moz-range-track {
+            slider-native-track-common()
+        }
 
-    // Native slider track appearance
-    // We hide any inherent track styling and let the styles
-    // set with the fl-slider class be used without interference
-    // from native widget styling
-
-    input[type=range].fl-slider::-webkit-slider-runnable-track {
-        slider-native-track-common()
-    }
-
-    input[type=range].fl-slider::-moz-range-track {
-        slider-native-track-common()
-    }
-
-    input[type=range].fl-slider::-ms-track {
-        slider-native-track-common()
+        &::-ms-track {
+            slider-native-track-common()
+        }
     }
 
     .fl-slider-horz {
