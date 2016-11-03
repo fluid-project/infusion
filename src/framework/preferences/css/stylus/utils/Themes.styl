@@ -53,18 +53,11 @@ build-themes-prefsEditor(contrastThemes) {
                     background: none;
                     background-color: fColor;
                 }
-
-                input[type=range].fl-slider::-webkit-slider-thumb {
-                    slider-thumb-common-contrastTheme()
-                }
-
-                input[type=range].fl-slider::-moz-range-thumb {
-                    slider-thumb-common-contrastTheme()
-                }
-
-                input[type=range].fl-slider::-mms-thumb {
-                    slider-thumb-common-contrastTheme()
-                }
+                    &::-webkit-slider-thumb,
+                    &::-moz-range-thumb,
+                    &::-mms-thumb {
+                        slider-thumb-common-contrastTheme()
+                    }
 
                 // ON/OFF switch
                 .fl-prefsEditor-switch,
