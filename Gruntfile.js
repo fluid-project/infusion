@@ -243,6 +243,14 @@ module.exports = function (grunt) {
                 }]
             }
         },
+        // grunt-contrib-watch task to watch and rebuild stylus files
+        // automatically when doing stylus development
+        watch: {
+            buildStylus: {
+                files: "src/**/css/stylus/*.styl",
+                tasks: "buildStylus"
+            }
+        },
         shell: {
             runTests: {
                 command: "vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 testem ci --file tests/testem.json'"
@@ -280,6 +288,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-modulefiles");
     grunt.loadNpmTasks("grunt-contrib-stylus");
     grunt.loadNpmTasks("grunt-shell");
+    grunt.loadNpmTasks("grunt-contrib-watch");
 
     // Custom tasks:
 
