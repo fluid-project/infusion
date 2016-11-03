@@ -181,8 +181,8 @@ CSS files for the Preferences Framework have been re-written in Stylus. Only Sty
 
 For developing the Preferences Framework, run the following from the project root to compile Stylus files to CSS:
 
-    `grunt buildStylus`
+    grunt buildStylus
 
 A `watch` task using [grunt-contrib-watch](https://github.com/gruntjs/grunt-contrib-watch) is also supplied to ease Stylus development. This task launches a process that watches all Stylus files in the `src` directory and recompiles them when they are changed. This task can be run using the following command:
 
-    `grunt watch:buildStylus`
+    grunt watch:buildStylus

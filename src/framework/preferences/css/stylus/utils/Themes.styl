@@ -24,9 +24,10 @@ themes = {
     }
 }
 
-slider-thumb-common-contrastTheme()
+slider-thumb-common-contrastTheme() {
     background: none;
     background-color: fColor;
+}
 
 build-themes-prefsEditor(contrastThemes) {
 
@@ -61,7 +62,7 @@ build-themes-prefsEditor(contrastThemes) {
                     slider-thumb-common-contrastTheme()
                 }
 
-                .fl-prefsEditor input[type=range].fl-slider::-mms-thumb {
+                input[type=range].fl-slider::-mms-thumb {
                     slider-thumb-common-contrastTheme()
                 }
 
