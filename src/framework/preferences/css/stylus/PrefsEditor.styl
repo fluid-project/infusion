@@ -155,7 +155,9 @@ slider-thumb-common()
     }
 
     // Native slider track appearance
-    // We hide any inherent track styling
+    // We hide any inherent track styling and let the styles
+    // set with the fl-slider class be used without interference
+    // from native widget styling
 
     input[type=range].fl-slider::-webkit-slider-runnable-track {
         background: transparent;
