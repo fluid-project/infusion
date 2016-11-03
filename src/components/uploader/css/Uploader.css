@@ -77,10 +77,6 @@ table.fl-uploader-queue {
     color: #666;
 }
 
-.fl-uploader-queue caption {
-    display: none;
-}
-
 .fl-uploader-queue tbody {
     z-index: 6;
     display:block;
