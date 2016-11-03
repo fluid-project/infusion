@@ -52,12 +52,16 @@ build-themes-prefsEditor(contrastThemes) {
                 input[type=range].fl-slider {
                     background: none;
                     background-color: fColor;
-                }
-                    &::-webkit-slider-thumb,
-                    &::-moz-range-thumb,
+                    &::-webkit-slider-thumb {
+                        slider-thumb-common-contrastTheme()
+                    }
+                    &::-moz-range-thumb {
+                        slider-thumb-common-contrastTheme()
+                    }
                     &::-mms-thumb {
                         slider-thumb-common-contrastTheme()
                     }
+                }
 
                 // ON/OFF switch
                 .fl-prefsEditor-switch,

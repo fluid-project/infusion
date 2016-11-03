@@ -247,7 +247,7 @@ module.exports = function (grunt) {
         // automatically when doing stylus development
         watch: {
             buildStylus: {
-                files: "src/**/css/stylus/*.styl",
+                files: ["src/**/css/stylus/*.styl", "src/**/css/stylus/utils/*.styl"],
                 tasks: "buildStylus"
             }
         },
