@@ -49,10 +49,13 @@
                     <caption class="fl-hidden-accessible">File Upload Queue:</caption>
                     <thead class="fl-uploader-header">
                         <tr>
-                         <th class="fl-uploader-file-name">File Name</th>
-                         <th class="fl-uploader-file-size">Size</th>
-                         <th class="fl-uploader-file-actions"></th>
-                     </tr>
+                            <!-- TODO: These strings should be injected programmatically to support localization -->
+                            <th class="fl-uploader-file-name">File Name</th>
+                            <th class="fl-uploader-file-size">Size</th>
+                            <th class="fl-uploader-file-actions">
+                                <span class="fl-hidden-accessible">Status / Actions</span>
+                            </th>
+                        </tr>
                     </thead>
                     <tbody>
                         <!-- Template for file row -->
