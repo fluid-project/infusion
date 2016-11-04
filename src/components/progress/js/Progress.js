@@ -132,8 +132,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             fluid.progress.updateWidth(that, pixels);
         }
 
-        if (labelText !== null) {
-            fluid.progress.updateText(that.label, labelText);
+        if (fluid.isValue(labelText)) {
+            var text = fluid.stringTemplate(labelText, {percentComplete: percent});
+            fluid.progress.updateText(that.label, text);
         }
 
         // update ARIA
