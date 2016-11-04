@@ -75,9 +75,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return rowEl.find(q.options.selectors.fileSize).text();
         };
 
-        var checkARIA = function (file, row, statusStr) {
+        var checkARIA = function (file, row) {
             jqUnit.assertEquals("The added row should have an aria-label attribute on it containing descriptive text about the file.",
-                                file.name + " " + fluid.uploader.formatFileSize(file.size) + " " + statusStr, row.attr("aria-label"));
+                                file.name + " " + fluid.uploader.formatFileSize(file.size), row.attr("aria-label"));
         };
 
         // Reusable test functions
@@ -94,7 +94,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("The added row should have the correct class on the file action button.", fileIconBtn.hasClass(q.options.styles.remove));
             jqUnit.assertEquals("The added row should have the correct aria label for the file action button.", q.options.strings.buttons.remove, fileIconBtn.attr("aria-label"));
 
-            checkARIA(file, row, q.options.strings.status.remove);
+            checkARIA(file, row);
         };
 
         var createFileQueue = function () {

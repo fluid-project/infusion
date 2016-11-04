@@ -24,10 +24,18 @@ themes = {
     }
 }
 
+slider-thumb-common-contrastTheme() {
+    background: none;
+    background-color: fColor;
+    box-shadow: none !important;
+}
+
 build-themes-prefsEditor(contrastThemes) {
+
     for themeName in contrastThemes {
         fColor = contrastThemes[themeName].foregroundColor;
         bColor = contrastThemes[themeName].backgroundColor;
+
 
         {themeName} {
             .fl-prefsEditor {
@@ -38,9 +46,21 @@ build-themes-prefsEditor(contrastThemes) {
 
                     a, a:hover,
                     .fl-slider-handle, .fl-slider-handle:hover {
-                        border:1px solid fColor;
-                        background-color: bColor;
-                        background-image: none;
+                        slider-thumb-common-contrastTheme();
+                    }
+                }
+
+                input[type=range].fl-slider {
+                    background: none;
+                    background-color: fColor;
+                    &::-webkit-slider-thumb {
+                        slider-thumb-common-contrastTheme();
+                    }
+                    &::-moz-range-thumb {
+                        slider-thumb-common-contrastTheme();
+                    }
+                    &::-ms-thumb {
+                        slider-thumb-common-contrastTheme();
                     }
                 }
 

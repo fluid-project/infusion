@@ -122,21 +122,67 @@
             display:block;
             top:0;
             left:0;
-            height: 1.5em;
-            width: 1.5em;
             margin-top: -0.4em;
             margin-left: -0.4em;
-            background-color: #fff;
-            border: 1px solid #b3b3b3;
-            border-radius: 2em;
-            box-shadow: 4px 2px 3px rgba(0,0,0,0.3);
-            background-image: linear-gradient(right top, rgb(255,255,255) 46%, rgb(233,234,234) 73%);
+            slider-thumb-common();
 
             &:active {
                 outline: none;
             }
         }
     }
+
+    // Native slider appearance
+    // based on techniques described at https://css-tricks.com/styling-cross-browser-compatible-range-inputs-css/
+    // and http://brennaobrien.com/blog/2014/05/style-input-type-range-in-every-browser.html
+
+    input[type=range].fl-slider {
+        -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
+        // Native slider thumb appearance
+        &::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            slider-thumb-common();
+        }
+
+        &::-moz-range-thumb {
+            slider-thumb-common();
+        }
+
+        &::-ms-thumb {
+            slider-thumb-common();
+        }
+        // Native slider track appearance
+        // We hide any inherent track styling and let the styles
+        // set with the fl-slider class be used without interference
+        // from native widget styling
+
+        &::-webkit-slider-runnable-track {
+            slider-native-track-common();
+        }
+
+        &::-moz-range-track {
+            slider-native-track-common();
+        }
+
+        &::-ms-track {
+            slider-native-track-common();
+            color: transparent;
+        }
+
+        &::-ms-fill-lower {
+            background: none;
+            background-color: transparent;
+            border: 0;
+        }
+
+        &::-ms-fill-upper {
+            background: none;
+            background-color: transparent;
+            border: 0;
+        }
+
+    }
+
     .fl-slider-horz {
         width: 9em;
     }
