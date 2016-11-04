@@ -44,18 +44,16 @@
         <div class="flc-uploader-container">
             <form class="flc-uploader fl-uploader fl-progEnhance-enhanced" method="get" enctype="multipart/form-data">
 
-                <!-- File Queue, which is split up into two separate tables: one for the header and body -->
-                <table class="fl-uploader-header">
-                       <tr>
-                        <th class="fl-uploader-file-name">File Name</th>
-                        <th class="fl-uploader-file-size">Size</th>
-                        <th class="fl-uploader-file-actions"></th>
-                    </tr>
-                </table>
-
-                <!-- File Queue body, which is the default container for the FileQueueView component -->
+                <!-- File Queue body -->
                 <table class="flc-uploader-queue fl-uploader-queue">
                     <caption class="fl-hidden-accessible">File Upload Queue:</caption>
+                    <thead class="fl-uploader-header">
+                        <tr>
+                         <th class="fl-uploader-file-name">File Name</th>
+                         <th class="fl-uploader-file-size">Size</th>
+                         <th class="fl-uploader-file-actions"></th>
+                     </tr>
+                    </thead>
                     <tbody>
                         <!-- Template for file row -->
                         <tr class="flc-uploader-file-tmplt flc-uploader-file">

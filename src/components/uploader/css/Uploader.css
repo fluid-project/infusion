@@ -15,8 +15,9 @@
 }
 
 /* Header table */
-table.fl-uploader-header {
+table .fl-uploader-header {
     width: 100%;
+    display: block;
     border-bottom: 1px solid #999;
     color: #333;
     font-size: 0.9em;
@@ -28,17 +29,18 @@ table.fl-uploader-header {
 }
 
 .fl-uploader-header th {
-    text-align: left;
     border: none;
+    padding: 0 6px;
 }
 
 
 .fl-uploader-header th.fl-uploader-file-name {
-    width:27em;
+    text-align: left;
+    width:26em;
 }
 
-.fl-uploader-header .fl-uploader-file-size {
-    text-align: right;
+.fl-uploader-header th.fl-uploader-file-size {
+    width: 6em;
     white-space: nowrap;
 }
 
@@ -70,10 +72,12 @@ table.fl-uploader-header {
 table.fl-uploader-queue {
     margin: 0;
     border-spacing: 0px;
+    table-layout: fixed;
+    width: 100%;
 }
 
 
-.fl-uploader-queue tr.fl-uploader-dim {
+.fl-uploader-queue tbody tr.fl-uploader-dim {
     color: #666;
 }
 
@@ -83,11 +87,12 @@ table.fl-uploader-queue {
     font-size: 0.9em;
 }
 
-.fl-uploader-queue tr:focus, .fl-uploader-queue tr.fl-uploader-file-state-ready:hover {
+.fl-uploader-queue tbody tr:focus,
+.fl-uploader-queue tbody tr.fl-uploader-file-state-ready:hover {
     background-color: #FFF9DC;
 }
 
-.fl-uploader-queue td {
+.fl-uploader-queue tbody td {
     border: none;
     border-bottom: 1px solid #C5C5C5;
     margin: 0px;
@@ -95,25 +100,28 @@ table.fl-uploader-queue {
     padding: 3px 6px;
 }
 
-.fl-uploader-queue td.fl-uploader-file-name {
+.fl-uploader-queue tbody td.fl-uploader-file-name {
     width: 26em;
+    max-width: 26em;
+    word-wrap: break-word;
     overflow: hidden;
     font-weight:normal;
 }
 
-.fl-uploader-queue .fl-uploader-file-size {
+.fl-uploader-queue tbody .fl-uploader-file-size {
     text-align: right;
     white-space: nowrap;
     width: 6em;
 }
 
 /* file queue action column */
-.fl-uploader-queue .fl-uploader-file-actions, .fl-uploader-header .fl-uploader-file-actions {
+.fl-uploader-queue tbody .fl-uploader-file-actions,
+.fl-uploader-header thead .fl-uploader-file-actions {
     padding-right:15px;
     white-space: nowrap;
     text-align: center;
 }
-.fl-uploader-queue .fl-uploader-file-actions .fl-uploader-dim {
+.fl-uploader-queue tbody .fl-uploader-file-actions .fl-uploader-dim {
     border: 1px solid transparent;
     background-color: transparent;
     cursor: auto;
@@ -151,7 +159,8 @@ table.fl-uploader-queue {
 }
 
 
-.fl-uploader-file-actions .fl-uploader-file-action-remove:hover, tr:focus .fl-uploader-file-actions .fl-uploader-file-action-remove {
+.fl-uploader-file-actions .fl-uploader-file-action-remove:hover,
+tr:focus .fl-uploader-file-actions .fl-uploader-file-action-remove {
     border: 1px solid #CCC;
     background-color: #FFF;
 }
@@ -274,7 +283,8 @@ html>body .fl-uploader span.fl-uploader-browse {
     background-color: #FFF;
 }
 
-.fl-uploader span.fl-uploader-browse:focus, .fl-uploader span.fl-uploader-browse.focus {
+.fl-uploader span.fl-uploader-browse:focus,
+.fl-uploader span.fl-uploader-browse.focus {
     outline: 2px solid #142B8C;
     background-color: #FFF;
 }
@@ -335,7 +345,8 @@ html>body .fl-uploader span.fl-uploader-browse {
 }
 
 /* disabled button */
-.fl-uploader-buttons .fl-uploader-dim, .fl-uploader-buttons .fl-uploader-dim:hover {
+.fl-uploader-buttons .fl-uploader-dim,
+.fl-uploader-buttons .fl-uploader-dim:hover {
     background-color: #767676;
     border-color: #666666;
     cursor: auto;
@@ -344,7 +355,9 @@ html>body .fl-uploader span.fl-uploader-browse {
 /*
  * Progess bars
  */
-.fl-uploader-file-progress, .fl-uploader-total-progress-okay, .fl-uploader-total-progress-errored {
+.fl-uploader-file-progress,
+.fl-uploader-total-progress-okay,
+.fl-uploader-total-progress-errored {
     position: absolute;
     display: none;
     background-attachment: scroll;
