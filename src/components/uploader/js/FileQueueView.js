@@ -223,13 +223,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     fluid.uploader.fileQueueView.refreshAfterUpload = function (that) {
-        var fileRows = that.locate("fileRows");
-        var rowButtons = that.locate("fileIconBtn", fileRows);
+        var rows = that.locate("fileRows");
+        var rowButtons = that.locate("fileIconBtn", rows);
         // only re-enable rowButtons for files that have not been uploaded.
         rowButtons.each(function (index, rowButton) {
-            rowButton = $(rowButton);
             // TODO: Improve detection of completed files so as not to rely on row styling.
-            rowButton.prop("disabled", fileRows.eq(index).hasClass(that.options.styles.uploaded));
+            $(rowButton).prop("disabled", rows.eq(index).hasClass(that.options.styles.uploaded));
         });
         rowButtons.removeClass(that.options.styles.dim);
         fluid.uploader.fileQueueView.enableRows(that.locate("fileRows"), true);
@@ -247,11 +246,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         fluid.enabled(row, false);
 
         // update the click event and the styling for the file delete button
-        var removeRowBtn = that.locate("fileIconBtn", row);
-        removeRowBtn.prop("disabled", true);
-        removeRowBtn.off("click");
-        removeRowBtn.removeClass(that.options.styles.remove);
-        removeRowBtn.attr("title", that.options.strings.status.success);
+        var rowButton = that.locate("fileIconBtn", row);
+        rowButton.prop("disabled", true);
+        rowButton.off("click");
+        rowButton.removeClass(that.options.styles.remove);
+        rowButton.attr("title", that.options.strings.status.success);
     };
 
     fluid.uploader.fileQueueView.renderErrorInfoFromTemplate = function (that, fileRow, error) {

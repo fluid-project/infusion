@@ -181,7 +181,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("Button should be disabled. ",
                                 rowButtons.prop("disabled"));
 
-            //assume upload is stopped, but file not uploaded. call refreshAfterUpload
+            // Simulates the workflow where an upload is started but the stopped
+            // before any files have completed uploading.
+            // prepareForUpload -> "upload interrupted" -> refreshAfterUpload
             q.refreshAfterUpload();
             jqUnit.assertFalse("Button should be enabled.", rowButtons.prop("disabled"));
         });
@@ -227,6 +229,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             var q = createFileQueue();
             q.addFile(mountainTestFile);
+            q.prepareForUpload(mountainTestFile);
             q.markFileComplete(mountainTestFile);
 
             var row = q.container.find("#" + mountainTestFile.id);
@@ -241,6 +244,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("Remove file button should be disabled", rowButton.prop("disabled"));
 
             //assume upload is done. call refreshAfterUpload
+            // Simulates the workflow where an upload is started and completed
+            // prepareForUpload -> markFileComplete -> refreshAfterUpload
             q.refreshAfterUpload();
             jqUnit.assertTrue("Remove file button should still be disabled after upload finished. ", rowButton.prop("disabled"));
         });
