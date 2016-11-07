@@ -181,10 +181,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("Button should be disabled. ",
                                 rowButtons.prop("disabled"));
 
-            //assume upload is done. call refreshAfterUpload
+            //assume upload is stopped, but file not uploaded. call refreshAfterUpload
             q.refreshAfterUpload();
-            jqUnit.assertFalse("Button should be disabled. ",
-                                rowButtons.prop("disabled"));
+            jqUnit.assertFalse("Button should be enabled.", rowButtons.prop("disabled"));
         });
 
         jqUnit.test("File Progress Percentage test", function () {
@@ -224,18 +223,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.test("Mark file complete test", function () {
-            jqUnit.expect(2);
+            jqUnit.expect(4);
 
             var q = createFileQueue();
             q.addFile(mountainTestFile);
             q.markFileComplete(mountainTestFile);
+
+            var row = q.container.find("#" + mountainTestFile.id);
+            var rowButton = row.find("button");
 
             jqUnit.assertEquals("Progress should be 100. ",
                                 100,
                                 q.fileProgressors[mountainTestFile.id + "_progress"].storedPercent);
 
             jqUnit.assertTrue("Row state should be changed when row is marked as completed. ",
-                                q.container.find("#" + mountainTestFile.id).hasClass(q.options.styles.uploaded));
+                                row.hasClass(q.options.styles.uploaded));
+            jqUnit.assertTrue("Remove file button should be disabled", rowButton.prop("disabled"));
+
+            //assume upload is done. call refreshAfterUpload
+            q.refreshAfterUpload();
+            jqUnit.assertTrue("Remove file button should still be disabled after upload finished. ", rowButton.prop("disabled"));
         });
 
         jqUnit.test("Show error for files", function () {
