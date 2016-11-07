@@ -166,6 +166,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             progressBar.update(null, "");
             jqUnit.assertTrue("After updating text with an empty string, the label should be empty",
                  progressBar.label.text() === "");
+            // 4.8
+            // update with string template
+            progressBar.update(10, "%percentComplete% Complete");
+            jqUnit.assertTrue("After updating text with an string template, the label should include the rendered temlpate",
+                 progressBar.label.text() === "10% Complete");
         });
 
         jqUnit.module("Progress Tests (No animation)");
