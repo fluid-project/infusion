@@ -247,7 +247,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
         // update the click event and the styling for the file delete button
         var rowButton = that.locate("fileIconBtn", row);
-        rowButton.prop("disabled", true);
         rowButton.off("click");
         rowButton.removeClass(that.options.styles.remove);
         rowButton.attr("title", that.options.strings.status.success);
