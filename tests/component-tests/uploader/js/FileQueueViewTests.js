@@ -181,7 +181,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("Button should be disabled. ",
                                 rowButtons.prop("disabled"));
 
-            // Simulates the workflow where an upload is started but the stopped
+            // Simulates the workflow where an upload is started but then stopped
             // before any files have completed uploading.
             // prepareForUpload -> "upload interrupted" -> refreshAfterUpload
             q.refreshAfterUpload();
