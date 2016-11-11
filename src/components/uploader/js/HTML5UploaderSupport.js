@@ -275,8 +275,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         // on the fileInput so that it will open the OS's file dialog.
         // Using `navigator.msLaunchUri` to browser detect IE11 and MS Edge, because
         // it is exclusive to Microsoft browsers for IE 10 and later. This hack
-        // is only needed for IE 11 and MS Edge, and for Firefox this trips the
-        // pop-up blocker.
+        // is only needed for IE 11 and MS Edge. If the it is executed on Firefox,
+        // Firefox treats the file dialog as a popup, which is caught by the popup
+        // blocker.
         if (navigator.msLaunchUri) {
             fileInput.on("keydown", function (event) {
                 if (event.keyCode === $.ui.keyCode.ENTER) {
