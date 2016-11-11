@@ -36,6 +36,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
+    // FLUID-6056 ( https://issues.fluidproject.org/browse/FLUID-6056 )
+    // Using `navigator.msLaunchUri` to browser detect IE10+ and MS Edge, because
+    // it is exclusive to Microsoft browsers for IE 10 and later.
+    fluid.registerNamespace(fluid.uploader.html5.browser);
+    fluid.uploader.html5.browser.isMS = !!navigator.msLaunchUri;
+
     // TODO: The following two or three functions probably ultimately belong on a that responsible for
     // coordinating with the XHR. A fileConnection object or something similar.
 
@@ -273,12 +279,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         // the "Enter" key triggers a form submission. The workaround implemented
         // here is to translate the input from the "Enter" key into a click event
         // on the fileInput so that it will open the OS's file dialog.
-        // Using `navigator.msLaunchUri` to browser detect IE11 and MS Edge, because
-        // it is exclusive to Microsoft browsers for IE 10 and later. This hack
-        // is only needed for IE 11 and MS Edge. If the it is executed on Firefox,
-        // Firefox treats the file dialog as a popup, which is caught by the popup
-        // blocker.
-        if (navigator.msLaunchUri) {
+        // This hack is only needed for IE 11 and MS Edge. If the it is executed on
+        // Firefox because Firefox treats the file dialog as a popup, which is
+        // caught by the popup blocker.
+        if (fluid.uploader.html5.browser.isMS) {
             fileInput.on("keydown", function (event) {
                 if (event.keyCode === $.ui.keyCode.ENTER) {
                     event.preventDefault();
