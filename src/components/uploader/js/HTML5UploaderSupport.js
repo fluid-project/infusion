@@ -39,7 +39,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     // FLUID-6056 ( https://issues.fluidproject.org/browse/FLUID-6056 )
     // Using `navigator.msLaunchUri` to browser detect IE10+ and MS Edge, because
     // it is exclusive to Microsoft browsers for IE 10 and later.
-    fluid.registerNamespace(fluid.uploader.html5.browser);
+    fluid.registerNamespace("fluid.uploader.html5.browser");
     fluid.uploader.html5.browser.isMS = !!navigator.msLaunchUri;
 
     // TODO: The following two or three functions probably ultimately belong on a that responsible for
