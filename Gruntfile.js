@@ -323,7 +323,7 @@ module.exports = function (grunt) {
         var tasks = [
             "clean",
             "lint",
-            "stylus:dist",
+            "stylus:compile",
             "modulefiles:" + target,
             "setPostBuildCleanUp:" + target,
             "pathMap:" + target,
@@ -354,7 +354,7 @@ module.exports = function (grunt) {
         var concatTask = options.compress ? "uglify:" : "concat:";
         var tasks = [
             "cleanForDist",
-            "stylus",
+            "stylus:dist",
             "modulefiles:" + options.target,
             "pathMap:" + options.target,
             "copy:" + options.target,
