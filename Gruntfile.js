@@ -62,6 +62,7 @@ module.exports = function (grunt) {
             build: "build",
             products: "products",
             stylus: "src/framework/preferences/css/*.css",
+            stylusDist: "dist/assets/**/stylus", // removes the empty stylus directory from the distribution
             ciArtifacts: ["*.tap"],
             dist: "dist",
             postBuild: {
@@ -323,7 +324,7 @@ module.exports = function (grunt) {
         var tasks = [
             "clean",
             "lint",
-            "stylus:dist",
+            "stylus:compile",
             "modulefiles:" + target,
             "setPostBuildCleanUp:" + target,
             "pathMap:" + target,
@@ -354,7 +355,7 @@ module.exports = function (grunt) {
         var concatTask = options.compress ? "uglify:" : "concat:";
         var tasks = [
             "cleanForDist",
-            "stylus",
+            "stylus:dist",
             "modulefiles:" + options.target,
             "pathMap:" + options.target,
             "copy:" + options.target,
@@ -376,7 +377,7 @@ module.exports = function (grunt) {
         grunt.task.run(tasks);
     });
 
-    grunt.registerTask("cleanForDist", ["clean:build", "clean:products", "clean:stylus", "clean:ciArtifacts"]);
+    grunt.registerTask("cleanForDist", ["clean:build", "clean:products", "clean:stylus", "clean:stylusDist", "clean:ciArtifacts"]);
     grunt.registerTask("buildStylus", ["clean:stylus", "stylus:compile"]);
 
     grunt.registerTask("default", ["build:all"]);
