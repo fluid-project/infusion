@@ -1,8 +1,8 @@
 # Release Notes for Fluid Infusion 2.0 #
 
-[Main Project Site](http://fluidproject.org)
+[Fluid Project](http://fluidproject.org)
 
-[Documentation](https://github.com/fluid-project/infusion-docs)
+[Infusion Documentation](https://github.com/fluid-project/infusion-docs)
 
 ## What's New in 2.0.0? ##
 
@@ -16,12 +16,10 @@ See [API Changes from 1.5 to 2.0](http://docs.fluidproject.org/infusion/developm
 * [FLUID-5241: New "ContextAwareness" grades and API](https://issues.fluidproject.org/browse/FLUID-5241)
     * [FLUID-5264: progressiveCheckerForComponent does not respond at instantiation](https://issues.fluidproject.org/browse/FLUID-5264) (implementation is abolished)
 * [FLUID-5733: `fluid.notImplemented` function for implementing abstract grades](https://issues.fluidproject.org/browse/FLUID-5733)
-* [FLUID-4884: New `FluidViewDebugging.js` implementation for DOM-directed browsing of IoC tree](https://issues.fluidproject.org/browse/FLUID-4884)
 * [FLUID-5506: Constraint-based priority scheme to compute order of notifying listeners (and others)](https://issues.fluidproject.org/browse/FLUID-5506)
 
 ### Bug Fixes and Improvements
 
-* [FLUID-5668: Corruption when material written for `members` requires merging](https://issues.fluidproject.org/browse/FLUID-5668)
 * [FLUID-5714: The framework does not correctly merge invoker specifications when both "func" and "funcName" are used](https://issues.fluidproject.org/browse/FLUID-5714)
     * [FLUID-5184: Cannot override a this-ist invoker with a that-ist one](https://issues.fluidproject.org/browse/FLUID-5184)
 * [FLUID-5621: Improve `distributeOptions` so that priority of distributions can be precisely controlled](https://issues.fluidproject.org/browse/FLUID-5621)
@@ -48,7 +46,7 @@ See [API Changes from 1.5 to 2.0](http://docs.fluidproject.org/infusion/developm
 ## What's New in 1.9 ##
 
 **Note** 1.9 was never (so far) an official release of Infusion, but was a "last ditch" branching point to record the state of the framework should
-we ever in future require to make a release or backport fixes to a version of Infusion API compatible with the latest 1.x line, most particularly 1.5.x.
+we ever require to make a release or backport fixes to a version of Infusion API compatible with the latest 1.x line, most particularly 1.5.x.
 It is stored in github at [Infusion 1.9.x](https://github.com/fluid-project/infusion/tree/1.9.x)
 
 This list of JIRAs is nonexhaustive since work has accumulated in trunk for several years since the 1.5 Infusion release. These are some of the more significant recent fixes,
@@ -70,23 +68,20 @@ currently not including work on the preferences framework:
 * [FLUID-5659: Failure to notify multiple relay rules](https://issues.fluidproject.org/browse/FLUID-5659)
 * [FLUID-5599: Expand the message bundle system to be able to locate the bundle for a requested language](https://issues.fluidproject.org/browse/FLUID-5599)
 
-## Downloading Infusion ##
+## Obtaining Infusion ##
 
-You can dowload the source code for Infusion from [GitHub](https://github.com/fluid-project/infusion).
+* [Fork on GitHub](https://github.com/fluid-project/infusion)
+* [Download a Build](https://github.com/fluid-project/infusion/releases)
+* [NPM](https://www.npmjs.com/package/infusion)
 
 You can create your own custom build of Infusion using the [grunt build script](README.md#how-do-i-create-an-infusion-package):
 
 ## Demos ##
 
-Infusion ships with a demos for seeing all of the components in action. You can
-find them in the _**demos**_ folder in the release bundle or on our [build site](http://build.fluidproject.org/).
+Infusion ships with demos of all of the components in action. You can find them in the _**demos**_ folder in the release bundle or on our [build site](http://build.fluidproject.org/).
 
-When run from a local file system, several of these demos require you to enable local file AJAX
-in Firefox and Chrome:
-
-* https://wiki.fluidproject.org/display/fluid/Browser+settings+to+support+local+Ajax+calls
-* http://kb.mozillazine.org/Security.fileuri.strict_origin_policy
-* http://ejohn.org/blog/tightened-local-file-security/
+When running from your local machine, it is recommended to use a web server for accesing the demos. Several of the demos make use of AJAX calls; which typically are not allowed by
+the browser when run from the local file system.
 
 ## License ##
 
@@ -100,89 +95,52 @@ More information is available in our [wiki](http://wiki.fluidproject.org/display
 This is a list of publicly available software that is redistributed with Fluid Infusion,
 categorized by license:
 
-### MIT License ###
-* [Foundation v6.2.3](http://foundation.zurb.com/index.html)
-* [HTML5 Boilerplate v4.3](http://html5boilerplate.com/)
-* [jQuery v3.1.0](http://jquery.com/)
-* [jQuery UI (Core; Interactions: draggable, resizable; Widgets: button, checkboxradio, controlgroup, dialog, mouse, slider, tabs, and tooltip) v1.12.1](http://ui.jquery.com/)
-* [jQuery QUnit v1.12.0](http://qunitjs.com)
-* [jQuery QUnit Composite v1.0.1](https://github.com/jquery/qunit-composite)
-* [jQuery Mockjax v2.2.1](https://github.com/jakerella/jquery-mockjax)
-* [jQuery scrollTo v1.4.2](http://flesler.blogspot.com/2007/10/jqueryscrollto.html)
-* [jQuery Touch Punch v0.2.2](http://touchpunch.furf.com/)
-* [jquery.simulate](https://github.com/eduardolundgren/jquery-simulate)
-* [jquery.selectbox v0.5 (forked)](https://github.com/fluid-project/jquery.selectbox)
-* [Micro Clearfix](http://nicolasgallagher.com/micro-clearfix-hack/)
-* [Normalize v4.1.1](https://necolas.github.io/normalize.css/)
-* [Buzz v1.1.0](http://buzz.jaysalvat.com)
-* [html5shiv v3.7.2](https://code.google.com/p/html5shiv/)
-
-### zlib/libpng License ###
-* [fastXmlPull is based on XML for Script's Fast Pull Parser v3.1](http://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js)
-
-### ECL 2.0 ###
-* Sample markup and stylesheets from [Sakai v2.5](http://sakaiproject.org)
-
 ### Apache 2.0 ###
 * [Open Sans Light font](http://www.google.com/fonts/specimen/Open+Sans)
+
+### MIT License ###
+* [Buzz v1.1.0](http://buzz.jaysalvat.com)
+* [Foundation v6.2.3](http://foundation.zurb.com/index.html)
+* [HTML5 Boilerplate v4.3](http://html5boilerplate.com/)
+* [html5shiv v3.7.2](https://code.google.com/p/html5shiv/)
+* [jQuery v3.1.0](http://jquery.com/)
+* [jQuery Mockjax v2.2.1](https://github.com/jakerella/jquery-mockjax)
+* [jQuery QUnit v1.12.0](http://qunitjs.com)
+* [jQuery QUnit Composite v1.0.1](https://github.com/jquery/qunit-composite)
+* [jQuery scrollTo v1.4.2](http://flesler.blogspot.com/2007/10/jqueryscrollto.html)
+* [jQuery Touch Punch v0.2.2](http://touchpunch.furf.com/)
+* [jQuery UI (Core; Interactions: draggable, resizable; Widgets: button, checkboxradio, controlgroup, dialog, mouse, slider, tabs, and tooltip) v1.12.1](http://ui.jquery.com/)
+* [jquery.selectbox v0.5 (forked)](https://github.com/fluid-project/jquery.selectbox)
+* [jquery.simulate](https://github.com/eduardolundgren/jquery-simulate)
+* [Micro Clearfix](http://nicolasgallagher.com/micro-clearfix-hack/)
+* [Normalize v4.1.1](https://necolas.github.io/normalize.css/)
 
 ### Public Domain ###
 * Douglas Crockford's [JSON.js (from 2007-11-06)](http://www.json.org/)
 
+### zlib/libpng License ###
+* [fastXmlPull is based on XML for Script's Fast Pull Parser v3.1](http://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js)
+
 ## Documentation ##
 
-We are in the process of migrating our documentation to a new space. The markdown files for the documentation can be found in [github](https://github.com/fluid-project/infusion-docs).
-
-The new space is dedicated to only Infusion documentation, and provides improved navigation.
-
-Some of our documentation remains in the wiki space: Links to these pages are indicated with _**wiki**_. From any of these pages, you can return to the main documentation space using your
-browser's Back button.
+Documentation and tutorials can found on the [Infusion Documentation](http://docs.fluidproject.org/infusion/development/) site.
 
 ## Supported Browsers ##
 
 Infusion 2.0 was tested with the following browsers:
 
-* Chrome current (versions 43-44)
-* Firefox current (versions 39-40)
-* Internet Explorer versions 10 and 11
-* Safari versions ???
+* Chrome current (version 54)
+* Firefox current (versions 49-50)
+* Internet Explorer (version 11)
+* Microsoft Edge (version 38)
+* Safari (version 10)
 
-For more information see the [Fluid Infusion browser support](http://wiki.fluidproject.org/display/docs/Browser+Support) wiki page.
+Additional testing for mobile devices was performed with following:
 
+* Chrome (Android 6.0.1)
+* Safari (iOS 10.1.1)
 
-## Status of Components and Framework Features ##
-
-### Production ###
-
-Supported by tested browsers, and stable for production usage across a wide range of applications and use cases
-
-* Infusion Framework Core
-* Inline Edit: Simple Text
-* Renderer
-* Reorderer: List, Grid, Layout, Image
-* Undo
-
-### Preview ###
-
-Still growing, but with broad browser support. Expect new features in upcoming releases
-
-* IoC
-* Pager
-* Preferences Framework
-* Progress
-* UI Options
-* Uploader
-
-### Sneak Peek ###
-In development; APIs will change. Share your feedback, ideas, and code
-
-* Inline Edit: Dropdown
-* Inline Edit: Rich Text
-* Table of Contents
-* Model Relay
-* Model Transformation
-* Progressive Enhancement
-* etc.
+For more information see the [Fluid Infusion browser support](https://wiki.fluidproject.org/display/fluid/Prior+Browser+Support) wiki page.
 
 ## Known Issues ##
 
