@@ -256,7 +256,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             assembleComponent: {
                 funcName: "fluid.pager.renderedPageList.assembleComponent",
                 args: ["{arguments}.0", "{arguments}.1",
-                   "{pager}.events.initiatePageChange", "{pagerBar}.options.styles.currentPage", "{pagerBar}.options.strings.currentPageIndexMsg"]
+                    "{pager}.events.initiatePageChange", "{pagerBar}.options.styles.currentPage", "{pagerBar}.options.strings.currentPageIndexMsg"]
             }
         },
 
@@ -424,10 +424,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         that.applier.change("pageIndex", newPageIndex);
     };
 
-    fluid.pager.initiatePageSizeChangeListener = function (that, arg) {
-        that.applier.change("pageSize", arg);
-    };
-
     /*******************
      * Pager Component *
      *******************/
@@ -498,19 +494,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             "": "{that}.events.onModelChange.fire({change}.value, {change}.oldValue, {that})"
         },
         listeners: {
-            onCreate: {
-                namespace: "containerRole",
-                "this": "{that}.container",
-                method: "attr",
-                args: ["role", "application"]
-            },
-            initiatePageChange: {
+            "initiatePageChange.updatePageIndex": {
                 funcName: "fluid.pager.initiatePageChangeListener",
                 args: ["{that}", "{arguments}.0"]
             },
-            initiatePageSizeChange: {
-                funcName: "fluid.pager.initiatePageSizeChangeListener",
-                args: ["{that}", "{arguments}.0"]
+            "initiatePageSizeChange.updateModel": {
+                changePath: "pageSize",
+                value: "{arguments}.0"
             }
         },
         invokers: {
