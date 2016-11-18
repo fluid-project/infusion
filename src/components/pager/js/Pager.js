@@ -424,10 +424,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         that.applier.change("pageIndex", newPageIndex);
     };
 
-    fluid.pager.initiatePageSizeChangeListener = function (that, arg) {
-        that.applier.change("pageSize", arg);
-    };
-
     /*******************
      * Pager Component *
      *******************/
@@ -498,13 +494,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             "": "{that}.events.onModelChange.fire({change}.value, {change}.oldValue, {that})"
         },
         listeners: {
-            initiatePageChange: {
+            "initiatePageChange.updatePageIndex": {
                 funcName: "fluid.pager.initiatePageChangeListener",
                 args: ["{that}", "{arguments}.0"]
             },
-            initiatePageSizeChange: {
-                funcName: "fluid.pager.initiatePageSizeChangeListener",
-                args: ["{that}", "{arguments}.0"]
+            "initiatePageSizeChange.updateModel": {
+                changePath: "pageSize",
+                value: "{arguments}.0"
             }
         },
         invokers: {
