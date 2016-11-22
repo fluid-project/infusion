@@ -344,6 +344,9 @@ var fluid_1_4 = fluid_1_4 || {};
         updateQueueSummaryText(that);
         that.statusUpdater();
         renderFileUploadLimit(that);
+
+        // Uploader file queue uses application-style keyboard conventions, so give it a suitable role.
+        that.locate("fileQueue").attr("role", "application");
     };
 
     /**
