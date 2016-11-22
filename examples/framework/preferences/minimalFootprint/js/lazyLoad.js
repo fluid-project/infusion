@@ -27,6 +27,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      */
     fluid.pageEnhancer({
         uiEnhancer: {
+            //  The "fluid.uiEnhancer.starterEnactors" grade mentioned below indicate that the
+            //  "starter" enactors should be used. These correspond to the
+            //  same set of enactors used in a typical UI Options configuration. However, a
+            //  custom set of enactors could be configured instead.
             gradeNames: ["fluid.uiEnhancer.starterEnactors"],
             // The UI Enhancer's Table of Contents uses an HTML template. This tells the component
             // where to find that template.
