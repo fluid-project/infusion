@@ -29,6 +29,12 @@
 
                 // Will load the array of scripts if the "fluid-ui-settings" cookie is found
                 fluid.load.lazyLoadScripts("fluid-ui-settings", [
+                    // Because this example is included in the project repository
+                    // it makes reference to the individual JavaScript files instead of using
+                    // the built single concatenated JavaScript file. However in a context
+                    // where the built file is available these could all be replaced by it.
+                    // e.g. From NPM - "../../../../dist/infusion-all.js"
+                    // e.g. From a Custom Build - "../../../../infusion-custom.js"
                     "../../../../src/lib/jquery/core/js/jquery.js",
                     "../../../../src/lib/jquery/ui/js/jquery-ui.js",
                     "../../../../src/framework/core/js/Fluid.js",
@@ -51,6 +57,7 @@
                     "../../../../src/framework/preferences/js/PrefsEditor.js",
                     "../../../../src/framework/preferences/js/StarterGrades.js",
                     "../../../../src/components/tableOfContents/js/TableOfContents.js",
+
                     "js/lazyLoad.js"
                 ]);
 
