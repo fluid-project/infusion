@@ -741,17 +741,22 @@ var fluid = fluid || fluid_2_0_0;
 
     /**
      *
-     * Convert a string to a Boolean.
+     * Convert a string to a Boolean, for example, when working with HTML form element values.
      *
-     * The following are all `false`: `undefined`, `null`, "", "0", "false"
+     * The following are all false: undefined, null, "", "0", "false", false, 0
      *
-     * Everything else is `true`.
+     * Everything else is true.
      *
      * @param value {String} The value to be interpreted.
      * @returns {Boolean} The interpreted value.
      */
     fluid.transforms.stringToBoolean = function (value) {
-        return !Boolean(value === undefined || value === null || value === "" || value === "0" || value === "false");
+        if (value) {
+            return !Boolean(value === "" || value === "0" || value === "false");
+        }
+        else {
+            return false;
+        }
     };
 
     fluid.defaults("fluid.transforms.stringToBoolean", {
