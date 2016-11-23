@@ -807,7 +807,7 @@ var fluid = fluid || fluid_2_0_0;
      * ```
      * "": {
      *   transform: {
-     *     funcName: "fluid.transforms.objectToString",
+     *     funcName: "fluid.transforms.objectToJSONString",
      *     inputPath: "",
      *     space: 2
      *   }
