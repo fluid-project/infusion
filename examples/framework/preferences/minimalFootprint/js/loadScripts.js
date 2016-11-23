@@ -15,7 +15,8 @@ var fluid = fluid || fluid_2_0_0;
 (function (fluid) {
     "use strict";
 
-    fluid.load = {};
+    // setting up the `fluid.load` namespace
+    fluid.load = fluid.load || {};
 
     /**
      * based on Jake Archibald's example from:
