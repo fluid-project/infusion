@@ -768,7 +768,7 @@ var fluid = fluid || fluid_2_0_0;
      * @returns {string} - A stringified boolean representation of the value.
      */
     fluid.transforms.booleanToString = function (value) {
-        return value ? "true": "false";
+        return value ? "true" : "false";
     };
 
     fluid.defaults("fluid.transforms.booleanToString", {

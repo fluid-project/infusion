@@ -1480,7 +1480,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         targetEvent: null
                     }
                 }
-            },
+            }
         }
     });
 
@@ -1512,7 +1512,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         }
                     }
                 }
-            },
+            }
         }
     });
 
