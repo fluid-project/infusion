@@ -766,7 +766,7 @@ var fluid = fluid || fluid_2_0_0;
     /**
      *
      * Convert any value into a stringified boolean, i. e. either "true" or "false".  Anything that evaluates to
-     * `true` (1, `true`, "non empty string", {}, et. cetera) returns "true".  Anything else (0, `false`, `null`)
+     * true (1, true, "non empty string", {}, et. cetera) returns "true".  Anything else (0, false, null, et. cetera)
      * returns "false".
      *
      * @param value - The value to be converted to a stringified Boolean.
@@ -849,8 +849,11 @@ var fluid = fluid || fluid_2_0_0;
 
     /**
      *
-     * Transform a Date object into a date string using its toISOString method.  Results in date strings that are suitable
-     * for use with both HTML5 "date" inputs and JSON Schema "date" format string validation.
+     * Transform a Date object into a date string using its toISOString method.  Strips the "time" portion away to
+     * produce date strings that are suitable for use with both HTML5 "date" inputs and JSON Schema "date" format
+     * string validation, for example: `2016-11-23`
+     *
+     * If you wish to preserve the time, use `fluid.transforms.dateTimeToString` instead.
      *
      * A non-date object will be treated as `undefined`.
      *
@@ -876,7 +879,8 @@ var fluid = fluid || fluid_2_0_0;
     /**
      *
      * Transform a Date object into a date/time string using its toISOString method.  Results in date strings that are
-     * suitable for use with both HTML5 "dateTime" inputs and JSON Schema "date-time" format string validation.
+     * suitable for use with both HTML5 "dateTime" inputs and JSON Schema "date-time" format string validation, for\
+     * example: `2016-11-23T13:05:24.079Z`
      *
      * A non-date object will be treated as `undefined`.
      *
