@@ -815,7 +815,7 @@ var fluid = fluid || fluid_2_0_0;
      *
      */
     fluid.transforms.objectToJSONString = function (value, transformSpec) {
-        var space   = transformSpec.space || 0;
+        var space = transformSpec.space || 0;
         return JSON.stringify(value, null, space);
     };
 
