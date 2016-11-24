@@ -142,6 +142,180 @@ Additional testing for mobile devices was performed with following:
 
 For more information see the [Fluid Infusion browser support](https://wiki.fluidproject.org/display/fluid/Prior+Browser+Support) wiki page.
 
+### Testing Configurations ####
+
+<table>
+    <summary>Testing Configurations</summary>
+    <thead>
+        <tr>
+            <th rowspan="2">Testing Task</th>
+            <th colspan="5">Desktop Browser</th>
+            <th colspan="2">Mobile Browser</th>
+        </tr>
+        <tr>
+            <th>Chrome</th>
+            <th>Firefox</th>
+            <th>IE 11</th>
+            <th>MS Edge</th>
+            <th>Safari</th>
+            <th>Chrome for Android</th>
+            <th>Safari iOS</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>Run All Unit Tests</th>
+            <td>Chrome 54 (macOS 10.12)</td>
+            <td>Firefox 49 (macOS 10.12)</td>
+            <td>IE 11 (Win 10)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12)</td>
+            <td>Chrome 54 (Android 6.0.1 & 7.0.0)</td>
+            <td>Safari (iOS 10.1.1)</td>
+        </tr>
+        <tr>
+            <th>Smoke Tests - All Manual Tests</th>
+            <td>Chrome 54 (macOS 10.11.6)</td>
+            <td>Firefox 50 (macOS 10.12.1)</td>
+            <td>IE 11 (Win 8.1)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12.1)</td>
+            <td>Chrome 54 (Android 6.0.1)</td>
+            <td>Safari (iOS 10.1.1)</td>
+        </tr>
+        <tr>
+            <th>Smoke Tests - All Demos</th>
+            <td>Chrome 54 (macOS 10.12.1)</td>
+            <td>Firefox 50 (macOS 10.12.1)</td>
+            <td>IE 11 (Win 8.1)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12.1)</td>
+            <td>Chrome 54 (Android 6.0.1)</td>
+            <td>Safari (iOS 10.1.1)</td>
+        </tr>
+        <tr>
+            <th>Smoke Tests - All Examples</th>
+            <td>Chrome 54 (macOS 10.12.1)</td>
+            <td>Firefox 50 (macOS 10.12.1)</td>
+            <td>IE 11 (Win 8.1)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12.1)</td>
+            <td>Chrome 54 (Android 6.0.1)</td>
+            <td>Safari (iOS 10.1.1)</td>
+        </tr>
+        <tr>
+            <th>Inline Edit QA Test Plan - Simple Text</th>
+            <td>Chrome 54 (macOS 10.10)</td>
+            <td>Firefox 49 (openSUSE Linux 42.1)</td>
+            <td>IE 11 (Win 8.1)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12)</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Keyboard Accessibility QA Test Plan</th>
+            <td>Chrome 54 (Win 10)</td>
+            <td>Firefox 49.0.2 (macOS 10.12)</td>
+            <td>IE 11 (Win 8.1)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12)</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Pager QA Test Plan</th>
+            <td>Chrome 54 (Win 10)</td>
+            <td>Firefox 49.0.2 (macOS 10.12)</td>
+            <td>IE 11 (Win 7)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12)</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Progress QA Test Plan</th>
+            <td>Chrome 54 (macOS 10.11.6)</td>
+            <td>Firefox 49.0.2 (macOS 10.12)</td>
+            <td>IE 11 (Win 7)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12)</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Reorderer QA Test Plan - Image Reorderer</th>
+            <td>Chrome 54 (Win 10)</td>
+            <td>Firefox 49.0.2 (macOS 10.12)</td>
+            <td>IE 11 (Win 7)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12)</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Reorderer QA Test Plan - Layout Reorderer</th>
+            <td>Chrome 54 (macOS 10.11.6)</td>
+            <td>Firefox 49.0.2 (macOS 10.12)</td>
+            <td>IE 11 (Win 7)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12)</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Reorderer QA Test Plan - List Reorderer</th>
+            <td>Chrome 54 (macOS 10.11.6)</td>
+            <td>Firefox 49.0.2 (macOS 10.12)</td>
+            <td>IE 11 (Win 7)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12)</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Reorderer QA Test Plan - Grid Reorderer</th>
+            <td>Chrome 54 (macOS 10.11.6)</td>
+            <td>Firefox 49.0.2 (macOS 10.12)</td>
+            <td>IE 11 (Win 7)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12)</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Preferences Framework QA Test Plan</th>
+            <td>Chrome 54 (Win 10)</td>
+            <td>Firefox 49.0.2 (macOS 10.12)</td>
+            <td>IE 11 (Win 7)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12)</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>UI Options QA Test Plan - Separated Panel</th>
+            <td>Chrome 54 (Win 10)</td>
+            <td>Firefox 49.0.2 (Win 10)</td>
+            <td>IE 11 (Win 7)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12)</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Uploader QA Test Plan</th>
+            <td>Chrome 54 (macOS 10.12.1)</td>
+            <td>Firefox 49.0.2 (macOS 10.12.1)</td>
+            <td>IE 11 (Win 10)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12.1)</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+    </tbody>
+</table>
+
 ## Known Issues ##
 
 The Fluid Project uses a [JIRA](http://issues.fluidproject.org) website to track bugs. Some of the known issues in this release are described here:
