@@ -135,7 +135,7 @@ Infusion 2.0 was tested with the following browsers:
 * Microsoft Edge (version 38)
 * Safari (version 10)
 
-Additional testing for mobile devices was performed with following:
+Additional testing for mobile devices was performed with the following:
 
 * Chrome (Android 6.0.1)
 * Safari (iOS 10.1.1)
@@ -322,35 +322,48 @@ The Fluid Project uses a [JIRA](http://issues.fluidproject.org) website to track
 
 ### Framework ###
 
+* [FLUID-5912: "{arguments}" IoC references in dynamicComponents model block are incorrectly interpreted as implicit model relays](https://issues.fluidproject.org/browse/FLUID-5912)
+* [FLUID-5546: Framework fails to deregister listeners to events which are injected from other components](https://issues.fluidproject.org/browse/FLUID-5546)
 * [FLUID-5519: Timing of "initial transaction" in new model relay system is problematic](https://issues.fluidproject.org/browse/FLUID-5519)
 
 ### Inline Edit ###
 
+* [FLUID-5392: Two clicks required to edit an empty inline edit field](https://issues.fluidproject.org/browse/FLUID-5392)
 * [FLUID-1600: Pressing the "Tab" key to exit edit mode places focus on the wrong item](http://issues.fluidproject.org/browse/FLUID-1600)
 
 ### Layout Reorderer ###
 * [FLUID-3864: Layout Reorderer failed to move portlets back to the first column in three-columns view with keyboard](http://issues.fluidproject.org/browse/FLUID-3864)
 * [FLUID-3089: If columns become stacked, can't drag item into lower column](http://issues.fluidproject.org/browse/FLUID-3089)
 
-### Renderer ###
+### Pager ###
 
-* [FLUID-3493: Renderer appears to corrupt templates containing empty tags on Opera (maybe others)](http://issues.fluidproject.org/browse/FLUID-3493)
-* [FLUID-4322: Renderer can corrupt tag nesting structure in some cases with branch containers](http://issues.fluidproject.org/browse/FLUID-4322)
+[FLUID-6081: VoiceOver on Pager doesn't announce the page number when the focus is on a page link](https://issues.fluidproject.org/browse/FLUID-6081)
 
 ### Reorderer ###
 
+* [FLUID-6013: The Grid Reorderer and Image Reorderer are missing ARIA role=row containers](https://issues.fluidproject.org/browse/FLUID-6013)
+* [FLUID-5870: Reorderer demo failures on IE 11](https://issues.fluidproject.org/browse/FLUID-5870)
+* [FLUID-44737: Focus styling persists after moving focus from Reorderer](https://issues.fluidproject.org/browse/FLUID-4437)
 * [FLUID-3925: With no wrapping on, the keyboard movement keystrokes are captured by the browser where a wrap would have occurred.](http://issues.fluidproject.org/browse/FLUID-3925)
 
 ### UI Options / Preferences Framework ###
 
-* [FLUID-4394: Fat Panel UI Options' iFrame HTML page doesn't play nice with a concatenated build of Infusion](http://issues.fluidproject.org/browse/FLUID-4394)
-* [FLUID-4426: Sliding Panel needs ARIA and/or to move focus to beginning of panel when opened to alert screen readers of new content](http://issues.fluidproject.org/browse/FLUID-4426)
-* [FLUID-4491: Line spacing doesn't affect elements that have a line-height style set](http://issues.fluidproject.org/browse/FLUID-4491)
-* [FLUID-5066: UIO Integrators shouldn't have to edit Infusion's copy of html templates to add panels, css](http://issues.fluidproject.org/browse/FLUID-5066)
-* [FLUID-5218: Prefs editor requires iFrame template to be in the same place as panel templates; it probably shouldn't](http://issues.fluidproject.org/browse/FLUID-5218)
+* [FLUID-5928: Schema and Grade version save preferences to different values](https://issues.fluidproject.org/browse/FLUID-5928)
+* [FLUID-5372: Increasing font size does not increase width of UIO panel](https://issues.fluidproject.org/browse/FLUID-5372)
 * [FLUID-5223: If there's exactly one text field in the prefs editor, pressing enter on most inputs causes the form to submit](http://issues.fluidproject.org/browse/FLUID-5223)
-* [FLUID-5255: ToC template path is not configurable by UIO integrators](http://issues.fluidproject.org/browse/FLUID-5255)
+* [FLUID-5218: Prefs editor requires iFrame template to be in the same place as panel templates; it probably shouldn't](http://issues.fluidproject.org/browse/FLUID-5218)
+* [FLUID-5066: UIO Integrators shouldn't have to edit Infusion's copy of html templates to add panels, css](http://issues.fluidproject.org/browse/FLUID-5066)
+* [FLUID-4491: Line spacing doesn't affect elements that have a line-height style set](http://issues.fluidproject.org/browse/FLUID-4491)
+* [FLUID-4394: Separated Panel UI Options' iFrame HTML page (SeparatedPanelFrame.html) doesn't play nice with a concatenated build of Infusion](http://issues.fluidproject.org/browse/FLUID-4394)
 
 ### Undo ###
 
 * [FLUID-3697: Undo hard-codes selector classes instead of using user-configured values](http://issues.fluidproject.org/browse/FLUID-3697)
+
+### Uploader ###
+
+* [FLUID-6079: Uploader error, when chosen files are too large, is not read by screenreader](https://issues.fluidproject.org/browse/FLUID-6079)
+* [FLUID-6065: The focus remains on the "Browse Files" button with 2 keyboard tabbings in IE 11 and IE Edge](https://issues.fluidproject.org/browse/FLUID-6065)
+* [FLUID-6045: The table header scrolls out of view as the file queue is scrolled](https://issues.fluidproject.org/browse/FLUID-6045)
+* [FLUID-5737: Uploading size is higher than total size](https://issues.fluidproject.org/browse/FLUID-5737)
+* [FLUID-4726: Cannot change uploader's button text through the string options.](https://issues.fluidproject.org/browse/FLUID-4726)
