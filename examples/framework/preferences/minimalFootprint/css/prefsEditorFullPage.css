@@ -1,0 +1,33 @@
+body {
+    font-family: "Myriad Pro", Helvetica, Tahoma, Verdana, sans-serif;
+}
+
+main.content {
+    width: 95%;
+    max-width: none;
+    margin: 0;
+    padding-left: 2rem;
+}
+
+h1 {
+    font-size: 1.4em;
+    margin-bottom: 1em;
+    font-weight: bold;
+}
+
+.demo-backButton {
+    padding: 20px 0px;
+}
+
+.demo-backButton a {
+    padding: 10px;
+    background-color: #3E606F;
+    color: #FFFFFF;
+    border: 2px solid #3E606F;
+    text-decoration: none;
+}
+
+.demo-backButton a:before {
+    content: "⇦";
+    padding-right: 5px;
+}
