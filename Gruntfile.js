@@ -26,10 +26,10 @@ var execSync = require("child_process").execSync;
  */
 var getFromExec = function (command, options) {
     var result = options.defaultValue;
-    var stdio = options.verbose ? "pipe" : "ignore";
+    var stderr = options.verbose ? "pipe" : "ignore";
 
     try {
-        result = execSync(command, {stdio: stdio });
+        result = execSync(command, {stdio: ["pipe", "pipe", stderr]});
     } catch (e) {
         if (options.verbose) {
             console.log("Error executing command: " + command);
