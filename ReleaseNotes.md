@@ -86,6 +86,7 @@ This is a list of publicly available software that is redistributed with Fluid I
 categorized by license:
 
 ### Apache 2.0 ###
+* [`fluid.load.scripts` is based on Jake Archibald's script loading example](http://www.html5rocks.com/en/tutorials/speed/script-loading/#toc-dom-rescue)
 * [Open Sans Light font](http://www.google.com/fonts/specimen/Open+Sans)
 
 ### MIT License ###
