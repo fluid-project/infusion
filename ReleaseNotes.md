@@ -6,67 +6,57 @@
 
 ## What's New in 2.0.0? ##
 
-See [API Changes from 1.5 to 2.0](http://docs.fluidproject.org/infusion/development/APIChangesFrom1_5To2_0.html) on the Infusion docs site, as well as
-[Deprecations in 1.5](http://docs.fluidproject.org/infusion/development/DeprecationsIn1_5.html).
+See [API Changes from 1.5 to 2.0](http://docs.fluidproject.org/infusion/development/APIChangesFrom1_5To2_0.html) and [Deprecations in 1.5](http://docs.fluidproject.org/infusion/development/DeprecationsIn1_5.html) on the [Infusion Documentation](https://github.com/fluid-project/infusion-docs) site.
+
+For a complete list of Fixes and Improvements see the [Version 2.0](https://issues.fluidproject.org/projects/FLUID/versions/10041) summary in the [JIRA](https://issues.fluidproject.org) issue tracker.
 
 ### New Features
 
-* [FLUID-5249: Instantiation of all components in a single-rooted component tree](https://issues.fluidproject.org/browse/FLUID-5249)
-* [FLUID-5495: IoCSS expressions matching upwards in the first component, and support for root context /](https://issues.fluidproject.org/browse/FLUID-5495)
-* [FLUID-5241: New "ContextAwareness" grades and API](https://issues.fluidproject.org/browse/FLUID-5241)
-    * [FLUID-5264: progressiveCheckerForComponent does not respond at instantiation](https://issues.fluidproject.org/browse/FLUID-5264) (implementation is abolished)
-* [FLUID-5733: `fluid.notImplemented` function for implementing abstract grades](https://issues.fluidproject.org/browse/FLUID-5733)
-* [FLUID-5506: Constraint-based priority scheme to compute order of notifying listeners (and others)](https://issues.fluidproject.org/browse/FLUID-5506)
-
-### Bug Fixes and Improvements
-
-* [FLUID-5714: The framework does not correctly merge invoker specifications when both "func" and "funcName" are used](https://issues.fluidproject.org/browse/FLUID-5714)
-    * [FLUID-5184: Cannot override a this-ist invoker with a that-ist one](https://issues.fluidproject.org/browse/FLUID-5184)
-* [FLUID-5621: Improve `distributeOptions` so that priority of distributions can be precisely controlled](https://issues.fluidproject.org/browse/FLUID-5621)
-* [FLUID-5587: Framework should support namespaced options distributions rather than an array](https://issues.fluidproject.org/browse/FLUID-5587)
-* [FLUID-5226: `fluid.isPlainObject()` is not powerful to detect objects which are only exotic by virtue of constructor](https://issues.fluidproject.org/browse/FLUID-5226)
-* [FLUID-5717: Merge policies contributed via dynamic grades do not operate correctly](https://issues.fluidproject.org/browse/FLUID-5717)
-* [FLUID-5615: Grade closure algorithm for dynamic grades is faulty](https://issues.fluidproject.org/browse/FLUID-5615) (partial fix)
-* [FLUID-5742: Dynamic components do not respond to dynamic `typeName` or `gradeNames`](https://issues.fluidproject.org/browse/FLUID-5742)
-* [FLUID-5694: Diagnostic when injecting component to its own location](https://issues.fluidproject.org/browse/FLUID-5694)
-* [FLUID-5696: Failure to gingerly instantiate injection records](https://issues.fluidproject.org/browse/FLUID-5696)
-* [FLUID-5664: Renderer fails to respect rebinding of model reference](https://issues.fluidproject.org/browse/FLUID-5664)
-* [FLUID-5671: Memory exhaustion possible during `fluid.fail` on node.js (`fluid.prettyPrintJSON`)](https://issues.fluidproject.org/browse/FLUID-5671)
-* [FLUID-5582: Improve flexibility of `fluid.fail` handling further](https://issues.fluidproject.org/browse/FLUID-5582)
-* [FLUID-5667: Circularity in material sent for options expansion is not detected](https://issues.fluidproject.org/browse/FLUID-5667)
-* [FLUID-5711: The Infusion core framework doesn't work when run in a Web Worker](https://issues.fluidproject.org/browse/FLUID-5711)
-* [FLUID-5509: Storing NaN via a "new-style applier" will cause infinite recursion in DataBinding](https://issues.fluidproject.org/browse/FLUID-5509)
-* [FLUID-5675: Text To Speech enactor should be supplied with a mock implementation to facilitate integration testing](https://issues.fluidproject.org/browse/FLUID-5675)
+* Constraint-based priorities, supported by `listeners`, `modelListeners`, `modelRelay`, `distributeOptions`, `contextAwareness`, and `components`
+* Context Awareness - and things it relies on:
+  * Global Instantiator
+    * Every Infusion component, regardless of how it is instantiated, ends up in a single-rooted tree of components
+    * This enables use of modern IoC features such as model relay and declarative event binding
+    * Enables use of the root distributeOptions context "/"
+    * Enables the removal of "demands blocks"
+    * Useful debugging tip: Watch `fluid.globalInstantiator` in your JS debugging tools to see the structure of your application and its tree.
+* `fluid.notImplemented` function for implementing abstract grades
+* [Lazy loading UI Options](http://docs.fluidproject.org/infusion/development/UserInterfaceOptionsAPI.html#lazyload) and instructions for how to use the Prefernces Framework with a [minimal footprint](http://docs.fluidproject.org/infusion/development/tutorial-prefsFrameworkMinimalFootprint/MinimalFootprint.html).
+  * This should assist in improving performance when using the Preferences Framework, particularly for resource intensive sites and applications
+* Much faster invokers and boiled listeners (c. 60x faster)
+* NPM - "dists" directory containing pre-built versions of Infusion
+* Source Maps are generated for the concatenated JavaScript files
+* View oriented IoC debugging tools
+  * FluidViewDebugging.js - include this at the head of your HTML file to get access to the "IoC inspector"
 
 ### Removals
 
-* [FLUID-5616: "init functions" removed from the framework](https://issues.fluidproject.org/browse/FLUID-5616)
-* Also removed: the static and dynamic environments, dynamic invokers, old ChangeApplier, autoInit, etc.
+* Manual lifecycle points finalInit, postInit, etc.
+* Obsolete syntax for arguments, options, etc.
+* `"autoInit"` grade
+* Static and dynamic environments, replaced by Global Instantiator
+* The old model component hierarchy and "old ChangeApplier" implementation
+* `fluid.demands`
+* No more distinction between fast and dynamic invokers
+* Model Relay specific component grades have been removed, model relay now works with any model grade.
+
 
 ## What's New in 1.9 ##
 
-**Note** 1.9 was never (so far) an official release of Infusion, but was a "last ditch" branching point to record the state of the framework should
+**Note:** Infusion 1.9 was never (so far) an official release of Infusion, but was a "last ditch" branching point to record the state of the framework, should
 we ever require to make a release or backport fixes to a version of Infusion API compatible with the latest 1.x line, most particularly 1.5.x.
 It is stored in github at [Infusion 1.9.x](https://github.com/fluid-project/infusion/tree/1.9.x)
 
-This list of JIRAs is nonexhaustive since work has accumulated in trunk for several years since the 1.5 Infusion release. These are some of the more significant recent fixes,
-currently not including work on the preferences framework:
+For a complete list of Fixes and Improvements see the [Version 1.9](https://issues.fluidproject.org/projects/FLUID/versions/10520) summary in the [JIRA](https://issues.fluidproject.org) issue tracker.
+
 
 ### New Features
 
-* [FLUID-5513: Implement "micropromises" to ease manipulation of asynchronous code sequences](https://issues.fluidproject.org/browse/FLUID-5513)
+This list is not exhaustive because work has accumulated in trunk for several years since the 1.5 Infusion release.
 
-### Bug Fixes and Improvements
+* Implemented "micropromises" to ease manipulation of asynchronous code sequences
+* Improved diagnostics when framework is used within node.js
 
-* [FLUID-5662: fluid.fetchResources stalls if defaultLocale and locale are identical, and forceCache option is supplied](https://issues.fluidproject.org/browse/FLUID-5662)
-* [FLUID-5559: onTestCaseStart event can fire multiple times in IoC Testing fixture](https://issues.fluidproject.org/browse/FLUID-5559)
-* [FLUID-5575: Timing of onTestCaseStart event is incorrect](https://issues.fluidproject.org/browse/FLUID-5575)
-* [FLUID-5268: Newly implemented "afterDestroy" event does not function](https://issues.fluidproject.org/browse/FLUID-5268)
-* [FLUID-5475: Improve diagnostics when framework is used within node.js](https://issues.fluidproject.org/browse/FLUID-5475)
-* [FLUID-5512: Allow valueMapper to handle the defaultOutputValue when the transformation is based upon compound input values](https://issues.fluidproject.org/browse/FLUID-5512)
-* [FLUID-5673: Tooltips are not closed by closeAll and accumulate endlessly if some descendents are not part of "items" option](https://issues.fluidproject.org/browse/FLUID-5673)
-* [FLUID-5659: Failure to notify multiple relay rules](https://issues.fluidproject.org/browse/FLUID-5659)
-* [FLUID-5599: Expand the message bundle system to be able to locate the bundle for a requested language](https://issues.fluidproject.org/browse/FLUID-5599)
 
 ## Obtaining Infusion ##
 
