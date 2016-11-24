@@ -109,6 +109,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.module("FileQueueView Tests", {setup: setupFunction});
 
+        jqUnit.test("Initialization", function () {
+            jqUnit.expect(2);
+            var q = createFileQueue();
+
+            jqUnit.assertNotUndefined("The fileQueueView is initialized", q);
+            jqUnit.assertEquals("The application role is added", "application", q.container.attr("role"));
+        });
+
         jqUnit.test("Add file", function () {
             var q = createFileQueue();
 

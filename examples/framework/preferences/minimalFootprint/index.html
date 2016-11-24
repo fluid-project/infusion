@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <link rel="stylesheet" type="text/css" href="../../../../src/lib/normalize/css/normalize.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/framework/core/css/fluid.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/lib/jquery/ui/css/fl-theme-by/by.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/lib/jquery/ui/css/fl-theme-yb/yb.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/lib/jquery/ui/css/fl-theme-bw/bw.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/lib/jquery/ui/css/fl-theme-wb/wb.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/lib/jquery/ui/css/fl-theme-lgdg/lgdg.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/framework/preferences/css/Enactors.css" />
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
+
+        <script type="text/javascript" src="js/loadScripts.js"></script>
+
+        <title>Minimal Footprint - Prefs Framework Integration</title>
+    </head>
+
+    <body class="prefsEditor-demo-theme fl-focus">
+        <div class="demo-goTo-link">
+            <a href="fullPage.html">Go To Display Preferences</a>
+        </div>
+        <main class="fl-centered">
+            <div class="flc-toc-tocContainer toc"> </div>
+
+            <script>
+
+                // Will load the array of scripts if the "fluid-ui-settings" cookie is found
+                fluid.load.lazyLoadScripts("fluid-ui-settings", [
+                    // Because this example is included in the project repository
+                    // it makes reference to the individual JavaScript files instead of using
+                    // the built single concatenated JavaScript file. However in a context
+                    // where the built file is available these could all be replaced by a reference to it.
+                    // e.g. From NPM - "../../../../dist/infusion-all.js"
+                    // e.g. From a Custom Build - "../../../../infusion-custom.js"
+                    "../../../../src/lib/jquery/core/js/jquery.js",
+                    "../../../../src/lib/jquery/ui/js/jquery-ui.js",
+                    "../../../../src/framework/core/js/Fluid.js",
+                    "../../../../src/framework/core/js/FluidDocument.js",
+                    "../../../../src/framework/core/js/FluidRequests.js",
+                    "../../../../src/framework/core/js/FluidDOMUtilities.js",
+                    "../../../../src/framework/core/js/FluidIoC.js",
+                    "../../../../src/framework/core/js/DataBinding.js",
+                    "../../../../src/framework/core/js/ModelTransformation.js",
+                    "../../../../src/framework/core/js/ModelTransformationTransforms.js",
+                    "../../../../src/framework/enhancement/js/ContextAwareness.js",
+                    "../../../../src/framework/core/js/FluidView.js",
+                    "../../../../src/lib/fastXmlPull/js/fastXmlPull.js",
+                    "../../../../src/framework/renderer/js/fluidParser.js",
+                    "../../../../src/framework/renderer/js/fluidRenderer.js",
+                    "../../../../src/framework/renderer/js/RendererUtilities.js",
+                    "../../../../src/framework/preferences/js/Store.js",
+                    "../../../../src/framework/preferences/js/Enactors.js",
+                    "../../../../src/framework/preferences/js/UIEnhancer.js",
+                    "../../../../src/framework/preferences/js/PrefsEditor.js",
+                    "../../../../src/framework/preferences/js/StarterGrades.js",
+                    "../../../../src/components/tableOfContents/js/TableOfContents.js",
+
+                    "js/lazyLoad.js"
+                ]);
+
+            </script>
+
+            <h1>Minimal Footprint - Preferences Framework</h1>
+
+            <p>
+                This demo provides an example of using the preferences framework with a minimal resource footprint.
+                While it is preferable to use the Separated Panel version, which provides a preference editor on each page, this approach illustrates how to improve page load performance. It has the following features:
+                <ul>
+                    <li>uses the grade version of a Full Page prefs editor</li>
+                    <li>lazy loading the UI Enhancer</li>
+                </ul>
+                This code is the basis for the <a href="http://docs.fluidproject.org/infusion/development/tutorial-prefsFrameworkMinimalFootprint/MinimalFootprint.html">Minimal Footprint - Preferences Framework tutorial</a>.
+            </p>
+        </main>
+    </body>
+</html>
