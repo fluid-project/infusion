@@ -33,7 +33,7 @@ The best way to join the Fluid Community is to jump into any of our community ac
 
 ## Where is Infusion Used? ##
 
-The Infusion library is the cornerstone of a number of projects. You can see some of them featured on our [Projects page](http://fluidproject.org/projects.html). Additional integration of Infusion can be found on the [Infusion Integrations](https://wiki.fluidproject.org/display/fluid/Infusion+Integrations) wiki page.
+The Infusion library is the cornerstone of a number of projects. You can see some of them featured on our [Projects page](http://fluidproject.org/projects.html). Additional integrations of Infusion can be found on the [Infusion Integrations](https://wiki.fluidproject.org/display/fluid/Infusion+Integrations) wiki page.
 
 ## How Do I Create an Infusion Package? ##
 
@@ -185,7 +185,7 @@ Please note that any browsers launched will need to remain in the foreground bec
 
 ### Run Tests Using Browsers Installed In a VM ###
 
-If installing Testem is not preferable, a [Fedora VM](https://github.com/idi-ops/packer-fedora) can be automatically created using tools provided by the [Prosperity4All Quality Infrastructure](https://github.com/GPII/qi-development-environments/). After meeting the [QI development VM requirements](https://github.com/GPII/qi-development-environments/#requirements) the ``vagrant up`` command can be used to launch a VM which will contain Testem and several browsers. Typing ``grunt tests`` will run the Infusion tests in the VM and the results will be displayed in your terminal.
+If installing Testem is not desirable, a [Fedora VM](https://github.com/idi-ops/packer-fedora) can be automatically created using tools provided by the [Prosperity4All Quality Infrastructure](https://github.com/GPII/qi-development-environments/). After meeting the [QI development VM requirements](https://github.com/GPII/qi-development-environments/#requirements) the ``vagrant up`` command can be used to launch a VM which will contain Testem and several browsers. Typing ``grunt tests`` will run the Infusion tests in the VM and the results will be displayed in your terminal.
 
 When this VM is first created Chrome and Firefox will be upgraded to the latest versions available in the Fedora and Google package repositories. The ``vagrant provision`` command can be used at a later time to trigger the browser upgrade and general VM provisioning mechanism.
 
