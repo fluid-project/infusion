@@ -2100,7 +2100,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             source: "{that}.model",
             target: "{root}.model.subModel",
             singleTransform: {
-                type: "fluid.identity"
+                type: "fluid.transforms.identity"
             }
         }
     });
@@ -2144,18 +2144,39 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.fluid5585.verifyRelay = function (gradeName, that, testCases) {
+    fluid.tests.fluid5585.verifyBackwardRelay = function (that, testCases) {
+        jqUnit.expect(fluid.keys(testCases).length);
         fluid.each(testCases, function (newModel, caseName) {
             that.sub.applier.fireChangeRequest({path: "", type: "DELETE"});
             that.sub.applier.change("", newModel);
-            jqUnit.assertDeepEq(gradeName + ": the new model value has been relayed properly for " + caseName, newModel, that.relayedModelValue);
+            jqUnit.assertDeepEq("The new model value has been relayed properly for " + caseName, newModel, that.relayedModelValue);
         });
     };
 
-    fluid.tests.fluid5585.runOneConfiguration = function (gradeName) {
-        jqUnit.test("FLUID-5585 - " + gradeName + ": model relay for removing all or part of source value nodes", function () {
-            jqUnit.expect(6);
+    fluid.tests.fluid5585.verifyForwardRelay = function (that, testCases) {
+        jqUnit.expect(fluid.keys(testCases).length);
+        fluid.each(testCases, function (newModel, caseName) {
+            that.applier.fireChangeRequest({path: "subModel", type: "DELETE"});
+            that.applier.change("subModel", newModel);
+            jqUnit.assertDeepEq("The new model value has been relayed properly for " + caseName, newModel, that.sub.model);
+        });
+    };
 
+    fluid.tests.fluid5585.verifyForwardPartialDeleteRelay = function (that) {
+        jqUnit.expect(1);
+        that.applier.fireChangeRequest({path: "subModel.b", type: "DELETE"});
+        jqUnit.assertDeepEq("The new model value has been relayed properly for partial deletion", {a: true}, that.sub.model);
+    };
+
+    fluid.tests.fluid5585.verifyBackwardPartialDeleteRelay = function (that) {
+        jqUnit.expect(1);
+        that.sub.applier.fireChangeRequest({path: "b", type: "DELETE"});
+        jqUnit.assertDeepEq("The new model value has been relayed properly for partial deletion", {a: true}, that.model.subModel);
+    };
+
+    fluid.tests.fluid5585.runOneConfiguration = function (gradeName, verifyFunc) {
+        jqUnit.test("FLUID-5585 - " + gradeName + " with " + verifyFunc + ": model relay for removing all or part of source value nodes", function () {
+            jqUnit.expect(2);
             var that = fluid.tests.fluid5585.root({
                 components: {
                     sub: {
@@ -2167,13 +2188,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
             jqUnit.assertDeepEq(gradeName + ": the initial model value on the source component is set correctly", that.initialModelValue, that.sub.model);
             jqUnit.assertDeepEq(gradeName + ": the initial model value on the target component is set correctly", that.initialModelValue, that.model.subModel);
-            fluid.tests.fluid5585.verifyRelay(gradeName, that, fluid.tests.fluid5585fixtures);
+            fluid.invokeGlobalFunction(verifyFunc, [that, fluid.tests.fluid5585fixtures]);
         });
     };
 
+    fluid.tests.fluid5585.fixtureFuncs = [
+        "fluid.tests.fluid5585.verifyBackwardRelay",
+        "fluid.tests.fluid5585.verifyForwardRelay",
+        "fluid.tests.fluid5585.verifyForwardPartialDeleteRelay",
+        "fluid.tests.fluid5585.verifyBackwardPartialDeleteRelay"
+    ];
 
-    fluid.tests.fluid5585.runOneConfiguration("fluid.tests.fluid5585.explicitRelay");
-    fluid.tests.fluid5585.runOneConfiguration("fluid.tests.fluid5585.implicitRelay");
+    fluid.each(fluid.tests.fluid5585.fixtureFuncs, function (fixtureFunc) {
+        fluid.tests.fluid5585.runOneConfiguration("fluid.tests.fluid5585.explicitRelay", fixtureFunc);
+        fluid.tests.fluid5585.runOneConfiguration("fluid.tests.fluid5585.explicitRelay", fixtureFunc);
+    });
 
     /* FLUID-5586: change records of type DELETE and root path */
     fluid.defaults("fluid.tests.fluid5586root", {
@@ -2429,6 +2458,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return togo;
     };
 
-    fluid.test.runTests(["fluid.tests.fluid5659root"]);
+    // fluid.test.runTests(["fluid.tests.fluid5659root"]);
 
 })(jQuery);
