@@ -13,7 +13,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 "use strict";
 
 var _ = require("lodash");
-var path = require("path");
 var execSync = require("child_process").execSync;
 
 /**
@@ -27,10 +26,10 @@ var execSync = require("child_process").execSync;
  */
 var getFromExec = function (command, options) {
     var result = options.defaultValue;
-    var stdio = options.verbose ? "pipe" : "ignore";
+    var stderr = options.verbose ? "pipe" : "ignore";
 
     try {
-        result = execSync(command, {stdio: stdio });
+        result = execSync(command, {stdio: ["pipe", "pipe", stderr]});
     } catch (e) {
         if (options.verbose) {
             console.log("Error executing command: " + command);
@@ -42,20 +41,33 @@ var getFromExec = function (command, options) {
 
 module.exports = function (grunt) {
 
+    var setBuildSettings = function (settings) {
+        grunt.config.set("buildSettings", {}); // delete previous settings
+        _.forEach(settings, function (value, setting) {
+            var settingPath = ["buildSettings", setting].join(".");
+            grunt.config.set(settingPath, value);
+        });
+    };
+
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
         revision: getFromExec("git rev-parse --verify --short HEAD", {defaultValue: "Unknown revision, not within a git repository"}),
         branch: getFromExec("git rev-parse --abbrev-ref HEAD", {defaultValue: "Unknown branch, not within a git repository"}),
         allBuildName: "<%= pkg.name %>-all",
-        customBuildName: "<%= pkg.name %>-" + (grunt.option("name") || "custom"),
-        isCompressed: !grunt.option("source"),
+        buildSettings: {}, // set by the build tasks
+        customBuildName: "<%= pkg.name %>-<%= buildSettings.name %>",
         banner: "/*!\n <%= pkg.name %> - v<%= pkg.version %>\n <%= grunt.template.today('dddd, mmmm dS, yyyy, h:MM:ss TT') %>\n branch: <%= branch %> revision: <%= revision %>*/\n",
         clean: {
             build: "build",
             products: "products",
             stylus: "src/framework/preferences/css/*.css",
-            ciArtifacts: ["*.tap"]
+            stylusDist: "dist/assets/**/stylus", // removes the empty stylus directory from the distribution
+            ciArtifacts: ["*.tap"],
+            dist: "dist",
+            postBuild: {
+                files: [{}]
+            }
         },
         copy: {
             all: {
@@ -86,6 +98,27 @@ module.exports = function (grunt) {
                         return grunt.file.exists("build/lib/jQuery/");
                     }
                 }]
+            },
+            distJS: {
+                files: [{
+                    expand: true,
+                    cwd: "build/",
+                    src: "<%= allBuildName %>.*",
+                    dest: "dist/"
+                }, {
+                    expand: true,
+                    cwd: "build/",
+                    src: "<%= customBuildName %>.*",
+                    dest: "dist/"
+                }]
+            },
+            distAssets: {
+                files: [{
+                    expand: true,
+                    cwd: "build/",
+                    src: ["src/lib/fonts/**", "src/framework/preferences/fonts/**", "src/framework/preferences/images/**"],
+                    dest: "dist/assets/"
+                }]
             }
         },
         uglify: {
@@ -114,8 +147,8 @@ module.exports = function (grunt) {
             },
             custom: {
                 options: {
-                    exclude: grunt.option("exclude"),
-                    include: grunt.option("include")
+                    exclude: "<%= buildSettings.exclude %>",
+                    include: "<%= buildSettings.include %>"
                 },
                 src: ["src/**/*Dependencies.json"]
             }
@@ -125,25 +158,18 @@ module.exports = function (grunt) {
             // directory paths for copy:custom to ensure that
             // all of the subdirectories and files are copied over
             copyDirs: {
+                files: "<%= copy.custom.files %>",
                 prop: "copy.custom.files.0.src",
                 fn: function (str) {
                     return str + "/**";
                 }
             },
-            // prepend "build/" to all of the file paths for
-            // concat:all to rebase the paths to the build directory
-            concatAllFiles: {
-                prop: "concat.all.src",
+            postBuildClean: {
+                files: "<%= clean.postBuild.files %>",
+                prop: "clean.postBuild.files.0.src",
                 fn: function (str) {
-                    return "build/" + str;
-                }
-            },
-            // prepend "build/" to all of the file paths for
-            // concat:custom to rebase the paths to the build directory
-            concatCustomFiles: {
-                prop: "concat.custom.src",
-                fn: function (str) {
-                    return "build/" + str;
+                    var buildPath = "build/";
+                    return str.startsWith(buildPath) ? str : buildPath + str;
                 }
             }
         },
@@ -156,10 +182,14 @@ module.exports = function (grunt) {
                 sourceMap: true
             },
             all: {
+                nonull: true,
+                cwd: "./build/", // Src matches are relative to this path.
                 src: "<%= modulefiles.all.output.files %>",
                 dest: "./build/<%= allBuildName %>.js"
             },
             custom: {
+                nonull: true,
+                cwd: "./build/", // Src matches are relative to this path.
                 src: "<%= modulefiles.custom.output.files %>",
                 dest: "./build/<%= customBuildName %>.js"
             }
@@ -192,24 +222,58 @@ module.exports = function (grunt) {
         stylus: {
             compile: {
                 options: {
-                    compress: "<%= isCompressed %>"
+                    compress: "<%= buildSettings.compress %>",
+                    relativeDest: ".."
+                },
+                files: [{
+                    expand: true,
+                    src: ["src/**/css/stylus/*.styl"],
+                    ext: ".css"
+                }]
+            },
+            dist: {
+                options: {
+                    compress: "<%= buildSettings.compress %>",
+                    relativeDest: ".."
                 },
                 files: [{
                     expand: true,
                     src: ["src/**/css/stylus/*.styl"],
                     ext: ".css",
-                    rename: function (dest, src) {
-                        // Move the generated css files one level up out of the stylus directory
-                        var dir = path.dirname(src);
-                        var filename = path.basename(src);
-                        return path.join(dir, "..", filename);
-                    }
+                    dest: "dist/assets/"
                 }]
+            }
+        },
+        // grunt-contrib-watch task to watch and rebuild stylus files
+        // automatically when doing stylus development
+        watch: {
+            buildStylus: {
+                files: ["src/**/css/stylus/*.styl", "src/**/css/stylus/utils/*.styl"],
+                tasks: "buildStylus"
             }
         },
         shell: {
             runTests: {
                 command: "vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 testem ci --file tests/testem.json'"
+            }
+        },
+        distributions: {
+            "all": {},
+            "all-no-jquery": {
+                options: {
+                    exclude: "jQuery, jQueryUI"
+                }
+            },
+            "framework": {
+                options: {
+                    include: "framework"
+                }
+            },
+            "framework-no-jquery": {
+                options: {
+                    include: "framework",
+                    exclude: "jQuery, jQueryUI"
+                }
             }
         }
     });
@@ -225,41 +289,96 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-modulefiles");
     grunt.loadNpmTasks("grunt-contrib-stylus");
     grunt.loadNpmTasks("grunt-shell");
+    grunt.loadNpmTasks("grunt-contrib-watch");
 
     // Custom tasks:
 
     // Simple task for transforming a property
     grunt.registerMultiTask("map", "a task wrapper around the map function from lodash", function () {
-        var transformed = _.map(grunt.config.get(this.data.prop), this.data.fn);
+        var transformed = _.map(this.filesSrc, this.data.fn);
         grunt.config.set(this.data.prop, transformed);
     });
 
     grunt.registerTask("pathMap", "Triggers the map task for the specified build target", function (target) {
-        if (target === "all") {
-            grunt.task.run("map:concatAllFiles");
-        } else if (target === "custom") {
-            grunt.task.run("map:copyDirs", "map:concatCustomFiles");
+        grunt.task.run("map:postBuildClean");
+        if (target === "custom") {
+            grunt.task.run("map:copyDirs");
         }
+    });
+
+    grunt.registerTask("setPostBuildCleanUp", "Sets the file source for post build cleanup", function (target) {
+        grunt.config.set("clean.postBuild.files.0.src", "<%= modulefiles." + target + ".output.files %>");
     });
 
     // Task for organizing the build
     grunt.registerTask("build", "Generates a minified or source distribution for the specified build target", function (target) {
         target = target || "all";
-        var concatTask = grunt.option("source") ? "concat:" : "uglify:";
+        setBuildSettings({
+            name: grunt.option("name") || "custom",
+            exclude: grunt.option("exclude"),
+            include: grunt.option("include"),
+            compress: !grunt.option("source"),
+            target: target
+        });
+        var concatTask = grunt.config.get("buildSettings.compress") ? "uglify:" : "concat:";
         var tasks = [
             "clean",
-            "stylus",
+            "lint",
+            "stylus:compile",
             "modulefiles:" + target,
+            "setPostBuildCleanUp:" + target,
             "pathMap:" + target,
             "copy:" + target,
             "copy:necessities",
             concatTask + target,
-            "compress:" + target
+            "compress:" + target,
+            "clean:postBuild"
         ];
         grunt.task.run(tasks);
     });
 
-    grunt.registerTask("buildStylus", ["clean:stylus", "stylus"]);
+    grunt.registerMultiTask("distributions", "Enables a project to split its files into a set of modules. A module's information is stored in a json file containing a name for the module, the files it contains, and other modules it depends on. The module files can then be accumulated into various configurations of included and excluded modules, which can be fed into other plugins (e.g. grunt-contrib-concat) for packaging.", function () {
+        // Merge task-specific and/or target-specific options with these defaults.
+        var options = this.options({
+            name: this.target,
+            source: true,
+            target: "all",
+            compress: false
+        });
+
+        if (options.exclude || options.include) {
+            options.target = "custom";
+        }
+
+        setBuildSettings(options);
+
+        var concatTask = options.compress ? "uglify:" : "concat:";
+        var tasks = [
+            "cleanForDist",
+            "stylus:dist",
+            "modulefiles:" + options.target,
+            "pathMap:" + options.target,
+            "copy:" + options.target,
+            "copy:necessities",
+            concatTask + options.target,
+            "copy:distJS",
+            "copy:distAssets"
+        ];
+        grunt.task.run(tasks);
+    });
+
+    grunt.registerTask("buildDists", "Tasks to run before publishing to NPM", function (target) {
+        var tasks = [
+            "clean",
+            "lint",
+            "distributions" + ( target ? ":" + target : "" ),
+            "cleanForDist"
+        ];
+        grunt.task.run(tasks);
+    });
+
+    grunt.registerTask("cleanForDist", ["clean:build", "clean:products", "clean:stylus", "clean:stylusDist", "clean:ciArtifacts"]);
+    grunt.registerTask("buildStylus", ["clean:stylus", "stylus:compile"]);
 
     grunt.registerTask("default", ["build:all"]);
     grunt.registerTask("custom", ["build:custom"]);

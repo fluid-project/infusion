@@ -1,4 +1,5 @@
 /build/
+/dist/
 /products/
 /node_modules/
 /src/framework/preferences/css/*.css

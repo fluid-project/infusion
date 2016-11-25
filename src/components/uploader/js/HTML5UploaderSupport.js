@@ -36,6 +36,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     });
 
+    // FLUID-6056 ( https://issues.fluidproject.org/browse/FLUID-6056 )
+    // Using `navigator.msLaunchUri` to browser detect IE10+ and MS Edge, because
+    // it is exclusive to Microsoft browsers for IE 10 and later.
+    fluid.registerNamespace("fluid.uploader.html5.browser");
+    fluid.uploader.html5.browser.isMS = !!navigator.msLaunchUri;
+
     // TODO: The following two or three functions probably ultimately belong on a that responsible for
     // coordinating with the XHR. A fileConnection object or something similar.
 
@@ -265,6 +271,25 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         fileInput.click(function () {
             that.events.onBrowse.fire();
         });
+
+        // FLUID-6056 ( https://issues.fluidproject.org/browse/FLUID-6056 )
+        // In IE 11 and MS Edge, < input type="file" > creates an element with
+        // two keyboard focusable parts (textfield and button). When the textfield
+        // is focused ( this happens first when tabbing through elements ), pressing
+        // the "Enter" key triggers a form submission. The workaround implemented
+        // here is to translate the input from the "Enter" key into a click event
+        // on the fileInput so that it will open the OS's file dialog.
+        // This hack is only needed for IE 11 and MS Edge. If the it is executed on
+        // Firefox because Firefox treats the file dialog as a popup, which is
+        // caught by the popup blocker.
+        if (fluid.uploader.html5.browser.isMS) {
+            fileInput.on("keydown", function (event) {
+                if (event.keyCode === $.ui.keyCode.ENTER) {
+                    event.preventDefault();
+                    fileInput.trigger("click");
+                }
+            });
+        }
 
         fileInput.change(function () {
             var files = fileInput[0].files;

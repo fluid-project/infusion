@@ -487,6 +487,98 @@ fluid.tests.promiseDispenser = function (arg, method) {
     return togo;
 };
 
+/** FLUID-5903: Priority-driven "grade budding system" **/
+
+fluid.defaults("fluid.tests.elementPriority.beginning", {
+    gradeNames: "fluid.test.sequenceElement",
+    sequence: [{
+        func: "{testCaseHolder}.pushRecord(beginning)"
+    }]
+});
+
+fluid.defaults("fluid.tests.elementPriority.postBeginning", {
+    gradeNames: "fluid.test.sequenceElement",
+    sequence: [{
+        func: "{testCaseHolder}.pushRecord(postBeginning)"
+    }]
+});
+
+
+fluid.defaults("fluid.tests.elementPriority.end", {
+    gradeNames: "fluid.test.sequenceElement",
+    sequence: [{
+        func: "{testCaseHolder}.pushRecord(end)"
+    }]
+});
+
+fluid.defaults("fluid.tests.elementPriority.check", {
+    gradeNames: "fluid.test.sequenceElement",
+    mergePolicy: {
+        targetComponent: "noexpand"
+    },
+    // A placeholder reference to test possibility for recursive context references
+    targetComponent: "{placeHolder}",
+    sequence: [{
+        func: "fluid.tests.elementPriority.checkSequence({{that}.options.targetComponent}.record)"
+    }]
+});
+
+fluid.tests.elementPriority.checkSequence = function (record) {
+    jqUnit.assertDeepEq("Sequence elements executed in correct order",
+        ["beginning", "postBeginning", "sequence", "end"], record);
+};
+
+fluid.defaults("fluid.tests.elementPrioritySequence", {
+    gradeNames: "fluid.test.sequence",
+    elements: {
+        check: {
+            gradeNames: "fluid.tests.elementPriority.check",
+            options: {
+                targetComponent: "{testCaseHolder}"
+            },
+            priority: "after:end"
+        },
+        end: {
+            gradeNames: "fluid.tests.elementPriority.end",
+            priority: "after:sequence"
+        },
+        postBeginning: {
+            gradeNames: "fluid.tests.elementPriority.postBeginning",
+            priority: "after:beginning"
+        },
+        beginning: {
+            gradeNames: "fluid.tests.elementPriority.beginning",
+            priority: "before:sequence"
+        }
+    }
+});
+
+fluid.tests.elementPriority.pushRecord = function (record, toPush) {
+    record.push(toPush);
+};
+
+fluid.defaults("fluid.tests.elementPriority", {
+    gradeNames: ["fluid.test.testEnvironment", "fluid.test.testCaseHolder"],
+    members: {
+        record: []
+    },
+    invokers: {
+        pushRecord: "fluid.tests.elementPriority.pushRecord({testCaseHolder}.record, {arguments}.0)"
+    },
+    modules: [{
+        name: "Priority-driven grade budding",
+        tests: [{
+            expect: 1,
+            name: "Simple sequence of 4 active elements",
+            sequenceGrade: "fluid.tests.elementPrioritySequence",
+            sequence: [{
+                func: "{testCaseHolder}.pushRecord(sequence)"
+            }]
+        }
+        ]
+    }]
+});
+
 /** Global driver function **/
 
 fluid.tests.IoCTestingTests = function () {
@@ -503,7 +595,8 @@ fluid.tests.IoCTestingTests = function () {
             "fluid.tests.fluid5575Tree.singleActive",
             "fluid.tests.fluid5575Tree.doubleActive",
             "fluid.tests.fluid5575Tree.activePassive",
-            "fluid.tests.taskTester"
+            "fluid.tests.taskTester",
+            "fluid.tests.elementPriority"
         ]);
     });
 };

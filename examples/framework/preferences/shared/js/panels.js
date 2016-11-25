@@ -89,13 +89,24 @@ var example = example || {};
                         value: "{example.panels.vol}.model.volume"
                     },
                     range: "{example.panels.vol}.options.range",
-                    sliderOptions: "{example.panels.vol}.options.sliderOptions"
+                    sliderOptions: "{example.panels.vol}.options.sliderOptions",
+                    ariaOptions: {
+                        "aria-labelledby": "{example.panels.vol}.options.panelOptions.labelId"
+                    }
                 }
             }
         },
         protoTree: {
-            label: {messagekey: "volLabel"},
+            label: {
+                messagekey: "volLabel",
+                decorators: {
+                    attrs: {id: "{that}.options.panelOptions.labelId"}
+                }
+            },
             multiplier: {messagekey: "volMultiplier"}
+        },
+        panelOptions: {
+            labelId: "vol-label-" + fluid.allocateGuid()
         }
     });
 
@@ -127,13 +138,24 @@ var example = example || {};
                         value: "{example.panels.wpm}.model.wordsPerMin"
                     },
                     range: "{example.panels.wpm}.options.range",
-                    sliderOptions: "{example.panels.wpm}.options.sliderOptions"
+                    sliderOptions: "{example.panels.wpm}.options.sliderOptions",
+                    ariaOptions: {
+                        "aria-labelledby": "{example.panels.wpm}.options.panelOptions.labelId"
+                    }
                 }
             }
         },
         protoTree: {
-            label: {messagekey: "wpmLabel"},
+            label: {
+                messagekey: "wpmLabel",
+                decorators: {
+                    attrs: {id: "{that}.options.panelOptions.labelId"}
+                }
+            },
             multiplier: {messagekey: "wpmMultiplier"}
+        },
+        panelOptions: {
+            labelId: "wpm-label-" + fluid.allocateGuid()
         }
     });
 
@@ -165,13 +187,24 @@ var example = example || {};
                         value: "{example.panels.cursor}.model.cursorMult"
                     },
                     range: "{example.panels.cursor}.options.range",
-                    sliderOptions: "{example.panels.cursor}.options.sliderOptions"
+                    sliderOptions: "{example.panels.cursor}.options.sliderOptions",
+                    ariaOptions: {
+                        "aria-labelledby": "{example.panels.cursor}.options.panelOptions.labelId"
+                    }
                 }
             }
         },
         protoTree: {
-            label: {messagekey: "cursorLabel"},
+            label: {
+                messagekey: "cursorLabel",
+                decorators: {
+                    attrs: {id: "{that}.options.panelOptions.labelId"}
+                }
+            },
             multiplier: {messagekey: "cursorMultiplier"}
+        },
+        panelOptions: {
+            labelId: "cursor-label-" + fluid.allocateGuid()
         }
     });
 
@@ -203,13 +236,24 @@ var example = example || {};
                         value: "{example.panels.magFactor}.model.mag"
                     },
                     range: "{example.panels.magFactor}.options.range",
-                    sliderOptions: "{example.panels.magFactor}.options.sliderOptions"
+                    sliderOptions: "{example.panels.magFactor}.options.sliderOptions",
+                    ariaOptions: {
+                        "aria-labelledby": "{example.panels.magFactor}.options.panelOptions.labelId"
+                    }
                 }
             }
         },
         protoTree: {
-            label: {messagekey: "magFactorLabel"},
+            label: {
+                messagekey: "magFactorLabel",
+                decorators: {
+                    attrs: {id: "{that}.options.panelOptions.labelId"}
+                }
+            },
             multiplier: {messagekey: "magFactorMultiplier"}
+        },
+        panelOptions: {
+            labelId: "magFactor-label-" + fluid.allocateGuid()
         }
     });
 

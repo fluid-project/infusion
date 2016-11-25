@@ -209,8 +209,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         },
         position: {
             my: "left top",
-            at: "left bottom",
-            offset: "0 5"
+            at: "left bottom"
         },
         items: "*",
         delay: 300

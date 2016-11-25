@@ -10,6 +10,6 @@
     "links": {
         "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/reorderer/gridReorderer",
         "apiLink": "http://docs.fluidproject.org/infusion/development/to-do/GridReordererAPI.html",
-        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Grid Reorderer feedback"
+        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Grid%20Reorderer%20feedback"
     }
 }

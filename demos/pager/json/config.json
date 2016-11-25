@@ -10,6 +10,6 @@
     "links": {
         "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/pager",
         "apiLink": "http://docs.fluidproject.org/infusion/development/to-do/PagerAPI.html",
-        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Pager feedback"
+        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Pager%20feedback"
     }
 }

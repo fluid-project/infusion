@@ -686,9 +686,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         if (noFilesMsg)  {
             that.locate("totalFileStatusText").text(noFilesMsg);
         }
-
-        // Uploader uses application-style keyboard conventions, so give it a suitable role.
-        that.container.attr("role", "application");
     };
 
 
