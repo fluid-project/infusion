@@ -1,4 +1,4 @@
-# Release Notes for Fluid Infusion 2.0 #
+# Release Notes for Fluid Infusion 2.0.0 #
 
 [Fluid Project](http://fluidproject.org)
 
@@ -9,6 +9,10 @@
 See [API Changes from 1.5 to 2.0](http://docs.fluidproject.org/infusion/development/APIChangesFrom1_5To2_0.html) and [Deprecations in 1.5](http://docs.fluidproject.org/infusion/development/DeprecationsIn1_5.html) on the [Infusion Documentation](https://github.com/fluid-project/infusion-docs) site.
 
 For a complete list of Fixes and Improvements see the [Version 2.0](https://issues.fluidproject.org/projects/FLUID/versions/10041) summary in the [JIRA](https://issues.fluidproject.org) issue tracker.
+
+**Note:** Infusion 1.9 was never (so far) an official release of Infusion, but was a "last ditch" branching point to record the state of the framework should
+we ever require to make a release or backport fixes to a version of the Infusion API compatible with the latest 1.x line.
+It is stored in a branch on GitHub at [Infusion 1.9.x](https://github.com/fluid-project/infusion/tree/1.9.x). For a complete list of Fixes and Improvements see the [Version 1.9](https://issues.fluidproject.org/projects/FLUID/versions/10520) summary in the [JIRA](https://issues.fluidproject.org) issue tracker.
 
 ### New Features
 
@@ -40,31 +44,13 @@ For a complete list of Fixes and Improvements see the [Version 2.0](https://issu
 * No more distinction between fast and dynamic invokers
 * Model Relay specific component grades have been removed, model relay now works with any model grade.
 
-
-## What's New in 1.9 ##
-
-**Note:** Infusion 1.9 was never (so far) an official release of Infusion, but was a "last ditch" branching point to record the state of the framework, should
-we ever require to make a release or backport fixes to a version of Infusion API compatible with the latest 1.x line, most particularly 1.5.x.
-It is stored in github at [Infusion 1.9.x](https://github.com/fluid-project/infusion/tree/1.9.x)
-
-For a complete list of Fixes and Improvements see the [Version 1.9](https://issues.fluidproject.org/projects/FLUID/versions/10520) summary in the [JIRA](https://issues.fluidproject.org) issue tracker.
-
-
-### New Features
-
-This list is not exhaustive because work has accumulated in trunk for several years since the 1.5 Infusion release.
-
-* Implemented "micropromises" to ease manipulation of asynchronous code sequences
-* Improved diagnostics when framework is used within node.js
-
-
 ## Obtaining Infusion ##
 
 * [Fork on GitHub](https://github.com/fluid-project/infusion)
 * [Download a Build](https://github.com/fluid-project/infusion/releases)
 * [NPM](https://www.npmjs.com/package/infusion)
 
-You can create your own custom build of Infusion using the [grunt build script](README.md#how-do-i-create-an-infusion-package):
+You can create your own custom build of Infusion using the [grunt build script](README.md#how-do-i-create-an-infusion-package).
 
 ## Demos ##
 
@@ -78,18 +64,18 @@ the browser when run from the local file system.
 Fluid Infusion is licensed under both the ECL 2.0 and new BSD licenses.
 
 More information is available in our [wiki](http://wiki.fluidproject.org/display/fluid/Fluid+Licensing).
-
-
 ## Third Party Software in Infusion ##
 
 This is a list of publicly available software that is redistributed with Fluid Infusion,
 categorized by license:
 
 ### Apache 2.0 ###
+
 * [`fluid.load.scripts` is based on Jake Archibald's script loading example](http://www.html5rocks.com/en/tutorials/speed/script-loading/#toc-dom-rescue)
 * [Open Sans Light font](http://www.google.com/fonts/specimen/Open+Sans)
 
 ### MIT License ###
+
 * [Buzz v1.1.0](http://buzz.jaysalvat.com)
 * [Foundation v6.2.3](http://foundation.zurb.com/index.html)
 * [HTML5 Boilerplate v4.3](http://html5boilerplate.com/)
@@ -107,9 +93,11 @@ categorized by license:
 * [Normalize v4.1.1](https://necolas.github.io/normalize.css/)
 
 ### Public Domain ###
+
 * Douglas Crockford's [JSON.js (from 2007-11-06)](http://www.json.org/)
 
 ### zlib/libpng License ###
+
 * [fastXmlPull is based on XML for Script's Fast Pull Parser v3.1](http://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js)
 
 ## Documentation ##
