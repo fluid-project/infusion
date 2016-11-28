@@ -22,6 +22,58 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.setLogging(fluid.logLevel.TRACE);
     fluid.activityTracing = true;
 
+    fluid.tests.parseContext = [{
+        ref: "{context}.path",
+        expected: {
+            context: "context",
+            path: "path"
+        }
+    }, {
+        ref: "{{nestedContext}.innerPath}.outerPath",
+        expected: {
+            context: {
+                context: "nestedContext",
+                path: "innerPath"
+            },
+            path: "outerPath"
+        }
+    }, {
+        ref: "{{nestedContext}}.outerPath",
+        expected: {
+            context: {
+                context: "nestedContext",
+                path: ""
+            },
+            path: "outerPath"
+        }
+    }, {
+        ref: "{{nestedContext}.innerPath}",
+        expected: {
+            context: {
+                context: "nestedContext",
+                path: "innerPath"
+            },
+            path: ""
+        }
+    }
+    ];
+
+    fluid.tests.filterContext = function (parsed) {
+        var togo = fluid.filterKeys(parsed, ["context", "path"]);
+        if (typeof(togo.context) === "object") {
+            togo.context = fluid.tests.filterContext(togo.context);
+        }
+        return togo;
+    };
+
+    jqUnit.test("fluid.parseContextReference tests", function () {
+        fluid.each(fluid.tests.parseContext, function (fixture, i) {
+            var parsed = fluid.parseContextReference(fixture.ref);
+            parsed = fluid.tests.filterContext(parsed);
+            jqUnit.assertDeepEq("Expected parsed context index " + i, fixture.expected, parsed);
+        });
+    });
+
     fluid.defaults("fluid.tests.defaultMergePolicy", {
         gradeNames: ["fluid.modelComponent"],
         defaultSource: "sourceValue",

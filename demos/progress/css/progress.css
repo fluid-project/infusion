@@ -81,6 +81,7 @@
 /* hide on start */
 .demo-progress-restart {
     display: none;
+    color: #006095;
 }
 
 /* table styles */

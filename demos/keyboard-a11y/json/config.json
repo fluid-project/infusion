@@ -12,6 +12,6 @@
     "links": {
         "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/keyboard-a11y",
         "apiLink": "http://wiki.fluidproject.org/display/docs/Keyboard+Accessibility+Plugin+API",
-        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Keyboard Accessibility Plugin feedback"
+        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Keyboard%20Accessibility%20Plugin%20feedback"
     }
 }

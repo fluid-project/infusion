@@ -75,9 +75,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return rowEl.find(q.options.selectors.fileSize).text();
         };
 
-        var checkARIA = function (file, row, statusStr) {
+        var checkARIA = function (file, row) {
             jqUnit.assertEquals("The added row should have an aria-label attribute on it containing descriptive text about the file.",
-                                file.name + " " + fluid.uploader.formatFileSize(file.size) + " " + statusStr, row.attr("aria-label"));
+                                file.name + " " + fluid.uploader.formatFileSize(file.size), row.attr("aria-label"));
         };
 
         // Reusable test functions
@@ -94,7 +94,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("The added row should have the correct class on the file action button.", fileIconBtn.hasClass(q.options.styles.remove));
             jqUnit.assertEquals("The added row should have the correct aria label for the file action button.", q.options.strings.buttons.remove, fileIconBtn.attr("aria-label"));
 
-            checkARIA(file, row, q.options.strings.status.remove);
+            checkARIA(file, row);
         };
 
         var createFileQueue = function () {
@@ -108,6 +108,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         jqUnit.module("FileQueueView Tests", {setup: setupFunction});
+
+        jqUnit.test("Initialization", function () {
+            jqUnit.expect(2);
+            var q = createFileQueue();
+
+            jqUnit.assertNotUndefined("The fileQueueView is initialized", q);
+            jqUnit.assertEquals("The application role is added", "application", q.container.attr("role"));
+        });
 
         jqUnit.test("Add file", function () {
             var q = createFileQueue();
@@ -181,10 +189,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertTrue("Button should be disabled. ",
                                 rowButtons.prop("disabled"));
 
-            //assume upload is done. call refreshAfterUpload
+            // Simulates the workflow where an upload is started but then stopped
+            // before any files have completed uploading.
+            // prepareForUpload -> "upload interrupted" -> refreshAfterUpload
             q.refreshAfterUpload();
-            jqUnit.assertFalse("Button should be disabled. ",
-                                rowButtons.prop("disabled"));
+            jqUnit.assertFalse("Button should be enabled.", rowButtons.prop("disabled"));
         });
 
         jqUnit.test("File Progress Percentage test", function () {
@@ -224,18 +233,29 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.test("Mark file complete test", function () {
-            jqUnit.expect(2);
+            jqUnit.expect(4);
 
             var q = createFileQueue();
             q.addFile(mountainTestFile);
+            q.prepareForUpload(mountainTestFile);
             q.markFileComplete(mountainTestFile);
+
+            var row = q.container.find("#" + mountainTestFile.id);
+            var rowButton = row.find("button");
 
             jqUnit.assertEquals("Progress should be 100. ",
                                 100,
                                 q.fileProgressors[mountainTestFile.id + "_progress"].storedPercent);
 
             jqUnit.assertTrue("Row state should be changed when row is marked as completed. ",
-                                q.container.find("#" + mountainTestFile.id).hasClass(q.options.styles.uploaded));
+                                row.hasClass(q.options.styles.uploaded));
+            jqUnit.assertTrue("Remove file button should be disabled", rowButton.prop("disabled"));
+
+            //assume upload is done. call refreshAfterUpload
+            // Simulates the workflow where an upload is started and completed
+            // prepareForUpload -> markFileComplete -> refreshAfterUpload
+            q.refreshAfterUpload();
+            jqUnit.assertTrue("Remove file button should still be disabled after upload finished. ", rowButton.prop("disabled"));
         });
 
         jqUnit.test("Show error for files", function () {

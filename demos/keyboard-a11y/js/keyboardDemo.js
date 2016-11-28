@@ -188,7 +188,7 @@ var demo = demo || {};
                 "this": "{that}.dom.thumbSelector",
                 "method": "attr",
                 "args": [{
-                    "role": "listitem",
+                    "role": "option",
                     "aria-controls": "image-preview",
                     "aria-selected": false
                 }]

@@ -31,7 +31,7 @@ input {
 }
 
 .fl-pager-pageLink a,.fl-pager-previous a,.fl-pager-next a {
-    color: #0099CC;
+    color: #00759c;
     font-size: .9em;
     text-decoration: none;
     border-bottom: solid .1em;
@@ -48,7 +48,7 @@ input {
 }
 
 .fl-pager-disabled a {
-    color: #777777;
+    color: #6c6c6c;
     border: 0;
     text-decoration: none;
 }

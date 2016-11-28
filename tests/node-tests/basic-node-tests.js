@@ -1,5 +1,6 @@
 /*
 Copyright 2014 Lucendo Development Ltd.
+Copyright 2016 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -11,6 +12,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 /* eslint-env node */
 "use strict";
 
+
 var fluid = require("../../src/module/fluid.js"),
     path = require("path");
 
@@ -20,6 +22,13 @@ var QUnit = fluid.registerNamespace("QUnit");
 var jqUnit = fluid.registerNamespace("jqUnit");
 
 fluid.registerNamespace("fluid.tests");
+
+fluid.registerNamespace("fluid.tests.tapOutput");
+
+// Number of expected assertions
+fluid.tests.expectedAsserts = 20;
+// Number of expected test cases
+fluid.tests.expectedTestCases = 10;
 
 fluid.loadInContext("../../tests/test-core/testTests/js/IoCTestingTests.js");
 
@@ -39,16 +48,27 @@ fluid.require("test-module", require, "test-module");
 
 fluid.setLogging(true);
 
+fluid.tests.getTestMessage = function (data) {
+    return "Test concluded - " + data.name + ": " + data.passed + " assertion(s) passed, " + data.failed + " assertion(s) failed";
+};
+
 QUnit.testDone(function (data) {
-    fluid.log("Test concluded - " + data.name + ": " + data.passed + " passed, " + data.failed + " failed");
+    fluid.log(fluid.tests.getTestMessage(data));
 });
 
-var expected = 20;
+require("./tap-reporting");
 
 QUnit.done(function (data) {
     fluid.log("Infusion node.js internal tests " +
-        (expected === data.passed && data.failed === 0 ? "PASSED" : "FAILED") +
-        " - " + data.passed + "/" + (expected + data.failed) + " tests passed");
+        (fluid.tests.expectedAsserts === data.passed && data.failed === 0 ? "PASSED" : "FAILED") +
+        " - " + data.passed + "/" + (fluid.tests.expectedAsserts + data.failed) + " assertions passed");
+
+    // Set the process to return a non-0 exit code if any tests failed,
+    // or the number of expected tests is not the same as the number of passed
+    // tests; this allows basic usage in CI
+    if (data.failed > 0 || data.passed < fluid.tests.expectedAsserts) {
+        process.exitCode = 1;
+    }
 });
 
 QUnit.log(function (details) {
@@ -117,11 +137,19 @@ fluid.tests.onUncaughtException = function () {
         true, fluid.tests.expectFailure);
     fluid.onUncaughtException.removeListener("test-uncaught");
     fluid.onUncaughtException.removeListener("log");
+    if (fluid.tests.tapOutput.shouldOutputTAP) {
+        fluid.onUncaughtException.removeListener("outputTAPFailure");
+    }
     fluid.tests.addLogListener(fluid.identity);
     fluid.tests.expectFailure = false;
     fluid.invokeLater(function () { // apply this later to avoid nesting uncaught exception handler
         fluid.invokeLater(function () {
             fluid.onUncaughtException.removeListener("log"); // restore the original listener
+            // Reregister listener to output TAP failure report
+            if (fluid.tests.tapOutput.shouldOutputTAP) {
+                fluid.onUncaughtException.addListener(fluid.tests.tapOutput.outputTAPFailure, "outputTAPFailure",
+                    fluid.handlerPriorities.uncaughtException.log);
+            }
             console.log("Restarting jqUnit in nested handler");
             jqUnit.start();
         });
@@ -138,6 +166,9 @@ jqUnit.asyncTest("Test uncaught exception handler registration and deregistratio
     jqUnit.expect(2);
     fluid.onUncaughtException.addListener(fluid.tests.onUncaughtException, "test-uncaught");
     fluid.tests.addLogListener(fluid.tests.benignLogger);
+    if (fluid.tests.tapOutput.shouldOutputTAP) {
+        fluid.onUncaughtException.removeListener("outputTAPFailure");
+    }
     fluid.tests.expectFailure = true;
     fluid.invokeLater(function () { // put this in a timeout to avoid bombing QUnit's exception handler
         "string".fail(); // provoke a global uncaught error

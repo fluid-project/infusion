@@ -293,14 +293,14 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
         separatedPanel.slidingPanel.events.afterPanelShow.addListener(function () {
             fluid.prefs.separatedPanel.updateView(prefsEditor);
-        });
+        }, "updateView", "after:openPanel");
 
         prefsEditor.events.onPrefsEditorRefresh.addListener(function () {
             iframeEnhancer.updateModel(prefsEditor.model.preferences);
-        });
+        }, "updateModel");
         prefsEditor.events.afterReset.addListener(function (prefsEditor) {
             fluid.prefs.separatedPanel.updateView(prefsEditor);
-        });
+        }, "updateView");
         prefsEditor.events.onSignificantDOMChange.addListener(function () {
             var dokkument = prefsEditor.container[0].ownerDocument;
             var height = fluid.dom.getDocumentHeight(dokkument);
@@ -309,21 +309,21 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             var panel = separatedPanel.slidingPanel.locate("panel");
             panel.css({height: ""});
             iframe.animate(attrs, 400);
-        });
+        }, "adjustHeight");
 
         separatedPanel.slidingPanel.events.afterPanelHide.addListener(function () {
             separatedPanel.iframeRenderer.iframe.height(0);
 
             // Prevent the hidden Preferences Editorpanel from being keyboard and screen reader accessible
             separatedPanel.iframeRenderer.iframe.hide();
-        });
+        }, "collapseFrame");
         separatedPanel.slidingPanel.events.afterPanelShow.addListener(function () {
             separatedPanel.iframeRenderer.iframe.show();
             separatedPanel.locate("reset").show();
-        });
+        }, "openPanel");
         separatedPanel.slidingPanel.events.onPanelHide.addListener(function () {
             separatedPanel.locate("reset").hide();
-        });
+        }, "hideReset");
     };
 
     // Replace the standard animator since we don't want the panel to become hidden

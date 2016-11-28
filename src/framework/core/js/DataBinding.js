@@ -560,7 +560,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     // the "forwardAdapter"
                     transducer(existing.transaction, options.sourceApplier ? undefined : newValue, sourceSegs, targetSegs, changeRequest);
                 } else {
-                    if (!options.noRelayDeletesDirect && newValue === undefined && changeRequest && changeRequest.type === "DELETE") {
+                    if (!options.noRelayDeletesDirect && changeRequest && changeRequest.type === "DELETE") {
                         existing.transaction.fireChangeRequest({type: "DELETE", segs: targetSegs});
                     }
                     if (newValue !== undefined) {
