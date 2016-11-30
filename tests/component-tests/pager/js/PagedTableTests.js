@@ -2,6 +2,7 @@
 Copyright 2008-2009 University of Cambridge
 Copyright 2008-2009 University of Toronto
 Copyright 2010-2014 OCAD University
+Copyright 2013-2014 Raising the Floor - US
 Copyright 2016 Dinuka De Silva
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
