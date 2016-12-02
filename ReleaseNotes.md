@@ -10,13 +10,11 @@ See [API Changes from 1.5 to 2.0](http://docs.fluidproject.org/infusion/developm
 
 For a complete list of Fixes and Improvements see the [Version 2.0](https://issues.fluidproject.org/projects/FLUID/versions/10041) summary in the [JIRA](https://issues.fluidproject.org) issue tracker.
 
-**Note:** Infusion 1.9 was never (so far) an official release of Infusion, but was a "last ditch" branching point to record the state of the framework should
-we ever require to make a release or backport fixes to a version of the Infusion API compatible with the latest 1.x line.
-It is stored in a branch on GitHub at [Infusion 1.9.x](https://github.com/fluid-project/infusion/tree/1.9.x). For a complete list of Fixes and Improvements see the [Version 1.9](https://issues.fluidproject.org/projects/FLUID/versions/10520) summary in the [JIRA](https://issues.fluidproject.org) issue tracker.
+**Note:** Infusion 1.9 was not officially released, but is available as an official branch. It is is available on GitHub at [Infusion 1.9.x](https://github.com/fluid-project/infusion/tree/1.9.x). For a complete list of Fixes and Improvements see the [Version 1.9](https://issues.fluidproject.org/projects/FLUID/versions/10520) summary in the [JIRA](https://issues.fluidproject.org) issue tracker.
 
-### New Features
+### New Features ###
 
-* Constraint-based priorities, supported by `listeners`, `modelListeners`, `modelRelay`, `distributeOptions`, `contextAwareness`, and `components`
+* Constraint-based priorities, supported by `listeners`, `modelListeners`, `modelRelay`, `distributeOptions`, `contextAwareness`, and `components`. This allows the specific order of those items to be configured. (See: [Priorities](http://docs.fluidproject.org/infusion/development/Priorities.html))
 * Context Awareness - and things it relies on:
   * Global Instantiator
     * Every Infusion component, regardless of how it is instantiated, ends up in a single-rooted tree of components
@@ -25,15 +23,17 @@ It is stored in a branch on GitHub at [Infusion 1.9.x](https://github.com/fluid-
     * Enables the removal of "demands blocks"
     * Useful debugging tip: Watch `fluid.globalInstantiator` in your JS debugging tools to see the structure of your application and its tree.
 * `fluid.notImplemented` function for implementing abstract grades
-* [Lazy loading UI Options](http://docs.fluidproject.org/infusion/development/UserInterfaceOptionsAPI.html#lazyload) and instructions for how to use the Prefernces Framework with a [minimal footprint](http://docs.fluidproject.org/infusion/development/tutorial-prefsFrameworkMinimalFootprint/MinimalFootprint.html).
+* [Lazy loading for UI Options](http://docs.fluidproject.org/infusion/development/UserInterfaceOptionsAPI.html#lazyload) and instructions for how to use the Preferences Framework with a [zero initial load time](http://docs.fluidproject.org/infusion/development/tutorial-prefsFrameworkMinimalFootprint/MinimalFootprint.html).
   * This should assist in improving performance when using the Preferences Framework, particularly for resource intensive sites and applications
 * Much faster invokers and boiled listeners (c. 60x faster)
-* NPM - "dists" directory containing pre-built versions of Infusion
+* Support for using Infusion with npm for both Node.js and web-based projects.
+  * Provides a variety of prebuilt versions of Infusion in the module's `dist` directory.
 * Source Maps are generated for the concatenated JavaScript files
 * View oriented IoC debugging tools
-  * FluidViewDebugging.js - include this at the head of your HTML file to get access to the "IoC inspector"
+  * Including FluidViewDebugging.js on the page of any Infusion application gives you access to the _IoC View Inspector_. Click on the small cogwheel icon at the bottom right of the page to open a panel which shows the details of the view components and their grades, that are attached to DOM nodes in the browser pane. This interface works similarly to the _DOM Inspector_ familiar from modern web browsers, but is an experimental implementation with an engineer-level UI.
 
-### Removals
+
+### Removal of Deprecated Features ###
 
 * Manual lifecycle points finalInit, postInit, etc.
 * Obsolete syntax for arguments, options, etc.
@@ -56,7 +56,7 @@ You can create your own custom build of Infusion using the [grunt build script](
 
 Infusion ships with demos of all of the components in action. You can find them in the _**demos**_ folder in the release bundle or on our [build site](http://build.fluidproject.org/).
 
-When running from your local machine, it is recommended to use a web server for accesing the demos. Several of the demos make use of AJAX calls; which typically are not allowed by
+When running the demos on your local machine, a web server is recommended. Several of the demos make use of AJAX calls; which typically are not allowed by
 the browser when run from the local file system.
 
 ## License ##
@@ -91,10 +91,6 @@ categorized by license:
 * [jquery.simulate](https://github.com/eduardolundgren/jquery-simulate)
 * [Micro Clearfix](http://nicolasgallagher.com/micro-clearfix-hack/)
 * [Normalize v4.1.1](https://necolas.github.io/normalize.css/)
-
-### Public Domain ###
-
-* Douglas Crockford's [JSON.js (from 2007-11-06)](http://www.json.org/)
 
 ### zlib/libpng License ###
 
