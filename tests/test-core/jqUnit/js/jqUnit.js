@@ -2,7 +2,7 @@
 Copyright 2008-2009 University of Cambridge
 Copyright 2008-2010 University of Toronto
 Copyright 2010-2011 OCAD University
-Copyright 2010-2011 Lucendo Development Ltd.f
+Copyright 2010-2011 Lucendo Development Ltd.
 Copyright 2012-2013 Raising the Floor - US
 Copyright 2014-2016 Raising the Floor - International
 
