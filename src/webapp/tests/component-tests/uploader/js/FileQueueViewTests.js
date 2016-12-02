@@ -16,12 +16,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global fluid, jqUnit, expect, jQuery*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 (function ($) {
     $(function () {
-        
+
         var removedFile = null;
         fluid.defaults("fluid.uploader.tests.multiFileUploader", {
             gradeNames: ["fluid.eventedComponent", "autoInit"],
@@ -32,7 +32,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         model: fluid.uploader.fileQueue().files,
                         uploaderContainer: "#main"
                     }
-                } 
+                }
             },
             events: {
                 onFileRemoved: null
@@ -53,39 +53,39 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         });
-        
+
         var mountainTestFile = {
-            id : 0, // SWFUpload file id, used for starting or cancelling and upload 
-            index : 0, // The index of this file for use in getFile(i) 
-            name : "Mountain.jpg", // The file name. The path is not included. 
-            size : 400000 // The file size in bytes     
+            id : 0, // SWFUpload file id, used for starting or cancelling and upload
+            index : 0, // The index of this file for use in getFile(i)
+            name : "Mountain.jpg", // The file name. The path is not included.
+            size : 400000 // The file size in bytes
         };
-        
+
         var oceanTestFile = {
-            id : 230948230984, // SWFUpload file id, used for starting or cancelling and upload 
-            index : 1, // The index of this file for use in getFile(i) 
-            name : "Ocean.jpg", // The file name. The path is not included. 
-            size : 950000000 // The file size in bytes        
+            id : 230948230984, // SWFUpload file id, used for starting or cancelling and upload
+            index : 1, // The index of this file for use in getFile(i)
+            name : "Ocean.jpg", // The file name. The path is not included.
+            size : 950000000 // The file size in bytes
         };
-                
+
         // Useful locate functions.
         var locateRows = function (q) {
-            return $("#main .flc-uploader-queue").find(q.options.selectors.fileRows);   
+            return $("#main .flc-uploader-queue").find(q.options.selectors.fileRows);
         };
-        
+
         var nameForRow = function (q, rowEl) {
             return rowEl.find(q.options.selectors.fileName).text();
         };
-        
+
         var sizeForRow = function (q, rowEl) {
             return rowEl.find(q.options.selectors.fileSize).text();
         };
-        
+
         var checkARIA = function (file, row) {
             jqUnit.assertEquals("The added row should have an aria-label attribute on it containing descriptive text about the file.",
                                 file.name + " " + fluid.uploader.formatFileSize(file.size), row.attr("aria-label"));
         };
-        
+
         // Reusable test functions
         var checkFileRow = function (q, file, row) {
             jqUnit.assertEquals("The added row should have the correct id attribute.",
@@ -93,56 +93,63 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The added row should have the correct filename.",
                                 file.name, nameForRow(q, row));
             jqUnit.assertEquals("The added row should have the correct size.",
-                                fluid.uploader.formatFileSize(file.size), 
+                                fluid.uploader.formatFileSize(file.size),
                                 sizeForRow(q, row));
             checkARIA(file, row);
         };
-      
+
         var createFileQueue = function () {
             var uploader = fluid.initComponent("fluid.uploader.tests.multiFileUploader");
             return uploader.fileQueueView;
         };
-        
+
         // File Queue test case
         var setupFunction = function () {
             jqUnit.subvertAnimations();
         };
-        
+
         var fileQueueViewTests = new jqUnit.TestCase("FileQueueView Tests", setupFunction);
-        
+
+        fileQueueViewTests.test("Initialization", function () {
+             jqUnit.expect(2);
+             var q = createFileQueue();
+             jqUnit.assertNotUndefined("The fileQueueView is initialized", q);
+             jqUnit.assertEquals("The application role is added", "application", q.container.attr("role"));
+         });
+
         fileQueueViewTests.test("Add file", function () {
             var q = createFileQueue();
-            
+
             // Add one file.
             q.addFile(mountainTestFile);
-            
+
             var addedRows = locateRows(q);
             jqUnit.assertEquals("There should be one file row in the queue after adding a file.",
                                 1, addedRows.length);
             checkFileRow(q, mountainTestFile, addedRows.eq(0));
-                                
+
             // And add another.
-            q.addFile(oceanTestFile);                                    
+            q.addFile(oceanTestFile);
             addedRows = locateRows(q);
             jqUnit.assertEquals("There should be two file rows in the queue.",
                                 2, addedRows.length);
             checkFileRow(q, oceanTestFile, addedRows.eq(1));
         });
-        
+
         fileQueueViewTests.test("Remove file", function () {
             var q = createFileQueue();
-            
+
             // Add a file, then remove it.
             q.addFile(mountainTestFile);
             jqUnit.assertEquals("There should be one row in the queue before removing it.",
-                                1, locateRows(q).length);         
+                                1, locateRows(q).length);
             q.removeFile(mountainTestFile);
-            
+
             // Ensure that it has been correctly removed.
             var rows = locateRows(q);
             jqUnit.assertEquals("There should be no rows in the queue after removing the only file.",
                                 0, rows.length);
-            
+
             // Add the file back and try removing a file that was never there.
             q.addFile(mountainTestFile);
             q.removeFile(oceanTestFile);
@@ -151,25 +158,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             checkFileRow(q, mountainTestFile, locateRows(q).eq(0));
             jqUnit.assertEquals("The file queue model should have been correctly modified.",
                          oceanTestFile, removedFile);
-            
+
             // Add another file and remove both.
             q.addFile(oceanTestFile);
             jqUnit.assertEquals("Two files should be in the queue before removing the first file.",
                                 2, locateRows(q).length);
-            q.removeFile(mountainTestFile);            
+            q.removeFile(mountainTestFile);
             jqUnit.assertEquals("There should still be one row in the queue after removing the first file.",
                                 1, locateRows(q).length);
             jqUnit.assertEquals("The file queue model should have been correctly modified.",
                          mountainTestFile, removedFile);
             checkFileRow(q, oceanTestFile, locateRows(q).eq(0));
-            
+
             q.removeFile(oceanTestFile);
             jqUnit.assertEquals("There should be no rows in the queue after removing the last file.",
                                 0, locateRows(q).length);
             jqUnit.assertEquals("The file queue model should have been correctly modified.",
                          oceanTestFile, removedFile);
         });
-        
+
         fileQueueViewTests.test("Prepare for upload/ Refresh for upload", function () {
             expect(2);
 
@@ -194,19 +201,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var q = createFileQueue();
             q.addFile(mountainTestFile);
 
-            q.updateFileProgress(mountainTestFile, "33999.99", mountainTestFile.size); //33999.99/400000 = 8.4999975% ~ 8%            
+            q.updateFileProgress(mountainTestFile, "33999.99", mountainTestFile.size); //33999.99/400000 = 8.4999975% ~ 8%
             jqUnit.assertEquals("Test float rounding down. ",
                                 8,
                                 q.fileProgressors[mountainTestFile.id + "_progress"].storedPercent);
-            q.updateFileProgress(mountainTestFile, "34000.01", mountainTestFile.size); //34000.01/400000 = 8.5000025% ~ 9%            
+            q.updateFileProgress(mountainTestFile, "34000.01", mountainTestFile.size); //34000.01/400000 = 8.5000025% ~ 9%
             jqUnit.assertEquals("Test float rounding up. ",
                                 9,
                                 q.fileProgressors[mountainTestFile.id + "_progress"].storedPercent);
-            q.updateFileProgress(mountainTestFile, "0", mountainTestFile.size); 
+            q.updateFileProgress(mountainTestFile, "0", mountainTestFile.size);
             jqUnit.assertEquals("Test zero. ",
                                 0,
                                 q.fileProgressors[mountainTestFile.id + "_progress"].storedPercent);
-            q.updateFileProgress(mountainTestFile, 400000, mountainTestFile.size); 
+            q.updateFileProgress(mountainTestFile, 400000, mountainTestFile.size);
             jqUnit.assertEquals("Test 100%. ",
                                 100,
                                 q.fileProgressors[mountainTestFile.id + "_progress"].storedPercent);
@@ -261,7 +268,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var q = createFileQueue();
             mountainTestFile.filestatus = fluid.uploader.fileStatusConstants.COMPLETE; //manually set filestatus to complete
             q.addFile(mountainTestFile);
-            q.hideFileProgress(mountainTestFile); 
+            q.hideFileProgress(mountainTestFile);
             jqUnit.assertFalse("the dim class should be removed on hidden. ",
                                 q.locate("fileIconBtn", q.locate("fileQueue").find("#" + mountainTestFile.id)).hasClass(q.options.styles.dim));
         });
@@ -271,12 +278,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var q = createFileQueue();
             q.addFile(mountainTestFile);
             q.addFile(oceanTestFile);
-            
+
             $("#main .flc-uploader-queue").focus();
             // Ensure that the first item is focussed.
             jqUnit.assertTrue("The first row should be selected.",
                                 locateRows(q).eq(0).hasClass(q.options.styles.selected));
-                                
+
             // And that the second item is also selectable.
             fluid.selectable.selectNext(q.container);
             jqUnit.assertTrue("The second row should now be selected.",
@@ -284,7 +291,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertFalse("The first row should no longer be selected.",
                                 locateRows(q).eq(0).hasClass(q.options.styles.selected));
         });
-        
+
         /********************
          * Scrollable tests *
          ********************/
@@ -299,5 +306,5 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                               table.parent().parent().hasClass("fl-scrollable-scroller"));
         });
     });
-    
+
 })(jQuery);

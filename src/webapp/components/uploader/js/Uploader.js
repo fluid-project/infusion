@@ -15,7 +15,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 // Declare dependencies
 /*global window, fluid_1_4:true, jQuery*/
 
-// JSLint options 
+// JSLint options
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 var fluid_1_4 = fluid_1_4 || {};
@@ -27,60 +27,60 @@ var fluid_1_4 = fluid_1_4 || {};
 (function ($, fluid) {
 
     var fileOrFiles = function (that, numFiles) {
-        return (numFiles === 1) ? that.options.strings.progress.singleFile : 
+        return (numFiles === 1) ? that.options.strings.progress.singleFile :
             that.options.strings.progress.pluralFiles;
     };
-    
+
     var enableElement = function (that, elm) {
         elm.prop("disabled", false);
         elm.removeClass(that.options.styles.dim);
     };
-    
+
     var disableElement = function (that, elm) {
         elm.prop("disabled", true);
         elm.addClass(that.options.styles.dim);
     };
-    
+
     var showElement = function (that, elm) {
         elm.removeClass(that.options.styles.hidden);
     };
-     
+
     var hideElement = function (that, elm) {
         elm.addClass(that.options.styles.hidden);
     };
-    
+
     var maxFilesUploaded = function (that) {
         var fileUploadLimit = that.queue.getUploadedFiles().length + that.queue.getReadyFiles().length + that.queue.getErroredFiles().length;
         return (fileUploadLimit === that.options.queueSettings.fileUploadLimit);
-    };    
-    
+    };
+
     var setTotalProgressStyle = function (that, didError) {
         didError = didError || false;
         var indicator = that.totalProgress.indicator;
         indicator.toggleClass(that.options.styles.totalProgress, !didError);
         indicator.toggleClass(that.options.styles.totalProgressError, didError);
     };
-    
+
     var setStateEmpty = function (that) {
         disableElement(that, that.locate("uploadButton"));
-        
+
         // If the queue is totally empty, treat it specially.
-        if (that.queue.files.length === 0) { 
+        if (that.queue.files.length === 0) {
             that.locate("browseButtonText").text(that.options.strings.buttons.browse);
             that.locate("browseButton").removeClass(that.options.styles.browseButton);
             showElement(that, that.locate("instructions"));
         }
     };
-    
-    // Only enable the browse button if the fileUploadLimit 
+
+    // Only enable the browse button if the fileUploadLimit
     // has not been reached
     var enableBrowseButton = function (that) {
         if (!maxFilesUploaded(that)) {
             enableElement(that, that.locate("browseButton"));
-            that.strategy.local.enableBrowseButton();            
+            that.strategy.local.enableBrowseButton();
         }
     };
-    
+
     var setStateDone = function (that) {
         disableElement(that, that.locate("uploadButton"));
         hideElement(that, that.locate("pauseButton"));
@@ -98,7 +98,7 @@ var fluid_1_4 = fluid_1_4 || {};
         that.totalProgress.hide();
         enableBrowseButton(that);
     };
-    
+
     var setStateUploading = function (that) {
         that.totalProgress.hide(false, false);
         setTotalProgressStyle(that);
@@ -110,18 +110,18 @@ var fluid_1_4 = fluid_1_4 || {};
         that.locate(that.options.focusWithEvent.afterUploadStart).focus();
     };
 
-    var setStateFull = function (that) {        
+    var setStateFull = function (that) {
         that.locate("browseButtonText").text(that.options.strings.buttons.addMore);
         that.locate("browseButton").addClass(that.options.styles.browseButton);
         hideElement(that, that.locate("pauseButton"));
         showElement(that, that.locate("uploadButton"));
         enableElement(that, that.locate("uploadButton"));
-        disableElement(that, that.locate("browseButton"));        
+        disableElement(that, that.locate("browseButton"));
         that.strategy.local.disableBrowseButton();
         hideElement(that, that.locate("instructions"));
         that.totalProgress.hide();
-    };    
-    
+    };
+
     var renderUploadTotalMessage = function (that) {
         // Render template for the total file status message.
         var numReadyFiles = that.queue.getReadyFiles().length;
@@ -129,49 +129,49 @@ var fluid_1_4 = fluid_1_4 || {};
         var fileLabelStr = fileOrFiles(that, numReadyFiles);
 
         var totalStateStr = fluid.stringTemplate(that.options.strings.progress.toUploadLabel, {
-            fileCount: numReadyFiles, 
-            fileLabel: fileLabelStr, 
+            fileCount: numReadyFiles,
+            fileLabel: fileLabelStr,
             totalBytes: fluid.uploader.formatFileSize(bytesReadyFiles)
         });
         that.locate("totalFileStatusText").html(totalStateStr);
     };
-    
+
     var renderFileUploadLimit = function (that) {
         if (that.options.queueSettings.fileUploadLimit > 0) {
             var fileUploadLimitText = fluid.stringTemplate(that.options.strings.progress.fileUploadLimitLabel, {
-                fileUploadLimit: that.options.queueSettings.fileUploadLimit, 
-                fileLabel: fileOrFiles(that, that.options.queueSettings.fileUploadLimit) 
+                fileUploadLimit: that.options.queueSettings.fileUploadLimit,
+                fileLabel: fileOrFiles(that, that.options.queueSettings.fileUploadLimit)
             });
             that.locate("fileUploadLimitText").html(fileUploadLimitText);
         }
     };
-        
+
     var updateTotalProgress = function (that) {
         var batch = that.queue.currentBatch;
         var totalPercent = fluid.uploader.derivePercent(batch.totalBytesUploaded, batch.totalBytes);
         var numFilesInBatch = batch.files.length;
         var fileLabelStr = fileOrFiles(that, numFilesInBatch);
-        
+
         var totalProgressStr = fluid.stringTemplate(that.options.strings.progress.totalProgressLabel, {
-            curFileN: batch.fileIdx, 
-            totalFilesN: numFilesInBatch, 
+            curFileN: batch.fileIdx,
+            totalFilesN: numFilesInBatch,
             fileLabel: fileLabelStr,
-            currBytes: fluid.uploader.formatFileSize(batch.totalBytesUploaded), 
+            currBytes: fluid.uploader.formatFileSize(batch.totalBytesUploaded),
             totalBytes: fluid.uploader.formatFileSize(batch.totalBytes)
-        });  
+        });
         that.totalProgress.update(totalPercent, totalProgressStr);
     };
-    
+
     var updateTotalAtCompletion = function (that) {
         var numErroredFiles = that.queue.getErroredFiles().length;
         var numTotalFiles = that.queue.files.length;
         var fileLabelStr = fileOrFiles(that, numTotalFiles);
         var errorStr = "";
-        
+
         // if there are errors then change the total progress bar
         // and set up the errorStr so that we can use it in the totalProgressStr
         if (numErroredFiles > 0) {
-            var errorLabelString = (numErroredFiles === 1) ? that.options.strings.progress.singleError : 
+            var errorLabelString = (numErroredFiles === 1) ? that.options.strings.progress.singleError :
                                                              that.options.strings.progress.pluralErrors;
             setTotalProgressStyle(that, true);
             errorStr = fluid.stringTemplate(that.options.strings.progress.numberOfErrors, {
@@ -179,34 +179,34 @@ var fluid_1_4 = fluid_1_4 || {};
                 errorLabel: errorLabelString
             });
         }
-        
+
         var totalProgressStr = fluid.stringTemplate(that.options.strings.progress.completedLabel, {
-            curFileN: that.queue.getUploadedFiles().length, 
+            curFileN: that.queue.getUploadedFiles().length,
             totalFilesN: numTotalFiles,
             errorString: errorStr,
             fileLabel: fileLabelStr,
             totalCurrBytes: fluid.uploader.formatFileSize(that.queue.sizeOfUploadedFiles())
         });
-        
+
         that.totalProgress.update(100, totalProgressStr);
     };
 
     /*
-     * Summarizes the status of all the files in the file queue.  
+     * Summarizes the status of all the files in the file queue.
      */
     var updateQueueSummaryText = function (that) {
-        var fileQueueTable = that.locate("fileQueue");        
+        var fileQueueTable = that.locate("fileQueue");
         if (that.queue.files.length === 0) {
             fileQueueTable.attr("summary", that.options.strings.queue.emptyQueue);
         } else {
             var queueSummary = fluid.stringTemplate(that.options.strings.queue.queueSummary, {
-                totalUploaded: that.queue.getUploadedFiles().length, 
+                totalUploaded: that.queue.getUploadedFiles().length,
                 totalInUploadQueue: that.queue.files.length - that.queue.getUploadedFiles().length
             });
             fileQueueTable.attr("summary", queueSummary);
         }
     };
-    
+
     var bindDOMEvents = function (that) {
         that.locate("uploadButton").click(function () {
             that.start();
@@ -230,7 +230,7 @@ var fluid_1_4 = fluid_1_4 || {};
             updateQueueSummaryText(that);
         }
     };
-    
+
     var updateStateAfterFileRemoval = function (that) {
         if (that.queue.getReadyFiles().length === 0) {
             setStateEmpty(that);
@@ -240,7 +240,7 @@ var fluid_1_4 = fluid_1_4 || {};
         renderUploadTotalMessage(that);
         updateQueueSummaryText(that);
     };
-    
+
     var updateStateAfterCompletion = function (that) {
         if (that.queue.getReadyFiles().length === 0) {
             setStateDone(that);
@@ -249,67 +249,67 @@ var fluid_1_4 = fluid_1_4 || {};
         }
         updateTotalAtCompletion(that);
         updateQueueSummaryText(that);
-    }; 
-    
+    };
+
     var uploadNextOrFinish = function (that) {
         if (that.queue.shouldUploadNextFile()) {
             that.strategy.remote.uploadNextFile();
         } else {
             that.events.afterUploadComplete.fire(that.queue.currentBatch.files);
             that.queue.clearCurrentBatch();
-        }        
+        }
     };
-    
+
     var bindEvents = function (that) {
         that.events.afterFileDialog.addListener(function () {
             updateStateAfterFileDialog(that);
         });
-        
+
         that.events.afterFileQueued.addListener(function (file) {
-            that.queue.addFile(file); 
+            that.queue.addFile(file);
         });
-        
+
         that.events.onFileRemoved.addListener(function (file) {
             that.removeFile(file);
         });
-        
+
         that.events.afterFileRemoved.addListener(function () {
             updateStateAfterFileRemoval(that);
         });
-        
+
         that.events.onUploadStart.addListener(function () {
             setStateUploading(that);
         });
-        
+
         that.events.onUploadStop.addListener(function () {
             that.locate(that.options.focusWithEvent.onUploadStop).focus();
         });
-        
+
         that.events.onFileStart.addListener(function (file) {
             file.filestatus = fluid.uploader.fileStatusConstants.IN_PROGRESS;
             that.queue.startFile();
         });
-        
+
         that.events.onFileProgress.addListener(function (file, currentBytes, totalBytes) {
             that.queue.updateBatchStatus(currentBytes);
-            updateTotalProgress(that); 
+            updateTotalProgress(that);
         });
-        
+
         that.events.onFileComplete.addListener(function (file) {
             that.queue.finishFile(file);
-            that.events.afterFileComplete.fire(file); 
+            that.events.afterFileComplete.fire(file);
             uploadNextOrFinish(that);
         });
-        
+
         that.events.onFileSuccess.addListener(function (file) {
             file.filestatus = fluid.uploader.fileStatusConstants.COMPLETE;
             if (that.queue.currentBatch.bytesUploadedForFile === 0) {
                 that.queue.currentBatch.totalBytesUploaded += file.size;
             }
-            
-            updateTotalProgress(that); 
+
+            updateTotalProgress(that);
         });
-        
+
         that.events.onFileError.addListener(function (file, error) {
             if (error === fluid.uploader.errorConstants.UPLOAD_STOPPED) {
                 file.filestatus = fluid.uploader.fileStatusConstants.CANCELLED;
@@ -330,28 +330,25 @@ var fluid_1_4 = fluid_1_4 || {};
             updateStateAfterCompletion(that);
         });
     };
-    
+
     var setupUploader = function (that) {
         that.demo = fluid.typeTag(that.options.demo ? "fluid.uploader.demo" : "fluid.uploader.live");
-        
+
         fluid.initDependents(that);
 
         // Upload button should not be enabled until there are files to upload
         disableElement(that, that.locate("uploadButton"));
         bindDOMEvents(that);
         bindEvents(that);
-        
+
         updateQueueSummaryText(that);
         that.statusUpdater();
         renderFileUploadLimit(that);
-        
-        // Uploader uses application-style keyboard conventions, so give it a suitable role.
-        that.container.attr("role", "application");
     };
-    
+
     /**
      * Instantiates a new Uploader component.
-     * 
+     *
      * @param {Object} container the DOM element in which the Uploader lives
      * @param {Object} options configuration options for the component.
      */
@@ -359,7 +356,7 @@ var fluid_1_4 = fluid_1_4 || {};
       // Do not try to expand uploaderOptions here or else our subcomponents will end up
       // nested inside uploaderImpl
         var that = fluid.initView("fluid.uploader", container);
-        
+
         // Unsupported, non-API function fluid.uploader.transformOptions
         if (fluid.uploader.transformOptions) {
             uploaderOptions = fluid.uploader.transformOptions(uploaderOptions);
@@ -369,13 +366,13 @@ var fluid_1_4 = fluid_1_4 || {};
         fluid.initDependents(that);
         return that.uploaderImpl;
     };
-    
+
     fluid.uploaderImpl = function () {
-        fluid.fail("Error creating uploader component - please make sure that a " + 
-            "progressiveCheckerForComponent for \"fluid.uploader\" is registered either in the " + 
+        fluid.fail("Error creating uploader component - please make sure that a " +
+            "progressiveCheckerForComponent for \"fluid.uploader\" is registered either in the " +
             "static environment or else is visible in the current component tree");
     };
-    
+
     fluid.defaults("fluid.uploader", {
         gradeNames: ["fluid.viewComponent"],
         components: {
@@ -403,11 +400,11 @@ var fluid_1_4 = fluid_1_4 || {};
             defaultContextName: "fluid.uploader.singleFile"
         }
     });
-    
+
     // Ensure that for all uploaders created via IoC, we bypass the wrapper and directly create the concrete uploader
     fluid.alias("fluid.uploader", "fluid.uploaderImpl");
-    
-    // This method has been deprecated as of Infusion 1.3. Use fluid.uploader() instead, 
+
+    // This method has been deprecated as of Infusion 1.3. Use fluid.uploader() instead,
     // which now includes built-in support for progressive enhancement.
     fluid.progressiveEnhanceableUploader = function (container, enhanceable, options) {
         return fluid.uploader(container, options);
@@ -423,7 +420,7 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.uploader.multiFileUploader = function (container, options) {
         var that = fluid.initView("fluid.uploader.multiFileUploader", container, options);
         that.queue = fluid.uploader.fileQueue();
-        
+
         /**
          * Opens the native OS browse file dialog.
          */
@@ -432,10 +429,10 @@ var fluid_1_4 = fluid_1_4 || {};
                 that.strategy.local.browse();
             }
         };
-        
+
         /**
          * Removes the specified file from the upload queue.
-         * 
+         *
          * @param {File} file the file to remove
          */
         that.removeFile = function (file) {
@@ -443,16 +440,16 @@ var fluid_1_4 = fluid_1_4 || {};
             that.strategy.local.removeFile(file);
             that.events.afterFileRemoved.fire(file);
         };
-        
+
         /**
          * Starts uploading all queued files to the server.
          */
         that.start = function () {
             that.queue.start();
-            that.events.onUploadStart.fire(that.queue.currentBatch.files);           
+            that.events.onUploadStart.fire(that.queue.currentBatch.files);
             that.strategy.remote.uploadNextFile();
         };
-        
+
         /**
          * Cancels an in-progress upload.
          */
@@ -460,11 +457,11 @@ var fluid_1_4 = fluid_1_4 || {};
             that.events.onUploadStop.fire();
             that.strategy.remote.stop();
         };
-        
+
         setupUploader(that);
-        return that;  
+        return that;
     };
-    
+
     fluid.defaults("fluid.uploader.multiFileUploader", {
         gradeNames: "fluid.viewComponent",
         components: {
@@ -483,13 +480,13 @@ var fluid_1_4 = fluid_1_4 || {};
                     uploaderContainer: "{multiFileUploader}.container"
                 }
             },
-            
+
             totalProgress: {
                 type: "fluid.uploader.totalProgressBar",
                 options: {
                     selectors: {
                         progressBar: ".flc-uploader-queue-footer",
-                        displayElement: ".flc-uploader-total-progress", 
+                        displayElement: ".flc-uploader-total-progress",
                         label: ".flc-uploader-total-progress-text",
                         indicator: ".flc-uploader-total-progress",
                         ariaElement: ".flc-uploader-total-progress"
@@ -497,11 +494,11 @@ var fluid_1_4 = fluid_1_4 || {};
                 }
             }
         },
-        
+
         invokers: {
             statusUpdater: "fluid.uploader.ariaLiveRegionUpdater"
         },
-        
+
         queueSettings: {
             uploadURL: "",
             postParams: {},
@@ -513,7 +510,7 @@ var fluid_1_4 = fluid_1_4 || {};
         },
 
         demo: false,
-        
+
         selectors: {
             fileQueue: ".flc-uploader-queue",
             browseButton: ".flc-uploader-button-browse",
@@ -534,7 +531,7 @@ var fluid_1_4 = fluid_1_4 || {};
             afterUploadStart: "pauseButton",
             onUploadStop: "uploadButton"
         },
-        
+
         styles: {
             disabled: "fl-uploader-disabled",
             hidden: "fl-uploader-hidden",
@@ -543,7 +540,7 @@ var fluid_1_4 = fluid_1_4 || {};
             totalProgressError: "fl-uploader-total-progress-errored",
             browseButton: "fl-uploader-browseMore"
         },
-        
+
         events: {
             afterReady: null,
             onFileDialog: null,
@@ -568,8 +565,8 @@ var fluid_1_4 = fluid_1_4 || {};
         strings: {
             progress: {
                 fileUploadLimitLabel: "%fileUploadLimit %fileLabel maximum",
-                toUploadLabel: "To upload: %fileCount %fileLabel (%totalBytes)", 
-                totalProgressLabel: "Uploading: %curFileN of %totalFilesN %fileLabel (%currBytes of %totalBytes)", 
+                toUploadLabel: "To upload: %fileCount %fileLabel (%totalBytes)",
+                totalProgressLabel: "Uploading: %curFileN of %totalFilesN %fileLabel (%currBytes of %totalBytes)",
                 completedLabel: "Uploaded: %curFileN of %totalFilesN %fileLabel (%totalCurrBytes)%errorString",
                 numberOfErrors: ", %errorsN %errorLabel",
                 singleFile: "file",
@@ -586,22 +583,22 @@ var fluid_1_4 = fluid_1_4 || {};
             },
             queue: {
                 emptyQueue: "File list: No files waiting to be uploaded.",
-                queueSummary: "File list:  %totalUploaded files uploaded, %totalInUploadQueue file waiting to be uploaded." 
+                queueSummary: "File list:  %totalUploaded files uploaded, %totalInUploadQueue file waiting to be uploaded."
             }
         },
-        
+
         mergePolicy: {
             "fileQueueView.options.model": "preserve"
         }
     });
-    
+
     fluid.demands("fluid.uploader.totalProgressBar", "fluid.uploader.multiFileUploader", {
         funcName: "fluid.progress",
         container: "{multiFileUploader}.container"
     });
-    
+
     /** Demands blocks for binding to fileQueueView **/
-            
+
     fluid.demands("fluid.uploader.fileQueueView", "fluid.uploader.multiFileUploader", {
         container: "{multiFileUploader}.dom.fileQueue",
         options: {
@@ -610,7 +607,7 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
     });
-        
+
     fluid.demands("fluid.uploader.fileQueueView.eventBinder", [
         "fluid.uploader.multiFileUploader",
         "fluid.uploader.fileQueueView"
@@ -628,10 +625,10 @@ var fluid_1_4 = fluid_1_4 || {};
             }
         }
     });
-        
+
    /**
     * Pretty prints a file's size, converting from bytes to kilobytes or megabytes.
-    * 
+    *
     * @param {Number} bytes the files size, specified as in number bytes.
     */
     fluid.uploader.formatFileSize = function (bytes) {
@@ -652,10 +649,10 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.uploader.derivePercent = function (num, total) {
         return Math.round((num * 100) / total);
     };
-     
+
     // TODO: Refactor this to be a general ARIA utility
     fluid.uploader.ariaLiveRegionUpdater = function (statusRegion, totalFileStatusText, events) {
-        statusRegion.attr("role", "log");     
+        statusRegion.attr("role", "log");
         statusRegion.attr("aria-live", "assertive");
         statusRegion.attr("aria-relevant", "text");
         statusRegion.attr("aria-atomic", "true");
@@ -668,7 +665,7 @@ var fluid_1_4 = fluid_1_4 || {};
         events.afterFileRemoved.addListener(regionUpdater);
         events.afterUploadComplete.addListener(regionUpdater);
     };
-    
+
     fluid.demands("fluid.uploader.ariaLiveRegionUpdater", "fluid.uploader.multiFileUploader", {
         funcName: "fluid.uploader.ariaLiveRegionUpdater",
         args: [
@@ -678,7 +675,7 @@ var fluid_1_4 = fluid_1_4 || {};
         ]
     });
 
-    
+
     /**************************************************
      * Error constants for the Uploader               *
      * TODO: These are SWFUpload-specific error codes *
@@ -690,7 +687,7 @@ var fluid_1_4 = fluid_1_4 || {};
         ZERO_BYTE_FILE: -120,
         INVALID_FILETYPE: -130
     };
-    
+
     fluid.uploader.errorConstants = {
         HTTP_ERROR: -200,
         MISSING_UPLOAD_URL: -210,
@@ -703,7 +700,7 @@ var fluid_1_4 = fluid_1_4 || {};
         FILE_CANCELLED: -280,
         UPLOAD_STOPPED: -290
     };
-    
+
     fluid.uploader.fileStatusConstants = {
         QUEUED: -1,
         IN_PROGRESS: -2,
@@ -714,7 +711,7 @@ var fluid_1_4 = fluid_1_4 || {};
 
     var toggleVisibility = function (toShow, toHide) {
         // For FLUID-2789: hide() doesn't work in Opera
-        if (window.opera) { 
+        if (window.opera) {
             toShow.show().removeClass("hideUploaderForOpera");
             toHide.show().addClass("hideUploaderForOpera");
         } else {
@@ -748,5 +745,5 @@ var fluid_1_4 = fluid_1_4 || {};
     fluid.demands("fluid.uploaderImpl", "fluid.uploader.singleFile", {
         funcName: "fluid.uploader.singleFileUploader"
     });
-    
+
 })(jQuery, fluid_1_4);
