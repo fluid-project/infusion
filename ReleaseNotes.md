@@ -1,188 +1,295 @@
-# Release Notes for Fluid Infusion 2.0 #
+# Release Notes for Fluid Infusion 2.0.0 #
 
-[Main Project Site](http://fluidproject.org)
+[Fluid Project](http://fluidproject.org)
 
-[Documentation](https://github.com/fluid-project/infusion-docs)
+[Infusion Documentation](https://github.com/fluid-project/infusion-docs)
 
 ## What's New in 2.0.0? ##
 
-See [API Changes from 1.5 to 2.0](http://docs.fluidproject.org/infusion/development/APIChangesFrom1_5To2_0.html) on the Infusion docs site, as well as
-[Deprecations in 1.5](http://docs.fluidproject.org/infusion/development/DeprecationsIn1_5.html).
+See [API Changes from 1.5 to 2.0](http://docs.fluidproject.org/infusion/development/APIChangesFrom1_5To2_0.html) and [Deprecations in 1.5](http://docs.fluidproject.org/infusion/development/DeprecationsIn1_5.html) on the [Infusion Documentation](https://github.com/fluid-project/infusion-docs) site.
 
-### New Features
+For a complete list of Fixes and Improvements see the [Version 2.0](https://issues.fluidproject.org/projects/FLUID/versions/10041) summary in the [JIRA](https://issues.fluidproject.org) issue tracker.
 
-* [FLUID-5249: Instantiation of all components in a single-rooted component tree](https://issues.fluidproject.org/browse/FLUID-5249)
-* [FLUID-5495: IoCSS expressions matching upwards in the first component, and support for root context /](https://issues.fluidproject.org/browse/FLUID-5495)
-* [FLUID-5241: New "ContextAwareness" grades and API](https://issues.fluidproject.org/browse/FLUID-5241)
-    * [FLUID-5264: progressiveCheckerForComponent does not respond at instantiation](https://issues.fluidproject.org/browse/FLUID-5264) (implementation is abolished)
-* [FLUID-5733: `fluid.notImplemented` function for implementing abstract grades](https://issues.fluidproject.org/browse/FLUID-5733)
-* [FLUID-4884: New `FluidViewDebugging.js` implementation for DOM-directed browsing of IoC tree](https://issues.fluidproject.org/browse/FLUID-4884)
-* [FLUID-5506: Constraint-based priority scheme to compute order of notifying listeners (and others)](https://issues.fluidproject.org/browse/FLUID-5506)
+**Note:** Infusion 1.9 was not officially released, but is available as an official branch. It is is available on GitHub at [Infusion 1.9.x](https://github.com/fluid-project/infusion/tree/1.9.x). For a complete list of Fixes and Improvements see the [Version 1.9](https://issues.fluidproject.org/projects/FLUID/versions/10520) summary in the [JIRA](https://issues.fluidproject.org) issue tracker.
 
-### Bug Fixes and Improvements
+### New Features ###
 
-* [FLUID-5668: Corruption when material written for `members` requires merging](https://issues.fluidproject.org/browse/FLUID-5668)
-* [FLUID-5714: The framework does not correctly merge invoker specifications when both "func" and "funcName" are used](https://issues.fluidproject.org/browse/FLUID-5714)
-    * [FLUID-5184: Cannot override a this-ist invoker with a that-ist one](https://issues.fluidproject.org/browse/FLUID-5184)
-* [FLUID-5621: Improve `distributeOptions` so that priority of distributions can be precisely controlled](https://issues.fluidproject.org/browse/FLUID-5621)
-* [FLUID-5587: Framework should support namespaced options distributions rather than an array](https://issues.fluidproject.org/browse/FLUID-5587)
-* [FLUID-5226: `fluid.isPlainObject()` is not powerful to detect objects which are only exotic by virtue of constructor](https://issues.fluidproject.org/browse/FLUID-5226)
-* [FLUID-5717: Merge policies contributed via dynamic grades do not operate correctly](https://issues.fluidproject.org/browse/FLUID-5717)
-* [FLUID-5615: Grade closure algorithm for dynamic grades is faulty](https://issues.fluidproject.org/browse/FLUID-5615) (partial fix)
-* [FLUID-5742: Dynamic components do not respond to dynamic `typeName` or `gradeNames`](https://issues.fluidproject.org/browse/FLUID-5742)
-* [FLUID-5694: Diagnostic when injecting component to its own location](https://issues.fluidproject.org/browse/FLUID-5694)
-* [FLUID-5696: Failure to gingerly instantiate injection records](https://issues.fluidproject.org/browse/FLUID-5696)
-* [FLUID-5664: Renderer fails to respect rebinding of model reference](https://issues.fluidproject.org/browse/FLUID-5664)
-* [FLUID-5671: Memory exhaustion possible during `fluid.fail` on node.js (`fluid.prettyPrintJSON`)](https://issues.fluidproject.org/browse/FLUID-5671)
-* [FLUID-5582: Improve flexibility of `fluid.fail` handling further](https://issues.fluidproject.org/browse/FLUID-5582)
-* [FLUID-5667: Circularity in material sent for options expansion is not detected](https://issues.fluidproject.org/browse/FLUID-5667)
-* [FLUID-5711: The Infusion core framework doesn't work when run in a Web Worker](https://issues.fluidproject.org/browse/FLUID-5711)
-* [FLUID-5509: Storing NaN via a "new-style applier" will cause infinite recursion in DataBinding](https://issues.fluidproject.org/browse/FLUID-5509)
-* [FLUID-5675: Text To Speech enactor should be supplied with a mock implementation to facilitate integration testing](https://issues.fluidproject.org/browse/FLUID-5675)
+* Constraint-based priorities, supported by `listeners`, `modelListeners`, `modelRelay`, `distributeOptions`, `contextAwareness`, and `components`. This allows the specific order of those items to be configured. (See: [Priorities](http://docs.fluidproject.org/infusion/development/Priorities.html))
+* Context Awareness - and things it relies on:
+  * Global Instantiator
+    * Every Infusion component, regardless of how it is instantiated, ends up in a single-rooted tree of components
+    * This enables use of modern IoC features such as model relay and declarative event binding
+    * Enables use of the root distributeOptions context "/"
+    * Enables the removal of "demands blocks"
+    * Useful debugging tip: Watch `fluid.globalInstantiator` in your JS debugging tools to see the structure of your application and its tree.
+* `fluid.notImplemented` function for implementing abstract grades
+* [Lazy loading for UI Options](http://docs.fluidproject.org/infusion/development/UserInterfaceOptionsAPI.html#lazyload) and instructions for how to use the Preferences Framework with a [zero initial load time](http://docs.fluidproject.org/infusion/development/tutorial-prefsFrameworkMinimalFootprint/MinimalFootprint.html).
+  * This should assist in improving performance when using the Preferences Framework, particularly for resource intensive sites and applications
+* Much faster invokers and boiled listeners (c. 60x faster)
+* Support for using Infusion with npm for both Node.js and web-based projects.
+  * Provides a variety of prebuilt versions of Infusion in the module's `dist` directory.
+* Source Maps are generated for the concatenated JavaScript files
+* View oriented IoC debugging tools
+  * Including FluidViewDebugging.js on the page of any Infusion application gives you access to the _IoC View Inspector_. Click on the small cogwheel icon at the bottom right of the page to open a panel which shows the details of the view components and their grades, that are attached to DOM nodes in the browser pane. This interface works similarly to the _DOM Inspector_ familiar from modern web browsers, but is an experimental implementation with an engineer-level UI.
 
-### Removals
 
-* [FLUID-5616: "init functions" removed from the framework](https://issues.fluidproject.org/browse/FLUID-5616)
-* Also removed: the static and dynamic environments, dynamic invokers, old ChangeApplier, autoInit, etc.
+### Removal of Deprecated Features ###
 
-## What's New in 1.9 ##
+* Manual lifecycle points finalInit, postInit, etc.
+* Obsolete syntax for arguments, options, etc.
+* `"autoInit"` grade
+* Static and dynamic environments, replaced by Global Instantiator
+* The old model component hierarchy and "old ChangeApplier" implementation
+* `fluid.demands`
+* No more distinction between fast and dynamic invokers
+* Model Relay specific component grades have been removed, model relay now works with any model grade.
 
-**Note** 1.9 was never (so far) an official release of Infusion, but was a "last ditch" branching point to record the state of the framework should
-we ever in future require to make a release or backport fixes to a version of Infusion API compatible with the latest 1.x line, most particularly 1.5.x.
-It is stored in github at [Infusion 1.9.x](https://github.com/fluid-project/infusion/tree/1.9.x)
+## Obtaining Infusion ##
 
-This list of JIRAs is nonexhaustive since work has accumulated in trunk for several years since the 1.5 Infusion release. These are some of the more significant recent fixes,
-currently not including work on the preferences framework:
+* [Fork on GitHub](https://github.com/fluid-project/infusion)
+* [Download a Build](https://github.com/fluid-project/infusion/releases)
+* [NPM](https://www.npmjs.com/package/infusion)
 
-### New Features
-
-* [FLUID-5513: Implement "micropromises" to ease manipulation of asynchronous code sequences](https://issues.fluidproject.org/browse/FLUID-5513)
-
-### Bug Fixes and Improvements
-
-* [FLUID-5662: fluid.fetchResources stalls if defaultLocale and locale are identical, and forceCache option is supplied](https://issues.fluidproject.org/browse/FLUID-5662)
-* [FLUID-5559: onTestCaseStart event can fire multiple times in IoC Testing fixture](https://issues.fluidproject.org/browse/FLUID-5559)
-* [FLUID-5575: Timing of onTestCaseStart event is incorrect](https://issues.fluidproject.org/browse/FLUID-5575)
-* [FLUID-5268: Newly implemented "afterDestroy" event does not function](https://issues.fluidproject.org/browse/FLUID-5268)
-* [FLUID-5475: Improve diagnostics when framework is used within node.js](https://issues.fluidproject.org/browse/FLUID-5475)
-* [FLUID-5512: Allow valueMapper to handle the defaultOutputValue when the transformation is based upon compound input values](https://issues.fluidproject.org/browse/FLUID-5512)
-* [FLUID-5673: Tooltips are not closed by closeAll and accumulate endlessly if some descendents are not part of "items" option](https://issues.fluidproject.org/browse/FLUID-5673)
-* [FLUID-5659: Failure to notify multiple relay rules](https://issues.fluidproject.org/browse/FLUID-5659)
-* [FLUID-5599: Expand the message bundle system to be able to locate the bundle for a requested language](https://issues.fluidproject.org/browse/FLUID-5599)
-
-## Downloading Infusion ##
-
-You can dowload the source code for Infusion from [GitHub](https://github.com/fluid-project/infusion).
-
-You can create your own custom build of Infusion using the [grunt build script](README.md#how-do-i-create-an-infusion-package):
+You can create your own custom build of Infusion using the [grunt build script](README.md#how-do-i-create-an-infusion-package).
 
 ## Demos ##
 
-Infusion ships with a demos for seeing all of the components in action. You can
-find them in the _**demos**_ folder in the release bundle or on our [build site](http://build.fluidproject.org/).
+Infusion ships with demos of all of the components in action. You can find them in the _**demos**_ folder in the release bundle or on our [build site](http://build.fluidproject.org/).
 
-When run from a local file system, several of these demos require you to enable local file AJAX
-in Firefox and Chrome:
-
-* https://wiki.fluidproject.org/display/fluid/Browser+settings+to+support+local+Ajax+calls
-* http://kb.mozillazine.org/Security.fileuri.strict_origin_policy
-* http://ejohn.org/blog/tightened-local-file-security/
+When running the demos on your local machine, a web server is recommended. Several of the demos make use of AJAX calls; which typically are not allowed by
+the browser when run from the local file system.
 
 ## License ##
 
 Fluid Infusion is licensed under both the ECL 2.0 and new BSD licenses.
 
 More information is available in our [wiki](http://wiki.fluidproject.org/display/fluid/Fluid+Licensing).
-
-
 ## Third Party Software in Infusion ##
 
 This is a list of publicly available software that is redistributed with Fluid Infusion,
 categorized by license:
 
-### MIT License ###
-* [Foundation v6.2.3](http://foundation.zurb.com/index.html)
-* [HTML5 Boilerplate v4.3](http://html5boilerplate.com/)
-* [jQuery v3.1.0](http://jquery.com/)
-* [jQuery UI (Core; Interactions: draggable, resizable; Widgets: button, checkboxradio, controlgroup, dialog, mouse, slider, tabs, and tooltip) v1.12.1](http://ui.jquery.com/)
-* [jQuery QUnit v1.12.0](http://qunitjs.com)
-* [jQuery QUnit Composite v1.0.1](https://github.com/jquery/qunit-composite)
-* [jQuery Mockjax v2.2.1](https://github.com/jakerella/jquery-mockjax)
-* [jQuery scrollTo v1.4.2](http://flesler.blogspot.com/2007/10/jqueryscrollto.html)
-* [jQuery Touch Punch v0.2.2](http://touchpunch.furf.com/)
-* [jquery.simulate](https://github.com/eduardolundgren/jquery-simulate)
-* [jquery.selectbox v0.5 (forked)](https://github.com/fluid-project/jquery.selectbox)
-* [Micro Clearfix](http://nicolasgallagher.com/micro-clearfix-hack/)
-* [Normalize v4.1.1](https://necolas.github.io/normalize.css/)
-* [Buzz v1.1.0](http://buzz.jaysalvat.com)
-* [html5shiv v3.7.2](https://code.google.com/p/html5shiv/)
-
-### zlib/libpng License ###
-* [fastXmlPull is based on XML for Script's Fast Pull Parser v3.1](http://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js)
-
-### ECL 2.0 ###
-* Sample markup and stylesheets from [Sakai v2.5](http://sakaiproject.org)
-
 ### Apache 2.0 ###
+
+* [`fluid.load.scripts` is based on Jake Archibald's script loading example](http://www.html5rocks.com/en/tutorials/speed/script-loading/#toc-dom-rescue)
 * [Open Sans Light font](http://www.google.com/fonts/specimen/Open+Sans)
 
-### Public Domain ###
-* Douglas Crockford's [JSON.js (from 2007-11-06)](http://www.json.org/)
+### MIT License ###
+
+* [Buzz v1.1.0](http://buzz.jaysalvat.com)
+* [Foundation v6.2.3](http://foundation.zurb.com/index.html)
+* [HTML5 Boilerplate v4.3](http://html5boilerplate.com/)
+* [html5shiv v3.7.2](https://code.google.com/p/html5shiv/)
+* [jQuery v3.1.0](http://jquery.com/)
+* [jQuery Mockjax v2.2.1](https://github.com/jakerella/jquery-mockjax)
+* [jQuery QUnit v1.12.0](http://qunitjs.com)
+* [jQuery QUnit Composite v1.0.1](https://github.com/jquery/qunit-composite)
+* [jQuery scrollTo v1.4.2](http://flesler.blogspot.com/2007/10/jqueryscrollto.html)
+* [jQuery Touch Punch v0.2.2](http://touchpunch.furf.com/)
+* [jQuery UI (Core; Interactions: draggable, resizable; Widgets: button, checkboxradio, controlgroup, dialog, mouse, slider, tabs, and tooltip) v1.12.1](http://ui.jquery.com/)
+* [jquery.selectbox v0.5 (forked)](https://github.com/fluid-project/jquery.selectbox)
+* [jquery.simulate](https://github.com/eduardolundgren/jquery-simulate)
+* [Micro Clearfix](http://nicolasgallagher.com/micro-clearfix-hack/)
+* [Normalize v4.1.1](https://necolas.github.io/normalize.css/)
+
+### zlib/libpng License ###
+
+* [fastXmlPull is based on XML for Script's Fast Pull Parser v3.1](http://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js)
 
 ## Documentation ##
 
-We are in the process of migrating our documentation to a new space. The markdown files for the documentation can be found in [github](https://github.com/fluid-project/infusion-docs).
-
-The new space is dedicated to only Infusion documentation, and provides improved navigation.
-
-Some of our documentation remains in the wiki space: Links to these pages are indicated with _**wiki**_. From any of these pages, you can return to the main documentation space using your
-browser's Back button.
+Documentation and tutorials can found on the [Infusion Documentation](http://docs.fluidproject.org/infusion/development/) site.
 
 ## Supported Browsers ##
 
 Infusion 2.0 was tested with the following browsers:
 
-* Chrome current (versions 43-44)
-* Firefox current (versions 39-40)
-* Internet Explorer versions 10 and 11
-* Safari versions ???
+* Chrome current (version 54)
+* Firefox current (versions 49-50)
+* Internet Explorer (version 11)
+* Microsoft Edge (version 38)
+* Safari (version 10)
 
-For more information see the [Fluid Infusion browser support](http://wiki.fluidproject.org/display/docs/Browser+Support) wiki page.
+Additional testing for mobile devices was performed with the following:
 
+* Chrome (Android 6.0.1)
+* Safari (iOS 10.1.1)
 
-## Status of Components and Framework Features ##
+For more information see the [Fluid Infusion browser support](https://wiki.fluidproject.org/display/fluid/Prior+Browser+Support) wiki page.
 
-### Production ###
+### Testing Configurations ####
 
-Supported by tested browsers, and stable for production usage across a wide range of applications and use cases
-
-* Infusion Framework Core
-* Inline Edit: Simple Text
-* Renderer
-* Reorderer: List, Grid, Layout, Image
-* Undo
-
-### Preview ###
-
-Still growing, but with broad browser support. Expect new features in upcoming releases
-
-* IoC
-* Pager
-* Preferences Framework
-* Progress
-* UI Options
-* Uploader
-
-### Sneak Peek ###
-In development; APIs will change. Share your feedback, ideas, and code
-
-* Inline Edit: Dropdown
-* Inline Edit: Rich Text
-* Table of Contents
-* Model Relay
-* Model Transformation
-* Progressive Enhancement
-* etc.
+<table>
+    <summary>Testing Configurations</summary>
+    <thead>
+        <tr>
+            <th rowspan="2">Testing Task</th>
+            <th colspan="5">Desktop Browser</th>
+            <th colspan="2">Mobile Browser</th>
+        </tr>
+        <tr>
+            <th>Chrome</th>
+            <th>Firefox</th>
+            <th>IE 11</th>
+            <th>MS Edge</th>
+            <th>Safari</th>
+            <th>Chrome for Android</th>
+            <th>Safari iOS</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>Run All Unit Tests</th>
+            <td>Chrome 54 (macOS 10.12)</td>
+            <td>Firefox 49 (macOS 10.12)</td>
+            <td>IE 11 (Win 10)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12)</td>
+            <td>Chrome 54 (Android 6.0.1 & 7.0.0)</td>
+            <td>Safari (iOS 10.1.1)</td>
+        </tr>
+        <tr>
+            <th>Smoke Tests - All Manual Tests</th>
+            <td>Chrome 54 (macOS 10.11.6)</td>
+            <td>Firefox 50 (macOS 10.12.1)</td>
+            <td>IE 11 (Win 8.1)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12.1)</td>
+            <td>Chrome 54 (Android 6.0.1)</td>
+            <td>Safari (iOS 10.1.1)</td>
+        </tr>
+        <tr>
+            <th>Smoke Tests - All Demos</th>
+            <td>Chrome 54 (macOS 10.12.1)</td>
+            <td>Firefox 50 (macOS 10.12.1)</td>
+            <td>IE 11 (Win 8.1)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12.1)</td>
+            <td>Chrome 54 (Android 6.0.1)</td>
+            <td>Safari (iOS 10.1.1)</td>
+        </tr>
+        <tr>
+            <th>Smoke Tests - All Examples</th>
+            <td>Chrome 54 (macOS 10.12.1)</td>
+            <td>Firefox 50 (macOS 10.12.1)</td>
+            <td>IE 11 (Win 8.1)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12.1)</td>
+            <td>Chrome 54 (Android 6.0.1)</td>
+            <td>Safari (iOS 10.1.1)</td>
+        </tr>
+        <tr>
+            <th>Inline Edit QA Test Plan - Simple Text</th>
+            <td>Chrome 54 (macOS 10.10)</td>
+            <td>Firefox 49 (openSUSE Linux 42.1)</td>
+            <td>IE 11 (Win 8.1)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12)</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Keyboard Accessibility QA Test Plan</th>
+            <td>Chrome 54 (Win 10)</td>
+            <td>Firefox 49.0.2 (macOS 10.12)</td>
+            <td>IE 11 (Win 8.1)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12)</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Pager QA Test Plan</th>
+            <td>Chrome 54 (Win 10)</td>
+            <td>Firefox 49.0.2 (macOS 10.12)</td>
+            <td>IE 11 (Win 7)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12)</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Progress QA Test Plan</th>
+            <td>Chrome 54 (macOS 10.11.6)</td>
+            <td>Firefox 49.0.2 (macOS 10.12)</td>
+            <td>IE 11 (Win 7)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12)</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Reorderer QA Test Plan - Image Reorderer</th>
+            <td>Chrome 54 (Win 10)</td>
+            <td>Firefox 49.0.2 (macOS 10.12)</td>
+            <td>IE 11 (Win 7)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12)</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Reorderer QA Test Plan - Layout Reorderer</th>
+            <td>Chrome 54 (macOS 10.11.6)</td>
+            <td>Firefox 49.0.2 (macOS 10.12)</td>
+            <td>IE 11 (Win 7)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12)</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Reorderer QA Test Plan - List Reorderer</th>
+            <td>Chrome 54 (macOS 10.11.6)</td>
+            <td>Firefox 49.0.2 (macOS 10.12)</td>
+            <td>IE 11 (Win 7)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12)</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Reorderer QA Test Plan - Grid Reorderer</th>
+            <td>Chrome 54 (macOS 10.11.6)</td>
+            <td>Firefox 49.0.2 (macOS 10.12)</td>
+            <td>IE 11 (Win 7)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12)</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Preferences Framework QA Test Plan</th>
+            <td>Chrome 54 (Win 10)</td>
+            <td>Firefox 49.0.2 (macOS 10.12)</td>
+            <td>IE 11 (Win 7)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12)</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>UI Options QA Test Plan - Separated Panel</th>
+            <td>Chrome 54 (Win 10)</td>
+            <td>Firefox 49.0.2 (Win 10)</td>
+            <td>IE 11 (Win 7)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12)</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Uploader QA Test Plan</th>
+            <td>Chrome 54 (macOS 10.12.1)</td>
+            <td>Firefox 49.0.2 (macOS 10.12.1)</td>
+            <td>IE 11 (Win 10)</td>
+            <td>MS Edge 38 (Win 10)</td>
+            <td>Safari 10 (macOS 10.12.1)</td>
+            <td>N/A</td>
+            <td>N/A</td>
+        </tr>
+    </tbody>
+</table>
 
 ## Known Issues ##
 
@@ -190,35 +297,48 @@ The Fluid Project uses a [JIRA](http://issues.fluidproject.org) website to track
 
 ### Framework ###
 
+* [FLUID-5912: "{arguments}" IoC references in dynamicComponents model block are incorrectly interpreted as implicit model relays](https://issues.fluidproject.org/browse/FLUID-5912)
+* [FLUID-5546: Framework fails to deregister listeners to events which are injected from other components](https://issues.fluidproject.org/browse/FLUID-5546)
 * [FLUID-5519: Timing of "initial transaction" in new model relay system is problematic](https://issues.fluidproject.org/browse/FLUID-5519)
 
 ### Inline Edit ###
 
+* [FLUID-5392: Two clicks required to edit an empty inline edit field](https://issues.fluidproject.org/browse/FLUID-5392)
 * [FLUID-1600: Pressing the "Tab" key to exit edit mode places focus on the wrong item](http://issues.fluidproject.org/browse/FLUID-1600)
 
 ### Layout Reorderer ###
 * [FLUID-3864: Layout Reorderer failed to move portlets back to the first column in three-columns view with keyboard](http://issues.fluidproject.org/browse/FLUID-3864)
 * [FLUID-3089: If columns become stacked, can't drag item into lower column](http://issues.fluidproject.org/browse/FLUID-3089)
 
-### Renderer ###
+### Pager ###
 
-* [FLUID-3493: Renderer appears to corrupt templates containing empty tags on Opera (maybe others)](http://issues.fluidproject.org/browse/FLUID-3493)
-* [FLUID-4322: Renderer can corrupt tag nesting structure in some cases with branch containers](http://issues.fluidproject.org/browse/FLUID-4322)
+[FLUID-6081: VoiceOver on Pager doesn't announce the page number when the focus is on a page link](https://issues.fluidproject.org/browse/FLUID-6081)
 
 ### Reorderer ###
 
+* [FLUID-6013: The Grid Reorderer and Image Reorderer are missing ARIA role=row containers](https://issues.fluidproject.org/browse/FLUID-6013)
+* [FLUID-5870: Reorderer demo failures on IE 11](https://issues.fluidproject.org/browse/FLUID-5870)
+* [FLUID-44737: Focus styling persists after moving focus from Reorderer](https://issues.fluidproject.org/browse/FLUID-4437)
 * [FLUID-3925: With no wrapping on, the keyboard movement keystrokes are captured by the browser where a wrap would have occurred.](http://issues.fluidproject.org/browse/FLUID-3925)
 
 ### UI Options / Preferences Framework ###
 
-* [FLUID-4394: Fat Panel UI Options' iFrame HTML page doesn't play nice with a concatenated build of Infusion](http://issues.fluidproject.org/browse/FLUID-4394)
-* [FLUID-4426: Sliding Panel needs ARIA and/or to move focus to beginning of panel when opened to alert screen readers of new content](http://issues.fluidproject.org/browse/FLUID-4426)
-* [FLUID-4491: Line spacing doesn't affect elements that have a line-height style set](http://issues.fluidproject.org/browse/FLUID-4491)
-* [FLUID-5066: UIO Integrators shouldn't have to edit Infusion's copy of html templates to add panels, css](http://issues.fluidproject.org/browse/FLUID-5066)
-* [FLUID-5218: Prefs editor requires iFrame template to be in the same place as panel templates; it probably shouldn't](http://issues.fluidproject.org/browse/FLUID-5218)
+* [FLUID-5928: Schema and Grade version save preferences to different values](https://issues.fluidproject.org/browse/FLUID-5928)
+* [FLUID-5372: Increasing font size does not increase width of UIO panel](https://issues.fluidproject.org/browse/FLUID-5372)
 * [FLUID-5223: If there's exactly one text field in the prefs editor, pressing enter on most inputs causes the form to submit](http://issues.fluidproject.org/browse/FLUID-5223)
-* [FLUID-5255: ToC template path is not configurable by UIO integrators](http://issues.fluidproject.org/browse/FLUID-5255)
+* [FLUID-5218: Prefs editor requires iFrame template to be in the same place as panel templates; it probably shouldn't](http://issues.fluidproject.org/browse/FLUID-5218)
+* [FLUID-5066: UIO Integrators shouldn't have to edit Infusion's copy of html templates to add panels, css](http://issues.fluidproject.org/browse/FLUID-5066)
+* [FLUID-4491: Line spacing doesn't affect elements that have a line-height style set](http://issues.fluidproject.org/browse/FLUID-4491)
+* [FLUID-4394: Separated Panel UI Options' iFrame HTML page (SeparatedPanelFrame.html) doesn't play nice with a concatenated build of Infusion](http://issues.fluidproject.org/browse/FLUID-4394)
 
 ### Undo ###
 
 * [FLUID-3697: Undo hard-codes selector classes instead of using user-configured values](http://issues.fluidproject.org/browse/FLUID-3697)
+
+### Uploader ###
+
+* [FLUID-6079: Uploader error, when chosen files are too large, is not read by screenreader](https://issues.fluidproject.org/browse/FLUID-6079)
+* [FLUID-6065: The focus remains on the "Browse Files" button with 2 keyboard tabbings in IE 11 and IE Edge](https://issues.fluidproject.org/browse/FLUID-6065)
+* [FLUID-6045: The table header scrolls out of view as the file queue is scrolled](https://issues.fluidproject.org/browse/FLUID-6045)
+* [FLUID-5737: Uploading size is higher than total size](https://issues.fluidproject.org/browse/FLUID-5737)
+* [FLUID-4726: Cannot change uploader's button text through the string options.](https://issues.fluidproject.org/browse/FLUID-4726)
