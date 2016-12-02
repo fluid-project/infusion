@@ -14,15 +14,16 @@ Infusion includes:
 
 ## How Do I Get Infusion? ##
 
-You can checkout and fork Infusion on github:
+* [Download a Release](https://github.com/fluid-project/infusion/releases)
+* [Install from NPM](https://www.npmjs.com/package/infusion)
+* [Fork on GitHub](https://github.com/fluid-project/infusion)
 
-<https://github.com/fluid-project/infusion>
 
 See [How Do I Create an Infusion Package?](#how-do-i-create-an-infusion-package), for details on creating complete or custom packages of Infusion.
 
 ## Where is the Infusion Documentation? ##
 
-Infusion has comprehensive documentation at <http://docs.fluidproject.org/infusion/development/>.
+Infusion has comprehensive documentation at <http://docs.fluidproject.org/infusion>.
 
 ## Who Makes Infusion, and How Can I Help? ##
 
@@ -32,7 +33,7 @@ The best way to join the Fluid Community is to jump into any of our community ac
 
 ## Where is Infusion Used? ##
 
-The Infusion library is the cornerstone of a number of projects. You can see some of them featured on our [Projects page](http://fluidproject.org/projects.html).
+Infusion is the cornerstone of a number of Fluid's own projects dedicated to supporting inclusive design on the Web. You can see some of them featured on our [Projects page](http://fluidproject.org/projects.html). Infusion is also used in a variety of third-party applications, which are listed on the [Infusion Integrations](https://wiki.fluidproject.org/display/fluid/Infusion+Integrations) wiki page.
 
 ## How Do I Create an Infusion Package? ##
 
@@ -63,7 +64,9 @@ Source maps are supported in all of the major browsers: [Chrome](https://develop
 
 All other development dependencies will be installed by running the following from the project root:
 
-    npm install
+```bash
+npm install
+```
 
 ### Package Types ###
 
@@ -71,13 +74,17 @@ All other development dependencies will be installed by running the following fr
 
 Will include all of Infusion. The source files packaged along with the single concatenated js file will include all of the demos and unit tests. This is a good choice if you are trying to learn Infusion.
 
-    grunt
+```bash
+grunt
+```
 
 ##### Custom Build #####
 
 Will only include the modules you request, and all of their dependencies, minus any that are explicitly excluded. Unlike the "all" build, none of the demos or tests are included with a custom package.
 
-    grunt custom
+```bash
+grunt custom
+```
 
 ### Build Options ###
 
@@ -88,9 +95,11 @@ _the value can be omitted if --source is the last flag specified_
 
 By default all packages are minified. This option will allow you to maintain the readable spacing and comments.
 
-    grunt --source=true
+```bash
+grunt --source=true
 
-    grunt custom --source=true
+grunt custom --source=true
+```
 
 #### --include ####
 
@@ -99,7 +108,9 @@ _only available to custom packages_
 
 The `--include` option takes in a comma-separated string of the [Modules](#modules) to be included in a custom package. If omitted, all modules will be included (demos and tests will not be included).
 
-    grunt custom --include="inlineEdit, uiOptions"
+```bash
+grunt custom --include="inlineEdit, uiOptions"
+```
 
 #### --exclude ####
 
@@ -108,9 +119,11 @@ _only available to custom packages_
 
 The exclude option takes in a comma-separated string of the [Modules](#modules) to be excluded from a custom package. The `--exclude` option takes priority over `--include`.
 
-    grunt custom --exclude="jQuery"
+```bash
+grunt custom --exclude="jQuery"
 
-    grunt custom --include="framework" --exclude="jQuery"
+grunt custom --include="framework" --exclude="jQuery"
+```
 
 #### --name ####
 
@@ -119,24 +132,10 @@ _only available to custom packages_
 
 By default, custom packages are given a name with the form _infusion-custom-<version>.zip_ and the concatenated js file is called _infusion-custom.js_. By supplying the `--name` option, you can replace "custom" with any other valid string you like.
 
-    grunt custom --name="myPackage"    # this produces infusion-myPackage.js
-
-### How Do I Run Tests? ###
-
-There are two options available for running tests. The first option involves using browsers installed on your computer and the second uses browsers available in a VM.
-
-#### Run Tests Using Browsers Installed On Your Computer ####
-
-Using this option requires the installation of [Testem](https://github.com/testem/testem/#installation) and then running ``testem ci --file tests/testem.json`` in this directory. Any browsers that Testem finds on your platform will be launched sequentially with each browser running the full Infusion test suite. The results will be returned in your terminal in the [TAP](https://testanything.org/) format. You can use the ``testem launchers`` command to get a list of available browsers.
-
-Please note that any browsers launched will need to remain in the foreground because some of the tests require window focus.
-
-#### Run Tests Using Browsers Installed In a VM ####
-
-If installing Testem is not preferable, a [Fedora VM](https://github.com/idi-ops/packer-fedora) can be automatically created using tools provided by the [Prosperity4All Quality Infrastructure](https://github.com/GPII/qi-development-environments/). After meeting the [QI development VM requirements](https://github.com/GPII/qi-development-environments/#requirements) the ``vagrant up`` command can be used to launch a VM which will contain Testem and several browsers. Typing ``grunt tests`` will run the Infusion tests in the VM and the results will be displayed in your terminal.
-
-When this VM is first created Chrome and Firefox will be upgraded to the latest versions available in the Fedora and Google package repositories. The ``vagrant provision`` command can be used at a later time to trigger the browser upgrade and general VM provisioning mechanism.
-
+```bash
+# this produces infusion-myPackage.js
+grunt custom --name="myPackage"
+```
 ### Modules ###
 
 #### Framework Modules ####
@@ -174,6 +173,27 @@ When this VM is first created Chrome and Firefox will be upgraded to the latest 
 
 All of these libraries are already bundled within the Infusion image.
 
+## How Do I Run Tests? ##
+
+There are two options available for running tests. The first option involves using browsers installed on your computer and the second uses browsers available in a VM.
+
+### Run Tests Using Browsers Installed On Your Computer ###
+
+Using this option requires the installation of [Testem](https://github.com/testem/testem/#installation) and then running ``testem ci --file tests/testem.json`` in this directory. Any browsers that Testem finds on your platform will be launched sequentially with each browser running the full Infusion test suite. The results will be returned in your terminal in the [TAP](https://testanything.org/) format. You can use the ``testem launchers`` command to get a list of available browsers.
+
+**Note:** Any browser launched will need to be focused and remain the active window. Some of the tests require focus, and will report errors if they are not focused.
+
+### Run Tests Using Browsers Installed In a VM ###
+
+A [Fedora VM](https://github.com/idi-ops/packer-fedora) can be automatically created using tools provided by the [Prosperity4All Quality Infrastructure](https://github.com/GPII/qi-development-environments/). After meeting the [QI development VM requirements](https://github.com/GPII/qi-development-environments/#requirements) the ``vagrant up`` command can be used to launch a VM which will contain Testem and several browsers. Typing ``grunt tests`` will run the Infusion tests in the VM and the results will be displayed in your terminal.
+
+When this VM is first created Chrome and Firefox will be upgraded to the latest versions available in the Fedora and Google package repositories. The ``vagrant provision`` command can be used at a later time to trigger the browser upgrade and general VM provisioning mechanism.
+
+The benefits of using a VM include the following:
+
+* Does not require testem to be installed on the host machine
+* Allows other applications on the host machine to have focus while the tests are run
+
 ## Developing with the Preferences Framework ##
 
 Infusion is in the process of switching to use [Stylus](http://learnboost.github.io/stylus/) for CSS pre-processing.
@@ -181,8 +201,12 @@ CSS files for the Preferences Framework have been re-written in Stylus. Only Sty
 
 For developing the Preferences Framework, run the following from the project root to compile Stylus files to CSS:
 
-    grunt buildStylus
+```bash
+grunt buildStylus
+```
 
 A `watch` task using [grunt-contrib-watch](https://github.com/gruntjs/grunt-contrib-watch) is also supplied to ease Stylus development. This task launches a process that watches all Stylus files in the `src` directory and recompiles them when they are changed. This task can be run using the following command:
 
-    grunt watch:buildStylus
+```bash
+grunt watch:buildStylus
+```
