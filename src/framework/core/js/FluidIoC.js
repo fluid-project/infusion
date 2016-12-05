@@ -1996,8 +1996,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                 fluid.fail("Badly-formed compact " + type + " record " + string + " - unexpected material following close parenthesis: " + trail);
             }
             var prefix = string.substring(0, openPos);
-            var body = string.substring(openPos + 1, closePos);
-            var args = fluid.transform(body.split(","), $.trim, fluid.coerceToPrimitive);
+            var body = $.trim(string.substring(openPos + 1, closePos));
+            var args = body === "" ? [] : fluid.transform(body.split(","), $.trim, fluid.coerceToPrimitive);
             var togo = fluid.upgradePrimitiveFunc(prefix, null);
             togo.args = args;
             return togo;

@@ -3534,6 +3534,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.one = value1;
     };
 
+    fluid.tests.fluid6091check = function () {
+        jqUnit.assertDeepEq("FLUID-6091: Should have been supplied empty argument list", [], fluid.makeArray(arguments));
+        return arguments[0];
+    };
+
     fluid.defaults("fluid.tests.fluid5127root", {
         gradeNames: ["fluid.component"],
         members: {
@@ -3550,6 +3555,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         invokers: {
             addOne: "fluid.tests.add({that}.one, {arguments}.0)",
+            noArgs: "fluid.tests.fluid6091check()",
             bindRecord: "fluid.tests.fluid5127listener({arguments}.0, {arguments}.1, {that})"
         },
         events: {
@@ -3576,10 +3582,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Number", 3.5, that.number);
         jqUnit.assertEquals("true", true, that["true"]);
         jqUnit.assertEquals("false", false, that["false"]);
+        jqUnit.assertEquals("false", false, that["false"]);
 
         var added = that.addOne(2);
         jqUnit.assertEquals("Compact invoker", 3, added);
         jqUnit.assertEquals("Expander to invoker", 3, that.addedInvoke);
+
+        var noArgs = that.noArgs();
+        jqUnit.assertEquals("No args supply no arguments", undefined, noArgs);
 
         that.events.addEvent.fire(1);
         jqUnit.assertEquals("Compact direct listener", 2, that.fireValue);
