@@ -1,5 +1,5 @@
 /*!
- * Fluid Infusion v2.0
+ * Fluid Infusion v2.0.0
  *
  * Infusion is distributed under the Educational Community License 2.0 and new BSD licenses:
  * http://wiki.fluidproject.org/display/fluid/Fluid+Licensing
@@ -12,9 +12,10 @@ Copyright 2007-2010 University of Cambridge
 Copyright 2007-2009 University of Toronto
 Copyright 2007-2009 University of California, Berkeley
 Copyright 2010-2011 Lucendo Development Ltd.
-Copyright 2010 OCAD University
+Copyright 2010-2015 OCAD University
 Copyright 2011 Charly Molter
-Copyright 2014-2015 Raising the Floor - International
+Copyright 2012-2014 Raising the Floor - US
+Copyright 2014-2016 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
