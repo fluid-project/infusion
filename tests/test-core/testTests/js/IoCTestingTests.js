@@ -530,7 +530,7 @@ fluid.tests.elementPriority.checkSequence = function (record) {
 
 fluid.defaults("fluid.tests.elementPrioritySequence", {
     gradeNames: "fluid.test.sequence",
-    elements: {
+    sequenceElements: {
         check: {
             gradeNames: "fluid.tests.elementPriority.check",
             options: {
@@ -566,7 +566,7 @@ fluid.defaults("fluid.tests.elementPriority", {
         pushRecord: "fluid.tests.elementPriority.pushRecord({testCaseHolder}.record, {arguments}.0)"
     },
     modules: [{
-        name: "Priority-driven grade budding",
+        name: "FLUID-5903: Priority-driven grade budding",
         tests: [{
             expect: 1,
             name: "Simple sequence of 4 active elements",
