@@ -483,7 +483,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             var sequenceComponent = fluid.construct(seqPath, {type: fixture.sequenceGrade});
 
             fluid.test.checkComponentGrade(sequenceComponent, fixture.sequenceGrade, "fluid.test.sequence", "sequenceGrade", fixture);
-            var elements = fluid.transform(sequenceComponent.options.elements, function (element, i) {
+            var elements = fluid.transform(sequenceComponent.options.sequenceElements, function (element, i) {
                 var elementPath = seqPath.concat(["sequenceElement-" + i]);
                 var constructOptions = fluid.extend({type: element.gradeNames}, element.options);
                 var elementComponent = fluid.construct(elementPath, constructOptions);
