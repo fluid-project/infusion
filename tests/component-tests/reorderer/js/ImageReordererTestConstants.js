@@ -2,6 +2,7 @@
 Copyright 2007-2009 University of Cambridge
 Copyright 2007-2009 University of Toronto
 Copyright 2010-2011 OCAD University
+Copyright 2011 Lucendo Development Ltd.
 Copyright 2011 John Kremer
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
