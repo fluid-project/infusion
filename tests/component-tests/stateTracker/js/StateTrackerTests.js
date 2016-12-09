@@ -136,7 +136,43 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             );
         });
 
-        jqUnit.asyncTest("Test tracking state", function () {
+        jqUnit.asyncTest("Test tracking state, default interval", function () {
+            jqUnit.expect(1);
+            var stateTracker = fluid.stateTracker();
+            checkBoxEvaluator.init();
+            stateTrackerTests.numStateChanges = 0;
+
+            var intervalID = stateTracker.startTracking(
+                checkBoxEvaluator,
+                stateTrackerTests.onStateChanged
+            );
+            stateTracker.events.onStateChange.addListener(function () {
+                // Below this listener are three calls to change the "checked"
+                // state of the test checkbox.
+                if (stateTrackerTests.numCallsToChangeState === 3) {
+                    jqUnit.assertEquals(
+                        "State change detection",
+                        stateTrackerTests.numCallsToChangeState,
+                        stateTrackerTests.numStateChanges
+                    );
+                    jqUnit.start();
+                    stateTracker.stopTracking(
+                        stateTrackerTests.onStateChanged, intervalID
+                    );
+                }
+            });
+            // Change the state three times, and see if it's detected.  Space
+            // the changes by at least the tracker's polling interval.
+            stateTrackerTests.numCallsToChangeState = 0;
+            var delay = 200;
+            stateTrackerTests.changeStateWithDelay(delay);
+            delay += stateTracker.interval;
+            stateTrackerTests.changeStateWithDelay(delay);
+            delay += stateTracker.interval;
+            stateTrackerTests.changeStateWithDelay(delay);
+        });
+
+        jqUnit.asyncTest("Test tracking state, interval 100 msec", function () {
             jqUnit.expect(1);
             var stateTracker = fluid.stateTracker();
             checkBoxEvaluator.init();
@@ -164,13 +200,52 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
             // Change the state three times, and see if it's detected.  Space
-            // the changes by at least <interval> msec plus some slop.
+            // the changes by at least <interval> msec.
             stateTrackerTests.numCallsToChangeState = 0;
             var delay = 200;
             stateTrackerTests.changeStateWithDelay(delay);
-            delay += interval + 25;
+            delay += interval;
             stateTrackerTests.changeStateWithDelay(delay);
-            delay += interval + 25;
+            delay += interval;
+            stateTrackerTests.changeStateWithDelay(delay);
+        });
+
+        jqUnit.asyncTest("Test tracking limitation, interval 100 msec", function () {
+            jqUnit.expect(1);
+            var stateTracker = fluid.stateTracker();
+            checkBoxEvaluator.init();
+            stateTrackerTests.numStateChanges = 0;
+            var interval = 100;
+
+            var intervalID = stateTracker.startTracking(
+                checkBoxEvaluator,
+                stateTrackerTests.onStateChanged,
+                interval
+            );
+            stateTracker.events.onStateChange.addListener(function () {
+                // Below this listener are three calls to change the "checked"
+                // state of the test checkbox.
+                if (stateTrackerTests.numCallsToChangeState === 3) {
+                    jqUnit.assertNotEquals(
+                        "State change detection failure",
+                        stateTrackerTests.numCallsToChangeState,
+                        stateTrackerTests.numStateChanges
+                    );
+                    jqUnit.start();
+                    stateTracker.stopTracking(
+                        stateTrackerTests.onStateChanged, intervalID
+                    );
+                }
+            });
+            // Change the state three times, and see if it's detected.  The
+            // changes are faster finely than the tracker's.  Not all of the
+            // changes will be tracked.
+            stateTrackerTests.numCallsToChangeState = 0;
+            var delay = 25;
+            stateTrackerTests.changeStateWithDelay(delay);
+            delay += delay;
+            stateTrackerTests.changeStateWithDelay(delay);
+            delay += delay;
             stateTrackerTests.changeStateWithDelay(delay);
         });
     });
