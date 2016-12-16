@@ -10,6 +10,6 @@
     "links": {
         "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/renderer",
         "apiLink": "http://docs.fluidproject.org/infusion/development/Renderer.html",
-        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Renderer feedback"
+        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Renderer%20feedback"
     }
 }

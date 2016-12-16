@@ -1,5 +1,5 @@
 /*!
- * Fluid Infusion v2.0
+ * Fluid Infusion v2.0.0
  *
  * Infusion is distributed under the Educational Community License 2.0 and new BSD licenses:
  * http://wiki.fluidproject.org/display/fluid/Fluid+Licensing
@@ -12,9 +12,10 @@ Copyright 2007-2010 University of Cambridge
 Copyright 2007-2009 University of Toronto
 Copyright 2007-2009 University of California, Berkeley
 Copyright 2010-2011 Lucendo Development Ltd.
-Copyright 2010 OCAD University
+Copyright 2010-2015 OCAD University
 Copyright 2011 Charly Molter
-Copyright 2014-2015 Raising the Floor - International
+Copyright 2012-2014 Raising the Floor - US
+Copyright 2014-2016 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -366,6 +367,14 @@ var fluid = fluid || fluid_2_0_0;
         return obj && obj.constructor === fluid.componentConstructor;
     };
 
+    fluid.isUncopyable = function (totest) {
+        return fluid.isPrimitive(totest) || !fluid.isPlainObject(totest);
+    };
+
+    fluid.isApplicable = function (totest) {
+        return totest.apply && typeof(totest.apply) === "function";
+    };
+
     /** A basic utility that returns its argument unchanged */
 
     fluid.identity = function (arg) {
@@ -378,18 +387,20 @@ var fluid = fluid || fluid_2_0_0;
         fluid.fail("This operation is not implemented");
     };
 
+    /** Returns the first of its arguments if it is not `undefined`, otherwise returns the second.
+     * @param a {Any} The first argument to be tested for being `undefined`
+     * @param b {Any} The fallback argument, to be returned if `a` is `undefined`
+     * @return {Any} `a` if it is not `undefined`, else `b`.
+     */
+
+    fluid.firstDefined = function (a, b) {
+        return a === undefined ? b : a;
+    };
+
     /** Return an empty container as the same type as the argument (either an
      * array or hash */
     fluid.freshContainer = function (tocopy) {
         return fluid.isArrayable(tocopy) ? [] : {};
-    };
-
-    fluid.isUncopyable = function (totest) {
-        return fluid.isPrimitive(totest) || !fluid.isPlainObject(totest);
-    };
-
-    fluid.isApplicable = function (totest) {
-        return totest.apply && typeof(totest.apply) === "function";
     };
 
     fluid.copyRecurse = function (tocopy, segs) {
@@ -1277,7 +1288,7 @@ var fluid = fluid || fluid_2_0_0;
             if (firstConstraint === oldFirstConstraint) {
                 var holders = array.slice(firstConstraint);
                 fluid.fail("Could not find targets for any constraints in " + holders[0].priority.site + " ", holders, ": none of the targets (" + fluid.getMembers(holders, "priority.constraint.target").join(", ") +
-                    ") matched any namespaces of the elements in (", array.slice(0, firstConstraint) + ") - this is caused by either an invalid or circular reference");
+                    ") matched any namespaces of the elements in (", array.slice(0, firstConstraint), ") - this is caused by either an invalid or circular reference");
             }
         }
     };
@@ -1720,7 +1731,9 @@ var fluid = fluid || fluid_2_0_0;
     // unsupported, NON-API function
     fluid.resolveGrade = function (defaults, defaultName, gradeNames) {
         var gradeStruct = fluid.resolveGradeStructure(defaultName, gradeNames);
-        var mergeArgs = fluid.transform(gradeStruct.gradeChain, fluid.rawDefaults);
+        // TODO: Fault in the merging algorithm does not actually treat arguments as immutable - failure in FLUID-5082 tests
+        // due to listeners mergePolicy
+        var mergeArgs = fluid.transform(gradeStruct.gradeChain, fluid.rawDefaults, fluid.copy);
         fluid.remove_if(mergeArgs, function (options) {
             return !options;
         });
@@ -1757,7 +1770,7 @@ var fluid = fluid || fluid_2_0_0;
                 lastTick = Math.max(lastTick, gradeTickStore[searchGrades[i]] || 0);
             }
             if (lastTick > mergedDefaults.lastTick) {
-                fluid.log("Clearing cache for component " + defaultName + " with gradeNames ", searchGrades);
+                fluid.log(fluid.logLevel.TRACE, "Clearing cache for component " + defaultName + " with gradeNames ", searchGrades);
                 mergedDefaults = null;
             }
         }
@@ -1772,6 +1785,13 @@ var fluid = fluid || fluid_2_0_0;
     };
 
     // unsupported, NON-API function
+    /** Upgrades an element of an IoC record which designates a function to prepare for a {func, args} representation.
+     * @param rec {Any} If the record is of a primitive type,
+     * @param key {String} The key in the returned record to hold the function, this will default to `funcName` if `rec` is a `string` *not*
+     * holding an IoC reference, or `func` otherwise
+     * @return {Object} The original `rec` if it was not of primitive type, else a record holding { key : rec } if it was of primitive type.
+     */
+
     fluid.upgradePrimitiveFunc = function (rec, key) {
         if (rec && fluid.isPrimitive(rec)) {
             var togo = {};
@@ -1912,10 +1932,10 @@ var fluid = fluid || fluid_2_0_0;
         fluid.setGlobalValue(componentName, creator);
     };
 
-    var emptyPolicy = {};
+    fluid.emptyPolicy = fluid.freezeRecursive({});
     // unsupported, NON-API function
     fluid.derefMergePolicy = function (policy) {
-        return (policy ? policy["*"] : emptyPolicy) || emptyPolicy;
+        return (policy ? policy["*"] : fluid.emptyPolicy) || fluid.emptyPolicy;
     };
 
     // unsupported, NON-API function
@@ -2022,11 +2042,14 @@ var fluid = fluid || fluid_2_0_0;
             // traversal of concrete properties to do the final merge.
             if (source !== undefined) {
                 fluid.each(source, function (newSource, name) {
-                    if (!(name in target)) { // only request each new target key once -- all sources will be queried per strategy
+                    var childPolicy = fluid.concreteTrundler(mergePolicy, name);
+                    // 2nd arm of condition is an Outrageous bodge to fix FLUID-4930 further. See fluid.tests.retrunking in FluidIoCTests.js
+                    // We make extra use of the old "evaluateFully" flag and ensure to flood any trunk objects again during final "initter" phase of merging.
+                    // The problem is that a custom mergePolicy may have replaced the system generated trunk with a differently structured object which we must not
+                    // corrupt. This work should properly be done with a set of dedicated provenance/progress records in a separate structure
+                    if (!(name in target) || (options.evaluateFully && childPolicy === undefined && !fluid.isPrimitive(target[name]))) { // only request each new target key once -- all sources will be queried per strategy
                         segs[i] = name;
-                        if (!fluid.getImmediate(options.exceptions, segs, i)) {
-                            options.strategy(target, name, i + 1, segs, sources, mergePolicy);
-                        }
+                        options.strategy(target, name, i + 1, segs, sources, mergePolicy);
                     }
                 });
                 if (thisPolicy.replace) { // this branch primarily deals with a policy of replace at the root
@@ -2079,7 +2102,6 @@ var fluid = fluid || fluid_2_0_0;
                 sources = regenerateSources(options.sources, segs, i - 1, options.sourceStrategies);
                 policy = regenerateCursor(options.mergePolicy, segs, i - 1, fluid.concreteTrundler);
             }
-            // var thisPolicy = fluid.derefMergePolicy(policy);
             var newPolicyHolder = fluid.concreteTrundler(policy, name);
             var newPolicy = fluid.derefMergePolicy(newPolicyHolder);
 
@@ -2097,7 +2119,9 @@ var fluid = fluid || fluid_2_0_0;
                 var k = mul * j;
                 var thisSource = options.sourceStrategies[k](sources[k], name, i, segs); // Run the RH algorithm in "driving" mode
                 if (thisSource !== undefined) {
-                    newSources[k] = thisSource;
+                    if (!fluid.isPrimitive(thisSource)) {
+                        newSources[k] = thisSource;
+                    }
                     if (oldTarget === undefined) {
                         if (mul === -1) { // if we are going backwards, it is "replace"
                             thisTarget = target[name] = thisSource;

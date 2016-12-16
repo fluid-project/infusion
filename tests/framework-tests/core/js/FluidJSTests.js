@@ -5,6 +5,8 @@ Copyright 2008-2009 University of California, Berkeley
 Copyright 2010-2011 Lucendo Development Ltd.
 Copyright 2010-2011 OCAD University
 Copyright 2011 Charly Molter
+Copyright 2012-2013 Raising the Floor - US
+Copyright 2014-2016 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -50,6 +52,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         jqUnit.assertEquals("Array is plain by standard", true, fluid.isPlainObject([]));
         jqUnit.assertEquals("Array is nonplain in strict", false, fluid.isPlainObject([], true));
+    });
+
+    fluid.tests.firstDefinedTests = [
+        {a: undefined, b: 3, expected: 3},
+        {a: 0, b: 5, expected: 0},
+        {a: null, b: 4, expected: null},
+        {a: "thing", b: undefined, expected: "thing"},
+        {a: undefined, b: undefined, expected: undefined}
+    ];
+
+    jqUnit.test("fluid.firstDefined tests", function () {
+        fluid.each(fluid.tests.firstDefinedTests, function (fixture, i) {
+            jqUnit.assertEquals("fluid.firstDefined fixture " + i, fixture.expected, fluid.firstDefined(fixture.a, fixture.b));
+        });
     });
 
     jqUnit.test("fluid.makeArray tests", function () {

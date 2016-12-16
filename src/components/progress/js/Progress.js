@@ -1,7 +1,8 @@
 /*
 Copyright 2008-2009 University of Toronto
 Copyright 2008-2009 University of California, Berkeley
-Copyright 2010-2011 OCAD University
+Copyright 2010-2016 OCAD University
+Copyright 2013 Raising the Floor - US
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -132,8 +133,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             fluid.progress.updateWidth(that, pixels);
         }
 
-        if (labelText !== null) {
-            fluid.progress.updateText(that.label, labelText);
+        if (fluid.isValue(labelText)) {
+            var text = fluid.stringTemplate(labelText, {percentComplete: percent});
+            fluid.progress.updateText(that.label, text);
         }
 
         // update ARIA

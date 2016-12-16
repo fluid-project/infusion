@@ -29,10 +29,10 @@
 .demo-content a {
     font-weight: normal;
     text-decoration:none;
-    color:#00a3e3;
+    color: #0079ab;
 }
-.demo-content a:link { color:  #00a3e3; }
-.demo-content a:visited { color: #00a3e3; }
+.demo-content a:link { color: #0079ab; }
+.demo-content a:visited { color: #0079ab; }
 .demo-content a:hover { color: #ffbf00; }
 
 
@@ -159,6 +159,10 @@ em {
     top: 0;
 }
 
+#searchlabel {
+    color: #0079aa;
+}
+
 /* MIDDLE-LEFT ITEMS */
 
 #midNavElements a {
@@ -246,7 +250,7 @@ em {
 }
 
 #newsReleasesList h3 {
-    color:#00a0e1;
+    color:##0079ac;
     font-size: 1.4em;
 }
 
@@ -357,14 +361,6 @@ img.icon {
     width: 19.1em;
 }
 
-.h1_middle_text {
-    color: #ffffff;
-    font-weight:bold;
-    font-family:Arial, Helvetica, sans-serif;
-    margin-left: 6px;
-    font-size: 15px;
-}
-
 .box {
     padding: 4px 5px;
     margin-top: 5px;
@@ -376,7 +372,9 @@ img.icon {
     color: #ffffff;
     font-family:Arial, Helvetica, sans-serif;
     margin-left: 6px;
+    font-weight:bold;
     font-size: 1.08em;
+    display: inline;
 }
 
 .theme_image_caption {
@@ -418,6 +416,7 @@ img.icon {
     background:url(../images/tab_middle_side.png);
     background-repeat:repeat-x;
     background-size: contain;
+    background-color: #0080aa;
 }
 #left_box .right_tab {
     float:left;
@@ -438,6 +437,7 @@ img.icon {
 #breadcrumbs a {
     text-decoration:none;
     padding-bottom: 2px;
+    color: #0079ab;
 }
 
 .article {
@@ -486,6 +486,7 @@ h5 {
     background-repeat: repeat-x;
     height: 2.3em;
     background-size: contain;
+    background-color:#0080aa;
 }
 .fl-theme-yb #mainBlock {
     background-image: none;

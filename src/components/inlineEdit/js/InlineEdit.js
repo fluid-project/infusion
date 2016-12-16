@@ -2,7 +2,9 @@
 Copyright 2008-2009 University of Cambridge
 Copyright 2008-2010 University of Toronto
 Copyright 2008-2009 University of California, Berkeley
-Copyright 2010-2011 OCAD University
+Copyright 2010-2016 OCAD University
+Copyright 2012-2013 Raising the Floor - US
+Copyright 2015-2016 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -221,8 +223,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             content: that.options.tooltipText,
             position: {
                 my: "left top",
-                at: "left bottom",
-                offset: "0 5"
+                at: "left bottom+25%", // add a 25% offset to keep the tooltip from overlapping the element it is for
+                // setting the "of" property to ensure that the tooltip is positioned relative to that.viewEl
+                // even when keyboard focus is on that.textEditButton
+                of: that.viewEl
             },
             target: "*",
             delay: that.options.tooltipDelay,
@@ -353,8 +357,16 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             editModeInstruction.show();
 
             var editFieldPosition = editField.offset();
+            // For FLUID-5980 (https://issues.fluidproject.org/browse/FLUID-5980)
+            //
+            // From the jQuery height docs (http://api.jquery.com/height/)
+            // "As of jQuery 1.8, this may require retrieving the CSS height plus
+            // box-sizing property and then subtracting any potential border and
+            // padding on each element when the element has box-sizing: border-box.
+            // To avoid this penalty, use .css( "height" ) rather than .height()."
+            var editFieldHeight = parseInt(editField.css("height"), 10);
             editModeInstruction.css({left: editFieldPosition.left});
-            editModeInstruction.css({top: editFieldPosition.top + editField.height() + 5});
+            editModeInstruction.css({top: editFieldPosition.top + editFieldHeight + 5});
         });
     };
 

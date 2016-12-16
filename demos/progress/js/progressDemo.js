@@ -84,7 +84,7 @@ var demo = demo || {};
         strings: {
             confirmStatus: "Confirm and submit your order.",
             orderSubmitted: "Order Submitted. Demo finished.",
-            percentCompleted: "%percent% Complete",
+            percentCompleted: "%percentComplete% Complete",
             progressTitle: "Checking inventory, please wait."
         },
         events: {
@@ -157,7 +157,7 @@ var demo = demo || {};
                     modelListeners: {
                         "percent": {
                             func: "{progress}.update",
-                            args: ["{change}.value"],
+                            args: ["{change}.value", "{shoppingDemo}.options.strings.percentCompleted"],
                             excludeSource: "init"
                         }
                     }

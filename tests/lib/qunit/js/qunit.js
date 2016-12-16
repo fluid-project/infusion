@@ -7,7 +7,7 @@
  * http://qunitjs.com
  *
  * Copyright 2013 jQuery Foundation and other contributors
- * Copyright 2016 Raising the Floor (International)
+ * Copyright 2016 Raising the Floor - International
  * Released under the MIT license.
  * https://jquery.org/license/
  */

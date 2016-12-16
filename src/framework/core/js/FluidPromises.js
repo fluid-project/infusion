@@ -1,6 +1,8 @@
 /*!
- Copyright unscriptable.com / John Hann 2011
- Copyright Lucendo Development Ltd. 2014
+ Copyright 2011 unscriptable.com / John Hann
+ Copyright 2014 Lucendo Development Ltd.
+ Copyright 2014 Raising the Floor - US
+ Copyright 2014-2016 Raising the Floor - International
 
  License MIT
 */
@@ -110,7 +112,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         var togo = fluid.promise();
         promise.then(function (value) {
             var mapped = func(value);
-            togo.resolve(mapped);
+            if (fluid.isPromise(mapped)) {
+                fluid.promise.follow(mapped, togo);
+            } else {
+                togo.resolve(mapped);
+            }
         }, function (error) {
             togo.reject(error);
         });

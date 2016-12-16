@@ -1,5 +1,5 @@
 /*
-Copyright 2014 Lucendo Development Ltd.
+Copyright 2014-2016 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -414,6 +414,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.fail("Should not resolve from mapping failed promise");
         }, function (error) {
             jqUnit.assertEquals("Should receive failure from mapped failed promise", "Error", error);
+        });
+    });
+
+    jqUnit.asyncTest("fluid.promise.map FLUID-5968 tests", function () {
+        var mapper = function (val) {
+            var togo = fluid.promise();
+            fluid.invokeLater(function () {
+                togo.resolve(val + 1);
+            });
+            return togo;
+        };
+        var unit = fluid.promise().resolve(1);
+        var p4 = fluid.promise.map(unit, mapper);
+        p4.then(function (resolve) {
+            jqUnit.assertEquals("Mapped promise returned from fluid.promise.map", 2, resolve);
+            jqUnit.start();
         });
     });
 

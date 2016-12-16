@@ -1,6 +1,8 @@
 /*
 Copyright 2010-2011 Lucendo Development Ltd.
-Copyright 2010-2011 OCAD University
+Copyright 2010-2016 OCAD University
+Copyright 2012-2014 Raising the Floor - US
+Copyright 2014-2016 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -21,6 +23,58 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.setLogging(fluid.logLevel.TRACE);
     fluid.activityTracing = true;
+
+    fluid.tests.parseContext = [{
+        ref: "{context}.path",
+        expected: {
+            context: "context",
+            path: "path"
+        }
+    }, {
+        ref: "{{nestedContext}.innerPath}.outerPath",
+        expected: {
+            context: {
+                context: "nestedContext",
+                path: "innerPath"
+            },
+            path: "outerPath"
+        }
+    }, {
+        ref: "{{nestedContext}}.outerPath",
+        expected: {
+            context: {
+                context: "nestedContext",
+                path: ""
+            },
+            path: "outerPath"
+        }
+    }, {
+        ref: "{{nestedContext}.innerPath}",
+        expected: {
+            context: {
+                context: "nestedContext",
+                path: "innerPath"
+            },
+            path: ""
+        }
+    }
+    ];
+
+    fluid.tests.filterContext = function (parsed) {
+        var togo = fluid.filterKeys(parsed, ["context", "path"]);
+        if (typeof(togo.context) === "object") {
+            togo.context = fluid.tests.filterContext(togo.context);
+        }
+        return togo;
+    };
+
+    jqUnit.test("fluid.parseContextReference tests", function () {
+        fluid.each(fluid.tests.parseContext, function (fixture, i) {
+            var parsed = fluid.parseContextReference(fixture.ref);
+            parsed = fluid.tests.filterContext(parsed);
+            jqUnit.assertDeepEq("Expected parsed context index " + i, fixture.expected, parsed);
+        });
+    });
 
     fluid.defaults("fluid.tests.defaultMergePolicy", {
         gradeNames: ["fluid.modelComponent"],
@@ -268,6 +322,44 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
         var result = that.events.event.fire(false);
         jqUnit.assertUndefined("Event returned to nonpreventable through merge", result);
+    });
+
+    /** FLUID-4930 retrunking test taken from fluid-authoring arrow rendering **/
+
+    fluid.tests.vectorToPolar = function (start, end) {
+        var dx = end[0] - start[0], dy = end[1] - start[1];
+        return {
+            length: Math.sqrt(dx * dx + dy * dy),
+            angle: Math.atan2(dy, dx)
+        };
+    };
+
+    fluid.defaults("fluid.tests.retrunking", {
+        gradeNames: "fluid.component",
+        arrowGeometry: {
+            length: "{that}.options.polar.length",
+            width: 10,
+            headWidth: 20,
+            headHeight: 20,
+            angle: "{that}.options.polar.angle",
+            start: [100, 100],
+            end: [100, 200]
+        },
+        polar: "@expand:fluid.tests.vectorToPolar({that}.options.arrowGeometry.start, {that}.options.arrowGeometry.end)"
+    });
+
+    jqUnit.test("FLUID-4930: Options retrunking test", function () {
+        var that = fluid.tests.retrunking();
+        var expected = {
+            length: 100,
+            width: 10,
+            headWidth: 20,
+            headHeight: 20,
+            angle: Math.PI / 2,
+            start: [100, 100],
+            end: [100, 200]
+        };
+        jqUnit.assertDeepEq("Successfully evaluated all options", expected, that.options.arrowGeometry);
     });
 
     /** FLUID-5755 - another "exotic types" test - this time a native array **/
@@ -1419,6 +1511,72 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
+    /** FLUID-5925 - ginger reference from IoC-qualified listener key **/
+
+    fluid.defaults("fluid.tests.FLUID5925root1", {
+        gradeNames: "fluid.component",
+        components: {
+            referrer: {
+                type: "fluid.modelComponent",
+                options: {
+                    listeners: {
+                        "{eventHolder}.events.targetEvent": {
+                            changePath: "value",
+                            value: "{arguments}.0"
+                        }
+                    }
+                }
+            },
+            eventHolder: {
+                type: "fluid.component",
+                options: {
+                    events: {
+                        targetEvent: null
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5925 ginger reference from IoC-qualified listener key", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.FLUID5925root1();
+        that.eventHolder.events.targetEvent.fire(1);
+        jqUnit.assertEquals("Ginger reference successfully registered model listener", 1, that.referrer.model.value);
+    });
+
+    fluid.defaults("fluid.tests.FLUID5925root2", {
+        gradeNames: "fluid.component",
+        events: {
+            localEvent: null
+        },
+        listeners: {
+            localEvent: {
+                listener: "{invokerHolder}.record"
+            }
+        },
+        components: {
+            invokerHolder: {
+                type: "fluid.modelComponent",
+                options: {
+                    invokers: {
+                        record: {
+                            changePath: "value",
+                            value: 1
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5925 ginger reference from IoC-qualified listener function", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.FLUID5925root2();
+        that.events.localEvent.fire(1);
+        jqUnit.assertEquals("Ginger reference successfully registered model listener", 1, that.invokerHolder.model.value);
+    });
+
     /** FLUID-5820 - scope chain reference to injected component **/
 
     fluid.defaults("fluid.tests.FLUID5820root", {
@@ -2189,6 +2347,91 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "eventTimeComponent.onCreate"
         ];
         jqUnit.assertDeepEq("Expected initialisation sequence", expected, testComp.listenerRecord);
+    });
+
+    /** FLUID-5930 - presence of injected components during onDestroy **/
+
+    fluid.defaults("fluid.tests.fluid5930.root", {
+        gradeNames: "fluid.component",
+        components: {
+            toInject: {
+                type: "fluid.component"
+            },
+            middle: {
+                type: "fluid.component",
+                options: {
+                    components: {
+                        injectSite: "{toInject}"
+                    },
+                    listeners: {
+                        onDestroy: "fluid.tests.fluid5930.checkInjection"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid5930.checkInjection = function (middle) {
+        jqUnit.assertValue("Injected component reference should still be present during onDestroy", middle.injectSite);
+    };
+
+    jqUnit.test("Component lifecycle test - FLUID-5930 injection clearing", function () {
+        jqUnit.expect(2);
+        var that = fluid.tests.fluid5930.root();
+        jqUnit.assertValue("Check correct injection on startup", that.middle.injectSite);
+        that.destroy();
+    });
+
+    /** FLUID-5931 - full clearance of records during afterDestroy **/
+
+    fluid.defaults("fluid.tests.fluid5931.root", {
+        gradeNames: "fluid.component",
+        events: {
+            createIt: null
+        },
+        components: {
+            recreate: {
+                type: "fluid.component",
+                createOnEvent: "createIt",
+                options: {
+                    creationValue: "{arguments}.0",
+                    listeners: {
+                        afterDestroy: "fluid.tests.fluid5931.recreate({root})"
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.tests.fluid5931.recreate = function (root) {
+        // In the future framework, this will not start construction immediately
+        root.events.createIt.fire(2);
+    };
+
+    jqUnit.test("Component lifecycle test - FLUID-5931 afterDestroy clearance", function () {
+        jqUnit.expect(2);
+        var that = fluid.tests.fluid5931.root();
+        that.events.createIt.fire(1);
+        jqUnit.assertEquals("Correct instance on first firing", 1, that.recreate.options.creationValue);
+        that.recreate.destroy();
+        jqUnit.assertEquals("Correct instance on second firing", 2, that.recreate.options.creationValue);
+    });
+
+    /** FLUID-5790 - neutering invoker support **/
+
+    fluid.defaults("fluid.tests.fluid5790.root", {
+        gradeNames: "fluid.component",
+        invokers: {
+            explode: "fluid.fail"
+        }
+    });
+
+    jqUnit.test("Neutering invoker test", function () {
+        jqUnit.expect(1);
+        var that = fluid.tests.fluid5790.root();
+        that.destroy();
+        that.explode();
+        jqUnit.assert("Harmless explosion after component is destroyed");
     });
 
     /** FLUID-5268 - direct root "afterDestroy" listener **/
@@ -3026,6 +3269,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var that = fluid.tests.FLUID5771root();
         jqUnit.assertEquals("FLUID-5771: Distributed injected component reference to child component",
             that, that.child);
+    });
+
+    /** FLUID-5982 - Injected component designated by expander **/
+
+    fluid.defaults("fluid.tests.FLUID5982root", {
+        gradeNames: "fluid.component",
+        components: {
+            sourceComponent: {
+                type: "fluid.component",
+                options: {
+                    sourceComponent: true
+                }
+            },
+            targetComponent: {
+                expander: {
+                    func: "fluid.identity",
+                    args: "{FLUID5982root}.sourceComponent"
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-5982: Designate injected component via expander", function () {
+        var that = fluid.tests.FLUID5982root();
+        jqUnit.assertEquals("Injected component resolved via expander", true, that.targetComponent.options.sourceComponent);
     });
 
     /** FLUID-5022 - Designation of dynamic components **/

@@ -1,6 +1,7 @@
 /*
 Copyright 2010 University of Toronto
-Copyright 2010-2011 OCAD University
+Copyright 2010-2015 OCAD University
+Copyright 2013-2014 Raising the Floor - US
 Copyright 2013-2016 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
