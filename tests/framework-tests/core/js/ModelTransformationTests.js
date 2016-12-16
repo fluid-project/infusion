@@ -5326,6 +5326,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expected: "2011-04-22T17:14:25.000Z",
             method: "assertDeepEq",
             model: { dateTime: new Date("2011-04-22T17:14:25.000Z") }
+        },
+        {
+            message: "A non-date should be treated as `undefined` (dateToString)...",
+            transform: {
+                type: "fluid.transforms.dateToString",
+                inputPath: "nonDate"
+            },
+            expected: undefined,
+            method: "assertDeepEq",
+            model: { nonDate: "definitely not a date" }
+        },
+        {
+            message: "A non-date should be treated as `undefined` (dateTimeToString)...",
+            transform: {
+                type: "fluid.transforms.dateTimeToString",
+                inputPath: "dateTime"
+            },
+            expected: undefined,
+            method: "assertDeepEq",
+            model: { nonDate: "definitely not a date" }
         }
     ];
 

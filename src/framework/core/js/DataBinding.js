@@ -560,9 +560,14 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
                     // TODO: This is just for safety but is still unusual and now abused. The transducer doesn't need the "newValue" since all the transform information
                     // has been baked into the transform document itself. However, we now rely on this special signalling value to make sure we regenerate transforms in
                     // the "forwardAdapter"
-                    transducer(existing.transaction, options.sourceApplier ? undefined : newValue, sourceSegs, targetSegs);
-                } else if (newValue !== undefined) {
-                    existing.transaction.fireChangeRequest({type: "ADD", segs: targetSegs, value: newValue});
+                    transducer(existing.transaction, options.sourceApplier ? undefined : newValue, sourceSegs, targetSegs, changeRequest);
+                } else {
+                    if (!options.noRelayDeletesDirect && changeRequest && changeRequest.type === "DELETE") {
+                        existing.transaction.fireChangeRequest({type: "DELETE", segs: targetSegs});
+                    }
+                    if (newValue !== undefined) {
+                        existing.transaction.fireChangeRequest({type: "ADD", segs: targetSegs, value: newValue});
+                    }
                 }
             }
         };
@@ -658,8 +663,11 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     // TODO: This rather crummy function is the only site with a hard use of "path" as String
     fluid.transformToAdapter = function (transform, targetPath) {
         var basedTransform = {};
-        basedTransform[targetPath] = transform;
-        return function (trans, newValue /*, sourceSegs, targetSegs */) {
+        basedTransform[targetPath] = transform; // TODO: Faulty with respect to escaping rules
+        return function (trans, newValue, sourceSegs, targetSegs, changeRequest) {
+            if (changeRequest && changeRequest.type === "DELETE") {
+                trans.fireChangeRequest({type: "DELETE", path: targetPath}); // avoid mouse droppings in target document for FLUID-5585
+            }
             // TODO: More efficient model that can only run invalidated portion of transform (need to access changeMap of source transaction)
             fluid.model.transformWithRules(newValue, basedTransform, {finalApplier: trans});
         };
@@ -768,12 +776,15 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             fluid.fail("Cannot parse modelRelay record without element \"singleTransform\" or \"transform\":", mrrec);
         }
         var forwardCond = fluid.model.parseRelayCondition(mrrec.forward), backwardCond = fluid.model.parseRelayCondition(mrrec.backward);
+
         var transformPackage = fluid.makeTransformPackage(that, transform, parsedSource.path, parsedTarget.path, forwardCond, backwardCond, namespace, mrrec.priority);
+        var noRelayDeletes = {noRelayDeletesDirect : true}; // DELETE relay is handled in the transducer itself
         if (transformPackage.refCount === 0) { // There were no implicit relay elements found in the relay document - it can be relayed directly
             // This first call binds changes emitted from the relay ends to each other, synchronously
             fluid.connectModelRelay(parsedSource.that || that, parsedSource.modelSegs, parsedTarget.that, parsedTarget.modelSegs,
-                fluid.filterKeys(transformPackage, ["forwardAdapter", "backwardAdapter", "namespace", "priority"]));
             // Primarily, here, we want to get rid of "update" which is what signals to connectModelRelay that this is a invalidatable relay
+                fluid.filterKeys(transformPackage, ["forwardAdapter", "backwardAdapter", "namespace", "priority"])
+                , noRelayDeletes);
         } else {
             if (parsedSource.modelSegs) {
                 fluid.fail("Error in model relay definition: If a relay transform has a model dependency, you can not specify a \"source\" entry - please instead enter this as \"input\" in the transform specification. Definition was ", mrrec, " for component ", that);
@@ -1023,16 +1034,6 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
 
     /** CHANGE APPLIER **/
-
-    /** Add a listener to a ChangeApplier event that only acts in the case the event
-     * has not come from the specified source (typically ourself)
-     * @param modelEvent An model event held by a changeApplier (typically applier.modelChanged)
-     * @param path The path specification to listen to
-     * @param source The source value to exclude (direct equality used)
-     * @param func The listener to be notified of a change
-     * @param [eventName] - optional - the event name to be listened to - defaults to "modelChanged"
-     * @param [namespace] - optional - the event namespace
-     */
 
     /** Dispatches a list of changes to the supplied applier */
     fluid.fireChanges = function (applier, changes) {

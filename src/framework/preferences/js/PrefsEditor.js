@@ -321,7 +321,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * @return the saved model
      */
     fluid.prefs.prefsEditor.save = function (that) {
-        if (!that.model) {  // Don't save a reset model
+        if (!that.model || $.isEmptyObject(that.model)) {  // Don't save a reset model
             return;
         }
 
