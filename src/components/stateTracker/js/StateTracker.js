@@ -28,7 +28,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             startTracking: {
                 funcName: "fluid.stateTracker.startTracking",
                 args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
-                                 // changeEvaluator, changeListener, polling delay
+                                 // changeEvaluator, changeListener, polling interval
             },
             stopTracking: {
                 funcName: "fluid.stateTracker.stopTracking",
@@ -49,16 +49,16 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     });
 
     // Initiate polling.
-    // @param changeEvaluator - an object or function to evaluate if the state
-    //                          has changed.  If and object, it must have a
-    //                          function named evaluateChange().
-    // @param changeListener  - a listener to handles the onStateChange event.
+    // @param changeEvaluator - an object used to evaluate if the state
+    //                          has changed.  It must have an evaluateChange()
+    //                          function.
+    // @param changeListener  - a listener to handle the onStateChange event.
     // @param interval        - optional delay between calls to check the state's
     //                          current value (msec).
     // @return                - the intervalID.
     fluid.stateTracker.startTracking = function (that, changeEvaluator, changeListener, interval) {
-        // TODO:  provide checks that <changeEvaluator> and <changeListener>(?)
-        // are not undefined.
+        // TODO?:  provide checks that <changeEvaluator> and <changeListener>
+        // are not undefined?
         var monitor = that.initMonitorInfo(changeEvaluator);
         that.events.onStateChange.addListener(changeListener);
         if (!!interval) {
@@ -72,7 +72,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     };
 
     // Stop polling.
-    // @param changeListener - a listener to remove.
+    // @param changeListener - the listener to remove.
     // @param intervalID     - the interval to clear.
     fluid.stateTracker.stopTracking = function (that, handler, intervalID) {
         that.events.onStateChange.removeListener(handler);
@@ -86,7 +86,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         }
     };
 
-    // Create a monitor object for passing to a function that periodically
+    // Initialize a monitor object for passing to a function that periodically
     // checks for chanages in the state of a process.
     // @param changeEvaluator - an object to evaluate if the state has changed
     //                          that has a function named evaluateChange().

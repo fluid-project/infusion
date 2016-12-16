@@ -26,7 +26,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         // Object to determine if a state change occurred.
-        // TODO:  ?make this part of the fluid.stateTracker source file with a
+        // TODO?: make this part of the fluid.stateTracker source file with a
         // grade of "basic evaluator", abstracting out checkbox specificity?
         fluid.defaults("fluid.tests.stateTracker.checkBoxEvaluator", {
             gradeNames: ["fluid.component"],
@@ -61,8 +61,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
         var checkBoxEvaluator = fluid.tests.stateTracker.checkBoxEvaluator();
 
-        // Change the state of the checkbox, but with a delay.  For each change
-        // count the number of changes.
+        // Change the state of the checkbox, but with a delay.  Record the
+        // number of calls to change the state.
         stateTrackerTests.numCallsToChangeState = 0;
         stateTrackerTests.changeStateWithDelay = function (delay) {
             setTimeout (function () {
@@ -147,8 +147,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 stateTrackerTests.onStateChanged
             );
             stateTracker.events.onStateChange.addListener(function () {
-                // Below this listener are three calls to change the "checked"
-                // state of the test checkbox.
+                // Below this addListener() block are three calls to change
+                // the "checked" state of the test checkbox.
                 if (stateTrackerTests.numCallsToChangeState === 3) {
                     jqUnit.assertEquals(
                         "State change detection",
@@ -223,8 +223,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 interval
             );
             stateTracker.events.onStateChange.addListener(function () {
-                // Below this listener are three calls to change the "checked"
-                // state of the test checkbox.
+                // Below this addListener() block are three calls to change the
+                // "checked" state of the test checkbox.
                 if (stateTrackerTests.numCallsToChangeState === 3) {
                     jqUnit.assertNotEquals(
                         "State change detection failure",
@@ -238,8 +238,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
             // Change the state three times, and see if it's detected.  The
-            // changes are faster finely than the tracker's.  Not all of the
-            // changes will be tracked.
+            // changes are faster than the tracker's polling interval.  This
+            // shows a limitation of the technique:  Not all of the changes will
+            // be tracked.
             stateTrackerTests.numCallsToChangeState = 0;
             var delay = 25;
             stateTrackerTests.changeStateWithDelay(delay);
