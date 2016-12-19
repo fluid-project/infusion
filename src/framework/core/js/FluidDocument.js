@@ -2,7 +2,8 @@
 Copyright 2007-2010 University of Cambridge
 Copyright 2007-2009 University of Toronto
 Copyright 2010-2011 Lucendo Development Ltd.
-Copyright 2010 OCAD University
+Copyright 2010-2016 OCAD University
+Copyright 2013-2014 Raising the Floor - US
 Copyright 2005-2013 jQuery Foundation, Inc. and other contributors
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
