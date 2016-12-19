@@ -74,8 +74,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     // Stop polling.
     // @param changeListener - the listener to remove.
     // @param intervalID     - the interval to clear.
-    fluid.stateTracker.stopTracking = function (that, handler, intervalID) {
-        that.events.onStateChange.removeListener(handler);
+    fluid.stateTracker.stopTracking = function (that, listener, intervalID) {
+        that.events.onStateChange.removeListener(listener);
         clearInterval(intervalID);
     };
 
