@@ -2,6 +2,9 @@
 Copyright 2008-2010 University of Cambridge
 Copyright 2008-2009 University of Toronto
 Copyright 2010-2011 Lucendo Development Ltd.
+Copyright 2013 OCAD University
+Copyright 2013-2014 Raising the Floor - US
+Copyright 2015-2016 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these

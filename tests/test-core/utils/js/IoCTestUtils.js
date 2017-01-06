@@ -1,5 +1,8 @@
 /*
-Copyright 2010-2012 Lucendo Development Ltd.
+Copyright 2010 Lucendo Development Ltd.
+Copyright 2012-2014 Raising the Floor - US
+Copyright 2013 OCAD University
+Copyright 2014-2016 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -480,7 +483,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             var sequenceComponent = fluid.construct(seqPath, {type: fixture.sequenceGrade});
 
             fluid.test.checkComponentGrade(sequenceComponent, fixture.sequenceGrade, "fluid.test.sequence", "sequenceGrade", fixture);
-            var elements = fluid.transform(sequenceComponent.options.elements, function (element, i) {
+            var elements = fluid.transform(sequenceComponent.options.sequenceElements, function (element, i) {
                 var elementPath = seqPath.concat(["sequenceElement-" + i]);
                 var constructOptions = fluid.extend({type: element.gradeNames}, element.options);
                 var elementComponent = fluid.construct(elementPath, constructOptions);

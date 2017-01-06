@@ -1,7 +1,8 @@
 /*
-Copyright 2011 OCAD University
+Copyright 2011-2016 OCAD University
 Copyright 2011 Lucendo Development Ltd.
-Copyright 2015 Raising the Floor (International)
+Copyright 2013 Raising the Floor - US
+Copyright 2015 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
