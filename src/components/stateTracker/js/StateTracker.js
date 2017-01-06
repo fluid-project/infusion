@@ -22,7 +22,8 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             onStateChange: null
         },
         members: {
-            interval: 10          // msec, polling frequency (default)
+            // default polling frequency in msec.
+            interval: 10
         },
         invokers: {
             startTracking: {
@@ -57,16 +58,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     //                          current value (msec).
     // @return                - the intervalID.
     fluid.stateTracker.startTracking = function (that, changeEvaluator, changeListener, interval) {
-        // TODO?:  provide checks that <changeEvaluator> and <changeListener>
-        // are not undefined?
         var monitor = that.initMonitorInfo(changeEvaluator);
         that.events.onStateChange.addListener(changeListener);
         if (!!interval) {
             that.interval = interval;
         }
         monitor.intervalID = setInterval(function () {
-            // or that.monitorChange()?
-            fluid.stateTracker.monitorChange(that, monitor);
+            that.monitorChange(monitor);
         }, that.interval);
         return monitor.intervalID;
     };

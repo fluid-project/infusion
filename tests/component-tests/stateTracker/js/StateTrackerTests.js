@@ -26,8 +26,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         // Object to determine if a state change occurred.
-        // TODO?: make this part of the fluid.stateTracker source file with a
-        // grade of "basic evaluator", abstracting out checkbox specificity?
         fluid.defaults("fluid.tests.stateTracker.checkBoxEvaluator", {
             gradeNames: ["fluid.component"],
             members: {
@@ -51,7 +49,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.stateTracker.checkBoxEvaluator.evaluateChange = function (that) {
             that.currentState = $("#testCheckBox").attr("checked");
             if (that.currentState !== that.oldState) {
-                // Reset for next change.
+                // Reset for next check.
                 that.oldState = that.currentState;
                 return true;
             }
@@ -72,19 +70,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }, delay);
         };
 
-        // Set up to track the checkbox's checked state
-        stateTrackerTests.initStateTracking = function (stateTracker, interval) {
-            checkBoxEvaluator.init();
-            stateTrackerTests.numStateChanges = 0;
-            stateTrackerTests.numCallsToChangeState = 0;
-            var intervalID = stateTracker.startTracking(
-                checkBoxEvaluator,
-                stateTrackerTests.onStateChanged,
-                interval
-            );
-            return intervalID;
-        };
-
         jqUnit.test("Test Initialize", function () {
             jqUnit.expect(2);
             var stateTracker = fluid.stateTracker();
@@ -101,7 +86,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var monitorInfo = stateTracker.initMonitorInfo(checkBoxEvaluator);
 
             jqUnit.assertNotNull("Monitor instance", monitorInfo);
-            jqUnit.assertEquals(
+            jqUnit.assertDeepEq(
                 "Monitor's evaluator",
                 checkBoxEvaluator,
                 monitorInfo.changeEvaluator
@@ -111,7 +96,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             );
         });
 
-        jqUnit.test("Test tracking state setup", function () {
+        jqUnit.test("Test tracking state setup, default interval", function () {
+            jqUnit.expect(4);
+            var stateTracker = fluid.stateTracker();
+            jqUnit.assertNotNull("State tracker instance", stateTracker);
+
+            stateTrackerTests.numStateChanges = 0;
+            checkBoxEvaluator.init();
+            var intervalID = stateTracker.startTracking(
+                checkBoxEvaluator,
+                stateTrackerTests.onStateChanged
+            );
+            jqUnit.assertNotEquals("Tracking id", -1, intervalID);
+            jqUnit.assertEquals(
+                "Interval value", 10, stateTracker.interval
+            );
+            jqUnit.assertEquals(
+                "State change detection", 0, stateTrackerTests.numStateChanges
+            );
+            stateTracker.stopTracking(
+                stateTrackerTests.onStateChanged, intervalID
+            );
+        });
+
+        jqUnit.test("Test tracking state setup, 100msec interval", function () {
             jqUnit.expect(4);
             var stateTracker = fluid.stateTracker();
             jqUnit.assertNotNull("State tracker instance", stateTracker);
@@ -172,7 +180,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             stateTrackerTests.changeStateWithDelay(delay);
         });
 
-        jqUnit.asyncTest("Test tracking state, interval 100 msec", function () {
+        jqUnit.asyncTest("Test tracking state, 100msec interval", function () {
             jqUnit.expect(1);
             var stateTracker = fluid.stateTracker();
             checkBoxEvaluator.init();
@@ -210,7 +218,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             stateTrackerTests.changeStateWithDelay(delay);
         });
 
-        jqUnit.asyncTest("Test tracking limitation, interval 100 msec", function () {
+        jqUnit.asyncTest("Test tracking limitation, 100msec interval", function () {
             jqUnit.expect(1);
             var stateTracker = fluid.stateTracker();
             checkBoxEvaluator.init();
