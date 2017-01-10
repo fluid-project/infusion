@@ -860,8 +860,15 @@ var fluid = fluid || fluid_2_0_0;
      *
      * A string that cannot be parsed will be treated as `undefined`.
      *
+     * Note: This function allows you to create Date objects, for use outside the model (such as in calculations or
+     * comparisons). You are not advised to store non-serializable objects like Dates as part of your model, as the
+     * framework does not guarantee they will be handled correctly.  See the Infusion documentation for details:
+     *
+     * http://docs.fluidproject.org/infusion/development/FrameworkConcepts.html#model-objects
+     *
      * @param value - The String value to be transformed into a Date object.
      * @returns {Date} - A date object, or `undefined`.
+     *
      */
     fluid.transforms.stringToDate = function (value) {
         var date = new Date(value);
@@ -887,6 +894,12 @@ var fluid = fluid || fluid_2_0_0;
      * If you wish to preserve the time, use `fluid.transforms.dateTimeToString` instead.
      *
      * A non-date object will be treated as `undefined`.
+     *
+     * Note: This function is intended to be used to serialize dates (not including time) before storing them in the
+     * model.  You are not advised to store non-serializable objects like Dates as part of your model, as the
+     * framework does not guarantee they will be handled correctly.  See the Infusion documentation for details:
+     *
+     * http://docs.fluidproject.org/infusion/development/FrameworkConcepts.html#model-objects
      *
      * @param value - The Date object to be transformed into an ISO 8601 string.
      * @returns {String} - A {String} value representing the date, or `undefined` if the date is invalid.
@@ -921,8 +934,15 @@ var fluid = fluid || fluid_2_0_0;
      *
      * A non-date object will be treated as `undefined`.
      *
+     * Note: This function is intended to be used to serialize dates (including time information) before storing them in
+     * the model.  You are not advised to store non-serializable objects like Dates as part of your model, as the
+     * framework does not guarantee they will be handled correctly.  See the Infusion documentation for details:
+     *
+     * http://docs.fluidproject.org/infusion/development/FrameworkConcepts.html#model-objects
+     *
      * @param value - The Date object to be transformed into an ISO 8601 string.
      * @returns {String} - A {String} value representing the date and time, or `undefined` if the date/time are invalid.
+     *
      */
     fluid.transforms.dateTimeToString = function (value) {
         return value instanceof Date ? value.toISOString() : undefined;
