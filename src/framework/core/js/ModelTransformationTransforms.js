@@ -833,7 +833,7 @@ var fluid = fluid || fluid_2_0_0;
      * }
      * ```
      *
-     * The default value for `space` is 0, which disabled spacing and line breaks.
+     * The default value for `space` is 0, which disables spacing and line breaks.
      *
      * @param value {Object} - An object to be converted to stringified JSON.
      *
