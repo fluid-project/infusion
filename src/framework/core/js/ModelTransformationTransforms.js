@@ -760,8 +760,14 @@ var fluid = fluid || fluid_2_0_0;
         }
     };
 
+    fluid.transforms.stringToBoolean.invert = function (transformSpec) {
+        transformSpec.type = "fluid.transforms.booleanToString";
+        return transformSpec;
+    };
+
     fluid.defaults("fluid.transforms.stringToBoolean", {
-        gradeNames: ["fluid.standardTransformFunction"]
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
+        invertConfiguration: "fluid.transforms.stringToBoolean.invert"
     });
 
     /**
@@ -777,8 +783,14 @@ var fluid = fluid || fluid_2_0_0;
         return value ? "true" : "false";
     };
 
+    fluid.transforms.booleanToString.invert = function (transformSpec) {
+        transformSpec.type = "fluid.transforms.stringToBoolean";
+        return transformSpec;
+    };
+
     fluid.defaults("fluid.transforms.booleanToString", {
-        gradeNames: ["fluid.standardTransformFunction"]
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
+        invertConfiguration: "fluid.transforms.booleanToString.invert"
     });
 
     /**
@@ -796,8 +808,14 @@ var fluid = fluid || fluid_2_0_0;
         }
     };
 
+    fluid.transforms.JSONstringToObject.invert = function (transformSpec) {
+        transformSpec.type = "fluid.transforms.objectToJSONString";
+        return transformSpec;
+    };
+
     fluid.defaults("fluid.transforms.JSONstringToObject", {
-        gradeNames: ["fluid.standardTransformFunction"]
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
+        invertConfiguration: "fluid.transforms.JSONstringToObject.invert"
     });
 
     /**
@@ -825,8 +843,14 @@ var fluid = fluid || fluid_2_0_0;
         return JSON.stringify(value, null, space);
     };
 
+    fluid.transforms.objectToJSONString.invert = function (transformSpec) {
+        transformSpec.type = "fluid.transforms.JSONstringToObject";
+        return transformSpec;
+    };
+
     fluid.defaults("fluid.transforms.objectToJSONString", {
-        gradeNames: ["fluid.standardTransformFunction"]
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
+        invertConfiguration: "fluid.transforms.objectToJSONString.invert"
     });
 
     /**
@@ -844,8 +868,14 @@ var fluid = fluid || fluid_2_0_0;
         return isNaN(date.getTime()) ? undefined : date;
     };
 
+    fluid.transforms.stringToDate.invert = function (transformSpec) {
+        transformSpec.type = "fluid.transforms.dateToString";
+        return transformSpec;
+    };
+
     fluid.defaults("fluid.transforms.stringToDate", {
-        gradeNames: ["fluid.standardTransformFunction"]
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
+        invertConfiguration: "fluid.transforms.stringToDate.invert"
     });
 
     /**
@@ -873,8 +903,14 @@ var fluid = fluid || fluid_2_0_0;
         }
     };
 
+    fluid.transforms.dateToString.invert = function (transformSpec) {
+        transformSpec.type = "fluid.transforms.stringToDate";
+        return transformSpec;
+    };
+
     fluid.defaults("fluid.transforms.dateToString", {
-        gradeNames: ["fluid.standardTransformFunction"]
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
+        invertConfiguration: "fluid.transforms.dateToString.invert"
     });
 
     /**
@@ -893,6 +929,7 @@ var fluid = fluid || fluid_2_0_0;
     };
 
     fluid.defaults("fluid.transforms.dateTimeToString", {
-        gradeNames: ["fluid.standardTransformFunction"]
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
+        invertConfiguration: "fluid.transforms.dateToString.invert"
     });
 })(jQuery, fluid_2_0_0);

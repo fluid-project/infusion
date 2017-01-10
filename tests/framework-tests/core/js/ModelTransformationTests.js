@@ -5129,14 +5129,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.transforms.objectStringTests = [
         {
-            message: "An object should be converted to stringified JSON correctly...",
+            message: "An object should be converted to stringified JSON correctly (with inversion)...",
+            transformWrap: false,
             transform: {
-                type: "fluid.transforms.objectToJSONString",
-                inputPath: ""
+                outie: {
+                    transform: {
+                        type: "fluid.transforms.objectToJSONString",
+                        inputPath: "originalObject"
+                    }
+                }
             },
-            expected: "{\"foo\":\"bar\"}",
+            expected: { outie: "{\"foo\":\"bar\"}" },
             method: "assertDeepEq",
-            model: { foo: "bar" }
+            model: { originalObject: { foo: "bar" } },
+            invertedRules: {
+                transform: [{
+                    type: "fluid.transforms.JSONstringToObject",
+                    outputPath: "originalObject",
+                    inputPath: "outie"
+                }]
+            },
+            fullyInvertible: true
         },
         {
             message: "The object -> stringified JSON transform should support spaces...",
@@ -5150,14 +5163,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             model: { foo: "bar" }
         },
         {
-            message: "Stringified JSON should be converted to an object correctly...",
+            message: "Stringified JSON should be converted to an object correctly (with inversion)...",
+            transformWrap: false,
             transform: {
-                type: "fluid.transforms.JSONstringToObject",
-                inputPath: ""
+                outie: {
+                    transform: {
+                        type: "fluid.transforms.JSONstringToObject",
+                        inputPath: "stringifiedObject"
+                    }
+                }
             },
-            expected: { foo: "bar" },
+            expected: { outie: { foo: "bar" } },
             method: "assertDeepEq",
-            model: "{\n  \"foo\":\"bar\"\n}"
+            model: { stringifiedObject: "{\"foo\":\"bar\"}" },
+            invertedRules: {
+                transform: [{
+                    type: "fluid.transforms.objectToJSONString",
+                    outputPath: "stringifiedObject",
+                    inputPath: "outie"
+                }]
+            },
+            fullyInvertible: true
         },
         {
             message: "Invalid JSON strings should result in undefined values...",
@@ -5249,26 +5275,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             model: { emptyString: "" }
         },
         {
-            message: "The string 'true' should be converted to a boolean correctly...",
-            transform: {
-                type: "fluid.transforms.stringToBoolean",
-                inputPath: ""
-            },
-            expected: true,
-            method: "assertDeepEq",
-            model: "true"
-        },
-        {
-            message: "The string 'false' should be converted to a boolean correctly...",
-            transform: {
-                type: "fluid.transforms.stringToBoolean",
-                inputPath: ""
-            },
-            expected: false,
-            method: "assertDeepEq",
-            model: "false"
-        },
-        {
             message: "A non-empty string should be converted to a boolean correctly...",
             transform: {
                 type: "fluid.transforms.stringToBoolean",
@@ -5277,6 +5283,52 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expected: true,
             method: "assertDeepEq",
             model: "something truthy this way comes"
+        },
+        {
+            message: "The string 'true' should be converted to a boolean correctly (with inversion)...",
+            transformWrap: false,
+            transform: {
+                outie: {
+                    transform: {
+                        type: "fluid.transforms.stringToBoolean",
+                        inputPath: "trueString"
+                    }
+                }
+            },
+            expected: { outie: true},
+            method: "assertDeepEq",
+            model: { trueString: "true" },
+            invertedRules: {
+                transform: [{
+                    type: "fluid.transforms.booleanToString",
+                    outputPath: "trueString",
+                    inputPath: "outie"
+                }]
+            },
+            fullyInvertible: true
+        },
+        {
+            message: "The string 'false' should be converted to a boolean correctly (with inversion)...",
+            transformWrap: false,
+            transform: {
+                outie: {
+                    transform: {
+                        type: "fluid.transforms.stringToBoolean",
+                        inputPath: "falseString"
+                    }
+                }
+            },
+            expected: { outie: false },
+            method: "assertDeepEq",
+            model: { falseString: "false" },
+            invertedRules: {
+                transform: [{
+                    type: "fluid.transforms.booleanToString",
+                    outputPath: "falseString",
+                    inputPath: "outie"
+                }]
+            },
+            fullyInvertible: true
         }
     ];
 
@@ -5296,6 +5348,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expected: new Date("1972-02-05"),
             method: "assertDeepEq",
             model: { dateString: "1972-02-05" }
+        },
+        {
+            message: "A stringified date/time should be correctly decoded (with inversion)..",
+            transformWrap: false,
+            transform: {
+                outie: {
+                    transform: {
+                        type: "fluid.transforms.stringToDate",
+                        inputPath: "dateTimeString"
+                    }
+                }
+            },
+            expected: { outie: new Date("1972-02-05T17:14:25.000Z") },
+            method: "assertDeepEq",
+            model: { dateTimeString: "1972-02-05T17:14:25.000Z" }
         },
         {
             message: "A meaningless string should result in an undefined date value...",
@@ -5318,14 +5385,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             model: { date: new Date("2014-01-17") }
         },
         {
-            message: "A date/time should be correctly converted to a string...",
+            message: "A date/time should be correctly converted to a string (with inversion)...",
+            transformWrap: false,
             transform: {
-                type: "fluid.transforms.dateTimeToString",
-                inputPath: "dateTime"
+                outie: {
+                    transform: {
+                        type: "fluid.transforms.dateTimeToString",
+                        inputPath: "dateTime"
+                    }
+                }
             },
-            expected: "2011-04-22T17:14:25.000Z",
+            expected: { outie: "2011-04-22T17:14:25.000Z"},
             method: "assertDeepEq",
-            model: { dateTime: new Date("2011-04-22T17:14:25.000Z") }
+            model: { dateTime: new Date("2011-04-22T17:14:25.000Z") },
+            invertedRules: {
+                transform: [{
+                    type: "fluid.transforms.stringToDate",
+                    outputPath: "dateTime",
+                    inputPath: "outie"
+                }]
+            },
+            fullyInvertible: true
         },
         {
             message: "A non-date should be treated as `undefined` (dateToString)...",
