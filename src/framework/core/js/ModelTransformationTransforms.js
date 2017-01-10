@@ -753,7 +753,7 @@ var fluid = fluid || fluid_2_0_0;
      */
     fluid.transforms.stringToBoolean = function (value) {
         if (value) {
-            return !Boolean(value === "" || value === "0" || value === "false");
+            return !(value === "0" || value === "false");
         }
         else {
             return false;
