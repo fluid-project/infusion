@@ -10,7 +10,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
 var fluid_2_0_0 = fluid_2_0_0 || {};
-
 (function ($, fluid) {
     "use strict";
 
@@ -44,23 +43,23 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             initMonitorInfo: {
                 funcName: "fluid.stateTracker.initMonitorInfo",
                 args: ["{arguments}.0"]
-                       // changeEvaluator object or function
+                       // changeEvaluator object
             }
         }
     });
 
-    // Initiate polling.
-    // @param changeEvaluator - an object used to evaluate if the state
-    //                          has changed.  It must have an evaluateChange()
-    //                          function.
-    // @param changeListener  - a listener to handle the onStateChange event.
-    // @param interval        - optional delay between calls to check the state's
-    //                          current value (msec).
-    // @return                - the intervalID.
+    /**
+     * Initiate polling.
+     * @psrsm that {Component} An instance of fluid.stateTracker
+     * @param changeEvaluator {Object} an object used to evaluate if the state has changed.  It must have an evaluateChange() function.
+     * @param changeListener {Function} a listener to handle the onStateChange event.
+     * @param interval {Number} optional delay between calls to check the state's current value (msec).
+     * @return {Number}the intervalID.
+     */
     fluid.stateTracker.startTracking = function (that, changeEvaluator, changeListener, interval) {
         var monitor = that.initMonitorInfo(changeEvaluator);
         that.events.onStateChange.addListener(changeListener);
-        if (!!interval) {
+        if (interval) {
             that.interval = interval;
         }
         monitor.intervalID = setInterval(function () {
@@ -69,27 +68,33 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         return monitor.intervalID;
     };
 
-    // Stop polling.
-    // @param changeListener - the listener to remove.
-    // @param intervalID     - the interval to clear.
-    fluid.stateTracker.stopTracking = function (that, listener, intervalID) {
-        that.events.onStateChange.removeListener(listener);
+    /**
+     * Stop polling.
+     * @psrsm that {Component} An instance of fluid.stateTracker
+     * @param changeListener {Function} the listener to remove.
+     * @param intervalID {Object} the interval to clear.
+     */
+    fluid.stateTracker.stopTracking = function (that, changeListener, intervalID) {
+        that.events.onStateChange.removeListener(changeListener);
         clearInterval(intervalID);
     };
 
-    // Callback to pass to setInterval() to periodically check a state.
+    /**
+     * Callback to pass to setInterval() to periodically check a state.
+     * @psrsm that {Component} An instance of fluid.stateTracker
+     * @psrsm monitor {Object} Contains the changeEvaluator object and the intervalID.
+     */
     fluid.stateTracker.monitorChange = function (that, monitor) {
         if (monitor.changeEvaluator.evaluateChange()) {
             that.events.onStateChange.fire(monitor.changeEvaluator);
         }
     };
 
-    // Initialize a monitor object for passing to a function that periodically
-    // checks for chanages in the state of a process.
-    // @param changeEvaluator - an object to evaluate if the state has changed
-    //                          that has a function named evaluateChange().
-    //                          Provided by client.
-    // @return                - the monitor object.
+    /**
+     * Create and initialize a monitor object for passing to that.monitorChange() that periodically checks for chanages in state.
+     * @param changeEvaluator {Object} an object to evaluate if the state has changed.  It has a method named evaluateChange().  Provided by client.
+     * @return {Object} the monitor object.
+     */
     fluid.stateTracker.initMonitorInfo = function (changeEvaluator) {
         var monitor = {};
         monitor.intervalID = -1;
