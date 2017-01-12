@@ -28,7 +28,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             startTracking: {
                 funcName: "fluid.stateTracker.startTracking",
                 args: ["{that}", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
-                                 // changeEvaluator, changeListener, polling interval
+                                 // changeListener, polling interval
             },
             stopTracking: {
                 funcName: "fluid.stateTracker.stopTracking",
@@ -42,8 +42,10 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             },
             initMonitorInfo: {
                 funcName: "fluid.stateTracker.initMonitorInfo",
-                args: ["{arguments}.0"]
-                       // changeEvaluator object
+                args: ["{that}"]
+            },
+            evaluateChange: {
+                funcName: "fluid.notImplemented"
             }
         }
     });
@@ -51,13 +53,12 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     /**
      * Initiate polling.
      * @psrsm that {Component} An instance of fluid.stateTracker
-     * @param changeEvaluator {Object} an object used to evaluate if the state has changed.  It must have an evaluateChange() function.
      * @param changeListener {Function} a listener to handle the onStateChange event.
      * @param interval {Number} optional delay between calls to check the state's current value (msec).
      * @return {Number}the intervalID.
      */
-    fluid.stateTracker.startTracking = function (that, changeEvaluator, changeListener, interval) {
-        var monitor = that.initMonitorInfo(changeEvaluator);
+    fluid.stateTracker.startTracking = function (that, changeListener, interval) {
+        var monitor = that.initMonitorInfo();
         that.events.onStateChange.addListener(changeListener);
         if (interval) {
             that.interval = interval;
@@ -92,13 +93,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 
     /**
      * Create and initialize a monitor object for passing to that.monitorChange() that periodically checks for chanages in state.
-     * @param changeEvaluator {Object} an object to evaluate if the state has changed.  It has a method named evaluateChange().  Provided by client.
+     * @psrsm that {Component} An instance of fluid.stateTracker
      * @return {Object} the monitor object.
      */
-    fluid.stateTracker.initMonitorInfo = function (changeEvaluator) {
+    fluid.stateTracker.initMonitorInfo = function (that) {
         var monitor = {};
         monitor.intervalID = -1;
-        monitor.changeEvaluator = changeEvaluator;
+        monitor.changeEvaluator = that;
         return monitor;
     };
 
