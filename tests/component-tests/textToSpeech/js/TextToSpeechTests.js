@@ -269,7 +269,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // https://bugs.chromium.org/p/chromium/issues/detail?id=679043
 
     fluid.tests.textToSpeech.isPauseResumeSupporting = function () {
-      return !fluid.tests.textToSpeech.isChromeOnWindows() && !fluid.test.conditionalTestUtils.isBrowserOnLinux();
+        return !fluid.tests.textToSpeech.isChromeOnWindows() && !fluid.test.conditionalTestUtils.isBrowserOnLinux();
     };
 
     // Makes check Chrome on Windows due to TTS pause/resume bug
