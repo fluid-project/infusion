@@ -100,7 +100,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.test.conditionalTestUtils.isBrowserOnWindows = function () {
-        return fluid.test.conditionalTestUtils.contextValueContains("Windows", "{fluid.browser.platformName}");
+        return fluid.test.conditionalTestUtils.contextValueContains("Win", "{fluid.browser.platformName}");
     };
 
     // Makes checks for browser platform
