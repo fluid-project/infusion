@@ -212,9 +212,18 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         return typeof(navigator) !== "undefined" && navigator.platform ? navigator.platform : undefined;
     };
 
+    // Context awareness for the reported user agent name
+
+    fluid.contextAware.browser.getUserAgent = function () {
+        return typeof(navigator) !== "undefined" && navigator.userAgent ? navigator.userAgent : undefined;
+    };
+
     fluid.contextAware.makeChecks({
         "fluid.browser.platformName": {
             funcName: "fluid.contextAware.browser.getPlatformName"
+        },
+        "fluid.browser.userAgent": {
+            funcName: "fluid.contextAware.browser.getUserAgent"
         }
     });
 

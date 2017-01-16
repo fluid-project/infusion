@@ -103,10 +103,34 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return fluid.test.conditionalTestUtils.contextValueContains("Windows", "{fluid.browser.platformName}");
     };
 
+    // Makes checks for browser platform
     fluid.contextAware.makeChecks({
         "fluid.browser.platform.isLinux": "fluid.test.conditionalTestUtils.isBrowserOnLinux",
         "fluid.browser.platform.isMac": "fluid.test.conditionalTestUtils.isBrowserOnMac",
         "fluid.browser.platform.isWindows": "fluid.test.conditionalTestUtils.isBrowserOnWindows"
+    });
+
+    // Functions for web browser name reporting for makeChecks
+
+    fluid.test.conditionalTestUtils.isChromeBrowser = function () {
+        return fluid.test.conditionalTestUtils.contextValueContains("Chrome", "{fluid.browser.userAgent}");
+    };
+
+    // We have to check that the userAgent string contains Safari, but does not
+    // contain Chrome, because Chrome on Mac includes the string "Safari"
+    fluid.test.conditionalTestUtils.isSafariBrowser = function () {
+        return fluid.test.conditionalTestUtils.contextValueContains("Safari", "{fluid.browser.userAgent}") && !fluid.test.conditionalTestUtils.contextValueContains("Chrome", "{fluid.browser.userAgent}");
+    };
+
+    fluid.test.conditionalTestUtils.isFirefoxBrowser = function () {
+        return fluid.test.conditionalTestUtils.contextValueContains("Firefox", "{fluid.browser.userAgent}");
+    };
+
+    // Makes checks for browser name
+    fluid.contextAware.makeChecks({
+        "fluid.browser.isChrome": "fluid.test.conditionalTestUtils.isChromeBrowser",
+        "fluid.browser.isSafari": "fluid.test.conditionalTestUtils.isSafariBrowser",
+        "fluid.browser.isFirefox": "fluid.test.conditionalTestUtils.isFirefoxBrowser"
     });
 
 })();
