@@ -436,7 +436,7 @@ var fluid = fluid || fluid_2_0_0;
     fluid.makeArray = function (arg) {
         var togo = [];
         if (arg !== null && arg !== undefined) {
-            if (fluid.isPrimitive(arg) || typeof(arg.length) !== "number") {
+            if (fluid.isPrimitive(arg) || fluid.isPlainObject(arg, true) || typeof(arg.length) !== "number") {
                 togo.push(arg);
             }
             else {
