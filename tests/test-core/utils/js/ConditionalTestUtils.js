@@ -112,8 +112,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     // Functions for web browser name reporting for makeChecks
 
+    // Edge reports Chrome in its userAgent string, so we have to additionally check for
+    // the Edge string
     fluid.test.conditionalTestUtils.isChromeBrowser = function () {
-        return fluid.test.conditionalTestUtils.contextValueContains("Chrome", "{fluid.browser.userAgent}");
+        return fluid.test.conditionalTestUtils.contextValueContains("Chrome", "{fluid.browser.userAgent}") && !fluid.test.conditionalTestUtils.contextValueContains("Edge", "{fluid.browser.userAgent}");;
     };
 
     // We have to check that the userAgent string contains Safari, but does not
@@ -126,11 +128,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return fluid.test.conditionalTestUtils.contextValueContains("Firefox", "{fluid.browser.userAgent}");
     };
 
+    fluid.test.conditionalTestUtils.isEdgeBrowser = function () {
+        return fluid.test.conditionalTestUtils.contextValueContains("Edge", "{fluid.browser.userAgent}");
+    };
+
     // Makes checks for browser name
     fluid.contextAware.makeChecks({
         "fluid.browser.isChrome": "fluid.test.conditionalTestUtils.isChromeBrowser",
         "fluid.browser.isSafari": "fluid.test.conditionalTestUtils.isSafariBrowser",
-        "fluid.browser.isFirefox": "fluid.test.conditionalTestUtils.isFirefoxBrowser"
+        "fluid.browser.isFirefox": "fluid.test.conditionalTestUtils.isFirefoxBrowser",
+        "fluid.browser.isEdge": "fluid.test.conditionalTestUtils.isEdgeBrowser"
     });
 
 })();
