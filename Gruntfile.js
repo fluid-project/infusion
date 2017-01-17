@@ -277,19 +277,7 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     src: ["src/**/css/stylus/*.styl"],
-                    ext: ".css",
-                    dest: "dist/assets/"
-                }]
-            },
-            distMinify: {
-                options: {
-                    compress: "<%= buildSettings.compress %>",
-                    relativeDest: ".."
-                },
-                files: [{
-                    expand: true,
-                    src: ["src/**/css/stylus/*.styl"],
-                    ext: ".min.css",
+                    ext: "<% buildSettings.compress ? print('.min.css') : print('.css') %>",
                     dest: "dist/assets/"
                 }]
             }
@@ -427,19 +415,18 @@ module.exports = function (grunt) {
 
         setBuildSettings(options);
 
-        var stylusTask = options.compress ? "distMinify" : "dist";
         var concatTask = options.compress ? "uglify:" : "concat:";
-        var jsCopyTask = options.compress ? "distJSMinify" : "distJS";
+        var jsCopyTarget = options.compress ? "distJSMinify" : "distJS";
 
         var tasks = [
             "cleanForDist",
-            "stylus:" + stylusTask,
+            "stylus:dist",
             "modulefiles:" + options.target,
             "pathMap:" + options.target,
             "copy:" + options.target,
             "copy:necessities",
             concatTask + options.target,
-            "copy:" + jsCopyTask,
+            "copy:" + jsCopyTarget,
             "copy:distAssets"
         ];
         grunt.task.run(tasks);
