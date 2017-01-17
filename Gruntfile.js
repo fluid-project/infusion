@@ -40,6 +40,24 @@ var getFromExec = function (command, options) {
     return result;
 };
 
+/**
+ * Rename function for grunt file tasks for  adding ".min" convention in front
+ * of minified files; won't do anything to files that already have ".min" in
+ * their filename
+ * @param {String} dest - supplied by Grunt task, see http://gruntjs.com/configuring-tasks#the-rename-property
+ * @param {String} src - supplied by Grunt task, see http://gruntjs.com/configuring-tasks#the-rename-property
+ * @param {String} extension - the extension of the file in question ("js" or "css")
+*/
+var addMinifyToFilename = function (dest, src, extension) {
+    var minifiedExtension = ".min." + extension;
+    // Don't operate on files that already have a .min convention
+    if (src.indexOf(minifiedExtension) > -1) {
+        return dest + src;
+    } else {
+        return dest + src.replace("." + extension, minifiedExtension);
+    }
+};
+
 module.exports = function (grunt) {
 
     var setBuildSettings = function (settings) {
@@ -111,6 +129,25 @@ module.exports = function (grunt) {
                     cwd: "build/",
                     src: "<%= customBuildName %>.*",
                     dest: "dist/"
+                }]
+            },
+            distJSMinify: {
+                files: [{
+                    expand: true,
+                    cwd: "build/",
+                    src: "<%= allBuildName %>.*",
+                    dest: "dist/",
+                    rename: function (dest, src) {
+                        return addMinifyToFilename(dest, src, "js");
+                    }
+                }, {
+                    expand: true,
+                    cwd: "build/",
+                    src: "<%= customBuildName %>.*",
+                    dest: "dist/",
+                    rename: function (dest, src) {
+                        return addMinifyToFilename(dest, src, "js");
+                    }
                 }]
             },
             distAssets: {
@@ -243,6 +280,18 @@ module.exports = function (grunt) {
                     ext: ".css",
                     dest: "dist/assets/"
                 }]
+            },
+            distMinify: {
+                options: {
+                    compress: "<%= buildSettings.compress %>",
+                    relativeDest: ".."
+                },
+                files: [{
+                    expand: true,
+                    src: ["src/**/css/stylus/*.styl"],
+                    ext: ".min.css",
+                    dest: "dist/assets/"
+                }]
             }
         },
         // grunt-contrib-watch task to watch and rebuild stylus files
@@ -274,6 +323,30 @@ module.exports = function (grunt) {
                 options: {
                     include: "framework",
                     exclude: "jQuery, jQueryUI"
+                }
+            },
+            "all.min": {
+                options: {
+                    compress: true
+                }
+            },
+            "all-no-jquery.min": {
+                options: {
+                    exclude: "jQuery, jQueryUI",
+                    compress: true
+                }
+            },
+            "framework.min": {
+                options: {
+                    include: "framework",
+                    compress: true
+                }
+            },
+            "framework-no-jquery.min": {
+                options: {
+                    include: "framework",
+                    exclude: "jQuery, jQueryUI",
+                    compress: true
                 }
             }
         }
@@ -340,6 +413,7 @@ module.exports = function (grunt) {
 
     grunt.registerMultiTask("distributions", "Enables a project to split its files into a set of modules. A module's information is stored in a json file containing a name for the module, the files it contains, and other modules it depends on. The module files can then be accumulated into various configurations of included and excluded modules, which can be fed into other plugins (e.g. grunt-contrib-concat) for packaging.", function () {
         // Merge task-specific and/or target-specific options with these defaults.
+
         var options = this.options({
             name: this.target,
             source: true,
@@ -353,16 +427,19 @@ module.exports = function (grunt) {
 
         setBuildSettings(options);
 
+        var stylusTask = options.compress ? "distMinify" : "dist";
         var concatTask = options.compress ? "uglify:" : "concat:";
+        var jsCopyTask = options.compress ? "distJSMinify" : "distJS";
+
         var tasks = [
             "cleanForDist",
-            "stylus:dist",
+            "stylus:" + stylusTask,
             "modulefiles:" + options.target,
             "pathMap:" + options.target,
             "copy:" + options.target,
             "copy:necessities",
             concatTask + options.target,
-            "copy:distJS",
+            "copy:" + jsCopyTask,
             "copy:distAssets"
         ];
         grunt.task.run(tasks);
