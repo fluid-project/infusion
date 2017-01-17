@@ -1,10 +1,10 @@
-# Release Notes for Fluid Infusion 2.0.0 #
+# Release Notes for Fluid Infusion 3.0.0 #
 
 [Fluid Project](http://fluidproject.org)
 
 [Infusion Documentation](https://github.com/fluid-project/infusion-docs)
 
-## What's New in 2.0.0? ##
+## What's New in 3.0.0? ##
 
 See [API Changes from 1.5 to 2.0](http://docs.fluidproject.org/infusion/development/APIChangesFrom1_5To2_0.html) and [Deprecations in 1.5](http://docs.fluidproject.org/infusion/development/DeprecationsIn1_5.html) on the [Infusion Documentation](https://github.com/fluid-project/infusion-docs) site.
 
