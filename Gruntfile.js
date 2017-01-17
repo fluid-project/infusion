@@ -388,7 +388,6 @@ module.exports = function (grunt) {
 
     grunt.registerMultiTask("distributions", "Enables a project to split its files into a set of modules. A module's information is stored in a json file containing a name for the module, the files it contains, and other modules it depends on. The module files can then be accumulated into various configurations of included and excluded modules, which can be fed into other plugins (e.g. grunt-contrib-concat) for packaging.", function () {
         // Merge task-specific and/or target-specific options with these defaults.
-
         var options = this.options({
             name: this.target,
             source: true,
@@ -403,7 +402,6 @@ module.exports = function (grunt) {
         setBuildSettings(options);
 
         var concatTask = options.compress ? "uglify:" : "concat:";
-
         var tasks = [
             "cleanForDist",
             "stylus:dist",
