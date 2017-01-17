@@ -123,22 +123,9 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: "build/",
                     src: "<%= allBuildName %>.*",
-                    dest: "dist/"
-                }, {
-                    expand: true,
-                    cwd: "build/",
-                    src: "<%= customBuildName %>.*",
-                    dest: "dist/"
-                }]
-            },
-            distJSMinify: {
-                files: [{
-                    expand: true,
-                    cwd: "build/",
-                    src: "<%= allBuildName %>.*",
                     dest: "dist/",
                     rename: function (dest, src) {
-                        return addMinifyToFilename(dest, src, "js");
+                        return grunt.config.get("buildSettings.compress") ? addMinifyToFilename(dest, src, "js") : dest + src;
                     }
                 }, {
                     expand: true,
@@ -146,7 +133,7 @@ module.exports = function (grunt) {
                     src: "<%= customBuildName %>.*",
                     dest: "dist/",
                     rename: function (dest, src) {
-                        return addMinifyToFilename(dest, src, "js");
+                        return grunt.config.get("buildSettings.compress") ? addMinifyToFilename(dest, src, "js") : dest + src;
                     }
                 }]
             },
@@ -416,7 +403,6 @@ module.exports = function (grunt) {
         setBuildSettings(options);
 
         var concatTask = options.compress ? "uglify:" : "concat:";
-        var jsCopyTarget = options.compress ? "distJSMinify" : "distJS";
 
         var tasks = [
             "cleanForDist",
@@ -426,7 +412,7 @@ module.exports = function (grunt) {
             "copy:" + options.target,
             "copy:necessities",
             concatTask + options.target,
-            "copy:" + jsCopyTarget,
+            "copy:distJS",
             "copy:distAssets"
         ];
         grunt.task.run(tasks);
