@@ -14,7 +14,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 /* global jqUnit, QUnit */
 
-var fluid_2_0_0 = fluid_2_0_0 || {};
+var fluid_3_0_0 = fluid_3_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -785,4 +785,4 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         fluid.test.iocTestState.append(envs);
     };
 
-})(jQuery, fluid_2_0_0);
+})(jQuery, fluid_3_0_0);

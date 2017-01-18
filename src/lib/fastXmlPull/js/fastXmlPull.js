@@ -50,7 +50,7 @@ freely, subject to the following restrictions:
     distribution.
  */
 
-var fluid_2_0_0 = fluid_2_0_0 || {};
+var fluid_3_0_0 = fluid_3_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -474,4 +474,4 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         return strD.substring(iB, iE).split(strF).join(strR);
     };
 
-})(jQuery, fluid_2_0_0);
+})(jQuery, fluid_3_0_0);

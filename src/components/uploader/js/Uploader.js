@@ -14,7 +14,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0_0 = fluid_2_0_0 || {};
+var fluid_3_0_0 = fluid_3_0_0 || {};
 
 /************
  * Uploader *
@@ -811,4 +811,4 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         fluid.uploader.singleFile.toggleVisibility($(that.options.selectors.basicUpload), that.container);
     };
 
-})(jQuery, fluid_2_0_0);
+})(jQuery, fluid_3_0_0);
