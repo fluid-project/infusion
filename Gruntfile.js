@@ -421,9 +421,36 @@ module.exports = function (grunt) {
             "clean",
             "lint",
             "distributions" + ( target ? ":" + target : "" ),
-            "cleanForDist"
+            "cleanForDist",
+            "verifyDists"
         ];
         grunt.task.run(tasks);
+    });
+
+    grunt.registerTask("verifyDists", "Verifies that the expected /dist files were created", function () {
+        console.log("Verifying that expected distribution files are present in /dist directory");
+        var missingDistributions = 0;
+        var distributions = grunt.config.get("distributions");
+        _.forEach(distributions, function (value, distribution) {
+            var jsFilename = "infusion-" + distribution + ".js";
+            var mapFilename = jsFilename + ".map";
+            var expectedFilenames = [jsFilename, mapFilename];
+            _.forEach(expectedFilenames, function (expectedFilename) {
+                var fileExists = grunt.file.exists("dist", expectedFilename);
+                if (fileExists) {
+                    console.log(expectedFilename + " - PRESENT");
+                } else {
+                    missingDistributions = missingDistributions + 1;
+                    console.log(expectedFilename + " - MISSING");
+                }
+            });
+        });
+        if (missingDistributions > 0) {
+            grunt.fail.fatal("Verification failed, " + missingDistributions + " expected /dist files were not found");
+        } else {
+            console.log("All expected distribution files present");
+        }
+
     });
 
     grunt.registerTask("cleanForDist", ["clean:build", "clean:products", "clean:stylus", "clean:stylusDist", "clean:ciArtifacts"]);
