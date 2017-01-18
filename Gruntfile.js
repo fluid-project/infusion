@@ -427,7 +427,7 @@ module.exports = function (grunt) {
         grunt.task.run(tasks);
     });
 
-    grunt.registerTask("verifyDists", "Verifies that the expected /dist files were created", function () {
+    grunt.registerTask("verifyDists", "Verifies that the expected /dist/*.js files and their source maps were created", function () {
         console.log("Verifying that expected distribution files are present in /dist directory");
         var missingDistributions = 0;
         var distributions = grunt.config.get("distributions");
