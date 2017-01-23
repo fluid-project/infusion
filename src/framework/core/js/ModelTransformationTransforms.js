@@ -855,14 +855,18 @@ var fluid = fluid || fluid_2_0_0;
 
     /**
      *
-     * Transform a string to a date using the Date constructor.  Accepts (among other things) the date and dateTime values
-     * returned by HTML5 date and dateTime inputs.
+     * Transform a string to a date using the Date constructor.  Accepts (among other things) the date and dateTime
+     * values returned by HTML5 date and dateTime inputs.
      *
      * A string that cannot be parsed will be treated as `undefined`.
      *
-     * Note: This function allows you to create Date objects, for use outside the model (such as in calculations or
-     * comparisons). You are not advised to store non-serializable objects like Dates as part of your model, as the
-     * framework does not guarantee they will be handled correctly.  See the Infusion documentation for details:
+     * Note: This function allows you to create Date objects from an ISO 8601 string such as `2017-01-23T08:51:25.891Z`.
+     * It is intended to provide a consistent mechanism for recreating Date objects stored as strings.  Although the
+     * framework currently works as expected with Date objects stored in the model, this is very likely to change.  If
+     * you are working with Date objects in your model, your best option for ensuring your code continues to work in the
+     * future is to handle serialisation and deserialisation yourself, for example, by using this transform and one of
+     * its inverse transforms, `fluid.transforms.dateToString` or `fluid.transforms.dateTimeToString`.  See the Infusion
+     * documentation for details about supported model values:
      *
      * http://docs.fluidproject.org/infusion/development/FrameworkConcepts.html#model-objects
      *
@@ -895,9 +899,13 @@ var fluid = fluid || fluid_2_0_0;
      *
      * A non-date object will be treated as `undefined`.
      *
-     * Note: This function is intended to be used to serialize dates (not including time) before storing them in the
-     * model.  You are not advised to store non-serializable objects like Dates as part of your model, as the
-     * framework does not guarantee they will be handled correctly.  See the Infusion documentation for details:
+     * Note: This function allows you to seralise Date objects (not including time information) as ISO 8601 strings such
+     * as `2017-01-23`.  It is intended to provide a consistent mechanism for storing Date objects in a model.  Although
+     * the framework currently works as expected with Date objects stored in the model, this is very likely to change.
+     * If you are working with Date objects in your model, your best option for ensuring your code continues to work in
+     * the future is to handle serialisation and deserialisation yourself, for example, by using this transform and its
+     * inverse, `fluid.transforms.stringToDate`.  See the Infusion documentation for details about supported model
+     * values:
      *
      * http://docs.fluidproject.org/infusion/development/FrameworkConcepts.html#model-objects
      *
@@ -934,9 +942,13 @@ var fluid = fluid || fluid_2_0_0;
      *
      * A non-date object will be treated as `undefined`.
      *
-     * Note: This function is intended to be used to serialize dates (including time information) before storing them in
-     * the model.  You are not advised to store non-serializable objects like Dates as part of your model, as the
-     * framework does not guarantee they will be handled correctly.  See the Infusion documentation for details:
+     * Note: This function allows you to seralise Date objects (including time information) as ISO 8601 strings such as
+     * `2017-01-23T08:51:25.891Z`. It is intended to provide a consistent mechanism for storing Date objects in a model.
+     * Although the framework currently works as expected with Date objects stored in the model, this is very likely to
+     * change.  If you are working with Date objects in your model, your best option for ensuring your code continues to
+     * work in the future is to handle serialisation and deserialisation yourself, for example, by using this function
+     * and its inverse, `fluid.transforms.stringToDate`.  See the Infusion documentation for details about supported
+     * model values:
      *
      * http://docs.fluidproject.org/infusion/development/FrameworkConcepts.html#model-objects
      *
