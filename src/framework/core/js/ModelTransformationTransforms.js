@@ -952,4 +952,4 @@ var fluid = fluid || fluid_2_0_0;
         gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
         invertConfiguration: "fluid.transforms.dateToString.invert"
     });
-})(jQuery, fluid_2_0_0);
+})(jQuery, fluid_3_0_0);

@@ -17,7 +17,7 @@ Underscore may be freely distributed under the MIT license.
 
 /* global speechSynthesis, SpeechSynthesisUtterance*/
 
-var fluid_2_0_0 = fluid_2_0_0 || {};
+var fluid_3_0_0 = fluid_3_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -285,4 +285,4 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         fluid.textToSpeech.deferredSpeechSynthesisControl("cancel");
     };
 
-})(jQuery, fluid_2_0_0);
+})(jQuery, fluid_3_0_0);
