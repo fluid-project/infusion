@@ -27,7 +27,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         });
 
-        fluid.defaults("fluid.tests.textfieldSlider.nativeHTML", {
+        fluid.defaults("fluid.tests.textfieldSlider", {
             gradeNames: ["fluid.tests.textfieldSlider", "fluid.textfieldSlider"],
             ariaOptions: {
                 "aria-labelledby": "label-nativeHTML"
@@ -50,49 +50,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         });
 
-        fluid.defaults("fluid.tests.textfieldSlider.jQueryUI", {
-            gradeNames: ["fluid.tests.textfieldSlider", "fluid.textfieldSlider"],
-            ariaOptions: {
-                "aria-labelledby": "label-jQueryUI"
-            },
-            invokers: {
-                "getSliderValue": {
-                    "this": "{that}.slider.slider",
-                    "method": "slider",
-                    args: ["value"]
-                },
-                "setSliderValue": {
-                    "this": "{that}.slider",
-                    "method": "setSliderValue",
-                    args: ["{arguments}.0"]
-                },
-                "getSliderAttr": {
-                    "this": "{that}.slider.dom.thumb",
-                    "method": "attr",
-                    "args": "{arguments}.0"
-                }
-            }
-        });
-
-        fluid.tests.textfieldSlider.createTextfieldSliderNativeHTML = function (options) {
-            // Make sure we're using the native widget
-            fluid.contextAware.makeChecks({
-                "fluid.prefsWidgetType": {
-                    value: "nativeHTML"
-                }
-            });
-            return fluid.tests.textfieldSlider.nativeHTML(".fl-textfield-slider-native", options);
-        };
-
-        fluid.tests.textfieldSlider.createTextfieldSliderJQueryUI = function (options) {
-            // Override default native widget to use jQuery slider instead
-            fluid.contextAware.makeChecks({
-                "fluid.prefsWidgetType": {
-                    value: "jQueryUI"
-                }
-            });
-
-            return fluid.tests.textfieldSlider.jQueryUI(".fl-textfield-slider-jQuery", options);
+        fluid.tests.textfieldSlider.createTextfieldSlider = function (options) {
+            return fluid.tests.textfieldSlider(".fl-textfield-slider", options);
         };
 
         fluid.tests.textfieldSlider.testCommonInit = function (textfieldSlider) {
@@ -110,9 +69,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         };
 
-        jqUnit.test("Test Init (native HTML slider)", function () {
+        jqUnit.test("Test Init", function () {
             jqUnit.expect(10);
-            var that = fluid.tests.textfieldSlider.createTextfieldSliderNativeHTML({model: {value: 15}});
+            var that = fluid.tests.textfieldSlider.createTextfieldSlider({model: {value: 15}});
 
             fluid.tests.textfieldSlider.testCommonInit(that);
 
@@ -122,21 +81,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The value now should be 15", 15, +that.getSliderValue());
             jqUnit.assertEquals("The max should be 100", 100, +slider.attr("max"));
             jqUnit.assertEquals("The min should be 0", 0, +slider.attr("min"));
-            fluid.contextAware.forgetChecks("fluid.prefsWidgetType");
-        });
-
-        jqUnit.test("Test Init (jQuery UI slider)", function () {
-            jqUnit.expect(10);
-            var that = fluid.tests.textfieldSlider.createTextfieldSliderJQueryUI({model: {value: 15}});
-
-            fluid.tests.textfieldSlider.testCommonInit(that);
-
-            // Check ARIA defaults
-            var thumb = that.slider.locate("thumb");
-            jqUnit.assertEquals("The ARIA value now should be 15", 15, +thumb.attr("aria-valuenow"));
-            jqUnit.assertEquals("The ARIA max should be 100", 100, +thumb.attr("aria-valuemax"));
-            jqUnit.assertEquals("The ARIA min should be 0", 0, +thumb.attr("aria-valuemin"));
-            fluid.contextAware.forgetChecks("fluid.prefsWidgetType");
         });
 
         fluid.tests.textfieldSlider.testInputField = function (valToTest, expected, that) {
@@ -181,43 +125,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.tests.textfieldSlider.testInputField(null, 0, that);
         };
 
-        fluid.tests.textfieldSlider.testImplementedComponentTypes = function (messagePrefix, expected, componentOptions, testFunction) {
-            var implementedTypes = [
-                {
-                    messageSuffix: " (native HTML)",
-                    creatorFunc: fluid.tests.textfieldSlider.createTextfieldSliderNativeHTML
-                },
-                {
-                    messageSuffix: " (jQuery UI)",
-                    creatorFunc: fluid.tests.textfieldSlider.createTextfieldSliderJQueryUI
-                }
-            ];
-
-            fluid.each(implementedTypes, function (currentType) {
-                jqUnit.test(messagePrefix + currentType.messageSuffix, function () {
-                    jqUnit.expect(expected);
-                    var that = currentType.creatorFunc(componentOptions);
-                    testFunction(that);
-                    fluid.contextAware.forgetChecks("fluid.prefsWidgetType");
-                });
-            });
-        };
-
         var testCases = [
             {
-                messagePrefix: "Test Min/Max Size",
+                message: "Test Min/Max Size",
                 expected: 18,
                 componentOptions: {range: {min: 5, max: 55}},
                 testFunction: fluid.tests.textfieldSlider.testMinMax
             },
             {
-                messagePrefix: "Test Negative Scale",
+                message: "Test Negative Scale",
                 expected: 15,
                 componentOptions: {range: {min: -15, max: -5}},
                 testFunction: fluid.tests.textfieldSlider.testNegativeScale
             },
             {
-                messagePrefix: "Test Invalid Values",
+                message: "Test Invalid Values",
                 expected: 4,
                 componentOptions: {
                     range: {
@@ -233,7 +155,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         ];
 
         fluid.each(testCases, function (currentCase) {
-            fluid.tests.textfieldSlider.testImplementedComponentTypes(currentCase.messagePrefix, currentCase.expected, currentCase.componentOptions, currentCase.testFunction);
+            jqUnit.test(currentCase.message, function () {
+                jqUnit.expect(currentCase.expected);
+                var that = fluid.tests.textfieldSlider.createTextfieldSlider(currentCase.componentOptions);
+                currentCase.testFunction(that);
+            });
         });
 
     });
