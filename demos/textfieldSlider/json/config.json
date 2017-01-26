@@ -1,0 +1,15 @@
+{
+    "templateUrl": "../shared/html/overviewPanelTemplate-noDesign.html",
+    "strings": {
+        "componentName": "Textfield Slider"
+    },
+    "markup": {
+        "description": "The Textfield Slider pairs a slider and textfield and synchronizes the input between them, providing multiple modes of entry.",
+        "instructions": "<ul><li>Use the mouse or keyboard to adjust the value via the slider thumb.</li><li>Enter a value between 0 and 10 in the textfield</li></ul>"
+    },
+    "links": {
+        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/textfieldSlider",
+        "apiLink": "#",
+        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Textfield%20Slider%20feedback"
+    }
+}

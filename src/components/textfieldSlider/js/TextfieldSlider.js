@@ -140,6 +140,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             textfield: ".flc-textfieldSlider-field",
             slider: ".flc-textfieldSlider-slider"
         },
+        styles: {
+            container: "fl-textfieldSlider fl-focus"
+        },
         model: {
             value: null
         },
@@ -171,6 +174,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // text of label to apply to both textfield and slider input
             // via aria-label attribute
             // "aria-label": ""
+        },
+        listeners: {
+            "onCreate.addContainerStyle": {
+                "this": "{that}.container",
+                method: "addClass",
+                args: ["{that}.options.styles.container"]
+            }
         }
     });
 
