@@ -4153,6 +4153,39 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         expected: 2,
         expectedInputPaths: [ "halfdozen" ]
+    }, {
+        message: "limitRange is able to do (lossy) inverse.",
+        transform: {
+            outie: {
+                transform: {
+                    type: "fluid.transforms.limitRange",
+                    min: 0,
+                    max: 10,
+                    inputPath: "myin"
+                }
+            }
+        },
+        model: {
+            myin: 11
+        },
+        expected: {
+            outie: 10
+        },
+        invertedRules: {
+            transform: [{
+                type: "fluid.transforms.identity",
+                max: 10,
+                min: 0,
+                outputPath: "myin",
+                inputPath: "outie"
+            }]
+        },
+        modelAfterInversion: {
+            myin: 10
+        },
+        weaklyInvertible: true,
+        transformWrap: false,
+        method: "assertDeepEq"
     }
     ];
 

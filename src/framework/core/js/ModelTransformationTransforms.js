@@ -601,7 +601,8 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     fluid.defaults("fluid.transforms.limitRange", {
-        gradeNames: "fluid.standardTransformFunction"
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
+        invertConfiguration: "fluid.transforms.invertToIdentity"
     });
 
     fluid.transforms.limitRange = function (value, transformSpec) {
