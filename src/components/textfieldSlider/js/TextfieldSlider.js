@@ -14,38 +14,32 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
-    /********************
-     * Textfield Slider *
-     ********************/
+    /************************
+     * TextField Controller *
+     ************************/
 
-    fluid.defaults("fluid.textfieldSlider", {
+    fluid.defaults("fluid.textfieldController", {
         gradeNames: ["fluid.viewComponent"],
-        components: {
-            textfield: {
-                type: "fluid.textfieldSlider.textfield",
-                container: "{textfieldSlider}.dom.textfield",
-                options: {
-                    model: "{textfieldSlider}.model",
-                    range: "{textfieldSlider}.options.range",
-                    ariaOptions: "{textfieldSlider}.options.ariaOptions",
-                    strings: "{textfieldSlider}.options.strings"
-                }
-            },
-            slider: {
-                type: "fluid.slider",
-                container: "{textfieldSlider}.dom.slider",
-                options: {
-                    model: "{textfieldSlider}.model",
-                    range: "{textfieldSlider}.options.range",
-                    sliderOptions: "{textfieldSlider}.options.sliderOptions",
-                    ariaOptions: "{textfieldSlider}.options.ariaOptions",
-                    strings: "{textfieldSlider}.options.strings"
-                }
-            }
+        strings: {
+            // Specified by implementor
+            // text of label to apply to both textfield and slider input
+            // via aria-label attribute
+            // "aria-label": ""
         },
         selectors: {
-            textfield: ".flc-textfieldSlider-field",
-            slider: ".flc-textfieldSlider-slider"
+            textfield: ".flc-textfieldController-field"
+        },
+        components: {
+            textfield: {
+                type: "fluid.textfieldController.textfield",
+                container: "{textfieldController}.dom.textfield",
+                options: {
+                    model: "{textfieldController}.model",
+                    range: "{textfieldController}.options.range",
+                    ariaOptions: "{textfieldController}.options.ariaOptions",
+                    strings: "{textfieldController}.options.strings"
+                }
+            }
         },
         model: {
             value: null
@@ -68,22 +62,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // ID of an external label to refer to with aria-labelledby
             // attribute
             // "aria-labelledby": ""
-        },
-        sliderOptions: {
-            orientation: "horizontal",
-            step: 1.0
-        },
-        strings: {
-            // Specified by implementor
-            // text of label to apply to both textfield and slider input
-            // via aria-label attribute
-            // "aria-label": ""
         }
     });
 
-    fluid.defaults("fluid.textfieldSlider.textfield", {
+    fluid.defaults("fluid.textfieldController.textfield", {
         gradeNames: ["fluid.viewComponent"],
-        range: {}, // should be used to specify the min, max range e.g. {min: 0, max: 100}
         modelRelay: {
             target: "value",
             singleTransform: {
@@ -131,6 +114,63 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 changePath: "stringValue",
                 value: "{arguments}.0.target.value"
             }
+        }
+    });
+
+    /********************
+     * Textfield Slider *
+     ********************/
+
+    fluid.defaults("fluid.textfieldSlider", {
+        gradeNames: ["fluid.textfieldController"],
+        components: {
+            slider: {
+                type: "fluid.slider",
+                container: "{textfieldSlider}.dom.slider",
+                options: {
+                    model: "{textfieldSlider}.model",
+                    range: "{textfieldSlider}.options.range",
+                    sliderOptions: "{textfieldSlider}.options.sliderOptions",
+                    ariaOptions: "{textfieldSlider}.options.ariaOptions",
+                    strings: "{textfieldSlider}.options.strings"
+                }
+            }
+        },
+        selectors: {
+            textfield: ".flc-textfieldSlider-field",
+            slider: ".flc-textfieldSlider-slider"
+        },
+        model: {
+            value: null
+        },
+        modelRelay: {
+            target: "value",
+            singleTransform: {
+                type: "fluid.transforms.limitRange",
+                input: "{that}.model.value",
+                min: "{that}.options.range.min",
+                max: "{that}.options.range.max"
+            }
+        },
+        range: {
+            min: 0,
+            max: 100
+        },
+        ariaOptions: {
+            // Specified by implementor
+            // ID of an external label to refer to with aria-labelledby
+            // attribute
+            // "aria-labelledby": ""
+        },
+        sliderOptions: {
+            orientation: "horizontal",
+            step: 1.0
+        },
+        strings: {
+            // Specified by implementor
+            // text of label to apply to both textfield and slider input
+            // via aria-label attribute
+            // "aria-label": ""
         }
     });
 
