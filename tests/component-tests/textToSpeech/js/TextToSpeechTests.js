@@ -258,30 +258,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
            fluid.test.conditionalTestUtils.bypassTest, "Browser appears to support TTS", "Browser does not appear to support TTS");
     };
 
-    fluid.defaults("fluid.tests.textToSpeech.contextAwareTestRunner", {
-        gradeNames: ["fluid.test.conditionalTestUtils.contextAwareTestRunner"],
-        contextAwareness: {
-            supportsPauseResume: {
-                checks: {
-                    supportsPauseResume: {
-                        contextValue: "{fluid.browser.platform.isLinux}",
-                        equals: false,
-                        gradeNames: ["fluid.tests.textToSpeech.supportsPauseResume"]
-                    }
-                }
-            }
-        },
-        tests: {
-            base: "fluid.tests.textToSpeech.baseTests"
-        }
-    });
-
     fluid.defaults("fluid.tests.textToSpeech.supportsPauseResume", {
         tests: {
             supportsPauseResume: "fluid.tests.textToSpeech.supportsPauseResumeTests"
         }
     });
-
-    fluid.tests.textToSpeech.contextAwareTestRunner();
 
 })();

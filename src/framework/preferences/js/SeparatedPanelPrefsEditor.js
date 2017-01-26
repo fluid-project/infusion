@@ -54,16 +54,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         gradeNames: "fluid.prefs.separatedPanel.lazyLoad"
                     }
                 }
-            },
-            separatedPanelPrefsWidgetType: {
-                checks: {
-                    jQueryUI: {
-                        contextValue: "{fluid.prefsWidgetType}",
-                        equals: "jQueryUI",
-                        gradeNames: "fluid.prefs.separatedPanel.jQueryUI"
-                    }
-                },
-                defaultGradeNames: "fluid.prefs.separatedPanel.nativeHTML"
             }
         },
         selectors: {
@@ -202,7 +192,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             iframeRenderer: {
                 options: {
                     markupProps: {
-                        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame-nativeHTML.html"
+                        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame.html"
                     }
                 }
             }
@@ -242,7 +232,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         markupProps: {
             "class": "flc-iframe",
-            src: "%templatePrefix/prefsEditorIframe.html"
+            src: "%templatePrefix/SeparatedPanelPrefsEditorFrame.html"
         },
         listeners: {
             "onCreate.startLoadingIframe": "fluid.prefs.separatedPanel.renderIframe.startLoadingIframe"

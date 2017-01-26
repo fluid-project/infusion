@@ -11,7 +11,7 @@
 
         <link rel="stylesheet" type="text/css" href="../shared/css/preferences.css" />
 
-        <title>Preferences Editor Example: Conditional Adjusters - Single Panel</title>
+        <title>Preferences Editor Example: Conditional Adjusters</title>
         <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery-ui.js"></script>
 
@@ -49,7 +49,6 @@
 
         <script type="text/javascript" src="../shared/js/primarySchema.js"></script>
         <script type="text/javascript" src="../shared/js/utilities.js"></script>
-        <script type="text/javascript" src="../shared/js/contextAwareAuxSchemas.js"></script>
         <script type="text/javascript" src="js/auxiliarySchema.js"></script>
         <script type="text/javascript" src="../shared/js/panels.js"></script>
         <script type="text/javascript" src="js/panels.js"></script>
@@ -57,7 +56,7 @@
         <script type="text/javascript" src="js/conditional.js"></script>
     </head>
 
-    <body class="example-theme fl-focus">
+    <body class="learning-theme fl-focus">
 
         <!-- BEGIN markup for Preference Editor -->
         <div class="flc-prefsEditor-separatedPanel fl-prefsEditor-separatedPanel">
@@ -79,10 +78,9 @@
         </script>
 
         <div class="overview">
-            <h1>Test of Composite Panels With Conditional Show/Hide of Adjusters</h1>
-            <p>This example illustrates a single composite panel with a collection of adjusters that are dependent on one of two boolean adjusters.</p>
-            <p>Initially*, you should see only two on/off switches in the panel. Turning one preference on should reveal dependent adjusters, and turning the preference off should hide them. Each of the two preferences has its own set of dependent adjusters.</p>
-            <p>Turning one preference on and off should not affect the visibility of the other boolean's dependent adjusters.</p>
+            <h1>Test of Composite Panels With Conditional Show/Hide of Adjustors</h1>
+            <p>This example illustrates two composite panels, each with a set of adjusters that are dependent on another boolean adjuster.</p>
+            <p>Initially*, you should see only a single on/off switch in each panel. Turning the preference on should reveal the dependent adjusters, and turning the preference off should hide them.</p>
             <p>Any values set with the dependent adjusters should be preserved even if the controlling preference is turned off.</p>
             <p>* Once the page is loaded, preference values are stored in a cookie, so on subsequent page loads the stored values will be used. To reset the example to its default state, clear cookies for the page.</p>
         </div>
