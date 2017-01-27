@@ -12,8 +12,8 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_3_0_0 = fluid_3_0_0 || {};
-var fluid = fluid || fluid_3_0_0;
+var fluid_2_0_0 = fluid_2_0_0 || {};
+var fluid = fluid || fluid_2_0_0;
 
 (function ($, fluid) {
     "use strict";
@@ -740,4 +740,228 @@ var fluid = fluid || fluid_3_0_0;
             (transformSpec.max === undefined ||  transformSpec.max >= value) ? true : false;
     };
 
+    /**
+     *
+     * Convert a string to a Boolean, for example, when working with HTML form element values.
+     *
+     * The following are all false: undefined, null, "", "0", "false", false, 0
+     *
+     * Everything else is true.
+     *
+     * @param value {String} The value to be interpreted.
+     * @returns {Boolean} The interpreted value.
+     */
+    fluid.transforms.stringToBoolean = function (value) {
+        if (value) {
+            return !(value === "0" || value === "false");
+        }
+        else {
+            return false;
+        }
+    };
+
+    fluid.transforms.stringToBoolean.invert = function (transformSpec) {
+        transformSpec.type = "fluid.transforms.booleanToString";
+        return transformSpec;
+    };
+
+    fluid.defaults("fluid.transforms.stringToBoolean", {
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
+        invertConfiguration: "fluid.transforms.stringToBoolean.invert"
+    });
+
+    /**
+     *
+     * Convert any value into a stringified boolean, i. e. either "true" or "false".  Anything that evaluates to
+     * true (1, true, "non empty string", {}, et. cetera) returns "true".  Anything else (0, false, null, et. cetera)
+     * returns "false".
+     *
+     * @param value - The value to be converted to a stringified Boolean.
+     * @returns {string} - A stringified boolean representation of the value.
+     */
+    fluid.transforms.booleanToString = function (value) {
+        return value ? "true" : "false";
+    };
+
+    fluid.transforms.booleanToString.invert = function (transformSpec) {
+        transformSpec.type = "fluid.transforms.stringToBoolean";
+        return transformSpec;
+    };
+
+    fluid.defaults("fluid.transforms.booleanToString", {
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
+        invertConfiguration: "fluid.transforms.booleanToString.invert"
+    });
+
+    /**
+     *
+     * Transform stringified JSON to an object using `JSON.parse`.  Returns `undefined` if the JSON string is invalid.
+     *
+     * @param value {String} - The stringified JSON to be converted to an object.
+     */
+    fluid.transforms.JSONstringToObject = function (value) {
+        try {
+            return JSON.parse(value);
+        }
+        catch (e) {
+            return undefined;
+        }
+    };
+
+    fluid.transforms.JSONstringToObject.invert = function (transformSpec) {
+        transformSpec.type = "fluid.transforms.objectToJSONString";
+        return transformSpec;
+    };
+
+    fluid.defaults("fluid.transforms.JSONstringToObject", {
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
+        invertConfiguration: "fluid.transforms.JSONstringToObject.invert"
+    });
+
+    /**
+     *
+     * Transform an object to a string using `JSON.stringify`.  You can pass the `space` option to be used
+     * as part of your transform, as in:
+     *
+     * ```
+     * "": {
+     *   transform: {
+     *     funcName: "fluid.transforms.objectToJSONString",
+     *     inputPath: "",
+     *     space: 2
+     *   }
+     * }
+     * ```
+     *
+     * The default value for `space` is 0, which disables spacing and line breaks.
+     *
+     * @param value {Object} - An object to be converted to stringified JSON.
+     *
+     */
+    fluid.transforms.objectToJSONString = function (value, transformSpec) {
+        var space = transformSpec.space || 0;
+        return JSON.stringify(value, null, space);
+    };
+
+    fluid.transforms.objectToJSONString.invert = function (transformSpec) {
+        transformSpec.type = "fluid.transforms.JSONstringToObject";
+        return transformSpec;
+    };
+
+    fluid.defaults("fluid.transforms.objectToJSONString", {
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
+        invertConfiguration: "fluid.transforms.objectToJSONString.invert"
+    });
+
+    /**
+     *
+     * Transform a string to a date using the Date constructor.  Accepts (among other things) the date and dateTime
+     * values returned by HTML5 date and dateTime inputs.
+     *
+     * A string that cannot be parsed will be treated as `undefined`.
+     *
+     * Note: This function allows you to create Date objects from an ISO 8601 string such as `2017-01-23T08:51:25.891Z`.
+     * It is intended to provide a consistent mechanism for recreating Date objects stored as strings.  Although the
+     * framework currently works as expected with Date objects stored in the model, this is very likely to change.  If
+     * you are working with Date objects in your model, your best option for ensuring your code continues to work in the
+     * future is to handle serialisation and deserialisation yourself, for example, by using this transform and one of
+     * its inverse transforms, `fluid.transforms.dateToString` or `fluid.transforms.dateTimeToString`.  See the Infusion
+     * documentation for details about supported model values:
+     *
+     * http://docs.fluidproject.org/infusion/development/FrameworkConcepts.html#model-objects
+     *
+     * @param value - The String value to be transformed into a Date object.
+     * @returns {Date} - A date object, or `undefined`.
+     *
+     */
+    fluid.transforms.stringToDate = function (value) {
+        var date = new Date(value);
+        return isNaN(date.getTime()) ? undefined : date;
+    };
+
+    fluid.transforms.stringToDate.invert = function (transformSpec) {
+        transformSpec.type = "fluid.transforms.dateToString";
+        return transformSpec;
+    };
+
+    fluid.defaults("fluid.transforms.stringToDate", {
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
+        invertConfiguration: "fluid.transforms.stringToDate.invert"
+    });
+
+    /**
+     *
+     * Transform a Date object into a date string using its toISOString method.  Strips the "time" portion away to
+     * produce date strings that are suitable for use with both HTML5 "date" inputs and JSON Schema "date" format
+     * string validation, for example: `2016-11-23`
+     *
+     * If you wish to preserve the time, use `fluid.transforms.dateTimeToString` instead.
+     *
+     * A non-date object will be treated as `undefined`.
+     *
+     * Note: This function allows you to seralise Date objects (not including time information) as ISO 8601 strings such
+     * as `2017-01-23`.  It is intended to provide a consistent mechanism for storing Date objects in a model.  Although
+     * the framework currently works as expected with Date objects stored in the model, this is very likely to change.
+     * If you are working with Date objects in your model, your best option for ensuring your code continues to work in
+     * the future is to handle serialisation and deserialisation yourself, for example, by using this transform and its
+     * inverse, `fluid.transforms.stringToDate`.  See the Infusion documentation for details about supported model
+     * values:
+     *
+     * http://docs.fluidproject.org/infusion/development/FrameworkConcepts.html#model-objects
+     *
+     * @param value - The Date object to be transformed into an ISO 8601 string.
+     * @returns {String} - A {String} value representing the date, or `undefined` if the date is invalid.
+     *
+     */
+    fluid.transforms.dateToString = function (value) {
+        if (value instanceof Date) {
+            var isoString = value.toISOString(); // A string like "2016-09-26T08:05:57.462Z"
+            var dateString = isoString.substring(0, isoString.indexOf("T")); // A string like "2016-09-26"
+            return dateString;
+        }
+        else {
+            return undefined;
+        }
+    };
+
+    fluid.transforms.dateToString.invert = function (transformSpec) {
+        transformSpec.type = "fluid.transforms.stringToDate";
+        return transformSpec;
+    };
+
+    fluid.defaults("fluid.transforms.dateToString", {
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
+        invertConfiguration: "fluid.transforms.dateToString.invert"
+    });
+
+    /**
+     *
+     * Transform a Date object into a date/time string using its toISOString method.  Results in date strings that are
+     * suitable for use with both HTML5 "dateTime" inputs and JSON Schema "date-time" format string validation, for\
+     * example: `2016-11-23T13:05:24.079Z`
+     *
+     * A non-date object will be treated as `undefined`.
+     *
+     * Note: This function allows you to seralise Date objects (including time information) as ISO 8601 strings such as
+     * `2017-01-23T08:51:25.891Z`. It is intended to provide a consistent mechanism for storing Date objects in a model.
+     * Although the framework currently works as expected with Date objects stored in the model, this is very likely to
+     * change.  If you are working with Date objects in your model, your best option for ensuring your code continues to
+     * work in the future is to handle serialisation and deserialisation yourself, for example, by using this function
+     * and its inverse, `fluid.transforms.stringToDate`.  See the Infusion documentation for details about supported
+     * model values:
+     *
+     * http://docs.fluidproject.org/infusion/development/FrameworkConcepts.html#model-objects
+     *
+     * @param value - The Date object to be transformed into an ISO 8601 string.
+     * @returns {String} - A {String} value representing the date and time, or `undefined` if the date/time are invalid.
+     *
+     */
+    fluid.transforms.dateTimeToString = function (value) {
+        return value instanceof Date ? value.toISOString() : undefined;
+    };
+
+    fluid.defaults("fluid.transforms.dateTimeToString", {
+        gradeNames: ["fluid.standardTransformFunction", "fluid.lens"],
+        invertConfiguration: "fluid.transforms.dateToString.invert"
+    });
 })(jQuery, fluid_3_0_0);
