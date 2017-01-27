@@ -432,18 +432,20 @@ module.exports = function (grunt) {
         var missingDistributions = 0;
         var distributions = grunt.config.get("distributions");
         _.forEach(distributions, function (value, distribution) {
+            console.log("Distribution \"" + distribution + "\"");
             var jsFilename = "infusion-" + distribution + ".js";
             var mapFilename = jsFilename + ".map";
             var expectedFilenames = [jsFilename, mapFilename];
             _.forEach(expectedFilenames, function (expectedFilename) {
                 var fileExists = grunt.file.exists("dist", expectedFilename);
                 if (fileExists) {
-                    console.log(expectedFilename + " - PRESENT");
+                    console.log("└─╴" + expectedFilename + " - ✓ Present");
                 } else {
                     missingDistributions = missingDistributions + 1;
-                    console.log(expectedFilename + " - MISSING");
+                    console.log("└─╴" + expectedFilename + " - ✗ Missing");
                 }
             });
+            console.log("----------");
         });
         if (missingDistributions > 0) {
             grunt.fail.fatal("Verification failed, " + missingDistributions + " expected /dist files were not found");
