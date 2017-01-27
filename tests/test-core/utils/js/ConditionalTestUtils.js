@@ -91,14 +91,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     // Functions for browser platform reporting for makeChecks
+
+    // Given the lack of standards around navigator.platform, this is based on
+    // web developer "folk knowledge" as embodied in posts like
+    // http://stackoverflow.com/questions/19877924/what-is-the-list-of-possible-values-for-navigator-platform-as-of-today
+    //
+    // These checks should not be relied upon outside of a controlled testing
+    // context, when we need to skip certain tests based on bugs or partial
+    // implementation on a particular browser/platform combination
+
+    // Linux platforms identify themselves with a full "Linux" string plus
+    // a platform architecture string, as the following partial list:
+    // - Linux x86_64
+    // - Linux aarch64
     fluid.test.conditionalTestUtils.isBrowserOnLinux = function () {
         return fluid.test.conditionalTestUtils.contextValueContains("Linux", "{fluid.browser.platformName}");
     };
 
+    // Macintosh platforms identify themselves with a "Mac" string concatenated
+    // with a platform architecture string, such as:
+    // - MacIntel
+    // - MacPPC
     fluid.test.conditionalTestUtils.isBrowserOnMac = function () {
         return fluid.test.conditionalTestUtils.contextValueContains("Mac", "{fluid.browser.platformName}");
     };
 
+    // Windows platforms identify themselves with a "Win" string concatenated
+    // with a platform architecture string, such as:
+    // - Win32
+    // - Win16
+    // - WinCE
     fluid.test.conditionalTestUtils.isBrowserOnWindows = function () {
         return fluid.test.conditionalTestUtils.contextValueContains("Win", "{fluid.browser.platformName}");
     };
@@ -115,7 +137,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // Edge reports Chrome in its userAgent string, so we have to additionally check for
     // the Edge string
     fluid.test.conditionalTestUtils.isChromeBrowser = function () {
-        return fluid.test.conditionalTestUtils.contextValueContains("Chrome", "{fluid.browser.userAgent}") && !fluid.test.conditionalTestUtils.contextValueContains("Edge", "{fluid.browser.userAgent}");;
+        return fluid.test.conditionalTestUtils.contextValueContains("Chrome", "{fluid.browser.userAgent}") && !fluid.test.conditionalTestUtils.contextValueContains("Edge", "{fluid.browser.userAgent}");
     };
 
     // We have to check that the userAgent string contains Safari, but does not
