@@ -18,6 +18,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * TextField Control *
      *********************/
 
+    /**
+     * TextField Control is a primarily used as a base grade for combining
+     * a textfield with another UI element such as buttons or a slider
+     * for inputing numerical values.
+     */
     fluid.defaults("fluid.textfieldControl", {
         gradeNames: ["fluid.viewComponent"],
         strings: {
