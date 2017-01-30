@@ -1,9 +1,10 @@
 {
     "textfieldSlider": {
-        "name": "Textfield Slider",
-        "description": "A synchronized slider and textfield",
+        "name": "Textfield Controls",
+        "description": "A collection of UI widgets that synchronize a control with a textfield.",
         "cssFiles": [],
         "files": [
+            "./js/TextfieldControl.js",
             "./js/TextfieldSlider.js"
         ],
         "dependencies": [
@@ -11,8 +12,7 @@
             "jQueryUI",
             "normalize",
             "framework",
-            "enhancement",
-            "jQueryTouchPunchPlugin"
+            "enhancement"
         ]
     }
 }
