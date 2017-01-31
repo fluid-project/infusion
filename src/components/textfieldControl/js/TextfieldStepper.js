@@ -14,9 +14,9 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
-    /********************
-     * Textfield Buttons *
-     ********************/
+    /*********************
+     * Textfield Stepper *
+     *********************/
 
     fluid.defaults("fluid.textfieldButtons", {
         gradeNames: ["fluid.viewComponent"],
