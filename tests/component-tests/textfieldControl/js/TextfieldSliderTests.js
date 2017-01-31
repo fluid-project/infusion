@@ -17,150 +17,79 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     $(document).ready(function () {
 
-        fluid.registerNamespace("fluid.tests.textfieldSlider");
-
         jqUnit.module("TextfieldSlider Tests");
 
         fluid.defaults("fluid.tests.textfieldSlider", {
+            gradeNames: ["fluid.textfieldSlider"],
+            ariaOptions: {
+                "aria-labelledby": "label-nativeHTML"
+            },
             strings: {
                 "aria-label": "Aria self-labeling"
             }
         });
 
-        fluid.defaults("fluid.tests.textfieldSlider", {
-            gradeNames: ["fluid.tests.textfieldSlider", "fluid.textfieldSlider"],
-            ariaOptions: {
-                "aria-labelledby": "label-nativeHTML"
-            },
-            invokers: {
-                "getSliderValue": {
-                    "this": "{that}.slider.container",
-                    "method": "val"
-                },
-                "setSliderValue": {
-                    "this": "{that}.slider.container",
-                    "method": "val",
-                    args: ["{arguments}.0"]
-                },
-                "getSliderAttr": {
-                    "this": "{that}.slider.container",
-                    "method": "attr",
-                    "args": "{arguments}.0"
-                }
-            }
-        });
-
-        fluid.tests.textfieldSlider.createTextfieldSlider = function (options) {
-            return fluid.tests.textfieldSlider(".fl-textfield-slider", options);
-        };
-
-        fluid.tests.textfieldSlider.testCommonInit = function (textfieldSlider) {
-            var that = textfieldSlider;
-
-            jqUnit.assertEquals("Slider value is set to input value", 15, +textfieldSlider.getSliderValue());
-            jqUnit.assertEquals("Textfield value is set", 15, +that.locate("textfield").val());
-            jqUnit.assertEquals("The model should be set", 15, that.model.value);
-            jqUnit.assertEquals("Min should be the default", 0, that.options.range.min);
-            jqUnit.assertEquals("Max should be the default", 100, that.options.range.max);
-
-            jqUnit.assertEquals("Slider has user-supplied aria-label value", textfieldSlider.options.strings["aria-label"], textfieldSlider.getSliderAttr("aria-label"));
-
-            jqUnit.assertEquals("Slider has user-supplied aria-labelled value", textfieldSlider.options.ariaOptions["aria-labelledby"], textfieldSlider.getSliderAttr("aria-labelledby"));
-
-        };
-
         jqUnit.test("Test Init", function () {
-            jqUnit.expect(10);
-            var that = fluid.tests.textfieldSlider.createTextfieldSlider({model: {value: 15}});
+            jqUnit.expect(11);
+            var options = {
+                model: {
+                    value: 15
+                },
+                range: {
+                    min: 10,
+                    max: 20
+                }
+            };
+            var that = fluid.tests.textfieldSlider(".fl-textfield-slider", options);
 
-            fluid.tests.textfieldSlider.testCommonInit(that);
+            fluid.tests.textfieldControl.assertTextfieldControlInit(that, options, that.locate("textfield"));
 
             var slider = that.locate("slider");
-
-            // Check range slider attributes
-            jqUnit.assertEquals("The value now should be 15", 15, +that.getSliderValue());
-            jqUnit.assertEquals("The max should be 100", 100, +slider.attr("max"));
-            jqUnit.assertEquals("The min should be 0", 0, +slider.attr("min"));
+            jqUnit.assertEquals("The value now should be " + options.model.value, options.model.value, +slider.val());
+            jqUnit.assertEquals("The max should be " + options.range.max, options.range.max, +slider.attr("max"));
+            jqUnit.assertEquals("The min should be " + options.range.min, options.range.min, +slider.attr("min"));
+            jqUnit.assertEquals("Slider has user-supplied aria-label value", that.options.strings["aria-label"], slider.attr("aria-label"));
+            jqUnit.assertEquals("Slider has user-supplied aria-labelled value", that.options.ariaOptions["aria-labelledby"], slider.attr("aria-labelledby"));
         });
 
-        fluid.tests.textfieldSlider.testInputField = function (valToTest, expected, that) {
-            var textfield = that.locate("textfield");
-
-            fluid.changeElementValue(textfield, valToTest);
-
-            jqUnit.assertEquals("Textfield value should be the " + expected, expected, +textfield.val());
-
-            jqUnit.assertEquals("Slider value should be " + expected, expected, +that.getSliderValue());
+        fluid.tests.textfieldSlider.assertTextfieldEntry = function (valToTest, expected, that) {
+            fluid.tests.textfieldControl.assertTextfieldEntry(valToTest, expected, that, that.locate("textfield"));
+            jqUnit.assertEquals("Slider value should be " + expected, expected, +that.locate("slider").val());
         };
 
-        fluid.tests.textfieldSlider.testSlider = function (valToTest, expected, that) {
-            that.setSliderValue(valToTest);
-            jqUnit.assertEquals("Slider value should be " + expected, expected, +that.getSliderValue());
+        fluid.tests.textfieldSlider.assertSliderEntry = function (valToTest, expected, that) {
+            that.slider.container.val(valToTest).change();
+            jqUnit.assertEquals("Textfield value should be " + expected, expected, +that.locate("textfield").val());
+            jqUnit.assertEquals("Model value should be " + expected, expected, that.model.value);
         };
 
-        fluid.tests.textfieldSlider.testAll = function (valToTest, expected, that) {
-            fluid.tests.textfieldSlider.testSlider(valToTest, expected, that);
-            fluid.tests.textfieldSlider.testInputField(valToTest, expected, that);
-        };
+        fluid.each(fluid.tests.textfieldControl.testCases, function (currentCase) {
+            jqUnit.test("textfield - " + currentCase.message, function () {
+                var that = fluid.tests.textfieldSlider(".fl-textfield-slider", currentCase.componentOptions);
 
-        fluid.tests.textfieldSlider.testMinMax = function (that) {
-            fluid.tests.textfieldSlider.testAll(56, 55, that);
-            fluid.tests.textfieldSlider.testAll(55, 55, that);
-            fluid.tests.textfieldSlider.testAll(4, 5, that);
-            fluid.tests.textfieldSlider.testAll(25, 25, that);
-            fluid.tests.textfieldSlider.testAll(-5, 5, that);
-            fluid.tests.textfieldSlider.testAll(5, 5, that);
-        };
-
-        fluid.tests.textfieldSlider.testNegativeScale = function (that) {
-            fluid.tests.textfieldSlider.testAll(56, -5, that);
-            fluid.tests.textfieldSlider.testAll(-10, -10, that);
-            fluid.tests.textfieldSlider.testAll(-16, -15, that);
-            fluid.tests.textfieldSlider.testAll(-15, -15, that);
-            fluid.tests.textfieldSlider.testAll(-5, -5, that);
-        };
-
-        fluid.tests.textfieldSlider.testInvalidValues = function (that) {
-            fluid.tests.textfieldSlider.testInputField("aaa", 1, that);
-            fluid.tests.textfieldSlider.testInputField(null, 0, that);
-        };
-
-        var testCases = [
-            {
-                message: "Test Min/Max Size",
-                expected: 18,
-                componentOptions: {range: {min: 5, max: 55}},
-                testFunction: fluid.tests.textfieldSlider.testMinMax
-            },
-            {
-                message: "Test Negative Scale",
-                expected: 15,
-                componentOptions: {range: {min: -15, max: -5}},
-                testFunction: fluid.tests.textfieldSlider.testNegativeScale
-            },
-            {
-                message: "Test Invalid Values",
-                expected: 4,
-                componentOptions: {
-                    range: {
-                        min: -5,
-                        max: 5
-                    },
-                    model: {
-                        value: 1
-                    }
-                },
-                testFunction: fluid.tests.textfieldSlider.testInvalidValues
-            }
-        ];
-
-        fluid.each(testCases, function (currentCase) {
-            jqUnit.test(currentCase.message, function () {
-                jqUnit.expect(currentCase.expected);
-                var that = fluid.tests.textfieldSlider.createTextfieldSlider(currentCase.componentOptions);
-                currentCase.testFunction(that);
+                fluid.each(currentCase.tests, function (currentTest) {
+                    fluid.tests.textfieldSlider.assertTextfieldEntry(currentTest.input, currentTest.expected, that);
+                });
             });
         });
 
+        // override the invalid test case to update the tests because the
+        // expected value for the slider in an invalid input is different
+        // than the textfield entry.
+        fluid.tests.textfieldSlider.testCases = fluid.copy(fluid.tests.textfieldControl.testCases);
+        fluid.tests.textfieldSlider.testCases.invalid.tests = [
+            {input: "aaa", expected: 0},
+            {input: null, expected: 0}
+        ];
+
+        fluid.each(fluid.tests.textfieldSlider.testCases, function (currentCase) {
+            jqUnit.test("slider - " + currentCase.message, function () {
+                var that = fluid.tests.textfieldSlider(".fl-textfield-slider", currentCase.componentOptions);
+
+                fluid.each(currentCase.tests, function (currentTest) {
+                    fluid.tests.textfieldSlider.assertSliderEntry(currentTest.input, currentTest.expected, that);
+                });
+            });
+        });
     });
 })(jQuery);

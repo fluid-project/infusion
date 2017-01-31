@@ -43,7 +43,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.tests.textfieldControl.assertTextfieldInit(that, {model: {value: 5}}, that.container);
         });
 
-        fluid.tests.textfieldControl.textfield.testCases = [{
+        fluid.tests.textfieldControl.textfield.testCase = {
             message: "Test Valid Values",
             expected: 8,
             tests: [
@@ -52,17 +52,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 {input: 100, expected: 100},
                 {input: -5, expected: -5}
             ]
-        }];
+        };
 
-        fluid.each(fluid.tests.textfieldControl.textfield.testCases, function (currentCase) {
-            jqUnit.test(currentCase.message, function () {
-                jqUnit.expect(currentCase.expected);
-                var that = fluid.tests.textfieldControl.textfield(".flc-textfieldControl-textfield", currentCase.componentOptions);
-                var textfield = that.container;
+        jqUnit.test(fluid.tests.textfieldControl.textfield.testCase.message, function () {
+            jqUnit.expect(fluid.tests.textfieldControl.textfield.testCase.expected);
+            var that = fluid.tests.textfieldControl.textfield(".flc-textfieldControl-textfield", fluid.tests.textfieldControl.textfield.testCase.componentOptions);
+            var textfield = that.container;
 
-                fluid.each(currentCase.tests, function (currentTest) {
-                    fluid.tests.textfieldControl.assertTextfieldEntry(currentTest.input, currentTest.expected, that, textfield);
-                });
+            fluid.each(fluid.tests.textfieldControl.textfield.testCase.tests, function (currentTest) {
+                fluid.tests.textfieldControl.assertTextfieldEntry(currentTest.input, currentTest.expected, that, textfield);
             });
         });
 
@@ -83,31 +81,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             ariaOptions: {
                 "aria-labelledby": "label-nativeHTML"
-            },
-            invokers: {
-                "getSliderValue": {
-                    "this": "{that}.slider.container",
-                    "method": "val"
-                },
-                "setSliderValue": {
-                    "this": "{that}.slider.container",
-                    "method": "val",
-                    args: ["{arguments}.0"]
-                },
-                "getSliderAttr": {
-                    "this": "{that}.slider.container",
-                    "method": "attr",
-                    "args": "{arguments}.0"
-                }
             }
         });
-
-        fluid.tests.textfieldControl.testCommonInit = function (textfieldControl, expected) {
-            var textfield = textfieldControl.locate("textfield");
-            fluid.tests.textfieldControl.assertTextfieldInit(textfieldControl, expected, textfield);
-            jqUnit.assertEquals("Min should be the default", expected.range.min, textfieldControl.options.range.min);
-            jqUnit.assertEquals("Max should be the default", expected.range.max, textfieldControl.options.range.max);
-        };
 
         jqUnit.test("Test Init", function () {
             jqUnit.expect(6);
@@ -122,7 +97,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             };
             var that = fluid.tests.textfieldControl(".flc-textfieldControl", options);
 
-            fluid.tests.textfieldControl.testCommonInit(that, options);
+            fluid.tests.textfieldControl.assertTextfieldControlInit(that, options);
         });
 
         fluid.tests.textfieldControl.testInputField = function (valToTest, expected, that) {
@@ -134,52 +109,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("Model value should be " + expected, expected, that.model.value);
         };
 
-        fluid.tests.textfieldControl.testCases = [{
-            message: "Test Min/Max Size",
-            expected: 12,
-            componentOptions: {range: {min: 5, max: 55}},
-            tests: [
-                {input: 56, expected: 55},
-                {input: 55, expected: 55},
-                {input: 4, expected: 5},
-                {input: 25, expected: 25},
-                {input: -5, expected: 5},
-                {input: 5, expected: 5}
-            ]
-        },
-        {
-            message: "Test Negative Scale",
-            expected: 10,
-            componentOptions: {range: {min: -15, max: -5}},
-            tests: [
-                {input: 56, expected: -5},
-                {input: -10, expected: -10},
-                {input: -16, expected: -15},
-                {input: -15, expected: -15},
-                {input: -5, expected: -5}
-            ]
-        },
-        {
-            message: "Test Invalid Values",
-            expected: 4,
-            componentOptions: {
-                range: {
-                    min: -5,
-                    max: 5
-                },
-                model: {
-                    value: 1
-                }
-            },
-            tests: [
-                {input: "aaa", expected: 1},
-                {input: null, expected: 0}
-            ]
-        }];
-
         fluid.each(fluid.tests.textfieldControl.testCases, function (currentCase) {
             jqUnit.test(currentCase.message, function () {
-                jqUnit.expect(currentCase.expected);
                 var that = fluid.tests.textfieldControl(".flc-textfieldControl", currentCase.componentOptions);
                 var textfield = that.locate("textfield");
 
