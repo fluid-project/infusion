@@ -1659,7 +1659,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 if (typeof(resolvedFunc) !== "function") {
                     fluid.fail("Object ", resolvedThis, " at reference " + recthis + " has no member named " + record.method + " which is a function ");
                 }
-                fluid.log("Applying arguments ", args, " to method " + record.method + " of instance ", resolvedThis);
+                if (fluid.passLogLevel(fluid.logLevel.TRACE)) {
+                    fluid.log(fluid.logLevel.TRACE, "Applying arguments ", args, " to method " + record.method + " of instance ", resolvedThis);
+                }
                 return resolvedFunc.apply(resolvedThis, args);
             }
         };
