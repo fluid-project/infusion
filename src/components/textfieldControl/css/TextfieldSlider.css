@@ -8,8 +8,8 @@
 
 .fl-textfieldSlider .fl-textfieldSlider-textField {
     margin: 0;
-    margin-left: 1em;
-    width: 2.5em;
+    margin-left: 1rem;
+    width: 2.5rem;
     text-align: center;
 }
 
@@ -18,7 +18,7 @@
 /*
 Native slider appearance based on techniques described at
 https://css-tricks.com/styling-cross-browser-compatible-range-inputs-css/
-and 
+and
 http://brennaobrien.com/blog/2014/05/style-input-type-range-in-every-browser.html
 */
 
@@ -38,11 +38,11 @@ http://brennaobrien.com/blog/2014/05/style-input-type-range-in-every-browser.htm
   border: 1px solid #b3b3b3;
 }
 .fl-textfieldSlider input[type=range].fl-slider::-webkit-slider-thumb {
-    height: 1.5em;
-    width: 1.5em;
+    height: 1.5rem;
+    width: 1.5rem;
     background-color: #fff;
     border: 1px solid #b3b3b3;
-    border-radius: 2em;
+    border-radius: 2rem;
     box-shadow: 4px 2px 3px rgba(0,0,0,0.3);
     background-image: linear-gradient(right top, #fff 46%, #e9eaea 73%);
     -webkit-appearance: none;
@@ -59,11 +59,11 @@ http://brennaobrien.com/blog/2014/05/style-input-type-range-in-every-browser.htm
   border: 1px solid #b3b3b3;
 }
 .fl-textfieldSlider input[type=range].fl-slider::-moz-range-thumb {
-    height: 1.5em;
-    width: 1.5em;
+    height: 1.5rem;
+    width: 1.5rem;
     background-color: #fff;
     border: 1px solid #b3b3b3;
-    border-radius: 2em;
+    border-radius: 2rem;
     box-shadow: 4px 2px 3px rgba(0,0,0,0.3);
     background-image: linear-gradient(right top, #fff 46%, #e9eaea 73%);
 }
@@ -88,11 +88,11 @@ http://brennaobrien.com/blog/2014/05/style-input-type-range-in-every-browser.htm
   border-radius: 0.3rem;
 }
 .fl-textfieldSlider input[type=range].fl-slider::-ms-thumb {
-    height: 1.5em;
-    width: 1.5em;
+    height: 1.5rem;
+    width: 1.5rem;
     background-color: #fff;
     border: 1px solid #b3b3b3;
-    border-radius: 2em;
+    border-radius: 2rem;
     box-shadow: 4px 2px 3px rgba(0,0,0,0.3);
     background-image: linear-gradient(right top, #fff 46%, #e9eaea 73%);
 }
