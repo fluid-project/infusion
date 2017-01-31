@@ -1486,7 +1486,9 @@ var fluid = fluid || fluid_3_0_0;
             fire: function () {
                 var listeners = that.sortedListeners;
                 if (!listeners || that.destroyed) { return; }
-                fluid.log(fluid.logLevel.TRACE, "Firing event " + name + " to list of " + listeners.length + " listeners");
+                if (fluid.passLogLevel(fluid.logLevel.TRACE)) {
+                    fluid.log(fluid.logLevel.TRACE, "Firing event " + name + " to list of " + listeners.length + " listeners");
+                }
                 for (var i = 0; i < listeners.length; ++i) {
                     var lisrec = listeners[i];
                     lisrec.listener = fluid.event.resolveListener(lisrec.listener);
@@ -1770,7 +1772,9 @@ var fluid = fluid || fluid_3_0_0;
                 lastTick = Math.max(lastTick, gradeTickStore[searchGrades[i]] || 0);
             }
             if (lastTick > mergedDefaults.lastTick) {
-                fluid.log(fluid.logLevel.TRACE, "Clearing cache for component " + defaultName + " with gradeNames ", searchGrades);
+                if (fluid.passLogLevel(fluid.logLevel.TRACE)) {
+                    fluid.log(fluid.logLevel.TRACE, "Clearing cache for component " + defaultName + " with gradeNames ", searchGrades);
+                }
                 mergedDefaults = null;
             }
         }
