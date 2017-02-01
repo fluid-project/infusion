@@ -27,7 +27,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.viewComponent"],
         strings: {
             // Specified by implementor
-            // text of label to apply to both textfield and slider input
+            // text of label to apply to both textfield and control
             // via aria-label attribute
             // "aria-label": ""
         },

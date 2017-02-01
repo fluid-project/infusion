@@ -18,95 +18,95 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
      * Textfield Stepper *
      *********************/
 
-    fluid.defaults("fluid.textfieldButtons", {
+    // fluid.defaults("fluid.textfieldStepper", {
+    //     gradeNames: ["fluid.textfieldControl"],
+    //     strings: {
+    //         // Specified by implementor
+    //         // text of label to apply to both textfield and control
+    //         // via aria-label attribute
+    //         // "aria-label": ""
+    //     },
+    //     components: {
+    //         textfield: {
+    //             type: "fluid.textfieldSlider.textfield",
+    //             container: "{fluid.textfieldButtons}.dom.textfield",
+    //             options: {
+    //                 model: "{fluid.textfieldButtons}.model",
+    //                 range: "{fluid.textfieldButtons}.options.range"
+    //             }
+    //         },
+    //         increaseButton: {
+    //             type: "fluid.stepper.button",
+    //             container: "{fluid.textfieldButtons}.dom.increaseButton",
+    //             options: {
+    //                 coefficient: 1
+    //             }
+    //         },
+    //         decreaseButton: {
+    //             type: "fluid.stepper.button",
+    //             container: "{fluid.textfieldButtons}.dom.decreaseButton",
+    //             options: {
+    //                 coefficient: -1
+    //             }
+    //         }
+    //     },
+    //     selectors: {
+    //         textfield: ".flc-textfieldStepper-field",
+    //         increaseButton: ".flc-textfieldStepper-increase",
+    //         decreaseButton: ".flc-textfieldStepper-decrease"
+    //     },
+    //     model: {
+    //         value: null
+    //     },
+    //     range: {
+    //         min: 0,
+    //         max: 100
+    //     },
+    //     ariaOptions: {
+    //         // Specified by implementor
+    //         // ID of an external label to refer to with aria-labelledby
+    //         // attribute
+    //         // "aria-labelledby": ""
+    //     }
+    // });
+
+    fluid.defaults("fluid.textfieldStepper.button", {
         gradeNames: ["fluid.viewComponent"],
-        distributeOptions: {
-            target: "{that > fluid.stepper.button}.options",
-            record: {
-                model: "{fluid.textfieldButtons}.model",
-                range: "{fluid.textfieldButtons}.options.range",
-                buttonOptions: "{fluid.textfieldButtons}.options.buttonOptions"
-            }
-        },
-        components: {
-            textfield: {
-                type: "fluid.textfieldSlider.textfield",
-                container: "{fluid.textfieldButtons}.dom.textfield",
-                options: {
-                    model: "{fluid.textfieldButtons}.model",
-                    range: "{fluid.textfieldButtons}.options.range"
-                }
-            },
-            increaseButton: {
-                type: "fluid.stepper.button",
-                container: "{fluid.textfieldButtons}.dom.increaseButton",
-                options: {
-                    incrementCoefficient: 1
-                }
-            },
-            decreaseButton: {
-                type: "fluid.stepper.button",
-                container: "{fluid.textfieldButtons}.dom.decreaseButton",
-                options: {
-                    incrementCoefficient: -1
-                }
-            }
-        },
-        selectors: {
-            textfield: ".flc-textfieldButtons-field",
-            increaseButton: ".fl-increase-button",
-            decreaseButton: ".fl-decrease-button"
+        strings: {
+            // to be specified by an implementor.
+            // to provide a label for the button.
+            // label: ""
         },
         model: {
-            value: null
+            disabled: false
         },
-        modelRelay: {
-            target: "value",
-            singleTransform: {
-                type: "fluid.transforms.limitRange",
-                input: "{that}.model.value",
-                min: "{that}.options.range.min",
-                max: "{that}.options.range.max"
-            }
-        },
-        range: {
-            min: 0,
-            max: 100
-        }
-    });
-
-    fluid.defaults("fluid.stepper.button", {
-        gradeNames: ["fluid.viewComponent"],
-        range: {}, // should be used to specify the min, max range e.g. {min: 0, max: 100}
-        invokers: {
-            setModel: {
-                changePath: "value",
-                value: {
-                    expander: {
-                        funcName: "{that}.calculateValue"
-                    }
-                }
-            },
-            calculateValue: {
-                funcName: "fluid.stepper.button.buttonCalculateValue",
-                args: ["{that}.options.incrementCoefficient", "{that}.options.buttonOptions.stepMultiplier", "{that}.model.value"]
-            }
+        events: {
+            onClick: null
         },
         listeners: {
-            "onCreate.bindClickEvt": {
+            "onCreate.bindClick": {
                 "this": "{that}.container",
                 "method": "click",
-                "args": "{that}.setModel"
+                "args": "{that}.events.onClick.fire"
+            },
+            "onCreate.addLabel": {
+                "this": "{that}.container",
+                method: "attr",
+                args: ["aria-label", "{that}.options.strings.label"]
             }
         },
-        incrementCoefficient: 1,
-        buttonOptions: {
-            stepMultiplier: 10
+        modelListeners: {
+            disabled: {
+                "this": "{that}.container",
+                method: "prop",
+                args: ["disabled", "{change}.value"]
+            }
         }
     });
 
-    fluid.stepper.button.buttonCalculateValue = function (incrementCoefficient, stepMultiplier, modelValue) {
-        return (Math.round(modelValue * stepMultiplier + incrementCoefficient)) / stepMultiplier;
+    fluid.textfieldStepper.button.step = function (that) {
+        var newValue = that.model.value + (that.options.coefficient * that.options.step);
+        that.applier.change("value", newValue);
     };
 
-})(jQuery, fluid_2_0_0);
+})(jQuery, fluid_3_0_0);
