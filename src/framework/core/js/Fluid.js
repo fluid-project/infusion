@@ -1,5 +1,5 @@
 /*!
- * Fluid Infusion v2.0.0
+ * Fluid Infusion v3.0.0
  *
  * Infusion is distributed under the Educational Community License 2.0 and new BSD licenses:
  * http://wiki.fluidproject.org/display/fluid/Fluid+Licensing
@@ -27,13 +27,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 /* global console */
 
-var fluid_2_0_0 = fluid_2_0_0 || {};
-var fluid = fluid || fluid_2_0_0;
+var fluid_3_0_0 = fluid_3_0_0 || {};
+var fluid = fluid || fluid_3_0_0;
 
 (function ($, fluid) {
     "use strict";
 
-    fluid.version = "Infusion 2.0.0";
+    fluid.version = "Infusion 3.0.0";
 
     // Export this for use in environments like node.js, where it is useful for
     // configuring stack trace behaviour
@@ -1486,7 +1486,9 @@ var fluid = fluid || fluid_2_0_0;
             fire: function () {
                 var listeners = that.sortedListeners;
                 if (!listeners || that.destroyed) { return; }
-                fluid.log(fluid.logLevel.TRACE, "Firing event " + name + " to list of " + listeners.length + " listeners");
+                if (fluid.passLogLevel(fluid.logLevel.TRACE)) {
+                    fluid.log(fluid.logLevel.TRACE, "Firing event " + name + " to list of " + listeners.length + " listeners");
+                }
                 for (var i = 0; i < listeners.length; ++i) {
                     var lisrec = listeners[i];
                     lisrec.listener = fluid.event.resolveListener(lisrec.listener);
@@ -1770,7 +1772,9 @@ var fluid = fluid || fluid_2_0_0;
                 lastTick = Math.max(lastTick, gradeTickStore[searchGrades[i]] || 0);
             }
             if (lastTick > mergedDefaults.lastTick) {
-                fluid.log(fluid.logLevel.TRACE, "Clearing cache for component " + defaultName + " with gradeNames ", searchGrades);
+                if (fluid.passLogLevel(fluid.logLevel.TRACE)) {
+                    fluid.log(fluid.logLevel.TRACE, "Clearing cache for component " + defaultName + " with gradeNames ", searchGrades);
+                }
                 mergedDefaults = null;
             }
         }
@@ -2803,4 +2807,4 @@ var fluid = fluid || fluid_2_0_0;
         return template;
     };
 
-})(jQuery, fluid_2_0_0);
+})(jQuery, fluid_3_0_0);

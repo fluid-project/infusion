@@ -258,15 +258,34 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
            fluid.test.conditionalTestUtils.bypassTest, "Browser appears to support TTS", "Browser does not appear to support TTS");
     };
 
+    fluid.tests.textToSpeech.isChromeOnWindows = function () {
+        return fluid.contextAware.getCheckValue(fluid.rootComponent, "{fluid.browser.isChrome}") && fluid.contextAware.getCheckValue(fluid.rootComponent, "{fluid.browser.platform.isWindows}");
+    };
+
+    // The following environments are currently consider to not support
+    // pause and resume:
+    // Linux (any browser)
+    // Chrome on Windows due to this bug:
+    // https://bugs.chromium.org/p/chromium/issues/detail?id=679043
+
+    fluid.tests.textToSpeech.isPauseResumeSupporting = function () {
+        return !fluid.tests.textToSpeech.isChromeOnWindows() && !fluid.test.conditionalTestUtils.isBrowserOnLinux();
+    };
+
+    // Makes check Chrome on Windows due to TTS pause/resume bug
+    fluid.contextAware.makeChecks({
+        "fluid.tests.textToSpeech.supportsPauseResume": "fluid.tests.textToSpeech.isPauseResumeSupporting"
+    });
+
     fluid.defaults("fluid.tests.textToSpeech.contextAwareTestRunner", {
         gradeNames: ["fluid.test.conditionalTestUtils.contextAwareTestRunner"],
         contextAwareness: {
             supportsPauseResume: {
                 checks: {
                     supportsPauseResume: {
-                        contextValue: "{fluid.browser.platform.isLinux}",
-                        equals: false,
-                        gradeNames: ["fluid.tests.textToSpeech.supportsPauseResume"]
+                        contextValue: "{fluid.tests.textToSpeech.supportsPauseResume}",
+                        equals: true,
+                        gradeNames: ["fluid.tests.textToSpeech.contextAwareTestRunner.supportsPauseResume"]
                     }
                 }
             }
@@ -276,7 +295,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.defaults("fluid.tests.textToSpeech.supportsPauseResume", {
+    fluid.defaults("fluid.tests.textToSpeech.contextAwareTestRunner.supportsPauseResume", {
         tests: {
             supportsPauseResume: "fluid.tests.textToSpeech.supportsPauseResumeTests"
         }

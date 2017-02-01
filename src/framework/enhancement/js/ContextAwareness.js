@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-var fluid_2_0_0 = fluid_2_0_0 || {};
+var fluid_3_0_0 = fluid_3_0_0 || {};
 
 (function ($, fluid) {
     "use strict";
@@ -212,10 +212,19 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
         return typeof(navigator) !== "undefined" && navigator.platform ? navigator.platform : undefined;
     };
 
+    // Context awareness for the reported user agent name
+
+    fluid.contextAware.browser.getUserAgent = function () {
+        return typeof(navigator) !== "undefined" && navigator.userAgent ? navigator.userAgent : undefined;
+    };
+
     fluid.contextAware.makeChecks({
         "fluid.browser.platformName": {
             funcName: "fluid.contextAware.browser.getPlatformName"
+        },
+        "fluid.browser.userAgent": {
+            funcName: "fluid.contextAware.browser.getUserAgent"
         }
     });
 
-})(jQuery, fluid_2_0_0);
+})(jQuery, fluid_3_0_0);
