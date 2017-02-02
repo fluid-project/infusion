@@ -49,6 +49,8 @@ For a complete list of Fixes and Improvements see the [Version 2.0](https://issu
 * [Fork on GitHub](https://github.com/fluid-project/infusion)
 * [Download a Build](https://github.com/fluid-project/infusion/releases)
 * [NPM](https://www.npmjs.com/package/infusion)
+* [Use from the CDNJS Content Distribution Network](https://cdnjs.com/libraries/infusion)
+  * To try out Infusion quickly you can use the following `script` tag to include the full framework from the CDN: `<script src='https://cdnjs.cloudflare.com/ajax/libs/infusion/2.0.0/infusion-all.min.js'></script>`
 
 You can create your own custom build of Infusion using the [grunt build script](README.md#how-do-i-create-an-infusion-package).
 

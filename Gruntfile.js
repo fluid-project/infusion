@@ -434,7 +434,7 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask("verifyDists", "Verifies that the expected /dist/*.js files and their source maps were created", function () {
-        grunt.log.writeln("Verifying that expected distribution files are present in /dist directory");
+        grunt.log.subhead("Verifying that expected distribution files are present in /dist directory");
         var missingDistributions = 0;
         var distributions = grunt.config.get("distributions");
         _.forEach(distributions, function (value, distribution) {

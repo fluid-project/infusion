@@ -17,7 +17,8 @@ Infusion includes:
 * [Download a Release](https://github.com/fluid-project/infusion/releases)
 * [Install from NPM](https://www.npmjs.com/package/infusion)
 * [Fork on GitHub](https://github.com/fluid-project/infusion)
-
+* [Use from the CDNJS Content Distribution Network](https://cdnjs.com/libraries/infusion)
+  * To try out Infusion quickly you can use the following `script` tag to include the full framework from the CDN: `<script src='https://cdnjs.cloudflare.com/ajax/libs/infusion/2.0.0/infusion-all.min.js'></script>`
 
 See [How Do I Create an Infusion Package?](#how-do-i-create-an-infusion-package), for details on creating complete or custom packages of Infusion.
 
