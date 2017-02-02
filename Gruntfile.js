@@ -434,29 +434,29 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask("verifyDists", "Verifies that the expected /dist/*.js files and their source maps were created", function () {
-        console.log("Verifying that expected distribution files are present in /dist directory");
+        grunt.log.writeln("Verifying that expected distribution files are present in /dist directory");
         var missingDistributions = 0;
         var distributions = grunt.config.get("distributions");
         _.forEach(distributions, function (value, distribution) {
-            console.log("Distribution \"" + distribution + "\"");
+            grunt.log.subhead("Distribution \"" + distribution + "\"");
             var jsFilename = "infusion-" + distribution + ".js";
             var mapFilename = jsFilename + ".map";
             var expectedFilenames = [jsFilename, mapFilename];
             _.forEach(expectedFilenames, function (expectedFilename) {
                 var fileExists = grunt.file.exists("dist", expectedFilename);
                 if (fileExists) {
-                    console.log("└─╴" + expectedFilename + " - ✓ Present");
+                    grunt.log.oklns("└─╴" + expectedFilename + " - ✓ Present".green);
                 } else {
                     missingDistributions = missingDistributions + 1;
-                    console.log("└─╴" + expectedFilename + " - ✗ Missing");
+                    grunt.log.errorlns("└─╴" + expectedFilename + " - ✗ Missing".red);
                 }
             });
-            console.log("----------");
+            grunt.log.writeln("----------");
         });
         if (missingDistributions > 0) {
             grunt.fail.fatal("Verification failed, " + missingDistributions + " expected /dist files were not found");
         } else {
-            console.log("All expected distribution files present");
+            grunt.log.oklns("All expected distribution files present");
         }
 
     });
