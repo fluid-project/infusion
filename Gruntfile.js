@@ -451,10 +451,10 @@ module.exports = function (grunt) {
                     grunt.log.errorlns("└─╴" + expectedFilename + " - ✗ Missing".red);
                 }
             });
-            grunt.log.writeln("----------");
         });
         if (missingDistributions > 0) {
-            grunt.fail.fatal("Verification failed, " + missingDistributions + " expected /dist files were not found");
+            grunt.log.subhead("Verification failed".red);
+            grunt.fail.fatal(missingDistributions + " expected /dist files were not found");
         } else {
             grunt.log.oklns("All expected distribution files present");
         }
