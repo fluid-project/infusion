@@ -24,36 +24,50 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     //         // Specified by implementor
     //         // text of label to apply to both textfield and control
     //         // via aria-label attribute
-    //         // "aria-label": ""
-    //     },
-    //     components: {
-    //         textfield: {
-    //             type: "fluid.textfieldSlider.textfield",
-    //             container: "{fluid.textfieldButtons}.dom.textfield",
-    //             options: {
-    //                 model: "{fluid.textfieldButtons}.model",
-    //                 range: "{fluid.textfieldButtons}.options.range"
-    //             }
-    //         },
-    //         increaseButton: {
-    //             type: "fluid.stepper.button",
-    //             container: "{fluid.textfieldButtons}.dom.increaseButton",
-    //             options: {
-    //                 coefficient: 1
-    //             }
-    //         },
-    //         decreaseButton: {
-    //             type: "fluid.stepper.button",
-    //             container: "{fluid.textfieldButtons}.dom.decreaseButton",
-    //             options: {
-    //                 coefficient: -1
-    //             }
-    //         }
+    //         // "aria-label": "",
+    //         increaseLabel: "increment",
+    //         decreaseLabel: "decrement"
     //     },
     //     selectors: {
     //         textfield: ".flc-textfieldStepper-field",
     //         increaseButton: ".flc-textfieldStepper-increase",
     //         decreaseButton: ".flc-textfieldStepper-decrease"
+    //     },
+    //     components: {
+    //         increaseButton: {
+    //             type: "fluid.textfieldStepper.button",
+    //             container: "{textfieldStepper}.dom.increaseButton",
+    //             options: {
+    //                 strings: {
+    //                     label: "{textfieldStepper}.options.strings.increaseLabel"
+    //                 },
+    //                 listeners: {
+    //                     "onClick.increase": "{textfieldStepper}.increase"
+    //                 }
+    //             }
+    //         },
+    //         decreaseButton: {
+    //             type: "fluid.textfieldStepper.button",
+    //             container: "{textfieldStepper}.dom.decreaseButton",
+    //             options: {
+    //                 strings: {
+    //                     label: "{textfieldStepper}.options.strings.decreaseLabel"
+    //                 },
+    //                 listeners: {
+    //                     "onClick.increase": "{textfieldStepper}.increase"
+    //                 }
+    //             }
+    //         }
+    //     },
+    //     invokers: {
+    //         increase: {
+    //             funcName: "fluid.textfieldStepper.step",
+    //             args: ["{that}"]
+    //         },
+    //         decrease: {
+    //             funcName: "fluid.textfieldStepper.step",
+    //             args: ["{that}", -1]
+    //         }
     //     },
     //     model: {
     //         value: null
@@ -62,6 +76,7 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     //         min: 0,
     //         max: 100
     //     },
+    //     step: 1,
     //     ariaOptions: {
     //         // Specified by implementor
     //         // ID of an external label to refer to with aria-labelledby
@@ -69,6 +84,13 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
     //         // "aria-labelledby": ""
     //     }
     // });
+    //
+    //
+    // fluid.textfieldStepper.step = function (that, coefficient) {
+    //     coefficient = coefficient || 1;
+    //     var newValue = that.model.value + (coefficient * that.options.step);
+    //     that.applier.change("value", newValue);
+    // };
 
     fluid.defaults("fluid.textfieldStepper.button", {
         gradeNames: ["fluid.viewComponent"],
@@ -103,10 +125,5 @@ var fluid_2_0_0 = fluid_2_0_0 || {};
             }
         }
     });
-
-    fluid.textfieldStepper.button.step = function (that) {
-        var newValue = that.model.value + (that.options.coefficient * that.options.step);
-        that.applier.change("value", newValue);
-    };
 
 })(jQuery, fluid_3_0_0);
