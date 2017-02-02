@@ -41,12 +41,13 @@ var getFromExec = function (command, options) {
 };
 
 /**
- * Rename function for grunt file tasks for  adding ".min" convention in front
- * of minified files; won't do anything to files that already have ".min" in
- * their filename
+ * Rename function for grunt file tasks for  adding ".min" convention
+ * to filename string; won't do anything to strings that already
+ * include ".min"
  * @param {String} dest - supplied by Grunt task, see http://gruntjs.com/configuring-tasks#the-rename-property
  * @param {String} src - supplied by Grunt task, see http://gruntjs.com/configuring-tasks#the-rename-property
- * @param {String} extension - the extension of the file in question ("js" or "css")
+ * @param {String} extension - the extension to put ".min" in front of
+ * (necessary for filenames like foo.js.map, which should produce foo.js.min.map)
 */
 var addMinifyToFilename = function (dest, src, extension) {
     var minifiedExtension = ".min." + extension;
