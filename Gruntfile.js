@@ -82,6 +82,9 @@ module.exports = function (grunt) {
     };
 
     // Base distribution configuration
+    // This should specify only the options for include/exclude;
+    // a parallel "minify" set with options.compress: true
+    // will be generated for the final configuration
     var baseDistributions =
         {
             "all": {},
