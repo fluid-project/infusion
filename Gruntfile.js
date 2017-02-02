@@ -41,21 +41,33 @@ var getFromExec = function (command, options) {
 };
 
 /**
+* Returns the "full extension" of a filename containing
+* multiple periods; common in minified/mapped JS file name
+* conventions, such as "infusion-all.min.js.map"
+* @param {String} filename - the filename to parse
+* @returns {String} the extracted extension such as ".min.js.map"
+*/
+
+var getFullFilenameExtension = function (filename) {
+    var firstPeriod = filename.indexOf(".");
+    return filename.slice(firstPeriod);
+};
+
+/**
  * Rename function for grunt file tasks for  adding ".min" convention
  * to filename string; won't do anything to strings that already
  * include ".min"
  * @param {String} dest - supplied by Grunt task, see http://gruntjs.com/configuring-tasks#the-rename-property
  * @param {String} src - supplied by Grunt task, see http://gruntjs.com/configuring-tasks#the-rename-property
- * @param {String} extension - the extension to put ".min" in front of
- * (necessary for filenames like foo.js.map, which should produce foo.min.js.map)
 */
-var addMinifyToFilename = function (dest, src, extension) {
-    var minifiedExtension = ".min." + extension;
-    // Don't operate on files that already have a .min convention
-    if (src.indexOf(minifiedExtension) > -1) {
+var addMinifyToFilename = function (dest, src) {
+    var fullExtension = getFullFilenameExtension(src);
+    var minifiedExtension = ".min" + fullExtension;
+    // Don't operate on files that already have a .min extension
+    if (fullExtension.indexOf(".min.") > -1) {
         return dest + src;
     } else {
-        return dest + src.replace("." + extension, minifiedExtension);
+        return dest + src.replace(fullExtension, minifiedExtension);
     }
 };
 
@@ -161,7 +173,7 @@ module.exports = function (grunt) {
                     src: "<%= allBuildName %>.*",
                     dest: "dist/",
                     rename: function (dest, src) {
-                        return grunt.config.get("buildSettings.compress") ? addMinifyToFilename(dest, src, "js") : dest + src;
+                        return grunt.config.get("buildSettings.compress") ? addMinifyToFilename(dest, src) : dest + src;
                     }
                 }, {
                     expand: true,
