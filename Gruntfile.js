@@ -440,7 +440,7 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask("verifyDists", "Verifies that the expected /dist/*.js files and their source maps were created", function () {
-        grunt.log.subhead("Verifying that expected distribution files are present in /dist directory");
+        grunt.log.subhead("Verifying that expected distribution JS files are present in /dist directory");
         var missingDistributions = 0;
         var distributions = grunt.config.get("distributions");
         _.forEach(distributions, function (value, distribution) {
@@ -460,10 +460,39 @@ module.exports = function (grunt) {
         });
         if (missingDistributions > 0) {
             grunt.log.subhead("Verification failed".red);
-            grunt.fail.fatal(missingDistributions + " expected /dist files were not found");
+            grunt.fail.fatal(missingDistributions + " expected /dist JS files were not found");
         } else {
             grunt.log.subhead("Verification passed".green);
-            grunt.log.oklns("All expected distribution files present");
+            grunt.log.oklns("All expected distribution JS files present");
+        }
+
+    });
+
+    grunt.registerTask("verifyDistCSS", "Verifies that the expected /dist/ CSS files were created", function () {
+        grunt.log.subhead("Verifying that expected distribution CSS files are present in /dist/assets directory");
+        var missingCSS = 0;
+        var preferencesStylusFiles = grunt.file.expand("src/framework/preferences/css/stylus/*.styl");
+        _.forEach(preferencesStylusFiles, function (stylusFile) {
+            var cssFilename = stylusFile.replace(".styl", ".css");
+            var minifiedCSSFilename = stylusFile.replace(".styl", ".min.css");
+            var expectedFilenames = [cssFilename, minifiedCSSFilename];
+            _.forEach(expectedFilenames, function (expectedFilename) {
+                var fileExists = grunt.file.exists("dist/assets/", expectedFilename.replace("/stylus", ""));
+                if (fileExists) {
+                    grunt.log.oklns("dist/assets/" + expectedFilename + " - ✓ Present".green);
+                } else {
+                    missingCSS = missingCSS + 1;
+                    grunt.log.errorlns("dist/assets/" + expectedFilename + " - ✗ Missing".red);
+                }
+            });
+        });
+
+        if (missingCSS > 0) {
+            grunt.log.subhead("Verification failed".red);
+            grunt.fail.fatal(missingCSS + " expected /dist/assets CSS files were not found");
+        } else {
+            grunt.log.subhead("Verification passed".green);
+            grunt.log.oklns("All expected distribution CSS files present");
         }
 
     });
