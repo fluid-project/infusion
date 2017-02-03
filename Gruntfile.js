@@ -79,44 +79,6 @@ module.exports = function (grunt) {
         });
     };
 
-    // Base distribution configuration
-    // This should specify only the options for include/exclude;
-    // a parallel "minify" set with options.compress: true
-    // will be generated for the final configuration
-    var baseDistributions =
-        {
-            "all": {},
-            "all-no-jquery": {
-                options: {
-                    exclude: "jQuery, jQueryUI"
-                }
-            },
-            "framework": {
-                options: {
-                    include: "framework"
-                }
-            },
-            "framework-no-jquery": {
-                options: {
-                    include: "framework",
-                    exclude: "jQuery, jQueryUI"
-                }
-            }
-        };
-
-    // Create a parallel set of minified configuration distributions
-    var minifiedDistributions = _.transform(_.cloneDeep(baseDistributions), function (accumulator, value, key) {
-        var minKey = key + ".min";
-        accumulator[minKey] = value;
-        var options = accumulator[minKey].options ? accumulator[minKey].options : {};
-        options.compress = true;
-        accumulator[minKey].options = options;
-    }, {});
-
-    // Create final combined distributions object
-    // for use by the initial configuration
-    var combinedDistributions = _.merge(baseDistributions, minifiedDistributions);
-
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
@@ -331,7 +293,50 @@ module.exports = function (grunt) {
                 command: "vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 testem ci --file tests/testem.json'"
             }
         },
-        distributions: combinedDistributions
+        distributions:
+        {
+            "all": {},
+            "all.min": {
+                options: {
+                    compress: true
+                }
+            },
+            "all-no-jquery": {
+                options: {
+                    exclude: "jQuery, jQueryUI"
+                }
+            },
+            "all-no-jquery.min": {
+                options: {
+                    exclude: "jQuery, jQueryUI",
+                    compress: true
+                }
+            },
+            "framework": {
+                options: {
+                    include: "framework"
+                }
+            },
+            "framework.min": {
+                options: {
+                    include: "framework",
+                    compress: true
+                }
+            },
+            "framework-no-jquery": {
+                options: {
+                    include: "framework",
+                    exclude: "jQuery, jQueryUI"
+                }
+            },
+            "framework-no-jquery.min": {
+                options: {
+                    include: "framework",
+                    exclude: "jQuery, jQueryUI",
+                    compress: true
+                }
+            }
+        }
     });
 
     // Load the plugins:
