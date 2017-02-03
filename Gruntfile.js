@@ -485,8 +485,11 @@ module.exports = function (grunt) {
             var mapFilename = jsFilename + ".map";
             expectedFilenames.push(jsFilename, mapFilename);
         });
+
         var report = verifyFiles("dist", expectedFilenames);
+
         processVerifyFilesReport(report);
+
         if (report.missingFiles > 0) {
             grunt.log.subhead("JS verification failed".red);
             grunt.fail.fatal(report.missingFiles + " expected /dist JS files were not found");
