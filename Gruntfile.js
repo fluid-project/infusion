@@ -447,10 +447,10 @@ module.exports = function (grunt) {
             _.forEach(expectedFilenames, function (expectedFilename) {
                 var fileExists = grunt.file.exists("dist", expectedFilename);
                 if (fileExists) {
-                    grunt.log.oklns("└─╴" + expectedFilename + " - ✓ Present".green);
+                    grunt.log.oklns(expectedFilename + " - ✓ Present".green);
                 } else {
                     missingDistributions = missingDistributions + 1;
-                    grunt.log.errorlns("└─╴" + expectedFilename + " - ✗ Missing".red);
+                    grunt.log.errorlns(expectedFilename + " - ✗ Missing".red);
                 }
             });
         });
@@ -458,6 +458,7 @@ module.exports = function (grunt) {
             grunt.log.subhead("Verification failed".red);
             grunt.fail.fatal(missingDistributions + " expected /dist files were not found");
         } else {
+            grunt.log.subhead("Verification passed".green);
             grunt.log.oklns("All expected distribution files present");
         }
 
