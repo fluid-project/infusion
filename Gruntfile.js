@@ -445,10 +445,11 @@ module.exports = function (grunt) {
     * @param {String} dir - base directory expected to contain files
     * @param {Array} fileList - array of string filenames to check; may include
     * full paths and thereby search subdirectories of dir
-    * @returns the number of missing files
+    * @returns a report structure for further processing
     */
     var verifyFiles = function (dir, fileList) {
         var missingFiles = 0;
+        var report = {fileList: {}};
         _.forEach(fileList, function (fileName) {
             var fileExists = grunt.file.exists(dir, fileName);
             if (fileExists) {
@@ -457,13 +458,26 @@ module.exports = function (grunt) {
                 missingFiles = missingFiles + 1;
                 grunt.log.errorlns(fileName + " - ✗ Missing".red);
             }
+            report.fileList[dir + "/" + fileName] = {"present": fileExists};
         });
-        return missingFiles;
+        report.missingFiles = missingFiles;
+
+        return report;
+    };
+
+    var processVerifyFilesReport = function (report) {
+        _.forEach(report.fileList, function (value, fileName) {
+            var fileExists = value.present;
+            if (fileExists) {
+                grunt.log.oklns(fileName + " - ✓ Present".green);
+            } else {
+                grunt.log.errorlns(fileName + " - ✗ Missing".red);
+            }
+        });
     };
 
     grunt.registerTask("verifyDistJS", "Verifies that the expected /dist/*.js files and their source maps were created", function () {
         grunt.log.subhead("Verifying that expected distribution JS files are present in /dist directory");
-        var missing = 0;
         var expectedFilenames = [];
         var distributions = grunt.config.get("distributions");
         _.forEach(distributions, function (value, distribution) {
@@ -471,10 +485,11 @@ module.exports = function (grunt) {
             var mapFilename = jsFilename + ".map";
             expectedFilenames.push(jsFilename, mapFilename);
         });
-        missing = verifyFiles("dist", expectedFilenames);
-        if (missing > 0) {
+        var report = verifyFiles("dist", expectedFilenames);
+        processVerifyFilesReport(report);
+        if (report.missingFiles > 0) {
             grunt.log.subhead("JS verification failed".red);
-            grunt.fail.fatal(missing + " expected /dist JS files were not found");
+            grunt.fail.fatal(report.missingFiles + " expected /dist JS files were not found");
         } else {
             grunt.log.subhead("JS verification passed".green);
             grunt.log.oklns("All expected distribution JS files present");
@@ -484,7 +499,6 @@ module.exports = function (grunt) {
 
     grunt.registerTask("verifyDistCSS", "Verifies that the expected /dist/ CSS files were created", function () {
         grunt.log.subhead("Verifying that expected distribution CSS files are present in /dist/assets directory");
-        var missing = 0;
         var expectedFilenames = [];
         var preferencesStylusFiles = grunt.file.expand("src/framework/preferences/css/stylus/*.styl");
         _.forEach(preferencesStylusFiles, function (stylusFile) {
@@ -494,19 +508,19 @@ module.exports = function (grunt) {
             expectedFilenames.push(cssFilename.replace("/stylus", ""), minifiedCSSFilename.replace("/stylus", ""));
         });
 
-        missing = verifyFiles("dist/assets", expectedFilenames);
-        
-        if (missing > 0) {
+        var report = verifyFiles("dist/assets", expectedFilenames);
+
+        processVerifyFilesReport(report);
+
+        if (report.missingFiles > 0) {
             grunt.log.subhead("CSS verification failed".red);
-            grunt.fail.fatal(missing + " expected /dist/assets CSS files were not found");
+            grunt.fail.fatal(report.missingFiles + " expected /dist/assets CSS files were not found");
         } else {
             grunt.log.subhead("CSS verification passed".green);
             grunt.log.oklns("All expected distribution CSS files present");
         }
 
     });
-
-    grunt.registerTask("verifyDist", ["verifyDistJS", "verifyDistCSS"]);
 
     grunt.registerTask("cleanForDist", ["clean:build", "clean:products", "clean:stylus", "clean:stylusDist", "clean:ciArtifacts"]);
     grunt.registerTask("buildStylus", ["clean:stylus", "stylus:compile"]);
