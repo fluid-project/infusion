@@ -44,15 +44,15 @@ For a complete list of Fixes and Improvements see the [Version 2.0](https://issu
 * No more distinction between fast and dynamic invokers
 * Model Relay specific component grades have been removed, model relay now works with any model grade.
 
-## Obtaining Infusion ##
+## How Do I Get Infusion? ##
 
+* [Download a Release](https://github.com/fluid-project/infusion/releases)
+* [Install from NPM](https://www.npmjs.com/package/infusion)
 * [Fork on GitHub](https://github.com/fluid-project/infusion)
-* [Download a Build](https://github.com/fluid-project/infusion/releases)
-* [NPM](https://www.npmjs.com/package/infusion)
 * [Use from the CDNJS Content Distribution Network](https://cdnjs.com/libraries/infusion)
   * To try out Infusion quickly you can use the following `script` tag to include the full framework from the CDN: `<script src='https://cdnjs.cloudflare.com/ajax/libs/infusion/2.0.0/infusion-all.min.js'></script>`
 
-You can create your own custom build of Infusion using the [grunt build script](README.md#how-do-i-create-an-infusion-package).
+See [How Do I Create an Infusion Package?](#how-do-i-create-an-infusion-package), for details on creating complete or custom packages of Infusion.
 
 ## Demos ##
 
