@@ -47,7 +47,6 @@ var getFromExec = function (command, options) {
 * @param {String} filename - the filename to parse
 * @returns {String} the extracted extension such as ".min.js.map"
 */
-
 var getFullFilenameExtension = function (filename) {
     var firstPeriod = filename.indexOf(".");
     return filename.slice(firstPeriod);
