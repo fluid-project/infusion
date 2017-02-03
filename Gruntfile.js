@@ -434,12 +434,13 @@ module.exports = function (grunt) {
             "lint",
             "distributions" + ( target ? ":" + target : "" ),
             "cleanForDist",
-            "verifyDists"
+            "verifyDistJS",
+            "verifyDistCSS"
         ];
         grunt.task.run(tasks);
     });
 
-    grunt.registerTask("verifyDists", "Verifies that the expected /dist/*.js files and their source maps were created", function () {
+    grunt.registerTask("verifyDistJS", "Verifies that the expected /dist/*.js files and their source maps were created", function () {
         grunt.log.subhead("Verifying that expected distribution JS files are present in /dist directory");
         var missingDistributions = 0;
         var distributions = grunt.config.get("distributions");
@@ -459,10 +460,10 @@ module.exports = function (grunt) {
             });
         });
         if (missingDistributions > 0) {
-            grunt.log.subhead("Verification failed".red);
+            grunt.log.subhead("JS verification failed".red);
             grunt.fail.fatal(missingDistributions + " expected /dist JS files were not found");
         } else {
-            grunt.log.subhead("Verification passed".green);
+            grunt.log.subhead("JS verification passed".green);
             grunt.log.oklns("All expected distribution JS files present");
         }
 
@@ -488,10 +489,10 @@ module.exports = function (grunt) {
         });
 
         if (missingCSS > 0) {
-            grunt.log.subhead("Verification failed".red);
+            grunt.log.subhead("CSS verification failed".red);
             grunt.fail.fatal(missingCSS + " expected /dist/assets CSS files were not found");
         } else {
-            grunt.log.subhead("Verification passed".green);
+            grunt.log.subhead("CSS verification passed".green);
             grunt.log.oklns("All expected distribution CSS files present");
         }
 
