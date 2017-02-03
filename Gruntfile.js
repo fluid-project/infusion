@@ -41,15 +41,21 @@ var getFromExec = function (command, options) {
 };
 
 /**
-* Returns the "full extension" of a filename containing
-* multiple periods; common in minified/mapped JS file name
-* conventions, such as "infusion-all.min.js.map"
-* @param {String} filename - the filename to parse
-* @returns {String} the extracted extension such as ".min.js.map"
-*/
-var getFullFilenameExtension = function (filename) {
-    var firstPeriod = filename.indexOf(".");
-    return filename.slice(firstPeriod);
+ * Adds '.min' convention in front of the first period of a filename string
+ * Example results:
+ * infusion-all.js -> infusion-all.min.js
+ * infusion-all.js.map -> infusion-all.min.js.map
+ * @param {String} fileName - filename string to add '.min' to
+ * @returns the modified filename string
+ */
+var addMin = function (fileName) {
+    var segs = fileName.split(".");
+    var min = "min";
+
+    if (segs[0] && segs.indexOf(min) < 0 ) {
+        segs.splice(1, 0, min);
+    }
+    return segs.join(".");
 };
 
 /**
@@ -60,14 +66,7 @@ var getFullFilenameExtension = function (filename) {
  * @param {String} src - supplied by Grunt task, see http://gruntjs.com/configuring-tasks#the-rename-property
 */
 var addMinifyToFilename = function (dest, src) {
-    var fullExtension = getFullFilenameExtension(src);
-    var minifiedExtension = ".min" + fullExtension;
-    // Don't operate on files that already have a .min extension
-    if (fullExtension.indexOf(".min.") > -1) {
-        return dest + src;
-    } else {
-        return dest + src.replace(fullExtension, minifiedExtension);
-    }
+    return dest + addMin(src);
 };
 
 module.exports = function (grunt) {
