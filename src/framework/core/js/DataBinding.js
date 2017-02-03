@@ -578,8 +578,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 segs: sourceSegs,
                 transactional: options.transactional
             }, sourceListener);
-            fluid.log(fluid.logLevel.TRACE, "Adding relay listener with listenerId " + spec.listenerId + " to source applier with id " +
-                sourceApplier.applierId + " from target applier with id " + applierId + " for target component with id " + target.id);
+            if (fluid.passLogLevel(fluid.logLevel.TRACE)) {
+                fluid.log(fluid.logLevel.TRACE, "Adding relay listener with listenerId " + spec.listenerId + " to source applier with id " +
+                    sourceApplier.applierId + " from target applier with id " + applierId + " for target component with id " + target.id);
+            }
         }
         if (source) { // TODO - we actually may require to register on THREE sources in the case modelRelay is attached to a
             // component which is neither source nor target. Note there will be problems if source, say, is destroyed and recreated,
