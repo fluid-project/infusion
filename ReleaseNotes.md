@@ -52,7 +52,7 @@ For a complete list of Fixes and Improvements see the [Version 2.0](https://issu
 * [Use from the CDNJS Content Distribution Network](https://cdnjs.com/libraries/infusion)
   * To try out Infusion quickly you can use the following `script` tag to include the full framework from the CDN: `<script src='https://cdnjs.cloudflare.com/ajax/libs/infusion/2.0.0/infusion-all.min.js'></script>`
 
-See [How Do I Create an Infusion Package?](#how-do-i-create-an-infusion-package), for details on creating complete or custom packages of Infusion.
+See [How Do I Create an Infusion Package?](README.md#how-do-i-create-an-infusion-package), for details on creating complete or custom packages of Infusion.
 
 ## Demos ##
 
