@@ -72,7 +72,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.module("Textfield Control Tests");
 
         fluid.defaults("fluid.tests.textfieldControl", {
-            gradeNames: ["fluid.tests.textfieldControl", "fluid.textfieldControl"],
+            gradeNames: ["fluid.textfieldControl"],
             strings: {
                 "aria-label": "Aria self-labeling"
             },

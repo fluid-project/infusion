@@ -21,6 +21,7 @@
     <script type="text/javascript" src="../../src/components/tooltip/js/Tooltip.js"></script>
     <script type="text/javascript" src="../../src/components/textfieldControl/js/TextfieldControl.js"></script>
     <script type="text/javascript" src="../../src/components/textfieldControl/js/TextfieldSlider.js"></script>
+    <script type="text/javascript" src="../../src/components/textfieldControl/js/textfieldStepper.js"></script>
 
     <!-- required for the Overview Panel -->
     <script type="text/javascript" src="../../src/framework/core/js/FluidDOMUtilities.js"></script>
@@ -49,6 +50,31 @@
 
             <script type="text/javascript">
                 fluid.textfieldSlider(".flc-textfieldSlider", {
+                    strings: {
+                        "aria-label": "Textfield Slider"
+                    },
+                    model: {
+                        value: 7
+                    },
+                    range: {
+                        min: 0,
+                        max: 10
+                    }
+                });
+            </script>
+
+            <h2>Textfield Stepper</h2>
+            <div class="flc-textfieldStepper">
+                <button class="flc-textfieldStepper-decrease">-</button>
+                <input aria-labelledby="text-size-label" class="flc-textfieldStepper-field" type="text">
+                <button class="flc-textfieldStepper-increase">+</button>
+            </div>
+
+            <script type="text/javascript">
+                fluid.textfieldStepper(".flc-textfieldStepper", {
+                    strings: {
+                        "aria-label": "Textfield Stepper"
+                    },
                     model: {
                         value: 7
                     },
