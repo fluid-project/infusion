@@ -128,6 +128,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // to provide a label for the button.
             // label: ""
         },
+        styles: {
+            container: "fl-textfieldStepper-button"
+        },
         model: {
             disabled: false
         },
@@ -144,6 +147,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "this": "{that}.container",
                 method: "attr",
                 args: ["aria-label", "{that}.options.strings.label"]
+            },
+            "onCreate.addContainerStyle": {
+                "this": "{that}.container",
+                method: "addClass",
+                args: ["{that}.options.styles.container"]
             }
         },
         modelListeners: {

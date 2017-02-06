@@ -22,13 +22,6 @@
     margin: 0 1rem;
 }
 
-/* enlarge text inside of button, and position in the middle */
-.fl-textfieldStepper .fl-textfieldStepper-button > * {
-    font-size: 3.5rem;
-    display: inline-block;
-    margin-top: -1rem;
-}
-
 .fl-textfieldStepper .fl-textfieldStepper-button:disabled {
     opacity: 0.3;
 }
