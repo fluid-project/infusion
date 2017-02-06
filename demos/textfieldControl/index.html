@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="../lib/foundation/css/foundation.css" />
     <link rel="stylesheet" type="text/css" href="../../src/framework/core/css/fluid.css" />
     <link rel="stylesheet" type="text/css" href="../../src/components/textfieldControl/css/TextfieldSlider.css" />
+    <link rel="stylesheet" type="text/css" href="../../src/components/textfieldControl/css/textfieldStepper.css" />
     <link rel="stylesheet" type="text/css" href="../../src/components/overviewPanel/css/OverviewPanel.css" />
     <link rel="stylesheet" type="text/css" href="css/textfieldControlDemo.css" />
 
@@ -65,9 +66,11 @@
 
             <h2>Textfield Stepper</h2>
             <div class="flc-textfieldStepper">
-                <button class="flc-textfieldStepper-decrease">-</button>
-                <input aria-labelledby="text-size-label" class="flc-textfieldStepper-field" type="text">
-                <button class="flc-textfieldStepper-increase">+</button>
+                <span class="demo-smallIcon">A</span>
+                <button class="flc-textfieldStepper-decrease fl-textfieldStepper-button"><span>-</span></button>
+                <input aria-labelledby="text-size-label" class="flc-textfieldStepper-field fl-textfieldStepper-textField" type="text">
+                <button class="flc-textfieldStepper-increase fl-textfieldStepper-button"><span>+</span></button>
+                <span class="demo-largeIcon">A</span>
             </div>
 
             <script type="text/javascript">
@@ -76,11 +79,11 @@
                         "aria-label": "Textfield Stepper"
                     },
                     model: {
-                        value: 7
+                        value: 100
                     },
                     range: {
                         min: 0,
-                        max: 10
+                        max: 100
                     }
                 });
             </script>

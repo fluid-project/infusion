@@ -34,6 +34,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             increaseButton: ".flc-textfieldStepper-increase",
             decreaseButton: ".flc-textfieldStepper-decrease"
         },
+        styles: {
+            container: "fl-textfieldStepper fl-focus"
+        },
         components: {
             increaseButton: {
                 type: "fluid.textfieldStepper.button",
@@ -86,6 +89,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             decrease: {
                 funcName: "fluid.textfieldStepper.step",
                 args: ["{that}", -1]
+            }
+        },
+        listeners: {
+            "onCreate.addContainerStyle": {
+                "this": "{that}.container",
+                method: "addClass",
+                args: ["{that}.options.styles.container"]
             }
         },
         model: {
