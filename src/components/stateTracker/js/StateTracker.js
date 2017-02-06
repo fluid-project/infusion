@@ -19,7 +19,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.modelComponent"],
         members: {
             // default polling frequency in msec.
-            interval: 10
+            interval: 10,
+            // reference to timer returned by setInterval()
+            intervalID: -1
         },
         invokers: {
             startTracking: {
@@ -29,8 +31,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             stopTracking: {
                 funcName: "fluid.stateTracker.stopTracking",
-                args: ["{arguments}.0"]
-                       //intervalID
+                args: ["{that}"]
             },
             evaluateChange: {
                 funcName: "fluid.notImplemented"
@@ -42,22 +43,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Initiate polling.
      * @psrsm that {Component} An instance of fluid.stateTracker
      * @param interval {Number} optional delay between calls to check the state's current value (msec).
-     * @return {Number}the intervalID.
      */
     fluid.stateTracker.startTracking = function (that, interval) {
         if (interval) {
             that.interval = interval;
         }
-        return setInterval(function () {that.evaluateChange();}, that.interval);
+        that.intervalID = setInterval(function () {that.evaluateChange();}, that.interval);
     };
 
     /**
      * Stop polling.
      * @psrsm that {Component} An instance of fluid.stateTracker
-     * @param intervalID {Object} the interval to clear.
      */
-    fluid.stateTracker.stopTracking = function (intervalID) {
-        clearInterval(intervalID);
+    fluid.stateTracker.stopTracking = function (that) {
+        clearInterval(that.intervalID);
+        that.intervalID = -1;
     };
 
 })(jQuery, fluid_3_0_0);

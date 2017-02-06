@@ -24,7 +24,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.defaults("fluid.tests.checkboxTracker", {
             gradeNames: ["fluid.stateTracker"],
             members: {
-                checkbox: null
+                checkbox: null,
+                numStateChanges: 0
             },
             model: {
                 checkboxState: undefined
@@ -33,7 +34,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 checkboxState : {
                     funcName: "fluid.tests.checkboxTracker.countStateChanges",
                     excludeSource: "init",
-                    args: []
+                    args: ["{that}"]
                 }
             },
             invokers: {
@@ -44,12 +45,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         });
 
-        // Handler for when state changes -- count the number of changes.
-        stateTrackerTests.numStateChanges = 0;
-        fluid.tests.checkboxTracker.countStateChanges = function () {
-            stateTrackerTests.numStateChanges++;
+        /**
+         * Model listener for state changes:  Count the number of times the
+         * test checkbox switches from "checked" to "unchecked" and vice versa.
+         * @psrsm that {Component} An instance of fluid.tests.checkboxTracker
+         */
+        fluid.tests.checkboxTracker.countStateChanges = function (that) {
+            that.numStateChanges++;
         };
 
+        /**
+         * Evaluate whether the state being tracked has changed; here, whether
+         * the test checkbox has switched from "checked" to "unchecked" or vice
+         * versa.
+         * @psrsm that {Component} An instance of fluid.tests.checkboxTracker
+         */
         fluid.tests.checkboxTracker.evaluateChange = function (that) {
             if (that.model.checkboxState !== that.checkbox.checked) {
                 that.applier.change("checkboxState", that.checkbox.checked);
@@ -71,22 +81,43 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             });
         };
 
-        // Change the state of the checkbox, but with a delay.  Record the
-        // number of times the change was made.
-        stateTrackerTests.numCallsToChangeState = 0;
-        stateTrackerTests.changeStateWithDelay = function (delay) {
+        // Object outside of the tracker that changes the state of the checkbox.
+        // Simulates clicking on the checkbox.
+        fluid.defaults("fluid.tests.checkboxManipulator", {
+            gradeNames: ["fluid.component"],
+            members: {
+                numCallsToChangeState: 0
+            },
+            invokers: {
+                changeStateWithDelay: {
+                    funcName: "fluid.tests.stateTracker.changeStateWithDelay",
+                    args: ["{that}", "{arguments}.0"]
+                                     // delay in msec.
+                }
+            }
+        });
+
+        /**
+         * Simulate a user clicking on the test checkbox to check/uncheck it.
+         * @psrsm that {Component}  An instance of fluid.tests.checkboxManipulator
+         * @param delay {Number}    Delay in msec before changing the checkbox.
+         */
+        fluid.tests.stateTracker.changeStateWithDelay = function (that, delay) {
             setTimeout (function () {
                 stateTrackerTests.checkbox.checked = !stateTrackerTests.checkbox.checked;
-                stateTrackerTests.numCallsToChangeState++;
+                that.numCallsToChangeState++;
             }, delay);
         };
 
         jqUnit.test("Test Initialize", function () {
-            jqUnit.expect(4);
+            jqUnit.expect(5);
             var stateTracker = fluid.tests.createCheckboxTracker(stateTrackerTests.checkbox);
             jqUnit.assertNotNull("State tracker instance", stateTracker);
             jqUnit.assertEquals(
                 "State tracker's polling interval", 10, stateTracker.interval
+            );
+            jqUnit.assertEquals(
+                "State tracker's intervalID", -1, stateTracker.intervalID
             );
             jqUnit.assertEquals(
                 "Tracking test checkbox",
@@ -101,124 +132,118 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.test("Test tracking setup, default interval", function () {
-            jqUnit.expect(4);
+            jqUnit.expect(5);
             var stateTracker = fluid.tests.createCheckboxTracker(stateTrackerTests.checkbox);
             jqUnit.assertNotNull("State tracker instance", stateTracker);
-
-            stateTrackerTests.numStateChanges = 0;
-            var intervalID = stateTracker.startTracking();
-            jqUnit.assertNotEquals("Tracking id", -1, intervalID);
+            stateTracker.startTracking();
+            jqUnit.assertNotEquals("Tracking id", -1, stateTracker.intervalID);
             jqUnit.assertEquals(
                 "Interval value", 10, stateTracker.interval
             );
             jqUnit.assertEquals(
-                "State change detection", 0, stateTrackerTests.numStateChanges
+                "State change detection", 0, stateTracker.numStateChanges
             );
-            stateTracker.stopTracking(intervalID);
+            stateTracker.stopTracking();
+            jqUnit.assertEquals(
+                "Tracking ID", -1, stateTracker.intervalID
+            );
         });
 
         jqUnit.test("Test tracking setup, 100 msec interval", function () {
-            jqUnit.expect(4);
+            jqUnit.expect(5);
             var stateTracker = fluid.tests.createCheckboxTracker(stateTrackerTests.checkbox);
             jqUnit.assertNotNull("State tracker instance", stateTracker);
-
             stateTrackerTests.numStateChanges = 0;
             var interval = 100; // msec
-            var intervalID = stateTracker.startTracking(interval);
+            stateTracker.startTracking(interval);
 
-            jqUnit.assertNotEquals("Tracking id", -1, intervalID);
+            jqUnit.assertNotEquals("Tracking id", -1, stateTracker.intervalID);
             jqUnit.assertEquals(
                 "Interval value", interval, stateTracker.interval
             );
             jqUnit.assertEquals(
-                "State change detection", 0, stateTrackerTests.numStateChanges
+                "State change detection", 0, stateTracker.numStateChanges
             );
-            stateTracker.stopTracking(intervalID);
+            stateTracker.stopTracking();
+            jqUnit.assertEquals(
+                "Tracking ID", -1, stateTracker.intervalID
+            );
         });
-
 
         jqUnit.asyncTest("Test tracking, default interval", function () {
             jqUnit.expect(1);
-
-            stateTrackerTests.numStateChanges = 0;
-            stateTrackerTests.numCallsToChangeState = 0;
             var checkboxTracker = fluid.tests.createCheckboxTracker(stateTrackerTests.checkbox);
-            var intervalID = checkboxTracker.startTracking();
+            var manipulator = fluid.tests.checkboxManipulator();
+            checkboxTracker.startTracking();
             checkboxTracker.applier.modelChanged.addListener("checkboxState", function () {
                 // Below this addListener() block are three calls to change
                 // the "checked" state of the test checkbox.
-                if (stateTrackerTests.numCallsToChangeState === 3) {
+                if (manipulator.numCallsToChangeState === 3) {
                     jqUnit.assertEquals(
                         "State change detection",
-                        stateTrackerTests.numCallsToChangeState,
-                        stateTrackerTests.numStateChanges
+                        manipulator.numCallsToChangeState,
+                        checkboxTracker.numStateChanges
                     );
                     jqUnit.start();
-                    checkboxTracker.stopTracking(intervalID);
+                    checkboxTracker.stopTracking();
                 }
             });
-            // Change the state three times, and see if it's detected.  Space
+            // Change the state three times, and see if they're detected.  Space
             // the changes by at least the tracker's polling interval.
             var delay = 200;
-            stateTrackerTests.changeStateWithDelay(delay);
+            manipulator.changeStateWithDelay(delay);
             delay += checkboxTracker.interval;
-            stateTrackerTests.changeStateWithDelay(delay);
+            manipulator.changeStateWithDelay(delay);
             delay += checkboxTracker.interval;
-            stateTrackerTests.changeStateWithDelay(delay);
+            manipulator.changeStateWithDelay(delay);
         });
 
         jqUnit.asyncTest("Test tracking, 100 msec interval", function () {
             jqUnit.expect(1);
-
-            stateTrackerTests.numStateChanges = 0;
-            stateTrackerTests.numCallsToChangeState = 0;
             var checkboxTracker = fluid.tests.createCheckboxTracker(stateTrackerTests.checkbox);
+            var manipulator = fluid.tests.checkboxManipulator();
             var interval = 100;
-            var intervalID = checkboxTracker.startTracking(interval);
-
+            checkboxTracker.startTracking(interval);
             checkboxTracker.applier.modelChanged.addListener("checkboxState", function () {
                 // Below this listener are three calls to change the "checked"
                 // state of the test checkbox.
-                if (stateTrackerTests.numCallsToChangeState === 3) {
+                if (manipulator.numCallsToChangeState === 3) {
                     jqUnit.assertEquals(
                         "State change detection",
-                        stateTrackerTests.numCallsToChangeState,
-                        stateTrackerTests.numStateChanges
+                        manipulator.numCallsToChangeState,
+                        checkboxTracker.numStateChanges
                     );
                     jqUnit.start();
-                    checkboxTracker.stopTracking(intervalID);
+                    checkboxTracker.stopTracking();
                 }
             });
             // Change the state three times, and see if it's detected.  Space
             // the changes by at least msec.
             var delay = 200;
-            stateTrackerTests.changeStateWithDelay(delay);
+            manipulator.changeStateWithDelay(delay);
             delay += interval;
-            stateTrackerTests.changeStateWithDelay(delay);
+            manipulator.changeStateWithDelay(delay);
             delay += interval;
-            stateTrackerTests.changeStateWithDelay(delay);
+            manipulator.changeStateWithDelay(delay);
         });
 
         jqUnit.asyncTest("Test tracking limitation, 100 msec interval", function () {
             jqUnit.expect(1);
-
-            stateTrackerTests.numStateChanges = 0;
-            stateTrackerTests.numCallsToChangeState = 0;
             var checkboxTracker = fluid.tests.createCheckboxTracker(stateTrackerTests.checkbox);
+            var manipulator = fluid.tests.checkboxManipulator();
             var interval = 100;
-
-            var intervalID = checkboxTracker.startTracking(interval);
+            checkboxTracker.startTracking(interval);
             checkboxTracker.applier.modelChanged.addListener("checkboxState", function () {
                 // Below this addListener() block are three calls to change the
                 // "checked" state of the test checkbox.
-                if (stateTrackerTests.numCallsToChangeState === 3) {
+                if (manipulator.numCallsToChangeState === 3) {
                     jqUnit.assertNotEquals(
                         "State change detection failure",
-                        stateTrackerTests.numCallsToChangeState,
-                        stateTrackerTests.numStateChanges
+                        manipulator.numCallsToChangeState,
+                        checkboxTracker.numStateChanges
                     );
                     jqUnit.start();
-                    checkboxTracker.stopTracking(intervalID);
+                    checkboxTracker.stopTracking();
                 }
             });
             // Change the state three times, and see if it's detected.  The
@@ -226,11 +251,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // shows a limitation of the technique:  Not all of the changes will
             // be tracked.
             var delay = 25;
-            stateTrackerTests.changeStateWithDelay(delay);
+            manipulator.changeStateWithDelay(delay);
             delay += delay;
-            stateTrackerTests.changeStateWithDelay(delay);
+            manipulator.changeStateWithDelay(delay);
             delay += delay;
-            stateTrackerTests.changeStateWithDelay(delay);
+            manipulator.changeStateWithDelay(delay);
         });
     });
 })(jQuery);
