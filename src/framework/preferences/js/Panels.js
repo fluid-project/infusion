@@ -695,7 +695,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     range: "{fluid.prefs.panel.textSize}.options.range",
                     step: "{fluid.prefs.panel.textSize}.options.step",
                     ariaOptions: {
-                        "aria-labelledby": "{textSize}.options.panelOptions.labelId"
+                        "aria-labelledby": "{fluid.prefs.panel.textSize}.options.panelOptions.labelId"
                     }
                 }
             }
@@ -773,7 +773,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "fluid.prefs.lineSpace": {
                 "model.lineSpace": "default",
                 "range.min": "minimum",
-                "range.max": "maximum"
+                "range.max": "maximum",
+                "step": "divisibleBy"
             }
         },
         // The default model values represent both the expected format as well as the setting to be applied in the absence of values passed down to the component.
@@ -791,18 +792,22 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         selectorsToIgnore: ["lineSpace"],
         components: {
-            textfieldSlider: {
-                type: "fluid.textfieldSlider",
+            textfieldStepper: {
+                type: "fluid.textfieldStepper",
                 container: "{that}.dom.lineSpace",
                 createOnEvent: "afterRender",
                 options: {
                     model: {
                         value: "{fluid.prefs.panel.lineSpace}.model.lineSpace"
                     },
+                    strings: {
+                        increaseLabel: "{fluid.prefs.panel.lineSpace}.msgLookup.increaseLabel",
+                        decreaseLabel: "{fluid.prefs.panel.lineSpace}.msgLookup.decreaseLabel"
+                    },
                     range: "{fluid.prefs.panel.lineSpace}.options.range",
-                    sliderOptions: "{fluid.prefs.panel.lineSpace}.options.sliderOptions",
+                    step: "{fluid.prefs.panel.lineSpace}.options.step",
                     ariaOptions: {
-                        "aria-labelledby": "{lineSpace}.options.panelOptions.labelId"
+                        "aria-labelledby": "{fluid.prefs.panel.lineSpace}.options.panelOptions.labelId"
                     }
                 }
             }
@@ -816,11 +821,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             multiplier: {messagekey: "multiplier"},
             lineSpaceDescr: {messagekey: "lineSpaceDescr"}
-        },
-        sliderOptions: {
-            orientation: "horizontal",
-            step: 0.1,
-            range: "min"
         },
         panelOptions: {
             labelId: "lineSpace-label-" + fluid.allocateGuid()
