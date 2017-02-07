@@ -1,5 +1,6 @@
 /* General Preferences Editor styles, used for all layouts */
 
+// Helpers
 @import "utils/Helpers"
 @import "utils/Themes"
 
@@ -231,6 +232,34 @@
         input:focus ~ label {
             outline: 2px solid black;
         }
+    }
+
+    // Stepper
+    // Custom styling for the textfield stepper when used in the prefs framework
+
+    .fl-textfieldStepper {
+        display: flex;
+        align-items: center;
+    }
+
+    .fl-textfieldStepper .fl-textfieldStepper-textField {
+        margin: 0 -0.5rem;
+        width: 5rem;
+        height: 2rem;
+        text-align: center;
+    }
+
+    .fl-textfieldStepper .fl-textfieldStepper-button {
+        border: 2px solid #000000;
+        border-radius: 0.4rem;
+        background-color: #FFFFFF;
+        height: 2.4375rem;
+        width: 2.4375rem;
+        margin: 0 1rem;
+    }
+
+    .fl-textfieldStepper .fl-textfieldStepper-button:disabled {
+        opacity: 0.3;
     }
 
     // ON/OFF Switch for checkboxes

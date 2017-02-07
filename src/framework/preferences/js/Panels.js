@@ -661,7 +661,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "fluid.prefs.textSize": {
                 "model.textSize": "default",
                 "range.min": "minimum",
-                "range.max": "maximum"
+                "range.max": "maximum",
+                "step": "divisibleBy"
             }
         },
         // The default model values represent both the expected format as well as the setting to be applied in the absence of values passed down to the component.
@@ -679,8 +680,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         selectorsToIgnore: ["textSize"],
         components: {
-            textfieldSlider: {
-                type: "fluid.textfieldSlider",
+            textfieldStepper: {
+                type: "fluid.textfieldStepper",
                 container: "{that}.dom.textSize",
                 createOnEvent: "afterRender",
                 options: {
@@ -688,7 +689,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         value: "{fluid.prefs.panel.textSize}.model.textSize"
                     },
                     range: "{fluid.prefs.panel.textSize}.options.range",
-                    sliderOptions: "{fluid.prefs.panel.textSize}.options.sliderOptions",
+                    step: "{fluid.prefs.panel.textSize}.options.step",
                     ariaOptions: {
                         "aria-labelledby": "{textSize}.options.panelOptions.labelId"
                     }
@@ -704,11 +705,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             multiplier: {messagekey: "multiplier"},
             textSizeDescr: {messagekey: "textSizeDescr"}
-        },
-        sliderOptions: {
-            orientation: "horizontal",
-            step: 0.1,
-            range: "min"
         },
         panelOptions: {
             labelId: "textSize-label-" + fluid.allocateGuid()
