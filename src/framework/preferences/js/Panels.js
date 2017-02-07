@@ -688,6 +688,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     model: {
                         value: "{fluid.prefs.panel.textSize}.model.textSize"
                     },
+                    strings: {
+                        increaseLabel: "{fluid.prefs.panel.textSize}.msgLookup.increaseLabel",
+                        decreaseLabel: "{fluid.prefs.panel.textSize}.msgLookup.decreaseLabel"
+                    },
                     range: "{fluid.prefs.panel.textSize}.options.range",
                     step: "{fluid.prefs.panel.textSize}.options.step",
                     ariaOptions: {
