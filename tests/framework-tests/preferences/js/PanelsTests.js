@@ -1266,7 +1266,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test the text sizer settings panel",
             tests: [{
-                expect: 3,
+                expect: 1,
                 name: "Test the rendering of the text size panel",
                 sequence: [{
                     func: "fluid.tests.changeInput",
@@ -1276,9 +1276,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["textSize", "{textSize}.model", "{that}.options.testOptions.newValue"],
                     spec: {path: "textSize", priority: "last"},
                     changeEvent: "{textSize}.applier.modelChanged"
-                }, {
-                    func: "fluid.tests.testTextFieldSliderAriaLabelledBy",
-                    args: ["{textSize}"]
                 }]
             }]
         }]
@@ -1332,7 +1329,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test the line space settings panel",
             tests: [{
-                expect: 3,
+                expect: 1,
                 name: "Test the rendering of the line space panel",
                 sequence: [
                     {
@@ -1343,27 +1340,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         args: ["lineSpace", "{lineSpace}.model", "{that}.options.testOptions.newValue"],
                         spec: {path: "lineSpace", priority: "last"},
                         changeEvent: "{lineSpace}.applier.modelChanged"
-                    },
-                    {
-                        func: "fluid.tests.testTextFieldSliderAriaLabelledBy",
-                        args: ["{lineSpace}"]
                     }
                 ]
             }]
         }]
     });
-
-    // Used for testing aria-labelledby application of panels using
-    // the textfieldSlider component, which needs to apply a single
-    // label to both the slider and the textfield
-    fluid.tests.testTextFieldSliderAriaLabelledBy = function (panel) {
-        var labelId = panel.locate("label").attr("id");
-        var sliderAriaLabelledby = panel.textfieldSlider.slider.container.attr("aria-labelledby");
-        var textfieldAriaLabelledby = panel.textfieldSlider.textfield.container.attr("aria-labelledby");
-
-        jqUnit.assertEquals("textfieldSlider slider element has aria-labelledby attribute matching the panel label", labelId, sliderAriaLabelledby);
-        jqUnit.assertEquals("textfieldSlider textfield element has aria-labelledby attribute matching the panel label", labelId, textfieldAriaLabelledby);
-    };
 
     /*******************************************************************************
      * layoutPanel

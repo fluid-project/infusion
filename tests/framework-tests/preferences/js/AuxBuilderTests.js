@@ -678,6 +678,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             min: 1,
                             max: 2
                         },
+                        step: 0.1,
                         messageBase: "{messageLoader}.resources.fluid_prefs_panel_textSize.resourceText",
                         resources: {
                             template: "templateLoader.resources.fluid_prefs_panel_textSize"
@@ -825,6 +826,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     min: 1,
                                     max: 2
                                 },
+                                step: 0.1,
                                 messageBase: "{messageLoader}.resources.fluid_prefs_panel_textSize.resourceText",
                                 resources: {
                                     template: "templateLoader.resources.fluid_prefs_panel_textSize"
@@ -991,6 +993,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     min: 1,
                                     max: 2
                                 },
+                                step: 0.1,
                                 messageBase: "{messageLoader}.resources.fluid_prefs_panel_textSize.resourceText",
                                 resources: {
                                     template: "templateLoader.resources.fluid_prefs_panel_textSize"
