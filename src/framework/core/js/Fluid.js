@@ -829,9 +829,8 @@ var fluid = fluid || fluid_3_0_0;
     /**
      * Derived from AGK's stack overflow answer ( http://stackoverflow.com/a/12830454 )
      *
-     * Rounds the supplied number to at most the number of digits in the scale.
-     * If the scale is invalid (i.e falsey, not a number, negative value), it is treated as 0 and will
-     * round to the integer.
+     * Rounds the supplied number to at most the number of decimal places indicated by the scale, omiting any trailing 0s.
+     * If the scale is invalid (i.e falsey, not a number, negative value), it is treated as 0.
      * If the scale is a floating point number, it is rounded to an integer.
      *
      * @param {number} num - the number to be rounded
