@@ -826,6 +826,29 @@ var fluid = fluid || fluid_3_0_0;
         return isFinite(string) && ((string % 1) === 0) ? Number(string) : NaN;
     };
 
+    /**
+     * Derived from AGK's stack overflow answer ( http://stackoverflow.com/a/12830454 )
+     *
+     * Rounds the supplied number to at most the number of digits in the scale.
+     * If the scale is invalid (i.e falsey, not a number, negative value), it is treated as 0 and will
+     * round to the integer.
+     * If the scale is a floating point number, it is rounded to an integer.
+     *
+     * @param {number} num - the number to be rounded
+     * @param {number} scale - the maximum number of decimal places to round to.
+     * @return {number} The num value rounded to the specified number of decimal places.
+     */
+    fluid.roundToDecimal = function (num, scale) {
+        // treat invalid scales as 0
+        scale = scale && scale >= 0 ? Math.round(scale) : 0;
+        var number = Math.round(num * Math.pow(10, scale)) / Math.pow(10, scale);
+        if (num - number > 0) {
+            return (number + Math.floor(2 * Math.round((num - number) * Math.pow(10, (scale + 1))) / 10) / Math.pow(10, scale));
+        } else {
+            return number;
+        }
+    };
+
     /** Calls Object.freeze at each level of containment of the supplied object
      * @return The supplied argument, recursively frozen
      */

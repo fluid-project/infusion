@@ -230,6 +230,29 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
+    fluid.tests.roundToDecimalTests = [
+        {num: 1.555, scale: 5, expected: 1.555},
+        {num: 1.555, scale: 4, expected: 1.555},
+        {num: 1.555, scale: 3, expected: 1.555},
+        {num: 1.555, scale: 2, expected: 1.56},
+        {num: 1.555, scale: 1, expected: 1.6},
+        {num: 1.555, scale: 1.3, expected: 1.6},
+        {num: 1.555, scale: 1.5, expected: 1.56},
+        {num: 1.555, scale: 0, expected: 2},
+        {num: 1.555, scale: -2, expected: 2},
+        {num: 1.555, scale: NaN, expected: 2},
+        {num: 1.555, scale: undefined, expected: 2},
+        {num: 1.555, scale: null, expected: 2},
+        {num: 1.555, scale: "two", expected: 2}
+    ];
+
+    jqUnit.test("fluid.roundToDecimal", function () {
+        fluid.each(fluid.tests.roundToDecimalTests, function (test) {
+            var rounded = fluid.roundToDecimal(test.num, test.scale);
+            jqUnit.assertEquals("num: " + test.num + " with scale: " + test.scale, test.expected, rounded);
+        });
+    });
+
     jqUnit.test("merge", function () {
         jqUnit.expect(8);
 
