@@ -833,9 +833,9 @@ var fluid = fluid || fluid_3_0_0;
      * If the scale is invalid (i.e falsey, not a number, negative value), it is treated as 0.
      * If the scale is a floating point number, it is rounded to an integer.
      *
-     * @param {number} num - the number to be rounded
-     * @param {number} scale - the maximum number of decimal places to round to.
-     * @return {number} The num value rounded to the specified number of decimal places.
+     * @param {Number} num - the number to be rounded
+     * @param {Number} scale - the maximum number of decimal places to round to.
+     * @return {Number} The num value rounded to the specified number of decimal places.
      */
     fluid.roundToDecimal = function (num, scale) {
         // treat invalid scales as 0
