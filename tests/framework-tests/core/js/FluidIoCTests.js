@@ -4668,4 +4668,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.assertUndefined("fluid.componentForPath returns undefined for destroyed component", fluid.componentForPath(globalPath));
     });
+
+    /** FLUID-6126 failure to construct child of root which has been advised **/
+
+    fluid.defaults("fluid.tests.FLUID6126root", {
+        gradeNames: "fluid.component"
+    });
+
+    fluid.defaults("fluid.tests.FLUID6126advisor", {
+        gradeNames: "fluid.component",
+        distributeOptions: {
+            record: "fluid.tests.FLUID6126addon",
+            target: "{/ fluid.tests.FLUID6126root}.options.gradeNames"
+        }
+    });
+
+    jqUnit.test("FLUID-6126: Failure to construct direct child of root which has been advised by distribution", function () {
+        var advisor = fluid.tests.FLUID6126advisor();
+        var root = fluid.construct("fluid6126root", {type: "fluid.tests.FLUID6126root"});
+        jqUnit.assertValue("Successfully constructed root", root);
+        jqUnit.assertTrue("Root has been advised", fluid.componentHasGrade(root, "fluid.tests.FLUID6126addon"));
+        advisor.destroy();
+        root.destroy();
+    });
+
 })(jQuery);
