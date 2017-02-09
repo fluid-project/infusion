@@ -24,12 +24,6 @@ themes = {
     }
 }
 
-slider-thumb-common-contrastTheme() {
-    background: none;
-    background-color: fColor;
-    box-shadow: none !important;
-}
-
 build-themes-prefsEditor(contrastThemes) {
 
     for themeName in contrastThemes {
@@ -39,30 +33,6 @@ build-themes-prefsEditor(contrastThemes) {
 
         {themeName} {
             .fl-prefsEditor {
-                // slider
-                & .fl-slider {
-                    background: none;
-                    background-color: fColor;
-
-                    a, a:hover,
-                    .fl-slider-handle, .fl-slider-handle:hover {
-                        slider-thumb-common-contrastTheme();
-                    }
-                }
-
-                input[type=range].fl-slider {
-                    background: none;
-                    background-color: fColor;
-                    &::-webkit-slider-thumb {
-                        slider-thumb-common-contrastTheme();
-                    }
-                    &::-moz-range-thumb {
-                        slider-thumb-common-contrastTheme();
-                    }
-                    &::-ms-thumb {
-                        slider-thumb-common-contrastTheme();
-                    }
-                }
 
                 // ON/OFF switch
                 .fl-prefsEditor-switch,

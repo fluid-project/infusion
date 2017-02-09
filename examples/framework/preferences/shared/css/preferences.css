@@ -22,12 +22,18 @@
 .mpe-slider {
     padding: 1.5em 0;
 }
-.fl-prefsEditor .mpe-slider .fl-slider {
-    margin-top: 1em;
+
+.mpe-radioRow {
+    padding-top: 0.5rem;
+}
+
+.mpe-radioRow label {
+    display: inline;
 }
 
 .mpe-increasing-magPos {
     float: right;
+    padding-left: 1rem;
 }
 
 .mpe-speakIncrease ul.fl-inputs {
