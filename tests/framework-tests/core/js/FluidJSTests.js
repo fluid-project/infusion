@@ -238,12 +238,35 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         {num: 1.555, scale: 1, expected: 1.6},
         {num: 1.555, scale: 1.3, expected: 1.6},
         {num: 1.555, scale: 1.5, expected: 1.56},
+        {num: -1.555, scale: 5, expected: -1.555},
+        {num: -1.555, scale: 4, expected: -1.555},
+        {num: -1.555, scale: 3, expected: -1.555}, // fails
+        {num: -1.555, scale: 2, expected: -1.56},
+        {num: -1.555, scale: 1, expected: -1.6}, // fails
         {num: 1.555, scale: 0, expected: 2},
         {num: 1.555, scale: -2, expected: 2},
         {num: 1.555, scale: NaN, expected: 2},
         {num: 1.555, scale: undefined, expected: 2},
         {num: 1.555, scale: null, expected: 2},
-        {num: 1.555, scale: "two", expected: 2}
+        {num: 1.555, scale: "two", expected: 2},
+        {num: 1.005, scale: 2, expected: 1.01},
+        {num: -1.005, scale: 2, expected: -1.01}, // fails
+        {num: 0.014999999999999999, scale: 2, expected: 0.01}, // fails
+        {num: -0.014999999999999999, scale: 2, expected: -0.01},
+        {num: 0.0150000000000000001, scale: 2, expected: 0.02},
+        {num: -0.0150000000000000001, scale: 2, expected: -0.02},
+        {num: 0.015, scale: 2, expected: 0.02},
+        {num: -0.015, scale: 2, expected: -0.02}, // fails
+        {num: 55.549, scale: 1, expected: 55.5}, // fails
+        {num: -55.549, scale: 1, expected: -55.5},
+        {num: 54.9, scale: 0, expected: 55},
+        {num: -54.9, scale: 0, expected: -55},
+        {num: 55.55, scale: 1, expected: 55.6},
+        {num: -55.55, scale: 1, expected: -55.6}, // fails
+        {num: 55.551, scale: 1, expected: 55.6},
+        {num: -55.551, scale: 1, expected: -55.6}, // fails
+        {num: 55.59, scale: 1, expected: 55.6},
+        {num: -55.59, scale: 1, expected: -55.6}
     ];
 
     jqUnit.test("fluid.roundToDecimal", function () {

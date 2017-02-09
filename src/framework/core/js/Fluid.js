@@ -840,9 +840,10 @@ var fluid = fluid || fluid_3_0_0;
     fluid.roundToDecimal = function (num, scale) {
         // treat invalid scales as 0
         scale = scale && scale >= 0 ? Math.round(scale) : 0;
-        var number = Math.round(num * Math.pow(10, scale)) / Math.pow(10, scale);
+        var scalep = Math.pow(10, scale);
+        var number = Math.round(num * scalep) / scalep;
         if (num - number > 0) {
-            return (number + Math.floor(2 * Math.round((num - number) * Math.pow(10, (scale + 1))) / 10) / Math.pow(10, scale));
+            return (number + Math.floor(2 * Math.round((num - number) * scalep * 10) / 10) / scalep);
         } else {
             return number;
         }
