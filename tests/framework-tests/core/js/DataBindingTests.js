@@ -811,6 +811,29 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Just one listener registered", 1, that.listenerCount);
     });
 
+    /** FLUID-6111: Model merging with numeric property named "length" **/
+
+    fluid.defaults("fluid.tests.fluid6111head", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            name: "ABCD",
+            length: 14
+        }
+    });
+
+    jqUnit.test("FLUID-6111: Model merging with numeric property named \"length\"", function () {
+        var that = fluid.tests.fluid6111head({
+            model: {
+                duration: 34
+            }
+        });
+        var baseModel = {
+            name: "ABCD",
+            length: 14
+        };
+        jqUnit.assertLeftHand("Expected original model contents", baseModel, that.model);
+    });
+
     /** FLUID-5695: New-style multiple paths and namespaces for model listeners **/
 
     fluid.defaults("fluid.tests.fluid5695root", {
