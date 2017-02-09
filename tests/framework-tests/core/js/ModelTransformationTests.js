@@ -45,6 +45,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         catsAreDecent: true,
         floatyLowy: 12.3910,
         floatyHighy: 12.52,
+        floatAddLow: 0.1 + 0.2,
+        floatAddHigh: 0.1 + 0.7,
         floaty2: -9876.789,
         hundredInString: "100",
         floatInString: "12.52",
@@ -53,7 +55,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         floaty2InString: "-9876.789",
         floaty2InString2: "-9876.79",
         floaty2InString1: "-9876.8",
-        floaty2InString0: "-9877"
+        floaty2InString0: "-9877",
+        floatAddLowInString: "0.3",
+        floatAddHighInString: "0.8"
     };
 
     jqUnit.module("Model Transformation");
@@ -1025,7 +1029,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.transforms.numberToStringTests = [{
-        message: "numberToString() converts integers.",
+        message: "numberToString() converts integers",
         transformWrap: true,
         transform: {
             type: "fluid.transforms.numberToString",
@@ -1034,7 +1038,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: fluid.tests.transforms.source.hundredInString,
         expectedInputPaths: [ "hundred" ]
     }, {
-        message: "numberToString() converts integers - with scale.",
+        message: "numberToString() converts integers - with scale",
         transformWrap: true,
         transform: {
             type: "fluid.transforms.numberToString",
@@ -1044,7 +1048,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: fluid.tests.transforms.source.hundredInString,
         expectedInputPaths: [ "hundred" ]
     }, {
-        message: "numberToString() converts float values.",
+        message: "numberToString() converts float values",
         transformWrap: true,
         transform: {
             type: "fluid.transforms.numberToString",
@@ -1053,7 +1057,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: fluid.tests.transforms.source.floatInString,
         expectedInputPaths: [ "floatyHighy" ]
     }, {
-        message: "numberToString() converts float values - with scale = 2.",
+        message: "numberToString() converts float values - with scale = 2",
         transformWrap: true,
         transform: {
             type: "fluid.transforms.numberToString",
@@ -1063,7 +1067,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: fluid.tests.transforms.source.floatInString,
         expectedInputPaths: [ "floatyHighy" ]
     }, {
-        message: "numberToString() converts float values - with scale = 1.",
+        message: "numberToString() converts float values - with scale = 1",
         transformWrap: true,
         transform: {
             type: "fluid.transforms.numberToString",
@@ -1073,7 +1077,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: fluid.tests.transforms.source.floatInStringScale1,
         expectedInputPaths: [ "floatyHighy" ]
     }, {
-        message: "numberToString() converts float values - with scale = 0.",
+        message: "numberToString() converts float values - with scale = 0",
         transformWrap: true,
         transform: {
             type: "fluid.transforms.numberToString",
@@ -1083,7 +1087,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: fluid.tests.transforms.source.floatInStringScale0,
         expectedInputPaths: [ "floatyHighy" ]
     }, {
-        message: "numberToString() converts float values - with scale invalid.",
+        message: "numberToString() converts float values - with scale invalid",
         transformWrap: true,
         transform: {
             type: "fluid.transforms.numberToString",
@@ -1093,7 +1097,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: fluid.tests.transforms.source.floatInString,
         expectedInputPaths: [ "floatyHighy" ]
     }, {
-        message: "numberToString() converts negative float values.",
+        message: "numberToString() converts negative float values",
         transformWrap: true,
         transform: {
             type: "fluid.transforms.numberToString",
@@ -1102,7 +1106,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: fluid.tests.transforms.source.floaty2InString,
         expectedInputPaths: [ "floaty2" ]
     }, {
-        message: "numberToString() converts negative float values with scale = 3.",
+        message: "numberToString() converts negative float values with scale = 3",
         transformWrap: true,
         transform: {
             type: "fluid.transforms.numberToString",
@@ -1112,7 +1116,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: fluid.tests.transforms.source.floaty2InString,
         expectedInputPaths: [ "floaty2" ]
     }, {
-        message: "numberToString() converts negative float values with scale = 2.",
+        message: "numberToString() converts negative float values with scale = 2",
         transformWrap: true,
         transform: {
             type: "fluid.transforms.numberToString",
@@ -1122,7 +1126,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: fluid.tests.transforms.source.floaty2InString2,
         expectedInputPaths: [ "floaty2" ]
     }, {
-        message: "numberToString() converts negative float values with scale = 1.",
+        message: "numberToString() converts negative float values with scale = 1",
         transformWrap: true,
         transform: {
             type: "fluid.transforms.numberToString",
@@ -1132,7 +1136,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: fluid.tests.transforms.source.floaty2InString1,
         expectedInputPaths: [ "floaty2" ]
     }, {
-        message: "numberToString() converts negative float values with scale = 0.",
+        message: "numberToString() converts negative float values with scale = 0",
         transformWrap: true,
         transform: {
             type: "fluid.transforms.numberToString",
@@ -1142,7 +1146,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: fluid.tests.transforms.source.floaty2InString0,
         expectedInputPaths: [ "floaty2" ]
     }, {
-        message: "numberToString() converts negative float values with scale = -1.",
+        message: "numberToString() converts negative float values with scale = -1",
         transformWrap: true,
         transform: {
             type: "fluid.transforms.numberToString",
@@ -1152,7 +1156,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: fluid.tests.transforms.source.floaty2InString0,
         expectedInputPaths: [ "floaty2" ]
     }, {
-        message: "numberToString() converts negative float values with scale invalid.",
+        message: "numberToString() converts negative float values with scale invalid",
         transformWrap: true,
         transform: {
             type: "fluid.transforms.numberToString",
@@ -1162,7 +1166,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: fluid.tests.transforms.source.floaty2InString,
         expectedInputPaths: [ "floaty2" ]
     }, {
-        message: "numberToString() doesn't attempt to convert non-numbers.",
+        message: "numberToString() converts added floats (low) with scale",
+        transformWrap: true,
+        transform: {
+            type: "fluid.transforms.numberToString",
+            inputPath: "floatAddLow",
+            scale: 1
+        },
+        expected: fluid.tests.transforms.source.floatAddLowInString,
+        expectedInputPaths: [ "floatAddLow" ]
+    }, {
+        message: "numberToString() converts added floats (high) with scale",
+        transformWrap: true,
+        transform: {
+            type: "fluid.transforms.numberToString",
+            inputPath: "floatAddHigh",
+            scale: 2
+        },
+        expected: fluid.tests.transforms.source.floatAddHighInString,
+        expectedInputPaths: [ "floatAddHigh" ]
+    }, {
+        message: "numberToString() doesn't attempt to convert non-numbers",
         transformWrap: true,
         transform: {
             type: "fluid.transforms.numberToString",
