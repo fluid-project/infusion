@@ -827,9 +827,11 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     /**
-     * Derived from AGK's stack overflow answer ( http://stackoverflow.com/a/12830454 )
+     * Derived from Sindre Sorhus's round-to node module ( https://github.com/sindresorhus/round-to ).
+     * License: MIT
      *
      * Rounds the supplied number to at most the number of decimal places indicated by the scale, omiting any trailing 0s.
+     * Numbers are rounded away from 0 (i.e 0.5 -> 1, -0.5 -> -1).
      * If the scale is invalid (i.e falsey, not a number, negative value), it is treated as 0.
      * If the scale is a floating point number, it is rounded to an integer.
      *
@@ -840,13 +842,10 @@ var fluid = fluid || fluid_3_0_0;
     fluid.roundToDecimal = function (num, scale) {
         // treat invalid scales as 0
         scale = scale && scale >= 0 ? Math.round(scale) : 0;
-        var scalep = Math.pow(10, scale);
-        var number = Math.round(num * scalep) / scalep;
-        if (num - number > 0) {
-            return (number + Math.floor(2 * Math.round((num - number) * scalep * 10) / 10) / scalep);
-        } else {
-            return number;
-        }
+
+        // The following is derived from https://github.com/sindresorhus/round-to/blob/v2.0.0/index.js#L17
+        var sign = num >= 0 ? 1 : -1; // manually calculating the sign because Math.sign is not supported in IE
+        return Number(sign * (Math.round(Math.abs(num) + "e" + scale) + "e-" + scale));
     };
 
     /** Calls Object.freeze at each level of containment of the supplied object
