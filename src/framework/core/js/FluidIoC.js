@@ -81,12 +81,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.getMemberNames = function (instantiator, thatStack) {
-        var path = instantiator.idToPath(thatStack[thatStack.length - 1].id);
-        var segs = instantiator.parseEL(path);
-            // TODO: we should now have no longer shortness in the stack
-        segs.unshift.apply(segs, fluid.generate(thatStack.length - segs.length, ""));
-
-        return segs;
+        if (thatStack.length === 0) { // Odd edge case for FLUID-6126 from fluid.computeDistributionPriority
+            return [];
+        } else {
+            var path = instantiator.idToPath(thatStack[thatStack.length - 1].id);
+            var segs = instantiator.parseEL(path);
+                // TODO: we should now have no longer shortness in the stack
+            segs.unshift.apply(segs, fluid.generate(thatStack.length - segs.length, ""));
+            return segs;
+        }
     };
 
     // thatStack contains an increasing list of MORE SPECIFIC thats.

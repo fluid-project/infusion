@@ -40,6 +40,35 @@ var getFromExec = function (command, options) {
     return result;
 };
 
+/**
+ * Adds '.min' convention in front of the first period of a filename string
+ * Example results:
+ * infusion-all.js -> infusion-all.min.js
+ * infusion-all.js.map -> infusion-all.min.js.map
+ * @param {String} fileName - filename string to add '.min' to
+ * @returns the modified filename string
+ */
+var addMin = function (fileName) {
+    var segs = fileName.split(".");
+    var min = "min";
+
+    if (segs[0] && segs.indexOf(min) < 0 ) {
+        segs.splice(1, 0, min);
+    }
+    return segs.join(".");
+};
+
+/**
+ * Rename function for grunt file tasks for  adding ".min" convention
+ * to filename string; won't do anything to strings that already
+ * include ".min"
+ * @param {String} dest - supplied by Grunt task, see http://gruntjs.com/configuring-tasks#the-rename-property
+ * @param {String} src - supplied by Grunt task, see http://gruntjs.com/configuring-tasks#the-rename-property
+*/
+var addMinifyToFilename = function (dest, src) {
+    return dest + addMin(src);
+};
+
 module.exports = function (grunt) {
 
     var setBuildSettings = function (settings) {
@@ -105,12 +134,18 @@ module.exports = function (grunt) {
                     expand: true,
                     cwd: "build/",
                     src: "<%= allBuildName %>.*",
-                    dest: "dist/"
+                    dest: "dist/",
+                    rename: function (dest, src) {
+                        return grunt.config.get("buildSettings.compress") ? addMinifyToFilename(dest, src) : dest + src;
+                    }
                 }, {
                     expand: true,
                     cwd: "build/",
                     src: "<%= customBuildName %>.*",
-                    dest: "dist/"
+                    dest: "dist/",
+                    rename: function (dest, src) {
+                        return grunt.config.get("buildSettings.compress") ? addMinifyToFilename(dest, src, "js") : dest + src;
+                    }
                 }]
             },
             distAssets: {
@@ -240,7 +275,7 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     src: ["src/**/css/stylus/*.styl"],
-                    ext: ".css",
+                    ext: "<% buildSettings.compress ? print('.min.css') : print('.css') %>",
                     dest: "dist/assets/"
                 }]
             }
@@ -258,11 +293,23 @@ module.exports = function (grunt) {
                 command: "vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 testem ci --file tests/testem.json'"
             }
         },
-        distributions: {
+        distributions:
+        {
             "all": {},
+            "all.min": {
+                options: {
+                    compress: true
+                }
+            },
             "all-no-jquery": {
                 options: {
                     exclude: "jQuery, jQueryUI"
+                }
+            },
+            "all-no-jquery.min": {
+                options: {
+                    exclude: "jQuery, jQueryUI",
+                    compress: true
                 }
             },
             "framework": {
@@ -270,10 +317,23 @@ module.exports = function (grunt) {
                     include: "framework"
                 }
             },
+            "framework.min": {
+                options: {
+                    include: "framework",
+                    compress: true
+                }
+            },
             "framework-no-jquery": {
                 options: {
                     include: "framework",
                     exclude: "jQuery, jQueryUI"
+                }
+            },
+            "framework-no-jquery.min": {
+                options: {
+                    include: "framework",
+                    exclude: "jQuery, jQueryUI",
+                    compress: true
                 }
             }
         }
@@ -373,9 +433,97 @@ module.exports = function (grunt) {
             "clean",
             "lint",
             "distributions" + ( target ? ":" + target : "" ),
-            "cleanForDist"
+            "cleanForDist",
+            "verifyDistJS",
+            "verifyDistCSS"
         ];
         grunt.task.run(tasks);
+    });
+
+    /** Verifies that directory "contains the files in fileList
+    * logs a report
+    * @param {String} dir - base directory expected to contain files
+    * @param {Array} fileList - array of string filenames to check; may include
+    * full paths and thereby search subdirectories of dir
+    * @returns a report structure for further processing
+    */
+    var verifyFiles = function (dir, fileList) {
+        var report = {
+            fileList: {},
+            missingFiles: 0,
+            expectedFiles: fileList.length
+        };
+        _.forEach(fileList, function (fileName) {
+            var fileExists = grunt.file.exists(dir, fileName);
+            if (!fileExists) {
+                report.missingFiles = report.missingFiles + 1;
+            }
+            report.fileList[dir + "/" + fileName] = {"present": fileExists};
+        });
+
+        return report;
+    };
+
+    /** Displays a file verification report generated by verifyFiles
+    * @param {Object} report - the report to display
+    */
+    var displayVerifyFilesReport = function (report) {
+        _.forEach(report.fileList, function (value, fileName) {
+            var fileExists = value.present;
+            if (fileExists) {
+                grunt.log.oklns(fileName + " - ✓ Present".green);
+            } else {
+                grunt.log.errorlns(fileName + " - ✗ Missing".red);
+            }
+        });
+    };
+
+    /** Processes a file verification report, and fails the build if
+    * any files are missing
+    * @param {Object} report - the report to process
+    */
+    var processVerifyFilesReport = function (report) {
+        if (report.missingFiles > 0) {
+            grunt.log.subhead("Verification failed".red);
+            grunt.fail.fatal(report.missingFiles + " out of " + report.expectedFiles + " expected files not found");
+        } else {
+            grunt.log.subhead("Verification passed".green);
+            grunt.log.oklns("All expected files were present");
+        }
+    };
+
+    grunt.registerTask("verifyDistJS", "Verifies that the expected /dist/*.js files and their source maps were created", function () {
+        grunt.log.subhead("Verifying that expected distribution JS files are present in /dist directory");
+        var expectedFilenames = [];
+        var distributions = grunt.config.get("distributions");
+        _.forEach(distributions, function (value, distribution) {
+            var jsFilename = "infusion-" + distribution + ".js";
+            var mapFilename = jsFilename + ".map";
+            expectedFilenames.push(jsFilename, mapFilename);
+        });
+
+        var report = verifyFiles("dist", expectedFilenames);
+
+        displayVerifyFilesReport(report);
+        processVerifyFilesReport(report);
+    });
+
+    grunt.registerTask("verifyDistCSS", "Verifies that the expected /dist/ CSS files were created", function () {
+        grunt.log.subhead("Verifying that expected distribution CSS files are present in /dist/assets directory");
+        var expectedFilenames = [];
+        var preferencesStylusFiles = grunt.file.expand("src/framework/preferences/css/stylus/*.styl");
+        _.forEach(preferencesStylusFiles, function (stylusFile) {
+            var cssFilename = stylusFile.replace(".styl", ".css");
+            var minifiedCSSFilename = stylusFile.replace(".styl", ".min.css");
+            // Remove /stylus from the path, since dist/assets won't have it
+            expectedFilenames.push(cssFilename.replace("/stylus", ""), minifiedCSSFilename.replace("/stylus", ""));
+        });
+
+        var report = verifyFiles("dist/assets", expectedFilenames);
+
+        displayVerifyFilesReport(report);
+        processVerifyFilesReport(report);
+
     });
 
     grunt.registerTask("cleanForDist", ["clean:build", "clean:products", "clean:stylus", "clean:stylusDist", "clean:ciArtifacts"]);
