@@ -1226,10 +1226,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return togo;
     };
 
+    fluid.outputMatches = function (matches, outSegs, root) {
+        fluid.each(root, function (value, key) {
+            matches.push(outSegs.concat(key));
+        });
+    };
+
     // Here we only support for now very simple expressions which have at most one
     // wildcard which must appear in the final segment
-    fluid.matchChanges = function (changeMap, specSegs, newHolder) {
-        var root = newHolder.model;
+    fluid.matchChanges = function (changeMap, specSegs, newHolder, oldHolder) {
+        var newRoot = newHolder.model;
+        var oldRoot = oldHolder.model;
         var map = changeMap;
         var outSegs = ["model"];
         var wildcard = false;
@@ -1245,14 +1252,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             } else {
                 outSegs.push(seg);
                 map = fluid.isPrimitive(map) ? map : map[seg];
-                root = root ? root[seg] : undefined;
+                newRoot = newRoot ? newRoot[seg] : undefined;
+                oldRoot = oldRoot ? oldRoot[seg] : undefined;
             }
         }
         if (map) {
             if (wildcard) {
-                fluid.each(root, function (value, key) {
-                    togo.push(outSegs.concat(key));
-                });
+                if (map === "DELETE") {
+                    fluid.outputMatches(togo, outSegs, oldRoot);
+                } else if (map === "ADD") {
+                    fluid.outputMatches(togo, outSegs, newRoot);
+                } else {
+                    fluid.outputMatches(togo, outSegs, map);
+                }
             } else {
                 togo.push(outSegs);
             }
@@ -1278,7 +1290,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var spec = listeners[i];
             var multiplePaths = spec.segsArray.length > 1; // does this spec listen on multiple paths? If so, don't rebase arguments and just report once per transaction
             for (var j = 0; j < spec.segsArray.length; ++j) {
-                var invalidPaths = fluid.matchChanges(changeMap, spec.segsArray[j], newHolder);
+                var invalidPaths = fluid.matchChanges(changeMap, spec.segsArray[j], newHolder, oldHolder);
                 // We only have multiple invalidPaths here if there is a wildcard
                 for (var k = 0; k < invalidPaths.length; ++k) {
                     if (applier.destroyed) { // 2nd guarding point for FLUID-5592
