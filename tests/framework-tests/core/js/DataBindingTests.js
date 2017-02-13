@@ -811,6 +811,29 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Just one listener registered", 1, that.listenerCount);
     });
 
+    /** FLUID-6111: Model merging with numeric property named "length" **/
+
+    fluid.defaults("fluid.tests.fluid6111head", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            name: "ABCD",
+            length: 14
+        }
+    });
+
+    jqUnit.test("FLUID-6111: Model merging with numeric property named \"length\"", function () {
+        var that = fluid.tests.fluid6111head({
+            model: {
+                duration: 34
+            }
+        });
+        var baseModel = {
+            name: "ABCD",
+            length: 14
+        };
+        jqUnit.assertLeftHand("Expected original model contents", baseModel, that.model);
+    });
+
     /** FLUID-5695: New-style multiple paths and namespaces for model listeners **/
 
     fluid.defaults("fluid.tests.fluid5695root", {
@@ -886,6 +909,97 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.applier.change("windowHolders.mainWindow.x", 30);
         jqUnit.assertEquals("Invalidated by change in position field", 3, that.refreshes);
         jqUnit.assertDeepEq("Captured model by argument", {x: 30, y: 30}, that.frozenModel.windowHolders.mainWindow);
+    });
+
+    /** FLUID-6127: Wildcards in modelListeners, and support for deletion **/
+
+    fluid.defaults("fluid.tests.fluid6127root", {
+        gradeNames: ["fluid.modelComponent", "fluid.tests.changeRecorder"],
+        modelListeners: {
+            wildcardy: {
+                path: "idToPath.*",
+                excludeSource: "init",
+                listener: "{that}.record", // TODO: support compact form here
+                args: ["{change}.path", "{change}.value", "{change}.oldValue"]
+            }
+        },
+        model: {
+            idToPath: {
+                first: 1
+            }
+        }
+    });
+
+    fluid.tests.fluid6127fixtures = [{
+        change: {
+            type: "ADD",
+            path: "",
+            value: {
+                idToPath: {
+                    first: 2,
+                    second: 2
+                }
+            }
+        },
+        expected: [{
+            path: ["idToPath", "first"],
+            oldValue: 1,
+            value: 2
+        }, {
+            path: ["idToPath", "second"],
+            oldValue: undefined,
+            value: 2
+        }]
+    }, {
+        change: {
+            type: "DELETE",
+            path: ""
+        },
+        expected: [{
+            path: ["idToPath", "first"],
+            oldValue: 1,
+            value: undefined
+        }]
+    }, {
+        change: {
+            type: "DELETE",
+            path: "idToPath.first"
+        },
+        expected: [{
+            path: ["idToPath", "first"],
+            oldValue: 1,
+            value: undefined
+        }]
+    }, {
+        initialModel: {
+            idToPath: {
+                second: 2
+            }
+        },
+        change: {
+            type: "DELETE",
+            path: ""
+        },
+        expected: [{
+            path: ["idToPath", "first"],
+            oldValue: 1,
+            value: undefined
+        }, {
+            path: ["idToPath", "second"],
+            oldValue: 2,
+            value: undefined
+        }]
+    }];
+
+    jqUnit.test("FLUID-6127: Wildcards in modelListeners, with deletion support", function () {
+        fluid.each(fluid.tests.fluid6127fixtures, function (fixture, index) {
+            var root = fluid.tests.fluid6127root({
+                model: fixture.initialModel
+            });
+            root.applier.fireChangeRequest(fixture.change);
+            jqUnit.assertDeepEq("Expected fire record for fixture " + index, fixture.expected, root.fireRecord);
+            root.destroy();
+        });
     });
 
     /** FLUID-5866: Global priorities mediated without "priorityHolder" component **/
