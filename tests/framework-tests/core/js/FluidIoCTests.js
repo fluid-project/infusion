@@ -4710,6 +4710,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var advisor = fluid.tests.FLUID6128advisor();
         var freeModel = fluid.modelComponent();
         jqUnit.assertValue("Successfully constructed free modelComponent", freeModel);
+        jqUnit.assertTrue("Free model has not been advised", !fluid.componentHasGrade(freeModel, "fluid.tests.FLUID6128addon"));
         var midRoot = fluid.construct("intervening-name", {type: "fluid.component"});
         var root = fluid.construct(["intervening-name", "fluid6128root"], {type: "fluid.tests.FLUID6128root"});
         jqUnit.assertTrue("Root has been advised", fluid.componentHasGrade(root, "fluid.tests.FLUID6128addon"));
