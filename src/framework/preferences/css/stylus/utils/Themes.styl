@@ -65,20 +65,27 @@ build-themes-prefsEditor(contrastThemes) {
                 }
 
                 // ON/OFF switch
-                .fl-prefsEditor-switch,
-                .fl-prefsEditor-switch-inner,
-                input + label .fl-prefsEditor-switch:before {
-                    box-shadow: none !important;
-                    text-shadow: none;
-                    color: inherit;
-                    background-image: none;
-                    background-color: inherit;
-                }
+                    .fl-prefsEditor-onoff {
 
-                input:focus + label,
-                .fl-choice input:focus ~ label {
-                    outline: 0.2em solid fColor;
-                }
+                        input:checked + label .fl-prefsEditor-switchOff
+                        input:not(:checked) + label .fl-prefsEditor-switchOn {
+                            border-color: transparent !important;
+                        }
+
+                        input:focus + label .fl-prefsEditor-switch {
+                            outline: 2px solid fColor;
+                            outline-offset: 1px;
+                        }
+
+                        .fl-prefsEditor-switch {
+
+                            .fl-prefsEditor-switch-indicator,
+                            .fl-prefsEditor-switchOn-label,
+                            .fl-prefsEditor-switchOff-label {
+                                background-color: transparent !important;
+                            }
+                        }
+                    }
             }
         }
 
