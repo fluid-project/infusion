@@ -32,11 +32,15 @@ var example = example || {};
         },
         selectors: {
             bool: ".mpe-speakText",
-            speakTextDescr: ".mpe-speakText-descr"
+            speakTextDescr: ".mpe-speakText-descr",
+            toggleOn: ".flc-prefsEditor-switchOn-label",
+            toggleOff: ".flc-prefsEditor-switchOff-label"
         },
         protoTree: {
             speakTextDescr: {messagekey: "speakText"},
-            bool: "${speakText}"
+            bool: "${speakText}",
+            toggleOn: {messagekey: "toggleOn"},
+            toggleOff: {messagekey: "toggleOff"}
         }
     });
 
@@ -53,11 +57,15 @@ var example = example || {};
         selectors: {
             bool: ".mpe-incSize",
             label: ".mpe-incSize-label",
-            incSizeDescr: ".mpe-incSize-descr"
+            incSizeDescr: ".mpe-incSize-descr",
+            toggleOn: ".flc-prefsEditor-switchOn-label",
+            toggleOff: ".flc-prefsEditor-switchOff-label"
         },
         protoTree: {
             incSizeDescr: {messagekey: "incSize"},
-            bool: "${incSize}"
+            bool: "${incSize}",
+            toggleOn: {messagekey: "toggleOn"},
+            toggleOff: {messagekey: "toggleOff"}
         }
     });
 

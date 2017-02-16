@@ -1,4 +1,6 @@
 {
     "tocLabel": "Table of Contents",
-    "tocDescr": "Create a table of contents"
+    "tocDescr": "Create a table of contents",
+    "toggleOn": "ON",
+    "toggleOff": "OFF"
 }

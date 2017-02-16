@@ -1532,7 +1532,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         messageBase: {
             "tocLabel": "Table of Contents",
-            "tocDescr": "Create a table of contents"
+            "tocDescr": "Create a table of contents",
+            "toggleOn": "ToC On",
+            "toggleOff": "ToC Off"
         },
         resources: {
             template: {
@@ -1560,6 +1562,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.assertEquals("The label text is " + messageBase.tocLabel, messageBase.tocLabel, that.locate("label").text());
         jqUnit.assertEquals("The description text is " + messageBase.tocDescr, messageBase.tocDescr, that.locate("tocDescr").text());
+        jqUnit.assertEquals("The toggle on text is " + messageBase.toggleOn, messageBase.toggleOn, that.locate("toggleOn").text());
+        jqUnit.assertEquals("The toggle off text is " + messageBase.toggleOff, messageBase.toggleOff, that.locate("toggleOff").text());
 
         fluid.tests.panels.utils.verifyCheckboxState("The toc option is not checked by default", defaultInputStatus, that.locate("toc"));
     };
@@ -1573,7 +1577,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test the layout settings panel",
             tests: [{
-                expect: 4,
+                expect: 6,
                 name: "Test the rendering of the layout panel",
                 sequence: [{
                     listener: "fluid.tests.layoutPanel.checkRendering",

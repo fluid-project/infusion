@@ -21,7 +21,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.panel.speak", "fluid.tests.panels.utils.defaultTestPanel"],
         messageBase: {
             "speakLabel": "Text-to-Speech",
-            "speakDescr": "Let the computer read site content out loud"
+            "speakDescr": "Let the computer read site content out loud",
+            "toggleOn": "Speak On",
+            "toggleOff": "Speak Off"
         },
         model: {
             speak: false
@@ -51,6 +53,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.panels.utils.verifyCheckboxState("The text-to-speech option is not checked by default", false, that.locate("speak"));
         jqUnit.assertEquals("The text for speakLabel should be rendered", that.options.messageBase.speakLabel, that.locate("label").text());
         jqUnit.assertEquals("The text for speakDescr should be rendered", that.options.messageBase.speakDescr, that.locate("speakDescr").text());
+        jqUnit.assertEquals("The text for the on option should be rendered", that.options.messageBase.toggleOn, that.locate("toggleOn").text());
+        jqUnit.assertEquals("The text for the off option should be rendered", that.options.messageBase.toggleOff, that.locate("toggleOff").text());
     };
 
     fluid.defaults("fluid.tests.speakTester", {
@@ -61,7 +65,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test the speak settings panel",
             tests: [{
-                expect: 4,
+                expect: 6,
                 name: "Test the rendering of the speak panel",
                 sequence: [{
                     event: "{testEnvironment speak}.events.onResourcesFetched",

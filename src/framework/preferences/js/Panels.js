@@ -936,12 +936,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         selectors: {
             toc: ".flc-prefsEditor-toc",
             label: ".flc-prefsEditor-toc-label",
-            tocDescr: ".flc-prefsEditor-toc-descr"
+            tocDescr: ".flc-prefsEditor-toc-descr",
+            toggleOn: ".flc-prefsEditor-switchOn-label",
+            toggleOff: ".flc-prefsEditor-switchOff-label"
         },
         protoTree: {
             label: {messagekey: "tocLabel"},
             tocDescr: {messagekey: "tocDescr"},
-            toc: "${toc}"
+            toc: "${toc}",
+            toggleOn: {messagekey: "toggleOn"},
+            toggleOff: {messagekey: "toggleOff"}
         }
     });
 

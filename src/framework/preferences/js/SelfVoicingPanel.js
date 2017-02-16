@@ -27,12 +27,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         selectors: {
             speak: ".flc-prefsEditor-speak",
             label: ".flc-prefsEditor-speak-label",
-            speakDescr: ".flc-prefsEditor-speak-descr"
+            speakDescr: ".flc-prefsEditor-speak-descr",
+            toggleOn: ".flc-prefsEditor-switchOn-label",
+            toggleOff: ".flc-prefsEditor-switchOff-label"
         },
         protoTree: {
             label: {messagekey: "speakLabel"},
             speakDescr: {messagekey: "speakDescr"},
-            speak: "${speak}"
+            speak: "${speak}",
+            toggleOn: {messagekey: "toggleOn"},
+            toggleOff: {messagekey: "toggleOff"}
         }
     });
 

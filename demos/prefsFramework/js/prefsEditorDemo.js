@@ -116,12 +116,16 @@ var demo = demo || {};
         selectors: {
             simplify: ".demo-prefsEditor-simplify",
             label: ".demo-prefsEditor-simplify-label",
-            simplifyDescr: ".demo-prefsEditor-simplify-descr"
+            simplifyDescr: ".demo-prefsEditor-simplify-descr",
+            toggleOn: ".flc-prefsEditor-switchOn-label",
+            toggleOff: ".flc-prefsEditor-switchOff-label"
         },
         protoTree: {
             label: {messagekey: "simplifyLabel"},
             simplifyDescr: {messagekey: "simplifyDescr"},
-            simplify: "${simplify}"
+            simplify: "${simplify}",
+            toggleOn: {messagekey: "toggleOn"},
+            toggleOff: {messagekey: "toggleOff"}
         }
     });
 
