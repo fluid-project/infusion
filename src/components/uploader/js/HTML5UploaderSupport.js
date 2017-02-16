@@ -251,7 +251,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var file = files[i];
             if (fileLimit && remainingUploadLimit === 0) {
                 that.events.onQueueError.fire(file, fluid.uploader.queueErrorConstants.QUEUE_LIMIT_EXCEEDED);
-            } else if (file.size >= sizeLimit) {
+            } else if (file.size > sizeLimit) {
                 file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
                 that.events.onQueueError.fire(file, fluid.uploader.queueErrorConstants.FILE_EXCEEDS_SIZE_LIMIT);
             } else if (!fileLimit || remainingUploadLimit > 0) {
