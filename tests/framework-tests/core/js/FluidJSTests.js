@@ -251,6 +251,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         {num: 1.555, scale: "two", expected: 2},
         {num: 1.005, scale: 2, expected: 1.01},
         {num: -1.005, scale: 2, expected: -1.01},
+        // 1.005 - 1 should equate to 0.005 and round up to 0.01; however,
+        // do to the imprecision of floating point number representation
+        // it is represented as 0.004999999999999893 instead and as such
+        // rounds down to 0.
+        {num: 1.005 - 1, scale: 2, expected: 0},
         {num: 55.549, scale: 1, expected: 55.5},
         {num: -55.549, scale: 1, expected: -55.5},
         {num: 54.9, scale: 0, expected: 55},
