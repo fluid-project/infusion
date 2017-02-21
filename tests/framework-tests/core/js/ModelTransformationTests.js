@@ -51,6 +51,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         hundredInString: "100",
         floatInString: "12.52",
         floatInStringScale1: "12.5",
+        floatInStringScale1Ceil: "12.6",
         floatInStringScale0: "13",
         floaty2InString: "-9876.789",
         floaty2InString2: "-9876.79",
@@ -1194,6 +1195,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         expected: undefined,
         expectedInputPaths: [ "cat" ]
+    }, {
+        message: "numberToString() converts float values - with scale = 1 and method = ceil",
+        transformWrap: true,
+        transform: {
+            type: "fluid.transforms.numberToString",
+            inputPath: "floatyHighy",
+            scale: 1,
+            method: "ceil"
+        },
+        expected: fluid.tests.transforms.source.floatInStringScale1Ceil,
+        expectedInputPaths: [ "floatyHighy" ]
+    }, {
+        message: "numberToString() converts float values - with scale = 1 and method = floor",
+        transformWrap: true,
+        transform: {
+            type: "fluid.transforms.numberToString",
+            inputPath: "floatyHighy",
+            scale: 1,
+            method: "floor"
+        },
+        expected: fluid.tests.transforms.source.floatInStringScale1,
+        expectedInputPaths: [ "floatyHighy" ]
     }];
 
     jqUnit.test("fluid.transforms.numberToString()", function () {

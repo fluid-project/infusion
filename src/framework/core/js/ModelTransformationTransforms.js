@@ -75,7 +75,7 @@ var fluid = fluid || fluid_2_0_0;
     fluid.transforms.numberToString = function (value, transformSpec) {
         if (typeof value === "number") {
             if (typeof transformSpec.scale === "number" && !isNaN(transformSpec.scale)) {
-                var rounded = fluid.roundToDecimal(value, transformSpec.scale);
+                var rounded = fluid.roundToDecimal(value, transformSpec.scale, transformSpec.method);
                 return rounded.toString();
             } else {
                 return value.toString();
