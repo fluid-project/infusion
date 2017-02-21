@@ -231,54 +231,66 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.roundToDecimalTests = [
-        {num: 1.555, scale: 5, expected: 1.555},
-        {num: 1.555, scale: 4, expected: 1.555},
-        {num: 1.555, scale: 3, expected: 1.555},
-        {num: 1.555, scale: 2, expected: 1.56},
-        {num: 1.555, scale: 1, expected: 1.6},
-        {num: 1.555, scale: 1.3, expected: 1.6},
-        {num: 1.555, scale: 1.5, expected: 1.56},
-        {num: -1.555, scale: 5, expected: -1.555},
-        {num: -1.555, scale: 4, expected: -1.555},
-        {num: -1.555, scale: 3, expected: -1.555},
-        {num: -1.555, scale: 2, expected: -1.56},
-        {num: -1.555, scale: 1, expected: -1.6},
-        {num: 1.555, scale: 0, expected: 2},
-        {num: 1.555, scale: -2, expected: 2},
-        {num: 1.555, scale: NaN, expected: 2},
-        {num: 1.555, scale: undefined, expected: 2},
-        {num: 1.555, scale: null, expected: 2},
-        {num: 1.555, scale: "two", expected: 2},
-        {num: 1.005, scale: 2, expected: 1.01},
-        {num: -1.005, scale: 2, expected: -1.01},
+        {num: 1.555, scale: 5, round: 1.555, ceil: 1.555, floor: 1.555},
+        {num: 1.555, scale: 4, round: 1.555, ceil: 1.555, floor: 1.555},
+        {num: 1.555, scale: 3, round: 1.555, ceil: 1.555, floor: 1.555},
+        {num: 1.555, scale: 2, round: 1.56, ceil: 1.56, floor: 1.55},
+        {num: 1.555, scale: 1, round: 1.6, ceil: 1.6, floor: 1.5},
+        {num: 1.555, scale: 1.3, round: 1.6, ceil: 1.6, floor: 1.5},
+        {num: 1.555, scale: 1.5, round: 1.56, ceil: 1.56, floor: 1.55},
+        {num: -1.555, scale: 5, round: -1.555, ceil: -1.555, floor: -1.555},
+        {num: -1.555, scale: 4, round: -1.555, ceil: -1.555, floor: -1.555},
+        {num: -1.555, scale: 3, round: -1.555, ceil: -1.555, floor: -1.555},
+        {num: -1.555, scale: 2, round: -1.56, ceil: -1.55, floor: -1.56},
+        {num: -1.555, scale: 1, round: -1.6, ceil: -1.5, floor: -1.6},
+        {num: 1.555, scale: 0, round: 2, ceil: 2, floor: 1},
+        {num: 1.555, scale: -2, round: 2, ceil: 2, floor: 1},
+        {num: 1.555, scale: NaN, round: 2, ceil: 2, floor: 1},
+        {num: 1.555, scale: undefined, round: 2, ceil: 2, floor: 1},
+        {num: 1.555, scale: null, round: 2, ceil: 2, floor: 1},
+        {num: 1.555, scale: "two", round: 2, ceil: 2, floor: 1},
+        {num: 1.005, scale: 2, round: 1.01, ceil: 1.01, floor: 1},
+        {num: -1.005, scale: 2, round: -1.01, ceil: -1, floor: -1.01},
         // 1.005 - 1 should equate to 0.005 and round up to 0.01; however,
         // do to the imprecision of floating point number representation
         // it is represented as 0.004999999999999893 instead and as such
         // rounds down to 0.
-        {num: 1.005 - 1, scale: 2, expected: 0},
-        {num: 55.549, scale: 1, expected: 55.5},
-        {num: -55.549, scale: 1, expected: -55.5},
-        {num: 54.9, scale: 0, expected: 55},
-        {num: -54.9, scale: 0, expected: -55},
-        {num: 55.55, scale: 1, expected: 55.6},
-        {num: -55.55, scale: 1, expected: -55.6},
-        {num: 55.551, scale: 1, expected: 55.6},
-        {num: -55.551, scale: 1, expected: -55.6},
-        {num: 55.59, scale: 1, expected: 55.6},
-        {num: -55.59, scale: 1, expected: -55.6},
+        {num: 1.005 - 1, scale: 2, round: 0, ceil: 0.01, floor: 0},
+        {num: 55.549, scale: 1, round: 55.5, ceil: 55.6, floor: 55.5},
+        {num: -55.549, scale: 1, round: -55.5, ceil: -55.5, floor: -55.6},
+        {num: 54.9, scale: 0, round: 55, ceil: 55, floor: 54},
+        {num: -54.9, scale: 0, round: -55, ceil: -54, floor: -55},
+        {num: 55.55, scale: 1, round: 55.6, ceil: 55.6, floor: 55.5},
+        {num: -55.55, scale: 1, round: -55.6, ceil: -55.5, floor: -55.6},
+        {num: 55.551, scale: 1, round: 55.6, ceil: 55.6, floor: 55.5},
+        {num: -55.551, scale: 1, round: -55.6, ceil: -55.5, floor: -55.6},
+        {num: 55.59, scale: 1, round: 55.6, ceil: 55.6, floor: 55.5},
+        {num: -55.59, scale: 1, round: -55.6, ceil: -55.5, floor: -55.6},
         // IEEE 754 binary floating point numbers treat 0.014999999999999999, 0.0150000000000000001 and 0.015 as equivalent.
-        {num: 0.014999999999999999, scale: 2, expected: 0.02},
-        {num: -0.014999999999999999, scale: 2, expected: -0.02},
-        {num: 0.0150000000000000001, scale: 2, expected: 0.02},
-        {num: -0.0150000000000000001, scale: 2, expected: -0.02},
-        {num: 0.015, scale: 2, expected: 0.02},
-        {num: -0.015, scale: 2, expected: -0.02}
+        {num: 0.014999999999999999, scale: 2, round: 0.02, ceil: 0.02, floor: 0.01},
+        {num: -0.014999999999999999, scale: 2, round: -0.02, ceil: -0.01, floor: -0.02},
+        {num: 0.0150000000000000001, scale: 2, round: 0.02, ceil: 0.02, floor: 0.01},
+        {num: -0.0150000000000000001, scale: 2, round: -0.02, ceil: -0.01, floor: -0.02},
+        {num: 0.015, scale: 2, round: 0.02, ceil: 0.02, floor: 0.01},
+        {num: -0.015, scale: 2, round: -0.02, ceil: -0.01, floor: -0.02}
     ];
 
     jqUnit.test("fluid.roundToDecimal", function () {
         fluid.each(fluid.tests.roundToDecimalTests, function (test) {
-            var rounded = fluid.roundToDecimal(test.num, test.scale);
-            jqUnit.assertEquals("num: " + test.num + " with scale: " + test.scale, test.expected, rounded);
+            var roundResult = fluid.roundToDecimal(test.num, test.scale, "round");
+            jqUnit.assertEquals("Round - num: " + test.num + " with scale: " + test.scale, test.round, roundResult);
+
+            var ceilResult = fluid.roundToDecimal(test.num, test.scale, "ceil");
+            jqUnit.assertEquals("Ceil - num: " + test.num + " with scale: " + test.scale, test.ceil, ceilResult);
+
+            var floorResult = fluid.roundToDecimal(test.num, test.scale, "floor");
+            jqUnit.assertEquals("Floor - num: " + test.num + " with scale: " + test.scale, test.floor, floorResult);
+
+            var noMethodResult = fluid.roundToDecimal(test.num, test.scale);
+            jqUnit.assertEquals("No Method Provided - num: " + test.num + " with scale: " + test.scale, test.round, noMethodResult);
+
+            var invalidMethodResult = fluid.roundToDecimal(test.num, test.scale, "invalid");
+            jqUnit.assertEquals("Invalid Method Provided - num: " + test.num + " with scale: " + test.scale, test.round, invalidMethodResult);
         });
     });
 
