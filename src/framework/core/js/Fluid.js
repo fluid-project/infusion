@@ -841,7 +841,7 @@ var fluid = fluid || fluid_3_0_0;
      * @param {Number} num - the number to be rounded
      * @param {Number} scale - the maximum number of decimal places to round to.
      * @param {String} method - (optional) Request a rounding method to use ("round", "ceil", "floor").
-     *                          if nothing or an invalid method is provided, it will default to "round".
+     *                          If nothing or an invalid method is provided, it will default to "round".
      * @return {Number} The num value rounded to the specified number of decimal places.
      */
     fluid.roundToDecimal = function (num, scale, method) {
