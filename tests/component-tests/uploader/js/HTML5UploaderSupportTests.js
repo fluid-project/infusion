@@ -201,7 +201,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             jqUnit.module("Uploader Basic Tests");
 
-            var file1 = fluid.tests.uploader.html5.mockFile("file1", "emptyfile.zip", "application/zip", 0),
+            var file1 = fluid.tests.uploader.html5.mockFile("file1", "emptyfile.zip", "application/zip", 1000),
                 file2 = fluid.tests.uploader.html5.mockFile("file2", "tinyfile.jpg", "image/jpeg", 5),
                 file3 = fluid.tests.uploader.html5.mockFile("file3", "bigfile.rar", "application/x-rar-compressed", 200000);
 
