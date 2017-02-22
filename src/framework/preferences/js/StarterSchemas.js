@@ -200,39 +200,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     "message": "%messagePrefix/tableOfContents.json"
                 }
             },
-            "emphasizeLinks": {
-                "type": "fluid.prefs.emphasizeLinks",
+            "enhanceInputs": {
+                "type": "fluid.prefs.enhanceInputs",
                 "enactor": {
-                    "type": "fluid.prefs.enactor.emphasizeLinks",
-                    "cssClass": "fl-link-enhanced"
+                    "type": "fluid.prefs.enactor.enhanceInputs",
+                    "cssClass": "fl-input-enhanced"
                 },
                 "panel": {
-                    "type": "fluid.prefs.panel.emphasizeLinks",
-                    "container": ".flc-prefsEditor-emphasizeLinks",  // the css selector in the template where the panel is rendered
-                    "template": "%templatePrefix/PrefsEditorTemplate-emphasizeLinks.html",
-                    "message": "%messagePrefix/emphasizeLinks.json"
-                }
-            },
-            "inputsLarger": {
-                "type": "fluid.prefs.inputsLarger",
-                "enactor": {
-                    "type": "fluid.prefs.enactor.inputsLarger",
-                    "cssClass": "fl-text-larger"
-                },
-                "panel": {
-                    "type": "fluid.prefs.panel.inputsLarger",
-                    "container": ".flc-prefsEditor-inputsLarger",  // the css selector in the template where the panel is rendered
-                    "template": "%templatePrefix/PrefsEditorTemplate-inputsLarger.html",
-                    "message": "%messagePrefix/inputsLarger.json"
-                }
-            },
-            groups: {
-                "linksControls": {
-                    "container": ".flc-prefsEditor-links-controls",
-                    "template": "%templatePrefix/PrefsEditorTemplate-linksControls.html",
-                    "message": "%messagePrefix/linksControls.json",
-                    "type": "fluid.prefs.panel.linksControls",
-                    "panels": ["emphasizeLinks", "inputsLarger"]
+                    "type": "fluid.prefs.panel.enhanceInputs",
+                    "container": ".flc-prefsEditor-enhanceInputs",  // the css selector in the template where the panel is rendered
+                    "template": "%templatePrefix/PrefsEditorTemplate-enhanceInputs.html",
+                    "message": "%messagePrefix/enhanceInputs.json"
                 }
             }
         }
@@ -303,20 +281,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
-    fluid.defaults("fluid.prefs.schemas.emphasizeLinks", {
+    fluid.defaults("fluid.prefs.schemas.enhanceInputs", {
         gradeNames: ["fluid.prefs.schemas"],
         schema: {
-            "fluid.prefs.emphasizeLinks": {
-                "type": "boolean",
-                "default": false
-            }
-        }
-    });
-
-    fluid.defaults("fluid.prefs.schemas.inputsLarger", {
-        gradeNames: ["fluid.prefs.schemas"],
-        schema: {
-            "fluid.prefs.inputsLarger": {
+            "fluid.prefs.enhanceInputs": {
                 "type": "boolean",
                 "default": false
             }

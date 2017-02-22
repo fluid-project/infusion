@@ -364,7 +364,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "textFont": true,
         "contrast": true,
         "layoutControls": true,
-        "linksControls": true,
+        "enhanceInputs": true,
         "uiEnhancer.options.components.tableOfContents": true
     };
 
@@ -422,7 +422,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "textFont": false,
         "contrast": false,
         "layoutControls": false,
-        "linksControls": false,
+        "enhanceInputs": false,
         "uiEnhancer.options.components.tableOfContents": true
     };
 

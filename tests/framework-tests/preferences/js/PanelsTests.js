@@ -1597,228 +1597,75 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
-     * emphasize links
+     * enhanceInputs
      *******************************************************************************/
 
-    fluid.defaults("fluid.tests.prefs.panel.emphasizeLinks", {
-        gradeNames: ["fluid.prefs.panel.emphasizeLinks", "fluid.tests.panels.utils.defaultTestPanel", "fluid.tests.panels.utils.injectTemplates"],
+    fluid.defaults("fluid.tests.prefs.panel.enhanceInputs", {
+        gradeNames: ["fluid.prefs.panel.enhanceInputs", "fluid.tests.panels.utils.defaultTestPanel", "fluid.tests.panels.utils.injectTemplates"],
         model: {
-            links: false
-        },
-        resources: {
-            template: {
-                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-emphasizeLinks.html"
-            }
-        }
-    });
-
-    fluid.defaults("fluid.tests.emphasizeLinksPanel", {
-        gradeNames: ["fluid.test.testEnvironment"],
-        components: {
-            emphasizeLinks: {
-                type: "fluid.tests.prefs.panel.emphasizeLinks",
-                container: ".flc-links",
-                createOnEvent: "{emphasizeLinksTester}.events.onTestCaseStart"
-            },
-            emphasizeLinksTester: {
-                type: "fluid.tests.emphasizeLinksTester"
-            }
-        }
-    });
-
-    fluid.defaults("fluid.tests.emphasizeLinksTester", {
-        gradeNames: ["fluid.test.testCaseHolder"],
-        testOptions: {
-            defaultInputStatus: false,
-            newValue: true
-        },
-        modules: [{
-            name: "Test the emphasizeLinks settings panel",
-            tests: [{
-                expect: 2,
-                name: "Test the rendering of the emphasizeLinks panel",
-                sequence: [{
-                    listener: "fluid.tests.panels.utils.verifyCheckboxState",
-                    args: ["The inputs should be unchecked by default", "{that}.options.testOptions.defaultInputStatus", "{emphasizeLinks}.dom.links"],
-                    event: "{emphasizeLinksPanel emphasizeLinks}.events.afterRender"
-                }, {
-                    func: "fluid.tests.panels.utils.setCheckboxState",
-                    args: ["{emphasizeLinks}.dom.links", "{that}.options.testOptions.newValue"]
-                }, {
-                    listener: "fluid.tests.panels.utils.checkModel",
-                    args: ["links", "{emphasizeLinks}.model", "{that}.options.testOptions.newValue"],
-                    spec: {path: "links", priority: "last"},
-                    changeEvent: "{emphasizeLinks}.applier.modelChanged"
-                }]
-            }]
-        }]
-    });
-
-    /*******************************************************************************
-     * inputs larger
-     *******************************************************************************/
-
-    fluid.defaults("fluid.tests.prefs.panel.inputsLarger", {
-        gradeNames: ["fluid.prefs.panel.inputsLarger", "fluid.tests.panels.utils.defaultTestPanel", "fluid.tests.panels.utils.injectTemplates"],
-        model: {
-            inputsLarger: false
-        },
-        resources: {
-            template: {
-                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-inputsLarger.html"
-            }
-        }
-    });
-
-    fluid.defaults("fluid.tests.inputsLargerPanel", {
-        gradeNames: ["fluid.test.testEnvironment"],
-        components: {
-            inputsLarger: {
-                type: "fluid.tests.prefs.panel.inputsLarger",
-                container: ".flc-links",
-                createOnEvent: "{inputsLargerTester}.events.onTestCaseStart"
-            },
-            inputsLargerTester: {
-                type: "fluid.tests.inputsLargerTester"
-            }
-        }
-    });
-
-    fluid.defaults("fluid.tests.inputsLargerTester", {
-        gradeNames: ["fluid.test.testCaseHolder"],
-        testOptions: {
-            defaultInputStatus: false,
-            newValue: true
-        },
-        modules: [{
-            name: "Test the inputsLarger settings panel",
-            tests: [{
-                expect: 2,
-                name: "Test the rendering of the inputsLarger panel",
-                sequence: [{
-                    listener: "fluid.tests.panels.utils.verifyCheckboxState",
-                    args: ["The inputs should be unchecked by default", "{that}.options.testOptions.defaultInputStatus", "{inputsLarger}.dom.inputsLarger"],
-                    event: "{inputsLargerPanel inputsLarger}.events.afterRender"
-                }, {
-                    func: "fluid.tests.panels.utils.setCheckboxState",
-                    args: ["{inputsLarger}.dom.inputsLarger", "{that}.options.testOptions.newValue"]
-                }, {
-                    listener: "fluid.tests.panels.utils.checkModel",
-                    args: ["inputsLarger", "{inputsLarger}.model", "{that}.options.testOptions.newValue"],
-                    spec: {path: "inputsLarger", priority: "last"},
-                    changeEvent: "{inputsLarger}.applier.modelChanged"
-                }]
-            }]
-        }]
-    });
-
-    /*******************************************************************************
-     * linksControlsPanel
-     *******************************************************************************/
-
-     //Unable to automate this composite pane successfully. See FLUID-5726
-
-    fluid.defaults("fluid.tests.prefs.panel.linksControls", {
-        gradeNames: ["fluid.prefs.panel.linksControls", "fluid.tests.panels.utils.defaultTestPanel"],
-        model: {
-            fluid_prefs_emphasizeLinks: false,
-            fluid_prefs_inputsLarger: false
+            enhanceInputs: false
         },
         messageBase: {
-            "linksControlsLabel": "emphasis",
-            "inputsChoiceLabel": "Enlarge buttons, menus, text-fields, and other inputs",
-            "linksChoiceLabel": "Underline and bold links"
-        },
-        selectors: {
-            emphasizeLinks: ".flc-prefsEditor-emphasizeLinks",
-            inputsLarger: ".flc-prefsEditor-inputsLarger"
-        },
-        selectorsToIgnore: ["emphasizeLinks", "inputsLarger"],
-        components: {
-            emphasizeLinks: {
-                type: "fluid.prefs.panel.emphasizeLinks",
-                container: "{that}.dom.emphasizeLinks",
-                createOnEvent: "initSubPanels"
-            },
-            inputsLarger: {
-                type: "fluid.prefs.panel.inputsLarger",
-                container: "{that}.dom.inputsLarger",
-                createOnEvent: "initSubPanels"
-            }
+            "label": "Enhance Inputs",
+            "descr": "Emphasize links, buttons, menus, textfields, and other inputs",
+            "toggleOn": "Enhance ON",
+            "toggleOff": "Enhance OFF"
         },
         resources: {
             template: {
-                resourceText: "<h2><span class=\"fl-icon-links\"></span><span class=\"flc-prefsEditor-linksControls-label fl-heading-text\"></span></h2><ul class=\"fl-inputs fl-links-buttons-options\"><li class=\"flc-prefsEditor-emphasizeLinks\"></li><li class=\"flc-prefsEditor-inputsLarger\"></li></ul>"
-            },
-            emphasizeLinks: {
-                resourceText: "<input type=\"checkbox\" id=\"links-choice\" class=\"flc-prefsEditor-links fl-force-left\" /><label class=\"flc-prefsEditor-links-choice-label\" for=\"links-choice\"></label>"
-            },
-            inputsLarger: {
-                resourceText:  "<input type=\"checkbox\" id=\"inputs-choice\" class=\"flc-prefsEditor-inputs-larger fl-force-left\" /><label class=\"flc-prefsEditor-links-inputs-choice-label\" for=\"inputs-choice\"></label>"
+                href: fluid.tests.prefsPaneltemplatePrefix + "PrefsEditorTemplate-enhanceInputs.html"
             }
         }
     });
 
-    fluid.defaults("fluid.tests.linksControlsPanel", {
+    fluid.defaults("fluid.tests.enhanceInputsPanel", {
         gradeNames: ["fluid.test.testEnvironment"],
         components: {
-            linksControls: {
-                type: "fluid.tests.prefs.panel.linksControls",
-                container: ".flc-links"
+            enhanceInputs: {
+                type: "fluid.tests.prefs.panel.enhanceInputs",
+                container: ".flc-enhanceInputs",
+                createOnEvent: "{enhanceInputsTester}.events.onTestCaseStart"
             },
-            linksTester: {
-                type: "fluid.tests.linksTester"
+            enhanceInputsTester: {
+                type: "fluid.tests.enhanceInputsTester"
             }
         }
     });
 
-    fluid.tests.linksControlsPanel.testDefault = function (linksControlsPanel, expectedValue, expectedLabel) {
-        var messageBase = linksControlsPanel.options.messageBase;
+    fluid.tests.enhanceInputsPanel.checkRendering = function (that, defaultInputStatus) {
+        var messageBase = that.options.messageBase;
 
-        jqUnit.assertEquals("The label text is " + messageBase.linksControlsLabel, messageBase.linksControlsLabel, linksControlsPanel.locate("label").text());
+        jqUnit.assertEquals("The label text is " + messageBase.label, messageBase.label, that.locate("label").text());
+        jqUnit.assertEquals("The description text is " + messageBase.descr, messageBase.descr, that.locate("descr").text());
+        jqUnit.assertEquals("The toggle on text is " + messageBase.toggleOn, messageBase.toggleOn, that.locate("toggleOn").text());
+        jqUnit.assertEquals("The toggle off text is " + messageBase.toggleOff, messageBase.toggleOff, that.locate("toggleOff").text());
 
-        var linksLabel = linksControlsPanel.locate("label").text();
-        jqUnit.assertEquals("The links control label is rendered correctly", expectedLabel, linksLabel);
-        var linksValue = linksControlsPanel.emphasizeLinks.locate("links").attr("checked");
-        jqUnit.assertEquals("The emphasizeLinks option is not checked by default", expectedValue, linksValue);
-        var inputsLargerValue = linksControlsPanel.inputsLarger.locate("inputsLarger").attr("checked");
-        jqUnit.assertEquals("The inputsLarger option is not checked by default", expectedValue, inputsLargerValue);
+        fluid.tests.panels.utils.verifyCheckboxState("The enhanceInputs option is not checked by default", defaultInputStatus, that.locate("enhanceInputs"));
     };
 
-
-    fluid.defaults("fluid.tests.linksTester", {
+    fluid.defaults("fluid.tests.enhanceInputsTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
-            defaultInputStatus: undefined,
+            defaultInputStatus: false,
             newValue: true
         },
         modules: [{
-            name: "Test the linksControls settings panel",
+            name: "Test the enhance inputs panel",
             tests: [{
                 expect: 6,
-                name: "Test the rendering of the linksControls panel",
+                name: "Test the rendering of the enhance inputs panel",
                 sequence: [{
-                    func: "{linksControls}.refreshView"
-                }, {
-                    listener: "fluid.tests.linksControlsPanel.testDefault",
-                    args: ["{linksControls}", "{that}.options.testOptions.defaultInputStatus", "{linksControls}.options.messageBase.linksControlsLabel"],
-                    event: "{linksControls}.events.afterRender"
+                    listener: "fluid.tests.enhanceInputsPanel.checkRendering",
+                    event: "{enhanceInputsPanel enhanceInputs}.events.afterRender",
+                    args: ["{enhanceInputs}", "{that}.options.testOptions.defaultInputStatus"]
                 }, {
                     func: "fluid.tests.panels.utils.setCheckboxState",
-                    args: ["{linksControls}.emphasizeLinks.dom.links", "{that}.options.testOptions.newValue"]
+                    args: ["{enhanceInputs}.dom.enhanceInputs", "{that}.options.testOptions.newValue"]
                 }, {
                     listener: "fluid.tests.panels.utils.checkModel",
-                    args: ["fluid_prefs_emphasizeLinks", "{linksControls}.model", "{that}.options.testOptions.newValue"],
-                    spec: {path: "fluid_prefs_emphasizeLinks", priority: "last"},
-                    changeEvent: "{linksControls}.applier.modelChanged"
-                }, {
-                    func: "fluid.tests.panels.utils.setCheckboxState",
-                    args: ["{linksControls}.inputsLarger.dom.inputsLarger", "{that}.options.testOptions.newValue"]
-                }, {
-                    listener: "fluid.tests.panels.utils.checkModel",
-                    args: ["fluid_prefs_inputsLarger", "{linksControls}.model", "{that}.options.testOptions.newValue"],
-                    spec: {path: "fluid_prefs_inputsLarger", priority: "last"},
-                    changeEvent: "{linksControls}.applier.modelChanged"
+                    args: ["enhanceInputs", "{that}.options.testOptions.newValue"],
+                    spec: {path: "enhanceInputs", priority: "last"},
+                    changeEvent: "{enhanceInputs}.applier.modelChanged"
                 }]
             }]
         }]
@@ -1833,10 +1680,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "fluid.tests.lineSpacePanel.nativeHTML",
             "fluid.tests.lineSpacePanel.jQueryUI",
             "fluid.tests.layoutPanel",
-            "fluid.tests.emphasizeLinksPanel",
-            "fluid.tests.inputsLargerPanel",
-            "fluid.tests.linksControlsPanel"
-
+            "fluid.tests.enhanceInputsPanel"
         ]);
     });
 
