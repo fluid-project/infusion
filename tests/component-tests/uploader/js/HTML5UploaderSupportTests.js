@@ -201,9 +201,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             jqUnit.module("Uploader Basic Tests");
 
-            var file1 = fluid.tests.uploader.html5.mockFile("file1", "emptyfile.zip", "application/zip", 1000),
+            var file1 = fluid.tests.uploader.html5.mockFile("file1", "emptyfile.zip", "application/zip", 1024),
                 file2 = fluid.tests.uploader.html5.mockFile("file2", "tinyfile.jpg", "image/jpeg", 5),
-                file3 = fluid.tests.uploader.html5.mockFile("file3", "bigfile.rar", "application/x-rar-compressed", 200000);
+                file3 = fluid.tests.uploader.html5.mockFile("file3", "bigfile.rar", "application/x-rar-compressed", 200000),
+                file4 = fluid.tests.uploader.html5.mockFile("file4", "justbig.jpg", "image/jpeg", 1025);
 
 
             /******************************
@@ -388,38 +389,45 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var addFilesTests = [ {
                 fileUploadLimit: 3,
                 fileSizeLimit: 1,
-                step1Events: ["afterFileQueued", "afterFileQueued", "onQueueError"],
-                step1Files: 2, // Test #1: Two out of three files should have been added to the queue. The third is too large.
-                step2Events: ["afterFileQueued", "onQueueError", "onQueueError"],
+                step1Events: ["afterFileQueued", "afterFileQueued", "onQueueError", "onQueueError"],
+                step1Files: 2, // Test #1: Two out of four files should have been added to the queue. The third and fourth is too large.
+                step2Events: ["afterFileQueued", "onQueueError", "onQueueError", "onQueueError"],
                 step2Files: 1  // Test #2: One file should have been added, after which the fileUploadLimit will have been hit.
             }, {
                 fileUploadLimit: 1,
                 fileSizeLimit: 100000,
-                step1Events: ["afterFileQueued", "onQueueError", "onQueueError"],
-                step1Files: 1, // Test #1: One out of three files should have been added to the queue.
-                step2Events: ["onQueueError", "onQueueError", "onQueueError"],
+                step1Events: ["afterFileQueued", "onQueueError", "onQueueError", "onQueueError"],
+                step1Files: 1, // Test #1: One out of four files should have been added to the queue.
+                step2Events: ["onQueueError", "onQueueError", "onQueueError", "onQueueError"],
                 step2Files: 0  // Test #2: No files should have been added, since the fileUploadLimit has been hit.
             }, {
                 fileUploadLimit: 0,
                 fileSizeLimit: 100000,
-                step1Events: ["afterFileQueued", "afterFileQueued", "afterFileQueued"],
-                step1Files: 3, // Test #1: All three files should have been added to the queue.
-                step2Events: ["afterFileQueued", "afterFileQueued", "afterFileQueued"],
-                step2Files: 3  // Test #2: All three files should have been added to the queue.
+                step1Events: ["afterFileQueued", "afterFileQueued", "afterFileQueued", "afterFileQueued"],
+                step1Files: 4, // Test #1: All four files should have been added to the queue.
+                step2Events: ["afterFileQueued", "afterFileQueued", "afterFileQueued", "afterFileQueued"],
+                step2Files: 4  // Test #2: All four files should have been added to the queue.
             }, {
                 fileUploadLimit: null,
                 fileSizeLimit: 100000,
-                step1Events: ["afterFileQueued", "afterFileQueued", "afterFileQueued"],
-                step1Files: 3, // Test #1: All three files should have been added to the queue.
-                step2Events: ["afterFileQueued", "afterFileQueued", "afterFileQueued"],
-                step2Files: 3  // Test #2: All three files should have been added to the queue.
+                step1Events: ["afterFileQueued", "afterFileQueued", "afterFileQueued", "afterFileQueued"],
+                step1Files: 4, // Test #1: All four files should have been added to the queue.
+                step2Events: ["afterFileQueued", "afterFileQueued", "afterFileQueued", "afterFileQueued"],
+                step2Files: 4  // Test #2: All four files should have been added to the queue.
             }, {
                 fileUploadLimit: undefined,
                 fileSizeLimit: 100000,
-                step1Events: ["afterFileQueued", "afterFileQueued", "afterFileQueued"],
-                step1Files: 3, // Test #1: All three files should have been added to the queue.
-                step2Events: ["afterFileQueued", "afterFileQueued", "afterFileQueued"],
-                step2Files: 3  // Test #2: All three files should have been added to the queue.
+                step1Events: ["afterFileQueued", "afterFileQueued", "afterFileQueued", "afterFileQueued"],
+                step1Files: 4, // Test #1: All four files should have been added to the queue.
+                step2Events: ["afterFileQueued", "afterFileQueued", "afterFileQueued", "afterFileQueued"],
+                step2Files: 4  // Test #2: All four files should have been added to the queue.
+            }, {
+                fileUploadLimit: 4,
+                fileSizeLimit: 1,
+                step1Events: ["afterFileQueued", "afterFileQueued", "onQueueError", "onQueueError"],
+                step1Files: 2, // Test #1: Two out of four files should have been added to the queue. The third and fourth is too large.
+                step2Events: ["afterFileQueued", "afterFileQueued", "onQueueError", "onQueueError"],
+                step2Files: 2  // Test #2: Two files should have been added to the queue, after which the fileUploadLimit will have been hit.
             }
             ];
 
@@ -428,7 +436,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     var files = [
                         file1,
                         file2,
-                        file3
+                        file3,
+                        file4
                     ];
 
                     var tracker = trackLocalListeners();
