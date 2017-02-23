@@ -1117,6 +1117,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
         // obliterate resolveRoot's scope objects and replace by the real root scope - which is unused by its own children
         var rootShadow = instantiator.idToShadow[fluid.rootComponent.id];
+        rootShadow.contextHash = {}; // Fix for FLUID-6128
         var resolveRootShadow = instantiator.idToShadow[fluid.resolveRootComponent.id];
         resolveRootShadow.ownScope = rootShadow.ownScope;
         resolveRootShadow.childrenScope = rootShadow.childrenScope;

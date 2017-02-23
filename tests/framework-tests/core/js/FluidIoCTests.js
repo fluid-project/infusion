@@ -4692,4 +4692,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         root.destroy();
     });
 
+    /** FLUID-6128 failure when issuing IoCSS advice with more than 2 components from root **/
+
+    fluid.defaults("fluid.tests.FLUID6128root", {
+        gradeNames: "fluid.modelComponent"
+    });
+
+    fluid.defaults("fluid.tests.FLUID6128advisor", {
+        gradeNames: "fluid.component",
+        distributeOptions: {
+            record: "fluid.tests.FLUID6128addon",
+            target: "{/ intervening-name fluid.modelComponent}.options.gradeNames"
+        }
+    });
+
+    jqUnit.test("FLUID-6128: Failure to match IoCSS selector with more than 2 components from root", function () {
+        var advisor = fluid.tests.FLUID6128advisor();
+        var freeModel = fluid.modelComponent();
+        jqUnit.assertValue("Successfully constructed free modelComponent", freeModel);
+        jqUnit.assertTrue("Free model has not been advised", !fluid.componentHasGrade(freeModel, "fluid.tests.FLUID6128addon"));
+        var midRoot = fluid.construct("intervening-name", {type: "fluid.component"});
+        var root = fluid.construct(["intervening-name", "fluid6128root"], {type: "fluid.tests.FLUID6128root"});
+        jqUnit.assertTrue("Root has been advised", fluid.componentHasGrade(root, "fluid.tests.FLUID6128addon"));
+        midRoot.destroy();
+        freeModel.destroy();
+        advisor.destroy();
+    });
 })(jQuery);
