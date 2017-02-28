@@ -203,7 +203,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             var file1 = fluid.tests.uploader.html5.mockFile("file1", "emptyfile.zip", "application/zip", 0),
                 file2 = fluid.tests.uploader.html5.mockFile("file2", "tinyfile.jpg", "image/jpeg", 5),
-                file3 = fluid.tests.uploader.html5.mockFile("file3", "bigfile.rar", "application/x-rar-compressed", 200000);
+                file3 = fluid.tests.uploader.html5.mockFile("file3", "bigfile.rar", "application/x-rar-compressed", 200000),
+                file4 = fluid.tests.uploader.html5.mockFile("file4", "justOver1KB.jpg", "image/jpeg", 1025),
+                file5 = fluid.tests.uploader.html5.mockFile("file5", "exact1KB.jpg", "image/jpeg", 1024);
 
 
             /******************************
@@ -386,40 +388,40 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
              * addFiles() Tests *
              ********************/
             var addFilesTests = [ {
-                fileUploadLimit: 3,
+                fileUploadLimit: 4,
                 fileSizeLimit: 1,
-                step1Events: ["afterFileQueued", "afterFileQueued", "onQueueError"],
-                step1Files: 2, // Test #1: Two out of three files should have been added to the queue. The third is too large.
-                step2Events: ["afterFileQueued", "onQueueError", "onQueueError"],
+                step1Events: ["afterFileQueued", "afterFileQueued", "onQueueError", "onQueueError", "afterFileQueued"],
+                step1Files: 3, // Test #1: Three out of five files should have been added to the queue. The third and fourth are too large.
+                step2Events: ["afterFileQueued", "onQueueError", "onQueueError", "onQueueError", "onQueueError"],
                 step2Files: 1  // Test #2: One file should have been added, after which the fileUploadLimit will have been hit.
             }, {
                 fileUploadLimit: 1,
                 fileSizeLimit: 100000,
-                step1Events: ["afterFileQueued", "onQueueError", "onQueueError"],
-                step1Files: 1, // Test #1: One out of three files should have been added to the queue.
-                step2Events: ["onQueueError", "onQueueError", "onQueueError"],
+                step1Events: ["afterFileQueued", "onQueueError", "onQueueError", "onQueueError", "onQueueError"],
+                step1Files: 1, // Test #1: One out of five files should have been added to the queue.
+                step2Events: ["onQueueError", "onQueueError", "onQueueError", "onQueueError", "onQueueError"],
                 step2Files: 0  // Test #2: No files should have been added, since the fileUploadLimit has been hit.
             }, {
                 fileUploadLimit: 0,
                 fileSizeLimit: 100000,
-                step1Events: ["afterFileQueued", "afterFileQueued", "afterFileQueued"],
-                step1Files: 3, // Test #1: All three files should have been added to the queue.
-                step2Events: ["afterFileQueued", "afterFileQueued", "afterFileQueued"],
-                step2Files: 3  // Test #2: All three files should have been added to the queue.
+                step1Events: ["afterFileQueued", "afterFileQueued", "afterFileQueued", "afterFileQueued", "afterFileQueued"],
+                step1Files: 5, // Test #1: All five files should have been added to the queue.
+                step2Events: ["afterFileQueued", "afterFileQueued", "afterFileQueued", "afterFileQueued", "afterFileQueued"],
+                step2Files: 5  // Test #2: All five files should have been added to the queue.
             }, {
                 fileUploadLimit: null,
                 fileSizeLimit: 100000,
-                step1Events: ["afterFileQueued", "afterFileQueued", "afterFileQueued"],
-                step1Files: 3, // Test #1: All three files should have been added to the queue.
-                step2Events: ["afterFileQueued", "afterFileQueued", "afterFileQueued"],
-                step2Files: 3  // Test #2: All three files should have been added to the queue.
+                step1Events: ["afterFileQueued", "afterFileQueued", "afterFileQueued", "afterFileQueued", "afterFileQueued"],
+                step1Files: 5, // Test #1: All five files should have been added to the queue.
+                step2Events: ["afterFileQueued", "afterFileQueued", "afterFileQueued", "afterFileQueued", "afterFileQueued"],
+                step2Files: 5  // Test #2: All five files should have been added to the queue.
             }, {
                 fileUploadLimit: undefined,
                 fileSizeLimit: 100000,
-                step1Events: ["afterFileQueued", "afterFileQueued", "afterFileQueued"],
-                step1Files: 3, // Test #1: All three files should have been added to the queue.
-                step2Events: ["afterFileQueued", "afterFileQueued", "afterFileQueued"],
-                step2Files: 3  // Test #2: All three files should have been added to the queue.
+                step1Events: ["afterFileQueued", "afterFileQueued", "afterFileQueued", "afterFileQueued", "afterFileQueued"],
+                step1Files: 5, // Test #1: All five files should have been added to the queue.
+                step2Events: ["afterFileQueued", "afterFileQueued", "afterFileQueued", "afterFileQueued", "afterFileQueued"],
+                step2Files: 5  // Test #2: All five files should have been added to the queue.
             }
             ];
 
@@ -428,7 +430,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     var files = [
                         file1,
                         file2,
-                        file3
+                        file3,
+                        file4,
+                        file5
                     ];
 
                     var tracker = trackLocalListeners();
