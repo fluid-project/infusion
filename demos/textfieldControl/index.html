@@ -20,7 +20,7 @@
     <script type="text/javascript" src="../../src/framework/core/js/DataBinding.js"></script>
     <script type="text/javascript" src="../../src/framework/core/js/FluidView.js"></script>
     <script type="text/javascript" src="../../src/components/tooltip/js/Tooltip.js"></script>
-    <script type="text/javascript" src="../../src/components/textfieldControl/js/TextfieldControl.js"></script>
+    <script type="text/javascript" src="../../src/components/textfieldControl/js/Textfield.js"></script>
     <script type="text/javascript" src="../../src/components/textfieldControl/js/TextfieldSlider.js"></script>
     <script type="text/javascript" src="../../src/components/textfieldControl/js/textfieldStepper.js"></script>
 
@@ -55,12 +55,14 @@
                         "aria-label": "Textfield Slider"
                     },
                     model: {
-                        value: 7
+                        value: 7,
+                        step: 1,
+                        range: {
+                            min: 0,
+                            max: 10
+                        }
                     },
-                    range: {
-                        min: 0,
-                        max: 10
-                    }
+                    scale: 2
                 });
             </script>
 
@@ -79,12 +81,14 @@
                         "aria-label": "Textfield Stepper"
                     },
                     model: {
-                        value: 100
+                        value: 1,
+                        step: 0.1,
+                        range: {
+                            min: 1,
+                            max: 2
+                        }
                     },
-                    range: {
-                        min: 0,
-                        max: 100
-                    }
+                    scale: 1
                 });
             </script>
         </div>

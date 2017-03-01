@@ -16,8 +16,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests.textfieldControl");
 
-    fluid.tests.textfieldControl.assertTextfieldInit = function (that, expected, textfield) {
-        jqUnit.assertEquals("Textfield value is set", expected.model.value, +textfield.val());
+    fluid.tests.textfieldControl.assertTextfieldInit = function (that, expected, textfield, expectString) {
+        var value = expectString ? textfield.val() : +textfield.val();
+        jqUnit.assertEquals("Textfield value is set", expected.model.value, value);
         jqUnit.assertEquals("The model should be set", expected.model.value, that.model.value);
         jqUnit.assertEquals("The aria-label should be set", that.options.strings["aria-label"], textfield.attr("aria-label"));
         jqUnit.assertEquals("The aria-labelledby should be set", that.options.ariaOptions["aria-labelledby"], textfield.attr("aria-labelledby"));

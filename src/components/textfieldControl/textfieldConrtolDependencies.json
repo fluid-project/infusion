@@ -4,7 +4,7 @@
         "description": "A collection of UI widgets that synchronize a control with a textfield.",
         "cssFiles": [],
         "files": [
-            "./js/TextfieldControl.js",
+            "./js/Textfield.js",
             "./js/TextfieldSlider.js",
             "./js/TextfieldStepper.js"
         ],

@@ -19,15 +19,27 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      ********************/
 
     fluid.defaults("fluid.textfieldSlider", {
-        gradeNames: ["fluid.textfieldControl"],
+        gradeNames: ["fluid.viewComponent"],
         components: {
+            textfield: {
+                type: "fluid.textfield",
+                container: "{that}.dom.textfield",
+                options: {
+                    gradeNames: ["fluid.textfield.rangeController"],
+                    components: {
+                        controller: {
+                            options: {
+                                model: "{textfieldSlider}.model"
+                            }
+                        }
+                    }
+                }
+            },
             slider: {
                 type: "fluid.slider",
                 container: "{textfieldSlider}.dom.slider",
                 options: {
                     model: "{textfieldSlider}.model",
-                    range: "{textfieldSlider}.options.range",
-                    sliderOptions: "{textfieldSlider}.options.sliderOptions",
                     ariaOptions: "{textfieldSlider}.options.ariaOptions",
                     strings: "{textfieldSlider}.options.strings"
                 }
@@ -41,7 +53,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             container: "fl-textfieldSlider fl-focus"
         },
         model: {
-            value: null
+            value: null,
+            step: 1.0,
+            range: {
+                min: 0,
+                max: 100
+            }
         },
         modelRelay: {
             target: "value",
@@ -52,19 +69,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 max: "{that}.options.range.max"
             }
         },
-        range: {
-            min: 0,
-            max: 100
-        },
+
         ariaOptions: {
             // Specified by implementor
             // ID of an external label to refer to with aria-labelledby
             // attribute
             // "aria-labelledby": ""
-        },
-        sliderOptions: {
-            orientation: "horizontal",
-            step: 1.0
         },
         strings: {
             // Specified by implementor
@@ -78,7 +88,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 method: "addClass",
                 args: ["{that}.options.styles.container"]
             }
-        }
+        },
+        distributeOptions: [{
+            source: "{that}.options.scale",
+            target: "{that > fluid.textfield > controller}.options.scale"
+        }]
     });
 
     fluid.defaults("fluid.slider", {
@@ -99,22 +113,36 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         "method": "val"
                     }
                 }
-            }
-        },
-        listeners: {
-            "onCreate.initSliderAttributes": {
+            },
+            updateSliderAttributes: {
                 "this": "{that}.container",
                 method: "attr",
                 args: [{
-                    "min": "{that}.options.range.min",
-                    "max": "{that}.options.range.max",
-                    "step": "{that}.options.sliderOptions.step",
+                    "min": "{that}.model.range.min",
+                    "max": "{that}.model.range.max",
+                    "step": "{that}.model.step",
                     "type": "range",
                     "value": "{that}.model.value",
                     "aria-labelledby": "{that}.options.ariaOptions.aria-labelledby",
                     "aria-label": "{that}.options.strings.aria-label"
                 }]
-            },
+            }
+        },
+        listeners: {
+            // "onCreate.initSliderAttributes": {
+            //     "this": "{that}.container",
+            //     method: "attr",
+            //     args: [{
+            //         "min": "{that}.options.range.min",
+            //         "max": "{that}.options.range.max",
+            //         "step": "{that}.options.step",
+            //         "type": "range",
+            //         "value": "{that}.model.value",
+            //         "aria-labelledby": "{that}.options.ariaOptions.aria-labelledby",
+            //         "aria-label": "{that}.options.strings.aria-label"
+            //     }]
+            // },
+            "onCreate.initSliderAttributes": "{that}.updateSliderAttributes",
             "onCreate.bindSlideEvt": {
                 "this": "{that}.container",
                 "method": "on",
@@ -136,7 +164,23 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 // sets min / max / step, which messes up the
                 // initial slider rendering
                 excludeSource: "init"
-            }]
+            }],
+            "range": {
+                listener: "{that}.updateSliderAttributes",
+                // If we don't exclude init, the value can get
+                // set before onCreate.initSliderAttributes
+                // sets min / max / step, which messes up the
+                // initial slider rendering
+                excludeSource: "init"
+            },
+            "step": {
+                listener: "{that}.updateSliderAttributes",
+                // If we don't exclude init, the value can get
+                // set before onCreate.initSliderAttributes
+                // sets min / max / step, which messes up the
+                // initial slider rendering
+                excludeSource: "init"
+            }
         }
     });
 

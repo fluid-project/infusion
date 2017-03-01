@@ -20,7 +20,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *********************/
 
     fluid.defaults("fluid.textfieldStepper", {
-        gradeNames: ["fluid.textfieldControl"],
+        gradeNames: ["fluid.viewComponent"],
         strings: {
             // Specified by implementor
             // text of label to apply to both textfield and control
@@ -38,6 +38,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             container: "fl-textfieldStepper fl-focus"
         },
         components: {
+            textfield: {
+                type: "fluid.textfield",
+                container: "{that}.dom.textfield",
+                options: {
+                    gradeNames: ["fluid.textfield.rangeController"],
+                    components: {
+                        controller: {
+                            options: {
+                                model: "{textfieldStepper}.model"
+                            }
+                        }
+                    }
+                }
+            },
             increaseButton: {
                 type: "fluid.textfieldStepper.button",
                 container: "{textfieldStepper}.dom.increaseButton",
@@ -99,25 +113,29 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         model: {
-            value: null
+            value: null,
+            step: 1,
+            range: {
+                min: 0,
+                max: 100
+            }
         },
-        range: {
-            min: 0,
-            max: 100
-        },
-        step: 1,
         ariaOptions: {
             // Specified by implementor
             // ID of an external label to refer to with aria-labelledby
             // attribute
             // "aria-labelledby": ""
-        }
+        },
+        distributeOptions: [{
+            source: "{that}.options.scale",
+            target: "{that > fluid.textfield > controller}.options.scale"
+        }]
     });
 
 
     fluid.textfieldStepper.step = function (that, coefficient) {
         coefficient = coefficient || 1;
-        var newValue = that.model.value + (coefficient * that.options.step);
+        var newValue = that.model.value + (coefficient * that.model.step);
         that.applier.change("value", newValue);
     };
 
