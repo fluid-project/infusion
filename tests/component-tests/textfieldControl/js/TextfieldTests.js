@@ -47,7 +47,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.expect(4);
             var that = fluid.tests.textfield(".flc-textfield");
 
-            fluid.tests.textfieldControl.assertTextfieldInit(that, {model: {value: "default value"}}, that.container, true);
+            fluid.tests.textfieldControl.assertTextfieldInit(that, {model: {value: "default value"}});
         });
 
         jqUnit.test("Change Value", function () {
@@ -64,83 +64,60 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The model value should have udpated", newTextfieldEntry, that.model.value);
         });
 
-        //
-        // fluid.tests.textfield.testCase = {
-        //     message: "Test Valid Values",
-        //     expected: 8,
-        //     tests: [
-        //         {input: 5, expected: 5},
-        //         {input: 0, expected: 0},
-        //         {input: 100, expected: 100},
-        //         {input: -5, expected: -5}
-        //     ]
-        // };
-        //
-        // jqUnit.test(fluid.tests.textfield.testCase.message, function () {
-        //     jqUnit.expect(fluid.tests.textfield.testCase.expected);
-        //     var that = fluid.tests.textfield(".flc-textfield", fluid.tests.textfield.testCase.componentOptions);
-        //     var textfield = that.container;
-        //
-        //     fluid.each(fluid.tests.textfield.testCase.tests, function (currentTest) {
-        //         fluid.tests.textfieldControl.assertTextfieldEntry(currentTest.input, currentTest.expected, that, textfield);
-        //     });
-        // });
+        /************************************
+         * TextField Range Controller Tests *
+         ************************************/
 
-        // /***************************
-        //  * Textfield Control Tests *
-        //  ***************************/
-        //
-        //
-        // jqUnit.module("Textfield Control Tests");
-        //
-        // fluid.defaults("fluid.tests.textfieldControl", {
-        //     gradeNames: ["fluid.textfieldControl"],
-        //     strings: {
-        //         "aria-label": "Aria self-labeling"
-        //     },
-        //     model: {
-        //         value: 0
-        //     },
-        //     ariaOptions: {
-        //         "aria-labelledby": "label-nativeHTML"
-        //     }
-        // });
-        //
-        // jqUnit.test("Test Init", function () {
-        //     jqUnit.expect(6);
-        //     var options = {
-        //         model: {
-        //             value: 8
-        //         },
-        //         range: {
-        //             max: 10,
-        //             min: 1
-        //         }
-        //     };
-        //     var that = fluid.tests.textfieldControl(".flc-textfieldControl", options);
-        //
-        //     fluid.tests.textfieldControl.assertTextfieldControlInit(that, options);
-        // });
-        //
-        // fluid.tests.textfieldControl.testInputField = function (valToTest, expected, that) {
-        //     var textfield = that.locate("textfield");
-        //
-        //     fluid.changeElementValue(textfield, valToTest);
-        //
-        //     jqUnit.assertEquals("Textfield value should be " + expected, expected, +textfield.val());
-        //     jqUnit.assertEquals("Model value should be " + expected, expected, that.model.value);
-        // };
-        //
-        // fluid.each(fluid.tests.textfieldControl.testCases, function (currentCase) {
-        //     jqUnit.test(currentCase.message, function () {
-        //         var that = fluid.tests.textfieldControl(".flc-textfieldControl", currentCase.componentOptions);
-        //         var textfield = that.locate("textfield");
-        //
-        //         fluid.each(currentCase.tests, function (currentTest) {
-        //             fluid.tests.textfieldControl.assertTextfieldEntry(currentTest.input, currentTest.expected, that, textfield);
-        //         });
-        //     });
-        // });
+        jqUnit.module("TextField Range Controller Tests");
+
+        fluid.defaults("fluid.tests.textfield.rangeController", {
+            gradeNames: ["fluid.textfield.rangeController"],
+            strings: {
+                "aria-label": "Aria self-labeling"
+            },
+            model: {
+                value: 0
+            },
+            ariaOptions: {
+                "aria-labelledby": "label-nativeHTML"
+            }
+        });
+
+        jqUnit.test("Test Init", function () {
+            jqUnit.expect(5);
+            var options = {
+                model: {
+                    value: 8,
+                    range: {
+                        max: 10,
+                        min: 1
+                    }
+                }
+            };
+            var that = fluid.tests.textfield.rangeController(".flc-textfield-rangeController", options);
+            fluid.tests.textfieldControl.assertRangeControlledTextfieldInit(that, options);
+        });
+
+        fluid.tests.textfield.rangeController.testInputField = function (valToTest, expected, that) {
+            var textfield = that.container;
+
+            fluid.changeElementValue(textfield, valToTest);
+
+            jqUnit.assertEquals("Textfield value should be " + expected, expected, +textfield.val());
+            jqUnit.assertEquals("Model value should be " + expected, expected, +that.model.value);
+            jqUnit.assertEquals("Controller model value should be " + expected, expected, that.model.value);
+        };
+
+        fluid.each(fluid.tests.textfieldControl.testCases, function (currentCase) {
+            jqUnit.test(currentCase.message, function () {
+                var that = fluid.tests.textfield.rangeController(".flc-textfield-rangeController", currentCase.componentOptions);
+                var textfield = that.container;
+
+                fluid.each(currentCase.tests, function (currentTest) {
+                    fluid.tests.textfieldControl.assertTextfieldEntry(currentTest.input, currentTest.expected, that, textfield);
+                });
+            });
+        });
 
     });
 })(jQuery);

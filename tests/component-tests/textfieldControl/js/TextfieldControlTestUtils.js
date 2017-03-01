@@ -16,32 +16,46 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests.textfieldControl");
 
-    fluid.tests.textfieldControl.assertTextfieldInit = function (that, expected, textfield, expectString) {
-        var value = expectString ? textfield.val() : +textfield.val();
-        jqUnit.assertEquals("Textfield value is set", expected.model.value, value);
+    fluid.tests.textfieldControl.assertTextfieldInit = function (that, expected) {
+        var textfield = that.container;
+        jqUnit.assertEquals("Textfield value is set", expected.model.value, textfield.val());
         jqUnit.assertEquals("The model should be set", expected.model.value, that.model.value);
         jqUnit.assertEquals("The aria-label should be set", that.options.strings["aria-label"], textfield.attr("aria-label"));
         jqUnit.assertEquals("The aria-labelledby should be set", that.options.ariaOptions["aria-labelledby"], textfield.attr("aria-labelledby"));
     };
 
-    fluid.tests.textfieldControl.assertTextfieldControlInit = function (textfieldControl, expected) {
-        var textfield = textfieldControl.locate("textfield");
-        fluid.tests.textfieldControl.assertTextfieldInit(textfieldControl, expected, textfield);
-        jqUnit.assertEquals("Min should be the default", expected.range.min, textfieldControl.options.range.min);
-        jqUnit.assertEquals("Max should be the default", expected.range.max, textfieldControl.options.range.max);
+    fluid.tests.textfieldControl.assertRangeControlledTextfieldInit = function (that, expected) {
+        var textfield = that.container;
+        jqUnit.assertEquals("Textfield value is set", expected.model.value, +textfield.val());
+        jqUnit.assertEquals("The model should be set", expected.model.value, +that.model.value);
+        jqUnit.assertEquals("The controller model should be set", expected.model.value, that.controller.model.value);
+        jqUnit.assertEquals("The aria-label should be set", that.options.strings["aria-label"], textfield.attr("aria-label"));
+        jqUnit.assertEquals("The aria-labelledby should be set", that.options.ariaOptions["aria-labelledby"], textfield.attr("aria-labelledby"));
     };
+
+    // fluid.tests.textfieldControl.assertTextfieldControlInit = function (that, expected) {
+    //     var textfield = that.container;
+    //     fluid.tests.textfieldControl.assertTextfieldInit(that, expected, true);
+    // };
 
     fluid.tests.textfieldControl.assertTextfieldEntry = function (valToTest, expected, that, textfield) {
         fluid.changeElementValue(textfield, valToTest);
 
         jqUnit.assertEquals("Textfield value should be " + expected, expected, +textfield.val());
-        jqUnit.assertEquals("Model value should be " + expected, expected, that.model.value);
+        jqUnit.assertEquals("Model value should be " + expected, expected, +that.model.value);
     };
 
     fluid.tests.textfieldControl.testCases = {
         valid: {
             message: "Test Min/Max Size",
-            componentOptions: {range: {min: 5, max: 55}},
+            componentOptions: {
+                model: {
+                    range: {
+                        min: 5,
+                        max: 55
+                    }
+                }
+            },
             tests: [
                 {input: 56, expected: 55},
                 {input: 55, expected: 55},
@@ -53,7 +67,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         negative: {
             message: "Test Negative Scale",
-            componentOptions: {range: {min: -15, max: -5}},
+            componentOptions: {
+                model: {
+                    range: {
+                        min: -15,
+                        max: -5
+                    }
+                }
+            },
             tests: [
                 {input: 56, expected: -5},
                 {input: -10, expected: -10},
@@ -65,12 +86,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         invalid: {
             message: "Test Invalid Values",
             componentOptions: {
-                range: {
-                    min: -5,
-                    max: 5
-                },
                 model: {
-                    value: 1
+                    value: 1,
+                    range: {
+                        min: -5,
+                        max: 5
+                    }
                 }
             },
             tests: [
