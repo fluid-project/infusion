@@ -997,8 +997,13 @@ var fluid = fluid || fluid_3_0_0;
 
     // unsupported, NON-API function
     fluid.model.resolvePathSegment = function (root, segment, create, origEnv) {
+        // TODO: This branch incurs a huge cost that we incur across the whole framework, just to support the DOM binder
+        // usage. We need to either do something "schematic" or move to proxies
         if (!origEnv && root.resolvePathSegment) {
-            return root.resolvePathSegment(segment);
+            var togo = root.resolvePathSegment(segment);
+            if (togo !== undefined) { // To resolve FLUID-6132
+                return togo;
+            }
         }
         if (create && root[segment] === undefined) {
             // This optimisation in this heavily used function has a fair effect
