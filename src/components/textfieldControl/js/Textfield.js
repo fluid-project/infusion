@@ -61,13 +61,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         invokers: {
             setModel: {
-                funcName: "fluid.notImplemented"
+                changePath: "value",
+                value: "{arguments}.0.target.value"
             }
-            // TODO: after FLUID-6136 has been addressed. Re-instate the default implementation.
-            // setModel: {
-            //     changePath: "value",
-            //     value: "{arguments}.0.target.value"
-            // }
         }
     });
 

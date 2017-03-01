@@ -33,13 +33,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             ariaOptions: {
                 "aria-labelledby": "label-textfield"
-            },
-            invokers: {
-                // TODO: after FLUID-6136 has been addressed. Can use the default invoker in the test
-                setModel: {
-                    changePath: "value",
-                    value: "{arguments}.0.target.value"
-                }
             }
         });
 
