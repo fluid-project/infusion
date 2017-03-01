@@ -640,6 +640,40 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertNoValue("Options exclusion", uploader.uploaderContext);
     });
 
+    /** FLUID-6137 distributeOptions with 0 as value **/
+
+    fluid.defaults("fluid.tests.distributeOptionsZero", {
+        gradeNames: ["fluid.component"],
+        components: {
+            child: {
+                type: "fluid.component"
+            }
+        },
+        toDistributeCheck: 1,
+        toDistribute: 0,
+        distributeOptions: [{
+            source: "{that}.options.toDistributeCheck",
+            target: "{that child}.options.sourceSanityCheck"
+        }, {
+            record: 1,
+            target: "{that child}.options.recordSanityCheck"
+        }, {
+            source: "{that}.options.toDistribute",
+            target: "{that child}.options.fromSource"
+        }, {
+            record: 0,
+            target: "{that child}.options.fromRecord"
+        }]
+    });
+
+    jqUnit.test("FLUID-6137 distributeOptions with 0 as value", function () {
+        var distributeZero = fluid.tests.distributeOptionsZero();
+        jqUnit.assertEquals("Option should be distributed to sourceSanityCheck", 1, distributeZero.child.options.sourceSanityCheck);
+        jqUnit.assertEquals("Option should be distributed to recordSanityCheck", 1, distributeZero.child.options.recordSanityCheck);
+        jqUnit.assertEquals("Option should be distributed to fromSource", 0, distributeZero.child.options.fromSource);
+        jqUnit.assertEquals("Option should be distributed to fromRecord", 0, distributeZero.child.options.fromRecord);
+    });
+
     /** FLUID-4926 Invoker tests **/
 
     fluid.defaults("fluid.tests.invokerFunc", {
