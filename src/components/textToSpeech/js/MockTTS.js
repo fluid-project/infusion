@@ -52,19 +52,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 funcName: "fluid.mock.textToSpeech.cancel",
                 args: ["{that}", "{that}.handleEnd"]
             },
-            pause: {
-                "this": null, // TODO: This needs to be removed once FLUID-5714 is fixed
-                method: null,
-                func: "{that}.events.onPause.fire"
-            },
-            resume: {
-                "this": null,
-                method: null,
-                func: "{that}.events.onResume.fire"
-            },
             getVoices: {
-                "this": null,
-                method: null,
                 funcName: "fluid.identity",
                 args: []
             },

@@ -1994,6 +1994,49 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The overriding method should be called by the invoker", "Stored arg set to: 7", that.thisistThing.storedArg);
     });
 
+    /** FLUID-6136 - "overriding changePath invoker" **/
+
+    fluid.defaults("fluid.tests.overrideInvokerChangePath", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            value: "foo"
+        },
+        invokers: {
+            toOverride: {
+                changePath: "value",
+                value: "{arguments}.0"
+            }
+        }
+    });
+
+    fluid.tests.overrideInvokerChangePath.overridden = function (that) {
+        that.applier.change("value", "overridden");
+    };
+
+    jqUnit.test("FLUID-6136 overriding changePath invoker", function () {
+        var replace = fluid.tests.overrideInvokerChangePath({
+            invokers: {
+                toOverride: {
+                    funcName: "fluid.tests.overrideInvokerChangePath.overridden",
+                    args: ["{that}"]
+                }
+            }
+        });
+        replace.toOverride("bar");
+        jqUnit.assertEquals("The overriding method should be called by the invoker", "overridden", replace.model.value);
+
+        var replaceAndNull = fluid.tests.overrideInvokerChangePath({
+            invokers: {
+                toOverride: {
+                    funcName: "fluid.tests.overrideInvokerChangePath.overridden",
+                    args: ["{that}"]
+                }
+            }
+        });
+        replaceAndNull.toOverride("bar");
+        jqUnit.assertEquals("The overriding method, with changePath and value nulled out, should be called by the invoker", "overridden", replaceAndNull.model.value);
+    });
+
     /** FLUID-4055 - reinstantiation test **/
 
     fluid.defaults("fluid.tests.refChild", {

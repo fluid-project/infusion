@@ -2538,7 +2538,7 @@ var fluid = fluid || fluid_3_0_0;
         return target;
     };
 
-    fluid.invokerStrategies = fluid.arrayToHash(["func", "funcName", "listener", "this", "method"]);
+    fluid.invokerStrategies = fluid.arrayToHash(["func", "funcName", "listener", "this", "method", "changePath", "value"]);
 
     // Resolve FLUID-5741, FLUID-5184 by ensuring that we avoid mixing incompatible invoker strategies
     fluid.invokersMergePolicy = function (target, source) {
