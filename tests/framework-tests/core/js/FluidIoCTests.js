@@ -1995,9 +1995,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             invokers: {
                 toOverride: {
                     funcName: "fluid.tests.overrideInvokerChangePath.overridden",
-                    args: ["{that}"],
-                    changePath: null,
-                    value: null
+                    args: ["{that}"]
                 }
             }
         });
