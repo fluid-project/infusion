@@ -32,7 +32,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                                 model: "{textfieldSlider}.model"
                             }
                         }
-                    }
+                    },
+                    ariaOptions: "{textfieldSlider}.options.ariaOptions",
+                    strings: "{textfieldSlider}.options.strings"
                 }
             },
             slider: {

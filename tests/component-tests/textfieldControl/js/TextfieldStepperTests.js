@@ -79,19 +79,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.test("Test Init", function () {
-            jqUnit.expect(8);
+            jqUnit.expect(7);
             var options = {
                 model: {
-                    value: 8
-                },
-                range: {
-                    max: 10,
-                    min: 1
+                    value: 8,
+                    range: {
+                        max: 10,
+                        min: 1
+                    }
                 }
             };
             var that = fluid.tests.textfieldStepper(".flc-textfieldStepper", options);
 
-            fluid.tests.textfieldControl.assertTextfieldControlInit(that, options);
+            fluid.tests.textfieldControl.assertRangeControlledTextfieldInit(that.textfield, options);
 
             jqUnit.assertFalse("The increase button is enabled", that.locate("increaseButton").is(":disabled"));
             jqUnit.assertFalse("The decrease button is enabled", that.locate("decreaseButton").is(":disabled"));
@@ -101,11 +101,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.expect(8);
             var options = {
                 model: {
-                    value: 10
-                },
-                range: {
-                    max: 10,
-                    min: 1
+                    value: 10,
+                    range: {
+                        max: 10,
+                        min: 1
+                    }
                 }
             };
             var that = fluid.tests.textfieldStepper(".flc-textfieldStepper", options);
@@ -119,14 +119,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // decrease
             decreaseBtn.trigger("click");
 
-            jqUnit.assertEquals("The model value should decrease", that.options.range.max - that.options.step, that.model.value);
+            jqUnit.assertEquals("The model value should decrease", that.model.range.max - that.model.step, that.model.value);
             jqUnit.assertFalse("The increase button is enabled", increaseBtn.is(":disabled"));
             jqUnit.assertFalse("The decrease button is enabled", decreaseBtn.is(":disabled"));
 
             // increase
             increaseBtn.trigger("click");
 
-            jqUnit.assertEquals("The model value should increase", that.options.range.max, that.model.value);
+            jqUnit.assertEquals("The model value should increase", that.model.range.max, that.model.value);
             jqUnit.assertTrue("The increase button is disabled", increaseBtn.is(":disabled"));
             jqUnit.assertFalse("The decrease button is enabled", decreaseBtn.is(":disabled"));
         });
@@ -135,11 +135,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.expect(8);
             var options = {
                 model: {
-                    value: 1
-                },
-                range: {
-                    max: 10,
-                    min: 1
+                    value: 1,
+                    range: {
+                        max: 10,
+                        min: 1
+                    }
                 }
             };
             var that = fluid.tests.textfieldStepper(".flc-textfieldStepper", options);
@@ -153,14 +153,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // increase
             increaseBtn.trigger("click");
 
-            jqUnit.assertEquals("The model value should decrease", that.options.range.min + that.options.step, that.model.value);
+            jqUnit.assertEquals("The model value should decrease", that.model.range.min + that.model.step, that.model.value);
             jqUnit.assertFalse("The increase button is enabled", increaseBtn.is(":disabled"));
             jqUnit.assertFalse("The decrease button is enabled", decreaseBtn.is(":disabled"));
 
             // decrease
             decreaseBtn.trigger("click");
 
-            jqUnit.assertEquals("The model value should increase", that.options.range.min, that.model.value);
+            jqUnit.assertEquals("The model value should increase", that.model.range.min, that.model.value);
             jqUnit.assertFalse("The increase button is enabled", increaseBtn.is(":disabled"));
             jqUnit.assertTrue("The decrease button is disabled", decreaseBtn.is(":disabled"));
         });

@@ -73,6 +73,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             ariaOptions: {
                 "aria-labelledby": "label-nativeHTML"
+            },
+            // this distribution would typically be handled through a model relay
+            // by a parent component, such as fluid.textfieldStepper
+            distributeOptions: {
+                source: "{that}.options.model.range",
+                target: "{that controller}.options.model.range"
             }
         });
 

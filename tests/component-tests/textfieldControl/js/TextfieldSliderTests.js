@@ -30,24 +30,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.test("Test Init", function () {
-            jqUnit.expect(11);
+            jqUnit.expect(10);
             var options = {
                 model: {
-                    value: 15
-                },
-                range: {
-                    min: 10,
-                    max: 20
+                    value: 15,
+                    range: {
+                        min: 10,
+                        max: 20
+                    }
                 }
             };
             var that = fluid.tests.textfieldSlider(".fl-textfield-slider", options);
 
-            fluid.tests.textfieldControl.assertTextfieldControlInit(that, options, that.locate("textfield"));
+            fluid.tests.textfieldControl.assertRangeControlledTextfieldInit(that.textfield, options);
 
             var slider = that.locate("slider");
             jqUnit.assertEquals("The value now should be " + options.model.value, options.model.value, +slider.val());
-            jqUnit.assertEquals("The max should be " + options.range.max, options.range.max, +slider.attr("max"));
-            jqUnit.assertEquals("The min should be " + options.range.min, options.range.min, +slider.attr("min"));
+            jqUnit.assertEquals("The max should be " + options.model.range.max, options.model.range.max, +slider.attr("max"));
+            jqUnit.assertEquals("The min should be " + options.model.range.min, options.model.range.min, +slider.attr("min"));
             jqUnit.assertEquals("Slider has user-supplied aria-label value", that.options.strings["aria-label"], slider.attr("aria-label"));
             jqUnit.assertEquals("Slider has user-supplied aria-labelled value", that.options.ariaOptions["aria-labelledby"], slider.attr("aria-labelledby"));
         });

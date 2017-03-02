@@ -49,7 +49,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                                 model: "{textfieldStepper}.model"
                             }
                         }
-                    }
+                    },
+                    ariaOptions: "{textfieldStepper}.options.ariaOptions",
+                    strings: "{textfieldStepper}.options.strings"
                 }
             },
             increaseButton: {
@@ -67,7 +69,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         singleTransform: {
                             type: "fluid.transforms.binaryOp",
                             left: "{textfieldStepper}.model.value",
-                            right: "{textfieldStepper}.options.range.max",
+                            right: "{textfieldStepper}.model.range.max",
                             operator: ">="
                         }
                     }
@@ -88,7 +90,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         singleTransform: {
                             type: "fluid.transforms.binaryOp",
                             left: "{textfieldStepper}.model.value",
-                            right: "{textfieldStepper}.options.range.min",
+                            right: "{textfieldStepper}.model.range.min",
                             operator: "<="
                         }
                     }

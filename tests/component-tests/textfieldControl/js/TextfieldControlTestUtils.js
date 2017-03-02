@@ -33,11 +33,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The aria-labelledby should be set", that.options.ariaOptions["aria-labelledby"], textfield.attr("aria-labelledby"));
     };
 
-    // fluid.tests.textfieldControl.assertTextfieldControlInit = function (that, expected) {
-    //     var textfield = that.container;
-    //     fluid.tests.textfieldControl.assertTextfieldInit(that, expected, true);
-    // };
-
     fluid.tests.textfieldControl.assertTextfieldEntry = function (valToTest, expected, that, textfield) {
         fluid.changeElementValue(textfield, valToTest);
 
