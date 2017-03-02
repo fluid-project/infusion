@@ -161,7 +161,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.each(map, function (primaryPath, internalPath) {
                 if (fluid.prefs.checkPrimarySchema(prefSchema, prefKey)) {
                     var opts = {};
-                    if (internalPath.indexOf("model.") === 0) {
+                    if (internalPath.indexOf("model.") === 0 && primaryPath === "default") {
                         var internalModelName = internalPath.slice(6);
                         // Set up the binding in "rules" accepted by the modelRelay base grade of every panel
                         fluid.set(opts, "model", fluid.get(opts, "model") || {});
@@ -283,7 +283,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 fluid.each(map, function (primaryPath, internalPath) {
                     if (fluid.prefs.checkPrimarySchema(prefSchema, subPanelPrefsKey)) {
                         var opts;
-                        if (internalPath.indexOf("model.") === 0) {
+                        if (internalPath.indexOf("model.") === 0 && primaryPath === "default") {
                             // Set up the binding in "rules" accepted by the modelRelay base grade of every panel
                             fluid.set(compositePanelOptions, ["options", "model"], fluid.get(compositePanelOptions, ["options", "model"]) || {});
                             fluid.prefs.addCommonOptions(compositePanelOptions, ["options", "model"], panelModelCommonOptions, {
