@@ -198,9 +198,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 options: {
                     gradeNames: "fluid.prefs.prefsEditorConnections",
                     model: {
-                        textSize: "{prefsEditor}.model.preferences.textSize"
+                        textSize: "{prefsEditor}.model.preferences.textSize",
+                        step: 0.1,
+                        range: {
+                            min: 1,
+                            max: 2
+                        }
                     },
-                    step: 0.1,
                     messageBase: "{messageLoader}.resources.textSize.resourceText",
                     resources: {
                         template: "{templateLoader}.resources.textSize"
@@ -214,9 +218,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 options: {
                     gradeNames: "fluid.prefs.prefsEditorConnections",
                     model: {
-                        lineSpace: "{prefsEditor}.model.preferences.lineSpace"
+                        lineSpace: "{prefsEditor}.model.preferences.lineSpace",
+                        step: 0.1,
+                        range: {
+                            min: 1,
+                            max: 2
+                        }
                     },
-                    step: 0.1,
                     messageBase: "{messageLoader}.resources.lineSpace.resourceText",
                     resources: {
                         template: "{templateLoader}.resources.lineSpace"

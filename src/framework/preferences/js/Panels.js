@@ -665,13 +665,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "step": "divisibleBy"
             }
         },
-        // The default model values represent both the expected format as well as the setting to be applied in the absence of values passed down to the component.
-        // i.e. from the settings store, or specific defaults derived from schema.
-        // Note: Except for being passed down to its subcomponent, these default values are not contributed and shared out
-        range: {
-            min: 1,
-            max: 2
-        },
         selectors: {
             textSize: ".flc-prefsEditor-min-text-size",
             label: ".flc-prefsEditor-min-text-size-label",
@@ -686,14 +679,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 createOnEvent: "afterRender",
                 options: {
                     model: {
-                        value: "{fluid.prefs.panel.textSize}.model.textSize"
+                        value: "{fluid.prefs.panel.textSize}.model.textSize",
+                        range: {
+                            min: "{fluid.prefs.panel.textSize}.options.range.min",
+                            max: "{fluid.prefs.panel.textSize}.options.range.max"
+                        },
+                        step: "{fluid.prefs.panel.textSize}.options.step"
                     },
+                    scale: 1,
                     strings: {
                         increaseLabel: "{fluid.prefs.panel.textSize}.msgLookup.increaseLabel",
                         decreaseLabel: "{fluid.prefs.panel.textSize}.msgLookup.decreaseLabel"
                     },
-                    range: "{fluid.prefs.panel.textSize}.options.range",
-                    step: "{fluid.prefs.panel.textSize}.options.step",
                     ariaOptions: {
                         "aria-labelledby": "{fluid.prefs.panel.textSize}.options.panelOptions.labelId"
                     }
@@ -777,13 +774,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "step": "divisibleBy"
             }
         },
-        // The default model values represent both the expected format as well as the setting to be applied in the absence of values passed down to the component.
-        // i.e. from the settings store, or specific defaults derived from schema.
-        // Note: Except for being passed down to its subcomponent, these default values are not contributed and shared out
-        range: {
-            min: 1,
-            max: 2
-        },
         selectors: {
             lineSpace: ".flc-prefsEditor-line-space",
             label: ".flc-prefsEditor-line-space-label",
@@ -798,14 +788,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 createOnEvent: "afterRender",
                 options: {
                     model: {
-                        value: "{fluid.prefs.panel.lineSpace}.model.lineSpace"
+                        value: "{fluid.prefs.panel.lineSpace}.model.lineSpace",
+                        range: {
+                            min: "{fluid.prefs.panel.lineSpace}.options.range.min",
+                            max: "{fluid.prefs.panel.lineSpace}.options.range.max"
+                        },
+                        step: "{fluid.prefs.panel.lineSpace}.options.step"
                     },
+                    scale: 1,
                     strings: {
                         increaseLabel: "{fluid.prefs.panel.lineSpace}.msgLookup.increaseLabel",
                         decreaseLabel: "{fluid.prefs.panel.lineSpace}.msgLookup.decreaseLabel"
                     },
-                    range: "{fluid.prefs.panel.lineSpace}.options.range",
-                    step: "{fluid.prefs.panel.lineSpace}.options.step",
                     ariaOptions: {
                         "aria-labelledby": "{fluid.prefs.panel.lineSpace}.options.panelOptions.labelId"
                     }
