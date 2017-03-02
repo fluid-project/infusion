@@ -57,18 +57,27 @@ fluid.module.hasPackage = function (dir) {
     }
 };
 
+fluid.module.modulesToRoot = function (root) {
+    var paths = fluid.module.pathsToRoot(root || __dirname);
+    var packages = fluid.transform(paths, fluid.module.hasPackage);
+    var names = fluid.getMembers(packages, "name");
+    return {
+        paths: paths,
+        packages: packages,
+        names: names
+    };
+};
+
 // A simple precursor of our eventual global module inspection system. This simply inspects the path
 // to root for any readable package.json files, and extracts their "name" field as a moral identifier
 // of a module's presence. Eventually our registry will include versions and be indexed from the
 // requestor's viewpoint - in the further future it will be mapped directly into an IoC tree
 
 fluid.module.preInspect = function (root) {
-    var paths = fluid.module.pathsToRoot(root || __dirname);
-    var packages = fluid.transform(paths, fluid.module.hasPackage);
-    var names = fluid.getMembers(packages, "name");
-    fluid.each(names, function (name, index) {
+    var moduleInfo = fluid.module.modulesToRoot(root);
+    fluid.each(moduleInfo.names, function (name, index) {
         if (name && !fluid.module.modules[name]) {
-            fluid.module.register(name, paths[index], null); // TODO: fabricate a "require" too - so far unused
+            fluid.module.register(name, moduleInfo.paths[index], null); // TODO: fabricate a "require" too - so far unused
         }
     });
 };
