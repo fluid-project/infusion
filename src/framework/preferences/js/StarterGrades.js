@@ -198,16 +198,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 options: {
                     gradeNames: "fluid.prefs.prefsEditorConnections",
                     model: {
-                        textSize: "{prefsEditor}.model.preferences.textSize",
-                        step: 0.1,
-                        range: {
-                            min: 1,
-                            max: 2
-                        }
+                        textSize: "{prefsEditor}.model.preferences.textSize"
                     },
                     messageBase: "{messageLoader}.resources.textSize.resourceText",
                     resources: {
                         template: "{templateLoader}.resources.textSize"
+                    },
+                    step: 0.1,
+                    range: {
+                        min: 1,
+                        max: 2
                     }
                 }
             },
@@ -218,16 +218,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 options: {
                     gradeNames: "fluid.prefs.prefsEditorConnections",
                     model: {
-                        lineSpace: "{prefsEditor}.model.preferences.lineSpace",
-                        step: 0.1,
-                        range: {
-                            min: 1,
-                            max: 2
-                        }
+                        lineSpace: "{prefsEditor}.model.preferences.lineSpace"
                     },
                     messageBase: "{messageLoader}.resources.lineSpace.resourceText",
                     resources: {
                         template: "{templateLoader}.resources.lineSpace"
+                    },
+                    step: 0.1,
+                    range: {
+                        min: 1,
+                        max: 2
                     }
                 }
             },
