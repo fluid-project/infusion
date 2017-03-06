@@ -259,7 +259,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.panel.contrast"],
         preferenceMap: {
             "fluid.prefs.contrast": {
-                "model.value": "default",
+                "model.value": "value",
                 "model.type": "type",
                 "controlValues.theme": "enum"
             }
@@ -507,10 +507,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.emphasizeLinks": {
-                "model.links": "default"
+                "model.links": "value"
             },
             "fluid.prefs.inputsLarger": {
-                "model.inputsLarger": "default"
+                "model.inputsLarger": "value"
             }
         }
     });
@@ -537,7 +537,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.viewComponent"],
         preferenceMap: {
             "fluid.prefs.textSize": {
-                "model.value": "default",
+                "model.value": "value",
                 "range.min": "minimum",
                 "range.max": "maximum"
             }
@@ -1133,7 +1133,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.subPanel1": {
-                "model.value": "default",
+                "model.value": "value",
                 "range.min": "minimum",
                 "range.max": "maximum"
             }
@@ -1150,7 +1150,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.subPanel2": {
-                "model.value": "default"
+                "model.value": "value"
             }
         },
         selectors: {
@@ -1165,7 +1165,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.enactor"],
         preferenceMap: {
             "fluid.prefs.subPanel1": {
-                "model.value": "default"
+                "model.value": "value"
             }
         }
     });
@@ -1174,7 +1174,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
         preferenceMap: {
             "fluid.prefs.subPanel2": {
-                "model.value": "default"
+                "model.value": "value"
             }
         }
     });
@@ -1430,7 +1430,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.subPanel3": {
-                "model.value": "default",
+                "model.value": "value",
                 "range.min": "minimum",
                 "range.max": "maximum",
                 "model.step": "divisibleBy" // to test that model paths without the "default" keyword are mapped correctly.
@@ -1442,7 +1442,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.subPanel4": {
-                "model.value": "default"
+                "model.value": "value"
             }
         }
     });
@@ -1451,7 +1451,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.enactor"],
         preferenceMap: {
             "fluid.prefs.subPanel3": {
-                "model.value": "default"
+                "model.value": "value"
             }
         }
     });
@@ -1460,7 +1460,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
         preferenceMap: {
             "fluid.prefs.subPanel4": {
-                "model.value": "default"
+                "model.value": "value"
             }
         }
     });
@@ -1697,7 +1697,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.subPanel5": {
-                "model.value": "default"
+                "model.value": "value"
             }
         }
     });
@@ -1706,7 +1706,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.subPanel6": {
-                "model.value": "default"
+                "model.value": "value"
             }
         }
     });
@@ -1715,7 +1715,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.subPanel7": {
-                "model.value": "default"
+                "model.value": "value"
             }
         }
     });
@@ -1724,7 +1724,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.subPanel8": {
-                "model.value": "default"
+                "model.value": "value"
             }
         }
     });

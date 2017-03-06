@@ -659,7 +659,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.textSize": {
-                "model.textSize": "default",
+                "model.textSize": "value",
                 "range.min": "minimum",
                 "range.max": "maximum"
             }
@@ -726,7 +726,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.textFont": {
-                "model.value": "default",
+                "model.value": "value",
                 "controlValues.textFont": "enum"
             }
         },
@@ -771,7 +771,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.lineSpace": {
-                "model.lineSpace": "default",
+                "model.lineSpace": "value",
                 "range.min": "minimum",
                 "range.max": "maximum"
             }
@@ -838,7 +838,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.contrast": {
-                "model.value": "default",
+                "model.value": "value",
                 "controlValues.theme": "enum"
             }
         },
@@ -930,7 +930,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.tableOfContents": {
-                "model.toc": "default"
+                "model.toc": "value"
             }
         },
         selectors: {
@@ -955,7 +955,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.emphasizeLinks": {
-                "model.links": "default"
+                "model.links": "value"
             }
         },
         selectors: {
@@ -978,7 +978,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.inputsLarger": {
-                "model.inputsLarger": "default"
+                "model.inputsLarger": "value"
             }
         },
         selectors: {

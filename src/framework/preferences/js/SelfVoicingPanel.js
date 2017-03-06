@@ -21,7 +21,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.prefs.speak": {
-                "model.speak": "default"
+                "model.speak": "value"
             }
         },
         selectors: {

@@ -26,7 +26,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: "fluid.prefs.enactor",
         preferenceMap: {
             "fluid.prefs.speak": {
-                "model.enabled": "default"
+                "model.enabled": "value"
             }
         },
         components: {

@@ -27,7 +27,7 @@ var example = example || {};
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "example.speakText": {
-                "model.speakText": "default"
+                "model.speakText": "value"
             }
         },
         selectors: {
@@ -47,7 +47,7 @@ var example = example || {};
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "example.increaseSize": {
-                "model.incSize": "default"
+                "model.incSize": "value"
             }
         },
         selectors: {
@@ -68,7 +68,7 @@ var example = example || {};
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "example.volume": {
-                "model.volume": "default",
+                "model.volume": "value",
                 "range.min": "minimum",
                 "range.max": "maximum"
             }
@@ -117,7 +117,7 @@ var example = example || {};
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "example.wordsPerMinute": {
-                "model.wordsPerMin": "default",
+                "model.wordsPerMin": "value",
                 "range.min": "minimum",
                 "range.max": "maximum"
             }
@@ -166,7 +166,7 @@ var example = example || {};
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "example.cursorSize": {
-                "model.cursorMult": "default",
+                "model.cursorMult": "value",
                 "range.min": "minimum",
                 "range.max": "maximum"
             }
@@ -215,7 +215,7 @@ var example = example || {};
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "example.magnification": {
-                "model.mag": "default",
+                "model.mag": "value",
                 "range.min": "minimum",
                 "range.max": "maximum"
             }
@@ -267,7 +267,7 @@ var example = example || {};
         },
         preferenceMap: {
             "example.magnifierPosition": {
-                "model.magPos": "default",
+                "model.magPos": "value",
                 "controlValues.magPos": "enum"
             }
         },
