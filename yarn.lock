@@ -138,6 +138,10 @@ arrify@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/arrify/-/arrify-1.0.1.tgz#898508da2226f380df904728456849c1501a4b0d"
 
+asap@~1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/asap/-/asap-1.0.0.tgz#b2a45da5fdfa20b0496fc3768cc27c12fa916a7d"
+
 async@1.x, async@^1.4.0, async@^1.5.0, async@^1.5.2, async@~1.5.2:
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/async/-/async-1.5.2.tgz#ec6a61ae56480c0c3cb241c95618e20892f9672a"
@@ -750,6 +754,16 @@ exit@~0.1.1:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/exit/-/exit-0.1.2.tgz#0632638f8d877cc82107d30a0fff1a17cba1cd0c"
 
+express-handlebars@1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/express-handlebars/-/express-handlebars-1.2.2.tgz#945530aea626f0b87130dc8dbea2b6cea9c43460"
+  dependencies:
+    glob "^5.0.0"
+    graceful-fs "^3.0.2"
+    handlebars "^2.0.0"
+    promise "^6.0.0"
+    semver "^3.0.1"
+
 express-session@1.15.0:
   version "1.15.0"
   resolved "https://registry.yarnpkg.com/express-session/-/express-session-1.15.0.tgz#67131dd5b78a42bc57b50af0a14880265c03f919"
@@ -1003,7 +1017,7 @@ getobject@~0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/getobject/-/getobject-0.1.0.tgz#047a449789fa160d018f5486ed91320b6ec7885c"
 
-glob@7.0.x, glob@~7.0.0:
+glob@7.0.x, glob@^7.0.0, glob@^7.0.3, glob@^7.0.4, glob@^7.0.5, glob@~7.0.0:
   version "7.0.6"
   resolved "https://registry.yarnpkg.com/glob/-/glob-7.0.6.tgz#211bafaf49e525b8cd93260d14ab136152b3f57a"
   dependencies:
@@ -1014,7 +1028,7 @@ glob@7.0.x, glob@~7.0.0:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-glob@^5.0.15, glob@~5.0.0:
+glob@^5.0.0, glob@^5.0.15, glob@~5.0.0:
   version "5.0.15"
   resolved "https://registry.yarnpkg.com/glob/-/glob-5.0.15.tgz#1bc936b9e02f4a603fcc222ecf7633d30b8b93b1"
   dependencies:
@@ -1024,7 +1038,7 @@ glob@^5.0.15, glob@~5.0.0:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-glob@^7.0.0, glob@^7.0.3, glob@^7.0.4, glob@^7.0.5, glob@~7.1.1:
+glob@~7.1.1:
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/glob/-/glob-7.1.1.tgz#805211df04faaf1c63a3600306cdf5ade50b2ec8"
   dependencies:
@@ -1058,6 +1072,12 @@ globule@^1.0.0:
     lodash "~4.16.4"
     minimatch "~3.0.2"
 
+gpii-binder@1.0.0-dev.20170127T144054Z.54a5ef2:
+  version "1.0.0-dev.20170127T144054Z.54a5ef2"
+  resolved "https://registry.yarnpkg.com/gpii-binder/-/gpii-binder-1.0.0-dev.20170127T144054Z.54a5ef2.tgz#a56985dcfdbf0a52970a9b42fe3f39d375a50d63"
+  dependencies:
+    infusion "3.0.0-dev.20170127T130413Z.103de6e"
+
 gpii-express@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/gpii-express/-/gpii-express-1.0.2.tgz#be71f0d453c536b66de1b86af0056831ed738105"
@@ -1068,17 +1088,47 @@ gpii-express@1.0.2:
     express-session "1.15.0"
     infusion "3.0.0-dev.20170127T130413Z.103de6e"
 
-gpii-testem@1.0.0-dev.20170301T121642Z.8e9b44d:
-  version "1.0.0-dev.20170301T121642Z.8e9b44d"
-  resolved "https://registry.yarnpkg.com/gpii-testem/-/gpii-testem-1.0.0-dev.20170301T121642Z.8e9b44d.tgz#938de993a7b3d592a56b98963c660ae1ab794979"
+gpii-express@1.0.2-dev.20170303T152835Z.fda504c:
+  version "1.0.2-dev.20170303T152835Z.fda504c"
+  resolved "https://registry.yarnpkg.com/gpii-express/-/gpii-express-1.0.2-dev.20170303T152835Z.fda504c.tgz#fcef66ea05def21087da4e439838fe37eb614300"
   dependencies:
-    gpii-express "1.0.2"
+    body-parser "1.16.0"
+    cookie-parser "1.4.3"
+    express "4.14.0"
+    express-session "1.15.0"
     infusion "3.0.0-dev.20170127T130413Z.103de6e"
+
+gpii-handlebars@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/gpii-handlebars/-/gpii-handlebars-1.0.0.tgz#68c1b15e3774aa8c26e838fff470381eb311fec9"
+  dependencies:
+    express-handlebars "1.2.2"
+    gpii-binder "1.0.0-dev.20170127T144054Z.54a5ef2"
+    gpii-express "1.0.2"
+    handlebars "4.0.6"
+    infusion "3.0.0-dev.20170127T130413Z.103de6e"
+    marked "0.3.6"
+    pagedown "1.1.0"
+    underscore-node "0.1.2"
+
+gpii-testem@1.0.0-dev.20170308T132406Z.afcf388:
+  version "1.0.0-dev.20170308T132406Z.afcf388"
+  resolved "https://registry.yarnpkg.com/gpii-testem/-/gpii-testem-1.0.0-dev.20170308T132406Z.afcf388.tgz#8c132cad5f24b60b86c1a59a90892b9072c2e6e9"
+  dependencies:
+    gpii-express "1.0.2-dev.20170303T152835Z.fda504c"
+    gpii-handlebars "1.0.0"
+    infusion "git://github.com/amb26/infusion.git#3ee14d99e2169e9870dffcbd1119aa109a3277c8"
     istanbul "0.4.5"
     node-jqunit "1.1.4"
     qunitjs "2.1.1"
     rimraf "2.6.0"
     testem "1.15.0"
+
+graceful-fs@^3.0.2:
+  version "3.0.11"
+  resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-3.0.11.tgz#7613c778a1afea62f25c630a086d7f3acbbdd818"
+  dependencies:
+    natives "^1.1.0"
 
 graceful-fs@^4.1.0, graceful-fs@^4.1.2:
   version "4.1.11"
@@ -1242,7 +1292,7 @@ gzip-size@^1.0.0:
     browserify-zlib "^0.1.4"
     concat-stream "^1.4.1"
 
-handlebars@^4.0.1:
+handlebars@4.0.6, handlebars@^4.0.1:
   version "4.0.6"
   resolved "https://registry.yarnpkg.com/handlebars/-/handlebars-4.0.6.tgz#2ce4484850537f9c97a8026d5399b935c4ed4ed7"
   dependencies:
@@ -1251,6 +1301,14 @@ handlebars@^4.0.1:
     source-map "^0.4.4"
   optionalDependencies:
     uglify-js "^2.6"
+
+handlebars@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/handlebars/-/handlebars-2.0.0.tgz#6e9d7f8514a3467fa5e9f82cc158ecfc1d5ac76f"
+  dependencies:
+    optimist "~0.3"
+  optionalDependencies:
+    uglify-js "~2.3"
 
 has-ansi@^2.0.0:
   version "2.0.0"
@@ -1358,6 +1416,12 @@ infusion@2.0.0-dev.20151130T180545Z.18ee3f8:
 infusion@3.0.0-dev.20170127T130413Z.103de6e:
   version "3.0.0-dev.20170127T130413Z.103de6e"
   resolved "https://registry.yarnpkg.com/infusion/-/infusion-3.0.0-dev.20170127T130413Z.103de6e.tgz#59d5163cd6c55d4c5b3c34af54b74fdb331b1a1d"
+  dependencies:
+    fluid-resolve "1.2.0"
+
+"infusion@git://github.com/amb26/infusion.git#3ee14d99e2169e9870dffcbd1119aa109a3277c8":
+  version "3.0.0"
+  resolved "git://github.com/amb26/infusion.git#3ee14d99e2169e9870dffcbd1119aa109a3277c8"
   dependencies:
     fluid-resolve "1.2.0"
 
@@ -1610,7 +1674,7 @@ lodash.isarray@^3.0.0:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/lodash.isarray/-/lodash.isarray-3.0.4.tgz#79e4eb88c36a8122af86f844aa9bcd851b5fbb55"
 
-lodash@4.13.1, lodash@^4.0.0, lodash@^4.0.1, lodash@^4.7.0, lodash@^4.8.0:
+lodash@4.13.1, lodash@^4.0.0, lodash@^4.0.1, lodash@^4.3.0, lodash@^4.7.0, lodash@^4.8.0:
   version "4.13.1"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.13.1.tgz#83e4b10913f48496d4d16fec4a560af2ee744b68"
 
@@ -1618,7 +1682,7 @@ lodash@^3.10.1, lodash@~3.10.1:
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
 
-lodash@^4.14.0, lodash@^4.3.0:
+lodash@^4.14.0:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
@@ -1651,6 +1715,10 @@ lru-cache@^4.0.1:
 map-obj@^1.0.0, map-obj@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/map-obj/-/map-obj-1.0.1.tgz#d933ceb9205d82bdcf4886f6742bdc2b4dea146d"
+
+marked@0.3.6:
+  version "0.3.6"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-0.3.6.tgz#b2c6c618fccece4ef86c4fc6cb8a7cbf5aeda8d7"
 
 maxmin@^1.1.0:
   version "1.1.0"
@@ -1737,6 +1805,10 @@ mustache@^2.2.1:
 mute-stream@0.0.5:
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.5.tgz#8fbfabb0a98a253d3184331f9e8deb7372fac6c0"
+
+natives@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/natives/-/natives-1.1.0.tgz#e9ff841418a6b2ec7a495e939984f78f163e6e31"
 
 negotiator@0.6.1:
   version "0.6.1"
@@ -1853,6 +1925,12 @@ optimist@^0.6.1:
     minimist "~0.0.1"
     wordwrap "~0.0.2"
 
+optimist@~0.3, optimist@~0.3.5:
+  version "0.3.7"
+  resolved "https://registry.yarnpkg.com/optimist/-/optimist-0.3.7.tgz#c90941ad59e4273328923074d2cf2e7cbc6ec0d9"
+  dependencies:
+    wordwrap "~0.0.2"
+
 optionator@^0.8.1:
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/optionator/-/optionator-0.8.2.tgz#364c5e409d3f4d6301d6c0b4c05bba50180aeb64"
@@ -1871,6 +1949,10 @@ options@>=0.0.5:
 os-homedir@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/os-homedir/-/os-homedir-1.0.2.tgz#ffbc4988336e0e833de0c168c7ef152121aa7fb3"
+
+pagedown@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/pagedown/-/pagedown-1.1.0.tgz#2b46c119d5d5b583cc3c9210a000b3d40e4e6f80"
 
 pako@~0.2.0:
   version "0.2.9"
@@ -1980,6 +2062,12 @@ process-nextick-args@~1.0.6:
 progress@^1.1.8:
   version "1.1.8"
   resolved "https://registry.yarnpkg.com/progress/-/progress-1.1.8.tgz#e260c78f6161cdd9b0e56cc3e0a85de17c7a57be"
+
+promise@^6.0.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/promise/-/promise-6.1.0.tgz#2ce729f6b94b45c26891ad0602c5c90e04c6eef6"
+  dependencies:
+    asap "~1.0.0"
 
 proxy-addr@~1.1.2, proxy-addr@~1.1.3:
   version "1.1.3"
@@ -2158,6 +2246,10 @@ sax@0.5.x:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.3.0.tgz#9b2ce5d3de02d17c6012ad326aa6b4d0cf54f94f"
 
+semver@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-3.0.1.tgz#720ac012515a252f91fb0dd2e99a56a70d6cf078"
+
 send@0.14.1:
   version "0.14.1"
   resolved "https://registry.yarnpkg.com/send/-/send-0.14.1.tgz#a954984325392f51532a7760760e459598c89f7a"
@@ -2281,7 +2373,7 @@ socket.io@1.6.0:
     socket.io-client "1.6.0"
     socket.io-parser "2.3.1"
 
-source-map@0.1.x:
+source-map@0.1.x, source-map@~0.1.7:
   version "0.1.43"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.1.43.tgz#c24bc146ca517c1471f5dacbe2571b2b7f9e3346"
   dependencies:
@@ -2519,6 +2611,14 @@ uglify-js@^2.6, uglify-js@~2.6.2:
     uglify-to-browserify "~1.0.0"
     yargs "~3.10.0"
 
+uglify-js@~2.3:
+  version "2.3.6"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-2.3.6.tgz#fa0984770b428b7a9b2a8058f46355d14fef211a"
+  dependencies:
+    async "~0.2.6"
+    optimist "~0.3.5"
+    source-map "~0.1.7"
+
 uglify-to-browserify@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/uglify-to-browserify/-/uglify-to-browserify-1.0.2.tgz#6e0924d6bda6b5afe349e39a6d632850a0f882b7"
@@ -2533,6 +2633,10 @@ uid-safe@~2.1.3:
 ultron@1.0.x:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/ultron/-/ultron-1.0.2.tgz#ace116ab557cd197386a4e88f4685378c8b2e4fa"
+
+underscore-node@0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/underscore-node/-/underscore-node-0.1.2.tgz#0ce8c7a5737ca6dc8e71315dc4da246949d48278"
 
 underscore.string@~3.2.3:
   version "3.2.3"

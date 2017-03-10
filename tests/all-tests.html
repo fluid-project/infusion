@@ -4,10 +4,17 @@
     <meta charset="UTF-8" />
     <title>Fluid framework complete tests runner</title>
 
+    <!--  Fluid is required for the "coverage sender" below -->
+    <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/FluidDebugging.js"></script>
+
     <link rel="stylesheet" href="lib/qunit/css/qunit.css" type="text/css" media="screen">
     <link rel="stylesheet" href="lib/qunit/addons/composite/qunit-composite.css">
     <script src="lib/qunit/js/qunit.js"></script>
+
     <script src="/testem.js"></script>
+
     <script src="lib/qunit/addons/composite/qunit-composite.js"></script>
 
     <!--
@@ -89,7 +96,6 @@
 </head>
 <body>
     <div id="qunit"></div>
-    <div id="qunit-fixture">
-</div>
+    <div id="qunit-fixture"></div>
 </body>
 </html>

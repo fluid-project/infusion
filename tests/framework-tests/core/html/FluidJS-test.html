@@ -16,16 +16,28 @@
         <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
         <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
 
+        <script src="/testem.js"></script>
+
+        <script type="text/javascript" src="/coverage/client/coverageSender.js"></script>
+
         <!--  These are tests that have been written using this page as data -->
         <script type="text/javascript" src="../js/FluidJSTests.js"></script>
-
     </head>
     <body>
-    <h1 id="qunit-header">Fluid JS Test Suite</h1>
-    <h2 id="qunit-banner"></h2>
-    <div id="qunit-testrunner-toolbar"></div>
-    <h2 id="qunit-userAgent"></h2>
-    <ol id="qunit-tests"></ol>
+        <h1 id="qunit-header">Fluid JS Test Suite</h1>
+        <h2 id="qunit-banner"></h2>
+        <div id="qunit-testrunner-toolbar"></div>
+        <h2 id="qunit-userAgent"></h2>
+        <ol id="qunit-tests"></ol>
+
+        <script type="text/javascript">
+            QUnit.testDone(function(){ console.log("QUnit module done (single file)...");})
+            QUnit.moduleDone(function(){ console.log("QUnit module done (single file)...");})
+            Testem.afterTests(function(config, data, callback) {
+                console.log("Testem after tests (single file)...");
+                callback();
+            });
+        </script>
 
     </body>
 </html>

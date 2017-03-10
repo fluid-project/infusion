@@ -288,11 +288,6 @@ module.exports = function (grunt) {
                 tasks: "buildStylus"
             }
         },
-        shell: {
-            runTests: {
-                command: "vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 testem ci --file tests/testem.json'"
-            }
-        },
         distributions:
         {
             "all": {},
@@ -349,7 +344,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-jsonlint");
     grunt.loadNpmTasks("grunt-modulefiles");
     grunt.loadNpmTasks("grunt-contrib-stylus");
-    grunt.loadNpmTasks("grunt-shell");
     grunt.loadNpmTasks("grunt-contrib-watch");
 
     // Custom tasks:
@@ -533,6 +527,4 @@ module.exports = function (grunt) {
     grunt.registerTask("custom", ["build:custom"]);
 
     grunt.registerTask("lint", "Apply eslint and jsonlint", ["eslint", "jsonlint"]);
-
-    grunt.registerTask("tests", "Run tests", ["shell:runTests"]);
 };

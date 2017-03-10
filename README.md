@@ -216,20 +216,25 @@ and will report errors if they are not focused.
 
 ### Run Tests Using Browsers Installed In a VM ###
 
-A [Fedora VM](https://github.com/idi-ops/packer-fedora) can be automatically created using tools provided by the
-[Prosperity4All Quality Infrastructure](https://github.com/GPII/qi-development-environments/). After meeting the
-[QI development VM requirements](https://github.com/GPII/qi-development-environments/#requirements) the ``vagrant up``
-command can be used to launch a VM which will contain Testem and several browsers. Typing ``grunt tests`` will run the
-Infusion tests in the VM and the results will be displayed in your terminal.
+The tests in this package can be run within a virtual machine (VM).  The benefits of using a VM include the following:
 
-When this VM is first created Chrome and Firefox will be upgraded to the latest versions available in the Fedora and
+* Does not require testem to be installed on the host machine.
+* Allows other applications on the host machine to have focus while the tests are run.
+* Isolates the test run from issues specific to one operating system or machine.
+
+Before you can run tests within a VM, your machine will need to meet the
+[QI development VM requirements](https://github.com/GPII/qi-development-environments/#requirements).  Once you have that,
+a [Fedora VM](https://github.com/idi-ops/packer-fedora) can be automatically created using tools provided by the
+[Prosperity4All Quality Infrastructure](https://github.com/GPII/qi-development-environments/). The command
+``npm run test:vagrant`` (or ``yarn run test:vagrant``) will create the VM (if neeeded) and run the Infusion tests in
+the VM.  The test results from the VM will be displayed in your terminal.
+
+If you just want to create the VM yourself, you can use a command like ``vagrant up``, and connect to it the VM either
+from Virtualbox, or from the command line using a command like ``vagrant ssh``.
+
+When this VM is first created, Chrome and Firefox will be upgraded to the latest versions available in the Fedora and
 Google package repositories. The ``vagrant provision`` command can be used at a later time to trigger the browser
 upgrade and general VM provisioning mechanism.
-
-The benefits of using a VM include the following:
-
-* Does not require testem to be installed on the host machine
-* Allows other applications on the host machine to have focus while the tests are run
 
 ## Developing with the Preferences Framework ##
 

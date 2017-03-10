@@ -8,6 +8,7 @@ nodejs_branch: lts
 
 nodejs_app_npm_packages:
   - testem
+  - istanbul
 
 nodejs_app_commands:
   - npm install
