@@ -211,7 +211,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var togo = [];
         fluid.each(sourceBlocks, function (block) {
             var source = fluid.get(block.source, sourceSegs);
-            if (source) {
+            if (source !== undefined) {
                 togo.push(fluid.makeDistributionRecord(contextThat, block.source, sourceSegs, targetSegs, exclusions, block.recordType));
                 var rescued = $.extend({}, source);
                 if (removeSource) {
