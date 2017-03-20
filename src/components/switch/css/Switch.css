@@ -5,8 +5,8 @@
 }
 
 .fl-switchUI-control {
-    width: 10em;
-    border: 0.2em solid #000000;
+    width: 5.4em;
+    border: 0.1em solid #000000;
     border-radius: 2rem;
     margin: 0 1em;
     display: flex;
@@ -31,4 +31,9 @@
     border-radius: 1.8em;
     display: inline-block;
     margin: 0.2em;
+}
+
+.fl-switchUI-text {
+    text-transform: uppercase;
+    font-weight: 600;
 }
