@@ -1,5 +1,5 @@
 /*
-Copyright 2013-2016 OCAD University
+Copyright 2013-2017 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -1531,8 +1531,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             layout: false
         },
         messageBase: {
-            "tocLabel": "Table of Contents",
-            "tocDescr": "Create a table of contents",
+            "label": "Table of Contents",
+            "description": "Create a table of contents",
             "switchOn": "ToC On",
             "switchOff": "ToC Off"
         },
@@ -1560,8 +1560,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.layoutPanel.checkRendering = function (that, defaultInputStatus) {
         var messageBase = that.options.messageBase;
 
-        jqUnit.assertEquals("The label text is " + messageBase.tocLabel, messageBase.tocLabel, that.locate("label").text());
-        jqUnit.assertEquals("The description text is " + messageBase.tocDescr, messageBase.tocDescr, that.locate("tocDescr").text());
+        jqUnit.assertEquals("The label text is " + messageBase.label, messageBase.label, that.locate("label").text());
+        jqUnit.assertEquals("The description text is " + messageBase.description, messageBase.description, that.locate("description").text());
 
 
         jqUnit.assertValue("The switch component should have been created", that.switchUI);
@@ -1591,8 +1591,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     element: "{layout}.switchUI.dom.control"
                 }, {
                     listener: "fluid.tests.panels.utils.checkModel",
-                    args: ["toc", "{that}.options.testOptions.newValue"],
-                    spec: {path: "toc", priority: "last"},
+                    args: ["value", "{that}.options.testOptions.newValue"],
+                    spec: {path: "value", priority: "last"},
                     changeEvent: "{layout}.applier.modelChanged"
                 }]
             }]
@@ -1839,7 +1839,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "fluid.tests.emphasizeLinksPanel",
             "fluid.tests.inputsLargerPanel",
             "fluid.tests.linksControlsPanel"
-
         ]);
     });
 

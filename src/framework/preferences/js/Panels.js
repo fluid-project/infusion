@@ -1,5 +1,5 @@
 /*
-Copyright 2013-2016 OCAD University
+Copyright 2013-2017 OCAD University
 Copyright 2016 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -648,6 +648,50 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         parentBundle: "{fluid.prefs.prefsEditorLoader}.msgResolver"
     });
 
+    /*******************************************
+     * A base grade for switch adjuster panels *
+     *******************************************/
+
+    fluid.defaults("fluid.prefs.panel.switchAduster", {
+        gradeNames: ["fluid.prefs.panel"],
+        // preferences maps should map model values to "model.value"
+        // model: {value: ""}
+        selectors: {
+            switchContainer: ".flc-prefsEditor-switch",
+            label: ".flc-prefsEditor-label",
+            description: ".flc-prefsEditor-description"
+        },
+        selectorsToIgnore: ["switchContainer"],
+        components: {
+            switchUI: {
+                type: "fluid.switchUI",
+                container: "{that}.dom.switchContainer",
+                createOnEvent: "afterRender",
+                options: {
+                    strings: {
+                        on: "{fluid.prefs.panel.switchAduster}.msgLookup.switchOn",
+                        off: "{fluid.prefs.panel.switchAduster}.msgLookup.switchOff"
+                    },
+                    model: {
+                        enabled: "{fluid.prefs.panel.switchAduster}.model.value"
+                    },
+                    attrs: {
+                        "aria-labelledby": {
+                            expander: {
+                                funcName: "fluid.allocateSimpleId",
+                                args: ["{fluid.prefs.panel.switchAduster}.dom.description"]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        protoTree: {
+            label: {messagekey: "label"},
+            description: {messagekey: "description"}
+        }
+    });
+
     /********************************
      * Preferences Editor Text Size *
      ********************************/
@@ -927,45 +971,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * A sub-component of fluid.prefs that renders the "layout and navigation" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.layoutControls", {
-        gradeNames: ["fluid.prefs.panel"],
+        gradeNames: ["fluid.prefs.panel.switchAduster"],
         preferenceMap: {
             "fluid.prefs.tableOfContents": {
-                "model.toc": "default"
+                "model.value": "default"
             }
-        },
-        selectors: {
-            toc: ".flc-prefsEditor-toc",
-            label: ".flc-prefsEditor-toc-label",
-            tocDescr: ".flc-prefsEditor-toc-descr"
-        },
-        selectorsToIgnore: ["toc"],
-        components: {
-            switchUI: {
-                type: "fluid.switchUI",
-                container: "{that}.dom.toc",
-                createOnEvent: "afterRender",
-                options: {
-                    strings: {
-                        on: "{fluid.prefs.panel.layoutControls}.msgLookup.switchOn",
-                        off: "{fluid.prefs.panel.layoutControls}.msgLookup.switchOff"
-                    },
-                    model: {
-                        enabled: "{fluid.prefs.panel.layoutControls}.model.toc"
-                    },
-                    attrs: {
-                        "aria-labelledby": {
-                            expander: {
-                                funcName: "fluid.allocateSimpleId",
-                                args: ["{fluid.prefs.panel.layoutControls}.dom.tocDescr"]
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        protoTree: {
-            label: {messagekey: "tocLabel"},
-            tocDescr: {messagekey: "tocDescr"}
         }
     });
 

@@ -1,5 +1,5 @@
 /*
-Copyright 2013-2016 OCAD University
+Copyright 2013-2017 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -24,23 +24,14 @@ var example = example || {};
      * The "speak text" preference is a boolean, rendered as an on/off switch.
      */
     fluid.defaults("example.panels.speak", {
-        gradeNames: ["fluid.prefs.panel"],
+        gradeNames: ["fluid.prefs.panel.switchAduster"],
         preferenceMap: {
             "example.speakText": {
-                "model.speakText": "default"
+                "model.value": "default"
             }
         },
-        selectors: {
-            bool: ".mpe-speakText",
-            speakTextDescr: ".mpe-speakText-descr",
-            toggleOn: ".flc-prefsEditor-switchOn-label",
-            toggleOff: ".flc-prefsEditor-switchOff-label"
-        },
         protoTree: {
-            speakTextDescr: {messagekey: "speakText"},
-            bool: "${speakText}",
-            toggleOn: {messagekey: "toggleOn"},
-            toggleOff: {messagekey: "toggleOff"}
+            description: {messagekey: "speakText"}
         }
     });
 
@@ -48,24 +39,14 @@ var example = example || {};
      * The "increase size" preference is a boolean, rendered as an on/off switch.
      */
     fluid.defaults("example.panels.incSize", {
-        gradeNames: ["fluid.prefs.panel"],
+        gradeNames: ["fluid.prefs.panel.switchAduster"],
         preferenceMap: {
             "example.increaseSize": {
-                "model.incSize": "default"
+                "model.value": "default"
             }
         },
-        selectors: {
-            bool: ".mpe-incSize",
-            label: ".mpe-incSize-label",
-            incSizeDescr: ".mpe-incSize-descr",
-            toggleOn: ".flc-prefsEditor-switchOn-label",
-            toggleOff: ".flc-prefsEditor-switchOff-label"
-        },
         protoTree: {
-            incSizeDescr: {messagekey: "incSize"},
-            bool: "${incSize}",
-            toggleOn: {messagekey: "toggleOn"},
-            toggleOff: {messagekey: "toggleOff"}
+            description: {messagekey: "incSize"}
         }
     });
 

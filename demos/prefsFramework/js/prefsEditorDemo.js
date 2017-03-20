@@ -1,5 +1,5 @@
 /*
-Copyright 2014-2015 OCAD University
+Copyright 2014-2017 OCAD University
 Copyright 2015 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -108,45 +108,11 @@ var demo = demo || {};
      **********************************************************************************/
 
     fluid.defaults("demo.prefsEditor.simplifyPanel", {
-        gradeNames: ["fluid.prefs.panel"],
+        gradeNames: ["fluid.prefs.panel.switchAduster"],
         preferenceMap: {
             "demo.prefs.simplify": {
-                "model.simplify": "default"
+                "model.value": "default"
             }
-        },
-        selectors: {
-            simplify: ".demo-prefsEditor-simplify",
-            label: ".demo-prefsEditor-simplify-label",
-            simplifyDescr: ".demo-prefsEditor-simplify-descr"
-        },
-        selectorsToIgnore: ["simplify"],
-        components: {
-            switchUI: {
-                type: "fluid.switchUI",
-                container: "{that}.dom.simplify",
-                createOnEvent: "afterRender",
-                options: {
-                    strings: {
-                        on: "{demo.prefsEditor.simplifyPanel}.msgLookup.switchOn",
-                        off: "{demo.prefsEditor.simplifyPanel}.msgLookup.switchOff"
-                    },
-                    model: {
-                        enabled: "{demo.prefsEditor.simplifyPanel}.model.simplify"
-                    },
-                    attrs: {
-                        "aria-labelledby": {
-                            expander: {
-                                funcName: "fluid.allocateSimpleId",
-                                args: ["{demo.prefsEditor.simplifyPanel}.dom.simplifyDescr"]
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        protoTree: {
-            label: {messagekey: "simplifyLabel"},
-            simplifyDescr: {messagekey: "simplifyDescr"}
         }
     });
 
