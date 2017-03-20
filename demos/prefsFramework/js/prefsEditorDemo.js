@@ -106,6 +106,7 @@ var demo = demo || {};
     /**********************************************************************************
      * simplifyPanel
      **********************************************************************************/
+
     fluid.defaults("demo.prefsEditor.simplifyPanel", {
         gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
@@ -116,16 +117,36 @@ var demo = demo || {};
         selectors: {
             simplify: ".demo-prefsEditor-simplify",
             label: ".demo-prefsEditor-simplify-label",
-            simplifyDescr: ".demo-prefsEditor-simplify-descr",
-            toggleOn: ".flc-prefsEditor-switchOn-label",
-            toggleOff: ".flc-prefsEditor-switchOff-label"
+            simplifyDescr: ".demo-prefsEditor-simplify-descr"
+        },
+        selectorsToIgnore: ["simplify"],
+        components: {
+            switchUI: {
+                type: "fluid.switchUI",
+                container: "{that}.dom.simplify",
+                createOnEvent: "afterRender",
+                options: {
+                    strings: {
+                        on: "{demo.prefsEditor.simplifyPanel}.msgLookup.switchOn",
+                        off: "{demo.prefsEditor.simplifyPanel}.msgLookup.switchOff"
+                    },
+                    model: {
+                        enabled: "{demo.prefsEditor.simplifyPanel}.model.simplify"
+                    },
+                    attrs: {
+                        "aria-labelledby": {
+                            expander: {
+                                funcName: "fluid.allocateSimpleId",
+                                args: ["{fluid.prefs.panel.simplifyPanel}.dom.simplifyDescr"]
+                            }
+                        }
+                    }
+                }
+            }
         },
         protoTree: {
             label: {messagekey: "simplifyLabel"},
-            simplifyDescr: {messagekey: "simplifyDescr"},
-            simplify: "${simplify}",
-            toggleOn: {messagekey: "toggleOn"},
-            toggleOff: {messagekey: "toggleOff"}
+            simplifyDescr: {messagekey: "simplifyDescr"}
         }
     });
 

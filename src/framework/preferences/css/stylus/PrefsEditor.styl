@@ -235,70 +235,51 @@
 
     // ON/OFF Switch for checkboxes
     // The container for the toggle, which is also a label for the hidden checkbox.
+    // TODO: This is essentially a duplicate version of the CSS from Switch.css
+    //       need to implement a way to share the styling between the two locations.
     .fl-prefsEditor-onoff {
+        knobSize = 1.8em;
+        knobMargin = 0.2em;
         padding: 0 1rem;
 
-        input {
-            // hides the checkbox but makes it accessible to ATs and keyboard
-            border: 0 none;
-            clip: rect(0px, 0px, 0px, 0px);
-            height: 1px;
-            margin: -1px;
-            overflow: hidden;
-            padding: 0;
-            position: absolute;
-            width: 1px;
-
-            &:focus + label .fl-prefsEditor-switch {
-                outline: 0.2em solid #000000;
-                outline-offset: 0.1em;
-            }
-
-            &:checked + label .fl-prefsEditor-switchOn,
-            &:not(:checked) + label .fl-prefsEditor-switchOff {
-                border-color: #000000;
-                font-weight: bold;
-                font-size: 1.2em;
-
-                .fl-prefsEditor-switch-indicator {
-                    visibility: visible;
-                }
-            }
-
-            &:checked + label .fl-prefsEditor-switchOff
-            &:not(:checked) + label .fl-prefsEditor-switchOn {
-                border-color: transparent;
-            }
-        }
-
-        .fl-prefsEditor-panel-descr {
-            display: block;
-        }
-
-        .fl-prefsEditor-switch {
-            border: solid 0.2em #C7C7C8;
-            border-radius: 0.2em;
-            display: inline-flex;
+        .fl-switchUI {
+            display: flex;
             justify-content: center;
             align-items: center;
-            padding: 0.2em;
-            margin-top: 1em;
+        }
 
-            .fl-prefsEditor-switchOn,
-            .fl-prefsEditor-switchOff {
-                border: solid 0.2em #000000;
-                border-radius: 0.2em;
-                width: 4em;
+        .fl-switchUI-control {
+            width: knobSize * 3;
+            border: 0.1em solid #000000;
+            border-radius: knobSize + knobMargin;
+            margin: 0 1em;
+            display: flex;
+            align-items: center;
+            background-color: #ffffff;
+
+            &:focus {
+                outline: none;
+                box-shadow: 0 0 0 0.1em rgb(255, 255, 255),
+                            0 0 0 0.3em rgb(0, 0, 0);
             }
 
-            .fl-prefsEditor-switchOff {
-                margin-left: 0.8em;
+            &[aria-checked=true] {
+                justify-content: flex-end;
             }
+        }
 
-            .fl-prefsEditor-switch-indicator {
-                padding: 0 0.2em;
-                visibility: hidden;
-            }
+        .fl-switchUI-controlKnob {
+            height: knobSize;
+            width: knobSize;
+            background-color: #000000;
+            border-radius: knobSize;
+            display: inline-block;
+            margin: knobMargin;
+        }
+
+        .fl-switchUI-text {
+            text-transform: uppercase;
+            font-weight: 600;
         }
     }
 

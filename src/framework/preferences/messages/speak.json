@@ -1,6 +1,6 @@
 {
     "speakLabel": "Text-to-Speech",
     "speakDescr": "Let the computer read site content out loud",
-    "toggleOn": "ON",
-    "toggleOff": "OFF"
+    "switchOn": "ON",
+    "switchOff": "OFF"
 }

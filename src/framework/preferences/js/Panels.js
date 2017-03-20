@@ -936,16 +936,36 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         selectors: {
             toc: ".flc-prefsEditor-toc",
             label: ".flc-prefsEditor-toc-label",
-            tocDescr: ".flc-prefsEditor-toc-descr",
-            toggleOn: ".flc-prefsEditor-switchOn-label",
-            toggleOff: ".flc-prefsEditor-switchOff-label"
+            tocDescr: ".flc-prefsEditor-toc-descr"
+        },
+        selectorsToIgnore: ["toc"],
+        components: {
+            switchUI: {
+                type: "fluid.switchUI",
+                container: "{that}.dom.toc",
+                createOnEvent: "afterRender",
+                options: {
+                    strings: {
+                        on: "{fluid.prefs.panel.layoutControls}.msgLookup.switchOn",
+                        off: "{fluid.prefs.panel.layoutControls}.msgLookup.switchOff"
+                    },
+                    model: {
+                        enabled: "{fluid.prefs.panel.layoutControls}.model.toc"
+                    },
+                    attrs: {
+                        "aria-labelledby": {
+                            expander: {
+                                funcName: "fluid.allocateSimpleId",
+                                args: ["{fluid.prefs.panel.layoutControls}.dom.tocDescr"]
+                            }
+                        }
+                    }
+                }
+            }
         },
         protoTree: {
             label: {messagekey: "tocLabel"},
-            tocDescr: {messagekey: "tocDescr"},
-            toc: "${toc}",
-            toggleOn: {messagekey: "toggleOn"},
-            toggleOff: {messagekey: "toggleOff"}
+            tocDescr: {messagekey: "tocDescr"}
         }
     });
 
