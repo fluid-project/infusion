@@ -137,7 +137,7 @@ var demo = demo || {};
                         "aria-labelledby": {
                             expander: {
                                 funcName: "fluid.allocateSimpleId",
-                                args: ["{fluid.prefs.panel.simplifyPanel}.dom.simplifyDescr"]
+                                args: ["{demo.prefsEditor.simplifyPanel}.dom.simplifyDescr"]
                             }
                         }
                     }
