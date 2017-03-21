@@ -65,26 +65,33 @@ build-themes-prefsEditor(contrastThemes) {
                 }
 
                 // ON/OFF switch
-                    .fl-prefsEditor-onoff {
+                .fl-switchUI-control:focus {
+                    box-shadow: 0 0 0 0.1em bColor,
+                                0 0 0 0.3em fColor;
+                }
 
-                        input:checked + label .fl-prefsEditor-switchOff
-                        input:not(:checked) + label .fl-prefsEditor-switchOn {
-                            border-color: transparent !important;
-                        }
+                .fl-switchUI-controlKnob {
+                    background-color: fColor !important;
+                }
 
-                        input:focus + label .fl-prefsEditor-switch {
-                            outline: 0.2em solid fColor;
-                            outline-offset: 0.1em;
-                        }
+                // TODO: This is just here for experimenting with the styling.
+                //       This should either be removed or replace to above
+                //       styling after the appropriate one is determined.
+                .fl-switchUI-alternate {
+                    .fl-switchUI-control {
+                        border-color: fColor !important;
+                        background-color: fColor !important;
 
-                        .fl-prefsEditor-switch {
-
-                            .fl-prefsEditor-switch-indicator,
-                            .fl-prefsEditor-switch-label {
-                                background-color: transparent !important;
-                            }
+                        &:focus {
+                            box-shadow: 0 0 0 0.1em bColor,
+                                        0 0 0 0.3em fColor;
                         }
                     }
+
+                    .fl-switchUI-controlKnob {
+                        background-color: bColor !important;
+                    }
+                }
             }
         }
 

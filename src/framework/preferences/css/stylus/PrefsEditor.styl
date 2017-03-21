@@ -234,72 +234,10 @@
     }
 
     // ON/OFF Switch for checkboxes
-    // The container for the toggle, which is also a label for the hidden checkbox.
     .fl-prefsEditor-onoff {
         padding: 0 1rem;
 
-        input {
-            // hides the checkbox but makes it accessible to ATs and keyboard
-            border: 0 none;
-            clip: rect(0px, 0px, 0px, 0px);
-            height: 1px;
-            margin: -1px;
-            overflow: hidden;
-            padding: 0;
-            position: absolute;
-            width: 1px;
-
-            &:focus + label .fl-prefsEditor-switch {
-                outline: 0.2em solid #000000;
-                outline-offset: 0.1em;
-            }
-
-            &:checked + label .fl-prefsEditor-switchOn,
-            &:not(:checked) + label .fl-prefsEditor-switchOff {
-                border-color: #000000;
-                font-weight: bold;
-                font-size: 1.2em;
-
-                .fl-prefsEditor-switch-indicator {
-                    visibility: visible;
-                }
-            }
-
-            &:checked + label .fl-prefsEditor-switchOff
-            &:not(:checked) + label .fl-prefsEditor-switchOn {
-                border-color: transparent;
-            }
-        }
-
-        .fl-prefsEditor-panel-descr {
-            display: block;
-        }
-
-        .fl-prefsEditor-switch {
-            border: solid 0.2em #C7C7C8;
-            border-radius: 0.2em;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            padding: 0.2em;
-            margin-top: 1em;
-
-            .fl-prefsEditor-switchOn,
-            .fl-prefsEditor-switchOff {
-                border: solid 0.2em #000000;
-                border-radius: 0.2em;
-                width: 4em;
-            }
-
-            .fl-prefsEditor-switchOff {
-                margin-left: 0.8em;
-            }
-
-            .fl-prefsEditor-switch-indicator {
-                padding: 0 0.2em;
-                visibility: hidden;
-            }
-        }
+        @import "../../../../components/switch/css/stylus/Switch.styl"
     }
 
     // Font Icons

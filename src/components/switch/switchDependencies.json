@@ -1,0 +1,15 @@
+{
+    "switch": {
+        "name": "Switch",
+        "description": "A switch ui widget",
+        "cssFiles": [],
+        "files": [
+            "./js/Switch.js"
+        ],
+        "dependencies": [
+            "jQuery",
+            "normalize",
+            "framework"
+        ]
+    }
+}

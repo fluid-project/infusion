@@ -1,5 +1,5 @@
 /*
-Copyright 2014-2015 OCAD University
+Copyright 2014-2017 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -18,25 +18,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     * speakPanel
     **********************************************************************************/
     fluid.defaults("fluid.prefs.panel.speak", {
-        gradeNames: ["fluid.prefs.panel"],
+        gradeNames: ["fluid.prefs.panel.switchAduster"],
         preferenceMap: {
             "fluid.prefs.speak": {
-                "model.speak": "default"
+                "model.value": "default"
             }
-        },
-        selectors: {
-            speak: ".flc-prefsEditor-speak",
-            label: ".flc-prefsEditor-speak-label",
-            speakDescr: ".flc-prefsEditor-speak-descr",
-            toggleOn: ".flc-prefsEditor-switchOn-label",
-            toggleOff: ".flc-prefsEditor-switchOff-label"
-        },
-        protoTree: {
-            label: {messagekey: "speakLabel"},
-            speakDescr: {messagekey: "speakDescr"},
-            speak: "${speak}",
-            toggleOn: {messagekey: "toggleOn"},
-            toggleOff: {messagekey: "toggleOff"}
         }
     });
 

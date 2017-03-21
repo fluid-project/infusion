@@ -189,6 +189,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         checkChildContainer(parent, parent.defaultedChildView, "defaultedChildContainer", "defaults");
     });
 
+    fluid.defaults("fluid.tests.FLUID6132root", {
+        gradeNames: "fluid.viewComponent",
+        selectors: {
+            links: ".page-link"
+        },
+        invokers: {
+            fastLocateLinks: "{that}.dom.fastLocate(links)"
+        }
+    });
+
+    jqUnit.test("FLUID-6132: Access DOM Binder's methods via IoC", function () {
+        var that = fluid.tests.FLUID6132root("#pager-top");
+        var links = that.fastLocateLinks();
+        jqUnit.assertEquals("Resolve fastLocate method via API", 3, links.length);
+    });
+
     /** FLUID-5908 - failure when adding this-ist record as event listener **/
 
     fluid.defaults("fluid.tests.FLUID5908root", {

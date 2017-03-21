@@ -1,0 +1,63 @@
+knobSize = 1.8em;
+knobMargin = 0.2em;
+foregroundColor = #000000;
+backgroundColor = #ffffff;
+
+.fl-switchUI {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.fl-switchUI-control {
+    width: knobSize * 3;
+    border: 0.1em solid foregroundColor;
+    border-radius: knobSize + knobMargin;
+    margin: 0 1em;
+    display: flex;
+    align-items: center;
+    background-color: backgroundColor;
+
+    &:focus {
+        outline: none;
+        box-shadow: 0 0 0 0.1em backgroundColor,
+                    0 0 0 0.3em foregroundColor;
+    }
+
+    &[aria-checked=true] {
+        justify-content: flex-end;
+    }
+}
+
+.fl-switchUI-controlKnob {
+    height: knobSize;
+    width: knobSize;
+    background-color: foregroundColor;
+    border-radius: knobSize;
+    display: inline-block;
+    margin: knobMargin;
+}
+
+.fl-switchUI-text {
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+// TODO: This is just here for experimenting with the styling.
+//       This should either be removed or replace to above
+//       styling after the appropriate one is determined.
+.fl-switchUI-alternate {
+    .fl-switchUI-control {
+        border-color: foregroundColor;
+        background-color: foregroundColor;
+
+        &:focus {
+            box-shadow: 0 0 0 0.1em backgroundColor,
+                        0 0 0 0.3em foregroundColor;
+        }
+    }
+
+    .fl-switchUI-controlKnob {
+        background-color: backgroundColor;
+    }
+}

@@ -1,6 +1,6 @@
 {
-    "simplifyLabel": "Simplify",
-    "simplifyDescr": "Only display the main content",
-    "toggleOn": "ON",
-    "toggleOff": "OFF"
+    "label": "Simplify",
+    "description": "Only display the main content",
+    "switchOn": "ON",
+    "switchOff": "OFF"
 }

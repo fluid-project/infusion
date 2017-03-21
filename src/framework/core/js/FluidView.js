@@ -160,6 +160,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var selector, thisContainer, togo;
 
             selector = selectors[name];
+            if (selector === undefined) {
+                return undefined;
+            }
             thisContainer = localContainer ? $(localContainer) : container;
             if (!thisContainer) {
                 fluid.fail("DOM binder invoked for selector " + name + " without container");
