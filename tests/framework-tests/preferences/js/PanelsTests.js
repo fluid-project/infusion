@@ -1557,19 +1557,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.layoutPanel.checkRendering = function (that, defaultInputStatus) {
-        var messageBase = that.options.messageBase;
-
-        jqUnit.assertEquals("The label text is " + messageBase.label, messageBase.label, that.locate("label").text());
-        jqUnit.assertEquals("The description text is " + messageBase.description, messageBase.description, that.locate("description").text());
-
-
-        jqUnit.assertValue("The switch component should have been created", that.switchUI);
-        jqUnit.assertEquals("The toc state is set correctly", defaultInputStatus.toString(), that.switchUI.locate("control").attr("aria-checked"));
-        jqUnit.assertEquals("The toggle on text is " + messageBase.switchOn, messageBase.switchOn, that.switchUI.locate("on").text());
-        jqUnit.assertEquals("The toggle off text is " + messageBase.switchOff, messageBase.switchOff, that.switchUI.locate("off").text());
-    };
-
     fluid.defaults("fluid.tests.layoutTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
@@ -1582,7 +1569,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 7,
                 name: "Test the rendering of the layout panel",
                 sequence: [{
-                    listener: "fluid.tests.layoutPanel.checkRendering",
+                    listener: "fluid.tests.panels.checkSwitchAdjusterRendering",
                     event: "{layoutPanel layout}.events.afterRender",
                     priority: "last:testing",
                     args: ["{layout}", "{that}.options.testOptions.defaultInputStatus"]
@@ -1610,9 +1597,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         messageBase: {
             "label": "Enhance Inputs",
-            "descr": "Emphasize links, buttons, menus, textfields, and other inputs",
-            "toggleOn": "Enhance ON",
-            "toggleOff": "Enhance OFF"
+            "description": "Emphasize links, buttons, menus, textfields, and other inputs",
+            "switchOn": "Enhance ON",
+            "switchOff": "Enhance OFF"
         },
         resources: {
             template: {
@@ -1635,17 +1622,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.enhanceInputsPanel.checkRendering = function (that, defaultInputStatus) {
-        var messageBase = that.options.messageBase;
-
-        jqUnit.assertEquals("The label text is " + messageBase.label, messageBase.label, that.locate("label").text());
-        jqUnit.assertEquals("The description text is " + messageBase.descr, messageBase.descr, that.locate("descr").text());
-        jqUnit.assertEquals("The toggle on text is " + messageBase.toggleOn, messageBase.toggleOn, that.locate("toggleOn").text());
-        jqUnit.assertEquals("The toggle off text is " + messageBase.toggleOff, messageBase.toggleOff, that.locate("toggleOff").text());
-
-        fluid.tests.panels.utils.verifyCheckboxState("The enhanceInputs option is not checked by default", defaultInputStatus, that.locate("enhanceInputs"));
-    };
-
     fluid.defaults("fluid.tests.enhanceInputsTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
@@ -1655,19 +1631,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test the enhance inputs panel",
             tests: [{
-                expect: 6,
+                expect: 7,
                 name: "Test the rendering of the enhance inputs panel",
                 sequence: [{
-                    listener: "fluid.tests.enhanceInputsPanel.checkRendering",
+                    listener: "fluid.tests.panels.checkSwitchAdjusterRendering",
                     event: "{enhanceInputsPanel enhanceInputs}.events.afterRender",
+                    priority: "last:testing",
                     args: ["{enhanceInputs}", "{that}.options.testOptions.defaultInputStatus"]
                 }, {
-                    func: "fluid.tests.panels.utils.setCheckboxState",
-                    args: ["{enhanceInputs}.dom.enhanceInputs", "{that}.options.testOptions.newValue"]
+                    jQueryTrigger: "click",
+                    element: "{enhanceInputs}.switchUI.dom.control"
                 }, {
                     listener: "fluid.tests.panels.utils.checkModel",
-                    args: ["enhanceInputs", "{that}.options.testOptions.newValue"],
-                    spec: {path: "enhanceInputs", priority: "last"},
+                    args: ["value", "{that}.options.testOptions.newValue"],
+                    spec: {path: "value", priority: "last"},
                     changeEvent: "{enhanceInputs}.applier.modelChanged"
                 }]
             }]

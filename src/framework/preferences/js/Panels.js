@@ -987,25 +987,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * A sub-component of fluid.prefs that renders the "enhance inputs" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.enhanceInputs", {
-        gradeNames: ["fluid.prefs.panel"],
+        gradeNames: ["fluid.prefs.panel.switchAduster"],
         preferenceMap: {
             "fluid.prefs.enhanceInputs": {
-                "model.enhanceInputs": "default"
+                "model.value": "default"
             }
-        },
-        selectors: {
-            enhanceInputs: ".flc-prefsEditor-enhanceInputs",
-            label: ".flc-prefsEditor-enhanceInputs-label",
-            descr: ".flc-prefsEditor-enhanceInputs-descr",
-            toggleOn: ".flc-prefsEditor-switchOn-label",
-            toggleOff: ".flc-prefsEditor-switchOff-label"
-        },
-        protoTree: {
-            label: {messagekey: "label"},
-            descr: {messagekey: "descr"},
-            enhanceInputs: "${enhanceInputs}",
-            toggleOn: {messagekey: "toggleOn"},
-            toggleOff: {messagekey: "toggleOff"}
         }
     });
 
