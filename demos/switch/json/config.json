@@ -9,7 +9,7 @@
     },
     "links": {
         "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/switch",
-        "apiLink": "http://docs.fluidproject.org/infusion/development/to-do/Switch.html",
+        "apiLink": "http://docs.fluidproject.org/infusion/development/SwitchAPI.html",
         "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Switch%20feedback"
     }
 }
