@@ -52,11 +52,12 @@
     </head>
     <body>
         <div class="flc-overviewPanel fl-overviewPanel-container"></div>
-        <!-- Basic upload controls, used when JavaScript is unavailable -->
+        <!-- Basic upload controls, used when JavaScript/HTML5 is unavailable -->
         <form method="post" enctype="multipart/form-data" class="fl-progEnhance-basic">
             <p>Use the Browse button to add a file, and the Save button to upload it.</p>
             <input name="fileData" type="file" />
             <input class="fl-uploader-basic-save" type="submit" value="Save"/>
+            <p class="fl-uploader-no-js-note">NOTE : To use the full featured Uploader, please use a browser that supports HTML5 <noscript>and JavaScript </noscript>features.</p>
         </form>
 
         <!-- The Uploader's template will be injected via AJAX into this container. -->
