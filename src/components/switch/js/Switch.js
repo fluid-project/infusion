@@ -60,7 +60,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "onCreate.addOnOffText": "fluid.switchUI.addOnOffText",
             "onCreate.activateable": {
                 listener: "fluid.activatable",
-                args: ["{that}.dom.control", "{that}.toggleModel"]
+                args: ["{that}.dom.control", "{that}.activateHandler"]
             },
             "onCreate.bindClick": {
                 "this": "{that}.dom.control",
@@ -72,6 +72,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             toggleModel: {
                 funcName: "fluid.switchUI.toggleModel",
                 args: ["{that}"]
+            },
+            activateHandler: {
+                funcName: "fluid.switchUI.activateHandler",
+                args: ["{arguments}.0", "{that}.toggleModel"]
             }
         }
     });
@@ -83,6 +87,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.switchUI.toggleModel = function (that) {
         that.applier.change("enabled", !that.model.enabled);
+    };
+
+    fluid.switchUI.activateHandler = function (event, fn) {
+        event.preventDefault();
+        fn();
     };
 
 })(jQuery, fluid_3_0_0);
