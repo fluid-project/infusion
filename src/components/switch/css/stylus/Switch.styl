@@ -1,7 +1,8 @@
 knobSize = 1.8em;
 knobMargin = 0.2em;
-foregroundColor = #000000;
+foregroundColor = currentColor;
 backgroundColor = #ffffff;
+focusColor = #000000;
 
 .fl-switchUI {
     display: flex;
@@ -11,7 +12,7 @@ backgroundColor = #ffffff;
 
 .fl-switchUI-control {
     width: knobSize * 3;
-    border: 0.1em solid foregroundColor;
+    border: 0.15em solid foregroundColor;
     border-radius: knobSize + knobMargin;
     margin: 0 1em;
     display: flex;
@@ -20,8 +21,8 @@ backgroundColor = #ffffff;
 
     &:focus {
         outline: none;
-        box-shadow: 0 0 0 0.1em backgroundColor,
-                    0 0 0 0.3em foregroundColor;
+        box-shadow: 0 0 0 0.2em backgroundColor,
+                    0 0 0 0.35em focusColor;
     }
 
     &[aria-checked=true] {
@@ -41,23 +42,4 @@ backgroundColor = #ffffff;
 .fl-switchUI-text {
     text-transform: uppercase;
     font-weight: 600;
-}
-
-// TODO: This is just here for experimenting with the styling.
-//       This should either be removed or replace to above
-//       styling after the appropriate one is determined.
-.fl-switchUI-alternate {
-    .fl-switchUI-control {
-        border-color: foregroundColor;
-        background-color: foregroundColor;
-
-        &:focus {
-            box-shadow: 0 0 0 0.1em backgroundColor,
-                        0 0 0 0.3em foregroundColor;
-        }
-    }
-
-    .fl-switchUI-controlKnob {
-        background-color: backgroundColor;
-    }
 }
