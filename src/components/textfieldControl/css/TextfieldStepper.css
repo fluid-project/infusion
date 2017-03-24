@@ -2,7 +2,22 @@
 
 .fl-textfieldStepper {
     display: flex;
+    flex-basis: auto;
     justify-content: center;
+    align-items: center;
+}
+
+.fl-textfieldStepper *:focus {
+    outline: none;
+}
+
+.fl-textfieldStepper-focus {
+    outline: solid 0.2rem #000000;
+}
+
+.fl-textfieldStepper-focusContainer {
+    padding: 0.4rem;
+    display: flex;
     align-items: center;
 }
 

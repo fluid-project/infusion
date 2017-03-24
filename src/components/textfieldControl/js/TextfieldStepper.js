@@ -31,11 +31,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         selectors: {
             textfield: ".flc-textfieldStepper-field",
+            focusContainer: ".flc-textfieldStepper-focusContainer",
             increaseButton: ".flc-textfieldStepper-increase",
             decreaseButton: ".flc-textfieldStepper-decrease"
         },
         styles: {
-            container: "fl-textfieldStepper fl-focus"
+            container: "fl-textfieldStepper",
+            focus: "fl-textfieldStepper-focus"
         },
         components: {
             textfield: {
@@ -46,12 +48,46 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     components: {
                         controller: {
                             options: {
-                                model: "{textfieldStepper}.model"
+                                model: "{textfieldStepper}.model",
+                                modelListeners: {
+                                    "range.min": {
+                                        "this": "{textfield}.container",
+                                        method: "attr",
+                                        args: ["aria-valuemin", "{change}.value"]
+                                    },
+                                    "range.max": {
+                                        "this": "{textfield}.container",
+                                        method: "attr",
+                                        args: ["aria-valuemax", "{change}.value"]
+                                    }
+                                }
                             }
                         }
                     },
                     ariaOptions: "{textfieldStepper}.options.ariaOptions",
-                    strings: "{textfieldStepper}.options.strings"
+                    strings: "{textfieldStepper}.options.strings",
+                    listeners: {
+                        "onCreate.bindUpArrow": {
+                            listener: "fluid.textfieldStepper.bindKeyEvent",
+                            args: ["{that}.container", "keydown", 38, "{textfieldStepper}.increase"]
+                        },
+                        "onCreate.bindDownArrow": {
+                            listener: "fluid.textfieldStepper.bindKeyEvent",
+                            args: ["{that}.container", "keydown", 40, "{textfieldStepper}.decrease"]
+                        },
+                        "onCreate.addRole": {
+                            "this": "{that}.container",
+                            method: "attr",
+                            args: ["role", "spinbutton"]
+                        }
+                    },
+                    modelListeners: {
+                        "value": {
+                            "this": "{that}.container",
+                            method: "attr",
+                            args: ["aria-valuenow", "{change}.value"]
+                        }
+                    }
                 }
             },
             increaseButton: {
@@ -83,7 +119,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         label: "{textfieldStepper}.options.strings.decreaseLabel"
                     },
                     listeners: {
-                        "onClick.increase": "{textfieldStepper}.decrease"
+                        "onClick.decrease": "{textfieldStepper}.decrease"
                     },
                     modelRelay: {
                         target: "disabled",
@@ -105,6 +141,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             decrease: {
                 funcName: "fluid.textfieldStepper.step",
                 args: ["{that}", -1]
+            },
+            addFocus: {
+                "this": "{that}.dom.focusContainer",
+                method: "addClass",
+                args: ["{that}.options.styles.focus"]
+            },
+            removeFocus: {
+                "this": "{that}.dom.focusContainer",
+                method: "removeClass",
+                args: ["{that}.options.styles.focus"]
             }
         },
         listeners: {
@@ -112,6 +158,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "this": "{that}.container",
                 method: "addClass",
                 args: ["{that}.options.styles.container"]
+            },
+            "onCreate.bindFocusin": {
+                "this": "{that}.container",
+                method: "on",
+                args: ["focusin", "{that}.addFocus"]
+            },
+            "onCreate.bindFocusout": {
+                "this": "{that}.container",
+                method: "on",
+                args: ["focusout", "{that}.removeFocus"]
             }
         },
         model: {
@@ -124,9 +180,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         ariaOptions: {
             // Specified by implementor
-            // ID of an external label to refer to with aria-labelledby
+            // ID of an element to use as a label for the stepper
             // attribute
             // "aria-labelledby": ""
+            // Should specify either "aria-label" or "aria-labelledby"
+            // aria-label: "{that}.options.strings.label",
         },
         distributeOptions: [{
             source: "{that}.options.scale",
@@ -134,11 +192,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }]
     });
 
-
     fluid.textfieldStepper.step = function (that, coefficient) {
         coefficient = coefficient || 1;
         var newValue = that.model.value + (coefficient * that.model.step);
         that.applier.change("value", newValue);
+    };
+
+    fluid.textfieldStepper.bindKeyEvent = function (elm, keyEvent, keyCode, fn) {
+        $(elm).on(keyEvent, function (event) {
+            if (event.which === keyCode) {
+                fn();
+                event.preventDefault();
+            }
+        });
     };
 
     fluid.defaults("fluid.textfieldStepper.button", {
@@ -172,6 +238,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "this": "{that}.container",
                 method: "addClass",
                 args: ["{that}.options.styles.container"]
+            },
+            // removing from tab order as keyboard users will
+            // increment and decrement the stepper using the up/down arrow keys.
+            "onCreate.removeFromTabOrder": {
+                "this": "{that}.container",
+                method: "attr",
+                args: ["tabindex", "-1"]
             }
         },
         modelListeners: {

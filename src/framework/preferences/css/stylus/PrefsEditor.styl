@@ -150,6 +150,20 @@
         align-items: center;
     }
 
+    .fl-textfieldStepper-focusContainer {
+        padding: 0.4rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .fl-textfieldStepper *:focus {
+        outline: none;
+    }
+
+    .fl-textfieldStepper-focus {
+        outline: solid 0.2rem #000000;
+    }
+
     /* height and width specified in ems instead of rems
        to respond to emphasize links preferences */
     .fl-textfieldStepper .fl-textfieldStepper-textField {
@@ -280,7 +294,6 @@
         font-variant: normal;
         text-transform: none;
         -webkit-font-smoothing: antialiased;
-        float: left;
         margin: 0.2em 0.3em 0 0;
         font-size: 1.5em;
     }
