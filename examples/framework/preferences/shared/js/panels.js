@@ -24,7 +24,7 @@ var example = example || {};
      * The "speak text" preference is a boolean, rendered as an on/off switch.
      */
     fluid.defaults("example.panels.speak", {
-        gradeNames: ["fluid.prefs.panel.switchAduster"],
+        gradeNames: ["fluid.prefs.panel.switchAdjuster"],
         preferenceMap: {
             "example.speakText": {
                 "model.value": "default"
@@ -39,7 +39,7 @@ var example = example || {};
      * The "increase size" preference is a boolean, rendered as an on/off switch.
      */
     fluid.defaults("example.panels.incSize", {
-        gradeNames: ["fluid.prefs.panel.switchAduster"],
+        gradeNames: ["fluid.prefs.panel.switchAdjuster"],
         preferenceMap: {
             "example.increaseSize": {
                 "model.value": "default"

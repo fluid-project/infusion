@@ -18,7 +18,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     * speakPanel
     **********************************************************************************/
     fluid.defaults("fluid.prefs.panel.speak", {
-        gradeNames: ["fluid.prefs.panel.switchAduster"],
+        gradeNames: ["fluid.prefs.panel.switchAdjuster"],
         preferenceMap: {
             "fluid.prefs.speak": {
                 "model.value": "default"
