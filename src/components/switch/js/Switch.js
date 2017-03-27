@@ -38,6 +38,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // "aria-labelledby": "",
             // Should specify either "aria-label" or "aria-labelledby"
             // "aria-label": "{that}.options.strings.label",
+            // ID of an element that is controlled by the switch.
+            // "aria-controls": ""
             role: "switch",
             tabindex: 0
         },
