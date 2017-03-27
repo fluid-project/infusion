@@ -57,7 +57,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 method: "attr",
                 args: ["{that}.options.attrs"]
             },
-            "onCreate.addOnOffText": "fluid.switchUI.addOnOffText",
+            "onCreate.addOnText": {
+                "this": "{that}.dom.on",
+                method: "text",
+                args: ["{that}.options.strings.on"]
+            },
+            "onCreate.addOffText": {
+                "this": "{that}.dom.off",
+                method: "text",
+                args: ["{that}.options.strings.off"]
+            },
             "onCreate.activateable": {
                 listener: "fluid.activatable",
                 args: ["{that}.dom.control", "{that}.activateHandler"]
@@ -79,11 +88,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         }
     });
-
-    fluid.switchUI.addOnOffText = function (that) {
-        that.locate("on").text(that.options.strings.on);
-        that.locate("off").text(that.options.strings.off);
-    };
 
     fluid.switchUI.toggleModel = function (that) {
         that.applier.change("enabled", !that.model.enabled);
