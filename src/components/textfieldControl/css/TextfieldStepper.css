@@ -16,15 +16,14 @@
 }
 
 .fl-textfieldStepper-focusContainer {
-    padding: 0.4rem;
-    display: flex;
-    align-items: center;
+    padding: 0.2rem;
+    margin: 0 0.5rem;
 }
 
 /* Textfield Styling */
 
 .fl-textfieldStepper .fl-textfieldStepper-textField {
-    margin: 0 -0.5rem;
+    margin: 0 0.5rem;
     width: 7rem;
     text-align: center;
 }
@@ -36,7 +35,6 @@
     border-radius: 0.4rem;
     height: 2.4375rem;
     width: 2.4375rem;
-    margin: 0 1rem;
 }
 
 .fl-textfieldStepper .fl-textfieldStepper-button:disabled {
