@@ -69,10 +69,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     listeners: {
                         "onCreate.bindUpArrow": {
                             listener: "fluid.textfieldStepper.bindKeyEvent",
+                            // up arrow === 38
                             args: ["{that}.container", "keydown", 38, "{textfieldStepper}.increase"]
                         },
                         "onCreate.bindDownArrow": {
                             listener: "fluid.textfieldStepper.bindKeyEvent",
+                            // down arrow === 40
                             args: ["{that}.container", "keydown", 40, "{textfieldStepper}.decrease"]
                         },
                         "onCreate.addRole": {
