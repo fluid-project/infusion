@@ -38,7 +38,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "document": document,
         "window": window,
         "jDocument": $("document"),
-        "component": fluid.component()
+        "component": fluid.typeTag("fluid.component")
     };
 
     jqUnit.test("fluid.isPlainObject tests", function () {
@@ -563,11 +563,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.builtinFail(args); // throw exception to keep expectFrameworkDiagnostic happy
         }
         jqUnit.expect(1);
-        fluid.pushSoftFailure(failHandle);
+        fluid.failureEvent.addListener(failHandle, "fail");
         jqUnit.expectFrameworkDiagnostic("Configurable failure handler", function () {
             fluid.fail.apply(null, testArgs);
         }, "thingit");
-        fluid.pushSoftFailure(-1);
+        fluid.failureEvent.removeListener("fail");
     });
 
     jqUnit.test("FLUID-5807 tests - identify fluid.FluidError", function () {
@@ -818,105 +818,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 fluid.sortByPriority(listeners);
             });
         });
-    });
-
-    fluid.defaults("fluid.tests.eventMerge", {
-        gradeNames: ["fluid.component"],
-        events: {
-            event: "preventable"
-        }
-    });
-
-    jqUnit.test("Merge over named listener", function () {
-        var that = fluid.tests.eventMerge({
-            events: {
-                event: null
-            },
-            listeners: {
-                event: "fluid.identity"
-            }
-        });
-        var result = that.events.event.fire(false);
-        jqUnit.assertUndefined("Event returned to nonpreventable through merge", result);
-    });
-
-    fluid.tests.makeNotingListener = function (key) {
-        return function (that) {
-            var existing = that.values[key];
-            that.values[key] = existing === undefined ? 1 : existing + 1;
-        };
-    };
-
-    fluid.defaults("fluid.tests.listenerTest", {
-        gradeNames: ["fluid.component"],
-        events: {
-            event: null
-        },
-        listeners: {
-            event: fluid.tests.makeNotingListener("noNamespace"),
-            "event.namespace": fluid.tests.makeNotingListener("namespace"),
-            onCreate: fluid.tests.makeNotingListener("onCreate"),
-            "onCreate.namespace": fluid.tests.makeNotingListener("onCreate.namespace"),
-            "onCreate.makeValues": {
-                listener: "fluid.tests.listenerTest.makeValues",
-                priority: "first"
-            }
-        }
-    });
-
-    fluid.tests.listenerTest.makeValues = function (that) {
-        that.values = {};
-    };
-
-    jqUnit.test("Correctly merge optioned listeners", function () {
-        var options = {listeners: {
-            event: fluid.tests.makeNotingListener("noNamespace2"),
-            "event.namespace": fluid.tests.makeNotingListener("namespace2"),
-            onCreate: fluid.tests.makeNotingListener("onCreate2"),
-            "onCreate.namespace": fluid.tests.makeNotingListener("onCreate.namespace2")
-        }};
-        var that = fluid.tests.listenerTest(options);
-        var expected1 = {
-            onCreate: 1,
-            onCreate2: 1,
-            "onCreate.namespace2": 1
-        };
-        jqUnit.assertDeepEq("Creation listeners merged and fired", expected1, that.values);
-        that.events.event.fire(that);
-        var expected2 = {
-            noNamespace: 1,
-            noNamespace2: 1,
-            namespace2: 1
-        };
-        jqUnit.assertDeepEq("Listeners correctly merged", $.extend(expected2, expected1), that.values);
-    });
-
-    /** FLUID-5288: Improved diagnostic for incomplete grade hierarchy **/
-
-    jqUnit.test("FLUID-5288: Improved diagnostic for component with incomplete grade hierarchy", function () {
-        jqUnit.expectFrameworkDiagnostic("Framework diagnostic on incomplete grade hierarchy", function () {
-            // TODO: in future, there will be no error thrown on definition, but only on use - since it should be possible
-            // to declare grade hierarchies through forward reference
-            fluid.defaults("fluid.tests.missingGradeComponent", {
-                gradeNames: ["fluid.tests.nonexistentGrade"]
-            });
-            fluid.tests.missingGradeComponent();
-        }, ["incomplete", "nonexistentGrade"]);
-    });
-
-
-    fluid.defaults("fluid.tests.forwardRefComponent", {
-        gradeNames: "fluid.tests.forwardBaseComponent"
-    });
-
-    fluid.defaults("fluid.tests.forwardBaseComponent", {
-        gradeNames: "fluid.component"
-    });
-
-    jqUnit.test("Forward reference through grade hierarchy", function () {
-        jqUnit.expect(1);
-        var that = fluid.tests.forwardRefComponent();
-        jqUnit.assertValue("Should have received component with forward grade reference", that);
     });
 
     fluid.defaults("fluid.tests.schema.textSizer", {

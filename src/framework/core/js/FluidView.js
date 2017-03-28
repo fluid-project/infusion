@@ -38,26 +38,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             selectable.selector ? selectable.selector : "";
     };
 
-    // unsupported, NON-API function
-    // NOTE: this function represents a temporary strategy until we have more integrated IoC debugging.
-    // It preserves the 1.3 and previous framework behaviour for the 1.x releases, but provides a more informative
-    // diagnostic - in fact, it is perfectly acceptable for a component's creator to return no value and
-    // the failure is really in assumptions in fluid.initLittleComponent. Revisit this issue for 2.0
-    fluid.diagnoseFailedView = function (componentName, that, options, args) {
-        if (!that && fluid.hasGrade(options, "fluid.viewComponent")) {
-            var container = fluid.wrap(args[1]);
-            var message1 = "Instantiation of view component with type " + componentName + " failed, since ";
-            if (!container) {
-                fluid.fail(message1 + " container argument is empty");
-            }
-            else if (container.length === 0) {
-                fluid.fail(message1 + "selector \"", fluid.dumpSelector(args[1]), "\" did not match any markup in the document");
-            } else {
-                fluid.fail(message1 + " component creator function did not return a value");
-            }
-        }
-    };
-
     fluid.checkTryCatchParameter = function () {
         var location = window.location || { search: "", protocol: "file:" };
         var GETparams = location.search.slice(1).split("&");
@@ -101,6 +81,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @return a single-element jQuery of container
      */
     fluid.container = function (containerSpec, fallible, userJQuery) {
+        if (!containerSpec) {
+            fluid.fail("fluid.container argument is empty");
+        }
         var selector = containerSpec.selector || containerSpec;
         if (userJQuery) {
             containerSpec = fluid.unwrap(containerSpec);
@@ -141,7 +124,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Object} selectors a collection of named jQuery selectors
      */
     fluid.createDomBinder = function (container, selectors) {
-        // don't put on a typename to avoid confusing primitive visitComponentChildren
         var that = {
             id: fluid.allocateGuid(),
             cache: {}
@@ -251,6 +233,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var receiver = function (that) {
             that.container = container;
         };
+        // THIS is the only point localOptions was used - now trashed
         var that = fluid.initLittleComponent(componentName, userOptions, localOptions || {gradeNames: ["fluid.viewComponent"]}, receiver);
 
         if (!that.dom) {

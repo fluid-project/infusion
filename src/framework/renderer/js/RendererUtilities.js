@@ -379,6 +379,49 @@ fluid_3_0_0 = fluid_3_0_0 || {};
         return config.expander(tree);
     };
 
+    /** BEGIN unofficial IoC material **/
+    // The following three functions are unsupported ane only used in the renderer expander.
+    // The material they produce is no longer recognised for component resolution.
+
+    fluid.withEnvironment = function (envAdd, func, root) {
+        var key;
+        root = root || fluid.globalThreadLocal();
+        try {
+            for (key in envAdd) {
+                root[key] = envAdd[key];
+            }
+            $.extend(root, envAdd);
+            return func();
+        } finally {
+            for (key in envAdd) {
+                delete root[key]; // TODO: users may want a recursive "scoping" model
+            }
+        }
+    };
+
+    fluid.fetchContextReference = function (parsed, directModel, env, elResolver, externalFetcher) {
+        // The "elResolver" is a hack to make certain common idioms in protoTrees work correctly, where a contextualised EL
+        // path actually resolves onto a further EL reference rather than directly onto a value target
+        if (elResolver) {
+            parsed = elResolver(parsed, env);
+        }
+        var base = parsed.context ? env[parsed.context] : directModel;
+        if (!base) {
+            var resolveExternal = externalFetcher && externalFetcher(parsed);
+            return resolveExternal || base;
+        }
+        return parsed.noDereference ? parsed.path : fluid.get(base, parsed.path);
+    };
+
+    fluid.makeEnvironmentFetcher = function (directModel, elResolver, envGetter, externalFetcher) {
+        envGetter = envGetter || fluid.globalThreadLocal;
+        return function (parsed) {
+            var env = envGetter();
+            return fluid.fetchContextReference(parsed, directModel, env, elResolver, externalFetcher);
+        };
+    };
+
+    /** END of unofficial IoC material **/
 
     /* An EL extraction utility suitable for context expressions which occur in
      * expanding component trees. It dispatches context expressions to fluid.transformContextPath
