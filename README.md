@@ -199,20 +199,24 @@ compute.  The second uses browsers available in a VM.
 
 ### Run Tests On Your Computer ###
 
-
-To run only the browser tests, use the command `npm run test:browser` or `yarn run test:browser`.  The browser tests
-require you to install [Testem](https://github.com/testem/testem/#installation) globally.  Any browsers that Testem
-finds on your system will be launched sequentially with each browser running the full Infusion test suite. The results
-will be returned in your terminal in the [TAP](https://testanything.org/) format. You can use the ``testem launchers``
-command to get a list of available browsers.
+To run both the browser and node tests for this package, use the command `npm test` or `yarn test`.
 
 To run only the node tests, use the command `npm run test:node` or `yarn run test:node`.
 
-To run both the browser and node tests for this package, use the command `npm test` or `yarn test`.
+To run only the browser tests, use the command `npm run test:browser` or `yarn run test:browser`.  Any browsers that Testem
+finds on your system will be launched sequentially with each browser running the full Infusion test suite. The results
+will be returned in your terminal in the [TAP](https://testanything.org/) format. Once you have run `npm install`, you
+can use the command ``node node_modules/testem/testem.js launchers`` from the root of this repository to get a list of
+browsers that Testem can launch on your system.
 
+If you would like to debug individual tests or view the test summary in a browser, you can:
+
+1. Host the working directory, for example, using a command like the following from the root of the repository: `python -m SimpleHTTPServer 4102`
+2. Open the "rollup" file `tests/all-tests.html` that runs all tests in a browser.  Continuing the above example, you would load the URL `http://localhost:4102/tests/all-tests.html`.
 
 **Note:** Any browser launched will need to be focused and remain the active window. Some of the tests require focus,
-and will report errors if they are not focused.
+and will report errors if they are not focused.  If you want to run the tests consistently, your best option is to run
+the tests in a VM (see below).
 
 ### Run Tests Using Browsers Installed In a VM ###
 
