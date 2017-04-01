@@ -2577,22 +2577,27 @@ var fluid = fluid || fluid_3_0_0;
         // TODO: Perhaps one day we will support a directive which allows the user to select a current component
         // root for free components other than the global root
         var path = [fluid.computeGlobalMemberName(type, id)];
-        // Special potentia form for free components which has pre-computed id in order to compute path, but
-        // has not yet computed "options" since this cannot be known until we have determined component grade
+        var userRecord = {
+            recordType: "user",
+            type: type
+        };
+        var upDefaults = fluid.defaults(type);
+        fluid.each(upDefaults.argumentMap, function (index, name) {
+            var arg = initArgs[index];
+            userRecord[name] = name === "options" ? fluid.expandCompact(arg, true) : arg;
+        });
         var potentia = {
             type: "create",
             path: path,
             componentId: id,
-            records: [{
-                type: type,
-                initArgs: initArgs
-            }]
+            records: [userRecord]
         };
         var transactionId = fluid.registerPotentia(potentia);
         if (!fluid.globalInstantiator.currentTreeTransaction) {
             // TODO: In future, we may like to go as far as operateCreatePotentia and return a shell instead of nothing
-            fluid.commitPotentiae(transactionId);
-            return fluid.componentForPath(path);
+            var shadows = fluid.commitPotentiae(transactionId);
+            // Use this strange style to make sure we return a self-destructed component for FLUID-5333
+            return shadows[shadows.length - 1].that;
         }
     };
 

@@ -23,6 +23,46 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.testRendererUtilities = function () {
 
+        jqUnit.module("Environmental Tests");
+
+        /** withEnvironment tests - eventually to be deprecated **/
+
+        fluid.registerNamespace("fluid.tests.envTests");
+
+        fluid.tests.envTests.config = {
+            viewURLTemplate: "http://titan.atrc.utoronto.ca:5984/%dbName/%view",
+            views: {
+                exhibitions: "_design/exhibitions/_view/browse"
+            }
+        };
+
+        jqUnit.test("Environmental Tests", function () {
+            var urlBuilder = {
+                type: "fluid.stringTemplate",
+                template: "{config}.viewURLTemplate",
+                mapper: {
+                    dbName: "${{params}.db}_exhibitions",
+                    view: "{config}.views.exhibitions"
+                }
+            };
+
+            fluid.withEnvironment({
+                params: {db: "mccord"},
+                config: fluid.tests.envTests.config
+            }, function () {
+                var resolved = fluid.expand(urlBuilder, {fetcher: fluid.makeEnvironmentFetcher()});
+                var required = {
+                    type: "fluid.stringTemplate",
+                    template: "http://titan.atrc.utoronto.ca:5984/%dbName/%view",
+                    mapper: {
+                        dbName: "mccord_exhibitions",
+                        view: "_design/exhibitions/_view/browse"
+                    }
+                };
+                jqUnit.assertDeepEq("Resolved Environment", required, resolved);
+            });
+        });
+
         jqUnit.module("Cutpoint utility tests");
         jqUnit.test("Renderer Utilities Test: selectorsToCutpoints", function () {
             // Single class name, simple cutpoints generation.
