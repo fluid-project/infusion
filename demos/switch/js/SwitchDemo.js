@@ -16,34 +16,6 @@ var demo = demo || {};
 (function () {
     "use strict";
 
-    // demo.faces = {
-    //     primary: "😃",
-    //     random: ["😆", "😋", "😝", "😲"]
-    // };
-    //
-    // demo.switchPoint = 0.5;
-    //
-    // demo.getFace = function () {
-    //     var rand = Math.random();
-    //
-    //     if (rand >= demo.switchPoint) {
-    //         demo.switchPoint += 0.05;
-    //         var faceIdx = Math.floor(Math.random() * (demo.faces.random.length));
-    //         return demo.faces.random[faceIdx];
-    //     } else {
-    //         return demo.faces.primary;
-    //     }
-    // };
-    //
-    // demo.toggleLight = function (state) {
-    //     var panel = $(".demo-panel");
-    //     var panelText = $(".demo-panel-text");
-    //     var panelFace = $(".demo-panel-face");
-    //     panelText.text(state ? "on" : "off");
-    //     panelFace.text(state ? demo.getFace() : "");
-    //     panel.toggleClass("demo-light", state);
-    // };
-
     fluid.defaults("demo.faces", {
         gradeNames: ["fluid.viewComponent"],
         strings: {
