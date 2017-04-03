@@ -37,6 +37,7 @@
             "enhancement",
             "renderer",
             "slidingPanel",
+            "switch",
             "textfieldSlider",
             "tableOfContents",
             "textToSpeech"

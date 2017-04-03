@@ -22,6 +22,7 @@
 .mpe-slider {
     padding: 1.5em 0;
 }
+
 .fl-prefsEditor .mpe-slider .fl-slider {
     margin-top: 1em;
 }
@@ -30,9 +31,13 @@
     float: right;
 }
 
+.mpe-speakIncrease .mpe-panels {
+    display: flex;
+    justify-content: space-around;
+}
+
 .mpe-speakIncrease ul.fl-inputs {
     border: 1px solid gray;
     padding: 0 1em 2em 1em;
-    display: inline-block;
     width: 25em;
 }
