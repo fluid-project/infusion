@@ -33,7 +33,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                             }
                         }
                     },
-                    ariaOptions: "{textfieldSlider}.options.ariaOptions",
+                    attrs: "{textfieldSlider}.options.attrs",
                     strings: "{textfieldSlider}.options.strings"
                 }
             },
@@ -42,7 +42,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 container: "{textfieldSlider}.dom.slider",
                 options: {
                     model: "{textfieldSlider}.model",
-                    ariaOptions: "{textfieldSlider}.options.ariaOptions",
+                    attrs: "{textfieldSlider}.options.attrs",
                     strings: "{textfieldSlider}.options.strings"
                 }
             }
@@ -72,17 +72,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
 
-        ariaOptions: {
+        attrs: {
             // Specified by implementor
             // ID of an external label to refer to with aria-labelledby
             // attribute
-            // "aria-labelledby": ""
+            // "aria-labelledby": "",
+            // Should specify either "aria-label" or "aria-labelledby"
+            // aria-label: "{that}.options.strings.label",
+            // ID of an element that is controlled by the textfield.
+            // "aria-controls": ""
         },
         strings: {
             // Specified by implementor
             // text of label to apply to both textfield and slider input
             // via aria-label attribute
-            // "aria-label": ""
+            // "label": ""
         },
         listeners: {
             "onCreate.addContainerStyle": {
@@ -128,25 +132,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     "step": "{that}.model.step",
                     "type": "range",
                     "value": "{that}.model.value",
-                    "aria-labelledby": "{that}.options.ariaOptions.aria-labelledby",
-                    "aria-label": "{that}.options.strings.aria-label"
+                    "aria-labelledby": "{that}.options.attrs.aria-labelledby",
+                    "aria-label": "{that}.options.attrs.aria-label"
                 }]
             }
         },
         listeners: {
-            // "onCreate.initSliderAttributes": {
-            //     "this": "{that}.container",
-            //     method: "attr",
-            //     args: [{
-            //         "min": "{that}.options.range.min",
-            //         "max": "{that}.options.range.max",
-            //         "step": "{that}.options.step",
-            //         "type": "range",
-            //         "value": "{that}.model.value",
-            //         "aria-labelledby": "{that}.options.ariaOptions.aria-labelledby",
-            //         "aria-label": "{that}.options.strings.aria-label"
-            //     }]
-            // },
             "onCreate.initSliderAttributes": "{that}.updateSliderAttributes",
             "onCreate.bindSlideEvt": {
                 "this": "{that}.container",

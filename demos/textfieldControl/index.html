@@ -44,15 +44,18 @@
             <h2>Textfield Slider</h2>
             <div class="flc-textfieldSlider">
                 <span class="demo-smallIcon">A</span>
-                <input aria-labelledby="text-size-label" class="flc-textfieldSlider-slider fl-slider">
+                <input class="flc-textfieldSlider-slider fl-slider">
                 <span class="demo-largeIcon">A</span>
-                <input aria-labelledby="text-size-label" class="flc-textfieldSlider-field fl-textfieldSlider-textField" type="text">
+                <input class="flc-textfieldSlider-field fl-textfieldSlider-textField" type="text">
             </div>
 
             <script type="text/javascript">
                 fluid.textfieldSlider(".flc-textfieldSlider", {
+                    attrs: {
+                        "aria-label": "{that}.options.strings.label",
+                    },
                     strings: {
-                        "aria-label": "Textfield Slider"
+                        "label": "Textfield Slider"
                     },
                     model: {
                         value: 7,
@@ -79,8 +82,11 @@
 
             <script type="text/javascript">
                 fluid.textfieldStepper(".flc-textfieldStepper", {
+                    attrs: {
+                        "aria-label": "{that}.options.strings.label",
+                    },
                     strings: {
-                        "aria-label": "Textfield Stepper"
+                        "label": "Textfield Stepper"
                     },
                     model: {
                         value: 1,

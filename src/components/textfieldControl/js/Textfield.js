@@ -25,17 +25,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
     fluid.defaults("fluid.textfield", {
         gradeNames: ["fluid.viewComponent"],
-        ariaOptions: {
+        attrs: {
             // Specified by implementor
             // ID of an external label to refer to with aria-labelledby
             // attribute
-            // "aria-labelledby": ""
+            // "aria-labelledby": "",
+            // Should specify either "aria-label" or "aria-labelledby"
+            // aria-label: "{that}.options.strings.label",
+            // ID of an element that is controlled by the textfield.
+            // "aria-controls": ""
         },
         strings: {
             // Specified by implementor
             // text of label to apply to both textfield and slider input
             // via aria-label attribute
-            // "aria-label": ""
+            // "label": ""
         },
         modelListeners: {
             value: {
@@ -53,10 +57,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "onCreate.initTextfieldAttributes": {
                 "this": "{that}.container",
                 method: "attr",
-                args: [{
-                    "aria-labelledby": "{that}.options.ariaOptions.aria-labelledby",
-                    "aria-label": "{that}.options.strings.aria-label"
-                }]
+                args: ["{that}.options.attrs"]
             }
         },
         invokers: {

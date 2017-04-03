@@ -29,10 +29,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 value: "default value"
             },
             strings: {
-                "aria-label": "Aria Label"
+                "label": "Aria Label"
             },
-            ariaOptions: {
-                "aria-labelledby": "label-textfield"
+            attrs: {
+                "aria-labelledby": "label-textfield",
+                "aria-label": "{that}.options.strings.label"
             }
         });
 
@@ -66,13 +67,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.defaults("fluid.tests.textfield.rangeController", {
             gradeNames: ["fluid.textfield.rangeController"],
             strings: {
-                "aria-label": "Aria self-labeling"
+                "label": "Aria self-labeling"
             },
             model: {
                 value: 0
             },
-            ariaOptions: {
-                "aria-labelledby": "label-nativeHTML"
+            attrs: {
+                "aria-labelledby": "label-nativeHTML",
+                "aria-label": "{that}.options.strings.label"
             },
             // this distribution would typically be handled through a model relay
             // by a parent component, such as fluid.textfieldStepper

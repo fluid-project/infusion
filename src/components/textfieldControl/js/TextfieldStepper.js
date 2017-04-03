@@ -64,7 +64,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                             }
                         }
                     },
-                    ariaOptions: "{textfieldStepper}.options.ariaOptions",
+                    attrs: "{textfieldStepper}.options.attrs",
                     strings: "{textfieldStepper}.options.strings",
                     listeners: {
                         "onCreate.bindUpArrow": {
@@ -180,13 +180,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 max: 100
             }
         },
-        ariaOptions: {
+        attrs: {
             // Specified by implementor
             // ID of an element to use as a label for the stepper
             // attribute
             // "aria-labelledby": ""
             // Should specify either "aria-label" or "aria-labelledby"
             // aria-label: "{that}.options.strings.label",
+            // ID of an element that is controlled by the textfield.
+            // "aria-controls": ""
         },
         distributeOptions: [{
             // The scale option sets the number of decimal places to round

@@ -691,7 +691,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         increaseLabel: "{fluid.prefs.panel.textSize}.msgLookup.increaseLabel",
                         decreaseLabel: "{fluid.prefs.panel.textSize}.msgLookup.decreaseLabel"
                     },
-                    ariaOptions: {
+                    attrs: {
                         "aria-labelledby": "{fluid.prefs.panel.textSize}.options.panelOptions.labelId"
                     }
                 }
@@ -800,7 +800,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         increaseLabel: "{fluid.prefs.panel.lineSpace}.msgLookup.increaseLabel",
                         decreaseLabel: "{fluid.prefs.panel.lineSpace}.msgLookup.decreaseLabel"
                     },
-                    ariaOptions: {
+                    attrs: {
                         "aria-labelledby": "{fluid.prefs.panel.lineSpace}.options.panelOptions.labelId"
                     }
                 }

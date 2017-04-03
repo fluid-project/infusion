@@ -68,13 +68,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.defaults("fluid.tests.textfieldStepper", {
             gradeNames: ["fluid.textfieldStepper"],
             strings: {
-                "aria-label": "Aria self-labeling"
+                "label": "Aria self-labeling"
             },
             model: {
                 value: 0
             },
-            ariaOptions: {
-                "aria-labelledby": "label-nativeHTML"
+            attrs: {
+                "aria-labelledby": "label-nativeHTML",
+                "aria-label": "{that}.options.strings.label"
             }
         });
 
