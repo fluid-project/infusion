@@ -20,7 +20,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var textfield = that.container;
         jqUnit.assertEquals("Textfield value is set", expected.model.value, textfield.val());
         jqUnit.assertEquals("The model should be set", expected.model.value, that.model.value);
-        jqUnit.assertEquals("The aria-label should be set", that.options.strings["label"], textfield.attr("aria-label"));
+        jqUnit.assertEquals("The aria-label should be set", that.options.strings.label, textfield.attr("aria-label"));
         jqUnit.assertEquals("The aria-labelledby should be set", that.options.attrs["aria-labelledby"], textfield.attr("aria-labelledby"));
     };
 
@@ -30,7 +30,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Textfield value is set", expected.model.value, +textfield.val());
         jqUnit.assertEquals("The model should be set", expected.model.value, +that.model.value);
         jqUnit.assertEquals("The controller model should be set", expected.model.value, that.controller.model.value);
-        jqUnit.assertEquals("The aria-label should be set", that.options.strings["label"], textfield.attr("aria-label"));
+        jqUnit.assertEquals("The aria-label should be set", that.options.strings.label, textfield.attr("aria-label"));
         jqUnit.assertEquals("The aria-labelledby should be set", that.options.attrs["aria-labelledby"], textfield.attr("aria-labelledby"));
     };
 

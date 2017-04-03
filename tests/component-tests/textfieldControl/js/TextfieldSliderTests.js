@@ -49,7 +49,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertEquals("The value now should be " + options.model.value, options.model.value, +slider.val());
             jqUnit.assertEquals("The max should be " + options.model.range.max, options.model.range.max, +slider.attr("max"));
             jqUnit.assertEquals("The min should be " + options.model.range.min, options.model.range.min, +slider.attr("min"));
-            jqUnit.assertEquals("Slider has user-supplied aria-label value", that.options.strings["label"], slider.attr("aria-label"));
+            jqUnit.assertEquals("Slider has user-supplied aria-label value", that.options.strings.label, slider.attr("aria-label"));
             jqUnit.assertEquals("Slider has user-supplied aria-labelled value", that.options.attrs["aria-labelledby"], slider.attr("aria-labelledby"));
         });
 
