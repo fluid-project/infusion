@@ -151,30 +151,22 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         modelListeners: {
+            // If we don't exclude init, the value can get
+            // set before onCreate.initSliderAttributes
+            // sets min / max / step, which messes up the
+            // initial slider rendering
             "value": [{
                 "this": "{that}.container",
                 "method": "val",
                 args: ["{change}.value"],
-                // If we don't exclude init, the value can get
-                // set before onCreate.initSliderAttributes
-                // sets min / max / step, which messes up the
-                // initial slider rendering
                 excludeSource: "init"
             }],
             "range": {
                 listener: "{that}.updateSliderAttributes",
-                // If we don't exclude init, the value can get
-                // set before onCreate.initSliderAttributes
-                // sets min / max / step, which messes up the
-                // initial slider rendering
                 excludeSource: "init"
             },
             "step": {
                 listener: "{that}.updateSliderAttributes",
-                // If we don't exclude init, the value can get
-                // set before onCreate.initSliderAttributes
-                // sets min / max / step, which messes up the
-                // initial slider rendering
                 excludeSource: "init"
             }
         }
