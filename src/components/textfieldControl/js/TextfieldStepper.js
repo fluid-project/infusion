@@ -189,6 +189,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // aria-label: "{that}.options.strings.label",
         },
         distributeOptions: [{
+            // The scale option sets the number of decimal places to round
+            // the number to. If no scale is specified, the number will not be rounded.
+            // Scaling is useful to avoid long decimal places due to floating point imprecision.
             source: "{that}.options.scale",
             target: "{that > fluid.textfield > controller}.options.scale"
         }]

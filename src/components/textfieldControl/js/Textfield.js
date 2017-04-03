@@ -113,6 +113,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         target: "{fluid.textfield}.model.value",
                         singleTransform: {
                             type: "fluid.transforms.numberToString",
+                            // The scale option sets the number of decimal places to round
+                            // the number to. If no scale is specified, the number will not be rounded.
+                            // Scaling is useful to avoid long decimal places due to floating point imprecision.
                             scale: "{that}.options.scale"
                         }
                     }, {
