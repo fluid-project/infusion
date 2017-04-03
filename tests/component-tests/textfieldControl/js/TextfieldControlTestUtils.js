@@ -26,6 +26,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.textfieldControl.assertRangeControlledTextfieldInit = function (that, expected) {
         var textfield = that.container;
+        // values with a "+" are coerced from a string to number.
         jqUnit.assertEquals("Textfield value is set", expected.model.value, +textfield.val());
         jqUnit.assertEquals("The model should be set", expected.model.value, +that.model.value);
         jqUnit.assertEquals("The controller model should be set", expected.model.value, that.controller.model.value);
@@ -36,6 +37,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.textfieldControl.assertTextfieldEntry = function (valToTest, expected, that, textfield) {
         fluid.changeElementValue(textfield, valToTest);
 
+        // values with a "+" are coerced from a string to number.
         jqUnit.assertEquals("Textfield value should be " + expected, expected, +textfield.val());
         jqUnit.assertEquals("Model value should be " + expected, expected, +that.model.value);
     };
