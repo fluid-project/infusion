@@ -648,6 +648,50 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         parentBundle: "{fluid.prefs.prefsEditorLoader}.msgResolver"
     });
 
+    /*******************************************
+     * A base grade for switch adjuster panels *
+     *******************************************/
+
+    fluid.defaults("fluid.prefs.panel.switchAdjuster", {
+        gradeNames: ["fluid.prefs.panel"],
+        // preferences maps should map model values to "model.value"
+        // model: {value: ""}
+        selectors: {
+            switchContainer: ".flc-prefsEditor-switch",
+            label: ".flc-prefsEditor-label",
+            description: ".flc-prefsEditor-description"
+        },
+        selectorsToIgnore: ["switchContainer"],
+        components: {
+            switchUI: {
+                type: "fluid.switchUI",
+                container: "{that}.dom.switchContainer",
+                createOnEvent: "afterRender",
+                options: {
+                    strings: {
+                        on: "{fluid.prefs.panel.switchAdjuster}.msgLookup.switchOn",
+                        off: "{fluid.prefs.panel.switchAdjuster}.msgLookup.switchOff"
+                    },
+                    model: {
+                        enabled: "{fluid.prefs.panel.switchAdjuster}.model.value"
+                    },
+                    attrs: {
+                        "aria-labelledby": {
+                            expander: {
+                                funcName: "fluid.allocateSimpleId",
+                                args: ["{fluid.prefs.panel.switchAdjuster}.dom.description"]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        protoTree: {
+            label: {messagekey: "label"},
+            description: {messagekey: "description"}
+        }
+    });
+
     /********************************
      * Preferences Editor Text Size *
      ********************************/
@@ -921,21 +965,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * A sub-component of fluid.prefs that renders the "layout and navigation" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.layoutControls", {
-        gradeNames: ["fluid.prefs.panel"],
+        gradeNames: ["fluid.prefs.panel.switchAdjuster"],
         preferenceMap: {
             "fluid.prefs.tableOfContents": {
-                "model.toc": "default"
+                "model.value": "default"
             }
-        },
-        selectors: {
-            toc: ".flc-prefsEditor-toc",
-            label: ".flc-prefsEditor-toc-label",
-            tocDescr: ".flc-prefsEditor-toc-descr"
-        },
-        protoTree: {
-            label: {messagekey: "tocLabel"},
-            tocDescr: {messagekey: "tocDescr"},
-            toc: "${toc}"
         }
     });
 

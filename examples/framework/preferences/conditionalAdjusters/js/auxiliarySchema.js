@@ -53,7 +53,7 @@ var example = example || {};
                 panel: {
                     type: "example.panels.speak",
                     container: ".mpe-speaking-onOff",
-                    template: "%templatePrefix/speak-template.html",
+                    template: "%templatePrefix/switch-template.html",
                     message: "%messagePrefix/speaking.json"
                 }
             },
@@ -89,7 +89,7 @@ var example = example || {};
                 panel: {
                     type: "example.panels.incSize",
                     container: ".mpe-increasing-onOff",
-                    template: "%templatePrefix/incSize-template.html",
+                    template: "%templatePrefix/switch-template.html",
                     message: "%messagePrefix/increasing.json"
                 }
             },

@@ -31,14 +31,22 @@
     display: inline;
 }
 
+.fl-prefsEditor .mpe-slider .fl-slider {
+    margin-top: 1em;
+}
+
 .mpe-increasing-magPos {
     float: right;
     padding-left: 1rem;
 }
 
+.mpe-speakIncrease .mpe-panels {
+    display: flex;
+    justify-content: space-around;
+}
+
 .mpe-speakIncrease ul.fl-inputs {
     border: 1px solid gray;
     padding: 0 1em 2em 1em;
-    display: inline-block;
     width: 25em;
 }

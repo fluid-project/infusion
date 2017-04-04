@@ -38,6 +38,7 @@
             "renderer",
             "slidingPanel",
             "textfieldControls",
+            "switch",
             "tableOfContents",
             "textToSpeech"
         ]
