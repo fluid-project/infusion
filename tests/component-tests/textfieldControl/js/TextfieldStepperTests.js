@@ -30,10 +30,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.test("Test Init", function () {
-            jqUnit.expect(2);
+            jqUnit.expect(4);
             var that = fluid.tests.textfieldStepper.button(".flc-textfieldStepper-button");
 
             jqUnit.assertEquals("The label should be set", that.options.strings.label, that.container.attr("aria-label"));
+            jqUnit.assertTrue("The container styles should be added", that.container.hasClass(that.options.styles.container));
+            jqUnit.assertEquals("The button should be removed from the tab order", "-1", that.container.attr("tabindex"));
             jqUnit.assertEquals("The state of the button should match the model", that.model.disabled, that.container.is(":disabled"));
         });
 
@@ -71,7 +73,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "label": "Aria self-labeling"
             },
             model: {
-                value: 0
+                value: 0,
+                range: {
+                    max: 10,
+                    min: 1
+                }
             },
             attrs: {
                 "aria-labelledby": "label-nativeHTML",
@@ -79,132 +85,90 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         });
 
-        jqUnit.test("Test Init", function () {
-            jqUnit.expect(11);
-            var options = {
-                model: {
-                    value: 8,
-                    range: {
-                        max: 10,
-                        min: 1
+        fluid.tests.textfieldStepper.verifyState = function (that, expectedValue, incBtnState, decBtnState) {
+            jqUnit.assertEquals("The model value should be " + expectedValue, expectedValue, that.model.value);
+            jqUnit.assertEquals("The aria-valuenow should be " + expectedValue, expectedValue.toString(), that.textfield.container.attr("aria-valuenow"));
+            jqUnit.assertEquals("The increase button is " + (incBtnState ? "enabled" : "disabled"), incBtnState, !that.locate("increaseButton").is(":disabled"));
+            jqUnit.assertEquals("The decrease button is " + (decBtnState ? "enabled" : "disabled"), decBtnState, !that.locate("decreaseButton").is(":disabled"));
+        };
+
+        fluid.defaults("fluid.tests.stepperTestTree", {
+            gradeNames: ["fluid.test.testEnvironment", "fluid.modelComponent"],
+            components: {
+                stepper: {
+                    type: "fluid.tests.textfieldStepper",
+                    container: ".flc-textfieldStepper",
+                    options: {
+                        model: {
+                            value: 1,
+                            step: 1,
+                            range: {
+                                min: 0,
+                                max: 2
+                            }
+                        }
                     }
+                },
+                testCases: {
+                    type: "fluid.tests.stepperTestCases"
                 }
-            };
-            var that = fluid.tests.textfieldStepper(".flc-textfieldStepper", options);
-
-            fluid.tests.textfieldControl.assertRangeControlledTextfieldInit(that.textfield, options);
-            jqUnit.assertEquals("The role is set", "spinbutton", that.textfield.container.attr("role"));
-            jqUnit.assertEquals("The aria-valuemin is set", that.model.range.min.toString(), that.textfield.container.attr("aria-valuemin"));
-            jqUnit.assertEquals("The aria-valuemax is set", that.model.range.max.toString(), that.textfield.container.attr("aria-valuemax"));
-            jqUnit.assertEquals("The aria-valuenow is set", that.model.value.toString(), that.textfield.container.attr("aria-valuenow"));
-
-            jqUnit.assertFalse("The increase button is enabled", that.locate("increaseButton").is(":disabled"));
-            jqUnit.assertFalse("The decrease button is enabled", that.locate("decreaseButton").is(":disabled"));
+            }
         });
 
-        jqUnit.test("Test Maximum", function () {
-            jqUnit.expect(10);
-            var options = {
-                model: {
-                    value: 10,
-                    range: {
-                        max: 10,
-                        min: 1
-                    }
-                }
-            };
-            var that = fluid.tests.textfieldStepper(".flc-textfieldStepper", options);
-            var increaseBtn = that.locate("increaseButton");
-            var decreaseBtn = that.locate("decreaseButton");
-
-            // init
-            jqUnit.assertTrue("The increase button is disabled", increaseBtn.is(":disabled"));
-            jqUnit.assertFalse("The decrease button is enabled", decreaseBtn.is(":disabled"));
-
-            // decrease
-            decreaseBtn.trigger("click");
-
-            var decreasedVal = that.model.range.max - that.model.step;
-            jqUnit.assertEquals("The model value should decrease", decreasedVal, that.model.value);
-            jqUnit.assertEquals("The aria-valuenow should be updated", decreasedVal.toString(), that.textfield.container.attr("aria-valuenow"));
-            jqUnit.assertFalse("The increase button is enabled", increaseBtn.is(":disabled"));
-            jqUnit.assertFalse("The decrease button is enabled", decreaseBtn.is(":disabled"));
-
-            // increase
-            increaseBtn.trigger("click");
-
-            jqUnit.assertEquals("The model value should increase", that.model.range.max, that.model.value);
-            jqUnit.assertEquals("The aria-valuenow should be updated", that.model.range.max.toString(), that.textfield.container.attr("aria-valuenow"));
-            jqUnit.assertTrue("The increase button is disabled", increaseBtn.is(":disabled"));
-            jqUnit.assertFalse("The decrease button is enabled", decreaseBtn.is(":disabled"));
+        fluid.defaults("fluid.tests.stepperTestCases", {
+            gradeNames: ["fluid.test.testCaseHolder"],
+            modules: [ {
+                name: "Textfield Stepper Interaction Tests",
+                tests: [{
+                    name: "Change Value",
+                    expect: 20,
+                    sequence: [{
+                        // initial state
+                        funcName: "fluid.tests.textfieldStepper.verifyState",
+                        args: ["{stepper}", 1, true, true]
+                    }, {
+                        jQueryTrigger: "click",
+                        element: "{stepper}.dom.increaseButton"
+                    }, {
+                        // increase to maximum
+                        listener: "fluid.tests.textfieldStepper.verifyState",
+                        args: ["{stepper}", 2, false, true],
+                        spec: {path: "value", priority: "last:testing"},
+                        changeEvent: "{stepper}.applier.modelChanged"
+                    }, {
+                        // decrease
+                        jQueryTrigger: "click",
+                        element: "{stepper}.dom.decreaseButton"
+                    }, {
+                        listener: "fluid.tests.textfieldStepper.verifyState",
+                        args: ["{stepper}", 1, true, true],
+                        spec: {path: "value", priority: "last:testing"},
+                        changeEvent: "{stepper}.applier.modelChanged"
+                    }, {
+                        // decrease to minimum
+                        jQueryTrigger: fluid.tests.textfieldControl.createKeyEvent("keydown", 40),
+                        element: "{stepper}.dom.textfield"
+                    }, {
+                        listener: "fluid.tests.textfieldStepper.verifyState",
+                        args: ["{stepper}", 0, true, false],
+                        spec: {path: "value", priority: "last:testing"},
+                        changeEvent: "{stepper}.applier.modelChanged"
+                    }, {
+                        // increase
+                        jQueryTrigger: fluid.tests.textfieldControl.createKeyEvent("keydown", 38),
+                        element: "{stepper}.dom.textfield"
+                    }, {
+                        listener: "fluid.tests.textfieldStepper.verifyState",
+                        args: ["{stepper}", 1, true, true],
+                        spec: {path: "value", priority: "last:testing"},
+                        changeEvent: "{stepper}.applier.modelChanged"
+                    }]
+                }]
+            }]
         });
 
-        jqUnit.test("Test Minimum", function () {
-            jqUnit.expect(10);
-            var options = {
-                model: {
-                    value: 1,
-                    range: {
-                        max: 10,
-                        min: 1
-                    }
-                }
-            };
-            var that = fluid.tests.textfieldStepper(".flc-textfieldStepper", options);
-            var increaseBtn = that.locate("increaseButton");
-            var decreaseBtn = that.locate("decreaseButton");
-
-            // init
-            jqUnit.assertFalse("The increase button is enabled", increaseBtn.is(":disabled"));
-            jqUnit.assertTrue("The decrease button is disabled", decreaseBtn.is(":disabled"));
-
-            // increase
-            increaseBtn.trigger("click");
-
-            var increasedVal = that.model.range.min + that.model.step;
-            jqUnit.assertEquals("The model value should increase", increasedVal, that.model.value);
-            jqUnit.assertEquals("The aria-valuenow should be updated", increasedVal.toString(), that.textfield.container.attr("aria-valuenow"));
-            jqUnit.assertFalse("The increase button is enabled", increaseBtn.is(":disabled"));
-            jqUnit.assertFalse("The decrease button is enabled", decreaseBtn.is(":disabled"));
-
-            // decrease
-            decreaseBtn.trigger("click");
-
-            jqUnit.assertEquals("The model value should decrease", that.model.range.min, that.model.value);
-            jqUnit.assertEquals("The aria-valuenow should be updated", that.model.range.min.toString(), that.textfield.container.attr("aria-valuenow"));
-            jqUnit.assertFalse("The increase button is enabled", increaseBtn.is(":disabled"));
-            jqUnit.assertTrue("The decrease button is disabled", decreaseBtn.is(":disabled"));
-        });
-
-        jqUnit.test("Change with arrow keys", function () {
-            jqUnit.expect(4);
-            var options = {
-                model: {
-                    value: 5,
-                    range: {
-                        max: 10,
-                        min: 1
-                    }
-                }
-            };
-            var that = fluid.tests.textfieldStepper(".flc-textfieldStepper", options);
-            var upArrowEvent = $.Event("keydown");
-            upArrowEvent.which = 38; // up arrow === 38
-            var downArrowEvent = $.Event("keydown");
-            downArrowEvent.which = 40; // down arrow === 40
-
-            // increase
-            that.textfield.container.trigger(upArrowEvent);
-
-            var increasedVal = options.model.value + that.model.step;
-            jqUnit.assertEquals("The model value should increase", increasedVal, that.model.value);
-            jqUnit.assertEquals("The aria-valuenow should be updated", increasedVal.toString(), that.textfield.container.attr("aria-valuenow"));
-
-            // decrease
-            that.textfield.container.trigger(downArrowEvent);
-
-            jqUnit.assertEquals("The model value should decrease", options.model.value, that.model.value);
-            jqUnit.assertEquals("The aria-valuenow should be updated", options.model.value.toString(), that.textfield.container.attr("aria-valuenow"));
-        });
+        fluid.test.runTests([
+            "fluid.tests.stepperTestTree"
+        ]);
     });
 })(jQuery);

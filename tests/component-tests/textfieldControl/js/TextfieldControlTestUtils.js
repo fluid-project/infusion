@@ -16,6 +16,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests.textfieldControl");
 
+    fluid.tests.textfieldControl.createKeyEvent = function (keyEvent, key) {
+        var event = $.Event(keyEvent);
+        event.which = key;
+        return event;
+    };
+
     fluid.tests.textfieldControl.assertTextfieldInit = function (that, expected) {
         var textfield = that.container;
         jqUnit.assertEquals("Textfield value is set", expected.model.value, textfield.val());
