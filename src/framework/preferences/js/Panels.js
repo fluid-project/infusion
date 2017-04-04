@@ -652,7 +652,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * A base grade for switch adjuster panels *
      *******************************************/
 
-    fluid.defaults("fluid.prefs.panel.switchAduster", {
+    fluid.defaults("fluid.prefs.panel.switchAdjuster", {
         gradeNames: ["fluid.prefs.panel"],
         // preferences maps should map model values to "model.value"
         // model: {value: ""}
@@ -669,17 +669,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 createOnEvent: "afterRender",
                 options: {
                     strings: {
-                        on: "{fluid.prefs.panel.switchAduster}.msgLookup.switchOn",
-                        off: "{fluid.prefs.panel.switchAduster}.msgLookup.switchOff"
+                        on: "{fluid.prefs.panel.switchAdjuster}.msgLookup.switchOn",
+                        off: "{fluid.prefs.panel.switchAdjuster}.msgLookup.switchOff"
                     },
                     model: {
-                        enabled: "{fluid.prefs.panel.switchAduster}.model.value"
+                        enabled: "{fluid.prefs.panel.switchAdjuster}.model.value"
                     },
                     attrs: {
                         "aria-labelledby": {
                             expander: {
                                 funcName: "fluid.allocateSimpleId",
-                                args: ["{fluid.prefs.panel.switchAduster}.dom.description"]
+                                args: ["{fluid.prefs.panel.switchAdjuster}.dom.description"]
                             }
                         }
                     }
@@ -971,7 +971,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * A sub-component of fluid.prefs that renders the "layout and navigation" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.layoutControls", {
-        gradeNames: ["fluid.prefs.panel.switchAduster"],
+        gradeNames: ["fluid.prefs.panel.switchAdjuster"],
         preferenceMap: {
             "fluid.prefs.tableOfContents": {
                 "model.value": "default"

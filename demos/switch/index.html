@@ -37,32 +37,21 @@
 
 <body>
     <div class="flc-overviewPanel fl-overviewPanel-container"></div>
-    <section class="row demo-container">
+    <section class="demo-faces demo-container row">
         <p id="flc-switchUI-label">Light</p>
-        <div class="flc-switchUI fl-switchUI">
+        <div class="demo-faces-switch fl-switchUI">
             <span class="flc-switchUI-off fl-switchUI-text" aria-hidden="true"></span>
             <span class="flc-switchUI-control fl-switchUI-control"><span class="fl-switchUI-controlKnob"></span></span>
             <span class="flc-switchUI-on fl-switchUI-text" aria-hidden="true"></span>
         </div>
 
-        <p id="demo-panel" class="demo-panel">
-            <strong class="demo-panel-face" aria-live="polite"></strong>
-            <strong class="demo-panel-text"></strong>
+        <p class="demo-faces-panel demo-panel">
+            <strong class="demo-faces-face demo-face" aria-live="polite"></strong>
+            <strong class="demo-faces-text demo-text"></strong>
         </p>
     </section>
     <script>
-        fluid.switchUI(".flc-switchUI", {
-            attrs: {
-                "aria-labelledby": "flc-switchUI-label",
-                "aria-controls": "demo-panel"
-            },
-            modelListeners: {
-                enabled: {
-                    listener: "demo.toggleLight",
-                    args: ["{change}.value"]
-                }
-            }
-        });
+        demo.faces(".demo-faces");
     </script>
 </body>
 </html>

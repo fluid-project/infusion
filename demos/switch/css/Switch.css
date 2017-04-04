@@ -22,10 +22,6 @@
     background-color: #ffffff;
 }
 
-/*.demo-panel-text {
-    font-size: 25vh;
-}*/
-
-.demo-light .demo-panel-text {
+.demo-light .demo-text {
     text-shadow: 5px 4px 2px rgba(150, 150, 150, 1);
 }

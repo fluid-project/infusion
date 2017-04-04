@@ -108,7 +108,7 @@ var demo = demo || {};
      **********************************************************************************/
 
     fluid.defaults("demo.prefsEditor.simplifyPanel", {
-        gradeNames: ["fluid.prefs.panel.switchAduster"],
+        gradeNames: ["fluid.prefs.panel.switchAdjuster"],
         preferenceMap: {
             "demo.prefs.simplify": {
                 "model.value": "default"

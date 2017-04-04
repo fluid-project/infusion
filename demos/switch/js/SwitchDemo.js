@@ -9,37 +9,92 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
+/* global fluid */
+
 var demo = demo || {};
 
-(function ($) {
+(function () {
     "use strict";
 
-    demo.faces = {
-        primary: "😃",
-        random: ["😆", "😋", "😝", "😲"]
-    };
+    fluid.defaults("demo.faces", {
+        gradeNames: ["fluid.viewComponent"],
+        strings: {
+            on: "on",
+            off: "off"
+        },
+        selectors: {
+            panel: ".demo-faces-panel",
+            text: ".demo-faces-text",
+            face: ".demo-faces-face",
+            switchUI: ".demo-faces-switch"
+        },
+        styles: {
+            light: "demo-light"
+        },
+        faces: {
+            primary: "😃",
+            random: ["😆", "😋", "😝", "😲"]
+        },
+        members: {
+            switchPoint: 0.5
+        },
+        model: {
+            lightOn: false
+        },
+        invokers: {
+            getFace: {
+                funcName: "demo.faces.getFace",
+                args: ["{that}.switchPoint", "{that}.options.faces"]
+            },
+            toggleLight: {
+                funcName: "demo.faces.toggleLight",
+                args: ["{that}", "{arguments}.0"]
+            }
+        },
+        modelListeners: {
+            lightOn: {
+                listener: "{that}.toggleLight",
+                args: ["{change}.value"]
+            }
+        },
+        components: {
+            switchUI: {
+                type: "fluid.switchUI",
+                container: "{that}.dom.switchUI",
+                options: {
+                    attrs: {
+                        "aria-labelledby": "flc-switchUI-label",
+                        "aria-controls": {
+                            expander: {
+                                funcName: "fluid.allocateSimpleId",
+                                args: ["{demo.faces}.dom.panel"]
+                            }
+                        }
+                    },
+                    model: {
+                        enabled: "{demo.faces}.model.lightOn"
+                    }
+                }
+            }
+        }
+    });
 
-    demo.switchPoint = 0.5;
-
-    demo.getFace = function () {
+    demo.faces.getFace = function (switchPoint, faces) {
         var rand = Math.random();
 
-        if (rand >= demo.switchPoint) {
-            demo.switchPoint += 0.05;
-            var faceIdx = Math.floor(Math.random() * (demo.faces.random.length));
-            return demo.faces.random[faceIdx];
+        if (rand >= switchPoint) {
+            switchPoint += 0.05;
+            var faceIdx = Math.floor(Math.random() * (faces.random.length));
+            return faces.random[faceIdx];
         } else {
-            return demo.faces.primary;
+            return faces.primary;
         }
     };
 
-    demo.toggleLight = function (state) {
-        var panel = $(".demo-panel");
-        var panelText = $(".demo-panel-text");
-        var panelFace = $(".demo-panel-face");
-        panelText.text(state ? "on" : "off");
-        panelFace.text(state ? demo.getFace() : "");
-        panel.toggleClass("demo-light", state);
+    demo.faces.toggleLight = function (that, state) {
+        that.locate("text").text(that.options.strings[state ? "on" : "off"]);
+        that.locate("face").text(state ? that.getFace() : "");
+        that.locate("panel").toggleClass(that.options.styles.light, state);
     };
 
-})(jQuery);
+})();
