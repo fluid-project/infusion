@@ -94,7 +94,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      ******************************/
 
     /**
-     * Range Controller is intended to be used as a subcomponent of a fluid.textfield component. It will limit the input
+     * Range Controller is intended to be used as a grade on a fluid.textfield component. It will limit the input
      * to be constrained within a given numerical range. This should be paired with configuring the textfield.setModel
      * invoker to use fluid.textfield.setModelRestrictToNumbers.
      * The Range Controller is useful when combining the textfield with a UI control element such as stepper buttons
