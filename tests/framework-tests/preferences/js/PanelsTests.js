@@ -1266,9 +1266,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test the text sizer settings panel",
             tests: [{
-                expect: 1,
+                expect: 2,
                 name: "Test the rendering of the text size panel",
                 sequence: [{
+                    funcName: "fluid.tests.panels.utils.checkModel",
+                    args: ["textSize", "{textSize}.model", 1]
+                }, {
                     func: "fluid.tests.changeInput",
                     args: ["{textSize}.dom.textSize", "{that}.options.testOptions.newValue"]
                 }, {
@@ -1329,10 +1332,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test the line space settings panel",
             tests: [{
-                expect: 1,
+                expect: 2,
                 name: "Test the rendering of the line space panel",
                 sequence: [
                     {
+                        funcName: "fluid.tests.panels.utils.checkModel",
+                        args: ["lineSpace", "{lineSpace}.model", 1]
+                    }, {
                         func: "fluid.tests.changeInput",
                         args: ["{lineSpace}.dom.lineSpace", "{that}.options.testOptions.newValue"]
                     }, {
