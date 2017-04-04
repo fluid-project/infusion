@@ -987,7 +987,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * A sub-component of fluid.prefs that renders the "enhance inputs" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.enhanceInputs", {
-        gradeNames: ["fluid.prefs.panel.switchAduster"],
+        gradeNames: ["fluid.prefs.panel.switchAdjuster"],
         preferenceMap: {
             "fluid.prefs.enhanceInputs": {
                 "model.value": "default"

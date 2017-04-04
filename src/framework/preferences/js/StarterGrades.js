@@ -263,7 +263,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 options: {
                     gradeNames: "fluid.prefs.prefsEditorConnections",
                     model: {
-                        enhanceInputs: "{prefsEditor}.model.preferences.inputs"
+                        value: "{prefsEditor}.model.preferences.inputs"
                     },
                     messageBase: "{messageLoader}.resources.enhanceInputs.resourceText",
                     resources: {
