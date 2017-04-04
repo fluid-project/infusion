@@ -186,32 +186,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }]
     });
 
-    // Used for context-awareness behaviour
-    fluid.defaults("fluid.prefs.separatedPanel.nativeHTML", {
-        components: {
-            iframeRenderer: {
-                options: {
-                    markupProps: {
-                        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame.html"
-                    }
-                }
-            }
-        }
-    });
-
-    // Used for context-awareness behaviour
-    fluid.defaults("fluid.prefs.separatedPanel.jQueryUI", {
-        components: {
-            iframeRenderer: {
-                options: {
-                    markupProps: {
-                        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame-jQueryUI.html"
-                    }
-                }
-            }
-        }
-    });
-
     fluid.prefs.separatedPanel.hideReset = function (separatedPanel) {
         separatedPanel.locate("reset").hide();
     };
