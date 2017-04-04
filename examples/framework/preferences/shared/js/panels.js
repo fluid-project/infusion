@@ -79,7 +79,7 @@ var example = example || {};
                     },
                     range: "{example.panels.vol}.options.range",
                     sliderOptions: "{example.panels.vol}.options.sliderOptions",
-                    ariaOptions: {
+                    attrs: {
                         "aria-labelledby": "{example.panels.vol}.options.panelOptions.labelId"
                     }
                 }
@@ -128,7 +128,7 @@ var example = example || {};
                     },
                     range: "{example.panels.wpm}.options.range",
                     sliderOptions: "{example.panels.wpm}.options.sliderOptions",
-                    ariaOptions: {
+                    attrs: {
                         "aria-labelledby": "{example.panels.wpm}.options.panelOptions.labelId"
                     }
                 }
@@ -177,7 +177,7 @@ var example = example || {};
                     },
                     range: "{example.panels.cursor}.options.range",
                     sliderOptions: "{example.panels.cursor}.options.sliderOptions",
-                    ariaOptions: {
+                    attrs: {
                         "aria-labelledby": "{example.panels.cursor}.options.panelOptions.labelId"
                     }
                 }
@@ -226,7 +226,7 @@ var example = example || {};
                     },
                     range: "{example.panels.magFactor}.options.range",
                     sliderOptions: "{example.panels.magFactor}.options.sliderOptions",
-                    ariaOptions: {
+                    attrs: {
                         "aria-labelledby": "{example.panels.magFactor}.options.panelOptions.labelId"
                     }
                 }

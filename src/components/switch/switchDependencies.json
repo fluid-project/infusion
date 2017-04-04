@@ -1,8 +1,10 @@
 {
     "switch": {
         "name": "Switch",
-        "description": "A switch ui widget",
-        "cssFiles": [],
+        "description": "A switch user interface widget",
+        "cssFiles": [
+            "./css/Switch.css"
+        ],
         "files": [
             "./js/Switch.js"
         ],
