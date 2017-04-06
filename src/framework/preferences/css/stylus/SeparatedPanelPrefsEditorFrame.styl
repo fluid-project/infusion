@@ -21,21 +21,16 @@
     font-style: normal;
 }
 
-html {
-    overflow: visible
-}
-
 /* Preferences Editor Separated Panel styles */
 .fl-prefsEditor-separatedPanel {
     background-color: #fff;
+    // TODO: remove from mobile once adjusters fit full height of sliding panel
     background-image: url('../images/default/separatedpanelbg.png');
     background-repeat: repeat;
     height: 100%;
     overflow-x: auto;
     overflow-y: hidden;
     color: #5d5652;
-    padding: 1px 0px;
-    margin: 0px;
 
     .fl-prefsEditor {
         font-family: 'OpenSans',"Myriad Pro", Helvetica, Arial, sans-serif;
@@ -46,58 +41,88 @@ html {
     .fl-prefsEditor-panels {
         white-space: nowrap;
         display: table;
-        border-spacing: 20px 0px;
+        margin: 0;
 
         .fl-prefsEditor-panel {
             border: 1px solid #615e59;
-            border-radius: 5px;
-            box-shadow: 2px 2px #7a766d;
-            padding: 1em;
-            min-width: 25em;
+            padding: 1rem;
+            min-width: calc(100vw - 2rem);
             background-color: #fff;
             white-space: normal;
             display: table-cell;
+
+            h2 {
+                text-align: center;
+                width: 100%;
+                text-transform: lowercase;
+
+                [class*='fl-icon-'] {
+                    display: none;
+                }
+
+                .fl-heading-text {
+                    padding-top: 0.2rem;
+                    font-size: 1.3em;
+                    font-weight: 600;
+                }
+            }
+
+            .fl-prefsEditor-panel-descr {
+                border: 0;
+                clip: rect(0 0 0 0);
+                height: 1px;
+                margin: -1px;
+                overflow: hidden;
+                padding: 0;
+                position: absolute;
+                width: 1px;
+            }
+
+            label {
+                font-size: 1rem;
+            }
         }
     }
 
-    h2 {
-        padding: 0 0 0.5em 0;
-        margin: 0 0 1.5em 0;
-        width: 100%;
-        border-bottom: solid #ccc 1px;
-        box-shadow: 0px 6px 7px -6px rgba(0,0,0,0.3);
-        font-size: 1.2em;
-        text-transform: lowercase;
-        line-height:1.7em;
-        height: 2em;
-    }
+    // large screen / desktop view
+    @media screen and (min-width: 40em) {
 
-    .fl-inputs {
-        float: none;
-        padding: 0;
-    }
+        padding: 1px 0px;
+        margin: 0px;
 
-    label {
-        font-size: 1em;
-    }
+        // Preference Panels
+        .fl-prefsEditor-panels {
+            margin: 1rem 0;
+            border-spacing: 20px 0px;
 
-    // Emphasize links buttons panel
-    .fl-links-buttons-options {
-        label {
-            width: 21em;
-            display:inline-block;
-        }
+            .fl-prefsEditor-panel {
+                border-radius: 5px;
+                box-shadow: 2px 2px #7a766d;
+                min-width: 25rem;
 
-        li {
-            margin-bottom: 0.4em;
-        }
-    }
+                h2 {
+                    display: flex;
+                    align-items: center;
+                    margin: 0 0 1.8rem 0;
+                    border-bottom: solid #ccc 1px;
+                    box-shadow: 0px 6px 7px -6px rgba(0,0,0,0.3);
+                    font-size: 1.2rem;
+                    height: 3rem;
 
-    h2 {
-        label, .fl-heading-text {
-            padding-top: 0.2em;
-            font-size: 1.3em;
-            font-weight: 600;
+                    [class*='fl-icon-'] {
+                        display: inline;
+                    }
+                }
+
+                .fl-prefsEditor-panel-descr {
+                    clip: auto;
+                    height: auto;
+                    margin: 1rem 0;
+                    overflow: auto;
+                    position: inherit;
+                    width: auto;
+                }
+            }
         }
     }
 }

@@ -4,19 +4,15 @@
 
 .fl-prefsEditor-separatedPanel .fl-prefsEditor-panels .fl-prefsEditor-panel {
     width: auto;
-    min-width: 25em;
+}
+
+.fl-prefsEditor-separatedPanel .fl-prefsEditor-panels .fl-prefsEditor-panel .fl-inputs {
+    padding: 0.2rem;
+    margin: 0.2rem;
 }
 
 .fl-prefsEditor-onoff {
     margin: 1em 0;
-}
-
-.mpe-increasing {
-    width: 30em;
-}
-
-.mpe-speakIncrease {
-    width: 60em;
 }
 
 .mpe-slider {
@@ -43,6 +39,7 @@
 .mpe-speakIncrease .mpe-panels {
     display: flex;
     justify-content: space-around;
+    flex-wrap: wrap;
 }
 
 .mpe-speakIncrease ul.fl-inputs {
