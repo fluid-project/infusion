@@ -23,45 +23,49 @@
 
 // Top bar and show/hide button
 .fl-prefsEditor-separatedPanel {
+    display: flex;
+    flex-direction: column-reverse;
+
     .fl-panelBar {
         width: 100%;
         background-color: #fff;
         border-bottom: 1px solid #ccc;
+        box-shadow: 0px 2px 3px 0 #6f6f6f;
+        font-size: 1.6rem;
 
         .fl-prefsEditor-buttons {
-            box-shadow: 2px 2px 3px 0 #6f6f6f;
-            border-bottom: 1px solid #ccc;
-            border-left: 1px solid #ccc;
-            border-right: 1px solid #ccc; //FLUID-4991: The shadow effect around the hide/show preferences bug fix. (Border right added)
-            border-bottom-left-radius:8px;
-            border-bottom-right-radius:8px;
-            background-color: white;
-            min-height: 2em;
-            margin-right: 10em;
-            display: block;
-            float: right;
+            width: 100%;
+            height: 3rem;
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            flex-direction: row-reverse; // so that reset is after showHide
+            align-items: center;
         }
-    }
-
-    .fl-prefsEditor-showHide {
-        min-width: 15em;
     }
 
     .fl-prefsEditor-showHide, .fl-prefsEditor-reset {
         text-transform: lowercase;
-        font-weight: bold;
-        border: 0;
-        background-color: white;
-        height: 1.8em;
+        background-color: #ffffff;
+        border: none;
         color: #2f2b2a;
         font-family: 'OpenSans',"Myriad Pro", Helvetica, Arial, sans-serif;
-        font-size: 1.1em;
-        margin-right: 0.5em;
-        margin-left: 0.5em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        flex-shrink: 1;
+    }
+
+    .fl-prefsEditor-showHide {
+        flex-grow: 2;
+        text-align: left;
+        padding-left: 1rem;
     }
 
     .fl-prefsEditor-reset {
-        border-right: 1px solid #ccc;
+        border-left: 2px solid #ccc;
+        text-align: center;
+        padding: 0 1rem;
     }
 
     // Font icon for reset tab
@@ -73,14 +77,57 @@
         font-variant: normal;
         text-transform: none;
         -webkit-font-smoothing: antialiased;
-        float: left;
-        margin-right: 0.3em;
-        margin-top: -0.1em;
-        font-size: 1em;
+        font-size: 1.2rem;
     }
 
     .fl-icon-undo:before {
         content: "\e008";
+    }
+
+    // large screen / desktop view
+    @media screen and (min-width: 40em) {
+        display: block;
+
+        .fl-panelBar {
+            box-shadow: none;
+            font-size: 1rem;
+
+            .fl-prefsEditor-buttons {
+                width: auto;
+                height: auto;
+
+                box-shadow: 2px 2px 3px 0 #6f6f6f;
+                border-bottom: 1px solid #ccc;
+                border-left: 1px solid #ccc;
+                border-right: 1px solid #ccc; //FLUID-4991: The shadow effect around the hide/show preferences bug fix. (Border right added)
+                border-bottom-left-radius:8px;
+                border-bottom-right-radius:8px;
+                background-color: white;
+                min-height: 2rem;
+                margin-right: 5%;
+                display: block;
+                float: right;
+            }
+        }
+
+        .fl-prefsEditor-showHide, .fl-prefsEditor-reset {
+            font-weight: bold;
+            border: none;
+            min-height: 1.8rem;
+            font-size: 1.1rem;
+            text-align: center;
+            padding: 0;
+        }
+
+        .fl-prefsEditor-showHide {
+            margin: 0 0.5rem;
+        }
+
+        .fl-prefsEditor-reset {
+            border-right: 1px solid #ccc;
+            padding-right: 0.8rem;
+            margin-left: 0.5rem;
+        }
     }
 }
 
@@ -88,8 +135,7 @@
 .fl-prefsEditor-separatedPanel-iframe {
     border: 0;
     background-color: #fff;
-    height: 0px;
-    display: block;
+    height: 0;
     width: 100%;
 }
 
