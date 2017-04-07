@@ -60,6 +60,8 @@
 
     select {
         &#textFont {
+            margin: 0 auto;
+            display: block;
             font-weight:bold;
             option {
                 &.times {
@@ -95,7 +97,6 @@
         }
 
         .fl-inputs {
-            float: left;
             font-size: 1em;
         }
     }
@@ -111,33 +112,36 @@
     }
 
     // Theme radio buttons
-    .fl-choice {
-        display: inline;
-        float: left;
+    .fl-choices {
+        display: flex;
+        justify-content: center;
 
-        label {
-            margin-right: 5px;
-            border: 1px solid black;
-            border-radius: 5px;
-            height: 3em;
-            width: 3em;
-            text-align: center;
-            vertical-align: middle;
-            display: inline-block;
-            line-height: 3em !important;
-            padding: 2px;
-        }
-        .fl-preview-A {
-            font-size: 2em;
-        }
+        .fl-choice {
 
-        // Pseudo content to prevent AT from reading display 'a'
-        .fl-preview-A:before {
-            content: "a";
-        }
+            label {
+                margin-right: 5px;
+                border: 1px solid black;
+                border-radius: 5px;
+                height: 3em;
+                width: 3em;
+                text-align: center;
+                vertical-align: middle;
+                display: inline-block;
+                line-height: 3em !important;
+                padding: 2px;
+            }
+            .fl-preview-A {
+                font-size: 2em;
+            }
 
-        input:focus ~ label {
-            outline: 2px solid black;
+            // Pseudo content to prevent AT from reading display 'a'
+            .fl-preview-A:before {
+                content: "a";
+            }
+
+            input:focus ~ label {
+                outline: 2px solid black;
+            }
         }
     }
 
@@ -167,7 +171,7 @@
        to respond to emphasize links preferences */
     .fl-textfieldStepper .fl-textfieldStepper-textField {
         margin: 0 0.5em;
-        width: 5em;
+        width: 4em;
         height: 2em;
         text-align: center;
     }
