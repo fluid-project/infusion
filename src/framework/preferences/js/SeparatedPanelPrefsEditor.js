@@ -269,7 +269,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var dokkument = prefsEditor.container[0].ownerDocument;
             var height = fluid.dom.getDocumentHeight(dokkument);
             var iframe = separatedPanel.iframeRenderer.iframe;
-            var attrs = {height: height + 15}; // TODO: Configurable padding here
+            var attrs = {height: height};
             var panel = separatedPanel.slidingPanel.locate("panel");
             panel.css({height: ""});
             iframe.animate(attrs, 400);
