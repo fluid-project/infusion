@@ -158,6 +158,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         "onReady.boilOnReady": {
                             listener: "{separatedPanel}.events.onReady",
                             args: "{separatedPanel}"
+                        },
+                        "onReady.windowResize": {
+                            "this": window,
+                            method: "addEventListener",
+                            args: ["resize", "{that}.events.onSignificantDOMChange.fire"]
                         }
                     }
                 }
@@ -272,6 +277,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var attrs = {height: height};
             var panel = separatedPanel.slidingPanel.locate("panel");
             panel.css({height: ""});
+            iframe.clearQueue();
             iframe.animate(attrs, 400);
         }, "adjustHeight");
 
