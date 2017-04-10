@@ -19,6 +19,14 @@ fluid.defaults("fluid.tests.testem", {
         browser_disconnect_timeout: 300, // Five minutes
         browser_start_timeout:      300,
         timeout: 300,
+        // https://github.com/testem/testem/issues/777
+        // TODO: Make it possible to define this as a yargs-style map, and use an expander to reduce it to what testem expects.
+        "browser_args": {
+            "Chrome": ["--memory-pressure-threshholds 1"]
+            // ,
+            // Try --memory-pressure-off  ?
+            // "Firefox": ["-safe-mode"]
+        },
         "framework":   "qunit",
         "parallel":    3
     }

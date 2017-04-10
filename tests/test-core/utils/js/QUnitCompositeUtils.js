@@ -38,12 +38,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.test.qunitCompositeUtils.informQUnit = function (that, testDefs) {
         fluid.each(fluid.makeArray(testDefs), function (testDef) {
-            var argsForQUnit = [];
             var resolvedTestPaths = fluid.test.qunitCompositeUtils.resolveAllPaths(that.options.basePath, testDef.tests);
-            argsForQUnit.push(resolvedTestPaths);
-
-            if (testDef.name) { argsForQUnit.unshift(testDef.name); }
-            QUnit.testSuites.apply(null, argsForQUnit);
+            if (testDef.name) {
+                QUnit.testSuites(testDef.name, resolvedTestPaths);
+            }
+            else {
+                QUnit.testSuites(resolvedTestPaths);
+            }
         });
     };
 
