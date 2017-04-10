@@ -146,13 +146,19 @@ html {
                 }
 
                 // Stepper icons
-                .fl-textfieldStepper [class*='fl-icon-'] {
-                    display: inline;
-                }
+                .fl-textfieldStepper {
+                    [class*='fl-icon-'] {
+                        display: inline;
+                    }
 
-                .fl-textfieldStepper-textField {
-                    width: 4em;
-                    margin: 0 0.5em;
+                    .fl-textfieldStepper-textField {
+                        width: 4em;
+                        margin: 0 0.5em;
+                    }
+
+                    .fl-textfieldStepper-focusContainer {
+                        margin: 0 0.5em;
+                    }
                 }
             }
         }
