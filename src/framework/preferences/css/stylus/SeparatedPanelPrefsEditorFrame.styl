@@ -85,6 +85,16 @@ html {
             label {
                 font-size: 1rem;
             }
+
+            // Theme radio buttons
+            .fl-choices {
+                flex-wrap: wrap;
+            }
+
+            // Stepper icons
+            .fl-textfieldStepper [class*='fl-icon-'] {
+                display: none;
+            }
         }
     }
 
@@ -125,6 +135,11 @@ html {
                     overflow: auto;
                     position: inherit;
                     width: auto;
+                }
+
+                // Stepper icons
+                .fl-textfieldStepper [class*='fl-icon-'] {
+                    display: inline;
                 }
             }
         }
