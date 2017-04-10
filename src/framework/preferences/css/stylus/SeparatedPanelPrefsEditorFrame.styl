@@ -49,8 +49,8 @@ html {
 
         .fl-prefsEditor-panel {
             border: 1px solid #615e59;
-            padding: 1rem;
-            min-width: calc(100vw - 2rem);
+            // minus 2px because of borders
+            min-width: calc(100vw - 2px);
             background-color: #fff;
             white-space: normal;
             display: table-cell;
@@ -92,8 +92,15 @@ html {
             }
 
             // Stepper icons
-            .fl-textfieldStepper [class*='fl-icon-'] {
-                display: none;
+            .fl-textfieldStepper {
+                [class*='fl-icon-'] {
+                    display: none;
+                }
+
+                .fl-textfieldStepper-textField {
+                    width: 3ch;
+                    margin: 0;
+                }
             }
         }
     }
@@ -110,6 +117,7 @@ html {
             border-spacing: 20px 0px;
 
             .fl-prefsEditor-panel {
+                padding: 1rem;
                 border-radius: 5px;
                 box-shadow: 2px 2px #7a766d;
                 min-width: 25rem;
@@ -140,6 +148,11 @@ html {
                 // Stepper icons
                 .fl-textfieldStepper [class*='fl-icon-'] {
                     display: inline;
+                }
+
+                .fl-textfieldStepper-textField {
+                    width: 4em;
+                    margin: 0 0.5em;
                 }
             }
         }
