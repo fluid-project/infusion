@@ -23,6 +23,14 @@
 
 html {
     overflow: hidden;
+
+    .fl-hidden-accessible {
+        position: fixed;
+
+        @media screen and (min-width: 40em) {
+            position: absolute;
+        }
+    }
 }
 
 /* Preferences Editor Separated Panel styles */
@@ -39,6 +47,11 @@ html {
     .fl-prefsEditor {
         font-family: 'OpenSans',"Myriad Pro", Helvetica, Arial, sans-serif;
         line-height: 1.2 !important; // FLUID-4959: fix the line height so it doesn't scale with the Preferences Editor line space scaling.
+
+        // Required to force the iframe to fit the device width and scroll on iOS
+        width: 1px;
+        min-width: 100%;
+        overflow: scroll;
     }
 
     // Preference Panels
@@ -78,7 +91,7 @@ html {
                 margin: -1px;
                 overflow: hidden;
                 padding: 0;
-                position: absolute;
+                position: fixed;
                 width: 1px;
             }
 
