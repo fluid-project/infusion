@@ -188,11 +188,3 @@ main {
 .fl-prefsEditor-separatedPanel .fl-panelBar .fl-prefsEditor-reset  {
     border-left: 1px solid #fff;
 }
-
- /*large screen / desktop view*/
-@media screen and (min-width: 40em) {
-    .fl-prefsEditor-separatedPanel .fl-panelBar .fl-prefsEditor-reset  {
-        border: none;
-        border-right: 1px solid #fff;
-    }
-}

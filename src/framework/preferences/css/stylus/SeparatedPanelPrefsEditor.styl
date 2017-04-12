@@ -39,12 +39,12 @@
             display: flex;
             flex-wrap: nowrap;
             justify-content: space-between;
-            flex-direction: row-reverse; // so that reset is after showHide
             align-items: center;
         }
     }
 
     .fl-prefsEditor-showHide, .fl-prefsEditor-reset {
+        text-align: center;
         text-transform: lowercase;
         background-color: #ffffff;
         border: none;
@@ -64,7 +64,6 @@
 
     .fl-prefsEditor-reset {
         border-left: 2px solid #ccc;
-        text-align: center;
         padding: 0 1rem;
     }
 
@@ -115,7 +114,6 @@
             border: none;
             min-height: 1.8rem;
             font-size: 1.1rem;
-            text-align: center;
             padding: 0;
         }
 
@@ -124,9 +122,9 @@
         }
 
         .fl-prefsEditor-reset {
-            border-right: 1px solid #ccc;
-            padding-right: 0.8rem;
-            margin-left: 0.5rem;
+            // border-right: 1px solid #ccc;
+            padding-left: 0.8rem;
+            margin-right: 0.5rem;
         }
     }
 }
