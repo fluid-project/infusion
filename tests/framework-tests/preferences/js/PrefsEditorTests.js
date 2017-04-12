@@ -247,7 +247,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             prefsEditor.events.onPrefsEditorRefresh.fire();
             var fontSizeCtrl = $(".flc-prefsEditor-min-text-size");
-            var fontSizeSetting = $(".flc-textfieldSlider-field", fontSizeCtrl).val();
+            var fontSizeSetting = $(".flc-textfieldStepper-field", fontSizeCtrl).val();
             jqUnit.assertEquals("Small font size selected", "1.8", fontSizeSetting);
             var fontStyleSelection = $(":selected", $(".flc-prefsEditor-text-font"));
             jqUnit.assertEquals("Verdana selected", "verdana", fontStyleSelection[0].value);

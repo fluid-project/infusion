@@ -154,9 +154,10 @@ grunt custom --name="myPackage"
 * progress
 * reorderer
 * slidingPanel
+* switch
 * tableOfContents
 * tabs
-* textfieldSlider
+* textfieldControls
 * textToSpeech
 * tooltip
 * uiOptions

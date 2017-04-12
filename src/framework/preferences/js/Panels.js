@@ -705,15 +705,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "fluid.prefs.textSize": {
                 "model.textSize": "default",
                 "range.min": "minimum",
-                "range.max": "maximum"
+                "range.max": "maximum",
+                "step": "divisibleBy"
             }
-        },
-        // The default model values represent both the expected format as well as the setting to be applied in the absence of values passed down to the component.
-        // i.e. from the settings store, or specific defaults derived from schema.
-        // Note: Except for being passed down to its subcomponent, these default values are not contributed and shared out
-        range: {
-            min: 1,
-            max: 2
         },
         selectors: {
             textSize: ".flc-prefsEditor-min-text-size",
@@ -723,18 +717,26 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         selectorsToIgnore: ["textSize"],
         components: {
-            textfieldSlider: {
-                type: "fluid.textfieldSlider",
+            textfieldStepper: {
+                type: "fluid.textfieldStepper",
                 container: "{that}.dom.textSize",
                 createOnEvent: "afterRender",
                 options: {
                     model: {
-                        value: "{fluid.prefs.panel.textSize}.model.textSize"
+                        value: "{fluid.prefs.panel.textSize}.model.textSize",
+                        range: {
+                            min: "{fluid.prefs.panel.textSize}.options.range.min",
+                            max: "{fluid.prefs.panel.textSize}.options.range.max"
+                        },
+                        step: "{fluid.prefs.panel.textSize}.options.step"
                     },
-                    range: "{fluid.prefs.panel.textSize}.options.range",
-                    sliderOptions: "{fluid.prefs.panel.textSize}.options.sliderOptions",
-                    ariaOptions: {
-                        "aria-labelledby": "{textSize}.options.panelOptions.labelId"
+                    scale: 1,
+                    strings: {
+                        increaseLabel: "{fluid.prefs.panel.textSize}.msgLookup.increaseLabel",
+                        decreaseLabel: "{fluid.prefs.panel.textSize}.msgLookup.decreaseLabel"
+                    },
+                    attrs: {
+                        "aria-labelledby": "{fluid.prefs.panel.textSize}.options.panelOptions.labelId"
                     }
                 }
             }
@@ -748,11 +750,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             multiplier: {messagekey: "multiplier"},
             textSizeDescr: {messagekey: "textSizeDescr"}
-        },
-        sliderOptions: {
-            orientation: "horizontal",
-            step: 0.1,
-            range: "min"
         },
         panelOptions: {
             labelId: "textSize-label-" + fluid.allocateGuid()
@@ -817,15 +814,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "fluid.prefs.lineSpace": {
                 "model.lineSpace": "default",
                 "range.min": "minimum",
-                "range.max": "maximum"
+                "range.max": "maximum",
+                "step": "divisibleBy"
             }
-        },
-        // The default model values represent both the expected format as well as the setting to be applied in the absence of values passed down to the component.
-        // i.e. from the settings store, or specific defaults derived from schema.
-        // Note: Except for being passed down to its subcomponent, these default values are not contributed and shared out
-        range: {
-            min: 1,
-            max: 2
         },
         selectors: {
             lineSpace: ".flc-prefsEditor-line-space",
@@ -835,18 +826,26 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         selectorsToIgnore: ["lineSpace"],
         components: {
-            textfieldSlider: {
-                type: "fluid.textfieldSlider",
+            textfieldStepper: {
+                type: "fluid.textfieldStepper",
                 container: "{that}.dom.lineSpace",
                 createOnEvent: "afterRender",
                 options: {
                     model: {
-                        value: "{fluid.prefs.panel.lineSpace}.model.lineSpace"
+                        value: "{fluid.prefs.panel.lineSpace}.model.lineSpace",
+                        range: {
+                            min: "{fluid.prefs.panel.lineSpace}.options.range.min",
+                            max: "{fluid.prefs.panel.lineSpace}.options.range.max"
+                        },
+                        step: "{fluid.prefs.panel.lineSpace}.options.step"
                     },
-                    range: "{fluid.prefs.panel.lineSpace}.options.range",
-                    sliderOptions: "{fluid.prefs.panel.lineSpace}.options.sliderOptions",
-                    ariaOptions: {
-                        "aria-labelledby": "{lineSpace}.options.panelOptions.labelId"
+                    scale: 1,
+                    strings: {
+                        increaseLabel: "{fluid.prefs.panel.lineSpace}.msgLookup.increaseLabel",
+                        decreaseLabel: "{fluid.prefs.panel.lineSpace}.msgLookup.decreaseLabel"
+                    },
+                    attrs: {
+                        "aria-labelledby": "{fluid.prefs.panel.lineSpace}.options.panelOptions.labelId"
                     }
                 }
             }
@@ -860,11 +859,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             multiplier: {messagekey: "multiplier"},
             lineSpaceDescr: {messagekey: "lineSpaceDescr"}
-        },
-        sliderOptions: {
-            orientation: "horizontal",
-            step: 0.1,
-            range: "min"
         },
         panelOptions: {
             labelId: "lineSpace-label-" + fluid.allocateGuid()

@@ -23,12 +23,21 @@
     padding: 1.5em 0;
 }
 
+.mpe-radioRow {
+    padding-top: 0.5rem;
+}
+
+.mpe-radioRow label {
+    display: inline;
+}
+
 .fl-prefsEditor .mpe-slider .fl-slider {
     margin-top: 1em;
 }
 
 .mpe-increasing-magPos {
     float: right;
+    padding-left: 1rem;
 }
 
 .mpe-speakIncrease .mpe-panels {
