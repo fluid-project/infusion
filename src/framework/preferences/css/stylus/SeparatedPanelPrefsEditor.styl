@@ -24,7 +24,7 @@
 // Top bar and show/hide button
 .fl-prefsEditor-separatedPanel {
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
 
     .fl-panelBar {
         width: 100%;
@@ -32,6 +32,11 @@
         border-bottom: 1px solid #ccc;
         box-shadow: 0px 2px 3px 0 #6f6f6f;
         font-size: 1.6rem;
+
+        // panelBar for desktop view
+        &.fl-panelBar-below {
+            display: none;
+        }
 
         .fl-prefsEditor-buttons {
             width: 100%;
@@ -90,6 +95,16 @@
         .fl-panelBar {
             box-shadow: none;
             font-size: 1rem;
+
+            // panelBar for mobile view
+            &.fl-panelBar-above {
+                display: none;
+            }
+
+            // panelBar for desktop view
+            &.fl-panelBar-below {
+                display: block;
+            }
 
             .fl-prefsEditor-buttons {
                 width: auto;
