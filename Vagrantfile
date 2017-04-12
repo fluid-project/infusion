@@ -20,7 +20,7 @@ guest_tcp_port = ansible_vars["nodejs_app_tcp_port"] || 8081
 # By default this VM will use 2 processor cores and 2GB of RAM. The 'VM_CPUS' and
 # "VM_RAM" environment variables can be used to change that behaviour.
 cpus = ENV["VM_CPUS"] || 2
-ram = ENV["VM_RAM"] || 3072
+ram = ENV["VM_RAM"] || 2048
 
 Vagrant.configure(2) do |config|
 

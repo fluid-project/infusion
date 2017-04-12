@@ -1147,9 +1147,9 @@ gpii-handlebars@1.0.0:
     pagedown "1.1.0"
     underscore-node "0.1.2"
 
-gpii-testem@1.0.0-dev.20170330T084814Z.70e12cf:
-  version "1.0.0-dev.20170330T084814Z.70e12cf"
-  resolved "https://registry.yarnpkg.com/gpii-testem/-/gpii-testem-1.0.0-dev.20170330T084814Z.70e12cf.tgz#7297875e5a7cf3b447c243db0e98de895a01c046"
+gpii-testem@1.0.0-dev.20170411T125618Z.4ec8037:
+  version "1.0.0-dev.20170411T125618Z.4ec8037"
+  resolved "https://registry.yarnpkg.com/gpii-testem/-/gpii-testem-1.0.0-dev.20170411T125618Z.4ec8037.tgz#0ea249f70c1b39e17d7c62e14badb62b44bd37e0"
   dependencies:
     gpii-express "1.0.6-dev.20170323T081341Z.8faf4d3"
     gpii-handlebars "1.0.0"
@@ -1568,26 +1568,7 @@ isexe@^1.1.1:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/isexe/-/isexe-1.1.2.tgz#36f3e22e60750920f5e7241a476a8c6a42275ad0"
 
-istanbul@0.4.5:
-  version "0.4.5"
-  resolved "https://registry.yarnpkg.com/istanbul/-/istanbul-0.4.5.tgz#65c7d73d4c4da84d4f3ac310b918fb0b8033733b"
-  dependencies:
-    abbrev "1.0.x"
-    async "1.x"
-    escodegen "1.8.x"
-    esprima "2.7.x"
-    glob "^5.0.15"
-    handlebars "^4.0.1"
-    js-yaml "3.x"
-    mkdirp "0.5.x"
-    nopt "3.x"
-    once "1.x"
-    resolve "1.1.x"
-    supports-color "^3.1.0"
-    which "^1.1.1"
-    wordwrap "^1.0.0"
-
-"istanbul@git://github.com/the-t-in-rtf/istanbul#828eb930add7bd663ca20649a917f3f3829e48c5":
+istanbul@0.4.5, "istanbul@git://github.com/the-t-in-rtf/istanbul#828eb930add7bd663ca20649a917f3f3829e48c5":
   version "0.4.5"
   resolved "git://github.com/the-t-in-rtf/istanbul#828eb930add7bd663ca20649a917f3f3829e48c5"
   dependencies:
