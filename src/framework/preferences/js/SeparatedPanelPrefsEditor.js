@@ -271,14 +271,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.prefs.separatedPanel.updateView(prefsEditor);
         }, "updateView");
         prefsEditor.events.onSignificantDOMChange.addListener(function () {
-            var dokkument = prefsEditor.container[0].ownerDocument;
-            var height = fluid.dom.getDocumentHeight(dokkument);
-            var iframe = separatedPanel.iframeRenderer.iframe;
-            var attrs = {height: height};
-            var panel = separatedPanel.slidingPanel.locate("panel");
-            panel.css({height: ""});
-            iframe.clearQueue();
-            iframe.animate(attrs, 400);
+            // ensure that the panel is open before trying to adjust its height
+            if ( fluid.get(separatedPanel, "slidingPanel.model.isShowing") ) {
+                var dokkument = prefsEditor.container[0].ownerDocument;
+                var height = fluid.dom.getDocumentHeight(dokkument);
+                var iframe = separatedPanel.iframeRenderer.iframe;
+                var attrs = {height: height};
+                var panel = separatedPanel.slidingPanel.locate("panel");
+                panel.css({height: ""});
+                iframe.clearQueue();
+                iframe.animate(attrs, 400);
+            }
         }, "adjustHeight");
 
         separatedPanel.slidingPanel.events.afterPanelHide.addListener(function () {
