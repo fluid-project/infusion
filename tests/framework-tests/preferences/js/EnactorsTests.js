@@ -86,7 +86,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.enhanceInputsTests", {
         gradeNames: ["fluid.test.testEnvironment"],
-        container: ".flc-emphasizeLinks",
         expectedEnhanceInputsClass: "fl-enhanceInputs-test",
         expectedDefaultFlag: false,
         components: {
