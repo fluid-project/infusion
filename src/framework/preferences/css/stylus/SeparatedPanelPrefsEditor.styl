@@ -40,7 +40,7 @@
 
         .fl-prefsEditor-buttons {
             width: 100%;
-            height: 3rem;
+            height: 66px;
             display: flex;
             flex-wrap: nowrap;
             justify-content: space-between;
@@ -58,18 +58,18 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        flex-shrink: 1;
     }
 
     .fl-prefsEditor-showHide {
-        flex-grow: 2;
+        flex-shrink: 2;
         text-align: left;
-        padding-left: 1rem;
+        padding-left: 0 1rem;
     }
 
     .fl-prefsEditor-reset {
+        flex-shrink: 1;
         border-left: 2px solid #ccc;
-        padding: 0 1rem;
+        padding-right: 1rem;
     }
 
     // Font icon for reset tab
