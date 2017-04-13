@@ -1245,15 +1245,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         components: {
             textSize: {
                 type: "fluid.tests.prefs.panel.textSize",
-                container: ".flc-textSize"
+                container: ".flc-textSize",
+                createOnEvent: "{textSizeTester}.events.onTestCaseStart"
             },
             textSizeTester: {
-                type: "fluid.tests.textSizeTester",
-                options: {
-                    modules: [{
-                        name: "Test the text sizer settings panel"
-                    }]
-                }
+                type: "fluid.tests.textSizeTester"
             }
         }
     });
@@ -1269,7 +1265,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 expect: 2,
                 name: "Test the rendering of the text size panel",
                 sequence: [{
-                    funcName: "fluid.tests.panels.utils.checkModel",
+                    event: "{fluid.tests.textSizePanel textSize}.events.afterRender",
+                    priority: "last:testing",
+                    listener: "fluid.tests.panels.utils.checkModel",
                     args: ["textSize", "{textSize}.model", 1]
                 }, {
                     func: "fluid.tests.changeInput",
@@ -1311,7 +1309,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         components: {
             lineSpace: {
                 type: "fluid.tests.prefs.panel.lineSpace",
-                container: ".flc-lineSpace"
+                container: ".flc-lineSpace",
+                createOnEvent: "{lineSpaceTester}.events.onTestCaseStart"
             },
             lineSpaceTester: {
                 type: "fluid.tests.lineSpaceTester",
@@ -1336,7 +1335,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Test the rendering of the line space panel",
                 sequence: [
                     {
-                        funcName: "fluid.tests.panels.utils.checkModel",
+                        event: "{fluid.tests.lineSpacePanel lineSpace}.events.afterRender",
+                        priority: "last:testing",
+                        listener: "fluid.tests.panels.utils.checkModel",
                         args: ["lineSpace", "{lineSpace}.model", 1]
                     }, {
                         func: "fluid.tests.changeInput",
