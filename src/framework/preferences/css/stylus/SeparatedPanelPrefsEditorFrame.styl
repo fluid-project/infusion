@@ -67,6 +67,7 @@ html {
             background-color: #fff;
             white-space: normal;
             display: table-cell;
+            padding: 16px 0;
 
             h2 {
                 text-align: center;
@@ -99,20 +100,15 @@ html {
                 font-size: 1rem;
             }
 
-            // Theme radio buttons
-            .fl-choices {
-                flex-wrap: wrap;
-            }
-
-            // Stepper icons
+            // Stepper
             .fl-textfieldStepper {
                 [class*='fl-icon-'] {
                     display: none;
                 }
 
-                .fl-textfieldStepper-textField {
-                    width: 3ch;
-                    margin: 0;
+                .fl-textfieldStepper-focusContainer {
+                    display: flex;
+                    justify-content: center;
                 }
             }
         }
@@ -162,15 +158,6 @@ html {
                 .fl-textfieldStepper {
                     [class*='fl-icon-'] {
                         display: inline;
-                    }
-
-                    .fl-textfieldStepper-textField {
-                        width: 4em;
-                        margin: 0 0.5em;
-                    }
-
-                    .fl-textfieldStepper-focusContainer {
-                        margin: 0 0.5em;
                     }
                 }
             }
