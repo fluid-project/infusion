@@ -139,9 +139,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             removeSource: true,
             target: "{that layoutControls}.options"
         }, {
-            source: "{that}.options.linksControls",
+            source: "{that}.options.enhanceInputs",
             removeSource: true,
-            target: "{that linksControls}.options"
+            target: "{that enhanceInputs}.options"
         }]
     });
 

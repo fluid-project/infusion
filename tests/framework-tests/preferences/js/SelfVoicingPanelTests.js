@@ -10,7 +10,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global fluid */
 
 (function ($) {
     "use strict";
@@ -49,16 +49,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.speakPanel.verifyRendering = function (that) {
-        jqUnit.assertEquals("The text for speakLabel should be rendered", that.options.messageBase.label, that.locate("label").text());
-        jqUnit.assertEquals("The text for speakDescr should be rendered", that.options.messageBase.description, that.locate("description").text());
-
-        jqUnit.assertValue("The switch component should have been created", that.switchUI);
-        jqUnit.assertEquals("The text-to-speech option is not checked by default", "false", that.switchUI.locate("control").attr("aria-checked"));
-        jqUnit.assertEquals("The text for the on option should be rendered", that.options.messageBase.switchOn, that.switchUI.locate("on").text());
-        jqUnit.assertEquals("The text for the off option should be rendered", that.options.messageBase.switchOff, that.switchUI.locate("off").text());
-    };
-
     fluid.defaults("fluid.tests.speakTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
@@ -75,8 +65,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 },  {
                     func: "{speak}.refreshView"
                 }, {
-                    listener: "fluid.tests.speakPanel.verifyRendering",
-                    event: "{speak}.events.afterRender"
+                    listener: "fluid.tests.panels.checkSwitchAdjusterRendering",
+                    event: "{speak}.events.afterRender",
+                    args: ["{speak}", false]
                 }, {
                     jQueryTrigger: "click",
                     element: "{speak}.switchUI.dom.control"

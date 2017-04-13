@@ -973,65 +973,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
-    /**************************************
-     * Preferences Editor Emphasize Links *
-     **************************************/
-    /**
-     * A sub-component of fluid.prefs that renders the "links and buttons" panel of the user preferences interface.
-     */
-    fluid.defaults("fluid.prefs.panel.emphasizeLinks", {
-        gradeNames: ["fluid.prefs.panel"],
-        preferenceMap: {
-            "fluid.prefs.emphasizeLinks": {
-                "model.links": "default"
-            }
-        },
-        selectors: {
-            links: ".flc-prefsEditor-links",
-            linksChoiceLabel: ".flc-prefsEditor-links-choice-label"
-        },
-        protoTree: {
-            linksChoiceLabel: {messagekey: "linksChoiceLabel"},
-            links: "${links}"
-        }
-    });
-
-    /************************************
-     * Preferences Editor Inputs Larger *
-     ************************************/
-    /**
-     * A sub-component of fluid.prefs that renders the "links and buttons" panel of the user preferences interface.
-     */
-    fluid.defaults("fluid.prefs.panel.inputsLarger", {
-        gradeNames: ["fluid.prefs.panel"],
-        preferenceMap: {
-            "fluid.prefs.inputsLarger": {
-                "model.inputsLarger": "default"
-            }
-        },
-        selectors: {
-            inputsLarger: ".flc-prefsEditor-inputs-larger",
-            inputsChoiceLabel: ".flc-prefsEditor-links-inputs-choice-label"
-        },
-        protoTree: {
-            inputsChoiceLabel: {messagekey: "inputsChoiceLabel"},
-            inputsLarger: "${inputsLarger}"
-        }
-    });
-
     /*************************************
-     * Preferences Editor Links Controls *
+     * Preferences Editor Enhance Inputs *
      *************************************/
+
     /**
-     * A sub-component of fluid.prefs that renders the "links and buttons" panel of the user preferences interface.
+     * A sub-component of fluid.prefs that renders the "enhance inputs" panel of the user preferences interface.
      */
-    fluid.defaults("fluid.prefs.panel.linksControls", {
-        gradeNames: ["fluid.prefs.compositePanel"],
-        selectors: {
-            label: ".flc-prefsEditor-linksControls-label"
-        },
-        protoTree: {
-            label: {messagekey: "linksControlsLabel"}
+    fluid.defaults("fluid.prefs.panel.enhanceInputs", {
+        gradeNames: ["fluid.prefs.panel.switchAdjuster"],
+        preferenceMap: {
+            "fluid.prefs.enhanceInputs": {
+                "model.value": "default"
+            }
         }
     });
 
