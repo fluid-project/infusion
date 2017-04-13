@@ -143,8 +143,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 textFont: "verdana",
                 theme: "bw",
                 layout: false,
-                toc: true,
-                links: true
+                toc: true
             }
         },
         modules: [{
