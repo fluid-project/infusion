@@ -24,12 +24,10 @@
 html {
     overflow: hidden;
 
+    // overriding .fl-hiddem-accessible to preserve
+    // propper iframe scrolling in iOS
     .fl-hidden-accessible {
         position: fixed;
-
-        @media screen and (min-width: 40em) {
-            position: absolute;
-        }
     }
 }
 
@@ -85,6 +83,9 @@ html {
                 }
             }
 
+            // visually hide descriptions in mobile view.
+            // this style declaration is essentially a copy of
+            // .fl-hidden-accessible
             .fl-prefsEditor-panel-descr {
                 border: 0;
                 clip: rect(0 0 0 0);
