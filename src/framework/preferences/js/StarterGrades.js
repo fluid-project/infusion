@@ -1,5 +1,5 @@
 /*
-Copyright 2013-2016 OCAD University
+Copyright 2013-2017 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -191,6 +191,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     messageBase: "{messageLoader}.resources.textSize.resourceText",
                     resources: {
                         template: "{templateLoader}.resources.textSize"
+                    },
+                    step: 0.1,
+                    range: {
+                        min: 1,
+                        max: 2
                     }
                 }
             },
@@ -206,6 +211,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     messageBase: "{messageLoader}.resources.lineSpace.resourceText",
                     resources: {
                         template: "{templateLoader}.resources.lineSpace"
+                    },
+                    step: 0.1,
+                    range: {
+                        min: 1,
+                        max: 2
                     }
                 }
             },
@@ -285,38 +295,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
 
     fluid.defaults("fluid.prefs.starterTemplateLoader", {
-        gradeNames: ["fluid.resourceLoader", "fluid.contextAware"],
+        gradeNames: ["fluid.resourceLoader"],
         resources: {
+            textSize: "%templatePrefix/PrefsEditorTemplate-textSize.html",
+            lineSpace: "%templatePrefix/PrefsEditorTemplate-lineSpace.html",
             textFont: "%templatePrefix/PrefsEditorTemplate-textFont.html",
             contrast: "%templatePrefix/PrefsEditorTemplate-contrast.html",
             layoutControls: "%templatePrefix/PrefsEditorTemplate-layout.html",
             enhanceInputs: "%templatePrefix/PrefsEditorTemplate-enhanceInputs.html"
-        },
-        contextAwareness: {
-            startTemplateLoaderPrefsWidgetType: {
-                checks: {
-                    jQueryUI: {
-                        contextValue: "{fluid.prefsWidgetType}",
-                        equals: "jQueryUI",
-                        gradeNames: "fluid.prefs.starterTemplateLoader.jQuery"
-                    }
-                },
-                defaultGradeNames: "fluid.prefs.starterTemplateLoader.native"
-            }
-        }
-    });
-
-    fluid.defaults("fluid.prefs.starterTemplateLoader.native", {
-        resources: {
-            textSize: "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html",
-            lineSpace: "%templatePrefix/PrefsEditorTemplate-lineSpace-nativeHTML.html"
-        }
-    });
-
-    fluid.defaults("fluid.prefs.starterTemplateLoader.jQuery", {
-        resources: {
-            textSize: "%templatePrefix/PrefsEditorTemplate-textSize-jQueryUI.html",
-            lineSpace: "%templatePrefix/PrefsEditorTemplate-lineSpace-jQueryUI.html"
         }
     });
 

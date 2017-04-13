@@ -48,7 +48,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     iframeRenderer: {
                         markupProps: {
-                            src: "./SeparatedPanelPrefsEditorFrame-nativeHTML.html"
+                            src: "./SeparatedPanelPrefsEditorFrame.html"
                         }
                     },
                     templateLoader: {
@@ -221,7 +221,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     gradeNames: ["fluid.tests.prefs.mungingIntegrationBase"],
                     iframeRenderer: {
                         markupProps: {
-                            src: "./SeparatedPanelPrefsEditorFrame-nativeHTML.html"
+                            src: "./SeparatedPanelPrefsEditorFrame.html"
                         }
                     },
                     slidingPanel: {

@@ -75,11 +75,11 @@ var example = example || {};
                 createOnEvent: "onDomBind",
                 options: {
                     model: {
-                        value: "{example.panels.vol}.model.volume"
+                        value: "{example.panels.vol}.model.volume",
+                        range: "{example.panels.vol}.options.range"
                     },
-                    range: "{example.panels.vol}.options.range",
                     sliderOptions: "{example.panels.vol}.options.sliderOptions",
-                    ariaOptions: {
+                    attrs: {
                         "aria-labelledby": "{example.panels.vol}.options.panelOptions.labelId"
                     }
                 }
@@ -124,11 +124,11 @@ var example = example || {};
                 createOnEvent: "afterRender",
                 options: {
                     model: {
-                        value: "{example.panels.wpm}.model.wordsPerMin"
+                        value: "{example.panels.wpm}.model.wordsPerMin",
+                        range: "{example.panels.wpm}.options.range"
                     },
-                    range: "{example.panels.wpm}.options.range",
                     sliderOptions: "{example.panels.wpm}.options.sliderOptions",
-                    ariaOptions: {
+                    attrs: {
                         "aria-labelledby": "{example.panels.wpm}.options.panelOptions.labelId"
                     }
                 }
@@ -173,11 +173,11 @@ var example = example || {};
                 createOnEvent: "onDomBind",
                 options: {
                     model: {
-                        value: "{example.panels.cursor}.model.cursorMult"
+                        value: "{example.panels.cursor}.model.cursorMult",
+                        range: "{example.panels.cursor}.options.range"
                     },
-                    range: "{example.panels.cursor}.options.range",
                     sliderOptions: "{example.panels.cursor}.options.sliderOptions",
-                    ariaOptions: {
+                    attrs: {
                         "aria-labelledby": "{example.panels.cursor}.options.panelOptions.labelId"
                     }
                 }
@@ -222,11 +222,11 @@ var example = example || {};
                 createOnEvent: "onDomBind",
                 options: {
                     model: {
-                        value: "{example.panels.magFactor}.model.mag"
+                        value: "{example.panels.magFactor}.model.mag",
+                        range: "{example.panels.magFactor}.options.range"
                     },
-                    range: "{example.panels.magFactor}.options.range",
                     sliderOptions: "{example.panels.magFactor}.options.sliderOptions",
-                    ariaOptions: {
+                    attrs: {
                         "aria-labelledby": "{example.panels.magFactor}.options.panelOptions.labelId"
                     }
                 }

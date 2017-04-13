@@ -54,16 +54,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         gradeNames: "fluid.prefs.separatedPanel.lazyLoad"
                     }
                 }
-            },
-            separatedPanelPrefsWidgetType: {
-                checks: {
-                    jQueryUI: {
-                        contextValue: "{fluid.prefsWidgetType}",
-                        equals: "jQueryUI",
-                        gradeNames: "fluid.prefs.separatedPanel.jQueryUI"
-                    }
-                },
-                defaultGradeNames: "fluid.prefs.separatedPanel.nativeHTML"
             }
         },
         selectors: {
@@ -196,32 +186,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }]
     });
 
-    // Used for context-awareness behaviour
-    fluid.defaults("fluid.prefs.separatedPanel.nativeHTML", {
-        components: {
-            iframeRenderer: {
-                options: {
-                    markupProps: {
-                        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame-nativeHTML.html"
-                    }
-                }
-            }
-        }
-    });
-
-    // Used for context-awareness behaviour
-    fluid.defaults("fluid.prefs.separatedPanel.jQueryUI", {
-        components: {
-            iframeRenderer: {
-                options: {
-                    markupProps: {
-                        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame-jQueryUI.html"
-                    }
-                }
-            }
-        }
-    });
-
     fluid.prefs.separatedPanel.hideReset = function (separatedPanel) {
         separatedPanel.locate("reset").hide();
     };
@@ -242,7 +206,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         markupProps: {
             "class": "flc-iframe",
-            src: "%templatePrefix/prefsEditorIframe.html"
+            src: "%templatePrefix/SeparatedPanelPrefsEditorFrame.html"
         },
         listeners: {
             "onCreate.startLoadingIframe": "fluid.prefs.separatedPanel.renderIframe.startLoadingIframe"

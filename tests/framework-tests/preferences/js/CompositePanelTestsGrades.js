@@ -162,7 +162,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.prefs.separatedPanel"],
         iframeRenderer: {
             markupProps: {
-                src: "./SeparatedPanelPrefsEditorFrame-nativeHTML.html"
+                src: "./SeparatedPanelPrefsEditorFrame.html"
             }
         }
     });
