@@ -40,7 +40,7 @@
 
         .fl-prefsEditor-buttons {
             width: 100%;
-            height: 66px;
+            height: 66px; // fixed height so the buttons won't push down the sliding panel as the text size is changed
             display: flex;
             flex-wrap: nowrap;
             justify-content: space-between;
@@ -65,13 +65,13 @@
         flex-grow: 1;
         flex-shrink: 2;
         text-align: left;
-        padding-left: 16px;
+        padding-left: 16px; // fixed padding to save space on mobile when text size adjustments are applied
     }
 
     .fl-prefsEditor-reset {
         flex-shrink: 1;
         border-left: 2px solid #ccc;
-        padding-right: 16px;
+        padding-right: 16px; // fixed padding to save space on mobile when text size adjustments are applied
     }
 
     // Font icon for reset tab
