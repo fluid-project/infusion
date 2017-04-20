@@ -60,6 +60,8 @@
 
     select {
         &#textFont {
+            margin: 0 auto;
+            display: block;
             font-weight:bold;
             option {
                 &.times {
@@ -95,7 +97,6 @@
         }
 
         .fl-inputs {
-            float: left;
             font-size: 1em;
         }
     }
@@ -111,33 +112,35 @@
     }
 
     // Theme radio buttons
-    .fl-choice {
-        display: inline;
-        float: left;
+    .fl-choices {
+        display: flex;
+        justify-content: center;
 
-        label {
-            margin-right: 5px;
-            border: 1px solid black;
-            border-radius: 5px;
-            height: 3em;
-            width: 3em;
-            text-align: center;
-            vertical-align: middle;
-            display: inline-block;
-            line-height: 3em !important;
-            padding: 2px;
-        }
-        .fl-preview-A {
-            font-size: 2em;
-        }
+        .fl-choice {
+            label {
+                margin-right: 5px;
+                border: 1px solid black;
+                border-radius: 5px;
+                height: 3em;
+                width: 3em;
+                text-align: center;
+                vertical-align: middle;
+                display: inline-block;
+                line-height: 3em !important;
+                padding: 2px;
+            }
+            .fl-preview-A {
+                font-size: 2em;
+            }
 
-        // Pseudo content to prevent AT from reading display 'a'
-        .fl-preview-A:before {
-            content: "a";
-        }
+            // Pseudo content to prevent AT from reading display 'a'
+            .fl-preview-A:before {
+                content: "a";
+            }
 
-        input:focus ~ label {
-            outline: 2px solid black;
+            input:focus ~ label {
+                outline: 2px solid black;
+            }
         }
     }
 
@@ -152,7 +155,6 @@
 
     .fl-textfieldStepper-focusContainer {
         padding: 0.2em;
-        margin: 0 0.5em;
     }
 
     .fl-textfieldStepper *:focus {
@@ -167,7 +169,7 @@
        to respond to emphasize links preferences */
     .fl-textfieldStepper .fl-textfieldStepper-textField {
         margin: 0 0.5em;
-        width: 5em;
+        width: 4em;
         height: 2em;
         text-align: center;
     }
@@ -184,10 +186,8 @@
         opacity: 0.3;
     }
 
-    // ON/OFF Switch for checkboxes
+    // ON/OFF Switch
     .fl-prefsEditor-onoff {
-        padding: 0 1rem;
-
         @import "../../../../components/switch/css/stylus/Switch.styl"
     }
 
@@ -260,6 +260,9 @@
         content: "\e00c";
     }
     .fl-icon-simplify:before {
+        content: "\e00d";
+    }
+    .fl-icon-settings:before {
         content: "\e00e";
     }
     .fl-icon-font:before {
