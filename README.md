@@ -34,7 +34,7 @@ The best way to join the Fluid Community is to jump into any of our community ac
 
 ## Inclusion ##
 
-The Fluid community is dedicated to inclusive design&mdash;design that considers the full range of human diversity with respect to ability, language, culture, gender, age and other forms of human difference. To help ensure that our community is a safe space for all contributors, we have adopted a [code of conduct](https://wiki.fluidproject.org/display/fluid/Inclusion+in+the+Fluid+Community) based on the Contributor Covenant. All participants and contributors have the responsibility to uphold this code. Please contact the [Advocacy working group](mailto:fluid-advocacy@fluidproject.org) if you encounter unacceptable behaviour.
+The Fluid community is dedicated to inclusive design&mdash;design that considers the full range of human diversity with respect to ability, language, culture, gender, age and other forms of human difference. To help ensure that our community is a safe space for all contributors, we have adopted a [code of conduct](https://wiki.fluidproject.org/display/fluid/Inclusion+in+the+Fluid+Community) based on the [Contributor Covenant](http://contributor-covenant.org/). All participants and contributors have the responsibility to uphold this code. Please contact the [Advocacy working group](mailto:fluid-advocacy@fluidproject.org) if you encounter unacceptable behaviour.
 
 ## Where is Infusion Used? ##
 
