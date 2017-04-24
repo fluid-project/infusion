@@ -49,7 +49,7 @@ html {
         // Required to force the iframe to fit the device width and scroll on iOS
         width: 1px;
         min-width: 100%;
-        overflow: scroll;
+        overflow-x: scroll;
     }
 
     // Preference Panels
@@ -149,12 +149,12 @@ html {
                 }
 
                 .fl-prefsEditor-panel-descr {
-                    clip: auto;
                     height: auto;
-                    margin: 1rem 0;
-                    overflow: auto;
+                    margin: 0;
+                    margin-bottom: 1rem;
+                    overflow: visible;
                     position: inherit;
-                    width: auto;
+                    width: 100%;
                 }
 
                 // Stepper icons
