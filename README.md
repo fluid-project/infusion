@@ -32,6 +32,10 @@ The Fluid community is an international group of designers, developers, and test
 
 The best way to join the Fluid Community is to jump into any of our community activities. Visit our [website](http://fluidproject.org/) for links to our mailing lists, chat room, wiki, etc.
 
+## Inclusion ##
+
+The Fluid community is dedicated to inclusive design&mdash;design that considers the full range of human diversity with respect to ability, language, culture, gender, age and other forms of human difference. To help ensure that our community is a safe space for all contributors, we have adopted a [code of conduct](https://wiki.fluidproject.org/display/fluid/Inclusion+in+the+Fluid+Community) based on the [Contributor Covenant](http://contributor-covenant.org/). All participants and contributors have the responsibility to uphold this code. Please contact the [Advocacy working group](mailto:fluid-advocacy@fluidproject.org) if you encounter unacceptable behaviour.
+
 ## Where is Infusion Used? ##
 
 Infusion is the cornerstone of a number of Fluid's own projects dedicated to supporting inclusive design on the Web. You can see some of them featured on our [Projects page](http://fluidproject.org/projects.html). Infusion is also used in a variety of third-party applications, which are listed on the [Infusion Integrations](https://wiki.fluidproject.org/display/fluid/Infusion+Integrations) wiki page.
