@@ -85,30 +85,27 @@ html {
                     text-align: center;
                 }
 
-                // The same as Font Icons style declaration from PrefsEditor.styl
-                // Declared separately so that additional markup would not have to
-                // be added to the panels and the heading text itself would have the
-                // propper font family applied.
+                // for right and left arrows
                 &:before, &:after {
-                    font-family: 'InfusionIcons' !important;
+                    font-family: "Times New Roman", Georgia, Times, serif !important;
                     speak: none;
                     font-style: normal;
                     font-weight: normal;
                     font-variant: normal;
                     text-transform: none;
                     -webkit-font-smoothing: antialiased;
-                    margin: 0.2em 0.3em 0 0;
-                    font-size: 1.5em;
+                    margin: -0.4rem 1rem 0rem 1rem;
+                    font-size: 4rem;
                 }
 
-                // same as fl-icon-left
+                // Single Left-Pointing Angle Quotation Mark
                 &:before {
-                    content: "\e002";
+                    content: "\2039";
                 }
 
-                // same as fl-icon-right
+                // Single Right-Pointing Angle Quotation Mark
                 &:after {
-                    content: "\e001";
+                    content: "\203a";
                 }
             }
 
