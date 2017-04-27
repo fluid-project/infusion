@@ -68,9 +68,13 @@ html {
             padding: 16px 0.5rem;
 
             h2 {
-                text-align: center;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
                 width: 100%;
+                min-height: 3.6rem;
                 text-transform: lowercase;
+                white-space: nowrap;
 
                 [class*='fl-icon-'] {
                     display: none;
@@ -80,7 +84,39 @@ html {
                     padding-top: 0.2rem;
                     font-size: 1.3em;
                     font-weight: 600;
+                    text-align: center;
                 }
+
+                // for right and left arrows
+                &:before, &:after {
+                    font-family: "Times New Roman", Georgia, Times, serif !important;
+                    speak: none;
+                    font-style: normal;
+                    font-weight: normal;
+                    font-variant: normal;
+                    text-transform: none;
+                    -webkit-font-smoothing: antialiased;
+                    font-size: 3rem;
+                }
+
+                // Single Left-Pointing Angle Quotation Mark
+                &:before {
+                    content: "\2039";
+                    margin-left: 1rem;
+                }
+
+                // Single Right-Pointing Angle Quotation Mark
+                &:after {
+                    content: "\203a";
+                    margin-right: 1rem;
+                }
+            }
+
+            // hide left arrow from first panel
+            // hide right arrow from last panel
+            &:first-of-type h2:before,
+            &:last-of-type h2:after {
+                visibility: hidden;
             }
 
             // visually hide descriptions in mobile view.
@@ -135,16 +171,20 @@ html {
                 min-width: 25rem;
 
                 h2 {
-                    display: flex;
-                    align-items: center;
+                    justify-content: flex-start;
                     margin: 0 0 1.8rem 0;
                     border-bottom: solid #ccc 1px;
                     box-shadow: 0px 6px 7px -6px rgba(0,0,0,0.3);
                     font-size: 1.2rem;
                     height: 3rem;
+                    white-space: normal;
 
                     [class*='fl-icon-'] {
                         display: inline;
+                    }
+
+                    &:before, &:after {
+                        content: none;
                     }
                 }
 

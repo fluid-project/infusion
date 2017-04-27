@@ -121,16 +121,19 @@
                 margin-right: 5px;
                 border: 1px solid black;
                 border-radius: 5px;
-                height: 3em;
-                width: 3em;
+                height: 2.5em;
+                width: 2.5em;
                 text-align: center;
                 vertical-align: middle;
                 display: inline-block;
-                line-height: 3em !important;
+                line-height: 2.2em !important;
                 padding: 2px;
             }
+            &:last-child label {
+                margin-right: 0;
+            }
             .fl-preview-A {
-                font-size: 2em;
+                font-size: 1.7em;
             }
 
             // Pseudo content to prevent AT from reading display 'a'
@@ -142,6 +145,7 @@
                 outline: 2px solid black;
             }
         }
+
     }
 
     // Stepper
@@ -192,7 +196,7 @@
     }
 
     // Font Icons
-    .fl-icon-indicator, .fl-icon-crossout, .fl-icon-big-a, .fl-icon-small-a, .fl-icon-line-space-expanded, .fl-icon-line-space-condensed,
+    .fl-icon-right, .fl-icon-left, .fl-icon-indicator, .fl-icon-crossout, .fl-icon-big-a, .fl-icon-small-a, .fl-icon-line-space-expanded, .fl-icon-line-space-condensed,
     .fl-icon-contrast, .fl-icon-undo, .fl-icon-line-space, .fl-icon-inputs, .fl-icon-simplify, .fl-icon-font, .fl-icon-size, .fl-icon-text-to-speech, .fl-icon-toc {
         font-family: 'InfusionIcons' !important;
         speak: none;
@@ -236,7 +240,7 @@
 
         .fl-prefsEditor-contrast-defaultThemeLabel .fl-crossout {
             font-family: 'InfusionIcons' !important;
-            margin-top: -1.75em;
+            margin-top: -1.25em;
             font-size: 1.85em;
         }
 
@@ -250,6 +254,12 @@
     }
 
     // header icons
+    .fl-icon-right:before {
+        content: "\e001";
+    }
+    .fl-icon-left:before {
+        content: "\e002";
+    }
     .fl-icon-contrast:before {
         content: "\e005";
     }
