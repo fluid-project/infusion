@@ -72,7 +72,9 @@ html {
                 justify-content: space-between;
                 align-items: center;
                 width: 100%;
+                min-height: 3.6rem;
                 text-transform: lowercase;
+                white-space: nowrap;
 
                 [class*='fl-icon-'] {
                     display: none;
@@ -94,18 +96,19 @@ html {
                     font-variant: normal;
                     text-transform: none;
                     -webkit-font-smoothing: antialiased;
-                    margin: -0.4rem 1rem 0rem 1rem;
-                    font-size: 4rem;
+                    font-size: 3rem;
                 }
 
                 // Single Left-Pointing Angle Quotation Mark
                 &:before {
                     content: "\2039";
+                    margin-left: 1rem;
                 }
 
                 // Single Right-Pointing Angle Quotation Mark
                 &:after {
                     content: "\203a";
+                    margin-right: 1rem;
                 }
             }
 
@@ -174,6 +177,7 @@ html {
                     box-shadow: 0px 6px 7px -6px rgba(0,0,0,0.3);
                     font-size: 1.2rem;
                     height: 3rem;
+                    white-space: normal;
 
                     [class*='fl-icon-'] {
                         display: inline;
