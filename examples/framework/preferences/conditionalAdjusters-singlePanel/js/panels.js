@@ -21,8 +21,10 @@ var example = example || {};
     fluid.defaults("example.panels.speakIncrease", {
         gradeNames: ["fluid.prefs.compositePanel"],
         selectors: {
+            header: ".flc-prefsEditor-header",
             label: ".mpe-speakIncrease-header"
         },
+        selectorsToIgnore: ["header"],
         protoTree: {
             label: {messagekey: "speakIncreaseHeader"}
         }

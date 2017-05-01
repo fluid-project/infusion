@@ -142,6 +142,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 container: "{iframeRenderer}.renderPrefsEditorContainer",
                 options: {
                     gradeNames: ["fluid.prefs.uiEnhancerRelay"],
+                    selectors: {
+                        scrollContainer: ".flc-prefsEditor-scrollContainer"
+                    },
                     // ensure that model and applier are available to users at top level
                     model: "{separatedPanel}.model",
                     events: {
@@ -164,7 +167,27 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                             method: "addEventListener",
                             args: ["resize", "{that}.events.onSignificantDOMChange.fire"]
                         }
-                    }
+                    },
+                    invokers: {
+                        scrollToPanel: {
+                            funcName: "fluid.prefs.separatedPanel.scrollToPanel",
+                            args: ["{that}", "{arguments}.0"]
+                        },
+                        translateToScroll: {
+                            funcName: "fluid.prefs.separatedPanel.translateToScroll",
+                            args: ["{that}", "{arguments}.0"]
+                        }
+                    },
+                    distributeOptions: [{
+                        record: {
+                            "afterRender.bindScrollArrows": {
+                                "this": "{that}.dom.header",
+                                method: "click",
+                                args: ["{prefsEditor}.translateToScroll"]
+                            }
+                        },
+                        target: "{that > fluid.prefs.panel}.options.listeners"
+                    }]
                 }
             }
         },
@@ -193,6 +216,25 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.prefs.separatedPanel.hideReset = function (separatedPanel) {
         separatedPanel.locate("reset").hide();
+    };
+
+    fluid.prefs.separatedPanel.translateToScroll = function (that, event) {
+        event.preventDefault();
+        var target = $(event.target);
+        var midPoint = target.width() / 2;
+        var currentIndex = target.closest(that.options.selectors.panels).index();
+        var scrollIndex = currentIndex + (event.offsetX < midPoint ? -1 : 1);
+
+        that.scrollToPanel(scrollIndex);
+    };
+
+    fluid.prefs.separatedPanel.scrollToPanel = function (that, panelIndex) {
+        var panels = that.locate("panels");
+        var scrollContainer = that.locate("scrollContainer");
+
+        if (panelIndex >= 0 && panelIndex < panels.length) {
+            scrollContainer.scrollLeft(scrollContainer.scrollLeft() + panels.eq(panelIndex).offset().left);
+        }
     };
     /*****************************************
      * fluid.prefs.separatedPanel.renderIframe *

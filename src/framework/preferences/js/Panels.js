@@ -657,11 +657,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // preferences maps should map model values to "model.value"
         // model: {value: ""}
         selectors: {
+            header: ".flc-prefsEditor-header",
             switchContainer: ".flc-prefsEditor-switch",
             label: ".flc-prefsEditor-label",
             description: ".flc-prefsEditor-description"
         },
-        selectorsToIgnore: ["switchContainer"],
+        selectorsToIgnore: ["header", "switchContainer"],
         components: {
             switchUI: {
                 type: "fluid.switchUI",
@@ -710,12 +711,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         selectors: {
+            header: ".flc-prefsEditor-text-size-header",
             textSize: ".flc-prefsEditor-min-text-size",
             label: ".flc-prefsEditor-min-text-size-label",
             multiplier: ".flc-prefsEditor-multiplier",
             textSizeDescr: ".flc-prefsEditor-text-size-descr"
         },
-        selectorsToIgnore: ["textSize"],
+        selectorsToIgnore: ["header", "textSize"],
         components: {
             textfieldStepper: {
                 type: "fluid.textfieldStepper",
@@ -772,10 +774,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         selectors: {
+            header: ".flc-prefsEditor-text-font-header",
             textFont: ".flc-prefsEditor-text-font",
             label: ".flc-prefsEditor-text-font-label",
             textFontDescr: ".flc-prefsEditor-text-font-descr"
         },
+        selectorsToIgnore: ["header"],
         stringArrayIndex: {
             textFont: ["textFont-default", "textFont-times", "textFont-comic", "textFont-arial", "textFont-verdana"]
         },
@@ -819,12 +823,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         selectors: {
+            header: ".flc-prefsEditor-line-space-header",
             lineSpace: ".flc-prefsEditor-line-space",
             label: ".flc-prefsEditor-line-space-label",
             multiplier: ".flc-prefsEditor-multiplier",
             lineSpaceDescr: ".flc-prefsEditor-line-space-descr"
         },
-        selectorsToIgnore: ["lineSpace"],
+        selectorsToIgnore: ["header", "lineSpace"],
         components: {
             textfieldStepper: {
                 type: "fluid.textfieldStepper",
@@ -884,12 +889,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "afterRender.style": "{that}.style"
         },
         selectors: {
+            header: ".flc-prefsEditor-contrast-header",
             themeRow: ".flc-prefsEditor-themeRow",
             themeLabel: ".flc-prefsEditor-theme-label",
             themeInput: ".flc-prefsEditor-themeInput",
             label: ".flc-prefsEditor-contrast-label",
             contrastDescr: ".flc-prefsEditor-contrast-descr"
         },
+        selectorsToIgnore: ["header"],
         styles: {
             defaultThemeLabel: "fl-prefsEditor-contrast-defaultThemeLabel"
         },

@@ -252,6 +252,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         selectors: {
+            panels: ".flc-prefsEditor-panel",
             cancel: ".flc-prefsEditor-cancel",
             reset: ".flc-prefsEditor-reset",
             save: ".flc-prefsEditor-save",

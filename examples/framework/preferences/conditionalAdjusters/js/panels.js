@@ -21,8 +21,10 @@ var example = example || {};
     fluid.defaults("example.panels.speaking", {
         gradeNames: ["fluid.prefs.compositePanel"],
         selectors: {
+            header: ".flc-prefsEditor-header",
             label: ".mpe-speaking-header"
         },
+        selectorsToIgnore: ["header"],
         protoTree: {
             label: {messagekey: "speakingHeader"}
         }
@@ -30,8 +32,10 @@ var example = example || {};
     fluid.defaults("example.panels.increasing", {
         gradeNames: ["fluid.prefs.compositePanel"],
         selectors: {
+            header: ".flc-prefsEditor-header",
             label: ".mpe-increasing-header"
         },
+        selectorsToIgnore: ["header"],
         protoTree: {
             label: {messagekey: "increasingHeader"}
         }
