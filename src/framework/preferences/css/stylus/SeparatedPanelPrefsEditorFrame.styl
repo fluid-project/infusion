@@ -114,6 +114,19 @@ html {
                 }
             }
 
+            // hiding arrows from IE 11, as the current method for making them interactive does
+            // not work in IE. The media query used here is a hack to target only IE
+            @media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {
+                h2 {
+                    display: block;
+                    text-align: center;
+
+                    &:before, &:after {
+                        content: none;
+                    }
+                }
+            }
+
             // hide left arrow from first panel
             // hide right arrow from last panel
             &:first-of-type h2:before,
