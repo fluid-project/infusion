@@ -286,6 +286,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         cancel: ".flc-prefsEditor-cancel",
                         reset: ".flc-prefsEditor-reset",
                         save: ".flc-prefsEditor-save",
+                        panels: ".flc-prefsEditor-panel",
                         previewFrame : ".flc-prefsEditor-preview-frame"
                     }
                 },

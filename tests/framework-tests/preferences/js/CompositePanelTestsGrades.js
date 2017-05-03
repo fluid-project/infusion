@@ -96,8 +96,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             increaseHeader: "increase"
         },
         selectors: {
+            header: ".flc-prefsEditor-header",
             label: ".fluid-tests-composite-increase-header"
         },
+        selectorsToIgnore: ["header"],
         protoTree: {
             label: {messagekey: "increaseHeader"}
         }
@@ -111,8 +113,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         selectors: {
+            header: ".flc-prefsEditor-header",
             bool: ".fluid-tests-composite-input"
         },
+        selectorsToIgnore: ["header"],
         protoTree: {
             bool: "${speakText}"
         }
@@ -121,8 +125,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.cmpPanel.base", {
         gradeNames: ["fluid.prefs.panel"],
         selectors: {
+            header: ".flc-prefsEditor-header",
             bool: ".fluid-tests-composite-input"
         },
+        selectorsToIgnore: ["header"],
         protoTree: {
             bool: "${value}"
         },
