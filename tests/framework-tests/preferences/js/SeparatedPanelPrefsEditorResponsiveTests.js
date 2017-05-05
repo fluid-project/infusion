@@ -119,6 +119,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var iframe = $("iframe");
 
         iframe.on("load", function () {
+            // the global settings store and pageEnhancer are added
+            // as they are required by the prefs editor.
             fluid.tests.prefs.globalSettingsStore();
             fluid.pageEnhancer(fluid.tests.prefs.enhancerOptions);
 
