@@ -1507,4 +1507,66 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return that;
     };
 
+    fluid.modelPairToChanges = function (value, oldValue, changePathPrefix) {
+        var diffOptions = {changes: 0, unchanged: 0, changeMap: {}};
+        fluid.model.diff(oldValue, value, diffOptions);
+
+        var changes = [];
+
+        fluid.modelPairToChanges1(
+            value,
+            fluid.pathUtil.parseEL(changePathPrefix),
+            diffOptions.changeMap,
+            [],
+            changes
+        );
+
+        return changes;
+    };
+
+    fluid.modelPairToChanges1 = function (value, changePathPrefixSegs, changeMap, changeSegs, changes) {
+        if (changeMap === "ADD") {
+            // The whole model value is new
+            changes.push({
+                changePath: changePathPrefixSegs,
+                value: value,
+                type: "ADD"
+            });
+        } else if (changeMap === "DELETE") {
+            // The whole model value has been deleted
+            changes.push({
+                changePath: changePathPrefixSegs,
+                value: null,
+                type: "DELETE"
+            });
+        } else if (fluid.isPlainObject(changeMap, true)) {
+            // Something within the model value has changed
+            fluid.each(changeMap, function (change, seg) {
+                var currentChangeSegs = changeSegs.concat([seg]);
+                if (change === "ADD") {
+                    changes.push({
+                        changePath: changePathPrefixSegs.concat(currentChangeSegs),
+                        value: fluid.get(value, currentChangeSegs),
+                        type: "ADD"
+                    });
+                } else if (change === "DELETE") {
+                    changes.push({
+                        changePath: changePathPrefixSegs.concat(currentChangeSegs),
+                        value: null,
+                        type: "DELETE"
+                    });
+                } else if (fluid.isPlainObject(change, true)) {
+                    // Recurse down the tree of changes
+                    fluid.modelPairToChanges1(
+                        value,
+                        changePathPrefixSegs,
+                        change,
+                        currentChangeSegs,
+                        changes
+                    );
+                }
+            });
+        }
+    };
+
 })(jQuery, fluid_3_0_0);

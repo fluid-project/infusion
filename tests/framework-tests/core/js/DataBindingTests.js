@@ -2477,6 +2477,162 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.innerModel.applier.change("pressed", true);
     });
 
+    // FLUID-6158
+
+    fluid.tests.modelPairToChanges = [
+        {
+            description: "Value and oldValue are undefined",
+            value: undefined,
+            oldValue: undefined,
+            changePathPrefix: "",
+            expected: []
+        },
+        {
+            description: "Two empty objects",
+            value: {},
+            oldValue: {},
+            changePathPrefix: "",
+            expected: []
+        },
+        {
+            description: "New value is an object with properties and oldValue is undefined",
+            value: {
+                a: "Alice",
+                b: "Bob"
+            },
+            oldValue: undefined,
+            changePathPrefix: "",
+            expected: [
+                {
+                    changePath: [],
+                    value: {
+                        a: "Alice",
+                        b: "Bob"
+                    },
+                    type: "ADD"
+                }
+            ]
+        },
+        {
+            description: "New value is undefined and oldValue is an object with properties",
+            value: undefined,
+            oldValue: {
+                a: "Alice",
+                b: "Bob"
+            },
+            changePathPrefix: "",
+            expected: [
+                {
+                    changePath: [],
+                    value: null,
+                    type: "DELETE"
+                }
+            ]
+        },
+        {
+            description: "Add properties to an empty object",
+            value: {
+                a: "Alice",
+                b: "Bob"
+            },
+            oldValue: {},
+            changePathPrefix: "",
+            expected: [
+                {
+                    changePath: ["a"],
+                    value: "Alice",
+                    type: "ADD"
+                },
+                {
+                    changePath: ["b"],
+                    value: "Bob",
+                    type: "ADD"
+                }
+            ]
+        },
+        {
+            description: "Remove all properties from an object",
+            value: {},
+            oldValue: {
+                a: "Alice",
+                b: "Bob"
+            },
+            changePathPrefix: "",
+            expected: [
+                {
+                    changePath: ["a"],
+                    value: null,
+                    type: "DELETE"
+                },
+                {
+                    changePath: ["b"],
+                    value: null,
+                    type: "DELETE"
+                }
+            ]
+        },
+        {
+            description: "Add an object property not at the root",
+            value: {
+                people: {
+                    a: "Alice",
+                    b: "Bob"
+                }
+            },
+            oldValue: {
+                people: {
+                    a: "Alice"
+                }
+            },
+            changePathPrefix: "",
+            expected: [
+                {
+                    changePath: ["people", "b"],
+                    value: "Bob",
+                    type: "ADD"
+                }
+            ]
+        },
+        {
+            description: "Add elements to an empty array",
+            value: [10, 42],
+            oldValue: [],
+            changePathPrefix: "",
+            expected: [
+                {
+                    changePath: [],
+                    value: [10, 42],
+                    type: "ADD"
+                }
+            ]
+        },
+        {
+            description: "Add elements to a non-empty array",
+            value: [10, 42, 314],
+            oldValue: [10],
+            changePathPrefix: "",
+            expected: [
+                {
+                    changePath: [],
+                    value: [10, 42, 314],
+                    type: "ADD"
+                }
+            ]
+        }
+    ];
+
+    jqUnit.test("modelPairToChanges", function () {
+        jqUnit.expect(9);
+        fluid.each(fluid.tests.modelPairToChanges, function (testcase) {
+            var changes = fluid.modelPairToChanges(testcase.value,
+                testcase.oldValue, testcase.changePathPrefix);
+            // Verify changes are as expected
+            jqUnit.assertDeepEq(testcase.description, testcase.expected, changes);
+
+            // TODO: Can I easily run the changes through fluid.fireChanges and verify that a model with oldValue is updated to value?
+        });
+    });
+
     // FLUID-5659: Saturating relay counts through back-to-back transactions
 
     fluid.defaults("fluid.tests.fluid5659relay", {
