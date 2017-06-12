@@ -1507,7 +1507,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return that;
     };
 
+    /**
+     * Calculates the changes between the model values 'value' and
+     * 'oldValue'. The optional argument 'changePathPrefix' is prepended
+     * to the generated change paths. This is useful for generating
+     * change records to be applied at a non-root path in a model.
+     * Returns an array of change records, suitable for passing to
+     * fluid.fireChanges().
+     */
     fluid.modelPairToChanges = function (value, oldValue, changePathPrefix) {
+        changePathPrefix = changePathPrefix || "";
+
         var diffOptions = {changes: 0, unchanged: 0, changeMap: {}};
         fluid.model.diff(oldValue, value, diffOptions);
 

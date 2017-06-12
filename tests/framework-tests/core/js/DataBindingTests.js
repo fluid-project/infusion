@@ -2690,17 +2690,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.each(fluid.tests.modelPairToChanges, function (testcase) {
             // Test first without a path prefix
             var changesWithoutPrefix = fluid.modelPairToChanges(testcase.value,
-                testcase.oldValue, "");
-            jqUnit.assertDeepEq(testcase.description, testcase.expected,
-                changesWithoutPrefix);
+                testcase.oldValue);
+            jqUnit.assertDeepEq(testcase.description + "; without prefix",
+                testcase.expected, changesWithoutPrefix);
 
             // And then test with a path prefix
             var changesWithPrefix = fluid.modelPairToChanges(testcase.value,
                 testcase.oldValue, testcase.changePathPrefix);
-            jqUnit.assertDeepEq(testcase.description,
+            jqUnit.assertDeepEq(testcase.description + "; with prefix: " + testcase.changePathPrefix,
                 testcase.expectedWithPrefix, changesWithPrefix);
-
-            // TODO: Can I easily run the changes through fluid.fireChanges and verify that a model with oldValue is updated to value?
         });
     });
 
