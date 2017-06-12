@@ -1528,14 +1528,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (changeMap === "ADD") {
             // The whole model value is new
             changes.push({
-                changePath: changePathPrefixSegs,
+                path: changePathPrefixSegs,
                 value: value,
                 type: "ADD"
             });
         } else if (changeMap === "DELETE") {
             // The whole model value has been deleted
             changes.push({
-                changePath: changePathPrefixSegs,
+                path: changePathPrefixSegs,
                 value: null,
                 type: "DELETE"
             });
@@ -1545,13 +1545,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 var currentChangeSegs = changeSegs.concat([seg]);
                 if (change === "ADD") {
                     changes.push({
-                        changePath: changePathPrefixSegs.concat(currentChangeSegs),
+                        path: changePathPrefixSegs.concat(currentChangeSegs),
                         value: fluid.get(value, currentChangeSegs),
                         type: "ADD"
                     });
                 } else if (change === "DELETE") {
                     changes.push({
-                        changePath: changePathPrefixSegs.concat(currentChangeSegs),
+                        path: changePathPrefixSegs.concat(currentChangeSegs),
                         value: null,
                         type: "DELETE"
                     });

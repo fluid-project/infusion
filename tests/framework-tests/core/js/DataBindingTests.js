@@ -2484,15 +2484,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             description: "Value and oldValue are undefined",
             value: undefined,
             oldValue: undefined,
-            changePathPrefix: "",
-            expected: []
+            expected: [],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: []
         },
         {
             description: "Two empty objects",
             value: {},
             oldValue: {},
-            changePathPrefix: "",
-            expected: []
+            expected: [],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: []
         },
         {
             description: "New value is an object with properties and oldValue is undefined",
@@ -2501,10 +2503,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 b: "Bob"
             },
             oldValue: undefined,
-            changePathPrefix: "",
             expected: [
                 {
-                    changePath: [],
+                    path: [],
+                    value: {
+                        a: "Alice",
+                        b: "Bob"
+                    },
+                    type: "ADD"
+                }
+            ],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: [
+                {
+                    path: ["path1", "path2"],
                     value: {
                         a: "Alice",
                         b: "Bob"
@@ -2520,10 +2532,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 a: "Alice",
                 b: "Bob"
             },
-            changePathPrefix: "",
             expected: [
                 {
-                    changePath: [],
+                    path: [],
+                    value: null,
+                    type: "DELETE"
+                }
+            ],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: [
+                {
+                    path: ["path1", "path2"],
                     value: null,
                     type: "DELETE"
                 }
@@ -2536,15 +2555,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 b: "Bob"
             },
             oldValue: {},
-            changePathPrefix: "",
             expected: [
                 {
-                    changePath: ["a"],
+                    path: ["a"],
                     value: "Alice",
                     type: "ADD"
                 },
                 {
-                    changePath: ["b"],
+                    path: ["b"],
+                    value: "Bob",
+                    type: "ADD"
+                }
+            ],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: [
+                {
+                    path: ["path1", "path2", "a"],
+                    value: "Alice",
+                    type: "ADD"
+                },
+                {
+                    path: ["path1", "path2", "b"],
                     value: "Bob",
                     type: "ADD"
                 }
@@ -2557,15 +2588,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 a: "Alice",
                 b: "Bob"
             },
-            changePathPrefix: "",
             expected: [
                 {
-                    changePath: ["a"],
+                    path: ["a"],
                     value: null,
                     type: "DELETE"
                 },
                 {
-                    changePath: ["b"],
+                    path: ["b"],
+                    value: null,
+                    type: "DELETE"
+                }
+            ],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: [
+                {
+                    path: ["path1", "path2", "a"],
+                    value: null,
+                    type: "DELETE"
+                },
+                {
+                    path: ["path1", "path2", "b"],
                     value: null,
                     type: "DELETE"
                 }
@@ -2584,10 +2627,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     a: "Alice"
                 }
             },
-            changePathPrefix: "",
             expected: [
                 {
-                    changePath: ["people", "b"],
+                    path: ["people", "b"],
+                    value: "Bob",
+                    type: "ADD"
+                }
+            ],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: [
+                {
+                    path: ["path1", "path2", "people", "b"],
                     value: "Bob",
                     type: "ADD"
                 }
@@ -2597,10 +2647,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             description: "Add elements to an empty array",
             value: [10, 42],
             oldValue: [],
-            changePathPrefix: "",
             expected: [
                 {
-                    changePath: [],
+                    path: [],
+                    value: [10, 42],
+                    type: "ADD"
+                }
+            ],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: [
+                {
+                    path: ["path1", "path2"],
                     value: [10, 42],
                     type: "ADD"
                 }
@@ -2610,10 +2667,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             description: "Add elements to a non-empty array",
             value: [10, 42, 314],
             oldValue: [10],
-            changePathPrefix: "",
             expected: [
                 {
-                    changePath: [],
+                    path: [],
+                    value: [10, 42, 314],
+                    type: "ADD"
+                }
+            ],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: [
+                {
+                    path: ["path1", "path2"],
                     value: [10, 42, 314],
                     type: "ADD"
                 }
@@ -2622,12 +2686,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     ];
 
     jqUnit.test("modelPairToChanges", function () {
-        jqUnit.expect(9);
+        jqUnit.expect(18);
         fluid.each(fluid.tests.modelPairToChanges, function (testcase) {
-            var changes = fluid.modelPairToChanges(testcase.value,
+            // Test first without a path prefix
+            var changesWithoutPrefix = fluid.modelPairToChanges(testcase.value,
+                testcase.oldValue, "");
+            jqUnit.assertDeepEq(testcase.description, testcase.expected,
+                changesWithoutPrefix);
+
+            // And then test with a path prefix
+            var changesWithPrefix = fluid.modelPairToChanges(testcase.value,
                 testcase.oldValue, testcase.changePathPrefix);
-            // Verify changes are as expected
-            jqUnit.assertDeepEq(testcase.description, testcase.expected, changes);
+            jqUnit.assertDeepEq(testcase.description,
+                testcase.expectedWithPrefix, changesWithPrefix);
 
             // TODO: Can I easily run the changes through fluid.fireChanges and verify that a model with oldValue is updated to value?
         });
