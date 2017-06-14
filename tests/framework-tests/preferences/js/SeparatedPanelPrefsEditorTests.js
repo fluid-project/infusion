@@ -48,7 +48,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     iframeRenderer: {
                         markupProps: {
-                            src: "./SeparatedPanelPrefsEditorFrame-nativeHTML.html"
+                            src: "./SeparatedPanelPrefsEditorFrame.html"
                         }
                     },
                     templateLoader: {
@@ -165,7 +165,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Separated panel integration tests",
             tests: [{
-                expect: 38,
+                expect: 37,
                 name: "Separated panel integration tests",
                 sequence: [{
                     listener: "fluid.tests.testSeparatedPanel",
@@ -221,7 +221,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     gradeNames: ["fluid.tests.prefs.mungingIntegrationBase"],
                     iframeRenderer: {
                         markupProps: {
-                            src: "./SeparatedPanelPrefsEditorFrame-nativeHTML.html"
+                            src: "./SeparatedPanelPrefsEditorFrame.html"
                         }
                     },
                     slidingPanel: {

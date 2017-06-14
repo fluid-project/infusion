@@ -17,9 +17,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var fs = require("fs"),
     path = require("path"),
     vm = require("vm"),
-    // We use a forked version of this dependency to resolve FLUID-5940
-    // This can be removed once resolve's issue #106 is resolved
-    resolve = require("fluid-resolve");
+    resolve = require("resolve");
 
 var moduleBaseDir = path.resolve(__dirname, "../..");
 
@@ -183,7 +181,7 @@ fluid.module.resolveSync = function (moduleId, fromPath) {
 // literally into the filesystem for package.json files which can be successfully loaded
 
 var moduleInfo = fluid.module.modulesToRoot(__dirname);
-console.log("Got moduleInfo ", moduleInfo);
+
 var highestInfusionIndex = fluid.find(moduleInfo.names, function (name, index) {
     return name === "infusion" ? index : undefined;
 });
@@ -193,7 +191,6 @@ if (highestInfusionIndex !== undefined) {
     // this path which should be reported as an uncaught exception
     var highestInfusionPath = moduleInfo.paths[highestInfusionIndex];
     var infusionModule = require(highestInfusionPath);
-    console.log("Loaded ", infusionModule, " from path " + highestInfusionPath);
     if (infusionModule.module && infusionModule.module.modules.infusion.baseDir !== moduleBaseDir) {
         console.log("Pre-inspection from path " + __dirname + " resolved to infusion at higher path " + highestInfusionPath);
         module.exports = infusionModule;

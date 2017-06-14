@@ -45,7 +45,7 @@ fluid.module.pathsToRoot = function (baseDir) {
         total.push(top + path.sep + seg);
         return total;
     }, [segs[0]]);
-    return paths.slice(1);
+    return paths;
 };
 
 fluid.module.hasPackage = function (dir) {
@@ -68,6 +68,10 @@ fluid.module.modulesToRoot = function (root) {
     };
 };
 
+fluid.module.normaliseWindowsRoot = function (path) {
+    return /^([A-Za-z]):$/.test(path) ? path + "\\" : path;
+};
+
 // A simple precursor of our eventual global module inspection system. This simply inspects the path
 // to root for any readable package.json files, and extracts their "name" field as a moral identifier
 // of a module's presence. Eventually our registry will include versions and be indexed from the
@@ -77,7 +81,8 @@ fluid.module.preInspect = function (root) {
     var moduleInfo = fluid.module.modulesToRoot(root);
     fluid.each(moduleInfo.names, function (name, index) {
         if (name && !fluid.module.modules[name]) {
-            fluid.module.register(name, moduleInfo.paths[index], null); // TODO: fabricate a "require" too - so far unused
+            var baseDir = fluid.module.normaliseWindowsRoot(moduleInfo.paths[index]);
+            fluid.module.register(name, baseDir, null); // TODO: fabricate a "require" too - so far unused
         }
     });
 };

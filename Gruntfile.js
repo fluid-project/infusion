@@ -91,7 +91,7 @@ module.exports = function (grunt) {
         clean: {
             build: "build",
             products: "products",
-            stylus: "src/framework/preferences/css/*.css",
+            stylus: ["src/components/switch/css/*.css", "src/framework/preferences/css/*.css"],
             stylusDist: "dist/assets/**/stylus", // removes the empty stylus directory from the distribution
             ciArtifacts: ["*.tap"],
             dist: "dist",

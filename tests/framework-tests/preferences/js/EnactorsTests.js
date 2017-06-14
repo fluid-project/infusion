@@ -81,87 +81,46 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
-     * Unit tests for fluid.prefs.enactor.emphasizeLinks
+     * Unit tests for fluid.prefs.enactor.enhanceInputs
      *******************************************************************************/
 
-    fluid.defaults("fluid.tests.emphasizeLinksTests", {
+    fluid.defaults("fluid.tests.enhanceInputsTests", {
         gradeNames: ["fluid.test.testEnvironment"],
-        container: ".flc-emphasizeLinks",
-        expectedEmphasizeLinksClass: "fl-emphasizeLinks-test",
+        expectedEnhanceInputsClass: "fl-enhanceInputs-test",
         expectedDefaultFlag: false,
         components: {
-            emphasizeLinks: {
-                type: "fluid.prefs.enactor.emphasizeLinks",
-                container: ".flc-emphasizeLinks",
+            enhanceInputs: {
+                type: "fluid.prefs.enactor.enhanceInputs",
+                container: ".flc-enhanceInputs",
                 options: {
-                    cssClass: "fl-emphasizeLinks-test",
+                    cssClass: "fl-enhanceInputs-test",
                     model: {
                         value: false
                     }
                 }
             },
-            emphasizeLinksTester: {
-                type: "fluid.tests.emphasizeLinksTester"
+            enhanceInputsTester: {
+                type: "fluid.tests.enhanceInputsTester"
             }
         }
     });
 
-    fluid.defaults("fluid.tests.emphasizeLinksTester", {
+    fluid.defaults("fluid.tests.enhanceInputsTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
-            name: "Test emphasize links enactor",
+            name: "Test enhance inputs enactor",
             tests: [{
                 expect: 5,
-                name: "Apply and reset emphasized links",
+                name: "Apply and reset enhance inputs",
                 type: "test",
                 func: "fluid.tests.testStyle",
-                args: ["{emphasizeLinks}", "{fluid.tests.emphasizeLinksTests}.options.expectedDefaultFlag", "{fluid.tests.emphasizeLinksTests}.options.expectedEmphasizeLinksClass"]
+                args: ["{enhanceInputs}", "{fluid.tests.enhanceInputsTests}.options.expectedDefaultFlag", "{fluid.tests.enhanceInputsTests}.options.expectedEnhanceInputsClass"]
             }]
         }]
     });
 
     /*******************************************************************************
-     * Unit tests for fluid.prefs.enactor.inputsLarger
-     *******************************************************************************/
-
-    fluid.defaults("fluid.tests.inputsLargerTests", {
-        gradeNames: ["fluid.test.testEnvironment"],
-        container: ".flc-inputsLarger",
-        expectedDefaultFlag: false,
-        expectedInputsLargerClass: "fl-text-larger",
-        components: {
-            inputsLarger: {
-                type: "fluid.prefs.enactor.inputsLarger",
-                container: ".flc-inputsLarger",
-                options: {
-                    cssClass: "fl-text-larger",
-                    model: {
-                        value: false
-                    }
-                }
-            },
-            inputsLargerTester: {
-                type: "fluid.tests.inputsLargerTester"
-            }
-        }
-    });
-
-    fluid.defaults("fluid.tests.inputsLargerTester", {
-        gradeNames: ["fluid.test.testCaseHolder"],
-        modules: [{
-            name: "Test inputs larger enactor",
-            tests: [{
-                expect: 5,
-                name: "Apply and reset larger inputs",
-                type: "test",
-                func: "fluid.tests.testStyle",
-                args: ["{inputsLarger}", "{fluid.tests.inputsLargerTests}.options.expectedDefaultFlag", "{fluid.tests.inputsLargerTests}.options.expectedInputsLargerClass"]
-            }]
-        }]
-    });
-
-    /*******************************************************************************
-     * Unit tests for fluid.prefs.enactor.inputsLarger
+     * Unit tests for fluid.prefs.enactor.classSwapper
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.classSwapperTests", {
@@ -469,8 +428,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     $(document).ready(function () {
         fluid.test.runTests([
             "fluid.tests.styleElementsTests",
-            "fluid.tests.emphasizeLinksTests",
-            "fluid.tests.inputsLargerTests",
+            "fluid.tests.enhanceInputsTests",
             "fluid.tests.classSwapperTests",
             "fluid.tests.textSizeTests",
             "fluid.tests.getLineHeightTests",

@@ -23,7 +23,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * styleElements
      *
      * Adds or removes the classname to/from the elements based upon the model value.
-     * This component is used as a grade by emphasizeLinks & inputsLarger
+     * This component is used as a grade by enhanceInputs
      **********************************************************************************/
     fluid.defaults("fluid.prefs.enactor.styleElements", {
         gradeNames: ["fluid.prefs.enactor"],
@@ -122,34 +122,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /*******************************************************************************
-     * emphasizeLinks
+     * enhanceInputs
      *
-     * The enactor to emphasize links in the container according to the value
+     * The enactor to enhance inputs in the container according to the value
      *******************************************************************************/
 
     // Note that the implementors need to provide the container for this view component
-    fluid.defaults("fluid.prefs.enactor.emphasizeLinks", {
+    fluid.defaults("fluid.prefs.enactor.enhanceInputs", {
         gradeNames: ["fluid.prefs.enactor.styleElements", "fluid.viewComponent"],
         preferenceMap: {
-            "fluid.prefs.emphasizeLinks": {
-                "model.value": "default"
-            }
-        },
-        cssClass: null,  // Must be supplied by implementors
-        elementsToStyle: "{that}.container"
-    });
-
-    /*******************************************************************************
-     * inputsLarger
-     *
-     * The enactor to enlarge inputs in the container according to the value
-     *******************************************************************************/
-
-    // Note that the implementors need to provide the container for this view component
-    fluid.defaults("fluid.prefs.enactor.inputsLarger", {
-        gradeNames: ["fluid.prefs.enactor.styleElements", "fluid.viewComponent"],
-        preferenceMap: {
-            "fluid.prefs.inputsLarger": {
+            "fluid.prefs.enhanceInputs": {
                 "model.value": "default"
             }
         },

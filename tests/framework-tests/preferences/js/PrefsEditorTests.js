@@ -247,7 +247,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             prefsEditor.events.onPrefsEditorRefresh.fire();
             var fontSizeCtrl = $(".flc-prefsEditor-min-text-size");
-            var fontSizeSetting = $(".flc-textfieldSlider-field", fontSizeCtrl).val();
+            var fontSizeSetting = $(".flc-textfieldStepper-field", fontSizeCtrl).val();
             jqUnit.assertEquals("Small font size selected", "1.8", fontSizeSetting);
             var fontStyleSelection = $(":selected", $(".flc-prefsEditor-text-font"));
             jqUnit.assertEquals("Verdana selected", "verdana", fontStyleSelection[0].value);
@@ -364,7 +364,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "textFont": true,
         "contrast": true,
         "layoutControls": true,
-        "linksControls": true,
+        "enhanceInputs": true,
         "uiEnhancer.options.components.tableOfContents": true
     };
 
@@ -422,7 +422,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "textFont": false,
         "contrast": false,
         "layoutControls": false,
-        "linksControls": false,
+        "enhanceInputs": false,
         "uiEnhancer.options.components.tableOfContents": true
     };
 

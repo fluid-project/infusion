@@ -1,5 +1,5 @@
 /*
-Copyright 2013-2016 OCAD University
+Copyright 2013-2017 OCAD University
 Copyright 2016 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -648,6 +648,50 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         parentBundle: "{fluid.prefs.prefsEditorLoader}.msgResolver"
     });
 
+    /*******************************************
+     * A base grade for switch adjuster panels *
+     *******************************************/
+
+    fluid.defaults("fluid.prefs.panel.switchAdjuster", {
+        gradeNames: ["fluid.prefs.panel"],
+        // preferences maps should map model values to "model.value"
+        // model: {value: ""}
+        selectors: {
+            switchContainer: ".flc-prefsEditor-switch",
+            label: ".flc-prefsEditor-label",
+            description: ".flc-prefsEditor-description"
+        },
+        selectorsToIgnore: ["switchContainer"],
+        components: {
+            switchUI: {
+                type: "fluid.switchUI",
+                container: "{that}.dom.switchContainer",
+                createOnEvent: "afterRender",
+                options: {
+                    strings: {
+                        on: "{fluid.prefs.panel.switchAdjuster}.msgLookup.switchOn",
+                        off: "{fluid.prefs.panel.switchAdjuster}.msgLookup.switchOff"
+                    },
+                    model: {
+                        enabled: "{fluid.prefs.panel.switchAdjuster}.model.value"
+                    },
+                    attrs: {
+                        "aria-labelledby": {
+                            expander: {
+                                funcName: "fluid.allocateSimpleId",
+                                args: ["{fluid.prefs.panel.switchAdjuster}.dom.description"]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        protoTree: {
+            label: {messagekey: "label"},
+            description: {messagekey: "description"}
+        }
+    });
+
     /********************************
      * Preferences Editor Text Size *
      ********************************/
@@ -661,15 +705,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "fluid.prefs.textSize": {
                 "model.textSize": "default",
                 "range.min": "minimum",
-                "range.max": "maximum"
+                "range.max": "maximum",
+                "step": "divisibleBy"
             }
-        },
-        // The default model values represent both the expected format as well as the setting to be applied in the absence of values passed down to the component.
-        // i.e. from the settings store, or specific defaults derived from schema.
-        // Note: Except for being passed down to its subcomponent, these default values are not contributed and shared out
-        range: {
-            min: 1,
-            max: 2
         },
         selectors: {
             textSize: ".flc-prefsEditor-min-text-size",
@@ -679,18 +717,26 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         selectorsToIgnore: ["textSize"],
         components: {
-            textfieldSlider: {
-                type: "fluid.textfieldSlider",
+            textfieldStepper: {
+                type: "fluid.textfieldStepper",
                 container: "{that}.dom.textSize",
                 createOnEvent: "afterRender",
                 options: {
                     model: {
-                        value: "{fluid.prefs.panel.textSize}.model.textSize"
+                        value: "{fluid.prefs.panel.textSize}.model.textSize",
+                        range: {
+                            min: "{fluid.prefs.panel.textSize}.options.range.min",
+                            max: "{fluid.prefs.panel.textSize}.options.range.max"
+                        },
+                        step: "{fluid.prefs.panel.textSize}.options.step"
                     },
-                    range: "{fluid.prefs.panel.textSize}.options.range",
-                    sliderOptions: "{fluid.prefs.panel.textSize}.options.sliderOptions",
-                    ariaOptions: {
-                        "aria-labelledby": "{textSize}.options.panelOptions.labelId"
+                    scale: 1,
+                    strings: {
+                        increaseLabel: "{fluid.prefs.panel.textSize}.msgLookup.increaseLabel",
+                        decreaseLabel: "{fluid.prefs.panel.textSize}.msgLookup.decreaseLabel"
+                    },
+                    attrs: {
+                        "aria-labelledby": "{fluid.prefs.panel.textSize}.options.panelOptions.labelId"
                     }
                 }
             }
@@ -704,11 +750,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             multiplier: {messagekey: "multiplier"},
             textSizeDescr: {messagekey: "textSizeDescr"}
-        },
-        sliderOptions: {
-            orientation: "horizontal",
-            step: 0.1,
-            range: "min"
         },
         panelOptions: {
             labelId: "textSize-label-" + fluid.allocateGuid()
@@ -773,15 +814,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "fluid.prefs.lineSpace": {
                 "model.lineSpace": "default",
                 "range.min": "minimum",
-                "range.max": "maximum"
+                "range.max": "maximum",
+                "step": "divisibleBy"
             }
-        },
-        // The default model values represent both the expected format as well as the setting to be applied in the absence of values passed down to the component.
-        // i.e. from the settings store, or specific defaults derived from schema.
-        // Note: Except for being passed down to its subcomponent, these default values are not contributed and shared out
-        range: {
-            min: 1,
-            max: 2
         },
         selectors: {
             lineSpace: ".flc-prefsEditor-line-space",
@@ -791,18 +826,26 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         selectorsToIgnore: ["lineSpace"],
         components: {
-            textfieldSlider: {
-                type: "fluid.textfieldSlider",
+            textfieldStepper: {
+                type: "fluid.textfieldStepper",
                 container: "{that}.dom.lineSpace",
                 createOnEvent: "afterRender",
                 options: {
                     model: {
-                        value: "{fluid.prefs.panel.lineSpace}.model.lineSpace"
+                        value: "{fluid.prefs.panel.lineSpace}.model.lineSpace",
+                        range: {
+                            min: "{fluid.prefs.panel.lineSpace}.options.range.min",
+                            max: "{fluid.prefs.panel.lineSpace}.options.range.max"
+                        },
+                        step: "{fluid.prefs.panel.lineSpace}.options.step"
                     },
-                    range: "{fluid.prefs.panel.lineSpace}.options.range",
-                    sliderOptions: "{fluid.prefs.panel.lineSpace}.options.sliderOptions",
-                    ariaOptions: {
-                        "aria-labelledby": "{lineSpace}.options.panelOptions.labelId"
+                    scale: 1,
+                    strings: {
+                        increaseLabel: "{fluid.prefs.panel.lineSpace}.msgLookup.increaseLabel",
+                        decreaseLabel: "{fluid.prefs.panel.lineSpace}.msgLookup.decreaseLabel"
+                    },
+                    attrs: {
+                        "aria-labelledby": "{fluid.prefs.panel.lineSpace}.options.panelOptions.labelId"
                     }
                 }
             }
@@ -816,11 +859,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             multiplier: {messagekey: "multiplier"},
             lineSpaceDescr: {messagekey: "lineSpaceDescr"}
-        },
-        sliderOptions: {
-            orientation: "horizontal",
-            step: 0.1,
-            range: "min"
         },
         panelOptions: {
             labelId: "lineSpace-label-" + fluid.allocateGuid()
@@ -927,83 +965,27 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * A sub-component of fluid.prefs that renders the "layout and navigation" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.layoutControls", {
-        gradeNames: ["fluid.prefs.panel"],
+        gradeNames: ["fluid.prefs.panel.switchAdjuster"],
         preferenceMap: {
             "fluid.prefs.tableOfContents": {
-                "model.toc": "default"
+                "model.value": "default"
             }
-        },
-        selectors: {
-            toc: ".flc-prefsEditor-toc",
-            label: ".flc-prefsEditor-toc-label",
-            tocDescr: ".flc-prefsEditor-toc-descr"
-        },
-        protoTree: {
-            label: {messagekey: "tocLabel"},
-            tocDescr: {messagekey: "tocDescr"},
-            toc: "${toc}"
-        }
-    });
-
-    /**************************************
-     * Preferences Editor Emphasize Links *
-     **************************************/
-    /**
-     * A sub-component of fluid.prefs that renders the "links and buttons" panel of the user preferences interface.
-     */
-    fluid.defaults("fluid.prefs.panel.emphasizeLinks", {
-        gradeNames: ["fluid.prefs.panel"],
-        preferenceMap: {
-            "fluid.prefs.emphasizeLinks": {
-                "model.links": "default"
-            }
-        },
-        selectors: {
-            links: ".flc-prefsEditor-links",
-            linksChoiceLabel: ".flc-prefsEditor-links-choice-label"
-        },
-        protoTree: {
-            linksChoiceLabel: {messagekey: "linksChoiceLabel"},
-            links: "${links}"
-        }
-    });
-
-    /************************************
-     * Preferences Editor Inputs Larger *
-     ************************************/
-    /**
-     * A sub-component of fluid.prefs that renders the "links and buttons" panel of the user preferences interface.
-     */
-    fluid.defaults("fluid.prefs.panel.inputsLarger", {
-        gradeNames: ["fluid.prefs.panel"],
-        preferenceMap: {
-            "fluid.prefs.inputsLarger": {
-                "model.inputsLarger": "default"
-            }
-        },
-        selectors: {
-            inputsLarger: ".flc-prefsEditor-inputs-larger",
-            inputsChoiceLabel: ".flc-prefsEditor-links-inputs-choice-label"
-        },
-        protoTree: {
-            inputsChoiceLabel: {messagekey: "inputsChoiceLabel"},
-            inputsLarger: "${inputsLarger}"
         }
     });
 
     /*************************************
-     * Preferences Editor Links Controls *
+     * Preferences Editor Enhance Inputs *
      *************************************/
+
     /**
-     * A sub-component of fluid.prefs that renders the "links and buttons" panel of the user preferences interface.
+     * A sub-component of fluid.prefs that renders the "enhance inputs" panel of the user preferences interface.
      */
-    fluid.defaults("fluid.prefs.panel.linksControls", {
-        gradeNames: ["fluid.prefs.compositePanel"],
-        selectors: {
-            label: ".flc-prefsEditor-linksControls-label"
-        },
-        protoTree: {
-            label: {messagekey: "linksControlsLabel"}
+    fluid.defaults("fluid.prefs.panel.enhanceInputs", {
+        gradeNames: ["fluid.prefs.panel.switchAdjuster"],
+        preferenceMap: {
+            "fluid.prefs.enhanceInputs": {
+                "model.value": "default"
+            }
         }
     });
 

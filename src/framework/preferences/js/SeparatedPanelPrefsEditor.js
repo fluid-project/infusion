@@ -54,16 +54,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         gradeNames: "fluid.prefs.separatedPanel.lazyLoad"
                     }
                 }
-            },
-            separatedPanelPrefsWidgetType: {
-                checks: {
-                    jQueryUI: {
-                        contextValue: "{fluid.prefsWidgetType}",
-                        equals: "jQueryUI",
-                        gradeNames: "fluid.prefs.separatedPanel.jQueryUI"
-                    }
-                },
-                defaultGradeNames: "fluid.prefs.separatedPanel.nativeHTML"
             }
         },
         selectors: {
@@ -168,6 +158,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         "onReady.boilOnReady": {
                             listener: "{separatedPanel}.events.onReady",
                             args: "{separatedPanel}"
+                        },
+                        "onReady.windowResize": {
+                            "this": window,
+                            method: "addEventListener",
+                            args: ["resize", "{that}.events.onSignificantDOMChange.fire"]
                         }
                     }
                 }
@@ -196,32 +191,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }]
     });
 
-    // Used for context-awareness behaviour
-    fluid.defaults("fluid.prefs.separatedPanel.nativeHTML", {
-        components: {
-            iframeRenderer: {
-                options: {
-                    markupProps: {
-                        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame-nativeHTML.html"
-                    }
-                }
-            }
-        }
-    });
-
-    // Used for context-awareness behaviour
-    fluid.defaults("fluid.prefs.separatedPanel.jQueryUI", {
-        components: {
-            iframeRenderer: {
-                options: {
-                    markupProps: {
-                        src: "%templatePrefix/SeparatedPanelPrefsEditorFrame-jQueryUI.html"
-                    }
-                }
-            }
-        }
-    });
-
     fluid.prefs.separatedPanel.hideReset = function (separatedPanel) {
         separatedPanel.locate("reset").hide();
     };
@@ -242,7 +211,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         markupProps: {
             "class": "flc-iframe",
-            src: "%templatePrefix/prefsEditorIframe.html"
+            src: "%templatePrefix/SeparatedPanelPrefsEditorFrame.html"
         },
         listeners: {
             "onCreate.startLoadingIframe": "fluid.prefs.separatedPanel.renderIframe.startLoadingIframe"
@@ -302,13 +271,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.prefs.separatedPanel.updateView(prefsEditor);
         }, "updateView");
         prefsEditor.events.onSignificantDOMChange.addListener(function () {
-            var dokkument = prefsEditor.container[0].ownerDocument;
-            var height = fluid.dom.getDocumentHeight(dokkument);
-            var iframe = separatedPanel.iframeRenderer.iframe;
-            var attrs = {height: height + 15}; // TODO: Configurable padding here
-            var panel = separatedPanel.slidingPanel.locate("panel");
-            panel.css({height: ""});
-            iframe.animate(attrs, 400);
+            // ensure that the panel is open before trying to adjust its height
+            if ( fluid.get(separatedPanel, "slidingPanel.model.isShowing") ) {
+                var dokkument = prefsEditor.container[0].ownerDocument;
+                var height = fluid.dom.getDocumentHeight(dokkument);
+                var iframe = separatedPanel.iframeRenderer.iframe;
+                var attrs = {height: height};
+                var panel = separatedPanel.slidingPanel.locate("panel");
+                panel.css({height: ""});
+                iframe.clearQueue();
+                iframe.animate(attrs, 400);
+            }
         }, "adjustHeight");
 
         separatedPanel.slidingPanel.events.afterPanelHide.addListener(function () {

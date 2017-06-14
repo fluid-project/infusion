@@ -1,5 +1,5 @@
 /*
-Copyright 2014-2015 OCAD University
+Copyright 2014-2017 OCAD University
 Copyright 2015 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -106,22 +106,13 @@ var demo = demo || {};
     /**********************************************************************************
      * simplifyPanel
      **********************************************************************************/
+
     fluid.defaults("demo.prefsEditor.simplifyPanel", {
-        gradeNames: ["fluid.prefs.panel"],
+        gradeNames: ["fluid.prefs.panel.switchAdjuster"],
         preferenceMap: {
             "demo.prefs.simplify": {
-                "model.simplify": "default"
+                "model.value": "default"
             }
-        },
-        selectors: {
-            simplify: ".demo-prefsEditor-simplify",
-            label: ".demo-prefsEditor-simplify-label",
-            simplifyDescr: ".demo-prefsEditor-simplify-descr"
-        },
-        protoTree: {
-            label: {messagekey: "simplifyLabel"},
-            simplifyDescr: {messagekey: "simplifyDescr"},
-            simplify: "${simplify}"
         }
     });
 
