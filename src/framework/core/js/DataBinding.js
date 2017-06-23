@@ -1509,32 +1509,50 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Calculates the changes between the model values 'value' and
-     * 'oldValue'. The optional argument 'changePathPrefix' is prepended
-     * to the generated change paths. This is useful for generating
-     * change records to be applied at a non-root path in a model.
-     * Returns an array of change records, suitable for passing to
-     * fluid.fireChanges().
+     * 'oldValue' and returns an array of change records. The optional
+     * argument 'changePathPrefix' is prepended to the change path of
+     * each record (this is useful for generating change records to be
+     * applied at a non-root path in a model). The returned array of
+     * change records may be used with fluid.fireChanges().
+     *
+     * @param value {Any} Model value to compare
+     * @param oldValue {Any} Model value to compare
+     * @param changePathPrefix {String|Array of String} [optional] Path prefix to prepend to change record paths
+     * @return {Array of Object} An array of change records
      */
     fluid.modelPairToChanges = function (value, oldValue, changePathPrefix) {
         changePathPrefix = changePathPrefix || "";
 
+        // Calculate the diff between value and oldValue
         var diffOptions = {changes: 0, unchanged: 0, changeMap: {}};
         fluid.model.diff(oldValue, value, diffOptions);
 
         var changes = [];
 
-        fluid.modelPairToChanges1(
-            value,
+        // Recursively process the diff to generate an array of change
+        // records, stored in 'changes'
+        fluid.modelPairToChangesImpl(value,
             fluid.pathUtil.parseEL(changePathPrefix),
-            diffOptions.changeMap,
-            [],
-            changes
-        );
+            diffOptions.changeMap, [], changes);
 
         return changes;
     };
 
-    fluid.modelPairToChanges1 = function (value, changePathPrefixSegs, changeMap, changeSegs, changes) {
+    /**
+     * This function implements recursive processing for
+     * fluid.modelPairToChanges(). It builds an array of change
+     * records, accumulated in the 'changes' argument, by walking the
+     * 'changeMap' structure and 'value' model value. As we walk down
+     * the model, our path from the root of the model is recorded in
+     * the 'changeSegs' argument.
+     *
+     * @param value {Any} Model value
+     * @param changePathPrefixSegs {Array of String} Path prefix to prepend to change record paths
+     * @param changeMap {String|Object} The changeMap structure from fluid.model.diff()
+     * @param changeSegs {Array of String} Our path relative to the model value root
+     * @param changes {Array of Object} The accumulated change records
+     */
+    fluid.modelPairToChangesImpl = function (value, changePathPrefixSegs, changeMap, changeSegs, changes) {
         if (changeMap === "ADD") {
             // The whole model value is new
             changes.push({
@@ -1567,13 +1585,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     });
                 } else if (fluid.isPlainObject(change, true)) {
                     // Recurse down the tree of changes
-                    fluid.modelPairToChanges1(
-                        value,
-                        changePathPrefixSegs,
-                        change,
-                        currentChangeSegs,
-                        changes
-                    );
+                    fluid.modelPairToChangesImpl(value, changePathPrefixSegs,
+                        change, currentChangeSegs, changes);
                 }
             });
         }
