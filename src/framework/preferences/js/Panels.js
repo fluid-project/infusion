@@ -771,6 +771,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "controlValues.textFont": "enum"
             }
         },
+        mergePolicy: {
+            "controlValues.textFont": "replace",
+            "stringArrayIndex.textFont": "replace"
+        },
         selectors: {
             textFont: ".flc-prefsEditor-text-font",
             label: ".flc-prefsEditor-text-font-label",
@@ -879,6 +883,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "model.value": "default",
                 "controlValues.theme": "enum"
             }
+        },
+        mergePolicy: {
+            "controlValues.theme": "replace",
+            "stringArrayIndex.theme": "replace"
         },
         listeners: {
             "afterRender.style": "{that}.style"
