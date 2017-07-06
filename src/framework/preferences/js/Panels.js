@@ -692,6 +692,93 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
+    /********************************************************
+     * A base grade for styled radio Button adjuster panels *
+     ********************************************************/
+
+    fluid.defaults("fluid.prefs.panel.styledRadioButtonAdjuster", {
+        gradeNames: ["fluid.prefs.panel"],
+        mergePolicy: {
+            "controlValues.theme": "replace",
+            "stringArrayIndex.theme": "replace"
+        },
+        listeners: {
+            "afterRender.style": "{that}.style"
+        },
+        selectors: {
+            themeRow: ".flc-prefsEditor-themeRow",
+            themeLabel: ".flc-prefsEditor-theme-label",
+            themeInput: ".flc-prefsEditor-themeInput",
+            label: ".flc-prefsEditor-styledRadioButton-label",
+            description: ".flc-prefsEditor-styledRadioButton-descr"
+        },
+        styles: {
+            defaultThemeLabel: "fl-prefsEditor-styledRadioButton-defaultThemeLabel"
+        },
+        stringArrayIndex: {
+            theme: []
+        },
+        repeatingSelectors: ["themeRow"],
+        protoTree: {
+            label: {messagekey: "label"},
+            description: {messagekey: "description"},
+            expander: {
+                type: "fluid.renderer.selection.inputs",
+                rowID: "themeRow",
+                labelID: "themeLabel",
+                inputID: "themeInput",
+                selectID: "theme-radio",
+                tree: {
+                    optionnames: "${{that}.msgLookup.theme}",
+                    optionlist: "${{that}.options.controlValues.theme}",
+                    selection: "${value}"
+                }
+            }
+        },
+        controlValues: {
+            theme: []
+        },
+        markup: {
+            // Aria-hidden needed on fl-preview-A and Display 'a' created as pseudo-content in css to prevent AT from reading out display 'a' on IE, Chrome, and Safari
+            // Aria-hidden needed on fl-crossout to prevent AT from trying to read crossout symbol in Safari
+            label: "<span class=\"fl-preview-A\" aria-hidden=\"true\"></span><span class=\"fl-hidden-accessible\">%theme</span><div class=\"fl-crossout\" aria-hidden=\"true\"></div>"
+        },
+        invokers: {
+            style: {
+                funcName: "fluid.prefs.panel.styledRadioButtonAdjuster.style",
+                args: [
+                    "{that}.dom.themeLabel",
+                    "{that}.msgLookup.theme",
+                    "{that}.options.markup.label",
+                    "{that}.options.controlValues.theme",
+                    "default",
+                    "{that}.options.classnameMap.theme",
+                    "{that}.options.styles.defaultThemeLabel"
+                ]
+            }
+        }
+    });
+
+    fluid.prefs.panel.styledRadioButtonAdjuster.style = function (labels, strings, markup, theme, defaultThemeName, style, defaultLabelStyle) {
+        fluid.each(labels, function (label, index) {
+            label = $(label);
+
+            var themeValue = strings[index];
+            label.html(fluid.stringTemplate(markup, {
+                theme: themeValue
+            }));
+
+            // Aria-label set to prevent Firefox from reading out the display 'a'
+            label.attr("aria-label", themeValue);
+
+            var labelTheme = theme[index];
+            if (labelTheme === defaultThemeName) {
+                label.addClass(defaultLabelStyle);
+            }
+            label.addClass(style[labelTheme]);
+        });
+    };
+
     /********************************
      * Preferences Editor Text Size *
      ********************************/
@@ -877,93 +964,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * A sub-component of fluid.prefs that renders the "contrast" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.contrast", {
-        gradeNames: ["fluid.prefs.panel"],
+        gradeNames: ["fluid.prefs.panel.styledRadioButtonAdjuster"],
         preferenceMap: {
             "fluid.prefs.contrast": {
                 "model.value": "default",
                 "controlValues.theme": "enum"
             }
         },
-        mergePolicy: {
-            "controlValues.theme": "replace",
-            "stringArrayIndex.theme": "replace"
-        },
-        listeners: {
-            "afterRender.style": "{that}.style"
-        },
-        selectors: {
-            themeRow: ".flc-prefsEditor-themeRow",
-            themeLabel: ".flc-prefsEditor-theme-label",
-            themeInput: ".flc-prefsEditor-themeInput",
-            label: ".flc-prefsEditor-contrast-label",
-            contrastDescr: ".flc-prefsEditor-contrast-descr"
-        },
-        styles: {
-            defaultThemeLabel: "fl-prefsEditor-contrast-defaultThemeLabel"
-        },
         stringArrayIndex: {
             theme: ["contrast-default", "contrast-bw", "contrast-wb", "contrast-by", "contrast-yb", "contrast-lgdg"]
         },
-        repeatingSelectors: ["themeRow"],
-        protoTree: {
-            label: {messagekey: "contrastLabel"},
-            contrastDescr: {messagekey: "contrastDescr"},
-            expander: {
-                type: "fluid.renderer.selection.inputs",
-                rowID: "themeRow",
-                labelID: "themeLabel",
-                inputID: "themeInput",
-                selectID: "theme-radio",
-                tree: {
-                    optionnames: "${{that}.msgLookup.theme}",
-                    optionlist: "${{that}.options.controlValues.theme}",
-                    selection: "${value}"
-                }
-            }
-        },
         controlValues: {
             theme: ["default", "bw", "wb", "by", "yb", "lgdg"]
-        },
-        markup: {
-            // Aria-hidden needed on fl-preview-A and Display 'a' created as pseudo-content in css to prevent AT from reading out display 'a' on IE, Chrome, and Safari
-            // Aria-hidden needed on fl-crossout to prevent AT from trying to read crossout symbol in Safari
-            label: "<span class=\"fl-preview-A\" aria-hidden=\"true\"></span><span class=\"fl-hidden-accessible\">%theme</span><div class=\"fl-crossout\" aria-hidden=\"true\"></div>"
-        },
-        invokers: {
-            style: {
-                funcName: "fluid.prefs.panel.contrast.style",
-                args: [
-                    "{that}.dom.themeLabel",
-                    "{that}.msgLookup.theme",
-                    "{that}.options.markup.label",
-                    "{that}.options.controlValues.theme",
-                    "default",
-                    "{that}.options.classnameMap.theme",
-                    "{that}.options.styles.defaultThemeLabel"
-                ]
-            }
         }
     });
-
-    fluid.prefs.panel.contrast.style = function (labels, strings, markup, theme, defaultThemeName, style, defaultLabelStyle) {
-        fluid.each(labels, function (label, index) {
-            label = $(label);
-
-            var themeValue = strings[index];
-            label.html(fluid.stringTemplate(markup, {
-                theme: themeValue
-            }));
-
-            // Aria-label set to prevent Firefox from reading out the display 'a'
-            label.attr("aria-label", themeValue);
-
-            var labelTheme = theme[index];
-            if (labelTheme === defaultThemeName) {
-                label.addClass(defaultLabelStyle);
-            }
-            label.addClass(style[labelTheme]);
-        });
-    };
 
     /**************************************
      * Preferences Editor Layout Controls *
