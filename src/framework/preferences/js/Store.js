@@ -47,7 +47,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.prefs.cookieStore", {
-        gradeNames: ["fluid.prefs.store"],
+        gradeNames: ["fluid.prefs.dataSource"],
         cookie: {
             name: "fluid-ui-settings",
             path: "/",
@@ -134,7 +134,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.prefs.tempStore", {
-        gradeNames: ["fluid.prefs.store", "fluid.modelComponent"],
+        gradeNames: ["fluid.prefs.dataSource", "fluid.modelComponent"],
         invokers: {
             get: {
                 funcName: "fluid.identity",
