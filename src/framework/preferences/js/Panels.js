@@ -692,15 +692,25 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
-    /********************************************************
-     * A base grade for styled radio Button adjuster panels *
-     ********************************************************/
+    /************************************************
+     * A base grade for themePicker adjuster panels *
+     ************************************************/
 
-    fluid.defaults("fluid.prefs.panel.styledRadioButtonAdjuster", {
+    fluid.defaults("fluid.prefs.panel.themePicker", {
         gradeNames: ["fluid.prefs.panel"],
         mergePolicy: {
             "controlValues.theme": "replace",
             "stringArrayIndex.theme": "replace"
+        },
+        // The controlValues are the ordered set of possible modelValues corresponding to each theme option.
+        // The order in which they are listed will determine the order they are presented in the UI.
+        // The stringArrayIndex contains the ordered set of namespaced strings in the message bundle.
+        // The order must match the controlValues in order to provide the proper labels to the theme options.
+        controlValues: {
+            theme: [] // must be supplied by the integrator
+        },
+        stringArrayIndex: {
+            theme: [] // must be supplied by the integrator
         },
         listeners: {
             "afterRender.style": "{that}.style"
@@ -714,9 +724,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         styles: {
             defaultThemeLabel: "fl-prefsEditor-styledRadioButton-defaultThemeLabel"
-        },
-        stringArrayIndex: {
-            theme: []
         },
         repeatingSelectors: ["themeRow"],
         protoTree: {
@@ -735,9 +742,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
             }
         },
-        controlValues: {
-            theme: []
-        },
         markup: {
             // Aria-hidden needed on fl-preview-A and Display 'a' created as pseudo-content in css to prevent AT from reading out display 'a' on IE, Chrome, and Safari
             // Aria-hidden needed on fl-crossout to prevent AT from trying to read crossout symbol in Safari
@@ -745,7 +749,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         invokers: {
             style: {
-                funcName: "fluid.prefs.panel.styledRadioButtonAdjuster.style",
+                funcName: "fluid.prefs.panel.themePicker.style",
                 args: [
                     "{that}.dom.themeLabel",
                     "{that}.msgLookup.theme",
@@ -759,7 +763,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
-    fluid.prefs.panel.styledRadioButtonAdjuster.style = function (labels, strings, markup, theme, defaultThemeName, style, defaultLabelStyle) {
+    fluid.prefs.panel.themePicker.style = function (labels, strings, markup, theme, defaultThemeName, style, defaultLabelStyle) {
         fluid.each(labels, function (label, index) {
             label = $(label);
 
@@ -964,7 +968,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * A sub-component of fluid.prefs that renders the "contrast" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.contrast", {
-        gradeNames: ["fluid.prefs.panel.styledRadioButtonAdjuster"],
+        gradeNames: ["fluid.prefs.panel.themePicker"],
         preferenceMap: {
             "fluid.prefs.contrast": {
                 "model.value": "default",
