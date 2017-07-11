@@ -1157,8 +1157,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "contrast-by": "Black on yellow",
             "contrast-yb": "Yellow on black",
             "contrast-lgdg": "Low contrast",
-            "contrastLabel": "colour and contrast",
-            "contrastDescr": "Change the text and background colours"
+            "label": "colour and contrast",
+            "description": "Change the text and background colours"
         },
         model: {
             value: "default"
@@ -1199,8 +1199,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var labels = that.locate("themeLabel");
         var messageBase = that.options.messageBase;
 
-        jqUnit.assertEquals("The label text is " + messageBase.contrastLabel, messageBase.contrastLabel, that.locate("label").text());
-        jqUnit.assertEquals("The description text is " + messageBase.contrastDescr, messageBase.contrastDescr, that.locate("contrastDescr").text());
+        jqUnit.assertEquals("The label text is " + messageBase.label, messageBase.label, that.locate("label").text());
+        jqUnit.assertEquals("The description text is " + messageBase.description, messageBase.description, that.locate("description").text());
 
         jqUnit.assertEquals("There are " + expectedNumOfOptions + " contrast selections in the control", expectedNumOfOptions, inputs.length);
         jqUnit.assertEquals("The first contrast is " + expectedContrast, expectedContrast, inputs.filter(":checked").val());
