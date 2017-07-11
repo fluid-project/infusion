@@ -719,11 +719,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             themeRow: ".flc-prefsEditor-themeRow",
             themeLabel: ".flc-prefsEditor-theme-label",
             themeInput: ".flc-prefsEditor-themeInput",
-            label: ".flc-prefsEditor-styledRadioButton-label",
-            description: ".flc-prefsEditor-styledRadioButton-descr"
+            label: ".flc-prefsEditor-themePicker-label",
+            description: ".flc-prefsEditor-themePicker-descr"
         },
         styles: {
-            defaultThemeLabel: "fl-prefsEditor-styledRadioButton-defaultThemeLabel"
+            defaultThemeLabel: "fl-prefsEditor-themePicker-defaultThemeLabel"
         },
         repeatingSelectors: ["themeRow"],
         protoTree: {
