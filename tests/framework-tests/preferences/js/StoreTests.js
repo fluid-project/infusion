@@ -118,13 +118,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             // Check that we get back the test settings correctly.
             var result = store.get();
+            jqUnit.assertDeepEq("The settings are saved to the model correctly.", testSettings, store.model);
             jqUnit.assertDeepEq("The settings are saved and retrieved correctly.", testSettings, result);
 
             // Change the results, save again. It should work again.
             var differentSettings = fluid.copy(testSettings);
             differentSettings.textSize = "32";
             store.set(differentSettings);
+            jqUnit.assertEquals("Changed settings are saved to model correctly.", "32", store.model.textSize);
             jqUnit.assertEquals("Changed settings are saved correctly.", "32", store.get().textSize);
+            jqUnit.assertEquals("Theme was saved to model correctly.", "bw", store.model.theme);
             jqUnit.assertEquals("Theme was saved correctly.", "bw", store.get().theme);
 
         });
