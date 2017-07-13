@@ -17,7 +17,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 var fs = require("fs"),
     path = require("path"),
     vm = require("vm"),
-    resolve = require("resolve");
+    resolve = require("fluid-resolve");
 
 var moduleBaseDir = path.resolve(__dirname, "../..");
 
