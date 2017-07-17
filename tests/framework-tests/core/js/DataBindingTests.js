@@ -2477,6 +2477,231 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.innerModel.applier.change("pressed", true);
     });
 
+    // FLUID-6158
+
+    fluid.tests.modelPairToChanges = [
+        {
+            description: "Value and oldValue are undefined",
+            value: undefined,
+            oldValue: undefined,
+            expected: [],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: []
+        },
+        {
+            description: "Two empty objects",
+            value: {},
+            oldValue: {},
+            expected: [],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: []
+        },
+        {
+            description: "New value is an object with properties and oldValue is undefined",
+            value: {
+                a: "Alice",
+                b: "Bob"
+            },
+            oldValue: undefined,
+            expected: [
+                {
+                    path: [],
+                    value: {
+                        a: "Alice",
+                        b: "Bob"
+                    },
+                    type: "ADD"
+                }
+            ],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: [
+                {
+                    path: ["path1", "path2"],
+                    value: {
+                        a: "Alice",
+                        b: "Bob"
+                    },
+                    type: "ADD"
+                }
+            ]
+        },
+        {
+            description: "New value is undefined and oldValue is an object with properties",
+            value: undefined,
+            oldValue: {
+                a: "Alice",
+                b: "Bob"
+            },
+            expected: [
+                {
+                    path: [],
+                    value: null,
+                    type: "DELETE"
+                }
+            ],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: [
+                {
+                    path: ["path1", "path2"],
+                    value: null,
+                    type: "DELETE"
+                }
+            ]
+        },
+        {
+            description: "Add properties to an empty object",
+            value: {
+                a: "Alice",
+                b: "Bob"
+            },
+            oldValue: {},
+            expected: [
+                {
+                    path: ["a"],
+                    value: "Alice",
+                    type: "ADD"
+                },
+                {
+                    path: ["b"],
+                    value: "Bob",
+                    type: "ADD"
+                }
+            ],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: [
+                {
+                    path: ["path1", "path2", "a"],
+                    value: "Alice",
+                    type: "ADD"
+                },
+                {
+                    path: ["path1", "path2", "b"],
+                    value: "Bob",
+                    type: "ADD"
+                }
+            ]
+        },
+        {
+            description: "Remove all properties from an object",
+            value: {},
+            oldValue: {
+                a: "Alice",
+                b: "Bob"
+            },
+            expected: [
+                {
+                    path: ["a"],
+                    value: null,
+                    type: "DELETE"
+                },
+                {
+                    path: ["b"],
+                    value: null,
+                    type: "DELETE"
+                }
+            ],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: [
+                {
+                    path: ["path1", "path2", "a"],
+                    value: null,
+                    type: "DELETE"
+                },
+                {
+                    path: ["path1", "path2", "b"],
+                    value: null,
+                    type: "DELETE"
+                }
+            ]
+        },
+        {
+            description: "Add an object property not at the root",
+            value: {
+                people: {
+                    a: "Alice",
+                    b: "Bob"
+                }
+            },
+            oldValue: {
+                people: {
+                    a: "Alice"
+                }
+            },
+            expected: [
+                {
+                    path: ["people", "b"],
+                    value: "Bob",
+                    type: "ADD"
+                }
+            ],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: [
+                {
+                    path: ["path1", "path2", "people", "b"],
+                    value: "Bob",
+                    type: "ADD"
+                }
+            ]
+        },
+        {
+            description: "Add elements to an empty array",
+            value: [10, 42],
+            oldValue: [],
+            expected: [
+                {
+                    path: [],
+                    value: [10, 42],
+                    type: "ADD"
+                }
+            ],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: [
+                {
+                    path: ["path1", "path2"],
+                    value: [10, 42],
+                    type: "ADD"
+                }
+            ]
+        },
+        {
+            description: "Add elements to a non-empty array",
+            value: [10, 42, 314],
+            oldValue: [10],
+            expected: [
+                {
+                    path: [],
+                    value: [10, 42, 314],
+                    type: "ADD"
+                }
+            ],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: [
+                {
+                    path: ["path1", "path2"],
+                    value: [10, 42, 314],
+                    type: "ADD"
+                }
+            ]
+        }
+    ];
+
+    jqUnit.test("modelPairToChanges", function () {
+        jqUnit.expect(18);
+        fluid.each(fluid.tests.modelPairToChanges, function (testcase) {
+            // Test first without a path prefix
+            var changesWithoutPrefix = fluid.modelPairToChanges(testcase.value,
+                testcase.oldValue);
+            jqUnit.assertDeepEq(testcase.description + "; without prefix",
+                testcase.expected, changesWithoutPrefix);
+
+            // And then test with a path prefix
+            var changesWithPrefix = fluid.modelPairToChanges(testcase.value,
+                testcase.oldValue, testcase.changePathPrefix);
+            jqUnit.assertDeepEq(testcase.description + "; with prefix: " + testcase.changePathPrefix,
+                testcase.expectedWithPrefix, changesWithPrefix);
+        });
+    });
+
     // FLUID-5659: Saturating relay counts through back-to-back transactions
 
     fluid.defaults("fluid.tests.fluid5659relay", {
