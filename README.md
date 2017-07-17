@@ -223,32 +223,49 @@ If you would like to debug individual tests or view the test summary in a browse
 and will report errors if they are not focused.  If you want to run the tests consistently, your best option is to run
 the tests in a VM (see below).
 
-### Run Tests Using Browsers Installed In a VM ###
+### Run Tests In a VM ###
 
 The tests in this package can be run within a virtual machine (VM).  The benefits of using a VM include the following:
 
-* Does not require testem to be installed on the host machine.
+* Does not require Testem to be installed on the host machine.
 * Allows other applications on the host machine to have focus while the tests are run.
 * Isolates the test run from issues specific to one operating system or machine.
 
 Before you can run tests within a VM, your machine will need to meet the
 [QI development VM requirements](https://github.com/GPII/qi-development-environments/#requirements).  Once you have that,
 a [Fedora VM](https://github.com/idi-ops/packer-fedora) can be automatically created using tools provided by the
-[Prosperity4All Quality Infrastructure](https://github.com/GPII/qi-development-environments/). The command
-``npm run test:vagrant`` (or ``yarn run test:vagrant``) will create the VM (if neeeded) and run the Infusion tests in
-the VM.  The test results from the VM will be displayed in your terminal.
+[Prosperity4All Quality Infrastructure](https://github.com/GPII/qi-development-environments/).
+
+- To run both the Node and browser tests in a VM: `npm run test:vagrant`
+- To run the Node tests only: `npm run test:vagrantNode`
+- To run the browser tests only: `npm run test:vagrantBrowser`
+
+Each of these commands will create the VM (if needed).  The test results from the VM will be displayed in your terminal.
 
 If you just want to create the VM yourself, you can use a command like ``vagrant up``, and connect to it the VM either
-from Virtualbox, or from the command line using a command like ``vagrant ssh``.
+from VirtualBox, or from the command line using a command like ``vagrant ssh``.
 
 When this VM is first created, Chrome and Firefox will be upgraded to the latest versions available in the Fedora and
 Google package repositories. The ``vagrant provision`` command can be used at a later time to trigger the browser
 upgrade and general VM provisioning mechanism.
 
+#### Coverage Reporting
+
+The preferred way to consistently generate a code coverage report is to use Vagrant as described above.  When you 
+start a VM using `vagrant up` and run `npm run test:vagrant`, the full test suite will run in the VM,  and a coverage 
+report will be saved to the `reports` directory.  You can also run the `npm test` command on your local machine, but 
+you will need to ensure that browsers receive focus when they are launched (see above).
+
+The `npm test` command has [two additional associated scripts](https://docs.npmjs.com/misc/scripts).  The `pretest`
+script runs before the command defined for the `test` script.  The `posttest` script runs after.  In our case
+we use a `pretest` script to clean up previous coverage data before we run the tests, and a `posttest` script to 
+compile the actual report.  You should not need to run the `pretest` scripts manually before running either the node or
+browser tests, or to run the `posttest` scripts afterward.
+
 ## Developing with the Preferences Framework ##
 
 Infusion is in the process of switching to use [Stylus](http://learnboost.github.io/stylus/) for CSS pre-processing.
-CSS files for the Preferences Framework have been re-written in Stylus. Only Stylus files are pushed into the github
+CSS files for the Preferences Framework have been re-written in Stylus. Only Stylus files are pushed into the GitHub
 repository.
 
 For developing the Preferences Framework, run the following from the project root to compile Stylus files to CSS:

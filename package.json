@@ -28,6 +28,8 @@
         "test:browser": "node node_modules/testem/testem.js ci --file tests/testem.js",
         "test:node": "node node_modules/istanbul/lib/cli.js cover tests/node-tests/basic-node-tests.js --report none --print none",
         "test:vagrant": "vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm test'",
+        "test:vagrantBrowser": "vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm run test:browser'",
+        "test:vagrantNode": "vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm run test:node'",
         "posttest": "node node_modules/istanbul/lib/cli.js report --root coverage --dir reports text-summary html"
     },
     "engines": {
