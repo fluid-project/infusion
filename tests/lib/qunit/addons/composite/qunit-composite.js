@@ -39,10 +39,6 @@ function runSuite( suite ) {
 	}
 
 	QUnit.asyncTest( suite, function() {
-		// See: https://github.com/JamesMGreene/qunit-composite/issues/20
-        if(iframe === undefined){
-			initIframe();
-		}
 		iframe.setAttribute( "src", path );
 		// QUnit.start is called from the child iframe's QUnit.done hook.
 	});
