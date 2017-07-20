@@ -38,7 +38,7 @@
     "devDependencies": {
         "eslint-config-fluid": "1.1.0",
         "fluid-grunt-eslint": "18.1.2",
-        "gpii-testem": "1.0.0",
+        "gpii-testem": "1.0.2-dev.20170719T133405Z.0df166e",
         "grunt": "1.0.1",
         "grunt-contrib-clean": "1.0.0",
         "grunt-contrib-compress": "1.3.0",
