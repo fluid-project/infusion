@@ -1015,14 +1015,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     input: ".flc-test-input"
                 },
                 selectionID: "",
+                selectorMap: {
+                    rowID: "row",
+                    labelID: "label",
+                    inputID: "input"
+                },
                 repeatingSelectors: ["row"],
                 renderOnInit: true,
                 protoTree: {
                     expander: {
                         type: "fluid.renderer.selection.inputs",
-                        rowID: "row",
-                        labelID: "label",
-                        inputID: "input",
+                        rowID: "{that}.options.selectorMap.rowID",
+                        labelID: "{that}.options.selectorMap.labelID",
+                        inputID: "{that}.options.selectorMap.inputID",
                         selectID: "{that}.options.selectionID",
                         tree: {
                             optionnames: "${{that}.options.strings.theme}",

@@ -307,17 +307,17 @@ fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.renderer.selection.inputs = function (options, container, key, config) {
         fluid.expect("Selection to inputs expander", options, ["selectID", "inputID", "labelID", "rowID"]);
         var selection = config.expander(options.tree);
-        var selectID = config.expandLight(options.selectID);
+        var expandedOpts = config.expandLight(options);
         var rows = fluid.transform(selection.optionlist.value, function (option, index) {
             var togo = {};
-            var element =  {parentRelativeID: "..::" + selectID, choiceindex: index};
-            togo[options.inputID] = element;
-            togo[options.labelID] = fluid.copy(element);
+            var element =  {parentRelativeID: "..::" + expandedOpts.selectID, choiceindex: index};
+            togo[expandedOpts.inputID] = element;
+            togo[expandedOpts.labelID] = fluid.copy(element);
             return togo;
         });
         var togo = {}; // TODO: JICO needs to support "quoted literal key initialisers" :P
-        togo[selectID] = selection;
-        togo[options.rowID] = {children: rows};
+        togo[expandedOpts.selectID] = selection;
+        togo[expandedOpts.rowID] = {children: rows};
         togo = config.expander(togo);
         return togo;
     };
