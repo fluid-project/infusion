@@ -82,18 +82,17 @@ fluid.module.preInspect = function (root) {
     var moduleInfo = fluid.module.modulesToRoot(root);
     fluid.each(moduleInfo.names, function (name, index) {
         if (name && !fluid.module.modules[name]) {
-            var baseDir = fluid.module.normaliseWindowsRoot(moduleInfo.paths[index]);
+            var baseDir = moduleInfo.paths[index];
             fluid.module.register(name, baseDir, null); // TODO: fabricate a "require" too - so far unused
         }
     });
 };
 
-/** Canonicalise a path by replacing all backslashes with forward slashes, and removing any final slash
+/** Canonicalise a path by replacing all backslashes with forward slashes
  * (such paths are always valid when supplied to Windows APIs)
  */
 fluid.module.canonPath = function (path) {
-    var canoned = path.replace(/\\/g, "/");
-    return canoned.endsWith("/") ? canoned.substring(0, canoned.length - 1) : canoned;
+    return path.replace(/\\/g, "/");
 };
 
 fluid.module.getDirs = function () {
@@ -112,7 +111,7 @@ fluid.module.terms = function () {
  */
 
 fluid.module.resolvePath = function (path) {
-    return fluid.stringTemplate(path, fluid.module.getDirs());
+    return fluid.stringTemplate(path, fluid.module.getDirs()).replace("//", "/");
 };
 
 fluid.module.moduleRegex = /^%([^\W._][\w\.-]*)/;
