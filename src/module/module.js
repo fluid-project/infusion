@@ -23,6 +23,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 fluid.registerNamespace("fluid.module");
 
+// A mapping of module name to a structure containing elements
+//    baseDir {String} The slash-terminated filesystem path of the base directory of the module
+//    require {Function} A function capable as acting as "require" loading modules relative to the module
+
 fluid.module.modules = {};
 
 /** A module which has just loaded will call this API to register itself into
@@ -37,14 +41,13 @@ fluid.module.register = function (name, baseDir, moduleRequire) {
     };
 };
 
-
 fluid.module.pathsToRoot = function (baseDir) {
     var segs = baseDir.split(path.sep);
     var paths = fluid.accumulate(segs.slice(1), function (seg, total) {
         var top = total[total.length - 1];
-        total.push(top + path.sep + seg);
+        total.push(top + seg + path.sep);
         return total;
-    }, [segs[0]]);
+    }, [segs[0] + path.sep]);
     return paths;
 };
 
@@ -68,10 +71,6 @@ fluid.module.modulesToRoot = function (root) {
     };
 };
 
-fluid.module.normaliseWindowsRoot = function (path) {
-    return /^([A-Za-z]):$/.test(path) ? path + "\\" : path;
-};
-
 // A simple precursor of our eventual global module inspection system. This simply inspects the path
 // to root for any readable package.json files, and extracts their "name" field as a moral identifier
 // of a module's presence. Eventually our registry will include versions and be indexed from the
@@ -81,14 +80,14 @@ fluid.module.preInspect = function (root) {
     var moduleInfo = fluid.module.modulesToRoot(root);
     fluid.each(moduleInfo.names, function (name, index) {
         if (name && !fluid.module.modules[name]) {
-            var baseDir = fluid.module.normaliseWindowsRoot(moduleInfo.paths[index]);
+            var baseDir = moduleInfo.paths[index];
             fluid.module.register(name, baseDir, null); // TODO: fabricate a "require" too - so far unused
         }
     });
 };
 
 /** Canonicalise a path by replacing all backslashes with forward slashes
- * (the latter are always valid when supplied to Windows APIs)
+ * (such paths are always valid when supplied to Windows APIs)
  */
 fluid.module.canonPath = function (path) {
     return path.replace(/\\/g, "/");
@@ -110,7 +109,7 @@ fluid.module.terms = function () {
  */
 
 fluid.module.resolvePath = function (path) {
-    return fluid.stringTemplate(path, fluid.module.getDirs());
+    return fluid.stringTemplate(path, fluid.module.getDirs()).replace("//", "/");
 };
 
 fluid.module.moduleRegex = /^%([^\W._][\w\.-]*)/;

@@ -32,7 +32,7 @@ fluid.tests.expectedTestCases = 10;
 
 fluid.loadInContext("../../tests/test-core/testTests/js/IoCTestingTests.js");
 
-var testModuleBase = __dirname + path.sep + "node_modules" + path.sep + "test-module";
+var testModuleBase = __dirname + path.sep + "node_modules" + path.sep + "test-module" + path.sep;
 
 fluid.module.preInspect(testModuleBase);
 
