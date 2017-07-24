@@ -5,9 +5,6 @@
     "author": "Fluid Project",
     "bugs": "http://issues.fluidproject.org/browse/FLUID",
     "homepage": "http://www.fluidproject.org/",
-    "dependencies": {
-        "fluid-resolve": "1.2.0"
-    },
     "license": "(BSD-3-Clause OR ECL-2.0)",
     "keywords": [
         "infusion",
@@ -27,6 +24,9 @@
     },
     "engines": {
         "node": ">=0.10.0"
+    },
+    "dependencies": {
+        "fluid-resolve": "fluid-project/node-resolve#GPII-2483"
     },
     "devDependencies": {
         "grunt": "1.0.1",

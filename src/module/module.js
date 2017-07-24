@@ -42,9 +42,9 @@ fluid.module.pathsToRoot = function (baseDir) {
     var segs = baseDir.split(path.sep);
     var paths = fluid.accumulate(segs.slice(1), function (seg, total) {
         var top = total[total.length - 1];
-        total.push(top + path.sep + seg);
+        total.push(top + seg + path.sep);
         return total;
-    }, [segs[0]]);
+    }, [segs[0] + path.sep]);
     return paths;
 };
 
@@ -69,6 +69,7 @@ fluid.module.modulesToRoot = function (root) {
 };
 
 fluid.module.normaliseWindowsRoot = function (path) {
+    return path;
     return /^([A-Za-z]):$/.test(path) ? path + "\\" : path;
 };
 
@@ -87,11 +88,12 @@ fluid.module.preInspect = function (root) {
     });
 };
 
-/** Canonicalise a path by replacing all backslashes with forward slashes
- * (the latter are always valid when supplied to Windows APIs)
+/** Canonicalise a path by replacing all backslashes with forward slashes, and removing any final slash
+ * (such paths are always valid when supplied to Windows APIs)
  */
 fluid.module.canonPath = function (path) {
-    return path.replace(/\\/g, "/");
+    var canoned = path.replace(/\\/g, "/");
+    return canoned.endsWith("/") ? canoned.substring(0, canoned.length - 1) : canoned;
 };
 
 fluid.module.getDirs = function () {
