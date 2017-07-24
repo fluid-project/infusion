@@ -23,6 +23,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 fluid.registerNamespace("fluid.module");
 
+// A mapping of module name to a structure containing elements
+//    baseDir {String} The slash-terminated filesystem path of the base directory of the module
+//    require {Function} A function capable as acting as "require" loading modules relative to the module
+
 fluid.module.modules = {};
 
 /** A module which has just loaded will call this API to register itself into
@@ -36,7 +40,6 @@ fluid.module.register = function (name, baseDir, moduleRequire) {
         require: moduleRequire
     };
 };
-
 
 fluid.module.pathsToRoot = function (baseDir) {
     var segs = baseDir.split(path.sep);
@@ -66,11 +69,6 @@ fluid.module.modulesToRoot = function (root) {
         packages: packages,
         names: names
     };
-};
-
-fluid.module.normaliseWindowsRoot = function (path) {
-    return path;
-    return /^([A-Za-z]):$/.test(path) ? path + "\\" : path;
 };
 
 // A simple precursor of our eventual global module inspection system. This simply inspects the path
