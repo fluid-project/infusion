@@ -307,7 +307,10 @@ fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.renderer.selection.inputs = function (options, container, key, config) {
         fluid.expect("Selection to inputs expander", options, ["selectID", "inputID", "labelID", "rowID"]);
         var selection = config.expander(options.tree);
-        var expandedOpts = config.expandLight(options);
+        // Remove the tree from option expansion as this is handled above, and
+        // the tree may have strings with similar syntax to IoC references.
+        var optsToExpand = fluid.censorKeys(options, ["tree"]);
+        var expandedOpts = config.expandLight(optsToExpand);
         var rows = fluid.transform(selection.optionlist.value, function (option, index) {
             var togo = {};
             var element =  {parentRelativeID: "..::" + expandedOpts.selectID, choiceindex: index};
