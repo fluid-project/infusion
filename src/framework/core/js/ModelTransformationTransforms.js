@@ -102,10 +102,13 @@ var fluid = fluid || fluid_2_0_0;
         invertConfiguration: "fluid.transforms.invertToIdentity"
     });
 
-    fluid.transforms.round = function (value) {
-        return Math.round(value);
+    fluid.transforms.round = function (value, transformSpec) {
+        if (typeof transformSpec.scale === "number" && !isNaN(transformSpec.scale)) {
+            return fluid.roundToDecimal(value, transformSpec.scale, transformSpec.method);
+        } else {
+            return Math.round(value);
+        }
     };
-
 
     fluid.defaults("fluid.transforms.delete", {
         gradeNames: "fluid.transformFunction"
