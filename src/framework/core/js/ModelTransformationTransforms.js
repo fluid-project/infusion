@@ -103,11 +103,8 @@ var fluid = fluid || fluid_2_0_0;
     });
 
     fluid.transforms.round = function (value, transformSpec) {
-        if (typeof transformSpec.scale === "number" && !isNaN(transformSpec.scale)) {
-            return fluid.roundToDecimal(value, transformSpec.scale, transformSpec.method);
-        } else {
-            return Math.round(value);
-        }
+        // validation of scale is handled by roundToDecimal
+        return fluid.roundToDecimal(value, transformSpec.scale, transformSpec.method);
     };
 
     fluid.defaults("fluid.transforms.delete", {

@@ -1411,7 +1411,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             myin: -912.50
         },
         expected: {
-            outie: -912
+            outie: -913
         },
         invertedRules: {
             transform: [{
@@ -1421,7 +1421,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }]
         },
         modelAfterInversion: {
-            myin: -912
+            myin: -913
         },
         weaklyInvertible: true,
         transformWrap: false,
