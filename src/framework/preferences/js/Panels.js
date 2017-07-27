@@ -712,6 +712,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         stringArrayIndex: {
             theme: [] // must be supplied by the integrator
         },
+        selectID: "{that}.id", // used for the name attribute to group the selection options
         listeners: {
             "afterRender.style": "{that}.style"
         },
@@ -734,7 +735,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 rowID: "themeRow",
                 labelID: "themeLabel",
                 inputID: "themeInput",
-                selectID: "theme-radio",
+                selectID: "{that}.options.selectID",
                 tree: {
                     optionnames: "${{that}.msgLookup.theme}",
                     optionlist: "${{that}.options.controlValues.theme}",
