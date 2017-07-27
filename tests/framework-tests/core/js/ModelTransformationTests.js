@@ -1351,6 +1351,53 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: -9877,
         expectedInputPaths: [ "floaty2" ]
     }, {
+        message: "round() round to decimal - up",
+        transform: {
+            type: "fluid.transforms.round",
+            inputPath: "floatyLowy",
+            scale: 1
+        },
+        expected: 12.4,
+        expectedInputPaths: [ "floatyLowy" ]
+    }, {
+        message: "round() round to decimal - down",
+        transform: {
+            type: "fluid.transforms.round",
+            inputPath: "floatyHighy",
+            scale: 1
+        },
+        expected: 12.5,
+        expectedInputPaths: [ "floatyHighy" ]
+    }, {
+        message: "round() round to decimal - whole number",
+        transform: {
+            type: "fluid.transforms.round",
+            inputPath: "hundred",
+            scale: 1
+        },
+        expected: 100,
+        expectedInputPaths: [ "hundred" ]
+    }, {
+        message: "round() round to decimal - ceil",
+        transform: {
+            type: "fluid.transforms.round",
+            inputPath: "floatyHighy",
+            scale: 1,
+            method: "ceil"
+        },
+        expected: 12.6,
+        expectedInputPaths: [ "floatyHighy" ]
+    }, {
+        message: "round() round to decimal - floor",
+        transform: {
+            type: "fluid.transforms.round",
+            inputPath: "floatyLowy",
+            scale: 1,
+            method: "floor"
+        },
+        expected: 12.3,
+        expectedInputPaths: [ "floatyLowy" ]
+    }, {
         message: "round() is able to do (lossy) inverse.",
         transform: {
             outie: {
@@ -1364,7 +1411,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             myin: -912.50
         },
         expected: {
-            outie: -912
+            outie: -913
         },
         invertedRules: {
             transform: [{
@@ -1374,7 +1421,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }]
         },
         modelAfterInversion: {
-            myin: -912
+            myin: -913
         },
         weaklyInvertible: true,
         transformWrap: false,

@@ -102,10 +102,10 @@ var fluid = fluid || fluid_2_0_0;
         invertConfiguration: "fluid.transforms.invertToIdentity"
     });
 
-    fluid.transforms.round = function (value) {
-        return Math.round(value);
+    fluid.transforms.round = function (value, transformSpec) {
+        // validation of scale is handled by roundToDecimal
+        return fluid.roundToDecimal(value, transformSpec.scale, transformSpec.method);
     };
-
 
     fluid.defaults("fluid.transforms.delete", {
         gradeNames: "fluid.transformFunction"
