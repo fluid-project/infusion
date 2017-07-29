@@ -2177,6 +2177,47 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }]
             },
             transformWrap: false
+        },
+        "FLUID-6174": {
+            message: "FLUID-6174: Support \"input\" for sourcing model data",
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultOutputPath: "flashing",
+                defaultOutputValue: false,
+                input: "blinking",
+                match: {
+                    blinking: true
+                }
+            },
+            expected: {
+                flashing: true
+            }
+        },
+        "FLUID-6174-nested": {
+            message: "FLUID-6174: Support \"input\" for sourcing model data from a nested transform",
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultOutputPath: "flashing",
+                defaultOutputValue: "unknown",
+                input: {
+                    transform: {
+                        type: "fluid.transforms.identity",
+                        input: {
+                            blinking: false
+                        }
+                    }
+                },
+                match: [{
+                    inputValue: {
+                        blinking: false
+                    },
+                    partialMatches: true,
+                    outputValue: false
+                }]
+            },
+            expected: {
+                flashing: false
+            }
         }
     };
 
