@@ -32,7 +32,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     invokers: {
                         queueSpeech: {
                             funcName: "fluid.mock.textToSpeech.queueSpeech",
-                            args: ["{that}", "{that}.handleStart", "{that}.handleEnd", "{that}.speechRecord", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+                            args: ["{that}", "{that}.speechRecord", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
                         }
                     }
                 }
@@ -123,7 +123,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         },
                         mockQueueSpeech: {
                             funcName: "fluid.mock.textToSpeech.queueSpeech",
-                            args: ["{arguments}.0", "{that}.handleStart", "{that}.handleEnd", "{that}.speechRecord", "{arguments}.1", "{arguments}.2", "{arguments}.3"]
+                            args: ["{arguments}.0", "{that}.speechRecord", "{arguments}.1", "{arguments}.2", "{arguments}.3"]
                         }
                     }
                 }
