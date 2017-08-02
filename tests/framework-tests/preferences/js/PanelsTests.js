@@ -1210,8 +1210,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             inputValue = input.value;
             label = labels.eq(index);
             jqUnit.assertTrue("The contrast label has appropriate css applied", label.hasClass(that.options.classnameMap.theme[inputValue]));
-
             jqUnit.assertEquals("The aria-label is " + that.options.messageBase.contrast[index], that.options.messageBase.contrast[index], label.attr("aria-label"));
+            jqUnit.assertEquals("The input has the correct name attribute", that.id, $(input).attr("name"));
         });
 
         jqUnit.assertTrue("The default contrast label has the default label css applied", labels.eq(0).hasClass(that.options.styles.defaultThemeLabel));
@@ -1233,7 +1233,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test the contrast settings panel",
             tests: [{
-                expect: 18,
+                expect: 24,
                 name: "Test the rendering of the contrast panel",
                 sequence: [{
                     listener: "fluid.tests.contrastPanel.testDefault",
@@ -1284,7 +1284,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test the contrast settings panel with controlValues replaced",
             tests: [{
-                expect: 12,
+                expect: 15,
                 name: "Test the rendering of the contrast panel",
                 sequence: [{
                     listener: "fluid.tests.contrastPanel.testDefault",

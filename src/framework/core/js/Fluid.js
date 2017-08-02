@@ -830,7 +830,7 @@ var fluid = fluid || fluid_3_0_0;
      * Derived from Sindre Sorhus's round-to node module ( https://github.com/sindresorhus/round-to ).
      * License: MIT
      *
-     * Rounds the supplied number to at most the number of decimal places indicated by the scale, omiting any trailing 0s.
+     * Rounds the supplied number to at most the number of decimal places indicated by the scale, omitting any trailing 0s.
      * There are three possible rounding methods described below: "round", "ceil", "floor"
      * Round: Numbers are rounded away from 0 (i.e 0.5 -> 1, -0.5 -> -1).
      * Ceil: Numbers are rounded up
