@@ -175,7 +175,7 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     // Marker so that we can render a custom string for properties which are not direct and concrete
-    fluid.SYNTHETIC_PROPERTY = {};
+    fluid.SYNTHETIC_PROPERTY = Object.freeze({});
 
     // utility to avoid triggering custom getter code which could throw an exception - e.g. express 3.x's request object
     fluid.getSafeProperty = function (obj, key) {
@@ -225,7 +225,7 @@ var fluid = fluid || fluid_3_0_0;
             }
             else {
                 out("{" + (isFunction ? " Function" : "") + "\n" + big); // NB - Function object invalid for JSON interchange
-                var keys = Object.keys(obj);
+                var keys = fluid.keys(obj);
                 for (i = 0; i < keys.length; ++i) {
                     var key = keys[i];
                     var value = fluid.getSafeProperty(obj, key);

@@ -50,10 +50,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var reparsed = JSON.parse(renderedComplex);
         jqUnit.assertDeepEq("Round-tripping complex object", complex, reparsed);
 
-        function Synthetic() {}
-        var proto = { b: 3 };
-        Synthetic.prototype = proto;
-        var synthetic = new Synthetic();
+        function Derived() {}
+        var proto = { protoProperty: 3 };
+        Derived.prototype = proto;
+        var derived = new Derived();
+
+        var renderedDerived = fluid.prettyPrintJSON(derived);
+        jqUnit.assertTrue("Caught prototype property", renderedDerived.indexOf("protoProperty") !== -1);
+
+        var synthetic = {};
+        Object.defineProperty(synthetic, "b", {
+            enumerable: true,
+            get: function () {
+                return 3;
+            }
+        });
 
         var renderedSynthetic = fluid.prettyPrintJSON(synthetic);
         jqUnit.assertTrue("Caught synthetic property", renderedSynthetic.indexOf("[Synthetic property]") !== -1);
