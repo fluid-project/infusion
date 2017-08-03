@@ -2184,7 +2184,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.transforms.valueMapper",
                 defaultOutputPath: "flashing",
                 defaultOutputValue: false,
-                input: "blinking",
+                defaultInput: "blinking",
                 match: {
                     blinking: true
                 }
@@ -2199,7 +2199,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.transforms.valueMapper",
                 defaultOutputPath: "flashing",
                 defaultOutputValue: "unknown",
-                input: {
+                defaultInput: {
                     transform: {
                         type: "fluid.transforms.identity",
                         input: {
