@@ -225,7 +225,7 @@ var fluid = fluid || fluid_3_0_0;
             }
             else {
                 out("{" + (isFunction ? " Function" : "") + "\n" + big); // NB - Function object invalid for JSON interchange
-                var keys = fluid.keys(obj);
+                var keys = Object.keys(obj);
                 for (i = 0; i < keys.length; ++i) {
                     var key = keys[i];
                     var value = fluid.getSafeProperty(obj, key);
