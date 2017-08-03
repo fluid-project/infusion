@@ -9,7 +9,6 @@ fluid.defaults("fluid.tests.testem", {
     gradeNames: ["gpii.testem.coverageDataOnly"],
     testPages:  "tests/all-tests.html",
     sourceDirs: ["src"],
-    packageName: "%infusion",
     coverageDir: "coverage",
     serveDirs:  ["src", "node_modules"]
 });
