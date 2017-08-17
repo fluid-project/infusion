@@ -1,4 +1,4 @@
-// Contains utility functions for changing font family
+// Contains a utility function for changing font family
 // !important is used for all styles to ensure that Preferences Framework's enactors are able to override the pages default styles.
 
 fonts = {
@@ -16,64 +16,14 @@ fonts = {
     }
 }
 
-build-fonts-prefsEditor(textFont) {
-
-	for fontName in textFont {
-		font = textFont[fontName].fontFamily;
-
-		.fl-prefsEditor {
-			{fontName},
-			{fontName} * {
-				:not([class*='icon']) {
-					font-family: unquote(font) !important;
-                }
-			}
-		}
-	}
-}
-
-build-fonts-separatedPanelPrefsEditorFrame(textFont) {
-
-    for fontName in textFont {
-        font = textFont[fontName].fontFamily;
-
-        .fl-prefsEditor {
-            {fontName},
-            {fontName} * {
-                :not([class*='icon']) {
-                    font-family: unquote(font) !important;
-                }
-            }
-        }
-    }
-}
-
-
-build-fonts-separatedPanelPrefsEditor(textFont) {
-
-    for fontName in textFont {
-        font = textFont[fontName].fontFamily;
-
-        .fl-prefsEditor {
-            {fontName},
-            {fontName} * {
-                :not([class*='icon']) {
-                    font-family: unquote(font) !important;
-                }
-            }
-        }
-    }
-}
-
-
 build-fonts-Enactors(textFont) {
 
     for fontName in textFont {
         font = textFont[fontName].fontFamily;
-
+        
         {fontName},
         {fontName} * {
-            :not([class*='icon']) {
+            &:not([class*='icon']) {
                 font-family: unquote(font) !important;
             }
         }
