@@ -1090,6 +1090,59 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
+    fluid.defaults("fluid.tests.prefs.panel.textFont.override", {
+        gradeNames: ["fluid.tests.prefs.panel.textFont"],
+        stringArrayIndex: {
+            textFont: ["textFont-default", "textFont-verdana"]
+        },
+        controlValues: {
+            textFont: ["default", "verdana"]
+        }
+    });
+
+    fluid.defaults("fluid.tests.textFontPanelOverride", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        components: {
+            textFont: {
+                type: "fluid.tests.prefs.panel.textFont.override",
+                container: ".flc-textFont",
+                createOnEvent: "{textFontTester}.events.onTestCaseStart"
+            },
+            textFontTester: {
+                type: "fluid.tests.textFontOverrideTester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.textFontOverrideTester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        testOptions: {
+            expectedNumOfOptions: 2,
+            defaultValue: "default",
+            newValue: "verdana"
+        },
+        modules: [{
+            name: "Test the text font settings panel with controlValues replaced",
+            tests: [{
+                expect: 6,
+                name: "Test the rendering of the text font panel",
+                sequence: [{
+                    listener: "fluid.tests.textFontPanel.testDefault",
+                    args: ["{textFont}", "{that}.options.testOptions.expectedNumOfOptions", "{that}.options.testOptions.defaultValue"],
+                    event: "{textFontPanelOverride textFont}.events.afterRender"
+                }, {
+                    func: "fluid.changeElementValue",
+                    args: ["{textFont}.dom.textFont", "{that}.options.testOptions.newValue"]
+                }, {
+                    listener: "fluid.tests.panels.utils.checkModel",
+                    args: ["value", "{textFont}.model", "{that}.options.testOptions.newValue"],
+                    spec: {path: "value", priority: "last"},
+                    changeEvent: "{textFont}.applier.modelChanged"
+                }]
+            }]
+        }]
+    });
+
     /*******************************************************************************
      * Contrast
      *******************************************************************************/
@@ -1104,8 +1157,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "contrast-by": "Black on yellow",
             "contrast-yb": "Yellow on black",
             "contrast-lgdg": "Low contrast",
-            "contrastLabel": "colour and contrast",
-            "contrastDescr": "Change the text and background colours"
+            "label": "colour and contrast",
+            "description": "Change the text and background colours"
         },
         model: {
             value: "default"
@@ -1146,8 +1199,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var labels = that.locate("themeLabel");
         var messageBase = that.options.messageBase;
 
-        jqUnit.assertEquals("The label text is " + messageBase.contrastLabel, messageBase.contrastLabel, that.locate("label").text());
-        jqUnit.assertEquals("The description text is " + messageBase.contrastDescr, messageBase.contrastDescr, that.locate("contrastDescr").text());
+        jqUnit.assertEquals("The label text is " + messageBase.label, messageBase.label, that.locate("label").text());
+        jqUnit.assertEquals("The description text is " + messageBase.description, messageBase.description, that.locate("description").text());
 
         jqUnit.assertEquals("There are " + expectedNumOfOptions + " contrast selections in the control", expectedNumOfOptions, inputs.length);
         jqUnit.assertEquals("The first contrast is " + expectedContrast, expectedContrast, inputs.filter(":checked").val());
@@ -1157,8 +1210,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             inputValue = input.value;
             label = labels.eq(index);
             jqUnit.assertTrue("The contrast label has appropriate css applied", label.hasClass(that.options.classnameMap.theme[inputValue]));
-
             jqUnit.assertEquals("The aria-label is " + that.options.messageBase.contrast[index], that.options.messageBase.contrast[index], label.attr("aria-label"));
+            jqUnit.assertEquals("The input has the correct name attribute", that.id, $(input).attr("name"));
         });
 
         jqUnit.assertTrue("The default contrast label has the default label css applied", labels.eq(0).hasClass(that.options.styles.defaultThemeLabel));
@@ -1180,13 +1233,64 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Test the contrast settings panel",
             tests: [{
-                expect: 18,
+                expect: 24,
                 name: "Test the rendering of the contrast panel",
                 sequence: [{
                     listener: "fluid.tests.contrastPanel.testDefault",
                     args: ["{contrast}", "{that}.options.testOptions.expectedNumOfOptions", "{that}.options.testOptions.defaultValue"],
                     spec: {priority: "last"},
                     event: "{contrastPanel contrast}.events.afterRender"
+                }, {
+                    func: "fluid.tests.contrastPanel.changeChecked",
+                    args: ["{contrast}.dom.themeInput", "{that}.options.testOptions.newValue"]
+                }, {
+                    listener: "fluid.tests.panels.utils.checkModel",
+                    args: ["value", "{contrast}.model", "{that}.options.testOptions.newValue"],
+                    spec: {path: "value", priority: "last"},
+                    changeEvent: "{contrast}.applier.modelChanged"
+                }]
+            }]
+        }]
+    });
+
+    fluid.defaults("fluid.tests.prefs.panel.contrast.override", {
+        gradeNames: ["fluid.tests.prefs.panel.contrast"],
+        controlValues:{
+            theme: ["default", "bw", "yb"]
+        }
+    });
+
+    fluid.defaults("fluid.tests.contrastPanelOverride", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        components: {
+            contrast: {
+                type: "fluid.tests.prefs.panel.contrast.override",
+                container: ".flc-contrast",
+                createOnEvent: "{contrastTester}.events.onTestCaseStart"
+            },
+            contrastTester: {
+                type: "fluid.tests.contrastOverrideTester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.contrastOverrideTester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        testOptions: {
+            expectedNumOfOptions: 3,
+            defaultValue: "default",
+            newValue: "yb"
+        },
+        modules: [{
+            name: "Test the contrast settings panel with controlValues replaced",
+            tests: [{
+                expect: 15,
+                name: "Test the rendering of the contrast panel",
+                sequence: [{
+                    listener: "fluid.tests.contrastPanel.testDefault",
+                    args: ["{contrast}", "{that}.options.testOptions.expectedNumOfOptions", "{that}.options.testOptions.defaultValue"],
+                    spec: {priority: "last"},
+                    event: "{contrastPanelOverride contrast}.events.afterRender"
                 }, {
                     func: "fluid.tests.contrastPanel.changeChecked",
                     args: ["{contrast}.dom.themeInput", "{that}.options.testOptions.newValue"]
@@ -1487,7 +1591,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     $(document).ready(function () {
         fluid.test.runTests([
             "fluid.tests.textFontPanel",
+            "fluid.tests.textFontPanelOverride",
             "fluid.tests.contrastPanel",
+            "fluid.tests.contrastPanelOverride",
             "fluid.tests.textSizePanel",
             "fluid.tests.lineSpacePanel",
             "fluid.tests.layoutPanel",

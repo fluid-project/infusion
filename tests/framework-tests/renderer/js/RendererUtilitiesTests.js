@@ -997,6 +997,69 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         });
 
+        jqUnit.asyncTest("FLUID-6171 test: IoC resolution in inputs expander", function () {
+            fluid.defaults("fluid.tets.fluid_6171.inputRenderer", {
+                gradeNames: ["fluid.rendererComponent"],
+                controlValues: {
+                    theme: ["a", "b"]
+                },
+                strings: {
+                    theme: ["A", "B"]
+                },
+                model: {
+                    value: "a"
+                },
+                selectors: {
+                    row: ".flc-test-row",
+                    label: ".flc-test-label",
+                    input: ".flc-test-input"
+                },
+                selectionID: "",
+                selectorMap: {
+                    rowID: "row",
+                    labelID: "label",
+                    inputID: "input"
+                },
+                repeatingSelectors: ["row"],
+                renderOnInit: true,
+                protoTree: {
+                    expander: {
+                        type: "fluid.renderer.selection.inputs",
+                        rowID: "{that}.options.selectorMap.rowID",
+                        labelID: "{that}.options.selectorMap.labelID",
+                        inputID: "{that}.options.selectorMap.inputID",
+                        selectID: "{that}.options.selectionID",
+                        tree: {
+                            optionnames: "${{that}.options.strings.theme}",
+                            optionlist: "${{that}.options.controlValues.theme}",
+                            selection: "${value}"
+                        }
+                    }
+                }
+            });
+
+            var selectionID = "fluid-6171";
+            fluid.tets.fluid_6171.inputRenderer(".fluid-6171-IoC-resolution", {
+                selectionID: selectionID,
+                listeners: {
+                    "afterRender.assert": {
+                        listener: function (that) {
+                            that.locate("input").each(function (idx, elm) {
+                                elm = $(elm);
+                                jqUnit.assertEquals("The group name for the radio button at index " + idx + " should be set correctly", selectionID, elm.attr("name"));
+                            });
+                        },
+                        args: ["{that}"],
+                        priority: "last:testing"
+                    },
+                    "afterRender.start": {
+                        listener: "jqUnit.start",
+                        priority: "after:assert"
+                    }
+                }
+            });
+        });
+
         function deleteComponentTypes(tree) {
             return fluid.transform(tree, function (el) {
                 if (fluid.isPrimitive(el)) {

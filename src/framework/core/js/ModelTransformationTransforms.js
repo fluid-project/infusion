@@ -102,10 +102,10 @@ var fluid = fluid || fluid_2_0_0;
         invertConfiguration: "fluid.transforms.invertToIdentity"
     });
 
-    fluid.transforms.round = function (value) {
-        return Math.round(value);
+    fluid.transforms.round = function (value, transformSpec) {
+        // validation of scale is handled by roundToDecimal
+        return fluid.roundToDecimal(value, transformSpec.scale, transformSpec.method);
     };
-
 
     fluid.defaults("fluid.transforms.delete", {
         gradeNames: "fluid.transformFunction"
@@ -244,7 +244,7 @@ var fluid = fluid || fluid_2_0_0;
         if (!transformSpec.match) {
             fluid.fail("valueMapper requires an array or hash of matches at path named \"match\", supplied ", transformSpec);
         }
-        var value = fluid.model.transform.getValue(transformSpec.defaultInputPath, undefined, transformer);
+        var value = fluid.model.transform.getValue(transformSpec.defaultInputPath, transformSpec.defaultInput, transformer);
 
         var matchedEntry = (fluid.isArrayable(transformSpec.match)) ? // long form with array of records?
             fluid.transforms.valueMapper.longFormMatch(value, transformSpec, transformer) :
