@@ -71,19 +71,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.assertAriaForToggleButton = function (button, buttonName, controlsId, state) {
+        var attrState = state ? "true" : "false";
         fluid.tests.assertAriaForButton(button, buttonName, controlsId);
-        jqUnit.assertEquals(buttonName + " button has correct aria-pressed", state, button.attr("aria-pressed"));
+        jqUnit.assertEquals(buttonName + " button has correct aria-pressed", attrState, button.attr("aria-pressed"));
     };
 
     fluid.tests.assertAria = function (that, state) {
         var toggleButton = that.locate("toggleButton");
         var panel = that.locate("panel");
         var panelId = panel.attr("id");
+        var attrState = state ? "true" : "false";
 
         fluid.tests.assertAriaForToggleButton(toggleButton, "Hide/show", panelId, state);
         jqUnit.assertEquals("Panel has the group role", "group", panel.attr("role"));
         jqUnit.assertEquals("Panel has the correct aria-label", that.options.strings.panelLabel, panel.attr("aria-label"));
-        jqUnit.assertEquals("Panel has correct aria-expanded", state, panel.attr("aria-expanded"));
+        jqUnit.assertEquals("Panel has correct aria-expanded", attrState, panel.attr("aria-expanded"));
     };
 
     fluid.tests.testSeparatedPanel = function (separatedPanel) {
@@ -94,8 +96,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Reset button is invisible", false, $(".flc-prefsEditor-reset").is(":visible"));
         fluid.tests.prefs.assertPresent(prefsEditor, fluid.tests.prefs.expectedComponents["fluid.prefs.separatedPanel"]);
 
-        fluid.tests.assertAria(separatedPanel.slidingPanel, "false");
+        fluid.tests.assertAria(separatedPanel.slidingPanel, false);
         fluid.tests.assertAriaForButton(separatedPanel.locate("reset"), "Reset", separatedPanel.slidingPanel.panelId);
+    };
+
+    fluid.tests.testSeparatedPanel2 = function (separatedPanel) {
+        // jqUnit.assertEquals("IFrame is invisible and keyboard inaccessible", false, separatedPanel.iframeRenderer.iframe.is(":visible"));
+        // fluid.tests.prefs.assertPresent(separatedPanel, fluid.tests.prefs.expectedSeparatedPanel);
+
+        var prefsEditor = separatedPanel.prefsEditor;
+        jqUnit.assertEquals("Reset button is visible", true, $(".flc-prefsEditor-reset").is(":visible"));
+        fluid.tests.prefs.assertPresent(prefsEditor, fluid.tests.prefs.expectedComponents["fluid.prefs.separatedPanel"]);
+
+        // fluid.tests.assertAria(separatedPanel.slidingPanel, false);
+        // fluid.tests.assertAriaForButton(separatedPanel.locate("reset"), "Reset", separatedPanel.slidingPanel.panelId);
     };
 
     fluid.defaults("fluid.tests.separatedPanelResponsiveTester", {
@@ -103,13 +117,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Separated panel integration tests",
             tests: [{
-                // expect: 37,
+                expect: 22,
                 name: "Separated panel integration tests",
                 sequence: [{
                     listener: "fluid.tests.testSeparatedPanel",
                     event: "{separatedPanelResponsive separatedPanel}.events.onReady"
                 }, {
                     func: "{separatedPanel}.slidingPanel.showPanel"
+                }, {
+                    listener: "fluid.tests.testSeparatedPanel2",
+                    event: "{separatedPanel}.slidingPanel.events.afterPanelShow",
+                    args: "{separatedPanel}",
+                    priority: "last:testing"
+                }, {
+                    func: "fluid.tests.assertAria",
+                    args: ["{separatedPanel}.slidingPanel", true]
                 }]
             }]
         }]
