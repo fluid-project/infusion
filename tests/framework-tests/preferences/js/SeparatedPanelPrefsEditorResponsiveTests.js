@@ -88,28 +88,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Panel has correct aria-expanded", attrState, panel.attr("aria-expanded"));
     };
 
-    fluid.tests.testSeparatedPanel = function (separatedPanel) {
-        jqUnit.assertEquals("IFrame is invisible and keyboard inaccessible", false, separatedPanel.iframeRenderer.iframe.is(":visible"));
-        fluid.tests.prefs.assertPresent(separatedPanel, fluid.tests.prefs.expectedSeparatedPanel);
+    fluid.tests.assertResetButton = function (separatedPanel, state) {
+        separatedPanel.locate("reset").each(function (idx, elm) {
+            elm = $(elm);
+            var smallScreenContainer = elm.parents(".fl-panelBar-smallScreen");
 
-        var prefsEditor = separatedPanel.prefsEditor;
-        jqUnit.assertEquals("Reset button is invisible", false, $(".flc-prefsEditor-reset").is(":visible"));
-        fluid.tests.prefs.assertPresent(prefsEditor, fluid.tests.prefs.expectedComponents["fluid.prefs.separatedPanel"]);
-
-        fluid.tests.assertAria(separatedPanel.slidingPanel, false);
-        fluid.tests.assertAriaForButton(separatedPanel.locate("reset"), "Reset", separatedPanel.slidingPanel.panelId);
+            if (smallScreenContainer.length > 0) {
+                jqUnit.assertEquals("The small screen Reset button visibility should be " + state, state, elm.is(":visible"));
+                fluid.tests.assertAriaForButton(elm, "The small screen Reset", separatedPanel.slidingPanel.panelId);
+            } else {
+                jqUnit.assertEquals("The wide screen Reset button visibility should be false", false, elm.is(":visible"));
+                fluid.tests.assertAriaForButton(elm, "The wide screen Reset", separatedPanel.slidingPanel.panelId);
+            }
+        });
     };
 
-    fluid.tests.testSeparatedPanel2 = function (separatedPanel) {
-        // jqUnit.assertEquals("IFrame is invisible and keyboard inaccessible", false, separatedPanel.iframeRenderer.iframe.is(":visible"));
-        // fluid.tests.prefs.assertPresent(separatedPanel, fluid.tests.prefs.expectedSeparatedPanel);
+    fluid.tests.assertSeparatedPanelState = function (separatedPanel, state) {
+        jqUnit.assertEquals("The iframe visibilith should be" + state, state, separatedPanel.iframeRenderer.iframe.is(":visible"));
+        fluid.tests.assertResetButton(separatedPanel, state);
+        fluid.tests.assertAria(separatedPanel.slidingPanel, state);
+    };
 
-        var prefsEditor = separatedPanel.prefsEditor;
-        jqUnit.assertEquals("Reset button is visible", true, $(".flc-prefsEditor-reset").is(":visible"));
-        fluid.tests.prefs.assertPresent(prefsEditor, fluid.tests.prefs.expectedComponents["fluid.prefs.separatedPanel"]);
-
-        // fluid.tests.assertAria(separatedPanel.slidingPanel, false);
-        // fluid.tests.assertAriaForButton(separatedPanel.locate("reset"), "Reset", separatedPanel.slidingPanel.panelId);
+    fluid.tests.assertSeparatedPanelInit = function (separatedPanel) {
+        fluid.tests.assertSeparatedPanelState(separatedPanel, false);
+        fluid.tests.prefs.assertPresent(separatedPanel, fluid.tests.prefs.expectedSeparatedPanel);
+        fluid.tests.prefs.assertPresent(separatedPanel.prefsEditor, fluid.tests.prefs.expectedComponents["fluid.prefs.separatedPanel"]);
     };
 
     fluid.defaults("fluid.tests.separatedPanelResponsiveTester", {
@@ -117,21 +120,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Separated panel integration tests",
             tests: [{
-                expect: 22,
+                expect: 31,
                 name: "Separated panel integration tests",
                 sequence: [{
-                    listener: "fluid.tests.testSeparatedPanel",
+                    listener: "fluid.tests.assertSeparatedPanelInit",
                     event: "{separatedPanelResponsive separatedPanel}.events.onReady"
                 }, {
                     func: "{separatedPanel}.slidingPanel.showPanel"
                 }, {
-                    listener: "fluid.tests.testSeparatedPanel2",
+                    listener: "fluid.tests.assertSeparatedPanelState",
                     event: "{separatedPanel}.slidingPanel.events.afterPanelShow",
-                    args: "{separatedPanel}",
-                    priority: "last:testing"
-                }, {
-                    func: "fluid.tests.assertAria",
-                    args: ["{separatedPanel}.slidingPanel", true]
+                    args: ["{separatedPanel}", true]
                 }]
             }]
         }]
