@@ -128,12 +128,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
+    fluid.tests.direction = {
+        LEFT: false,
+        RIGHT: true
+    };
+
+    fluid.tests.clickArrow = function (elm, direction) {
+        var keyEvent = $.Event("click");
+        keyEvent.offsetX = direction ? elm.width() : 0;
+
+        elm.trigger(keyEvent);
+    };
+
     fluid.defaults("fluid.tests.separatedPanelResponsiveTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "Separated panel integration tests",
             tests: [{
-                expect: 43,
+                expect: 55,
                 name: "Separated panel integration tests",
                 sequence: [{
                     listener: "fluid.tests.assertSeparatedPanelInit",
@@ -153,6 +165,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     func: "fluid.tests.assertPanelVisibility",
                     args: ["{separatedPanel}.prefsEditor", "ScrollToPanel 2", 2]
+                }, {
+                    func: "fluid.tests.clickArrow",
+                    args: ["{separatedPanel}.prefsEditor.lineSpace.dom.header", fluid.tests.direction.RIGHT]
+                }, {
+                    func: "fluid.tests.assertPanelVisibility",
+                    args: ["{separatedPanel}.prefsEditor", "Clicked to go to Panel to the Right", 3]
+                }, {
+                    func: "fluid.tests.clickArrow",
+                    args: ["{separatedPanel}.prefsEditor.contrast.dom.header", fluid.tests.direction.LEFT]
+                }, {
+                    func: "fluid.tests.assertPanelVisibility",
+                    args: ["{separatedPanel}.prefsEditor", "Clicked to go to Panel to the Left", 2]
                 }]
             }]
         }]
