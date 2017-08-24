@@ -115,15 +115,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.prefs.assertPresent(separatedPanel.prefsEditor, fluid.tests.prefs.expectedComponents["fluid.prefs.separatedPanel"]);
     };
 
-    fluid.tests.assertPanelVisibility = function (prefsEditor, panelIndex) {
+    fluid.tests.assertPanelVisibility = function (prefsEditor, testName, panelIndex) {
         var panels = prefsEditor.locate("panels");
 
         panels.each(function (idx, elm) {
             var panelOffset = $(elm).offset().left;
             if (idx === panelIndex) {
-                jqUnit.assertEquals("The panel at index " + idx + " should be scrolled into view", 0, panelOffset);
+                jqUnit.assertEquals(testName + ": The panel at index " + idx + " should be scrolled into view with offset = 0", 0, panelOffset);
             } else {
-                jqUnit.assertNotEquals("The panel at index " + idx + " should not be scrolled into view", 0, panelOffset);
+                jqUnit.assertNotEquals(testName + ": The panel at index " + idx + " should not be scrolled into view and have an offset greater or less than 0", 0, panelOffset);
             }
         });
     };
@@ -133,7 +133,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Separated panel integration tests",
             tests: [{
-                expect: 37,
+                expect: 43,
                 name: "Separated panel integration tests",
                 sequence: [{
                     listener: "fluid.tests.assertSeparatedPanelInit",
@@ -146,7 +146,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["{separatedPanel}", true]
                 }, {
                     func: "fluid.tests.assertPanelVisibility",
-                    args: ["{separatedPanel}.prefsEditor", 0]
+                    args: ["{separatedPanel}.prefsEditor", "Initial Rendering", 0]
+                }, {
+                    func: "{separatedPanel}.prefsEditor.scrollToPanel",
+                    args: [2]
+                }, {
+                    func: "fluid.tests.assertPanelVisibility",
+                    args: ["{separatedPanel}.prefsEditor", "ScrollToPanel 2", 2]
                 }]
             }]
         }]
