@@ -115,12 +115,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.prefs.assertPresent(separatedPanel.prefsEditor, fluid.tests.prefs.expectedComponents["fluid.prefs.separatedPanel"]);
     };
 
+    fluid.tests.assertPanelVisibility = function (prefsEditor, panelIndex) {
+        var panels = prefsEditor.locate("panels");
+
+        panels.each(function (idx, elm) {
+            var panelOffset = $(elm).offset().left;
+            if (idx === panelIndex) {
+                jqUnit.assertEquals("The panel at index " + idx + " should be scrolled into view", 0, panelOffset);
+            } else {
+                jqUnit.assertNotEquals("The panel at index " + idx + " should not be scrolled into view", 0, panelOffset);
+            }
+        });
+    };
+
     fluid.defaults("fluid.tests.separatedPanelResponsiveTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "Separated panel integration tests",
             tests: [{
-                expect: 31,
+                expect: 37,
                 name: "Separated panel integration tests",
                 sequence: [{
                     listener: "fluid.tests.assertSeparatedPanelInit",
@@ -131,6 +144,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     listener: "fluid.tests.assertSeparatedPanelState",
                     event: "{separatedPanel}.slidingPanel.events.afterPanelShow",
                     args: ["{separatedPanel}", true]
+                }, {
+                    func: "fluid.tests.assertPanelVisibility",
+                    args: ["{separatedPanel}.prefsEditor", 0]
                 }]
             }]
         }]
@@ -148,9 +164,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.test.runTests([
                 "fluid.tests.separatedPanelResponsive"
             ]);
+
         });
 
-        iframe.css({width: "639px"}); // set to the largest mobile screen size
+        iframe.css({width: "400px", height: "400px"}); // set to a small screen size
         // injecting the iframe source so that we can ensure the iframe on load event
         // is fired after the listener is bound.
         iframe.attr("src", "SeparatedPanelPrefsEditorResponsiveTestPage.html");
