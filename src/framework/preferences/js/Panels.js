@@ -994,7 +994,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         selectorsToIgnore: ["header"],
         styles: {
-            defaultThemeLabel: "fl-prefsEditor-contrast-defaultThemeLabel"
+            defaultThemeLabel: "fl-prefsEditor-themePicker-defaultThemeLabel"
         },
         stringArrayIndex: {
             theme: ["contrast-default", "contrast-bw", "contrast-wb", "contrast-by", "contrast-yb", "contrast-lgdg"]
