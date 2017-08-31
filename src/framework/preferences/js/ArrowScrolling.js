@@ -69,9 +69,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var panels = that.locate("panels");
         var scrollContainer = that.locate("scrollContainer");
 
-        if (panelIndex >= 0 && panelIndex < panels.length) {
-            scrollContainer.scrollLeft(scrollContainer.scrollLeft() + panels.eq(panelIndex).offset().left);
-        }
+        panelIndex = Math.max(Math.min(panelIndex, panels.length - 1),0);
+        scrollContainer.scrollLeft(scrollContainer.scrollLeft() + panels.eq(panelIndex).offset().left);
     };
 
 })(jQuery, fluid_3_0_0);
+

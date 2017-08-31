@@ -145,7 +145,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Separated panel integration tests",
             tests: [{
-                expect: 55,
+                expect: 67,
                 name: "Separated panel integration tests",
                 sequence: [{
                     listener: "fluid.tests.assertSeparatedPanelInit",
@@ -177,6 +177,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     func: "fluid.tests.assertPanelVisibility",
                     args: ["{separatedPanel}.prefsEditor", "Clicked to go to Panel to the Left", 2]
+                }, {
+                    func: "{separatedPanel}.prefsEditor.scrollToPanel",
+                    args: [-1]
+                }, {
+                    func: "fluid.tests.assertPanelVisibility",
+                    args: ["{separatedPanel}.prefsEditor", "Scrolled to panel below bounds", 0]
+                }, {
+                    func: "{separatedPanel}.prefsEditor.scrollToPanel",
+                    args: [20]
+                }, {
+                    func: "fluid.tests.assertPanelVisibility",
+                    args: ["{separatedPanel}.prefsEditor", "Scrolled to panel beyond bounds", 5]
                 }]
             }]
         }]
