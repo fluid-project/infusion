@@ -22,20 +22,61 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      ************************************************************************************/
 
     fluid.defaults("fluid.prefs.arrowScrolling", {
+        gradeNames: ["fluid.modelComponent"],
         selectors: {
+            // panels: "", // should be supplied by the fluid.prefs.prefsEditor grade.
             scrollContainer: ".flc-prefsEditor-scrollContainer"
+        },
+        model: {
+            // panelMaxIndex: null, // determined by the number of panels calculated after the onPrefsEditorMarkupReady event fired
+            // scrollToIndex: null, // the raw index set by translateToScroll, will be transformed to the panelIndex
+            panelIndex: 0
+        },
+        events: {
+            // beforeReset: null // should be provided by the fluid.prefs.prefsEditor grade
+        },
+        modelRelay: {
+            target: "panelIndex",
+            forward: {excludeSource: "init"},
+            singleTransform: {
+                type: "fluid.transforms.limitRange",
+                input: "{that}.model.scrollToIndex",
+                min: 0,
+                max: "{that}.model.panelMaxIndex"
+            }
+        },
+        modelListeners: {
+            "panelIndex": {
+                listener: "fluid.prefs.arrowScrolling.scrollToPanel",
+                args: ["{that}", "{change}.value"]
+            }
         },
         listeners: {
             "onReady.windowResize": {
                 "this": window,
                 method: "addEventListener",
                 args: ["resize", "{that}.events.onSignificantDOMChange.fire"]
+            },
+            // Need to set panelMaxIndex after onPrefsEditorMarkupReady to ensure that the template has been
+            // rendered before we try to get the number of panels.
+            "onPrefsEditorMarkupReady.setPanelMaxIndex": {
+                changePath: "panelMaxIndex",
+                value: {
+                    expander: {
+                        funcName: "fluid.prefs.arrowScrolling.calculatePanelMaxIndex",
+                        args: ["{that}.dom.panels"]
+                    }
+                }
+            },
+            "beforeReset.resetPanelIndex": {
+                listener: "{that}.applier.fireChangeRequest",
+                args: {path: "panelIndex", value: 0, type: "ADD", source: "reset"}
             }
         },
         invokers: {
             scrollToPanel: {
-                funcName: "fluid.prefs.arrowScrolling.scrollToPanel",
-                args: ["{that}", "{arguments}.0"]
+                changePath: "scrollToIndex",
+                value: "{arguments}.0"
             },
             translateToScroll: {
                 funcName: "fluid.prefs.arrowScrolling.translateToScroll",
@@ -55,23 +96,24 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     });
 
+    fluid.prefs.arrowScrolling.calculatePanelMaxIndex = function (panels) {
+        return Math.max(0, panels.length - 1);
+    };
+
     fluid.prefs.arrowScrolling.translateToScroll = function (that, event) {
         event.preventDefault();
         var target = $(event.target);
         var midPoint = target.width() / 2;
-        var currentIndex = target.closest(that.options.selectors.panels).index();
-        var scrollIndex = currentIndex + (event.offsetX < midPoint ? -1 : 1);
-
-        that.scrollToPanel(scrollIndex);
+        var scrollToIndex = that.model.panelIndex + (event.offsetX < midPoint ? -1 : 1);
+        that.applier.change("scrollToIndex", scrollToIndex);
     };
 
     fluid.prefs.arrowScrolling.scrollToPanel = function (that, panelIndex) {
         var panels = that.locate("panels");
         var scrollContainer = that.locate("scrollContainer");
-
-        panelIndex = Math.max(Math.min(panelIndex, panels.length - 1),0);
-        scrollContainer.scrollLeft(scrollContainer.scrollLeft() + panels.eq(panelIndex).offset().left);
+        if (panels.length) {
+            scrollContainer.scrollLeft(scrollContainer.scrollLeft() + panels.eq(panelIndex).offset().left);
+        }
     };
 
 })(jQuery, fluid_3_0_0);
-

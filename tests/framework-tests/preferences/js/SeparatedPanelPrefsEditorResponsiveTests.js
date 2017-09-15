@@ -110,9 +110,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.assertSeparatedPanelInit = function (separatedPanel) {
+        var prefsEditor = separatedPanel.prefsEditor;
+        jqUnit.assertEquals("The panelIndex should be 0", 0, prefsEditor.model.panelIndex);
+        jqUnit.assertEquals("The panelMaxIndex should be 5", 5, prefsEditor.model.panelMaxIndex);
         fluid.tests.assertSeparatedPanelState(separatedPanel, false);
         fluid.tests.prefs.assertPresent(separatedPanel, fluid.tests.prefs.expectedSeparatedPanel);
-        fluid.tests.prefs.assertPresent(separatedPanel.prefsEditor, fluid.tests.prefs.expectedComponents["fluid.prefs.separatedPanel"]);
+        fluid.tests.prefs.assertPresent(prefsEditor, fluid.tests.prefs.expectedComponents["fluid.prefs.separatedPanel"]);
     };
 
     fluid.tests.assertPanelVisibility = function (prefsEditor, testName, panelIndex) {
@@ -145,7 +148,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Separated panel integration tests",
             tests: [{
-                expect: 67,
+                expect: 69,
                 name: "Separated panel integration tests",
                 sequence: [{
                     listener: "fluid.tests.assertSeparatedPanelInit",
