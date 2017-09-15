@@ -197,7 +197,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             prefsEditor.reset();
             fluid.tests.prefs.assertPrefs("Reset model %p", ps, "assertNotEquals", bwSkin, prefsEditor.model);
 
-            var stateModel = {state: 1};
+            var stateModel = {state: 1, userData: true};
             var saveCases = [{
                 msg: "Unchanged preferences are not saved",
                 model: $.extend({}, true, stateModel, prefsEditor.initialModel),
@@ -207,6 +207,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 model: $.extend({}, true, stateModel, bwSkin),
                 expectedSavedModel: {
                     state: 1,
+                    userData: true,
                     preferences: {
                         lineSpace: 2,
                         textFont: "verdana",

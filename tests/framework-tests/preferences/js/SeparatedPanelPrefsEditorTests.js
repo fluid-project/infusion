@@ -22,6 +22,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /*******************************************************************************
      * PrefsEditor separatedPanel integration tests
      *******************************************************************************/
+    fluid.tests.prefs.panelState = {
+        panelIndex: 0,
+        panelMaxIndex: 5
+    };
+
     fluid.tests.prefs.expectedSeparatedPanel = [
         "templateLoader",
         "messageLoader",
@@ -131,8 +136,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.afterHideFunc1 = function () {
         return function () {
             var settingsStore = fluid.tests.fetchGlobalSettingsStore();
+            var expected = $.extend(true, {}, fluid.tests.prefs.panelState, fluid.tests.prefs.bwSkin);
             jqUnit.assertEquals("Reset button is invisible", false, $(".flc-prefsEditor-reset").is(":visible"));
-            jqUnit.assertDeepEq("Only the changed preferences are saved", fluid.tests.prefs.bwSkin, settingsStore.get());
+            jqUnit.assertDeepEq("Only the changed preferences are saved", expected, settingsStore.get());
         };
     };
     fluid.tests.afterShowFunc2 = function (separatedPanel) {

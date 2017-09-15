@@ -364,7 +364,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
     fluid.prefs.prefsEditor.reset = function (that) {
         that.events.beforeReset.fire(that);
-        that.applier.fireChangeRequest({path: "", type: "DELETE"});
+        that.applier.fireChangeRequest({path: "settings", type: "DELETE"});
         that.applier.change("", fluid.copy(that.initialModel));
         that.events.onPrefsEditorRefresh.fire();
         that.events.afterReset.fire(that);
