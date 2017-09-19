@@ -85,20 +85,20 @@ var fluid = fluid || fluid_3_0_0;
         return !prefix ? suffix : (!suffix ? prefix : prefix + "." + suffix);
     };
 
-    fluid.model.transform.accumulateInputPath = function (inputPath, transformer, paths) {
+    fluid.model.transform.accumulateInputPath = function (inputPath, transformer) {
         if (inputPath !== undefined) {
-            paths.push(fluid.model.composePaths(transformer.inputPrefix, inputPath));
+            transformer.inputPaths.push(fluid.model.composePaths(transformer.inputPrefix, inputPath));
         }
     };
 
-    fluid.model.transform.accumulateStandardInputPath = function (input, transformSpec, transformer, paths) {
+    fluid.model.transform.accumulateStandardInputPath = function (input, transformSpec, transformer) {
         fluid.model.transform.getValue(undefined, transformSpec[input], transformer);
-        fluid.model.transform.accumulateInputPath(transformSpec[input + "Path"], transformer, paths);
+        fluid.model.transform.accumulateInputPath(transformSpec[input + "Path"], transformer);
     };
 
-    fluid.model.transform.accumulateMultiInputPaths = function (inputVariables, transformSpec, transformer, paths) {
+    fluid.model.transform.accumulateMultiInputPaths = function (inputVariables, transformSpec, transformer) {
         fluid.each(inputVariables, function (v, k) {
-            fluid.model.transform.accumulateStandardInputPath(k, transformSpec, transformer, paths);
+            fluid.model.transform.accumulateStandardInputPath(k, transformSpec, transformer);
         });
     };
 
@@ -401,10 +401,10 @@ var fluid = fluid || fluid_3_0_0;
         var multiInput = fluid.hasGrade(defaults, "fluid.multiInputTransformFunction");
 
         if (standardInput) {
-            fluid.model.transform.accumulateStandardInputPath("input", transformSpec, transformer, transformer.inputPaths);
+            fluid.model.transform.accumulateStandardInputPath("input", transformSpec, transformer);
         }
         if (multiInput) {
-            fluid.model.transform.accumulateMultiInputPaths(defaults.inputVariables, transformSpec, transformer, transformer.inputPaths);
+            fluid.model.transform.accumulateMultiInputPaths(defaults.inputVariables, transformSpec, transformer);
         }
         if (!multiInput && !standardInput) {
             var collector = defaults.collectInputPaths;
