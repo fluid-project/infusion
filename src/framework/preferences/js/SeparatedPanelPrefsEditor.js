@@ -292,6 +292,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }, "collapseFrame");
         separatedPanel.slidingPanel.events.afterPanelShow.addListener(function () {
             separatedPanel.iframeRenderer.iframe.show();
+
+            // FLUID-6183: Required for bug in MS EDGE that clips off the bottom of adjusters
+            // The height needs to be recalculated in order for the panel to show up completely
+            separatedPanel.iframeRenderer.iframe.height();
             separatedPanel.locate("reset").show();
         }, "openPanel");
         separatedPanel.slidingPanel.events.onPanelHide.addListener(function () {
