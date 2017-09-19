@@ -104,14 +104,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.assertSeparatedPanelState = function (separatedPanel, state) {
-        jqUnit.assertEquals("The iframe visibilith should be" + state, state, separatedPanel.iframeRenderer.iframe.is(":visible"));
+        jqUnit.assertEquals("The iframe visibility should be " + state, state, separatedPanel.iframeRenderer.iframe.is(":visible"));
         fluid.tests.assertResetButton(separatedPanel, state);
         fluid.tests.assertAria(separatedPanel.slidingPanel, state);
     };
 
-    fluid.tests.assertSeparatedPanelInit = function (separatedPanel) {
+    fluid.tests.assertSeparatedPanelInit = function (separatedPanel, expectedPanelIndex) {
         var prefsEditor = separatedPanel.prefsEditor;
-        jqUnit.assertEquals("The panelIndex should be 0", 0, prefsEditor.model.panelIndex);
+        jqUnit.assertEquals("The panelIndex should be " + expectedPanelIndex, expectedPanelIndex, prefsEditor.model.panelIndex);
         jqUnit.assertEquals("The panelMaxIndex should be 5", 5, prefsEditor.model.panelMaxIndex);
         fluid.tests.assertSeparatedPanelState(separatedPanel, false);
         fluid.tests.prefs.assertPresent(separatedPanel, fluid.tests.prefs.expectedSeparatedPanel);
@@ -152,7 +152,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Separated panel integration tests",
                 sequence: [{
                     listener: "fluid.tests.assertSeparatedPanelInit",
-                    event: "{separatedPanelResponsive separatedPanel}.events.onReady"
+                    event: "{separatedPanelResponsive separatedPanel}.events.onReady",
+                    args: ["{separatedPanel}", 0]
                 }, {
                     func: "{separatedPanel}.slidingPanel.showPanel"
                 }, {
@@ -197,6 +198,58 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
+    fluid.defaults("fluid.tests.separatedPanel.initialPanelIndex", {
+        gradeNames: ["fluid.tests.separatedPanel"],
+        model: {
+            panelIndex: 2,
+            preferences: {}
+        }
+    });
+
+    fluid.defaults("fluid.tests.separatedPanelInitialPanelIndex", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        components: {
+            separatedPanel: {
+                type: "fluid.tests.separatedPanel.initialPanelIndex",
+                container: {
+                    expander: {
+                        funcName: "fluid.tests.separatedPanel.assignSeparatedPanelContainer"
+                    }
+                },
+                createOnEvent: "{separatedPanelInitialPanelIndexTester}.events.onTestCaseStart"
+            },
+            separatedPanelInitialPanelIndexTester: {
+                type: "fluid.tests.separatedPanelInitialPanelIndexTester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.separatedPanelInitialPanelIndexTester", {
+    gradeNames: ["fluid.test.testCaseHolder"],
+    modules: [{
+        name: "Separated panel initial panelIndex tester",
+        tests: [{
+            expect: 39,
+            name: "Separated panel initial panelIndex tester",
+            sequence: [{
+                    listener: "fluid.tests.assertSeparatedPanelInit",
+                    event: "{separatedPanelInitialPanelIndex separatedPanel}.events.onReady",
+                    args: ["{separatedPanel}", 2]
+                }, {
+                     func: "{separatedPanel}.slidingPanel.showPanel"
+                }, {
+                    listener: "fluid.tests.assertSeparatedPanelState",
+                    event: "{separatedPanel}.slidingPanel.events.afterPanelShow",
+                    args: ["{separatedPanel}", true],
+                    priority: "last:testing"
+                }, {
+                    func: "fluid.tests.assertPanelVisibility",
+                    args: ["{separatedPanel}.prefsEditor", "Scrolled to panel 2", 2]
+                }]
+            }]
+        }]
+    });
+
     $(document).ready(function () {
         var iframe = $("iframe");
 
@@ -207,7 +260,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.pageEnhancer(fluid.tests.prefs.enhancerOptions);
 
             fluid.test.runTests([
-                "fluid.tests.separatedPanelResponsive"
+                //"fluid.tests.separatedPanelResponsive",
+                "fluid.tests.separatedPanelInitialPanelIndex"
             ]);
 
         });
