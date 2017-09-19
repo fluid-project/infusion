@@ -48,7 +48,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         modelListeners: {
             "panelIndex": {
                 listener: "fluid.prefs.arrowScrolling.scrollToPanel",
-                args: ["{that}", "{change}.value"]
+                args: ["{that}", "{change}.value"],
+                namespace: "scrollToPanel"
             }
         },
         listeners: {
@@ -76,7 +77,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         invokers: {
             scrollToPanel: {
                 changePath: "scrollToIndex",
-                value: "{arguments}.0"
+                value: "{arguments}.0",
+                source: "scrollToPanel"
             },
             translateToScroll: {
                 funcName: "fluid.prefs.arrowScrolling.translateToScroll",

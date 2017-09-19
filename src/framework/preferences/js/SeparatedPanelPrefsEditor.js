@@ -148,6 +148,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         onSignificantDOMChange: null,
                         updateEnhancerModel: "{that}.events.modelChanged"
                     },
+                    modelListeners: {
+                        "panelIndex": {
+                            listener: "fluid.prefs.arrowScrolling.scrollToPanel",
+                            args: ["{that}", "{change}.value"],
+                            includeSource: ["scrollToPanel"],
+                            namespace: "scrollToPanel"
+                        }
+                    },
                     listeners: {
                         "modelChanged.save": "{that}.save",
                         "onCreate.bindReset": {
@@ -158,6 +166,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         "onReady.boilOnReady": {
                             listener: "{separatedPanel}.events.onReady",
                             args: "{separatedPanel}"
+                        },
+                        "{separatedPanel}.slidingPanel.events.afterPanelShow": {
+                            listener: "fluid.prefs.arrowScrolling.scrollToPanel",
+                            args: ["{that}", "{that}.model.panelIndex"],
+                            priority: "last"
                         }
                     }
                 }
