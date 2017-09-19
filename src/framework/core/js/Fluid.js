@@ -189,7 +189,7 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     fluid.renderLoggingArg = function (arg) {
-        return fluid.isPrimitive(arg) || !fluid.isPlainObject(arg) ? arg : JSON.stringify(arg);
+        return arg === undefined ? "undefined" : fluid.isPrimitive(arg) || !fluid.isPlainObject(arg) ? arg : JSON.stringify(arg);
     };
 
     // The framework's built-in "fail" failure handler - this throws an exception of type <code>fluid.FluidError</code>
