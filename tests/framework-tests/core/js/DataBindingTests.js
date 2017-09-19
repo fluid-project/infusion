@@ -1275,22 +1275,47 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     /** FLUID-6191: Proper diagnostic on indirect model reference which fails to resolve **/
 
-    fluid.defaults("fluid.tests.fluid6191root", {
+    fluid.defaults("fluid.tests.fluid6191root1", {
         gradeNames: "fluid.modelComponent",
         components: {
             badRefHolder: {
                 type: "fluid.modelComponent",
                 options: {
-                    model: "{fluid6191root}.nonexistent.model.path"
+                    model: "{fluid6191root1}.nonexistent.model.path"
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid6191root2", {
+        gradeNames: "fluid.modelComponent",
+        components: {
+            nonModelComponent: {
+                type: "fluid.component",
+                options: {
+                    members: {
+                        model: {
+                            path: "a fake model"
+                        }
+                    }
+                }
+            },
+            badRefHolder: {
+                type: "fluid.modelComponent",
+                options: {
+                    model: "{fluid6191root2}.nonModelComponent.model.path"
                 }
             }
         }
     });
 
     jqUnit.test("FLUID-6191: Framework diagnostic on bad indirect implicit model relay reference", function () {
-        jqUnit.expectFrameworkDiagnostic("Framework diagnostic on bad indirect implicit model relay reference", function () {
-            fluid.tests.fluid6191root();
+        jqUnit.expectFrameworkDiagnostic("Framework diagnostic on indirect implicit model relay reference to undefined", function () {
+            fluid.tests.fluid6191root1();
         }, ["reference", "nonexistent", "implicit", "undefined"]);
+        jqUnit.expectFrameworkDiagnostic("Framework diagnostic on indirect implicit model relay reference to non-model component", function () {
+            fluid.tests.fluid6191root2();
+        }, ["reference", "nonModelComponent", "implicit", "fluid.modelComponent"]);
     });
 
     /** Demonstrate resolving a set of model references which is cyclic in components (although not in values), as well as
