@@ -152,6 +152,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         "panelIndex": {
                             listener: "fluid.prefs.arrowScrolling.scrollToPanel",
                             args: ["{that}", "{change}.value"],
+                            // Only scrolling to panels on model changes triggered by "scrollToPanel",
+                            // which comes from clicking on the arrows.
                             includeSource: ["scrollToPanel"],
                             namespace: "scrollToPanel"
                         }
@@ -167,6 +169,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                             listener: "{separatedPanel}.events.onReady",
                             args: "{separatedPanel}"
                         },
+                        // Scroll to active panel after opening the separate Panel.
+                        // This is when the panels are all rendered and the actual sizes are available.
                         "{separatedPanel}.slidingPanel.events.afterPanelShow": {
                             listener: "fluid.prefs.arrowScrolling.scrollToPanel",
                             args: ["{that}", "{that}.model.panelIndex"],
