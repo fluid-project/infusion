@@ -170,7 +170,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         "{separatedPanel}.slidingPanel.events.afterPanelShow": {
                             listener: "fluid.prefs.arrowScrolling.scrollToPanel",
                             args: ["{that}", "{that}.model.panelIndex"],
-                            priority: "last"
+                            priority: "after:updateView"
                         }
                     }
                 }
