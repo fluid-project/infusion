@@ -1273,6 +1273,32 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }, "source");
     });
 
+    /** FLUID-6192: Model relay with source of "" **/
+
+    fluid.defaults("fluid.tests.fluid6192root", {
+        gradeNames: "fluid.modelComponent",
+        modelRelay: {
+            source: "",
+            target: "{that}.relayTarget.model",
+            singleTransform: {
+                type: "fluid.transforms.identity"
+            }
+        },
+        components: {
+            relayTarget: {
+                type: "fluid.modelComponent"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6192: Model relay with source of \"\"", function () {
+        var root = fluid.tests.fluid6192root();
+        root.applier.change("key", "value");
+        jqUnit.assertDeepEq("Model relay successfully established", {
+            key: "value"
+        }, root.relayTarget.model);
+    });
+
     /** FLUID-6191: Proper diagnostic on indirect model reference which fails to resolve **/
 
     fluid.defaults("fluid.tests.fluid6191root1", {
