@@ -260,7 +260,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             fluid.pageEnhancer(fluid.tests.prefs.enhancerOptions);
 
             fluid.test.runTests([
-                //"fluid.tests.separatedPanelResponsive",
+                "fluid.tests.separatedPanelResponsive",
                 "fluid.tests.separatedPanelInitialPanelIndex"
             ]);
 
