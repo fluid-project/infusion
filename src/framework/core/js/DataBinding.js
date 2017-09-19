@@ -413,8 +413,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *    segs {Array of String} Holds the full array of path segments found by parsing the original reference - only useful in <code>nonModel</code> case
      */
     fluid.parseValidModelReference = function (that, name, ref, implicitRelay) {
-        var reject = function (message) {
-            fluid.fail("Error in " + name + ": ", ref, message);
+        var reject = function () {
+            var failArgs = ["Error in " + name + ": ", ref].concat(fluid.makeArray(arguments));
+            fluid.fail.apply(null, failArgs);
+        };
+        var rejectNonModel = function (value) {
+            reject(" must be a reference to a component with a ChangeApplier (descended from fluid.modelComponent), instead got ", value);
         };
         var parsed; // resolve ref into context and modelSegs
         if (typeof(ref) === "string") {
@@ -432,7 +436,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     parsed.contextSegs = parsed.segs.slice(0, modelPoint);
                     delete parsed.path;
                 }
-
             } else {
                 parsed = {
                     path: ref,
@@ -448,30 +451,31 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 modelSegs: fluid.expandOptions(ref.segs, that)
             };
         }
-        var target; // resolve target component, which defaults to "that"
+        var contextTarget, target; // resolve target component, which defaults to "that"
         if (parsed.context) {
-            target = fluid.resolveContext(parsed.context, that);
-            if (!target) {
-                reject(" must be a reference to an existing component");
+            contextTarget = fluid.resolveContext(parsed.context, that);
+            if (!contextTarget) {
+                reject(" context must be a reference to an existing component");
             }
-            if (parsed.contextSegs) {
-                target = fluid.getForComponent(target, parsed.contextSegs);
-            }
+            target = parsed.contextSegs ? fluid.getForComponent(contextTarget, parsed.contextSegs) : contextTarget;
         } else {
             target = that;
         }
         if (!parsed.nonModel) {
+            if (!fluid.isComponent(target)) {
+                rejectNonModel(target);
+            }
             if (!target.applier) {
                 fluid.getForComponent(target, ["applier"]);
             }
             if (!target.applier) {
-                reject(" must be a reference to a component with a ChangeApplier (descended from fluid.modelComponent)");
+                rejectNonModel(target);
             }
         }
         parsed.that = target;
-        parsed.applier = target.applier;
+        parsed.applier = target && target.applier;
         if (!parsed.path) { // ChangeToApplicable amongst others rely on this
-            parsed.path = target.applier.composeSegments.apply(null, parsed.modelSegs);
+            parsed.path = target && target.applier.composeSegments.apply(null, parsed.modelSegs);
         }
         return parsed;
     };

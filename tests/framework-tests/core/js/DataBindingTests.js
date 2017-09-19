@@ -1273,6 +1273,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }, "source");
     });
 
+    /** FLUID-6191: Proper diagnostic on indirect model reference which fails to resolve **/
+
+    fluid.defaults("fluid.tests.fluid6191root", {
+        gradeNames: "fluid.modelComponent",
+        components: {
+            badRefHolder: {
+                type: "fluid.modelComponent",
+                options: {
+                    model: "{fluid6191root}.nonexistent.model.path"
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6191: Framework diagnostic on bad indirect implicit model relay reference", function () {
+        jqUnit.expectFrameworkDiagnostic("Framework diagnostic on bad indirect implicit model relay reference", function () {
+            fluid.tests.fluid6191root();
+        }, ["reference", "nonexistent", "implicit", "undefined"]);
+    });
+
     /** Demonstrate resolving a set of model references which is cyclic in components (although not in values), as well as
      * double relay and longer "transform" form of relay specification */
 
