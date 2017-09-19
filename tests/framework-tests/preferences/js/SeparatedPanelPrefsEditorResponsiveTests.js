@@ -131,14 +131,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
-    fluid.tests.direction = {
-        LEFT: false,
-        RIGHT: true
-    };
-
     fluid.tests.clickArrow = function (elm, direction) {
         var keyEvent = $.Event("click");
-        keyEvent.offsetX = direction ? elm.width() : 0;
+        keyEvent.offsetX = direction === "RIGHT" ? elm.width() : 0;
 
         elm.trigger(keyEvent);
     };
@@ -171,13 +166,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["{separatedPanel}.prefsEditor", "ScrollToPanel 2", 2]
                 }, {
                     func: "fluid.tests.clickArrow",
-                    args: ["{separatedPanel}.prefsEditor.lineSpace.dom.header", fluid.tests.direction.RIGHT]
+                    args: ["{separatedPanel}.prefsEditor.lineSpace.dom.header", "RIGHT"]
                 }, {
                     func: "fluid.tests.assertPanelVisibility",
                     args: ["{separatedPanel}.prefsEditor", "Clicked to go to Panel to the Right", 3]
                 }, {
                     func: "fluid.tests.clickArrow",
-                    args: ["{separatedPanel}.prefsEditor.contrast.dom.header", fluid.tests.direction.LEFT]
+                    args: ["{separatedPanel}.prefsEditor.contrast.dom.header", "LEFT"]
                 }, {
                     func: "fluid.tests.assertPanelVisibility",
                     args: ["{separatedPanel}.prefsEditor", "Clicked to go to Panel to the Left", 2]

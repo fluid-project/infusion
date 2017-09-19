@@ -38,6 +38,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         modelRelay: {
             target: "panelIndex",
             forward: {excludeSource: "init"},
+            namespace: "limitPanelIndex",
             singleTransform: {
                 type: "fluid.transforms.limitRange",
                 input: "{that}.model.scrollToIndex",
