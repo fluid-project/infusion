@@ -67,7 +67,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         var renderedSynthetic = fluid.prettyPrintJSON(synthetic);
-        jqUnit.assertTrue("Caught synthetic property", renderedSynthetic.indexOf("[Synthetic property]") !== -1);
+        jqUnit.assertTrue("Caught synthetic property", renderedSynthetic.indexOf("\"b\": [Synthetic property]") !== -1);
     });
 
     // Generates an obnoxiously cross-linked object in the style we might meet, for example, in "express"
