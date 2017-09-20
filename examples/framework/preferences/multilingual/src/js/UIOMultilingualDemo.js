@@ -28,7 +28,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             // own directory
             "templatePrefix": "./src/html"
         },
-        "tocTemplate": "src/js/lib/infusion/src/components/tableOfContents/html/TableOfContents.html",
+        "tocTemplate": "../../../../../../src/components/tableOfContents/html/TableOfContents.html",
         "ignoreForToC": {
             "overviewPanel": ".flc-overviewPanel"
         },
