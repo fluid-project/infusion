@@ -159,8 +159,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "fluid.tests.assertPanelVisibility",
                     args: ["{separatedPanel}.prefsEditor", "Initial Rendering", 0]
                 }, {
-                    func: "{separatedPanel}.prefsEditor.scrollToPanel",
-                    args: [2]
+                    func: "{separatedPanel}.applier.change",
+                    args: ["scrollToIndex", 2]
                 }, {
                     func: "fluid.tests.assertPanelVisibility",
                     args: ["{separatedPanel}.prefsEditor", "ScrollToPanel 2", 2]
@@ -177,14 +177,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "fluid.tests.assertPanelVisibility",
                     args: ["{separatedPanel}.prefsEditor", "Clicked to go to Panel to the Left", 2]
                 }, {
-                    func: "{separatedPanel}.prefsEditor.scrollToPanel",
-                    args: [-1]
+                    func: "{separatedPanel}.applier.change",
+                    args: ["scrollToIndex", -1]
                 }, {
                     func: "fluid.tests.assertPanelVisibility",
                     args: ["{separatedPanel}.prefsEditor", "Scrolled to panel below bounds", 0]
                 }, {
-                    func: "{separatedPanel}.prefsEditor.scrollToPanel",
-                    args: [20]
+                    func: "{separatedPanel}.applier.change",
+                    args: ["scrollToIndex", 20]
                 }, {
                     func: "fluid.tests.assertPanelVisibility",
                     args: ["{separatedPanel}.prefsEditor", "Scrolled to panel beyond bounds", 5]
@@ -220,18 +220,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.separatedPanelInitialPanelIndexTester", {
-    gradeNames: ["fluid.test.testCaseHolder"],
-    modules: [{
-        name: "Separated panel initial panelIndex tester",
-        tests: [{
-            expect: 39,
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [{
             name: "Separated panel initial panelIndex tester",
-            sequence: [{
+            tests: [{
+                expect: 39,
+                name: "Separated panel initial panelIndex tester",
+                sequence: [{
                     listener: "fluid.tests.assertSeparatedPanelInit",
                     event: "{separatedPanelInitialPanelIndex separatedPanel}.events.onReady",
                     args: ["{separatedPanel}", 2]
                 }, {
-                     func: "{separatedPanel}.slidingPanel.showPanel"
+                    func: "{separatedPanel}.slidingPanel.showPanel"
                 }, {
                     listener: "fluid.tests.assertSeparatedPanelState",
                     event: "{separatedPanel}.slidingPanel.events.afterPanelShow",

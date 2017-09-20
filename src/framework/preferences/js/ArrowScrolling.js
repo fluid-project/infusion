@@ -76,11 +76,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         invokers: {
-            scrollToPanel: {
-                changePath: "scrollToIndex",
-                value: "{arguments}.0",
-                source: "scrollToPanel"
-            },
             eventToScrollIndex: {
                 funcName: "fluid.prefs.arrowScrolling.eventToScrollIndex",
                 args: ["{that}", "{arguments}.0"]
@@ -108,7 +103,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var target = $(event.target);
         var midPoint = target.width() / 2;
         var scrollToIndex = that.model.panelIndex + (event.offsetX < midPoint ? -1 : 1);
-        that.scrollToPanel(scrollToIndex);
+        that.applier.change("scrollToIndex", scrollToIndex, "ADD", "eventToScrollIndex");
     };
 
     fluid.prefs.arrowScrolling.scrollToPanel = function (that, panelIndex) {
