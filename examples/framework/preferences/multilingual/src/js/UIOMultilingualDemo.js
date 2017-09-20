@@ -53,7 +53,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 source: "{that}.options.multilingualSettings.tocHeader"
             },
             locale: {
-                // Targeting does not work
+                // Targeting this does not work, but appears to be what
+                // is described at http://docs.fluidproject.org/infusion/development/LocalizationInThePreferencesFramework.html#specifying-a-localization
                 // target: "{that}.options.settings.locale",
                 //
                 // Targeting the messageLoader locale directly works
