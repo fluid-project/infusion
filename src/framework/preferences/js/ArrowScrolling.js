@@ -33,7 +33,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             panelIndex: 0
         },
         events: {
-            // beforeReset: null // should be provided by the fluid.prefs.prefsEditor grade
+            beforeReset: null // should be fired by the fluid.prefs.prefsEditor grade
         },
         modelRelay: {
             target: "panelIndex",
