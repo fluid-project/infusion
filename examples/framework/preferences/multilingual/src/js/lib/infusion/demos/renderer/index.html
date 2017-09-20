@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Renderer Example</title>
+        <link rel="stylesheet" type="text/css" href="../../src/lib/normalize/css/normalize.css" />
+        <link rel="stylesheet" type="text/css" href="../lib/foundation/css/foundation.css" />
+        <link rel="stylesheet" type="text/css" href="../../src/framework/core/css/fluid.css" />
+        <link rel="stylesheet" type="text/css" href="../../src/components/overviewPanel/css/OverviewPanel.css" />
+        <link type="text/css" rel="stylesheet" media="all" href="css/renderer.css" />
+
+        <script type="text/javascript" src="../../src/lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../src/lib/jquery/ui/js/jquery-ui.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../src/framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../src/framework/renderer/js/fluidRenderer.js"></script>
+
+        <!-- required for the Overview Panel -->
+        <script type="text/javascript" src="../../src/framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../src/framework/renderer/js/RendererUtilities.js"></script>
+
+        <script type="text/javascript" src="../../src/components/overviewPanel/js/OverviewPanel.js"></script>
+        <script type="text/javascript" src="../shared/js/overviewWrapper.js"></script>
+
+        <script type="text/javascript" src="data/rendererDemoData.js"></script>
+        <script type="text/javascript" src="js/rendererDemo.js"></script>
+    </head>
+
+    <body class="fl-focus">
+        <div class="flc-overviewPanel fl-overviewPanel-container"></div>
+
+        <main class="demo-banquet-form">
+            <p class="renderButton-container">
+                <input class="demo-banquet-form-renderButton" type="button" value="Render"/>
+            </p>
+
+            <hr/>
+            <div class="row">
+                <div class="large-6 columns">
+                    <p class="demo-intro-block">
+                        <span class="demo-intro">Template for the intro text</span>
+                    </p>
+
+                    <div class="demo-location-block info-block">
+                        <label for="demo-location-list" class="demo-location-label">label</label>
+                        <select id="demo-location-list" class="demo-location-list">
+                            <option value="Location">Location</option>
+                        </select>
+                    </div>
+
+                    <div class="demo-wine-block info-block">
+                        <fieldset>
+                            <legend>
+                                <span id="demo-wine-list-label" class="demo-wine-list-label">label</span>
+                            </legend>
+                            <ul>
+                                <li class="demo-wine-list">
+                                    <input class="demo-wine-selection" type="radio" id="demo-wine-button" value="Wine"/>
+                                    <label class="demo-wine-name" for="demo-wine-button">Template for wine list</label>
+                                </li>
+                            </ul>
+                        </fieldset>
+                    </div>
+
+                    <div class="demo-canape-block info-block">
+                        <fieldset>
+                            <legend>
+                            <span id="demo-canape-list-label" class="demo-canape-list-label">label</span></legend>
+                            <table class="demo-canape-list">
+                                <tr>
+                                    <th class="demo-canape-plate-header">header</th>
+                                    <th class="demo-canape-price-header">header</th>
+                                    <th class="demo-canape-include-header">header</th>
+                                </tr>
+                                <tr class="demo-canapes">
+                                    <td><label class="demo-canape-name" for="demo-canape-button">name</label></td>
+                                    <td class="demo-canape-price">price</td>
+                                    <td><input id="demo-canape-button" class="demo-canape-selection" type="checkbox" value="Canape"/></td>
+                                </tr>
+                            </table>
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="large-6 columns">
+                    <p>Model:</p>
+                    <div>
+                        <pre class="demo-banquet-form-modelView model-dump">
+                        This is where the auto-bound model will be displayed.
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script type="text/javascript">
+            demo.banquet.form(".demo-banquet-form", {
+                strings: demo.data.strings,
+                locations: demo.data.locations,
+                wineList: demo.data.wineList,
+                canapeList: demo.data.canapeList,
+                model: {
+                    location: demo.data.locations.choice,
+                    wine: demo.data.wineList.choice,
+                    canapes: demo.data.canapeList.choices
+                }
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Multiple Versions of Infusion</title>
+
+        <link rel="stylesheet" type="text/css" href="../../../../../src/lib/normalize/css/normalize.css" />
+
+        <!-- styling for manual tests -->
+        <link rel="stylesheet" type="text/css" href="../../../shared/css/manualTests.css" />
+
+        <script type="text/javascript" src="js/infusion-1.5.js"></script>
+        <!--  Ensure jQuery plays nice with other toolkits - must be called after all the javascript is loaded. -->
+        <script language="JavaScript" type="text/javascript">
+            jQuery.noConflict();
+        </script>
+
+        <script type="text/javascript" src="../../../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../../src/lib/jquery/ui/js/jquery-ui.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../../../src/components/reorderer/js/ReordererDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../../src/components/reorderer/js/GeometricManager.js"></script>
+        <script type="text/javascript" src="../../../../../src/components/reorderer/js/Reorderer.js"></script>
+
+    </head>
+
+    <body>
+        <aside class="instructions-container">
+            <div class="instructions-content">
+                <h2>Description</h2>
+                <p>
+                    There are two reorderable lists. The first one uses a previously released version of Infusion, while the second uses the current version. This demostrates that ability to use multiple versions of Infusion on the same page at the same time.
+                </p>
+                <h2>Instructions</h2>
+                <ol>
+                    <li>Move an item in the first sortable list to another position in the same list</li>
+                    <li>Move an item in the second sortable list to another position in the same list</li>
+                </ol>
+            </div>
+        </aside>
+
+        <main>
+            <h1>Multiple Versions of Infusion</h1>
+            <h2>Sortable List Using Prior Version: <span id="priorVersionNumber"></span></h2>
+            <ul id="list-priorVersion">
+                <li class="flc-reorderer-movable">Item 1</li>
+                <li class="flc-reorderer-movable">Item 2</li>
+                <li class="flc-reorderer-movable">Item 3</li>
+                <li class="flc-reorderer-movable">Item 4</li>
+                <li class="flc-reorderer-movable">Item 5</li>
+            </ul>
+
+            <h2 class="header-currentVersion">Sortable List Using Current Version: <span id="currentVersionNumber"></span></h2>
+            <ul id="list-currentVersion">
+                <li class="flc-reorderer-movable">Item 1</li>
+                <li class="flc-reorderer-movable">Item 2</li>
+                <li class="flc-reorderer-movable">Item 3</li>
+                <li class="flc-reorderer-movable">Item 4</li>
+                <li class="flc-reorderer-movable">Item 5</li>
+            </ul>
+        </main>
+
+        <script type="text/javascript">
+            // initialize the list using a prior version of Infusion
+            fluid.reorderList("#list-priorVersion");
+            $("#priorVersionNumber").text(fluid.version);
+
+            // initialize the list using the current version of Infusion
+            fluid_3_0_0.reorderList("#list-currentVersion");
+            $("#currentVersionNumber").text(fluid_3_0_0.version);
+        </script>
+    </body>
+</html>

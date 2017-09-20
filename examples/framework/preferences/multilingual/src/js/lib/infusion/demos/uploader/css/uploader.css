@@ -1,0 +1,13 @@
+#uploader-contents {
+    margin: 5em;
+}
+
+/* Shifts the basic uploader so that it isn't covered by the overviewPanel */
+.fl-progEnhance-basic {
+    margin: 4em 24em;
+}
+
+/* Override styles for foundation */
+.fl-uploader {
+    width: 31.5rem
+}

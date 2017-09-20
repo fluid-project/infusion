@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Progress: Animate Forward and Back</title>
+
+        <link rel="stylesheet" type="text/css" href="../../../../src/lib/normalize/css/normalize.css" />
+        <link rel="stylesheet" type="text/css" href="../shared/css/progress.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/framework/core/css/fluid.css" />
+
+        <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
+
+        <script type="text/javascript" src="../../../../src/components/progress/js/Progress.js"></script>
+    </head>
+
+    <body>
+        <main>
+            <div id="progressBar" class="example-progress-container">
+                <div class="flc-progress-label example-progress-label">Progress Value: 0%</div>
+                <div class="flc-progress-bar example-progress-bar">
+                    <div class="flc-progress-indicator example-progress-indicator"></div>
+                </div>
+            </div>
+            <label>
+                Set Progress: <input class="fl-focus" id="setProgress" type="range" min="0" max="100" step="20" value="0"/>
+            </label>
+        </main>
+
+        <script>
+            var progress = fluid.progress("#progressBar", {animate: "both"});
+            var rangeInput = $("#setProgress");
+            rangeInput.val(0) // force the slider back to zero as sometimes the position is cached.
+
+            rangeInput.on("input change", function () {
+                var val = rangeInput.val();
+                progress.update(val, "Progress Value: " + val + "%");
+            });
+        </script>
+    </body>
+</html>

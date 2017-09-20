@@ -1,0 +1,15 @@
+{
+    "templateUrl": "../shared/html/overviewPanelTemplate-noDesign.html",
+    "strings": {
+        "componentName": "Progress"
+    },
+    "markup": {
+        "description": "The Progress component provides a usable and accessible progress display for use on its own or with other Fluid components. It is highly flexible -- customizable for use in many contexts.",
+        "instructions": "<ul><li>Click on the 'Submit' button to observe the progress component.</li></ul>"
+    },
+    "links": {
+        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/progress",
+        "apiLink": "http://docs.fluidproject.org/infusion/development/to-do/ProgressAPI.html",
+        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Progress%20feedback"
+    }
+}

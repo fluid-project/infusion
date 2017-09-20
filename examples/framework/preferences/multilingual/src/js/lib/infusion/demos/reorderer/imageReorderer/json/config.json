@@ -1,0 +1,16 @@
+{
+    "templateUrl": "../../../src/components/overviewPanel/html/overviewPanelTemplate.html",
+    "strings": {
+        "componentName": "Image Reorderer"
+    },
+    "markup": {
+        "description": "The Image Reorderer lets users reorder images within a collection. It provides fully keyboard-accessible and mouse-based manipulation of images on-screen. It is intended to work well with screen magnifiers, low screen resolutions, and linear layouts.",
+        "instructions": "<ul><li>Try reordering the images using the mouse.</li><li>Try reordering the images using only the keyboard: Direction keys (arrow keys or i-j-k-m) move focus; CTRL + direction keys move the item.</li></ul>"
+    },
+    "links": {
+        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/reorderer/imageReorderer",
+        "apiLink": "http://docs.fluidproject.org/infusion/development/ImageReordererAPI.html",
+        "designLink": "http://wiki.fluidproject.org/display/Infusion13/Image+Reorderer+Design+Overview",
+        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Image%20Reorderer%20feedback"
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "templateUrl": "../../../src/components/overviewPanel/html/overviewPanelTemplate.html",
+    "strings": {
+        "componentName": "Layout Reorderer"
+    },
+    "markup": {
+        "description": "The Layout Reorderer provides drag and drop customization of modules in a portal environment.",
+        "instructions": "<ul><li>Try rearranging the portals using the mouse.</li><li>Try rearranging the portals using only the keyboard: Direction keys (arrow keys or i-j-k-m) move focus; CTRL + direction keys move the item.</li></ul>"
+    },
+    "links": {
+        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/reorderer/layoutReorderer",
+        "apiLink": "http://docs.fluidproject.org/infusion/development/to-do/LayoutReordererAPI.html",
+        "designLink": "http://wiki.fluidproject.org/display/Infusion13/Layout+Reorderer+Design+Overview",
+        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Layout%20Reorderer%20feedback"
+    }
+}

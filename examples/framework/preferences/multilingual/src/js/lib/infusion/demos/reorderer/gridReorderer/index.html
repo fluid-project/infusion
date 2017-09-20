@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Grid Reorderer Demo - Letter Puzzle</title>
+
+        <link rel="stylesheet" type="text/css" href="../../../src/lib/normalize/css/normalize.css" />
+        <link rel="stylesheet" type="text/css" href="../../lib/foundation/css/foundation.css" />
+        <link rel="stylesheet" type="text/css" href="../../../src/framework/core/css/fluid.css" />
+        <link rel="stylesheet" type="text/css" href="../../../src/components/reorderer/css/Reorderer.css" />
+        <link rel="stylesheet" type="text/css" href="../../../src/components/overviewPanel/css/OverviewPanel.css" />
+        <link rel="stylesheet" type="text/css" href="css/gridReorderer.css" />
+
+        <script type="text/javascript" src="../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../src/lib/jquery/ui/js/jquery-ui.js"></script>
+        <script type="text/javascript" src="../../../src/lib/jquery/plugins/touchPunch/js/jquery.ui.touch-punch.js"></script>
+        <script type="text/javascript" src="../../../src/framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../src/framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../src/components/reorderer/js/ReordererDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../src/components/reorderer/js/GeometricManager.js"></script>
+        <script type="text/javascript" src="../../../src/components/reorderer/js/Reorderer.js"></script>
+
+        <!-- required for the Overview Panel -->
+        <script type="text/javascript" src="../../../src/framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../src/framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../src/framework/renderer/js/RendererUtilities.js"></script>
+
+        <script type="text/javascript" src="../../../src/components/overviewPanel/js/OverviewPanel.js"></script>
+        <script type="text/javascript" src="../../shared/js/overviewWrapper.js"></script>
+
+    </head>
+    <body>
+        <div class="flc-overviewPanel fl-overviewPanel-container"></div>
+        <section class="row">
+            <div class="demo-gridReorderer-container small-8 small-centered columns">
+                <h1>Letter Puzzle</h1>
+
+                <p><strong>Mouse instructions:</strong> Drag and drop items with the mouse.</p>
+                <p><strong>Keyboard instructions:</strong> Direction keys (arrow keys or i-j-k-m) move focus. CTRL + direction keys move the item.</p>
+
+                <div class="flc-reorderer-movable">
+                    <div class="demoSelector-gridReorderer-alphabetGrid demo-gridReorderer-alphabetGrid fl-focus">
+                        <div class="flc-reorderer-movable">F</div>
+                        <div class="flc-reorderer-movable">G</div>
+                        <div class="flc-reorderer-movable">A</div>
+                        <div class="flc-reorderer-movable">E</div>
+                        <div class="flc-reorderer-movable">H</div>
+                        <div class="flc-reorderer-movable">B</div>
+                        <div class="flc-reorderer-movable">I</div>
+                        <div class="flc-reorderer-movable">D</div>
+                        <div class="flc-reorderer-movable">C</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <script type="text/javascript">
+            fluid.reorderGrid(".demoSelector-gridReorderer-alphabetGrid", {
+                styles: {
+                    dragging: "demo-gridReorderer-dragging",
+                    avatar: "demo-gridReorderer-avatar",
+                    selected: "demo-gridReorderer-selected",
+                    dropMarker: "demo-gridReorderer-dropMarker"
+                },
+                disableWrap: true
+            });
+        </script>
+    </body>
+</html>

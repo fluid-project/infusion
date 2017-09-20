@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Reorderer complete tests runner</title>
+
+    <link rel="stylesheet" href="../../lib/qunit/css/qunit.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="../../lib/qunit/addons/composite/qunit-composite.css">
+    <script src="../../lib/qunit/js/qunit.js"></script>
+    <script src="../../lib/qunit/addons/composite/qunit-composite.js"></script>
+
+    <!--
+        command line search:
+        find . -name "*-test.html" | awk '{print "\""$1"\","}'
+    -->
+    <script>
+        QUnit.testSuites("Uploader Tests", [
+            "./html/AriaLabeller-test.html",
+            "./html/GeometricManager-test.html",
+            "./html/ImageReorderer-test.html",
+            "./html/LayoutReorderer-test.html",
+            "./html/NestedReorderer-test.html",
+            "./html/ReorderList-test.html",
+            "./html/Scheduler-test.html"
+        ]);
+    </script>
+</head>
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixture">
+</div>
+</body>
+</html>

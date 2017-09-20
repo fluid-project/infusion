@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <link rel="stylesheet" type="text/css" href="../../../../src/lib/normalize/css/normalize.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/framework/core/css/fluid.css" />
+
+        <link rel="stylesheet" type="text/css" href="../../../../src/lib/jquery/ui/css/fl-theme-by/by.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/lib/jquery/ui/css/fl-theme-yb/yb.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/lib/jquery/ui/css/fl-theme-bw/bw.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/lib/jquery/ui/css/fl-theme-wb/wb.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/lib/jquery/ui/css/fl-theme-lgdg/lgdg.css" />
+
+        <!-- Component styles -->
+        <link rel="stylesheet" type="text/css" href="../../../../src/framework/preferences/css/Enactors.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/framework/preferences/css/PrefsEditor.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/framework/preferences/css/FullPrefsEditor.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/framework/preferences/css/FullPreviewPrefsEditor.css" />
+
+        <!-- Demo style -->
+        <link rel="stylesheet" type="text/css" href="css/prefsEditorFullPage.css" />
+
+        <title>Preferences Editor: Full Page</title>
+
+        <!--
+            Because this example is included in the project repository
+            it makes reference to the individual JavaScript files instead of using
+            the built single concatenated JavaScript file. However in a context
+            where the built file is available these could all be replaced by a reference to it.
+            e.g. From NPM - "../../../../dist/infusion-all.js"
+            e.g. From a Custom Build - "../../../../infusion-custom.js"
+        -->
+        <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery-ui.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformation.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformationTransforms.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/ResourceLoader.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/RendererUtilities.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/Store.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/Enactors.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/UIEnhancer.js"></script>
+        <script type="text/javascript" src="../../../../src/components/textfieldControl/js/Textfield.js"></script>
+        <script type="text/javascript" src="../../../../src/components/textfieldControl/js/TextfieldStepper.js"></script>
+        <script type="text/javascript" src="../../../../src/components/switch/js/Switch.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/PrefsEditor.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/Panels.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/StarterGrades.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/FullPreviewPrefsEditor.js"></script>
+        <script type="text/javascript" src="../../../../src/components/tableOfContents/js/TableOfContents.js"></script>
+
+    </head>
+
+    <body>
+
+        <main class="content">
+            <div class="demo-backButton">
+                <a href="index.html">To Content</a>
+            </div>
+            <div class="fl-hidden">
+                <div class="flc-toc-tocContainer">
+                </div>
+            </div>
+
+            <h1>Preferences Editor: Full Page</h1>
+            <div class="demo-prefsEditor-fullWithPreview"></div>
+        </main>
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                /*
+                 * The various starter gradeNames mentioned below indicate that the
+                 * "starter" adjusters and enactors should be used. These correspond to the
+                 * same set of adjusters and enactors used in a typical UI Options
+                 * configuration. However, a custom set of adjusters and enactors could be
+                 * configured instead.
+                 */
+
+                /**
+                 * Initialize the PrefsEditor global settings store.
+                 * The globalSettingsStore handles the storage and retrieval of preferences,
+                 * by default it is configured to use the fluid.prefs.cookieStore
+                 * which stores preferences in a browser cookie.
+                 */
+                fluid.prefs.globalSettingsStore();
+
+                /**
+                 * Initialize the UI Enhancer for the page.
+                 */
+                fluid.pageEnhancer({
+                    uiEnhancer: {
+                        gradeNames: ["fluid.uiEnhancer.starterEnactors"],
+                        // The UI Enhancer's Table of Contents uses an HTML template. This tells the component
+                        // where to find that template.
+                        tocTemplate: "../../../../src/components/tableOfContents/html/TableOfContents.html"
+                    }
+                });
+
+                fluid.prefs.fullPreview(".demo-prefsEditor-fullWithPreview", {
+                    gradeNames: ["fluid.prefs.transformDefaultPanelsOptions", "fluid.prefs.initialModel.starter"],
+                    // Tell PrefsEditor where to find all the resources, relative to this file
+                    terms: {
+                        // The Preferences Editor interface is defined by several HTML templates. The component
+                        // needs to know where those templates are.
+                        templatePrefix: "../../../../src/framework/preferences/html",
+                        //  The strings used on Preferences Editor interface are defined in several JSON files. The component
+                        //  needs to know where those files are.
+                        messagePrefix: "../../../../src/framework/preferences/messages"
+                    },
+                    messageLoader: {
+                        gradeNames: ["fluid.prefs.starterMessageLoader"]
+                    },
+                    templateLoader: {
+                        gradeNames: ["fluid.prefs.starterFullPreviewTemplateLoader"]
+                    },
+                    prefsEditor: {
+                        gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.uiEnhancerRelay"],
+                        listeners: {
+                            // Tells the PrefsEditor where to redirect to if the user cancels the operation.
+                            // In this case, it goes back one step in the browser's history.
+                            onCancel: {
+                                "this": window.history,
+                                method: "back"
+                            }
+                        }
+                    },
+                    preview: {
+                        templateUrl: "html/prefsEditorPreview.html"
+                    }
+                });
+            });
+
+        </script>
+
+    </body>
+</html>

@@ -1,0 +1,17 @@
+{
+    "templateUrl": "../shared/html/overviewPanelTemplate-noDesign.html",
+    "strings": {
+        "componentName": "Keyboard Accessibility Plugin",
+        "feedbackText": "Found a bug? Have a question?",
+        "feedbackLinkText": "Let us know!"
+    },
+    "markup": {
+        "description": "The Keyboard Accessibility Plugin makes it easy for developers to add keyboard handlers to their code without a lot of extra overhead.",
+        "instructions": "<ul><li>Tab to the images. Arrow keys move the focus, and 'Space,' 'Return' or 'Enter' open the current image in the viewer.</li><li>Try tabbing to the 'five star rating' widget and using the arrow keys and Enter to rate the image.</li></ul>"
+    },
+    "links": {
+        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/keyboard-a11y",
+        "apiLink": "http://wiki.fluidproject.org/display/docs/Keyboard+Accessibility+Plugin+API",
+        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Keyboard%20Accessibility%20Plugin%20feedback"
+    }
+}

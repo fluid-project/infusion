@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Preferences Framework complete tests runner</title>
+
+    <link rel="stylesheet" href="../../lib/qunit/css/qunit.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="../../lib/qunit/addons/composite/qunit-composite.css">
+    <script src="../../lib/qunit/js/qunit.js"></script>
+    <script src="../../lib/qunit/addons/composite/qunit-composite.js"></script>
+<!-- Stupid bloody escaping rules:
+    find . -name "*-test.html" | awk '{print "\""$1"\","}' -->
+    <script>
+    QUnit.testSuites("Preferences Framework Tests", [
+        "./html/AuxBuilder-test.html",
+        "./html/Builder-test.html",
+        "./html/Enactors-test.html",
+        "./html/SelfVoicingEnactor-test.html",
+        "./html/SeparatedPanelPrefsEditor-test.html",
+        "./html/FullNoPreviewPrefsEditor-test.html",
+        "./html/FullPreviewPrefsEditor-test.html",
+        "./html/PageEnhancer-test.html",
+        "./html/Panels-test.html",
+        "./html/SelfVoicingPanel-test.html",
+        "./html/PrimaryBuilder-test.html",
+        "./html/Store-test.html",
+        "./html/UIEnhancer-test.html",
+        "./html/PrefsEditor-test.html",
+        "./html/URLUtilities-test.html"
+    ]);
+    </script>
+</head>
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixture">
+</div>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:rsf="http://ponder.org.uk/rsf">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Renderer Utilities Tests</title>
+
+        <link rel="stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
+
+        <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/JavaProperties.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/RendererUtilities.js"></script>
+
+
+        <!--  These are the jqUnit test js files -->
+        <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
+        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit-browser.js"></script>
+
+        <!--  These are tests that have been written using this page as data -->
+        <script type="text/javascript" src="../js/RendererUtilitiesTests.js"></script>
+
+  </head>
+  <body id="body">
+    <h1 id="qunit-header">RendererUtilities.js Test Suite</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+
+    <!-- Test HTML -->
+    <div id="qunit-fixture" style="display: none;">
+
+        <div id="decorator-container">
+            <div class="flc-row">
+                <div class="flc-val">
+                    <input type="text" class="flc-val-val" />
+                </div>
+            </div>
+
+        </div>
+        <div class="flc-renderUtils-container">
+            <span class="flc-renderUtils-test">
+            Template here
+            <span class="flc-renderUtils-message">Message</span>
+            </span>
+        </div>
+
+        <div class="repeater-leaf-test">
+          <a rsf:id="link:" href="#">Link text</a>
+        </div>
+
+        <div class="recursive-expansion-test">
+            <table>
+                <tr rsf:id="permissions-record-row:">
+                    <td rsf:id="permissions-record-column:">
+                        <div rsf:id="permissions-record-role-row:">
+                            <input rsf:id="permissions-record-role-input" type="radio" name="vocable" id="radio1" value="Aerumnous"/>
+                            <label rsf:id="permissions-record-role-label" for="radio1">Aerumnous</label>
+                        </div>
+                    </td>
+                    <td>
+                        <span rsf:id="permissions-record-type">Permission type</span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="fluid-6171-IoC-resolution">
+            <div class="flc-test-row">
+                <input type="radio" class="flc-test-input" name="theme" id="default" value="default" />
+                <label for="default" class="flc-test-label"></label>
+            </div>
+        </div>
+
+        <div class="renderer-component-test-repeat">
+            <ul>
+                <li class="csc-tabs-tab">
+                    <a class="csc-tabs-tab-link"></a>
+                </li>
+            </ul>
+            <div class="csc-unmatchedMessage"></div>
+        </div>
+
+        <div class="renderer-component-test-multiple-repeat">
+            <li class="csc-tabs-tab">
+                <div class="csc-tabs-tab-content"></div>
+            </li>
+            <li class="csc-tabs-tab-two">
+                <div class="csc-tabs-tab-two-content"></div>
+            </li>
+        </div>
+
+        <div class="renderer-ioc-test">
+            <div class="middle-component">
+                <div class="decorated-component">
+                </div>
+            </div>
+        </div>
+
+        <div class="renderer-component-test">
+            <span class="csc-searchBox-message">A messuage</span>
+            <span class="csc-searchBox-deffoltmessage">A messuage</span>
+            <span class="csc-searchBox-recordType">Record 1</span>
+        </div>
+
+        <div class="FLUID-4165-test">
+            <input type="text" value="" class="flc-renderUtils-test"/>
+        </div>
+
+        <div class="FLUID-4189-test">
+            <input type="text" value="" class="flc-renderUtils-test"/>
+            <input type="text" value="" class="flc-renderUtils-test2"/>
+        </div>
+
+        <div class="renderer-component-infRec">
+            <span class="csc-footer-text1"></span>
+            <span class="csc-footer-text2"></span>
+            <a class="csc-footer-currentRelease" href=""></a>
+            <a class="csc-footer-about" href=""></a>
+            <a class="csc-footer-feedback" href=""></a>
+        </div>
+
+        <div class="identicalComponentParent">
+            <div class="identicalComponent1"></div>
+            <div class="identicalComponent2"></div>
+        </div>
+
+        <div class="mergeRenderParent">
+            <div class="mergeComponent"></div>
+        </div>
+
+      <iframe src="RendererUtilitiesIFrame.html"></iframe>
+
+        <div class="news-items">
+            <div class="news-item">
+                <h1><a class="link" href="" title=""><span class="title">Title</span></a></h1>
+                <p class="description">Description</p>
+            </div>
+        </div>
+
+        <div class="pathAsProp">
+            <div class="pathexp-row">
+                <div class="pathexp-row-decorated"></div>
+            </div>
+        </div>
+
+        <div class="FLUID-4737">
+            <ul class="messages">
+                <li class="message"></li>
+            </ul>
+        </div>
+
+        <div class="FLUID-4935">
+            <input type="text" class="escaped" />
+        </div>
+
+        <div id="FLUID-5048-test">
+            <div class="flc-prefsEditor-captions-settings"></div>
+            <div class="flc-prefsEditor-transcripts-settings"></div>
+        </div>
+
+        <div id="FLUID-5099">
+            <input type="text" value="" class="flc-fluid5099-test"/>
+        </div>
+
+        <div id="FLUID-4986">
+            <select class="flc-fluid4986-select"></select>
+            <span class="flc-fluid4986-simpleBound1"></span>
+            <span class="flc-fluid4986-simpleBound2"></span>
+            <span class="flc-fluid4986-simpleBound3"></span>
+            <span class="flc-fluid4986-simpleBound4"></span>
+            <span class="flc-fluid4986-simpleBound5"></span>
+            <span class="flc-fluid4986-simpleBound6"></span>
+        </div>
+
+        <div id="FLUID-5279">
+            <div class="flc-main"></div>
+            <div class="flc-sub"></div>
+        </div>
+
+        <div id="FLUID-5280">
+            <div class="flc-fluid5280-main"></div>
+            <div class="flc-fluid5280-sub"></div>
+        </div>
+
+        <div id="FLUID-5282">
+            <p></p>
+        </div>
+
+        <div id="FLUID-5664">
+            <input class="flc-fluid5664-input" type="text"/>
+        </div>
+
+    </div>
+
+    <script>
+    fluid.tests.testRendererUtilities();
+    </script>
+</body>
+</html>

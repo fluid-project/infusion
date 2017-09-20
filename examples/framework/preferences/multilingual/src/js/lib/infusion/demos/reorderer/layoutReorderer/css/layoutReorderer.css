@@ -1,0 +1,120 @@
+
+.demo-layoutReorderer-container {
+    width:95%;
+    margin-top: 3em;
+    background-color: #ccd3ff;
+    overflow:auto;
+    padding: 5px;
+}
+
+.demo-layoutReorderer-container h2 {
+    margin-top: 0px;
+}
+
+.demo-layoutReorderer-container ul li {
+    padding-bottom:0.5em;
+}
+
+.demo-layoutReorderer-module,
+.demo-layoutReorderer-locked  {
+    border: 1px solid #808285;
+    margin: 6px;
+    background-color: #fff;
+}
+
+.demo-layoutReorderer-module-dragbar {
+    /* dragbar is the bar on top of each module */
+    cursor: move;
+    background-color: #A5CFEF;
+    background-position: right 1px center;
+    background-repeat: no-repeat;
+    background-image: url("../images/move.png");
+    padding: 4px;
+}
+
+.demo-layoutReorderer-locked .demo-layoutReorderer-module-dragbar {
+    /* Locked module */
+    cursor: default;
+    background-color: #fff;
+    background-image: url("../images/locked.png");
+    background-position: right 1px center;
+}
+
+.demo-layoutReorderer-leftColumn,
+.demo-layoutReorderer-rightColumn {
+    width: 25%;
+}
+
+.demo-layoutReorderer-centerColumn {
+    width: 50%;
+}
+
+/*
+ * demo-module-content is the box below the dragbar, which contains the
+ * actual content of the module
+ */
+.demo-layoutReorderer-module-content {
+    padding: 6px;
+    width: 95%;
+    overflow: auto;
+}
+
+.demo-layoutReorderer-module-content img {
+    border: 1px solid #afafaf;
+    float:left;
+    margin-right: 10px;
+    width: 30%;
+}
+
+.demo-layoutReorderer-movable-hover, .demo-layoutReorderer-movable-selected{
+    outline: 2px solid #000;
+}
+
+.demo-layoutReorderer-list-emphasis {
+    font-weight: bold;
+}
+
+/**
+ * Interaction styling.
+ */
+
+.demo-layoutReorderer-avatar {
+    background-color:#9fff9f;
+    outline: 2px solid #000;
+    opacity: 0.5;
+    filter: alpha(opacity=50); /* ie opacity fix */
+}
+.demo-layoutReorderer-avatar .demo-layoutReorderer-module-dragbar,
+.demo-layoutReorderer-avatar .demo-layoutReorderer-module-content {
+    /* hide contents of the module's avatar, while dragging. */
+    visibility: hidden;
+}
+
+.demo-layoutReorderer-movable-dragging {
+    margin: 6px 2px 6px 12px;
+}
+
+.demo-layoutReorderer-movable-mousedrag {
+    /* hide the original module while being dragged. */
+    display:none;
+}
+
+.demo-layoutReorderer-dropMarker {
+    background-color: #00a651;
+    height: 3px;
+    padding: 0 0 0 0;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.demo-layoutReorderer-dropWarning {
+    border: 3px solid black;
+    background-color: #ffffff;
+    background-image: url('../images/info.png');
+    background-repeat: no-repeat;
+    background-position: left center;
+    display: none;
+    padding: 5px 30px;
+    z-index: 10;
+    width:250px;
+}

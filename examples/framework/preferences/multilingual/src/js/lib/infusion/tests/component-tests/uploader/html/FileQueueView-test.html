@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>FileQueue VIEW Tests</title>
+
+    <!--  This is the jqUnit test css file -->
+    <link rel="stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
+
+    <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+    <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../../../../src/lib/jquery/plugins/scrollTo/js/jquery.scrollTo.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/FluidDebugging.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/enhancement/js/ProgressiveEnhancement.js"></script>
+
+    <script type="text/javascript" src="../../../../src/components/progress/js/Progress.js"></script>
+    <script type="text/javascript" src="../../../../src/components/uploader/js/Uploader.js"></script>
+    <script type="text/javascript" src="../../../../src/components/uploader/js/FileQueue.js"></script>
+    <script type="text/javascript" src="../../../../src/components/uploader/js/FileQueueView.js"></script>
+
+
+    <!--  These are the jqUnit test js files -->
+    <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
+    <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+    <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit-browser.js"></script>
+
+    <script type="text/javascript" src="../js/FileQueueViewTests.js"></script>
+</head>
+
+<body id="body">
+    <h1 id="qunit-header">FileQueueView Tests</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+
+    <!-- Test HTML -->
+    <div id="qunit-fixture">
+
+        <!-- The file queue -->
+        <table class="flc-uploader-queue fl-uploader-data">
+            <caption>File Upload Queue:</caption>
+            <thead>
+                <tr>
+                    <th scope="col" class="fl-uploader-file-name">File Name</th>
+                    <th scope="col" class="fl-uploader-file-size">Size</th>
+                    <th scope="col" class="fl-uploader-file-actions"></th>
+                </tr>
+            </thead>
+            <tbody class="fl-uploader-queue">
+                <!-- Rows will be rendered in here. -->
+
+                <!-- Template markup for the file queue rows -->
+                <tr class="flc-uploader-file-tmplt flc-uploader-file fl-uploader-hidden-templates">
+                    <td class="flc-uploader-file-name fl-uploader-file-name">File Name Placeholder</td>
+                    <td class="flc-uploader-file-size fl-uploader-file-size">0 KB</td>
+                    <td class="fl-uploader-file-actions">
+                        <button type="button" class="flc-uploader-file-action fl-uploader-file-action" tabindex="-1">
+                            <span class="fl-uploader-button-text fl-uploader-hidden">Remove file from queue</span>
+                        </button>
+                    </td>
+                </tr>
+
+                <!-- Template for the file error info rows -->
+                <tr class="flc-uploader-file-error-tmplt fl-uploader-file-error fl-uploader-hidden-templates">
+                    <td colspan="3" class="flc-uploader-file-error"></td>
+                </tr>
+            </tbody>
+        </table>
+
+
+        <table id="scrollableTable">
+            <tr>
+                <th>Cat</th><th>Color</th>
+            </tr>
+            <tr>
+                <td>Sirius</td><td>Black</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

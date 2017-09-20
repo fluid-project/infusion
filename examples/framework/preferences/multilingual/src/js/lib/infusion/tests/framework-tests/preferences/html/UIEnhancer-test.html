@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>UI Enhancer Tests</title>
+
+        <!--  This is the jqUnit test css file -->
+        <link rel="stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
+
+        <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/ResourceLoader.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/RendererUtilities.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/enhancement/js/ProgressiveEnhancement.js"></script>
+
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/Store.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/UIEnhancer.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/PrefsEditor.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/Enactors.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/StarterGrades.js"></script>
+        <script type="text/javascript" src="../../../../src/components/tableOfContents/js/TableOfContents.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/PrimaryBuilder.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/AuxBuilder.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/StarterSchemas.js"></script>
+
+        <!--  These are the jqUnit test js files -->
+        <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
+        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+        <script type="text/javascript" src="../../../test-core/utils/js/IoCTestUtils.js"></script>
+
+        <!--  These are tests that have been written using this page as data -->
+        <script type="text/javascript" src="../js/UIEnhancerTests.js"></script>
+
+    </head>
+    <body>
+    <h1 id="qunit-header">UI Enhancer Test Suite</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+
+    <!-- Test HTML -->
+    <div id="qunit-fixture" class="container">
+        <div class="flc-toc-tocContainer toc">
+        </div>
+
+        <h1>This heading is to test TOC and link creation</h1>
+
+        <div class="flt-textSize" style="font-size: 8px">
+        </div>
+
+        <div class="flt-baseFontSize-parent" style="font-size: 8px">
+            <div class="flt-baseFontSize-child" style="font-size: 10px">
+            </div>
+        </div>
+
+        <div class="flt-classSwapper fl-font-verdana">
+            <span class="fl-font-comic-sans"></span>
+        </div>
+
+        <div class="flt-lineSpace-parent" style="font-size: 24px">
+            <div class="flt-lineSpace" style="line-height: 12px; font-size: 6px">
+            </div>
+        </div>
+
+        <!-- For test for FLUID-4703 -->
+        <div class="flt-lineHeight" style="font-size: 16px">
+            <div class="flt-lineHeight-child-1em">Test</div>
+            <div class="flt-lineHeight-child-2em" style="font-size: 2em">Test</div>
+        </div>
+
+        <div class="flt-customizedEnactors">
+            <a href="#"></a>
+        </div>
+    </div>
+
+    </body>
+</html>

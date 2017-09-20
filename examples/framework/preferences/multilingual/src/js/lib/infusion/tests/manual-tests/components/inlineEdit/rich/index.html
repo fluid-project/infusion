@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Rich Text Inline Edit</title>
+
+        <link rel="stylesheet" type="text/css" href="../../../../../src/lib/normalize/css/normalize.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../../src/framework/core/css/fluid.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../../src/components/inlineEdit/css/InlineEdit.css" />
+        <link rel="stylesheet" type="text/css" href="css/InlineEdit.css" />
+
+        <!-- styling for manual tests -->
+        <link rel="stylesheet" type="text/css" href="../../../shared/css/manualTests.css" />
+
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.4.3/tinymce.min.js"></script>
+
+        <script type="text/javascript" src="../../../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../../src/lib/jquery/ui/js/jquery-ui.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../../src/components/tooltip/js/Tooltip.js"></script>
+
+        <script type="text/javascript" src="../../../../../src/components/inlineEdit/js/InlineEdit.js"></script>
+        <script type="text/javascript" src="../../../../../src/components/inlineEdit/js/InlineEditIntegrations.js"></script>
+        <script type="text/javascript" src="../../../../../src/components/undo/js/Undo.js"></script>
+
+        <!-- required for the Overview Panel -->
+        <script type="text/javascript" src="../../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../../../src/framework/renderer/js/RendererUtilities.js"></script>
+
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.5.11/ckeditor.js"></script>
+
+        <script type="text/javascript" src="js/inlineEditDemo.js"></script>
+
+   </head>
+    <body class="fl-focus">
+        <aside class="instructions-container">
+            <div class="instructions-content">
+                <h2>Description</h2>
+                <p>
+                    Below are three examples of rich text inline edit. Two using TinyMCE, and one using CK Editor 3.
+                    Apart from being a demostration of the rich text inline edit itself, this also demostrates that
+                    mulitple instances can be run on the same page.
+                </p>
+                <p class="instructions-note">
+                    <em><strong>Note:</strong> TinyMCE and CK Editor are pulled down from a CDN, which may prevent some of their features from working (i.e. anything using a dialog).</em>
+                </p>
+                <h2>Instructions</h2>
+                <ol>
+                    <li>Activate the the Edit link</li>
+                    <li>Modify the content in the rich text editor</li>
+                    <li>Activate the save button to accept the changes</li>
+                    <li>Activate the undo/redo link to toggle between undoing and redoing the changes</li>
+                </ol>
+            </div>
+        </aside>
+        <main>
+            <!-- Inline Edit with a Tiny MCE editor. -->
+            <h2 class="demo-start">Rich Text Inline Edit with Tiny MCE</h2>
+            <div id="demo-richInlineEdit-container-tinyMCE">
+                <div class="flc-inlineEdit-text">
+                    <p>After a hiatus, <strong>Portishead</strong> is back with their first studio
+                    album in 6 years. <em>Third</em> brings back the familiar and
+                    the new, and none of this is best exemplified than in the track
+                    <em>Machine Gun</em>. It seems that regardless of how <strong>Portishead</strong>
+                    sounds now, the one thing that has stayed constant is their refusal to be ordinary.
+                    </p>
+                </div>
+                <div class="flc-inlineEdit-editContainer">
+                    <textarea></textarea>
+                    <button class="demo-save">Save</button> <button class="demo-cancel">Cancel</button>
+                </div>
+            </div>
+
+            <h2>Duplicate Rich Text Inline Edit with Tiny MCE</h2>
+            <div id="demo-richInlineEdit-container-tinyMCE-2">
+                <div class="flc-inlineEdit-text">
+                    <p>After a hiatus, <strong>Portishead</strong> is back with their first studio
+                    album in 6 years. <em>Third</em> brings back the familiar and
+                    the new, and none of this is best exemplified than in the track
+                    <em>Machine Gun</em>. It seems that regardless of how <strong>Portishead</strong>
+                    sounds now, the one thing that has stayed constant is their refusal to be ordinary.
+                    </p>
+                </div>
+                <div class="flc-inlineEdit-editContainer">
+                    <textarea></textarea>
+                    <button class="demo-save">Save</button> <button class="demo-cancel">Cancel</button>
+                </div>
+            </div>
+
+            <!-- Inline Edit with CKEditor editor. -->
+            <h2>Rich Text Inline Edit with CKEditor 3</h2>
+            <div id="demo-richInlineEdit-container-ckEditor">
+                <div class="flc-inlineEdit-text">
+                    <p>After a hiatus, <strong>Portishead</strong> is back with their first studio
+                    album in 6 years. <em>Third</em> brings back the familiar and
+                    the new, and none of this is best exemplified than in the track
+                    <em>Machine Gun</em>. It seems that regardless of how <strong>Portishead</strong>
+                    sounds now, the one thing that has stayed constant is their refusal to be ordinary.
+                    </p>
+                </div>
+                <div class="flc-inlineEdit-editContainer">
+                    <textarea></textarea>
+                    <button class="demo-save">Save</button> <button class="demo-cancel">Cancel</button>
+                </div>
+            </div>
+        </main>
+
+        <script type="text/javascript">
+            demo.initRichInlineEdit();
+        </script>
+    </body>
+</html>

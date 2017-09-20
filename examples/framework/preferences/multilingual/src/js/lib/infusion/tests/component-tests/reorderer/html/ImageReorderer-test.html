@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Fluid Image Reorderer Tests</title>
+
+    <link type="text/css" rel="stylesheet" media="all" href="../../../../src/components/reorderer/css/Reorderer.css" />
+    <link type="text/css" rel="stylesheet" media="all" href="../../../../src/components/reorderer/css/ImageReorderer.css" />
+
+    <!--  This is the jqUnit test css file -->
+    <link rel="stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
+
+    <!--  This is a test-time css dependency. -->
+    <link type="text/css" rel="stylesheet" media="all" href="../css/TestStyles.css" />
+
+    <!--  These are the required javascript modules for the imageReorderer -->
+    <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+    <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
+    <script type="text/javascript" src="../../../../src/components/reorderer/js/ReordererDOMUtilities.js"></script>
+    <script type="text/javascript" src="../../../../src/components/reorderer/js/GeometricManager.js"></script>
+    <script type="text/javascript" src="../../../../src/components/reorderer/js/Reorderer.js"></script>
+    <script type="text/javascript" src="../../../../src/components/reorderer/js/ImageReorderer.js"></script>
+
+    <!--  These are the jqUnit test js files -->
+    <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
+    <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+    <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit-browser.js"></script>
+
+    <!--  These are test-time dependencies. -->
+    <script type="text/javascript" src="../js/ImageReordererTestConstants.js"></script>
+    <script type="text/javascript" src="../js/ReordererTestUtils.js"></script>
+
+    <!--  These are the tests -->
+    <script type="text/javascript" src="../js/ImageReordererTests.js"></script>
+    <script type="text/javascript" src="../js/ReorderGridTests.js"></script>
+
+  </head>
+  <body>
+    <h1 id="qunit-header">ImageReorderer Test Suite</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+
+    <div id="qunit-fixture">
+    <!-- Normally for jqUnit tests, the test data within the "main" div is not actually displayed (i.e. style="display:none;")
+         but since the tests involve focus and blur, the data must be rendered in this case -->
+
+    <p id="para1">This is the Image Reorderer demo page.</p>
+
+    <!--
+      The ImageReorderer uses hidden inputs as the strategy for posting the item order back
+      to the server, therefore the orderables need to be enclosed in a form.
+    -->
+    <form id="reorder-form" class="fl-imageReorderer fl-reorderer-horizontalLayout fl-focus">
+
+      <!--
+        Declare the thumbnails as an ARIA grid, that is single-selectable, writeable, and, when
+        first receives focus, has the first thumbnail focussed.
+      -->
+      <div id="gallery:::gallery-thumbs:::" class="width-3-thumb">
+
+        <!--
+          Orderable items are divs denoted by ids in the following form.
+          [lightbox-container-id] + lightbox-cell: + [index] + :
+          The createLightboxFromIds() function expects this format when attaching the javascript behaviour of the Lightbox.
+        -->
+        <div class="float fl-reorderer-movable-default fl-imageReorderer-item" id="gallery:::gallery-thumbs:::lightbox-cell:0:">
+
+          <div>
+
+            <div>
+
+              <a id="focus-element1" href="../../../../demos/reorderer/imageReorderer/images/Dragonfruit.jpg">
+                <img id="fluid.img.0" src="../../../../demos/reorderer/imageReorderer/images/Dragonfruit.jpg" border="0" alt="Dragonfruit"/>
+              </a>
+            </div>
+            <div class="caption flc-reorderer-imageTitle fl-reorderer-imageTitle">
+              <a href="../../../../demos/reorderer/imageReorderer/images/Dragonfruit.jpg" >Dragonfruit</a>
+            </div>
+          </div>
+
+          <!--
+            This input is used for posting the new order back to the server.
+            The value is the index of the thumbnail in a virtual array of thumbnails.
+            That is, 'value="0"' denotes the 0'th thumbnail; 'value="1"' the 1st,
+            and so on.
+          -->
+          <input id="gallery:::gallery-thumbs:::lightbox-cell:0:reorder-index" value="0" type="hidden"/>
+        </div>
+
+        <div class="float fl-reorderer-movable-default fl-imageReorderer-item" id="gallery:::gallery-thumbs:::lightbox-cell:1:">
+          <div>
+            <div>
+              <a href="../../../../demos/reorderer/imageReorderer/images/Kiwano.jpg" >
+                <img id="fluid.img.1" src="../../../../demos/reorderer/imageReorderer/images/Kiwano.jpg" border="0" alt="Kiwano"/>
+              </a>
+            </div>
+            <div class="caption flc-reorderer-imageTitle fl-reorderer-imageTitle">
+              <a href="../../../../demos/reorderer/imageReorderer/images/Kiwano.jpg" >Kiwano</a>
+            </div>
+          </div>
+          <input id="gallery:::gallery-thumbs:::lightbox-cell:1:reorder-index" value="1" type="hidden"/>
+        </div>
+
+        <div class="float fl-reorderer-movable-default fl-imageReorderer-item" id="gallery:::gallery-thumbs:::lightbox-cell:2:">
+          <div>
+            <div>
+              <a href="../../../../demos/reorderer/imageReorderer/images/Blackberry.jpg" >
+                <img id="fluid.img.2" src="../../../../demos/reorderer/imageReorderer/images/Blackberry.jpg" border="0" alt="Blackberry"/>
+              </a>
+            </div>
+            <div class="caption flc-reorderer-imageTitle fl-reorderer-imageTitle">
+              <a href="../../../../demos/reorderer/imageReorderer/images/Blackberry.jpg" >Blackberry</a>
+            </div>
+          </div>
+          <input id="gallery:::gallery-thumbs:::lightbox-cell:2:reorder-index" value="2" type="hidden"/>
+        </div>
+
+        <div class="float fl-reorderer-movable-default fl-imageReorderer-item" id="gallery:::gallery-thumbs:::lightbox-cell:3:">
+          <div>
+            <div>
+              <a href="../../../../demos/reorderer/imageReorderer/images/Cherry.jpg">
+                <img id="fluid.img.3" src="../../../../demos/reorderer/imageReorderer/images/Cherry.jpg" border="0" alt="Cherry"/>
+              </a>
+            </div>
+            <div class="caption flc-reorderer-imageTitle fl-reorderer-imageTitle">
+              <a href="../../../../demos/reorderer/imageReorderer/images/Cherry.jpg" >Cherry</a>
+            </div>
+          </div>
+          <input id="gallery:::gallery-thumbs:::lightbox-cell:3:reorder-index" value="3" type="hidden"/>
+        </div>
+
+        <div class="float fl-reorderer-movable-default fl-imageReorderer-item" id="gallery:::gallery-thumbs:::lightbox-cell:4:">
+          <div>
+            <div>
+              <a href="../../../../demos/reorderer/imageReorderer/images/Fig.jpg">
+                <img id="fluid.img.4" src="../../../../demos/reorderer/imageReorderer/images/Fig.jpg" border="0" alt="Fig"/>
+              </a>
+            </div>
+            <div class="caption flc-reorderer-imageTitle fl-reorderer-imageTitle">
+              <a href="../../../../demos/reorderer/imageReorderer/images/Fig.jpg" >Fig</a>
+            </div>
+          </div>
+          <input id="gallery:::gallery-thumbs:::lightbox-cell:4:reorder-index" value="4" type="hidden"/>
+        </div>
+
+        <div class="float fl-reorderer-movable-default fl-imageReorderer-item" id="gallery:::gallery-thumbs:::lightbox-cell:5:">
+          <div>
+            <div>
+              <a href="../../../../demos/reorderer/imageReorderer/images/Grapes.jpg">
+                <img id="fluid.img.5" src="../../../../demos/reorderer/imageReorderer/images/Grapes.jpg" border="0" alt="Grapes"/>
+              </a>
+            </div>
+            <div class="caption flc-reorderer-imageTitle fl-reorderer-imageTitle">
+              <a href="../../../../demos/reorderer/imageReorderer/images/Grapes.jpg" >Grapes</a>
+            </div>
+          </div>
+          <input id="gallery:::gallery-thumbs:::lightbox-cell:5:reorder-index" value="5" type="hidden"/>
+        </div>
+
+        <div class="float fl-reorderer-movable-default fl-imageReorderer-item" id="gallery:::gallery-thumbs:::lightbox-cell:6:">
+          <div>
+            <div>
+              <a href="../../../../demos/reorderer/imageReorderer/images/Kiwi.jpg" >
+                <img id="fluid.img.6" src="../../../../demos/reorderer/imageReorderer/images/Kiwi.jpg" border="0" alt="Kiwi"/>
+              </a>
+            </div>
+            <div class="caption flc-reorderer-imageTitle fl-reorderer-imageTitle">
+              <a href="../../../../demos/reorderer/imageReorderer/images/Kiwi.jpg" >Kiwi</a>
+            </div>
+          </div>
+          <input id="gallery:::gallery-thumbs:::lightbox-cell:6:reorder-index" value="6" type="hidden"/>
+        </div>
+
+        <div class="float fl-reorderer-movable-default fl-imageReorderer-item" id="gallery:::gallery-thumbs:::lightbox-cell:7:">
+          <div>
+            <div>
+              <a href="../../../../demos/reorderer/imageReorderer/images/Kumquat.jpg">
+                <img id="fluid.img.7" src="../../../../demos/reorderer/imageReorderer/images/Kumquat.jpg" border="0" alt="Kumquat"/>
+              </a>
+            </div>
+            <div class="caption flc-reorderer-imageTitle fl-reorderer-imageTitle">
+              <a href="../../../../demos/reorderer/imageReorderer/images/Kumquat.jpg" >Kumquat</a>
+            </div>
+          </div>
+          <input id="gallery:::gallery-thumbs:::lightbox-cell:7:reorder-index" value="7" type="hidden"/>
+        </div>
+
+        <div class="float fl-reorderer-movable-default fl-imageReorderer-item" id="gallery:::gallery-thumbs:::lightbox-cell:8:">
+          <div>
+            <div>
+              <a href="../../../../demos/reorderer/imageReorderer/images/Lemon.jpg">
+                <img id="fluid.img.8" src="../../../../demos/reorderer/imageReorderer/images/Lemon.jpg" border="0" alt="Lemon"/>
+              </a>
+            </div>
+            <div class="caption flc-reorderer-imageTitle fl-reorderer-imageTitle">
+              <a href="../../../../demos/reorderer/imageReorderer/images/Lemon.jpg" >Lemon</a>
+            </div>
+          </div>
+          <input id="gallery:::gallery-thumbs:::lightbox-cell:8:reorder-index" value="8" type="hidden"/>
+        </div>
+
+        <div class="float fl-reorderer-movable-default fl-imageReorderer-item" id="gallery:::gallery-thumbs:::lightbox-cell:9:">
+          <div>
+            <div>
+              <a href="../../../../demos/reorderer/imageReorderer/images/Orange.jpg">
+                <img id="fluid.img.9" src="../../../../demos/reorderer/imageReorderer/images/Orange.jpg" border="0" alt="Orange"/>
+              </a>
+            </div>
+            <div class="caption flc-reorderer-imageTitle fl-reorderer-imageTitle">
+              <a href="../../../../demos/reorderer/imageReorderer/images/Orange.jpg" >Orange</a>
+            </div>
+          </div>
+          <input id="gallery:::gallery-thumbs:::lightbox-cell:9:reorder-index" value="9" type="hidden"/>
+        </div>
+
+        <div class="float fl-reorderer-movable-default fl-imageReorderer-item" id="gallery:::gallery-thumbs:::lightbox-cell:10:">
+          <div>
+            <div>
+              <a href="../../../../demos/reorderer/imageReorderer/images/RedApple.jpg">
+                <img id="fluid.img.10" src="../../../../demos/reorderer/imageReorderer/images/RedApple.jpg" border="0" alt="RedApple"/>
+              </a>
+            </div>
+            <div class="caption flc-reorderer-imageTitle fl-reorderer-imageTitle">
+              <a href="../../../../demos/reorderer/imageReorderer/images/RedApple.jpg" >RedApple</a>
+            </div>
+          </div>
+          <input id="gallery:::gallery-thumbs:::lightbox-cell:10:reorder-index" value="10" type="hidden"/>
+        </div>
+
+        <div class="float fl-reorderer-movable-default fl-imageReorderer-item" id="gallery:::gallery-thumbs:::lightbox-cell:11:">
+          <div>
+            <div>
+              <a href="../../../../demos/reorderer/imageReorderer/images/Tamarillo.jpg">
+                <img id="fluid.img.11" src="../../../../demos/reorderer/imageReorderer/images/Tamarillo.jpg" border="0" alt="Tamarillo"/>
+              </a>
+            </div>
+            <div class="caption flc-reorderer-imageTitle fl-reorderer-imageTitle">
+              <a href="../../../../demos/reorderer/imageReorderer/images/Tamarillo.jpg" >Tamarillo</a>
+            </div>
+          </div>
+          <input id="gallery:::gallery-thumbs:::lightbox-cell:11:reorder-index" value="11" type="hidden"/>
+        </div>
+
+        <div class="float fl-reorderer-movable-default fl-imageReorderer-item" id="gallery:::gallery-thumbs:::lightbox-cell:12:">
+          <div>
+            <div>
+              <a href="../../../../demos/reorderer/imageReorderer/images/Mangosteen.jpg">
+                <img id="fluid.img.12" src="../../../../demos/reorderer/imageReorderer/images/Mangosteen.jpg" border="0" alt="Mangosteen"/>
+              </a>
+            </div>
+            <div class="caption flc-reorderer-imageTitle fl-reorderer-imageTitle">
+              <a href="../../../../demos/reorderer/imageReorderer/images/Mangosteen.jpg" >Mangosteen</a>
+            </div>
+          </div>
+          <input id="gallery:::gallery-thumbs:::lightbox-cell:12:reorder-index" value="12" type="hidden"/>
+        </div>
+
+        <div class="float fl-reorderer-movable-default fl-imageReorderer-item orderable" id="gallery:::gallery-thumbs:::lightbox-cell:13:">
+          <div>
+            <div>
+              <a href="../../../../demos/reorderer/imageReorderer/images/Banana.jpg">
+                <img id="fluid.img.13" src="../../../../demos/reorderer/imageReorderer/images/Banana.jpg" border="0" alt="Banana"/>
+              </a>
+            </div>
+            <div class="caption flc-reorderer-imageTitle fl-reorderer-imageTitle">
+              <a href="../../../../demos/reorderer/imageReorderer/images/Banana.jpg" >Banana</a>
+            </div>
+          </div>
+          <input id="gallery:::gallery-thumbs:::lightbox-cell:13:reorder-index" value="13" type="hidden"/>
+        </div>
+      </div>
+
+      <div class="fl-reorderer-instructions">
+        <div class="screen-reader-instructions" tabindex="1">Image Reorderer: To use the keyboard:
+                  Screen reader users turn off virtual cursor (insert + z).
+                  Select an image using i, k, m or j.
+                  Move an image using CTRL + i, k, m or j.
+                  View an image by pressing Enter.</div>
+        <div class="fl-reorderer-downarrow"></div>
+        <div tabindex="-1">
+          View an image by pressing Enter. Move an image using CTRL+Arrow Key.
+        </div>
+      </div>
+    </form>
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" id="html">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>HTML5 Uploader Tests</title>
+
+    <!--  This is the QUnit test css file -->
+    <link rel="stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
+
+    <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+    <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
+
+    <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/enhancement/js/ProgressiveEnhancement.js"></script>
+
+    <script type="text/javascript" src="../../../../src/components/uploader/js/Uploader.js"></script>
+    <script type="text/javascript" src="../../../../src/components/uploader/js/FileQueue.js"></script>
+    <script type="text/javascript" src="../../../../src/components/uploader/js/HTML5UploaderSupport.js"></script>
+    <script type="text/javascript" src="../../../../src/components/progress/js/Progress.js"></script>
+    <script type="text/javascript" src="../../../../src/components/uploader/js/FileQueueView.js"></script>
+    <script type="text/javascript" src="../../../lib/mockjax/js/jquery.mockjax.js"></script>
+
+    <!--  These are the jqUnit test js files -->
+    <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
+    <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+    <script type="text/javascript" src="../../../test-core/utils/js/IoCTestUtils.js"></script>
+
+    <script type="text/javascript" src="../js/UploaderTestUtilities.js"></script>
+    <script type="text/javascript" src="../js/HTML5UploaderSupportTests.js"></script>
+</head>
+
+<body id="body">
+    <h1 id="qunit-header">HTML5 Uploader Support Tests</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+
+     <!-- Test HTML -->
+    <div id="qunit-fixture">
+        <!-- Uploader container -->
+        <div id="browseButtonContainer">
+            <a href="#" id="browseButton" class="flc-uploader-button-browse">Browse Files...</a>
+        </div>
+    </div>
+    <!-- A separate instance for the IoC testing fixtures to avoid confusing standard Qunit markup teardown -->
+    <div id="iocBrowseButtonContainer">
+        <a href="#" id="iocBrowseButton" class="flc-uploader-button-browse">Browse Files...</a>
+    </div>
+    <a href="#" id="focusTarget"></a>
+</body>
+</html>

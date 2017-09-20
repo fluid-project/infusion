@@ -1,0 +1,19 @@
+main {
+    max-width: 50em;
+    padding: 2em;
+}
+
+.example-progress-label {
+    text-align: center;
+}
+
+.example-progress-bar {
+    border: 2px solid #000;
+    height: 2em;
+    width: 100%;
+}
+
+.example-progress-indicator {
+        background-color: #699BD8;
+        height: 100%;
+}

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Paged Table Tests</title>
+
+    <!--  This is the jqUnit test css file -->
+    <link rel="stylesheet" type="text/css" media="screen" href="../../../lib/qunit/css/qunit.css" />
+
+    <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+    <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformation.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformationTransforms.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/enhancement/js/ProgressiveEnhancement.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/core/js/FluidRequests.js"></script>
+    <script type="text/javascript" src="../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidParser.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
+    <script type="text/javascript" src="../../../../src/framework/renderer/js/RendererUtilities.js"></script>
+    <script type="text/javascript" src="../../../../src/components/tooltip/js/Tooltip.js"></script>
+    <script type="text/javascript" src="../../../../src/components/pager/js/Pager.js"></script>
+    <script type="text/javascript" src="../../../../src/components/pager/js/Table.js"></script>
+    <script type="text/javascript" src="../../../../src/components/pager/js/PagedTable.js"></script>
+
+    <!--  These are the jqUnit test js files -->
+    <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
+    <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+    <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit-browser.js"></script>
+    <script type="text/javascript" src="../../../lib/jquery-ui/js/jquery.simulate.js"></script>
+    <script type="text/javascript" src="../../../test-core/utils/js/IoCTestUtils.js"></script>
+
+    <!--  These are used for tests that have been written using this page as data -->
+    <script type="text/javascript" src="../../tooltip/js/TooltipTests.js"></script>
+    <script type="text/javascript" src="../js/PagedTableTests.js"></script>
+  </head>
+
+  <body>
+    <h1 id="qunit-header">Paged Table Test Suite</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+
+    <div id="qunit-fixture">
+        <div id="gradebook">
+            <ul id="pager-top" class="flc-pager-top">
+                <li id="top1" class="flc-pager-pageLink"><a href="#">1</a></li>
+                <li id="top2" class="flc-pager-pageLink"><a href="#">2</a></li>
+                <li id="top3" class="flc-pager-pageLink"><a href="#">3</a></li>
+                <li id="previous-top" class="flc-pager-previous">&lt; previous</li>
+                <li id="next-top" class="flc-pager-next">next &gt;</li>
+            </ul>
+            <table id="students">
+              <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>User Id</td>
+                    <td>Points</td>
+                    <td>Comments</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                    <td>Ahn, Jason</td>
+                    <td>15234314</td>
+                    <td>87</td>
+                    <td>Great job, Jason! Very excited to see a big jump.</td>
+                </tr>
+                <tr>
+                    <td>Azer, Tamer</td>
+                    <td>19206726</td>
+                    <td>68</td>
+                    <td>Lorem ipsum</td>
+                </tr>
+                <tr>
+                    <td>Bellefuille, Elaine</td>
+                    <td>19286942</td>
+                    <td>90</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Braganza, Sherman</td>
+                    <td>19446940</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Campaign, Leslie</td>
+                    <td>19283721</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+              </tbody>
+            </table>
+            <ul id="pager-bottom" class="flc-pager-bottom">
+                   <li id="bottom1" class="flc-pager-pageLink"><a href="#">1</a></li>
+                <li id="bottom2" class="flc-pager-pageLink"><a href="#">2</a></li>
+                <li id="bottom3" class="flc-pager-pageLink"><a href="#">3</a></li>
+                <li id="previous-bottom" class="flc-pager-previous">&lt; previous</li>
+                <li id="next-bottom" class="flc-pager-next">next &gt;</li>
+            </ul>
+        </div>
+
+        <div id="plants">
+            <ul id="plants-pager-top" class="flc-pager-top">
+                   <li id="plants-top1" class="flc-pager-pageLink"><a href="#">1</a></li>
+                <li id="plants-top2" class="flc-pager-pageLink"><a href="#">2</a></li>
+                <li id="plants-top3" class="flc-pager-pageLink"><a href="#">3</a></li>
+                <li id="plants-previous-top" class="flc-pager-previous">&lt; previous</li>
+                <li id="plants-next-top" class="flc-pager-next">next &gt;</li>
+            </ul>
+            <ul class="flc-pager-body-template">
+                <li id="chives">Chives</li>
+                <li>Lovage</li>
+                <li>Oregano</li>
+                <li>Parsley</li>
+                <li>Rhubarb</li>
+                <li>Sylvetta</li>
+            </ul>
+            <ul id="plants-pager-bottom" class="flc-pager-bottom">
+                   <li id="plants-bottom1" class="flc-pager-pageLink"><a href="#">1</a></li>
+                <li id="plants-bottom2" class="flc-pager-pageLink"><a href="#">2</a></li>
+                <li id="plants-bottom" class="flc-pager-pageLink"><a href="#">3</a></li>
+                <li id="plants-previous-bottom" class="flc-pager-previous">&lt; previous</li>
+                <li id="plants-next-bottom" class="flc-pager-next">next &gt;</li>
+            </ul>
+        </div>
+
+        <div id="rendered">
+            <div class="flc-pager-top">
+                <ul class="flc-pager-links">
+                    <li class="flc-pager-pageLink"><a href="#">1</a></li>
+                    <li class="flc-pager-pageLink-skip">...</li>
+                </ul>
+                <ul>
+                    <li class="flc-pager-previous">&lt; previous</li>
+                    <li class="flc-pager-next">next &gt;</li>
+                </ul>
+            </div>
+            <!-- Presence of these two controls tests an obscure FLUID-5082 bug, do not remove -->
+            <span class="flc-pager-summary"></span>
+            <select class="flc-pager-page-size">
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+
+            <table class="flc-pager-body-template">
+                <thead>
+                    <tr class="flc-table-header">
+                        <th class="flc-pager-sort-header"><a class="tests-category" href="#">Category</a></th>
+                        <th class="flc-pager-sort-header"><a class="tests-breed" href="#">Breed</a></th>
+                        <th class="flc-pager-sort-header"><a class="tests-origin" href="#">Origin</a></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="flc-table-row">
+                        <td><span class="tests-category">Animal category</span></td>
+                        <td><span class="tests-breed">Shiba</span></td>
+                        <td><span class="tests-origin">Japan</span></td>
+                        <td><span class="tests-animal">DOGGE</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="flc-pager-bottom">
+                <ul class="flc-pager-links">
+                    <li class="flc-pager-pageLink"><a href="#">1</a></li>
+                    <li class="flc-pager-pageLink-skip">...</li>
+                </ul>
+                <ul>
+                    <li class="flc-pager-previous">&lt; previous</li>
+                    <li class="flc-pager-next">next &gt;</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script>
+        var runTests = fluid.tests.runPagedTableTests;
+        fluid = fluid_3_0_0 = null; // test FLUID-5271 for some substantial part of the framework
+        runTests();
+    </script>
+  </body>
+</html>

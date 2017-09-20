@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" style="font-size: 16px">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Enactors Tests</title>
+
+        <!--  This is the jqUnit test css file -->
+        <link rel="stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
+
+        <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/ResourceLoader.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/RendererUtilities.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/enhancement/js/ProgressiveEnhancement.js"></script>
+        <script type="text/javascript" src="../../../../src/components/tableOfContents/js/TableOfContents.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/UIEnhancer.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/PrefsEditor.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/Panels.js"></script>
+
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/Enactors.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/StarterGrades.js"></script>
+
+        <!--  These are the jqUnit test js files -->
+        <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
+        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+        <script type="text/javascript" src="../../../test-core/utils/js/IoCTestUtils.js"></script>
+
+        <!--  These are tests that have been written using this page as data -->
+        <script type="text/javascript" src="../js/EnactorsTests.js"></script>
+
+    </head>
+
+    <body style="font-size: 1.5rem;">
+        <h1 id="qunit-header">Enactor Test Suite</h1>
+        <h2 id="qunit-banner"></h2>
+        <div id="qunit-testrunner-toolbar"></div>
+        <h2 id="qunit-userAgent"></h2>
+        <ol id="qunit-tests"></ol>
+
+        <div class="flc-styleElements">
+            <div></div>
+        </div>
+
+        <div class="flc-enhanceInputs">
+            <a href="#"></a>
+            <a href="#"></a>
+            <input type="hidden" />
+            <button></button>
+        </div>
+
+        <div class="flc-classSwapper">
+        </div>
+
+        <div class="flc-getSize-parent" style="font-size: 8px">
+            <div class="flc-getSize" style="font-size: 10px">
+            </div>
+        </div>
+
+        <div class="flc-textSize">
+            <div id="flc-textSize-remTest" style="font-size: 2rem"></div>
+        </div>
+
+        <div class="flc-lineSpace-parent" style="font-size: 24px">
+            <div class="flc-lineSpace" style="line-height: 12px; font-size: 6px">
+            </div>
+        </div>
+
+        <div class="flc-tableOfContents">
+            <div class="flc-toc-tocContainer"></div>
+            <h1>Heading 1</h1>
+            <h2>Heading 1.1</h2>
+            <h1>Heading 2</h1>
+        </div>
+
+    </body>
+</html>

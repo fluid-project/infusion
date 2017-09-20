@@ -1,0 +1,123 @@
+/* pager example styles */
+
+.example-pager-container {
+    width:95%;
+}
+
+.example-pager-container input {
+    width: 3em;
+}
+
+.example-pager-container .hidden {
+    display: none;
+}
+
+.example-pager-container a:visited {
+    color: blue;
+}
+
+.example-pager-container a:hover{
+    outline: 2px #000 solid;
+    padding:0px;
+}
+
+/***********************************************
+ * Styles for table formatting.
+ */
+
+.example-pager-container table {
+    width: 100%;
+}
+
+.example-pager-container thead {
+    color: #343499;
+    background-color: #E6E7E8;
+}
+
+.example-pager-container td {
+    padding: .5em .2em;
+}
+
+.example-pager-head-select { width:5%; }
+.example-pager-head-members { width:25%; }
+.example-pager-head-email { width:25%; }
+.example-pager-head-role { width:15%; }
+.example-pager-head-comments { color: #000; }
+
+.example-pager-table-data {
+    width: 100%;
+    clear: both;
+}
+
+/***********************************************
+ * The horizontal pager bar containing Previous, Next, and Page links.
+ */
+.example-pager-bar  {
+    min-width: 555px;
+    margin-left: 0em;
+}
+
+.example-pager-bar  li  {
+    display:inline;
+    float:left;
+}
+
+/***********************************************
+ * Previous and Next default and hover styles
+ */
+
+.example-pager-previous, .example-pager-next {
+    margin: 1px;
+    padding: 2px 6px 2px 6px; /* padding values to align Next and Previous links to Page numbered links */
+}
+
+/***********************************************
+ * Styles for the list of numerated page links.
+ */
+
+.example-pager-pageLink-default a {
+    /* Using display:block and float:left, it creates helps create a horizontal list with fixed width elements.*/
+    display:block;
+    float:left;
+
+    width:3em;
+    text-align:center;
+    margin:2px;
+    border: 1px solid #afafaf;
+}
+
+.example-pager-pageLink-default a {
+    text-decoration: none;
+}
+
+.example-pager-links .fl-pager-currentPage {
+    color: #fff;
+    display:block;
+    width:3em;
+    float:left;
+    background: #000;
+    padding:0px;
+    margin:2px;
+    border: 1px solid #000;
+    text-align:center;
+}
+
+.example-pager-links .fl-pager-currentPage:visited {
+    color: #fff;
+}
+
+.example-pager-head a {
+    display:block;
+    width:100%;
+}
+
+/***********************************************
+ * Styles for pager size selector.
+ */
+.example-pager-page-size {
+    margin-top: 10px;/* horizontal align page size selector to the pager bar. */
+}
+
+ .example-pager-page-size  label {
+    margin-right: 2px;
+ }

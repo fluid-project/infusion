@@ -1,0 +1,136 @@
+/* progress demo styles */
+
+.demo-progress-container {
+    position: relative;
+    min-height: 300px;
+    padding: 1em;
+    background-color: white;
+    border: 3px solid black;
+    max-width: 30em;
+    min-width: 30em;
+    margin-top: 1em;
+}
+
+.demo-progress-container h1 {
+    margin-top: 0.5em;
+}
+
+.demo-progress-container abbr {
+    border:0px;
+}
+
+/* progress bar */
+.demo-progress-popUp {
+    display: none;
+    text-align: center;
+    color: black;
+    margin: 0px auto;
+    width: 20em;
+    z-index: 3000;
+}
+
+.demo-progress-theBar-label {
+    margin-top: 0.6em;
+    margin-bottom: 0;
+}
+
+.demo-progress-theBar {
+    text-align: left;
+    background-image: url('../images/progress-bar-animation.gif');
+    background-position: left top;
+    background-repeat: repeat;
+    background-attachment: fixed;
+    background-color: white;
+    border: 1px solid #000;
+    border-left-width: 2px;
+    border-right-width: 2px;
+    overflow: hidden;
+    -moz-border-radius: 0.2em;
+    -webkit-border-radius: 0.2em;
+}
+
+.demo-progress-indicator {
+    height: 16px;
+    width: 5px;
+    border: 1px solid #2D3E76;
+    border-right-width: 2px;
+    border-left-width: 0px;
+    background-color: #7B7EAE;
+    -moz-border-radius: 0.1em;
+    -moz-border-radius-bottomright: 0;
+    -moz-border-radius-topright: 0;
+    -webkit-border-radius: 0.1em;
+    -webkit-border-bottom-right-radius: 0;
+    -webkit-border-top-right-radius: 0;
+}
+
+.demo-progress-status-container{
+    background-color: #afddc5;
+    padding:1em;
+}
+
+.demo-progress-liveRegion {
+    text-align: center;
+}
+
+.demo-progress-liveRegion > * {
+    border:0;
+    margin-top:1em;
+}
+
+/* hide on start */
+.demo-progress-restart {
+    display: none;
+    color: #006095;
+}
+
+/* table styles */
+
+.demo-progress-table-container {
+    margin: 10px 0px 10px 0px;
+    border:3px solid #d2d3d5;
+    padding: 0px 30px 0px 30px;
+}
+
+.demo-progress-table-container table {
+    width: 100%;
+    border: 0px;
+    margin-top: 10px;
+}
+
+.demo-progress-table-container th {
+    font-weight:bold;
+    text-align:left;
+    border: 0px;
+    padding: 2px;
+}
+
+.demo-progress-table-container td {
+    border: 0px;
+    padding: 2px;
+}
+
+.demo-progress-total-label {
+    width:18em;
+}
+
+/* Submit controls */
+
+.progress-demo-submit {
+    text-align:right;
+    clear:both;
+}
+
+.progress-demo-submit button {
+    background-color: #8bc5eb;
+    border: 1px solid black;
+    padding:3px 15px 3px 15px;
+    color: black;
+}
+
+.progress-demo-submit button:disabled {
+    background-color: #cbe5f6;
+    border: 1px solid #cdcccc;
+    padding:3px 15px 3px 15px;
+    color: #cdcccc;
+}

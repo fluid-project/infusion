@@ -1,0 +1,20 @@
+form, #inline-edit4 {
+    padding: 1em;
+}
+
+.fl-inlineEdit-invitation {
+    background-color: #FFECB3;
+        /* See http://www.quirksmode.org/css/cursor.html#note for cross-platform recommendation */
+    cursor: pointer;
+}
+
+.fl-inlineEdit-invitation-text {
+    color: #999999;
+}
+.fl-inlineEdit-focus {
+    border: 2px solid #777777;
+}
+
+.fluid-undo {
+	  font-size: smaller;
+}

@@ -1,0 +1,16 @@
+{
+    "increasingHeader": "Increase Size",
+    "incSize": "Magnification",
+    "toggleOn": "ON",
+    "toggleOff": "OFF",
+    "magFactorLabel": "Magnification Factor",
+    "magFactorMultiplier": "times",
+    "cursorLabel": "Cursor Size",
+    "cursorMultiplier": "percent",
+    "magPosLabel": "Magnifier Position",
+    "magPos-centre": "Centre",
+    "magPos-left": "Left",
+    "magPos-right": "Right",
+    "magPos-top": "Top",
+    "magPos-bottom": "Bottom"
+}

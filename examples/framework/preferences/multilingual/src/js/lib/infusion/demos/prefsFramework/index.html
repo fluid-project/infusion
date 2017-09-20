@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+        <link rel="shortcut icon" href="http://www.education.noaa.gov/education_web/images/favicon.ico">
+        <link rel="icon" type="image/x-icon" href="http://www.education.noaa.gov/favicon.ico">
+
+        <link rel="stylesheet" type="text/css" href="../../src/lib/normalize/css/normalize.css" />
+        <link rel="stylesheet" type="text/css" href="../../src/framework/core/css/fluid.css" />
+
+        <!-- CSS required for the Prefs Editor -->
+        <link rel="stylesheet" type="text/css" href="../../src/framework/preferences/css/Enactors.css" />
+        <link rel="stylesheet" type="text/css" href="../../src/framework/preferences/css/PrefsEditor.css" />
+        <link rel="stylesheet" type="text/css" href="../../src/framework/preferences/css/SeparatedPanelPrefsEditor.css" />
+        <link rel="stylesheet" type="text/css" href="../../src/components/overviewPanel/css/OverviewPanel.css" />
+
+        <link href="css/main.css" rel="stylesheet" type="text/css" media="screen">
+
+        <script type="text/javascript" src="../../src/lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../src/lib/jquery/ui/js/jquery-ui.js"></script>
+        <script type="text/javascript" src="lib/buzz/js/buzz.js"></script>
+        <!--[if IE 8]>
+            <script type="text/javascript" src="lib/html5shiv/js/html5shiv.js"></script>
+        <![endif]-->
+
+        <script type="text/javascript" src="../../src/framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/ModelTransformation.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/ModelTransformationTransforms.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/ResourceLoader.js"></script>
+        <script type="text/javascript" src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../src/framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../src/framework/renderer/js/RendererUtilities.js"></script>
+        <script type="text/javascript" src="../../src/framework/enhancement/js/ContextAwareness.js"></script>
+        <script type="text/javascript" src="../../src/framework/enhancement/js/ProgressiveEnhancement.js"></script>
+
+        <script type="text/javascript" src="../../src/framework/preferences/js/URLUtilities.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/Store.js"></script>
+        <script type="text/javascript" src="../../src/components/textfieldControl/js/Textfield.js"></script>
+        <script type="text/javascript" src="../../src/components/textfieldControl/js/TextfieldStepper.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/UIEnhancer.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/PrefsEditor.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/Panels.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/SelfVoicingPanel.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/Enactors.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/SelfVoicingEnactor.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/SeparatedPanelPrefsEditor.js"></script>
+        <script type="text/javascript" src="../../src/components/slidingPanel/js/SlidingPanel.js"></script>
+        <script type="text/javascript" src="../../src/components/switch/js/Switch.js"></script>
+        <script type="text/javascript" src="../../src/components/tableOfContents/js/TableOfContents.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/PrimaryBuilder.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/AuxBuilder.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/StarterSchemas.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/SelfVoicingSchemas.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/StarterSchemas.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/Builder.js"></script>
+        <script type="text/javascript" src="../../src/components/uiOptions/js/UIOptions.js"></script>
+        <script type="text/javascript" src="../../src/components/textToSpeech/js/TextToSpeech.js"></script>
+
+        <script type="text/javascript" src="js/prefsEditorDemo.js"></script>
+
+        <!-- for Overview Panel -->
+        <script type="text/javascript" src="../../src/components/overviewPanel/js/OverviewPanel.js"></script>
+        <script type="text/javascript" src="../shared/js/overviewWrapper.js"></script>
+
+        <title>NOAA Education Resources: Climate Change Impacts Collection</title>
+    </head>
+
+    <body class="fl-focus">
+        <!-- The page-wide UI Enhancer needs to be initialized right away -->
+        <script type="text/javascript">
+            $(document).ready(function () {
+                var prefsEditor = fluid.prefs.create(".flc-prefsEditor-separatedPanel", {
+                    build: {
+                        gradeNames: [
+                            "fluid.prefs.auxSchema.starter", // this will add the starter set
+                            "demo.prefsEditor.auxSchema.simplify", // this will add the simplify adjuster and enactor
+                            "demo.prefsEditor.progressiveEnhancement" // progressive enhancment
+                        ],
+                        primarySchema: demo.prefsEditor.primarySchema
+                    }
+                });
+            });
+        </script>
+
+        <div class="flc-overviewPanel fl-overviewPanel-container"></div>
+        <!-- BEGIN markup for Preference Editor -->
+        <div class="flc-prefsEditor-separatedPanel fl-prefsEditor-separatedPanel">
+            <!--
+                This div is for the sliding panel bar that shows and hides the Preference Editor controls in the mobile view.
+                A separate panel bar for mobile displays is needed to preserver the correct tab order.
+            -->
+            <div class="fl-panelBar fl-panelBar-smallScreen">
+                <span class="fl-prefsEditor-buttons">
+                    <button class="flc-slidingPanel-toggleButton fl-prefsEditor-showHide"> Show/Hide</button>
+                    <button class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span> Reset</button>
+                </span>
+            </div>
+
+            <!-- This is the div that will contain the Preference Editor component -->
+            <div class="flc-slidingPanel-panel flc-prefsEditor-iframe"></div>
+
+            <!--
+                This div is for the sliding panel bar that shows and hides the Preference Editor controls in the desktop view.
+                A separate panel bar for desktop displays is needed to preserver the correct tab order.
+            -->
+            <div class="fl-panelBar fl-panelBar-wideScreen">
+                <span class="fl-prefsEditor-buttons">
+                    <button class="flc-slidingPanel-toggleButton fl-prefsEditor-showHide"> Show/Hide</button>
+                    <button class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span> Reset</button>
+                </span>
+            </div>
+        </div>
+        <!-- END markup for Preference Editor -->
+
+        <div class="flc-toc-tocContainer toc"> </div>
+        <div id="content" class="demo-content">
+            <div id="container">
+
+                <header id="header" class="dotGovSub">
+                    <div id="headTitle">
+                        <span class="fl-hidden-accessible">NOAA Office of Education</span>
+                    </div>
+                    <div id="midBlock">
+                        <nav>
+                            <ul id="midNavElements">
+                                <li>
+                                    <a href="#">Home</a>
+                                </li>
+                                <li>
+                                    <a href="#">Education Programs</a>
+                                </li>
+                                <li>
+                                    <a href="#">About this Site</a>
+                                </li>
+                                <li>
+                                    <a href="#">Contact Us</a>
+                                </li>
+                                <li>
+                                    <a href="#">Feedback</a>
+                                </li>
+                            </ul>
+                        </nav>
+
+                        <div id="searchBox" style="margin-right: 5px; margin-top: 0px;">
+                            <input name="t" id="searchme" type="text">
+                            <label for="searchme">
+                                <a id="searchlabel" href="#">Search</a>
+                            </label>
+                        </div>
+                    </div>
+
+                    <script type="text/javascript" src="js/changeClass.js"></script>
+
+                    <div id="mainBlock">
+                        <div id="mainNavElements">
+                            <nav class="navigation">
+                                <div class="dropdown" onmouseover="demo.changeClass('a')" onmouseout="demo.changeAgain('a')" onclick="demo.changeAgain('a')">
+                                    <a href="#" class="mainnavitems"><b>Ocean and Coasts</b></a><span class="spacer">|</span>
+
+                                    <div id="a" style="display:none;  z-index:10000; position:relative; background-color:#0057a5;top:8px; ">
+                                        <div class="top">
+                                            <div style="height:5px"></div>
+
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Ocean and Coasts Homepage</a>
+                                            </p>
+
+                                            <div class="border"></div>
+                                            <p class="ltblue">
+                                                <b>Collections</b>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Gulf Oil Spill</a>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Ocean Currents</a>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Ocean Floor Features</a>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Ocean Pollution</a>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Tides</a>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Tsunami</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div style="height:2px;"></div>
+                                </div>
+
+                                <div class="dropdown" onmouseover="demo.changeClass('b')" onmouseout="demo.changeAgain('b')" onclick="demo.changeAgain('b')">
+                                    <a href="#" class="mainnavitems"><b>Climate</b></a><span class="spacer">|</span>
+                                    <div id="b" style="display:none;  z-index:10000; position:relative; background-color:#0057a5;top:8px; ">
+
+                                        <div class="top">
+                                            <div style="height:8px"></div>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Climate Homepage</a>
+                                            </p>
+                                            <div class="border"></div>
+                                            <p class="ltblue">
+                                                <b>Collections</b>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Carbon Cycle</a>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Changing Seasons</a>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Climate Change Impacts</a>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Climate Monitoring</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div style="height:2px;"></div>
+                                </div>
+
+                                <div class="dropdown" onmouseover="demo.changeClass('c')" onmouseout="demo.changeAgain('c')" onclick="demo.changeAgain('c')">
+                                    <a href="#" class="mainnavitems"><b>Weather and Atmosphere</b></a><span class="spacer">|</span>
+                                    <div id="c" style="display:none;  z-index:10000; position:relative; background-color:#0057a5;top:8px; ">
+
+                                        <div class="top">
+                                            <div style="height:10px"></div>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Weather and Atmosphere Homepage</a>
+                                            </p>
+                                            <div class="border"></div>
+                                            <p class="ltblue">
+                                                <b>Collections</b>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">El Niño</a>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Hurricanes</a>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Space Weather</a>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Weather Observations</a>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Weather Systems and Patterns</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div style="height:2px;"></div>
+
+                                </div>
+
+                                <div class="dropdown" onmouseover="demo.changeClass('d')" onmouseout="demo.changeAgain('d')" onclick="demo.changeAgain('d')">
+                                    <a href="#" class="mainnavitems"><b>Marine Life</b></a><span class="spacer">|</span>
+                                    <div id="d" style="display: none; z-index: 10000; position: relative; background-color: rgb(0, 87, 165); top: 8px;">
+
+                                        <div class="top">
+                                            <div style="height:10px"></div>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Marine Life Homepage</a>
+                                            </p>
+                                            <div class="border"></div>
+                                            <p class="ltblue">
+                                                <b>Collections</b>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Aquatic Food Webs</a>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Coral Ecosystems</a>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Life In An Estuary</a>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Marine Mammals</a>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Sea Turtles</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div style="height:2px;"></div>
+                                </div>
+
+                                <div class="dropdown" onmouseover="demo.changeClass('e')" onmouseout="demo.changeAgain('e')" onclick="demo.changeAgain('e')">
+                                    <a href="#" class="mainnavitems"><b>Freshwater</b></a><span class="spacer">|</span>
+
+                                    <div id="e" style="display:none;  z-index:10000; position:relative; background-color:#0057a5;top:8px; ">
+                                        <div class="top">
+                                            <div style="height:10px"></div>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Freshwater Homepage</a>
+                                            </p>
+
+                                            <div class="border"></div>
+                                            <p class="ltblue">
+                                                <b>Collections</b>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Great Lakes Eco-Region</a>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Water Cycle</a>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Watersheds, Flooding and Pollution</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div style="height:2px;"></div>
+                                </div>
+
+                                <div class="dropdown" onmouseover="demo.changeClass('f')" onmouseout="demo.changeAgain('f')" onclick="demo.changeAgain('f')">
+                                    <a href="#" class="mainnavitems"><b>Special Topics</b></a><span class="spacer"></span>
+                                    <div id="f" style="display:none;  z-index:10000; position:relative; background-color:#0057a5;top:8px; ">
+                                        <div class="top">
+
+                                            <div style="height:10px"></div>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Special Topics Homepage</a>
+                                            </p>
+                                            <div class="border"></div>
+                                            <p class="ltblue">
+                                                <b>Collections</b>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Careers and Technology</a>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Elementary Science</a>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Hands-On Science Activities</a>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Mark Trail Comics</a>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">NOAA in Your Backyard</a>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Photos and Multimedia</a>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Science Olympiad Resources</a>
+                                            </p>
+                                            <div class="border"></div>
+
+                                            <p class="ltblue">
+                                                <b>Other Resources</b>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Educator Opportunities</a>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Funding Opportunities</a>
+                                            </p>
+                                            <p class="navigation">
+                                                <a class="navitems" href="#">Student Opportunities</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div style="height:2px;"></div>
+                                </div>
+
+                            </nav>
+                        </div>
+                    </div>
+
+                </header>
+
+                <nav id="breadcrumbs">
+                    <a href="#">Home</a> &gt;&gt; <a href="#">Climate</a> &gt;&gt; Climate Change Impacts
+                </nav>
+
+                <div id="contentArea" class="home">
+
+                    <article>
+                        <h1 class="ocean">Climate Change Impacts</h1>
+
+                        <img class="icon" style="padding-right: 5px; float: right;" src="images/theme_climate_90.gif" alt="Oceans and Coasts" height="90" width="90">
+                        <aside id="left_box">
+
+                            <div class="left_tab"></div>
+                            <div class="middle_tab">
+                                <h2 class="h1_middle_text">Resources</h2>
+                            </div>
+                            <div class="right_tab"></div><div style="clear:both;"></div>
+                            <div id="newsReleasesList" style="overflow: hidden;border: 1px #CCC solid ;margin-bottom: 11px; ">
+                                <h3 style="padding:5px; padding-bottom:0px; background-color:#F0F8FF">Multimedia</h3>
+                                <ul>
+
+                                    <li>
+                                        <div id="container0" onmouseover="demo.changeClass('d0')" onmouseout="demo.changeAgain('d0')" onclick="demo.changeAgain('d0')" class="container">
+                                            <a class="linker" href="#">Acid Oceans Video (MS, HS)</a>
+                                            <div style="display: none;" id="d0" class="rollover_resources_off">
+                                                <p class="hover_text">
+                                                    <a href="#">A 6-minute video that describes the causes and consequences of ocean acidification.</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div id="container1" onmouseover="demo.changeClass('d1')" onmouseout="demo.changeAgain('d1')" onclick="demo.changeAgain('d1')" class="container">
+                                            <a class="linker" href="#">Ocean Acidification Podcast (MS, HS)</a>
+                                            <div style="display: none;" id="d1" class="rollover_resources_off">
+                                                <p class="hover_text">
+                                                    <a href="#">Episode
+                                                    8: A discussion of a  new study which finds significant ocean
+                                                    acidification in the Caribbean and how coral reefs will adapt to this
+                                                    harmful process. 7:30 min.</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div id="container2" onmouseover="demo.changeClass('d2')" onmouseout="demo.changeAgain('d2')" onclick="demo.changeAgain('d2')" class="container">
+                                            <a class="linker" href="#">The Melting North Pole (MS, HS)</a>
+                                            <div style="display: none;" id="d2" class="rollover_resources_off">
+                                                <p class="hover_text">
+                                                    <a href="#">Animation of arctic sea ice satellite data 2007-2008. These two years had the lowest ice extents on record.</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div id="container3" onmouseover="demo.changeClass('d3')" onmouseout="demo.changeAgain('d3')" onclick="demo.changeAgain('d3')" class="container">
+                                            <a class="linker" href="#">Climate Change Wildlife and Wildlands Video (MS, HS)</a>
+                                            <div style="display: none;" id="d3" class="rollover_resources_off">
+                                                <p class="hover_text">
+                                                    <a href="#">An
+                                                    engaging video on climate change science, and impacts on wildlife and
+                                                    their habitats. Includes a segment on "what you can do". 12 min.</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ul>
+
+                                <h3 style="padding:5px; padding-bottom:0px; background-color:#F0F8FF">Lessons and Activities</h3>
+                                <ul>
+
+                                    <li>
+                                        <div id="container4" onmouseover="demo.changeClass('d4')" onmouseout="demo.changeAgain('d4')" onclick="demo.changeAgain('d4')" class="container">
+                                            <a class="linker" href="#">Climate Change and Corals (ES, MS)</a>
+                                            <div style="display: none;" id="d4" class="rollover_resources_off">
+                                                <p class="hover_text">
+                                                    <a href="#">Three simple classroom hands-on activities about ocean acidification and sea level rise.</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div id="container5" onmouseover="demo.changeClass('d5')" onmouseout="demo.changeAgain('d5')" onclick="demo.changeAgain('d5')" class="container">
+                                            <a class="linker" href="#">Explore Your Eco-Region (MS)</a>
+                                            <div id="d5" class="rollover_resources_off">
+                                                <p class="hover_text">
+                                                    <a href="#">Case
+                                                    studies, lesson plans  and activities that bring alive the climate
+                                                    change impacts and solutions in 11 ecological regions. (Such as- Great
+                                                    Lakes, Gulf Coast, and Prairie Grasslands)</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div id="container6" onmouseover="demo.changeClass('d6')" onmouseout="demo.changeAgain('d6')" onclick="demo.changeAgain('d6')" class="container">
+                                            <a class="linker" href="#">Our Changing World - Alaska (MS)</a>
+                                            <div id="d6" class="rollover_resources_off">
+                                                <p class="hover_text">
+                                                    <a href="#">A
+                                                    collection of 5 individual units presenting climate change impacts to
+                                                    glaciers, sea ice, native ecosystems and the wildlife and people that
+                                                    inhabit them.  Includes short videos, hands-on and data analysis
+                                                    activities.</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div id="container7" onmouseover="demo.changeClass('d7')" onmouseout="demo.changeAgain('d7')" onclick="demo.changeAgain('d7')" class="container">
+                                            <a class="linker" href="#">Drought Online Unit (MS)</a>
+                                            <div id="d7" class="rollover_resources_off">
+                                                <p class="hover_text">
+                                                    <a href="#">Students investigate climate patterns using precipitation data.  Includes graphing of online data.</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div id="container8" onmouseover="demo.changeClass('d8')" onmouseout="demo.changeAgain('d8')" onclick="demo.changeAgain('d8')" class="container">
+                                            <a class="linker" href="#">Are You Getting Thirsty? (HS)</a>
+                                            <div id="d8" class="rollover_resources_off">
+                                                <p class="hover_text">
+                                                    <a href="#">Students
+                                                    research and discuss historic drought and flood events related to
+                                                    climate conditions, water temperature, and stream flow rate data.</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div id="container9" onmouseover="demo.changeClass('d9')" onmouseout="demo.changeAgain('d9')" onclick="demo.changeAgain('d9')" class="container">
+                                            <a class="linker" href="#">Climate Change Education Modules (MS)</a>
+                                            <div id="d9" class="rollover_resources_off">
+                                                <p class="hover_text">
+                                                    <a href="#">Seven education modules on human and ecological responses to climate change, each involve data interpretation.</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ul>
+
+                                <h3 style="padding:5px; padding-bottom:0px; background-color:#F0F8FF">Real World Data</h3>
+                                <ul>
+
+                                    <li>
+                                        <div id="container10" onmouseover="demo.changeClass('d10')" onmouseout="demo.changeAgain('d10')" onclick="demo.changeAgain('d10')" class="container">
+                                            <a class="linker" href="#">Climate Predictions</a>
+                                            <div id="d10" class="rollover_resources_off">
+                                                <p class="hover_text">
+                                                    <a href="#">Explore how climate phenomena are likely to unfold in the coming days, weeks and months.</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div id="container11" onmouseover="demo.changeClass('d11')" onmouseout="demo.changeAgain('d11')" onclick="demo.changeAgain('d11')" class="container">
+                                            <a class="linker" href="#">Climate At A Glance</a>
+                                            <div id="d11" class="rollover_resources_off">
+                                                <p class="hover_text">
+                                                    <a href="#">Current and historical temperature and precipitation data organized and graphed by region, state, city and the national level.</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div id="container12" onmouseover="demo.changeClass('d12')" onmouseout="demo.changeAgain('d12')" onclick="demo.changeAgain('d12')" class="container">
+                                            <a class="linker" href="#">Sea Level Trends</a>
+                                            <div id="d12" class="rollover_resources_off">
+                                                <p class="hover_text">
+                                                    <a href="#">Interactive map allows access to sea level trends at individual locations around the U.S. coast.</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div id="container13" onmouseover="demo.changeClass('d13')" onmouseout="demo.changeAgain('d13')" onclick="demo.changeAgain('d13')" class="container">
+                                            <a class="linker" href="#">U.S. Drought Portal</a>
+                                            <div id="d13" class="rollover_resources_off">
+                                                <p class="hover_text">
+                                                    <a href="#">The US Government's official web portal for drought conditions and forecasts.</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div id="container14" onmouseover="demo.changeClass('d14')" onmouseout="demo.changeAgain('d14')" onclick="demo.changeAgain('d14')" class="container">
+                                            <a class="linker" href="#">Sea Ice Interactive Data</a>
+                                            <div id="d14" class="rollover_resources_off">
+                                                <p class="hover_text">
+                                                    <a href="#">Interactive and easily searchable real time and historic data source for arctic and Antarctic sea ice.</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div id="container15" onmouseover="demo.changeClass('d15')" onmouseout="demo.changeAgain('d15')" onclick="demo.changeAgain('d15')" class="container">
+                                            <a class="linker" href="#">Data For Google Earth</a>
+                                            <div id="d15" class="rollover_resources_off">
+                                                <p class="hover_text">
+                                                    <a href="#">Ice, Glacier, Soil Moisture and other data files for Google Earth.</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div id="container16" onmouseover="demo.changeClass('d16')" onmouseout="demo.changeAgain('d16')" onclick="demo.changeAgain('d16')" class="container">
+                                            <a class="linker" href="#">Extreme Weather and Climate Events</a>
+                                            <div id="d16" class="rollover_resources_off">
+                                                <p class="hover_text">
+                                                    <a href="#">Data
+                                                    source for severe and extreme events including; temperature, rain fall
+                                                    and snow fall, U.S. weather records, hurricanes, tornadoes and other
+                                                    weather disasters.</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ul>
+
+                                <h2 style="padding:5px; padding-bottom:0px; background-color:#F0F8FF">Background Information</h2>
+                                <ul>
+
+                                    <li>
+                                        <div id="container17" onmouseover="demo.changeClass('d17')" onmouseout="demo.changeAgain('d17')" onclick="demo.changeAgain('d17')" class="container">
+                                            <a class="linker" href="#">Climate Change Impacts in Eastern U.S.</a>
+                                            <div id="d17" class="rollover_resources_off">
+                                                <p class="hover_text">
+                                                    <a href="#">2009
+                                                    NSTA/NOAA webinar focused on specific climate changes, current and
+                                                    expected in the Eastern United States. Also links to other climate
+                                                    change webinars.</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div id="container18" onmouseover="demo.changeClass('d18')" onmouseout="demo.changeAgain('d18')" onclick="demo.changeAgain('d18')" class="container">
+                                            <a class="linker" href="#">Climate Change Impacts in Western U.S.</a>
+                                            <div id="d18" class="rollover_resources_off">
+                                                <p class="hover_text">
+                                                    <a href="#">2009
+                                                    NSTA/NOAA webinar focused on specific climate changes, current and
+                                                    expected in the Western United States. Also links to other climate
+                                                    change webinars.</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div id="container19" onmouseover="demo.changeClass('d19')" onmouseout="demo.changeAgain('d19')" onclick="demo.changeAgain('d19')" class="container">
+                                            <a class="linker" href="#">Climate Change Impacts: Key U.S. Findings</a>
+                                            <div id="d19" class="rollover_resources_off">
+                                                <p class="hover_text">
+                                                    <a href="#">Describes
+                                                    current and predicted impacts to different sectors, including;
+                                                    transportation, human health, agriculture, ecosystems and society.</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div id="container20" onmouseover="demo.changeClass('d20')" onmouseout="demo.changeAgain('d20')" onclick="demo.changeAgain('d20')" class="container">
+                                            <a class="linker" href="#">NOAA Ocean Acidification Webpage</a>
+                                            <div id="d20" class="rollover_resources_off">
+                                                <p class="hover_text">
+                                                    <a href="#">Frequently Asked Questions, Fact Sheets, videos and other information about ocean acidification.</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div id="container21" onmouseover="demo.changeClass('d21')" onmouseout="demo.changeAgain('d21')" onclick="demo.changeAgain('d21')" class="container">
+                                            <a class="linker" href="#">Climate Change FAQs</a>
+                                            <div id="d21" class="rollover_resources_off">
+                                                <p class="hover_text">
+                                                    <a href="#">FAQs
+                                                    about the causes, evidence, projections and impacts of climate change.
+                                                    Reports are from the Intergovernmental Panel on Climate Change (IPCC).</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div id="container22" onmouseover="demo.changeClass('d22')" onmouseout="demo.changeAgain('d22')" onclick="demo.changeAgain('d22')" class="container">
+                                            <a class="linker" href="#">Global Climate Change Impacts Report</a>
+                                            <div id="d22" class="rollover_resources_off">
+                                                <p class="hover_text">
+                                                    <a href="#">20
+                                                    page report summarizes the science of climate change and the impacts of
+                                                    climate change on the United States, now and in the future.(June 2010
+                                                    4mb PDF)</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                </ul>
+
+                            </div>
+
+                        </aside>
+                        <p class="first">
+                            Climate changes are underway in the United States and are projected to grow.
+                        </p>
+
+                        <p>
+                            Global temperature has increased over the past 50 years,
+                            primarily due to human behaviors that release heat-trapping gases, like
+                            carbon dioxide.
+                        </p>
+
+                        <p class="first">
+                            Widespread climate-related impacts are occurring now and are expected to increase.
+                        </p>
+
+                        <p>
+                            Changes are happening in the United States, and elsewhere, but the
+                            impacts vary from region to region. These changes are affecting sectors
+                            of our society that cross regional boundaries. Already impacted are
+                            things that we depend upon; water, energy, transportation, agriculture,
+                            ecosystems, and human health.
+                        </p>
+                        <figure id="article_image" style="padding-top: 5px; width: 402px;">
+                            <a href="#"><img src="images/climate_change_collection_img.jpg" alt="climate change graphic" height="242" width="400"></a>
+                            <div class="theme_image_caption" style="width: 402px;">
+                                The global average combined land and ocean surface temperature for the month of June 2010 was the warmest on record.
+                                <br>
+                                <a href="#">NOAA Environmental Visualization Laboratory</a>
+                                <br>
+                                <a href="#">High Resolution Image with more information about the graphic</a>
+                            </div>
+                        </figure>
+                        <p>
+                            Across the country, water is an issue. However, the specific impact
+                            is different from location to location. In some regions, particularly
+                            in the western United States, drought is an important issue. Less snow
+                            in the mountains is important in the West and Alaska where the snowpack
+                            stores water for later use. In the Midwest and northeastern states, the
+                            amount of heavy downpours has substantially increased over the past few
+                            decades. In most regions, floods and water quality problems are likely
+                            to be worse because of climate change.
+                        </p>
+                        <p>
+                            Agriculture is considered adaptable to changes in climate. However,
+                            changes, like increased temperatures, water stress, diseases, and
+                            weather extremes will create new challenges for food producers, upon
+                            which our society depends.
+                        </p>
+                        <p>
+                            Human health is likely to be affected by climate change.&nbsp;A
+                            changing environment will likely cause more heat stress, an increase in
+                            waterborne diseases, poor air quality, extreme weather events, and
+                            diseases transmitted by insects and rodents. Higher sea levels and storm
+                            surges will cause U.S. coastal areas to be at a greater risk of erosion
+                            and flooding.
+                        </p>
+                        <p class="first">
+                            Future climate change and its impacts depend on choices made today.
+                        </p>
+                        <p>
+                            The amount of future climate change largely depends on the amount
+                            of heat-trapping gases released by humans. Lower releases of these gases
+                            will decrease the impact of climate change. However, unless
+                            substantially decreased emissions the impacts are expected to become
+                            increasingly worse.
+                        </p>
+
+                        <section>
+                            <p class="topicheading">
+                                Educational Connection
+                            </p>
+
+                            <p>
+                                This Climate Change Impacts Collection provides the teacher and
+                                their students the opportunity to explore some of the environmental
+                                changes already observed, from the Arctic to tropical regions. Data
+                                sources provide historic precipitation and temperature records, allowing
+                                students to compare changes in their own local area to others. Lessons
+                                included, provide opportunities for place-based instruction related to
+                                climate change, others provided a more global perspective. The
+                                background resources provided in this collection tend to be for the
+                                teacher and/or the advanced student.
+                            </p>
+                        </section>
+                        <p class="caption">
+                            Adapted from materials provided by <a href="#">Global Climate Change Impacts in the United States</a>
+                        </p>
+                    </article>
+
+                    <aside class="box" style="margin-bottom: 10px;">
+                        <h2>Features</h2>
+                        <div class="line"></div>
+                        <article class="article" style="margin-left:2px;">
+                            <a href="#"> <img src="images/article_climate_change_1.gif" alt="Ocean buoy helps collect climate data" height="200" width="250"></a>
+                            <div class="article_description">
+                                <div class="line"></div>
+                                <h3><a href="#">Ocean Stored Significant Warming Over Last 16 Years</a></h3>
+                                <p>
+                                    <span class="caption">May 2010 (<a href="#">NOAA</a>) </span>
+                                    <br>
+                                    The upper layer of the world's ocean has warmed since 1993, indicating a
+                                    strong climate change signal, according to a new study. The energy
+                                    stored is enough to power nearly 500 100-watt light bulbs per each of
+                                    the roughly 6.7 billion people on the planet continuously over the
+                                    16-year study period....
+                                    <a href="#">Read More</a>
+                                </p>
+                            </div>
+                        </article>
+                        <article class="article" style="margin-left:34px;">
+                            <a href="#"> <img src="images/article_climate_change_2.gif" alt="Climate Change impacts coral reef health" height="200" width="250"></a>
+                            <div class="article_description">
+                                <div class="line"></div>
+                                <h3><a href="#">"Vital New Roadmap" Underscores Need to Study Climate Change, Human Health Links</a></h3>
+                                <p>
+                                    <span class="caption">April 2010 (<a href="#">NOAA News</a>) </span>
+                                    <br>
+                                    The vulnerability of people to the health effects of climate change is
+                                    the focus of a report released today by an NIH-led federal interagency
+                                    group that includes NOAA....
+                                    <a href="#">Read More</a>
+                                </p>
+                            </div>
+                        </article>
+                        <article class="article" style="margin-left:34px;">
+                            <a href="#"> <img src="images/article_climate_change_3.gif" alt="Barrels of toxic chemicals potential threat as sea levels rise" height="200" width="250"></a>
+                            <div class="article_description">
+                                <div class="line"></div>
+                                <h3><a href="#">Time and Tides</a></h3>
+                                <p>
+                                    <span class="caption">July 2010 (<a href="#">NOAA Climate Watch Magazine</a>) </span>
+                                    <br>
+                                    The impacts of climate change and sea level rise have the potential to
+                                    contaminate facilities and natural resources in the Pacific Northwest.
+                                    Now, coastal managers have a new tool to help them visualize future
+                                    changes and decide how they might avoid these problems....
+                                    <a href="#">Read More</a>
+                                </p>
+                            </div>
+                        </article>
+                        <div style="clear:both;"></div>
+
+                    </aside>
+                </div>
+
+            </div>
+
+            <footer id="footer">
+                <a href="#">Privacy Policy</a> | <a href="#">FOIA</a> | <a href="#">Information Quality</a> | <a href="#">Disclaimer</a> | <a href="#">USA.gov</a> | <a href="#">Ready.gov</a> | <a href="#">Contact Webmaster</a>
+                <br/>
+                Full Site | <a href="#">Mobile Site</a>
+            </footer>
+        </div>
+    </body>
+</html>

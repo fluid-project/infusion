@@ -1,0 +1,33 @@
+section {
+    margin: 2rem;
+}
+
+td,
+th {
+    padding: 1em 1.5em;
+    border: 0 solid;
+}
+
+th {
+    background: #DCDCDC;
+}
+
+.fl-reorderer-movable-default:hover,
+.fl-reorderer-movable-selected {
+    cursor: move;
+    background: #eee;
+}
+
+.fl-reorderer-avatar,
+.fl-reorderer-movable-dragging {
+  background: #ffc !important;
+  outline: 1px solid red;
+}
+
+.fl-reorderer-avatar {
+    opacity: 0.75;
+}
+
+.fl-reorderer-dropMarker {
+    height: 2em;
+}

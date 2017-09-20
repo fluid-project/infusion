@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../../src/lib/normalize/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="../lib/foundation/css/foundation.css" />
+    <link rel="stylesheet" type="text/css" href="../../src/lib/jquery/ui/css/default-theme/jquery-ui.css" />
+    <link rel="stylesheet" type="text/css" href="../../src/framework/core/css/fluid.css" />
+    <link rel="stylesheet" type="text/css" href="../../src/components/inlineEdit/css/InlineEdit.css" />
+    <link rel="stylesheet" type="text/css" href="../../src/components/overviewPanel/css/OverviewPanel.css" />
+    <link rel="stylesheet" type="text/css" href="css/InlineEdit.css" />
+
+    <script type="text/javascript" src="../../src/lib/jquery/core/js/jquery.js"></script>
+    <script type="text/javascript" src="../../src/lib/jquery/ui/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/Fluid.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/FluidDocument.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/FluidIoC.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/DataBinding.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/FluidView.js"></script>
+    <script type="text/javascript" src="../../src/components/tooltip/js/Tooltip.js"></script>
+    <script type="text/javascript" src="../../src/components/inlineEdit/js/InlineEdit.js"></script>
+    <script type="text/javascript" src="../../src/components/undo/js/Undo.js"></script>
+
+    <!-- required for the Overview Panel -->
+    <script type="text/javascript" src="../../src/framework/core/js/FluidDOMUtilities.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/FluidRequests.js"></script>
+    <script type="text/javascript" src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+    <script type="text/javascript" src="../../src/framework/renderer/js/fluidParser.js"></script>
+    <script type="text/javascript" src="../../src/framework/renderer/js/fluidRenderer.js"></script>
+    <script type="text/javascript" src="../../src/framework/renderer/js/RendererUtilities.js"></script>
+    <script type="text/javascript" src="../../src/components/overviewPanel/js/OverviewPanel.js"></script>
+    <script type="text/javascript" src="../shared/js/overviewWrapper.js"></script>
+
+    <script type="text/javascript" src="js/inlineEditDemo.js"></script>
+
+    <title>Inline Edit Demo</title>
+</head>
+
+<body>
+    <div class="flc-overviewPanel fl-overviewPanel-container"></div>
+    <section class="row">
+        <div class="demo-inlineEdit-indent large-centered">
+            <p class="demo-inlineEdit-instructions"><strong>Mouse instructions:</strong> Click an editable area to activate the text area. Use the 'Escape' key to cancel, or the 'Enter,' 'Return' or 'Tab' key to finish editing.</p>
+            <p class="demo-inlineEdit-instructions"><strong>Keyboard instructions:</strong> Use the 'Enter' or 'Return' key to activate the text area. Use the 'Escape' button to cancel, or the 'Enter,' 'Return' or 'Tab' key to finish editing.</p>
+
+            <div class="demoSelector-inlineEdit-container-title">
+                <p class="flc-inlineEdit-text demo-inlineEdit-title"></p>
+            </div>
+
+            <figure>
+                <img src="images/red-car.jpg" alt="shiny red car" />
+                <figcaption class="demoSelector-inlineEdit-container-caption">Caption: <span class="flc-inlineEdit-text">A red vintage car</span></figcaption>
+            </figure>
+
+            <script type="text/javascript">
+                demo.inlineEdit(".demoSelector-inlineEdit-container-title", {
+                    styles: {
+                        edit: "demo-inlineEdit-title-edit demo-inlineEdit-edit"
+                    }
+                });
+                demo.inlineEdit(".demoSelector-inlineEdit-container-caption");
+            </script>
+        </div>
+    </section>
+</body>
+</html>

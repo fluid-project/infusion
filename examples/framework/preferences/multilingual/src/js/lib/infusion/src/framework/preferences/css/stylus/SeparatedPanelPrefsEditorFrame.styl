@@ -1,0 +1,213 @@
+@import "utils/Themes"
+
+@font-face {
+    font-family: "OpenSans";
+    src: url("../../../lib/fonts/OpenSans-Light.ttf");
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'OpenSans';
+    src:url('../../../lib/fonts/OpenSans-Regular.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'OpenSans';
+    src:url('../../../lib/fonts/OpenSans-Semibold.ttf');
+    font-weight: 600;
+    font-style: normal;
+}
+
+html {
+    overflow: hidden;
+
+    // overriding .fl-hiddem-accessible to preserve
+    // propper iframe scrolling in iOS
+    .fl-hidden-accessible {
+        position: fixed;
+    }
+}
+
+/* Preferences Editor Separated Panel styles */
+.fl-prefsEditor-separatedPanel {
+    background-color: #fff;
+    // TODO: remove from mobile once adjusters fit full height of sliding panel
+    background-image: url('../images/default/separatedpanelbg.png');
+    background-repeat: repeat;
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    color: #5d5652;
+
+    .fl-prefsEditor {
+        font-family: 'OpenSans',"Myriad Pro", Helvetica, Arial, sans-serif;
+        line-height: 1.2 !important; // FLUID-4959: fix the line height so it doesn't scale with the Preferences Editor line space scaling.
+
+        // Required to force the iframe to fit the device width and scroll on iOS
+        width: 1px;
+        min-width: 100%;
+        overflow-x: scroll;
+    }
+
+    // Preference Panels
+    .fl-prefsEditor-panels {
+        white-space: nowrap;
+        display: table;
+        margin: 0;
+
+        .fl-prefsEditor-panel {
+            border: 1px solid #615e59;
+            // minus 2px because of borders
+            min-width: calc(100vw - 2px);
+            background-color: #fff;
+            white-space: normal;
+            display: table-cell;
+            padding: 16px 0.5rem;
+
+            h2 {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                min-height: 3.6rem;
+                text-transform: lowercase;
+                white-space: nowrap;
+
+                [class*='fl-icon-'] {
+                    display: none;
+                }
+
+                .fl-heading-text {
+                    padding-top: 0.2rem;
+                    font-size: 1.3em;
+                    font-weight: 600;
+                    text-align: center;
+                }
+
+                // for right and left arrows
+                &:before, &:after {
+                    font-family: "Times New Roman", Georgia, Times, serif !important;
+                    speak: none;
+                    font-style: normal;
+                    font-weight: normal;
+                    font-variant: normal;
+                    text-transform: none;
+                    -webkit-font-smoothing: antialiased;
+                    font-size: 3rem;
+                }
+
+                // Single Left-Pointing Angle Quotation Mark
+                &:before {
+                    content: "\2039";
+                    margin-left: 1rem;
+                }
+
+                // Single Right-Pointing Angle Quotation Mark
+                &:after {
+                    content: "\203a";
+                    margin-right: 1rem;
+                }
+            }
+
+            // hide left arrow from first panel
+            // hide right arrow from last panel
+            &:first-of-type h2:before,
+            &:last-of-type h2:after {
+                visibility: hidden;
+            }
+
+            // visually hide descriptions in mobile view.
+            // this style declaration is essentially a copy of
+            // .fl-hidden-accessible
+            .fl-prefsEditor-panel-descr {
+                border: 0;
+                clip: rect(0 0 0 0);
+                height: 1px;
+                margin: -1px;
+                overflow: hidden;
+                padding: 0;
+                position: fixed;
+                width: 1px;
+            }
+
+            label {
+                font-size: 1rem;
+            }
+
+            // Stepper
+            .fl-textfieldStepper {
+                [class*='fl-icon-'] {
+                    display: none;
+                }
+
+                .fl-textfieldStepper-focusContainer {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center
+                }
+            }
+        }
+    }
+
+    // large screen / desktop view
+    @media screen and (min-width: 40em) {
+
+        padding: 1px 0px;
+        margin: 0px;
+
+        // Preference Panels
+        .fl-prefsEditor-panels {
+            margin: 1rem 0;
+            border-spacing: 20px 0px;
+
+            .fl-prefsEditor-panel {
+                padding: 1.5rem;
+                padding-top: 1rem;
+                border-radius: 5px;
+                box-shadow: 2px 2px #7a766d;
+                min-width: 25rem;
+
+                h2 {
+                    justify-content: flex-start;
+                    margin: 0 0 1.8rem 0;
+                    border-bottom: solid #ccc 1px;
+                    box-shadow: 0px 6px 7px -6px rgba(0,0,0,0.3);
+                    font-size: 1.2rem;
+                    height: 3rem;
+                    white-space: normal;
+
+                    [class*='fl-icon-'] {
+                        display: inline;
+                    }
+
+                    &:before, &:after {
+                        content: none;
+                    }
+                }
+
+                .fl-prefsEditor-panel-descr {
+                    height: auto;
+                    margin: 0;
+                    margin-bottom: 1rem;
+                    overflow: visible;
+                    position: inherit;
+                    width: 100%;
+                }
+
+                // Stepper icons
+                .fl-textfieldStepper {
+                    [class*='fl-icon-'] {
+                        display: inline;
+                        margin: 0 0.3em;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Theming
+build-themes-separatedPanelPrefsEditorFrame(themes);

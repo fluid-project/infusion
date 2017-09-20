@@ -1,0 +1,15 @@
+{
+    "strings": {
+        "componentName": "User Interface Options"
+    },
+    "markup": {
+        "description": "The User Interface Options component (UI Options) allows users to transform the presentation of the user interface and content resources so that they are personalized to the individual user's needs.",
+        "instructions": "<ul><li>To access UI Options, click the 'Show Display Preferences' tab in the upper right corner of the window.</li><li>Try adjusting the controls in the panel that opens. You will see the changes applied to the page immediately.</li></ul>"
+    },
+    "links": {
+        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/uiOptions",
+        "apiLink": "http://docs.fluidproject.org/infusion/development/UserInterfaceOptionsAPI.html",
+        "designLink": "http://wiki.fluidproject.org/pages/viewpage.action?pageId=29959408",
+        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=UI%20Options%20feedback"
+    }
+}

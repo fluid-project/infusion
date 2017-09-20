@@ -1,0 +1,38 @@
+.demo-gridReorderer-container {
+    margin-top: 4em;
+}
+
+.demo-gridReorderer-alphabetGrid {
+    width    : 15em;
+}
+
+.demo-gridReorderer-alphabetGrid div,
+div.demo-gridReorderer-avatar {
+    width       : 2em;
+    height      : 2em;
+    margin      : 5px;
+    text-align  : center;
+    display     : inline;
+    float       : left;
+    font-size   : 2em;
+    font-style: : bold;
+    padding-top : 10px;
+    outline     : 1px solid #CCC;
+}
+
+div.demo-gridReorderer-dragging,
+.demo-gridReorderer-avatar {
+    outline          : 2px solid #000;
+    background-color : #9fff9f;
+    filter           : alpha(opacity=75);
+    opacity          : 0.75;
+}
+
+.demo-gridReorderer-container  div.demo-gridReorderer-selected {
+    cursor : move;
+}
+
+.demo-gridReorderer-container div.demo-gridReorderer-dropMarker {
+    outline: 3px solid #008800;
+    width            : 0;
+}

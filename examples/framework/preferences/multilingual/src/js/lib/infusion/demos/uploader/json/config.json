@@ -1,0 +1,15 @@
+{
+    "strings": {
+        "componentName": "Uploader"
+    },
+    "markup": {
+        "description": "The Uploader allows users to upload multiple files. The user can select desired files from their computer, view them in a queue, add or remove files to and from the queue, and upload them. <p><em>Note: If the browser does not support HTML5 upload and JavaScript, a basic single file uploader will be provided instead.</em></p>",
+        "instructions": "<ul><li>Click the 'Browse Files' buttonto select files to be added to the queue.</li><li>Use the red 'X' delete button to remove files from the queue.</li><li>Click the 'Add More' button to add more files to the queue.</li><li>Click 'Upload' to start the upload.</li><li>Click 'Stop Upload' to pause the upload.</li></ul>"
+    },
+    "links": {
+        "demoCodeLink": "https://github.com/fluid-project/infusion/tree/master/demos/uploader",
+        "apiLink": "http://docs.fluidproject.org/infusion/development/UploaderAPI.html",
+        "designLink": "http://wiki.fluidproject.org/display/Infusion13/Uploader+Design+Overview",
+        "feedbackLink": "mailto:infusion-users@fluidproject.org?subject=Uploader%20feedback"
+    }
+}

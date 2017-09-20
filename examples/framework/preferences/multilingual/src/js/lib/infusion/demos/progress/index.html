@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <title>Progress Example</title>
+        <link rel="stylesheet" type="text/css" href="../../src/lib/normalize/css/normalize.css" />
+        <link rel="stylesheet" type="text/css" href="../lib/foundation/css/foundation.css" />
+        <link rel="stylesheet" type="text/css" href="../../src/framework/core/css/fluid.css" />
+        <link rel="stylesheet" type="text/css" href="../../src/components/overviewPanel/css/OverviewPanel.css" />
+        <link rel="stylesheet" type="text/css" href="css/progress.css" />
+
+        <script type="text/javascript" src="../../src/lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../src/lib/jquery/ui/js/jquery-ui.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/DataBinding.js"></script>
+
+        <!-- required for the Overview Panel -->
+        <script type="text/javascript" src="../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../src/framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../src/framework/renderer/js/RendererUtilities.js"></script>
+        <script type="text/javascript" src="../../src/components/overviewPanel/js/OverviewPanel.js"></script>
+        <script type="text/javascript" src="../shared/js/overviewWrapper.js"></script>
+
+        <script type="text/javascript" src="../../src/components/progress/js/Progress.js"></script>
+        <script type="text/javascript" src="js/progressDemo.js"></script>
+    </head>
+    <body>
+        <div class="flc-overviewPanel fl-overviewPanel-container"></div>
+        <div class="demoSelector-shoppingDemo demo-progress-container fl-centered fl-focus">
+
+            <h1>Zip Grocery Delivery</h1>
+
+            <!-- The area that displays dynamic status messages and the progress bar. -->
+            <div id="demo-status-message" class="demo-progress-status-container">
+
+                <div class='demoSelector-liveRegion demo-progress-liveRegion'>
+                    <!-- status text for progress -->
+                    <p class='demoSelector-progress-status-text demo-progress-status-text'></p>
+                    <!-- links to the demo page -->
+                    <a class='demoSelector-progress-restart demo-progress-restart' href="index.html">Restart the Demo</a>
+                </div>
+
+                <!-- progress simulation -->
+                <div class="demoSelector-progress-theComponent">
+                    <div class="flc-progress demo-progress-popUp">
+                        <div class="flc-progress-bar demo-progress-theBar">
+                            <div class="flc-progress-indicator demo-progress-indicator">
+                            </div>
+                        </div>
+                        <p class="flc-progress-label demo-progress-theBar-label">
+                            0% Complete
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-progress-table-container">
+
+                <!-- The customer's order. -->
+                <table>
+                    <caption>Order Summary</caption>
+                    <tr>
+                         <th>Item</th>
+                         <th><abbr title="Quantity">Qty.</abbr></th>
+                         <th>Price</th>
+                    </tr>
+
+                    <tr>
+                         <td>Apples</td>
+                         <td>1<abbr title="pound">lb.</abbr></td>
+                         <td>$ 1.12</td>
+                    </tr>
+
+                    <tr>
+                         <td>Bananas</td>
+                         <td>2<abbr title="pounds">lb.</abbr></td>
+                         <td>$ 2.10</td>
+                    </tr>
+
+                    <tr>
+                         <td>Corn Flakes</td>
+                         <td>1</td>
+                         <td>$ 2.99</td>
+                    </tr>
+
+                    <tr>
+                         <td>8<abbr title="pounds">lb.</abbr> Rice</td>
+                         <td>1</td>
+                         <td>$ 5.99</td>
+                    </tr>
+
+                     <tr>
+                         <td>Ground Coffee</td>
+                         <td>1<abbr title="pound">lb.</abbr></td>
+                         <td>$10.99</td>
+                    </tr>
+              </table>
+
+              <!-- Subtotal, surcharge, and order total table. -->
+              <table>
+                    <tr>
+                         <th id="demo-subtotal" class="demo-progress-total-label">SUBTOTAL</th>
+                         <td headers="demo-subtotal">$23.19</td>
+                    </tr>
+
+                     <tr>
+                         <th id="demo-service" class="demo-progress-total-label">Service Charge</th>
+                         <td headers="demo-service">$ 7.32</td>
+                    </tr>
+
+                    <tr>
+                         <th id="demo-total" class="demo-progress-total-label">TOTAL</th>
+                         <td headers="demo-total">$30.51</td>
+                    </tr>
+
+            </table>
+        </div>
+
+        <!-- The Submit button -->
+        <div class="progress-demo-submit">
+            <button title="Submit your order">Submit</button>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        demo.shoppingDemo(".demoSelector-shoppingDemo");
+    </script>
+
+    </body>
+</html>

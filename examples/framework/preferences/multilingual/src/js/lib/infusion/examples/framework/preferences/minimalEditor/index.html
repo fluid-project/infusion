@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Minimal Preferences Editor</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
+
+        <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+
+        <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformation.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformationTransforms.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/ResourceLoader.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/RendererUtilities.js"></script>
+
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/Store.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/UIEnhancer.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/PrefsEditor.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/Panels.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/FullNoPreviewPrefsEditor.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/PrimaryBuilder.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/AuxBuilder.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/Builder.js"></script>
+
+        <script type="text/javascript" src="schemas/primary.js"></script>
+        <script type="text/javascript" src="schemas/auxiliary.js"></script>
+        <script type="text/javascript" src="js/prefsEditor.js"></script>
+    </head>
+
+    <body>
+
+        <div class="awe-instructions">
+            <p>The Preference Editor below is an example of a minimal but fully functional preferences editor. It has:
+                <ul>
+                    <li>only one preference</li>
+                    <li>no enactor</li>
+                    <li>no localization (Note that this is not best practice!)</li>
+                </ul>
+            This code is the basis for the
+            <a href="http://docs.fluidproject.org/infusion/development/tutorial-prefsFramework/CreatingAPrefsEditor.html">Preferences Framework tutorial</a>.</p>
+        </div>
+
+        <!-- placeholder for the preferences editor -->
+        <div id="preferencesEditor"></div>
+
+        <script type="text/javascript">
+            awesomeCars.prefs.init("#preferencesEditor");
+        </script>
+
+   </body>
+</html>

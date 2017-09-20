@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Simple Layout Reorderer Sample</title>
+
+        <link rel="stylesheet" type="text/css" href="../../../src/lib/normalize/css/normalize.css" />
+        <link rel="stylesheet" type="text/css" href="../../lib/foundation/css/foundation.css" />
+        <link rel="stylesheet" type="text/css" href="../../../src/framework/core/css/fluid.css" />
+        <link rel="stylesheet" type="text/css" href="../../../src/components/reorderer/css/Reorderer.css" />
+        <link rel="stylesheet" type="text/css" href="../../../src/components/overviewPanel/css/OverviewPanel.css" />
+        <link rel="stylesheet" type="text/css" href="css/layoutReorderer.css" />
+
+
+        <script type="text/javascript" src="../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../src/lib/jquery/ui/js/jquery-ui.js"></script>
+        <script type="text/javascript" src="../../../src/lib/jquery/plugins/touchPunch/js/jquery.ui.touch-punch.js"></script>
+        <script type="text/javascript" src="../../../src/framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
+
+        <script type="text/javascript" src="../../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../src/framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../src/components/reorderer/js/ReordererDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../src/components/reorderer/js/GeometricManager.js"></script>
+        <script type="text/javascript" src="../../../src/components/reorderer/js/Reorderer.js"></script>
+        <script type="text/javascript" src="../../../src/components/reorderer/js/LayoutReorderer.js"></script>
+        <script type="text/javascript" src="../../../src/components/reorderer/js/ModuleLayout.js"></script>
+
+        <!-- required for the Overview Panel -->
+        <script type="text/javascript" src="../../../src/framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../src/framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../src/framework/renderer/js/RendererUtilities.js"></script>
+
+        <script type="text/javascript" src="../../../src/components/overviewPanel/js/OverviewPanel.js"></script>
+        <script type="text/javascript" src="../../shared/js/overviewWrapper.js"></script>
+
+    </head>
+    <body>
+        <div class="flc-overviewPanel fl-overviewPanel-container"></div>
+        <div class="demo-layoutReorderer-container fl-centered" id="demo-layoutReorderer" >
+            <h1>The GadgetLife.com</h1>
+
+            <p><strong>Mouse instructions: </strong>Drag and drop items with the mouse.</p>
+            <p><strong>Keyboard instructions: </strong>Direction keys (arrow keys or i-j-k-m) move focus. CTRL + direction keys move the item.</p>
+
+            <div class="columnSetup3 fluid-vertical-order fl-clearfix">
+             <!-- invalid drag n drop message template -->
+                <p class="flc-reorderer-dropWarning demo-layoutReorderer-dropWarning">This element can not be placed here.  The element underneath is locked.</p>
+
+                <!-- Column #1 -->
+                <div class="flc-reorderer-column demo-layoutReorderer-leftColumn fl-force-left">
+                    <div class="flc-reorderer-module demoSelector-layoutReorderer-locked demo-layoutReorderer-locked">
+                        <div class="demoSelector-layoutReorderer demo-layoutReorderer-module-dragbar">Buy ecoSkinns Today!</div>
+                        <div class="demo-layoutReorderer-module-content">
+                            <h2>Fake Advertisement</h2>
+                            "Buy ecoSkinns Today!<br/>
+                            The only 100% organic screen protector."
+                        </div>
+                    </div>
+                    <div class="flc-reorderer-module demo-layoutReorderer-module demo-last-login">
+                        <div class="demoSelector-layoutReorderer demo-layoutReorderer-module-dragbar">Login Status:</div>
+                        <div class="demo-layoutReorderer-module-content">
+                            <h2>User Information</h2>
+                            <ul>
+                            <li><strong>Last Login:</strong> 3 hours ago.</li>
+                            <li><strong>Users Online:</strong> 213.</li>
+                            <li><strong>Friends Online:</strong> 3</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Column #2 -->
+                <div class="flc-reorderer-column demo-layoutReorderer-centerColumn fl-force-left">
+                    <div class="flc-reorderer-module demoSelector-layoutReorderer-locked demo-layoutReorderer-locked">
+                        <div class="demoSelector-layoutReorderer demo-layoutReorderer-module-dragbar">The Making of a Thneed</div>
+                        <div class="demo-layoutReorderer-module-content">
+                            <h2>Latest issue: The Making of a Thneed</h2>
+                            <img src="images/RedApple.jpg" alt="Image of a Red Delicious apple." />
+
+                            How something that didn't exist suddenly becomes something we can't live without.
+                            <br />
+                        </div>
+                    </div>
+
+                    <div class="flc-reorderer-module demo-layoutReorderer-module">
+                        <div class="demoSelector-layoutReorderer demo-layoutReorderer-module-dragbar">Lorem ipsum dolor sit amet</div>
+                        <div class="demo-layoutReorderer-module-content">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque bibendum ultricies scelerisque.  Aliquam ut felis quis elit malesuada rhoncus nec at sem.
+                        </div>
+                    </div>
+
+                    <div class="flc-reorderer-module demo-layoutReorderer-module">
+                        <div class="demoSelector-layoutReorderer demo-layoutReorderer-module-dragbar">Ut non turpis banana</div>
+                        <div class="demo-layoutReorderer-module-content">
+                            <img src="images/Banana.jpg" alt="Banana thumbnail" />
+                            Ut non turpis libero, euismod tempus ante.  Maecenas placerat accumsan lacus eget bibendum.
+                             <br />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Column #3 -->
+                <div class="flc-reorderer-column demo-layoutReorderer-rightColumn fl-force-left">
+                    <div class="flc-reorderer-module demo-layoutReorderer-module">
+                        <div class="demoSelector-layoutReorderer demo-layoutReorderer-module-dragbar">News Ticker</div>
+                        <div class="demo-layoutReorderer-module-content">
+                            <h2>News</h2>
+                            <ul>
+                                <li>
+                                    <strong>October 10, 2010</strong>
+                                    <em>"Orange Inc. now shipping juicePads with v2.1 software."</em>
+                                </li>
+                                <li>
+                                    <strong>October 2, 2010</strong>
+                                    <em>"VIM introduces the gleeBook targeting the enterprise for $199 with 3 year contract."</em>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="flc-reorderer-module demo-layoutReorderer-module">
+                        <div class="demoSelector-layoutReorderer demo-layoutReorderer-module-dragbar">juicePad Survey</div>
+                        <div class="demo-layoutReorderer-module-content">
+                            <h2>Survey Results</h2>
+                            <span>Do you plan on buying a new juicePad?</span>
+                            <ul>
+                                <li>43% - Yes! Take my money!</li>
+                                <li>23% - Yes, if the price drops.</li>
+                                <li>15% - Not interested.</li>
+                                <li>15% - No. Going with the competition.</li>
+                                <li>4% - No opinion.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            fluid.reorderLayout("#demo-layoutReorderer", {
+                selectors: {
+                    lockedModules: ".demoSelector-layoutReorderer-locked",
+                    grabHandle: ".demoSelector-layoutReorderer"
+                },
+                styles: {
+                    defaultStyle: "demo-layoutReorderer-movable-default",
+                    selected: "demo-layoutReorderer-movable-selected",
+                    dragging: "demo-layoutReorderer-movable-dragging",
+                    mouseDrag: "demo-layoutReorderer-movable-mousedrag",
+                    dropMarker: "demo-layoutReorderer-dropMarker",
+                    avatar: "demo-layoutReorderer-avatar"
+                },
+                disableWrap: true
+            });
+        </script>
+    </body>
+</html>

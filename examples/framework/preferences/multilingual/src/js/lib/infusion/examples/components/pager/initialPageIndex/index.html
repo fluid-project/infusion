@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta name="generator" content="HTML Tidy, see www.w3.org" />
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+
+        <title>Pager Example: Initial Page Index</title>
+
+        <link rel="stylesheet" type="text/css" href="../../../../src/lib/normalize/css/normalize.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/framework/core/css/fluid.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/components/pager/css/Pager.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/lib/jquery/ui/css/default-theme/jquery-ui.css" />
+        <link rel="stylesheet" type="text/css" href="../shared/css/pager.css" />
+
+
+        <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery-ui.js"></script>
+
+        <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformation.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformationTransforms.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/RendererUtilities.js"></script>
+
+        <script type="text/javascript" src="../../../../src/components/tooltip/js/Tooltip.js"></script>
+        <script type="text/javascript" src="../../../../src/components/pager/js/Pager.js"></script>
+        <script type="text/javascript" src="../../../../src/components/pager/js/Table.js"></script>
+        <script type="text/javascript" src="../../../../src/components/pager/js/PagedTable.js"></script>
+
+        <script type="text/javascript" src="js/pager-example.js"></script>
+
+    </head>
+
+<body>
+    <div class="example-pager-container fl-pager fl-centered">
+        <h1>School Roster</h1>
+        <div class="flc-pager-summary">Summary goes here</div>
+
+        <div class="flc-pager-top">
+            <ul class="example-pager-bar fl-force-left fl-focus">
+                <li class="flc-pager-previous example-pager-previous"><a href="#" title="Previous Page">&lt; Previous</a></li>
+                <li>
+                    <ul class="flc-pager-links example-pager-links">
+                        <li class="flc-pager-pageLink example-pager-pageLink-default"><a href="#">1</a></li>
+                        <li class="flc-pager-pageLink-skip example-pager-pageLink-skip ">...</li>
+                        <li class="flc-pager-pageLink"><a href="#">2</a></li>
+                    </ul>
+                </li>
+                <li class="example-pager-next flc-pager-next"><a href="#" title="Next Page">Next &gt;</a></li>
+            </ul>
+        </div>
+
+        <div class="example-pager-page-size fl-force-right fl-focus">
+            <label for="example-pager-selector-page-size-top">Items per page:</label>
+            <select id="example-pager-selector-page-size-top" class="flc-pager-page-size">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+            </select>
+        </div>
+
+        <div id="membership-table" class="example-pager-table-data fl-pager-data">
+           <table>
+                <caption>Table of all students and teachers</caption>
+                <thead>
+                    <tr class="flc-table-header fl-focus">
+                        <th class="flc-pager-sort-header example-pager-head example-pager-head-members"><a class="example-user-link" href="#">Members</a></th>
+                        <th class="flc-pager-sort-header example-pager-head example-pager-head-email"><a class="example-user-email" href="#">Email</a></th>
+                        <th class="flc-pager-sort-header example-pager-head example-pager-head-role"><a class="example-user-role" href="#">Role</a></th>
+                        <th><span class="example-user-comment example-pager-head-comments">Comments</span></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr class="flc-table-row">
+                        <td><span class="example-user-link">Edee</span></td>
+                        <td><span class="example-user-email">edee@none.none</span></td>
+                        <td><span class="example-user-role">Instructor</span></td>
+                        <td><span class="example-user-comment">The best teacher.</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="flc-pager-bottom">
+            <ul class="example-pager-bar fl-force-left fl-focus">
+                <li class="flc-pager-previous example-pager-previous"><a href="#">&lt; Previous</a></li>
+                <li>
+                    <ul class="flc-pager-links example-pager-links">
+                        <li class="flc-pager-pageLink example-pager-pageLink-default"><a href="#">1</a></li>
+                        <li class="flc-pager-pageLink-skip example-pager-pageLink-skip">...</li>
+                        <li class="flc-pager-pageLink"><a href="#">2</a></li>
+                    </ul>
+                </li>
+                <li class="flc-pager-next example-pager-next"><a href="#">Next &gt;</a></li>
+            </ul>
+        </div>
+
+    </div>
+
+    <script type="text/javascript">
+        example.initPager();
+    </script>
+
+    </body>
+</html>

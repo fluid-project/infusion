@@ -1,0 +1,68 @@
+/**/
+/* Main image viewer */
+/**/
+.demo-container-imageViewer {
+    width: 100%;
+    height: 24em;
+    border: 0.1em solid #000;
+    text-align:center;
+}
+
+/* Stretch the image to fit the height view container, while maintaining the aspect ratio. */
+.demo-image-mainImage {
+    height:100%;
+    width:auto; /* maintain the aspect ratio even if height resized. */
+}
+
+
+/**/
+/* Thumbnails */
+/**/
+.demo-container-imageThumbnails  {
+    padding: 1em;
+    background-color:#CCCBE4;
+    border: 1px solid #000;
+    overflow:auto;
+    white-space:nowrap;
+    z-index:1;
+    clear:both;
+    list-style:none outside none;
+    margin:0;
+}
+
+.demo-container-imageThumbnails li {
+    display:inline;
+    margin:0.8em;
+    text-align:center;
+}
+
+.demo-container-imageThumbnails img {
+    max-height:7em;
+    border:5px solid #fff;
+}
+
+.demo-container-imageThumbnails .demo-selected,
+.demo-container-imageThumbnails li:hover img {
+    border: 5px solid black;
+}
+
+/**/
+/* Five Star Widget */
+/**/
+.demo-container-fiveStar {
+    background-color:#CCCBE4;
+    border-top: 1px solid #000;
+    border-right: 1px solid #000;
+    border-left: 1px solid #000;
+    text-align:center;
+    padding: 1em 0;
+    margin-top:1em;
+}
+
+.demo-container-fiveStar #demo-ranking {
+    cursor: pointer;
+}
+
+#demo-ranking.demo-selected img:focus {
+    outline: 3px solid black;
+}

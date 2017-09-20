@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Keyboard Accessbility Demo</title>
+    <link rel="stylesheet" type="text/css" href="../../src/lib/normalize/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="../lib/foundation/css/foundation.css" />
+    <link rel="stylesheet" type="text/css" href="../../src/framework/core/css/fluid.css" />
+    <link rel="stylesheet" type="text/css" href="../../src/components/overviewPanel/css/OverviewPanel.css" />
+    <link rel="stylesheet" type="text/css" href="css/keyboard.css" />
+
+    <script type="text/javascript" src="../../src/lib/jquery/core/js/jquery.js"></script>
+    <script type="text/javascript" src="../../src/lib/jquery/ui/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/Fluid.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/FluidDocument.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/FluidIoC.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/DataBinding.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/ModelTransformation.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/ModelTransformationTransforms.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/FluidView.js"></script>
+
+    <!-- required for the Overview Panel -->
+    <script type="text/javascript" src="../../src/framework/core/js/FluidDOMUtilities.js"></script>
+    <script type="text/javascript" src="../../src/framework/core/js/FluidRequests.js"></script>
+    <script type="text/javascript" src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+    <script type="text/javascript" src="../../src/framework/renderer/js/fluidParser.js"></script>
+    <script type="text/javascript" src="../../src/framework/renderer/js/fluidRenderer.js"></script>
+    <script type="text/javascript" src="../../src/framework/renderer/js/RendererUtilities.js"></script>
+    <script type="text/javascript" src="../../src/components/overviewPanel/js/OverviewPanel.js"></script>
+    <script type="text/javascript" src="../shared/js/overviewWrapper.js"></script>
+
+    <script type="text/javascript" src="js/five-star.js"></script>
+    <script type="text/javascript" src="js/keyboardDemo.js"></script>
+</head>
+<body>
+
+    <div class="flc-overviewPanel fl-overviewPanel-container"></div>
+    <section class="row">
+        <div class="demo-container large-centered">
+
+            <h1>Gallery Viewer</h1>
+            <p><strong>Mouse instructions:</strong> Click an image to focus and to open in viewer.</p>
+            <p><strong>Keyboard instructions:</strong> Arrow keys move the focus. 'Space' or 'Return' or 'Enter' open image in viewer.</p>
+
+            <ul class="demo-container-imageThumbnails">
+                <!-- The class "selectable" specifies to the Keyboard Accessibility component
+                which items are to be selectable using keyboard or mouse. -->
+                <li><img class="demo-image-thumbImg selectable" src="images/Mangosteen.jpg" alt="mangosteen" /></li>
+                <li><img class="demo-image-thumbImg selectable" src="images/Banana.jpg" alt="banana" /></li>
+                <li><img class="demo-image-thumbImg selectable" src="images/RedApple.jpg" alt="red apple" /></li>
+                <li><img class="demo-image-thumbImg selectable" src="images/Dragonfruit.jpg" alt="dragonfruit" /></li>
+                <li><img class="demo-image-thumbImg selectable" src="images/Grapes.jpg" alt="bunch of grapes" /></li>
+                <li><img class="demo-image-thumbImg selectable" src="images/Fig.jpg" alt="fig" /></li>
+                <li><img class="demo-image-thumbImg selectable" src="images/Lemon.jpg" alt="lemon" /></li>
+                <li><img class="demo-image-thumbImg selectable" src="images/Cherry.jpg" alt="cherry" /></li>
+                <li><img class="demo-image-thumbImg selectable" src="images/Orange.jpg" alt="orange" /></li>
+            </ul>
+
+            <div class="demo-container-fiveStar">
+                <span id="demo-rank">Rank:</span>
+                <span id="demo-ranking" class="demo-fiveStar" aria-labelledby="demo-rank">
+                    <img class="star-1" alt="one star" src="images/star-blank.gif" />
+                    <img class="star-2" alt="two stars" src="images/star-blank.gif" />
+                    <img class="star-3" alt="three stars" src="images/star-blank.gif" />
+                    <img class="star-4" alt="four stars" src="images/star-blank.gif" />
+                    <img class="star-5" alt="five stars" src="images/star-blank.gif" />
+                </span>
+            </div>
+
+            <div id="image-preview" class="demo-container-imageViewer fl-centered">
+                <img class="demo-image-mainImage" src="images/Banana.jpg" alt="" />
+            </div>
+
+        </div>
+    </section>
+    <script type="text/javascript">
+        demo.imageViewer(".demo-container");
+    </script>
+</body>
+</html>

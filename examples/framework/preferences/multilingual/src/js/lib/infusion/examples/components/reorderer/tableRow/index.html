@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Reorder Table</title>
+
+        <link rel="stylesheet" type="text/css" href="../../../../src/lib/normalize/css/normalize.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/framework/core/css/fluid.css" />
+        <link href="css/reorderer.css" type="text/css" rel="stylesheet" />
+
+        <!--  These are the required javascript modules for the Reorderer and can be replaced with Fluid-all.js -->
+        <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery-ui.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/jquery/plugins/touchPunch/js/jquery.ui.touch-punch.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../../src/components/reorderer/js/ReordererDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../src/components/reorderer/js/GeometricManager.js"></script>
+        <script type="text/javascript" src="../../../../src/components/reorderer/js/Reorderer.js"></script>
+
+    </head>
+    <body>
+        <section>
+            <h1>Table Row Reordering</h1>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Common Name</th>
+                        <th>Kindgom</th>
+                        <th>Phylum</th>
+                        <th>Class</th>
+                        <th>Order</th>
+                        <th>Family</th>
+                        <th>Genus</th>
+                        <th>Species</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Blue Jay</td>
+                        <td>Animalia</td>
+                        <td>Chordata</td>
+                        <td>Aves</td>
+                        <td>Passeriformes</td>
+                        <td>Corvidae</td>
+                        <td>Cyanocitta</td>
+                        <td>C. cristata</td>
+                    </tr>
+                    <tr>
+                        <td>Cat</td>
+                        <td>Animalia</td>
+                        <td>Chordata</td>
+                        <td>Mammalia</td>
+                        <td>Carnivora</td>
+                        <td>Felidae</td>
+                        <td>Felis</td>
+                        <td>F. catus</td>
+                    </tr>
+                    <tr>
+                        <td>Dog</td>
+                        <td>Animalia</td>
+                        <td>Chordata</td>
+                        <td>Mammalia</td>
+                        <td>Carnivora</td>
+                        <td>Canidae</td>
+                        <td>Canis</td>
+                        <td>C. lupus</td>
+                    </tr>
+                    <tr>
+                        <td>Great White Shark</td>
+                        <td>Animalia</td>
+                        <td>Chrodata</td>
+                        <td>Chondrichthyes</td>
+                        <td>Lamniformes</td>
+                        <td>Lamnidae</td>
+                        <td>Carcharodon</td>
+                        <td>C. carcharias</td>
+                    </tr>
+                    <tr>
+                        <td>Human</td>
+                        <td>Animalia</td>
+                        <td>Chrodata</td>
+                        <td>Mammalia</td>
+                        <td>Primates</td>
+                        <td>Hominidae</td>
+                        <td>Homo</td>
+                        <td>H. Sapiens</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <script type="text/javascript">
+            fluid.reorderList("tbody", {
+                selectors: {
+                    movables: "tr"
+                },
+                components: {
+                    labeller: {
+                        options: {
+                            strings: {
+                                overallTemplate: "%recentStatus to %position",
+                                position:        "%index",
+                                recentStatus:    "moved from row %position"
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>
