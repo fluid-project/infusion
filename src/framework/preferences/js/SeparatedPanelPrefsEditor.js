@@ -148,16 +148,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         onSignificantDOMChange: null,
                         updateEnhancerModel: "{that}.events.modelChanged"
                     },
-                    modelListeners: {
-                        "panelIndex": {
-                            listener: "fluid.prefs.arrowScrolling.scrollToPanel",
-                            args: ["{that}", "{change}.value"],
-                            // Only scrolling to panels on model changes triggered by "scrollToPanel",
-                            // which comes from clicking on the arrows.
-                            includeSource: ["scrollToPanel"],
-                            namespace: "scrollToPanel"
-                        }
-                    },
                     listeners: {
                         "modelChanged.save": "{that}.save",
                         "onCreate.bindReset": {
