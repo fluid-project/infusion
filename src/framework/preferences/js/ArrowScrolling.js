@@ -29,7 +29,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         model: {
             // panelMaxIndex: null, // determined by the number of panels calculated after the onPrefsEditorMarkupReady event fired
-            // scrollToIndex: null, // the raw index set by translateToScroll, will be transformed to the panelIndex
+            // scrollToIndex: null, // the raw index set by eventToScrollIndex, will be transformed to the panelIndex
             panelIndex: 0
         },
         events: {
@@ -81,8 +81,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 value: "{arguments}.0",
                 source: "scrollToPanel"
             },
-            translateToScroll: {
-                funcName: "fluid.prefs.arrowScrolling.translateToScroll",
+            eventToScrollIndex: {
+                funcName: "fluid.prefs.arrowScrolling.eventToScrollIndex",
                 args: ["{that}", "{arguments}.0"]
             }
         },
@@ -91,7 +91,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "afterRender.bindScrollArrows": {
                     "this": "{that}.dom.header",
                     method: "click",
-                    args: ["{prefsEditor}.translateToScroll"]
+                    args: ["{prefsEditor}.eventToScrollIndex"]
                 }
             },
             target: "{that > fluid.prefs.panel}.options.listeners"
@@ -103,7 +103,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return Math.max(0, panels.length - 1);
     };
 
-    fluid.prefs.arrowScrolling.translateToScroll = function (that, event) {
+    fluid.prefs.arrowScrolling.eventToScrollIndex = function (that, event) {
         event.preventDefault();
         var target = $(event.target);
         var midPoint = target.width() / 2;
