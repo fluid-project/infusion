@@ -632,7 +632,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         } else { // more efficient branch where relay is uncontextualised
             fluid.registerDirectChangeRelay(target, targetSegs, source, sourceSegs, linkId, options.forwardAdapter, {transactional: false}, npOptions);
-            if (sourceSegs) {
+            if (sourceSegs /* && options.backwardAdapter !== fluid.model.transform.uninvertibleTransform */) {
                 fluid.registerDirectChangeRelay(source, sourceSegs, target, targetSegs, linkId, options.backwardAdapter, {transactional: false}, npOptions);
             }
         }
@@ -661,7 +661,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.model.guardedAdapter = function (transaction, cond, func, args) {
-        if (!fluid.isExcludedChangeSource(transaction, cond)) {
+        if (!fluid.isExcludedChangeSource(transaction, cond) && func !== fluid.model.transform.uninvertibleTransform) {
             func.apply(null, args);
         }
     };
@@ -689,8 +689,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // can't commit "half-transaction" or events will fire - violate encapsulation in this way
             that.forwardAdapterImpl = fluid.transformToAdapter(trans ? trans.newHolder.model : that.forwardHolder.model, targetPath);
             if (sourcePath !== null) {
-                that.backwardHolder.model = fluid.model.transform.invertConfiguration(transform);
-                that.backwardAdapterImpl = fluid.transformToAdapter(that.backwardHolder.model, sourcePath);
+                var inverted = fluid.model.transform.invertConfiguration(transform);
+                if (inverted !== fluid.model.transform.uninvertibleTransform) {
+                    that.backwardHolder.model = inverted;
+                    that.backwardAdapterImpl = fluid.transformToAdapter(that.backwardHolder.model, sourcePath);
+                } else {
+                    that.backwardAdapterImpl = inverted;
+                }
             }
         };
         that.forwardAdapter = function (transaction, newValue) { // create a stable function reference for this possibly changing adapter

@@ -2,7 +2,7 @@
 Copyright 2010 University of Toronto
 Copyright 2010-2015 OCAD University
 Copyright 2013-2014 Raising the Floor - US
-Copyright 2013-2016 Raising the Floor - International
+Copyright 2013-2017 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -550,7 +550,12 @@ var fluid = fluid || fluid_2_0_0;
         if (transformSpec.innerValue) {
             var innerValue = transformSpec.innerValue;
             for (var i = 0; i < innerValue.length; ++i) {
-                innerValue[i] = fluid.model.transform.invertConfiguration(innerValue[i]);
+                var inverted = fluid.model.transform.invertConfiguration(innerValue[i]);
+                if (inverted === fluid.model.transform.uninvertibleTransform) {
+                    return inverted;
+                } else {
+                    innerValue[i] = inverted;
+                }
             }
         }
         return transformSpec;
@@ -732,12 +737,12 @@ var fluid = fluid || fluid_2_0_0;
     };
 
     /**
-     * inRange transformer checks whether a value is within a given range and returns true if it is,
-     * and false if it's not.
+     * inRange transformer checks whether a value is within a given range and returns `true` if it is,
+     * and `false` if it's not.
      *
      * The range is defined by the two inputs: "min" and "max" (both inclusive). If one of these inputs
-     * is not present it is considered -infinite and +infinite, respectively - In other words, if no
-     * `min` value is defined, any value below or equal to the given "max" value will result in true.
+     * is not present it is treated as -Infinity and +Infinity, respectively - In other words, if no
+     * `min` value is defined, any value below or equal to the given `max` value will result in `true`.
      */
     fluid.defaults("fluid.transforms.inRange", {
         gradeNames: "fluid.standardTransformFunction"

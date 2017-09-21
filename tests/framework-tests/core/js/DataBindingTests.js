@@ -2298,7 +2298,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         model: "{root}.model.subModel"
     });
 
-    /* FLUID-5585:  Removal from the model is not relayed in any case*/
+    /* FLUID-5585: Removal from the model is not relayed in any case */
+
     fluid.defaults("fluid.tests.fluid5585.root", {
         gradeNames: ["fluid.modelComponent"],
         members: {
@@ -2392,7 +2393,33 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.fluid5585.runOneConfiguration("fluid.tests.fluid5585.explicitRelay", fixtureFunc);
     });
 
+    /** FLUID-6194: Do not relay DELETEs backwards for uninvertible transforms **/
+
+    fluid.defaults("fluid.tests.fluid6194root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            source: 1
+        },
+        modelRelay: {
+            source: "source",
+            target: "target",
+            singleTransform: {
+                type: "fluid.identity"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6194: Do not relay DELETE backwards for uninvertible transform", function () {
+        var root = fluid.tests.fluid6194root();
+        jqUnit.assertEquals("Forward relay via fluid.identity", 1, root.model.target);
+        root.applier.change("target", null, "DELETE");
+        jqUnit.assertDeepEq("No relay backwards of DELETE of uninvertible transform", {
+            source: 1
+        }, root.model);
+    });
+
     /* FLUID-5586: change records of type DELETE and root path */
+
     fluid.defaults("fluid.tests.fluid5586root", {
         gradeNames: ["fluid.modelComponent"],
         model: 973,
