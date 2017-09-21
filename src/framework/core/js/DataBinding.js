@@ -379,7 +379,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             return recel.complete !== true;
         });
         if (!incomplete) {
-            fluid.operateInitialTransaction(that, mrec);
+            try { // For FLUID-6195 ensure that exceptions during init relay don't leave the framework unusable
+                fluid.operateInitialTransaction(that, mrec);
+            } catch (e) {
+                fluid.clearTransactions();
+                throw e;
+            }
             // NB: Don't call fluid.concludeTransaction since "init" is not a standard record - this occurs in commitRelays for the corresponding genuine record as usual
             instantiator.modelTransactions.init = {};
         }
