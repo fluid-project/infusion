@@ -632,7 +632,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         } else { // more efficient branch where relay is uncontextualised
             fluid.registerDirectChangeRelay(target, targetSegs, source, sourceSegs, linkId, options.forwardAdapter, {transactional: false}, npOptions);
-            if (sourceSegs /* && options.backwardAdapter !== fluid.model.transform.uninvertibleTransform */) {
+            if (sourceSegs) {
                 fluid.registerDirectChangeRelay(source, sourceSegs, target, targetSegs, linkId, options.backwardAdapter, {transactional: false}, npOptions);
             }
         }
