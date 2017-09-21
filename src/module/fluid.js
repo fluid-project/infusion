@@ -113,6 +113,15 @@ fluid.onUncaughtException.addListener(fluid.logUncaughtException, "log",
 fluid.onUncaughtException.addListener(function () {fluid.logActivity();}, "logActivity",
     fluid.handlerPriorities.uncaughtException.logActivity);
 
+
+// Make sure process exits with error (see FLUID-5920)
+fluid.handleUncaughtException = function () {
+    process.exit(1);
+};
+
+fluid.onUncaughtException.addListener(fluid.handleUncaughtException, "fail",
+    fluid.handlerPriorities.uncaughtException.fail);
+
 // Convert an argument intended for console.log in the node environment to a readable form (the
 // default action of util.inspect censors at depth 1)
 fluid.renderLoggingArg = function (arg) {
@@ -156,12 +165,19 @@ fluid.getCallerInfo = function (atDepth) {
 fluid.loadInContext = loadInContext;
 fluid.loadIncludes = loadIncludes;
 
+fluid.testingSupportLoaded = false;
+
 /**
  * Set up testing environment with jqUnit and IoC Test Utils in node.
- * This function will load everything necessary for running node jqUnit.
+ * This function will load the Infusion internal dependencies (QUnit, jqUnit and the IoC Testing Framework) necessary
+ * for running node-jqUnit - the node-jqunit module itself must still be loaded by the user via their own devDependencies.
  */
 fluid.loadTestingSupport = function () {
-    fluid.loadIncludes("devIncludes.json");
+    // Guard against multiple inclusion of QUnit - FLUID-6188
+    if (!fluid.testingSupportLoaded) {
+        fluid.loadIncludes("devIncludes.json");
+        fluid.testingSupportLoaded = true;
+    }
 };
 
 /** Implementation for FLUID-5822 to avoid requirement for dedupe-infusion **/
