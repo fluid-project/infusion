@@ -17,6 +17,70 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests");
 
+    /*********************************************
+     * Tests infrastructure to setup environment *
+     *********************************************/
+
+    fluid.defaults("fluid.tests.iframeSetup", {
+        gradeNames: "fluid.viewComponent",
+        events: {
+            onReady: null
+        },
+        listeners: {
+            "onCreate.init": "fluid.tests.iframeSetup.init"
+        },
+        src: "SeparatedPanelPrefsEditorResponsiveTestPage.html",
+        dimensions: {
+            width: "400px",
+            height: "400px"
+        }
+    });
+
+    fluid.tests.iframeSetup.init = function (that) {
+        that.container.on("load", function () {
+            // the global settings store and pageEnhancer are added
+            // as they are required by the prefs editor.
+            fluid.tests.prefs.globalSettingsStore();
+            fluid.pageEnhancer(fluid.tests.prefs.enhancerOptions);
+            that.events.onReady.fire(that);
+        });
+
+        that.container.css(that.options.dimensions); // set to a small screen size
+        // injecting the iframe source so that we can ensure the iframe on load event
+        // is fired after the listener is bound.
+        that.container.attr("src", that.options.src);
+    };
+
+    fluid.defaults("fluid.tests.createEnvironment", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        components: {
+            iframeSetup: {
+                type: "fluid.tests.iframeSetup",
+                container: ".flc-iframeSetup",
+                createOnEvent: "{iframeSetupTester}.events.onTestCaseStart"
+            },
+            iframeSetupTester: {
+                type: "fluid.tests.iframeSetupTester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.iframeSetupTester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [{
+            name: "Environment Setup",
+            tests: [{
+                expect: 1,
+                name: "Ensure iframe is set up",
+                sequence: [{
+                    listener: "jqUnit.assert",
+                    event: "{createEnvironment iframeSetup}.events.onReady",
+                    args: ["The test environment is setup"]
+                }]
+            }]
+        }]
+    });
+
     /*******************************************************************************
      * PrefsEditor separatedPanel responsive tests
      *******************************************************************************/
@@ -258,25 +322,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     $(document).ready(function () {
-        var iframe = $("iframe");
-
-        iframe.on("load", function () {
-            // the global settings store and pageEnhancer are added
-            // as they are required by the prefs editor.
-            fluid.tests.prefs.globalSettingsStore();
-            fluid.pageEnhancer(fluid.tests.prefs.enhancerOptions);
-
-            fluid.test.runTests([
-                "fluid.tests.separatedPanelResponsive",
-                "fluid.tests.separatedPanelInitialPanelIndex"
-            ]);
-
-        });
-
-        iframe.css({width: "400px", height: "400px"}); // set to a small screen size
-        // injecting the iframe source so that we can ensure the iframe on load event
-        // is fired after the listener is bound.
-        iframe.attr("src", "SeparatedPanelPrefsEditorResponsiveTestPage.html");
+        fluid.test.runTests([
+            "fluid.tests.createEnvironment",
+            "fluid.tests.separatedPanelResponsive",
+            "fluid.tests.separatedPanelInitialPanelIndex"
+        ]);
     });
 
 })(jQuery);
