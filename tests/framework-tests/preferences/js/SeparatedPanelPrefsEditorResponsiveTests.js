@@ -17,6 +17,59 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests");
 
+    /******************
+     * Setup sequence *
+     ******************/
+
+    fluid.defaults("fluid.tests.iframeSetup", {
+        gradeNames: "fluid.test.sequenceElement",
+        events: {
+            iframeLoaded: null
+        },
+        iframe: ".flc-iframeSetup",
+        sequence: [{
+            func: "fluid.tests.iframeSetup.load",
+            args: ["{that}"]
+        }]
+    });
+
+    fluid.tests.iframeSetup.load = function (that) {
+        var iframe = $(that.options.iframe);
+
+        // remove any old src values
+        iframe.removeAttr("src");
+
+        iframe.one("load", function () {
+            // the global settings store and pageEnhancer are added
+            // as they are required by the prefs editor.
+            fluid.tests.prefs.globalSettingsStore();
+            fluid.pageEnhancer(fluid.tests.prefs.enhancerOptions);
+            that.events.iframeLoaded.fire(that);
+        });
+
+        iframe.css({width: "400px", height: "400px"}); // set to a small screen size
+
+        // injecting the iframe source so that we can ensure the iframe on load event
+        // is fired after the listener is bound.
+        iframe.attr("src", "SeparatedPanelPrefsEditorResponsiveTestPage.html");
+    };
+
+    fluid.defaults("fluid.tests.iframeSequence", {
+        gradeNames: "fluid.test.sequence",
+        sequenceElements: {
+            setup: {
+                gradeNames: "fluid.tests.iframeSetup",
+                options: {
+                    events: {
+                        iframeLoaded: "{fluid.test.testCaseHolder}.events.afterSetup"
+                    },
+                    iframe: "{fluid.test.testCaseHolder}.options.iframe"
+                },
+                priority: "before:sequence"
+            }
+        }
+    });
+
     /*******************************************************************************
      * PrefsEditor separatedPanel responsive tests
      *******************************************************************************/
@@ -57,7 +110,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         funcName: "fluid.tests.separatedPanel.assignSeparatedPanelContainer"
                     }
                 },
-                createOnEvent: "{separatedPanelResponsiveTester}.events.onTestCaseStart"
+                createOnEvent: "{separatedPanelResponsiveTester}.events.afterSetup"
             },
             separatedPanelResponsiveTester: {
                 type: "fluid.tests.separatedPanelResponsiveTester"
@@ -139,17 +192,29 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.triggerDOMEvent = function (elm, type) {
-        var event = new Event(type);
+        var event;
+        // In IE 11 Event is an object not a function
+        if (typeof Event === "function") {
+            event = new Event(type);
+        } else {
+            event = document.createEvent("Event");
+            event.initEvent("resize", true, true);
+        }
         elm.dispatchEvent(event);
     };
 
     fluid.defaults("fluid.tests.separatedPanelResponsiveTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
+        events: {
+            afterSetup: null
+        },
+        iframe: ".flc-iframeSetup-responsiveTests",
         modules: [{
             name: "Separated panel integration tests",
             tests: [{
                 expect: 70,
                 name: "Separated panel integration tests",
+                sequenceGrade: "fluid.tests.iframeSequence",
                 sequence: [{
                     listener: "fluid.tests.assertSeparatedPanelInit",
                     event: "{separatedPanelResponsive separatedPanel}.events.onReady",
@@ -223,7 +288,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         funcName: "fluid.tests.separatedPanel.assignSeparatedPanelContainer"
                     }
                 },
-                createOnEvent: "{separatedPanelInitialPanelIndexTester}.events.onTestCaseStart"
+                createOnEvent: "{separatedPanelInitialPanelIndexTester}.events.afterSetup"
             },
             separatedPanelInitialPanelIndexTester: {
                 type: "fluid.tests.separatedPanelInitialPanelIndexTester"
@@ -233,11 +298,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.separatedPanelInitialPanelIndexTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
+        events: {
+            afterSetup: null
+        },
+        iframe: ".flc-iframeSetup-panelIndexTests",
         modules: [{
             name: "Separated panel initial panelIndex tester",
             tests: [{
                 expect: 39,
                 name: "Separated panel initial panelIndex tester",
+                sequenceGrade: "fluid.tests.iframeSequence",
                 sequence: [{
                     listener: "fluid.tests.assertSeparatedPanelInit",
                     event: "{separatedPanelInitialPanelIndex separatedPanel}.events.onReady",
@@ -258,25 +328,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     $(document).ready(function () {
-        var iframe = $("iframe");
-
-        iframe.on("load", function () {
-            // the global settings store and pageEnhancer are added
-            // as they are required by the prefs editor.
-            fluid.tests.prefs.globalSettingsStore();
-            fluid.pageEnhancer(fluid.tests.prefs.enhancerOptions);
-
-            fluid.test.runTests([
-                "fluid.tests.separatedPanelResponsive",
-                "fluid.tests.separatedPanelInitialPanelIndex"
-            ]);
-
-        });
-
-        iframe.css({width: "400px", height: "400px"}); // set to a small screen size
-        // injecting the iframe source so that we can ensure the iframe on load event
-        // is fired after the listener is bound.
-        iframe.attr("src", "SeparatedPanelPrefsEditorResponsiveTestPage.html");
+        fluid.test.runTests([
+            "fluid.tests.separatedPanelResponsive",
+            "fluid.tests.separatedPanelInitialPanelIndex"
+        ]);
     });
 
 })(jQuery);
