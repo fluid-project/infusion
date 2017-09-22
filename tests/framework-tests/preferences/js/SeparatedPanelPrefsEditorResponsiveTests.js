@@ -138,12 +138,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         elm.trigger(keyEvent);
     };
 
+    fluid.tests.triggerDOMEvent = function (elm, type) {
+        var event = new Event(type);
+        elm.dispatchEvent(event);
+    };
+
     fluid.defaults("fluid.tests.separatedPanelResponsiveTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "Separated panel integration tests",
             tests: [{
-                expect: 69,
+                expect: 70,
                 name: "Separated panel integration tests",
                 sequence: [{
                     listener: "fluid.tests.assertSeparatedPanelInit",
@@ -188,6 +193,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     func: "fluid.tests.assertPanelVisibility",
                     args: ["{separatedPanel}.prefsEditor", "Scrolled to panel beyond bounds", 5]
+                }, {
+                    func: "fluid.tests.triggerDOMEvent",
+                    args: [window, "resize"]
+                }, {
+                    listener: "jqUnit.assert",
+                    event: "{separatedPanel}.prefsEditor.events.onSignificantDOMChange",
+                    args: ["A window resize event triggered the onSignificantDOMChange event"]
                 }]
             }]
         }]
