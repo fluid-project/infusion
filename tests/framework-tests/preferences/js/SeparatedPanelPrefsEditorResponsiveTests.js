@@ -203,7 +203,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.triggerDOMEvent = function (elm, type) {
-        var event = new Event(type);
+        var event;
+        // In IE 11 Event is an object not a function
+        if (typeof Event === "function") {
+            event = new Event(type);
+        } else {
+            event = document.createEvent("Event");
+            event.initEvent("resize", true, true);
+        }
         elm.dispatchEvent(event);
     };
 
