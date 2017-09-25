@@ -29,7 +29,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         model: {
             // panelMaxIndex: null, // determined by the number of panels calculated after the onPrefsEditorMarkupReady event fired
-            // scrollToIndex: null, // the raw index set by eventToScrollIndex, will be transformed to the panelIndex
             panelIndex: 0
         },
         events: {
@@ -41,7 +40,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             namespace: "limitPanelIndex",
             singleTransform: {
                 type: "fluid.transforms.limitRange",
-                input: "{that}.model.scrollToIndex",
+                input: "{that}.model.panelIndex",
                 min: 0,
                 max: "{that}.model.panelMaxIndex"
             }
@@ -108,7 +107,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var target = $(event.target);
         var midPoint = target.width() / 2;
         var scrollToIndex = that.model.panelIndex + (event.offsetX < midPoint ? -1 : 1);
-        that.applier.change("scrollToIndex", scrollToIndex, "ADD", "eventToScrollIndex");
+        that.applier.change("panelIndex", scrollToIndex, "ADD", "eventToScrollIndex");
     };
 
     fluid.prefs.arrowScrolling.scrollToPanel = function (that, panelIndex) {
