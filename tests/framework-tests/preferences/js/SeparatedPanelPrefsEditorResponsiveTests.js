@@ -182,6 +182,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 jqUnit.assertNotEquals(testName + ": The panel at index " + idx + " should not be scrolled into view and have an offset greater or less than 0", 0, panelOffset);
             }
         });
+
+        jqUnit.assertEquals("fluid.prefs.arrowScrolling.getClosesPanelIndex should return " + panelIndex, panelIndex, fluid.prefs.arrowScrolling.getClosesPanelIndex(panels));
     };
 
     fluid.tests.clickArrow = function (elm, direction) {
@@ -212,7 +214,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Separated panel integration tests",
             tests: [{
-                expect: 70,
+                expect: 77,
                 name: "Separated panel integration tests",
                 sequenceGrade: "fluid.tests.iframeSequence",
                 sequence: [{
@@ -265,6 +267,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     listener: "jqUnit.assert",
                     event: "{separatedPanel}.prefsEditor.events.onSignificantDOMChange",
                     args: ["A window resize event triggered the onSignificantDOMChange event"]
+                }, {
+                    jQueryTrigger: "scroll",
+                    element: "{separatedPanel}.prefsEditor.dom.scrollContainer"
+                }, {
+                    listener: "jqUnit.assert",
+                    event: "{separatedPanel}.prefsEditor.events.afterScroll",
+                    args: ["A scroll event triggered the afterScroll event"]
                 }]
             }]
         }]
@@ -305,7 +314,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "Separated panel initial panelIndex tester",
             tests: [{
-                expect: 39,
+                expect: 40,
                 name: "Separated panel initial panelIndex tester",
                 sequenceGrade: "fluid.tests.iframeSequence",
                 sequence: [{
