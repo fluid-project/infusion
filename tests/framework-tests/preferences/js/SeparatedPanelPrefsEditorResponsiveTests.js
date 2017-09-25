@@ -198,7 +198,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             event = new Event(type);
         } else {
             event = document.createEvent("Event");
-            event.initEvent("resize", true, true);
+            event.initEvent(type, true, true);
         }
         elm.dispatchEvent(event);
     };
