@@ -2228,6 +2228,49 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertValue("Long lifetime component has survived", reins.longChild);
     });
 
+    /** FLUID-6193: corruption when options distribution head is shorter-lived sibling **/
+
+    fluid.defaults("fluid.tests.FLUID6193root", {
+        gradeNames: "fluid.component",
+        components: {
+            distroSource: {
+                type: "fluid.component",
+                options: {
+                    distributeOptions: {
+                        record: 5,
+                        target: "{siblingHead distroTarget}.options.five"
+                    }
+                }
+            },
+            siblingHead: {
+                type: "fluid.component",
+                options: {
+                    events: {
+                        createTarget: null
+                    },
+                    components: {
+                        distroTarget: {
+                            // note that without createOnEvent, there is no way the distribution can win the race -
+                            // this will change with FLUID-6148 world and should be re-tested
+                            createOnEvent: "createTarget",
+                            type: "fluid.component"
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6193 options distribution with shorter-lived sibling as head", function () {
+        jqUnit.expect(2);
+        var root = fluid.tests.FLUID6193root();
+        root.siblingHead.events.createTarget.fire();
+        jqUnit.assertEquals("Distribution reached target", 5, root.siblingHead.distroTarget.options.five);
+        root.siblingHead.destroy();
+        root.destroy();
+        jqUnit.assert("Components destroyed without failure");
+    });
+
     /** FLUID-4179 unexpected material in clear test **/
 
     fluid.defaults("fluid.tests.misclearTop", {
