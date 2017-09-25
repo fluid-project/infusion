@@ -230,7 +230,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["{separatedPanel}.prefsEditor", "Initial Rendering", 0]
                 }, {
                     func: "{separatedPanel}.applier.change",
-                    args: ["scrollToIndex", 2]
+                    args: ["panelIndex", 2]
                 }, {
                     func: "fluid.tests.assertPanelVisibility",
                     args: ["{separatedPanel}.prefsEditor", "ScrollToPanel 2", 2]
@@ -248,13 +248,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["{separatedPanel}.prefsEditor", "Clicked to go to Panel to the Left", 2]
                 }, {
                     func: "{separatedPanel}.applier.change",
-                    args: ["scrollToIndex", -1]
+                    args: ["panelIndex", -1]
                 }, {
                     func: "fluid.tests.assertPanelVisibility",
                     args: ["{separatedPanel}.prefsEditor", "Scrolled to panel below bounds", 0]
                 }, {
                     func: "{separatedPanel}.applier.change",
-                    args: ["scrollToIndex", 20]
+                    args: ["panelIndex", 20]
                 }, {
                     func: "fluid.tests.assertPanelVisibility",
                     args: ["{separatedPanel}.prefsEditor", "Scrolled to panel beyond bounds", 5]
