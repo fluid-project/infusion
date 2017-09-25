@@ -33,7 +33,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             panelIndex: 0
         },
         events: {
-            beforeReset: null // should be fired by the fluid.prefs.prefsEditor grade
+            beforeReset: null, // should be fired by the fluid.prefs.prefsEditor grade
+            afterScroll: null
         },
         modelRelay: {
             target: "panelIndex",
@@ -50,10 +51,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "panelIndex": {
                 listener: "fluid.prefs.arrowScrolling.scrollToPanel",
                 args: ["{that}", "{change}.value"],
+                excludeSource: ["manualScroll"],
                 namespace: "scrollToPanel"
             }
         },
         listeners: {
+            "onReady.scrollEvent": {
+                "listener": "fluid.prefs.arrowScrolling.scrollDebounce",
+                args: ["{that}.dom.scrollContainer", "{that}.events.afterScroll.fire"]
+            },
             "onReady.windowResize": {
                 "this": window,
                 method: "addEventListener",
@@ -78,6 +84,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "beforeReset.resetPanelIndex": {
                 listener: "{that}.applier.fireChangeRequest",
                 args: {path: "panelIndex", value: 0, type: "ADD", source: "reset"}
+            },
+            "afterScroll.setPanelIndex": {
+                changePath: "panelIndex",
+                value: {
+                    expander: {
+                        funcName: "fluid.prefs.arrowScrolling.getClosesPanelIndex",
+                        args: "{that}.dom.panels"
+                    }
+                },
+                source: "manualScroll"
             }
         },
         invokers: {
@@ -117,6 +133,32 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (panels.length) {
             scrollContainer.scrollLeft(scrollContainer.scrollLeft() + panels.eq(panelIndex).offset().left);
         }
+    };
+
+    fluid.prefs.arrowScrolling.getClosesPanelIndex = function (panels) {
+        var panelArray = [];
+        panels.each(function (idx, panel) {
+            panelArray.push({
+                index: idx,
+                offset: Math.abs($(panel).offset().left)
+            });
+        });
+        panelArray.sort(function (a, b) {
+            return a.offset - b.offset;
+        });
+        return panelArray[0].index;
+    };
+
+    // Based on scrollStop.js ( https://github.com/cferdinandi/scrollStop ),
+    // which is licensed under: MIT License.
+    fluid.prefs.arrowScrolling.scrollDebounce = function (elm, callback, delay) {
+        var timeoutID;
+        delay = delay || 66;
+
+        $(elm).scroll(function () {
+            window.clearTimeout(timeoutID);
+            timeoutID = setTimeout(callback, delay);
+        });
     };
 
 })(jQuery, fluid_3_0_0);
