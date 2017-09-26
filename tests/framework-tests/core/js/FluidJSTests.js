@@ -190,6 +190,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("fluid.values", [1, null, false, "Sneeze"], fluid.values(seek1));
     });
 
+    jqUnit.test("fluid.keys and fluid.values with prototype chain", function () {
+        var proto = {
+            a: 1
+        };
+        var Derived = function () {};
+        Derived.prototype = proto;
+        var derived = new Derived();
+        derived.b = 2;
+
+        jqUnit.assertDeepEq("fluid.keys", ["a", "b"], fluid.keys(derived).sort());
+        jqUnit.assertDeepEq("fluid.values", [1, 2], fluid.values(derived).sort());
+    });
+
     jqUnit.test("null iteration", function () {
         jqUnit.expect(2);
 
