@@ -189,7 +189,7 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     fluid.renderLoggingArg = function (arg) {
-        return fluid.isPrimitive(arg) || !fluid.isPlainObject(arg) ? arg : JSON.stringify(arg);
+        return arg === undefined ? "undefined" : fluid.isPrimitive(arg) || !fluid.isPlainObject(arg) ? arg : JSON.stringify(arg);
     };
 
     // The framework's built-in "fail" failure handler - this throws an exception of type <code>fluid.FluidError</code>
@@ -682,22 +682,23 @@ var fluid = fluid || fluid_3_0_0;
         return fluid.filterKeys(toCensor, keys, true);
     };
 
-    // TODO: This is not as clever an idea as we think it is - this typically inner-loop function will optimise badly due to closure
-    fluid.makeFlatten = function (index) {
-        return function (obj) {
-            var togo = [];
-            fluid.each(obj, function (/* value, key */) {
-                togo.push(arguments[index]);
-            });
-            return togo;
-        };
+    /** Return the keys in the supplied object as an array. Note that this will return keys found in the prototype chain as well as "own properties", unlike Object.keys() **/
+    fluid.keys = function (obj) {
+        var togo = [];
+        for (var key in obj) {
+            togo.push(key);
+        }
+        return togo;
     };
 
-    /** Return the keys in the supplied object as an array. Note that this will return keys found in the prototype chain as well as "own properties", unlike Object.keys() **/
-    fluid.keys = fluid.makeFlatten(1);
-
     /** Return the values in the supplied object as an array **/
-    fluid.values = fluid.makeFlatten(0);
+    fluid.values = function (obj) {
+        var togo = [];
+        for (var key in obj) {
+            togo.push(obj[key]);
+        }
+        return togo;
+    };
 
     /**
      * Searches through the supplied object, and returns <code>true</code> if the supplied value

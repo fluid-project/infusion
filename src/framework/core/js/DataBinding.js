@@ -4,7 +4,7 @@ Copyright 2008-2009 University of Toronto
 Copyright 2010-2011 Lucendo Development Ltd.
 Copyright 2010-2014 OCAD University
 Copyright 2012-2014 Raising the Floor - US
-Copyright 2014-2016 Raising the Floor - International
+Copyright 2014-2017 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -379,7 +379,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             return recel.complete !== true;
         });
         if (!incomplete) {
-            fluid.operateInitialTransaction(that, mrec);
+            try { // For FLUID-6195 ensure that exceptions during init relay don't leave the framework unusable
+                fluid.operateInitialTransaction(that, mrec);
+            } catch (e) {
+                fluid.clearTransactions();
+                throw e;
+            }
             // NB: Don't call fluid.concludeTransaction since "init" is not a standard record - this occurs in commitRelays for the corresponding genuine record as usual
             instantiator.modelTransactions.init = {};
         }
@@ -413,8 +418,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *    segs {Array of String} Holds the full array of path segments found by parsing the original reference - only useful in <code>nonModel</code> case
      */
     fluid.parseValidModelReference = function (that, name, ref, implicitRelay) {
-        var reject = function (message) {
-            fluid.fail("Error in " + name + ": ", ref, message);
+        var reject = function () {
+            var failArgs = ["Error in " + name + ": ", ref].concat(fluid.makeArray(arguments));
+            fluid.fail.apply(null, failArgs);
+        };
+        var rejectNonModel = function (value) {
+            reject(" must be a reference to a component with a ChangeApplier (descended from fluid.modelComponent), instead got ", value);
         };
         var parsed; // resolve ref into context and modelSegs
         if (typeof(ref) === "string") {
@@ -432,7 +441,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     parsed.contextSegs = parsed.segs.slice(0, modelPoint);
                     delete parsed.path;
                 }
-
             } else {
                 parsed = {
                     path: ref,
@@ -448,30 +456,31 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 modelSegs: fluid.expandOptions(ref.segs, that)
             };
         }
-        var target; // resolve target component, which defaults to "that"
+        var contextTarget, target; // resolve target component, which defaults to "that"
         if (parsed.context) {
-            target = fluid.resolveContext(parsed.context, that);
-            if (!target) {
-                reject(" must be a reference to an existing component");
+            contextTarget = fluid.resolveContext(parsed.context, that);
+            if (!contextTarget) {
+                reject(" context must be a reference to an existing component");
             }
-            if (parsed.contextSegs) {
-                target = fluid.getForComponent(target, parsed.contextSegs);
-            }
+            target = parsed.contextSegs ? fluid.getForComponent(contextTarget, parsed.contextSegs) : contextTarget;
         } else {
             target = that;
         }
         if (!parsed.nonModel) {
+            if (!fluid.isComponent(target)) {
+                rejectNonModel(target);
+            }
             if (!target.applier) {
                 fluid.getForComponent(target, ["applier"]);
             }
             if (!target.applier) {
-                reject(" must be a reference to a component with a ChangeApplier (descended from fluid.modelComponent)");
+                rejectNonModel(target);
             }
         }
         parsed.that = target;
-        parsed.applier = target.applier;
+        parsed.applier = target && target.applier;
         if (!parsed.path) { // ChangeToApplicable amongst others rely on this
-            parsed.path = target.applier.composeSegments.apply(null, parsed.modelSegs);
+            parsed.path = target && target.applier.composeSegments.apply(null, parsed.modelSegs);
         }
         return parsed;
     };
@@ -768,7 +777,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.parseModelRelay = function (that, mrrec, key) {
-        var parsedSource = mrrec.source ? fluid.parseValidModelReference(that, "modelRelay record member \"source\"", mrrec.source) :
+        var parsedSource = mrrec.source !== undefined ? fluid.parseValidModelReference(that, "modelRelay record member \"source\"", mrrec.source) :
             {path: null, modelSegs: null};
         var parsedTarget = fluid.parseValidModelReference(that, "modelRelay record member \"target\"", mrrec.target);
         var namespace = mrrec.namespace || key;
