@@ -1318,8 +1318,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     };
 
-    fluid.tests.changeInput = function (textSlider, newValue) {
-        fluid.changeElementValue(textSlider.find("input"), newValue);
+    fluid.tests.changeInput = function (textfieldControlContainer, newValue) {
+        fluid.changeElementValue(textfieldControlContainer.find("input"), newValue);
     };
 
     /*******************************************************************************
@@ -1329,7 +1329,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.prefs.panel.textSize", {
         gradeNames: ["fluid.prefs.panel.textSize", "fluid.tests.panels.utils.defaultTestPanel", "fluid.tests.panels.utils.injectTemplates"],
         model: {
-            textSize: 1
+            value: 1
         },
         messageBase: {
             "textSizeLabel": "Text Size",
@@ -1372,14 +1372,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     event: "{fluid.tests.textSizePanel textSize}.events.afterRender",
                     priority: "last:testing",
                     listener: "fluid.tests.panels.utils.checkModel",
-                    args: ["textSize", "{textSize}.model", 1]
+                    args: ["value", "{textSize}.model", 1]
                 }, {
                     func: "fluid.tests.changeInput",
-                    args: ["{textSize}.dom.textSize", "{that}.options.testOptions.newValue"]
+                    args: ["{textSize}.dom.textfieldStepperContainer", "{that}.options.testOptions.newValue"]
                 }, {
                     listener: "fluid.tests.panels.utils.checkModel",
-                    args: ["textSize", "{textSize}.model", "{that}.options.testOptions.newValue"],
-                    spec: {path: "textSize", priority: "last"},
+                    args: ["value", "{textSize}.model", "{that}.options.testOptions.newValue"],
+                    spec: {path: "value", priority: "last"},
                     changeEvent: "{textSize}.applier.modelChanged"
                 }]
             }]
@@ -1393,7 +1393,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.prefs.panel.lineSpace", {
         gradeNames: ["fluid.prefs.panel.lineSpace", "fluid.tests.panels.utils.defaultTestPanel", "fluid.tests.panels.utils.injectTemplates"],
         model: {
-            lineSpace: 1
+            value: 1
         },
         messageBase: {
             "lineSpaceLabel": "Line Spacing",
@@ -1442,14 +1442,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         event: "{fluid.tests.lineSpacePanel lineSpace}.events.afterRender",
                         priority: "last:testing",
                         listener: "fluid.tests.panels.utils.checkModel",
-                        args: ["lineSpace", "{lineSpace}.model", 1]
+                        args: ["value", "{lineSpace}.model", 1]
                     }, {
                         func: "fluid.tests.changeInput",
-                        args: ["{lineSpace}.dom.lineSpace", "{that}.options.testOptions.newValue"]
+                        args: ["{lineSpace}.dom.textfieldStepperContainer", "{that}.options.testOptions.newValue"]
                     }, {
                         listener: "fluid.tests.panels.utils.checkModel",
-                        args: ["lineSpace", "{lineSpace}.model", "{that}.options.testOptions.newValue"],
-                        spec: {path: "lineSpace", priority: "last"},
+                        args: ["value", "{lineSpace}.model", "{that}.options.testOptions.newValue"],
+                        spec: {path: "value", priority: "last"},
                         changeEvent: "{lineSpace}.applier.modelChanged"
                     }
                 ]
