@@ -2,7 +2,7 @@
 Copyright 2010-2015 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 Copyright 2012-2013 Raising the Floor - US
-Copyright 2013-2016 Raising the Floor - International
+Copyright 2013-2017 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -5547,6 +5547,45 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("FLUID-5294: avoid ambiguous support of 'value' and 'valuePath' - only accept 'input' and 'inputPath'", function () {
         fluid.tests.transforms.testOneStructure(fluid.tests.transforms.noValueSupport, {
             transformWrap: true
+        });
+    });
+
+    fluid.tests.transforms.uninvertible = [{
+        message: "Plain fluid.identity", // Note that unlike fluid.transforms.identity, this is just a random function with no inverse
+        transform: {
+            type: "fluid.identity"
+        }
+    }, {
+        message: "Nested fluid.identity", // Our one transform that supports compound inversion
+        transform: {
+            type: "fluid.transforms.indexArrayByKey",
+            inputPath: "outer",
+            key: "outerpivot",
+            innerValue: [
+                {
+                    "outervar": {
+                        "transform": {
+                            type: "fluid.identity",
+                            inputPath: "outervar",
+                            key: "innerpivot"
+                        }
+                    }
+                }
+            ]
+        }
+    }, {
+        message: "Nested within path rule",
+        b: {
+            transform: {
+                type: "fluid.transforms.inRange"
+            }
+        }
+    }];
+
+    jqUnit.test("FLUID-6194: report on uninvertible transforms", function () {
+        fluid.each(fluid.tests.transforms.uninvertible, function (oneTransform) {
+            var inverted = fluid.model.transform.invertConfiguration(fluid.censorKeys(oneTransform, ["message"]));
+            jqUnit.assertEquals(oneTransform.message, fluid.model.transform.uninvertibleTransform, inverted);
         });
     });
 
