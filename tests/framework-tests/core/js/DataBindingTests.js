@@ -1344,6 +1344,35 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }, ["reference", "nonModelComponent", "implicit", "fluid.modelComponent"]);
     });
 
+    /** FLUID-6195: Exploding relay rule does not corrupt framework state **/
+
+    fluid.defaults("fluid.tests.fluid6195root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            source: 1
+        },
+        modelRelay: {
+            source: "source",
+            target: "target",
+            singleTransform: {
+                type: "fluid.tests.fluid6195explode"
+            }
+        }
+    });
+
+    fluid.tests.fluid6195explode = function () {
+        throw {message: "This relay rule has exploded"};
+    };
+
+    jqUnit.test("FLUID-6195: Exploding model relay rule does not corrupt framework state", function () {
+        jqUnit.expect(1);
+        try {
+            fluid.tests.fluid6195root();
+        } catch (e) {
+            jqUnit.assert("Received bare exception through model relay", "This relay rule has exploded", e.message);
+        }
+    });
+
     /** Demonstrate resolving a set of model references which is cyclic in components (although not in values), as well as
      * double relay and longer "transform" form of relay specification */
 

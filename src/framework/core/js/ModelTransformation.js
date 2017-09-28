@@ -410,7 +410,7 @@ var fluid = fluid || fluid_3_0_0;
             var collector = defaults.collectInputPaths;
             if (collector) {
                 var collected = fluid.makeArray(fluid.invokeGlobalFunction(collector, [transformSpec, transformer]));
-                transformer.inputPaths = transformer.inputPaths.concat(collected);
+                Array.prototype.push.apply(transformer.inputPaths, collected); // push all elements of collected onto inputPaths
             }
         }
     };
