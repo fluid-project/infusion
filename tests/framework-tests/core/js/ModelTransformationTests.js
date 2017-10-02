@@ -339,6 +339,136 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
 
+    fluid.transforms.extraCollectInputPathsTests = [{
+        message: "Using an array of transformers with a given outputkey",
+        transform: {
+            dog: [
+                {
+                    transform: {
+                        type: "fluid.transforms.linearScale",
+                        inputPath: "scaleMe",
+                        factorPath: "scaleFactor",
+                        offset: 5
+                    }
+                }, {
+                    "cat": {
+                        transform: {
+                            type: "fluid.transforms.value",
+                            inputPath: "helloAnimal"
+                        }
+                    }
+                }
+            ]
+        },
+        expected: {
+            dog: [ 11, { cat: "I'm a cat"} ]
+        },
+        model: {
+            scaleMe: 3,
+            scaleFactor: 2,
+            helloAnimal: "I'm a cat"
+        },
+        expectedInputPaths: [ "scaleMe", "scaleFactor", "helloAnimal" ]
+    }, {
+        message: "Simple path from condition",
+        transform: {
+            transform: [
+                {
+                    "type": "fluid.transforms.condition",
+                    "conditionPath": "contrastPath",
+                    "condition": false,
+                    "outputPath": "theme",
+                    "false": "colour",
+                    "true": "hc"
+                }
+            ]
+        },
+        expected: {
+            theme: "hc"
+        },
+        model: {
+            contrastPath: true
+        },
+        expectedInputPaths: [ "contrastPath" ]
+    }, {
+        message: "Nested Condition",
+        transform: {
+            transform: [
+                {
+                    "type": "fluid.transforms.condition",
+                    "conditionPath": "contrastPath",
+                    "condition": false,
+                    "outputPath": "theme",
+                    "falsePath": "falsePath",
+                    "true": {
+                        "transform": {
+                            "type": "fluid.transforms.value",
+                            "inputPath": "cat"
+                        }
+                    }
+                }
+            ]
+        },
+        expected: {
+            "theme": "meow"
+        },
+        model: {
+            "contrastPath": true,
+            "cat": "meow"
+        },
+        expectedInputPaths: [
+            "cat",
+            "falsePath",
+            "contrastPath"
+        ]
+    }, {
+        message: "FLUID-6196: Complex transform nested in simpler transform",
+        transform: {
+            "transform": [
+                {
+                    "type": "fluid.transforms.condition",
+                    "conditionPath": "myCond",
+                    "condition": false,
+                    "outputPath": "theme",
+                    "falsePath": "myFalsePath",
+                    "true": {
+                        "transform": {
+                            "type": "fluid.transforms.valueMapper",
+                            "defaultInputPath": "mapper",
+                            "match": {
+                                "black-white": "bw",
+                                "white-black": "bw",
+                                "black-yellow": "hc",
+                                "yellow-black": "hc"
+                            },
+                            "noMatch": {
+                                "outputValue": "bw"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        expected: {
+            "theme": "hc"
+        },
+        model: {
+            "myCond": true,
+            "mapper": "black-yellow"
+        },
+        expectedInputPaths: [
+            "mapper",
+            "myFalsePath",
+            "myCond"
+        ]
+    }];
+
+    jqUnit.test("fluid.transforms.extraCollectInputPathsTests()", function () {
+        fluid.tests.transforms.testOneStructure(fluid.transforms.extraCollectInputPathsTests, {
+            method: "assertDeepEq"
+        });
+    });
+
     fluid.tests.transforms.literalValueTests = [{
         message: "literalValue - basic test",
         transform: {
@@ -718,7 +848,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expected: "it was true",
             expectedInputPaths: [ "catsAreDecent" ]
         }, {
-            message: "truePath condition",
+            message: "truePath working",
             transform: {
                 type: "fluid.transforms.condition",
                 condition: true,
@@ -729,14 +859,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             expectedInputPaths: [ "cow" ]
         }, {
+            message: "falsePath working",
+            transform: {
+                type: "fluid.transforms.condition",
+                condition: false,
+                "falsePath": "cow"
+            },
+            expected: {
+                grass: "chew"
+            },
+            expectedInputPaths: [ "cow" ]
+        }, {
             message: "invalid truePath",
             transform: {
                 type: "fluid.transforms.condition",
                 conditionPath: "catsAreDecent",
-                "true": fluid.tests.transforms.source.bow
+                truePath: "fluid.tests.transforms.source.idontexist"
             },
             expected: undefined,
-            expectedInputPaths: [ "catsAreDecent" ]
+            expectedInputPaths: [
+                "fluid.tests.transforms.source.idontexist",
+                "catsAreDecent"
+            ]
         }, {
             message: "invalid condition path",
             transform: {
