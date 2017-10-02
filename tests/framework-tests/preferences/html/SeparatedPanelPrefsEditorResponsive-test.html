@@ -68,6 +68,14 @@
 
     <!-- Test HTML -->
     <!-- <div id="qunit-fixture"> -->
+        <!--
+            The tests are run in an iframe so that the size of the document can be set to trigger the responsive
+            layouts.
+
+            We require separate iframes for each of the tests due to IE 11 and Edge throwing a "Permission Denied"
+            error when trying to setup the iframe for the second run. This was likely caused by reseting the iframe's
+            source and may be related to https://github.com/jquery/jquery/issues/1831
+        -->
         <iframe class="flc-iframeSetup-responsiveTests"></iframe>
         <iframe class="flc-iframeSetup-panelIndexTests"></iframe>
     <!-- </div> -->
