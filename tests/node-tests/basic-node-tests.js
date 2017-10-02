@@ -24,9 +24,9 @@ var jqUnit = fluid.registerNamespace("jqUnit");
 fluid.registerNamespace("fluid.tests");
 
 // Number of expected assertions
-fluid.tests.expectedAsserts = 21;
+fluid.tests.expectedAsserts = 22;
 // Number of expected test cases - used in tap-reporting.js
-fluid.tests.expectedTestCases = 11;
+fluid.tests.expectedTestCases = 12;
 
 require("./tap-reporting");
 
@@ -190,6 +190,20 @@ jqUnit.test("FLUID-5807 noncorrupt framework stack traces", function () {
     jqUnit.assertTrue("Framework error is an instance of itself", error instanceof fluid.FluidError);
     var stack = error.stack.toString();
     jqUnit.assertTrue("Our own filename must appear in the stack", stack.indexOf("basic-node-tests") !== -1);
+});
+
+jqUnit.test("FLUID-6178 fluid.prettyPrintJSON with exploding synthetic properties", function () {
+    var exploding = {};
+    Object.defineProperty(exploding, "explode", {
+        configurable: true,
+        enumerable: true,
+        get: function () {
+            "This function should not be called".explode();
+        }
+    });
+    var rendered = fluid.prettyPrintJSON(exploding);
+    var expected = "{\n    \"explode\": [Synthetic property]\n}";
+    jqUnit.assertEquals("Exploding property should be safely bypassed", expected, rendered);
 });
 
 QUnit.load();
