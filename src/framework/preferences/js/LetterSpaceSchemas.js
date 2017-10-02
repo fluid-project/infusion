@@ -33,15 +33,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "template": "%templatePrefix/SeparatedPanelPrefsEditor.html",
             "message": "%messagePrefix/prefsEditor.json",
 
-            speak: {
+            letterSpace: {
                 type: "fluid.prefs.letterSpace",
                 enactor: {
-                    type: "fluid.prefs.enactor.letterSpace",
-                    container: "body"
+                    type: "fluid.prefs.enactor.letterSpace"
                 },
                 panel: {
                     type: "fluid.prefs.panel.letterSpace",
-                    container: ".flc-prefsEditor-letterSpace",
+                    container: ".flc-prefsEditor-letter-space",
                     template: "%templatePrefix/PrefsEditorTemplate-letterSpace.html",
                     message: "%messagePrefix/letterSpace.json"
                 }
@@ -63,8 +62,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "type": "number",
                 "default": 0,
                 "minimum": 0,
-                "maximum": 2,
-                "divisibleBy": 0.05
+                "maximum": 3,
+                "divisibleBy": 0.5
             }
         }
     });
