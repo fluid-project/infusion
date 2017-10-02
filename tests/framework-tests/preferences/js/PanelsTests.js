@@ -1305,24 +1305,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
-     * Test functions shared by text field slider unit tests
-     *******************************************************************************/
-    fluid.tests.testDefault = function (that, messageMap) {
-        var inputValue = parseFloat(that.container.find("input").val(), 10);
-        var messageBase = that.options.messageBase;
-        jqUnit.assertEquals("The default input value has been set to the min value", that.options.range.min, inputValue);
-
-        fluid.each(messageMap, function (messageName, selectorName) {
-            jqUnit.assertEquals("The label text is " + messageBase[messageName], messageBase[messageName], that.locate(selectorName).text());
-        });
-
-    };
-
-    fluid.tests.changeInput = function (textfieldControlContainer, newValue) {
-        fluid.changeElementValue(textfieldControlContainer.find("input"), newValue);
-    };
-
-    /*******************************************************************************
      * textSize
      *******************************************************************************/
 
@@ -1374,7 +1356,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     listener: "fluid.tests.panels.utils.checkModel",
                     args: ["value", "{textSize}.model", 1]
                 }, {
-                    func: "fluid.tests.changeInput",
+                    func: "fluid.tests.panels.changeInput",
                     args: ["{textSize}.dom.textfieldStepperContainer", "{that}.options.testOptions.newValue"]
                 }, {
                     listener: "fluid.tests.panels.utils.checkModel",
@@ -1444,7 +1426,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         listener: "fluid.tests.panels.utils.checkModel",
                         args: ["value", "{lineSpace}.model", 1]
                     }, {
-                        func: "fluid.tests.changeInput",
+                        func: "fluid.tests.panels.changeInput",
                         args: ["{lineSpace}.dom.textfieldStepperContainer", "{that}.options.testOptions.newValue"]
                     }, {
                         listener: "fluid.tests.panels.utils.checkModel",

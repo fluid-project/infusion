@@ -54,4 +54,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The toggle off text is " + messageBase.switchOff, messageBase.switchOff, that.switchUI.locate("off").text());
     };
 
+    fluid.tests.panels.changeInput = function (controlContainer, newValue) {
+        fluid.changeElementValue(controlContainer.find("input"), newValue);
+    };
+
 })();
