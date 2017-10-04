@@ -148,8 +148,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     });
 
     fluid.prefs.tempStore.set = function (settings, applier) {
-        applier.fireChangeRequest({path: "", type: "DELETE"});
-        applier.change("", settings);
+        var transaction = applier.initiate();
+        transaction.fireChangeRequest({path: "", type: "DELETE"});
+        transaction.change("", settings);
+        transaction.commit();
     };
 
     fluid.defaults("fluid.prefs.globalSettingsStore", {
