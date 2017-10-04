@@ -362,9 +362,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Resets the selections to the integrator's defaults and fires afterReset
      */
     fluid.prefs.prefsEditor.reset = function (that) {
+        var transaction = that.applier.initiate();
         that.events.beforeReset.fire(that);
-        that.applier.fireChangeRequest({path: "", type: "DELETE"});
-        that.applier.change("", fluid.copy(that.initialModel));
+        transaction.fireChangeRequest({path: "", type: "DELETE"});
+        transaction.change("", fluid.copy(that.initialModel));
+        transaction.commit();
         that.events.onPrefsEditorRefresh.fire();
         that.events.afterReset.fire(that);
     };
