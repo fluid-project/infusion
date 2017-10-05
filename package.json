@@ -19,8 +19,10 @@
     "repository": "git://github.com/fluid-project/infusion.git",
     "main": "./src/module/fluid.js",
     "scripts": {
-        "prepublish": "grunt buildDists",
-        "test": "node tests/node-tests/basic-node-tests.js"
+        "prepublish": "npm run buildDists && npm run buildStylus",
+        "test": "node tests/node-tests/basic-node-tests.js",
+        "buildDists": "grunt buildDists",
+        "buildStylus": "grunt buildStylus"
     },
     "engines": {
         "node": ">=0.10.0"
