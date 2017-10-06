@@ -78,7 +78,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 fluid.tests.assertJQuery(message + " - located container should be a jQuery", container);
             }
             var missingElement = that.locate("missing");
-            fluid.tests.fluid5821.isEmptyJquery("Locate a non-existent selector key", missingElement);
+            jqUnit.assertUndefined("Locate a non-existent selector key", missingElement);
             var badElement = that.locate("bad");
             fluid.tests.fluid5821.isEmptyJquery("Locate a selector which matches nothing", badElement, true);
             var container = that.locate("emptyString");

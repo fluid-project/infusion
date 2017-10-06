@@ -5,6 +5,6 @@
     "contrast-by": "Black on yellow",
     "contrast-yb": "Yellow on black",
     "contrast-lgdg": "Low contrast",
-    "contrastLabel": "colour and contrast",
-    "contrastDescr": "Change text and background colours"
+    "label": "Contrast",
+    "description": "Change text and background colours"
 }

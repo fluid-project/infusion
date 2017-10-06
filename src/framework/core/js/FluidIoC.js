@@ -81,12 +81,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.getMemberNames = function (instantiator, thatStack) {
-        var path = instantiator.idToPath(thatStack[thatStack.length - 1].id);
-        var segs = instantiator.parseEL(path);
-            // TODO: we should now have no longer shortness in the stack
-        segs.unshift.apply(segs, fluid.generate(thatStack.length - segs.length, ""));
-
-        return segs;
+        if (thatStack.length === 0) { // Odd edge case for FLUID-6126 from fluid.computeDistributionPriority
+            return [];
+        } else {
+            var path = instantiator.idToPath(thatStack[thatStack.length - 1].id);
+            var segs = instantiator.parseEL(path);
+                // TODO: we should now have no longer shortness in the stack
+            segs.unshift.apply(segs, fluid.generate(thatStack.length - segs.length, ""));
+            return segs;
+        }
     };
 
     // thatStack contains an increasing list of MORE SPECIFIC thats.
@@ -208,7 +211,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var togo = [];
         fluid.each(sourceBlocks, function (block) {
             var source = fluid.get(block.source, sourceSegs);
-            if (source) {
+            if (source !== undefined) {
                 togo.push(fluid.makeDistributionRecord(contextThat, block.source, sourceSegs, targetSegs, exclusions, block.recordType));
                 var rescued = $.extend({}, source);
                 if (removeSource) {
@@ -403,16 +406,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return id;
     };
 
-    fluid.clearDistribution = function (targetHead, id) {
-        var targetShadow = fluid.shadowForComponent(targetHead);
-        fluid.remove_if(targetShadow.distributions, function (distribution) {
-            return distribution.id === id;
-        });
+    fluid.clearDistribution = function (targetHeadId, id) {
+        var targetHeadShadow = fluid.globalInstantiator.idToShadow[targetHeadId];
+        // By FLUID-6193, the head component may already have been destroyed, in which case the distributions are gone,
+        // and we have leaked only its id. In theory we may want to re-establish the distribution if the head is
+        // re-created, but that is a far wider issue.
+        if (targetHeadShadow) {
+            fluid.remove_if(targetHeadShadow.distributions, function (distribution) {
+                return distribution.id === id;
+            });
+        }
     };
 
     fluid.clearDistributions = function (shadow) {
         fluid.each(shadow.outDistributions, function (outDist) {
-            fluid.clearDistribution(outDist.targetComponent, outDist.distributionId);
+            fluid.clearDistribution(outDist.targetHeadId, outDist.distributionId);
         });
     };
 
@@ -454,12 +462,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 fluid.fail("Error in options distribution record ", record, ": must supply either a member \"source\" holding an IoC reference or a member \"record\" holding a literal record");
             }
             var targetRef = fluid.parseContextReference(record.target);
-            var targetComp, selector, context;
+            var targetHead, selector, context;
             if (fluid.isIoCSSSelector(targetRef.context)) {
                 selector = fluid.parseSelector(targetRef.context, fluid.IoCSSMatcher);
                 var headContext = fluid.extractSelectorHead(selector);
                 if (headContext === "/") {
-                    targetComp = fluid.rootComponent;
+                    targetHead = fluid.rootComponent;
                 } else {
                     context = headContext;
                 }
@@ -467,9 +475,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             else {
                 context = targetRef.context;
             }
-            targetComp = targetComp || fluid.resolveContext(context, that);
-            if (!targetComp) {
-                fluid.fail("Error in options distribution record ", record, " - could not resolve context {" + context + "} to a root component");
+            targetHead = targetHead || fluid.resolveContext(context, that);
+            if (!targetHead) {
+                fluid.fail("Error in options distribution record ", record, " - could not resolve context {" + context + "} to a head component");
             }
             var targetSegs = fluid.model.parseEL(targetRef.path);
             var preBlocks;
@@ -496,15 +504,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // TODO: inline material has to be expanded in its original context!
 
             if (selector) {
-                var distributionId = fluid.pushDistributions(targetComp, selector, record.target, preBlocks);
+                var distributionId = fluid.pushDistributions(targetHead, selector, record.target, preBlocks);
                 thatShadow.outDistributions = thatShadow.outDistributions || [];
                 thatShadow.outDistributions.push({
-                    targetComponent: targetComp,
+                    targetHeadId: targetHead.id,
                     distributionId: distributionId
                 });
             }
             else { // The component exists now, we must rebalance it
-                var targetShadow = fluid.shadowForComponent(targetComp);
+                var targetShadow = fluid.shadowForComponent(targetHead);
                 fluid.applyDistributions(that, preBlocks, targetShadow);
             }
             fluid.popActivity();
@@ -1114,6 +1122,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
         // obliterate resolveRoot's scope objects and replace by the real root scope - which is unused by its own children
         var rootShadow = instantiator.idToShadow[fluid.rootComponent.id];
+        rootShadow.contextHash = {}; // Fix for FLUID-6128
         var resolveRootShadow = instantiator.idToShadow[fluid.resolveRootComponent.id];
         resolveRootShadow.ownScope = rootShadow.ownScope;
         resolveRootShadow.childrenScope = rootShadow.childrenScope;

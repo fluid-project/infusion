@@ -2,7 +2,7 @@
 Copyright 2010 University of Toronto
 Copyright 2010-2015 OCAD University
 Copyright 2013-2014 Raising the Floor - US
-Copyright 2013-2016 Raising the Floor - International
+Copyright 2013-2017 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -72,8 +72,15 @@ var fluid = fluid || fluid_2_0_0;
         invertConfiguration: "fluid.transforms.numberToString.invert"
     });
 
-    fluid.transforms.numberToString = function (value) {
-        return (typeof value !== "number") ? undefined : "" + value;
+    fluid.transforms.numberToString = function (value, transformSpec) {
+        if (typeof value === "number") {
+            if (typeof transformSpec.scale === "number" && !isNaN(transformSpec.scale)) {
+                var rounded = fluid.roundToDecimal(value, transformSpec.scale, transformSpec.method);
+                return rounded.toString();
+            } else {
+                return value.toString();
+            }
+        }
     };
 
     fluid.transforms.numberToString.invert = function (transformSpec) {
@@ -95,10 +102,10 @@ var fluid = fluid || fluid_2_0_0;
         invertConfiguration: "fluid.transforms.invertToIdentity"
     });
 
-    fluid.transforms.round = function (value) {
-        return Math.round(value);
+    fluid.transforms.round = function (value, transformSpec) {
+        // validation of scale is handled by roundToDecimal
+        return fluid.roundToDecimal(value, transformSpec.scale, transformSpec.method);
     };
-
 
     fluid.defaults("fluid.transforms.delete", {
         gradeNames: "fluid.transformFunction"
@@ -237,7 +244,7 @@ var fluid = fluid || fluid_2_0_0;
         if (!transformSpec.match) {
             fluid.fail("valueMapper requires an array or hash of matches at path named \"match\", supplied ", transformSpec);
         }
-        var value = fluid.model.transform.getValue(transformSpec.defaultInputPath, undefined, transformer);
+        var value = fluid.model.transform.getValue(transformSpec.defaultInputPath, transformSpec.defaultInput, transformer);
 
         var matchedEntry = (fluid.isArrayable(transformSpec.match)) ? // long form with array of records?
             fluid.transforms.valueMapper.longFormMatch(value, transformSpec, transformer) :
@@ -543,7 +550,12 @@ var fluid = fluid || fluid_2_0_0;
         if (transformSpec.innerValue) {
             var innerValue = transformSpec.innerValue;
             for (var i = 0; i < innerValue.length; ++i) {
-                innerValue[i] = fluid.model.transform.invertConfiguration(innerValue[i]);
+                var inverted = fluid.model.transform.invertConfiguration(innerValue[i]);
+                if (inverted === fluid.model.transform.uninvertibleTransform) {
+                    return inverted;
+                } else {
+                    innerValue[i] = inverted;
+                }
             }
         }
         return transformSpec;
@@ -725,12 +737,12 @@ var fluid = fluid || fluid_2_0_0;
     };
 
     /**
-     * inRange transformer checks whether a value is within a given range and returns true if it is,
-     * and false if it's not.
+     * inRange transformer checks whether a value is within a given range and returns `true` if it is,
+     * and `false` if it's not.
      *
      * The range is defined by the two inputs: "min" and "max" (both inclusive). If one of these inputs
-     * is not present it is considered -infinite and +infinite, respectively - In other words, if no
-     * `min` value is defined, any value below or equal to the given "max" value will result in true.
+     * is not present it is treated as -Infinity and +Infinity, respectively - In other words, if no
+     * `min` value is defined, any value below or equal to the given `max` value will result in `true`.
      */
     fluid.defaults("fluid.transforms.inRange", {
         gradeNames: "fluid.standardTransformFunction"

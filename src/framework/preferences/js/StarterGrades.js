@@ -1,5 +1,5 @@
 /*
-Copyright 2013-2016 OCAD University
+Copyright 2013-2017 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -33,8 +33,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     textSize: 1,                  // in points
                     lineSpace: 1,                 // in ems
                     toc: false,                   // boolean
-                    links: false,                 // boolean
-                    inputsLarger: false           // boolean
+                    inputs: false                 // boolean
                 }
             }
         }
@@ -65,8 +64,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "yb": "fl-theme-yb",
                 "lgdg": "fl-theme-lgdg"
             },
-            "links": "fl-link-enhanced",
-            "inputsLarger": "fl-text-larger"
+            "inputs": "fl-input-enhanced"
         }
     });
 
@@ -141,23 +139,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     }
                 }
             },
-            emphasizeLinks: {
-                type: "fluid.prefs.enactor.emphasizeLinks",
+            enhanceInputs: {
+                type: "fluid.prefs.enactor.enhanceInputs",
                 container: "{uiEnhancer}.container",
                 options: {
-                    cssClass: "{uiEnhancer}.options.classnameMap.links",
+                    cssClass: "{uiEnhancer}.options.classnameMap.inputs",
                     model: {
-                        value: "{uiEnhancer}.model.links"
-                    }
-                }
-            },
-            inputsLarger: {
-                type: "fluid.prefs.enactor.inputsLarger",
-                container: "{uiEnhancer}.container",
-                options: {
-                    cssClass: "{uiEnhancer}.options.classnameMap.inputsLarger",
-                    model: {
-                        value: "{uiEnhancer}.model.inputsLarger"
+                        value: "{uiEnhancer}.model.inputs"
                     }
                 }
             },
@@ -188,7 +176,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             contrast: ".flc-prefsEditor-contrast",
             textControls: ".flc-prefsEditor-text-controls",
             layoutControls: ".flc-prefsEditor-layout-controls",
-            linksControls: ".flc-prefsEditor-links-controls"
+            enhanceInputs: ".flc-prefsEditor-enhanceInputs"
         },
         components: {
             textSize: {
@@ -203,6 +191,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     messageBase: "{messageLoader}.resources.textSize.resourceText",
                     resources: {
                         template: "{templateLoader}.resources.textSize"
+                    },
+                    step: 0.1,
+                    range: {
+                        min: 1,
+                        max: 2
                     }
                 }
             },
@@ -218,6 +211,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     messageBase: "{messageLoader}.resources.lineSpace.resourceText",
                     resources: {
                         template: "{templateLoader}.resources.lineSpace"
+                    },
+                    step: 0.1,
+                    range: {
+                        min: 1,
+                        max: 2
                     }
                 }
             },
@@ -260,7 +258,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 options: {
                     gradeNames: "fluid.prefs.prefsEditorConnections",
                     model: {
-                        toc: "{prefsEditor}.model.preferences.toc"
+                        value: "{prefsEditor}.model.preferences.toc"
                     },
                     messageBase: "{messageLoader}.resources.layoutControls.resourceText",
                     resources: {
@@ -268,44 +266,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     }
                 }
             },
-            linksControls: {
-                type: "fluid.prefs.panel.linksControls",
-                container: "{prefsEditor}.dom.linksControls",
+            enhanceInputs: {
+                type: "fluid.prefs.panel.enhanceInputs",
+                container: "{prefsEditor}.dom.enhanceInputs",
                 createOnEvent: "onPrefsEditorMarkupReady",
                 options: {
                     gradeNames: "fluid.prefs.prefsEditorConnections",
-                    selectors: {
-                        emphasizeLinks: ".flc-prefsEditor-emphasizeLinks",
-                        inputsLarger: ".flc-prefsEditor-inputsLarger"
-                    },
-                    selectorsToIgnore: ["emphasizeLinks", "inputsLarger"],
                     model: {
-                        fluid_prefs_emphasizeLinks: "{prefsEditor}.model.preferences.links",
-                        fluid_prefs_inputsLarger: "{prefsEditor}.model.preferences.inputsLarger"
+                        value: "{prefsEditor}.model.preferences.inputs"
                     },
-                    components: {
-                        emphasizeLinks: {
-                            type: "fluid.prefs.panel.emphasizeLinks",
-                            container: "{that}.dom.emphasizeLinks",
-                            createOnEvent: "initSubPanels",
-                            options: {
-                                messageBase: "{messageLoader}.resources.emphasizeLinks.resourceText"
-                            }
-                        },
-                        inputsLarger: {
-                            type: "fluid.prefs.panel.inputsLarger",
-                            container: "{that}.dom.inputsLarger",
-                            createOnEvent: "initSubPanels",
-                            options: {
-                                messageBase: "{messageLoader}.resources.inputsLarger.resourceText"
-                            }
-                        }
-                    },
-                    messageBase: "{messageLoader}.resources.linksControls.resourceText",
+                    messageBase: "{messageLoader}.resources.enhanceInputs.resourceText",
                     resources: {
-                        template: "{templateLoader}.resources.linksControls",
-                        emphasizeLinks: "{templateLoader}.resources.emphasizeLinks",
-                        inputsLarger: "{templateLoader}.resources.inputsLarger"
+                        template: "{templateLoader}.resources.enhanceInputs"
                     }
                 }
             }
@@ -323,40 +295,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
 
     fluid.defaults("fluid.prefs.starterTemplateLoader", {
-        gradeNames: ["fluid.resourceLoader", "fluid.contextAware"],
+        gradeNames: ["fluid.resourceLoader"],
         resources: {
+            textSize: "%templatePrefix/PrefsEditorTemplate-textSize.html",
+            lineSpace: "%templatePrefix/PrefsEditorTemplate-lineSpace.html",
             textFont: "%templatePrefix/PrefsEditorTemplate-textFont.html",
             contrast: "%templatePrefix/PrefsEditorTemplate-contrast.html",
             layoutControls: "%templatePrefix/PrefsEditorTemplate-layout.html",
-            linksControls: "%templatePrefix/PrefsEditorTemplate-linksControls.html",
-            emphasizeLinks: "%templatePrefix/PrefsEditorTemplate-emphasizeLinks.html",
-            inputsLarger: "%templatePrefix/PrefsEditorTemplate-inputsLarger.html"
-        },
-        contextAwareness: {
-            startTemplateLoaderPrefsWidgetType: {
-                checks: {
-                    jQueryUI: {
-                        contextValue: "{fluid.prefsWidgetType}",
-                        equals: "jQueryUI",
-                        gradeNames: "fluid.prefs.starterTemplateLoader.jQuery"
-                    }
-                },
-                defaultGradeNames: "fluid.prefs.starterTemplateLoader.native"
-            }
-        }
-    });
-
-    fluid.defaults("fluid.prefs.starterTemplateLoader.native", {
-        resources: {
-            textSize: "%templatePrefix/PrefsEditorTemplate-textSize-nativeHTML.html",
-            lineSpace: "%templatePrefix/PrefsEditorTemplate-lineSpace-nativeHTML.html"
-        }
-    });
-
-    fluid.defaults("fluid.prefs.starterTemplateLoader.jQuery", {
-        resources: {
-            textSize: "%templatePrefix/PrefsEditorTemplate-textSize-jQueryUI.html",
-            lineSpace: "%templatePrefix/PrefsEditorTemplate-lineSpace-jQueryUI.html"
+            enhanceInputs: "%templatePrefix/PrefsEditorTemplate-enhanceInputs.html"
         }
     });
 
@@ -400,9 +346,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             lineSpace: "%messagePrefix/lineSpace.json",
             contrast: "%messagePrefix/contrast.json",
             layoutControls: "%messagePrefix/tableOfContents.json",
-            linksControls: "%messagePrefix/linksControls.json",
-            emphasizeLinks: "%messagePrefix/emphasizeLinks.json",
-            inputsLarger: "%messagePrefix/inputsLarger.json"
+            enhanceInputs: "%messagePrefix/enhanceInputs.json"
         }
     });
 

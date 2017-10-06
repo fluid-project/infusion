@@ -18,6 +18,7 @@ The comprehensive test suite for Infusion should be run in the browser by loadin
 
 ## TAP output for Testem Integration
 
-The test can optionally output a TAP-formatted report in addition to its usual reporting, for integration with the Testem test runner (https://github.com/testem/testem#processes-with-tap-output) that runs the browser-based tests (see the main README.md for details)
+The test can optionally output a TAP-formatted report in addition to its usual reporting, for integration with the Testem test runner
+(https://github.com/testem/testem#processes-with-tap-output) that runs the browser-based tests (see the main README.md for details)
 
 This mode is invoked by executing `node basic-node-tests.js --tap`

@@ -11,17 +11,24 @@ Currently the contents of this file represent a placeholder for future Infusion 
 
 ### New Features ###
 
+* Preference framework
+  * Updated look of on/off toggles
+
 
 ### Removal of Deprecated Features ###
 
+* Preference framework
+  * Collapsed inputsLarger and emphasizeLinks preferences into enhanceInputs
 
-## Obtaining Infusion ##
+## How Do I Get Infusion? ##
 
+* [Download a Release](https://github.com/fluid-project/infusion/releases)
+* [Install from NPM](https://www.npmjs.com/package/infusion)
 * [Fork on GitHub](https://github.com/fluid-project/infusion)
-* [Download a Build](https://github.com/fluid-project/infusion/releases)
-* [NPM](https://www.npmjs.com/package/infusion)
+* [Use from the CDNJS Content Distribution Network](https://cdnjs.com/libraries/infusion)
+  * To try out Infusion quickly you can use the following `script` tag to include the full framework from the CDN: `<script src='https://cdnjs.cloudflare.com/ajax/libs/infusion/2.0.0/infusion-all.min.js'></script>`
 
-You can create your own custom build of Infusion using the [grunt build script](README.md#how-do-i-create-an-infusion-package).
+See [How Do I Create an Infusion Package?](README.md#how-do-i-create-an-infusion-package), for details on creating complete or custom packages of Infusion.
 
 ## Demos ##
 

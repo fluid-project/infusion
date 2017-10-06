@@ -189,7 +189,7 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     fluid.renderLoggingArg = function (arg) {
-        return fluid.isPrimitive(arg) || !fluid.isPlainObject(arg) ? arg : JSON.stringify(arg);
+        return arg === undefined ? "undefined" : fluid.isPrimitive(arg) || !fluid.isPlainObject(arg) ? arg : JSON.stringify(arg);
     };
 
     // The framework's built-in "fail" failure handler - this throws an exception of type <code>fluid.FluidError</code>
@@ -436,7 +436,7 @@ var fluid = fluid || fluid_3_0_0;
     fluid.makeArray = function (arg) {
         var togo = [];
         if (arg !== null && arg !== undefined) {
-            if (fluid.isPrimitive(arg) || typeof(arg.length) !== "number") {
+            if (fluid.isPrimitive(arg) || fluid.isPlainObject(arg, true) || typeof(arg.length) !== "number") {
                 togo.push(arg);
             }
             else {
@@ -682,22 +682,23 @@ var fluid = fluid || fluid_3_0_0;
         return fluid.filterKeys(toCensor, keys, true);
     };
 
-    // TODO: This is not as clever an idea as we think it is - this typically inner-loop function will optimise badly due to closure
-    fluid.makeFlatten = function (index) {
-        return function (obj) {
-            var togo = [];
-            fluid.each(obj, function (/* value, key */) {
-                togo.push(arguments[index]);
-            });
-            return togo;
-        };
+    /** Return the keys in the supplied object as an array. Note that this will return keys found in the prototype chain as well as "own properties", unlike Object.keys() **/
+    fluid.keys = function (obj) {
+        var togo = [];
+        for (var key in obj) {
+            togo.push(key);
+        }
+        return togo;
     };
 
-    /** Return the keys in the supplied object as an array. Note that this will return keys found in the prototype chain as well as "own properties", unlike Object.keys() **/
-    fluid.keys = fluid.makeFlatten(1);
-
     /** Return the values in the supplied object as an array **/
-    fluid.values = fluid.makeFlatten(0);
+    fluid.values = function (obj) {
+        var togo = [];
+        for (var key in obj) {
+            togo.push(obj[key]);
+        }
+        return togo;
+    };
 
     /**
      * Searches through the supplied object, and returns <code>true</code> if the supplied value
@@ -824,6 +825,38 @@ var fluid = fluid || fluid_3_0_0;
      */
     fluid.parseInteger = function (string) {
         return isFinite(string) && ((string % 1) === 0) ? Number(string) : NaN;
+    };
+
+    /**
+     * Derived from Sindre Sorhus's round-to node module ( https://github.com/sindresorhus/round-to ).
+     * License: MIT
+     *
+     * Rounds the supplied number to at most the number of decimal places indicated by the scale, omitting any trailing 0s.
+     * There are three possible rounding methods described below: "round", "ceil", "floor"
+     * Round: Numbers are rounded away from 0 (i.e 0.5 -> 1, -0.5 -> -1).
+     * Ceil: Numbers are rounded up
+     * Floor: Numbers are rounded down
+     * If the scale is invalid (i.e falsey, not a number, negative value), it is treated as 0.
+     * If the scale is a floating point number, it is rounded to an integer.
+     *
+     * @param {Number} num - the number to be rounded
+     * @param {Number} scale - the maximum number of decimal places to round to.
+     * @param {String} method - (optional) Request a rounding method to use ("round", "ceil", "floor").
+     *                          If nothing or an invalid method is provided, it will default to "round".
+     * @return {Number} The num value rounded to the specified number of decimal places.
+     */
+    fluid.roundToDecimal = function (num, scale, method) {
+        // treat invalid scales as 0
+        scale = scale && scale >= 0 ? Math.round(scale) : 0;
+
+        if (method === "ceil" || method === "floor") {
+            // The following is derived from https://github.com/sindresorhus/round-to/blob/v2.0.0/index.js#L20
+            return Number(Math[method](num + "e" + scale) + "e-" + scale);
+        } else {
+            // The following is derived from https://github.com/sindresorhus/round-to/blob/v2.0.0/index.js#L17
+            var sign = num >= 0 ? 1 : -1; // manually calculating the sign because Math.sign is not supported in IE
+            return Number(sign * (Math.round(Math.abs(num) + "e" + scale) + "e-" + scale));
+        }
     };
 
     /** Calls Object.freeze at each level of containment of the supplied object
@@ -965,8 +998,13 @@ var fluid = fluid || fluid_3_0_0;
 
     // unsupported, NON-API function
     fluid.model.resolvePathSegment = function (root, segment, create, origEnv) {
+        // TODO: This branch incurs a huge cost that we incur across the whole framework, just to support the DOM binder
+        // usage. We need to either do something "schematic" or move to proxies
         if (!origEnv && root.resolvePathSegment) {
-            return root.resolvePathSegment(segment);
+            var togo = root.resolvePathSegment(segment);
+            if (togo !== undefined) { // To resolve FLUID-6132
+                return togo;
+            }
         }
         if (create && root[segment] === undefined) {
             // This optimisation in this heavily used function has a fair effect
@@ -2501,7 +2539,7 @@ var fluid = fluid || fluid_3_0_0;
         return target;
     };
 
-    fluid.invokerStrategies = fluid.arrayToHash(["func", "funcName", "listener", "this", "method"]);
+    fluid.invokerStrategies = fluid.arrayToHash(["func", "funcName", "listener", "this", "method", "changePath", "value"]);
 
     // Resolve FLUID-5741, FLUID-5184 by ensuring that we avoid mixing incompatible invoker strategies
     fluid.invokersMergePolicy = function (target, source) {

@@ -4,35 +4,46 @@
 
 .fl-prefsEditor-separatedPanel .fl-prefsEditor-panels .fl-prefsEditor-panel {
     width: auto;
-    min-width: 25em;
+}
+
+.fl-prefsEditor-separatedPanel .fl-prefsEditor-panels .fl-prefsEditor-panel .fl-inputs {
+    padding: 0.2rem;
+    margin: 0.2rem;
 }
 
 .fl-prefsEditor-onoff {
     margin: 1em 0;
 }
 
-.mpe-increasing {
-    width: 30em;
-}
-
-.mpe-speakIncrease {
-    width: 60em;
-}
-
 .mpe-slider {
     padding: 1.5em 0;
 }
+
+.mpe-radioRow {
+    padding-top: 0.5rem;
+}
+
+.mpe-radioRow label {
+    display: inline;
+}
+
 .fl-prefsEditor .mpe-slider .fl-slider {
     margin-top: 1em;
 }
 
 .mpe-increasing-magPos {
     float: right;
+    padding-left: 1rem;
+}
+
+.mpe-speakIncrease .mpe-panels {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
 }
 
 .mpe-speakIncrease ul.fl-inputs {
     border: 1px solid gray;
     padding: 0 1em 2em 1em;
-    display: inline-block;
     width: 25em;
 }

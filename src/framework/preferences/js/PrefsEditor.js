@@ -139,9 +139,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             removeSource: true,
             target: "{that layoutControls}.options"
         }, {
-            source: "{that}.options.linksControls",
+            source: "{that}.options.enhanceInputs",
             removeSource: true,
-            target: "{that linksControls}.options"
+            target: "{that enhanceInputs}.options"
         }]
     });
 
@@ -252,6 +252,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         selectors: {
+            panels: ".flc-prefsEditor-panel",
             cancel: ".flc-prefsEditor-cancel",
             reset: ".flc-prefsEditor-reset",
             save: ".flc-prefsEditor-save",
@@ -363,7 +364,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
     fluid.prefs.prefsEditor.reset = function (that) {
         that.events.beforeReset.fire(that);
-        that.applier.fireChangeRequest({path: "", type: "DELETE"});
+        that.applier.fireChangeRequest({path: "settings", type: "DELETE"});
         that.applier.change("", fluid.copy(that.initialModel));
         that.events.onPrefsEditorRefresh.fire();
         that.events.afterReset.fire(that);

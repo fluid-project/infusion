@@ -17,7 +17,8 @@ Infusion includes:
 * [Download a Release](https://github.com/fluid-project/infusion/releases)
 * [Install from NPM](https://www.npmjs.com/package/infusion)
 * [Fork on GitHub](https://github.com/fluid-project/infusion)
-
+* [Use from the CDNJS Content Distribution Network](https://cdnjs.com/libraries/infusion)
+  * To try out Infusion quickly you can use the following `script` tag to include the full framework from the CDN: `<script src='https://cdnjs.cloudflare.com/ajax/libs/infusion/2.0.0/infusion-all.min.js'></script>`
 
 See [How Do I Create an Infusion Package?](#how-do-i-create-an-infusion-package), for details on creating complete or custom packages of Infusion.
 
@@ -30,6 +31,10 @@ Infusion has comprehensive documentation at <http://docs.fluidproject.org/infusi
 The Fluid community is an international group of designers, developers, and testers who focus on a common mission: improving the user experience and accessibility of the open web.
 
 The best way to join the Fluid Community is to jump into any of our community activities. Visit our [website](http://fluidproject.org/) for links to our mailing lists, chat room, wiki, etc.
+
+## Inclusion ##
+
+The Fluid community is dedicated to inclusive design&mdash;design that considers the full range of human diversity with respect to ability, language, culture, gender, age and other forms of human difference. To help ensure that our community is a safe space for all contributors, we have adopted a [code of conduct](https://wiki.fluidproject.org/display/fluid/Inclusion+in+the+Fluid+Community) based on the [Contributor Covenant](http://contributor-covenant.org/). All participants and contributors have the responsibility to uphold this code. Please contact the [Advocacy working group](mailto:fluid-advocacy@fluidproject.org) if you encounter unacceptable behaviour.
 
 ## Where is Infusion Used? ##
 
@@ -153,9 +158,10 @@ grunt custom --name="myPackage"
 * progress
 * reorderer
 * slidingPanel
+* switch
 * tableOfContents
 * tabs
-* textfieldSlider
+* textfieldControls
 * textToSpeech
 * tooltip
 * uiOptions

@@ -11,6 +11,7 @@
         <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery-ui.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
@@ -26,7 +27,10 @@
         <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
         <script type="text/javascript" src="../../../../src/framework/renderer/js/RendererUtilities.js"></script>
 
-        <script type="text/javascript" src="../../../../src/components/textfieldSlider/js/TextfieldSlider.js"></script>
+        <script type="text/javascript" src="../../../../src/components/textfieldControl/js/Textfield.js"></script>
+        <script type="text/javascript" src="../../../../src/components/textfieldControl/js/TextfieldSlider.js"></script>
+        <script type="text/javascript" src="../../../../src/components/textfieldControl/js/TextfieldStepper.js"></script>
+        <script type="text/javascript" src="../../../../src/components/switch/js/Switch.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/PrefsEditor.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/Panels.js"></script>
 
@@ -78,10 +82,8 @@
         <!-- HTML markup for corresponding panel will be injected here -->
     </div>
 
-    <div class="flc-links">
-         <!-- Unable to inject markup for this composite pane successfully. See FLUID-5726  -->
-        <input type="checkbox" id="links-choice" class="flc-prefsEditor-links fl-force-left" />
-        <input type="checkbox" id="inputs-choice" class="flc-prefsEditor-inputs-larger fl-force-left" />
+    <div class="flc-enhanceInputs">
+        <!-- HTML markup for corresponding panel will be injected here -->
     </div>
 
     <div class="renderOnPreference"></div>

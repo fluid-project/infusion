@@ -640,6 +640,40 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertNoValue("Options exclusion", uploader.uploaderContext);
     });
 
+    /** FLUID-6137 distributeOptions with 0 as value **/
+
+    fluid.defaults("fluid.tests.distributeOptionsZero", {
+        gradeNames: ["fluid.component"],
+        components: {
+            child: {
+                type: "fluid.component"
+            }
+        },
+        toDistributeCheck: 1,
+        toDistribute: 0,
+        distributeOptions: [{
+            source: "{that}.options.toDistributeCheck",
+            target: "{that child}.options.sourceSanityCheck"
+        }, {
+            record: 1,
+            target: "{that child}.options.recordSanityCheck"
+        }, {
+            source: "{that}.options.toDistribute",
+            target: "{that child}.options.fromSource"
+        }, {
+            record: 0,
+            target: "{that child}.options.fromRecord"
+        }]
+    });
+
+    jqUnit.test("FLUID-6137 distributeOptions with 0 as value", function () {
+        var distributeZero = fluid.tests.distributeOptionsZero();
+        jqUnit.assertEquals("Option should be distributed to sourceSanityCheck", 1, distributeZero.child.options.sourceSanityCheck);
+        jqUnit.assertEquals("Option should be distributed to recordSanityCheck", 1, distributeZero.child.options.recordSanityCheck);
+        jqUnit.assertEquals("Option should be distributed to fromSource", 0, distributeZero.child.options.fromSource);
+        jqUnit.assertEquals("Option should be distributed to fromRecord", 0, distributeZero.child.options.fromRecord);
+    });
+
     /** FLUID-4926 Invoker tests **/
 
     fluid.defaults("fluid.tests.invokerFunc", {
@@ -1960,6 +1994,49 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The overriding method should be called by the invoker", "Stored arg set to: 7", that.thisistThing.storedArg);
     });
 
+    /** FLUID-6136 - "overriding changePath invoker" **/
+
+    fluid.defaults("fluid.tests.overrideInvokerChangePath", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            value: "foo"
+        },
+        invokers: {
+            toOverride: {
+                changePath: "value",
+                value: "{arguments}.0"
+            }
+        }
+    });
+
+    fluid.tests.overrideInvokerChangePath.overridden = function (that) {
+        that.applier.change("value", "overridden");
+    };
+
+    jqUnit.test("FLUID-6136 overriding changePath invoker", function () {
+        var replace = fluid.tests.overrideInvokerChangePath({
+            invokers: {
+                toOverride: {
+                    funcName: "fluid.tests.overrideInvokerChangePath.overridden",
+                    args: ["{that}"]
+                }
+            }
+        });
+        replace.toOverride("bar");
+        jqUnit.assertEquals("The overriding method should be called by the invoker", "overridden", replace.model.value);
+
+        var replaceAndNull = fluid.tests.overrideInvokerChangePath({
+            invokers: {
+                toOverride: {
+                    funcName: "fluid.tests.overrideInvokerChangePath.overridden",
+                    args: ["{that}"]
+                }
+            }
+        });
+        replaceAndNull.toOverride("bar");
+        jqUnit.assertEquals("The overriding method, with changePath and value nulled out, should be called by the invoker", "overridden", replaceAndNull.model.value);
+    });
+
     /** FLUID-4055 - reinstantiation test **/
 
     fluid.defaults("fluid.tests.refChild", {
@@ -2149,6 +2226,49 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertValue("Child components instantiated and injected", reins.shortParent.clearParent.longChild);
         reins.events.requestStart.fire();
         jqUnit.assertValue("Long lifetime component has survived", reins.longChild);
+    });
+
+    /** FLUID-6193: corruption when options distribution head is shorter-lived sibling **/
+
+    fluid.defaults("fluid.tests.FLUID6193root", {
+        gradeNames: "fluid.component",
+        components: {
+            distroSource: {
+                type: "fluid.component",
+                options: {
+                    distributeOptions: {
+                        record: 5,
+                        target: "{siblingHead distroTarget}.options.five"
+                    }
+                }
+            },
+            siblingHead: {
+                type: "fluid.component",
+                options: {
+                    events: {
+                        createTarget: null
+                    },
+                    components: {
+                        distroTarget: {
+                            // note that without createOnEvent, there is no way the distribution can win the race -
+                            // this will change with FLUID-6148 world and should be re-tested
+                            createOnEvent: "createTarget",
+                            type: "fluid.component"
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6193 options distribution with shorter-lived sibling as head", function () {
+        jqUnit.expect(2);
+        var root = fluid.tests.FLUID6193root();
+        root.siblingHead.events.createTarget.fire();
+        jqUnit.assertEquals("Distribution reached target", 5, root.siblingHead.distroTarget.options.five);
+        root.siblingHead.destroy();
+        root.destroy();
+        jqUnit.assert("Components destroyed without failure");
     });
 
     /** FLUID-4179 unexpected material in clear test **/
@@ -4667,5 +4787,55 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.destroy("fluid_tests_nexusRoot");
 
         jqUnit.assertUndefined("fluid.componentForPath returns undefined for destroyed component", fluid.componentForPath(globalPath));
+    });
+
+    /** FLUID-6126 failure to construct child of root which has been advised **/
+
+    fluid.defaults("fluid.tests.FLUID6126root", {
+        gradeNames: "fluid.component"
+    });
+
+    fluid.defaults("fluid.tests.FLUID6126advisor", {
+        gradeNames: "fluid.component",
+        distributeOptions: {
+            record: "fluid.tests.FLUID6126addon",
+            target: "{/ fluid.tests.FLUID6126root}.options.gradeNames"
+        }
+    });
+
+    jqUnit.test("FLUID-6126: Failure to construct direct child of root which has been advised by distribution", function () {
+        var advisor = fluid.tests.FLUID6126advisor();
+        var root = fluid.construct("fluid6126root", {type: "fluid.tests.FLUID6126root"});
+        jqUnit.assertValue("Successfully constructed root", root);
+        jqUnit.assertTrue("Root has been advised", fluid.componentHasGrade(root, "fluid.tests.FLUID6126addon"));
+        advisor.destroy();
+        root.destroy();
+    });
+
+    /** FLUID-6128 failure when issuing IoCSS advice with more than 2 components from root **/
+
+    fluid.defaults("fluid.tests.FLUID6128root", {
+        gradeNames: "fluid.modelComponent"
+    });
+
+    fluid.defaults("fluid.tests.FLUID6128advisor", {
+        gradeNames: "fluid.component",
+        distributeOptions: {
+            record: "fluid.tests.FLUID6128addon",
+            target: "{/ intervening-name fluid.modelComponent}.options.gradeNames"
+        }
+    });
+
+    jqUnit.test("FLUID-6128: Failure to match IoCSS selector with more than 2 components from root", function () {
+        var advisor = fluid.tests.FLUID6128advisor();
+        var freeModel = fluid.modelComponent();
+        jqUnit.assertValue("Successfully constructed free modelComponent", freeModel);
+        jqUnit.assertTrue("Free model has not been advised", !fluid.componentHasGrade(freeModel, "fluid.tests.FLUID6128addon"));
+        var midRoot = fluid.construct("intervening-name", {type: "fluid.component"});
+        var root = fluid.construct(["intervening-name", "fluid6128root"], {type: "fluid.tests.FLUID6128root"});
+        jqUnit.assertTrue("Root has been advised", fluid.componentHasGrade(root, "fluid.tests.FLUID6128addon"));
+        midRoot.destroy();
+        freeModel.destroy();
+        advisor.destroy();
     });
 })(jQuery);
