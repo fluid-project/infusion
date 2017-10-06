@@ -36,6 +36,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             evaluateChange: {
                 funcName: "fluid.notImplemented"
             }
+        },
+        listeners: {
+            onDestroy: {
+                funcName: "fluid.stateTracker.stopTracking",
+                args: ["{that}"]
+            }
         }
     });
 
