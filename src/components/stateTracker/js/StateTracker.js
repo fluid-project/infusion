@@ -41,7 +41,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Initiate polling.
-     * @psrsm that {Component} An instance of fluid.stateTracker
+     * @param that {Component} An instance of fluid.stateTracker
      * @param interval {Number} optional delay between calls to check the state's current value (msec).
      */
     fluid.stateTracker.startTracking = function (that, interval) {
@@ -53,7 +53,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Stop polling.
-     * @psrsm that {Component} An instance of fluid.stateTracker
+     * @param that {Component} An instance of fluid.stateTracker
      */
     fluid.stateTracker.stopTracking = function (that) {
         clearInterval(that.intervalID);
