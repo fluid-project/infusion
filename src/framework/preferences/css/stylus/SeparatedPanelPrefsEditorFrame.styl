@@ -75,6 +75,7 @@ html {
                 min-height: 3.6rem;
                 text-transform: lowercase;
                 white-space: nowrap;
+                pointer-events: none;
 
                 [class*='fl-icon-'] {
                     display: none;
@@ -97,6 +98,7 @@ html {
                     text-transform: none;
                     -webkit-font-smoothing: antialiased;
                     font-size: 3rem;
+                    pointer-events: auto;
                 }
 
                 // Single Left-Pointing Angle Quotation Mark
@@ -109,6 +111,19 @@ html {
                 &:after {
                     content: "\203a";
                     margin-right: 1rem;
+                }
+            }
+
+            // hiding arrows from IE 11, as the current method for making them interactive does
+            // not work in IE. The media query used here is a hack to target only IE
+            @media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {
+                h2 {
+                    display: block;
+                    text-align: center;
+
+                    &:before, &:after {
+                        content: none;
+                    }
                 }
             }
 

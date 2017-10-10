@@ -252,6 +252,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         selectors: {
+            panels: ".flc-prefsEditor-panel",
             cancel: ".flc-prefsEditor-cancel",
             reset: ".flc-prefsEditor-reset",
             save: ".flc-prefsEditor-save",
@@ -364,7 +365,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.prefs.prefsEditor.reset = function (that) {
         var transaction = that.applier.initiate();
         that.events.beforeReset.fire(that);
-        transaction.fireChangeRequest({path: "", type: "DELETE"});
+        transaction.fireChangeRequest({path: "settings", type: "DELETE"});
         transaction.change("", fluid.copy(that.initialModel));
         transaction.commit();
         that.events.onPrefsEditorRefresh.fire();
