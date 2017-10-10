@@ -111,4 +111,47 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.expect(1);
         fluid.tests.UI(".flc-container");
     });
+
+    /** FLUID-6202: testing real cause of fault, synchrony in FluidRequests.js **/
+
+    fluid.defaults("fluid.tests.FLUID6202parent2", {
+        gradeNames: "fluid.component",
+        events: {
+            compositeEvent: {
+                events: {
+                    templateLoader: "{that}.templateLoader.events.onResourcesLoaded",
+                    messageLoader: "{that}.messageLoader.events.onResourcesLoaded"
+                }
+            }
+        },
+        components: {
+            templateLoader: {
+                type: "fluid.tests.FLUID6202resources"
+            },
+            messageLoader: {
+                type: "fluid.tests.FLUID6202resources"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.FLUID6202resources", {
+        gradeNames: "fluid.resourceLoader",
+        resources: {
+            template1: "../data/testTemplate1.html"
+        }
+    });
+
+    jqUnit.asyncTest("FLUID-6202: Forced instantiation of resource loaders with cached content", function () {
+        jqUnit.expect(1);
+        var restart = function () {
+            jqUnit.assert("Composite event has fired");
+            jqUnit.start();
+        };
+        fluid.tests.FLUID6202parent2({
+            listeners: {
+                compositeEvent: restart
+            }
+        });
+    });
+
 })();
