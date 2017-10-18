@@ -5,6 +5,7 @@
         "files": [
             "./js/Fluid.js",
             "./js/FluidPromises.js",
+            "./js/DataSource.js",
             "./js/FluidDocument.js",
             "./js/FluidDOMUtilities.js",
             "./js/JavaProperties.js",
