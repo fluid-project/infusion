@@ -257,5 +257,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             delay += delay;
             manipulator.changeStateWithDelay(delay);
         });
+
+        jqUnit.test("Test multiple calls to startTracking()", function () {
+            jqUnit.expect(2);
+            var stateTracker = fluid.tests.createCheckboxTracker(stateTrackerTests.checkbox);
+            stateTracker.startTracking();
+            var pollingID = stateTracker.intervalID;
+            jqUnit.assertNotEquals("Test tracker is tracking", -1, pollingID);
+
+            // Try to start the tracker a second time -- shouldn't happen.
+            stateTracker.startTracking();
+            jqUnit.assertEquals(
+                "Test only one polling interval",
+                pollingID, stateTracker.intervalID
+            );
+        });
     });
 })(jQuery);

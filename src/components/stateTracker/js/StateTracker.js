@@ -46,15 +46,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     });
 
     /**
-     * Initiate polling.
+     * Initiate polling.  If already polling -- there was a previous call to
+     * startTracking() -- this is a no-op.
      * @param that {Component} An instance of fluid.stateTracker
      * @param interval {Number} optional delay between calls to check the state's current value (msec).
      */
     fluid.stateTracker.startTracking = function (that, interval) {
-        if (interval) {
-            that.interval = interval;
+        if (that.intervalID === -1) {
+            if (interval) {
+                that.interval = interval;
+            }
+            that.intervalID = setInterval(function () {that.evaluateChange();}, that.interval);
         }
-        that.intervalID = setInterval(function () {that.evaluateChange();}, that.interval);
     };
 
     /**
