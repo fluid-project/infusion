@@ -272,8 +272,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     element: "{separatedPanel}.prefsEditor.dom.scrollContainer"
                 }, {
                     listener: "jqUnit.assert",
-                    event: "{separatedPanel}.prefsEditor.events.afterScroll",
-                    args: ["A scroll event triggered the afterScroll event"]
+                    event: "{separatedPanel}.prefsEditor.events.onScroll",
+                    args: ["A scroll event triggered the onScroll event"]
                 }]
             }]
         }]

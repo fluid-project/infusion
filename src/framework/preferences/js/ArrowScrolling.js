@@ -33,7 +33,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         events: {
             beforeReset: null, // should be fired by the fluid.prefs.prefsEditor grade
-            afterScroll: null
+            onScroll: null
         },
         modelRelay: {
             target: "panelIndex",
@@ -56,8 +56,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         listeners: {
             "onReady.scrollEvent": {
-                "listener": "fluid.prefs.arrowScrolling.scrollDebounce",
-                args: ["{that}.dom.scrollContainer", "{that}.events.afterScroll.fire"]
+                "this": "{that}.dom.scrollContainer",
+                method: "scroll",
+                args: [{
+                    expander: {
+                        // Relaying the scroll event to onScroll but debounced to reduce the rate of fire.  A high rate
+                        // of fire may negatively effect performance for complex handlers.
+                        func: "fluid.debounce",
+                        args: ["{that}.events.onScroll.fire", 100]
+                    }
+                }]
             },
             "onReady.windowResize": {
                 "this": window,
@@ -84,7 +92,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 listener: "{that}.applier.fireChangeRequest",
                 args: {path: "panelIndex", value: 0, type: "ADD", source: "reset"}
             },
-            "afterScroll.setPanelIndex": {
+            "onScroll.setPanelIndex": {
                 changePath: "panelIndex",
                 value: {
                     expander: {
@@ -146,18 +154,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             return a.offset - b.offset;
         });
         return panelArray[0].index;
-    };
-
-    // Based on scrollStop.js ( https://github.com/cferdinandi/scrollStop ),
-    // which is licensed under: MIT License.
-    fluid.prefs.arrowScrolling.scrollDebounce = function (elm, callback, delay) {
-        var timeoutID;
-        delay = delay || 66;
-
-        $(elm).scroll(function () {
-            window.clearTimeout(timeoutID);
-            timeoutID = setTimeout(callback, delay);
-        });
     };
 
 })(jQuery, fluid_3_0_0);
