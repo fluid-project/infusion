@@ -50,7 +50,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "panelIndex": {
                 listener: "fluid.prefs.arrowScrolling.scrollToPanel",
                 args: ["{that}", "{change}.value"],
-                excludeSource: ["manualScroll"],
+                excludeSource: ["scrollEvent"],
                 namespace: "scrollToPanel"
             }
         },
@@ -92,7 +92,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         args: "{that}.dom.panels"
                     }
                 },
-                source: "manualScroll"
+                source: "scrollEvent"
             }
         },
         invokers: {
