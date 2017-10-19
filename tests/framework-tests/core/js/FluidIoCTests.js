@@ -1839,6 +1839,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /** FLUID-5112: Composite event firing test **/
+
     fluid.defaults("fluid.tests.composite.test", {
         gradeNames: ["fluid.component"],
         events: {
@@ -1881,7 +1882,55 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         });
+    });
 
+    /** FLUID-6202: merging over composite event **/
+
+    fluid.defaults("fluid.tests.FLUID6202parent", {
+        gradeNames: "fluid.component",
+        members: {
+            fireCount: 0
+        },
+        events: {
+            baseEvent: null,
+            compositeEvent: {
+                events: {
+                    baseEvent: "baseEvent"
+                }
+            }
+        },
+        listeners: {
+            compositeEvent: "fluid.tests.FLUID6202recordFire({that})"
+        }
+    });
+
+    fluid.tests.FLUID6202recordFire = function (that) {
+        ++that.fireCount;
+    };
+
+    fluid.defaults("fluid.tests.FLUID6202child", {
+        gradeNames: "fluid.tests.FLUID6202parent",
+        events: {
+            childEvent: null,
+            compositeEvent: {
+                events: {
+                    childEvent: "childEvent"
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6202: Merging over composite event", function () {
+        var that = fluid.tests.FLUID6202child();
+        jqUnit.assertEquals("No firing at start", 0, that.fireCount);
+        that.events.childEvent.fire();
+        jqUnit.assertEquals("No firing with child event", 0, that.fireCount);
+        that.events.baseEvent.fire();
+        jqUnit.assertEquals("1 firing with base event", 1, that.fireCount);
+        that.events.baseEvent.fire();
+        jqUnit.assertEquals("No firing with base event", 1, that.fireCount);
+        that.events.childEvent.fire();
+        jqUnit.assertEquals("One firing with child event", 2, that.fireCount);
     });
 
     /** FLUID-4135 - simple event injection test **/
