@@ -28,6 +28,7 @@ var example = example || {};
         modelListeners: {
             checkboxState: {
                 funcName: "example.checkboxTracker.showDetectedThenWipe",
+                excludeSource: "init",
                 args: ["{that}"]
             }
         },
@@ -60,9 +61,9 @@ var example = example || {};
      * @param {Component} An instance of example.checkboxTracker.
      */
     example.checkboxTracker.showDetectedThenWipe = function (that) {
-        that.statusEl.innerHTML = "Status: STATE CHANGE DETECTED!";
+        that.statusEl.innerHTML = "Checkbox status: STATE CHANGE DETECTED!";
         setTimeout(function () {
-            that.statusEl.innerHTML = "Status: ";
+            that.statusEl.innerHTML = "Checkbox status: ";
         }, 500);
     };
 
@@ -70,17 +71,32 @@ var example = example || {};
      * Initialize a tracker instance.
      */
     var theTracker = null;
-    example.initialize = function () {
+    var theCheckbox = null;
+    example.start = function () {
+        // Reset any existing tracking.
+        if (theTracker !== null) {
+            theTracker.destroy();
+            theTracker = null;
+        }
+        theCheckbox = document.getElementById("testCheckBox");
         theTracker = example.checkboxTracker({
             members: {
-                checkbox: document.getElementById("testCheckBox"),
+                checkbox: theCheckbox,
                 statusEl: document.getElementById("status")
             },
             model: {
                 checkboxState: "{that}.checkbox.checked"
             }
         });
-        return theTracker;
+        theTracker.startTracking();
+    };
+
+    /**
+     * Reset the example and remove the tracker instance.
+     */
+    example.stop = function () {
+        theTracker.destroy();
+        theTracker = null;
     };
 
     /**
@@ -88,9 +104,11 @@ var example = example || {};
      * second delay.
      */
     example.delayStateChange = function () {
-        setTimeout(function () {
-            theTracker.checkbox.checked = !(theTracker.checkbox.checked);
-        }, 1000);
+        if (theCheckbox !== null) {
+            setTimeout(function () {
+                theCheckbox.checked = !(theCheckbox.checked);
+            }, 1000);
+        }
     };
 
 })(jQuery, fluid);
