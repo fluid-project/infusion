@@ -88,7 +88,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 changePath: "panelIndex",
                 value: {
                     expander: {
-                        funcName: "fluid.prefs.arrowScrolling.getClosesPanelIndex",
+                        funcName: "fluid.prefs.arrowScrolling.getClosestPanelIndex",
                         args: "{that}.dom.panels"
                     }
                 },
@@ -134,7 +134,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
-    fluid.prefs.arrowScrolling.getClosesPanelIndex = function (panels) {
+    fluid.prefs.arrowScrolling.getClosestPanelIndex = function (panels) {
         var panelArray = [];
         panels.each(function (idx, panel) {
             panelArray.push({

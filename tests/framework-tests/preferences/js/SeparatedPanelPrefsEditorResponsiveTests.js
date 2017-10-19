@@ -183,7 +183,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         });
 
-        jqUnit.assertEquals("fluid.prefs.arrowScrolling.getClosesPanelIndex should return " + panelIndex, panelIndex, fluid.prefs.arrowScrolling.getClosesPanelIndex(panels));
+        jqUnit.assertEquals("fluid.prefs.arrowScrolling.getClosestPanelIndex should return " + panelIndex, panelIndex, fluid.prefs.arrowScrolling.getClosestPanelIndex(panels));
     };
 
     fluid.tests.prefs.responsive.clickArrow = function (elm, direction) {
