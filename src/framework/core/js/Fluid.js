@@ -2415,7 +2415,9 @@ var fluid = fluid || fluid_3_0_0;
         mergeOptions.updateBlocks = updateBlocks;
         mergeOptions.destroyValue = function (segs) { // This method is a temporary hack to assist FLUID-5091
             for (var i = 0; i < mergeBlocks.length; ++i) {
-                fluid.destroyValue(mergeBlocks[i].target, segs);
+                if (!mergeBlocks[i].immutableTarget) {
+                    fluid.destroyValue(mergeBlocks[i].target, segs);
+                }
             }
             fluid.destroyValue(baseMergeOptions.target, segs);
         };

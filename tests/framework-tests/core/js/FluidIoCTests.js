@@ -3558,6 +3558,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var that = fluid.tests.fluid5893root();
         that.events.createIt.fire({gradeNames: "fluid.resolveRoot"});
         jqUnit.assertTrue("Dynamic grade applied to dynamic component", fluid.componentHasGrade(that.dynamic, "fluid.resolveRoot"));
+        that.destroy();
+    });
+
+    /** FLUID-6213 - Dynamic components with directly specified subcomponents **/
+
+    jqUnit.test("FLUID-6213: Dynamic components with directly specified subcomponents", function () {
+        var that = fluid.tests.fluid5893root();
+        var eventArgument = {
+            components: {
+                sub1: {
+                    type: "fluid.component",
+                    options: {
+                        answer: 42
+                    }
+                },
+                sub2: {
+                    type: "fluid.modelComponent"
+                }
+            }
+        };
+        var eventArgCopy = fluid.copy(eventArgument);
+        that.events.createIt.fire(eventArgument);
+        jqUnit.assertDeepEq("Event argument is unmodified through being fired", eventArgCopy, eventArgument);
+        jqUnit.assertDeepEq("Designated subcomponents have been created", ["sub1", "sub2"], fluid.keys(fluid.filterKeys(that.dynamic, ["sub1", "sub2"])));
+        jqUnit.assertEquals("Subcomponent has designated option", 42, that.dynamic.sub1.options.answer);
     });
 
     /** FLUID-5029 - Child selector ">" in IoCSS selector should not select an indirect child **/
