@@ -2,6 +2,7 @@
 /dist/
 /products/
 /node_modules/
+/src/components/switch/css/*.css
 /src/framework/preferences/css/*.css
 /.bundle/
 /.vagrant/

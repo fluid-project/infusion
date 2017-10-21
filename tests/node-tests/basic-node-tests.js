@@ -23,28 +23,12 @@ var jqUnit = fluid.registerNamespace("jqUnit");
 
 fluid.registerNamespace("fluid.tests");
 
-fluid.registerNamespace("fluid.tests.tapOutput");
-
 // Number of expected assertions
-fluid.tests.expectedAsserts = 20;
-// Number of expected test cases
-fluid.tests.expectedTestCases = 10;
+fluid.tests.expectedAsserts = 22;
+// Number of expected test cases - used in tap-reporting.js
+fluid.tests.expectedTestCases = 12;
 
-fluid.loadInContext("../../tests/test-core/testTests/js/IoCTestingTests.js");
-
-var testModuleBase = __dirname + path.sep + "node_modules" + path.sep + "test-module";
-
-fluid.module.preInspect(testModuleBase);
-
-// We must store this NOW since it will be overwritten when the module is genuinely loaded - the test
-// fixture will run long afterwards
-var preInspected = fluid.module.modules["test-module"].baseDir;
-
-jqUnit.test("Test early inspection of test module", function () {
-    jqUnit.assertEquals("Test that base directory of test module has been successfully pre-inspected", fluid.module.canonPath(testModuleBase), preInspected);
-});
-
-fluid.require("test-module", require, "test-module");
+require("./tap-reporting");
 
 fluid.setLogging(true);
 
@@ -55,8 +39,6 @@ fluid.tests.getTestMessage = function (data) {
 QUnit.testDone(function (data) {
     fluid.log(fluid.tests.getTestMessage(data));
 });
-
-require("./tap-reporting");
 
 QUnit.done(function (data) {
     fluid.log("Infusion node.js internal tests " +
@@ -80,6 +62,55 @@ QUnit.log(function (details) {
         }
     }
 });
+
+fluid.tests.expectFailure = false;
+
+fluid.tests.addLogListener = function (listener) {
+    fluid.onUncaughtException.addListener(listener, "log",
+        fluid.handlerPriorities.uncaughtException.log);
+};
+
+fluid.onUncaughtException.addListener(function () {
+    if (fluid.tests.expectFailure) {
+        fluid.tests.expectFailure = false;
+    } else {
+        process.exit(1);
+    }
+}, "fail", fluid.handlerPriorities.uncaughtException.fail);
+
+/****
+ * TEST FIXTURES BEGIN HERE
+ ****/
+
+var testModuleBase = __dirname + path.sep + "node_modules" + path.sep + "test-module" + path.sep;
+
+fluid.module.preInspect(testModuleBase);
+
+// We must store this NOW since it will be overwritten when the module is genuinely loaded - the test
+// fixture will run long afterwards
+var preInspected = fluid.module.modules["test-module"].baseDir;
+
+jqUnit.test("Test early inspection of test module", function () {
+    jqUnit.assertEquals("Test that base directory of test module has been successfully pre-inspected", fluid.module.canonPath(testModuleBase), preInspected);
+});
+
+fluid.require("test-module", require, "test-module");
+
+// test FLUID-6188 idempotency of fluid.loadTestingSupport();
+
+var oldQUnit = QUnit;
+fluid.loadTestingSupport();
+QUnit = fluid.registerNamespace("QUnit");
+
+jqUnit.test("FLUID-6188 test: fluid.loadTestingSupport is idempotent and will only create one QUnit object", function () {
+    if (oldQUnit !== QUnit) {
+    // We don't use jqUnit here since in this case the QUnit configuration is unusably hosed
+        fluid.fail("FLUID-6188 test failed: Failure of idempotency of fluid.loadTestingSupport");
+    }
+    jqUnit.assert("fluid.loadTestingSupport is idempotent");
+});
+
+fluid.loadInContext("../../tests/test-core/testTests/js/IoCTestingTests.js");
 
 fluid.test.runTests(["fluid.tests.myTestTree"]);
 
@@ -125,54 +156,32 @@ jqUnit.test("Test module resolvePath", function () {
     jqUnit.assertEquals("Loaded package.json via resolved path directly via fluid.require", "test-module", pkg.name);
 });
 
-fluid.tests.expectFailure = false;
-
-fluid.tests.addLogListener = function (listener) {
-    fluid.onUncaughtException.addListener(listener, "log",
-        fluid.handlerPriorities.uncaughtException.log);
-};
-
-fluid.tests.onUncaughtException = function () {
-    jqUnit.assertEquals("Expected failure in uncaught exception handler",
-        true, fluid.tests.expectFailure);
-    fluid.onUncaughtException.removeListener("test-uncaught");
-    fluid.onUncaughtException.removeListener("log");
-    if (fluid.tests.tapOutput.shouldOutputTAP) {
-        fluid.onUncaughtException.removeListener("outputTAPFailure");
-    }
-    fluid.tests.addLogListener(fluid.identity);
-    fluid.tests.expectFailure = false;
-    fluid.invokeLater(function () { // apply this later to avoid nesting uncaught exception handler
-        fluid.invokeLater(function () {
-            fluid.onUncaughtException.removeListener("log"); // restore the original listener
-            // Reregister listener to output TAP failure report
-            if (fluid.tests.tapOutput.shouldOutputTAP) {
-                fluid.onUncaughtException.addListener(fluid.tests.tapOutput.outputTAPFailure, "outputTAPFailure",
-                    fluid.handlerPriorities.uncaughtException.log);
-            }
-            console.log("Restarting jqUnit in nested handler");
-            jqUnit.start();
-        });
-        "string".fail(); // provoke a further global uncaught error - should be a no-op
-    });
-};
 
 fluid.tests.benignLogger = function () {
     fluid.log("Expected global failure received in test case");
     jqUnit.assert("Expected global failure");
 };
 
+fluid.tests.onUncaughtException = function () {
+    jqUnit.assertEquals("Expected failure in uncaught exception handler",
+        true, fluid.tests.expectFailure);
+    fluid.onUncaughtException.removeListener("test-uncaught"); // remove ourselves - registered by the test below
+    fluid.onUncaughtException.removeListener("log"); // remove "benignLogger" and restore the original listener
+    fluid.invokeLater(function () { // apply this later to avoid nesting uncaught exception handler
+        console.log("Restarting jqUnit in nested handler");
+        jqUnit.start();
+    });
+};
+
 jqUnit.asyncTest("Test uncaught exception handler registration and deregistration", function () {
     jqUnit.expect(2);
     fluid.onUncaughtException.addListener(fluid.tests.onUncaughtException, "test-uncaught");
     fluid.tests.addLogListener(fluid.tests.benignLogger);
-    if (fluid.tests.tapOutput.shouldOutputTAP) {
-        fluid.onUncaughtException.removeListener("outputTAPFailure");
-    }
     fluid.tests.expectFailure = true;
     fluid.invokeLater(function () { // put this in a timeout to avoid bombing QUnit's exception handler
         "string".fail(); // provoke a global uncaught error
     });
+
 });
 
 jqUnit.test("FLUID-5807 noncorrupt framework stack traces", function () {
@@ -181,6 +190,20 @@ jqUnit.test("FLUID-5807 noncorrupt framework stack traces", function () {
     jqUnit.assertTrue("Framework error is an instance of itself", error instanceof fluid.FluidError);
     var stack = error.stack.toString();
     jqUnit.assertTrue("Our own filename must appear in the stack", stack.indexOf("basic-node-tests") !== -1);
+});
+
+jqUnit.test("FLUID-6178 fluid.prettyPrintJSON with exploding synthetic properties", function () {
+    var exploding = {};
+    Object.defineProperty(exploding, "explode", {
+        configurable: true,
+        enumerable: true,
+        get: function () {
+            "This function should not be called".explode();
+        }
+    });
+    var rendered = fluid.prettyPrintJSON(exploding);
+    var expected = "{\n    \"explode\": [Synthetic property]\n}";
+    jqUnit.assertEquals("Exploding property should be safely bypassed", expected, rendered);
 });
 
 QUnit.load();

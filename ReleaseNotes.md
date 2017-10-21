@@ -11,9 +11,14 @@ Currently the contents of this file represent a placeholder for future Infusion 
 
 ### New Features ###
 
+* Preference framework
+  * Updated look of on/off toggles
+
 
 ### Removal of Deprecated Features ###
 
+* Preference framework
+  * Collapsed inputsLarger and emphasizeLinks preferences into enhanceInputs
 
 ## How Do I Get Infusion? ##
 

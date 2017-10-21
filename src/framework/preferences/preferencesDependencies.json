@@ -3,8 +3,10 @@
         "name": "Preferences Framework",
         "description": "Framework for implementing user preference editing and persistence",
         "cssFiles": [
+            "Enactors.css",
             "PrefsEditor.css",
             "SeparatedPanelPrefsEditor.css",
+            "SeparatedPanelPrefsEditorFrame.css",
             "FullNoPreviewPrefsEditor.css",
             "FullPreviewPrefsEditor.css",
             "FullPrefsEditor.css"
@@ -19,6 +21,7 @@
             "./js/Enactors.js",
             "./js/SelfVoicingEnactor.js",
             "./js/StarterGrades.js",
+            "./js/ArrowScrolling.js",
             "./js/SeparatedPanelPrefsEditor.js",
             "./js/FullNoPreviewPrefsEditor.js",
             "./js/FullPreviewPrefsEditor.js",
@@ -37,7 +40,8 @@
             "enhancement",
             "renderer",
             "slidingPanel",
-            "textfieldSlider",
+            "textfieldControls",
+            "switch",
             "tableOfContents",
             "textToSpeech"
         ]

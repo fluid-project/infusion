@@ -2,6 +2,7 @@
 .gitignore
 .npmignore
 .project
+.vagrant
 report.tap
 build/
 demos/

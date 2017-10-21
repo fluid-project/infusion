@@ -4,7 +4,7 @@ Copyright 2008-2009 University of Toronto
 Copyright 2010-2011 Lucendo Development Ltd.
 Copyright 2012-2014 Raising the Floor - US
 Copyright 2014 OCAD University
-Copyright 2015-2016 Raising the Floor - International
+Copyright 2015-2017 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -1273,6 +1273,106 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }, "source");
     });
 
+    /** FLUID-6192: Model relay with source of "" **/
+
+    fluid.defaults("fluid.tests.fluid6192root", {
+        gradeNames: "fluid.modelComponent",
+        modelRelay: {
+            source: "",
+            target: "{that}.relayTarget.model",
+            singleTransform: {
+                type: "fluid.transforms.identity"
+            }
+        },
+        components: {
+            relayTarget: {
+                type: "fluid.modelComponent"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6192: Model relay with source of \"\"", function () {
+        var root = fluid.tests.fluid6192root();
+        root.applier.change("key", "value");
+        jqUnit.assertDeepEq("Model relay successfully established", {
+            key: "value"
+        }, root.relayTarget.model);
+    });
+
+    /** FLUID-6191: Proper diagnostic on indirect model reference which fails to resolve **/
+
+    fluid.defaults("fluid.tests.fluid6191root1", {
+        gradeNames: "fluid.modelComponent",
+        components: {
+            badRefHolder: {
+                type: "fluid.modelComponent",
+                options: {
+                    model: "{fluid6191root1}.nonexistent.model.path"
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid6191root2", {
+        gradeNames: "fluid.modelComponent",
+        components: {
+            nonModelComponent: {
+                type: "fluid.component",
+                options: {
+                    members: {
+                        model: {
+                            path: "a fake model"
+                        }
+                    }
+                }
+            },
+            badRefHolder: {
+                type: "fluid.modelComponent",
+                options: {
+                    model: "{fluid6191root2}.nonModelComponent.model.path"
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6191: Framework diagnostic on bad indirect implicit model relay reference", function () {
+        jqUnit.expectFrameworkDiagnostic("Framework diagnostic on indirect implicit model relay reference to undefined", function () {
+            fluid.tests.fluid6191root1();
+        }, ["reference", "nonexistent", "implicit", "undefined"]);
+        jqUnit.expectFrameworkDiagnostic("Framework diagnostic on indirect implicit model relay reference to non-model component", function () {
+            fluid.tests.fluid6191root2();
+        }, ["reference", "nonModelComponent", "implicit", "fluid.modelComponent"]);
+    });
+
+    /** FLUID-6195: Exploding relay rule does not corrupt framework state **/
+
+    fluid.defaults("fluid.tests.fluid6195root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            source: 1
+        },
+        modelRelay: {
+            source: "source",
+            target: "target",
+            singleTransform: {
+                type: "fluid.tests.fluid6195explode"
+            }
+        }
+    });
+
+    fluid.tests.fluid6195explode = function () {
+        throw {message: "This relay rule has exploded"};
+    };
+
+    jqUnit.test("FLUID-6195: Exploding model relay rule does not corrupt framework state", function () {
+        jqUnit.expect(1);
+        try {
+            fluid.tests.fluid6195root();
+        } catch (e) {
+            jqUnit.assert("Received bare exception through model relay", "This relay rule has exploded", e.message);
+        }
+    });
+
     /** Demonstrate resolving a set of model references which is cyclic in components (although not in values), as well as
      * double relay and longer "transform" form of relay specification */
 
@@ -2227,7 +2327,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         model: "{root}.model.subModel"
     });
 
-    /* FLUID-5585:  Removal from the model is not relayed in any case*/
+    /* FLUID-5585: Removal from the model is not relayed in any case */
+
     fluid.defaults("fluid.tests.fluid5585.root", {
         gradeNames: ["fluid.modelComponent"],
         members: {
@@ -2321,7 +2422,33 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.fluid5585.runOneConfiguration("fluid.tests.fluid5585.explicitRelay", fixtureFunc);
     });
 
+    /** FLUID-6194: Do not relay DELETEs backwards for uninvertible transforms **/
+
+    fluid.defaults("fluid.tests.fluid6194root", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            source: 1
+        },
+        modelRelay: {
+            source: "source",
+            target: "target",
+            singleTransform: {
+                type: "fluid.identity"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6194: Do not relay DELETE backwards for uninvertible transform", function () {
+        var root = fluid.tests.fluid6194root();
+        jqUnit.assertEquals("Forward relay via fluid.identity", 1, root.model.target);
+        root.applier.change("target", null, "DELETE");
+        jqUnit.assertDeepEq("No relay backwards of DELETE of uninvertible transform", {
+            source: 1
+        }, root.model);
+    });
+
     /* FLUID-5586: change records of type DELETE and root path */
+
     fluid.defaults("fluid.tests.fluid5586root", {
         gradeNames: ["fluid.modelComponent"],
         model: 973,
@@ -2475,6 +2602,231 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.expect(1);
         var that = fluid.tests.fluid5885root();
         that.innerModel.applier.change("pressed", true);
+    });
+
+    // FLUID-6158
+
+    fluid.tests.modelPairToChanges = [
+        {
+            description: "Value and oldValue are undefined",
+            value: undefined,
+            oldValue: undefined,
+            expected: [],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: []
+        },
+        {
+            description: "Two empty objects",
+            value: {},
+            oldValue: {},
+            expected: [],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: []
+        },
+        {
+            description: "New value is an object with properties and oldValue is undefined",
+            value: {
+                a: "Alice",
+                b: "Bob"
+            },
+            oldValue: undefined,
+            expected: [
+                {
+                    path: [],
+                    value: {
+                        a: "Alice",
+                        b: "Bob"
+                    },
+                    type: "ADD"
+                }
+            ],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: [
+                {
+                    path: ["path1", "path2"],
+                    value: {
+                        a: "Alice",
+                        b: "Bob"
+                    },
+                    type: "ADD"
+                }
+            ]
+        },
+        {
+            description: "New value is undefined and oldValue is an object with properties",
+            value: undefined,
+            oldValue: {
+                a: "Alice",
+                b: "Bob"
+            },
+            expected: [
+                {
+                    path: [],
+                    value: null,
+                    type: "DELETE"
+                }
+            ],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: [
+                {
+                    path: ["path1", "path2"],
+                    value: null,
+                    type: "DELETE"
+                }
+            ]
+        },
+        {
+            description: "Add properties to an empty object",
+            value: {
+                a: "Alice",
+                b: "Bob"
+            },
+            oldValue: {},
+            expected: [
+                {
+                    path: ["a"],
+                    value: "Alice",
+                    type: "ADD"
+                },
+                {
+                    path: ["b"],
+                    value: "Bob",
+                    type: "ADD"
+                }
+            ],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: [
+                {
+                    path: ["path1", "path2", "a"],
+                    value: "Alice",
+                    type: "ADD"
+                },
+                {
+                    path: ["path1", "path2", "b"],
+                    value: "Bob",
+                    type: "ADD"
+                }
+            ]
+        },
+        {
+            description: "Remove all properties from an object",
+            value: {},
+            oldValue: {
+                a: "Alice",
+                b: "Bob"
+            },
+            expected: [
+                {
+                    path: ["a"],
+                    value: null,
+                    type: "DELETE"
+                },
+                {
+                    path: ["b"],
+                    value: null,
+                    type: "DELETE"
+                }
+            ],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: [
+                {
+                    path: ["path1", "path2", "a"],
+                    value: null,
+                    type: "DELETE"
+                },
+                {
+                    path: ["path1", "path2", "b"],
+                    value: null,
+                    type: "DELETE"
+                }
+            ]
+        },
+        {
+            description: "Add an object property not at the root",
+            value: {
+                people: {
+                    a: "Alice",
+                    b: "Bob"
+                }
+            },
+            oldValue: {
+                people: {
+                    a: "Alice"
+                }
+            },
+            expected: [
+                {
+                    path: ["people", "b"],
+                    value: "Bob",
+                    type: "ADD"
+                }
+            ],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: [
+                {
+                    path: ["path1", "path2", "people", "b"],
+                    value: "Bob",
+                    type: "ADD"
+                }
+            ]
+        },
+        {
+            description: "Add elements to an empty array",
+            value: [10, 42],
+            oldValue: [],
+            expected: [
+                {
+                    path: [],
+                    value: [10, 42],
+                    type: "ADD"
+                }
+            ],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: [
+                {
+                    path: ["path1", "path2"],
+                    value: [10, 42],
+                    type: "ADD"
+                }
+            ]
+        },
+        {
+            description: "Add elements to a non-empty array",
+            value: [10, 42, 314],
+            oldValue: [10],
+            expected: [
+                {
+                    path: [],
+                    value: [10, 42, 314],
+                    type: "ADD"
+                }
+            ],
+            changePathPrefix: "path1.path2",
+            expectedWithPrefix: [
+                {
+                    path: ["path1", "path2"],
+                    value: [10, 42, 314],
+                    type: "ADD"
+                }
+            ]
+        }
+    ];
+
+    jqUnit.test("modelPairToChanges", function () {
+        jqUnit.expect(18);
+        fluid.each(fluid.tests.modelPairToChanges, function (testcase) {
+            // Test first without a path prefix
+            var changesWithoutPrefix = fluid.modelPairToChanges(testcase.value,
+                testcase.oldValue);
+            jqUnit.assertDeepEq(testcase.description + "; without prefix",
+                testcase.expected, changesWithoutPrefix);
+
+            // And then test with a path prefix
+            var changesWithPrefix = fluid.modelPairToChanges(testcase.value,
+                testcase.oldValue, testcase.changePathPrefix);
+            jqUnit.assertDeepEq(testcase.description + "; with prefix: " + testcase.changePathPrefix,
+                testcase.expectedWithPrefix, changesWithPrefix);
+        });
     });
 
     // FLUID-5659: Saturating relay counts through back-to-back transactions

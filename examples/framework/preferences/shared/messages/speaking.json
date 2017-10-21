@@ -1,6 +1,8 @@
 {
     "speakingHeader": "Speaking",
     "speakText": "Speak Text",
+    "toggleOn": "ON",
+    "toggleOff": "OFF",
     "volLabel": "Volume",
     "volMultiplier": "percent",
     "wpmLabel": "Words-per-min",

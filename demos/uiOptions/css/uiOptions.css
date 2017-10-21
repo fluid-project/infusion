@@ -90,30 +90,6 @@ main {
 .instructions .instruction-comment {
     font-size: 0.8em;
 }
-.disp-opts-buttons {
-    margin-top: 40px;
-}
-.disp-opts-button-container {
-    padding: 10px;
-    margin-top: 15px;
-    padding-right: 25px;
-}
-.disp-opts-button {
-    font-family: "Myriad Pro", Helvetica, Tahoma, Verdana, sans-serif;
-    font-weight: bold;
-    text-transform: uppercase;
-    text-align: left;
-    padding-right: 25px;
-    border-style: none none;
-    padding-left: 0;
-}
-.disp-opts-button a {
-    text-decoration: none;
-}
-.disp-opts-button .preview {
-    font-size: 0.8em;
-    font-weight: normal;
-}
 .content {
     margin-top: 1em;
     padding: 10px 0;
@@ -149,19 +125,6 @@ main {
 .prefsEditor-demo-theme a {
     color: #3E606F;
 }
-.prefsEditor-demo-theme .disp-opts-button-container {
-    background-color: #0071BC;
-    background-image: url("../images/arrow_right.png");
-    background-repeat: no-repeat;
-    background-position: right;
-}
-.prefsEditor-demo-theme .disp-opts-button {
-    color: white;
-    background-color: #0071BC;
-}
-.prefsEditor-demo-theme .disp-opts-button a {
-    color: white;
-}
 .prefsEditor-demo-theme .feedback-form input,
 .prefsEditor-demo-theme .feedback-form textarea {
     color: grey;
@@ -175,8 +138,6 @@ main {
     font-family: "Myriad Pro", Helvetica, Tahoma, Verdana, sans-serif;
     border: 0;
     border-radius: 0;
-    text-transform: uppercase;
-    font-weight: bold;
 }
 
 .prefsEditor-demo-theme .fl-prefsEditor-separatedPanel .fl-prefsEditor-showHide,
@@ -185,10 +146,6 @@ main {
     color: white;
 }
 
-.prefsEditor-demo-theme .fl-prefsEditor-separatedPanel .fl-prefsEditor-reset  {
-    border-right: 1px solid #fff;
-}
-
 .fl-prefsEditor-separatedPanel .fl-panelBar .fl-prefsEditor-reset  {
-    border-right: 1px solid #fff;
+    border-left: 1px solid #fff;
 }

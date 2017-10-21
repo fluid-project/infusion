@@ -1,5 +1,5 @@
 /*
-Copyright 2013-2015 OCAD University
+Copyright 2013-2017 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -678,6 +678,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             min: 1,
                             max: 2
                         },
+                        step: 0.1,
                         messageBase: "{messageLoader}.resources.fluid_prefs_panel_textSize.resourceText",
                         resources: {
                             template: "templateLoader.resources.fluid_prefs_panel_textSize"
@@ -825,6 +826,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     min: 1,
                                     max: 2
                                 },
+                                step: 0.1,
                                 messageBase: "{messageLoader}.resources.fluid_prefs_panel_textSize.resourceText",
                                 resources: {
                                     template: "templateLoader.resources.fluid_prefs_panel_textSize"
@@ -991,6 +993,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                                     min: 1,
                                     max: 2
                                 },
+                                step: 0.1,
                                 messageBase: "{messageLoader}.resources.fluid_prefs_panel_textSize.resourceText",
                                 resources: {
                                     template: "templateLoader.resources.fluid_prefs_panel_textSize"

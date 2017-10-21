@@ -189,7 +189,7 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     fluid.renderLoggingArg = function (arg) {
-        return fluid.isPrimitive(arg) || !fluid.isPlainObject(arg) ? arg : JSON.stringify(arg);
+        return arg === undefined ? "undefined" : fluid.isPrimitive(arg) || !fluid.isPlainObject(arg) ? arg : JSON.stringify(arg);
     };
 
     // The framework's built-in "fail" failure handler - this throws an exception of type <code>fluid.FluidError</code>
@@ -683,22 +683,23 @@ var fluid = fluid || fluid_3_0_0;
         return fluid.filterKeys(toCensor, keys, true);
     };
 
-    // TODO: This is not as clever an idea as we think it is - this typically inner-loop function will optimise badly due to closure
-    fluid.makeFlatten = function (index) {
-        return function (obj) {
-            var togo = [];
-            fluid.each(obj, function (/* value, key */) {
-                togo.push(arguments[index]);
-            });
-            return togo;
-        };
+    /** Return the keys in the supplied object as an array. Note that this will return keys found in the prototype chain as well as "own properties", unlike Object.keys() **/
+    fluid.keys = function (obj) {
+        var togo = [];
+        for (var key in obj) {
+            togo.push(key);
+        }
+        return togo;
     };
 
-    /** Return the keys in the supplied object as an array. Note that this will return keys found in the prototype chain as well as "own properties", unlike Object.keys() **/
-    fluid.keys = fluid.makeFlatten(1);
-
     /** Return the values in the supplied object as an array **/
-    fluid.values = fluid.makeFlatten(0);
+    fluid.values = function (obj) {
+        var togo = [];
+        for (var key in obj) {
+            togo.push(obj[key]);
+        }
+        return togo;
+    };
 
     /**
      * Searches through the supplied object, and returns <code>true</code> if the supplied value
@@ -831,7 +832,7 @@ var fluid = fluid || fluid_3_0_0;
      * Derived from Sindre Sorhus's round-to node module ( https://github.com/sindresorhus/round-to ).
      * License: MIT
      *
-     * Rounds the supplied number to at most the number of decimal places indicated by the scale, omiting any trailing 0s.
+     * Rounds the supplied number to at most the number of decimal places indicated by the scale, omitting any trailing 0s.
      * There are three possible rounding methods described below: "round", "ceil", "floor"
      * Round: Numbers are rounded away from 0 (i.e 0.5 -> 1, -0.5 -> -1).
      * Ceil: Numbers are rounded up
@@ -2375,7 +2376,9 @@ var fluid = fluid || fluid_3_0_0;
         mergeOptions.updateBlocks = updateBlocks;
         mergeOptions.destroyValue = function (segs) { // This method is a temporary hack to assist FLUID-5091
             for (var i = 0; i < mergeBlocks.length; ++i) {
-                fluid.destroyValue(mergeBlocks[i].target, segs);
+                if (!mergeBlocks[i].immutableTarget) {
+                    fluid.destroyValue(mergeBlocks[i].target, segs);
+                }
             }
             fluid.destroyValue(baseMergeOptions.target, segs);
         };

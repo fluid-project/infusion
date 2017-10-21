@@ -2,7 +2,7 @@
 Copyright 2010-2015 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 Copyright 2012-2013 Raising the Floor - US
-Copyright 2013-2016 Raising the Floor - International
+Copyright 2013-2017 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -338,6 +338,136 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
+
+    fluid.transforms.extraCollectInputPathsTests = [{
+        message: "Using an array of transformers with a given outputkey",
+        transform: {
+            dog: [
+                {
+                    transform: {
+                        type: "fluid.transforms.linearScale",
+                        inputPath: "scaleMe",
+                        factorPath: "scaleFactor",
+                        offset: 5
+                    }
+                }, {
+                    "cat": {
+                        transform: {
+                            type: "fluid.transforms.value",
+                            inputPath: "helloAnimal"
+                        }
+                    }
+                }
+            ]
+        },
+        expected: {
+            dog: [ 11, { cat: "I'm a cat"} ]
+        },
+        model: {
+            scaleMe: 3,
+            scaleFactor: 2,
+            helloAnimal: "I'm a cat"
+        },
+        expectedInputPaths: [ "scaleMe", "scaleFactor", "helloAnimal" ]
+    }, {
+        message: "Simple path from condition",
+        transform: {
+            transform: [
+                {
+                    "type": "fluid.transforms.condition",
+                    "conditionPath": "contrastPath",
+                    "condition": false,
+                    "outputPath": "theme",
+                    "false": "colour",
+                    "true": "hc"
+                }
+            ]
+        },
+        expected: {
+            theme: "hc"
+        },
+        model: {
+            contrastPath: true
+        },
+        expectedInputPaths: [ "contrastPath" ]
+    }, {
+        message: "Nested Condition",
+        transform: {
+            transform: [
+                {
+                    "type": "fluid.transforms.condition",
+                    "conditionPath": "contrastPath",
+                    "condition": false,
+                    "outputPath": "theme",
+                    "falsePath": "falsePath",
+                    "true": {
+                        "transform": {
+                            "type": "fluid.transforms.value",
+                            "inputPath": "cat"
+                        }
+                    }
+                }
+            ]
+        },
+        expected: {
+            "theme": "meow"
+        },
+        model: {
+            "contrastPath": true,
+            "cat": "meow"
+        },
+        expectedInputPaths: [
+            "cat",
+            "falsePath",
+            "contrastPath"
+        ]
+    }, {
+        message: "FLUID-6196: Complex transform nested in simpler transform",
+        transform: {
+            "transform": [
+                {
+                    "type": "fluid.transforms.condition",
+                    "conditionPath": "myCond",
+                    "condition": false,
+                    "outputPath": "theme",
+                    "falsePath": "myFalsePath",
+                    "true": {
+                        "transform": {
+                            "type": "fluid.transforms.valueMapper",
+                            "defaultInputPath": "mapper",
+                            "match": {
+                                "black-white": "bw",
+                                "white-black": "bw",
+                                "black-yellow": "hc",
+                                "yellow-black": "hc"
+                            },
+                            "noMatch": {
+                                "outputValue": "bw"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        expected: {
+            "theme": "hc"
+        },
+        model: {
+            "myCond": true,
+            "mapper": "black-yellow"
+        },
+        expectedInputPaths: [
+            "mapper",
+            "myFalsePath",
+            "myCond"
+        ]
+    }];
+
+    jqUnit.test("fluid.transforms.extraCollectInputPathsTests()", function () {
+        fluid.tests.transforms.testOneStructure(fluid.transforms.extraCollectInputPathsTests, {
+            method: "assertDeepEq"
+        });
+    });
 
     fluid.tests.transforms.literalValueTests = [{
         message: "literalValue - basic test",
@@ -718,7 +848,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expected: "it was true",
             expectedInputPaths: [ "catsAreDecent" ]
         }, {
-            message: "truePath condition",
+            message: "truePath working",
             transform: {
                 type: "fluid.transforms.condition",
                 condition: true,
@@ -729,14 +859,28 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             expectedInputPaths: [ "cow" ]
         }, {
+            message: "falsePath working",
+            transform: {
+                type: "fluid.transforms.condition",
+                condition: false,
+                "falsePath": "cow"
+            },
+            expected: {
+                grass: "chew"
+            },
+            expectedInputPaths: [ "cow" ]
+        }, {
             message: "invalid truePath",
             transform: {
                 type: "fluid.transforms.condition",
                 conditionPath: "catsAreDecent",
-                "true": fluid.tests.transforms.source.bow
+                truePath: "fluid.tests.transforms.source.idontexist"
             },
             expected: undefined,
-            expectedInputPaths: [ "catsAreDecent" ]
+            expectedInputPaths: [
+                "fluid.tests.transforms.source.idontexist",
+                "catsAreDecent"
+            ]
         }, {
             message: "invalid condition path",
             transform: {
@@ -1351,6 +1495,53 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: -9877,
         expectedInputPaths: [ "floaty2" ]
     }, {
+        message: "round() round to decimal - up",
+        transform: {
+            type: "fluid.transforms.round",
+            inputPath: "floatyLowy",
+            scale: 1
+        },
+        expected: 12.4,
+        expectedInputPaths: [ "floatyLowy" ]
+    }, {
+        message: "round() round to decimal - down",
+        transform: {
+            type: "fluid.transforms.round",
+            inputPath: "floatyHighy",
+            scale: 1
+        },
+        expected: 12.5,
+        expectedInputPaths: [ "floatyHighy" ]
+    }, {
+        message: "round() round to decimal - whole number",
+        transform: {
+            type: "fluid.transforms.round",
+            inputPath: "hundred",
+            scale: 1
+        },
+        expected: 100,
+        expectedInputPaths: [ "hundred" ]
+    }, {
+        message: "round() round to decimal - ceil",
+        transform: {
+            type: "fluid.transforms.round",
+            inputPath: "floatyHighy",
+            scale: 1,
+            method: "ceil"
+        },
+        expected: 12.6,
+        expectedInputPaths: [ "floatyHighy" ]
+    }, {
+        message: "round() round to decimal - floor",
+        transform: {
+            type: "fluid.transforms.round",
+            inputPath: "floatyLowy",
+            scale: 1,
+            method: "floor"
+        },
+        expected: 12.3,
+        expectedInputPaths: [ "floatyLowy" ]
+    }, {
         message: "round() is able to do (lossy) inverse.",
         transform: {
             outie: {
@@ -1364,7 +1555,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             myin: -912.50
         },
         expected: {
-            outie: -912
+            outie: -913
         },
         invertedRules: {
             transform: [{
@@ -1374,7 +1565,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }]
         },
         modelAfterInversion: {
-            myin: -912
+            myin: -913
         },
         weaklyInvertible: true,
         transformWrap: false,
@@ -2130,6 +2321,47 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }]
             },
             transformWrap: false
+        },
+        "FLUID-6174": {
+            message: "FLUID-6174: Support \"input\" for sourcing model data",
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultOutputPath: "flashing",
+                defaultOutputValue: false,
+                defaultInput: "blinking",
+                match: {
+                    blinking: true
+                }
+            },
+            expected: {
+                flashing: true
+            }
+        },
+        "FLUID-6174-nested": {
+            message: "FLUID-6174: Support \"input\" for sourcing model data from a nested transform",
+            transform: {
+                type: "fluid.transforms.valueMapper",
+                defaultOutputPath: "flashing",
+                defaultOutputValue: "unknown",
+                defaultInput: {
+                    transform: {
+                        type: "fluid.transforms.identity",
+                        input: {
+                            blinking: false
+                        }
+                    }
+                },
+                match: [{
+                    inputValue: {
+                        blinking: false
+                    },
+                    partialMatches: true,
+                    outputValue: false
+                }]
+            },
+            expected: {
+                flashing: false
+            }
         }
     };
 
@@ -5315,6 +5547,45 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("FLUID-5294: avoid ambiguous support of 'value' and 'valuePath' - only accept 'input' and 'inputPath'", function () {
         fluid.tests.transforms.testOneStructure(fluid.tests.transforms.noValueSupport, {
             transformWrap: true
+        });
+    });
+
+    fluid.tests.transforms.uninvertible = [{
+        message: "Plain fluid.identity", // Note that unlike fluid.transforms.identity, this is just a random function with no inverse
+        transform: {
+            type: "fluid.identity"
+        }
+    }, {
+        message: "Nested fluid.identity", // Our one transform that supports compound inversion
+        transform: {
+            type: "fluid.transforms.indexArrayByKey",
+            inputPath: "outer",
+            key: "outerpivot",
+            innerValue: [
+                {
+                    "outervar": {
+                        "transform": {
+                            type: "fluid.identity",
+                            inputPath: "outervar",
+                            key: "innerpivot"
+                        }
+                    }
+                }
+            ]
+        }
+    }, {
+        message: "Nested within path rule",
+        b: {
+            transform: {
+                type: "fluid.transforms.inRange"
+            }
+        }
+    }];
+
+    jqUnit.test("FLUID-6194: report on uninvertible transforms", function () {
+        fluid.each(fluid.tests.transforms.uninvertible, function (oneTransform) {
+            var inverted = fluid.model.transform.invertConfiguration(fluid.censorKeys(oneTransform, ["message"]));
+            jqUnit.assertEquals(oneTransform.message, fluid.model.transform.uninvertibleTransform, inverted);
         });
     });
 
