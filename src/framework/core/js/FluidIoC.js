@@ -1151,7 +1151,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.pushActivity("expandOptions", "expanding options %args for component %that ", {that: that, args: args});
         var expandOptions = fluid.makeStackResolverOptions(that, localRecord);
         expandOptions.mergePolicy = mergePolicy;
-        var expanded = outerExpandOptions && outerExpandOptions.defer ?
+        expandOptions.defer = outerExpandOptions && outerExpandOptions.defer;
+        var expanded = expandOptions.defer ?
             fluid.makeExpandOptions(args, expandOptions) : fluid.expand(args, expandOptions);
         fluid.popActivity();
         return expanded;
@@ -2326,11 +2327,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             options.strategy = fluid.concreteTrundler;
             options.initter = fluid.identity;
             if (typeof(source) === "string") {
-                options.target = options.expandSource(source);
+                // Copy is necessary to resolve FLUID-6213 since targets are regularly scrawled over with "undefined" by dim expansion pathway
+                // However, we can't screw up object identity for uncloneable things like events resolved via local expansion
+                options.target = (options.defer ? fluid.copy : fluid.identity)(options.expandSource(source));
             }
             else {
                 options.target = source;
             }
+            options.immutableTarget = true;
         }
         return options;
     };

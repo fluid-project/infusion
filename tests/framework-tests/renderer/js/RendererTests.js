@@ -1545,18 +1545,17 @@
             }
         };
 
-        jqUnit.test("fetchResources callback tests", function () {
-            var callbackCalled = 0;
+        jqUnit.asyncTest("fetchResources callback tests", function () {
             function callback() {
-                ++callbackCalled;
+                jqUnit.assert("Call to overall callback");
                 fluid.failureEvent.removeListener("jqUnit"); // restore the original jqUnit test failing listener
+                jqUnit.start();
             }
             jqUnit.expect(2);
             fluid.failureEvent.addListener(fluid.identity, "jqUnit"); // temporarily displace jqUnit's test failing listener
             fluid.fetchResources(resourceSpec2, callback);
 
             jqUnit.assertEquals("Two calls to destructive callback", 2, destructiveCalls);
-            jqUnit.assertEquals("Call to overall callback", 1, callbackCalled);
         });
 
         var resourceSpec3 = {
