@@ -78,11 +78,27 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 args: ["{change}.value"]
             }
         },
+        members: {
+            parseQueue: [],
+            parseIndex: 0,
+            range: {
+                expander: {
+                    this: "document",
+                    method: "createRange"
+                }
+            }
+        },
+        selectors: {
+            mark: ".flc-selfVoicing-mark"
+        },
+        markup: {
+            mark: "<mark class=\"flc-selfVoicing-mark fl-tts-highlight\"></mark>"
+        },
         invokers: {
             handleSelfVoicing: {
                 funcName: "fluid.prefs.enactor.selfVoicing.handleSelfVoicing",
                 // Pass in invokers to force them to be resolved
-                args: ["{that}.options.strings.welcomeMsg", "{tts}.queueSpeech", "{that}.readFromDOM", "{tts}.cancel", "{arguments}.0"]
+                args: ["{that}", "{that}.options.strings.welcomeMsg", "{tts}.queueSpeech", "{that}.readFromDOM", "{tts}.cancel", "{arguments}.0"]
             },
             readFromDOM: {
                 funcName: "fluid.prefs.enactor.selfVoicing.readFromDOM",
@@ -91,11 +107,31 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         strings: {
             welcomeMsg: "text to speech enabled"
+        },
+        listeners: {
+            "{tts}.events.utteranceOnEnd": {
+                listener: function (that) {
+                    that.parseQueue.shift();
+                    that.parseIndex = 0;
+                    that.locate("mark").contents().unwrap();
+                },
+                args: ["{that}"]
+            },
+            "{tts}.events.utteranceOnBoundary": {
+                listener: function (that, e) {
+                    if (that.parseQueue[0]) {
+                        fluid.prefs.enactor.selfVoicing.highlight(that, e.charIndex);
+                    }
+                },
+                args: ["{that}", "{arguments}.0"]
+            }
         }
     });
 
-    fluid.prefs.enactor.selfVoicing.handleSelfVoicing = function (welcomeMsg, queueSpeech, readFromDOM, cancel, enabled) {
+    fluid.prefs.enactor.selfVoicing.handleSelfVoicing = function (that, welcomeMsg, queueSpeech, readFromDOM, cancel, enabled) {
+        that.parseQueue = [];
         if (enabled) {
+            that.parseQueue.push(null); //TODO: Not sure why we push null into the queue, should try to remove this.
             queueSpeech(welcomeMsg, true);
             readFromDOM();
         } else {
@@ -109,27 +145,184 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         TEXT_NODE: 3
     };
 
-    // TODO: Currently only reads text nodes and alt text.
-    // This should be expanded to read other text descriptors as well.
-    fluid.prefs.enactor.selfVoicing.readFromDOM = function (that, elm) {
-        elm = $(elm);
-        var nodes = elm.contents();
-        fluid.each(nodes, function (node) {
-            if (node.nodeType === fluid.prefs.enactor.selfVoicing.nodeType.TEXT_NODE && node.nodeValue) {
-                that.tts.queueSpeech(node.nodeValue);
-            }
+    /**
+     * Tests if a string is a word, that is it has a value and is not only whitespace.
+     * inspired by https://stackoverflow.com/a/2031143
+     *
+     * @param {String} str - the String to test
+     *
+     * @returns {Boolean} - `true` if a word, `false` otherwise.
+     */
+    fluid.prefs.enactor.selfVoicing.isWord = function (str) {
+        return fluid.isValue(str) && /\S/.test(str);
+    };
 
-            if (node.nodeType === fluid.prefs.enactor.selfVoicing.nodeType.ELEMENT_NODE && window.getComputedStyle(node).display !== "none") {
-                if (node.nodeName === "IMG") {
-                    var altText = node.getAttribute("alt");
-                    if (altText) {
-                        that.tts.queueSpeech(altText);
+    // blockindex is the start index in the entire block of text.
+    // charIndex is the start index of the word in the nested block of text
+    /**
+     * Recursively parses a DOM element and it's sub elements to construct an array of data points representing the
+     * words and space between the words. This data structure provides the means for locating text to highlight as the
+     * self voicing engine runs.
+     * NOTE: consecutive whitespace is collapsed to the first whitespace character.
+     * NOTE: hidden text is skipped.
+     *
+     * @param {node} elm - the DOM node to parse
+     * @param {Number} blockIndex - The `blockIndex` represents the index into the entire block of text being parsed.
+     *                              It defaults to 0 and is primarily used internally for recursive calls.
+     *
+     * @returns {Array} - An array of data points, objects of the with the following structure.
+     *                   {
+                             blockIndex: {Number}, // the index into the entire block of text being parsed
+                             startOffset: {Number}, // the start offset of the current `word` relative to the closest enclosing DOM element
+                             endOffset: {Number}, // the start offset of the current `word` relative to the closest enclosing DOM element
+                             node: {node}, // the current child node being parsed
+                             childIndex: {Number}, // the index of the child node being parsed relative to its parent
+                             parentNode: {node}, // the parent DOM node
+                             word: {String} // the text, `word`, parsed from the node. (It may contain only whitespace.)
+                         }
+     */
+    fluid.prefs.enactor.selfVoicing.parse = function (elm, blockIndex) {
+        var parsed = [];
+        blockIndex = blockIndex || 0;
+
+        var childNodes = elm.childNodes;
+
+        $.each(childNodes, function (childIndex, childNode) {
+            if (childNode.nodeType === fluid.prefs.enactor.selfVoicing.nodeType.TEXT_NODE) {
+                var words = childNode.textContent.split(/(\s+)/); // split on whitespace, and capture whitespace
+                var charIndex = 0;
+
+                fluid.each(words, function (word) {
+                    if (fluid.prefs.enactor.selfVoicing.isWord(word)) {
+                        parsed.push({
+                            blockIndex: blockIndex,
+                            startOffset: charIndex,
+                            endOffset: charIndex + word.length,
+                            node: childNode,
+                            childIndex: childIndex,
+                            parentNode: childNode.parentNode,
+                            word: word
+                        });
+                        blockIndex += word.length;
+                    // if the current `word` is not an empty string and the last parsed `word` is not whitespace
+                    } else if (word && fluid.prefs.enactor.selfVoicing.isWord(fluid.get(parsed, [(parsed.length - 1), "word"]))) {
+                        word = word.substr(0,1); // only use first whitespace character
+                        parsed.push({
+                            blockIndex: blockIndex,
+                            startOffset: charIndex,
+                            endOffset: charIndex + word.length,
+                            node: childNode,
+                            childIndex: childIndex,
+                            parentNode: childNode.parentNode,
+                            word: word
+                        });
+                        blockIndex += word.length;
                     }
-                } else {
-                    fluid.prefs.enactor.selfVoicing.readFromDOM(that, node);
+                    charIndex += word.length;
+                });
+                // TODO: Probably shouldn't read any hidden/invisible text.
+            } else if (childNode.nodeType === fluid.prefs.enactor.selfVoicing.nodeType.ELEMENT_NODE && window.getComputedStyle(childNode).display !== "none" && childNode.tagName !== "SCRIPT") {
+                parsed = parsed.concat(fluid.prefs.enactor.selfVoicing.parse(childNode, blockIndex));
+                if (parsed.length) {
+                    var lastParsed = parsed[parsed.length - 1];
+                    blockIndex = lastParsed.blockIndex + lastParsed.word.length;
                 }
             }
         });
+
+        return parsed;
+    };
+
+    /**
+     * Combines the parsed text into a String.
+     *
+     * @param {Array} parsed - An array of parsed data points
+     *
+     * @returns {String} - The parsed text combined into a String.
+     */
+    fluid.prefs.enactor.selfVoicing.parsedToString = function (parsed) {
+        var words = fluid.transform(parsed, function (block) {
+            return block.word;
+        });
+
+        return words.join("");
+    };
+
+    /**
+     * Parses the DOM element into data points to use for highlighting the text, and queues the text into the self
+     * voicing engine. The parsed data points are added as an array to the component's `parseQueue`
+     *
+     * @param {Component} that - the component
+     * @param {node} elm - The DOM node to read
+     */
+    fluid.prefs.enactor.selfVoicing.readFromDOM = function (that, elm) {
+        elm = $(elm);
+        var parsedFromElm = fluid.prefs.enactor.selfVoicing.parse(elm[0]);
+        that.parseQueue.push(parsedFromElm);
+        that.tts.queueSpeech(fluid.prefs.enactor.selfVoicing.parsedToString(parsedFromElm));
+    };
+
+    /**
+     * Returns the index of the closest data point from the parseQueue based on the boundary provided.
+     *
+     * @param {Array} parseQueue - An array data points generated from parsing a DOM structure
+     * @param {Number} currentIndex - The index into the paraseQueue to start searching from. The currentIndex will be
+     *                                constrained to the bounds of the parseQueue.
+     * @param {Number} boundary - The boundary value used to compare against the blockIndex of the parsed data points.
+     *
+     * @returns {Number|undefined} - Will return the index of the closest data point in the parseQueue. If the boundary
+     *                               cannot be loacated within the parseQueue, `undefined` is returned.
+     */
+    fluid.prefs.enactor.selfVoicing.getClosestIndex = function (parseQueue, currentIndex, boundary) {
+        var maxIndex  = Math.max(parseQueue.length - 1, 0);
+        currentIndex = Math.max(Math.min(currentIndex, maxIndex), 0);
+
+        var nextIndex = currentIndex + 1;
+        var prevIndex = currentIndex - 1;
+
+        var currentBlockIndex = parseQueue[currentIndex].blockIndex;
+        var maxBoundary = parseQueue[maxIndex].blockIndex + parseQueue[maxIndex].word.length;
+
+
+        if (boundary < 0 || boundary > maxBoundary ) {
+            return undefined;
+        }
+
+        if (currentBlockIndex === boundary || (currentIndex < maxIndex && boundary < parseQueue[nextIndex].blockIndex)) {
+            return currentIndex;
+        }
+
+        if (currentBlockIndex > boundary) {
+            return fluid.prefs.enactor.selfVoicing.getClosestIndex(parseQueue, prevIndex, boundary);
+        }
+
+        return fluid.prefs.enactor.selfVoicing.getClosestIndex(parseQueue, nextIndex, boundary);
+    };
+
+    /**
+     * Highlights text from the parseQueue according to the specified boundary. Highlights are performed by wrapping
+     * the appropriate text in the markup specified by `that.options.markup.mark`.
+     *
+     * @param {Component} that - the component
+     * @param {Number} boundary - the boundary point used to find the text to highlight. Typically this is the utterance
+     *                            boundary returned from the utteranceOnBoundary event.
+     */
+    fluid.prefs.enactor.selfVoicing.highlight = function (that, boundary) {
+        that.locate("mark").contents().unwrap();
+        var closestIndex = fluid.prefs.enactor.selfVoicing.getClosestIndex(that.parseQueue[0], that.parseIndex, boundary);
+
+        if (fluid.value(closestIndex)) {
+            that.parseIndex = closestIndex;
+
+            var data = that.parseQueue[0][that.parseIndex];
+            data.parentNode.normalize();
+            var rangeNode = data.parentNode.childNodes[data.childIndex];
+
+            that.range.selectNode(rangeNode);
+            that.range.setStart(rangeNode, data.startOffset);
+            that.range.setEnd(rangeNode, data.endOffset);
+            that.range.surroundContents($(that.options.markup.mark)[0]);
+        }
     };
 
 })(jQuery, fluid_3_0_0);

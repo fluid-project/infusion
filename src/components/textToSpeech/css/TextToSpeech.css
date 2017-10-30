@@ -1,0 +1,9 @@
+.fl-tts-read-block {
+    background-color: #F1F3AE;
+    color: #000000;
+    outline: 1px dotted #000000;
+}
+
+mark.fl-tts-highlight {
+    background-color: #EED400;
+}
