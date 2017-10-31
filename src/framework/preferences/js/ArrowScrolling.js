@@ -143,17 +143,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.prefs.arrowScrolling.getClosestPanelIndex = function (panels) {
-        var panelArray = [];
-        panels.each(function (idx, panel) {
-            panelArray.push({
+        var panelArray = fluid.transform(panels, function (panel, idx) {
+            return {
                 index: idx,
                 offset: Math.abs($(panel).offset().left)
-            });
+            };
         });
         panelArray.sort(function (a, b) {
             return a.offset - b.offset;
         });
-        return panelArray[0].index;
+        return fluid.get(panelArray, ["0", "index"]) || 0;
     };
 
 })(jQuery, fluid_3_0_0);
