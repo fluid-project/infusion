@@ -27,6 +27,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // panels: "", // should be supplied by the fluid.prefs.prefsEditor grade.
             scrollContainer: ".flc-prefsEditor-scrollContainer"
         },
+        onScrollDelay: 100, // in ms, used to set the delay for debouncing the scroll event relay
         model: {
             // panelMaxIndex: null, // determined by the number of panels calculated after the onPrefsEditorMarkupReady event fired
             panelIndex: 0
@@ -63,7 +64,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         // Relaying the scroll event to onScroll but debounced to reduce the rate of fire.  A high rate
                         // of fire may negatively effect performance for complex handlers.
                         func: "fluid.debounce",
-                        args: ["{that}.events.onScroll.fire", 100]
+                        args: ["{that}.events.onScroll.fire", "{that}.options.onScrollDelay"]
                     }
                 }]
             },
@@ -119,7 +120,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             target: "{that > fluid.prefs.panel}.options.listeners"
         }]
-
     });
 
     fluid.prefs.arrowScrolling.calculatePanelMaxIndex = function (panels) {
