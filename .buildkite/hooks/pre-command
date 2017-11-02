@@ -1,2 +1,0 @@
-echo "Creating VM..."
-DISPLAY=:0 vagrant up --provider virtualbox && npm install
