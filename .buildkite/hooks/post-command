@@ -1,0 +1,2 @@
+echo "Destroying VM..."
+vagrant destroy -f
