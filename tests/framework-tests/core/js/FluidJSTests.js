@@ -670,6 +670,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("Call new global function", 2, fluid.newFunc());
     });
 
+    jqUnit.test("fluid.get for FLUID-6217 - get ending at falsy value", function () {
+        jqUnit.assertUndefined("Simple 0-based fetch", fluid.get([0,1,2],"0.value"));
+        jqUnit.assertUndefined("Nested 0-based fetch", fluid.get([0,1,2],"0.any.path.at.all"));
+        jqUnit.assertUndefined("Nested false-based fetch", fluid.get([0, false, 2],"1.foo.bar.baz"));
+        jqUnit.assertUndefined("Fetch from hash", fluid.get({foo:false}, "foo.bar.baz"));
+    });
+
     jqUnit.test("Globals", function () {
         var space = fluid.registerNamespace("fluid.engage.mccord");
         space.func = function () {

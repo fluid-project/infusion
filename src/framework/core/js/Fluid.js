@@ -1087,7 +1087,7 @@ var fluid = fluid || fluid_3_0_0;
         var limit = segs.length - uncess;
         for (var i = 0; i < limit; ++i) {
             if (!root) {
-                return root;
+                return undefined;
             }
             var segment = segs[i];
             if (environment && environment[segment]) {
