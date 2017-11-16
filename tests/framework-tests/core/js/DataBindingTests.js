@@ -2927,6 +2927,247 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return togo;
     };
 
-    fluid.test.runTests(["fluid.tests.fluid5659root"]);
+    // fluid.remoteModelComponent tests
+
+    fluid.defaults("fluid.tests.remoteModelComponent", {
+        gradeNames: ["fluid.remoteModelComponent"],
+        members: {
+            fetchedData: {},
+            resolveFetch: true,
+            resolveWrite: true
+        },
+        model: {
+            settings: {
+                pref1: true,
+                pref2: false
+            },
+            buffered: {
+                local: "{that}.model.settings"
+            }
+        },
+        invokers: {
+            fetchImpl: {
+                funcName: "fluid.tests.remoteModelComponent.reqImpl",
+                args: [100, "{that}.resolveFetch", "{that}.fetchedData"]
+            },
+            writeImpl: {
+                funcName: "fluid.tests.remoteModelComponent.reqImpl",
+                args: [100, "{that}.resolveWrite", "{arguments}.0"]
+            }
+        }
+    });
+
+    fluid.tests.remoteModelComponent.emptyRemoteModel = {
+        settings: {
+            pref1: true,
+            pref2: false
+        },
+        buffered: {
+            local: {
+                pref1: true,
+                pref2: false
+            },
+            remote: {},
+            requestInFlight: false
+        }
+    };
+
+    fluid.tests.remoteModelComponent.threePrefs = {
+        settings: {
+            pref1: true,
+            pref2: false,
+            pref3: "value"
+        },
+        buffered: {
+            local: {
+                pref1: true,
+                pref2: false,
+                pref3: "value"
+            },
+            remote: {
+                pref3: "value"
+            },
+            requestInFlight: false
+        }
+    };
+
+    fluid.tests.remoteModelComponent.differentRemote = {
+        settings: {
+            pref1: true,
+            pref2: false
+        },
+        buffered: {
+            local: {
+                pref1: true,
+                pref2: false
+            },
+            remote: {
+                pref1: false
+            },
+            requestInFlight: false
+        }
+    };
+
+    fluid.tests.remoteModelComponent.fetchedData = {
+        pref1False: {
+            pref1: false
+        },
+        pref3Value: {
+            pref3: "value"
+        },
+        empty: {}
+    };
+
+    fluid.tests.remoteModelComponent.reqImpl = function (delay, resolve, returnData) {
+        var promise = fluid.promise();
+        setTimeout(function () {
+            if (resolve) {
+                promise.resolve(returnData);
+            } else {
+                promise.reject({message: "request error"});
+            }
+        }, delay);
+        return promise;
+    };
+
+    fluid.defaults("fluid.tests.remoteModelComponent.tester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [{
+            name: "remote model component tests",
+            tests: [{
+                expect: 23,
+                name: "Fetch",
+                sequence: [{
+                    event: "{fluid.tests.remoteModelComponentTests remoteModelComponent}.events.onCreate",
+                    listener: "jqUnit.assertDeepEq",
+                    args: ["The initialized model is correct.", fluid.tests.remoteModelComponent.emptyRemoteModel, "{remoteModelComponent}.model"]
+                }, {
+                    // fetch an empty data set
+                    funcName: "fluid.set",
+                    args: ["{remoteModelComponent}", ["fetchedData"], fluid.tests.remoteModelComponent.fetchedData.empty]
+                }, {
+                    task: "{remoteModelComponent}.fetch",
+                    resolve: "fluid.tests.remoteModelComponent.tester.assertFetch",
+                    resolveArgs: ["{remoteModelComponent}", "empty fetch", "{arguments}.0", fluid.tests.remoteModelComponent.emptyRemoteModel]
+                }, {
+                    // fetch the pref3Value data set
+                    funcName: "fluid.set",
+                    args: ["{remoteModelComponent}", ["fetchedData"], fluid.tests.remoteModelComponent.fetchedData.pref3Value]
+                }, {
+                    task: "{remoteModelComponent}.fetch",
+                    resolve: "fluid.tests.remoteModelComponent.tester.assertFetch",
+                    resolveArgs: ["{remoteModelComponent}", "pref3Value", "{arguments}.0", fluid.tests.remoteModelComponent.threePrefs]
+                }, {
+                    // fetch the empty data set - should remove previous fetch addition
+                    funcName: "fluid.set",
+                    args: ["{remoteModelComponent}", ["fetchedData"], fluid.tests.remoteModelComponent.fetchedData.empty]
+                }, {
+                    task: "{remoteModelComponent}.fetch",
+                    resolve: "fluid.tests.remoteModelComponent.tester.assertFetch",
+                    resolveArgs: ["{remoteModelComponent}", "Remove Previous Additions", "{arguments}.0", fluid.tests.remoteModelComponent.emptyRemoteModel]
+                }, {
+                    // fetch the pref1False data set. values in the local model take priority over changes from the remote model
+                    funcName: "fluid.set",
+                    args: ["{remoteModelComponent}", ["fetchedData"], fluid.tests.remoteModelComponent.fetchedData.pref1False]
+                }, {
+                    task: "{remoteModelComponent}.fetch",
+                    resolve: "fluid.tests.remoteModelComponent.tester.assertFetch",
+                    resolveArgs: ["{remoteModelComponent}", "pref1False", "{arguments}.0", fluid.tests.remoteModelComponent.differentRemote]
+                }, {
+                    // multiple fetches
+                    funcName: "fluid.set",
+                    args: ["{remoteModelComponent}", ["fetchedData"], fluid.tests.remoteModelComponent.fetchedData.empty]
+                }, {
+                    task: "fluid.tests.remoteModelComponent.tester.testMultipleFetches",
+                    args: ["{remoteModelComponent}"],
+                    resolve: "fluid.tests.remoteModelComponent.tester.assertFetch",
+                    resolveArgs: ["{remoteModelComponent}", "multiple fetches", "{arguments}.0", fluid.tests.remoteModelComponent.emptyRemoteModel]
+                }]
+            }, {
+                expect: 12,
+                name: "Write",
+                sequence: [{
+                    funcName: "jqUnit.assertDeepEq",
+                    args: ["The initialized model is correct.", fluid.tests.remoteModelComponent.emptyRemoteModel, "{remoteModelComponent}.model"]
+                }, {
+                    task: "{remoteModelComponent}.write",
+                    resolve: "fluid.tests.remoteModelComponent.tester.assertWrite",
+                    resolveArgs: ["{remoteModelComponent}", "single write", "{arguments}.0"]
+                }, {
+                    task: "fluid.tests.remoteModelComponent.tester.testMultipleWrites",
+                    args: ["{remoteModelComponent}"],
+                    resolve: "fluid.tests.remoteModelComponent.tester.assertWrite",
+                    resolveArgs: ["{remoteModelComponent}", "multiple writes", "{arguments}.0"]
+                }]
+            }]
+        }]
+    });
+
+    fluid.tests.remoteModelComponent.tester.assertFetch = function (that, name, fetchedData, expectedModel) {
+        jqUnit.assertDeepEq(name + ": The fetched data should be returned", expectedModel.buffered.remote, fetchedData);
+        jqUnit.assertDeepEq(name + ": The model values should be updated correctly", expectedModel, that.model);
+        jqUnit.assertNull(name + ": There shouldn't be any pending fetch requests", that.pendingRequests.fetch);
+    };
+
+    fluid.tests.remoteModelComponent.tester.testMultipleFetches = function (that) {
+        var promise = fluid.promise();
+        // first fetch
+        var firstFetch  = that.fetch();
+        jqUnit.assertTrue("multiple fetches #1: There should be a request in flight", that.model.buffered.requestInFlight);
+        jqUnit.assertValue("multiple fetches #1: There should be a pending fetch request", that.pendingRequests.fetch);
+        jqUnit.assertEquals("multiple fetches #1: The pending fetch request promise should match the promise of the first fetch request", that.pendingRequests.fetch, firstFetch);
+
+        //second fetch
+        var secondFetch = that.fetch();
+        jqUnit.assertTrue("multiple fetches #2: There should be a request in flight", that.model.buffered.requestInFlight);
+        jqUnit.assertValue("multiple fetches #2: There should be a pending fetch request", that.pendingRequests.fetch);
+        jqUnit.assertEquals("multiple fetches #2: The pending fetch request promise should match the promise of the second fetch request", that.pendingRequests.fetch, firstFetch);
+        jqUnit.assertEquals("multiple fetches #2: The first fetch request promise should match the second fetch request promise", firstFetch, secondFetch);
+
+        fluid.promise.follow(firstFetch, promise);
+        return promise;
+    };
+
+    fluid.tests.remoteModelComponent.tester.assertWrite = function (that, name, writeData) {
+        jqUnit.assertDeepEq(name + ": The local model should be passed to the write implementation", that.model.buffered.local, writeData);
+        jqUnit.assertNull(name + ": There shouldn't be any pending write requests", that.pendingRequests.fetch);
+        jqUnit.assertFalse(name + ": There shouldn't be any in flight requests", that.model.buffered.requestInFlight);
+    };
+
+    fluid.tests.remoteModelComponent.tester.testMultipleWrites = function (that) {
+        var promise = fluid.promise();
+
+        // first write
+        that.write();
+        jqUnit.assertTrue("multiple writes #1: There should be a request in flight", that.model.buffered.requestInFlight);
+        jqUnit.assertNull("multiple writes #1: There should not be a pending write request", that.pendingRequests.write);
+
+        //second write
+        var secondWrite = that.write();
+        jqUnit.assertTrue("multiple writes #2: There should be a request in flight", that.model.buffered.requestInFlight);
+        jqUnit.assertValue("multiple writes #2: There should be a pending write request", that.pendingRequests.write);
+        jqUnit.assertEquals("multiple writes #2: The pending write request promise should match the promise of the first write request", that.pendingRequests.write, secondWrite);
+
+        fluid.promise.follow(secondWrite, promise);
+        return promise;
+    };
+
+    fluid.defaults("fluid.tests.remoteModelComponentTests", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        components: {
+            remoteModelComponent: {
+                type: "fluid.tests.remoteModelComponent",
+                createOnEvent: "{testCases}.events.onTestCaseStart"
+            },
+            testCases: {
+                type: "fluid.tests.remoteModelComponent.tester"
+            }
+        }
+    });
+
+    fluid.test.runTests([
+        "fluid.tests.fluid5659root",
+        "fluid.tests.remoteModelComponentTests"
+    ]);
 
 })(jQuery);
