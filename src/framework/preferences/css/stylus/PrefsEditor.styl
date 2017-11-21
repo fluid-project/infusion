@@ -117,6 +117,18 @@
         justify-content: center;
 
         .fl-choice {
+            input.fl-hidden-accessible {
+                // These overrides to the default behaviour of .fl-hidden-accessible are required to keep the
+                // radio button hidden from view, accessible and allow the input to be scrolled into view when tab
+                // focused. Using position fixed or absolute does not scroll the input into view when focused.
+                // See: FLUID-6228 ( https://issues.fluidproject.org/browse/FLUID-6228 )
+                position: relative;
+
+                // position behind label
+                z-index: -2;
+                top: 1rem;
+                left: 1rem;
+            }
             label {
                 margin-right: 5px;
                 border: 1px solid black;
