@@ -1018,51 +1018,52 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.remoteModelComponent.fetch = function (that) {
-        var promise;
+        var promise = fluid.promise();
 
         if (that.pendingRequests.fetch) {
-            promise = that.pendingRequests.fetch;
+            fluid.promise.follow(that.pendingRequests.fetch, promise);
         } else {
-            promise = fluid.promise();
-            promise.then(function (data) {
-                that.pendingRequests.fetch = null;
-                fluid.remoteModelComponent.updateModelFromFetch(that, data);
-                that.applier.change("buffered.requestInFlight", false);
-            }, that.events.onFetchError.fire);
             that.pendingRequests.fetch = promise;
         }
 
         if (!that.model.buffered.requestInFlight) {
             that.applier.change("buffered.requestInFlight", true);
             var reqPromise = that.fetchImpl();
-            fluid.promise.follow(reqPromise, promise);
+            reqPromise.then(function (data) {
+                that.pendingRequests.fetch = null;
+                fluid.remoteModelComponent.updateModelFromFetch(that, data);
+                that.applier.change("buffered.requestInFlight", false);
+            }, that.events.onFetchError.fire);
+            fluid.promise.follow(reqPromise, that.pendingRequests.fetch);
         }
         return promise;
     };
 
     fluid.remoteModelComponent.write = function (that) {
-        var promise;
+        var promise = fluid.promise();
+        var activePromise;
 
         if (that.pendingRequests.write) {
-            promise = that.pendingRequests.write;
+            activePromise = that.pendingRequests.write;
+            fluid.promise.follow(that.pendingRequests.write, promise);
         } else {
-            promise = fluid.promise();
-            promise.then(function () {
-                that.applier.change("buffered.requestInFlight", false);
-            }, that.events.onWriteError.fire);
+            activePromise = promise;
         }
 
         if (that.model.buffered.requestInFlight) {
-            that.pendingRequests.write = promise;
+            that.pendingRequests.write = activePromise;
         } else {
             that.applier.change("buffered.requestInFlight", true);
             that.pendingRequests.write = null;
 
             if (fluid.model.diff(that.model.buffered.local, that.model.buffered.remote)) {
-                promise.resolve(that.model.buffered.local);
+                activePromise.resolve(that.model.buffered.local);
             } else {
                 var reqPromise = that.writeImpl(that.model.buffered.local);
-                fluid.promise.follow(reqPromise, promise);
+                reqPromise.then(function () {
+                    that.applier.change("buffered.requestInFlight", false);
+                }, that.events.onWriteError.fire);
+                fluid.promise.follow(reqPromise, activePromise);
             }
         }
 
