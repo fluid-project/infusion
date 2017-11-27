@@ -27,16 +27,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         model: {
-            buffered: {
-                // an implementor must setup a model relay between the buffered local value and the portions of the
-                // component's model state that should be updated with the remote source.
-                local: {},
-                remote: {},
-                requestInFlight: false
-            }
+            // an implementor must setup a model relay between the buffered local value and the portions of the
+            // component's model state that should be updated with the remote source.
+            local: {},
+            remote: {},
+            requestInFlight: false
         },
         modelListeners: {
-            "buffered.requestInFlight": {
+            "requestInFlight": {
                 listener: "fluid.remoteModelComponent.launchPendingRequest",
                 args: ["{that}"]
             }
@@ -56,7 +54,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     });
 
     fluid.remoteModelComponent.launchPendingRequest = function (that) {
-        if (!that.model.buffered.requestInFlight) {
+        if (!that.model.requestInFlight) {
             if (that.pendingRequests.fetch) {
                 that.fetch();
             } else if (that.pendingRequests.write) {
@@ -66,16 +64,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.remoteModelComponent.updateModelFromFetch = function (that, fetchedModel) {
-        var remoteChanges = fluid.modelPairToChanges(fetchedModel, that.model.buffered.remote, "buffered.local");
-        var localChanges = fluid.modelPairToChanges(that.model.buffered.local, that.model.buffered.remote, "buffered.local");
+        var remoteChanges = fluid.modelPairToChanges(fetchedModel, that.model.remote, "local");
+        var localChanges = fluid.modelPairToChanges(that.model.local, that.model.remote, "local");
         var changes = remoteChanges.concat(localChanges);
 
         // perform model updates in a single transaction
         var transaction = that.applier.initiate();
-        transaction.fireChangeRequest({path: "buffered.local", type: "DELETE"}); // clear old local model
-        transaction.change("buffered.local", that.model.buffered.remote); // reset local model to the base for applying changes.
-        transaction.fireChangeRequest({path: "buffered.remote", type: "DELETE"}); // clear old remote model
-        transaction.change("buffered.remote", fetchedModel); // update remote model to fetched changes.
+        transaction.fireChangeRequest({path: "local", type: "DELETE"}); // clear old local model
+        transaction.change("local", that.model.remote); // reset local model to the base for applying changes.
+        transaction.fireChangeRequest({path: "remote", type: "DELETE"}); // clear old remote model
+        transaction.change("remote", fetchedModel); // update remote model to fetched changes.
         fluid.fireChanges(transaction, changes); // apply changes from remote and local onto base model.
         transaction.commit(); // submit transaction
     };
@@ -89,13 +87,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             that.pendingRequests.fetch = promise;
         }
 
-        if (!that.model.buffered.requestInFlight) {
-            that.applier.change("buffered.requestInFlight", true);
+        if (!that.model.requestInFlight) {
+            that.applier.change("requestInFlight", true);
             var reqPromise = that.fetchImpl();
             reqPromise.then(function (data) {
                 that.pendingRequests.fetch = null;
                 fluid.remoteModelComponent.updateModelFromFetch(that, data);
-                that.applier.change("buffered.requestInFlight", false);
+                that.applier.change("requestInFlight", false);
             }, that.events.onFetchError.fire);
             fluid.promise.follow(reqPromise, that.pendingRequests.fetch);
         }
@@ -113,18 +111,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             activePromise = promise;
         }
 
-        if (that.model.buffered.requestInFlight) {
+        if (that.model.requestInFlight) {
             that.pendingRequests.write = activePromise;
         } else {
-            that.applier.change("buffered.requestInFlight", true);
+            that.applier.change("requestInFlight", true);
             that.pendingRequests.write = null;
 
-            if (fluid.model.diff(that.model.buffered.local, that.model.buffered.remote)) {
-                activePromise.resolve(that.model.buffered.local);
+            if (fluid.model.diff(that.model.local, that.model.remote)) {
+                activePromise.resolve(that.model.local);
             } else {
-                var reqPromise = that.writeImpl(that.model.buffered.local);
+                var reqPromise = that.writeImpl(that.model.local);
                 reqPromise.then(function () {
-                    that.applier.change("buffered.requestInFlight", false);
+                    that.applier.change("requestInFlight", false);
                 }, that.events.onWriteError.fire);
                 fluid.promise.follow(reqPromise, activePromise);
             }

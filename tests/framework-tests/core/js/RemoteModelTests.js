@@ -11,7 +11,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 /* global fluid, jqUnit */
 
-(function ($) {
+(function () {
     "use strict";
 
     fluid.registerNamespace("fluid.tests");
@@ -28,9 +28,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 pref1: true,
                 pref2: false
             },
-            buffered: {
-                local: "{that}.model.settings"
-            }
+            local: "{that}.model.settings"
         },
         invokers: {
             fetchImpl: {
@@ -50,14 +48,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 pref1: true,
                 pref2: false
             },
-            buffered: {
-                local: {
-                    pref1: true,
-                    pref2: false
-                },
-                remote: {},
-                requestInFlight: false
-            }
+            local: {
+                pref1: true,
+                pref2: false
+            },
+            remote: {},
+            requestInFlight: false
         },
 
         emptyRemoteWithRequestInFlight: {
@@ -65,14 +61,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 pref1: true,
                 pref2: false
             },
-            buffered: {
-                local: {
-                    pref1: true,
-                    pref2: false
-                },
-                remote: {},
-                requestInFlight: true
-            }
+            local: {
+                pref1: true,
+                pref2: false
+            },
+            remote: {},
+            requestInFlight: true
         },
 
         threePrefs: {
@@ -81,17 +75,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 pref2: false,
                 pref3: "value"
             },
-            buffered: {
-                local: {
-                    pref1: true,
-                    pref2: false,
-                    pref3: "value"
-                },
-                remote: {
-                    pref3: "value"
-                },
-                requestInFlight: false
-            }
+            local: {
+                pref1: true,
+                pref2: false,
+                pref3: "value"
+            },
+            remote: {
+                pref3: "value"
+            },
+            requestInFlight: false
         },
 
         differentRemote: {
@@ -99,16 +91,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 pref1: true,
                 pref2: false
             },
-            buffered: {
-                local: {
-                    pref1: true,
-                    pref2: false
-                },
-                remote: {
-                    pref1: false
-                },
-                requestInFlight: false
-            }
+            local: {
+                pref1: true,
+                pref2: false
+            },
+            remote: {
+                pref1: false
+            },
+            requestInFlight: false
         }
     };
 
@@ -225,7 +215,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.remoteModelComponent.tester.assertFetch = function (that, name, fetchedData, expectedModel) {
-        jqUnit.assertDeepEq(name + ": The fetched data should be returned", expectedModel.buffered.remote, fetchedData);
+        jqUnit.assertDeepEq(name + ": The fetched data should be returned", expectedModel.remote, fetchedData);
         jqUnit.assertDeepEq(name + ": The model values should be updated correctly", expectedModel, that.model);
         jqUnit.assertNull(name + ": There shouldn't be any pending fetch requests", that.pendingRequests.fetch);
     };
@@ -234,7 +224,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var promise = fluid.promise();
         // first fetch
         var firstFetch  = that.fetch();
-        jqUnit.assertTrue("multiple fetches #1: There should be a request in flight", that.model.buffered.requestInFlight);
+        jqUnit.assertTrue("multiple fetches #1: There should be a request in flight", that.model.requestInFlight);
         jqUnit.assertValue("multiple fetches #1: There should be a pending fetch request", that.pendingRequests.fetch);
         jqUnit.assertEquals("multiple fetches #1: The pending fetch request promise should match the promise of the first fetch request", that.pendingRequests.fetch, firstFetch);
         firstFetch.then(function () {
@@ -243,7 +233,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         //second fetch
         var secondFetch = that.fetch();
-        jqUnit.assertTrue("multiple fetches #2: There should be a request in flight", that.model.buffered.requestInFlight);
+        jqUnit.assertTrue("multiple fetches #2: There should be a request in flight", that.model.requestInFlight);
         jqUnit.assertValue("multiple fetches #2: There should be a pending fetch request", that.pendingRequests.fetch);
         jqUnit.assertEquals("multiple fetches #2: The pending fetch request promise should match the promise of the second fetch request", that.pendingRequests.fetch, firstFetch);
         secondFetch.then(function () {
@@ -255,9 +245,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.remoteModelComponent.tester.assertWrite = function (that, name, writeData, requestInFlight) {
-        jqUnit.assertDeepEq(name + ": The local model should be passed to the write implementation", that.model.buffered.local, writeData);
+        jqUnit.assertDeepEq(name + ": The local model should be passed to the write implementation", that.model.local, writeData);
         jqUnit.assertNull(name + ": There shouldn't be any pending write requests", that.pendingRequests.write);
-        jqUnit.assertEquals(name + ": requestInFlight should be set to " + requestInFlight, requestInFlight, that.model.buffered.requestInFlight);
+        jqUnit.assertEquals(name + ": requestInFlight should be set to " + requestInFlight, requestInFlight, that.model.requestInFlight);
     };
 
     fluid.tests.remoteModelComponent.tester.testMultipleWrites = function (that) {
@@ -265,7 +255,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         // first write
         var firstWrite = that.write();
-        jqUnit.assertTrue("multiple writes #1: There should be a request in flight", that.model.buffered.requestInFlight);
+        jqUnit.assertTrue("multiple writes #1: There should be a request in flight", that.model.requestInFlight);
         jqUnit.assertNull("multiple writes #1: There should not be a pending write request", that.pendingRequests.write);
         firstWrite.then(function () {
             jqUnit.assert("multiple writes #1: The first write should have resolved");
@@ -273,7 +263,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         //second write
         var secondWrite = that.write();
-        jqUnit.assertTrue("multiple writes #2: There should be a request in flight", that.model.buffered.requestInFlight);
+        jqUnit.assertTrue("multiple writes #2: There should be a request in flight", that.model.requestInFlight);
         jqUnit.assertValue("multiple writes #2: There should be a pending write request", that.pendingRequests.write);
         secondWrite.then(function () {
             jqUnit.assert("multiple writes #2: The second write should have resolved");
@@ -288,7 +278,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var write  = that.write();
 
         // write tests
-        jqUnit.assertTrue("write/fetch - write: There should be a request in flight", that.model.buffered.requestInFlight);
+        jqUnit.assertTrue("write/fetch - write: There should be a request in flight", that.model.requestInFlight);
         jqUnit.assertNull("write/fetch - write: There should not be a pending write request", that.pendingRequests.write);
         jqUnit.assertNull("write/fetch - write: There should not be a pending fetch request", that.pendingRequests.fetch);
         write.then(function (writeData) {
@@ -297,7 +287,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         // fetch tests
         var fetch = that.fetch();
-        jqUnit.assertTrue("write/fetch - fetch: There should be a request in flight", that.model.buffered.requestInFlight);
+        jqUnit.assertTrue("write/fetch - fetch: There should be a request in flight", that.model.requestInFlight);
         jqUnit.assertValue("write/fetch - fetch: There should be a pending fetch request", that.pendingRequests.fetch);
         fetch.then(function () {
             jqUnit.assert("write/fetch - fetch: The fetch promise should have resolved");
@@ -315,13 +305,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         // fetch tests
-        jqUnit.assertTrue("fetch/write - fetch: There should be a request in flight", that.model.buffered.requestInFlight);
+        jqUnit.assertTrue("fetch/write - fetch: There should be a request in flight", that.model.requestInFlight);
         jqUnit.assertValue("fetch/write - fetch: There should be a pending fetch request", that.pendingRequests.fetch);
         jqUnit.assertNoValue("fetch/write - fetch: There shouldn't be a pending write request", that.pendingRequests.write);
 
         // write tests
         var write = that.write();
-        jqUnit.assertTrue("fetch/write - write: There should be a request in flight", that.model.buffered.requestInFlight);
+        jqUnit.assertTrue("fetch/write - write: There should be a request in flight", that.model.requestInFlight);
         jqUnit.assertValue("fetch/write - write: There should be a pending write request", that.pendingRequests.write);
         write.then(function () {
             jqUnit.assert("fetch/write - write: The write promise should have resolved");
@@ -348,4 +338,4 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "fluid.tests.remoteModelComponentTests"
     ]);
 
-})(jQuery);
+})();
