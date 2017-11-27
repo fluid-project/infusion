@@ -12,6 +12,7 @@
             "./js/FluidDebugging.js",
             "./js/FluidIoC.js",
             "./js/DataBinding.js",
+            "./js/RemoteModel.js",
             "./js/ModelTransformation.js",
             "./js/ModelTransformationTransforms.js",
             "./js/jquery.keyboard-a11y.js",
