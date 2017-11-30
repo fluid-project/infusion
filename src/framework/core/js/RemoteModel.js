@@ -17,8 +17,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.remoteModelComponent", {
         gradeNames: ["fluid.modelComponent"],
         events: {
-            onWriteError: null,
-            onFetchError: null
+            afterFetch: null,
+            onFetch: null,
+            onFetchError: null,
+            afterWrite: null,
+            onWrite: null,
+            onWriteError: null
         },
         members: {
             pendingRequests: {
@@ -37,6 +41,29 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "requestInFlight": {
                 listener: "fluid.remoteModelComponent.launchPendingRequest",
                 args: ["{that}"]
+            }
+        },
+        listeners: {
+            "afterFetch.updateModel": {
+                listener: "fluid.remoteModelComponent.updateModelFromFetch",
+                args: ["{that}", "{arguments}.0"],
+                priority: "before:unblock"
+            },
+            "afterFetch.unblock": {
+                listener: "fluid.remoteModelComponent.unblockFetchReq",
+                args: ["{that}"]
+            },
+            "onFetchError.unblock": {
+                listener: "fluid.remoteModelComponent.unblockFetchReq",
+                args: ["{that}"]
+            },
+            "afterWrite.unblock": {
+                changePath: "requestInFlight",
+                value: false
+            },
+            "onWriteError.unblock": {
+                changePath: "requestInFlight",
+                value: false
             }
         },
         invokers: {
@@ -78,26 +105,62 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         transaction.commit(); // submit transaction
     };
 
+    fluid.remoteModelComponent.makeSequneceStrategy = function (payload) {
+        return {
+            invokeNext: function (that) {
+                var lisrec = that.sources[that.index];
+                lisrec.listener = fluid.event.resolveListener(lisrec.listener);
+                var value = lisrec.listener.apply(null, [payload, that.options]);
+                return value;
+            },
+            resolveResult: function () {
+                return payload;
+            }
+        };
+    };
+
+    fluid.remoteModelComponent.makeSequence = function (listeners, payload, options) {
+        var sequencer = fluid.promise.makeSequencer(listeners, options, fluid.remoteModelComponent.makeSequneceStrategy(payload));
+        fluid.promise.resumeSequence(sequencer);
+        return sequencer;
+    };
+
+    fluid.remoteModelComponent.fireEventSequence = function (event, payload, options) {
+        var listeners = fluid.makeArray(event.sortedListeners);
+        var sequence = fluid.remoteModelComponent.makeSequence(listeners, payload, options);
+        return sequence.promise;
+    };
+
     fluid.remoteModelComponent.fetch = function (that) {
         var promise = fluid.promise();
+        var activePromise;
 
         if (that.pendingRequests.fetch) {
-            fluid.promise.follow(that.pendingRequests.fetch, promise);
+            activePromise = that.pendingRequests.fetch;
+            fluid.promise.follow(activePromise, promise);
         } else {
+            activePromise = promise;
             that.pendingRequests.fetch = promise;
         }
 
         if (!that.model.requestInFlight) {
-            that.applier.change("requestInFlight", true);
-            var reqPromise = that.fetchImpl();
-            reqPromise.then(function (data) {
-                that.pendingRequests.fetch = null;
-                fluid.remoteModelComponent.updateModelFromFetch(that, data);
-                that.applier.change("requestInFlight", false);
+            var onFetchSeqPromise = fluid.remoteModelComponent.fireEventSequence(that.events.onFetch);
+            onFetchSeqPromise.then(function () {
+                that.applier.change("requestInFlight", true);
+                var reqPromise = that.fetchImpl();
+                reqPromise.then(function (data) {
+                    var afterFetchSeqPromise = fluid.remoteModelComponent.fireEventSequence(that.events.afterFetch, data);
+                    fluid.promise.follow(afterFetchSeqPromise, activePromise);
+                }, that.events.onFetchError.fire);
+
             }, that.events.onFetchError.fire);
-            fluid.promise.follow(reqPromise, that.pendingRequests.fetch);
         }
         return promise;
+    };
+
+    fluid.remoteModelComponent.unblockFetchReq = function (that) {
+        that.pendingRequests.fetch = null;
+        that.applier.change("requestInFlight", false);
     };
 
     fluid.remoteModelComponent.write = function (that) {
@@ -114,18 +177,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (that.model.requestInFlight) {
             that.pendingRequests.write = activePromise;
         } else {
-            that.applier.change("requestInFlight", true);
-            that.pendingRequests.write = null;
+            var onWriteSeqPromise = fluid.remoteModelComponent.fireEventSequence(that.events.onWrite);
+            onWriteSeqPromise.then(function () {
+                that.applier.change("requestInFlight", true);
+                that.pendingRequests.write = null;
 
-            if (fluid.model.diff(that.model.local, that.model.remote)) {
-                activePromise.resolve(that.model.local);
-            } else {
-                var reqPromise = that.writeImpl(that.model.local);
-                reqPromise.then(function () {
-                    that.applier.change("requestInFlight", false);
-                }, that.events.onWriteError.fire);
-                fluid.promise.follow(reqPromise, activePromise);
-            }
+                if (fluid.model.diff(that.model.local, that.model.remote)) {
+                    activePromise.resolve(that.model.local);
+                } else {
+                    var reqPromise = that.writeImpl(that.model.local);
+                    reqPromise.then(function (data) {
+                        var afterWriteSeqPromise = fluid.remoteModelComponent.fireEventSequence(that.events.afterWrite, data);
+                        fluid.promise.follow(afterWriteSeqPromise, activePromise);
+                    }, that.events.onWriteError.fire);;
+                }
+            }, that.events.onWriteError.fire);
         }
 
         return promise;
