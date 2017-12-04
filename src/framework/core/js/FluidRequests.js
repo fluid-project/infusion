@@ -333,13 +333,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.fetchResources.fetchResourcesImpl = function (that) {
         var complete = true;
-        var allSync = true;
         var resourceSpecs = that.resourceSpecs;
         for (var key in resourceSpecs) {
             var resourceSpec = resourceSpecs[key];
-            if (!resourceSpec.options || resourceSpec.options.async) {
-                allSync = false;
-            }
             if (resourceSpec.href && !resourceSpec.completeTime) {
                 if (!resourceSpec.queued) {
                     fluid.fetchResources.issueRequest(resourceSpec, key);
@@ -358,15 +354,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
         if (complete && that.callback && !that.callbackCalled) {
             that.callbackCalled = true;
-            if ($.browser.mozilla && !allSync) {
-                // Defer this callback to avoid debugging problems on Firefox
-                setTimeout(function () {
-                    fluid.fetchResources.notifyResources(that, resourceSpecs, that.callback);
-                }, 1);
-            }
-            else {
+            // Always defer notification in an anti-Zalgo scheme to ease problems like FLUID-6202
+            // In time this will be resolved by i) latched events, ii) global async ginger world
+            setTimeout(function () {
                 fluid.fetchResources.notifyResources(that, resourceSpecs, that.callback);
-            }
+            }, 1);
         }
     };
 

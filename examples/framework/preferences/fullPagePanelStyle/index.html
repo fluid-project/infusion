@@ -1,16 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html  lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>SeparatedPanel Preferences Editor Tests</title>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-        <!--  This is the jqUnit test css file -->
-        <link rel="Stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/lib/normalize/css/normalize.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/framework/core/css/fluid.css" />
+
+        <!-- Component styles -->
+        <link rel="stylesheet" type="text/css" href="../../../../src/framework/preferences/css/Enactors.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/framework/preferences/css/PrefsEditor.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../src/framework/preferences/css/SeparatedPanelPrefsEditorFrame.css" />
 
         <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../../src/lib/jquery/ui/js/jquery-ui.js"></script>
 
-        <script type="text/javascript" src="../../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
@@ -20,78 +24,61 @@
         <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformation.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformationTransforms.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
         <script type="text/javascript" src="../../../../src/framework/core/js/ResourceLoader.js"></script>
         <script type="text/javascript" src="../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
         <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidParser.js"></script>
         <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
         <script type="text/javascript" src="../../../../src/framework/renderer/js/RendererUtilities.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
 
-        <script type="text/javascript" src="../../../../src/framework/preferences/js/URLUtilities.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/Store.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/Enactors.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/UIEnhancer.js"></script>
         <script type="text/javascript" src="../../../../src/components/textfieldControl/js/Textfield.js"></script>
         <script type="text/javascript" src="../../../../src/components/textfieldControl/js/TextfieldStepper.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/preferences/js/ArrowScrolling.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/PrefsEditor.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/Panels.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/preferences/js/StarterGrades.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/preferences/js/SeparatedPanelPrefsEditor.js"></script>
-        <script type="text/javascript" src="../../../../src/components/slidingPanel/js/SlidingPanel.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/ArrowScrolling.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/FullNoPreviewPrefsEditor.js"></script>
         <script type="text/javascript" src="../../../../src/components/switch/js/Switch.js"></script>
         <script type="text/javascript" src="../../../../src/components/tableOfContents/js/TableOfContents.js"></script>
-
         <script type="text/javascript" src="../../../../src/framework/preferences/js/PrimaryBuilder.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/AuxBuilder.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/StarterSchemas.js"></script>
         <script type="text/javascript" src="../../../../src/framework/preferences/js/Builder.js"></script>
 
-        <!--  These are the jqUnit test js files -->
-        <script src="../../../lib/qunit/js/qunit.js"></script>
-        <script src="../../../test-core/jqUnit/js/jqUnit.js"></script>
-        <script src="../../../test-core/jqUnit/js/jqUnit-browser.js"></script>
-        <script src="../../../test-core/utils/js/IoCTestUtils.js"></script>
+        <title>Preferences Editor: Full page with panel styling</title>
+     </head>
 
-        <!-- Required to ensure we sent coverage data at the end of the test run on this page -->
-        <script src="/testem.js"></script>
-        <script src="/coverage/client/coverageSender.js"></script>
+    <body class="fl-prefsEditor-separatedPanel fl-focus">
+        <div class="flc-prefsEditor-panelStyle"></div>
 
-        <!--  These are tests that have been written using this page as data -->
-        <script src="../js/PrefsEditorTestsCommon.js"></script>
-        <script src="../js/IntegrationTestsCommon.js"></script>
-        <script src="../js/CompositePanelTestsGrades.js"></script>
-        <script src="../js/SeparatedPanelPrefsEditorTests.js"></script>
-
-    </head>
-    <body>
-    <h1 id="qunit-header">SeparatedPanel Preferences Editor Test Suite</h1>
-    <h2 id="qunit-banner"></h2>
-    <div id="qunit-testrunner-toolbar"></div>
-    <h2 id="qunit-userAgent"></h2>
-    <ol id="qunit-tests"></ol>
-
-    <!-- Test HTML -->
-    <div id="qunit-fixture">
-
-        <div class="flc-prefsEditor-separatedPanel fl-prefsEditor-separatedPanel">
-            <div id="myPrefsEditor" class="flc-slidingPanel-panel flc-prefsEditor-iframe prefsEditor-munging"></div>
-
-            <div class="fl-panelBar">
-                <button class="flc-slidingPanel-toggleButton">Show/Hide</button>
-                <button class="flc-prefsEditor-reset fl-prefsEditor-reset">Reset</button>
-            </div>
-        </div>
-
-        <div class="flc-toc-tocContainer toc">
-        </div>
-
-        <div id="main">
-            <h1>Some Sample Title</h1>
-            <p>Some content with <a id="myLink">a link</a> and <button>a button</button>. </p>
-        </div>
-
-    </div>
-
+        <script>
+            fluid.prefs.create(".flc-prefsEditor-panelStyle", {
+                build: {
+                    gradeNames: ["fluid.prefs.auxSchema.starter"],
+                    auxiliarySchema: {
+                        "loaderGrades": ["fluid.prefs.fullNoPreview"],
+                        "terms": {
+                            "templatePrefix": "../../../../src/framework/preferences/html/",
+                            "messagePrefix": "../../../../src/framework/preferences/messages/"
+                        },
+                        "template": "%templatePrefix/SeparatedPanelPrefsEditor.html",
+                        "tableOfContents": {
+                            "enactor": {
+                                "tocTemplate": "../../../../src/components/tableOfContents/html/TableOfContents.html"
+                            }
+                        }
+                    }
+                },
+                prefsEditor: {
+                    prefsEditor: {
+                        gradeNames: ["fluid.prefs.arrowScrolling"]
+                    }
+                }
+            });
+        </script>
     </body>
+
 </html>

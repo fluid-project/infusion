@@ -2,7 +2,7 @@
 Copyright 2010 University of Toronto
 Copyright 2010-2014 OCAD University
 Copyright 2012-2014 Raising the Floor - US
-Copyright 2014-2016 Raising the Floor - International
+Copyright 2014-2017 Raising the Floor - International
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -391,6 +391,8 @@ var fluid = fluid || fluid_3_0_0;
         if (invertor) {
             var inverted = fluid.invokeGlobalFunction(invertor, [transformSpec, transformer]);
             transformer.inverted.push(inverted);
+        } else {
+            transformer.inverted.push(fluid.model.transform.uninvertibleTransform);
         }
     };
 
@@ -410,7 +412,7 @@ var fluid = fluid || fluid_3_0_0;
             var collector = defaults.collectInputPaths;
             if (collector) {
                 var collected = fluid.makeArray(fluid.invokeGlobalFunction(collector, [transformSpec, transformer]));
-                transformer.inputPaths = transformer.inputPaths.concat(collected);
+                Array.prototype.push.apply(transformer.inputPaths, collected); // push all elements of collected onto inputPaths
             }
         }
     };
@@ -487,17 +489,34 @@ var fluid = fluid || fluid_3_0_0;
         transformer.transformHandler = handleFn;
     };
 
+    /* A special, empty, transform document representing the inversion of a transformation which does not not have an inverse
+     */
+    fluid.model.transform.uninvertibleTransform = Object.freeze({});
+
+    /** Accepts a transformation document, and returns its inverse if all of its constituent transforms have inverses
+     * defined via their individual invertConfiguration functions, or else `fluid.model.transform.uninvertibleTransform`
+     * if any of them do not.
+     * Note that this algorithm will give faulty results in many cases of compound transformation documents.
+     * @param rules {Transform} The model transformation document to be inverted
+     * @return {Transform} The inverse transformation document if it can be computed easily, or
+     * `fluid.model.transform.uninvertibleTransform` if it is clear that it cannot.
+     */
     fluid.model.transform.invertConfiguration = function (rules) {
         var transformer = {
             inverted: []
         };
         fluid.model.transform.makeStrategy(transformer, fluid.model.transform.handleInvertStrategy);
         transformer.expand(rules);
-        return {
+        var invertible = transformer.inverted.indexOf(fluid.model.transform.uninvertibleTransform) === -1;
+        return invertible ? {
             transform: transformer.inverted
-        };
+        } : fluid.model.transform.uninvertibleTransform;
     };
 
+    /** Compute the paths which will be read from the input document of the supplied transformation if it were operated.
+     * @param rules {Transform} The transformation for which the input paths are to be computed
+     * @return {Array of String} An array of paths which will be read by the document.
+     */
     fluid.model.transform.collectInputPaths = function (rules) {
         var transformer = {
             inputPaths: []

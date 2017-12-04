@@ -1839,6 +1839,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /** FLUID-5112: Composite event firing test **/
+
     fluid.defaults("fluid.tests.composite.test", {
         gradeNames: ["fluid.component"],
         events: {
@@ -1881,7 +1882,55 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         });
+    });
 
+    /** FLUID-6202: merging over composite event **/
+
+    fluid.defaults("fluid.tests.FLUID6202parent", {
+        gradeNames: "fluid.component",
+        members: {
+            fireCount: 0
+        },
+        events: {
+            baseEvent: null,
+            compositeEvent: {
+                events: {
+                    baseEvent: "baseEvent"
+                }
+            }
+        },
+        listeners: {
+            compositeEvent: "fluid.tests.FLUID6202recordFire({that})"
+        }
+    });
+
+    fluid.tests.FLUID6202recordFire = function (that) {
+        ++that.fireCount;
+    };
+
+    fluid.defaults("fluid.tests.FLUID6202child", {
+        gradeNames: "fluid.tests.FLUID6202parent",
+        events: {
+            childEvent: null,
+            compositeEvent: {
+                events: {
+                    childEvent: "childEvent"
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6202: Merging over composite event", function () {
+        var that = fluid.tests.FLUID6202child();
+        jqUnit.assertEquals("No firing at start", 0, that.fireCount);
+        that.events.childEvent.fire();
+        jqUnit.assertEquals("No firing with child event", 0, that.fireCount);
+        that.events.baseEvent.fire();
+        jqUnit.assertEquals("1 firing with base event", 1, that.fireCount);
+        that.events.baseEvent.fire();
+        jqUnit.assertEquals("No firing with base event", 1, that.fireCount);
+        that.events.childEvent.fire();
+        jqUnit.assertEquals("One firing with child event", 2, that.fireCount);
     });
 
     /** FLUID-4135 - simple event injection test **/
@@ -2226,6 +2275,49 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertValue("Child components instantiated and injected", reins.shortParent.clearParent.longChild);
         reins.events.requestStart.fire();
         jqUnit.assertValue("Long lifetime component has survived", reins.longChild);
+    });
+
+    /** FLUID-6193: corruption when options distribution head is shorter-lived sibling **/
+
+    fluid.defaults("fluid.tests.FLUID6193root", {
+        gradeNames: "fluid.component",
+        components: {
+            distroSource: {
+                type: "fluid.component",
+                options: {
+                    distributeOptions: {
+                        record: 5,
+                        target: "{siblingHead distroTarget}.options.five"
+                    }
+                }
+            },
+            siblingHead: {
+                type: "fluid.component",
+                options: {
+                    events: {
+                        createTarget: null
+                    },
+                    components: {
+                        distroTarget: {
+                            // note that without createOnEvent, there is no way the distribution can win the race -
+                            // this will change with FLUID-6148 world and should be re-tested
+                            createOnEvent: "createTarget",
+                            type: "fluid.component"
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6193 options distribution with shorter-lived sibling as head", function () {
+        jqUnit.expect(2);
+        var root = fluid.tests.FLUID6193root();
+        root.siblingHead.events.createTarget.fire();
+        jqUnit.assertEquals("Distribution reached target", 5, root.siblingHead.distroTarget.options.five);
+        root.siblingHead.destroy();
+        root.destroy();
+        jqUnit.assert("Components destroyed without failure");
     });
 
     /** FLUID-4179 unexpected material in clear test **/
@@ -3466,6 +3558,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var that = fluid.tests.fluid5893root();
         that.events.createIt.fire({gradeNames: "fluid.resolveRoot"});
         jqUnit.assertTrue("Dynamic grade applied to dynamic component", fluid.componentHasGrade(that.dynamic, "fluid.resolveRoot"));
+        that.destroy();
+    });
+
+    /** FLUID-6213 - Dynamic components with directly specified subcomponents **/
+
+    jqUnit.test("FLUID-6213: Dynamic components with directly specified subcomponents", function () {
+        var that = fluid.tests.fluid5893root();
+        var eventArgument = {
+            components: {
+                sub1: {
+                    type: "fluid.component",
+                    options: {
+                        answer: 42
+                    }
+                },
+                sub2: {
+                    type: "fluid.modelComponent"
+                }
+            }
+        };
+        var eventArgCopy = fluid.copy(eventArgument);
+        that.events.createIt.fire(eventArgument);
+        jqUnit.assertDeepEq("Event argument is unmodified through being fired", eventArgCopy, eventArgument);
+        jqUnit.assertDeepEq("Designated subcomponents have been created", ["sub1", "sub2"], fluid.keys(fluid.filterKeys(that.dynamic, ["sub1", "sub2"])));
+        jqUnit.assertEquals("Subcomponent has designated option", 42, that.dynamic.sub1.options.answer);
     });
 
     /** FLUID-5029 - Child selector ">" in IoCSS selector should not select an indirect child **/

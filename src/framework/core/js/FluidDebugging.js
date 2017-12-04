@@ -175,7 +175,7 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     // Marker so that we can render a custom string for properties which are not direct and concrete
-    fluid.SYNTHETIC_PROPERTY = {};
+    fluid.SYNTHETIC_PROPERTY = Object.freeze({});
 
     // utility to avoid triggering custom getter code which could throw an exception - e.g. express 3.x's request object
     fluid.getSafeProperty = function (obj, key) {

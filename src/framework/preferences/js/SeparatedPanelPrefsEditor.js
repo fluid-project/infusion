@@ -1,5 +1,5 @@
 /*
-Copyright 2011-2016 OCAD University
+Copyright 2011-2017 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -141,7 +141,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 createOnEvent: "templatesAndIframeReady",
                 container: "{iframeRenderer}.renderPrefsEditorContainer",
                 options: {
-                    gradeNames: ["fluid.prefs.uiEnhancerRelay"],
+                    gradeNames: ["fluid.prefs.uiEnhancerRelay", "fluid.prefs.arrowScrolling"],
                     // ensure that model and applier are available to users at top level
                     model: "{separatedPanel}.model",
                     events: {
@@ -159,10 +159,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                             listener: "{separatedPanel}.events.onReady",
                             args: "{separatedPanel}"
                         },
-                        "onReady.windowResize": {
-                            "this": window,
-                            method: "addEventListener",
-                            args: ["resize", "{that}.events.onSignificantDOMChange.fire"]
+                        // Scroll to active panel after opening the separate Panel.
+                        // This is when the panels are all rendered and the actual sizes are available.
+                        "{separatedPanel}.slidingPanel.events.afterPanelShow": {
+                            listener: "fluid.prefs.arrowScrolling.scrollToPanel",
+                            args: ["{that}", "{that}.model.panelIndex"],
+                            priority: "after:updateView",
+                            namespace: "scrollToPanel"
                         }
                     }
                 }
@@ -194,6 +197,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.prefs.separatedPanel.hideReset = function (separatedPanel) {
         separatedPanel.locate("reset").hide();
     };
+
     /*****************************************
      * fluid.prefs.separatedPanel.renderIframe *
      *****************************************/
@@ -292,6 +296,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }, "collapseFrame");
         separatedPanel.slidingPanel.events.afterPanelShow.addListener(function () {
             separatedPanel.iframeRenderer.iframe.show();
+
+            // FLUID-6183: Required for bug in MS EDGE that clips off the bottom of adjusters
+            // The height needs to be recalculated in order for the panel to show up completely
+            separatedPanel.iframeRenderer.iframe.height();
             separatedPanel.locate("reset").show();
         }, "openPanel");
         separatedPanel.slidingPanel.events.onPanelHide.addListener(function () {

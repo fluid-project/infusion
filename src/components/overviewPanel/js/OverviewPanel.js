@@ -71,8 +71,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             showPanel: true
         },
         modelListeners: {
-            "showPanel.setVisibility": "{that}.setVisibility",
-            "showPanel.setAriaStates": "{that}.setAriaStates"
+            "setVisibility": {
+                path: "showPanel",
+                func: "{that}.setVisibility"
+            },
+            "setAriaStates": {
+                path: "showPanel",
+                func: "{that}.setAriaStates"
+            }
         },
         members: {
             containerId: {

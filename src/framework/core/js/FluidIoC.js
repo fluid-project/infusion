@@ -406,16 +406,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return id;
     };
 
-    fluid.clearDistribution = function (targetHead, id) {
-        var targetShadow = fluid.shadowForComponent(targetHead);
-        fluid.remove_if(targetShadow.distributions, function (distribution) {
-            return distribution.id === id;
-        });
+    fluid.clearDistribution = function (targetHeadId, id) {
+        var targetHeadShadow = fluid.globalInstantiator.idToShadow[targetHeadId];
+        // By FLUID-6193, the head component may already have been destroyed, in which case the distributions are gone,
+        // and we have leaked only its id. In theory we may want to re-establish the distribution if the head is
+        // re-created, but that is a far wider issue.
+        if (targetHeadShadow) {
+            fluid.remove_if(targetHeadShadow.distributions, function (distribution) {
+                return distribution.id === id;
+            });
+        }
     };
 
     fluid.clearDistributions = function (shadow) {
         fluid.each(shadow.outDistributions, function (outDist) {
-            fluid.clearDistribution(outDist.targetComponent, outDist.distributionId);
+            fluid.clearDistribution(outDist.targetHeadId, outDist.distributionId);
         });
     };
 
@@ -457,12 +462,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 fluid.fail("Error in options distribution record ", record, ": must supply either a member \"source\" holding an IoC reference or a member \"record\" holding a literal record");
             }
             var targetRef = fluid.parseContextReference(record.target);
-            var targetComp, selector, context;
+            var targetHead, selector, context;
             if (fluid.isIoCSSSelector(targetRef.context)) {
                 selector = fluid.parseSelector(targetRef.context, fluid.IoCSSMatcher);
                 var headContext = fluid.extractSelectorHead(selector);
                 if (headContext === "/") {
-                    targetComp = fluid.rootComponent;
+                    targetHead = fluid.rootComponent;
                 } else {
                     context = headContext;
                 }
@@ -470,9 +475,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             else {
                 context = targetRef.context;
             }
-            targetComp = targetComp || fluid.resolveContext(context, that);
-            if (!targetComp) {
-                fluid.fail("Error in options distribution record ", record, " - could not resolve context {" + context + "} to a root component");
+            targetHead = targetHead || fluid.resolveContext(context, that);
+            if (!targetHead) {
+                fluid.fail("Error in options distribution record ", record, " - could not resolve context {" + context + "} to a head component");
             }
             var targetSegs = fluid.model.parseEL(targetRef.path);
             var preBlocks;
@@ -499,15 +504,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // TODO: inline material has to be expanded in its original context!
 
             if (selector) {
-                var distributionId = fluid.pushDistributions(targetComp, selector, record.target, preBlocks);
+                var distributionId = fluid.pushDistributions(targetHead, selector, record.target, preBlocks);
                 thatShadow.outDistributions = thatShadow.outDistributions || [];
                 thatShadow.outDistributions.push({
-                    targetComponent: targetComp,
+                    targetHeadId: targetHead.id,
                     distributionId: distributionId
                 });
             }
             else { // The component exists now, we must rebalance it
-                var targetShadow = fluid.shadowForComponent(targetComp);
+                var targetShadow = fluid.shadowForComponent(targetHead);
                 fluid.applyDistributions(that, preBlocks, targetShadow);
             }
             fluid.popActivity();
@@ -1146,7 +1151,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.pushActivity("expandOptions", "expanding options %args for component %that ", {that: that, args: args});
         var expandOptions = fluid.makeStackResolverOptions(that, localRecord);
         expandOptions.mergePolicy = mergePolicy;
-        var expanded = outerExpandOptions && outerExpandOptions.defer ?
+        expandOptions.defer = outerExpandOptions && outerExpandOptions.defer;
+        var expanded = expandOptions.defer ?
             fluid.makeExpandOptions(args, expandOptions) : fluid.expand(args, expandOptions);
         fluid.popActivity();
         return expanded;
@@ -2321,11 +2327,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             options.strategy = fluid.concreteTrundler;
             options.initter = fluid.identity;
             if (typeof(source) === "string") {
-                options.target = options.expandSource(source);
+                // Copy is necessary to resolve FLUID-6213 since targets are regularly scrawled over with "undefined" by dim expansion pathway
+                // However, we can't screw up object identity for uncloneable things like events resolved via local expansion
+                options.target = (options.defer ? fluid.copy : fluid.identity)(options.expandSource(source));
             }
             else {
                 options.target = source;
             }
+            options.immutableTarget = true;
         }
         return options;
     };

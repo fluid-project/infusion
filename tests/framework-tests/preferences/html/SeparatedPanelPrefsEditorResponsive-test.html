@@ -48,50 +48,37 @@
         <script type="text/javascript" src="../../../../src/framework/preferences/js/Builder.js"></script>
 
         <!--  These are the jqUnit test js files -->
-        <script src="../../../lib/qunit/js/qunit.js"></script>
-        <script src="../../../test-core/jqUnit/js/jqUnit.js"></script>
-        <script src="../../../test-core/jqUnit/js/jqUnit-browser.js"></script>
-        <script src="../../../test-core/utils/js/IoCTestUtils.js"></script>
-
-        <!-- Required to ensure we sent coverage data at the end of the test run on this page -->
-        <script src="/testem.js"></script>
-        <script src="/coverage/client/coverageSender.js"></script>
+        <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
+        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit-browser.js"></script>
+        <script type="text/javascript" src="../../../test-core/utils/js/IoCTestUtils.js"></script>
 
         <!--  These are tests that have been written using this page as data -->
-        <script src="../js/PrefsEditorTestsCommon.js"></script>
-        <script src="../js/IntegrationTestsCommon.js"></script>
-        <script src="../js/CompositePanelTestsGrades.js"></script>
-        <script src="../js/SeparatedPanelPrefsEditorTests.js"></script>
+        <script type="text/javascript" src="../js/PrefsEditorTestsCommon.js"></script>
+        <script type="text/javascript" src="../js/IntegrationTestsCommon.js"></script>
+        <script type="text/javascript" src="../js/SeparatedPanelPrefsEditorResponsiveTests.js"></script>
 
     </head>
     <body>
-    <h1 id="qunit-header">SeparatedPanel Preferences Editor Test Suite</h1>
+    <h1 id="qunit-header">SeparatedPanel Preferences Editor Responsive Test Suite</h1>
     <h2 id="qunit-banner"></h2>
     <div id="qunit-testrunner-toolbar"></div>
     <h2 id="qunit-userAgent"></h2>
     <ol id="qunit-tests"></ol>
 
     <!-- Test HTML -->
-    <div id="qunit-fixture">
+    <!-- <div id="qunit-fixture"> -->
+        <!--
+            The tests are run in an iframe so that the size of the document can be set to trigger the responsive
+            layouts.
 
-        <div class="flc-prefsEditor-separatedPanel fl-prefsEditor-separatedPanel">
-            <div id="myPrefsEditor" class="flc-slidingPanel-panel flc-prefsEditor-iframe prefsEditor-munging"></div>
-
-            <div class="fl-panelBar">
-                <button class="flc-slidingPanel-toggleButton">Show/Hide</button>
-                <button class="flc-prefsEditor-reset fl-prefsEditor-reset">Reset</button>
-            </div>
-        </div>
-
-        <div class="flc-toc-tocContainer toc">
-        </div>
-
-        <div id="main">
-            <h1>Some Sample Title</h1>
-            <p>Some content with <a id="myLink">a link</a> and <button>a button</button>. </p>
-        </div>
-
-    </div>
+            We require separate iframes for each of the tests due to IE 11 and Edge throwing a "Permission Denied"
+            error when trying to setup the iframe for the second run. This was likely caused by reseting the iframe's
+            source and may be related to https://github.com/jquery/jquery/issues/1831
+        -->
+        <iframe class="flc-iframeSetup-responsiveTests"></iframe>
+        <iframe class="flc-iframeSetup-panelIndexTests"></iframe>
+    <!-- </div> -->
 
     </body>
 </html>

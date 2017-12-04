@@ -190,6 +190,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("fluid.values", [1, null, false, "Sneeze"], fluid.values(seek1));
     });
 
+    jqUnit.test("fluid.keys and fluid.values with prototype chain", function () {
+        var proto = {
+            a: 1
+        };
+        var Derived = function () {};
+        Derived.prototype = proto;
+        var derived = new Derived();
+        derived.b = 2;
+
+        jqUnit.assertDeepEq("fluid.keys", ["a", "b"], fluid.keys(derived).sort());
+        jqUnit.assertDeepEq("fluid.values", [1, 2], fluid.values(derived).sort());
+    });
+
     jqUnit.test("null iteration", function () {
         jqUnit.expect(2);
 
@@ -292,6 +305,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var invalidMethodResult = fluid.roundToDecimal(test.num, test.scale, "invalid");
             jqUnit.assertEquals("Invalid Method Provided - num: " + test.num + " with scale: " + test.scale, test.round, invalidMethodResult);
         });
+    });
+
+    fluid.tests.debounceTests = [1, 2, 3, 4 ,5];
+
+    jqUnit.asyncTest("fluid.debounce", function () {
+        var result = {};
+        var lead = fluid.debounce(function (val) {
+            result.lead = val;
+        }, 3, true);
+        var trail = fluid.debounce(function (val) {
+            result.trail = val;
+        }, 3);
+
+        setTimeout(function () {
+            jqUnit.assertEquals("The first value should be returned when accepting the leading response", fluid.tests.debounceTests[0], result.lead);
+            jqUnit.assertEquals("The last value should be returned when accepting the trailing response", fluid.tests.debounceTests[4], result.trail);
+            jqUnit.start();
+        }, 5);
+
+        fluid.each(fluid.tests.debounceTests, lead);
+        fluid.each(fluid.tests.debounceTests, trail);
     });
 
     jqUnit.test("merge", function () {
@@ -634,6 +668,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             return 2;
         });
         jqUnit.assertEquals("Call new global function", 2, fluid.newFunc());
+    });
+
+    jqUnit.test("fluid.get for FLUID-6217 - get ending at falsy value", function () {
+        jqUnit.assertUndefined("Simple 0-based fetch", fluid.get([0,1,2],"0.value"));
+        jqUnit.assertUndefined("Nested 0-based fetch", fluid.get([0,1,2],"0.any.path.at.all"));
+        jqUnit.assertUndefined("Nested false-based fetch", fluid.get([0, false, 2],"1.foo.bar.baz"));
+        jqUnit.assertUndefined("Fetch from hash", fluid.get({foo:false}, "foo.bar.baz"));
     });
 
     jqUnit.test("Globals", function () {

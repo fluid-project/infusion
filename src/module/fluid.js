@@ -84,35 +84,6 @@ fluid.invokeLater = function (func) {
 
 fluid.logObjectRenderChars = 1024;
 
-fluid.onUncaughtException = fluid.makeEventFirer({
-    name: "Global uncaught exception handler"
-});
-
-// This registry of priorities will be removed once the implementation of FLUID-5506 is complete
-fluid.handlerPriorities = {
-    uncaughtException: {
-        log: 100, // high priority - do all logging first
-        logActivity: "after:log",
-        fail: "last"
-    }
-};
-
-process.on("uncaughtException", function onUncaughtException(err) {
-    fluid.onUncaughtException.fire(err);
-});
-
-fluid.logUncaughtException = function (err) {
-    var message = "FATAL ERROR: Uncaught exception: " + err.message;
-    fluid.log(fluid.logLevel.FATAL, message);
-    console.log(err.stack);
-};
-
-fluid.onUncaughtException.addListener(fluid.logUncaughtException, "log",
-    fluid.handlerPriorities.uncaughtException.log);
-
-fluid.onUncaughtException.addListener(function () {fluid.logActivity();}, "logActivity",
-    fluid.handlerPriorities.uncaughtException.logActivity);
-
 // Convert an argument intended for console.log in the node environment to a readable form (the
 // default action of util.inspect censors at depth 1)
 fluid.renderLoggingArg = function (arg) {
@@ -156,12 +127,19 @@ fluid.getCallerInfo = function (atDepth) {
 fluid.loadInContext = loadInContext;
 fluid.loadIncludes = loadIncludes;
 
+fluid.testingSupportLoaded = false;
+
 /**
  * Set up testing environment with jqUnit and IoC Test Utils in node.
- * This function will load everything necessary for running node jqUnit.
+ * This function will load the Infusion internal dependencies (QUnit, jqUnit and the IoC Testing Framework) necessary
+ * for running node-jqUnit - the node-jqunit module itself must still be loaded by the user via their own devDependencies.
  */
 fluid.loadTestingSupport = function () {
-    fluid.loadIncludes("devIncludes.json");
+    // Guard against multiple inclusion of QUnit - FLUID-6188
+    if (!fluid.testingSupportLoaded) {
+        fluid.loadIncludes("devIncludes.json");
+        fluid.testingSupportLoaded = true;
+    }
 };
 
 /** Implementation for FLUID-5822 to avoid requirement for dedupe-infusion **/
@@ -214,7 +192,7 @@ if (upInfusionPath) {
 // on the same version of Infusion results in an empty object since we have not completed our own assignment to
 // module.exports yet
 if (upInfusion && upInfusion.module) {
-    upInfusion.log("Resolved infusion from path " + __dirname + " to " + upInfusion.module.modules.infusion.baseDir);
+    console.log("Resolved infusion from path " + __dirname + " to " + upInfusion.module.modules.infusion.baseDir);
     module.exports = upInfusion;
     return;
 } else {
@@ -242,5 +220,48 @@ fluid.module.register("infusion", moduleBaseDir, require);
 
 // Export the fluid object into the pan-module node.js global object
 global.fluid = fluid;
+
+
+/** Registering and instrumenting uncaught exception handler:
+ * Do this after determining that we are top-level Infusion to avoid FLUID-6225
+ */
+process.on("uncaughtException", function onUncaughtException(err) {
+    fluid.onUncaughtException.fire(err);
+});
+
+fluid.onUncaughtException = fluid.makeEventFirer({
+    name: "Global uncaught exception handler"
+});
+
+// This registry of priorities will be removed once the implementation of FLUID-5506 is complete
+fluid.handlerPriorities = {
+    uncaughtException: {
+        log: 100, // high priority - do all logging first
+        logActivity: "after:log",
+        fail: "last"
+    }
+};
+
+fluid.logUncaughtException = function (err) {
+    var message = "FATAL ERROR: Uncaught exception: " + err.message;
+    fluid.log(fluid.logLevel.FATAL, message);
+    console.log(err.stack);
+};
+
+fluid.onUncaughtException.addListener(fluid.logUncaughtException, "log",
+    fluid.handlerPriorities.uncaughtException.log);
+
+fluid.onUncaughtException.addListener(function () {fluid.logActivity();}, "logActivity",
+    fluid.handlerPriorities.uncaughtException.logActivity);
+
+
+// Make sure process exits with error (see FLUID-5920)
+fluid.handleUncaughtException = function () {
+    process.exit(1);
+};
+
+fluid.onUncaughtException.addListener(fluid.handleUncaughtException, "fail",
+    fluid.handlerPriorities.uncaughtException.fail);
+
 
 module.exports = fluid;
