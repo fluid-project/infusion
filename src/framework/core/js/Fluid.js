@@ -23,6 +23,11 @@ Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+
+Includes code from Underscore.js 1.4.3
+http://underscorejs.org
+(c) 2009-2012 Jeremy Ashkenas, DocumentCloud Inc.
+Underscore may be freely distributed under the MIT license.
 */
 
 /* global console */
@@ -859,6 +864,35 @@ var fluid = fluid || fluid_3_0_0;
         }
     };
 
+    /**
+     * Copied from Underscore.js 1.4.3 - see licence at head of this file
+     *
+     * Will execute the passed in function after the specified about of time since it was last executed.
+     * @param {Function} func - the function to execute
+     * @param {Number} wait - the number of milliseconds to wait before executing the function
+     * @param {Boolean} immediate - Whether to trigger the function at the start (true) or end (false) of
+     *                              the wait interval.
+     */
+    fluid.debounce = function (func, wait, immediate) {
+        var timeout, result;
+        return function () {
+            var context = this, args = arguments;
+            var later = function () {
+                timeout = null;
+                if (!immediate) {
+                    result = func.apply(context, args);
+                }
+            };
+            var callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) {
+                result = func.apply(context, args);
+            }
+            return result;
+        };
+    };
+
     /** Calls Object.freeze at each level of containment of the supplied object
      * @return The supplied argument, recursively frozen
      */
@@ -1053,7 +1087,7 @@ var fluid = fluid || fluid_3_0_0;
         var limit = segs.length - uncess;
         for (var i = 0; i < limit; ++i) {
             if (!root) {
-                return root;
+                return undefined;
             }
             var segment = segs[i];
             if (environment && environment[segment]) {
