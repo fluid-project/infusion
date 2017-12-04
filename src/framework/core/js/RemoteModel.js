@@ -183,7 +183,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 that.pendingRequests.write = null;
 
                 if (fluid.model.diff(that.model.local, that.model.remote)) {
-                    activePromise.resolve(that.model.local);
+                    var afterWriteSeqPromise = fluid.remoteModelComponent.fireEventSequence(that.events.afterWrite, that.model.local);
+                    fluid.promise.follow(afterWriteSeqPromise, activePromise);
                 } else {
                     var reqPromise = that.writeImpl(that.model.local);
                     reqPromise.then(function (data) {
