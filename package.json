@@ -40,7 +40,7 @@
     "devDependencies": {
         "eslint-config-fluid": "1.2.0",
         "fluid-grunt-eslint": "18.1.2",
-        "gpii-testem": "1.0.2-dev.20170803T085301Z.62f96c4",
+        "gpii-testem": "1.0.2-dev.20171120T141143Z.86d40cd",
         "grunt": "1.0.1",
         "grunt-contrib-clean": "1.1.0",
         "grunt-contrib-compress": "1.4.3",
@@ -54,7 +54,7 @@
         "grunt-shell": "2.1.0",
         "istanbul": "git://github.com/the-t-in-rtf/istanbul#828eb930add7bd663ca20649a917f3f3829e48c5",
         "lodash": "4.17.4",
-        "rimraf": "2.6.1",
-        "testem": "1.16.1"
+        "rimraf": "2.6.2",
+        "testem": "1.18.4"
     }
 }
