@@ -1,6 +1,15 @@
 steps:
+  # The CI job will be paused for third-party PR branches. It can be resumed from the Buildkite dashboard.
+  - block: "Run this CI job"
+    # Buildkite uses an "account:branch" naming pattern for third-party branches.
+    branches: "*:*"
+
   - name: "Create VM"
     command: "DISPLAY=:0 vagrant up --provider virtualbox && npm install"
+    timeout_in_minutes: 15
+
+  # Wait and make sure the VM was successfully created before proceeding. Otherwise the remaining steps will not run.
+  - wait
 
   - name: "Install dependencies"
     command: "vagrant ssh -c 'cd /home/vagrant/sync; npm install'"
@@ -13,3 +22,4 @@ steps:
 
   - name: "Destroy VM"
     command: "vagrant destroy -f"
+
