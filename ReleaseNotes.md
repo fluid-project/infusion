@@ -1,4 +1,4 @@
-# Release Notes for Fluid Infusion 3.0.0 #
+# Release Notes for Fluid Infusion 10.0.0 Creators Update #
 
 [Fluid Project](http://fluidproject.org)
 
