@@ -1,5 +1,5 @@
 
-## What Is Infusion? ##
+## What Is Infusion?!!! ##
 
 Infusion is a different kind of JavaScript framework. Our approach is to leave you in control—it's your interface, using your markup, your way. Infusion is accessible and very, very configurable.
 
