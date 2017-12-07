@@ -1,3 +1,6 @@
+# A block step is introduced in all pull request branches before any of the steps listed below. It 
+# is configured using the Buildkite web UI and has a "Run this CI job" label. It is not included 
+# in this YAML configuration to prevent it from being accidentally removed as part of a PR change.
 steps:
   - name: "Create VM"
     command: "DISPLAY=:0 vagrant up --provider virtualbox && npm install"
