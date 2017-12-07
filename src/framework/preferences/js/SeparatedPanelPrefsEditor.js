@@ -143,7 +143,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 options: {
                     gradeNames: ["fluid.prefs.uiEnhancerRelay", "fluid.prefs.arrowScrolling"],
                     // ensure that model and applier are available to users at top level
-                    model: "{separatedPanel}.model",
+                    model: {
+                        preferences: "{separatedPanel}.model.preferences",
+                        panelIndex: "{separatedPanel}.model.panelIndex",
+                        panelMaxIndex: "{separatedPanel}.model.panelMaxIndex",
+                        local: {
+                            panelIndex: "{that}.model.panelIndex",
+                            panelMaxIndex: "{that}.model.panelMaxIndex"
+                        }
+                    },
                     events: {
                         onSignificantDOMChange: null,
                         updateEnhancerModel: "{that}.events.modelChanged"

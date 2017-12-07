@@ -218,7 +218,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Object} options
      */
     fluid.defaults("fluid.prefs.prefsEditor", {
-        gradeNames: ["fluid.prefs.settingsGetter", "fluid.prefs.settingsSetter", "fluid.prefs.initialModel", "fluid.viewComponent"],
+        gradeNames: ["fluid.prefs.settingsGetter", "fluid.prefs.settingsSetter", "fluid.prefs.initialModel", "fluid.remoteModelComponent", "fluid.viewComponent"],
         invokers: {
             /**
              * Updates the change applier and fires modelChanged on subcomponent fluid.prefs.controls
@@ -226,8 +226,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
              * @param {Object} newModel
              * @param {Object} source
              */
-            fetch: {
-                funcName: "fluid.prefs.prefsEditor.fetch",
+            fetchImpl: {
+                funcName: "fluid.prefs.prefsEditor.fetchImpl",
+                args: ["{that}"]
+            },
+            writeImpl: {
+                funcName: "fluid.prefs.prefsEditor.writeImpl",
                 args: ["{that}", "{arguments}.0"]
             },
             applyChanges: {
@@ -274,13 +278,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "onCreate.init": "fluid.prefs.prefsEditor.init",
             "onAutoSave.save": "{that}.save"
         },
+        model: {
+            local: {
+                preferences: "{that}.model.preferences"
+            }
+        },
         modelListeners: {
-            "": [{
+            "preferences": [{
                 listener: "fluid.prefs.prefsEditor.handleAutoSave",
-                args: ["{that}"]
+                args: ["{that}"],
+                namespace: "autoSave"
             }, {
                 listener: "{that}.events.modelChanged.fire",
-                args: ["{change}.value"]
+                args: ["{change}.value"],
+                namespace: "modelChange"
             }]
         },
         resources: {
@@ -296,43 +307,24 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         that.events.onUpdateEnhancerModel.fire();
     };
 
-    fluid.prefs.prefsEditor.fetch = function (that, eventName) {
-        var completeModel = that.getSettings();
+    fluid.prefs.prefsEditor.fetchImpl = function (that) {
+        var promise = fluid.promise(),
+            // TODO: Convert that.getSettings to return a promise to wait for asynchronous fetches.
+            completeModel = that.getSettings();
         completeModel = $.extend(true, {}, that.initialModel, completeModel);
-        // TODO: This may not be completely effective if the root model is smaller than
-        // the current one. Given our previous discoveries re "model shrinkage"
-        // (http://issues.fluidproject.org/browse/FLUID-5585 ), the proper thing to do here
-        // is to apply a DELETE to the root before putting in the new model. And this should
-        // be done within a transaction in order to avoid notifying the tree more than necessary.
-        // However, the transactional model of the changeApplier is going to change radically
-        // soon (http://wiki.fluidproject.org/display/fluid/New+New+Notes+on+the+ChangeApplier)
-        // and this implementation doesn't seem to be causing a problem at present so we had
-        // just better leave it the way it is for now.
-        that.applier.change("", completeModel);
-        if (eventName) {
-            that.events[eventName].fire(that);
-        }
-        that.events.onPrefsEditorRefresh.fire();
-        that.applyChanges();
+        promise.resolve(completeModel);
+        return promise;
     };
 
-    /**
-     * Sends the prefsEditor.model to the store and fires onSave
-     * @param that: A fluid.prefs.prefsEditor instance
-     * @return the saved model
-     */
-    fluid.prefs.prefsEditor.save = function (that) {
-        if (!that.model || $.isEmptyObject(that.model)) {  // Don't save a reset model
-            return;
-        }
-
-        var modelToSave = fluid.copy(that.model),
-            initialModel = that.initialModel,
+    fluid.prefs.prefsEditor.writeImpl = function (that, modelToSave) {
+        var promise = fluid.promise(),
             stats = {changes: 0, unchanged: 0, changeMap: {}},
             changedPrefs = {};
 
+        modelToSave = fluid.copy(modelToSave);
+
         // To address https://issues.fluidproject.org/browse/FLUID-4686
-        fluid.model.diff(modelToSave.preferences, fluid.get(initialModel, ["preferences"]), stats);
+        fluid.model.diff(modelToSave.preferences, fluid.get(that.initialModel, ["preferences"]), stats);
 
         if (stats.changes === 0) {
             delete modelToSave.preferences;
@@ -345,18 +337,38 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
         that.events.onSave.fire(modelToSave);
         that.setSettings(modelToSave);
-        return modelToSave;
+
+        promise.resolve(modelToSave);
+        return promise;
+    };
+
+    /**
+     * Sends the prefsEditor.model to the store and fires onSave
+     * @param that: A fluid.prefs.prefsEditor instance
+     * @return the saved model
+     */
+    fluid.prefs.prefsEditor.save = function (that) {
+        var promise = fluid.promise();
+        if (!that.model || $.isEmptyObject(that.model)) {  // Don't save a reset model
+            promise.resolve({});
+        } else {
+            var writePromise = that.write();
+            fluid.promise.follow(writePromise, promise);
+        }
+
+        return promise;
     };
 
     fluid.prefs.prefsEditor.saveAndApply = function (that) {
-        var prevSettings = that.getSettings(),
-            changedSelections = that.save();
-
-        // Only when preferences are changed, re-render panels and trigger enactors to apply changes
-        if (!fluid.model.diff(fluid.get(changedSelections, "preferences"), fluid.get(prevSettings, "preferences"))) {
-            that.events.onPrefsEditorRefresh.fire();
-            that.applyChanges();
-        }
+        var prevSettings = that.getSettings();
+        var savePromise = that.save();
+        savePromise.then(function (changedSelections) {
+            // Only when preferences are changed, re-render panels and trigger enactors to apply changes
+            if (!fluid.model.diff(fluid.get(changedSelections, "preferences"), fluid.get(prevSettings, "preferences"))) {
+                that.events.onPrefsEditorRefresh.fire();
+                that.applyChanges();
+            }
+        });
     };
 
     /**
@@ -365,7 +377,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.prefs.prefsEditor.reset = function (that) {
         var transaction = that.applier.initiate();
         that.events.beforeReset.fire(that);
-        transaction.fireChangeRequest({path: "settings", type: "DELETE"});
+        transaction.fireChangeRequest({path: "preferences", type: "DELETE"});
         transaction.change("", fluid.copy(that.initialModel));
         transaction.commit();
         that.events.onPrefsEditorRefresh.fire();
@@ -377,7 +389,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
     fluid.prefs.prefsEditor.cancel = function (that) {
         that.events.onCancel.fire();
-        that.fetch();
+        var fetchPromise = that.fetch();
+        fetchPromise.then(function () {
+            var transaction = that.applier.initiate();
+            transaction.fireChangeRequest({path: "preferences", type: "DELETE"});
+            transaction.change("", that.model.remote);
+            transaction.commit();
+            that.events.onPrefsEditorRefresh.fire();
+        });
     };
 
     // called once markup is applied to the document containing tab component roots
@@ -398,8 +417,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         that.container.append(that.options.resources.template.resourceText);
         bindHandlers(that);
 
-        that.fetch("onPrefsEditorMarkupReady");
-        that.events.onReady.fire(that);
+        var fetchPromise = that.fetch();
+        fetchPromise.then(function () {
+            that.events.onPrefsEditorMarkupReady.fire();
+            that.events.onPrefsEditorRefresh.fire();
+            that.applyChanges();
+            that.events.onReady.fire(that);
+
+        });
     };
 
     fluid.prefs.prefsEditor.handleAutoSave = function (that) {

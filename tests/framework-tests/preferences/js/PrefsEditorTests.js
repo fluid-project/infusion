@@ -42,6 +42,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         },
+        model: {
+            local:{
+                state: "{that}.model.state"
+            }
+        },
         members: {
             saveCalled: false,
             savedModel: null,
@@ -130,11 +135,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.prefs.assertInitialModel = function (model) {
-        jqUnit.expect(3);
-        jqUnit.assertNotNull("Model is not null", model);
-        jqUnit.assertNotUndefined("Model is not undefined", model);
+        jqUnit.expect(2);
+        jqUnit.assertValue("Model is set", model);
         var initialModel = fluid.tests.mergeMembers(fluid.defaults("fluid.prefs.initialModel.starter").members.initialModel);
-        jqUnit.assertDeepEq("Initial model is the starter initialModel", initialModel, model);
+        jqUnit.assertDeepEq("Initial model contains the initial start preferences", initialModel.preferences, model.preferences);
     };
 
     jqUnit.asyncTest("Init Model and Controls", function () {
@@ -197,7 +201,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             prefsEditor.reset();
             fluid.tests.prefs.assertPrefs("Reset model %p", ps, "assertNotEquals", bwSkin, prefsEditor.model);
 
-            var stateModel = {state: 1, userData: true};
+            var stateModel = {state: {userData: true}};
             var saveCases = [{
                 msg: "Unchanged preferences are not saved",
                 model: $.extend({}, true, stateModel, prefsEditor.initialModel),
@@ -206,8 +210,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 msg: "The state information and changed preferences (compared to the initial model) are saved",
                 model: $.extend({}, true, stateModel, bwSkin),
                 expectedSavedModel: {
-                    state: 1,
-                    userData: true,
+                    state: {
+                        userData: true
+                    },
                     preferences: {
                         lineSpace: 2,
                         textFont: "verdana",
@@ -317,8 +322,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.assertTrue("Initially, settings store settings are empty",
             $.isEmptyObject(prefsEditor.getSettings()));
-        jqUnit.assertDeepEq("Initially, model should correspond to default model",
-            prefsEditor.initialModel, prefsEditor.model);
+        jqUnit.assertDeepEq("Initially, preferences in the model should correspond to default preferences",
+            prefsEditor.initialModel.preferences, prefsEditor.model.preferences);
 
         var preSaveSelections = fluid.copy(prefsEditor.model);
         fluid.tests.prefs.applierRequestChanges(prefsEditor, saveModel);
