@@ -1,4 +1,4 @@
-Infusion is available under either the terms of the New BSD license or the
+Infusion is available under either the terms of the NEW BSD license or the
 Educational Community License, Version 2.0. As a recipient of Infusion, you may
 choose which license to receive this code under (except as noted in per-module
 LICENSE files). All modules are Copyright 2011 OCAD University except
