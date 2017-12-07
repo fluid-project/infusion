@@ -1,9 +1,7 @@
+# A block step is introduced in all pull request branches before any of the steps listed below. It 
+# is configured using the Buildkite web UI and has a "Run this CI job" label. It is not included 
+# in this YAML configuration to prevent it from being accidentally removed as part of a PR change.
 steps:
-  # The CI job will be paused for third-party PR branches. It can be resumed from the Buildkite dashboard.
-  - block: "Run this CI job"
-    # Buildkite uses an "account:branch" naming pattern for third-party branches.
-    branches: "*:*"
-
   - name: "Create VM"
     command: "DISPLAY=:0 vagrant up --provider virtualbox && npm install"
     timeout_in_minutes: 15
@@ -22,4 +20,3 @@ steps:
 
   - name: "Destroy VM"
     command: "vagrant destroy -f"
-
