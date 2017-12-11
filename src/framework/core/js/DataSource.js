@@ -64,6 +64,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Top-level methods are:
      *     get(directModel[, callback|options] -        to get the data from data resource
      *     set(directModel, model[, callback|options] - to set the data
+     *
+     *
+     * directModel: An object expressing an "index" into some set of
+     *              state which can be read or written.
+     *
+     * model: The payload sent to the storage.
+     *
+     * options: An object expressing implementation specific details
+     *          regarding the handling of a request. Note: this does not
+     *          include details for identifying the resource. Those should be
+     *          placed in the directModel.
      */
     fluid.defaults("fluid.dataSource", {
         gradeNames: ["fluid.component"],
@@ -124,7 +135,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 func: "fluid.notImplemented",
                 priority: "after:encoding"
             },
-            "onWriteResponse.encode": {
+            "onWriteResponse.encoding": {
                 func: "{encoding}.parse"
             }
         },
