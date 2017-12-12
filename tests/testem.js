@@ -78,15 +78,15 @@ fluid.defaults("fluid.tests.testem", {
         "tests/component-tests/uploader/html/UploaderCompatibility-test.html",
         "tests/component-tests/overviewPanel/html/OverviewPanel-test.html"
     ],
-    beforeTestPause: 150,
+    startupPause: 150,
     invokers: {
-        handleBeforeTests: {
+        pauseOnStartup: {
             funcName: "setTimeout",
-            args: ["{arguments}.2", "{that}.options.beforeTestPause"]
+            args:     ["{that}.handleTestemStart", "{that}.options.startupPause", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
         }
     },
     testemOptions: {
-        before_tests: "{that}.handleBeforeTests"
+        on_start: "{that}.pauseOnStartup"
     },
     sourceDirs: ["src"],
     coverageDir: "coverage",
