@@ -82,7 +82,7 @@ fluid.defaults("fluid.tests.testem", {
     invokers: {
         handleBeforeTests: {
             funcName: "setTimeout",
-            args: ["{arguments}.0", "{that}.options.beforeTestPause"]
+            args: ["{arguments}.2", "{that}.options.beforeTestPause"]
         }
     },
     testemOptions: {
