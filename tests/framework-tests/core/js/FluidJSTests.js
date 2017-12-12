@@ -313,16 +313,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var result = {};
         var lead = fluid.debounce(function (val) {
             result.lead = val;
-        }, 3, true);
+        }, 300, true);
         var trail = fluid.debounce(function (val) {
             result.trail = val;
-        }, 3);
+        }, 300);
 
         setTimeout(function () {
             jqUnit.assertEquals("The first value should be returned when accepting the leading response", fluid.tests.debounceTests[0], result.lead);
             jqUnit.assertEquals("The last value should be returned when accepting the trailing response", fluid.tests.debounceTests[4], result.trail);
             jqUnit.start();
-        }, 5);
+        }, 500);
 
         fluid.each(fluid.tests.debounceTests, lead);
         fluid.each(fluid.tests.debounceTests, trail);
