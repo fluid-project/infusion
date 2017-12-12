@@ -78,14 +78,24 @@ fluid.defaults("fluid.tests.testem", {
     //     "tests/component-tests/uploader/html/UploaderCompatibility-test.html",
     //     "tests/component-tests/overviewPanel/html/OverviewPanel-test.html"
     // ],
+    beforeTestPause: 150,
+    invokers: {
+        handleBeforeTests: {
+            funcName: "setTimeout",
+            args: ["{arguments}.0", "{that}.options.beforeTestPause"]
+        }
+    },
+    testemOptions: {
+        before_tests: "{that}.handleBeforeTests"
+    },
     sourceDirs: ["src"],
     coverageDir: "coverage",
-    serveDirs:  ["src", "node_modules"],
-    browserArgs: {
-        "Firefox": [ "--private", "--silent", "--purge-caches"]
-    },
+    serveDirs:  ["src", "node_modules"]
+    // browserArgs: {
+        // "Firefox": [ "--private", "--silent", "--purge-caches"]
+    // },
     // crudeTimeout: 1000,
-    events: {
+    // events: {
         // onCrudeTimeoutReached: null,
         // onFixturesConstructed: {
         //     events: {
@@ -93,13 +103,13 @@ fluid.defaults("fluid.tests.testem", {
         //         onCrudeTimeoutReached: "onCrudeTimeoutReached"
         //     }
         // }
-    },
-    listeners: {
+    // },
+    // listeners: {
         // "onExpressStarted": {
         //     funcName: "setTimeout",
         //     args:     ["{that}.events.onCrudeTimeoutReached.fire", "{that}.options.crudeTimeout"]
         // }
-    }
+    // }
 });
 
 module.exports = fluid.tests.testem().getTestemOptions();
