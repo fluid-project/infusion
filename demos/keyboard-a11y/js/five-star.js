@@ -45,6 +45,7 @@ var demo = demo || {};
             "role": "radio",
             "aria-checked": false
         });
+        demo.fiveStar.updateARIA(stars,1);
     };
 
     /**
