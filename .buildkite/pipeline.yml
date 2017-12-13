@@ -16,7 +16,7 @@ steps:
     command: "vagrant ssh -c 'cd /home/vagrant/sync; grunt clean stylus modulefiles:all pathMap:all copy:all copy:necessities uglify:all concat:all compress:all'"
 
   - name: "Run tests"
-    command: "npm test"
+    command: "npm run test:vagrant"
 
   - name: "Destroy VM"
     command: "vagrant destroy -f"
