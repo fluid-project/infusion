@@ -23,7 +23,7 @@
         "pretest": "npm run pretest:cleanup && npm run pretest:instrument && npm run pretest:postInstrument",
         "pretest:cleanup": "node node_modules/rimraf/bin.js reports/* coverage/* instrumented/*",
         "pretest:instrument": "node node_modules/istanbul/lib/cli.js instrument --complete-copy src --output instrumented/src",
-        "pretest:postInstrument": "node node_modules/.bin/rimraf instrumented/src/lib && node node_modules/.bin/ncp src/lib instrumented/src/lib",
+        "pretest:postInstrument": "node node_modules/rimraf/bin.js instrumented/src/lib && node node_modules/.bin/ncp src/lib instrumented/src/lib",
         "test": "npm run test:browser && npm run test:node",
         "test:browser": "node node_modules/testem/testem.js ci --file tests/testem.js",
         "test:node": "node node_modules/istanbul/lib/cli.js cover tests/node-tests/basic-node-tests.js --report none --print none",
