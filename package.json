@@ -20,7 +20,10 @@
     "main": "./src/module/fluid.js",
     "scripts": {
         "prepublish": "npm run buildDists && npm run buildStylus",
-        "pretest": "node node_modules/rimraf/bin.js reports/* coverage/*",
+        "pretest": "npm run pretest:cleanup && npm run pretest:instrument && npm run pretest:postInstrument",
+        "pretest:cleanup": "node node_modules/rimraf/bin.js reports/* coverage/* instrumented/*",
+        "pretest:instrument": "node node_modules/istanbul/lib/cli.js instrument --complete-copy src --output instrumented/src",
+        "pretest:postInstrument": "node node_modules/.bin/rimraf instrumented/src/lib && node node_modules/.bin/ncp src/lib instrumented/src/lib",
         "test": "npm run test:browser && npm run test:node",
         "test:browser": "node node_modules/testem/testem.js ci --file tests/testem.js",
         "test:node": "node node_modules/istanbul/lib/cli.js cover tests/node-tests/basic-node-tests.js --report none --print none",
@@ -40,7 +43,7 @@
     "devDependencies": {
         "eslint-config-fluid": "1.2.0",
         "fluid-grunt-eslint": "18.1.2",
-        "gpii-testem": "1.0.2-dev.20171120T141143Z.86d40cd",
+        "gpii-testem": "1.0.3-dev.20171215T151816Z.7d9350d",
         "grunt": "1.0.1",
         "grunt-contrib-clean": "1.1.0",
         "grunt-contrib-compress": "1.4.3",
@@ -54,6 +57,7 @@
         "grunt-shell": "2.1.0",
         "istanbul": "git://github.com/the-t-in-rtf/istanbul#828eb930add7bd663ca20649a917f3f3829e48c5",
         "lodash": "4.17.4",
+        "ncp": "2.0.0",
         "rimraf": "2.6.2",
         "testem": "1.18.4"
     }
