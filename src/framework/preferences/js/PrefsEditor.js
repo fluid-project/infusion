@@ -1,6 +1,6 @@
 /*
 Copyright 2009 University of Toronto
-Copyright 2010-2016 OCAD University
+Copyright 2010-2017 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 Copyright 2012-2014 Raising the Floor - US
 Copyright 2015 Raising the Floor - International
@@ -31,14 +31,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.prefs.prefsEditorLoader", {
         gradeNames: ["fluid.prefs.settingsGetter", "fluid.prefs.initialModel", "fluid.viewComponent"],
         defaultLocale: "en",
-        members: {
-            settings: {
-                expander: {
-                    funcName: "fluid.prefs.prefsEditorLoader.getCompleteSettings",
-                    args: ["{that}.initialModel", "{that}.getSettings"]
-                }
-            }
-        },
         components: {
             prefsEditor: {
                 priority: "last",
@@ -50,6 +42,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     },
                     invokers: {
                         getSettings: "{prefsEditorLoader}.getSettings"
+                    },
+                    listeners: {
+                        "onReady.boil": {
+                            listener: "{prefsEditorLoader}.events.onReady",
+                            args: ["{prefsEditorLoader}"]
+                        }
                     }
                 }
             },
@@ -63,9 +61,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             messageLoader: {
                 type: "fluid.resourceLoader",
+                createOnEvent: "afterInitialSettingsFetched",
                 options: {
                     defaultLocale: "{prefsEditorLoader}.options.defaultLocale",
-                    locale: "{prefsEditorLoader}.settings.locale",
+                    locale: "{prefsEditorLoader}.settings.preferences.locale",
                     resourceOptions: {
                         dataType: "json"
                     },
@@ -75,7 +74,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
             }
         },
+        listeners: {
+            "onCreate.getInitialSettings": {
+                listener: "fluid.prefs.prefsEditorLoader.getInitialSettings",
+                args: ["{that}"]
+            }
+        },
         events: {
+            afterInitialSettingsFetched: null,
             onPrefsEditorTemplatesLoaded: null,
             onPrefsEditorMessagesLoaded: null,
             onCreatePrefsEditorReady: {
@@ -83,7 +89,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     templateLoaded: "onPrefsEditorTemplatesLoaded",
                     prefsEditorMessagesLoaded: "onPrefsEditorMessagesLoaded"
                 }
-            }
+            },
+            onReady: null
         },
         distributeOptions: [{
             source: "{that}.options.templateLoader",
@@ -106,9 +113,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }]
     });
 
-    fluid.prefs.prefsEditorLoader.getCompleteSettings = function (initialModel, getSettingsFunc) {
-        var savedSettings = getSettingsFunc();
-        return $.extend(true, {}, initialModel, savedSettings);
+    fluid.prefs.prefsEditorLoader.getInitialSettings = function (that) {
+        var promise = fluid.promise();
+        var fetchPromise = that.getSettings();
+        fetchPromise.then(function (savedSettings) {
+            that.settings = $.extend(true, {}, that.initialModel, savedSettings);
+            that.events.afterInitialSettingsFetched.fire(that.settings);
+        }, function (error) {
+            fluid.log(fluid.logLevel.WARN, error);
+            that.settings = that.initialModel;
+            that.events.afterInitialSettingsFetched.fire(that.settings);
+        });
+        fluid.promise.follow(fetchPromise, promise);
+        return promise;
     };
 
     // TODO: This mixin grade appears to be supplied manually by various test cases but no longer appears in
@@ -161,14 +178,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         invokers: {
             setSettings: {
                 funcName: "fluid.prefs.settingsSetter.setSettings",
-                args: ["{arguments}.0", "{fluid.prefs.store}.set"]
+                args: ["{arguments}.0", "{arguments}.1", "{fluid.prefs.store}.set"]
             }
         }
     });
 
-    fluid.prefs.settingsSetter.setSettings = function (model, set) {
+    fluid.prefs.settingsSetter.setSettings = function (model, directModel, set) {
         var userSettings = fluid.copy(model);
-        set(userSettings);
+        return set(directModel, userSettings);
     };
 
     fluid.defaults("fluid.prefs.uiEnhancerRelay", {
@@ -309,10 +326,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.prefs.prefsEditor.fetchImpl = function (that) {
         var promise = fluid.promise(),
-            // TODO: Convert that.getSettings to return a promise to wait for asynchronous fetches.
-            completeModel = that.getSettings();
-        completeModel = $.extend(true, {}, that.initialModel, completeModel);
-        promise.resolve(completeModel);
+            fetchPromise = that.getSettings();
+
+        fetchPromise.then(function (savedModel) {
+            var completeModel = $.extend(true, {}, that.initialModel, savedModel);
+            promise.resolve(completeModel);
+        }, promise.reject);
+
         return promise;
     };
 
@@ -336,9 +356,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
 
         that.events.onSave.fire(modelToSave);
-        that.setSettings(modelToSave);
+        var setPromise = that.setSettings(modelToSave);
 
-        promise.resolve(modelToSave);
+        fluid.promise.follow(setPromise, promise);
         return promise;
     };
 
@@ -360,15 +380,22 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.prefs.prefsEditor.saveAndApply = function (that) {
-        var prevSettings = that.getSettings();
-        var savePromise = that.save();
-        savePromise.then(function (changedSelections) {
-            // Only when preferences are changed, re-render panels and trigger enactors to apply changes
-            if (!fluid.model.diff(fluid.get(changedSelections, "preferences"), fluid.get(prevSettings, "preferences"))) {
-                that.events.onPrefsEditorRefresh.fire();
-                that.applyChanges();
-            }
+        var promise = fluid.promise();
+        var prevSettingsPromise = that.getSettings(),
+            savePromise = that.save();
+
+        prevSettingsPromise.then(function (prevSettings) {
+            savePromise.then(function (changedSelections) {
+                // Only when preferences are changed, re-render panels and trigger enactors to apply changes
+                if (!fluid.model.diff(fluid.get(changedSelections, "preferences"), fluid.get(prevSettings, "preferences"))) {
+                    that.events.onPrefsEditorRefresh.fire();
+                    that.applyChanges();
+                }
+            });
+            fluid.promise.follow(savePromise, promise);
         });
+
+        return promise;
     };
 
     /**

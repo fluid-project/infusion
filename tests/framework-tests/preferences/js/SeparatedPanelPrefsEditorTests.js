@@ -1,5 +1,5 @@
 /*
-Copyright 2011-2016 OCAD University
+Copyright 2011-2017 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 Copyright 2015 Raising the Floor - International
 
@@ -77,6 +77,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return fluid.queryIoCSelector(fluid.rootComponent, "fluid.prefs.globalSettingsStore", true)[0].settingsStore;
     };
 
+    fluid.tests.prefs.getSettings = function () {
+        var promise = fluid.promise();
+        var settingsStore = fluid.tests.prefs.fetchGlobalSettingsStore();
+
+        var fetchPromise = settingsStore.get();
+        fluid.promise.follow(fetchPromise, promise);
+
+        return promise;
+    };
+
     // Cleanup listener that restores a global settings store model to default.
     fluid.tests.prefs.clearStore = function () {
         var settingsStore = fluid.tests.prefs.fetchGlobalSettingsStore();
@@ -121,49 +131,44 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.prefs.assertAriaForButton(separatedPanel.locate("reset"), "Reset", separatedPanel.slidingPanel.panelId);
     };
 
-    fluid.tests.prefs.afterShowFunc1 = function (separatedPanel) {
-        return function () {
-            fluid.tests.prefs.applierRequestChanges(separatedPanel.prefsEditor, fluid.tests.prefs.bwSkin);
-            var enhancerModel = fluid.tests.prefs.getPageEnhancer(separatedPanel).model;
-            fluid.tests.prefs.checkModelSelections("enhancerModel from bwSkin", fluid.tests.prefs.bwSkin.preferences, enhancerModel);
-            jqUnit.assertEquals("Reset button is visible", true, $(".flc-prefsEditor-reset").is(":visible"));
+    fluid.tests.prefs.assertInitialShow = function (separatedPanel) {
+        fluid.tests.prefs.applierRequestChanges(separatedPanel.prefsEditor, fluid.tests.prefs.bwSkin);
+        var enhancerModel = fluid.tests.prefs.getPageEnhancer(separatedPanel).model;
+        fluid.tests.prefs.checkModelSelections("enhancerModel from bwSkin", fluid.tests.prefs.bwSkin.preferences, enhancerModel);
+        jqUnit.assertEquals("Reset button is visible", true, $(".flc-prefsEditor-reset").is(":visible"));
 
-            fluid.tests.prefs.assertAria(separatedPanel.slidingPanel, "true");
-            fluid.tests.prefs.assertAriaForButton(separatedPanel.locate("reset"), "Reset", separatedPanel.slidingPanel.panelId, "true");
-        };
+        fluid.tests.prefs.assertAria(separatedPanel.slidingPanel, "true");
+        fluid.tests.prefs.assertAriaForButton(separatedPanel.locate("reset"), "Reset", separatedPanel.slidingPanel.panelId, "true");
     };
 
-    fluid.tests.prefs.afterHideFunc1 = function () {
-        return function () {
-            var settingsStore = fluid.tests.prefs.fetchGlobalSettingsStore();
-            var expected = $.extend(true, {}, fluid.tests.prefs.panelState, fluid.tests.prefs.bwSkin);
-            jqUnit.assertEquals("Reset button is invisible", false, $(".flc-prefsEditor-reset").is(":visible"));
-            jqUnit.assertDeepEq("Only the changed preferences are saved", expected, settingsStore.get());
-        };
-    };
-    fluid.tests.prefs.afterShowFunc2 = function (separatedPanel) {
-        return function () {
-            var enhancerModel = fluid.tests.prefs.getPageEnhancer(separatedPanel).model;
-            var iframeEnhancerModel = separatedPanel.iframeRenderer.iframeEnhancer.model;
-
-            fluid.tests.prefs.checkModelSelections("iframeEnhancerModel from bwSkin", fluid.tests.prefs.bwSkin.preferences, iframeEnhancerModel);
-            fluid.tests.prefs.checkModelSelections("iframeEnhancerModel from enhancerModel", enhancerModel, iframeEnhancerModel);
-        };
+    fluid.tests.prefs.assertHide = function () {
+        jqUnit.assertEquals("Reset button is invisible", false, $(".flc-prefsEditor-reset").is(":visible"));
     };
 
-    fluid.tests.prefs.afterShowFunc3 = function (separatedPanel) {
-        return function () {
-            separatedPanel.locate("reset").click();
+    fluid.tests.prefs.assertStoredSettings = function (storedSettings) {
+        var expected = $.extend(true, {}, fluid.tests.prefs.panelState, fluid.tests.prefs.bwSkin);
+        jqUnit.assertDeepEq("Only the changed preferences are saved", expected, storedSettings);
+    };
 
-            var initialModel = separatedPanel.initialModel;
-            var enhancerModel = fluid.tests.prefs.getPageEnhancer(separatedPanel).model;
-            var iframeEnhancerModel = separatedPanel.iframeRenderer.iframeEnhancer.model;
+    fluid.tests.prefs.assertSecondShow = function (separatedPanel) {
+        var enhancerModel = fluid.tests.prefs.getPageEnhancer(separatedPanel).model;
+        var iframeEnhancerModel = separatedPanel.iframeRenderer.iframeEnhancer.model;
 
-            fluid.tests.prefs.checkModelSelections("enhancerModel from defaults", initialModel.preferences, enhancerModel);
-            separatedPanel.slidingPanel.hidePanel();
-            fluid.tests.prefs.checkModelSelections("iframeEnhancerModel from defaults", initialModel.preferences, iframeEnhancerModel);
-            fluid.tests.prefs.checkModelSelections("enhancerModel from iframeEnhancerModel", enhancerModel, iframeEnhancerModel);
-        };
+        fluid.tests.prefs.checkModelSelections("iframeEnhancerModel from bwSkin", fluid.tests.prefs.bwSkin.preferences, iframeEnhancerModel);
+        fluid.tests.prefs.checkModelSelections("iframeEnhancerModel from enhancerModel", enhancerModel, iframeEnhancerModel);
+    };
+
+    fluid.tests.prefs.assertThirdShow = function (separatedPanel) {
+        separatedPanel.locate("reset").click();
+
+        var initialModel = separatedPanel.initialModel;
+        var enhancerModel = fluid.tests.prefs.getPageEnhancer(separatedPanel).model;
+        var iframeEnhancerModel = separatedPanel.iframeRenderer.iframeEnhancer.model;
+
+        fluid.tests.prefs.checkModelSelections("enhancerModel from defaults", initialModel.preferences, enhancerModel);
+        separatedPanel.slidingPanel.hidePanel();
+        fluid.tests.prefs.checkModelSelections("iframeEnhancerModel from defaults", initialModel.preferences, iframeEnhancerModel);
+        fluid.tests.prefs.checkModelSelections("enhancerModel from iframeEnhancerModel", enhancerModel, iframeEnhancerModel);
     };
 
     fluid.defaults("fluid.tests.prefs.separatedPanelIntegrationTester", {
@@ -181,28 +186,31 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     func: "{separatedPanel}.slidingPanel.showPanel"
                 }, {
-                    listenerMaker: "fluid.tests.prefs.afterShowFunc1",
-                    makerArgs: ["{separatedPanel}"],
+                    listener: "fluid.tests.prefs.assertInitialShow",
+                    args: ["{separatedPanel}"],
                     event: "{separatedPanel}.slidingPanel.events.afterPanelShow"
                 }, {
                     func: "{separatedPanel}.slidingPanel.hidePanel"
                 }, {
-                    listenerMaker: "fluid.tests.prefs.afterHideFunc1",
-                    makerArgs: ["{separatedPanel}"],
+                    listener: "fluid.tests.prefs.assertHide",
+                    args: ["{separatedPanel}"],
                     event: "{separatedPanel}.slidingPanel.events.afterPanelHide"
                 }, {
+                    task: "fluid.tests.prefs.getSettings",
+                    resolve: "fluid.tests.prefs.assertStoredSettings"
+                }, {
                     func: "{separatedPanel}.slidingPanel.showPanel"
                 }, {
-                    listenerMaker: "fluid.tests.prefs.afterShowFunc2",
-                    makerArgs: ["{separatedPanel}"],
+                    listener: "fluid.tests.prefs.assertSecondShow",
+                    args: ["{separatedPanel}"],
                     event: "{separatedPanel}.slidingPanel.events.afterPanelShow"
                 }, {
                     func: "{separatedPanel}.slidingPanel.hidePanel"
                 }, {
                     func: "{separatedPanel}.slidingPanel.showPanel"
                 }, {
-                    listenerMaker: "fluid.tests.prefs.afterShowFunc3",
-                    makerArgs: ["{separatedPanel}"],
+                    listener: "fluid.tests.prefs.assertThirdShow",
+                    args: ["{separatedPanel}"],
                     event: "{separatedPanel}.slidingPanel.events.afterPanelShow"
                 }]
             }]

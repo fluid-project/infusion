@@ -163,10 +163,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                             args: ["{that}.reset"]
                         },
                         "afterReset.applyChanges": "{that}.applyChanges",
-                        "onReady.boilOnReady": {
-                            listener: "{separatedPanel}.events.onReady",
-                            args: "{separatedPanel}"
-                        },
                         // Scroll to active panel after opening the separate Panel.
                         // This is when the panels are all rendered and the actual sizes are available.
                         "{separatedPanel}.slidingPanel.events.afterPanelShow": {
