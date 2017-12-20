@@ -146,8 +146,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.prefs.assertStoredSettings = function (storedSettings) {
-        var expected = $.extend(true, {}, fluid.tests.prefs.panelState, fluid.tests.prefs.bwSkin);
-        jqUnit.assertDeepEq("Only the changed preferences are saved", expected, storedSettings);
+        jqUnit.assertDeepEq("Only the changed preferences are saved", fluid.tests.prefs.bwSkin, storedSettings);
     };
 
     fluid.tests.prefs.assertSecondShow = function (separatedPanel) {

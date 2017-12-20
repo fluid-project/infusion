@@ -148,16 +148,22 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         panelIndex: "{separatedPanel}.model.panelIndex",
                         panelMaxIndex: "{separatedPanel}.model.panelMaxIndex",
                         local: {
-                            panelIndex: "{that}.model.panelIndex",
-                            panelMaxIndex: "{that}.model.panelMaxIndex"
+                            panelIndex: "{that}.model.panelIndex"
                         }
                     },
+                    autoSave: true,
                     events: {
                         onSignificantDOMChange: null,
                         updateEnhancerModel: "{that}.events.modelChanged"
                     },
+                    modelListeners: {
+                        "panelIndex": [{
+                            listener: "fluid.prefs.prefsEditor.handleAutoSave",
+                            args: ["{that}"],
+                            namespace: "autoSavePanelIndex"
+                        }]
+                    },
                     listeners: {
-                        "modelChanged.save": "{that}.save",
                         "onCreate.bindReset": {
                             listener: "{separatedPanel}.bindReset",
                             args: ["{that}.reset"]

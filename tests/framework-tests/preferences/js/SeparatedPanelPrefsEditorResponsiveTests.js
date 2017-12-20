@@ -220,7 +220,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 sequence: [{
                     listener: "fluid.tests.prefs.responsive.assertSeparatedPanelInit",
                     event: "{separatedPanelResponsive separatedPanel}.events.onReady",
-                    args: ["{separatedPanel}", 0]
+                    args: ["{separatedPanel}", undefined] // initially there is no panelIndex set
                 }, {
                     func: "{separatedPanel}.slidingPanel.showPanel"
                 }, {
