@@ -275,6 +275,62 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         strategies: [fluid.model.defaultFetchStrategy, fluid.model.defaultCreatorStrategy]
     };
 
+    /** CONNECTED COMPONENTS AND TOPOLOGICAL SORTING **/
+
+    // Following "tarjan" at https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm
+
+    /** Compute the strongly connected components of a graph, specified as a list of vertices and an accessor function.
+     * Returns an array of arrays of strongly connected vertices, with each component in topologically sorted order
+     * @param vertices {Array of Vertex} The vertices of the graph to be processed. Each vertex object will be polluted
+     * with three extra fields: tarjanIndex, lowIndex and onStack
+     * @param accessor {Function: Vertex -> Array of Vertex}
+     * @return Array of Array of Vertex
+     */
+    fluid.stronglyConnected = function (vertices, accessor) {
+        var that = {
+            stack: [],
+            accessor: accessor,
+            components: [],
+            index: 0
+        };
+        vertices.forEach(function (vertex) {
+            if (vertex.tarjanIndex === undefined) {
+                fluid.stronglyConnectedOne(vertex, that);
+            }
+        });
+        return that.components;
+    };
+
+    // Perform one round of the Tarjan search algorithm using the state structure generated in fluid.stronglyConnected
+    fluid.stronglyConnectedOne = function (vertex, that) {
+        vertex.tarjanIndex = that.index;
+        vertex.lowIndex = that.index;
+        ++that.index;
+        that.stack.push(vertex);
+        vertex.onStack = true;
+        var outEdges = that.accessor(vertex);
+        outEdges.forEach(function (outVertex) {
+            if (outVertex.tarjanIndex === undefined) {
+                // Successor has not yet been visited; recurse on it
+                fluid.stronglyConnectedOne(outVertex, that);
+                vertex.lowIndex = Math.min(vertex.lowIndex, outVertex.lowIndex);
+            } else if (outVertex.onStack) {
+                // Successor is on the stack and hence in the current component
+                vertex.lowIndex = Math.min(vertex.lowIndex, outVertex.tarjanIndex);
+            }
+        });
+        // If vertex is a root node, pop the stack back as far as it and generate a component
+        if (vertex.lowIndex === vertex.tarjanIndex) {
+            var component = [], outVertex;
+            do {
+                outVertex = that.stack.pop();
+                outVertex.onStack = false;
+                component.push(outVertex);
+            } while (outVertex !== vertex);
+            that.components.push(component);
+        }
+    };
+
     /** MODEL COMPONENT HIERARCHY AND RELAY SYSTEM **/
 
     fluid.initRelayModel = function (that) {
@@ -541,9 +597,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // required within the "overall" transaction whilst genuine (external) changes continue to arrive.
 
     // TODO: Vast overcomplication and generation of closure garbage. SURELY we should be able to convert this into an externalised, arg-ist form
+    /** Registers a model relay listener connecting the source and target
+      * @param target {Component} The target component at the end of the relay.
+      * @param targetSegs {Array of String} The path in the target where outgoing changes are to be fired
+      * @param source {Component|Null} The source component from where changes will be listened to. May be null if the change source is a relay document.
+      * @param sourceSegs {Array of String} The path in the source component's model at which changes will be listened to
+      * @param linkId {String} The unique id of this relay arc. This will be used as a key within the active transaction record to look up dynamic information about
+      * activation of the link within that transaction (currently just an activation count)
+      * @param transducer {Function|Null} A function which will be invoked when a change is to be relayed. This is one of the adapters constructed in "makeTransformPackage"
+      * and is set when   
+      */
     fluid.registerDirectChangeRelay = function (target, targetSegs, source, sourceSegs, linkId, transducer, options, npOptions) {
-        var targetApplier = options.targetApplier || target.applier; // implies the target is a relay document
-        var sourceApplier = options.sourceApplier || source.applier; // implies the source is a relay document - listener will be transactional
+        var targetApplier = options.targetApplier || target.applier; // first branch implies the target is a relay document
+        var sourceApplier = options.sourceApplier || source.applier; // first branch implies the source is a relay document - listener will be transactional
         var applierId = targetApplier.applierId;
         targetSegs = fluid.makeArray(targetSegs);
         sourceSegs = sourceSegs ? fluid.makeArray(sourceSegs) : sourceSegs; // take copies since originals will be trashed
@@ -571,7 +637,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     // the "forwardAdapter"
                     transducer(existing.transaction, options.sourceApplier ? undefined : newValue, sourceSegs, targetSegs, changeRequest);
                 } else {
-                    if (!options.noRelayDeletesDirect && changeRequest && changeRequest.type === "DELETE") {
+                    if (changeRequest && changeRequest.type === "DELETE") {
                         existing.transaction.fireChangeRequest({type: "DELETE", segs: targetSegs});
                     }
                     if (newValue !== undefined) {
@@ -603,7 +669,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     // When called during parsing a contextualised model relay document, these arguments are reversed - "source" refers to the
-    // current component, and "target" refers successively to the various "source" components.
+    // component holding the relay document, and "target" refers successively to the various "source" components referred to within
+    // the document - changes in any of these models will be listened to and relayed onto the document's applier (? surely backwards)
     // "options" will be transformPackage
     fluid.connectModelRelay = function (source, sourceSegs, target, targetSegs, options) {
         var linkId = fluid.allocateGuid();
@@ -710,6 +777,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
             fluid.model.guardedAdapter(transaction, forwardCond, that.forwardAdapterImpl, arguments);
         };
+        that.forwardAdapter.cond = forwardCond; // Used when parsing graph in init transaction
         // fired from fluid.model.updateRelays via invalidator event
         that.runTransform = function (trans) {
             trans.commit(); // this will reach the special "half-transactional listener" registered in fluid.connectModelRelay,
@@ -725,6 +793,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             that.backwardAdapter = function (transaction) {
                 fluid.model.guardedAdapter(transaction, backwardCond, that.backwardAdapterImpl, arguments);
             };
+            that.backwardAdapter.cond = backwardCond;
         }
         that.update = that.invalidator.fire; // necessary so that both routes to fluid.connectModelRelay from here hit the first branch
         var implicitOptions = {
@@ -794,13 +863,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var forwardCond = fluid.model.parseRelayCondition(mrrec.forward), backwardCond = fluid.model.parseRelayCondition(mrrec.backward);
 
         var transformPackage = fluid.makeTransformPackage(that, transform, parsedSource.path, parsedTarget.path, forwardCond, backwardCond, namespace, mrrec.priority);
-        var noRelayDeletes = {noRelayDeletesDirect : true}; // DELETE relay is handled in the transducer itself
         if (transformPackage.refCount === 0) { // There were no implicit relay elements found in the relay document - it can be relayed directly
             // This first call binds changes emitted from the relay ends to each other, synchronously
             fluid.connectModelRelay(parsedSource.that || that, parsedSource.modelSegs, parsedTarget.that, parsedTarget.modelSegs,
             // Primarily, here, we want to get rid of "update" which is what signals to connectModelRelay that this is a invalidatable relay
-                fluid.filterKeys(transformPackage, ["forwardAdapter", "backwardAdapter", "namespace", "priority"])
-                , noRelayDeletes);
+                fluid.filterKeys(transformPackage, ["forwardAdapter", "backwardAdapter", "namespace", "priority"]));
         } else {
             if (parsedSource.modelSegs) {
                 fluid.fail("Error in model relay definition: If a relay transform has a model dependency, you can not specify a \"source\" entry - please instead enter this as \"input\" in the transform specification. Definition was ", mrrec, " for component ", that);
