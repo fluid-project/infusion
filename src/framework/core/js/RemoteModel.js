@@ -105,6 +105,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         transaction.commit(); // submit transaction
     };
 
+    /**
+     * Similar to fluid.promise.makeSequenceStrategy from FluidPromises.js; however, rather than passing along the
+     * result from one listener in the sequence to the next, the original payload is always passed to each listener.
+     * In this way, the synthetic events are handled like typical events, but a promise can be resolved/rejected at the
+     * end of the sequence.
+     */
     fluid.remoteModelComponent.makeSequenceStrategy = function (payload) {
         return {
             invokeNext: function (that) {
