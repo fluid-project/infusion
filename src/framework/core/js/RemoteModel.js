@@ -105,7 +105,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         transaction.commit(); // submit transaction
     };
 
-    fluid.remoteModelComponent.makeSequneceStrategy = function (payload) {
+    fluid.remoteModelComponent.makeSequenceStrategy = function (payload) {
         return {
             invokeNext: function (that) {
                 var lisrec = that.sources[that.index];
@@ -120,7 +120,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.remoteModelComponent.makeSequence = function (listeners, payload, options) {
-        var sequencer = fluid.promise.makeSequencer(listeners, options, fluid.remoteModelComponent.makeSequneceStrategy(payload));
+        var sequencer = fluid.promise.makeSequencer(listeners, options, fluid.remoteModelComponent.makeSequenceStrategy(payload));
         fluid.promise.resumeSequence(sequencer);
         return sequencer;
     };
