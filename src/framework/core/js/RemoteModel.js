@@ -137,6 +137,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return sequence.promise;
     };
 
+    /**
+     * Adds a fetch request and returns a promise.
+     *
+     * Only one request can be in flight (processing) at a time. If a write request is in flight, the fetch will be
+     * queued. If a fetch request is already in queue/flight, the result of that request will be passed along to the
+     * current fetch request. When a fetch request is in flight , it will trigger the fetchImpl invoker to perform the
+     * actual request.
+     *
+     * Two synthetic events, onFetch and afterFetch, are fired during the processing of a fetch. onFetch can be used to
+     * perform any necessary actions before running fetchImpl. afterFetch can be used to perform any necessary actions
+     * after running fetchImpl (e.g. updating the model, unblocking the queue). If promises returned from onFetch, afterFetch, or
+     * fetchImpl are rejected, the onFetchError event will be fired.
+     *
+     * @returns {Promise}
+     */
     fluid.remoteModelComponent.fetch = function (that) {
         var promise = fluid.promise();
         var activePromise;
@@ -169,6 +184,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         that.applier.change("requestInFlight", false);
     };
 
+    /**
+     * Adds a write request and returns a promise.
+     *
+     * Only one request can be in flight (processing) at a time. If a fetch or write request is in flight, the write will
+     * be queued. If a write request is already in queue, the result of that request will be passed along to the current
+     * write request. When a write request is in flight , it will trigger the writeImpl invoker to perform the
+     * actual request.
+     *
+     * Two synthetic events, onWrite and afterWrite, are fired during the processing of a write. onWrite can be used to
+     * perform any necessary actions before running writeImpl (e.g. performing a fetch). afterWrite can be used to perform any necessary actions
+     * after running writeImpl (e.g. unblocking the queue, performing a fetch). If promises returned from onWrite, afterWrite, or
+     * writeImpl are rejected, the onWriteError event will be fired.
+     *
+     * @returns {Promise}
+     */
     fluid.remoteModelComponent.write = function (that) {
         var promise = fluid.promise();
         var activePromise;
