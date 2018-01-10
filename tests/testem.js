@@ -6,7 +6,7 @@ fluid.setLogging(true);
 require("gpii-testem");
 
 fluid.defaults("fluid.tests.testem", {
-    gradeNames: ["gpii.testem.coverageDataOnly"],
+    gradeNames: ["gpii.testem.coverage"],
     // Add a 500ms pause between when our fixtures are ready and when we let Testem know it's safe to start the test run.
     // Seems to help with spurious browser test failures in Windows.
     // startupPause: 500,
@@ -29,9 +29,9 @@ fluid.defaults("fluid.tests.testem", {
         //     func:     "{that}.events.constructFixtures.fire"
         // },
     // },
-    instrumentSource: false,
     coverageDir: "coverage",
     reportsDir: "reports",
+    instrumentedSourceDir: "instrumented",
     testemOptions: {
         skip: "PhantomJS,Opera,Safari",
         disable_watching: true,

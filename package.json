@@ -20,10 +20,9 @@
     "main": "./src/module/fluid.js",
     "scripts": {
         "prepublish": "npm run buildDists && npm run buildStylus",
-        "pretest": "npm run pretest:cleanup && npm run pretest:instrument && npm run pretest:postInstrument",
+        "pretest": "npm run pretest:cleanup && npm run pretest:instrument",
         "pretest:cleanup": "node node_modules/rimraf/bin.js reports/* coverage/* instrumented/*",
-        "pretest:instrument": "node node_modules/istanbul/lib/cli.js instrument --complete-copy src --output instrumented/src",
-        "pretest:postInstrument": "node node_modules/rimraf/bin.js instrumented/src/lib && node node_modules/ncp/bin/ncp src/lib instrumented/src/lib",
+        "pretest:instrument": "node node_modules/gpii-testem/src/js/instrumenter-launcher.js --optionsFile tests/configs/fluid.tests.instrumenter.json --inputPath src --outputPath instrumented/src",
         "test": "npm run test:browser && npm run test:node",
         "test:browser": "node node_modules/testem/testem.js ci --file tests/testem.js",
         "test:node": "node node_modules/istanbul/lib/cli.js cover tests/node-tests/basic-node-tests.js --report none --print none",
@@ -43,7 +42,7 @@
     "devDependencies": {
         "eslint-config-fluid": "1.2.0",
         "fluid-grunt-eslint": "18.1.2",
-        "gpii-testem": "1.0.3-dev.20171215T151816Z.7d9350d",
+        "gpii-testem": "2.0.0-dev.20180110T121535Z.ea77a21",
         "grunt": "1.0.1",
         "grunt-contrib-clean": "1.1.0",
         "grunt-contrib-compress": "1.4.3",
