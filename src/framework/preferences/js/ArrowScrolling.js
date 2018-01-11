@@ -27,13 +27,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // panels: "", // should be supplied by the fluid.prefs.prefsEditor grade.
             scrollContainer: ".flc-prefsEditor-scrollContainer"
         },
+        onScrollDelay: 100, // in ms, used to set the delay for debouncing the scroll event relay
         model: {
             // panelMaxIndex: null, // determined by the number of panels calculated after the onPrefsEditorMarkupReady event fired
             panelIndex: 0
         },
         events: {
             beforeReset: null, // should be fired by the fluid.prefs.prefsEditor grade
-            afterScroll: null
+            onScroll: null
         },
         modelRelay: {
             target: "panelIndex",
@@ -50,14 +51,22 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "panelIndex": {
                 listener: "fluid.prefs.arrowScrolling.scrollToPanel",
                 args: ["{that}", "{change}.value"],
-                excludeSource: ["manualScroll"],
+                excludeSource: ["scrollEvent"],
                 namespace: "scrollToPanel"
             }
         },
         listeners: {
             "onReady.scrollEvent": {
-                "listener": "fluid.prefs.arrowScrolling.scrollDebounce",
-                args: ["{that}.dom.scrollContainer", "{that}.events.afterScroll.fire"]
+                "this": "{that}.dom.scrollContainer",
+                method: "scroll",
+                args: [{
+                    expander: {
+                        // Relaying the scroll event to onScroll but debounced to reduce the rate of fire.  A high rate
+                        // of fire may negatively effect performance for complex handlers.
+                        func: "fluid.debounce",
+                        args: ["{that}.events.onScroll.fire", "{that}.options.onScrollDelay"]
+                    }
+                }]
             },
             "onReady.windowResize": {
                 "this": window,
@@ -84,15 +93,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 listener: "{that}.applier.fireChangeRequest",
                 args: {path: "panelIndex", value: 0, type: "ADD", source: "reset"}
             },
-            "afterScroll.setPanelIndex": {
+            "onScroll.setPanelIndex": {
                 changePath: "panelIndex",
                 value: {
                     expander: {
-                        funcName: "fluid.prefs.arrowScrolling.getClosesPanelIndex",
+                        funcName: "fluid.prefs.arrowScrolling.getClosestPanelIndex",
                         args: "{that}.dom.panels"
                     }
                 },
-                source: "manualScroll"
+                source: "scrollEvent"
             }
         },
         invokers: {
@@ -111,7 +120,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             target: "{that > fluid.prefs.panel}.options.listeners"
         }]
-
     });
 
     fluid.prefs.arrowScrolling.calculatePanelMaxIndex = function (panels) {
@@ -134,30 +142,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
-    fluid.prefs.arrowScrolling.getClosesPanelIndex = function (panels) {
-        var panelArray = [];
-        panels.each(function (idx, panel) {
-            panelArray.push({
+    fluid.prefs.arrowScrolling.getClosestPanelIndex = function (panels) {
+        var panelArray = fluid.transform(panels, function (panel, idx) {
+            return {
                 index: idx,
                 offset: Math.abs($(panel).offset().left)
-            });
+            };
         });
         panelArray.sort(function (a, b) {
             return a.offset - b.offset;
         });
-        return panelArray[0].index;
-    };
-
-    // Based on scrollStop.js ( https://github.com/cferdinandi/scrollStop ),
-    // which is licensed under: MIT License.
-    fluid.prefs.arrowScrolling.scrollDebounce = function (elm, callback, delay) {
-        var timeoutID;
-        delay = delay || 66;
-
-        $(elm).scroll(function () {
-            window.clearTimeout(timeoutID);
-            timeoutID = setTimeout(callback, delay);
-        });
+        return fluid.get(panelArray, ["0", "index"]) || 0;
     };
 
 })(jQuery, fluid_3_0_0);

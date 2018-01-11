@@ -84,44 +84,6 @@ fluid.invokeLater = function (func) {
 
 fluid.logObjectRenderChars = 1024;
 
-fluid.onUncaughtException = fluid.makeEventFirer({
-    name: "Global uncaught exception handler"
-});
-
-// This registry of priorities will be removed once the implementation of FLUID-5506 is complete
-fluid.handlerPriorities = {
-    uncaughtException: {
-        log: 100, // high priority - do all logging first
-        logActivity: "after:log",
-        fail: "last"
-    }
-};
-
-process.on("uncaughtException", function onUncaughtException(err) {
-    fluid.onUncaughtException.fire(err);
-});
-
-fluid.logUncaughtException = function (err) {
-    var message = "FATAL ERROR: Uncaught exception: " + err.message;
-    fluid.log(fluid.logLevel.FATAL, message);
-    console.log(err.stack);
-};
-
-fluid.onUncaughtException.addListener(fluid.logUncaughtException, "log",
-    fluid.handlerPriorities.uncaughtException.log);
-
-fluid.onUncaughtException.addListener(function () {fluid.logActivity();}, "logActivity",
-    fluid.handlerPriorities.uncaughtException.logActivity);
-
-
-// Make sure process exits with error (see FLUID-5920)
-fluid.handleUncaughtException = function () {
-    process.exit(1);
-};
-
-fluid.onUncaughtException.addListener(fluid.handleUncaughtException, "fail",
-    fluid.handlerPriorities.uncaughtException.fail);
-
 // Convert an argument intended for console.log in the node environment to a readable form (the
 // default action of util.inspect censors at depth 1)
 fluid.renderLoggingArg = function (arg) {
@@ -230,7 +192,7 @@ if (upInfusionPath) {
 // on the same version of Infusion results in an empty object since we have not completed our own assignment to
 // module.exports yet
 if (upInfusion && upInfusion.module) {
-    upInfusion.log("Resolved infusion from path " + __dirname + " to " + upInfusion.module.modules.infusion.baseDir);
+    console.log("Resolved infusion from path " + __dirname + " to " + upInfusion.module.modules.infusion.baseDir);
     module.exports = upInfusion;
     return;
 } else {
@@ -258,5 +220,48 @@ fluid.module.register("infusion", moduleBaseDir, require);
 
 // Export the fluid object into the pan-module node.js global object
 global.fluid = fluid;
+
+
+/** Registering and instrumenting uncaught exception handler:
+ * Do this after determining that we are top-level Infusion to avoid FLUID-6225
+ */
+process.on("uncaughtException", function onUncaughtException(err) {
+    fluid.onUncaughtException.fire(err);
+});
+
+fluid.onUncaughtException = fluid.makeEventFirer({
+    name: "Global uncaught exception handler"
+});
+
+// This registry of priorities will be removed once the implementation of FLUID-5506 is complete
+fluid.handlerPriorities = {
+    uncaughtException: {
+        log: 100, // high priority - do all logging first
+        logActivity: "after:log",
+        fail: "last"
+    }
+};
+
+fluid.logUncaughtException = function (err) {
+    var message = "FATAL ERROR: Uncaught exception: " + err.message;
+    fluid.log(fluid.logLevel.FATAL, message);
+    console.log(err.stack);
+};
+
+fluid.onUncaughtException.addListener(fluid.logUncaughtException, "log",
+    fluid.handlerPriorities.uncaughtException.log);
+
+fluid.onUncaughtException.addListener(function () {fluid.logActivity();}, "logActivity",
+    fluid.handlerPriorities.uncaughtException.logActivity);
+
+
+// Make sure process exits with error (see FLUID-5920)
+fluid.handleUncaughtException = function () {
+    process.exit(1);
+};
+
+fluid.onUncaughtException.addListener(fluid.handleUncaughtException, "fail",
+    fluid.handlerPriorities.uncaughtException.fail);
+
 
 module.exports = fluid;
