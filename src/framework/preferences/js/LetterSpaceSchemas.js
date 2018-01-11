@@ -60,10 +60,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         schema: {
             "fluid.prefs.letterSpace": {
                 "type": "number",
-                "default": 0,
-                "minimum": 0,
-                "maximum": 3,
-                "divisibleBy": 0.5
+                "default": 1,
+                "minimum": 1,
+                "maximum": 1.5,
+                "divisibleBy": 0.1
             }
         }
     });

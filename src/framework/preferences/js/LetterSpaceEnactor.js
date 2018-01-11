@@ -48,15 +48,30 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         modelListeners: {
-            value: {
+            unit: {
                 listener: "{that}.set",
                 args: ["{change}.value"]
             }
+        },
+        modelRelay: {
+            target: "unit",
+            singleTransform: {
+                type: "fluid.transforms.round",
+                scale: 1,
+                input: {
+                    transform: {
+                        "type": "fluid.transforms.linearScale",
+                        "offset": -1,
+                        "input": "{that}.model.value"
+                    }
+                }
+            }
+
         }
     });
 
     fluid.prefs.enactor.letterSpace.set = function (that, units) {
-        var targetSize = units  ? units + "px" : "normal";
+        var targetSize = units  ? units + "em" : "normal";
         that.root.css("letter-spacing", targetSize);
     };
 

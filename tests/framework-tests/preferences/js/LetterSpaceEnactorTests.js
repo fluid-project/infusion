@@ -23,7 +23,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.prefs.enactor.letterSpaceEnactor", {
         gradeNames: ["fluid.prefs.enactor.letterSpace"],
         model: {
-            value: 0
+            value: 1
         },
         fontSizeMap: fluid.tests.enactors.utils.fontSizeMap
     });
@@ -54,24 +54,24 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     event: "{letterSpaceTests letterSpace}.events.onCreate",
                     args: ["The letter space enactor was created"]
                 }, {
-                    func: "fluid.tests.letterSpaceTester.assertLineSpace",
-                    args: ["{letterSpace}", 0, "0"]
+                    func: "fluid.tests.letterSpaceTester.assertLetterSpace",
+                    args: ["{letterSpace}", {value: 1, unit: 0}]
                 }, {
                     func: "{letterSpace}.applier.change",
                     args: ["value", 2]
                 }, {
                     changeEvent: "{letterSpace}.applier.modelChanged",
                     spec: {path: "value", priority: "last:testing"},
-                    listener: "fluid.tests.letterSpaceTester.assertLineSpace",
-                    args: ["{letterSpace}", 2, "2px"]
+                    listener: "fluid.tests.letterSpaceTester.assertLetterSpace",
+                    args: ["{letterSpace}", {value: 2, unit: 1}]
                 }, {
                     func: "{letterSpace}.applier.change",
                     args: ["value", -0.5]
                 }, {
                     changeEvent: "{letterSpace}.applier.modelChanged",
                     spec: {path: "value", priority: "last:testing"},
-                    listener: "fluid.tests.letterSpaceTester.assertLineSpace",
-                    args: ["{letterSpace}", -0.5, "-0.5px"]
+                    listener: "fluid.tests.letterSpaceTester.assertLetterSpace",
+                    args: ["{letterSpace}", {value: -0.5, unit: -1.5}]
                 }, {
                     funcName: "fluid.tests.letterSpaceTester.reset"
                 }]
@@ -79,11 +79,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
-    fluid.tests.letterSpaceTester.assertLineSpace = function (that, expectedModelValue) {
-        var expectedLetterSpace = expectedModelValue ? expectedModelValue + "px" : "0";
-        jqUnit.assertEquals("The model value should be set to " + expectedModelValue, expectedModelValue, that.model.value);
-        jqUnit.assertEquals("The line-spacing css style should be set to " + expectedLetterSpace, expectedLetterSpace, that.root.css("letter-spacing"));
-        jqUnit.assertEquals("The line-spacing of the content is set to " + expectedLetterSpace, expectedLetterSpace, that.container.css("letter-spacing"));
+    fluid.tests.letterSpaceTester.assertLetterSpace = function (that, expectedModel) {
+        var pxVal = expectedModel.unit * 16; // convert from em to px
+        var expectedLetterSpace = pxVal ? pxVal + "px" : "0";
+        jqUnit.assertDeepEq("The model should be set correctly", expectedModel, that.model);
+        jqUnit.assertEquals("The letter-spacing css style should be set to " + expectedLetterSpace, expectedLetterSpace, that.root.css("letter-spacing"));
+        jqUnit.assertEquals("The letter-spacing of the content is set to " + expectedLetterSpace, expectedLetterSpace, that.container.css("letter-spacing"));
     };
 
     fluid.tests.letterSpaceTester.reset = function () {
