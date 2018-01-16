@@ -443,6 +443,7 @@ module.exports = function (grunt) {
             "clean",
             "lint",
             "stylus:compile",
+            "webfont",
             "modulefiles:" + target,
             "setPostBuildCleanUp:" + target,
             "pathMap:" + target,
@@ -474,6 +475,7 @@ module.exports = function (grunt) {
         var tasks = [
             "cleanForDist",
             "stylus:dist",
+            "webfont",
             "modulefiles:" + options.target,
             "pathMap:" + options.target,
             "copy:" + options.target,
