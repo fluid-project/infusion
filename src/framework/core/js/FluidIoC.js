@@ -440,16 +440,68 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.undistributableOptions = ["gradeNames", "distributeOptions", "argumentMap", "mergePolicy"]; // automatically added to "exclusions" of every distribution
 
+    fluid.distributeOptionsOne = function (that, record, targetRef, selector, context) {
+        fluid.pushActivity("distributeOptions", "parsing distributeOptions block %record %that ", {that: that, record: record});
+        var targetHead = fluid.resolveContext(context, that);
+        if (!targetHead) {
+            fluid.fail("Error in options distribution record ", record, " - could not resolve context {" + context + "} to a head component");
+        }
+        var thatShadow = fluid.shadowForComponent(that);
+        var targetSegs = fluid.model.parseEL(targetRef.path);
+        var preBlocks;
+        if (record.record !== undefined) {
+            preBlocks = [(fluid.makeDistributionRecord(that, record.record, [], targetSegs, []))];
+        }
+        else {
+            var source = fluid.parseContextReference(record.source);
+            if (source.context !== "that") {
+                fluid.fail("Error in options distribution record ", record, " only a source context of {that} is supported");
+            }
+            var sourceSegs = fluid.parseExpectedOptionsPath(source.path, "source");
+            var fullExclusions = fluid.makeArray(record.exclusions).concat(sourceSegs.length === 0 ? fluid.undistributableOptions : []);
+
+            var exclusions = fluid.transform(fullExclusions, function (exclusion) {
+                return fluid.model.parseEL(exclusion);
+            });
+
+            preBlocks = fluid.filterBlocks(that, thatShadow.mergeOptions.mergeBlocks, sourceSegs, targetSegs, exclusions, record.removeSource);
+            thatShadow.mergeOptions.updateBlocks(); // perhaps unnecessary
+        }
+        fluid.replicateProperty(record, "priority", preBlocks);
+        fluid.replicateProperty(record, "namespace", preBlocks);
+        // TODO: inline material has to be expanded in its original context!
+
+        if (selector) {
+            var distributionId = fluid.pushDistributions(targetHead, selector, record.target, preBlocks);
+            thatShadow.outDistributions = thatShadow.outDistributions || [];
+            thatShadow.outDistributions.push({
+                targetHeadId: targetHead.id,
+                distributionId: distributionId
+            });
+        }
+        else { // The component exists now, we must rebalance it
+            var targetShadow = fluid.shadowForComponent(targetHead);
+            fluid.applyDistributions(that, preBlocks, targetShadow);
+        }
+        fluid.popActivity();
+    };
+
+    /** Return the active tree transaction that is responsible for a currently creating component - since these are
+     * currently synchronous, we can just retrieve the currently active one.
+     */
+    fluid.treeTransactionForComponent = function (/* that */) {
+        var instantiator = fluid.globalInstantiator;
+        return instantiator.treeTransactions[instantiator.currentTreeTransaction];
+    };
+
     /* Evaluate the `distributeOptions` block in the options of a component, and mount the distribution in the appropriate
      * shadow for components yet to be constructed, or else apply it immediately to the merge blocks of any target
      * which is currently in evaluation.
      * This occurs early during the evaluation phase of the source component, during `fluid.computeComponentAccessor`
      */
     fluid.distributeOptions = function (that, optionsStrategy) {
-        var thatShadow = fluid.shadowForComponent(that);
         var records = fluid.driveStrategy(that.options, "distributeOptions", optionsStrategy);
         fluid.each(records, function distributeOptionsOne(record) {
-            fluid.pushActivity("distributeOptions", "parsing distributeOptions block %record %that ", {that: that, record: record});
             if (typeof(record.target) !== "string") {
                 fluid.fail("Error in options distribution record ", record, " a member named \"target\" must be supplied holding an IoC reference");
             }
@@ -457,60 +509,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 fluid.fail("Error in options distribution record ", record, ": must supply either a member \"source\" holding an IoC reference or a member \"record\" holding a literal record");
             }
             var targetRef = fluid.parseContextReference(record.target);
-            var targetHead, selector, context;
+            var selector, context;
             if (fluid.isIoCSSSelector(targetRef.context)) {
                 selector = fluid.parseSelector(targetRef.context, fluid.IoCSSMatcher);
-                var headContext = fluid.extractSelectorHead(selector);
-                if (headContext === "/") {
-                    targetHead = fluid.rootComponent;
-                } else {
-                    context = headContext;
-                }
+                context = fluid.extractSelectorHead(selector);
             }
             else {
                 context = targetRef.context;
             }
-            targetHead = targetHead || fluid.resolveContext(context, that);
-            if (!targetHead) {
-                fluid.fail("Error in options distribution record ", record, " - could not resolve context {" + context + "} to a head component");
+            if (context === "/" || context === "that") {
+                fluid.distributeOptionsOne(that, record, targetRef, selector, context);
+            } else {
+                var transRec = fluid.treeTransactionForComponent(that);
+                transRec.deferredDistributions.push({that: that, record: record, targetRef: targetRef, selector: selector, context: context});
             }
-            var targetSegs = fluid.model.parseEL(targetRef.path);
-            var preBlocks;
-            if (record.record !== undefined) {
-                preBlocks = [(fluid.makeDistributionRecord(that, record.record, [], targetSegs, []))];
-            }
-            else {
-                var source = fluid.parseContextReference(record.source);
-                if (source.context !== "that") {
-                    fluid.fail("Error in options distribution record ", record, " only a context of {that} is supported");
-                }
-                var sourceSegs = fluid.parseExpectedOptionsPath(source.path, "source");
-                var fullExclusions = fluid.makeArray(record.exclusions).concat(sourceSegs.length === 0 ? fluid.undistributableOptions : []);
-
-                var exclusions = fluid.transform(fullExclusions, function (exclusion) {
-                    return fluid.model.parseEL(exclusion);
-                });
-
-                preBlocks = fluid.filterBlocks(that, thatShadow.mergeOptions.mergeBlocks, sourceSegs, targetSegs, exclusions, record.removeSource);
-                thatShadow.mergeOptions.updateBlocks(); // perhaps unnecessary
-            }
-            fluid.replicateProperty(record, "priority", preBlocks);
-            fluid.replicateProperty(record, "namespace", preBlocks);
-            // TODO: inline material has to be expanded in its original context!
-
-            if (selector) {
-                var distributionId = fluid.pushDistributions(targetHead, selector, record.target, preBlocks);
-                thatShadow.outDistributions = thatShadow.outDistributions || [];
-                thatShadow.outDistributions.push({
-                    targetHeadId: targetHead.id,
-                    distributionId: distributionId
-                });
-            }
-            else { // The component exists now, we must rebalance it
-                var targetShadow = fluid.shadowForComponent(targetHead);
-                fluid.applyDistributions(that, preBlocks, targetShadow);
-            }
-            fluid.popActivity();
         });
     };
 
@@ -786,6 +798,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.resolveContext = function (context, that, fast) {
         if (context === "that") {
             return that;
+        } else if (context === "/") {
+            return fluid.rootComponent;
         }
         // TODO: Check performance impact of this type check introduced for FLUID-5903 in a very sensitive corner
         if (typeof(context) === "object") {
@@ -918,7 +932,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 // pathToPotentia: an aligned map of component paths to "potentia II records"
                 // pendingPotentia: an array of the segs for pathToPotentia which remain to be handled
             // }
-            currentTreeTransaction: null, // any instantiation in progress. In the current framework, these are still synchronous
+            // any instantiation in progress. In the current framework, these are still synchronous - in future, there will be a backlink from the shadow
+            currentTreeTransaction: null,
             composePath: fluid.model.composePath, // For speed, we declare that no component's name may contain a period
             composeSegments: fluid.model.composeSegments,
             parseEL: fluid.model.parseEL,
@@ -1307,9 +1322,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
-    fluid.concludeComponentInit = function (that, shadow) {
+    fluid.concludeComponentObservation = function (shadow) {
+        var that = shadow.that;
         var mergeOptions = shadow.mergeOptions;
-        fluid.pushActivity("concludeComponentInit", "constructing component of type %componentName at path %path",
+        fluid.pushActivity("concludeComponentObservation", "constructing component of type %componentName at path %path",
             {componentName: that.typeName, path: shadow.path});
 
         for (var i = 0; i < mergeOptions.mergeBlocks.length; ++i) {
@@ -1321,11 +1337,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         shadow.memberStrategy.initter();
         shadow.invokerStrategy.initter();
 
-        fluid.getForComponent(that, "modelRelay");
-        fluid.getForComponent(that, "model"); // trigger this as late as possible - but must be before components so that child component has model on its onCreate
-        if (fluid.isDestroyed(that)) {
-            return; // Further fix for FLUID-5869 - if we managed to destroy ourselves through some bizarre model self-reaction, bail out here
-        }
         fluid.each(that.options.components, function (subcomponentRecord, key) {
             if (subcomponentRecord.createOnEvent) {
                 fluid.bindDeferredComponent(that, key, subcomponentRecord);
@@ -1336,7 +1347,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 fluid.bindDeferredComponent(that, key, subcomponentRecord, true);
             }
         });
+        fluid.popActivity();
+    };
 
+    fluid.notifyInitModel = function (shadow) {
+        if (shadow.initModelEvent) {
+            shadow.initModelEvent();
+            delete shadow.initModelEvent;
+        }
+    };
+
+    fluid.concludeComponentInit = function (shadow) {
+        var that = shadow.that;
+        if (fluid.isDestroyed(that)) {
+            return; // Further fix for FLUID-5869 - if we managed to destroy ourselves through some bizarre model self-reaction, bail out here
+        }
         that.lifecycleStatus = "constructed";
         fluid.assessTreeConstruction(that, shadow);
 
@@ -1362,7 +1387,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return instantiator.parseEL(shadow.path);
     };
 
-    // Amalgamates any further creations with any existing potentia at a path
+    /** Amalgamates any further creations with any existing potentia at a path
+    * @param transRec {TreeTransactionRecord} The transaction record for the current tree transaction
+    * @param path {String} Path at which the potentia will be registered
+    * @param topush {Potentia} A "create" potentia
+    * @return {Potentia|Undefined} `topush` if this was the first potentia registered for this path
+    */
     fluid.pushPathedPotentia = function (transRec, path, topush) {
         var existing = transRec.pathToPotentiae[path];
         if (existing) {
@@ -1379,7 +1409,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *    type: {String} Either "create" or "destroy".
      *    path: {String|Array of String} Path where the component is to be constructed or destroyed, represented as a string or array of segments
      *    componentDepth: {Number} The depth of nesting of this record from the originally created component - defaults to 0
-     *    records: {Object} A component's construction record, as they would currently appear in a component's "options.components.x" record
+     *    records: {Array of Object} A component's construction record, as they would currently appear in a component's "options.components.x" record
      * @param transactionId {String} [optional] A transaction id in which to enlist this registration. If this is omitted, the current transaction
      * will be used, if there is one - otherwise, a fresh transaction will be allocated
      * @return {String} The id of the transaction used for this registration
@@ -1393,14 +1423,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             transRec = instantiator.treeTransactions[transactionId] = {
                 pathToPotentiae: {}, // aligned map of component paths to "potentia II records"
                 pendingPotentiae: [], // array of potentia which remain to be handled
-                restoreRecords: [] // accumulate a list of records to be executed in case the transaction is backed out
+                restoreRecords: [], // accumulate a list of records to be executed in case the transaction is backed out
+                deferredDistributions: [] // distributeOptions may decide to defer application of a distribution for FLUID-6193
             };
         }
         var segs = potentia.segs = potentia.segs || instantiator.parseToSegments(potentia.path);
         var path = potentia.path = instantiator.composeSegments.apply(null, segs);
         var newPotentia = potentia;
         // TODO: Check for and reject attempt to have more than one "main phase" of construction
-        if (potentia.type === "create" && potentia.records) {
+        if (potentia.type === "create" && potentia.records) { // TODO: Why might there be a "create" with no records?
             newPotentia = fluid.pushPathedPotentia(transRec, path, potentia);
         }
         if (newPotentia) {
@@ -1521,7 +1552,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var subPotentia = {
             type: "create",
             segs: newSegs,
-            records: [record], // This is awkward - what if we accumulate multiple records with different localRecords?
+            records: [record],
+            // This is awkward - what if we accumulate multiple records with different localRecords?
+            // Can't do much about this without "local mergePolicies" and provenance
             localRecord: localRecord
         };
         fluid.registerPotentia(subPotentia);
@@ -1556,6 +1589,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 });
             }
         });
+        var transRec = fluid.treeTransactionForComponent(shell);
+        if (transRec.deferredDistributions.length) { // Resolve FLUID-6193 in potentia world by enqueueing deferred distributions
+            transRec.pendingPotentiae.push({
+                type: "distributeOptions",
+                distributions: transRec.deferredDistributions
+            });
+            transRec.deferredDistributions = [];
+        }
     };
 
     // Begin the action of creating a component - register its shell and mergeOptions at the correct site, and evaluate
@@ -1635,14 +1676,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         instantiator = instantiator || fluid.globalInstantiator;
         var transRec = instantiator.treeTransactions[transactionId];
         var shadows = [];
-        try {
+        fluid.tryCatch(function () {
             instantiator.currentTreeTransaction = transactionId;
             while (transRec.pendingPotentiae.length > 0) {
                 var potentia = transRec.pendingPotentiae.shift();
-                var segs = potentia.segs || instantiator.parseToSegments(potentia.path);
-                potentia.segs = segs;
-                potentia.memberName = segs[segs.length - 1];
-                potentia.parentThat = fluid.getImmediate(fluid.rootComponent, segs.slice(0, -1));
+                if (potentia.segs || potentia.path) {
+                    var segs = potentia.segs || instantiator.parseToSegments(potentia.path);
+                    potentia.segs = segs;
+                    potentia.memberName = segs[segs.length - 1];
+                    potentia.parentThat = fluid.getImmediate(fluid.rootComponent, segs.slice(0, -1));
+                }
                 if (potentia.type === "create") {
                     var shadow = fluid.operateCreatePotentia(transRec, potentia);
                     if (shadow) {
@@ -1650,6 +1693,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     }
                 } else if (potentia.type === "destroy") {
                     fluid.operateDestroyPotentia(transRec, potentia);
+                } else if (potentia.type === "distributeOptions") {
+                    potentia.distributions.forEach(function (distro) {
+                        fluid.distributeOptionsOne(distro.that, distro.record, distro.targetRef, distro.selector, distro.context);
+                    });
                 } else {
                     fluid.fail("Unrecognised potentia type " + potentia.type);
                 }
@@ -1657,21 +1704,25 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             shadows.forEach(function (shadow) {
                 fluid.instantiateEvents(shadow.that, shadow);
             });
+            // GLOBAL WORKFLOW POINT is here
+            fluid.resolveModelSkeleton(shadows);
+
             // TODO: This workflow is just one of many possibilities. *THIS* is a new point at which we may suspend -
             // for example, in order to compute asynchronous resources, model skeleta, etc.
-            shadows.reverse().forEach(function (shadow) {
-                fluid.concludeComponentInit(shadow.that, shadow);
-            });
+            shadows.reverse();
+            shadows.forEach(fluid.concludeComponentObservation);
+            shadows.forEach(fluid.notifyInitModel);
+            shadows.forEach(fluid.concludeComponentInit);
             instantiator.currentTreeTransaction = null;
-        } catch (e) {
+        }, function (e) {
             if (!isCancel) {
                 fluid.cancelTransaction(transRec, instantiator);
                 throw e;
             }
-        } finally {
+        }, function () {
             instantiator.currentTreeTransaction = null;
             delete instantiator.treeTransactions[transactionId];
-        }
+        });
         return shadows;
     };
 

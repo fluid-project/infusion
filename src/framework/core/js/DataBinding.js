@@ -334,28 +334,22 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /** MODEL COMPONENT HIERARCHY AND RELAY SYSTEM **/
 
     fluid.initRelayModel = function (that) {
-        fluid.deenlistModelComponent(that);
+        // TODO: Fail if this request occurs before model is initialised
+        // fluid.deenlistModelComponent(that);
         return that.model;
     };
 
-    // TODO: This utility compensates for our lack of control over "wave of explosions" initialisation - we may
-    // catch a model when it is apparently "completely initialised" and that's the best we can do, since we have
-    // missed its own initial transaction
-
-    fluid.isModelComplete = function (that) {
-        return "model" in that && that.model !== fluid.inEvaluationMarker;
-    };
-
     // Enlist this model component as part of the "initial transaction" wave - note that "special transaction" init
-    // is indexed by component, not by applier, and has special record type (complete + initModel), not transaction
+    // is indexed by component, not by applier, and has special record type (completeOnInit + initModel), not transaction
     fluid.enlistModelComponent = function (that) {
         var instantiator = fluid.getInstantiator(that);
         var enlist = instantiator.modelTransactions.init[that.id];
         if (!enlist) {
+            var shadow = fluid.shadowForComponent(that);
             enlist = {
                 that: that,
-                applier: fluid.getForComponent(that, "applier"), // required for FLUID-5504 even though currently unused
-                complete: fluid.isModelComplete(that)
+                applier: fluid.getForComponent(that, "applier"),
+                completeOnInit: shadow.modelComplete
             };
             instantiator.modelTransactions.init[that.id] = enlist;
         }
@@ -422,13 +416,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
 
     /** Operate all coordinated transactions by bringing models to their respective initial values, and then commit them all
-     * @param that {Component} A representative component of the collection for which the initial transaction is to be operated
      * @param mrec {Object} The global model transaction record for the init transaction. This is a hash indexed by component id
      * to a model transaction record, as registered in `fluid.enlistModelComponent`. This has members `that`, `applier`, `complete`.
      */
-    fluid.operateInitialTransaction = function (that, mrec) {
+    fluid.operateInitialTransaction = function (mrec) {
         var transId = fluid.allocateGuid();
-        var transRec = fluid.getModelTransactionRec(that, transId);
+        var transRec = fluid.getModelTransactionRec(fluid.rootComponent, transId);
         var transac;
         var transacs = fluid.transform(mrec, function (recel) {
             transac = recel.that.applier.initiate(null, "init", transId);
@@ -477,30 +470,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
 
         transac.commit(); // committing one representative transaction will commit them all
-    };
-
-    // This modelComponent has now concluded initialisation - commit its initialisation transaction if it is the last such in the wave
-    fluid.deenlistModelComponent = function (that) {
-        var instantiator = fluid.getInstantiator(that);
-        var mrec = instantiator.modelTransactions.init;
-        if (!mrec[that.id]) { // avoid double evaluation through currently hacked "members" implementation
-            return;
-        }
-        that.model = undefined; // Abuse of the ginger system - in fact it is "currently in evaluation" - we need to return a proper initial model value even if no init occurred yet
-        mrec[that.id].complete = true; // flag means - "complete as in ready to participate in this transaction"
-        var incomplete = fluid.find_if(mrec, function (recel) {
-            return recel.complete !== true;
-        });
-        if (!incomplete) {
-            try { // For FLUID-6195 ensure that exceptions during init relay don't leave the framework unusable
-                fluid.operateInitialTransaction(that, mrec);
-            } catch (e) {
-                fluid.clearTransactions();
-                throw e;
-            }
-            // NB: Don't call fluid.concludeTransaction since "init" is not a standard record - this occurs in commitRelays for the corresponding genuine record as usual
-            instantiator.modelTransactions.init = {};
-        }
     };
 
     fluid.parseModelReference = function (that, ref) {
@@ -602,10 +571,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // as well as looking up source id (linkId in below) to count/true
     // Through poor implementation quality, not every access passes through this function - some look up instantiator.modelTransactions directly
     fluid.getModelTransactionRec = function (that, transId) {
-        var instantiator = fluid.getInstantiator(that);
         if (!transId) {
             fluid.fail("Cannot get transaction record without transaction id");
         }
+        var instantiator = fluid.isComponent(that) && !fluid.isDestroyed(that) ? fluid.globalInstantiator : null;
         if (!instantiator) {
             return null;
         }
@@ -786,18 +755,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
     fluid.connectModelRelay = function (source, sourceSegs, target, targetSegs, options) {
         var linkId = fluid.allocateGuid();
-        function enlistComponent(component) {
-            var enlist = fluid.enlistModelComponent(component);
-
-            if (enlist.complete) {
-                var shadow = fluid.shadowForComponent(component);
-                if (shadow.modelComplete) {
-                    enlist.completeOnInit = true;
-                }
-            }
-        }
-        enlistComponent(target);
-        enlistComponent(source); // role of "source" and "target" are swapped in case iii)B)
+        fluid.enlistModelComponent(target);
+        fluid.enlistModelComponent(source); // role of "source" and "target" are swapped in case iii)B)
         var npOptions = fluid.filterKeys(options, ["namespace", "priority"]);
 
         if (options.update) { // it is a call for a relay document - ii) or iii)B)
@@ -1100,6 +1059,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return updates;
     };
 
+    /** The main entry point for enlisting a model component in the initial transaction. Positioned as a "fake member"
+     * which evalutes to null. Calls fluid.enlistModelComponent to register record in instantiator.modelTransactions.init
+     */
     fluid.establishModelRelay = function (that, optionsModel, optionsML, optionsMR, applier) {
         var shadow = fluid.shadowForComponent(that);
         if (!shadow.modelRelayEstablished) {
@@ -1107,7 +1069,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         } else {
             fluid.fail("FLUID-5887 failure: Model relay initialised twice on component", that);
         }
-        fluid.mergeModelListeners(that, optionsML);
 
         var enlist = fluid.enlistModelComponent(that);
         fluid.each(optionsMR, function (mrrec, key) {
@@ -1146,6 +1107,36 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         applier.postCommit.addListener(concludeTransaction);
 
         return null;
+    };
+
+    fluid.resolveModelSkeleton = function (shadows) {
+        var instantiator = fluid.globalInstantiator;
+        var modelComponents = shadows.filter(function (shadow) {
+            return fluid.componentHasGrade(shadow.that, "fluid.modelComponent");
+        });
+        if (modelComponents.length > 0) {
+            fluid.tryCatch(function () { // For FLUID-6195 ensure that exceptions during init relay don't leave the framework unusable
+                modelComponents.forEach(function (shadow) {
+                    fluid.getForComponent(shadow.that, "modelRelay"); // invoke fluid.establishModelRelay and enlist each component
+                });
+                fluid.operateInitialTransaction(instantiator.modelTransactions.init);
+                // Do this afterwards so that model listeners can be fired by concludeComponentInit
+                modelComponents.forEach(function (shadow) {
+                    var that = shadow.that;
+                    fluid.mergeModelListeners(that, that.options.modelListeners);
+                    shadow.initModelEvent = function () {
+                        var trans = that.applier.initiate(null, "init");
+                        fluid.initModelEvent(that, that.applier, trans, that.applier.transListeners.sortedListeners);
+                        trans.commit();
+                    };
+                });
+                // NB: Don't call fluid.concludeTransaction since "init" is not a standard record - this occurs in commitRelays for the corresponding genuine record as usual
+                instantiator.modelTransactions.init = {};
+            }, function (e) {
+                fluid.clearTransactions();
+                throw e;
+            }, fluid.identity);
+        }
     };
 
     // supported, PUBLIC API grade
@@ -1223,22 +1214,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             spec = parsed.applier.modelChanged.addListener(spec, func, namespace, record.softNamespace);
 
             fluid.recordChangeListener(that, parsed.applier, func, spec.listenerId);
-            function initModelEvent() {
-                if (fluid.isModelComplete(parsed.that)) {
-                    var trans = parsed.applier.initiate(null, "init");
-                    fluid.initModelEvent(that, parsed.applier, trans, [spec]);
-                    trans.commit();
-                }
-            }
-            if (that !== parsed.that && !fluid.isModelComplete(that)) { // TODO: Use FLUID-4883 "latched events" when available
-                // Don't confuse the end user by firing their listener before the component is constructed
-                // TODO: Better detection than this is requred - we assume that the target component will not be discovered as part
-                // of the initial transaction wave, but if it is, it will get a double notification - we really need "wave of explosions"
-                // since we are currently too early in initialisation of THIS component in order to tell if other will be found
-                // independently.
-                var onCreate = fluid.getForComponent(that, ["events", "onCreate"]);
-                onCreate.addListener(initModelEvent);
-            }
         });
     };
 
@@ -1731,7 +1706,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 fluid.mergeChangeSources(transRec.sources, globalSources);
                 trans.sources = transRec.sources;
                 trans.fullSources = Object.create(transRec.sources);
-                trans.fullSources[localSource] = true;
+                if (localSource) {
+                    trans.fullSources[localSource] = true;
+                }
             }
             trans.reset();
             fluid.bindRequestChange(trans);

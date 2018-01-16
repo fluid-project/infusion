@@ -222,6 +222,31 @@ var fluid = fluid || fluid_3_0_0;
         }
     };
 
+    fluid.notrycatch = false;
+
+    // A wrapper for the try/catch/finally language feature, to aid debugging in the QUnit UI by means of exception breakpoints for
+    // uncaught exceptions, since so many libraries, e.g. jQuery throw junk caught exceptions on startup
+    fluid.tryCatch = function (tryfun, catchfun, finallyfun) {
+        finallyfun = finallyfun || fluid.identity;
+        if (fluid.notrycatch) {
+            var togo = tryfun();
+            finallyfun();
+            return togo;
+        } else {
+            try {
+                return tryfun();
+            } catch (e) {
+                if (catchfun) {
+                    catchfun(e);
+                } else {
+                    throw (e);
+                }
+            } finally {
+                finallyfun();
+            }
+        }
+    };
+
     // TODO: rescued from kettleCouchDB.js - clean up in time
     fluid.expect = function (name, target, members) {
         fluid.transform(fluid.makeArray(members), function (key) {
