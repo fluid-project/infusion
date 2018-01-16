@@ -4,6 +4,7 @@
 /node_modules/
 /src/components/switch/css/*.css
 /src/framework/preferences/css/*.css
+/src/framework/preferences/fonts/
 /.bundle/
 /.vagrant/
 report.tap
