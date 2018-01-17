@@ -20,7 +20,16 @@
     "main": "./src/module/fluid.js",
     "scripts": {
         "prepublish": "npm run buildDists && npm run buildStylus",
-        "test": "node tests/node-tests/basic-node-tests.js",
+        "pretest": "npm run pretest:cleanup && npm run pretest:instrument",
+        "pretest:cleanup": "node node_modules/rimraf/bin.js reports/* coverage/* instrumented/*",
+        "pretest:instrument": "node node_modules/gpii-testem/src/js/instrumenter-launcher.js --optionsFile tests/configs/fluid.tests.instrumenter.json --inputPath src --outputPath instrumented/src",
+        "test": "npm run test:browser && npm run test:node",
+        "test:browser": "node node_modules/testem/testem.js ci --file tests/testem.js",
+        "test:node": "node node_modules/istanbul/lib/cli.js cover tests/node-tests/basic-node-tests.js --report none --print none",
+        "test:vagrant": "vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm test'",
+        "test:vagrantBrowser": "vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm run test:browser'",
+        "test:vagrantNode": "vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm run test:node'",
+        "posttest": "node node_modules/istanbul/lib/cli.js report --root coverage --dir reports text-summary html",
         "buildDists": "grunt buildDists",
         "buildStylus": "grunt buildStylus"
     },
@@ -33,6 +42,7 @@
     "devDependencies": {
         "eslint-config-fluid": "1.2.0",
         "fluid-grunt-eslint": "18.1.2",
+        "gpii-testem": "2.0.0-dev.20180110T125546Z.2aa56e8",
         "grunt": "1.0.1",
         "grunt-contrib-clean": "1.1.0",
         "grunt-contrib-compress": "1.4.3",
@@ -46,6 +56,10 @@
         "grunt-shell": "2.1.0",
         "grunt-webfont": "1.6.0",
         "infusion-icons": "1.0.0-dev.20171003T175157Z.6251d4e",
-        "lodash": "4.17.4"
+        "istanbul": "git://github.com/the-t-in-rtf/istanbul#828eb930add7bd663ca20649a917f3f3829e48c5",
+        "lodash": "4.17.4",
+        "ncp": "2.0.0",
+        "rimraf": "2.6.2",
+        "testem": "1.18.4"
     }
 }
