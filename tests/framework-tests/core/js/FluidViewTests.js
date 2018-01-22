@@ -178,9 +178,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
 
         jqUnit.test("FLUID-5277: Improve the error message when an nonexistent container is provided for fluid.viewComponent and fluid.rendererComponent", function () {
-            jqUnit.expectFrameworkDiagnostic("Nonexist container for relay component", function () {
+            jqUnit.expectFrameworkDiagnostic("Nonexistent container", function () {
                 fluid.tests.fluid5277("#nonexistent-container");
-            }, "did not match any markup");
+            }, ["No container element was found", "#nonexistent-container"]);
         });
 
         fluid.defaults("fluid.tests.testGradedView", {

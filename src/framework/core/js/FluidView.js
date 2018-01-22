@@ -22,12 +22,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.defaults("fluid.viewComponent", {
         gradeNames: ["fluid.modelComponent"],
-        initFunction: "fluid.initView",
         argumentMap: {
             container: 0,
             options: 1
         },
-        members: { // Used to allow early access to DOM binder via IoC, but to also avoid triggering evaluation of selectors
+        members: {
+            container: "@expand:fluid.containerForViewComponent({that}, {that}.options.container)",
             dom: "@expand:fluid.initDomBinder({that}, {that}.options.selectors)"
         }
     });
@@ -98,8 +98,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 containerSpec = container.selector;
             }
             var count = container.length !== undefined ? container.length : 0;
+            var extraMessage = container.selectorName ? " with selector name " + container.selectorName +
+                " in context " + fluid.dumpEl(containerSpec.context) : "";
             fluid.fail((count > 1 ? "More than one (" + count + ") container elements were"
-                    : "No container element was") + " found for selector " + containerSpec);
+                    : "No container element was") + " found for selector " + containerSpec + extraMessage );
         }
         if (!fluid.isDOMNode(container[0])) {
             fluid.fail("fluid.container was supplied a non-jQueryable element");
@@ -210,45 +212,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
-    /**
-     * The central initialiation method called as the first act of every Fluid
-     * component. This function automatically merges user options with defaults,
-     * attaches a DOM Binder to the instance, and configures events.
-     *
-     * @param {String} componentName The unique "name" of the component, which will be used
-     * to fetch the default options from store. By recommendation, this should be the global
-     * name of the component's creator function.
-     * @param {jQueryable} container A specifier for the single root "container node" in the
-     * DOM which will house all the markup for this component.
-     * @param {Object} userOptions The configuration options for this component.
-     */
-     // 4th argument is NOT SUPPORTED, see comments for initLittleComponent
-    fluid.initView = function (componentName, containerSpec, userOptions, localOptions) {
-        var container = fluid.container(containerSpec, true);
-        fluid.expectFilledSelector(container, "Error instantiating component with name \"" + componentName);
-        if (!container) {
-            return null;
-        }
-        // Need to ensure container is set early, without relying on an IoC mechanism - rethink this with asynchrony
-        var receiver = function (that) {
-            that.container = container;
-        };
-        // THIS is the only point localOptions was used - now trashed
-        var that = fluid.initLittleComponent(componentName, userOptions, localOptions || {gradeNames: ["fluid.viewComponent"]}, receiver);
-
-        if (!that.dom) {
-            fluid.initDomBinder(that);
-        }
-        // TODO: cannot afford a mutable container - put this into proper workflow
-        var userJQuery = that.options.jQuery; // Do it a second time to correct for jQuery injection
-        // if (userJQuery) {
-        //    container = fluid.container(containerSpec, true, userJQuery);
-        // }
-        fluid.log("Constructing view component " + componentName + " with container " + container.constructor.expando +
-            (userJQuery ? " user jQuery " + userJQuery.expando : "") + " env: " + $.expando);
-
-        return that;
-    };
+    fluid.containerForViewComponent = function (that, containerSpec) {
+        var container = fluid.container(containerSpec);
+        fluid.expectFilledSelector(container, "Error instantiating viewComponent at path \"" + fluid.pathForComponent(that));
+        return container;
+    }
 
     /**
      * Creates a new DOM Binder instance for the specified component and mixes it in.

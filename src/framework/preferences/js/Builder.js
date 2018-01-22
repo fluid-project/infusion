@@ -119,7 +119,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             prefsEditorLoader: {
                 type: "fluid.viewComponent",
                 container: "{fluid.prefs.assembler.prefsEd}.container",
-                priority: "last",
+//                priority: "last",
                 options: {
                     gradeNames: [
                         "{fluid.prefs.assembler.prefsEd}.options.componentGrades.terms",

@@ -26,7 +26,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         outerUiEnhancerGrades: "{originalEnhancerOptions}.uiEnhancer.options.userGrades",
         components: {
             prefsEditor: {
-                container: "{that}.container",
                 options: {
                     components: {
                         preview: {

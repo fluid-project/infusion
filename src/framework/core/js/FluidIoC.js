@@ -823,9 +823,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 return shadow.ownScope[context];
             } else {
                 var thatStack = instantiator.getFullStack(that);
-                fluid.visitComponentsForVisibility(instantiator, thatStack, function (component) {
+                fluid.visitComponentsForVisibility(instantiator, thatStack, function (component, memberName) {
                     var shadow = fluid.shadowForComponent(component);
-                    if (shadow.contextHash[context]) {
+                    var scopeValue = shadow.contextHash[context];
+                    // Replace "memberName" member of contextHash from original site with memberName from injection site -
+                    // need to mirror "fast" action of recordComponent in composing childrenScope
+                    if (scopeValue && scopeValue !== "memberName" || context === memberName) {
                         foundComponent = component;
                         return true; // YOUR VISIT IS AT AN END!!
                     }
@@ -1217,7 +1220,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 priority: fluid.mergeRecordTypes.distribution,
                 options: {
                     container: container
-                }
+                },
+                contextThat: potentia.parentThat
             });
         }
 
@@ -1282,7 +1286,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 type: "create",
                 records: [filteredRecord],
                 localRecord: localRecord
-            }, transactionId);
+            }, transactionId, true);
             fluid.popActivity();
         };
         event.addListener(constructListener);
@@ -1290,7 +1294,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var concludeListener = function () {
             if (instantiator.currentTreeTransaction) {
                 fluid.commitPotentiae(instantiator.currentTreeTransaction);
-                instantiator.currentTreeTransaction = null;
             }
         };
         event.addListener(concludeListener, null, "last:transaction");
@@ -1393,17 +1396,53 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     * @param topush {Potentia} A "create" potentia
     * @return {Potentia|Undefined} `topush` if this was the first potentia registered for this path
     */
-    fluid.pushPathedPotentia = function (transRec, path, topush) {
-        var existing = transRec.pathToPotentiae[path];
+    fluid.pushPathedPotentia = function (pathToPotentiae, path, topush) {
+        var existing = pathToPotentiae[path];
         if (existing) {
             Array.prototype.push.apply(existing.records, topush.records);
         } else {
-            transRec.pathToPotentiae[path] = topush;
+            pathToPotentiae[path] = topush;
             return topush;
         }
     };
 
-    /** Signature as for fluid.construct. Registers the intention of constructing or destroying a component at a particular path. The action will
+    fluid.blankPotentiaList = function () {
+        return {
+            destroys: [],
+            creates: [],
+            pathToPotentiae: {} // aligned map of component paths to "potentia II records"
+        };
+    };
+
+    /** Push the supplied potentia onto the appropriate potentiaList within the transaction record.
+     * Any "delete" which is issued if the "create" phase is in progress will go into the deferred list.
+     * Any "create" which is issued with `defer === true` will go into the deferred list if there are deferred destroys
+     * @param transRec {TreeTransactionRecord} The transaction record for the current tree transaction
+     * @param potentia {Potentia} A potentia to be registered
+     * @param defer {Boolean} [optional] Whether a "create" potentia might need to be deferred.
+     */
+    fluid.pushPotentia = function (transRec, instantiator, potentia, defer) {
+        var pendingPotentiae = transRec.pendingPotentiae,
+            deferredPotentiae = transRec.deferredPotentiae;
+        var segs = potentia.segs = potentia.segs || instantiator.parseToSegments(potentia.path);
+        var path = potentia.path = instantiator.composeSegments.apply(null, segs);
+
+
+        if (potentia.type === "destroy") {
+            (pendingPotentiae.creates.length === 0 ? pendingPotentiae.destroys : deferredPotentiae.destroys).push(potentia);
+        } else {
+            var potentiaList = defer && deferredPotentiae.destroys.length > 0 ? deferredPotentiae : pendingPotentiae;
+            var newPotentia = potentia;
+            if (potentia.type === "create" && potentia.records) { // TODO: Why might there be a "create" with no records?
+                newPotentia = fluid.pushPathedPotentia(potentiaList.pathToPotentiae, path, potentia);
+            }
+            if (newPotentia) {
+                potentiaList.creates.push(potentia);
+            };
+        }
+    };
+
+    /** Signature as for `fluid.construct`. Registers the intention of constructing or destroying a component at a particular path. The action will
      * occur once the transaction is committed.
      * @param potentia {Object} A record designating the kind of change to occur. Fields:
      *    type: {String} Either "create" or "destroy".
@@ -1411,32 +1450,26 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *    componentDepth: {Number} The depth of nesting of this record from the originally created component - defaults to 0
      *    records: {Array of Object} A component's construction record, as they would currently appear in a component's "options.components.x" record
      * @param transactionId {String} [optional] A transaction id in which to enlist this registration. If this is omitted, the current transaction
-     * will be used, if there is one - otherwise, a fresh transaction will be allocated
+     *     will be used, if there is one - otherwise, a fresh transaction will be allocated
+     * @param defer {Boolean} [optional] For a "create" potentia, this can be set to `true` if it is known that the potentia may need to be honoured
+     *     after an already issued "delete" which might have been deferred as a result of a "create" phase already being in progress.
      * @return {String} The id of the transaction used for this registration
      */
-    fluid.registerPotentia = function (potentia, transactionId) {
+    fluid.registerPotentia = function (potentia, transactionId, defer) {
         var instantiator = fluid.globalInstantiator;
         transactionId = transactionId || instantiator.currentTreeTransaction || fluid.allocateGuid();
 
         var transRec = instantiator.treeTransactions[transactionId];
         if (!transRec) {
             transRec = instantiator.treeTransactions[transactionId] = {
-                pathToPotentiae: {}, // aligned map of component paths to "potentia II records"
-                pendingPotentiae: [], // array of potentia which remain to be handled
-                restoreRecords: [], // accumulate a list of records to be executed in case the transaction is backed out
+                pendingPotentiae: fluid.blankPotentiaList(), // array of potentia which remain to be handled
+                deferredPotentiae: fluid.blankPotentiaList(), // potentia from any next phase
+                restoreRecords: fluid.blankPotentiaList(), // accumulate a list of records to be executed in case the transaction is backed out
                 deferredDistributions: [] // distributeOptions may decide to defer application of a distribution for FLUID-6193
             };
         }
-        var segs = potentia.segs = potentia.segs || instantiator.parseToSegments(potentia.path);
-        var path = potentia.path = instantiator.composeSegments.apply(null, segs);
-        var newPotentia = potentia;
-        // TODO: Check for and reject attempt to have more than one "main phase" of construction
-        if (potentia.type === "create" && potentia.records) { // TODO: Why might there be a "create" with no records?
-            newPotentia = fluid.pushPathedPotentia(transRec, path, potentia);
-        }
-        if (newPotentia) {
-            transRec.pendingPotentiae.push(potentia);
-        };
+        fluid.pushPotentia(transRec, instantiator, potentia, defer);
+
         return transactionId;
     };
 
@@ -1591,7 +1624,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
         var transRec = fluid.treeTransactionForComponent(shell);
         if (transRec.deferredDistributions.length) { // Resolve FLUID-6193 in potentia world by enqueueing deferred distributions
-            transRec.pendingPotentiae.push({
+            transRec.pendingPotentiae.creates.push({
                 type: "distributeOptions",
                 distributions: transRec.deferredDistributions
             });
@@ -1634,7 +1667,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 potentia.records, " as designating either an injected or concrete component");
         }
 
-        transRec.restoreRecords.unshift({
+        transRec.restoreRecords.destroys.unshift({
             type: "destroy",
             segs: potentia.segs
         });
@@ -1650,19 +1683,22 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             instantiator.clearComponent(potentia.parentThat, potentia.memberName, that);
             // Store the record that if this transaction is cancelled, the potentia which constructed this component
             // should be used to recreate it
-            transRec.restoreRecords.unshift(shadow.potentia);
+            transRec.restoreRecords.creates.unshift(shadow.potentia);
         }
     };
 
-    // The transaction record must previously have been sent to fluid.commitPotentiae
+    // The transaction record must previously have been sent to fluid.commitPotentiae TODO why?
+    /** Cancel the transaction represented by the supplied tree transaction record. Any actions journalled in its member
+     * `restoreRecords` will be undone by a further call to `fluid.commitPotentiae`.
+     */
     fluid.cancelTransaction = function (transRec, instantiator) {
         var transactionId;
         instantiator = instantiator || fluid.globalInstantiator;
         try {
             transRec.pendingPotentiae = transRec.restoreRecords;
-            transRec.restoreRecords = [];
+            transRec.restoreRecords = fluid.blankPotentiaList();
             transactionId = instantiator.currentTreeTransaction;
-            fluid.commitPotentiae(transactionId, true, instantiator);
+            fluid.commitPotentiae(transactionId, true);
         } catch (e) {
             fluid.log(fluid.logLevels.FAIL, "Fatal error cancelling transaction " + transactionId + ": destroying all affected paths");
             transRec.restoreRecords.forEach(function (potentia) {
@@ -1672,58 +1708,96 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
-    fluid.commitPotentiae = function (transactionId, isCancel, instantiator) {
-        instantiator = instantiator || fluid.globalInstantiator;
-        var transRec = instantiator.treeTransactions[transactionId];
-        var shadows = [];
-        fluid.tryCatch(function () {
-            instantiator.currentTreeTransaction = transactionId;
-            while (transRec.pendingPotentiae.length > 0) {
-                var potentia = transRec.pendingPotentiae.shift();
-                if (potentia.segs || potentia.path) {
-                    var segs = potentia.segs || instantiator.parseToSegments(potentia.path);
-                    potentia.segs = segs;
-                    potentia.memberName = segs[segs.length - 1];
-                    potentia.parentThat = fluid.getImmediate(fluid.rootComponent, segs.slice(0, -1));
-                }
-                if (potentia.type === "create") {
-                    var shadow = fluid.operateCreatePotentia(transRec, potentia);
-                    if (shadow) {
-                        shadows.push(shadow);
-                    }
-                } else if (potentia.type === "destroy") {
-                    fluid.operateDestroyPotentia(transRec, potentia);
-                } else if (potentia.type === "distributeOptions") {
-                    potentia.distributions.forEach(function (distro) {
-                        fluid.distributeOptionsOne(distro.that, distro.record, distro.targetRef, distro.selector, distro.context);
-                    });
-                } else {
-                    fluid.fail("Unrecognised potentia type " + potentia.type);
-                }
-            };
-            shadows.forEach(function (shadow) {
-                fluid.instantiateEvents(shadow.that, shadow);
-            });
-            // GLOBAL WORKFLOW POINT is here
-            fluid.resolveModelSkeleton(shadows);
+    fluid.preparePathedPotentia = function (potentia, instantiator) {
+        var segs = potentia.segs || instantiator.parseToSegments(potentia.path);
+        potentia.segs = segs;
+        potentia.memberName = segs[segs.length - 1];
+        potentia.parentThat = fluid.getImmediate(fluid.rootComponent, segs.slice(0, -1));
+    };
 
-            // TODO: This workflow is just one of many possibilities. *THIS* is a new point at which we may suspend -
-            // for example, in order to compute asynchronous resources, model skeleta, etc.
-            shadows.reverse();
-            shadows.forEach(fluid.concludeComponentObservation);
-            shadows.forEach(fluid.notifyInitModel);
-            shadows.forEach(fluid.concludeComponentInit);
-            instantiator.currentTreeTransaction = null;
-        }, function (e) {
-            if (!isCancel) {
-                fluid.cancelTransaction(transRec, instantiator);
-                throw e;
-            }
-        }, function () {
-            instantiator.currentTreeTransaction = null;
-            delete instantiator.treeTransactions[transactionId];
+    /** Operate one phase of a tree transaction, consisting of a list of component destructions and a list of
+     * component creations.
+     */
+    fluid.commitPotentiaePhase = function (transRec, instantiator) {
+        var pendingPotentiae = transRec.pendingPotentiae;
+        pendingPotentiae.destroys.forEach(function (potentia) {
+            fluid.preparePathedPotentia(potentia, instantiator);
+            fluid.operateDestroyPotentia(transRec, potentia);
         });
-        return shadows;
+        var shadows = [];
+        for (var i = 0; i < pendingPotentiae.creates.length; ++i) {
+            var potentia = pendingPotentiae.creates[i]; // not "forEach" since further elements will accumulate during construction
+            if (potentia.type === "create") {
+                fluid.preparePathedPotentia(potentia, instantiator);
+                var shadow = fluid.operateCreatePotentia(transRec, potentia);
+                if (shadow) {
+                    shadows.push(shadow);
+                }
+            } else if (potentia.type === "distributeOptions") {
+                potentia.distributions.forEach(function (distro) {
+                    fluid.distributeOptionsOne(distro.that, distro.record, distro.targetRef, distro.selector, distro.context);
+                });
+            } else {
+                fluid.fail("Unrecognised potentia type " + potentia.type);
+            }
+        }
+        var togo = shadows[0]; // We need to track the first created shadow to support constructing free components
+        shadows.forEach(function (shadow) {
+            fluid.instantiateEvents(shadow.that, shadow);
+        });
+        // GLOBAL WORKFLOW POINT is here
+        fluid.resolveModelSkeleton(shadows);
+
+        // TODO: This workflow is just one of many possibilities. *THIS* is a new point at which we may suspend -
+        // for example, in order to compute asynchronous resources, model skeleta, etc.
+        shadows.reverse();
+        shadows.forEach(fluid.concludeComponentObservation);
+        shadows.forEach(fluid.notifyInitModel);
+        shadows.forEach(fluid.concludeComponentInit);
+        return togo;
+    };
+
+    fluid.isPopulatedPotentiaList = function (potentiaList) {
+        return potentiaList.creates.length > 0 || potentiaList.destroys.length > 0;
+    };
+
+    /** Commit all potentiae that have been enqueued through calls to fluid.registerPotentia for the supplied transaction, 
+     * as well as any further potentiae which become enqueued through construction of these, potentially in multiple phases
+     * @param transactionId {String} The tree transaction to be committed
+     * @param isCancel {Boolean} [optional] `true` if this commit action is a result of cancelling a previous transaction. In this case
+     *     the `pendingPotentia` element of the transaction will have been derived from the `restoreRecords` of that transaction.
+     * @return {Shadow} The shadow record for the first component to be constructed during the transaction, if any.
+     */ 
+    fluid.commitPotentiae = function (transactionId, isCancel) {
+        var instantiator = fluid.globalInstantiator;
+        var transRec = instantiator.treeTransactions[transactionId];
+
+        if (transRec.commitInProgress) {
+            return; // Don't re-enter, e.g. in the case of a createOnEvent component timed on an onCreate event
+        } else {
+            transRec.commitInProgress = true;
+            var togo;
+    
+            fluid.tryCatch(function () {
+                instantiator.currentTreeTransaction = transactionId;
+                while (fluid.isPopulatedPotentiaList(transRec.pendingPotentiae)) {
+                    var firstShadow = fluid.commitPotentiaePhase(transRec, instantiator);
+                    togo = togo || firstShadow;
+                    transRec.pendingPotentiae = transRec.deferredPotentiae;
+                    transRec.deferredPotentiae = fluid.blankPotentiaList();
+                }
+                instantiator.currentTreeTransaction = null;
+            }, function (e) {
+                if (!isCancel) {
+                    fluid.cancelTransaction(transRec, instantiator);
+                    throw e;
+                }
+            }, function () {
+                instantiator.currentTreeTransaction = null;
+                delete instantiator.treeTransactions[transactionId];
+            });
+            return togo;
+        }
     };
 
     /** Construct a component with the supplied options at the specified path in the component tree. The parent path of the location must already be a component.
@@ -1759,7 +1833,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         };
         fluid.registerPotentia(potentia, localTransaction);
         if (!constructOptions.transactionId) {
-            fluid.commitPotentiae(localTransaction, instantiator);
+            fluid.commitPotentiae(localTransaction);
         }
         return fluid.getImmediate(fluid.rootComponent, potentia.segs);
     };
