@@ -391,6 +391,61 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("Array copy", array, copy);
     });
 
+    jqUnit.test("flattenObjectPaths: deep values", function () {
+        var originalObject = {
+            path: {
+                to: {
+                    value: "foo"
+                }
+            },
+            otherPath: {
+                to: {
+                    otherValue: "bar"
+                }
+            }
+        };
+        var output         = fluid.flattenObjectPaths(originalObject);
+        var expectedValue = {
+            "path": "[object Object]",
+            "path.to": "[object Object]",
+            "path.to.value": "foo",
+            "otherPath": "[object Object]",
+            "otherPath.to": "[object Object]",
+            "otherPath.to.otherValue": "bar"
+        };
+        jqUnit.assertDeepEq("Deep values should be flattened correctly.", expectedValue, output);
+    });
+
+    jqUnit.test("flattenObjectPaths: reflattening", function () {
+        var originalObject = { "deep.path.to.value": "foo"};
+        var output = fluid.flattenObjectPaths(originalObject);
+        jqUnit.assertDeepEq("A preflattened object should remain unchanged when flattened again.", originalObject, output);
+    });
+
+    jqUnit.test("flattenObjectPaths: top-level array", function () {
+        var originalObject = ["monkey", "fighting", "snakes"];
+        var output = fluid.flattenObjectPaths(originalObject);
+        jqUnit.assertDeepEq("A top-level array should be flattened correctly.", { 0: "monkey", 1: "fighting", 2: "snakes"}, output);
+    });
+
+    jqUnit.test("flattenObjectPaths: deep array", function () {
+        var originalObject = { "plane": ["monday", "to", "friday"]};
+        var output = fluid.flattenObjectPaths(originalObject);
+        jqUnit.assertDeepEq("A deep array should be flattened correctly.", { "plane": "monday,to,friday", "plane.0": "monday", "plane.1": "to", "plane.2": "friday"}, output);
+    });
+
+    jqUnit.test("flattenObjectPaths: deep empty objects", function () {
+        var originalObject = { deeply: { empty: {}, nonEmpty: true }};
+        var output = fluid.flattenObjectPaths(originalObject);
+        jqUnit.assertDeepEq("A deep empty object should be handled appropriately.", { "deeply": "[object Object]", "deeply.empty": "[object Object]", "deeply.nonEmpty": true }, output);
+    });
+
+    jqUnit.test("flattenObjectPaths: empty object", function () {
+        var originalObject = {};
+        var output = fluid.flattenObjectPaths(originalObject);
+        jqUnit.assertDeepEq("A top-level empty object should be handled correctly.", {}, output);
+    });
+
     jqUnit.test("stringTemplate: greedy", function () {
         var template = "%tenant/%tenantname",
             tenant = "../tenant",
@@ -548,6 +603,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertEquals("The template strings should match.", expected, result);
     });
 
+    jqUnit.test("stringTemplate: EL paths (FLUID-6237)", function () {
+        var template = "Deep EL paths %deep.path.to.value.";
+        var data = {
+            deep: {
+                path: {
+                    to: {
+                        value: "are working"
+                    }
+                }
+            }
+        };
+        var expected = "Deep EL paths are working.";
+        var result = fluid.stringTemplate(template, data);
+        jqUnit.assertEquals("The templat strings should match.", expected, result);
+    });
 
     var testDefaults = {
         gradeNames: "fluid.component",

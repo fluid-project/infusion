@@ -2862,21 +2862,82 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     /**
-     * Simple string template system.
-     * Takes a template string containing tokens in the form of "%value".
-     * Returns a new string with the tokens replaced by the specified values.
-     * Keys and values can be of any data type that can be coerced into a string.
      *
-     * @param {String}    template    a string (can be HTML) that contains tokens embedded into it
-     * @param {object}    values      a collection of token keys and values
+     * Take an original object and represent it using top-level sub-elements whose keys are EL Paths.  For example,
+     * `originalObject` might look like:
+     *
+     * ```
+     * {
+     *   deep: {
+     *     path: {
+     *       value: "foo",
+     *       emptyObject: {},
+     *       array: [ "peas", "porridge", "hot"]
+     *     }
+     *   }
+     * }
+     * ```
+     *
+     * Calling `fluid.flattenObjectKeys` on this would result in a new object that looks like:
+     *
+     * ```
+     * {
+     *   "deep": "[object Object]",
+     *   "deep.path": "[object Object]",
+     *   "deep.path.value": "foo",
+     *   "deep.path.array": "peas,porridge,hot",
+     *   "deep.path.array.0": "peas",
+     *   "deep.path.array.1": "porridge",
+     *   "deep.path.array.2": "hot"
+     * }
+     * ```
+     *
+     * This function preserves the previous functionality of displaying an entire object using its `toString` function,
+     * which is why many of the paths above resolve to "[object Object]".
+     *
+     * This function is an unsupported non-API function that is used in by `fluid.stringTemplate` (see below).
+     *
+     * @param `originalObject` `{Object}` - An object.
+     * @returns `{Object}` - A representation of the original object that only contains top-level sub-elements whose keys are EL Paths.
+     *
+     */
+    // unsupported, non-API function
+    fluid.flattenObjectPaths = function (originalObject) {
+        var flattenedObject = {};
+        fluid.each(originalObject, function (value, key) {
+            if (typeof value === "object") {
+                var flattenedSubObject = fluid.flattenObjectPaths(value);
+                fluid.each(flattenedSubObject, function (subValue, subKey) {
+                    flattenedObject[key + "." + subKey] = subValue;
+                });
+                if (typeof fluid.get(value, "toString") === "function") {
+                    flattenedObject[key] = value.toString();
+                }
+            }
+            else {
+                flattenedObject[key] = value;
+            }
+        });
+        return flattenedObject;
+    };
+
+    /**
+     * Simple string template system.  Takes a template string containing tokens in the form of "%value" or
+     * "%deep.path.to.value".  Returns a new string with the tokens replaced by the specified values.  Keys and values
+     * can be of any data type that can be coerced into a string.
+     *
+     * @param `{String}` `template` - A string (can be HTML) that contains tokens embedded into it.
+     * @param `{Object}`  `values` - A collection of token keys and values.
+     * @returns `{String}` - A string whose tokens have been replaced with values.
      */
     fluid.stringTemplate = function (template, values) {
-        var keys = fluid.keys(values);
+        var flattenedValues = fluid.flattenObjectPaths(values);
+        var keys = fluid.keys(flattenedValues);
         keys = keys.sort(fluid.compareStringLength());
         for (var i = 0; i < keys.length; ++i) {
             var key = keys[i];
             var re = fluid.stringToRegExp("%" + key, "g");
-            template = template.replace(re, values[key]);
+            template = template.replace(re, flattenedValues[key]);
         }
         return template;
     };
