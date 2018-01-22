@@ -2851,16 +2851,6 @@ var fluid = fluid || fluid_3_0_0;
 
     // Message resolution and templating
 
-   /**
-    * Converts a string to a regexp with the specified flags given in parameters
-    * @param {String} a string that has to be turned into a regular expression
-    * @param {String} the flags to provide to the reg exp
-    */
-    // TODO: this is an abominably inefficient technique for something that could simply be done by means of indexOf and slice
-    fluid.stringToRegExp = function (str, flags) {
-        return new RegExp(str.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&"), flags);
-    };
-
     /**
      *
      * Take an original object and represent it using top-level sub-elements whose keys are EL Paths.  For example,
@@ -2936,8 +2926,13 @@ var fluid = fluid || fluid_3_0_0;
         keys = keys.sort(fluid.compareStringLength());
         for (var i = 0; i < keys.length; ++i) {
             var key = keys[i];
-            var re = fluid.stringToRegExp("%" + key, "g");
-            template = template.replace(re, flattenedValues[key]);
+            var templatePlaceholder = "%" + key;
+            var replacementValue = flattenedValues[key];
+
+            var indexOfPlaceHolder = -1;
+            while  ((indexOfPlaceHolder = template.indexOf(templatePlaceholder)) !== -1) {
+                template = template.slice(0, indexOfPlaceHolder) + replacementValue + template.slice(indexOfPlaceHolder + templatePlaceholder.length);
+            }
         }
         return template;
     };
