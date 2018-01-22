@@ -395,13 +395,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var oneOutArcs = {};
             var listeners = recel.that.applier.listeners.sortedListeners;
             fluid.each(listeners, function (listener) {
-                console.log("oIT got listener ", listener);
                 if (listener.isRelay && !fluid.isExcludedChangeSource(transacs[id], listener.cond)) {
                     var targetId = listener.targetId;
                     if (targetId !== id) {
                         oneOutArcs[targetId] = true;
                     }
-                    console.log("Unexcluded arc to ", targetId, " with record ", mrec[targetId]);
                 }
             });
             var oneOutArcList = Object.keys(oneOutArcs);
@@ -443,7 +441,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // differently. But this will require even more ambitious work such as fragmenting all the initial model values along
         // these boundaries.
         var outArcs = fluid.computeInitialOutArcs(transacs, mrec);
-        console.log("Got outArcs of ", outArcs);
         var arcAccessor = function (mrec) {
             return outArcs[mrec.that.id];
         };
