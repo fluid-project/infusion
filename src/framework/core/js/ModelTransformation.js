@@ -610,9 +610,9 @@ var fluid = fluid || fluid_3_0_0;
      *       }
      *   }
      *
-     * @param {Object} source the model to transform
-     * @param {Object} rules a rules object containing instructions on how to transform the model
-     * @param {Object} options a set of rules governing the transformations. At present this may contain
+     * @param source {Object} the model to transform
+     * @param rules {Object} a rules object containing instructions on how to transform the model
+     * @param options {Object} a set of rules governing the transformations. At present this may contain
      * the values <code>isomorphic: true</code> indicating that the output model is to be governed by the
      * same schema found in the input model, or <code>flatSchema</code> holding a flat schema object which
      * consists of a hash of EL path specifications with wildcards, to the values "array"/"object" defining

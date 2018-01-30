@@ -207,7 +207,7 @@ var fluid = fluid || fluid_3_0_0;
      * Signals an error to the framework. The default behaviour is to log a structured error message and throw an exception. This strategy may be configured using the legacy
      * API <code>fluid.pushSoftFailure</code> or else by adding and removing suitably namespaced listeners to the special event <code>fluid.failureEvent</code>
      *
-     * @param {String} message the error message to log
+     * @param message {String} the error message to log
      * @param ... Additional arguments, suitable for being sent to the native console.log function
      */
     fluid.fail = function (/* message, ... */) {
@@ -800,7 +800,7 @@ var fluid = fluid || fluid_3_0_0;
     /**
      * Clears an object or array of its contents. For objects, each property is deleted.
      *
-     * @param {Object|Array} target the target to be cleared
+     * @param target {Object|Array} the target to be cleared
      */
     fluid.clear = function (target) {
         if (fluid.isArrayable(target)) {
@@ -826,7 +826,7 @@ var fluid = fluid || fluid_3_0_0;
 
     /**
      * Returns the converted integer if the input string can be converted to an integer. Otherwise, return NaN.
-     * @param {String} a string to be returned in integer
+     * @param string {String} A string to be returned in integer form.
      */
     fluid.parseInteger = function (string) {
         return isFinite(string) && ((string % 1) === 0) ? Number(string) : NaN;
@@ -844,9 +844,9 @@ var fluid = fluid || fluid_3_0_0;
      * If the scale is invalid (i.e falsey, not a number, negative value), it is treated as 0.
      * If the scale is a floating point number, it is rounded to an integer.
      *
-     * @param {Number} num - the number to be rounded
-     * @param {Number} scale - the maximum number of decimal places to round to.
-     * @param {String} method - (optional) Request a rounding method to use ("round", "ceil", "floor").
+     * @param num {Number} - the number to be rounded
+     * @param scale {Number} - the maximum number of decimal places to round to.
+     * @param method {String} - (optional) Request a rounding method to use ("round", "ceil", "floor").
      *                          If nothing or an invalid method is provided, it will default to "round".
      * @return {Number} The num value rounded to the specified number of decimal places.
      */
@@ -868,9 +868,9 @@ var fluid = fluid || fluid_3_0_0;
      * Copied from Underscore.js 1.4.3 - see licence at head of this file
      *
      * Will execute the passed in function after the specified about of time since it was last executed.
-     * @param {Function} func - the function to execute
-     * @param {Number} wait - the number of milliseconds to wait before executing the function
-     * @param {Boolean} immediate - Whether to trigger the function at the start (true) or end (false) of
+     * @param func {Function} - the function to execute
+     * @param wait {Number} - the number of milliseconds to wait before executing the function
+     * @param immediate {Boolean} - Whether to trigger the function at the start (true) or end (false) of
      *                              the wait interval.
      */
     fluid.debounce = function (func, wait, immediate) {
@@ -975,7 +975,7 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     /** Parse an EL expression separated by periods (.) into its component segments.
-     * @param {String} EL The EL expression to be split
+     * @param EL {String} The EL expression to be split
      * @return {Array of String} the component path expressions.
      * TODO: This needs to be upgraded to handle (the same) escaping rules (as RSF), so that
      * path segments containing periods and backslashes etc. can be processed, and be harmonised
@@ -1142,7 +1142,7 @@ var fluid = fluid || fluid_3_0_0;
     /** Evaluates an EL expression by fetching a dot-separated list of members
      * recursively from a provided root.
      * @param root The root data structure in which the EL expression is to be evaluated
-     * @param {string/array} EL The EL expression to be evaluated, or an array of path segments
+     * @param EL {string/array} The EL expression to be evaluated, or an array of path segments
      * @param config An optional configuration or environment structure which can customise the fetch operation
      * @return The fetched data value.
      */
@@ -1163,9 +1163,9 @@ var fluid = fluid || fluid_3_0_0;
 
     /**
      * Allows for the binding to a "this-ist" function
-     * @param {Object} obj, "this-ist" object to bind to
-     * @param {Object} fnName, the name of the function to call
-     * @param {Object} args, arguments to call the function with
+     * @param obj, {Object} "this-ist" object to bind to
+     * @param fnName, {Object} the name of the function to call
+     * @param args, {Object} arguments to call the function with
      */
     fluid.bind = function (obj, fnName, args) {
         return obj[fnName].apply(obj, fluid.makeArray(args));
@@ -1173,9 +1173,9 @@ var fluid = fluid || fluid_3_0_0;
 
     /**
      * Allows for the calling of a function from an EL expression "functionPath", with the arguments "args", scoped to an framework version "environment".
-     * @param {Object} functionPath - An EL expression
-     * @param {Object} args - An array of arguments to be applied to the function, specified in functionPath
-     * @param {Object} environment - (optional) The object to scope the functionPath to  (typically the framework root for version control)
+     * @param functionPath {Object} - An EL expression
+     * @param args {Object} - An array of arguments to be applied to the function, specified in functionPath
+     * @param environment {Object} - (optional) The object to scope the functionPath to  (typically the framework root for version control)
      */
     fluid.invokeGlobalFunction = function (functionPath, args, environment) {
         var func = fluid.getGlobalValue(functionPath, environment);
@@ -1441,7 +1441,7 @@ var fluid = fluid || fluid_3_0_0;
      * listeners, to which "events" can be fired. These events consist of an arbitrary
      * function signature. General documentation on the Fluid events system is at
      * http://docs.fluidproject.org/infusion/development/InfusionEventSystem.html .
-     * @param {Object} options - A structure to configure this event firer. Supported fields:
+     * @param options {Object} - A structure to configure this event firer. Supported fields:
      *     {String} name - a readable name for this firer to be used in diagnostics and debugging
      *     {Boolean} preventable - If <code>true</code> the return value of each handler will
      * be checked for <code>false</code> in which case further listeners will be shortcircuited, and this
@@ -1722,8 +1722,7 @@ var fluid = fluid || fluid_3_0_0;
 
     /**
      * Configure the behaviour of fluid.fail by pushing or popping a disposition record onto a stack.
-     * @param {Number|Function} condition
-     & Supply either a function, which will be called with two arguments, args (the complete arguments to
+     * @param condition {Number|Function} - Supply either a function, which will be called with two arguments, args (the complete arguments to
      * fluid.fail) and activity, an array of strings describing the current framework invocation state.
      * Or, the argument may be the number <code>-1</code> indicating that the previously supplied disposition should
      * be popped off the stack
@@ -2399,11 +2398,11 @@ var fluid = fluid || fluid_3_0_0;
      * Merges the component's declared defaults, as obtained from fluid.defaults(),
      * with the user's specified overrides.
      *
-     * @param {Object} that the instance to attach the options to
-     * @param {String} componentName the unique "name" of the component, which will be used
+     * @param that {Object} the instance to attach the options to
+     * @param componentName {String} the unique "name" of the component, which will be used
      * to fetch the default options from store. By recommendation, this should be the global
      * name of the component's creator function.
-     * @param {Object} userOptions the user-specified configuration options for this component
+     * @param userOptions {Object} the user-specified configuration options for this component
      */
     // unsupported, NON-API function
     fluid.mergeComponentOptions = function (that, componentName, userOptions, localOptions) {

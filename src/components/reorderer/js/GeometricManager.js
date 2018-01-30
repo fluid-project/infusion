@@ -570,9 +570,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /** Determine the one amongst a set of rectangle targets which is the "best fit"
      * for an axial motion from a "base rectangle" (commonly arising from the case
      * of cursor key navigation).
-     * @param {Rectangle} baserect The base rectangl from which the motion is to be referred
-     * @param {fluid.direction} direction  The direction of motion
-     * @param {Array of Rectangle holders} targets An array of objects "cache elements"
+     * @param baserect {Rectangle} The base rectangl from which the motion is to be referred
+     * @param direction {fluid.direction}  The direction of motion
+     * @param targets {Array of Rectangle holders} An array of objects "cache elements"
      * for which the member <code>rect</code> is the holder of the rectangle to be tested.
      * @param disableWrap which is used to enable or disable wrapping of elements
      * @return The cache element which is the most appropriate for the requested motion.

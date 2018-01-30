@@ -151,8 +151,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
    /**
     * Instantiates a new Progress component.
     *
-    * @param {jQuery|Selector|Element} container the DOM element in which the Uploader lives
-    * @param {Object} options configuration options for the component.
+    * @param container {jQuery|Selector|Element} the DOM element in which the Uploader lives
+    * @param options {Object} configuration options for the component.
     */
 
     fluid.defaults("fluid.progress", {
@@ -191,7 +191,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         invokers: {
            /**
             * Shows the progress bar if is currently hidden.
-            * @param {Object} animation a custom animation used when showing the progress bar
+            * @param animation {Object} a custom animation used when showing the progress bar
             */
             show: {
                 funcName: "fluid.progress.showProgress",
@@ -199,8 +199,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
            /**
             * Hides the progress bar if it is visible.
-            * @param {Number} delay the amount of time to wait before hiding
-            * @param {Object} animation a custom animation used when hiding the progress bar
+            * @param delay {Number} the amount of time to wait before hiding
+            * @param animation {Object} a custom animation used when hiding the progress bar
             */
             hide: {
                 funcName: "fluid.progress.hideProgress",
@@ -210,9 +210,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             * Updates the state of the progress bar.
             * This will automatically show the progress bar if it is currently hidden.
             * Percentage is specified as a decimal value, but will be automatically converted if needed.
-            * @param {Number|String} percentage the current percentage, specified as a "float-ish" value
-            * @param {String} labelValue the value to set for the label; this can be an HTML string
-            * @param {Object} animationForShow the animation to use when showing the progress bar if it is hidden
+            * @param percentage {Number|String} the current percentage, specified as a "float-ish" value
+            * @param labelValue {String} the value to set for the label; this can be an HTML string
+            * @param animationForShow {Object} the animation to use when showing the progress bar if it is hidden
             */
             update: {
                 funcName: "fluid.progress.updateProgress",

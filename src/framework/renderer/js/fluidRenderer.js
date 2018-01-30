@@ -1435,8 +1435,8 @@ fluid_3_0_0 = fluid_3_0_0 || {};
 
    /**
     * A common utility function to make a simple view of rows, where each row has a selection control and a label
-    * @param {Object} optionlist An array of the values of the options in the select
-    * @param {Object} opts An object with this structure: {
+    * @param optionlist {Object} An array of the values of the options in the select
+    * @param opts {Object} An object with this structure: {
             selectID: "",
             rowID: "",
             inputID: "",
