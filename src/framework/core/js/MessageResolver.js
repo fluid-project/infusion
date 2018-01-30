@@ -40,9 +40,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Returns both the template for the message and the function used to resolve the localised value.  By default
      * the resolve function is `fluid.stringTemplate`, and the template returned uses its syntax.
      *
-     * @param `that` `{Object}` - The component itself.
-     * @param `messagecodes` `{Array}` - One or more message codes to look up templates for.
-     * @returns `{Object}` - An object that contains`template` and `resolveFunc` members (see above).
+     * @param that {Object} - The component itself.
+     * @param messagecodes {Array} - One or more message codes to look up templates for.
+     * @return {Object} - An object that contains`template` and `resolveFunc` members (see above).
      *
      */
     fluid.messageResolver.lookup = function (that, messagecodes) {
@@ -61,10 +61,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Look up the first message that corresponds to a message code found in `messageCodes`.  Then, resolve its
      * localised value.  By default, supports variable substitutions using `fluid.stringTemplate`.
      *
-     * @param `that` `{Object}` - The component itself.
-     * @param `messagecodes` `{Array}` - A list of message codes to look for.
-     * @param `args` `{Object}` - A map of variables that may potentially be used as part of the final output.
-     * @returns {String} - The final message, localised, with any variables found in `args`.
+     * @param that {Object} - The component itself.
+     * @param messagecodes {Array} - A list of message codes to look for.
+     * @param args {Object} - A map of variables that may potentially be used as part of the final output.
+     * @return {String} - The final message, localised, with any variables found in `args`.
      *
      */
     fluid.messageResolver.resolve = function (that, messagecodes, args) {
@@ -95,9 +95,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * which maps an array of message codes, to be tried in sequence until a key is found, and an array of substitution
      * arguments, into a substituted message string.
      *
-     * @param `messageBase` - A body of messages to wrap in a resolver function.
-     * @param `resolveFunc` (Optional) - A "resolver" function to use instead of the default `fluid.stringTemplate`.
-     * @returns `{Function}` - A "messageLocator" function (see above).
+     * @param messageBase - A body of messages to wrap in a resolver function.
+     * @param resolveFunc (Optional) - A "resolver" function to use instead of the default `fluid.stringTemplate`.
+     * @return {Function} - A "messageLocator" function (see above).
      *
      */
     fluid.messageLocator = function (messageBase, resolveFunc) {
@@ -118,8 +118,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * A "resolver" is expected to be an object with a `type` element that is set to `resolver` that exposes a `resolve`
      * function.
      *
-     * @param `messageSource` `{Object}` - See above.
-     * @returns `{Function|String}` - A resolve function or a `String` representing the final resolved output.
+     * @param messageSource {Object} - See above.
+     * @return {Function|String} - A resolve function or a `String` representing the final resolved output.
      *
      */
     fluid.resolveMessageSource = function (messageSource) {

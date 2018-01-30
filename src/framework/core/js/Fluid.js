@@ -2657,8 +2657,8 @@ var fluid = fluid || fluid_3_0_0;
      * This method is a convenience for creating small objects that have options but don't require full
      * View-like features such as the DOM Binder or events
      *
-     * @param {Object} name the name of the little component to create
-     * @param {Object} options user-supplied options to merge with the defaults
+     * @param name {Object} The name of the little component to create
+     * @param options {Object} User-supplied options to merge with the defaults
      */
     // NOTE: the 3rd argument localOptions is NOT to be advertised as part of the stable API, it is present
     // just to allow backward compatibility whilst grade specifications are not mandatory - similarly for 4th arg "receiver"
@@ -2887,8 +2887,8 @@ var fluid = fluid || fluid_3_0_0;
      *
      * This function is an unsupported non-API function that is used in by `fluid.stringTemplate` (see below).
      *
-     * @param `originalObject` `{Object}` - An object.
-     * @returns `{Object}` - A representation of the original object that only contains top-level sub-elements whose keys are EL Paths.
+     * @param originalObject {Object} An object.
+     * @return {Object} A representation of the original object that only contains top-level sub-elements whose keys are EL Paths.
      *
      */
     // unsupported, non-API function
@@ -2912,13 +2912,15 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     /**
+     *
      * Simple string template system.  Takes a template string containing tokens in the form of "%value" or
      * "%deep.path.to.value".  Returns a new string with the tokens replaced by the specified values.  Keys and values
      * can be of any data type that can be coerced into a string.
      *
-     * @param `{String}` `template` - A string (can be HTML) that contains tokens embedded into it.
-     * @param `{Object}`  `values` - A collection of token keys and values.
-     * @returns `{String}` - A string whose tokens have been replaced with values.
+     * @param template {String} A string (can be HTML) that contains tokens embedded into it.
+     * @param values {Object} A collection of token keys and values.
+     * @return {String} A string whose tokens have been replaced with values.
+     *
      */
     fluid.stringTemplate = function (template, values) {
         var flattenedValues = fluid.flattenObjectPaths(values);
@@ -2930,7 +2932,7 @@ var fluid = fluid || fluid_3_0_0;
             var replacementValue = flattenedValues[key];
 
             var indexOfPlaceHolder = -1;
-            while  ((indexOfPlaceHolder = template.indexOf(templatePlaceholder)) !== -1) {
+            while ((indexOfPlaceHolder = template.indexOf(templatePlaceholder)) !== -1) {
                 template = template.slice(0, indexOfPlaceHolder) + replacementValue + template.slice(indexOfPlaceHolder + templatePlaceholder.length);
             }
         }
