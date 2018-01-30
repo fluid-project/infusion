@@ -4855,6 +4855,52 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertUndefined("fluid.componentForPath returns undefined for destroyed component", fluid.componentForPath(globalPath));
     });
 
+    /** Test potentia idioms **/
+
+    fluid.defaults("fluid.tests.FLUID6148root", {
+        gradeNames: "fluid.component",
+        events: {
+            constructEvent: null
+        },
+        components: {
+            child1: {
+                createOnEvent: "constructEvent",
+                type: "fluid.component",
+                options: {
+                    value1: "value1",
+                    nextValue: "{child3}.options.value3"
+                }
+            },
+            child2: {
+                createOnEvent: "constructEvent",
+                type: "fluid.component",
+                options: {
+                    value2: "value2",
+                    nextValue: "{child1}.options.value1"
+                }
+            },
+            child3: {
+                createOnEvent: "constructEvent",
+                type: "fluid.component",
+                options: {
+                    value3: "value3",
+                    nextValue: "{child2}.options.value2"
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6148: Construct circularly referring component on event", function () {
+        var that = fluid.tests.FLUID6148root();
+        that.events.constructEvent.fire();
+        var paths = ["child1.options.nextValue", "child2.options.nextValue", "child3.options.nextValue"];
+        var expected = ["value3", "value1", "value2"];
+        var values = fluid.transform(paths, function (path) {
+            return fluid.get(that, path);
+        });
+        jqUnit.assertDeepEq("Constructed circularly referring components on event", expected, values);
+    });
+
     /** FLUID-6126 failure to construct child of root which has been advised **/
 
     fluid.defaults("fluid.tests.FLUID6126root", {

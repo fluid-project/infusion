@@ -43,7 +43,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
-    fluid.tests.contextAware.testChecksData = [/*
+    fluid.tests.contextAware.testChecksData = [
         {
             message: "No checks, the default type tag should be returned",
             checks: {},
@@ -58,7 +58,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             },
             result: "food.fancyFeast"
-        }, */{
+        }, {
             message: "Both contexts match, so the first gradeName should be returned",
             markers: ["animal.cat", "animal.dog"],
             checks: {

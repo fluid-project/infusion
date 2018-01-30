@@ -41,7 +41,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         components: {
             prefsEditor: {
-//                priority: "last",
                 type: "fluid.prefs.prefsEditor",
                 createOnEvent: "onCreatePrefsEditorReady",
                 options: {

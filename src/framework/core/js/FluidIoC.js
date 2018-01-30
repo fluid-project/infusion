@@ -920,7 +920,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // potentia II records look a lot like change records -
     // action: "create"/"destroy"
     // record: { type: "componentType", etc.}
-    // complete: true
+    // applied: true
 
     // unsupported, non-API function - however, this structure is of considerable interest to those debugging
     // into IoC issues. The structures idToShadow and pathToComponent contain a complete map of the component tree
