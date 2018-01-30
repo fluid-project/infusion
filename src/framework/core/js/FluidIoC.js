@@ -26,9 +26,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.visitComponentChildren = function (that, visitor, options, segs) {
         segs = segs || [];
         var shadow = fluid.shadowForComponent(that);
-        fluid.each(shadow.childComponents, function (component, name) {
+        for (var name in shadow.childComponents) {
+            var component = shadow.childComponents[name];
             if (options.visited && options.visited[component.id]) {
-                return;
+                continue;
             }
             segs.push(name);
             if (options.visited) { // recall that this is here because we may run into a component that has been cross-injected which might otherwise cause cyclicity
@@ -41,7 +42,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 fluid.visitComponentChildren(component, visitor, options, segs);
             }
             segs.pop();
-        });
+        }
     };
 
     fluid.getContextHash = function (instantiator, that) {
@@ -536,7 +537,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     fluid.cacheShadowGrades = function (that, shadow) {
-        var contextHash = fluid.gradeNamesToHash(that.options && that.options.gradeNames || that.typeName);
+        var contextHash = fluid.gradeNamesToHash(that.options && that.options.gradeNames || [that.typeName]);
         if (!contextHash[shadow.memberName]) {
             contextHash[shadow.memberName] = "memberName"; // This is filtered out again in recordComponent - TODO: Ensure that ALL resolution uses the scope chain eventually
         }
@@ -695,7 +696,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
                 memberName = fluid.typeNameToMemberName(singleRootType);
             } else {
-                memberName = fluid.computeGlobalMemberName(that);
+                memberName = fluid.computeGlobalMemberName(that.typeName, that.id);
             }
             var parent = fluid.resolveRootComponent;
             if (parent[memberName]) {
@@ -1277,16 +1278,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var fullPath = fluid.pathForComponent(that).concat([key]);
             fluid.pushActivity("initDeferred", "instantiating deferred component %componentName of parent %that due to event %eventName",
              {componentName: componentName, that: that, eventName: eventName});
-            fluid.registerPotentia({
-                segs: fullPath,
-                type: "destroy"
-            }, transactionId);
+            var existing = that[key];
+            if (existing) {
+                fluid.registerPotentia({
+                    segs: fullPath,
+                    type: "destroy"
+                }, transactionId);
+            }
             fluid.registerPotentia({
                 segs: fullPath,
                 type: "create",
                 records: [filteredRecord],
                 localRecord: localRecord
-            }, transactionId, true);
+            }, transactionId);
             fluid.popActivity();
         };
         event.addListener(constructListener);
@@ -1296,7 +1300,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 fluid.commitPotentiae(instantiator.currentTreeTransaction);
             }
         };
-        event.addListener(concludeListener, null, "last:transaction");
+        event.addListener(concludeListener, "fluid-componentConstruction", "last:transaction");
         fluid.recordListener(event, concludeListener, shadow);
     };
 
@@ -1396,12 +1400,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     * @param topush {Potentia} A "create" potentia
     * @return {Potentia|Undefined} `topush` if this was the first potentia registered for this path
     */
-    fluid.pushPathedPotentia = function (pathToPotentiae, path, topush) {
-        var existing = pathToPotentiae[path];
-        if (existing) {
+    fluid.pushPathedPotentia = function (potentiaList, path, topush) {
+        var existing = potentiaList.pathToPotentiae[path];
+        // TODO: Crude approximation to allowing nested transactions
+        if (existing && !existing.applied) {
             Array.prototype.push.apply(existing.records, topush.records);
         } else {
-            pathToPotentiae[path] = topush;
+            potentiaList.pathToPotentiae[path] = topush;
             return topush;
         }
     };
@@ -1410,34 +1415,33 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return {
             destroys: [],
             creates: [],
+            activeCount: 0,
             pathToPotentiae: {} // aligned map of component paths to "potentia II records"
         };
     };
 
-    /** Push the supplied potentia onto the appropriate potentiaList within the transaction record.
-     * Any "delete" which is issued if the "create" phase is in progress will go into the deferred list.
-     * Any "create" which is issued with `defer === true` will go into the deferred list if there are deferred destroys
+    /** Push the supplied potentia onto the transaction record.
      * @param transRec {TreeTransactionRecord} The transaction record for the current tree transaction
      * @param potentia {Potentia} A potentia to be registered
-     * @param defer {Boolean} [optional] Whether a "create" potentia might need to be deferred.
+     * @return Truthy if this was a `create` potentia and it was for a fresh path
      */
-    fluid.pushPotentia = function (transRec, instantiator, potentia, defer) {
-        var pendingPotentiae = transRec.pendingPotentiae,
-            deferredPotentiae = transRec.deferredPotentiae;
+    fluid.pushPotentia = function (transRec, instantiator, potentia) {
+        var pendingPotentiae = transRec.pendingPotentiae;
+
         var segs = potentia.segs = potentia.segs || instantiator.parseToSegments(potentia.path);
         var path = potentia.path = instantiator.composeSegments.apply(null, segs);
 
-
         if (potentia.type === "destroy") {
-            (pendingPotentiae.creates.length === 0 ? pendingPotentiae.destroys : deferredPotentiae.destroys).push(potentia);
+            pendingPotentiae.destroys.push(potentia);
+            pendingPotentiae.activeCount++;
         } else {
-            var potentiaList = defer && deferredPotentiae.destroys.length > 0 ? deferredPotentiae : pendingPotentiae;
             var newPotentia = potentia;
-            if (potentia.type === "create" && potentia.records) { // TODO: Why might there be a "create" with no records?
-                newPotentia = fluid.pushPathedPotentia(potentiaList.pathToPotentiae, path, potentia);
+            if (potentia.type === "create") {
+                newPotentia = fluid.pushPathedPotentia(pendingPotentiae, path, potentia);
             }
             if (newPotentia) {
-                potentiaList.creates.push(potentia);
+                pendingPotentiae.creates.push(potentia);
+                pendingPotentiae.activeCount++;
             };
         }
     };
@@ -1451,24 +1455,22 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *    records: {Array of Object} A component's construction record, as they would currently appear in a component's "options.components.x" record
      * @param transactionId {String} [optional] A transaction id in which to enlist this registration. If this is omitted, the current transaction
      *     will be used, if there is one - otherwise, a fresh transaction will be allocated
-     * @param defer {Boolean} [optional] For a "create" potentia, this can be set to `true` if it is known that the potentia may need to be honoured
-     *     after an already issued "delete" which might have been deferred as a result of a "create" phase already being in progress.
      * @return {String} The id of the transaction used for this registration
      */
-    fluid.registerPotentia = function (potentia, transactionId, defer) {
+    fluid.registerPotentia = function (potentia, transactionId) {
         var instantiator = fluid.globalInstantiator;
         transactionId = transactionId || instantiator.currentTreeTransaction || fluid.allocateGuid();
 
         var transRec = instantiator.treeTransactions[transactionId];
         if (!transRec) {
             transRec = instantiator.treeTransactions[transactionId] = {
+                commitDepth: 0, // Depth of nested "commitPotentiae" calls
                 pendingPotentiae: fluid.blankPotentiaList(), // array of potentia which remain to be handled
-                deferredPotentiae: fluid.blankPotentiaList(), // potentia from any next phase
                 restoreRecords: fluid.blankPotentiaList(), // accumulate a list of records to be executed in case the transaction is backed out
                 deferredDistributions: [] // distributeOptions may decide to defer application of a distribution for FLUID-6193
             };
         }
-        fluid.pushPotentia(transRec, instantiator, potentia, defer);
+        fluid.pushPotentia(transRec, instantiator, potentia);
 
         return transactionId;
     };
@@ -1590,7 +1592,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // Can't do much about this without "local mergePolicies" and provenance
             localRecord: localRecord
         };
-        fluid.registerPotentia(subPotentia);
+        fluid.registerPotentia(subPotentia, null, false);
     };
 
     fluid.processComponentShell = function (potentia, shell) {
@@ -1628,6 +1630,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 type: "distributeOptions",
                 distributions: transRec.deferredDistributions
             });
+            ++transRec.pendingPotentiae.activeCount;
             transRec.deferredDistributions = [];
         }
     };
@@ -1695,9 +1698,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var transactionId;
         instantiator = instantiator || fluid.globalInstantiator;
         try {
+            transRec.commitDepth = 1;
             transRec.pendingPotentiae = transRec.restoreRecords;
             transRec.restoreRecords = fluid.blankPotentiaList();
             transactionId = instantiator.currentTreeTransaction;
+            transRec.cancelled = true;
             fluid.commitPotentiae(transactionId, true);
         } catch (e) {
             fluid.log(fluid.logLevels.FAIL, "Fatal error cancelling transaction " + transactionId + ": destroying all affected paths");
@@ -1721,24 +1726,34 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.commitPotentiaePhase = function (transRec, instantiator) {
         var pendingPotentiae = transRec.pendingPotentiae;
         pendingPotentiae.destroys.forEach(function (potentia) {
-            fluid.preparePathedPotentia(potentia, instantiator);
-            fluid.operateDestroyPotentia(transRec, potentia);
+            if (!potentia.applied) {
+                fluid.preparePathedPotentia(potentia, instantiator);
+                fluid.operateDestroyPotentia(transRec, potentia);
+                potentia.applied = true;
+                --pendingPotentiae.activeCount;
+            }
         });
         var shadows = [];
         for (var i = 0; i < pendingPotentiae.creates.length; ++i) {
             var potentia = pendingPotentiae.creates[i]; // not "forEach" since further elements will accumulate during construction
-            if (potentia.type === "create") {
-                fluid.preparePathedPotentia(potentia, instantiator);
-                var shadow = fluid.operateCreatePotentia(transRec, potentia);
-                if (shadow) {
-                    shadows.push(shadow);
+            if (!potentia.applied) {
+                if (potentia.type === "create") {
+                    fluid.preparePathedPotentia(potentia, instantiator);
+                    var shadow = fluid.operateCreatePotentia(transRec, potentia);
+                    if (shadow) {
+                        shadows.push(shadow);
+                    }
+                    potentia.applied = true;
+                    --pendingPotentiae.activeCount;
+                } else if (potentia.type === "distributeOptions") {
+                    potentia.distributions.forEach(function (distro) {
+                        fluid.distributeOptionsOne(distro.that, distro.record, distro.targetRef, distro.selector, distro.context);
+                    });
+                    potentia.applied = true;
+                    --pendingPotentiae.activeCount;
+                } else {
+                    fluid.fail("Unrecognised potentia type " + potentia.type);
                 }
-            } else if (potentia.type === "distributeOptions") {
-                potentia.distributions.forEach(function (distro) {
-                    fluid.distributeOptionsOne(distro.that, distro.record, distro.targetRef, distro.selector, distro.context);
-                });
-            } else {
-                fluid.fail("Unrecognised potentia type " + potentia.type);
             }
         }
         var togo = shadows[0]; // We need to track the first created shadow to support constructing free components
@@ -1752,64 +1767,79 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // for example, in order to compute asynchronous resources, model skeleta, etc.
         shadows.reverse();
         shadows.forEach(fluid.concludeComponentObservation);
+        shadows.forEach(fluid.initRendererShadow || fluid.identity);
         shadows.forEach(fluid.notifyInitModel);
         shadows.forEach(fluid.concludeComponentInit);
         return togo;
     };
 
     fluid.isPopulatedPotentiaList = function (potentiaList) {
-        return potentiaList.creates.length > 0 || potentiaList.destroys.length > 0;
+        return potentiaList.activeCount > 0;
     };
 
-    /** Commit all potentiae that have been enqueued through calls to fluid.registerPotentia for the supplied transaction, 
+    /** Commit all potentiae that have been enqueued through calls to fluid.registerPotentia for the supplied transaction,
      * as well as any further potentiae which become enqueued through construction of these, potentially in multiple phases
      * @param transactionId {String} The tree transaction to be committed
      * @param isCancel {Boolean} [optional] `true` if this commit action is a result of cancelling a previous transaction. In this case
      *     the `pendingPotentia` element of the transaction will have been derived from the `restoreRecords` of that transaction.
      * @return {Shadow} The shadow record for the first component to be constructed during the transaction, if any.
-     */ 
+     */
     fluid.commitPotentiae = function (transactionId, isCancel) {
         var instantiator = fluid.globalInstantiator;
         var transRec = instantiator.treeTransactions[transactionId];
+        var togo;
 
-        if (transRec.commitInProgress) {
-            return; // Don't re-enter, e.g. in the case of a createOnEvent component timed on an onCreate event
-        } else {
-            transRec.commitInProgress = true;
-            var togo;
-    
-            fluid.tryCatch(function () {
-                instantiator.currentTreeTransaction = transactionId;
-                while (fluid.isPopulatedPotentiaList(transRec.pendingPotentiae)) {
-                    var firstShadow = fluid.commitPotentiaePhase(transRec, instantiator);
-                    togo = togo || firstShadow;
-                    transRec.pendingPotentiae = transRec.deferredPotentiae;
-                    transRec.deferredPotentiae = fluid.blankPotentiaList();
-                }
+        if (!isCancel) {
+            ++transRec.commitDepth;
+        }
+        fluid.tryCatch(function commitPotentiae() {
+            instantiator.currentTreeTransaction = transactionId;
+            while (fluid.isPopulatedPotentiaList(transRec.pendingPotentiae)) {
+                var firstShadow = fluid.commitPotentiaePhase(transRec, instantiator);
+                togo = togo || firstShadow;
+            }
+            --transRec.commitDepth;
+            if (transRec.commitDepth === 0) {
                 instantiator.currentTreeTransaction = null;
-            }, function (e) {
-                if (!isCancel) {
-                    fluid.cancelTransaction(transRec, instantiator);
-                    throw e;
-                }
-            }, function () {
+            }
+        }, function (e) {
+            if (!isCancel) {
+                fluid.cancelTransaction(transRec, instantiator);
+                throw e;
+            }
+        }, function () {
+            if (transRec.commitDepth === 0) {
                 instantiator.currentTreeTransaction = null;
                 delete instantiator.treeTransactions[transactionId];
-            });
-            return togo;
-        }
+            }
+        });
+        return togo;
     };
 
-    /** Construct a component with the supplied options at the specified path in the component tree. The parent path of the location must already be a component.
-     * @param path {String|Array of String} Path where the new component is to be constructed, represented as a string or array of segments
+    /** Constructs a subcomponent as a child of an existing component, via a call to `fluid.construct`. Note that if
+     * a component already exists with the member name `memberName`, it will first be destroyed.
+     * @param parent {Component} Component for which a child subcomponent is to be constructed
+     * @param memberName {String} The member name of the resulting component in its parent
+     * @param componentOptions {Object} The top-level options supplied to the component, as for `fluid.construct`
+     * @return {Component} The constructed component
+     */
+    fluid.constructChild = function (parent, memberName, options) {
+        var parentPath = fluid.pathForComponent(parent);
+        var path = parentPath.concat([memberName]);
+        return fluid.construct(path, options);
+    };
+
+    /** Construct a component with the supplied options at the specified path in the component tree. The parent path of the location must already be a component. If
+     * a component is already present at the specified path, it will first be destroyed.
+     * @param path {String|Array of String} Path where the new component is to be constructed, represented as a string or array of segments.
      * @param componentOptions {Object} Top-level options supplied to the component - must at the very least include a field <code>type</code> holding the component's type
      * @param constructOptions {Object} [optional] A record of options guiding the construction of this component
      *     transactionId {String} [optional] A transaction which this construction action should be enlisted in. If this is supplied, the transaction will not
      *     localRecord {Object} A hash of context keys to context values which should be in scope for resolution of IoC references within this construction
-     * be committed, and the user must do so themselves via `fluid.commitPotentiae`
-     * @param instantiator {Instantiator} [optional] The instantiator holding the component to be created - if blank, the global instantiator will be used
+     *     be committed, and the user must do so themselves via `fluid.commitPotentiae`
+     * @return {Component} The constructed component
      */
-    fluid.construct = function (path, componentOptions, constructOptions, instantiator) {
+    fluid.construct = function (path, componentOptions, constructOptions) {
         constructOptions = constructOptions || {};
         var localTransaction = fluid.registerPotentia({
             path: path,
@@ -1881,7 +1911,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
         var memberName = fluid.typeNameToMemberName(options.singleRootType || type);
         segs.push(memberName);
-        return fluid.construct(segs, options, instantiator);
+        return fluid.construct(segs, options);
     };
 
     /** Destroy an instance created by `fluid.constructSingle`

@@ -680,8 +680,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 decorator = {type: decorator};
             }
             if (decorator.type === "fluid.undoDecorator") {
-                fluid.set(that.options, ["components", "undo"], { type: "fluid.undo", options: decorator.options});
-                that.decorators = [ fluid.initDependent(that, "undo")];
+                that.decorators = [fluid.constructChild(that, "undo", { type: "fluid.undo", options: decorator.options})];
             }
         }
     };
@@ -923,10 +922,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 type: "fluid.inlineEdit",
                 container: editable
             };
-            var name = "inlineEdit-" + i;
-            fluid.set(that.options, ["components", name], componentDef);
-            return fluid.initDependent(that, name);
-
+            return fluid.constructChild(that, "inlineEdit-" + i, componentDef);
         });
     };
 
@@ -938,7 +934,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // "source" distributions are silly and dangerous in any case, but they have become fairly widely used, together with the expectation that the
             // material from "defaults" can be broadcast too. But clearly material that is from base grade defaults is unwelcome to be distributed.
             // This seems to imply that we've got no option but to start supporting "provenance" in options and defaults - highly expensive.
-            exclusions: ["members.inlineEdits", "members.modelRelay", "members.applier", "members.model", "selectors.editables", "events"],
+            exclusions: ["members.inlineEdits", "members.modelRelay", "container", "members.container", "members.dom", "members.applier", "members.model", "selectors.editables", "events"],
             removeSource: true,
             target: "{that > fluid.inlineEdit}.options"
         },

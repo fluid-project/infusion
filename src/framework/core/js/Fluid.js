@@ -2655,12 +2655,8 @@ var fluid = fluid || fluid_3_0_0;
             records: [userRecord]
         };
         var transactionId = fluid.registerPotentia(potentia);
-        if (!fluid.globalInstantiator.currentTreeTransaction) {
-            // TODO: In future, we may like to go as far as operateCreatePotentia and return a shell instead of nothing
-            var shadow = fluid.commitPotentiae(transactionId);
-            // Use this strange style to make sure we return a self-destructed component for FLUID-5333
-            return shadow.that;
-        }
+        var shadow = fluid.commitPotentiae(transactionId);
+        return shadow.that;
     };
 
     // ******* SELECTOR ENGINE *********

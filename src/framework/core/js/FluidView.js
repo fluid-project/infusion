@@ -28,7 +28,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         members: {
             container: "@expand:fluid.containerForViewComponent({that}, {that}.options.container)",
-            dom: "@expand:fluid.initDomBinder({that}, {that}.options.selectors)"
+            dom: "@expand:fluid.initDomBinder({that}, {that}.options.selectors, {that}.container)"
         }
     });
 
@@ -216,19 +216,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var container = fluid.container(containerSpec);
         fluid.expectFilledSelector(container, "Error instantiating viewComponent at path \"" + fluid.pathForComponent(that));
         return container;
-    }
+    };
 
     /**
      * Creates a new DOM Binder instance for the specified component and mixes it in.
      *
      * @param {Object} that the component instance to attach the new DOM Binder to
      */
-    fluid.initDomBinder = function (that, selectors) {
-        if (!that.container) {
-            fluid.fail("fluid.initDomBinder called for component with typeName " + that.typeName +
-                " without an initialised container - this has probably resulted from placing \"fluid.viewComponent\" in incorrect position in grade merging order. " +
-                " Make sure to place it to the right of any non-view grades in the gradeNames list to ensure that it overrides properly: resolved gradeNames is ", that.options.gradeNames, " for component ", that);
-        }
+    // Note that whilst this is not a properly public function, it has been bound to in a few stray places such as Undo.js and
+    // Panels.js - until we can finally reform these sites we need to keep this signature stable as well as the bizarre side-effects
+    fluid.initDomBinder = function (that, selectors/*, container */) {
         that.dom = fluid.createDomBinder(that.container, selectors || that.options.selectors || {});
         that.locate = that.dom.locate;
         return that.dom;

@@ -334,8 +334,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /** MODEL COMPONENT HIERARCHY AND RELAY SYSTEM **/
 
     fluid.initRelayModel = function (that) {
-        // TODO: Fail if this request occurs before model is initialised
-        // fluid.deenlistModelComponent(that);
+        // This simply has the effect of returning the fluid.inEvaluationMarker marker if an access is somehow requested
+        // early, which will then trigger the circular evaluation failure
         return that.model;
     };
 
@@ -389,13 +389,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var oneOutArcs = {};
             var listeners = recel.that.applier.listeners.sortedListeners;
             fluid.each(listeners, function (listener) {
-                console.log("oIT got listener ", listener);
                 if (listener.isRelay && !fluid.isExcludedChangeSource(transacs[id], listener.cond)) {
                     var targetId = listener.targetId;
                     if (targetId !== id) {
                         oneOutArcs[targetId] = true;
                     }
-                    console.log("Unexcluded arc to ", targetId, " with record ", mrec[targetId]);
                 }
             });
             var oneOutArcList = Object.keys(oneOutArcs);
@@ -436,7 +434,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // differently. But this will require even more ambitious work such as fragmenting all the initial model values along
         // these boundaries.
         var outArcs = fluid.computeInitialOutArcs(transacs, mrec);
-        console.log("Got outArcs of ", outArcs);
         var arcAccessor = function (mrec) {
             return outArcs[mrec.that.id];
         };
@@ -462,6 +459,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     transac.fireChangeRequest({type: "ADD", segs: [], value: initModel});
                     fluid.clearLinkCounts(transRec, true);
                 });
+                // Ensure that the model can be read as early as possible through non-model interactions resolved via {that}.model
+                that.model = transac.newHolder.model;
             }
             var shadow = fluid.shadowForComponent(that);
             if (shadow) { // Fix for FLUID-5869 - the component may have been destroyed during its own init transaction

@@ -2636,7 +2636,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.fluid5931.recreate = function (root) {
-        // In the future framework, this will not start construction immediately
+        // In the future framework, this must still start creation immediately - although it will not conclude until the fluid-componentConstruction listener
         root.events.createIt.fire(2);
     };
 
@@ -4415,8 +4415,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     jqUnit.test("FLUID-5333 - destruction during listener notification", function () {
         var that = fluid.tests.fluid5333component();
         jqUnit.assertEquals("Component should be returned in destroyed condition", true, fluid.isDestroyed(that));
-        // Note: Change in behaviour after FLUID-6148: Component tree modification is now out of step with onCreate
-        jqUnit.assertTrue("Listeners after destruction point should be notified", that.noted);
+        jqUnit.assertUndefined("Listeners after destruction point should not be notified", that.noted);
         delete that.noted;
         that.events.ourEvent.fire(that);
         jqUnit.assertUndefined("Listeners after destruction should not be notified", that.noted);

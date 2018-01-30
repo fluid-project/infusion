@@ -209,17 +209,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         that.refreshView();
     };
 
-    fluid.pager.renderedPageList.renderLinkBody = function (linkBody, rendererOptions) {
-        if (linkBody) {
-            rendererOptions.cutpoints.push({
-                id: "payload-component",
-                selector: linkBody
-            });
-        }
+    fluid.pager.renderedPageList.linkBodyCutpoint = function (linkBody) {
+        return linkBody ? [{
+            id: "payload-component",
+            selector: linkBody
+        }] : [];
     };
 
     fluid.defaults("fluid.pager.renderedPageList", {
         gradeNames: ["fluid.pager.pageList", "fluid.rendererComponent"],
+        distributeOptions: {
+            record: "@expand:fluid.pager.renderedPageList.linkBodyCutpoint({that}.options.linkBody)",
+            target: "{that}.options.rendererOptions.cutpoints"
+        },
         rendererOptions: {
             idMap: {},
             cutpoints: [
@@ -240,12 +242,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         events: {
             onRenderPageLinks: "{pager}.events.onRenderPageLinks"
-        },
-        listeners: {
-            onCreate: {
-                funcName: "fluid.pager.renderedPageList.renderLinkBody",
-                args: ["{that}.options.linkBody", "{that}.options.rendererOptions"]
-            }
         },
         modelListeners: {
             "{pager}.model": "fluid.pager.renderedPageList.onModelChange({that}, {change}.value)"

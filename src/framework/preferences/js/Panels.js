@@ -71,6 +71,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         components: {
             msgResolver: {
                 type: "fluid.messageResolver"
+            }, // TODO: note that rendererComponent now configures such a resolver named "messageResolver"
+            messageResolver: {
+                type: "fluid.emptySubcomponent"
             }
         },
         rendererOptions: {
@@ -209,6 +212,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return target;
     };
 
+    fluid.prefs.appendTemplate = function (container, markup) {
+        container.append(markup);
+    };
+
     fluid.defaults("fluid.prefs.compositePanel", {
         gradeNames: ["fluid.prefs.panel", "{that}.getDistributeOptionsGrade", "{that}.getSubPanelLifecycleBindings"],
         mergePolicy: {
@@ -223,13 +230,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         listeners: {
             "onCreate.combineResources": "{that}.combineResources",
-            "onCreate.appendTemplate": {
-                "this": "{that}.container",
-                "method": "append",
-                "args": ["{that}.options.resources.template.resourceText"]
-            },
+            "onCreate.appendTemplate": "fluid.prefs.appendTemplate({that}.container, {that}.options.resources.template.resourceText)",
             "onCreate.initSubPanels": "{that}.events.initSubPanels",
-            "onCreate.hideInactive": "{that}.hideInactive",
+            "onCreate.hideInactive": {
+                func: "{that}.hideInactive",
+                priority: "after:fluid-componentConstruction"
+            },
             "onCreate.surfaceSubpanelRendererSelectors": "{that}.surfaceSubpanelRendererSelectors",
             "afterRender.hideInactive": "{that}.hideInactive"
         },
@@ -382,7 +388,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var eventName = fluid.prefs.compositePanel.creationEventName(pref);
             return {
                 func: "{that}.handleRenderOnPreference",
-                args: ["{change}.value", "{that}.events." + eventName + ".fire", componentNames]
+                args: ["{change}.value", "{that}.events." + eventName + ".fire", componentNames],
+                excludeSource: "init"
             };
         });
     };

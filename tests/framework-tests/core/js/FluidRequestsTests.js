@@ -22,13 +22,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             objects: {
                 href: "../data/objects.json",
                 options: {
-                    dataType: "text",
+                    dataType: "text"
                 }
             },
             intake: {
                 href: "../data/intake.json",
                 options: {
-                    dataType: "text",
+                    dataType: "text"
                 }
             }
         };

@@ -36,7 +36,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             uiEnhancer: {
                 type: "fluid.uiEnhancer",
                 container: "body",
-                priority: "first",
                 options: {
                     gradeNames: ["fluid.uiEnhancer.starterEnactors"]
                 }
@@ -349,7 +348,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             uiEnhancer: {
                 type: "fluid.uiEnhancer",
                 container: "body",
-                priority: "first",
                 options: {
                     gradeNames: ["fluid.uiEnhancer.starterEnactors"]
                 }
@@ -398,7 +396,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             uiEnhancer: {
                 type: "fluid.uiEnhancer",
                 container: "body",
-                priority: "first",
                 options: {
                     components: {
                         textSize: {

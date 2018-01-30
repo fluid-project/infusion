@@ -109,9 +109,9 @@ fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.defaults("fluid.rendererComponent", {
         gradeNames: ["fluid.viewComponent"],
-        initFunction: "fluid.initRendererComponent",
         mergePolicy: {
             "rendererOptions.idMap": "nomerge",
+            "rendererOptions.cutpoints": fluid.arrayConcatPolicy,
             protoTree: "noexpand, replace",
             parentBundle: "nomerge",
             "changeApplierOptions.resolverSetConfig": "resolverSetConfig"
@@ -140,6 +140,16 @@ fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.rendererComponent.renderOnInit",
                 args: ["{that}.options.renderOnInit", "{that}"],
                 priority: "last"
+            }
+        },
+        components: {
+            messageResolver: {
+                type: "fluid.messageResolver",
+                options: {
+                    messageBase: "{rendererComponent}.options.strings",
+                    resolveFunc: "{rendererComponent}.options.messageResolverFunction",
+                    parents: "@expand:fluid.makeArray({rendererComponent}.options.parentBundle)"
+                }
             }
         }
     });
@@ -187,24 +197,19 @@ fluid_3_0_0 = fluid_3_0_0 || {};
             that.options.protoTree;
     };
 
-    fluid.initRendererComponent = function (componentName, container, options) {
-        var that = fluid.initView(componentName, container, options, {gradeNames: ["fluid.rendererComponent"]});
-        fluid.getForComponent(that, "model"); // Force resolution of these due to our terrible workflow
-        fluid.getForComponent(that, "applier");
-        fluid.diagnoseFailedView(componentName, that, fluid.defaults(componentName), arguments);
+    fluid.initRendererShadow = function (shadow) {
+        if (fluid.componentHasGrade(shadow.that, "fluid.rendererComponent")) {
+            fluid.initRendererComponent(shadow.that);
+        }
+    };
 
+    fluid.initRendererComponent = function (that) {
         fluid.fetchResources(that.options.resources, that.events.onResourcesFetched.fire); // TODO: deal with asynchrony
 
         var rendererOptions = fluid.renderer.modeliseOptions(that.options.rendererOptions, null, that);
 
-        var messageResolver;
         if (!rendererOptions.messageSource && that.options.strings) {
-            messageResolver = fluid.messageResolver({
-                messageBase: that.options.strings,
-                resolveFunc: that.options.messageResolverFunction,
-                parents: fluid.makeArray(that.options.parentBundle)
-            });
-            rendererOptions.messageSource = {type: "resolver", resolver: messageResolver};
+            rendererOptions.messageSource = {type: "resolver", resolver: that.messageResolver};
         }
         fluid.renderer.reverseMerge(rendererOptions, that.options, ["resolverGetConfig", "resolverSetConfig"]);
         that.rendererOptions = rendererOptions;
@@ -225,9 +230,7 @@ fluid_3_0_0 = fluid_3_0_0 || {};
         }
 
         fluid.renderer.reverseMerge(rendererFnOptions, that.options, ["resolverGetConfig", "resolverSetConfig"]);
-        if (rendererFnOptions.rendererTargetSelector) {
-            container = function () {return that.dom.locate(rendererFnOptions.rendererTargetSelector); };
-        }
+
         var renderer = {
             fossils: {},
             rendererFnOptions: rendererFnOptions,
@@ -236,15 +239,8 @@ fluid_3_0_0 = fluid_3_0_0 || {};
             }
         };
 
-        var rendererSub = fluid.renderer.createRendererSubcomponent(container, that.options.selectors, rendererFnOptions, that, renderer.fossils);
+        var rendererSub = fluid.renderer.createRendererSubcomponent(that.container, that.options.selectors, rendererFnOptions, that, renderer.fossils);
         that.renderer = $.extend(renderer, rendererSub);
-
-        if (messageResolver) {
-            that.messageResolver = messageResolver;
-        }
-        renderer.refreshView = fluid.getForComponent(that, "refreshView"); // Stopgap implementation for FLUID-4334
-
-        return that;
     };
 
     var removeSelectors = function (selectors, selectorsToIgnore) {

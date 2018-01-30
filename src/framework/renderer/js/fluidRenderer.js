@@ -335,14 +335,12 @@ fluid_3_0_0 = fluid_3_0_0 || {};
     renderer.invokeFluidDecorator = function (func, args, ID, num, options) {
         var that;
         if (options.parentComponent) {
-            var parent = options.parentComponent;
             var name = renderer.IDtoComponentName(ID, num);
-            fluid.set(parent, ["options", "components", name], {
-                type: func,
-                container: args[0],
-                options: args[1]
-            });
-            that = fluid.initDependent(options.parentComponent, name);
+            that = fluid.constructChild(options.parentComponent, name,
+                $.extend({
+                    type: func,
+                    container: args[0]
+                }, args[1]));
         }
         else {
             that = fluid.invokeGlobalFunction(func, args);
