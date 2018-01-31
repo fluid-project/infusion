@@ -1954,10 +1954,9 @@ var fluid = fluid || fluid_3_0_0;
 
     /**
      * Retrieves and stores a grade's configuration centrally.
-     * @param {String} gradeName the name of the grade whose options are to be read or written
-     * @param {Object} (optional) an object containing the options to be set
+     * @param gradeName {String} The name of the grade whose options are to be read or written
+     * @param options {Object} An (optional) object containing the options to be set
      */
-
     fluid.defaults = function (componentName, options) {
         if (options === undefined) {
             return fluid.getMergedDefaults(componentName);
