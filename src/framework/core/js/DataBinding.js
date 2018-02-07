@@ -275,6 +275,62 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         strategies: [fluid.model.defaultFetchStrategy, fluid.model.defaultCreatorStrategy]
     };
 
+    /** CONNECTED COMPONENTS AND TOPOLOGICAL SORTING **/
+
+    // Following "tarjan" at https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm
+
+    /** Compute the strongly connected components of a graph, specified as a list of vertices and an accessor function.
+     * Returns an array of arrays of strongly connected vertices, with each component in topologically sorted order
+     * @param vertices {Array of Vertex} The vertices of the graph to be processed. Each vertex object will be polluted
+     * with three extra fields: `tarjanIndex`, `lowIndex` and `onStack`
+     * @param accessor {Function: Vertex -> Array of Vertex}
+     * @return Array of Array of Vertex
+     */
+    fluid.stronglyConnected = function (vertices, accessor) {
+        var that = {
+            stack: [],
+            accessor: accessor,
+            components: [],
+            index: 0
+        };
+        vertices.forEach(function (vertex) {
+            if (vertex.tarjanIndex === undefined) {
+                fluid.stronglyConnectedOne(vertex, that);
+            }
+        });
+        return that.components;
+    };
+
+    // Perform one round of the Tarjan search algorithm using the state structure generated in fluid.stronglyConnected
+    fluid.stronglyConnectedOne = function (vertex, that) {
+        vertex.tarjanIndex = that.index;
+        vertex.lowIndex = that.index;
+        ++that.index;
+        that.stack.push(vertex);
+        vertex.onStack = true;
+        var outEdges = that.accessor(vertex);
+        outEdges.forEach(function (outVertex) {
+            if (outVertex.tarjanIndex === undefined) {
+                // Successor has not yet been visited; recurse on it
+                fluid.stronglyConnectedOne(outVertex, that);
+                vertex.lowIndex = Math.min(vertex.lowIndex, outVertex.lowIndex);
+            } else if (outVertex.onStack) {
+                // Successor is on the stack and hence in the current component
+                vertex.lowIndex = Math.min(vertex.lowIndex, outVertex.tarjanIndex);
+            }
+        });
+        // If vertex is a root node, pop the stack back as far as it and generate a component
+        if (vertex.lowIndex === vertex.tarjanIndex) {
+            var component = [], outVertex;
+            do {
+                outVertex = that.stack.pop();
+                outVertex.onStack = false;
+                component.push(outVertex);
+            } while (outVertex !== vertex);
+            that.components.push(component);
+        }
+    };
+
     /** MODEL COMPONENT HIERARCHY AND RELAY SYSTEM **/
 
     fluid.initRelayModel = function (that) {
@@ -329,11 +385,45 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
     };
 
+    /** Compute relay dependency out arcs for a group of initialising components.
+     * @param transacs {Object} Hash of component id to local ChangeApplier transaction
+     * @param mrec {Object} Hash of component id to enlisted component record
+     * @return Object Hash of component id to list of enlisted component record
+     */
+    fluid.computeInitialOutArcs = function (transacs, mrec) {
+        return fluid.transform(mrec, function (recel, id) {
+            var oneOutArcs = {};
+            var listeners = recel.that.applier.listeners.sortedListeners;
+            fluid.each(listeners, function (listener) {
+                if (listener.isRelay && !fluid.isExcludedChangeSource(transacs[id], listener.cond)) {
+                    var targetId = listener.targetId;
+                    if (targetId !== id) {
+                        oneOutArcs[targetId] = true;
+                    }
+                }
+            });
+            var oneOutArcList = Object.keys(oneOutArcs);
+            var togo = oneOutArcList.map(function (id) {
+                return mrec[id];
+            });
+            // No edge if the component is not enlisted - it will sort to the end via "completeOnInit"
+            fluid.remove_if(togo, function (rec) {
+                return rec === undefined;
+            });
+            return togo;
+        });
+    };
+
     fluid.sortCompleteLast = function (reca, recb) {
         return (reca.completeOnInit ? 1 : 0) - (recb.completeOnInit ? 1 : 0);
     };
 
-    // Operate all coordinated transactions by bringing models to their respective initial values, and then commit them all
+
+    /** Operate all coordinated transactions by bringing models to their respective initial values, and then commit them all
+     * @param that {Component} A representative component of the collection for which the initial transaction is to be operated
+     * @param mrec {Object} The global model transaction record for the init transaction. This is a hash indexed by component id
+     * to a model transaction record, as registered in `fluid.enlistModelComponent`. This has members `that`, `applier`, `complete`.
+     */
     fluid.operateInitialTransaction = function (that, mrec) {
         var transId = fluid.allocateGuid();
         var transRec = fluid.getModelTransactionRec(that, transId);
@@ -345,8 +435,28 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
         // TODO: This sort has very little effect in any current test (can be replaced by no-op - see FLUID-5339) - but
         // at least can't be performed in reverse order ("FLUID-3674 event coordination test" will fail) - need more cases
-        var recs = fluid.values(mrec).sort(fluid.sortCompleteLast);
-        fluid.each(recs, function (recel) {
+
+        // Compute the graph of init transaction relays for FLUID-6234 - one day we will have to do better than this, since there
+        // may be finer structure than per-component - it may be that each piece of model area participates in this relation
+        // differently. But this will require even more ambitious work such as fragmenting all the initial model values along
+        // these boundaries.
+        var outArcs = fluid.computeInitialOutArcs(transacs, mrec);
+        var arcAccessor = function (mrec) {
+            return outArcs[mrec.that.id];
+        };
+        var recs = fluid.values(mrec);
+        var components = fluid.stronglyConnected(recs, arcAccessor);
+        var priorityIndex = 0;
+        components.forEach(function (component) {
+            component.forEach(function (recel) {
+                recel.initPriority = recel.completeOnInit ? Math.Infinity : priorityIndex++;
+            });
+        });
+
+        recs.sort(function (reca, recb) {
+            return reca.initPriority - recb.initPriority;
+        });
+        recs.forEach(function (recel) {
             var that = recel.that;
             var transac = transacs[that.id];
             if (recel.completeOnInit) {
@@ -512,6 +622,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.recordListener(applier.modelChanged, sourceListener, shadow, listenerId);
     };
 
+    /** Called when a relay listener registered using `fluid.registerDirectChangeRelay` enlists in a transaction. Opens a local
+     * representative of this transaction on `targetApplier`, creates and stores a "transaction element" within the global transaction
+     * record keyed by the target applier's id. The transaction element is also pushed onto the `relays` member of the global transaction record - they
+     * will be sorted by priority here when changes are fired.
+     * @param transRec {TransactionRecord} The global record for the current ChangeApplier transaction as retrieved from `fluid.getModelTransactionRec`
+     * @param targetApplier {ChangeApplier} The ChangeApplier to which outgoing changes will be applied. A local representative of the transaction will be opened on this applier and returned.
+     * @param transId {String} The global id of this transaction
+     * @param options {Object} The `options` argument supplied to `fluid.registerDirectChangeRelay`. This will be stored in the returned transaction element
+     * - note that only the member `update` is ever used in `fluid.model.updateRelays` - TODO: We should thin this out
+     * @return {Object} A "transaction element" holding information relevant to this relay's enlistment in the current transaction. This includes fields:
+     *     transaction {Transaction} The local representative of this transaction created on `targetApplier`
+     *     relayCount {Integer} The number of times this relay has been activated in this transaction
+     *     namespace {String} [optional] Namespace for this relay definition
+     *     priority {Priority} The parsed priority definition for this relay
+     */
     fluid.registerRelayTransaction = function (transRec, targetApplier, transId, options, npOptions) {
         var newTrans = targetApplier.initiate("relay", null, transId); // non-top-level transaction will defeat postCommit
         var transEl = transRec[targetApplier.applierId] = {transaction: newTrans, relayCount: 0, namespace: npOptions.namespace, priority: npOptions.priority, options: options};
@@ -541,12 +666,33 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // required within the "overall" transaction whilst genuine (external) changes continue to arrive.
 
     // TODO: Vast overcomplication and generation of closure garbage. SURELY we should be able to convert this into an externalised, arg-ist form
+    /** Registers a listener operating one leg of a model relay relation, connecting the source and target. Called once or twice from `fluid.connectModelRelay` -
+     * see the comment there for the three cases involved. Note that in its case iii)B) the applier to bind to is not the one attached to `target` but is instead
+     * held in `options.targetApplier`.
+     * @param target {Component} The target component at the end of the relay.
+     * @param targetSegs {Array of String} The path in the target where outgoing changes are to be fired
+     * @param source {Component|Null} The source component from where changes will be listened to. May be null if the change source is a relay document.
+     * @param sourceSegs {Array of String} The path in the source component's model at which changes will be listened to
+     * @param linkId {String} The unique id of this relay arc. This will be used as a key within the active transaction record to look up dynamic information about
+     *     activation of the link within that transaction (currently just an activation count)
+     * @param transducer {Function|Null} A function which will be invoked when a change is to be relayed. This is one of the adapters constructed in "makeTransformPackage"
+     *     and is set in all cases other than iii)B) (collecting changes to contextualised relay). Note that this will have a member `cond` as returned from
+     *    `fluid.model.parseRelayCondition` encoding the condition whereby changes should be excluded from the transaction. The rule encoded by the condition
+     *    will be applied by the function within `transducer`.
+     * @param options {Object}
+     *    transactional {Boolean} `true` in case iii) - although this only represents `half-transactions`, `false` in others since these are resolved immediately with no granularity
+     *    targetApplier {ChangeApplier} [optional] in case iii)B) holds the applier for the contextualised relay document which outgoing changes should be applied to
+     *    sourceApplier {ChangeApplier} [optional] in case ii) holds the applier for the contextualised relay document on which we listen for outgoing changes
+     * @param npOptions {Object} Namespace and priority options
+     *    namespace {String} [optional] The namespace attached to this relay definition
+     *    priority {String} [optional] The (unparsed) priority attached to this relay definition
+     */
     fluid.registerDirectChangeRelay = function (target, targetSegs, source, sourceSegs, linkId, transducer, options, npOptions) {
-        var targetApplier = options.targetApplier || target.applier; // implies the target is a relay document
-        var sourceApplier = options.sourceApplier || source.applier; // implies the source is a relay document - listener will be transactional
+        var targetApplier = options.targetApplier || target.applier; // first branch implies the target is a relay document
+        var sourceApplier = options.sourceApplier || source.applier; // first branch implies the source is a relay document - listener will be transactional
         var applierId = targetApplier.applierId;
         targetSegs = fluid.makeArray(targetSegs);
-        sourceSegs = sourceSegs ? fluid.makeArray(sourceSegs) : sourceSegs; // take copies since originals will be trashed
+        sourceSegs = fluid.makeArray(sourceSegs); // take copies since originals will be trashed
         var sourceListener = function (newValue, oldValue, path, changeRequest, trans, applier) {
             var transId = trans.id;
             var transRec = fluid.getModelTransactionRec(target, transId);
@@ -571,7 +717,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     // the "forwardAdapter"
                     transducer(existing.transaction, options.sourceApplier ? undefined : newValue, sourceSegs, targetSegs, changeRequest);
                 } else {
-                    if (!options.noRelayDeletesDirect && changeRequest && changeRequest.type === "DELETE") {
+                    if (changeRequest && changeRequest.type === "DELETE") {
                         existing.transaction.fireChangeRequest({type: "DELETE", segs: targetSegs});
                     }
                     if (newValue !== undefined) {
@@ -580,17 +726,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
             }
         };
-        var spec;
-        if (sourceSegs) {
-            spec = sourceApplier.modelChanged.addListener({
-                isRelay: true,
-                segs: sourceSegs,
-                transactional: options.transactional
-            }, sourceListener);
-            if (fluid.passLogLevel(fluid.logLevel.TRACE)) {
-                fluid.log(fluid.logLevel.TRACE, "Adding relay listener with listenerId " + spec.listenerId + " to source applier with id " +
-                    sourceApplier.applierId + " from target applier with id " + applierId + " for target component with id " + target.id);
-            }
+        var spec = sourceApplier.modelChanged.addListener({
+            isRelay: true,
+            cond: transducer && transducer.cond,
+            targetId: target.id, // these two fields for debuggability
+            targetApplierId: targetApplier.id,
+            segs: sourceSegs,
+            transactional: options.transactional
+        }, sourceListener);
+        if (fluid.passLogLevel(fluid.logLevel.TRACE)) {
+            fluid.log(fluid.logLevel.TRACE, "Adding relay listener with listenerId " + spec.listenerId + " to source applier with id " +
+                sourceApplier.applierId + " from target applier with id " + applierId + " for target component with id " + target.id);
         }
         if (source) { // TODO - we actually may require to register on THREE sources in the case modelRelay is attached to a
             // component which is neither source nor target. Note there will be problems if source, say, is destroyed and recreated,
@@ -602,9 +748,39 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
-    // When called during parsing a contextualised model relay document, these arguments are reversed - "source" refers to the
-    // current component, and "target" refers successively to the various "source" components.
-    // "options" will be transformPackage
+    /** Connect a model relay relation between model material. This is called in three scenarios:
+     * i) from `fluid.parseModelRelay` when parsing an uncontextualised model relay (one with a static transform document), to
+     * directly connect the source and target of the relay
+     * ii) from `fluid.parseModelRelay` when parsing a contextualised model relay (one whose transform document depends on other model
+     * material), to connect updates emitted from the transform document's applier onto the relay ends (both source and target)
+     * iii) from `fluid.parseImplicitRelay` when parsing model references found within contextualised model relay to bind changes emitted
+     * from the target of the reference onto the transform document's applier. These may apply directly to another component's model (in its case
+     * A) or apply to a relay document (in its case B)
+     *
+     * This function will make one or two calls to `fluid.registerDirectChangeRelay` in order to set up each leg of any required relay.
+     * Note that in case iii)B) the component referred to as our argument `target` is actually the "source" of the changes (that is, the one encountered
+     * while traversing the transform document), and our argument `source` is the component holding the transform, and so
+     * the call to `fluid.registerDirectChangeRelay` will have `source` and `target` reversed (`fluid.registerDirectChangeRelay` will bind to the `targetApplier`
+     * in the options rather than source's applier).
+     * @param source {Component} The component holding the material giving rise to the relay, or the one referred to by the `source` member
+     *   of the configuration in case ii), if there is one
+     * @param sourceSegs {Array of String|Null} The parsed segments of the `source` relay reference in case i), or the offset into the transform
+     *   document of the reference component in case iii), otherwise `null` (case ii))
+     * @param target {Component} The component holding the model relay `target` in cases i) and ii), or the component at the other end of
+     *   the model reference in case iii) (in this case in fact a "source" for the changes.
+     * @param targetSegs {Array of String} The parsed segments of the `target` reference in cases i) and ii), or of the model reference in
+     *   case iii)
+     * @param options {Object} A structure describing the relay, allowing discrimination of the various cases above. This is derived from the return from
+     * `fluid.makeTransformPackage` but will have some members filtered in different cases. This contains members:
+     *    update {Function} A function to be called at the end of a "half-transaction" when all pending updates have been applied to the document's applier.
+     *        This discriminates case iii)
+     *    targetApplier {ChangeApplier} The ChangeApplier for the relay document, in case iii)B)
+     *    forwardApplier (ChangeApplier} The ChangeApplier for the relay document, in cases ii) and iii)B) (only used in latter case)
+     *    forwardAdapter {Adapter} A function accepting (transaction, newValue) to pass through the forward leg of the relay. Contains a member `cond` holding the parsed relay condition.
+     *    backwardAdapter {Adapter} A function accepting (transaction, newValue) to pass through the backward leg of the relay. Contains a member `cond` holding the parsed relay condition.
+     *    namespace {String} Namespace for any relay definition
+     *    priority {String} Priority for any relay definition or synthetic "first" for iii)A)
+     */
     fluid.connectModelRelay = function (source, sourceSegs, target, targetSegs, options) {
         var linkId = fluid.allocateGuid();
         function enlistComponent(component) {
@@ -618,28 +794,26 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         }
         enlistComponent(target);
-        enlistComponent(source); // role of "source" and "target" may have been swapped in a modelRelay document
+        enlistComponent(source); // role of "source" and "target" are swapped in case iii)B)
         var npOptions = fluid.filterKeys(options, ["namespace", "priority"]);
 
-        if (options.update) { // it is a call via parseImplicitRelay for a relay document
-            if (options.targetApplier) {
-                // register changes from the model onto changes to the model relay document
+        if (options.update) { // it is a call for a relay document - ii) or iii)B)
+            if (options.targetApplier) { // case iii)B)
+                // We are in the middle of parsing a contextualised relay, and this call has arrived via its parseImplicitRelay.
+                // register changes from the target model onto changes to the model relay document
                 fluid.registerDirectChangeRelay(source, sourceSegs, target, targetSegs, linkId, null, {
                     transactional: false,
                     targetApplier: options.targetApplier,
                     update: options.update
                 }, npOptions);
-            } else {
-                // We are in the middle of parsing a contextualised relay, and this call has arrived via its parseImplicitRelay.
+            } else { // case ii), contextualised relay overall output
                 // Rather than bind source-source, instead register the "half-transactional" listener which binds changes
-                // from the relay itself onto the target
+                // from the relay document itself onto the target
                 fluid.registerDirectChangeRelay(target, targetSegs, source, [], linkId + "-transform", options.forwardAdapter, {transactional: true, sourceApplier: options.forwardApplier}, npOptions);
             }
-        } else { // more efficient branch where relay is uncontextualised
+        } else { // case i) or iii)A): more efficient, old-fashioned branch where relay is uncontextualised
             fluid.registerDirectChangeRelay(target, targetSegs, source, sourceSegs, linkId, options.forwardAdapter, {transactional: false}, npOptions);
-            if (sourceSegs) {
-                fluid.registerDirectChangeRelay(source, sourceSegs, target, targetSegs, linkId, options.backwardAdapter, {transactional: false}, npOptions);
-            }
+            fluid.registerDirectChangeRelay(source, sourceSegs, target, targetSegs, linkId, options.backwardAdapter, {transactional: false}, npOptions);
         }
     };
 
@@ -649,6 +823,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return targetSpec;
     };
 
+    /** Determines whether the supplied transaction should have changes not propagated into it as a result of being excluded by a
+     * condition specification.
+     * @param transaction {Transaction} A local ChangeApplier transaction, with member `fullSources` holding all currently active sources
+     * @param spec {ConditionSpec} A parsed relay condition specification, as returned from `fluid.model.parseRelayCondition`.
+     * @return {Boolean} `true` if changes should be excluded from the supplied transaction according to the supplied specification
+     */
     fluid.isExcludedChangeSource = function (transaction, spec) {
         if (!spec || !spec.excludeSource) { // mergeModelListeners initModelEvent fabricates a fake spec that bypasses processing
             return false;
@@ -710,6 +890,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
             fluid.model.guardedAdapter(transaction, forwardCond, that.forwardAdapterImpl, arguments);
         };
+        that.forwardAdapter.cond = forwardCond; // Used when parsing graph in init transaction
         // fired from fluid.model.updateRelays via invalidator event
         that.runTransform = function (trans) {
             trans.commit(); // this will reach the special "half-transactional listener" registered in fluid.connectModelRelay,
@@ -721,10 +902,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         that.forwardApplier.isRelayApplier = true; // special annotation so these can be discovered in the transaction record
         that.invalidator = fluid.makeEventFirer({name: "Invalidator for model relay with applier " + that.forwardApplier.applierId});
         if (sourcePath !== null) {
+            // TODO: backwardApplier is unused
             that.backwardApplier = fluid.makeHolderChangeApplier(that.backwardHolder);
             that.backwardAdapter = function (transaction) {
                 fluid.model.guardedAdapter(transaction, backwardCond, that.backwardAdapterImpl, arguments);
             };
+            that.backwardAdapter.cond = backwardCond;
         }
         that.update = that.invalidator.fire; // necessary so that both routes to fluid.connectModelRelay from here hit the first branch
         var implicitOptions = {
@@ -761,11 +944,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         always:   {}
     };
 
+    /** Parse a relay condition specification, e.g. of the form `{includeSource: "init"}` or `never` into a hash representation
+     * suitable for rapid querying.
+     * @param condition {String|Object} A relay condition specification, appearing in the section `forward` or `backward` of a
+     * relay definition
+     * @return {RelayCondition} The parsed condition, holding members `includeSource` and `excludeSource` each with a hash to `true`
+     * of referenced sources
+     */
     fluid.model.parseRelayCondition = function (condition) {
         if (condition === "initOnly") {
             fluid.log(fluid.logLevel.WARN, "The relay condition \"initOnly\" is deprecated: Please use the form 'includeSource: \"init\"' instead");
         } else if (condition === "liveOnly") {
-            fluid.log(fluid.logLevel.WARN, "The relay condition \"initOnly\" is deprecated: Please use the form 'excludeSource: \"init\"' instead");
+            fluid.log(fluid.logLevel.WARN, "The relay condition \"liveOnly\" is deprecated: Please use the form 'excludeSource: \"init\"' instead");
         }
         var exclusionRec;
         if (!condition) {
@@ -781,6 +971,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return fluid.parseSourceExclusionSpec({}, exclusionRec);
     };
 
+    /** Parse a single model relay record as appearing nested within the `modelRelay` block in a model component's
+     * options. By various calls to `fluid.connectModelRelay` this will set up the structure operating the live
+     * relay during the component#s lifetime.
+     * @param that {Component} The component holding the record, currently instantiating
+     * @param mrrec {Object} The model relay record. This must contain either a member `singleTransform` or `transform` and may also contain
+     * members `namespace`, `path`, `priority`, `forward` and `backward`
+     */
     fluid.parseModelRelay = function (that, mrrec, key) {
         var parsedSource = mrrec.source !== undefined ? fluid.parseValidModelReference(that, "modelRelay record member \"source\"", mrrec.source) :
             {path: null, modelSegs: null};
@@ -794,22 +991,41 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var forwardCond = fluid.model.parseRelayCondition(mrrec.forward), backwardCond = fluid.model.parseRelayCondition(mrrec.backward);
 
         var transformPackage = fluid.makeTransformPackage(that, transform, parsedSource.path, parsedTarget.path, forwardCond, backwardCond, namespace, mrrec.priority);
-        var noRelayDeletes = {noRelayDeletesDirect : true}; // DELETE relay is handled in the transducer itself
         if (transformPackage.refCount === 0) { // There were no implicit relay elements found in the relay document - it can be relayed directly
-            // This first call binds changes emitted from the relay ends to each other, synchronously
+            // Case i): Bind changes emitted from the relay ends to each other, synchronously
             fluid.connectModelRelay(parsedSource.that || that, parsedSource.modelSegs, parsedTarget.that, parsedTarget.modelSegs,
             // Primarily, here, we want to get rid of "update" which is what signals to connectModelRelay that this is a invalidatable relay
-                fluid.filterKeys(transformPackage, ["forwardAdapter", "backwardAdapter", "namespace", "priority"])
-                , noRelayDeletes);
+                fluid.filterKeys(transformPackage, ["forwardAdapter", "backwardAdapter", "namespace", "priority"]));
         } else {
             if (parsedSource.modelSegs) {
                 fluid.fail("Error in model relay definition: If a relay transform has a model dependency, you can not specify a \"source\" entry - please instead enter this as \"input\" in the transform specification. Definition was ", mrrec, " for component ", that);
             }
-            // This second call binds changes emitted from the relay document itself onto the relay ends (using the "half-transactional system")
-            fluid.connectModelRelay(parsedSource.that || that, parsedSource.modelSegs, parsedTarget.that, parsedTarget.modelSegs, transformPackage);
+            // Case ii): Binds changes emitted from the relay document itself onto the relay ends (using the "half-transactional system")
+            fluid.connectModelRelay(that, null, parsedTarget.that, parsedTarget.modelSegs, transformPackage);
         }
     };
 
+    /** Traverses a model document written within a component's options, parsing any IoC references looking for
+     * i) references to general material, which will be fetched and interpolated now, and ii) "implicit relay" references to the
+     * model areas of other components, which will be used to set up live synchronisation between the area in this component where
+     * they appear and their target, as well as setting up initial synchronisation to compute the initial contents.
+     * This is called in two situations: A) parsing the `model` configuration option for a model component, and B) parsing the
+     * `transform` member (perhaps derived from `singleTransform`) of a `modelRelay` block for a model component. It calls itself
+     * recursively as it progresses through the model document material with updated `segs`
+     * @param that {Component} The component holding the model document
+     * @param modelRec {Any} The model document specification to be parsed
+     * @param segs {Array of String} The array of path segments from the root of the entire model document to the point of current parsing
+     * @param options {Object} Configuration options (mutable) governing this parse. This is primarily used to hand as the 5th argument to
+     * `fluid.connectModelRelay` for any model references found, and contains members
+     *    refCount {Integer} An count incremented for every call to `fluid.connectModelRelay` setting up a synchronizing relay for every
+     * reference to model material encountered
+     *    priority {String} The unparsed priority member attached to this record, or `first` for a parse of `model` (case A)
+     *    namespace {String} [optional] A namespace attached to this transform, if we are parsing a transform
+     *    targetApplier {ChangeApplier} [optional] The ChangeApplier for this transform document, if it is a transform, empty otherwise
+     *    update {Function} [optional] A function to be called on conclusion of a "half-transaction" where all currently pending updates have been applied
+     * to this transform document. This function will update/regenerate the relay transform functions used to relay changes between the transform
+     * ends based on the updated document.
+     */
     fluid.parseImplicitRelay = function (that, modelRec, segs, options) {
         var value;
         if (fluid.isIoCReference(modelRec)) {
@@ -1439,12 +1655,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     spec.segsArray = [spec.segs];
                 }
             }
-            fluid.parseSourceExclusionSpec(spec, spec);
-            spec.wildcard = fluid.accumulate(fluid.transform(spec.segsArray, function (segs) {
-                return fluid.contains(segs, "*");
-            }), fluid.add, 0);
-            if (spec.wildcard && spec.segsArray.length > 1) {
-                fluid.fail("Error in model listener specification ", spec, " - you may not supply a wildcard pattern as one of a set of multiple paths to be matched");
+            if (!spec.isRelay) {
+                // This acts for listeners registered externally. For relays, the exclusion spec is stored in "cond"
+                fluid.parseSourceExclusionSpec(spec, spec);
+                spec.wildcard = fluid.accumulate(fluid.transform(spec.segsArray, function (segs) {
+                    return fluid.contains(segs, "*");
+                }), fluid.add, 0);
+                if (spec.wildcard && spec.segsArray.length > 1) {
+                    fluid.fail("Error in model listener specification ", spec, " - you may not supply a wildcard pattern as one of a set of multiple paths to be matched");
+                }
             }
             var firer = that[spec.transactional ? "transListeners" : "listeners"];
             firer.addListener(spec);
