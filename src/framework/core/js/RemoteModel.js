@@ -14,6 +14,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
+    /**
+     * fluid.remoteModelComponent builds on top of fluid.modelComponent with the purpose of providing a buffer between a
+     * local and remote model that are attempting to stay in sync. For example a local model is being updated by user
+     * interaction, this is sent back to a remote server, which in turn tries to update the local model. If additional
+     * user actions occur during the roundtrip, an infinite loop of updates may occur. fluid.remoteModelComponent solves
+     * this by restricting reading and writing to a single request at a time, waiting for one request to complete
+     * before operating the next.
+     *
+     * For more detailed documentation, including diagrams outlining the fetch and write workflows, see:
+     * https://docs.fluidproject.org/infusion/development/RemoteModelAPI.html
+     */
     fluid.defaults("fluid.remoteModelComponent", {
         gradeNames: ["fluid.modelComponent"],
         events: {
