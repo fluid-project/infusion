@@ -404,7 +404,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             }
         };
-        var output         = fluid.flattenObjectPaths(originalObject);
+        var output = fluid.flattenObjectPaths(originalObject);
         var expectedValue = {
             "path": "[object Object]",
             "path.to": "[object Object]",
@@ -423,27 +423,33 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     jqUnit.test("flattenObjectPaths: top-level array", function () {
-        var originalObject = ["monkey", "fighting", "snakes"];
-        var output = fluid.flattenObjectPaths(originalObject);
+        var output = fluid.flattenObjectPaths(["monkey", "fighting", "snakes"]);
         jqUnit.assertDeepEq("A top-level array should be flattened correctly.", { 0: "monkey", 1: "fighting", 2: "snakes"}, output);
     });
 
     jqUnit.test("flattenObjectPaths: deep array", function () {
-        var originalObject = { "plane": ["monday", "to", "friday"]};
-        var output = fluid.flattenObjectPaths(originalObject);
+        var output = fluid.flattenObjectPaths({ "plane": ["monday", "to", "friday"]});
         jqUnit.assertDeepEq("A deep array should be flattened correctly.", { "plane": "monday,to,friday", "plane.0": "monday", "plane.1": "to", "plane.2": "friday"}, output);
     });
 
     jqUnit.test("flattenObjectPaths: deep empty objects", function () {
-        var originalObject = { deeply: { empty: {}, nonEmpty: true }};
-        var output = fluid.flattenObjectPaths(originalObject);
+        var output = fluid.flattenObjectPaths({ deeply: { empty: {}, nonEmpty: true }});
         jqUnit.assertDeepEq("A deep empty object should be handled appropriately.", { "deeply": "[object Object]", "deeply.empty": "[object Object]", "deeply.nonEmpty": true }, output);
     });
 
     jqUnit.test("flattenObjectPaths: empty object", function () {
-        var originalObject = {};
-        var output = fluid.flattenObjectPaths(originalObject);
+        var output = fluid.flattenObjectPaths({});
         jqUnit.assertDeepEq("A top-level empty object should be handled correctly.", {}, output);
+    });
+
+    jqUnit.test("flattenObjectPaths: root value is null", function () {
+        var output = fluid.flattenObjectPaths(null);
+        jqUnit.assertDeepEq("A top-level null value should be handled correctly.", {}, output);
+    });
+
+    jqUnit.test("flattenObjectPaths: deep value is null", function () {
+        var output = fluid.flattenObjectPaths({ deep: { value: null} });
+        jqUnit.assertDeepEq("A top-level null value should be handled correctly.", { "deep.value": null, "deep": "[object Object]" }, output);
     });
 
     jqUnit.test("stringTemplate: greedy", function () {

@@ -2893,7 +2893,7 @@ var fluid = fluid || fluid_3_0_0;
     fluid.flattenObjectPaths = function (originalObject) {
         var flattenedObject = {};
         fluid.each(originalObject, function (value, key) {
-            if (typeof value === "object") {
+            if (value !== null && typeof value === "object") {
                 var flattenedSubObject = fluid.flattenObjectPaths(value);
                 fluid.each(flattenedSubObject, function (subValue, subKey) {
                     flattenedObject[key + "." + subKey] = subValue;
