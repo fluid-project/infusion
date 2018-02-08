@@ -44,7 +44,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * SettingsStore Subcomponent that uses a cookie for persistence.
-     * @param {Object} options
+     * @param options {Object}
      */
     fluid.defaults("fluid.prefs.cookieStore", {
         gradeNames: ["fluid.prefs.dataSource"],
@@ -98,7 +98,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Assembles the cookie string
-     * @param {Object} cookie settings
+     * @param cookie {Object} settings
      */
     fluid.prefs.cookieStore.assembleCookie = function (cookieOptions) {
         var cookieStr = cookieOptions.name + "=" + cookieOptions.data;
@@ -116,8 +116,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Saves the settings into a cookie
-     * @param {Object} settings
-     * @param {Object} cookieOptions
+     * @param settings {Object}
+     * @param cookieOptions {Object}
      */
     fluid.prefs.cookieStore.set = function (settings, cookieOptions) {
         cookieOptions.data = encodeURIComponent(JSON.stringify(settings));
@@ -131,7 +131,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * SettingsStore mock that doesn't do persistence.
-     * @param {Object} options
+     * @param options {Object}
      */
     fluid.defaults("fluid.prefs.tempStore", {
         gradeNames: ["fluid.prefs.dataSource", "fluid.modelComponent"],

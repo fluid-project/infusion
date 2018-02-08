@@ -219,8 +219,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Instantiate a rich-text InlineEdit component that uses an instance of TinyMCE.
      *
-     * @param {Object} componentContainer the element containing the inline editors
-     * @param {Object} options configuration options for the components
+     * @param componentContainer {Object} the element containing the inline editors
+     * @param options {Object} configuration options for the components
      */
 
     fluid.defaults("fluid.inlineEdit.tinyMCE", {
@@ -398,8 +398,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Instantiate a drop-down InlineEdit component
      *
-     * @param {Object} container
-     * @param {Object} options
+     * @param container {Object}
+     * @param options {Object}
      */
 
     fluid.defaults("fluid.inlineEdit.dropdown", {
