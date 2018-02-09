@@ -30,7 +30,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         onScrollDelay: 100, // in ms, used to set the delay for debouncing the scroll event relay
         model: {
             // panelMaxIndex: null, // determined by the number of panels calculated after the onPrefsEditorMarkupReady event fired
-            // panelIndex: 0 // the index of the panel to open on
+            panelIndex: 0 // the index of the panel to open on
         },
         events: {
             beforeReset: null, // should be fired by the fluid.prefs.prefsEditor grade
