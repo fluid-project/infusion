@@ -291,7 +291,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * A template loader component that expands the resources blocks for loading resources used by starterPanels
      *
-     * @param {Object} options
+     * @param options {Object}
      */
 
     fluid.defaults("fluid.prefs.starterTemplateLoader", {
@@ -334,9 +334,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * A message loader component that expands the resources blocks for loading messages for starter panels
      *
-     * @param {Object} options
+     * @param options {Object}
      */
-
     fluid.defaults("fluid.prefs.starterMessageLoader", {
         gradeNames: ["fluid.resourceLoader"],
         resources: {

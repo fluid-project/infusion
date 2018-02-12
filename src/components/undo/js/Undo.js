@@ -96,8 +96,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Decorates a target component with the function of "undoability". This component is intended to be attached as a
      * subcomponent to the target component, which will bear a grade of "fluid.undoable"
      *
-     * @param {Object} component a "model-bearing" standard Fluid component to receive the "undo" functionality
-     * @param {Object} options a collection of options settings
+     * @param component {Object} a "model-bearing" standard Fluid component to receive the "undo" functionality
+     * @param options {Object} a collection of options settings
      */
 
     fluid.defaults("fluid.undo", {

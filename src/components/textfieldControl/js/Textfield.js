@@ -72,9 +72,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Sets the model value only if the new value is a valid number, and will reset the textfield to the current model
      * value otherwise.
      *
-     * @param {Object} that - the component
-     * @param {Number} value - the new numerical entry
-     * @param {String} path - the path into the model for which the value should be set
+     * @param that {Object} - the component
+     * @param value {Number} - the new numerical entry
+     * @param path {String} - the path into the model for which the value should be set
      */
     fluid.textfield.setModelRestrictToNumbers = function (that, value, path) {
         var isNumber = !isNaN(Number(value));
