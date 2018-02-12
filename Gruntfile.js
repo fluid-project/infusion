@@ -93,7 +93,6 @@ module.exports = function (grunt) {
             products: "products",
             stylus: ["src/components/switch/css/*.css", "src/framework/preferences/css/*.css"],
             stylusDist: "dist/assets/**/stylus", // removes the empty stylus directory from the distribution
-            webfont: ["src/framework/preferences/fonts"],
             ciArtifacts: ["*.tap"],
             dist: "dist",
             postBuild: {
@@ -281,61 +280,6 @@ module.exports = function (grunt) {
                 }]
             }
         },
-        webfont: {
-            uioIcons: {
-                src: [
-                    "node_modules/infusion-icons/svg/arrow-triangle.svg",
-                    "node_modules/infusion-icons/svg/crossout-diag-dotted-line.svg",
-                    "node_modules/infusion-icons/svg/contrast.svg",
-                    "node_modules/infusion-icons/svg/bigA.svg",
-                    "node_modules/infusion-icons/svg/smallA.svg",
-                    "node_modules/infusion-icons/svg/reset-undo-arrow.svg",
-                    "node_modules/infusion-icons/svg/line-space-expanded.svg",
-                    "node_modules/infusion-icons/svg/line-space-condensed.svg",
-                    "node_modules/infusion-icons/svg/line-space.svg",
-                    "node_modules/infusion-icons/svg/links.svg",
-                    "node_modules/infusion-icons/svg/simplify.svg",
-                    "node_modules/infusion-icons/svg/preferences.svg",
-                    "node_modules/infusion-icons/svg/font-style.svg",
-                    "node_modules/infusion-icons/svg/size.svg",
-                    "node_modules/infusion-icons/svg/text-to-speech-no-article.svg",
-                    "node_modules/infusion-icons/svg/table-of-contents.svg"
-                ],
-                dest: "src/framework/preferences/fonts", // Destination path for the font files.
-                options: {
-                    engine: "node",
-                    fontHeight: 52, // Avoid encountering metric-related issues.
-                    ascent: 64, // Top height measured from the bottom of the glyph boundary.
-                    descent: 0, // Bottom height measured from the bottom of the glyph boundary.
-                    font: "PrefsFramework-Icons", // Name of the generated font.
-                    codepoints: {
-                        // icons with codepoints from 0xE000 to 0xE002 were no longer needed and removed.
-                        "arrow-triangle": 0xE003,
-                        "crossout-diag-dotted-line": 0xE004,
-                        "contrast": 0xE005,
-                        "bigA": 0xE006,
-                        "smallA": 0xE007,
-                        "reset-undo-arrow": 0xE008,
-                        "line-space-expanded": 0xE009,
-                        "line-space-condensed": 0xE00a,
-                        "line-space": 0xE00b,
-                        "links": 0xE00c,
-                        "simplify": 0xE00d,
-                        "preferences": 0xE00e,
-                        "font-style": 0xE00f,
-                        "size": 0xE010,
-                        "text-to-speech-no-article": 0xE011,
-                        "table-of-contents": 0xE012
-                    },
-                    // the following configuration is for the generated CSS file only
-                    // and not necessary if you setup the CSS manually
-                    syntax: "bootstrap",
-                    templateOptions: {
-                        classPrefix: "fl-icon-"
-                    }
-                }
-            }
-        },
         // grunt-contrib-watch task to watch and rebuild stylus files
         // automatically when doing stylus development
         watch: {
@@ -401,7 +345,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-modulefiles");
     grunt.loadNpmTasks("grunt-contrib-stylus");
     grunt.loadNpmTasks("grunt-contrib-watch");
-    grunt.loadNpmTasks("grunt-webfont");
 
     // Custom tasks:
 
@@ -437,7 +380,6 @@ module.exports = function (grunt) {
             "clean",
             "lint",
             "stylus:compile",
-            "webfont",
             "modulefiles:" + target,
             "setPostBuildCleanUp:" + target,
             "pathMap:" + target,
@@ -469,7 +411,6 @@ module.exports = function (grunt) {
         var tasks = [
             "cleanForDist",
             "stylus:dist",
-            "webfont",
             "modulefiles:" + options.target,
             "pathMap:" + options.target,
             "copy:" + options.target,

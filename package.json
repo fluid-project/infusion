@@ -54,8 +54,6 @@
         "grunt-jsonlint": "1.1.0",
         "grunt-modulefiles": "0.3.1",
         "grunt-shell": "2.1.0",
-        "grunt-webfont": "1.6.0",
-        "infusion-icons": "1.0.0-dev.20171003T175157Z.6251d4e",
         "istanbul": "git://github.com/the-t-in-rtf/istanbul#828eb930add7bd663ca20649a917f3f3829e48c5",
         "lodash": "4.17.4",
         "ncp": "2.0.0",
