@@ -558,7 +558,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         jItem.attr("aria-selected", "true");
     };
 
-    /**
+    /*
      * Takes a $ object and adds 'movable' functionality to it
      */
     fluid.reorderer.initMovable = function (thatReorderer, dropManager, item) {

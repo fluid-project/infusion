@@ -78,7 +78,7 @@ var fluid = fluid || fluid_3_0_0;
         };
     };
 
-    /** Accepts two fully escaped paths, either of which may be empty or null **/
+    /* Accepts two fully escaped paths, either of which may be empty or null */
     fluid.model.composePaths = function (prefix, suffix) {
         prefix = prefix === 0 ? "0" : prefix || "";
         suffix = suffix === 0 ? "0" : suffix || "";
@@ -261,31 +261,31 @@ var fluid = fluid || fluid_3_0_0;
 
     fluid.registerNamespace("fluid.pathUtil");
 
-    /** Parses a path segment, following escaping rules, starting from character index i in the supplied path */
+    /* Parses a path segment, following escaping rules, starting from character index i in the supplied path */
     fluid.pathUtil.getPathSegment = function (path, i) {
         fluid.pathUtil.getPathSegmentImpl(globalAccept, path, i);
         return globalAccept[0];
     };
-    /** Returns just the head segment of an EL path */
+    /* Returns just the head segment of an EL path */
     fluid.pathUtil.getHeadPath = function (path) {
         return fluid.pathUtil.getPathSegment(path, 0);
     };
 
-    /** Returns all of an EL path minus its first segment - if the path consists of just one segment, returns "" */
+    /* Returns all of an EL path minus its first segment - if the path consists of just one segment, returns "" */
     fluid.pathUtil.getFromHeadPath = function (path) {
         var firstdot = fluid.pathUtil.getPathSegmentImpl(null, path, 0);
         return firstdot === path.length ? "" : path.substring(firstdot + 1);
     };
+
     /** Determines whether a particular EL path matches a given path specification.
      * The specification consists of a path with optional wildcard segments represented by "*".
-     * @param spec (string) The specification to be matched
-     * @param path (string) The path to be tested
-     * @param exact (boolean) Whether the path must exactly match the length of the specification in
+     * @param {String} spec - The specification to be matched
+     * @param {String} path - The path to be tested
+     * @param {Boolean} exact - Whether the path must exactly match the length of the specification in
      * terms of path segments in order to count as match. If exact is falsy, short specifications will
      * match all longer paths as if they were padded out with "*" segments
-     * @return (array of string) The path segments which matched the specification, or <code>null</code> if there was no match
+     * @return {Array|null} - An array of {String} path segments which matched the specification, or <code>null</code> if there was no match.
      */
-
     fluid.pathUtil.matchPath = function (spec, path, exact) {
         var togo = [];
         while (true) {
@@ -497,7 +497,7 @@ var fluid = fluid || fluid_3_0_0;
      * defined via their individual invertConfiguration functions, or else `fluid.model.transform.uninvertibleTransform`
      * if any of them do not.
      * Note that this algorithm will give faulty results in many cases of compound transformation documents.
-     * @param rules {Transform} The model transformation document to be inverted
+     * @param {Transform} rules - The model transformation document to be inverted
      * @return {Transform} The inverse transformation document if it can be computed easily, or
      * `fluid.model.transform.uninvertibleTransform` if it is clear that it cannot.
      */
@@ -514,8 +514,9 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     /** Compute the paths which will be read from the input document of the supplied transformation if it were operated.
-     * @param rules {Transform} The transformation for which the input paths are to be computed
-     * @return {Array of String} An array of paths which will be read by the document.
+     *
+     * @param {Transform} rules - The transformation for which the input paths are to be computed.
+     * @return {Array} - An array of paths which will be read by the document.
      */
     fluid.model.transform.collectInputPaths = function (rules) {
         var transformer = {
@@ -576,7 +577,7 @@ var fluid = fluid || fluid_3_0_0;
         };
     };
 
-    /** Transforms a model by a sequence of rules. Parameters as for fluid.model.transform,
+    /* Transforms a model by a sequence of rules. Parameters as for fluid.model.transform,
      * only with an array accepted for "rules"
      */
     fluid.model.transform.sequence = function (source, rules, options) {
@@ -591,8 +592,7 @@ var fluid = fluid || fluid_3_0_0;
         return pdiff === 0 ? changea.sequence - changeb.sequence : pdiff;
     };
 
-   /** Fires an accumulated set of change requests in increasing order of target pathlength
-     */
+    /* Fires an accumulated set of change requests in increasing order of target pathlength */
     fluid.model.fireSortedChanges = function (changes, applier) {
         changes.sort(fluid.model.compareByPathLength);
         fluid.fireChanges(applier, changes);
@@ -610,13 +610,14 @@ var fluid = fluid || fluid_3_0_0;
      *       }
      *   }
      *
-     * @param source {Object} the model to transform
-     * @param rules {Object} a rules object containing instructions on how to transform the model
-     * @param options {Object} a set of rules governing the transformations. At present this may contain
+     * @param {Object} source - the model to transform
+     * @param {Object} rules - a rules object containing instructions on how to transform the model
+     * @param {Object} options - a set of rules governing the transformations. At present this may contain
      * the values <code>isomorphic: true</code> indicating that the output model is to be governed by the
      * same schema found in the input model, or <code>flatSchema</code> holding a flat schema object which
      * consists of a hash of EL path specifications with wildcards, to the values "array"/"object" defining
      * the schema to be used to construct missing trunk values.
+     * @return {Any} The transformed model.
      */
     fluid.model.transformWithRules = function (source, rules, options) {
         options = options || {};
@@ -671,7 +672,7 @@ var fluid = fluid || fluid_3_0_0;
     $.extend(fluid.model.transformWithRules, fluid.model.transform);
     fluid.model.transform = fluid.model.transformWithRules;
 
-    /** Utility function to produce a standard options transformation record for a single set of rules **/
+    /* Utility function to produce a standard options transformation record for a single set of rules */
     fluid.transformOne = function (rules) {
         return {
             transformOptions: {
@@ -681,7 +682,7 @@ var fluid = fluid || fluid_3_0_0;
         };
     };
 
-    /** Utility function to produce a standard options transformation record for multiple rules to be applied in sequence **/
+    /* Utility function to produce a standard options transformation record for multiple rules to be applied in sequence */
     fluid.transformMany = function (rules) {
         return {
             transformOptions: {

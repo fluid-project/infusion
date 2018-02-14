@@ -40,9 +40,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * API is implemented is for the `onstart` event of an utterance to never fire. If we don't receive this
      * event within a timeout, this API's behaviour is to return a promise which rejects.
      *
-     * @param delay {Number} A time in milliseconds to wait for the speechSynthesis to fire its onStart event
+     * @param {Number} delay - A time in milliseconds to wait for the speechSynthesis to fire its onStart event
      * by default it is 5000ms (5s). This is crux of the test, as it needs time to attempt to run the speechSynthesis.
-     * @return {fluid.promise} A promise which will resolve if the TTS is supported (the onstart event is fired within the delay period)
+     * @return {fluid.promise} - A promise which will resolve if the TTS is supported (the onstart event is fired within the delay period)
      * or be rejected otherwise.
      */
     fluid.textToSpeech.checkTTSSupport = function (delay) {

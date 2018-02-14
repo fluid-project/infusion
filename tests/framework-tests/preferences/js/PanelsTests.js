@@ -1307,6 +1307,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /*******************************************************************************
      * Test functions shared by text field slider unit tests
      *******************************************************************************/
+
     fluid.tests.testDefault = function (that, messageMap) {
         var inputValue = parseFloat(that.container.find("input").val(), 10);
         var messageBase = that.options.messageBase;

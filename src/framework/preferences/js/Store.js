@@ -16,7 +16,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
-    /**
+    /*
      * A Generic data source grade that defines an API for getting and setting
      * data.
      */
@@ -65,7 +65,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
-    /**
+    /*
      * Retrieve and return the value of the cookie
      */
     fluid.prefs.cookieStore.get = function (cookieName) {
@@ -97,8 +97,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
-     * Assembles the cookie string
-     * @param cookie {Object} settings
+     * Assembles the cookie string.
+     * @param {Object} cookieOptions - The cookie options (expires data, path) to use when creating the cookie.
+     * @return {String} - The cookie as a string.
      */
     fluid.prefs.cookieStore.assembleCookie = function (cookieOptions) {
         var cookieStr = cookieOptions.name + "=" + cookieOptions.data;
@@ -116,8 +117,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Saves the settings into a cookie
-     * @param settings {Object}
-     * @param cookieOptions {Object}
+     * @param {Object} settings - The settings to save as part of the cookie.
+     * @param {Object} cookieOptions - The cookie options (expires data, path) to use when creating the cookie.
      */
     fluid.prefs.cookieStore.set = function (settings, cookieOptions) {
         cookieOptions.data = encodeURIComponent(JSON.stringify(settings));

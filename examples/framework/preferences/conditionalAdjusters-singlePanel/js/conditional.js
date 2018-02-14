@@ -17,6 +17,8 @@ var example = example || {};
 
     /**
      * Initialize Preference Editor.
+     * @param {jQueryable} container - The Preference Editor's container element.
+     * @return {Object} - The created component.
      */
     example.initPrefsEditor = function (container) {
         return fluid.prefs.create(container, {
