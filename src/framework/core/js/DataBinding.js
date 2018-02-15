@@ -277,10 +277,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /** Compute the strongly connected components of a graph, specified as a list of vertices and an accessor function.
      * Returns an array of arrays of strongly connected vertices, with each component in topologically sorted order.
-     * @param {Array.<Vertex>} vertices - An array of vertices of the graph to be processed. Each vertex object will be polluted
+     * @param {Vertex[]} vertices - An array of vertices of the graph to be processed. Each vertex object will be polluted
      * with three extra fields: `tarjanIndex`, `lowIndex` and `onStack`.
      * @param {Function} accessor - A function that returns the accessor vertex or vertices.
-     * @return {Array.<Array.<Vertex>>} - An array of arrays of vertices.
+     * @return {Array.<Vertex[]>} - An array of arrays of vertices.
      */
     fluid.stronglyConnected = function (vertices, accessor) {
         var that = {
@@ -510,7 +510,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {String} name - A human-readable string representing the type of block holding the reference - e.g. "modelListeners"
      * @param {String|ModelReference} ref - The model reference to be parsed. This may have already been partially parsed at the original site - that is, a ModelReference is a
      * structure containing
-     *     segs: {Array of String} An array of model path segments to be dereferenced in the target component (will become `modelSegs` in the final return)
+     *     segs: {String[]} An array of model path segments to be dereferenced in the target component (will become `modelSegs` in the final return)
      *     context: {String} An IoC reference to the component holding the model
      * @param {Boolean} implicitRelay - <code>true</code> if the reference was being resolved for an implicit model relay - that is,
      * whether it occured within the `model` block itself. In this case, references to non-model material are not a failure and will simply be resolved
@@ -518,10 +518,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @return {Object} - A structure holding:
      *    that {Component} The component whose model is the target of the reference. This may end up being constructed as part of the act of resolving the reference
      *    applier {Component} The changeApplier for the component <code>that</code>. This may end up being constructed as part of the act of resolving the reference
-     *    modelSegs {Array of String} An array of path segments into the model of the component
+     *    modelSegs {String[]} An array of path segments into the model of the component
      *    path {String} the value of <code>modelSegs</code> encoded as an EL path (remove client uses of this in time)
      *    nonModel {Boolean} Set if <code>implicitRelay</code> was true and the reference was not into a model (modelSegs/path will not be set in this case)
-     *    segs {Array of String} Holds the full array of path segments found by parsing the original reference - only useful in <code>nonModel</code> case
+     *    segs {String[]} Holds the full array of path segments found by parsing the original reference - only useful in <code>nonModel</code> case
      */
     fluid.parseValidModelReference = function (that, name, ref, implicitRelay) {
         var reject = function () {
@@ -669,9 +669,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * see the comment there for the three cases involved. Note that in its case iii)B) the applier to bind to is not the one attached to `target` but is instead
      * held in `options.targetApplier`.
      * @param {Object} target - The target component at the end of the relay.
-     * @param {Array.<String>} targetSegs - String segments representing the path in the target where outgoing changes are to be fired
+     * @param {String[]} targetSegs - String segments representing the path in the target where outgoing changes are to be fired
      * @param {Component|null} source - The source component from where changes will be listened to. May be null if the change source is a relay document.
-     * @param {Array.<String>} sourceSegs - String segments representing the path in the source component's model at which changes will be listened to
+     * @param {String[]} sourceSegs - String segments representing the path in the source component's model at which changes will be listened to
      * @param {String} linkId - The unique id of this relay arc. This will be used as a key within the active transaction record to look up dynamic information about
      *     activation of the link within that transaction (currently just an activation count)
      * @param {Function|null} transducer - A function which will be invoked when a change is to be relayed. This is one of the adapters constructed in "makeTransformPackage"
@@ -1014,7 +1014,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * recursively as it progresses through the model document material with updated `segs`
      * @param {Component} that - The component holding the model document
      * @param {Any} modelRec - The model document specification to be parsed
-     * @param {Array.<String>} segs - The array of string path segments from the root of the entire model document to the point of current parsing
+     * @param {String[]} segs - The array of string path segments from the root of the entire model document to the point of current parsing
      * @param {Object} options - Configuration options (mutable) governing this parse. This is primarily used to hand as the 5th argument to
      * `fluid.connectModelRelay` for any model references found, and contains members
      *    refCount {Integer} An count incremented for every call to `fluid.connectModelRelay` setting up a synchronizing relay for every
@@ -1783,10 +1783,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * the 'changeSegs' argument.
      *
      * @param {Any} value - Model value
-     * @param {Array.<String>} changePathPrefixSegs - Path prefix to prepend to change record paths, expressed as an array of string segments.
+     * @param {String[]} changePathPrefixSegs - Path prefix to prepend to change record paths, expressed as an array of string segments.
      * @param {String|Object} changeMap - The changeMap structure from fluid.model.diff().
-     * @param {Array.<String>} changeSegs - Our path relative to the model value root, expressed as an array of string segments.
-     * @param {Array.<Object>} changes - The accumulated change record objects.
+     * @param {String[]} changeSegs - Our path relative to the model value root, expressed as an array of string segments.
+     * @param {Object[]} changes - The accumulated change record objects.
      */
     fluid.modelPairToChangesImpl = function (value, changePathPrefixSegs, changeMap, changeSegs, changes) {
         if (changeMap === "ADD") {

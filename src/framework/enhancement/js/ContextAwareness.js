@@ -82,8 +82,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Forgets a check made at a particular level of the component tree.
      *
-     * @param {Array.<String>} markerNames - The {String} marker typeNames whose check values are to be forgotten.
-     * @param {String|Array} [path] - [optional] The path in the component tree at which the check markers are to be removed. If omitted, "" is assumed
+     * @param {String[]} markerNames - The marker typeNames whose check values are to be forgotten.
+     * @param {String|String[]} [path] - [optional] The path in the component tree at which the check markers are to be removed. If omitted, "" is assumed
      * @param {Instantiator} [instantiator] - [optional] The instantiator holding the component tree the markers are to be removed from. If omitted, use `fluid.globalInstantiator`.
      */
     fluid.contextAware.forgetChecks = function (markerNames, path, instantiator) {
@@ -120,7 +120,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             //         gradeNames: gradeNames which will be output,
             //         priority: String/Number for priority of check [optional]
             //         equals: Value to be compared to contextValue [optional - default is `true`]
-            //     defaultGradeNames: // String or Array of String holding default gradeNames which will be output if no check matches [optional]
+            //     defaultGradeNames: // String or String[] holding default gradeNames which will be output if no check matches [optional]
             //     priority: // Number or String encoding priority relative to other records (same format as with event listeners) [optional]
             // }
         },
@@ -179,7 +179,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *  checkName {String} the name of the check within the contextAwareness record to receive the record - this will be a simple string
      *  record {Object} the record to be broadcast into contextAwareness - should contain entries
      *      contextValue {IoC expression} the context value to be checked to activate the adaptation
-     *      gradeNames {String/Array of String} the grade names to be supplied to the adapting target (matching advisedName)
+     *      gradeNames {String/String[]} the grade names to be supplied to the adapting target (matching advisedName)
      *
      * @param {Object} options - The options to use when making an adaptation.  See above for supported sub-options.
      */

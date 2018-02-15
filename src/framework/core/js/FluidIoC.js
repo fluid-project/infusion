@@ -1485,7 +1485,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *
      * @param {Component} component - A reference to a component.
      * @param {Instantiator} [instantiator] - (optional) An instantiator to use for the lookup.
-     * @return {Array.<String>} - An array of {String} path segments of the component within its tree, or `null` if the reference does not hold a live component.
+     * @return {String[]} - An array of {String} path segments of the component within its tree, or `null` if the reference does not hold a live component.
      */
     fluid.pathForComponent = function (component, instantiator) {
         instantiator = instantiator || fluid.getInstantiator(component) || fluid.globalInstantiator;
@@ -1497,7 +1497,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /** Construct a component with the supplied options at the specified path in the component tree. The parent path of the location must already be a component.
-     * @param {String|Array.<String>} path - Path where the new component is to be constructed, represented as a string or array of string segments
+     * @param {String|String[]} path - Path where the new component is to be constructed, represented as a string or array of string segments
      * @param {Object} options - Top-level options supplied to the component - must at the very least include a field <code>type</code> holding the component's type
      * @param {Instantiator} [instantiator] - [optional] The instantiator holding the component to be created - if blank, the global instantiator will be used
      * @return {Object} - The constructed component.
@@ -1513,7 +1513,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /** Destroys a component held at the specified path. The parent path must represent a component, although the component itself may be nonexistent
-     * @param {String|Array.<String>} path - Path where the new component is to be destroyed, represented as a string or array of string segments
+     * @param {String|String[]} path - Path where the new component is to be destroyed, represented as a string or array of string segments
      * @param {Instantiator} [instantiator] - [optional] The instantiator holding the component to be destroyed - if blank, the global instantiator will be used.
      * @return {Object} - An object containing a reference to the parent of the destroyed element, and the member name of the destroyed component.
      */
@@ -1538,7 +1538,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
    /** Construct an instance of a component as a child of the specified parent, with a well-known, unique name derived from its typeName
-    * @param {String|Array.<String>} parentPath - Parent of path where the new component is to be constructed, represented as a {String} or array of {String} segments
+    * @param {String|String[]} parentPath - Parent of path where the new component is to be constructed, represented as a {String} or array of {String} segments
     * @param {String|Object} options - Options encoding the component to be constructed. If this is of type String, it is assumed to represent the component's typeName with no options
     * @param {Instantiator} [instantiator] - [optional] The instantiator holding the component to be created - if blank, the global instantiator will be used
     */
@@ -1567,7 +1567,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /** Destroy an instance created by `fluid.constructSingle`
-     * @param {String|Array.<String>} parentPath - Parent of path where the new component is to be constructed, represented as a {String} or array of {String} segments
+     * @param {String|String[]} parentPath - Parent of path where the new component is to be constructed, represented as a {String} or array of {String} segments
      * @param {String} typeName - The type name used to construct the component (either `type` or `singleRootType` of the `options` argument to `fluid.constructSingle`
      * @param {Instantiator} [instantiator] - [optional] The instantiator holding the component to be created - if blank, the global instantiator will be used
     */
@@ -1582,8 +1582,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /** Registers and constructs a "linkage distribution" which will ensure that wherever a set of "input grades" co-occur, they will
      * always result in a supplied "output grades" in the component where they co-occur.
      * @param {String} linkageName - The name of the grade which will broadcast the resulting linkage. If required, this linkage can be destroyed by supplying this name to `fluid.destroySingle`.
-     * @param {Array.<String>} inputNames - An array of grade names which will be tested globally for co-occurrence
-     * @param {String|Array.<String>} outputNames - A single grade name or array of grade names which will be output into the co-occuring component
+     * @param {String[]} inputNames - An array of grade names which will be tested globally for co-occurrence
+     * @param {String|String[]} outputNames - A single grade name or array of grade names which will be output into the co-occuring component
      */
     fluid.makeGradeLinkage = function (linkageName, inputNames, outputNames) {
         fluid.defaults(linkageName, {
@@ -1597,7 +1597,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /** Retrieves a component by global path.
-    * @param {String|Array.<String>} path - The global path of the component to look up, expressed as a string or as an array of segments.
+    * @param {String|String[]} path - The global path of the component to look up, expressed as a string or as an array of segments.
     * @return {Object} - The component at the specified path, or undefined if none is found.
     */
     fluid.componentForPath = function (path) {

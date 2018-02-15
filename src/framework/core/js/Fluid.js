@@ -654,7 +654,7 @@ var fluid = fluid || fluid_3_0_0;
 
     /** Extracts a particular member from each top-level member of a container, returning a new container of the same type
      * @param {Array|Object} holder - The container to be filtered
-     * @param {String|Array.<String>} name - An EL path to be fetched from each top-level member
+     * @param {String|String[]} name - An EL path to be fetched from each top-level member
      * @return {Object} - The desired member component.
      */
     fluid.getMembers = function (holder, name) {
@@ -667,7 +667,7 @@ var fluid = fluid || fluid_3_0_0;
      * the array are removed, or only keys present in the array are returned.
      * @param {Array|Object} toFilter - The object to be filtered - this will be NOT modified by the operation (current implementation
      * passes through $.extend shallow algorithm)
-     * @param {Array.<String>} keys - The array of keys to operate with
+     * @param {String[]} keys - The array of keys to operate with
      * @param {Boolean} exclude - If <code>true</code>, the keys listed are removed rather than included
      * @return {Object} the filtered object (the same object that was supplied as <code>toFilter</code>
      */
@@ -729,7 +729,7 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     /** Converts an array into an object whose keys are the elements of the array, each with the value "true"
-     * @param {Array.<String>} array - The array to be converted to a hash
+     * @param {String[]} array - The array to be converted to a hash
      * @return hash {Object} An object with value <code>true</code> for each key taken from a member of <code>array</code>
      */
 
@@ -976,7 +976,7 @@ var fluid = fluid || fluid_3_0_0;
 
     /** Parse an EL expression separated by periods (.) into its component segments.
      * @param {String} EL - The EL expression to be split
-     * @return {Array.<String>} the component path expressions.
+     * @return {String[]} the component path expressions.
      * TODO: This needs to be upgraded to handle (the same) escaping rules (as RSF), so that
      * path segments containing periods and backslashes etc. can be processed, and be harmonised
      * with the more complex implementations in fluid.pathUtil(data binding).
@@ -1938,7 +1938,7 @@ var fluid = fluid || fluid_3_0_0;
     /** Evaluates an index specification over all the defaults records registered into the system.
      * @param {String} indexName - The name of this index record (currently ignored)
      * @param {Object} indexSpec - Specification of the index to be performed - fields:
-     *     gradeNames: {String|Array.<String>} List of grades that must be matched by this indexer
+     *     gradeNames: {String|String[]} List of grades that must be matched by this indexer
      *     indexFunc:  {String|Function} An index function which accepts a defaults record and returns an array of keys
      * @return A structure indexing keys to arrays of matched gradenames
      */
@@ -2388,7 +2388,7 @@ var fluid = fluid || fluid_3_0_0;
 
     /** Delete the value in the supplied object held at the specified path
      * @param {Object} target - The object holding the value to be deleted (possibly empty)
-     * @param {Array.<String>} segs - the path of the value to be deleted
+     * @param {String[]} segs - the path of the value to be deleted
      */
     // unsupported, NON-API function
     fluid.destroyValue = function (target, segs) {

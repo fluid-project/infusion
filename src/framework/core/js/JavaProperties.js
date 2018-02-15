@@ -99,7 +99,7 @@ fluid_3_0_0 = fluid_3_0_0 || {};
      * The message string is expected to contain replacement specifications such as {0}, {1}, {2}, etc.
      *
      * @param {String} messageString - The message key to be expanded
-     * @param {String|Array.<String>} args - A single string or array of strings to be substituted into the message.
+     * @param {String|String[]} args - A single string or array of strings to be substituted into the message.
      * @return {String} - The expanded message string.
      */
     fluid.formatMessage = function (messageString, args) {

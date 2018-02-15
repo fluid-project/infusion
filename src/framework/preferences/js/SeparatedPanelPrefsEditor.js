@@ -419,7 +419,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Object} that - the component
      * @param {Object} resources - all of the resourceSpecs to load, including preload and others.
      *                             see: fluid.fetchResources
-     * @param {Array|String} toPreload - a String or an Array of Strings corresponding to the names
+     * @param {Array|String} toPreload - a String or an String[]s corresponding to the names
      *                                   of the resources, supplied in the resource argument, that
      *                                   should be loaded. Only these resources will be loaded.
      */

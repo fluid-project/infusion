@@ -43,7 +43,7 @@ fluid.module.register = function (name, baseDir, moduleRequire) {
 
 /** Given a directory, return an array of slash-terminated parent directories, starting with the parent drive or filesystem
  * @param {String} baseDir - A directory name.
- * @return {Array of String} - An array of nested directory names, starting with the parent drive or filesystem root and ending
+ * @return {String[]} - An array of nested directory names, starting with the parent drive or filesystem root and ending
  * with `baseDir`
  */
 
@@ -74,9 +74,9 @@ fluid.module.hasPackage = function (dir) {
  * node module, by inspecting it for a package.json file and inspecting any such file for a `name` entry
  * @param {String} [root] - [optional] A directory name - if omitted, will use the directory of this module
  * @return {Object} - A structure holding the following aligned arrays:
- *    paths: {Array of String} an array of the parent directory names as returned from `fluid.module.pathsToRoot`
+ *    paths: {String[]} an array of the parent directory names as returned from `fluid.module.pathsToRoot`
  *    packages: {Array of Object|Null} an array of decoded package.json files, aligned with the array `paths`
- *    names: {Array of String|Null} an array of package names, aligned with the array `paths`, with entries `undefined` if
+ *    names: {String[]|Null} an array of package names, aligned with the array `paths`, with entries `undefined` if
  *           the respective directory does not contain a valid node packags
  */
 
