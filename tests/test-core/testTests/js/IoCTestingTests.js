@@ -290,6 +290,16 @@ fluid.defaults("fluid.tests.onTestCaseStart.tree", {
     components: {
         targetTree: {
             type: "fluid.component",
+            options: {
+                events: {
+                    "hearIt": null
+                },
+                listeners: {
+                    "onCreate.hearIt": {
+                        listener: "{that}.events.hearIt.fire"
+                    }
+                }
+            },
             createOnEvent: "{testCases}.events.onTestCaseStart"
         },
         testCases: {
@@ -307,14 +317,20 @@ fluid.defaults("fluid.tests.fluid5559Tree", {
                     name: "FLUID-5559 Double firing of onTestCaseStart",
                     tests: [{
                         name: "FLUID-5559 sequence",
-                        expect: 2,
-                        sequence: [ {
+                        expect: 3,
+                        sequence: [{
                             // Must use IoCSS here - see discussion on FLUID-4929 - must avoid triggering construction
-                            event: "{fluid5559Tree targetTree}.events.onCreate",
-                            listener: "fluid.tests.onTestCaseStart.assertOnce"
+                            event: "{fluid5559Tree targetTree}.events.hearIt",
+                            listener: "fluid.tests.onTestCaseStart.assertValue"
                         }, {
-                            func: "fluid.tests.onTestCaseStart.assertOnce",
+                            func: "fluid.tests.onTestCaseStart.assertValue",
                             args: "{targetTree}"
+                        }, { // Try firing the event again in order to test FLUID-5633
+                            func: "{fluid5559Tree}.targetTree.events.hearIt.fire",
+                            args: 5
+                        }, {
+                            event: "{fluid5559Tree targetTree}.events.hearIt",
+                            listener: "fluid.tests.onTestCaseStart.assertValue"
                         }]
                     }]
                 }]
@@ -323,7 +339,7 @@ fluid.defaults("fluid.tests.fluid5559Tree", {
     }
 });
 
-fluid.tests.onTestCaseStart.assertOnce = function (arg) {
+fluid.tests.onTestCaseStart.assertValue = function (arg) {
     jqUnit.assertValue("Received value", arg);
 };
 
@@ -353,7 +369,7 @@ fluid.defaults("fluid.tests.fluid5575Tree", {
                     triggerable: null // used in "activePassive" case
                 },
                 listeners: {
-                    onCreate: "fluid.tests.onTestCaseStart.assertOnce"
+                    onCreate: "fluid.tests.onTestCaseStart.assertValue"
                 }
             }
         },
@@ -371,7 +387,7 @@ fluid.defaults("fluid.tests.fluid5575Tree", {
 fluid.tests.onTestCaseStart.singleActive = {
     expect: 2,
     sequence: [{
-        func: "fluid.tests.onTestCaseStart.assertOnce",
+        func: "fluid.tests.onTestCaseStart.assertValue",
         args: "{targetTree}"
     }]
 };
@@ -384,10 +400,10 @@ fluid.defaults("fluid.tests.fluid5575Tree.singleActive", {
 fluid.tests.onTestCaseStart.doubleActive = {
     expect: 3,
     sequence: [{
-        func: "fluid.tests.onTestCaseStart.assertOnce",
+        func: "fluid.tests.onTestCaseStart.assertValue",
         args: "{targetTree}"
     }, {
-        func: "fluid.tests.onTestCaseStart.assertOnce",
+        func: "fluid.tests.onTestCaseStart.assertValue",
         args: "{targetTree}"
     }]
 };
@@ -406,7 +422,7 @@ fluid.tests.onTestCaseStart.activePassive = {
         args: "{targetTree}"
     }, {
         event: "{targetTree}.events.triggerable",
-        listener: "fluid.tests.onTestCaseStart.assertOnce"
+        listener: "fluid.tests.onTestCaseStart.assertValue"
     }]
 };
 
