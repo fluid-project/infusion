@@ -314,13 +314,14 @@ fluid.defaults("fluid.tests.fluid5559Tree", {
         testCases: {
             options: {
                 modules: [ {
-                    name: "FLUID-5559 Double firing of onTestCaseStart",
+                    name: "FLUID-5559 Double firing of onTestCaseStart and FLUID-5633 listener deregistration",
                     tests: [{
                         name: "FLUID-5559 sequence",
-                        expect: 3,
+                        expect: 4,
                         sequence: [{
                             // Must use IoCSS here - see discussion on FLUID-4929 - must avoid triggering construction
                             event: "{fluid5559Tree targetTree}.events.hearIt",
+                            // Use a bare listener this first time to test one variant of fluid.test.findListenerId
                             listener: "fluid.tests.onTestCaseStart.assertValue"
                         }, {
                             func: "fluid.tests.onTestCaseStart.assertValue",
@@ -330,7 +331,15 @@ fluid.defaults("fluid.tests.fluid5559Tree", {
                             args: 5
                         }, {
                             event: "{fluid5559Tree targetTree}.events.hearIt",
-                            listener: "fluid.tests.onTestCaseStart.assertValue"
+                            listener: "jqUnit.assertEquals",
+                            args: ["Resolved value from 2nd firing", 5, "{arguments}.0"]
+                        },  { // Try firing the event again in order to test FLUID-5633 further
+                            func: "{fluid5559Tree}.targetTree.events.hearIt.fire",
+                            args: true
+                        }, {
+                            event: "{fluid5559Tree targetTree}.events.hearIt",
+                            listener: "jqUnit.assertEquals",
+                            args: ["Resolved value from 3rd firing", true, "{arguments}.0"]
                         }]
                     }]
                 }]

@@ -372,7 +372,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // which was registered declaratively.
     fluid.test.findListenerId = function (event, listener) {
         return fluid.find(event.byId, function (lisRec, key) {
-            return lisRec.listener === listener ? key : undefined;
+            return lisRec.listener.$$fluid_guid === listener.$$fluid_guid ? key : undefined;
         }, fluid.event.identifyListener(listener));
     };
 
