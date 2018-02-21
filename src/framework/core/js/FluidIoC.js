@@ -17,7 +17,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
-    /* * NOTE: The contents of this file are by default NOT PART OF THE PUBLIC FLUID API unless explicitly annotated before the function * */
+    /** NOTE: The contents of this file are by default NOT PART OF THE PUBLIC FLUID API unless explicitly annotated before the function **/
 
     /* The Fluid "IoC System proper" - resolution of references and
      * completely automated instantiation of declaratively defined
@@ -1604,9 +1604,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return fluid.globalInstantiator.pathToComponent[fluid.isArrayable(path) ? path.join(".") : path];
     };
 
-    /* * END NEXUS METHODS * */
+    /** END NEXUS METHODS **/
 
-    /* * BEGIN IOC DEBUGGING METHODS * */
+    /** BEGIN IOC DEBUGGING METHODS **/
     fluid["debugger"] = function () {
         debugger; // eslint-disable-line no-debugger
     };
@@ -1655,7 +1655,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         fluid.destroy([probeName]);
     };
 
-    /* * END IOC DEBUGGING METHODS * */
+    /** END IOC DEBUGGING METHODS **/
 
     fluid.thisistToApplicable = function (record, recthis, that) {
         return {
@@ -1951,7 +1951,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return firer;
     };
 
-    /* * BEGIN unofficial IoC material * */
+    /** BEGIN unofficial IoC material **/
     // The following three functions are unsupported ane only used in the renderer expander.
     // The material they produce is no longer recognised for component resolution.
 
@@ -1993,7 +1993,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         };
     };
 
-    /* * END of unofficial IoC material * */
+    /** END of unofficial IoC material **/
 
     /* Compact expansion machinery - for short form invoker and expander references such as @expand:func(arg) and func(arg) */
 
@@ -2079,7 +2079,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return togo;
     };
 
-    /* * End compact record expansion machinery * */
+    /** End compact record expansion machinery **/
 
     fluid.extractEL = function (string, options) {
         if (options.ELstyle === "ALL") {

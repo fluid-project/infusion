@@ -1212,7 +1212,7 @@ var fluid = fluid || fluid_3_0_0;
     fluid.dumpEl = fluid.identity;
     fluid.renderTimestamp = fluid.identity;
 
-    /* * * The Fluid instance id * * */
+    /*** The Fluid instance id ***/
 
     // unsupported, NON-API function
     fluid.generateUniquePrefix = function () {
@@ -1232,7 +1232,7 @@ var fluid = fluid || fluid_3_0_0;
         return fluid_prefix + (fluid_guid++);
     };
 
-    /* * * The Fluid Event system. * * */
+    /*** The Fluid Event system. ***/
 
     fluid.registerNamespace("fluid.event");
 
@@ -1716,7 +1716,7 @@ var fluid = fluid || fluid_3_0_0;
         return fluid.makeArray(target).concat(fluid.makeArray(source));
     };
 
-    /* * * FLUID ERROR SYSTEM * * */
+    /*** FLUID ERROR SYSTEM ***/
 
     fluid.failureEvent = fluid.makeEventFirer({name: "failure event"});
 
@@ -1740,7 +1740,7 @@ var fluid = fluid || fluid_3_0_0;
         }
     };
 
-    /* * * DEFAULTS AND OPTIONS MERGING SYSTEM * * */
+    /*** DEFAULTS AND OPTIONS MERGING SYSTEM ***/
 
     // A function to tag the types of all Fluid components
     fluid.componentConstructor = function () {};
