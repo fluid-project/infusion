@@ -352,6 +352,54 @@ fluid.tests.onTestCaseStart.assertValue = function (arg) {
     jqUnit.assertValue("Received value", arg);
 };
 
+fluid.defaults("fluid.tests.fluid5633Tree", {
+    gradeNames: ["fluid.test.testEnvironment", "fluid.test.testCaseHolder"],
+    events: {
+        createIt: null
+    },
+    components: {
+        dynamic: {
+            type: "fluid.component",
+            createOnEvent: "createIt",
+            options: {
+                value: "{arguments}.0"
+            }
+        }
+    },
+    modules: [{
+        name: "FLUID-5633 Deregistration of IoCSS listeners",
+        tests: [{
+            name: "FLUID-5633 sequence",
+            expect: 3,
+            sequence: [{
+                func: "{fluid5633Tree}.events.createIt.fire",
+                args: 1
+            }, {
+                event: "{fluid5633Tree dynamic}.events.onCreate",
+                listener: "fluid.tests.onTestCaseStart.assertValue"
+            }, {
+                func: "{fluid5633Tree}.events.createIt.fire",
+                args: 2
+            }, {
+                event: "{fluid5633Tree dynamic}.events.onCreate",
+                // Use a different listener handle here to test for accumulation
+                listener: "fluid.tests.fluid5633Tree.assertValue2"
+            }, {
+                func: "{fluid5633Tree}.events.createIt.fire",
+                args: 2
+            }, {
+                event: "{fluid5633Tree dynamic}.events.onCreate",
+                listener: "jqUnit.assertEquals",
+                args: ["Resolved value from 3rd firing", 2, "{arguments}.0.options.value"]
+            }]
+        }]
+    }]
+});
+
+fluid.tests.fluid5633Tree.assertValue2 = function (that) {
+    jqUnit.assertEquals("Received argument from 2nd event firing", 2, that.options.value);
+};
+
 // FLUID-5575 late firing of onTestCaseStart
 
 // In this variant, we attach the onCreate listener directly, and refer to the
@@ -617,6 +665,7 @@ fluid.tests.IoCTestingTests = function () {
             "fluid.tests.listenerArg",
             "fluid.tests.modelTestTree",
             "fluid.tests.fluid5559Tree",
+            "fluid.tests.fluid5633Tree",
             "fluid.tests.fluid5575Tree.singleActive",
             "fluid.tests.fluid5575Tree.doubleActive",
             "fluid.tests.fluid5575Tree.activePassive",

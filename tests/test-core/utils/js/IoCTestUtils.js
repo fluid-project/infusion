@@ -198,7 +198,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var togo;
         if (fixture.args !== undefined) {
             togo = function () {
-                var expandedArgs = testCaseState.expand(fixture.args, {"arguments": arguments}, fixture.contextThat);
+                var expandedArgs = testCaseState.expand(fixture.args, {"arguments": fluid.makeArray(arguments)}, fixture.contextThat);
                 return listener.apply(null, fluid.makeArray(expandedArgs));
             };
         } else {
@@ -392,35 +392,38 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
         else if (analysed.path) {
             var id;
-
             bind = function (wrapped) {
+                // Push the distribution whether the component exists or not - since a further one may be created at this
+                // path via a createOnEvent annotation
+                var options = {};
+                fluid.event.identifyListener(wrapped);
+                fluid.set(options, ["listeners"].concat(analysed.path), {
+                    listener: wrapped,
+                    // Don't supply "args" here because we decode them ourselves in decodeListener
+                    namespace: fixture.namespace,
+                    priority: fixture.priority
+                });
+                id = fluid.pushDistributions(analysed.head, analysed.selector, fixture.event,
+                    [{options: options, recordType: "distribution", priority: fluid.mergeRecordTypes.distribution}]
+                );
                 var existent = analysed.query();
-                if (existent.length === 0) {
-                    // If it be not now, yet it will come
-                    var options = {};
-                    fluid.event.identifyListener(wrapped);
-                    fluid.set(options, ["listeners"].concat(analysed.path), {
-                        listener: wrapped,
-                        args: fixture.args,
-                        namespace: fixture.namespace,
-                        priority: fixture.priority
-                    });
-                    id = fluid.pushDistributions(analysed.head, analysed.selector, fixture.event,
-                        [{options: options, recordType: "distribution", priority: fluid.mergeRecordTypes.distribution}]
-                    );
-                } else if (existent.length === 1) {
-                    // If it be now, 'tis not to come
+                if (existent.length === 1) {
+                    // In addition, directly register the listener on any currently existing component
                     var event = fluid.getForComponent(existent[0], ["events"].concat(analysed.path));
                     event.addListener(wrapped, fixture.namespace, priority);
-                } else {
+                } else if (existent.length > 1) {
                     fluid.fail("Error in listening fixture ", fixture, " selector " + fixture.event + " matched more than one component during bind: ", existent);
                 }
             };
             unbind = function (wrapped) {
-                fluid.clearDistribution(analysed.head, id);
+                fluid.clearDistribution(analysed.head.id, id);
                 var existent = analysed.query();
                 if (existent.length === 1) {
                     var event = fluid.getForComponent(existent[0], ["events"].concat(analysed.path));
+                    // TODO: Note that this is overgenerous - will still fail in the (unlikely) case the implementation has manually
+                    // registered a listener whose handle is the same as the declaratively registered one. We need to track
+                    // listeners by attaching their parent distribution id to them. Note that the id allocated by
+                    // fluid.event.resolveListenerRecord is not declaratively recoverable.
                     var identified = fluid.test.findListenerId(event, wrapped);
                     event.removeListener(identified);
                 } else if (existent.length > 1) {
