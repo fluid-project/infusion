@@ -17,11 +17,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /*******************************************************************************
     * Starter auxiliary schema grade
     *
-    * Contains the settings for 7 preferences: text size, line space, text font,
-    * contrast, table of contents, inputs larger and emphasize links
+    * Contains the settings for the letter space preference
     *******************************************************************************/
 
-    // Fine-tune the starter aux schema and add speak panel
+    // Fine-tune the starter aux schema and add letter space preference
     fluid.defaults("fluid.prefs.auxSchema.letterSpace", {
         gradeNames: ["fluid.prefs.auxSchema"],
         auxiliarySchema: {
