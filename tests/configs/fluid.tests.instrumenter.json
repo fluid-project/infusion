@@ -1,0 +1,12 @@
+{
+    "type": "fluid.tests.instrumenter",
+    "options": {
+        "nonSources": [
+            "./**/lib/**/*.js",
+            "!./**/*.js",
+            "./Gruntfile.js"
+        ]
+    },
+    "mergeConfigs": "%gpii-testem/configs/instrumenter.json",
+    "require": "%gpii-testem"
+}

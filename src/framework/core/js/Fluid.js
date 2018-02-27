@@ -23,6 +23,11 @@ Licenses.
 
 You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
+
+Includes code from Underscore.js 1.4.3
+http://underscorejs.org
+(c) 2009-2012 Jeremy Ashkenas, DocumentCloud Inc.
+Underscore may be freely distributed under the MIT license.
 */
 
 /* global console */
@@ -202,7 +207,7 @@ var fluid = fluid || fluid_3_0_0;
      * Signals an error to the framework. The default behaviour is to log a structured error message and throw an exception. This strategy may be configured using the legacy
      * API <code>fluid.pushSoftFailure</code> or else by adding and removing suitably namespaced listeners to the special event <code>fluid.failureEvent</code>
      *
-     * @param {String} message the error message to log
+     * @param message {String} the error message to log
      * @param ... Additional arguments, suitable for being sent to the native console.log function
      */
     fluid.fail = function (/* message, ... */) {
@@ -795,7 +800,7 @@ var fluid = fluid || fluid_3_0_0;
     /**
      * Clears an object or array of its contents. For objects, each property is deleted.
      *
-     * @param {Object|Array} target the target to be cleared
+     * @param target {Object|Array} the target to be cleared
      */
     fluid.clear = function (target) {
         if (fluid.isArrayable(target)) {
@@ -821,7 +826,7 @@ var fluid = fluid || fluid_3_0_0;
 
     /**
      * Returns the converted integer if the input string can be converted to an integer. Otherwise, return NaN.
-     * @param {String} a string to be returned in integer
+     * @param string {String} A string to be returned in integer form.
      */
     fluid.parseInteger = function (string) {
         return isFinite(string) && ((string % 1) === 0) ? Number(string) : NaN;
@@ -839,9 +844,9 @@ var fluid = fluid || fluid_3_0_0;
      * If the scale is invalid (i.e falsey, not a number, negative value), it is treated as 0.
      * If the scale is a floating point number, it is rounded to an integer.
      *
-     * @param {Number} num - the number to be rounded
-     * @param {Number} scale - the maximum number of decimal places to round to.
-     * @param {String} method - (optional) Request a rounding method to use ("round", "ceil", "floor").
+     * @param num {Number} - the number to be rounded
+     * @param scale {Number} - the maximum number of decimal places to round to.
+     * @param method {String} - (optional) Request a rounding method to use ("round", "ceil", "floor").
      *                          If nothing or an invalid method is provided, it will default to "round".
      * @return {Number} The num value rounded to the specified number of decimal places.
      */
@@ -857,6 +862,35 @@ var fluid = fluid || fluid_3_0_0;
             var sign = num >= 0 ? 1 : -1; // manually calculating the sign because Math.sign is not supported in IE
             return Number(sign * (Math.round(Math.abs(num) + "e" + scale) + "e-" + scale));
         }
+    };
+
+    /**
+     * Copied from Underscore.js 1.4.3 - see licence at head of this file
+     *
+     * Will execute the passed in function after the specified about of time since it was last executed.
+     * @param func {Function} - the function to execute
+     * @param wait {Number} - the number of milliseconds to wait before executing the function
+     * @param immediate {Boolean} - Whether to trigger the function at the start (true) or end (false) of
+     *                              the wait interval.
+     */
+    fluid.debounce = function (func, wait, immediate) {
+        var timeout, result;
+        return function () {
+            var context = this, args = arguments;
+            var later = function () {
+                timeout = null;
+                if (!immediate) {
+                    result = func.apply(context, args);
+                }
+            };
+            var callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) {
+                result = func.apply(context, args);
+            }
+            return result;
+        };
     };
 
     /** Calls Object.freeze at each level of containment of the supplied object
@@ -941,7 +975,7 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     /** Parse an EL expression separated by periods (.) into its component segments.
-     * @param {String} EL The EL expression to be split
+     * @param EL {String} The EL expression to be split
      * @return {Array of String} the component path expressions.
      * TODO: This needs to be upgraded to handle (the same) escaping rules (as RSF), so that
      * path segments containing periods and backslashes etc. can be processed, and be harmonised
@@ -1053,7 +1087,7 @@ var fluid = fluid || fluid_3_0_0;
         var limit = segs.length - uncess;
         for (var i = 0; i < limit; ++i) {
             if (!root) {
-                return root;
+                return undefined;
             }
             var segment = segs[i];
             if (environment && environment[segment]) {
@@ -1108,7 +1142,7 @@ var fluid = fluid || fluid_3_0_0;
     /** Evaluates an EL expression by fetching a dot-separated list of members
      * recursively from a provided root.
      * @param root The root data structure in which the EL expression is to be evaluated
-     * @param {string/array} EL The EL expression to be evaluated, or an array of path segments
+     * @param EL {string/array} The EL expression to be evaluated, or an array of path segments
      * @param config An optional configuration or environment structure which can customise the fetch operation
      * @return The fetched data value.
      */
@@ -1129,9 +1163,9 @@ var fluid = fluid || fluid_3_0_0;
 
     /**
      * Allows for the binding to a "this-ist" function
-     * @param {Object} obj, "this-ist" object to bind to
-     * @param {Object} fnName, the name of the function to call
-     * @param {Object} args, arguments to call the function with
+     * @param obj, {Object} "this-ist" object to bind to
+     * @param fnName, {Object} the name of the function to call
+     * @param args, {Object} arguments to call the function with
      */
     fluid.bind = function (obj, fnName, args) {
         return obj[fnName].apply(obj, fluid.makeArray(args));
@@ -1139,9 +1173,9 @@ var fluid = fluid || fluid_3_0_0;
 
     /**
      * Allows for the calling of a function from an EL expression "functionPath", with the arguments "args", scoped to an framework version "environment".
-     * @param {Object} functionPath - An EL expression
-     * @param {Object} args - An array of arguments to be applied to the function, specified in functionPath
-     * @param {Object} environment - (optional) The object to scope the functionPath to  (typically the framework root for version control)
+     * @param functionPath {Object} - An EL expression
+     * @param args {Object} - An array of arguments to be applied to the function, specified in functionPath
+     * @param environment {Object} - (optional) The object to scope the functionPath to  (typically the framework root for version control)
      */
     fluid.invokeGlobalFunction = function (functionPath, args, environment) {
         var func = fluid.getGlobalValue(functionPath, environment);
@@ -1407,7 +1441,7 @@ var fluid = fluid || fluid_3_0_0;
      * listeners, to which "events" can be fired. These events consist of an arbitrary
      * function signature. General documentation on the Fluid events system is at
      * http://docs.fluidproject.org/infusion/development/InfusionEventSystem.html .
-     * @param {Object} options - A structure to configure this event firer. Supported fields:
+     * @param options {Object} - A structure to configure this event firer. Supported fields:
      *     {String} name - a readable name for this firer to be used in diagnostics and debugging
      *     {Boolean} preventable - If <code>true</code> the return value of each handler will
      * be checked for <code>false</code> in which case further listeners will be shortcircuited, and this
@@ -1688,8 +1722,7 @@ var fluid = fluid || fluid_3_0_0;
 
     /**
      * Configure the behaviour of fluid.fail by pushing or popping a disposition record onto a stack.
-     * @param {Number|Function} condition
-     & Supply either a function, which will be called with two arguments, args (the complete arguments to
+     * @param condition {Number|Function} - Supply either a function, which will be called with two arguments, args (the complete arguments to
      * fluid.fail) and activity, an array of strings describing the current framework invocation state.
      * Or, the argument may be the number <code>-1</code> indicating that the previously supplied disposition should
      * be popped off the stack
@@ -1921,10 +1954,9 @@ var fluid = fluid || fluid_3_0_0;
 
     /**
      * Retrieves and stores a grade's configuration centrally.
-     * @param {String} gradeName the name of the grade whose options are to be read or written
-     * @param {Object} (optional) an object containing the options to be set
+     * @param gradeName {String} The name of the grade whose options are to be read or written
+     * @param options {Object} An (optional) object containing the options to be set
      */
-
     fluid.defaults = function (componentName, options) {
         if (options === undefined) {
             return fluid.getMergedDefaults(componentName);
@@ -2365,11 +2397,11 @@ var fluid = fluid || fluid_3_0_0;
      * Merges the component's declared defaults, as obtained from fluid.defaults(),
      * with the user's specified overrides.
      *
-     * @param {Object} that the instance to attach the options to
-     * @param {String} componentName the unique "name" of the component, which will be used
+     * @param that {Object} the instance to attach the options to
+     * @param componentName {String} the unique "name" of the component, which will be used
      * to fetch the default options from store. By recommendation, this should be the global
      * name of the component's creator function.
-     * @param {Object} userOptions the user-specified configuration options for this component
+     * @param userOptions {Object} the user-specified configuration options for this component
      */
     // unsupported, NON-API function
     fluid.mergeComponentOptions = function (that, componentName, userOptions, localOptions) {
@@ -2415,7 +2447,9 @@ var fluid = fluid || fluid_3_0_0;
         mergeOptions.updateBlocks = updateBlocks;
         mergeOptions.destroyValue = function (segs) { // This method is a temporary hack to assist FLUID-5091
             for (var i = 0; i < mergeBlocks.length; ++i) {
-                fluid.destroyValue(mergeBlocks[i].target, segs);
+                if (!mergeBlocks[i].immutableTarget) {
+                    fluid.destroyValue(mergeBlocks[i].target, segs);
+                }
             }
             fluid.destroyValue(baseMergeOptions.target, segs);
         };
@@ -2621,8 +2655,8 @@ var fluid = fluid || fluid_3_0_0;
      * This method is a convenience for creating small objects that have options but don't require full
      * View-like features such as the DOM Binder or events
      *
-     * @param {Object} name the name of the little component to create
-     * @param {Object} options user-supplied options to merge with the defaults
+     * @param name {Object} The name of the little component to create
+     * @param options {Object} User-supplied options to merge with the defaults
      */
     // NOTE: the 3rd argument localOptions is NOT to be advertised as part of the stable API, it is present
     // just to allow backward compatibility whilst grade specifications are not mandatory - similarly for 4th arg "receiver"
@@ -2815,32 +2849,90 @@ var fluid = fluid || fluid_3_0_0;
 
     // Message resolution and templating
 
-   /**
-    * Converts a string to a regexp with the specified flags given in parameters
-    * @param {String} a string that has to be turned into a regular expression
-    * @param {String} the flags to provide to the reg exp
-    */
-    // TODO: this is an abominably inefficient technique for something that could simply be done by means of indexOf and slice
-    fluid.stringToRegExp = function (str, flags) {
-        return new RegExp(str.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&"), flags);
+    /**
+     *
+     * Take an original object and represent it using top-level sub-elements whose keys are EL Paths.  For example,
+     * `originalObject` might look like:
+     *
+     * ```
+     * {
+     *   deep: {
+     *     path: {
+     *       value: "foo",
+     *       emptyObject: {},
+     *       array: [ "peas", "porridge", "hot"]
+     *     }
+     *   }
+     * }
+     * ```
+     *
+     * Calling `fluid.flattenObjectKeys` on this would result in a new object that looks like:
+     *
+     * ```
+     * {
+     *   "deep": "[object Object]",
+     *   "deep.path": "[object Object]",
+     *   "deep.path.value": "foo",
+     *   "deep.path.array": "peas,porridge,hot",
+     *   "deep.path.array.0": "peas",
+     *   "deep.path.array.1": "porridge",
+     *   "deep.path.array.2": "hot"
+     * }
+     * ```
+     *
+     * This function preserves the previous functionality of displaying an entire object using its `toString` function,
+     * which is why many of the paths above resolve to "[object Object]".
+     *
+     * This function is an unsupported non-API function that is used in by `fluid.stringTemplate` (see below).
+     *
+     * @param originalObject {Object} An object.
+     * @return {Object} A representation of the original object that only contains top-level sub-elements whose keys are EL Paths.
+     *
+     */
+    // unsupported, non-API function
+    fluid.flattenObjectPaths = function (originalObject) {
+        var flattenedObject = {};
+        fluid.each(originalObject, function (value, key) {
+            if (value !== null && typeof value === "object") {
+                var flattenedSubObject = fluid.flattenObjectPaths(value);
+                fluid.each(flattenedSubObject, function (subValue, subKey) {
+                    flattenedObject[key + "." + subKey] = subValue;
+                });
+                if (typeof fluid.get(value, "toString") === "function") {
+                    flattenedObject[key] = value.toString();
+                }
+            }
+            else {
+                flattenedObject[key] = value;
+            }
+        });
+        return flattenedObject;
     };
 
     /**
-     * Simple string template system.
-     * Takes a template string containing tokens in the form of "%value".
-     * Returns a new string with the tokens replaced by the specified values.
-     * Keys and values can be of any data type that can be coerced into a string.
      *
-     * @param {String}    template    a string (can be HTML) that contains tokens embedded into it
-     * @param {object}    values      a collection of token keys and values
+     * Simple string template system.  Takes a template string containing tokens in the form of "%value" or
+     * "%deep.path.to.value".  Returns a new string with the tokens replaced by the specified values.  Keys and values
+     * can be of any data type that can be coerced into a string.
+     *
+     * @param template {String} A string (can be HTML) that contains tokens embedded into it.
+     * @param values {Object} A collection of token keys and values.
+     * @return {String} A string whose tokens have been replaced with values.
+     *
      */
     fluid.stringTemplate = function (template, values) {
-        var keys = fluid.keys(values);
+        var flattenedValues = fluid.flattenObjectPaths(values);
+        var keys = fluid.keys(flattenedValues);
         keys = keys.sort(fluid.compareStringLength());
         for (var i = 0; i < keys.length; ++i) {
             var key = keys[i];
-            var re = fluid.stringToRegExp("%" + key, "g");
-            template = template.replace(re, values[key]);
+            var templatePlaceholder = "%" + key;
+            var replacementValue = flattenedValues[key];
+
+            var indexOfPlaceHolder = -1;
+            while ((indexOfPlaceHolder = template.indexOf(templatePlaceholder)) !== -1) {
+                template = template.slice(0, indexOfPlaceHolder) + replacementValue + template.slice(indexOfPlaceHolder + templatePlaceholder.length);
+            }
         }
         return template;
     };
