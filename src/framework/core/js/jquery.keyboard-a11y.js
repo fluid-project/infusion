@@ -34,9 +34,8 @@ var fluid = fluid || fluid_3_0_0;
      *  permitting chaining to occur. However, as a courtesy, the particular "this" returned
      *  will be augmented with a function that() which will allow the original return
      *  value to be retrieved if desired.
-     *  @param {String} name The name under which the "plugin space" is to be injected into
-     *  JQuery
-     *  @param {Object} peer The root of the namespace corresponding to the peer object.
+     *  @param name {String} The name under which the "plugin space" is to be injected into JQuery
+     *  @param peer {Object} The root of the namespace corresponding to the peer object.
      */
 
     fluid.thatistBridge = function (name, peer) {
@@ -112,7 +111,7 @@ var fluid = fluid || fluid_3_0_0;
      * Gets the value of the tabindex attribute for the first item, or sets the tabindex value of all elements
      * if toIndex is specified.
      *
-     * @param {String|Number} toIndex
+     * @param toIndex {String|Number}
      */
     fluid.tabindex = function (target, toIndex) {
         target = $(target);
