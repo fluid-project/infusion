@@ -26,7 +26,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * An Preferences Editor top-level component that reflects the collaboration between prefsEditor, templateLoader and messageLoader.
      * This component is the only Preferences Editor component that is intended to be called by the outside world.
      *
-     * @param {Object} options
+     * @param options {Object}
      */
     fluid.defaults("fluid.prefs.prefsEditorLoader", {
         gradeNames: ["fluid.prefs.settingsGetter", "fluid.prefs.initialModel", "fluid.viewComponent"],
@@ -231,8 +231,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * interface for setting and saving personal preferences, and the UI Enhancer component carries out the
      * work of applying those preferences to the user interface.
      *
-     * @param {Object} container
-     * @param {Object} options
+     * @param container {Object}
+     * @param options {Object}
      */
     fluid.defaults("fluid.prefs.prefsEditor", {
         gradeNames: ["fluid.prefs.settingsGetter", "fluid.prefs.settingsSetter", "fluid.prefs.initialModel", "fluid.remoteModelComponent", "fluid.viewComponent"],
@@ -240,8 +240,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             /**
              * Updates the change applier and fires modelChanged on subcomponent fluid.prefs.controls
              *
-             * @param {Object} newModel
-             * @param {Object} source
+             * @param newModel {Object}
+             * @param source {Object}
              */
             fetchImpl: {
                 funcName: "fluid.prefs.prefsEditor.fetchImpl",

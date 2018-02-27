@@ -50,8 +50,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Inserts newChild as the next sibling of refChild.
-     * @param {Object} newChild
-     * @param {Object} refChild
+     * @param newChild {Object}
+     * @param refChild {Object}
      */
     fluid.dom.insertAfter = function (newChild, refChild) {
         var nextSib = refChild.nextSibling;

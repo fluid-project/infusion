@@ -43,7 +43,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * SettingsStore Subcomponent that uses a cookie for persistence.
-     * @param {Object} options
+     * @param options {Object}
      */
     fluid.defaults("fluid.prefs.cookieStore", {
         gradeNames: ["fluid.dataSource"],
@@ -119,9 +119,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Assembles the cookie string
-     * @param {String} cookieName - name of the cookie
-     * @param {String} data - the serialized data to be stored in the cookie
-     * @param {Object} options - settings
+     * @param cookieName {String} name of the cookie
+     * @param data {String} the serialized data to be stored in the cookie
+     * @param options {Object} settings
      */
     fluid.prefs.cookieStore.assembleCookie = function (cookieName, data, options) {
         options = options || {};
@@ -139,9 +139,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
-     * Write the cookie
-     * @param {Object} payload - the serialized data to write to the cookie
-     * @param {Object} options - settings
+     * Saves the settings into a cookie
+     * @param payload {Object} the serialized data to write to the cookie
+     * @param options {Object} settings
      */
     fluid.prefs.cookieStore.writeCookie = function (payload, options) {
         var cookieName = fluid.get(options, ["directModel", "cookieName"]) || options.name;
@@ -167,7 +167,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * SettingsStore mock that doesn't do persistence.
-     * @param {Object} options
+     * @param options {Object}
      */
     fluid.defaults("fluid.prefs.tempStore", {
         gradeNames: ["fluid.dataSource", "fluid.modelComponent"],
