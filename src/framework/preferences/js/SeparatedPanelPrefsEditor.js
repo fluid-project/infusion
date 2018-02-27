@@ -147,6 +147,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         preferences: "{separatedPanel}.model.preferences",
                         panelIndex: "{separatedPanel}.model.panelIndex",
                         panelMaxIndex: "{separatedPanel}.model.panelMaxIndex",
+                        // The `local` model path is used by the `fluid.remoteModelComponent` grade
+                        // for persisting and synchronizing model values with remotely stored data.
+                        // Below, the panelIndex is being tracked for such persistence and synchronization.
                         local: {
                             panelIndex: "{that}.model.panelIndex"
                         }
