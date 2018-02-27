@@ -582,9 +582,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.store", {
         gradeNames: "fluid.prefs.store",
-        invokers: {
-            get: "fluid.identity",
-            set: "fluid.identity"
+        listeners: {
+            "onRead.impl": {
+                func: "fluid.identity"
+            },
+            "onWrite.impl": {
+                func: "fluid.identity"
+            }
         }
     });
 
