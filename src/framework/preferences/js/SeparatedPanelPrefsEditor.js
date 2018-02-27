@@ -146,18 +146,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     model: {
                         preferences: "{separatedPanel}.model.preferences",
                         panelIndex: "{separatedPanel}.model.panelIndex",
-                        panelMaxIndex: "{separatedPanel}.model.panelMaxIndex"
-                    },
-                    // Model relay to setup the local/remote tracking of the
-                    // panelIndex value. An explicit model relay is used so that we
-                    // can exclude the relay action on init.
-                    modelRelay: {
-                        source: "panelIndex",
-                        target: "local.panelIndex",
-                        excludeSource: "init",
-                        forward: {excludeSource: "init"},
-                        singleTransform: {
-                            type: "fluid.transforms.identity"
+                        panelMaxIndex: "{separatedPanel}.model.panelMaxIndex",
+                        local: {
+                            panelIndex: "{that}.model.panelIndex"
                         }
                     },
                     autoSave: true,

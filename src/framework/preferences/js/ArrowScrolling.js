@@ -30,7 +30,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         onScrollDelay: 100, // in ms, used to set the delay for debouncing the scroll event relay
         model: {
             // panelMaxIndex: null, // determined by the number of panels calculated after the onPrefsEditorMarkupReady event fired
-            panelIndex: 0 // the index of the panel to open on
+
+            // Due to FLUID-6249 ( https://issues.fluidproject.org/browse/FLUID-6249 ) the default value for panelIndex
+            // needs to be commented out or it will interfere with reading in the panelIndex value saved in the store.
+            // panelIndex: 0 // the index of the panel to open on
         },
         events: {
             beforeReset: null, // should be fired by the fluid.prefs.prefsEditor grade
