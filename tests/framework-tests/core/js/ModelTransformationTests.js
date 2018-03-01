@@ -2362,6 +2362,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expected: {
                 flashing: false
             }
+        },
+        "FLUID-6248: Valuemapper collects paths from defaultInput": {
+            message: "Valuemapper with nested arrayToSetMembership as input",
+            transform: {
+                "type": "fluid.transforms.valueMapper",
+                "match": [{
+                    "inputValue": {
+                        "dictionaryEnabled": true
+                    },
+                    "outputValue": true
+                }],
+                "noMatch": {
+                    "outputValue": false
+                },
+                "defaultInput": {
+                    "transform": {
+                        "type": "fluid.transforms.arrayToSetMembership",
+                        "inputPath": "http://registry\\.gpii\\.net/common/supportTool",
+                        "options": {
+                            "dictionary": "dictionaryEnabled"
+                        }
+                    }
+                }
+            },
+            expectedInputPaths: [ "http://registry\\.gpii\\.net/common/supportTool" ],
+            model: {
+                "http://registry.gpii.net/common/supportTool": ["dictionary"]
+            },
+            expected: true,
+            weaklyInvertible: false
         }
     };
 

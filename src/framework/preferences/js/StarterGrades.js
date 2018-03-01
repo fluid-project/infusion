@@ -174,7 +174,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             textFont: ".flc-prefsEditor-text-font",
             lineSpace: ".flc-prefsEditor-line-space",
             contrast: ".flc-prefsEditor-contrast",
-            textControls: ".flc-prefsEditor-text-controls",
             layoutControls: ".flc-prefsEditor-layout-controls",
             enhanceInputs: ".flc-prefsEditor-enhanceInputs"
         },

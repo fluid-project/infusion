@@ -337,7 +337,7 @@ var fluid = fluid || fluid_2_0_0;
 
     fluid.transforms.valueMapper.collect = function (transformSpec, transformer) {
         var togo = [];
-        fluid.model.transform.accumulateInputPath(transformSpec.defaultInputPath, transformer, togo);
+        fluid.model.transform.accumulateStandardInputPath("defaultInput", transformSpec, transformer, togo);
         fluid.each(transformSpec.match, function (option) {
             fluid.model.transform.accumulateInputPath(option.inputPath, transformer, togo);
         });
