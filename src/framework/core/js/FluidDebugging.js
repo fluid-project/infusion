@@ -261,7 +261,7 @@ var fluid = fluid || fluid_3_0_0;
      * Dumps a DOM element into a readily recognisable form for debugging - produces a
      * "semi-selector" summarising its tag name, class and id, whichever are set.
      *
-     * @param {jQueryable} element The element to be dumped
+     * @param element {jQueryable} The element to be dumped
      * @return A string representing the element.
      */
     fluid.dumpEl = function (element) {

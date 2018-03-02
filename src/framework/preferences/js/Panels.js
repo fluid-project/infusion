@@ -304,7 +304,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.prefs.compositePanel.prefetchComponentOptions = function (type, options) {
         var baseOptions = fluid.getMergedDefaults(type, fluid.get(options, "gradeNames"));
         // TODO: awkwardly, fluid.merge is destructive on each argument!
-        return fluid.merge(baseOptions.mergePolicy, fluid.copy(baseOptions), options);
+        return baseOptions && fluid.merge(baseOptions.mergePolicy, fluid.copy(baseOptions), options);
     };
     /*
      * Should only be used when fluid.prefs.compositePanel.isActivatePanel cannot.

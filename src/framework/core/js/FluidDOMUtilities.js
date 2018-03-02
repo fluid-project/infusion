@@ -47,9 +47,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Reorderer component. General clients of the framework should use this method with caution if at all, and
      * the performance issues should be reassessed when we have time.
      *
-     * @param {Element} node the node to start walking from
-     * @param {Function} acceptor the function to invoke with each DOM element
-     * @param {Boolean} allnodes Use <code>true</code> to call acceptor on all nodes,
+     * @param node {Element} the node to start walking from
+     * @param acceptor {Function} the function to invoke with each DOM element
+     * @param allnodes {Boolean} Use <code>true</code> to call acceptor on all nodes,
      * rather than just element nodes (type 1)
      */
     fluid.dom.iterateDom = function (node, acceptor, allNodes) {
@@ -82,8 +82,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Checks if the specified container is actually the parent of containee.
      *
-     * @param {Element} container the potential parent
-     * @param {Element} containee the child in question
+     * @param container {Element} the potential parent
+     * @param containee {Element} the child in question
      */
     fluid.dom.isContainer = function (container, containee) {
         for (; containee; containee = containee.parentNode) {

@@ -56,8 +56,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * it ensures to wrap a null or otherwise falsy argument to itself, rather than the
      * often unhelpful jQuery default of returning the overall document node.
      *
-     * @param {Object} obj the object to wrap in a jQuery
-     * @param {jQuery} userJQuery the jQuery object to use for the wrapping, optional - use the current jQuery if absent
+     * @param obj {Object} the object to wrap in a jQuery
+     * @param userJQuery {jQuery} the jQuery object to use for the wrapping, optional - use the current jQuery if absent
      */
     fluid.wrap = function (obj, userJQuery) {
         userJQuery = userJQuery || $;
@@ -67,7 +67,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * If obj is a jQuery, this function will return the first DOM element within it. Otherwise, the object will be returned unchanged.
      *
-     * @param {jQuery} obj the jQuery instance to unwrap into a pure DOM element
+     * @param obj {jQuery} the jQuery instance to unwrap into a pure DOM element
      */
     fluid.unwrap = function (obj) {
         return obj && obj.jquery ? obj[0] : obj;
@@ -76,8 +76,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Fetches a single container element and returns it as a jQuery.
      *
-     * @param {String||jQuery||element} containerSpec an id string, a single-element jQuery, or a DOM element specifying a unique container
-     * @param {Boolean} fallible <code>true</code> if an empty container is to be reported as a valid condition
+     * @param containerSpec {String||jQuery||element} an id string, a single-element jQuery, or a DOM element specifying a unique container
+     * @param fallible {Boolean} <code>true</code> if an empty container is to be reported as a valid condition
      * @return a single-element jQuery of container
      */
     fluid.container = function (containerSpec, fallible, userJQuery) {
@@ -122,8 +122,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Creates a new DOM Binder instance, used to locate elements in the DOM by name.
      *
-     * @param {Object} container the root element in which to locate named elements
-     * @param {Object} selectors a collection of named jQuery selectors
+     * @param container {Object} the root element in which to locate named elements
+     * @param selectors {Object} a collection of named jQuery selectors
      */
     fluid.createDomBinder = function (container, selectors) {
         var that = {
@@ -221,7 +221,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Creates a new DOM Binder instance for the specified component and mixes it in.
      *
-     * @param {Object} that the component instance to attach the new DOM Binder to
+     * @param that {Object} the component instance to attach the new DOM Binder to
      */
     // Note that whilst this is not a properly public function, it has been bound to in a few stray places such as Undo.js and
     // Panels.js - until we can finally reform these sites we need to keep this signature stable as well as the bizarre side-effects
@@ -235,8 +235,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Finds the nearest ancestor of the element that matches a predicate
-     * @param {Element} element DOM element
-     * @param {Function} test A function (predicate) accepting a DOM element, returning a truthy value representing a match
+     * @param element {Element} DOM element
+     * @param test {Function} A function (predicate) accepting a DOM element, returning a truthy value representing a match
      * @return The first element parent for which the predicate returns truthy - or undefined if no parent matches
      */
     fluid.findAncestor = function (element, test) {
@@ -391,8 +391,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Returns an DOM element quickly, given an id
      *
-     * @param {Object} id the id of the DOM node to find
-     * @param {Document} dokkument the document in which it is to be found (if left empty, use the current document)
+     * @param id {Object} the id of the DOM node to find
+     * @param dokkument {Document} the document in which it is to be found (if left empty, use the current document)
      * @return The DOM element with this id, or null, if none exists in the document.
      */
     fluid.byId = function (id, dokkument) {
@@ -414,7 +414,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Returns the id attribute from a jQuery or pure DOM element.
      *
-     * @param {jQuery||Element} element the element to return the id attribute for
+     * @param element {jQuery||Element} the element to return the id attribute for
      */
     fluid.getId = function (element) {
         return fluid.unwrap(element).id;
@@ -441,7 +441,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Returns the document to which an element belongs, or the element itself if it is already a document
      *
-     * @param {jQuery||Element} element The element to return the document for
+     * @param element {jQuery||Element} The element to return the document for
      * @return {Document} dokkument The document in which it is to be found
      */
     fluid.getDocument = function (element) {

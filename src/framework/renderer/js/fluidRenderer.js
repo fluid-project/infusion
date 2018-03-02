@@ -20,69 +20,6 @@ fluid_3_0_0 = fluid_3_0_0 || {};
     "use strict";
 
 
-    fluid.defaults("fluid.messageResolver", {
-        gradeNames: ["fluid.component"],
-        mergePolicy: {
-            messageBase: "nomerge",
-            parents: "nomerge"
-        },
-        resolveFunc: fluid.stringTemplate,
-        parseFunc: fluid.identity,
-        messageBase: {},
-        members: {
-            messageBase: "@expand:{that}.options.parseFunc({that}.options.messageBase)"
-        },
-        invokers: {
-            lookup: "fluid.messageResolver.lookup({that}, {arguments}.0)", // messagecodes
-            resolve: "fluid.messageResolver.resolve({that}, {arguments}.0, {arguments}.1)" // messagecodes, args
-        },
-        parents: []
-    });
-
-    fluid.messageResolver.lookup = function (that, messagecodes) {
-        var resolved = fluid.messageResolver.resolveOne(that.messageBase, messagecodes);
-        if (resolved === undefined) {
-            return fluid.find(that.options.parents, function (parent) {
-                return parent ? parent.lookup(messagecodes) : undefined;
-            });
-        } else {
-            return {template: resolved, resolveFunc: that.options.resolveFunc};
-        }
-    };
-
-    fluid.messageResolver.resolve = function (that, messagecodes, args) {
-        if (!messagecodes) {
-            return "[No messagecodes provided]";
-        }
-        messagecodes = fluid.makeArray(messagecodes);
-        var looked = that.lookup(messagecodes);
-        return looked ? looked.resolveFunc(looked.template, args) :
-            "[Message string for key " + messagecodes[0] + " not found]";
-    };
-
-
-    // unsupported, NON-API function
-    fluid.messageResolver.resolveOne = function (messageBase, messagecodes) {
-        for (var i = 0; i < messagecodes.length; ++i) {
-            var code = messagecodes[i];
-            var message = messageBase[code];
-            if (message !== undefined) {
-                return message;
-            }
-        }
-    };
-
-    /** Converts a data structure consisting of a mapping of keys to message strings,
-     * into a "messageLocator" function which maps an array of message codes, to be
-     * tried in sequence until a key is found, and an array of substitution arguments,
-     * into a substituted message string.
-     */
-    fluid.messageLocator = function (messageBase, resolveFunc) {
-        var resolver = fluid.messageResolver({messageBase: messageBase, resolveFunc: resolveFunc});
-        return function (messagecodes, args) {
-            return resolver.resolve(messagecodes, args);
-        };
-    };
 
     function debugPosition(component) {
         return "as child of " + (component.parent.fullID ? "component with full ID " + component.parent.fullID : "root");
@@ -1496,8 +1433,8 @@ fluid_3_0_0 = fluid_3_0_0 || {};
 
    /**
     * A common utility function to make a simple view of rows, where each row has a selection control and a label
-    * @param {Object} optionlist An array of the values of the options in the select
-    * @param {Object} opts An object with this structure: {
+    * @param optionlist {Object} An array of the values of the options in the select
+    * @param opts {Object} An object with this structure: {
             selectID: "",
             rowID: "",
             inputID: "",
@@ -1514,20 +1451,6 @@ fluid_3_0_0 = fluid_3_0_0 || {};
                 ]
             };
         });
-    };
-
-    fluid.resolveMessageSource = function (messageSource) {
-        if (messageSource.type === "data") {
-            if (messageSource.url === undefined) {
-                return fluid.messageLocator(messageSource.messages, messageSource.resolveFunc);
-            }
-            else {
-              // TODO: fetch via AJAX, and convert format if necessary
-            }
-        }
-        else if (messageSource.type === "resolver") {
-            return messageSource.resolver.resolve;
-        }
     };
 
     fluid.renderTemplates = function (templates, tree, options, fossilsIn) {

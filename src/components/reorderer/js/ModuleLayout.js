@@ -69,9 +69,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Builds a layout object from a set of columns and modules.
-     * @param {jQuery} container
-     * @param {jQuery} columns
-     * @param {jQuery} portlets
+     * @param container {jQuery}
+     * @param columns {jQuery}
+     * @param portlets {jQuery}
      */
     fluid.moduleLayout.layoutFromFlat = function (container, columns, portlets) {
         var layout = {};

@@ -1,6 +1,6 @@
 /*
 Copyright 2009 University of Toronto
-Copyright 2010-2015 OCAD University
+Copyright 2010-2017 OCAD University
 Copyright 2011 Lucendo Development Ltd.
 Copyright 2015 Raising the Floor - International
 
@@ -112,7 +112,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     });
 
     fluid.pageEnhancer.init = function (that) {
-        that.uiEnhancer.updateModel(fluid.get(that.getSettings(), "preferences"));
+        var fetchPromise = that.getSettings();
+        fetchPromise.then(function (fetchedSettings) {
+            that.uiEnhancer.updateModel(fluid.get(fetchedSettings, "preferences"));
+        });
     };
 
 })(jQuery, fluid_3_0_0);
