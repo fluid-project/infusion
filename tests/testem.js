@@ -6,41 +6,28 @@ fluid.setLogging(true);
 require("gpii-testem");
 
 fluid.defaults("fluid.tests.testem", {
-    gradeNames: ["gpii.testem.coverage"],
-    // Add a 500ms pause between when our fixtures are ready and when we let Testem know it's safe to start the test run.
-    // Seems to help with spurious browser test failures in Windows.
-    // startupPause: 500,
-    // invokers: {
-    //     pauseOnStartup: {
-    //         funcName: "setTimeout",
-    //         args:     ["{that}.handleTestemStart", "{that}.options.startupPause", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
-    //     }
-    // },
-    // testemOptions: {
-    //     on_start: "{that}.pauseOnStartup"
-    // },
-    // listeners: {
-        // "onTestemStart.pause": {
-        //     priority: "after:instrument",
-        //     funcName: "{that}.events.constructFixtures.fire"
-        // },
-        // "onTestemStart.constructFixtures": {
-        //     priority: "after:pause",
-        //     func:     "{that}.events.constructFixtures.fire"
-        // },
-    // },
+    gradeNames: ["gpii.testem.instrumentation"],
     coverageDir: "coverage",
     reportsDir: "reports",
-    instrumentedSourceDir: "instrumented",
+    testPages:  ["tests/all-tests.html"],
+    instrumentationOptions: {
+        nonSources: [
+            "./**/*.!(js)",
+            "./lib/**/*",
+            "./**/lib/**/*",
+            "./Gruntfile.js"
+        ]
+    },
+    sourceDirs: {
+        src: "%infusion/src"
+    },
+    contentDirs: {
+        tests:   "%infusion/tests"
+    },
     testemOptions: {
-        skip: "PhantomJS,Opera,Safari",
+        skip: "PhantomJS,Opera,Safari,IE",
         disable_watching: true,
-        test_page:  "tests/all-tests.html",
-        tap_quiet_logs: true,
-        serve_files: ["instrumented", "tests", "node_modules"],
-        routes: {
-            "/src": "instrumented/src"
-        }
+        tap_quiet_logs: true
     }
 });
 

@@ -7,6 +7,5 @@
 /.bundle/
 /.vagrant/
 report.tap
-instrumented
 coverage
 reports
