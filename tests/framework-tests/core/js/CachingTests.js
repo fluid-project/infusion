@@ -16,7 +16,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests");
 
-    fluid.tests.cacheTestUrl = "/test/url";
+    fluid.tests.fetchWait     = 75; // TODO: Stability of tests seems to be very sensitive to this timeout
+
+    fluid.tests.cacheTestUrl  = "/test/url";
     fluid.tests.cacheTestUrl2 = "/test/url2";
     fluid.tests.cacheTestUrl3 = "/test/url3";
     fluid.tests.cacheTestUrl4 = "/test/url4";
@@ -107,7 +109,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 var defaults = fluid.defaults("fluid.tests.cacheComponent");
                 window.setTimeout(function () {
                     fluid.fetchResources(fluid.copy(defaults.resources), finalCallback);
-                }, 100);
+                }, fluid.tests.fetchWait);
             });
         }
 
@@ -148,7 +150,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     fluid.fetchResources(fluid.copy(fluid.tests.finalResources), finalCallback, {
                         amalgamateClasses: ["slowTemplate", "fastTemplate"]
                     });
-                }, 100); // TODO: Stability of tests seems to be very sensitive to this timeout
+                }, fluid.tests.fetchWait);
             });
         }
 
