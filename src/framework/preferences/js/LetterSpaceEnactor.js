@@ -19,25 +19,22 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *
      * Sets the letter space on the container to the number of units to increase
      * the letter space by. If a negative number is provided, the space between
-     * characters will decrease. Setting the size to 0 will use the default letter
-     * space.``
+     * characters will decrease. Setting the value to 1, unit to 0,  will use the
+     * default letter space.
      *******************************************************************************/
 
     // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.prefs.enactor.letterSpace", {
-        gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
+        gradeNames: ["fluid.prefs.enactor.textRelatedSizer"],
         preferenceMap: {
             "fluid.prefs.letterSpace": {
                 "model.value": "default"
             }
         },
-        fontSizeMap: {},  // must be supplied by implementors
         members: {
-            root: {
+            originalLetterSpace: {
                 expander: {
-                    "this": "{that}.container",
-                    "method": "closest", // ensure that the correct document is being used. i.e. in an iframe
-                    "args": ["html"]
+                    func: "{that}.getLetterSpace"
                 }
             }
         },
@@ -45,12 +42,23 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             set: {
                 funcName: "fluid.prefs.enactor.letterSpace.set",
                 args: ["{that}", "{arguments}.0"]
+            },
+            getLetterSpace: {
+                funcName: "fluid.prefs.enactor.letterSpace.getLetterSpace",
+                args: ["{that}", "{that}.getTextSizeInPx"]
             }
         },
         modelListeners: {
             unit: {
                 listener: "{that}.set",
-                args: ["{change}.value"]
+                args: ["{change}.value"],
+                namespace: "setAdaptation"
+            },
+            // Replace default model listener, because `value` needs be transformed before being applied.
+            // The `unit` model value should be used for setting the adaptation.
+            value: {
+                listener: "fluid.identity",
+                namespace: "setAdaptation"
             }
         },
         modelRelay: {
@@ -70,9 +78,22 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
+    fluid.prefs.enactor.letterSpace.getLetterSpace = function (that, getTextSizeFn) {
+        var current = parseFloat(that.container.css("letter-spacing"));
+        var textSize = getTextSizeFn();
+        return fluid.roundToDecimal(current / textSize, 2);
+    };
+
     fluid.prefs.enactor.letterSpace.set = function (that, units) {
-        var targetSize = units  ? units + "em" : "normal";
-        that.root.css("letter-spacing", targetSize);
+        var targetSize = that.originalLetterSpace;
+
+        if (units) {
+            targetSize = targetSize + units;
+        }
+
+        // setting the style value to "" will remove it.
+        var letterSpace = targetSize ?  fluid.roundToDecimal(targetSize, 2) + "em" : "";
+        that.container.css("letter-spacing", letterSpace);
     };
 
 })(jQuery, fluid_3_0_0);

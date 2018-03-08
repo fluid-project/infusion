@@ -47,7 +47,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.prefs.enactor.letterSpace",
             tests: [{
-                expect: 10,
+                expect: 7,
                 name: "Set letter space",
                 sequence: [{
                     listener: "jqUnit.assert",
@@ -55,7 +55,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["The letter space enactor was created"]
                 }, {
                     func: "fluid.tests.letterSpaceTester.assertLetterSpace",
-                    args: ["{letterSpace}", {value: 1, unit: 0}]
+                    args: ["{letterSpace}", 16, {value: 1, unit: 0}]
                 }, {
                     func: "{letterSpace}.applier.change",
                     args: ["value", 2]
@@ -63,7 +63,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     changeEvent: "{letterSpace}.applier.modelChanged",
                     spec: {path: "value", priority: "last:testing"},
                     listener: "fluid.tests.letterSpaceTester.assertLetterSpace",
-                    args: ["{letterSpace}", {value: 2, unit: 1}]
+                    args: ["{letterSpace}", 16, {value: 2, unit: 1}]
                 }, {
                     func: "{letterSpace}.applier.change",
                     args: ["value", -0.5]
@@ -71,29 +71,82 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     changeEvent: "{letterSpace}.applier.modelChanged",
                     spec: {path: "value", priority: "last:testing"},
                     listener: "fluid.tests.letterSpaceTester.assertLetterSpace",
-                    args: ["{letterSpace}", {value: -0.5, unit: -1.5}]
+                    args: ["{letterSpace}", 16, {value: -0.5, unit: -1.5}]
                 }, {
-                    funcName: "fluid.tests.letterSpaceTester.reset"
+                    funcName: "fluid.tests.letterSpaceTester.reset",
+                    args: ["{letterSpace}.container"]
                 }]
             }]
         }]
     });
 
-    fluid.tests.letterSpaceTester.assertLetterSpace = function (that, expectedModel) {
-        var pxVal = expectedModel.unit * 16; // convert from em to px
+    fluid.defaults("fluid.tests.letterSpaceExistingTests", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        components: {
+            letterSpace: {
+                type: "fluid.tests.prefs.enactor.letterSpaceEnactor",
+                container: ".flc-letterSpace-existing",
+                createOnEvent: "{letterSpaceTester}.events.onTestCaseStart"
+            },
+            letterSpaceTester: {
+                type: "fluid.tests.letterSpaceExistingTester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.letterSpaceExistingTester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [{
+            name: "fluid.prefs.enactor.letterSpace",
+            tests: [{
+                expect: 7,
+                name: "Set letter space when existing letter space present",
+                sequence: [{
+                    listener: "jqUnit.assert",
+                    event: "{letterSpaceExistingTests letterSpace}.events.onCreate",
+                    args: ["The letter space enactor was created"]
+                }, {
+                    func: "fluid.tests.letterSpaceTester.assertLetterSpace",
+                    args: ["{letterSpace}", 16, {value: 1, unit: 0}, 3.2]
+                }, {
+                    func: "{letterSpace}.applier.change",
+                    args: ["value", 2]
+                }, {
+                    changeEvent: "{letterSpace}.applier.modelChanged",
+                    spec: {path: "value", priority: "last:testing"},
+                    listener: "fluid.tests.letterSpaceTester.assertLetterSpace",
+                    args: ["{letterSpace}", 16, {value: 2, unit: 1}, 19.2]
+                }, {
+                    func: "{letterSpace}.applier.change",
+                    args: ["value", -0.5]
+                }, {
+                    changeEvent: "{letterSpace}.applier.modelChanged",
+                    spec: {path: "value", priority: "last:testing"},
+                    listener: "fluid.tests.letterSpaceTester.assertLetterSpace",
+                    args: ["{letterSpace}", 16, {value: -0.5, unit: -1.5}, -20.8]
+                }, {
+                    funcName: "fluid.tests.letterSpaceTester.reset",
+                    args: ["{letterSpace}.container"]
+                }]
+            }]
+        }]
+    });
+
+    fluid.tests.letterSpaceTester.assertLetterSpace = function (that, baseFontSize, expectedModel, expectedStyleValue) {
+        var pxVal = expectedStyleValue || expectedModel.unit * baseFontSize; // convert from em to px
         var expectedLetterSpace = pxVal ? pxVal + "px" : "0";
         jqUnit.assertDeepEq("The model should be set correctly", expectedModel, that.model);
-        jqUnit.assertEquals("The letter-spacing css style should be set to " + expectedLetterSpace, expectedLetterSpace, that.root.css("letter-spacing"));
-        jqUnit.assertEquals("The letter-spacing of the content is set to " + expectedLetterSpace, expectedLetterSpace, that.container.css("letter-spacing"));
+        jqUnit.assertEquals("The letter-spacing css style should be set to " + expectedLetterSpace, expectedLetterSpace, that.container.css("letter-spacing"));
     };
 
-    fluid.tests.letterSpaceTester.reset = function () {
-        $("body").css("letter-spacing", "normal");
+    fluid.tests.letterSpaceTester.reset = function (elm) {
+        $(elm).css("letter-spacing", "");
     };
 
     $(document).ready(function () {
         fluid.test.runTests([
-            "fluid.tests.letterSpaceTests"
+            "fluid.tests.letterSpaceTests",
+            "fluid.tests.letterSpaceExistingTests"
         ]);
     });
 

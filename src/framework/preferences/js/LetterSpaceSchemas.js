@@ -35,7 +35,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             letterSpace: {
                 type: "fluid.prefs.letterSpace",
                 enactor: {
-                    type: "fluid.prefs.enactor.letterSpace"
+                    type: "fluid.prefs.enactor.letterSpace",
+                    fontSizeMap: {
+                        "xx-small": "9px",
+                        "x-small": "11px",
+                        "small": "13px",
+                        "medium": "15px",
+                        "large": "18px",
+                        "x-large": "23px",
+                        "xx-large": "30px"
+                    }
                 },
                 panel: {
                     type: "fluid.prefs.panel.letterSpace",
@@ -61,7 +70,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 "type": "number",
                 "default": 1,
                 "minimum": 1,
-                "maximum": 1.5,
+                "maximum": 2,
                 "divisibleBy": 0.1
             }
         }
