@@ -293,7 +293,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         listeners: {
             "onCreate.init": "fluid.prefs.prefsEditor.init",
-            "onAutoSave.save": "{that}.save"
+            "onAutoSave.save": "{that}.save",
+            // After a save, update the remote model with the stored values.
+            "afterWrite.postFetch": {
+                func: "{that}.fetch",
+                priority: "after:unblock"
+            }
         },
         model: {
             local: {
