@@ -294,7 +294,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         listeners: {
             "onCreate.init": "fluid.prefs.prefsEditor.init",
             "onAutoSave.save": "{that}.save",
-            // After a save, update the remote model with the stored values.
+            // Using afterWrite to update the remote model is a temporary fix until
+            // FLUID-6257 (https://issues.fluidproject.org/browse/FLUID-6257) is addressed.
             "afterWrite.postFetch": {
                 func: "{that}.fetch",
                 priority: "after:unblock"
