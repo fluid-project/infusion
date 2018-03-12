@@ -56,8 +56,10 @@
         <script type="text/javascript" src="../../src/framework/preferences/js/PrefsEditor.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/Panels.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/SelfVoicingPanel.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/LetterSpacePanel.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/Enactors.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/SelfVoicingEnactor.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/LetterSpaceEnactor.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/SeparatedPanelPrefsEditor.js"></script>
         <script type="text/javascript" src="../../src/components/slidingPanel/js/SlidingPanel.js"></script>
         <script type="text/javascript" src="../../src/components/switch/js/Switch.js"></script>
@@ -66,7 +68,7 @@
         <script type="text/javascript" src="../../src/framework/preferences/js/AuxBuilder.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/StarterSchemas.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/SelfVoicingSchemas.js"></script>
-        <script type="text/javascript" src="../../src/framework/preferences/js/StarterSchemas.js"></script>
+        <script type="text/javascript" src="../../src/framework/preferences/js/LetterSpaceSchemas.js"></script>
         <script type="text/javascript" src="../../src/framework/preferences/js/Builder.js"></script>
         <script type="text/javascript" src="../../src/components/uiOptions/js/UIOptions.js"></script>
         <script type="text/javascript" src="../../src/components/textToSpeech/js/TextToSpeech.js"></script>
@@ -88,8 +90,9 @@
                     build: {
                         gradeNames: [
                             "fluid.prefs.auxSchema.starter", // this will add the starter set
+                            "fluid.prefs.auxSchema.letterSpace", // this will add the letter space adjuster and enactor
                             "demo.prefsEditor.auxSchema.simplify", // this will add the simplify adjuster and enactor
-                            "demo.prefsEditor.progressiveEnhancement" // progressive enhancment
+                            "demo.prefsEditor.progressiveEnhancement" // progressive enhancement - may add selfVoicing
                         ],
                         primarySchema: demo.prefsEditor.primarySchema
                     }
