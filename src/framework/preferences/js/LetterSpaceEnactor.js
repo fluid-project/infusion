@@ -19,7 +19,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *
      * Sets the letter space on the container to the number of units to increase
      * the letter space by. If a negative number is provided, the space between
-     * characters will decrease. Setting the value to 1, unit to 0,  will use the
+     * characters will decrease. Setting the value to 1 or unit to 0 will use the
      * default letter space.
      *******************************************************************************/
 
