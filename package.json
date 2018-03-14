@@ -20,16 +20,14 @@
     "main": "./src/module/fluid.js",
     "scripts": {
         "prepublish": "npm run buildDists && npm run buildStylus",
-        "pretest": "npm run pretest:cleanup && npm run pretest:instrument",
-        "pretest:cleanup": "node node_modules/rimraf/bin.js reports/* coverage/* instrumented/*",
-        "pretest:instrument": "node node_modules/gpii-testem/src/js/instrumenter-launcher.js --optionsFile tests/configs/fluid.tests.instrumenter.json --inputPath src --outputPath instrumented/src",
+        "pretest": "node node_modules/rimraf/bin.js reports/* coverage/*",
         "test": "npm run test:browser && npm run test:node",
         "test:browser": "node node_modules/testem/testem.js ci --file tests/testem.js",
-        "test:node": "node node_modules/istanbul/lib/cli.js cover tests/node-tests/basic-node-tests.js --report none --print none",
+        "test:node": "node node_modules/nyc/bin/nyc.js node tests/node-tests/basic-node-tests.js",
         "test:vagrant": "vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm test'",
         "test:vagrantBrowser": "vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm run test:browser'",
         "test:vagrantNode": "vagrant up && vagrant ssh -c 'cd /home/vagrant/sync/; DISPLAY=:0 npm run test:node'",
-        "posttest": "node node_modules/istanbul/lib/cli.js report --root coverage --dir reports text-summary html",
+        "posttest": "node node_modules/nyc/bin/nyc.js report -r text-summary -r html --report-dir reports --temp-directory coverage",
         "buildDists": "grunt buildDists",
         "buildStylus": "grunt buildStylus"
     },
@@ -57,6 +55,7 @@
         "istanbul": "git://github.com/the-t-in-rtf/istanbul#828eb930add7bd663ca20649a917f3f3829e48c5",
         "lodash": "4.17.5",
         "ncp": "2.0.0",
+        "nyc": "11.4.1",
         "rimraf": "2.6.2",
         "testem": "2.0.0"
     }
