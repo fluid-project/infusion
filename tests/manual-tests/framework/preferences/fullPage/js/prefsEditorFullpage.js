@@ -78,7 +78,7 @@ var demo = demo || {};
             prefsEditor: {
                 gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.uiEnhancerRelay"],
                 listeners: {
-                    onCancel: function () {
+                    "onCancel.alert": function () {
                         alert("Cancelled - would normally cancel any unsaved changes and return to the previous page.");
                     }
                 }

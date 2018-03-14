@@ -46,7 +46,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         modelListeners: {
             value: {
                 listener: "{that}.handleStyle",
-                args: ["{change}.value"]
+                args: ["{change}.value"],
+                namespace: "handleStyle"
             }
         }
     });
@@ -88,7 +89,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         modelListeners: {
             value: {
                 listener: "{that}.swap",
-                args: ["{change}.value"]
+                args: ["{change}.value"],
+                namespace: "swapClass"
             }
         },
         members: {
@@ -397,7 +399,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         modelListeners: {
             toc: {
                 listener: "{that}.applyToc",
-                args: ["{change}.value"]
+                args: ["{change}.value"],
+                namespace: "toggleToc"
             }
         },
         distributeOptions: {

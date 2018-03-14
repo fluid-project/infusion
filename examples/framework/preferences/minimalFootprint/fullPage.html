@@ -134,7 +134,7 @@
                         listeners: {
                             // Tells the PrefsEditor where to redirect to if the user cancels the operation.
                             // In this case, it goes back one step in the browser's history.
-                            onCancel: {
+                            "onCancel.back": {
                                 "this": window.history,
                                 method: "back"
                             }

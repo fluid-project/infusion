@@ -393,7 +393,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         },
                         "{separatedPanel}.events.onLazyLoad": {
                             listener: "fluid.resourceLoader.loadResources",
-                            args: ["{messageLoader}", {expander: {func: "{messageLoader}.resolveResources"}}]
+                            args: ["{messageLoader}", {expander: {func: "{messageLoader}.resolveResources"}}],
+                            namespace: "loadResources"
                         }
                     }
                 }

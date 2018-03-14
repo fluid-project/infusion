@@ -44,7 +44,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         listeners: {
-            afterRender: {
+            "afterRender.writeRecord": {
                 listener: "{compositePanel}.writeRecord",
                 args: ["subPanel1"]
             }
@@ -73,7 +73,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         listeners: {
-            afterRender: {
+            "afterRender.writeRecord": {
                 listener: "{compositePanel}.writeRecord",
                 args: ["subPanel2"]
             }
@@ -119,7 +119,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         listeners: {
-            afterRender: {
+            "afterRender.writeRecord": {
                 listener: "{that}.writeRecord",
                 args: ["compositePanel"]
             }

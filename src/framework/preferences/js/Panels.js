@@ -91,7 +91,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         listeners: {
             "{compositePanel}.events.afterRender": {
                 listener: "{that}.events.afterRender",
-                args: ["{that}"]
+                args: ["{that}"],
+                namespce: "boilAfterRender"
             },
             // Changing the firing of onDomBind from the onCreate.
             // This is due to the fact that the rendering process, controlled by the
@@ -382,7 +383,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var eventName = fluid.prefs.compositePanel.creationEventName(pref);
             return {
                 func: "{that}.handleRenderOnPreference",
-                args: ["{change}.value", "{that}.events." + eventName + ".fire", componentNames]
+                args: ["{change}.value", "{that}.events." + eventName + ".fire", componentNames],
+                namespace: "handleRenderOnPreference_" + pref
             };
         });
     };
@@ -642,6 +644,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.prefs.prefsEditorConnections", {
         gradeNames: ["fluid.component"],
         listeners: {
+            // No namespace supplied because this grade is added to every panel. Suppling a
+            // namespace would mean that only one panel's refreshView method was bound to the
+            // onPrefsEditorRefresh event.
             "{fluid.prefs.prefsEditor}.events.onPrefsEditorRefresh": "{fluid.prefs.panel}.refreshView"
         },
         strings: {},

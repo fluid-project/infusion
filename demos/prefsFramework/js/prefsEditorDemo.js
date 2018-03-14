@@ -140,7 +140,8 @@ var demo = demo || {};
         modelListeners: {
             simplify: {
                 listener: "{that}.set",
-                args: ["{change}.value"]
+                args: ["{change}.value"],
+                namespace: "setAdaptation"
             }
         },
         events: {

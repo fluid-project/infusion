@@ -505,7 +505,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         listeners: {
             "onCreate.startLoadingContainer": "fluid.prefs.preview.startLoadingContainer",
-            "{prefsEditor}.events.modelChanged": "{that}.updateModel",
+            "{prefsEditor}.events.modelChanged": {
+                listener: "{that}.updateModel",
+                namespace: "updateModel"
+            },
             "onReady.updateModel": "{that}.updateModel"
         },
         templateUrl: "%prefix/PrefsEditorPreview.html"
