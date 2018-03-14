@@ -103,7 +103,7 @@
 
         fluid.each(rawTestSuites, function (tests, moduleName) {
             var testsWithPaths = tests.map(function (entry) {
-                var leader = typeof Testem === "undefined" "." : "/tests";
+                var leader = typeof Testem === "undefined" ? "." : "/tests";
                 return leader + entry;
             });
             QUnit.testSuites(moduleName, testsWithPaths);
