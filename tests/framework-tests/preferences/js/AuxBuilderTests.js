@@ -672,7 +672,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     options: {
                         gradeNames: ["fluid.prefs.prefsEditorConnections"],
                         model: {
-                            textSize: "prefsEditor.model.preferences.fluid_prefs_textSize"
+                            value: "prefsEditor.model.preferences.fluid_prefs_textSize"
                         },
                         range: {
                             min: 1,
@@ -820,7 +820,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             options: {
                                 gradeNames: ["fluid.prefs.prefsEditorConnections"],
                                 model: {
-                                    textSize: "prefsEditor.model.preferences.fluid_prefs_textSize"
+                                    value: "prefsEditor.model.preferences.fluid_prefs_textSize"
                                 },
                                 range: {
                                     min: 1,
@@ -987,7 +987,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             options: {
                                 gradeNames: ["fluid.prefs.prefsEditorConnections"],
                                 model: {
-                                    textSize: "prefsEditor.model.preferences.fluid_prefs_textSize"
+                                    value: "prefsEditor.model.preferences.fluid_prefs_textSize"
                                 },
                                 range: {
                                     min: 1,
