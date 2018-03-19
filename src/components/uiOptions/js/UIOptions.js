@@ -21,24 +21,31 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.uiOptions.prefsEditor", {
         gradeNames: ["fluid.prefs.constructed.prefsEditor"],
         lazyLoad: false,
-        distributeOptions: [{
-            record: "{that}.options.lazyLoad",
-            target: "{that separatedPanel}.options.lazyLoad"
-        }, {
-            source: "{that}.options.tocTemplate",
-            target: "{that uiEnhancer}.options.tocTemplate"
-        }, {
-            source: "{that}.options.ignoreForToC",
-            target: "{that uiEnhancer}.options.ignoreForToC"
-        }],
-        enhancer: {
-            distributeOptions: [{
+        distributeOptions: {
+            "uio.separatedPanel.azyLoad": {
+                record: "{that}.options.lazyLoad",
+                target: "{that separatedPanel}.options.lazyLoad"
+            },
+            "uio.uiEnhancer.tocTemplate": {
                 source: "{that}.options.tocTemplate",
-                target: "{that > fluid.prefs.enactor.tableOfContents}.options.tocTemplate"
-            }, {
+                target: "{that uiEnhancer}.options.tocTemplate"
+            },
+            "uio.uiEnhancer.ignoreForToC": {
                 source: "{that}.options.ignoreForToC",
-                target: "{that > fluid.prefs.enactor.tableOfContents}.options.ignoreForToC"
-            }]
+                target: "{that uiEnhancer}.options.ignoreForToC"
+            }
+        },
+        enhancer: {
+            distributeOptions: {
+                "uio.enhancer.tableOfContents.tocTemplate": {
+                    source: "{that}.options.tocTemplate",
+                    target: "{that > fluid.prefs.enactor.tableOfContents}.options.tocTemplate"
+                },
+                "uio.enhancer.tableOfContents.ignoreForToC": {
+                    source: "{that}.options.ignoreForToC",
+                    target: "{that > fluid.prefs.enactor.tableOfContents}.options.ignoreForToC"
+                }
+            }
         }
     });
 

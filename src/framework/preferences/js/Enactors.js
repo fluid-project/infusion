@@ -404,8 +404,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         distributeOptions: {
-            source: "{that}.options.ignoreForToC",
-            target: "{that tableOfContents}.options.ignoreForToC"
+            "tocEnactor.tableOfContents.ignoreForToC": {
+                source: "{that}.options.ignoreForToC",
+                target: "{that tableOfContents}.options.ignoreForToC"
+            }
         }
     });
 

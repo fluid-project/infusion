@@ -95,8 +95,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "fluid.prefs.initialModel", "fluid.prefs.settingsGetter",
             "fluid.resolveRootSingle"],
         distributeOptions: {
-            source: "{that}.options.uiEnhancer",
-            target: "{that > uiEnhancer}.options"
+            "pageEnhancer.uiEnhancer": {
+                source: "{that}.options.uiEnhancer",
+                target: "{that > uiEnhancer}.options"
+            }
         },
         singleRootType: "fluid.pageEnhancer",
         components: {
