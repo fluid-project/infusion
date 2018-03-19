@@ -33,8 +33,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Takes a template string containing tokens in the form of "@source-path-to-value".
      * Returns a value (any type) or undefined if the path is not found.
      *
-     * @param {object}    root       an object to retrieve the returned value from
-     * @param {String}    pathRef    a string that the path to the requested value is embedded into
+     * @param root {object}       an object to retrieve the returned value from
+     * @param pathRef {String}    a string that the path to the requested value is embedded into
      *
      * Example:
      * 1. Parameters:
@@ -195,9 +195,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Expands a all "@" path references from an auxiliary schema.
      * Note that you cannot chain "@" paths.
      *
-     *  @param {object} schemaToExpand the shcema which will be expanded
-     *  @param {object} altSource an alternative look up object. This is primarily used for the internal recursive call.
-     *  @return {object} an expaneded version of the schema.
+     *  @param schemaToExpand {object} the schema which will be expanded
+     *  @param altSource {object} an alternative look up object. This is primarily used for the internal recursive call.
+     *  @return {object} an expanded version of the schema.
      */
     fluid.prefs.expandSchemaImpl = function (schemaToExpand, altSource) {
         var expandedSchema = fluid.copy(schemaToExpand);

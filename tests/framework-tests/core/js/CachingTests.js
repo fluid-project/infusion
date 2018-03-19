@@ -16,7 +16,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests");
 
-    fluid.tests.cacheTestUrl = "/test/url";
+    fluid.tests.cacheTestUrl  = "/test/url";
     fluid.tests.cacheTestUrl2 = "/test/url2";
     fluid.tests.cacheTestUrl3 = "/test/url3";
     fluid.tests.cacheTestUrl4 = "/test/url4";
@@ -148,14 +148,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     fluid.fetchResources(fluid.copy(fluid.tests.finalResources), finalCallback, {
                         amalgamateClasses: ["slowTemplate", "fastTemplate"]
                     });
-                }, 100); // TODO: Stability of tests seems to be very sensitive to this timeout
+                }, 150); // TODO: Stability of tests seems to be very sensitive to this timeout
             });
         }
 
         function testProleptickSet(mainDelay, collDelay) {
             testProleptickJoinset({cacheTestUrl:   0, cacheTestUrl2:   0, cacheTestUrl3: collDelay, cacheTestUrl4: mainDelay}, "Immediate", 1);
-            testProleptickJoinset({cacheTestUrl: 200, cacheTestUrl2: 200, cacheTestUrl3: collDelay, cacheTestUrl4: mainDelay}, "All late",  3);
-            testProleptickJoinset({cacheTestUrl:   0, cacheTestUrl2: 200, cacheTestUrl3: collDelay, cacheTestUrl4: mainDelay}, "One early", 2);
+            testProleptickJoinset({cacheTestUrl: 300, cacheTestUrl2: 300, cacheTestUrl3: collDelay, cacheTestUrl4: mainDelay}, "All late",  3);
+            testProleptickJoinset({cacheTestUrl:   0, cacheTestUrl2: 300, cacheTestUrl3: collDelay, cacheTestUrl4: mainDelay}, "One early", 2);
         }
         for (var mainDelay = 0; mainDelay < 200; mainDelay += 100) {
             for (var collDelay = 0; collDelay < 200; collDelay += 100) {

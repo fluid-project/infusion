@@ -8,16 +8,19 @@
         <link rel="stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
 
         <!--  These are the required javascript modules  -->
-        <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
-        <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script src="../../../../src/framework/core/js/Fluid.js"></script>
 
         <!--  These are the jqUnit test js files -->
-        <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
-        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+        <script src="../../../lib/qunit/js/qunit.js"></script>
+        <script src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+
+        <!-- Required to send coverage data at the end of the test run on this page -->
+        <script src="/testem.js"></script>
+        <script src="/coverage/client/coverageSender.js"></script>
 
         <!--  These are tests that have been written using this page as data -->
-        <script type="text/javascript" src="../js/WebWorkerTests.js"></script>
-
+        <script src="../js/WebWorkerTests.js"></script>
     </head>
     <body>
         <h1 id="qunit-header">Fluid Framework in a Web Worker Test</h1>
@@ -28,7 +31,6 @@
 
         <!-- Test HTML -->
         <div id="main" style="display:none;" class="container">
-
         </div>
     </body>
 </html>

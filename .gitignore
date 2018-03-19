@@ -7,3 +7,5 @@
 /.bundle/
 /.vagrant/
 report.tap
+coverage
+reports

@@ -5,9 +5,9 @@
 @import "utils/Themes"
 
 @font-face {
-    font-family: 'InfusionIcons';
-    src: url('../fonts/InfusionIcons-PrefsEditor.ttf'),
-         url('../fonts/InfusionIcons-PrefsEditor.eot');
+    font-family: 'PrefsFramework-Icons';
+    src: url('../fonts/PrefsFramework-Icons.ttf'),
+         url('../fonts/PrefsFramework-Icons.eot');
 }
 
 .fl-prefsEditor {
@@ -117,6 +117,18 @@
         justify-content: center;
 
         .fl-choice {
+            input.fl-hidden-accessible {
+                // These overrides to the default behaviour of .fl-hidden-accessible are required to keep the
+                // radio button hidden from view, accessible and allow the input to be scrolled into view when tab
+                // focused. Using position fixed or absolute does not scroll the input into view when focused.
+                // See: FLUID-6228 ( https://issues.fluidproject.org/browse/FLUID-6228 )
+                position: relative;
+
+                // position behind label
+                z-index: -2;
+                top: 1rem;
+                left: 1rem;
+            }
             label {
                 margin-right: 5px;
                 border: 1px solid black;
@@ -134,6 +146,7 @@
             }
             .fl-preview-A {
                 font-size: 1.7em;
+                letter-spacing: normal // prevents the preview content from shifting when letter-spacing is set
             }
 
             // Pseudo content to prevent AT from reading display 'a'
@@ -195,16 +208,17 @@
     }
 
     // Font Icons
-    .fl-icon-right, .fl-icon-left, .fl-icon-indicator, .fl-icon-crossout, .fl-icon-big-a, .fl-icon-small-a, .fl-icon-line-space-expanded, .fl-icon-line-space-condensed,
-    .fl-icon-contrast, .fl-icon-undo, .fl-icon-line-space, .fl-icon-inputs, .fl-icon-simplify, .fl-icon-font, .fl-icon-size, .fl-icon-text-to-speech, .fl-icon-toc {
-        font-family: 'InfusionIcons';
+    .fl-icon-indicator, .fl-icon-crossout, .fl-icon-big-a, .fl-icon-small-a, .fl-icon-line-space-expanded, .fl-icon-line-space-condensed,
+    .fl-icon-contrast, .fl-icon-undo, .fl-icon-line-space, .fl-icon-inputs, .fl-icon-simplify, .fl-icon-font, .fl-icon-size, .fl-icon-text-to-speech, .fl-icon-toc,
+    .fl-icon-letter-space, .fl-icon-letter-space-expanded, .fl-icon-letter-space-condensed {
+        font-family: 'PrefsFramework-Icons';
         speak: none;
         font-style: normal;
         font-weight: normal;
         font-variant: normal;
         text-transform: none;
         -webkit-font-smoothing: antialiased;
-        margin: 0.2em 0.3em 0 0;
+        margin-right: 0.3em;
         font-size: 1.5em;
     }
 
@@ -219,6 +233,12 @@
     .fl-icon-small-a:before {
         content: "\e007";
     }
+    .fl-icon-letter-space-expanded:before {
+        content: "\e000";
+    }
+    .fl-icon-letter-space-condensed:before {
+        content: "\e001";
+    }
     .fl-icon-line-space-expanded:before {
         content: "\e009";
     }
@@ -231,16 +251,22 @@
 
     .fl-choice {
         .fl-indicator {
-            font-family: 'InfusionIcons' !important;
-            font-size: 1.3em;
-            margin: -0.75em 0 0 0.75em;
+            font-family: 'PrefsFramework-Icons' !important;
+            margin-top: -1.5em;
             height: 1em;
+            width: calc(100% - 5px); // deduct the right margin from the calculation
+            text-align: center;
+            font-size: 1.25em;
+        }
+        &:last-child .fl-indicator {
+            width: 100%;
         }
 
         .fl-prefsEditor-themePicker-defaultThemeLabel .fl-crossout {
-            font-family: 'InfusionIcons' !important;
-            margin-top: -1.25em;
-            font-size: 1.85em;
+            font-family: 'PrefsFramework-Icons' !important;
+            background-color: transparent !important;
+            margin-top: -1.05em;
+            font-size: 2.2em;
         }
 
         label.fl-theme-prefsEditor-default,
@@ -253,10 +279,7 @@
     }
 
     // header icons
-    .fl-icon-right:before {
-        content: "\e001";
-    }
-    .fl-icon-left:before {
+    .fl-icon-letter-space:before {
         content: "\e002";
     }
     .fl-icon-contrast:before {

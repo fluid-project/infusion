@@ -27,12 +27,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             // panels: "", // should be supplied by the fluid.prefs.prefsEditor grade.
             scrollContainer: ".flc-prefsEditor-scrollContainer"
         },
+        onScrollDelay: 100, // in ms, used to set the delay for debouncing the scroll event relay
         model: {
             // panelMaxIndex: null, // determined by the number of panels calculated after the onPrefsEditorMarkupReady event fired
-            panelIndex: 0
+
+            // Due to FLUID-6249 ( https://issues.fluidproject.org/browse/FLUID-6249 ) the default value for panelIndex
+            // needs to be commented out or it will interfere with reading in the panelIndex value saved in the store.
+            // panelIndex: 0 // the index of the panel to open on
         },
         events: {
-            beforeReset: null // should be fired by the fluid.prefs.prefsEditor grade
+            beforeReset: null, // should be fired by the fluid.prefs.prefsEditor grade
+            onScroll: null
         },
         modelRelay: {
             target: "panelIndex",
@@ -49,10 +54,23 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "panelIndex": {
                 listener: "fluid.prefs.arrowScrolling.scrollToPanel",
                 args: ["{that}", "{change}.value"],
+                excludeSource: ["scrollEvent"],
                 namespace: "scrollToPanel"
             }
         },
         listeners: {
+            "onReady.scrollEvent": {
+                "this": "{that}.dom.scrollContainer",
+                method: "scroll",
+                args: [{
+                    expander: {
+                        // Relaying the scroll event to onScroll but debounced to reduce the rate of fire.  A high rate
+                        // of fire may negatively effect performance for complex handlers.
+                        func: "fluid.debounce",
+                        args: ["{that}.events.onScroll.fire", "{that}.options.onScrollDelay"]
+                    }
+                }]
+            },
             "onReady.windowResize": {
                 "this": window,
                 method: "addEventListener",
@@ -77,6 +95,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "beforeReset.resetPanelIndex": {
                 listener: "{that}.applier.fireChangeRequest",
                 args: {path: "panelIndex", value: 0, type: "ADD", source: "reset"}
+            },
+            "onScroll.setPanelIndex": {
+                changePath: "panelIndex",
+                value: {
+                    expander: {
+                        funcName: "fluid.prefs.arrowScrolling.getClosestPanelIndex",
+                        args: "{that}.dom.panels"
+                    }
+                },
+                source: "scrollEvent"
             }
         },
         invokers: {
@@ -95,7 +123,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             target: "{that > fluid.prefs.panel}.options.listeners"
         }]
-
     });
 
     fluid.prefs.arrowScrolling.calculatePanelMaxIndex = function (panels) {
@@ -106,16 +133,34 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         event.preventDefault();
         var target = $(event.target);
         var midPoint = target.width() / 2;
-        var scrollToIndex = that.model.panelIndex + (event.offsetX < midPoint ? -1 : 1);
+        var currentIndex = that.model.panelIndex || 0;
+        var scrollToIndex = currentIndex + (event.offsetX < midPoint ? -1 : 1);
         that.applier.change("panelIndex", scrollToIndex, "ADD", "eventToScrollIndex");
     };
 
     fluid.prefs.arrowScrolling.scrollToPanel = function (that, panelIndex) {
+        panelIndex = panelIndex || 0;
         var panels = that.locate("panels");
         var scrollContainer = that.locate("scrollContainer");
-        if (panels.length) {
+        var panel = panels.eq(panelIndex);
+
+        // only attempt to scroll the container if the panel exists and has been rendered.
+        if (panel.width()) {
             scrollContainer.scrollLeft(scrollContainer.scrollLeft() + panels.eq(panelIndex).offset().left);
         }
+    };
+
+    fluid.prefs.arrowScrolling.getClosestPanelIndex = function (panels) {
+        var panelArray = fluid.transform(panels, function (panel, idx) {
+            return {
+                index: idx,
+                offset: Math.abs($(panel).offset().left)
+            };
+        });
+        panelArray.sort(function (a, b) {
+            return a.offset - b.offset;
+        });
+        return fluid.get(panelArray, ["0", "index"]) || 0;
     };
 
 })(jQuery, fluid_3_0_0);

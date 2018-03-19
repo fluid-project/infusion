@@ -143,22 +143,35 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 options: {
                     gradeNames: ["fluid.prefs.uiEnhancerRelay", "fluid.prefs.arrowScrolling"],
                     // ensure that model and applier are available to users at top level
-                    model: "{separatedPanel}.model",
+                    model: {
+                        preferences: "{separatedPanel}.model.preferences",
+                        panelIndex: "{separatedPanel}.model.panelIndex",
+                        panelMaxIndex: "{separatedPanel}.model.panelMaxIndex",
+                        // The `local` model path is used by the `fluid.remoteModelComponent` grade
+                        // for persisting and synchronizing model values with remotely stored data.
+                        // Below, the panelIndex is being tracked for such persistence and synchronization.
+                        local: {
+                            panelIndex: "{that}.model.panelIndex"
+                        }
+                    },
+                    autoSave: true,
                     events: {
                         onSignificantDOMChange: null,
                         updateEnhancerModel: "{that}.events.modelChanged"
                     },
+                    modelListeners: {
+                        "panelIndex": [{
+                            listener: "fluid.prefs.prefsEditor.handleAutoSave",
+                            args: ["{that}"],
+                            namespace: "autoSavePanelIndex"
+                        }]
+                    },
                     listeners: {
-                        "modelChanged.save": "{that}.save",
                         "onCreate.bindReset": {
                             listener: "{separatedPanel}.bindReset",
                             args: ["{that}.reset"]
                         },
                         "afterReset.applyChanges": "{that}.applyChanges",
-                        "onReady.boilOnReady": {
-                            listener: "{separatedPanel}.events.onReady",
-                            args: "{separatedPanel}"
-                        },
                         // Scroll to active panel after opening the separate Panel.
                         // This is when the panels are all rendered and the actual sizes are available.
                         "{separatedPanel}.slidingPanel.events.afterPanelShow": {
@@ -416,10 +429,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * allowing for pre-loading of a subset of resources. This is required for the lazyLoading workflow
      * for the "fluid.prefs.separatedPanel.lazyLoad".
      *
-     * @param {Object} that - the component
-     * @param {Object} resource - all of the resourceSpecs to load, including preload and others.
+     * @param that {Object} - the component
+     * @param resource {Object} - all of the resourceSpecs to load, including preload and others.
      *                            see: fluid.fetchResources
-     * @param {Array/String} toPreload - a String or an Array of Strings corresponding to the names
+     * @param toPreload {Array/String} - a String or an Array of Strings corresponding to the names
      *                                   of the resources, supplied in the resource argument, that
      *                                   should be loaded. Only these resources will be loaded.
      */

@@ -206,7 +206,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             invokeNext: function (that) {
                 var lisrec = that.sources[that.index];
                 lisrec.listener = fluid.event.resolveListener(lisrec.listener);
-                var value = lisrec.listener(that.returns[that.index], that.options);
+                var value = lisrec.listener.apply(null, [that.returns[that.index], that.options]);
                 return value;
             },
             resolveResult: function (that) {

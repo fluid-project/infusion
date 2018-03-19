@@ -174,7 +174,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             textFont: ".flc-prefsEditor-text-font",
             lineSpace: ".flc-prefsEditor-line-space",
             contrast: ".flc-prefsEditor-contrast",
-            textControls: ".flc-prefsEditor-text-controls",
             layoutControls: ".flc-prefsEditor-layout-controls",
             enhanceInputs: ".flc-prefsEditor-enhanceInputs"
         },
@@ -186,7 +185,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 options: {
                     gradeNames: "fluid.prefs.prefsEditorConnections",
                     model: {
-                        textSize: "{prefsEditor}.model.preferences.textSize"
+                        value: "{prefsEditor}.model.preferences.textSize"
                     },
                     messageBase: "{messageLoader}.resources.textSize.resourceText",
                     resources: {
@@ -206,7 +205,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 options: {
                     gradeNames: "fluid.prefs.prefsEditorConnections",
                     model: {
-                        lineSpace: "{prefsEditor}.model.preferences.lineSpace"
+                        value: "{prefsEditor}.model.preferences.lineSpace"
                     },
                     messageBase: "{messageLoader}.resources.lineSpace.resourceText",
                     resources: {
@@ -291,7 +290,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * A template loader component that expands the resources blocks for loading resources used by starterPanels
      *
-     * @param {Object} options
+     * @param options {Object}
      */
 
     fluid.defaults("fluid.prefs.starterTemplateLoader", {
@@ -334,9 +333,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * A message loader component that expands the resources blocks for loading messages for starter panels
      *
-     * @param {Object} options
+     * @param options {Object}
      */
-
     fluid.defaults("fluid.prefs.starterMessageLoader", {
         gradeNames: ["fluid.resourceLoader"],
         resources: {

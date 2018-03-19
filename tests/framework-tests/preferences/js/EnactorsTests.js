@@ -1,5 +1,5 @@
 /*
-Copyright 2013-2015 OCAD University
+Copyright 2013-2017 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -173,20 +173,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
-     * fontSizeMap used for the various size related enactor tests
-     *******************************************************************************/
-
-    var fontSizeMap = {
-        "xx-small": "9px",
-        "x-small":  "11px",
-        "small":    "13px",
-        "medium":   "15px",
-        "large":    "18px",
-        "x-large":  "23px",
-        "xx-large": "30px"
-    };
-
-    /*******************************************************************************
      * Unit tests for fluid.prefs.enactor.textSize
      *******************************************************************************/
 
@@ -197,7 +183,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.prefs.enactor.textSize",
                 container: ".flc-textSize",
                 options: {
-                    fontSizeMap: fontSizeMap,
+                    fontSizeMap: fluid.tests.enactors.utils.fontSizeMap,
                     model: {
                         value: 1
                     }
@@ -213,12 +199,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var expectedInitialSize = 16;
         var muliplier = 2;
         var remTestElm = $("#flc-textSize-remTest");
-        var initialREMSize = fluid.prefs.enactor.getTextSizeInPx(remTestElm, fontSizeMap);
+        var initialREMSize = fluid.prefs.enactor.getTextSizeInPx(remTestElm, fluid.tests.enactors.utils.fontSizeMap);
 
         jqUnit.assertEquals("Check that the size is pulled from the container correctly", expectedInitialSize, that.initialSize);
         that.applier.change("value", muliplier);
         jqUnit.assertEquals("The size should be doubled", (expectedInitialSize * muliplier) + "px", that.root.css("fontSize"));
-        jqUnit.assertEquals("The font size specified in rem units should be doubled", initialREMSize * muliplier, fluid.prefs.enactor.getTextSizeInPx(remTestElm, fontSizeMap));
+        jqUnit.assertEquals("The font size specified in rem units should be doubled", initialREMSize * muliplier, fluid.prefs.enactor.getTextSizeInPx(remTestElm, fluid.tests.enactors.utils.fontSizeMap));
 
         // reset font size of root
         $("html").css("font-size", that.initialSize + "px");
@@ -245,7 +231,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.getLineHeightTests", {
         gradeNames: ["fluid.test.testEnvironment"],
         container: ".flc-lineSpace",
-        fontSizeMap: fontSizeMap,
+        fontSizeMap: fluid.tests.enactors.utils.fontSizeMap,
         expectedTestSize: 8,
         expectedSizeAtUndetected: 1,
         components: {
@@ -270,7 +256,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     var testGetLineHeightMultiplier = function (lineHeight, expected) {
         var container = $(".flc-lineSpace");
-        var fontSize = fluid.prefs.enactor.getTextSizeInPx(container, fontSizeMap);
+        var fontSize = fluid.prefs.enactor.getTextSizeInPx(container, fluid.tests.enactors.utils.fontSizeMap);
 
         var numerizedLineHeight = fluid.prefs.enactor.lineSpace.getLineHeightMultiplier(lineHeight, Math.round(fontSize));
 
@@ -317,7 +303,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.prefs.enactor.lineSpace",
                 container: ".flc-lineSpace",
                 options: {
-                    fontSizeMap: fontSizeMap,
+                    fontSizeMap: fluid.tests.enactors.utils.fontSizeMap,
                     model: {
                         value: 1
                     }

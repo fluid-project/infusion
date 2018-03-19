@@ -41,7 +41,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         }
                     },
                     listeners: {
-                        "onReady.boilOnPrefsEditorReady": "{fullPreview}.events.onPrefsEditorReady"
+                        "onReady.boil": {
+                            listener: "{prefsEditorLoader}.events.onPrefsEditorReady"
+                        }
                     },
                     distributeOptions: {
                         source: "{that}.options.preview",

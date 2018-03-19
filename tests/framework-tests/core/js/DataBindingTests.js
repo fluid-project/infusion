@@ -56,6 +56,120 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         });
     };
+
+    fluid.tarzanTests = [{
+        v: 1,
+        e: [],
+        expected: [[0]]
+    }, {
+        v: 2,
+        e: [],
+        expected: [[0], [1]]
+    }, {
+        v: 2,
+        e: ["01"],
+        expected: [[1], [0]]
+    }, {
+        v: 2,
+        e: ["01", "10"],
+        expected: [[1, 0]]
+    },  {
+        v: 3,
+        e: [],
+        expected: [[0], [1], [2]]
+    }, {
+        v: 3,
+        e: ["01"],
+        expected: [[1], [0], [2]]
+    }, {
+        v: 3,
+        e: ["01", "10"],
+        expected: [[1, 0], [2]]
+    }, {
+        v: 3,
+        e: ["01", "02"],
+        expected: [[1], [2], [0]]
+    }, {
+        v: 3,
+        e: ["01", "10", "02"],
+        expected: [[2], [1, 0]]
+    }, {
+        v: 3,
+        e: ["01", "10", "20"],
+        expected: [[1, 0], [2]]
+    }, {
+        v: 3,
+        e: ["01", "10", "02", "20"],
+        expected: [[2, 1, 0]]
+    }, {
+        v: 3,
+        e: ["01", "12", "20"],
+        expected: [[2, 1, 0]]
+    }, {
+        v: 3,
+        e: ["01", "10", "12", "21", "20", "02"],
+        expected: [[2, 1, 0]]
+    }, {
+        v: 4,
+        e: ["01", "10", "12", "21", "20", "02"],
+        expected: [[2, 1, 0], [3]]
+    }, {
+        v: 4,
+        e: ["01", "10", "23", "32"],
+        expected: [[1, 0], [3, 2]]
+    }, {
+        v: 4,
+        e: ["01", "21", "13"],
+        expected: [[3], [1], [0], [2]]
+    }, {
+        v: 4,
+        e: ["01", "10", "12", "30"],
+        expected: [[2], [1, 0], [3]]
+    }, {
+        v: 4,
+        e: ["01", "12", "20", "30"],
+        expected: [[2, 1, 0], [3]]
+    }, {
+        v: 4,
+        e: ["01", "12", "20", "03"],
+        expected: [[3], [2, 1, 0]]
+    }, {
+        v: 4,
+        e: ["01", "12", "23", "30"],
+        expected: [[3, 2, 1, 0]]
+    }];
+
+    fluid.tests.testOneTarzan = function (test, index) {
+        var vertices = fluid.generate(test.v, function (i) {
+            return {
+                index: i
+            };
+        }, true);
+        var outEdges = fluid.generate(test.v, function () {
+            return [];
+        }, true);
+        fluid.each(test.e, function (oneEdge) {
+            var start = +oneEdge.charAt(0), end = +oneEdge.charAt(1);
+            outEdges[start].push(vertices[end]);
+        });
+        var accessor = function (vertex) {
+            return outEdges[vertex.index];
+        };
+        var components = fluid.stronglyConnected(vertices, accessor);
+        var flattened = fluid.transform(components, function (component) {
+            return fluid.transform(component, function (vertex) {
+                return vertex.index;
+            });
+        });
+        jqUnit.assertDeepEq("Strongly connected components for " + test.v + " vertices with edgelist " +
+            JSON.stringify(test.e) + " at index " + index + " should be " +
+            JSON.stringify(test.expected), test.expected, flattened);
+    };
+
+    jqUnit.test("Strongly Connected Components Algorithm", function () {
+        fluid.tarzanTests.forEach(fluid.tests.testOneTarzan);
+    });
+
     // Unpacks a string encoded in triples into an array of objects, where the first digit encodes whether
     // _primary is true or false, and the following two encode the values of properties "a" and "b"
     fluid.tests.generateRepeatableThing = function (gens) {
@@ -575,6 +689,60 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         child.applier.change("", "interior thing 2");
         jqUnit.assertDeepEq("No change propagated outwards from destroyed component", {outerModel: "exterior thing 2"}, that.model);
     });
+
+    /** FLUID-6234: Infer init transaction application order from relay specifications **/
+
+    fluid.defaults("fluid.tests.fluid6234head", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            loop: false
+        },
+        invokers: {
+            // These definitions force children to be created during the same init transaction as parent
+            playChild: "{that}.child.play()",
+            playOtherChild: "{that}.otherChild.play()"
+        },
+        components: {
+            child: {
+                type: "fluid.tests.fluid6234relayingChild"
+            },
+            otherChild: {
+                type: "fluid.tests.fluid6234relayingChild"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.fluid6234relayingChild", {
+        gradeNames: "fluid.modelComponent",
+        model: {
+            loop: true
+        },
+        invokers: {
+            play: "fluid.identity"
+        },
+        modelRelay: {
+            source: "{fluid6234head}.model",
+            target: "{that}.model",
+            backward: {
+                excludeSource: "init"
+            },
+            singleTransform: {
+                type: "fluid.transforms.identity"
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6234 init transaction application order", function () {
+        var that = fluid.tests.fluid6234head();
+        var paths = ["model.loop", "child.model.loop", "otherChild.model.loop"];
+        var expected = [false, false, false];
+        var values = fluid.transform(paths, function (path) {
+            return fluid.get(that, path);
+        });
+        jqUnit.assertDeepEq("Model skeleton has settled to expected values", expected, values);
+    });
+
+    /** FLUID-5024: Bidirectional transforming relay together with floating point slop **/
 
     fluid.defaults("fluid.tests.allChangeRecorder", {
         gradeNames: "fluid.tests.changeRecorder",
@@ -2927,6 +3095,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return togo;
     };
 
-    fluid.test.runTests(["fluid.tests.fluid5659root"]);
+    fluid.test.runTests([
+        "fluid.tests.fluid5659root"
+    ]);
 
 })(jQuery);
