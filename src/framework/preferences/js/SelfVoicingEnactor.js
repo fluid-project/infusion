@@ -311,7 +311,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         that.locate("mark").contents().unwrap();
         var closestIndex = fluid.prefs.enactor.selfVoicing.getClosestIndex(that.parseQueue[0], that.parseIndex, boundary);
 
-        if (fluid.value(closestIndex)) {
+        if (fluid.isValue(closestIndex)) {
             that.parseIndex = closestIndex;
 
             var data = that.parseQueue[0][that.parseIndex];
