@@ -30,7 +30,9 @@ var getFromExec = function (command, options) {
     var stderr = options.verbose ? "pipe" : "ignore";
 
     try {
-        result = execSync(command, {stdio: ["pipe", "pipe", stderr]});
+        result = execSync(command, {
+            stdio: ["pipe", "pipe", stderr]
+        });
     } catch (e) {
         if (options.verbose) {
             console.log("Error executing command: " + command);
@@ -52,7 +54,7 @@ var addMin = function (fileName) {
     var segs = fileName.split(".");
     var min = "min";
 
-    if (segs[0] && segs.indexOf(min) < 0 ) {
+    if (segs[0] && segs.indexOf(min) < 0) {
         segs.splice(1, 0, min);
     }
     return segs.join(".");
@@ -64,7 +66,7 @@ var addMin = function (fileName) {
  * include ".min"
  * @param {String} dest - supplied by Grunt task, see http://gruntjs.com/configuring-tasks#the-rename-property
  * @param {String} src - supplied by Grunt task, see http://gruntjs.com/configuring-tasks#the-rename-property
-*/
+ */
 var addMinifyToFilename = function (dest, src) {
     return dest + addMin(src);
 };
@@ -82,8 +84,12 @@ module.exports = function (grunt) {
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
-        revision: getFromExec("git rev-parse --verify --short HEAD", {defaultValue: "Unknown revision, not within a git repository"}),
-        branch: getFromExec("git rev-parse --abbrev-ref HEAD", {defaultValue: "Unknown branch, not within a git repository"}),
+        revision: getFromExec("git rev-parse --verify --short HEAD", {
+            defaultValue: "Unknown revision, not within a git repository"
+        }),
+        branch: getFromExec("git rev-parse --abbrev-ref HEAD", {
+            defaultValue: "Unknown branch, not within a git repository"
+        }),
         allBuildName: "<%= pkg.name %>-all",
         buildSettings: {}, // set by the build tasks
         customBuildName: "<%= pkg.name %>-<%= buildSettings.name %>",
@@ -236,10 +242,10 @@ module.exports = function (grunt) {
                     archive: "products/<%= allBuildName %>-<%= pkg.version %>.zip"
                 },
                 files: [{
-                    expand: true,     // Enable dynamic expansion.
-                    cwd: "./build/",      // Src matches are relative to this path.
+                    expand: true, // Enable dynamic expansion.
+                    cwd: "./build/", // Src matches are relative to this path.
                     src: ["**/*"], // Actual pattern(s) to match.
-                    dest: "./infusion"   // Destination path prefix in the zip package
+                    dest: "./infusion" // Destination path prefix in the zip package
                 }]
             },
             custom: {
@@ -280,6 +286,40 @@ module.exports = function (grunt) {
                 }]
             }
         },
+        // The buildInfo Generator
+        "file-creator": {
+            "all": {
+                "build/buildInfo.md": function (fs, fd, done) {
+                    var pkg = grunt.file.readJSON("package.json");
+                    var revision = getFromExec("git rev-parse --verify --short HEAD", {
+                        defaultValue: "Unknown revision, not within a git repository"
+                    });
+                    var branch = getFromExec("git rev-parse --abbrev-ref HEAD", {
+                        defaultValue: "Unknown branch, not within a git repository"
+                    });
+                    fs.writeSync(fd, "## Infusion " + pkg.version + " All Build\nThe command used to generate this build is :\n");
+                    fs.writeSync(fd, "```bash\ngrunt\n```\n");
+                    fs.writeSync(fd, "Revision: " + revision + "\n" + "Branch: " + branch);
+                    done();
+                }
+            },
+            "custom": {
+                "build/buildInfo.md": function (fs, fd, done) {
+                    var pkg = grunt.file.readJSON("package.json");
+                    var revision = getFromExec("git rev-parse --verify --short HEAD", {
+                        defaultValue: "Unknown revision, not within a git repository"
+                    });
+                    var branch = getFromExec("git rev-parse --abbrev-ref HEAD", {
+                        defaultValue: "Unknown branch, not within a git repository"
+                    });
+                    var lineflag = grunt.option.flags();
+                    fs.writeSync(fd, "## Infusion " + pkg.version + " Custom Build\nThe command used to generate this build is :\n");
+                    fs.writeSync(fd, "```bash\ngrunt custom " + lineflag + "\n```\n");
+                    fs.writeSync(fd, "Revision: " + revision + "\n" + "Branch: " + branch);
+                    done();
+                }
+            }
+        },
         // grunt-contrib-watch task to watch and rebuild stylus files
         // automatically when doing stylus development
         watch: {
@@ -288,8 +328,7 @@ module.exports = function (grunt) {
                 tasks: "buildStylus"
             }
         },
-        distributions:
-        {
+        distributions: {
             "all": {},
             "all.min": {
                 options: {
@@ -345,6 +384,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-modulefiles");
     grunt.loadNpmTasks("grunt-contrib-stylus");
     grunt.loadNpmTasks("grunt-contrib-watch");
+    grunt.loadNpmTasks("grunt-file-creator");
 
     // Custom tasks:
 
@@ -387,7 +427,8 @@ module.exports = function (grunt) {
             "copy:necessities",
             concatTask + target,
             "compress:" + target,
-            "clean:postBuild"
+            "clean:postBuild",
+            "file-creator:" + target
         ];
         grunt.task.run(tasks);
     });
@@ -426,7 +467,7 @@ module.exports = function (grunt) {
         var tasks = [
             "clean",
             "lint",
-            "distributions" + ( target ? ":" + target : "" ),
+            "distributions" + (target ? ":" + target : ""),
             "cleanForDist",
             "verifyDistJS",
             "verifyDistCSS"
@@ -435,12 +476,12 @@ module.exports = function (grunt) {
     });
 
     /** Verifies that directory "contains the files in fileList
-    * logs a report
-    * @param {String} dir - base directory expected to contain files
-    * @param {Array} fileList - array of string filenames to check; may include
-    * full paths and thereby search subdirectories of dir
-    * @returns a report structure for further processing
-    */
+     * logs a report
+     * @param {String} dir - base directory expected to contain files
+     * @param {Array} fileList - array of string filenames to check; may include
+     * full paths and thereby search subdirectories of dir
+     * @returns a report structure for further processing
+     */
     var verifyFiles = function (dir, fileList) {
         var report = {
             fileList: {},
@@ -452,15 +493,17 @@ module.exports = function (grunt) {
             if (!fileExists) {
                 report.missingFiles = report.missingFiles + 1;
             }
-            report.fileList[dir + "/" + fileName] = {"present": fileExists};
+            report.fileList[dir + "/" + fileName] = {
+                "present": fileExists
+            };
         });
 
         return report;
     };
 
     /** Displays a file verification report generated by verifyFiles
-    * @param {Object} report - the report to display
-    */
+     * @param {Object} report - the report to display
+     */
     var displayVerifyFilesReport = function (report) {
         _.forEach(report.fileList, function (value, fileName) {
             var fileExists = value.present;
@@ -473,9 +516,9 @@ module.exports = function (grunt) {
     };
 
     /** Processes a file verification report, and fails the build if
-    * any files are missing
-    * @param {Object} report - the report to process
-    */
+     * any files are missing
+     * @param {Object} report - the report to process
+     */
     var processVerifyFilesReport = function (report) {
         if (report.missingFiles > 0) {
             grunt.log.subhead("Verification failed".red);
