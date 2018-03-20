@@ -286,38 +286,60 @@ module.exports = function (grunt) {
                 }]
             }
         },
-        // The buildInfo Generator
+        // Build Info file name generator
+        conditional: {
+            all: "Build_All_Info.md",
+            custom: "Build_Custom_Info.md",
+            dist: "Distribution_Info.md"
+        },
+        // Build Info Generator
         "file-creator": {
+            "dists": {
+                files: [{
+                    file: "dist/" + "<%= conditional.dist %>",
+                    method: function (fs, fd, done) {
+                        fs.writeSync(fd, "## Infusion " + grunt.config.data.pkg.version + " Distribution\nThe command used to generate this distribution is :\n");
+                        fs.writeSync(fd, "```\ngrunt buildDists\n```\n");
+                        fs.writeSync(fd, "Revision: " + grunt.config.data.revision + "\n" + "Branch: " + grunt.config.data.branch);
+                        done();
+                    }
+                }]
+            },
             "all": {
-                "build/buildInfo.md": function (fs, fd, done) {
-                    var pkg = grunt.file.readJSON("package.json");
-                    var revision = getFromExec("git rev-parse --verify --short HEAD", {
-                        defaultValue: "Unknown revision, not within a git repository"
-                    });
-                    var branch = getFromExec("git rev-parse --abbrev-ref HEAD", {
-                        defaultValue: "Unknown branch, not within a git repository"
-                    });
-                    fs.writeSync(fd, "## Infusion " + pkg.version + " All Build\nThe command used to generate this build is :\n");
-                    fs.writeSync(fd, "```bash\ngrunt\n```\n");
-                    fs.writeSync(fd, "Revision: " + revision + "\n" + "Branch: " + branch);
-                    done();
-                }
+                files: [{
+                    file: "build/" + "<%= conditional.all %>",
+                    method: function (fs, fd, done) {
+                        fs.writeSync(fd, "## Infusion " + grunt.config.data.pkg.version + " All Build\nThe command used to generate this build is :\n");
+                        fs.writeSync(fd, "```\ngrunt\n```\n");
+                        fs.writeSync(fd, "Revision: " + grunt.config.data.revision + "\n" + "Branch: " + grunt.config.data.branch);
+                        done();
+                    }
+                }]
             },
             "custom": {
-                "build/buildInfo.md": function (fs, fd, done) {
-                    var pkg = grunt.file.readJSON("package.json");
-                    var revision = getFromExec("git rev-parse --verify --short HEAD", {
-                        defaultValue: "Unknown revision, not within a git repository"
-                    });
-                    var branch = getFromExec("git rev-parse --abbrev-ref HEAD", {
-                        defaultValue: "Unknown branch, not within a git repository"
-                    });
-                    var lineflag = grunt.option.flags();
-                    fs.writeSync(fd, "## Infusion " + pkg.version + " Custom Build\nThe command used to generate this build is :\n");
-                    fs.writeSync(fd, "```bash\ngrunt custom " + lineflag + "\n```\n");
-                    fs.writeSync(fd, "Revision: " + revision + "\n" + "Branch: " + branch);
-                    done();
-                }
+                files: [{
+                    file: "build/" + "<%= conditional.custom %>",
+                    method: function (fs, fd, done) {
+                        var lineflag = grunt.option.flags();
+                        var includes = grunt.config.data.buildSettings.include;
+                        var excludes = grunt.config.data.buildSettings.exclude;
+                        if (includes === undefined) {
+                            fs.writeSync(fd, "## Infusion " + grunt.config.data.pkg.version + " No " + excludes + " Build\nThe command used to generate this build is :\n");
+                        }
+                        else if (excludes === undefined) {
+                            fs.writeSync(fd, "## Infusion " + grunt.config.data.pkg.version + " " + includes + " Build\nThe command used to generate this build is :\n");
+                        }
+                        else if (includes === undefined || excludes === undefined) {
+                            fs.writeSync(fd, "## Infusion " + grunt.config.data.pkg.version + " " + includes + ", No " + excludes + " Build\nThe command used to generate this build is :\n");
+                        }
+                        else {
+                            fs.writeSync(fd, "## Infusion " + grunt.config.data.pkg.version + " " + includes + ", No " + excludes + " Build\nThe command used to generate this build is :\n");
+                        }
+                        fs.writeSync(fd, "```\ngrunt custom " + lineflag + "\n```\n");
+                        fs.writeSync(fd, "Revision: " + grunt.config.data.revision + "\n" + "Branch: " + grunt.config.data.branch);
+                        done();
+                    }
+                }]
             }
         },
         // grunt-contrib-watch task to watch and rebuild stylus files
@@ -470,7 +492,8 @@ module.exports = function (grunt) {
             "distributions" + (target ? ":" + target : ""),
             "cleanForDist",
             "verifyDistJS",
-            "verifyDistCSS"
+            "verifyDistCSS",
+            "file-creator:dists"
         ];
         grunt.task.run(tasks);
     });
