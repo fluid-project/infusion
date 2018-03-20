@@ -77,8 +77,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             messageLocator: "{msgResolver}.resolve"
         },
         distributeOptions: {
-            source: "{that}.options.messageBase",
-            target: "{that > msgResolver}.options.messageBase"
+            "panel.msgResolver.messageBase": {
+                source: "{that}.options.messageBase",
+                target: "{that > msgResolver}.options.messageBase"
+            }
         }
     });
 
@@ -91,7 +93,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         listeners: {
             "{compositePanel}.events.afterRender": {
                 listener: "{that}.events.afterRender",
-                args: ["{that}"]
+                args: ["{that}"],
+                namespce: "boilAfterRender"
             },
             // Changing the firing of onDomBind from the onCreate.
             // This is due to the fact that the rendering process, controlled by the
@@ -319,14 +322,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
     fluid.prefs.compositePanel.assembleDistributeOptions = function (components) {
         var gradeName = "fluid.prefs.compositePanel.distributeOptions_" + fluid.allocateGuid();
-        var distributeOptions = [];
+        var distributeOptions = {};
         var relayOption = {};
         fluid.each(components, function (componentOptions, componentName) {
             if (fluid.prefs.compositePanel.isPanel(componentOptions.type, componentOptions.options)) {
-                distributeOptions.push({
+                distributeOptions[componentName + ".subPanelOverrides"] = {
                     source: "{that}.options.subPanelOverrides",
                     target: "{that > " + componentName + "}.options"
-                });
+                };
             }
 
             // Construct the model relay btw the composite panel and its subpanels
@@ -341,10 +344,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 });
             });
             relayOption[componentName] = componentRelayRules;
-            distributeOptions.push({
+            distributeOptions[componentName + ".modelRelay"] = {
                 source: "{that}.options.relayOption." + componentName,
                 target: "{that > " + componentName + "}.options.model"
-            });
+            };
         });
         fluid.defaults(gradeName, {
             gradeNames: ["fluid.component"],
@@ -382,7 +385,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var eventName = fluid.prefs.compositePanel.creationEventName(pref);
             return {
                 func: "{that}.handleRenderOnPreference",
-                args: ["{change}.value", "{that}.events." + eventName + ".fire", componentNames]
+                args: ["{change}.value", "{that}.events." + eventName + ".fire", componentNames],
+                namespace: "handleRenderOnPreference_" + pref
             };
         });
     };
@@ -397,7 +401,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
     fluid.prefs.compositePanel.subPanelLifecycleBindings = function (components) {
         var gradeName = "fluid.prefs.compositePanel.subPanelCreationTimingDistibution_" + fluid.allocateGuid();
-        var distributeOptions = [];
+        var distributeOptions = {};
         var subPanelCreationOpts = {
             "default": "initSubPanels"
         };
@@ -423,10 +427,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         args: ["{that}.model." + pref, "{that}.events." + creationEventOpt + ".fire"]
                     };
                 }
-                distributeOptions.push({
+                distributeOptions[componentName + ".subPanelCreationOpts"] = {
                     source: "{that}.options.subPanelCreationOpts." + creationEventOpt,
                     target: "{that}.options.components." + componentName + ".createOnEvent"
-                });
+                };
             }
         });
 
@@ -642,6 +646,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.prefs.prefsEditorConnections", {
         gradeNames: ["fluid.component"],
         listeners: {
+            // No namespace supplied because this grade is added to every panel. Suppling a
+            // namespace would mean that only one panel's refreshView method was bound to the
+            // onPrefsEditorRefresh event.
             "{fluid.prefs.prefsEditor}.events.onPrefsEditorRefresh": "{fluid.prefs.panel}.refreshView"
         },
         strings: {},
