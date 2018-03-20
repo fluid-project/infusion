@@ -22,7 +22,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         gradeNames: ["fluid.prefs.constructed.prefsEditor"],
         lazyLoad: false,
         distributeOptions: {
-            "uio.separatedPanel.azyLoad": {
+            "uio.separatedPanel.lazyLoad": {
                 record: "{that}.options.lazyLoad",
                 target: "{that separatedPanel}.options.lazyLoad"
             },
