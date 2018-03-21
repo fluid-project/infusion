@@ -75,7 +75,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         modelListeners: {
             "enabled": {
                 listener: "{that}.handleSelfVoicing",
-                args: ["{change}.value"]
+                args: ["{change}.value"],
+                namespace: "handleSelfVoicing"
             }
         },
         members: {

@@ -113,16 +113,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 args: ["{that}", "{arguments}.0"]
             }
         },
-        distributeOptions: [{
-            record: {
-                "afterRender.bindScrollArrows": {
-                    "this": "{that}.dom.header",
-                    method: "click",
-                    args: ["{prefsEditor}.eventToScrollIndex"]
-                }
-            },
-            target: "{that > fluid.prefs.panel}.options.listeners"
-        }]
+        distributeOptions: {
+            "arrowScrolling.panel.listeners.bindScrollArrows": {
+                record: {
+                    "afterRender.bindScrollArrows": {
+                        "this": "{that}.dom.header",
+                        method: "click",
+                        args: ["{prefsEditor}.eventToScrollIndex"]
+                    }
+                },
+                target: "{that > fluid.prefs.panel}.options.listeners"
+            }
+        }
     });
 
     fluid.prefs.arrowScrolling.calculatePanelMaxIndex = function (panels) {

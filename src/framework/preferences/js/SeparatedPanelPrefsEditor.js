@@ -185,26 +185,32 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         outerEnhancerOptions: "{originalEnhancerOptions}.options.originalUserOptions",
-        distributeOptions: [{
-            source: "{that}.options.slidingPanel",
-            removeSource: true,
-            target: "{that > slidingPanel}.options"
-        }, {
-            source: "{that}.options.iframeRenderer",
-            removeSource: true,
-            target: "{that > iframeRenderer}.options"
-        }, {
-            source: "{that}.options.iframe",
-            removeSource: true,
-            target: "{that}.options.selectors.iframe"
-        }, {
-            source: "{that}.options.outerEnhancerOptions",
-            removeSource: true,
-            target: "{that iframeEnhancer}.options"
-        }, {
-            source: "{that}.options.terms",
-            target: "{that > iframeRenderer}.options.terms"
-        }]
+        distributeOptions: {
+            "separatedPanel.slidingPanel": {
+                source: "{that}.options.slidingPanel",
+                removeSource: true,
+                target: "{that > slidingPanel}.options"
+            },
+            "separatedPanel.iframeRenderer": {
+                source: "{that}.options.iframeRenderer",
+                removeSource: true,
+                target: "{that > iframeRenderer}.options"
+            },
+            "separatedPanel.iframeRendered.terms": {
+                source: "{that}.options.terms",
+                target: "{that > iframeRenderer}.options.terms"
+            },
+            "separatedPanel.selectors.iframe": {
+                source: "{that}.options.iframe",
+                removeSource: true,
+                target: "{that}.options.selectors.iframe"
+            },
+            "separatedPanel.iframeEnhancer.outerEnhancerOptions": {
+                source: "{that}.options.outerEnhancerOptions",
+                removeSource: true,
+                target: "{that iframeEnhancer}.options"
+            }
+        }
     });
 
     fluid.prefs.separatedPanel.hideReset = function (separatedPanel) {
@@ -393,7 +399,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         },
                         "{separatedPanel}.events.onLazyLoad": {
                             listener: "fluid.resourceLoader.loadResources",
-                            args: ["{messageLoader}", {expander: {func: "{messageLoader}.resolveResources"}}]
+                            args: ["{messageLoader}", {expander: {func: "{messageLoader}.resolveResources"}}],
+                            namespace: "loadResources"
                         }
                     }
                 }

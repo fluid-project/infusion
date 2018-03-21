@@ -38,7 +38,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.prefs.separatedPanelIntegration", {
         gradeNames: ["fluid.test.testEnvironment"],
         listeners: {
-            onDestroy: "fluid.tests.prefs.clearStore"
+            "onDestroy.clearStore": "fluid.tests.prefs.clearStore"
         },
         components: {
             separatedPanel: {
@@ -239,7 +239,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     slidingPanel: {
                         listeners: {
-                            onPanelShow: function () {
+                            "onPanelShow.setFlag": function () {
                                 isSlidingPanelShown = true;
                             }
                         }

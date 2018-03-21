@@ -638,7 +638,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         storeOption: 2
                     },
                     listeners: {
-                        onReady: function () {
+                        "onReady.setReadyFlag": function () {
                             prefsEdReady = true;
                         }
                     }
