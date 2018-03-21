@@ -110,20 +110,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         listeners: {
             "{tts}.events.utteranceOnEnd": {
-                listener: function (that) {
-                    that.parseQueue.shift();
-                    that.parseIndex = 0;
-                    that.locate("mark").contents().unwrap();
-                },
-                args: ["{that}"]
+                listener: "fluid.prefs.enactor.selfVoicing.handleUtteranceEndEvent",
+                args: ["{that}"],
+                namespace: "cleanupSelfVoicing"
             },
             "{tts}.events.utteranceOnBoundary": {
-                listener: function (that, e) {
-                    if (that.parseQueue[0]) {
-                        fluid.prefs.enactor.selfVoicing.highlight(that, e.charIndex);
-                    }
-                },
-                args: ["{that}", "{arguments}.0"]
+                listener: "fluid.prefs.enactor.selfVoicing.handleUtteranceBoundaryEvent",
+                args: ["{that}", "{arguments}.0"],
+                namespace: "highlightUtteranceText"
+            },
+            "onDestroy.detachRange": {
+                "this": "{that}.range",
+                method: "detach"
             }
         }
     });
@@ -137,6 +135,29 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         } else {
             cancel();
         }
+    };
+
+    fluid.prefs.enactor.selfVoicing.handleUtteranceBoundaryEvent = function (that, e) {
+        if (that.parseQueue[0]) {
+            fluid.prefs.enactor.selfVoicing.highlight(that, e.charIndex);
+        }
+    };
+
+    fluid.prefs.enactor.selfVoicing.removeMark = function (that) {
+        var mark = that.locate("mark");
+
+        // remove previous marks and normalize parent to clean up textnodes
+        if (mark.length) {
+            var parent = mark.parent();
+            mark.contents().unwrap();
+            parent[0].normalize();
+        }
+    };
+
+    fluid.prefs.enactor.selfVoicing.handleUtteranceEndEvent = function (that) {
+        that.parseQueue.shift();
+        that.parseIndex = 0;
+        fluid.prefs.enactor.selfVoicing.removeMark(that);
     };
 
     // Constants representing DOM node types.
@@ -206,7 +227,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         blockIndex += word.length;
                     // if the current `word` is not an empty string and the last parsed `word` is not whitespace
                     } else if (word && fluid.prefs.enactor.selfVoicing.isWord(fluid.get(parsed, [(parsed.length - 1), "word"]))) {
-                        word = word.substr(0,1); // only use first whitespace character
                         parsed.push({
                             blockIndex: blockIndex,
                             startOffset: charIndex,
@@ -257,9 +277,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
     fluid.prefs.enactor.selfVoicing.readFromDOM = function (that, elm) {
         elm = $(elm);
-        var parsedFromElm = fluid.prefs.enactor.selfVoicing.parse(elm[0]);
-        that.parseQueue.push(parsedFromElm);
-        that.tts.queueSpeech(fluid.prefs.enactor.selfVoicing.parsedToString(parsedFromElm));
+
+        // only execute if there are nodes to read from
+        if (elm.length) {
+            var parsedFromElm = fluid.prefs.enactor.selfVoicing.parse(elm[0]);
+            that.parseQueue.push(parsedFromElm);
+            that.tts.queueSpeech(fluid.prefs.enactor.selfVoicing.parsedToString(parsedFromElm));
+        }
     };
 
     /**
@@ -308,14 +332,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *                            boundary returned from the utteranceOnBoundary event.
      */
     fluid.prefs.enactor.selfVoicing.highlight = function (that, boundary) {
-        that.locate("mark").contents().unwrap();
+        fluid.prefs.enactor.selfVoicing.removeMark(that);
+
         var closestIndex = fluid.prefs.enactor.selfVoicing.getClosestIndex(that.parseQueue[0], that.parseIndex, boundary);
 
         if (fluid.isValue(closestIndex)) {
             that.parseIndex = closestIndex;
 
             var data = that.parseQueue[0][that.parseIndex];
-            data.parentNode.normalize();
             var rangeNode = data.parentNode.childNodes[data.childIndex];
 
             that.range.selectNode(rangeNode);
