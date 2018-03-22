@@ -62,6 +62,7 @@
 }
 
 .demo-pager-bar  li  {
+    
     display:inline;
     float:left;
 }
@@ -70,11 +71,17 @@
  * Previous and Next default and hover styles
  */
 
-.demo-pager-previous, .demo-pager-next {
+.demo-pager-previous {
+    position: absolute;
+    left:150px;
     margin: 1px;
     padding: 2px 6px 2px 6px; /* padding values to align Next and Previous links to Page numbered links */
 }
 
+.demo-pager-next {
+    position: absolute; 
+    left: 800px;
+}
 /***********************************************
  * Styles for the list of numerated page links.
  */
@@ -125,4 +132,12 @@
 
  .demo-pager-page-size  label {
     margin-right: 2px;
+ }
+
+ /***********************************************
+ * SOLVED FOR PAGER LIST
+ */
+ .pagerlist{
+     position: absolute;
+     left:300px;
  }
