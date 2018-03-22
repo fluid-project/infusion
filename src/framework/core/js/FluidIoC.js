@@ -1170,7 +1170,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var recordType = record.recordType;
             if (recordType !== "distribution") {
                 record.priority = fluid.mergeRecordTypes[recordType] + (record.priorityDelta || 0);
-                if (!Number.isInteger(record.priority)) {
+                if (!fluid.isInteger(record.priority)) {
                     fluid.fail("Merge record with unrecognised type " + recordType + ": ", record);
                 }
             }
