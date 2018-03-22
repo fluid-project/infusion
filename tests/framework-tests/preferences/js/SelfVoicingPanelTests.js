@@ -61,7 +61,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 name: "Test the rendering of the speak panel",
                 sequence: [{
                     event: "{testEnvironment speak}.events.onResourcesFetched",
-                    listeners: "fluid.identity"
+                    listener: "fluid.identity"
                 },  {
                     func: "{speak}.refreshView"
                 }, {

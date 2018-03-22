@@ -63,6 +63,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         modelRelay: {
             target: "unit",
+            namespace: "toUnit",
             singleTransform: {
                 type: "fluid.transforms.round",
                 scale: 1,
@@ -74,7 +75,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     }
                 }
             }
-
         }
     });
 

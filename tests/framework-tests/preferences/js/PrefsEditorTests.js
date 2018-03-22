@@ -52,7 +52,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             refreshCount: 0
         },
         listeners: {
-            onSave: "fluid.tests.prefs.trackSave({prefsEditor}, {arguments}.0)",
+            "onSave.track": "fluid.tests.prefs.trackSave({prefsEditor}, {arguments}.0)",
             "onPrefsEditorRefresh.noteCalled": "fluid.tests.prefs.noteRefreshCalled({that})"
         }
     });
@@ -129,7 +129,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             distributeOptions: [{
                 record: {
                     funcName: onReady,
-                    args: ["{prefsEditor}", "{prefsEditorLoader}"]
+                    args: ["{prefsEditor}", "{prefsEditorLoader}"],
+                    namespace: "runTest"
                 },
                 target: "{that prefsEditor}.options.listeners.onReady"
             }, {

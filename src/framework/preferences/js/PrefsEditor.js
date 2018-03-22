@@ -91,25 +91,31 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             onReady: null
         },
-        distributeOptions: [{
-            source: "{that}.options.templateLoader",
-            removeSource: true,
-            target: "{that > templateLoader}.options"
-        }, {
-            source: "{that}.options.messageLoader",
-            removeSource: true,
-            target: "{that > messageLoader}.options"
-        }, {
-            source: "{that}.options.terms",
-            target: "{that > templateLoader}.options.terms"
-        }, {
-            source: "{that}.options.terms",
-            target: "{that > messageLoader}.options.terms"
-        }, {
-            source: "{that}.options.prefsEditor",
-            removeSource: true,
-            target: "{that > prefsEditor}.options"
-        }]
+        distributeOptions: {
+            "prefsEditorLoader.templateLoader": {
+                source: "{that}.options.templateLoader",
+                removeSource: true,
+                target: "{that > templateLoader}.options"
+            },
+            "prefsEditorLoader.templateLoader.terms": {
+                source: "{that}.options.terms",
+                target: "{that > templateLoader}.options.terms"
+            },
+            "prefsEditorLoader.messageLoader": {
+                source: "{that}.options.messageLoader",
+                removeSource: true,
+                target: "{that > messageLoader}.options"
+            },
+            "prefsEditorLoader.messageLoader.terms": {
+                source: "{that}.options.terms",
+                target: "{that > messageLoader}.options.terms"
+            },
+            "prefsEditorLoader.prefsEditor": {
+                source: "{that}.options.prefsEditor",
+                removeSource: true,
+                target: "{that > prefsEditor}.options"
+            }
+        }
     });
 
     fluid.prefs.prefsEditorLoader.getInitialSettings = function (that) {
@@ -134,31 +140,38 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // Do not supply "fluid.prefs.inline" here, since when this is used as a mixin for separatedPanel, it ends up displacing the
         // more refined type of the prefsEditorLoader
         gradeNames: ["fluid.viewComponent"],
-        distributeOptions: [{
-            source: "{that}.options.textSize",
-            removeSource: true,
-            target: "{that textSize}.options"
-        }, {
-            source: "{that}.options.lineSpace",
-            removeSource: true,
-            target: "{that lineSpace}.options"
-        }, {
-            source: "{that}.options.textFont",
-            removeSource: true,
-            target: "{that textFont}.options"
-        }, {
-            source: "{that}.options.contrast",
-            removeSource: true,
-            target: "{that contrast}.options"
-        }, {
-            source: "{that}.options.layoutControls",
-            removeSource: true,
-            target: "{that layoutControls}.options"
-        }, {
-            source: "{that}.options.enhanceInputs",
-            removeSource: true,
-            target: "{that enhanceInputs}.options"
-        }]
+        distributeOptions: {
+            "transformDefaultPanelsOptions.textSize": {
+                source: "{that}.options.textSize",
+                removeSource: true,
+                target: "{that textSize}.options"
+            },
+            "transformDefaultPanelsOptions.lineSpace": {
+                source: "{that}.options.lineSpace",
+                removeSource: true,
+                target: "{that lineSpace}.options"
+            },
+            "transformDefaultPanelsOptions.textFont": {
+                source: "{that}.options.textFont",
+                removeSource: true,
+                target: "{that textFont}.options"
+            },
+            "transformDefaultPanelsOptions.contrast": {
+                source: "{that}.options.contrast",
+                removeSource: true,
+                target: "{that contrast}.options"
+            },
+            "transformDefaultPanelsOptions.layoutControls": {
+                source: "{that}.options.layoutControls",
+                removeSource: true,
+                target: "{that layoutControls}.options"
+            },
+            "transformDefaultPanelsOptions.enhanceInputs": {
+                source: "{that}.options.enhanceInputs",
+                removeSource: true,
+                target: "{that enhanceInputs}.options"
+            }
+        }
     });
 
     /**********************
@@ -504,7 +517,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         listeners: {
             "onCreate.startLoadingContainer": "fluid.prefs.preview.startLoadingContainer",
-            "{prefsEditor}.events.modelChanged": "{that}.updateModel",
+            "{prefsEditor}.events.modelChanged": {
+                listener: "{that}.updateModel",
+                namespace: "updateModel"
+            },
             "onReady.updateModel": "{that}.updateModel"
         },
         templateUrl: "%prefix/PrefsEditorPreview.html"
