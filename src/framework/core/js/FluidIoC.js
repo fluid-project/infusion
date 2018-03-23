@@ -1329,6 +1329,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
+    /** Conclude the component's "observation" process by fully evaluating all options, members and invokers that have
+     * not already been evaluated, and read the `components` and `dynamicComponents` area to schedule the construction
+     * of any deferred subcomponents.
+     */
     fluid.concludeComponentObservation = function (shadow) {
         var that = shadow.that;
         var mergeOptions = shadow.mergeOptions;
