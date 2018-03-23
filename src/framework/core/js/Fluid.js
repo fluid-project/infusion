@@ -235,29 +235,41 @@ var fluid = fluid || fluid_3_0_0;
 
     // Logging
 
-    /* Returns whether logging is enabled */
+    /** Returns whether logging is enabled - legacy method
+     * @return {Boolean} `true` if the current logging level exceeds `fluid.logLevel.IMPORTANT`
+     */
     fluid.isLogging = function () {
         return logLevelStack[0].priority > fluid.logLevel.IMPORTANT.priority;
     };
 
-    /* Determines whether the supplied argument is a valid logLevel marker */
+    /** Determines whether the supplied argument is a valid logLevel marker
+     * @param {Any} arg - The value to be tested
+     * @return {Boolean} `true` if the supplied argument is a logLevel marker
+     */
     fluid.isLogLevel = function (arg) {
         return fluid.isMarker(arg) && arg.priority !== undefined;
     };
 
-    /* Accepts one of the members of the <code>fluid.logLevel</code> structure. Returns <code>true</code> if
-     *  a message supplied at that log priority would be accepted at the current logging level. Clients who
+    /** Check whether the current framework logging level would cause a message logged with the specified level to be
+     * logged. Clients who
      *  issue particularly expensive log payload arguments are recommended to guard their logging statements with this
-     *  function */
+     *  function
+     * @param {LogLevel} testLogLevel - The logLevel value which the current logging level will be tested against.
+     * Accepts one of the members of the <code>fluid.logLevel</code> structure.
+     * @return {Boolean} Returns <code>true</code> if a message supplied at that log priority would be accepted at the current logging level.
+     */
 
     fluid.passLogLevel = function (testLogLevel) {
         return testLogLevel.priority <= logLevelStack[0].priority;
     };
 
-    /* Method to allow user to control the logging level. Accepts either a boolean, for which <code>true</code>
+    /** Method to allow user to control the current framework logging level. The supplied level will be pushed onto a stack
+     * of logging levels which may be popped via `fluid.popLogging`.
+     * @param {Boolean|LogLevel} enabled - Either a boolean, for which <code>true</code>
      * represents <code>fluid.logLevel.INFO</code> and <code>false</code> represents <code>fluid.logLevel.IMPORTANT</code> (the default),
      * or else any other member of the structure <code>fluid.logLevel</code>
-     * Messages whose priority is strictly less than the current logging level will not be shown */
+     * Messages whose priority is strictly less than the current logging level will not be shown by `fluid.log`
+     */
     fluid.setLogging = function (enabled) {
         var logLevel;
         if (typeof enabled === "boolean") {
@@ -273,7 +285,9 @@ var fluid = fluid || fluid_3_0_0;
 
     fluid.setLogLevel = fluid.setLogging;
 
-    /* Undo the effect of the most recent "setLogging", returning the logging system to its previous state */
+    /** Undo the effect of the most recent "setLogging", returning the logging system to its previous state
+     * @return {LogLevel} The logLevel that was just popped
+     */
     fluid.popLogging = function () {
         var togo = logLevelStack.length === 1 ? logLevelStack[0] : logLevelStack.shift();
         fluid.defeatLogging = !fluid.isLogging();
@@ -316,21 +330,29 @@ var fluid = fluid || fluid_3_0_0;
 
     // Type checking functions
 
-    /* Returns true if the argument is a value other than null or undefined */
+    /** Check whether the argument is a value other than null or undefined
+     * @param {Any} value - The value to be tested
+     * @return {Boolean} `true` if the supplied value is other than null or undefined
+     */
     fluid.isValue = function (value) {
         return value !== undefined && value !== null;
     };
 
-    /* Returns true if the argument is a primitive type */
+    /** Check whether the argument is a primitive type
+     * @param {Any} value - The value to be tested
+     * @return {Boolean} `true` if the supplied value is a JavaScript (ES5) primitive
+     */
     fluid.isPrimitive = function (value) {
         var valueType = typeof (value);
         return !value || valueType === "string" || valueType === "boolean" || valueType === "number" || valueType === "function";
     };
 
-    /* Determines whether the supplied object is an array. The strategy used is an optimised
+    /** Determines whether the supplied object is an array. The strategy used is an optimised
      * approach taken from an earlier version of jQuery - detecting whether the toString() version
      * of the object agrees with the textual form [object Array], or else whether the object is a
      * jQuery object (the most common source of "fake arrays").
+     * @param {Any} totest - The value to be tested
+     * @return {Boolean} `true` if the supplied value is an array
      */
     fluid.isArrayable = function (totest) {
         return totest && (totest.jquery || Object.prototype.toString.call(totest) === "[object Array]");
@@ -352,8 +374,11 @@ var fluid = fluid || fluid_3_0_0;
         return !totest.constructor || !totest.constructor.prototype || Object.prototype.hasOwnProperty.call(totest.constructor.prototype, "isPrototypeOf");
     };
 
-    /* Returns <code>primitive</code>, <code>array</code> or <code>object</code> depending on whether the supplied object has
+    /** Returns a string typeCode representing the type of the supplied value at a coarse level.
+     * Returns <code>primitive</code>, <code>array</code> or <code>object</code> depending on whether the supplied object has
      * one of those types, by use of the <code>fluid.isPrimitive</code>, <code>fluid.isPlainObject</code> and <code>fluid.isArrayable</code> utilities
+     * @param {Any} totest - The value to be tested
+     * @return {String} Either `primitive`, `array` or `object` depending on the type of the supplied value
      */
     fluid.typeCode = function (totest) {
         return fluid.isPrimitive(totest) || !fluid.isPlainObject(totest) ? "primitive" :
@@ -388,7 +413,7 @@ var fluid = fluid || fluid_3_0_0;
         return arg;
     };
 
-    /* A function which raises a failure if executed */
+    /** A function which raises a failure if executed */
     fluid.notImplemented = function () {
         fluid.fail("This operation is not implemented");
     };

@@ -1344,13 +1344,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return togo;
     };
 
-    /* Instantiate the subcomponent with the supplied name of the supplied top-level component. Although this method
+    /** Instantiate the subcomponent with the supplied name of the supplied top-level component. Although this method
      * is published as part of the Fluid API, it should not be called by general users and may not remain stable. It is
      * currently the only mechanism provided for instantiating components whose definitions are dynamic, and will be
      * replaced in time by dedicated declarative framework described by FLUID-5022.
-     * @param {Component} that - the parent component for which the subcomponent is to be instantiated
-     * @param {String} name - the name of the component - the index of the options block which configures it as part of the
+     * @param {Component} that - The parent component for which the subcomponent is to be instantiated
+     * @param {String} name - The name of the component - the index of the options block which configures it as part of the
      * <code>components</code> section of its parent's options
+     * @param {Object} [localRecord] - A local scope record keyed by context names which should specially be in scope for this
+     * construction, e.g. `arguments`. Primarily for internal framework use.
+     * @return {Component} The constructed subcomponent
      */
     fluid.initDependent = function (that, name, localRecord) {
         if (that[name]) { return; } // TODO: move this into strategy
@@ -1485,7 +1488,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *
      * @param {Component} component - A reference to a component.
      * @param {Instantiator} [instantiator] - (optional) An instantiator to use for the lookup.
-     * @return {String[]} - An array of {String} path segments of the component within its tree, or `null` if the reference does not hold a live component.
+     * @return {String[]} An array of {String} path segments of the component within its tree, or `null` if the reference does not hold a live component.
      */
     fluid.pathForComponent = function (component, instantiator) {
         instantiator = instantiator || fluid.getInstantiator(component) || fluid.globalInstantiator;
@@ -1500,7 +1503,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {String|String[]} path - Path where the new component is to be constructed, represented as a string or array of string segments
      * @param {Object} options - Top-level options supplied to the component - must at the very least include a field <code>type</code> holding the component's type
      * @param {Instantiator} [instantiator] - [optional] The instantiator holding the component to be created - if blank, the global instantiator will be used
-     * @return {Object} - The constructed component.
+     * @return {Object} The constructed component.
      */
     fluid.construct = function (path, options, instantiator) {
         var record = fluid.destroy(path, instantiator);
