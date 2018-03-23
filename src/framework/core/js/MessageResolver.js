@@ -40,8 +40,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Returns both the template for the message and the function used to resolve the localised value.  By default
      * the resolve function is `fluid.stringTemplate`, and the template returned uses its syntax.
      *
-     * @param that {Object} - The component itself.
-     * @param messagecodes {Array} - One or more message codes to look up templates for.
+     * @param {Object} that - The component itself.
+     * @param {Array} messagecodes - One or more message codes to look up templates for.
      * @return {Object} - An object that contains`template` and `resolveFunc` members (see above).
      *
      */
@@ -61,9 +61,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Look up the first message that corresponds to a message code found in `messageCodes`.  Then, resolve its
      * localised value.  By default, supports variable substitutions using `fluid.stringTemplate`.
      *
-     * @param that {Object} - The component itself.
-     * @param messagecodes {Array} - A list of message codes to look for.
-     * @param args {Object} - A map of variables that may potentially be used as part of the final output.
+     * @param {Object} that - The component itself.
+     * @param {Array} messagecodes - A list of message codes to look for.
+     * @param {Object} args - A map of variables that may potentially be used as part of the final output.
      * @return {String} - The final message, localised, with any variables found in `args`.
      *
      */
@@ -95,8 +95,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * which maps an array of message codes, to be tried in sequence until a key is found, and an array of substitution
      * arguments, into a substituted message string.
      *
-     * @param messageBase - A body of messages to wrap in a resolver function.
-     * @param resolveFunc (Optional) - A "resolver" function to use instead of the default `fluid.stringTemplate`.
+     * @param {Object} messageBase - A body of messages to wrap in a resolver function.
+     * @param {Function} resolveFunc (Optional) - A "resolver" function to use instead of the default `fluid.stringTemplate`.
      * @return {Function} - A "messageLocator" function (see above).
      *
      */
@@ -118,7 +118,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * A "resolver" is expected to be an object with a `type` element that is set to `resolver` that exposes a `resolve`
      * function.
      *
-     * @param messageSource {Object} - See above.
+     * @param {Object} messageSource - See above.
      * @return {Function|String} - A resolve function or a `String` representing the final resolved output.
      *
      */

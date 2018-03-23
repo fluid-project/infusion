@@ -18,7 +18,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Textfield *
      *************/
 
-    /**
+    /*
      * A component for controlling a textfield and handling data binding.
      * Typically this will be used in conjunction with a UI control widget such as
      * button steppers or slider.
@@ -72,9 +72,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Sets the model value only if the new value is a valid number, and will reset the textfield to the current model
      * value otherwise.
      *
-     * @param that {Object} - the component
-     * @param value {Number} - the new numerical entry
-     * @param path {String} - the path into the model for which the value should be set
+     * @param {Object} that - The component.
+     * @param {Number} value - The new numerical entry.
+     * @param {String} path - The path into the model for which the value should be set.
      */
     fluid.textfield.setModelRestrictToNumbers = function (that, value, path) {
         var isNumber = !isNaN(Number(value));
@@ -93,7 +93,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * TextField Range Controller *
      ******************************/
 
-    /**
+    /*
      * Range Controller is intended to be used as a grade on a fluid.textfield component. It will limit the input
      * to be constrained within a given numerical range. This should be paired with configuring the textfield.setModel
      * invoker to use fluid.textfield.setModelRestrictToNumbers.

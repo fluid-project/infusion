@@ -379,7 +379,7 @@ var fluid = fluid || fluid_2_0_0;
         return output;
     };
 
-    /**
+    /*
      * NON-API function; Copies the entire transformSpec with the following modifications:
      * * A new type is set (from argument)
      * * each [key]=value entry in the options is swapped to be: [value]=key
@@ -436,7 +436,7 @@ var fluid = fluid || fluid_2_0_0;
 
     /* -------- deindexIntoArrayByKey and indexArrayByKey -------------------- */
 
-    /**
+    /*
      * Transforms the given array to an object.
      * Uses the transformSpec.options.key values from each object within the array as new keys.
      *
@@ -501,16 +501,16 @@ var fluid = fluid || fluid_2_0_0;
         invertConfiguration: "fluid.transforms.indexArrayByKey.invert"
     });
 
-    /** Transforms an array of objects into an object of objects, by indexing using the option "key" which must be supplied within the transform specification.
-    * The key of each element will be taken from the value held in each each original object's member derived from the option value in "key" - this member should
-    * exist in each array element. The member with name agreeing with "key" and its value will be removed from each original object before inserting into the returned
-    * object.
-    * For example,
-    * <code>fluid.transforms.indexArrayByKey([{k: "e1", b: 1, c: 2}, {k: "e2", b: 2: c: 3}], {key: "k"})</code> will output the object
-    * <code>{e1: {b: 1, c: 2}, e2: {b: 2: c, 3}</code>
-    * Note: This transform frequently arises in the context of data which arose in XML form, which often represents "morally indexed" data in repeating array-like
-    * constructs where the indexing key is held, for example, in an attribute.
-    */
+    /* Transforms an array of objects into an object of objects, by indexing using the option "key" which must be supplied within the transform specification.
+     * The key of each element will be taken from the value held in each each original object's member derived from the option value in "key" - this member should
+     * exist in each array element. The member with name agreeing with "key" and its value will be removed from each original object before inserting into the returned
+     * object.
+     * For example,
+     * <code>fluid.transforms.indexArrayByKey([{k: "e1", b: 1, c: 2}, {k: "e2", b: 2: c: 3}], {key: "k"})</code> will output the object
+     * <code>{e1: {b: 1, c: 2}, e2: {b: 2: c, 3}</code>
+     * Note: This transform frequently arises in the context of data which arose in XML form, which often represents "morally indexed" data in repeating array-like
+     * constructs where the indexing key is held, for example, in an attribute.
+     */
     fluid.transforms.indexArrayByKey = function (arr, transformSpec, transformer) {
         if (transformSpec.key === undefined) {
             fluid.fail("indexArrayByKey requires a 'key' option.", transformSpec);
@@ -567,7 +567,7 @@ var fluid = fluid || fluid_2_0_0;
         invertConfiguration: "fluid.transforms.deindexIntoArrayByKey.invert"
     });
 
-    /**
+    /*
      * Transforms an object of objects into an array of objects, by deindexing by the option "key" which must be supplied within the transform specification.
      * The key of each object will become split out into a fresh value in each array element which will be given the key held in the transformSpec option "key".
      * For example:
@@ -719,7 +719,7 @@ var fluid = fluid || fluid_2_0_0;
         gradeNames: "fluid.standardTransformFunction"
     });
 
-    /**
+    /*
      * Quantize function maps a continuous range into discrete values. Given an input, it will
      * be matched into a discrete bucket and the corresponding output will be done.
      */
@@ -761,8 +761,8 @@ var fluid = fluid || fluid_2_0_0;
      *
      * Everything else is true.
      *
-     * @param value {String} The value to be interpreted.
-     * @returns {Boolean} The interpreted value.
+     * @param {String} value - The value to be interpreted.
+     * @return {Boolean} The interpreted value.
      */
     fluid.transforms.stringToBoolean = function (value) {
         if (value) {
@@ -789,8 +789,8 @@ var fluid = fluid || fluid_2_0_0;
      * true (1, true, "non empty string", {}, et. cetera) returns "true".  Anything else (0, false, null, et. cetera)
      * returns "false".
      *
-     * @param value - The value to be converted to a stringified Boolean.
-     * @returns {string} - A stringified boolean representation of the value.
+     * @param {Any} value - The value to be converted to a stringified Boolean.
+     * @return {String} - A stringified boolean representation of the value.
      */
     fluid.transforms.booleanToString = function (value) {
         return value ? "true" : "false";
@@ -810,7 +810,8 @@ var fluid = fluid || fluid_2_0_0;
      *
      * Transform stringified JSON to an object using `JSON.parse`.  Returns `undefined` if the JSON string is invalid.
      *
-     * @param value {String} - The stringified JSON to be converted to an object.
+     * @param {String} value - The stringified JSON to be converted to an object.
+     * @return {Any} - The parsed value of the string, or `undefined` if it can't be parsed.
      */
     fluid.transforms.JSONstringToObject = function (value) {
         try {
@@ -848,7 +849,9 @@ var fluid = fluid || fluid_2_0_0;
      *
      * The default value for `space` is 0, which disables spacing and line breaks.
      *
-     * @param value {Object} - An object to be converted to stringified JSON.
+     * @param {Object} value - An object to be converted to stringified JSON.
+     * @param {Object} transformSpec - An object describing the transformation spec, see above.
+     * @return {String} - A string representation of the object.
      *
      */
     fluid.transforms.objectToJSONString = function (value, transformSpec) {
@@ -883,8 +886,8 @@ var fluid = fluid || fluid_2_0_0;
      *
      * http://docs.fluidproject.org/infusion/development/FrameworkConcepts.html#model-objects
      *
-     * @param value - The String value to be transformed into a Date object.
-     * @returns {Date} - A date object, or `undefined`.
+     * @param {String} value - The String value to be transformed into a Date object.
+     * @return {Date} - A date object, or `undefined`.
      *
      */
     fluid.transforms.stringToDate = function (value) {
@@ -922,8 +925,8 @@ var fluid = fluid || fluid_2_0_0;
      *
      * http://docs.fluidproject.org/infusion/development/FrameworkConcepts.html#model-objects
      *
-     * @param value - The Date object to be transformed into an ISO 8601 string.
-     * @returns {String} - A {String} value representing the date, or `undefined` if the date is invalid.
+     * @param {Date} value - The Date object to be transformed into an ISO 8601 string.
+     * @return {String} - A {String} value representing the date, or `undefined` if the date is invalid.
      *
      */
     fluid.transforms.dateToString = function (value) {
@@ -965,8 +968,8 @@ var fluid = fluid || fluid_2_0_0;
      *
      * http://docs.fluidproject.org/infusion/development/FrameworkConcepts.html#model-objects
      *
-     * @param value - The Date object to be transformed into an ISO 8601 string.
-     * @returns {String} - A {String} value representing the date and time, or `undefined` if the date/time are invalid.
+     * @param {Date} value - The Date object to be transformed into an ISO 8601 string.
+     * @return {String} - A {String} value representing the date and time, or `undefined` if the date/time are invalid.
      *
      */
     fluid.transforms.dateTimeToString = function (value) {

@@ -170,14 +170,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             /**
              * Generate an array with the given parameters defined below.
              *
-             * @param   int     0: default, generate an array with the given file_size
-             *                  1: decrement, generate an array with initial file_size = array_size,
-             *                     and subtract 1 each element afterwards.
-             *                     ie. 50, 49, 48,...,3, 2, 1
-             *                  2: increment, generate an array with the initial file_size = 0, up to
-             *                     the array_size.
-             * @param   int     the length of the array. Array index starts at 0.
-             * @param   int     the file size in each array element.
+             * @param {Integer} mode - 0: default, generate an array with the given file_size
+             *                         1: decrement, generate an array with initial file_size = array_size,
+             *                            and subtract 1 each element afterwards.
+             *                            ie. 50, 49, 48,...,3, 2, 1
+             *                         2: increment, generate an array with the initial file_size = 0, up to
+             *                            the array_size.
+             * @param {Integer} array_size - The length of the array. Array index starts at 0.
+             * @param {Integer} file_size - The file size in each array element.
+             * @return {Array} - The generated array.
              */
             var array_generator = function (mode, array_size, file_size) {
                 var generated_array = [];

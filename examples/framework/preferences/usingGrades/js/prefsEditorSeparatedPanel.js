@@ -41,6 +41,7 @@ var example = example || {};
     /**
      * Initialize UI Enhancer for the page. This function is used by the two full-page
      * Preferences Editor pages as well as by the example page itself.
+     * @param {String} customThemeName - The name of the custom theme.
      */
     example.initPageEnhancer = function (customThemeName) {
         fluid.pageEnhancer({
@@ -59,6 +60,7 @@ var example = example || {};
     /**
      * Initialize Preferences Editor. This version of Preferences Editor uses the
      * page itself as a live preview.
+     * @param {jQueryable} container - The Preference Editor's container element
      */
     example.initPrefsEditor = function (container) {
         fluid.prefs.separatedPanel(container, {

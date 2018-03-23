@@ -119,7 +119,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             target[key] = value;
         });
     };
-    /**
+    /*
      * Used to test transformations and potentially their invertibility.
      * Expects an array of objects, each object holding the test definitions. The extra options
      * argument are test-options that will be merged with the individual tests options.

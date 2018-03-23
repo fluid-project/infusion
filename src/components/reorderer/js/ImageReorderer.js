@@ -89,7 +89,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * represent the order for each image. This default listener submits the form's default
      * action via AJAX.
      *
-     * @param container {jQueryable} the Image Reorderer's container element
+     * @param {jQueryable} container - The Image Reorderer's container element.
+     * @return {Function} - A function which can be used as a listener for the afterMove event.
      */
     fluid.reorderImages.createIDAfterMoveListener = function (container) {
         var reorderform = fluid.reorderImages.seekForm(container);

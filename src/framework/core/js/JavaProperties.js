@@ -91,16 +91,17 @@ fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
-    * Expand a message string with respect to a set of arguments, following a basic
-    * subset of the Java MessageFormat rules.
-    * http://java.sun.com/j2se/1.4.2/docs/api/java/text/MessageFormat.html
-    *
-    * The message string is expected to contain replacement specifications such
-    * as {0}, {1}, {2}, etc.
-    * @param messageString {String} The message key to be expanded
-    * @param args {String/Array of String} An array of arguments to be substituted into the message.
-    * @return The expanded message string.
-    */
+     *
+     * Expand a message string with respect to a set of arguments, following a basic subset of the Java MessageFormat
+     * rules.
+     * http://java.sun.com/j2se/1.4.2/docs/api/java/text/MessageFormat.html
+     *
+     * The message string is expected to contain replacement specifications such as {0}, {1}, {2}, etc.
+     *
+     * @param {String} messageString - The message key to be expanded
+     * @param {String|String[]} args - A single string or array of strings to be substituted into the message.
+     * @return {String} - The expanded message string.
+     */
     fluid.formatMessage = function (messageString, args) {
         if (!args) {
             return messageString;
