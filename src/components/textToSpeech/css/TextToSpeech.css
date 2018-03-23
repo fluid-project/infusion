@@ -4,6 +4,9 @@
     outline: 1px dotted #000000;
 }
 
-mark.fl-tts-highlight {
+.fl-tts-highlight {
+    color: #000000;
     background-color: #EED400;
+    /* Used to make the background appear larger so that it stands out in a block of text */
+    outline: 0.2em solid #EED400;
 }
