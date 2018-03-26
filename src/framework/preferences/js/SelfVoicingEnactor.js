@@ -296,7 +296,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Number} boundary - The boundary value used to compare against the blockIndex of the parsed data points.
      *
      * @returns {Number|undefined} - Will return the index of the closest data point in the parseQueue. If the boundary
-     *                               cannot be loacated within the parseQueue, `undefined` is returned.
+     *                               cannot be located within the parseQueue, `undefined` is returned.
      */
     fluid.prefs.enactor.selfVoicing.getClosestIndex = function (parseQueue, currentIndex, boundary) {
         var maxIndex  = Math.max(parseQueue.length - 1, 0);
@@ -313,12 +313,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             return undefined;
         }
 
-        if (currentBlockIndex === boundary || (currentIndex < maxIndex && boundary < parseQueue[nextIndex].blockIndex)) {
-            return currentIndex;
-        }
-
         if (currentBlockIndex > boundary) {
             return fluid.prefs.enactor.selfVoicing.getClosestIndex(parseQueue, prevIndex, boundary);
+        }
+
+        var isWithinNextBound = parseQueue[nextIndex] ? boundary < parseQueue[nextIndex].blockIndex : boundary <= maxBoundary;
+
+        if (currentBlockIndex === boundary || (currentIndex <= maxIndex && isWithinNextBound)) {
+            return currentIndex;
         }
 
         return fluid.prefs.enactor.selfVoicing.getClosestIndex(parseQueue, nextIndex, boundary);

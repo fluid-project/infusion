@@ -105,6 +105,165 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Unit tests for fluid.prefs.enactor.selfVoicing
      *******************************************************************************/
 
+    fluid.registerNamespace("fluid.tests.prefs.enactor.selfVoicingEnactor");
+
+    // fluid.prefs.enactor.selfVoicing.isWord tests
+    fluid.tests.prefs.enactor.selfVoicingEnactor.isWordTestCases = {
+        "trueCase": ["a", "hello", "test string"],
+        "falseCase": ["", " ", "\t", "\n", undefined, null]
+    };
+
+    jqUnit.test("Test fluid.prefs.enactor.selfVoicing.isWord", function () {
+        // test trueCase
+        fluid.each(fluid.tests.prefs.enactor.selfVoicingEnactor.isWordTestCases.trueCase, function (str) {
+            jqUnit.assertTrue("\"" + str + "\" is considered a word.", fluid.prefs.enactor.selfVoicing.isWord(str));
+        });
+
+        // test falseCase
+        fluid.each(fluid.tests.prefs.enactor.selfVoicingEnactor.isWordTestCases.falseCase, function (str) {
+            jqUnit.assertFalse("\"" + str + "\" is not considered a word.", fluid.prefs.enactor.selfVoicing.isWord(str));
+        });
+    });
+
+    // fluid.prefs.enactor.selfVoicing.parse tests
+    fluid.tests.prefs.enactor.selfVoicingEnactor.parsed = [{
+        // 0
+        "blockIndex": 0,
+        "childIndex": 0,
+        "endOffset": 20,
+        "node": {},
+        "parentNode": {},
+        "startOffset": 13,
+        "word": "Reading"
+    }, {
+        // 1
+        "blockIndex": 7,
+        "childIndex": 0,
+        "endOffset": 21,
+        "node": {},
+        "parentNode": {},
+        "startOffset": 20,
+        "word": " "
+    }, {
+        // 2
+        "blockIndex": 8,
+        "childIndex": 0,
+        "endOffset": 4,
+        "node": {},
+        "parentNode": {},
+        "startOffset": 0,
+        "word": "text"
+    }, {
+        // 3
+        "blockIndex": 12,
+        "childIndex": 2,
+        "endOffset": 1,
+        "node": {},
+        "parentNode": {},
+        "startOffset": 0,
+        "word": " "
+    }, {
+        // 4
+        "blockIndex": 13,
+        "childIndex": 2,
+        "endOffset": 5,
+        "node": {},
+        "parentNode": {},
+        "startOffset": 1,
+        "word": "from"
+    }, {
+        // 5
+        "blockIndex": 17,
+        "childIndex": 2,
+        "endOffset": 6,
+        "node": {},
+        "parentNode": {},
+        "startOffset": 5,
+        "word": " "
+    }, {
+        // 6
+        "blockIndex": 18,
+        "childIndex": 0,
+        "endOffset": 3,
+        "node": {},
+        "parentNode": {},
+        "startOffset": 0,
+        "word": "DOM"
+    }, {
+        // 7
+        "blockIndex": 21,
+        "childIndex": 4,
+        "endOffset": 9,
+        "node": {},
+        "parentNode": {},
+        "startOffset": 0,
+        "word": "\n        "
+    }];
+
+    jqUnit.test("Test fluid.prefs.enactor.selfVoicing.parse", function () {
+        var elm = $(".flc-selfVoicing")[0];
+        var parsed = fluid.prefs.enactor.selfVoicing.parse(elm);
+        jqUnit.assertDeepEq("The DOM element should have been parsed correctly", fluid.tests.prefs.enactor.selfVoicingEnactor.parsed, parsed);
+    });
+
+    // fluid.prefs.enactor.selfVoicing.parsedToString tests
+    fluid.tests.prefs.enactor.selfVoicingEnactor.str = "Reading text from DOM\n        ";
+
+    jqUnit.test("fluid.prefs.enactor.selfVoicing.parsedToString", function () {
+        var str = fluid.prefs.enactor.selfVoicing.parsedToString(fluid.tests.prefs.enactor.selfVoicingEnactor.parsed);
+        jqUnit.assertEquals("The parsed text should have been combined to a string", fluid.tests.prefs.enactor.selfVoicingEnactor.str, str);
+    });
+
+    // fluid.prefs.enactor.selfVoicing.getClosestIndex tests
+    fluid.tests.prefs.enactor.selfVoicingEnactor.closestIndexTestCases = [{
+        currentIndex: 0,
+        boundary: -1,
+        expected: undefined
+    }, {
+        currentIndex: 0,
+        boundary: 0,
+        expected: 0
+    }, {
+        currentIndex: 0,
+        boundary: 6,
+        expected: 0
+    }, {
+        currentIndex: 0,
+        boundary: 7,
+        expected: 1
+    }, {
+        currentIndex: 2,
+        boundary: 27,
+        expected: 7
+    }, {
+        currentIndex: 5,
+        boundary: 2,
+        expected: 0
+    }, {
+        currentIndex: 7,
+        boundary: 18,
+        expected: 6
+    }, {
+        currentIndex: 7,
+        boundary: 29,
+        expected: 7
+    }, {
+        currentIndex: 7,
+        boundary: 30,
+        expected: 7
+    }, {
+        currentIndex: 7,
+        boundary: 35,
+        expected: undefined
+    }];
+
+    jqUnit.test("fluid.prefs.enactor.selfVoicing.getClosestIndex", function () {
+        fluid.each(fluid.tests.prefs.enactor.selfVoicingEnactor.closestIndexTestCases, function (testCase) {
+            var closest = fluid.prefs.enactor.selfVoicing.getClosestIndex(fluid.tests.prefs.enactor.selfVoicingEnactor.parsed, testCase.currentIndex, testCase.boundary);
+            jqUnit.assertEquals("Closest index for boundary \"" + testCase.boundary + "\" should be: " + testCase.expected, testCase.expected, closest);
+        });
+    });
+
     fluid.defaults("fluid.tests.prefs.enactor.selfVoicingEnactor", {
         gradeNames: ["fluid.prefs.enactor.selfVoicing"],
         model: {
@@ -156,8 +315,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         testOptions: {
             expectedText: [
                 {text: "{selfVoicing}.options.strings.welcomeMsg", interrupt: true},
-                {text: "Reading text from DOM", interrupt: false},
-                {text: "no image", interrupt: false}
+                {text: "Reading text from DOM", interrupt: false}
             ]
         },
         modules: [{
