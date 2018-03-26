@@ -17,6 +17,9 @@ steps:
 
   - name: "Run tests"
     command: "npm run test:vagrant"
+    artifact_paths:
+      - "coverage/**/*"
+      - "reports/**/*"
 
   - name: "Destroy VM"
     command: "vagrant destroy -f"
