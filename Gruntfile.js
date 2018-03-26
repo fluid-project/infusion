@@ -331,6 +331,30 @@ module.exports = function (grunt) {
                     exclude: "jQuery, jQueryUI",
                     compress: true
                 }
+            },
+            "uio": {
+                options: {
+                    include: "uiOptions"
+                }
+            },
+            "uio.min": {
+                options: {
+                    include: "uiOptions",
+                    compress: true
+                }
+            },
+            "uio-no-jquery": {
+                options: {
+                    include: "uiOptions",
+                    exclude: "jQuery, jQueryUI"
+                }
+            },
+            "uio-no-jquery.min": {
+                options: {
+                    include: "uiOptions",
+                    exclude: "jQuery, jQueryUI",
+                    compress: true
+                }
             }
         }
     });
