@@ -109,6 +109,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         strings: {
             welcomeMsg: "text to speech enabled"
         },
+        events: {
+            onReadFromDOM: null
+        },
         listeners: {
             "{tts}.events.utteranceOnEnd": {
                 listener: "fluid.prefs.enactor.selfVoicing.handleUtteranceEndEvent",
@@ -130,7 +133,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.prefs.enactor.selfVoicing.handleSelfVoicing = function (that, welcomeMsg, queueSpeech, readFromDOM, cancel, enabled) {
         that.parseQueue = [];
         if (enabled) {
-            that.parseQueue.push(null); //TODO: Not sure why we push null into the queue, should try to remove this.
+            //TODO: It seems that we push null so that the parseQueue and queued speech remain in sync, given the
+            //      welcomeMsg pushed into the speech queue.
+            //      We should try to remove the need to push null.
+            that.parseQueue.push(null);
             queueSpeech(welcomeMsg, true);
             readFromDOM();
         } else {
@@ -144,13 +150,19 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
-    fluid.prefs.enactor.selfVoicing.removeMark = function (that) {
-        var mark = that.locate("mark");
+    /**
+     * Unwraps the contents of the element by removing the tag surrounding the content and placing the content
+     * as a node within the element's parent. The parent is also normalized to combine any adjacent textnodes.
+     *
+     * @param {Selector/jQuery} - element to unwrap
+     */
+    fluid.prefs.enactor.selfVoicing.unWrap = function (elm) {
+        elm = $(elm);
 
         // remove previous marks and normalize parent to clean up textnodes
-        if (mark.length) {
-            var parent = mark.parent();
-            mark.contents().unwrap();
+        if (elm.length) {
+            var parent = elm.parent();
+            elm.contents().unwrap();
             parent[0].normalize();
         }
     };
@@ -158,7 +170,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.prefs.enactor.selfVoicing.handleUtteranceEndEvent = function (that) {
         that.parseQueue.shift();
         that.parseIndex = 0;
-        fluid.prefs.enactor.selfVoicing.removeMark(that);
+        fluid.prefs.enactor.selfVoicing.unWrap(that.locate("mark"));
     };
 
     // Constants representing DOM node types.
@@ -283,6 +295,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (elm.length) {
             var parsedFromElm = fluid.prefs.enactor.selfVoicing.parse(elm[0]);
             that.parseQueue.push(parsedFromElm);
+            that.events.onReadFromDOM.fire(parsedFromElm);
             that.tts.queueSpeech(fluid.prefs.enactor.selfVoicing.parsedToString(parsedFromElm));
         }
     };
@@ -335,7 +348,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *                            boundary returned from the utteranceOnBoundary event.
      */
     fluid.prefs.enactor.selfVoicing.highlight = function (that, boundary) {
-        fluid.prefs.enactor.selfVoicing.removeMark(that);
+        fluid.prefs.enactor.selfVoicing.unWrap(that.locate("mark"));
 
         var closestIndex = fluid.prefs.enactor.selfVoicing.getClosestIndex(that.parseQueue[0], that.parseIndex, boundary);
 

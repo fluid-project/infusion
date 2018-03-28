@@ -107,6 +107,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests.prefs.enactor.selfVoicingEnactor");
 
+    // fluid.prefs.enactor.selfVoicing.unWrap tests
+    jqUnit.test("Test fluid.prefs.enactor.selfVoicing.unWrap", function () {
+        jqUnit.assertNodeExists("The wrapper node should exist", ".flc-wrap");
+        fluid.prefs.enactor.selfVoicing.unWrap(".flc-wrap");
+
+        jqUnit.assertNodeNotExists("The wrapper node should have been removed", ".flc-wrap");
+        fluid.prefs.enactor.selfVoicing.unWrap(".flc-wrap");
+        jqUnit.assertEquals("There should only be one childnode in the wrapper's parent", 1, $(".flc-wrap-parent")[0].childNodes.length);
+
+        jqUnit.assert("Unwrapping a second time should not cause an error");
+    });
+
     // fluid.prefs.enactor.selfVoicing.isWord tests
     fluid.tests.prefs.enactor.selfVoicingEnactor.isWordTestCases = {
         "trueCase": ["a", "hello", "test string"],
@@ -321,23 +333,50 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.prefs.enactor.selfVoicing",
             tests: [{
-                expect: 1,
+                expect: 5,
                 name: "Dom Reading",
                 sequence: [{
                     func: "{selfVoicing}.toggle",
                     args: [true]
                 }, {
+                    listener: "fluid.tests.selfVoicingTester.verifyParseQueue",
+                    args: ["{selfVoicing}", [fluid.tests.prefs.enactor.selfVoicingEnactor.parsed], "{arguments}.0"],
+                    spec: {priority: "last:testing"},
+                    event: "{selfVoicing}.events.onReadFromDOM"
+                }, {
                     listener: "fluid.tests.selfVoicingTester.verifySpeakQueue",
                     args: ["{selfVoicing}", "{that}.options.testOptions.expectedText"],
-                    spec: {priority: "last"},
+                    spec: {priority: "last:testing"},
                     event: "{selfVoicing}.tts.events.onStop"
+                }, {
+                    funcName: "jqUnit.assertNodeNotExists",
+                    args: ["The self voicing has completed. All marks should be removed.", "{selfVoicing}.dom.mark"]
+                }, {
+                    func: "{selfVoicing}.tts.events.utteranceOnBoundary.fire",
+                    args: [{charIndex: 8}]
+                }, {
+                    funcName: "jqUnit.assertNodeNotExists",
+                    args: ["The parseQueue is empty, so no mark should be added", "{selfVoicing}.dom.mark"]
                 }]
             }]
         }]
     });
 
+    //TODO: Add tests for the following
+    //      - highlight
+    //          - mark added (need to directly add items to the parseQueue first)
+    //          - correct word highlighted
+    //          - mark removed
+    //      - handleSelfVoicing when speech disabled
+    //      - readFromDOM when element length is 0
+
     fluid.tests.selfVoicingTester.verifySpeakQueue = function (that, expectedText) {
         jqUnit.assertDeepEq("The text to be spoken should have been queued correctly", expectedText, that.tts.speechRecord);
+    };
+
+    fluid.tests.selfVoicingTester.verifyParseQueue = function (that, expected, parsed) {
+        jqUnit.assertDeepEq("The DOM should have been parsed correctly", expected[0], parsed);
+        jqUnit.assertDeepEq("The parseQueue should have been populated correctly", expected, that.parseQueue);
     };
 
     $(document).ready(function () {
