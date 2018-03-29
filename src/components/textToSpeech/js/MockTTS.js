@@ -50,7 +50,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             },
             cancel: {
                 funcName: "fluid.mock.textToSpeech.cancel",
-                args: ["{that}", "{that}.events.utteranceOnEnd.fire"]
+                args: ["{that}"]
             },
             getVoices: {
                 funcName: "fluid.identity",

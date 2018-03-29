@@ -322,7 +322,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var maxBoundary = parseQueue[maxIndex].blockIndex + parseQueue[maxIndex].word.length;
 
 
-        if (boundary < 0 || boundary > maxBoundary ) {
+        if (!fluid.isValue(boundary) || boundary < 0 || boundary > maxBoundary ) {
             return undefined;
         }
 

@@ -328,12 +328,43 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             expectedText: [
                 {text: "{selfVoicing}.options.strings.welcomeMsg", interrupt: true},
                 {text: "Reading text from DOM", interrupt: false}
-            ]
+            ],
+            // a mock parseQueue for testing adding and removing the mark
+            parseQueue: [[{
+                "blockIndex": 0,
+                "childIndex": 0,
+                "endOffset": 20,
+                "node": {},
+                "parentNode": {
+                    expander: {
+                        "this": "{selfVoicing}.container",
+                        method: "get",
+                        args: [0]
+                    }
+                },
+                "startOffset": 13,
+                "word": "Reading"
+            }, {
+                "blockIndex": 8,
+                "childIndex": 0,
+                "endOffset": 4,
+                "node": {},
+                "parentNode": {
+                    expander: {
+                        func: function (elm) {
+                            return $(elm).children()[0];
+                        },
+                        args: ["{selfVoicing}.container"]
+                    }
+                },
+                "startOffset": 0,
+                "word": "text"
+            }]]
         },
         modules: [{
             name: "fluid.prefs.enactor.selfVoicing",
             tests: [{
-                expect: 5,
+                expect: 15,
                 name: "Dom Reading",
                 sequence: [{
                     func: "{selfVoicing}.toggle",
@@ -349,6 +380,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     spec: {priority: "last:testing"},
                     event: "{selfVoicing}.tts.events.onStop"
                 }, {
+                    funcName: "jqUnit.assertEquals",
+                    args: ["The parseQueue should be empty.", 0, "{selfVoicing}.parseQueue.length"]
+                }, {
+                    funcName: "jqUnit.assertEquals",
+                    args: ["The parseIndex should be reset to 0.", 0, "{selfVoicing}.parseIndex"]
+                }, {
                     funcName: "jqUnit.assertNodeNotExists",
                     args: ["The self voicing has completed. All marks should be removed.", "{selfVoicing}.dom.mark"]
                 }, {
@@ -357,18 +394,42 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     funcName: "jqUnit.assertNodeNotExists",
                     args: ["The parseQueue is empty, so no mark should be added", "{selfVoicing}.dom.mark"]
+                }, {
+                    // manually add items to parseQueue so that we can more easily test adding and removing the mark
+                    funcName: "fluid.set",
+                    args: ["{selfVoicing}", ["parseQueue"], "{that}.options.testOptions.parseQueue"]
+                }, {
+                    func: "{selfVoicing}.tts.events.utteranceOnBoundary.fire",
+                    args: [{charIndex: "{that}.options.testOptions.parseQueue.0.0.blockIndex"}]
+                }, {
+                    funcName: "fluid.tests.selfVoicingTester.verifyMark",
+                    args: ["{selfVoicing}.dom.mark", "{that}.options.testOptions.parseQueue.0.0.word"]
+                }, {
+                    func: "{selfVoicing}.tts.events.utteranceOnBoundary.fire",
+                    args: [{charIndex: "{that}.options.testOptions.parseQueue.0.1.blockIndex"}]
+                }, {
+                    funcName: "fluid.tests.selfVoicingTester.verifyMark",
+                    args: ["{selfVoicing}.dom.mark", "{that}.options.testOptions.parseQueue.0.1.word"]
+                }, {
+                    // disabled text to speech
+                    func: "{selfVoicing}.applier.change",
+                    args: ["enabled", false]
+                }, {
+                    listener: "jqUnit.assert",
+                    args: ["The utteranceOnEnd event should have fired"],
+                    spec: {priority: "last:testing"},
+                    event: "{selfVoicing}.tts.events.utteranceOnEnd"
+                }, {
+                    // test readFromDom if the element to parse isn't available
+                    funcName: "fluid.prefs.enactor.selfVoicing.readFromDOM",
+                    args: ["{selfVoicing}", "{selfVoicing}.dom.mark"]
+                }, {
+                    funcName: "jqUnit.assertEquals",
+                    args: ["The parseQueue should still be empty after trying to parse an unavailable DOM node.", 0, "{selfVoicing}.parseQueue.length"]
                 }]
             }]
         }]
     });
-
-    //TODO: Add tests for the following
-    //      - highlight
-    //          - mark added (need to directly add items to the parseQueue first)
-    //          - correct word highlighted
-    //          - mark removed
-    //      - handleSelfVoicing when speech disabled
-    //      - readFromDOM when element length is 0
 
     fluid.tests.selfVoicingTester.verifySpeakQueue = function (that, expectedText) {
         jqUnit.assertDeepEq("The text to be spoken should have been queued correctly", expectedText, that.tts.speechRecord);
@@ -377,6 +438,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.tests.selfVoicingTester.verifyParseQueue = function (that, expected, parsed) {
         jqUnit.assertDeepEq("The DOM should have been parsed correctly", expected[0], parsed);
         jqUnit.assertDeepEq("The parseQueue should have been populated correctly", expected, that.parseQueue);
+    };
+
+    fluid.tests.selfVoicingTester.verifyMark = function (elm, expectedText) {
+        jqUnit.assertNodeExists("The mark should have been added", elm);
+        jqUnit.assertEquals("Only one mark should be present", 1, elm.length);
+        jqUnit.assertEquals("The marked textnode should be correct", elm.text(), expectedText);
     };
 
     $(document).ready(function () {
