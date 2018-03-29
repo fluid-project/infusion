@@ -48,7 +48,7 @@ var jqUnit = jqUnit || {};
         });
     };
 
-    /**
+    /*
      * Keeps track of the order of function invocations. The transcript contains information about
      * each invocation, including its name and the arguments that were supplied to it.
      */
@@ -88,7 +88,7 @@ var jqUnit = jqUnit || {};
         /**
          * Intercepts all the functions on the specified object.
          *
-         * @param {Object} obj
+         * @param {Object} obj - The object whose functions should be intercepted.
          */
         that.interceptAll = function (obj) {
             for (var fnName in obj) {

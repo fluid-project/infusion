@@ -854,7 +854,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * @param {String} template - take string template with a token "%guid" to be replaced by the a unique ID.
-     * @returns {String} - the resolved templated with the injected unique ID.
+     * @return {String} - the resolved templated with the injected unique ID.
      */
     fluid.prefs.panel.stepperAjuster.setLabelID = function (template) {
         return fluid.stringTemplate(template, {

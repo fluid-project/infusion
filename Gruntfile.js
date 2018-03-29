@@ -23,7 +23,7 @@ var execSync = require("child_process").execSync;
  * @param {String} command - the command to execute
  * @param {Object} options - optional arguments "verbose" will output a full stack trace when an error occurs,
  *                           "defaultValue" will set the default return value, useful in case of errors or when a result may be an empty string.
- * @returns {String} - returns a string representation of the result of the command or the defaultValue.
+ * @return {String} - returns a string representation of the result of the command or the defaultValue.
  */
 var getFromExec = function (command, options) {
     var result = options.defaultValue;
@@ -46,7 +46,7 @@ var getFromExec = function (command, options) {
  * infusion-all.js -> infusion-all.min.js
  * infusion-all.js.map -> infusion-all.min.js.map
  * @param {String} fileName - filename string to add '.min' to
- * @returns the modified filename string
+ * @return {String} The modified filename string.
  */
 var addMin = function (fileName) {
     var segs = fileName.split(".");
@@ -63,7 +63,8 @@ var addMin = function (fileName) {
  * to filename string; won't do anything to strings that already
  * include ".min"
  * @param {String} dest - supplied by Grunt task, see http://gruntjs.com/configuring-tasks#the-rename-property
- * @param {String} src - supplied by Grunt task, see http://gruntjs.com/configuring-tasks#the-rename-property
+ * @param {String} src - supplied by Grunt task, see http://gruntjs.com/configuring-tasks#the-rename-property\
+ * @return {String} - The minified version of the original filename.
 */
 var addMinifyToFilename = function (dest, src) {
     return dest + addMin(src);
@@ -330,6 +331,30 @@ module.exports = function (grunt) {
                     exclude: "jQuery, jQueryUI",
                     compress: true
                 }
+            },
+            "uio": {
+                options: {
+                    include: "uiOptions"
+                }
+            },
+            "uio.min": {
+                options: {
+                    include: "uiOptions",
+                    compress: true
+                }
+            },
+            "uio-no-jquery": {
+                options: {
+                    include: "uiOptions",
+                    exclude: "jQuery, jQueryUI"
+                }
+            },
+            "uio-no-jquery.min": {
+                options: {
+                    include: "uiOptions",
+                    exclude: "jQuery, jQueryUI",
+                    compress: true
+                }
             }
         }
     });
@@ -439,7 +464,7 @@ module.exports = function (grunt) {
     * @param {String} dir - base directory expected to contain files
     * @param {Array} fileList - array of string filenames to check; may include
     * full paths and thereby search subdirectories of dir
-    * @returns a report structure for further processing
+    * @return {Object} A report structure for further processing.
     */
     var verifyFiles = function (dir, fileList) {
         var report = {

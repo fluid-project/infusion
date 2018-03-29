@@ -71,7 +71,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return root;
     };
 
-    /** Returns both the value and the path of the value held at the supplied EL path **/
+    /* Returns both the value and the path of the value held at the supplied EL path */
     fluid.model.getValueAndSegments = function (root, EL, config, initSegs) {
         return fluid.model.accessWithStrategy(root, EL, fluid.NO_VALUE, config, initSegs, true);
     };
@@ -162,7 +162,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     var globalAccept = []; // TODO: reentrancy risk here. This holder is here to allow parseEL to make two returns without an allocation.
 
-    /** A version of fluid.model.parseEL that apples escaping rules - this allows path segments
+    /* A version of fluid.model.parseEL that apples escaping rules - this allows path segments
      * to contain period characters . - characters "\" and "}" will also be escaped. WARNING -
      * this current implementation is EXTREMELY slow compared to fluid.model.parseEL and should
      * not be used in performance-sensitive applications */
@@ -192,15 +192,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return prefix;
     };
 
-    /** Escapes a single path segment by replacing any character ".", "\" or "}" with
-     * itself prepended by \
-     */
+    /* Escapes a single path segment by replacing any character ".", "\" or "}" with itself prepended by \ */
     // supported, PUBLIC API function
     fluid.pathUtil.escapeSegment = function (segment) {
         return fluid.pathUtil.composeSegment("", segment);
     };
 
-    /**
+    /*
      * Compose a prefix and suffix EL path, where the prefix is already escaped.
      * Prefix may be empty, but not null. The suffix will become escaped.
      */
@@ -212,7 +210,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return fluid.pathUtil.composeSegment(prefix, suffix);
     };
 
-    /**
+    /*
      * Compose a set of path segments supplied as arguments into an escaped EL expression. Escaped version
      * of fluid.model.composeSegments
      */
@@ -226,9 +224,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return path;
     };
 
-    /** Helpful utility for use in resolvers - matches a path which has already been
-     * parsed into segments **/
-
+    /* Helpful utility for use in resolvers - matches a path which has already been parsed into segments */
     fluid.pathUtil.matchSegments = function (toMatch, segs, start, end) {
         if (end - start !== toMatch.length) {
             return false;
@@ -280,11 +276,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // Following "tarjan" at https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm
 
     /** Compute the strongly connected components of a graph, specified as a list of vertices and an accessor function.
-     * Returns an array of arrays of strongly connected vertices, with each component in topologically sorted order
-     * @param vertices {Array of Vertex} The vertices of the graph to be processed. Each vertex object will be polluted
-     * with three extra fields: `tarjanIndex`, `lowIndex` and `onStack`
-     * @param accessor {Function: Vertex -> Array of Vertex}
-     * @return Array of Array of Vertex
+     * Returns an array of arrays of strongly connected vertices, with each component in topologically sorted order.
+     * @param {Vertex[]} vertices - An array of vertices of the graph to be processed. Each vertex object will be polluted
+     * with three extra fields: `tarjanIndex`, `lowIndex` and `onStack`.
+     * @param {Function} accessor - A function that returns the accessor vertex or vertices.
+     * @return {Array.<Vertex[]>} - An array of arrays of vertices.
      */
     fluid.stronglyConnected = function (vertices, accessor) {
         var that = {
@@ -386,9 +382,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /** Compute relay dependency out arcs for a group of initialising components.
-     * @param transacs {Object} Hash of component id to local ChangeApplier transaction
-     * @param mrec {Object} Hash of component id to enlisted component record
-     * @return Object Hash of component id to list of enlisted component record
+     * @param {Object} transacs - Hash of component id to local ChangeApplier transaction.
+     * @param {Object} mrec - Hash of component id to enlisted component record.
+     * @return {Object} - Hash of component id to list of enlisted component record.
      */
     fluid.computeInitialOutArcs = function (transacs, mrec) {
         return fluid.transform(mrec, function (recel, id) {
@@ -420,8 +416,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
 
     /** Operate all coordinated transactions by bringing models to their respective initial values, and then commit them all
-     * @param that {Component} A representative component of the collection for which the initial transaction is to be operated
-     * @param mrec {Object} The global model transaction record for the init transaction. This is a hash indexed by component id
+     * @param {Component} that - A representative component of the collection for which the initial transaction is to be operated
+     * @param {Object} mrec - The global model transaction record for the init transaction. This is a hash indexed by component id
      * to a model transaction record, as registered in `fluid.enlistModelComponent`. This has members `that`, `applier`, `complete`.
      */
     fluid.operateInitialTransaction = function (that, mrec) {
@@ -510,22 +506,22 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * detects "references into model material" by looking for the first path segment in the path reference which holds the value "model". Some of its workflow is bypassed
      * in the special case of a reference representing an implicit model relay. In this case, ref will definitely be a String, and if it does not refer to model material, rather than
      * raising an error, the return structure will include a field <code>nonModel: true</code>
-     * @param that {Component} The component holding the reference
-     * @param name {String} A human-readable string representing the type of block holding the reference - e.g. "modelListeners"
-     * @param ref {String|ModelReference} The model reference to be parsed. This may have already been partially parsed at the original site - that is, a ModelReference is a
+     * @param {Component} that - The component holding the reference
+     * @param {String} name - A human-readable string representing the type of block holding the reference - e.g. "modelListeners"
+     * @param {String|ModelReference} ref - The model reference to be parsed. This may have already been partially parsed at the original site - that is, a ModelReference is a
      * structure containing
-     *     segs: {Array of String} An array of model path segments to be dereferenced in the target component (will become `modelSegs` in the final return)
+     *     segs: {String[]} An array of model path segments to be dereferenced in the target component (will become `modelSegs` in the final return)
      *     context: {String} An IoC reference to the component holding the model
-     * @param implicitRelay {Boolean} <code>true</code> if the reference was being resolved for an implicit model relay - that is,
+     * @param {Boolean} implicitRelay - <code>true</code> if the reference was being resolved for an implicit model relay - that is,
      * whether it occured within the `model` block itself. In this case, references to non-model material are not a failure and will simply be resolved
      * (by the caller) onto their targets (as constants). Otherwise, this function will issue a failure on discovering a reference to non-model material.
-     * @return A structure holding:
+     * @return {Object} - A structure holding:
      *    that {Component} The component whose model is the target of the reference. This may end up being constructed as part of the act of resolving the reference
      *    applier {Component} The changeApplier for the component <code>that</code>. This may end up being constructed as part of the act of resolving the reference
-     *    modelSegs {Array of String} An array of path segments into the model of the component
+     *    modelSegs {String[]} An array of path segments into the model of the component
      *    path {String} the value of <code>modelSegs</code> encoded as an EL path (remove client uses of this in time)
      *    nonModel {Boolean} Set if <code>implicitRelay</code> was true and the reference was not into a model (modelSegs/path will not be set in this case)
-     *    segs {Array of String} Holds the full array of path segments found by parsing the original reference - only useful in <code>nonModel</code> case
+     *    segs {String[]} Holds the full array of path segments found by parsing the original reference - only useful in <code>nonModel</code> case
      */
     fluid.parseValidModelReference = function (that, name, ref, implicitRelay) {
         var reject = function () {
@@ -626,11 +622,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * representative of this transaction on `targetApplier`, creates and stores a "transaction element" within the global transaction
      * record keyed by the target applier's id. The transaction element is also pushed onto the `relays` member of the global transaction record - they
      * will be sorted by priority here when changes are fired.
-     * @param transRec {TransactionRecord} The global record for the current ChangeApplier transaction as retrieved from `fluid.getModelTransactionRec`
-     * @param targetApplier {ChangeApplier} The ChangeApplier to which outgoing changes will be applied. A local representative of the transaction will be opened on this applier and returned.
-     * @param transId {String} The global id of this transaction
-     * @param options {Object} The `options` argument supplied to `fluid.registerDirectChangeRelay`. This will be stored in the returned transaction element
+     * @param {TransactionRecord} transRec - The global record for the current ChangeApplier transaction as retrieved from `fluid.getModelTransactionRec`
+     * @param {ChangeApplier} targetApplier - The ChangeApplier to which outgoing changes will be applied. A local representative of the transaction will be opened on this applier and returned.
+     * @param {String} transId - The global id of this transaction
+     * @param {Object} options - The `options` argument supplied to `fluid.registerDirectChangeRelay`. This will be stored in the returned transaction element
      * - note that only the member `update` is ever used in `fluid.model.updateRelays` - TODO: We should thin this out
+     * @param {Object} npOptions - Namespace and priority options
+     *    namespace {String} [optional] The namespace attached to this relay definition
+     *    priority {String} [optional] The (unparsed) priority attached to this relay definition
      * @return {Object} A "transaction element" holding information relevant to this relay's enlistment in the current transaction. This includes fields:
      *     transaction {Transaction} The local representative of this transaction created on `targetApplier`
      *     relayCount {Integer} The number of times this relay has been activated in this transaction
@@ -669,21 +668,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /** Registers a listener operating one leg of a model relay relation, connecting the source and target. Called once or twice from `fluid.connectModelRelay` -
      * see the comment there for the three cases involved. Note that in its case iii)B) the applier to bind to is not the one attached to `target` but is instead
      * held in `options.targetApplier`.
-     * @param target {Component} The target component at the end of the relay.
-     * @param targetSegs {Array of String} The path in the target where outgoing changes are to be fired
-     * @param source {Component|Null} The source component from where changes will be listened to. May be null if the change source is a relay document.
-     * @param sourceSegs {Array of String} The path in the source component's model at which changes will be listened to
-     * @param linkId {String} The unique id of this relay arc. This will be used as a key within the active transaction record to look up dynamic information about
+     * @param {Object} target - The target component at the end of the relay.
+     * @param {String[]} targetSegs - String segments representing the path in the target where outgoing changes are to be fired
+     * @param {Component|null} source - The source component from where changes will be listened to. May be null if the change source is a relay document.
+     * @param {String[]} sourceSegs - String segments representing the path in the source component's model at which changes will be listened to
+     * @param {String} linkId - The unique id of this relay arc. This will be used as a key within the active transaction record to look up dynamic information about
      *     activation of the link within that transaction (currently just an activation count)
-     * @param transducer {Function|Null} A function which will be invoked when a change is to be relayed. This is one of the adapters constructed in "makeTransformPackage"
+     * @param {Function|null} transducer - A function which will be invoked when a change is to be relayed. This is one of the adapters constructed in "makeTransformPackage"
      *     and is set in all cases other than iii)B) (collecting changes to contextualised relay). Note that this will have a member `cond` as returned from
      *    `fluid.model.parseRelayCondition` encoding the condition whereby changes should be excluded from the transaction. The rule encoded by the condition
      *    will be applied by the function within `transducer`.
-     * @param options {Object}
+     * @param {Object} options -
      *    transactional {Boolean} `true` in case iii) - although this only represents `half-transactions`, `false` in others since these are resolved immediately with no granularity
      *    targetApplier {ChangeApplier} [optional] in case iii)B) holds the applier for the contextualised relay document which outgoing changes should be applied to
      *    sourceApplier {ChangeApplier} [optional] in case ii) holds the applier for the contextualised relay document on which we listen for outgoing changes
-     * @param npOptions {Object} Namespace and priority options
+     * @param {Object} npOptions - Namespace and priority options
      *    namespace {String} [optional] The namespace attached to this relay definition
      *    priority {String} [optional] The (unparsed) priority attached to this relay definition
      */
@@ -762,15 +761,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * while traversing the transform document), and our argument `source` is the component holding the transform, and so
      * the call to `fluid.registerDirectChangeRelay` will have `source` and `target` reversed (`fluid.registerDirectChangeRelay` will bind to the `targetApplier`
      * in the options rather than source's applier).
-     * @param source {Component} The component holding the material giving rise to the relay, or the one referred to by the `source` member
+     * @param {Component} source - The component holding the material giving rise to the relay, or the one referred to by the `source` member
      *   of the configuration in case ii), if there is one
-     * @param sourceSegs {Array of String|Null} The parsed segments of the `source` relay reference in case i), or the offset into the transform
+     * @param {Array|null} sourceSegs - An array of parsed string segments of the `source` relay reference in case i), or the offset into the transform
      *   document of the reference component in case iii), otherwise `null` (case ii))
-     * @param target {Component} The component holding the model relay `target` in cases i) and ii), or the component at the other end of
+     * @param {Component} target - The component holding the model relay `target` in cases i) and ii), or the component at the other end of
      *   the model reference in case iii) (in this case in fact a "source" for the changes.
-     * @param targetSegs {Array of String} The parsed segments of the `target` reference in cases i) and ii), or of the model reference in
+     * @param {Array} targetSegs - An array of parsed string segments of the `target` reference in cases i) and ii), or of the model reference in
      *   case iii)
-     * @param options {Object} A structure describing the relay, allowing discrimination of the various cases above. This is derived from the return from
+     * @param {Object} options - A structure describing the relay, allowing discrimination of the various cases above. This is derived from the return from
      * `fluid.makeTransformPackage` but will have some members filtered in different cases. This contains members:
      *    update {Function} A function to be called at the end of a "half-transaction" when all pending updates have been applied to the document's applier.
      *        This discriminates case iii)
@@ -825,8 +824,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /** Determines whether the supplied transaction should have changes not propagated into it as a result of being excluded by a
      * condition specification.
-     * @param transaction {Transaction} A local ChangeApplier transaction, with member `fullSources` holding all currently active sources
-     * @param spec {ConditionSpec} A parsed relay condition specification, as returned from `fluid.model.parseRelayCondition`.
+     * @param {Transaction} transaction - A local ChangeApplier transaction, with member `fullSources` holding all currently active sources
+     * @param {ConditionSpec} spec - A parsed relay condition specification, as returned from `fluid.model.parseRelayCondition`.
      * @return {Boolean} `true` if changes should be excluded from the supplied transaction according to the supplied specification
      */
     fluid.isExcludedChangeSource = function (transaction, spec) {
@@ -946,7 +945,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /** Parse a relay condition specification, e.g. of the form `{includeSource: "init"}` or `never` into a hash representation
      * suitable for rapid querying.
-     * @param condition {String|Object} A relay condition specification, appearing in the section `forward` or `backward` of a
+     * @param {String|Object} condition - A relay condition specification, appearing in the section `forward` or `backward` of a
      * relay definition
      * @return {RelayCondition} The parsed condition, holding members `includeSource` and `excludeSource` each with a hash to `true`
      * of referenced sources
@@ -974,9 +973,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /** Parse a single model relay record as appearing nested within the `modelRelay` block in a model component's
      * options. By various calls to `fluid.connectModelRelay` this will set up the structure operating the live
      * relay during the component#s lifetime.
-     * @param that {Component} The component holding the record, currently instantiating
-     * @param mrrec {Object} The model relay record. This must contain either a member `singleTransform` or `transform` and may also contain
+     * @param {Component} that - The component holding the record, currently instantiating
+     * @param {Object} mrrec - The model relay record. This must contain either a member `singleTransform` or `transform` and may also contain
      * members `namespace`, `path`, `priority`, `forward` and `backward`
+     * @param {String} key -
      */
     fluid.parseModelRelay = function (that, mrrec, key) {
         var parsedSource = mrrec.source !== undefined ? fluid.parseValidModelReference(that, "modelRelay record member \"source\"", mrrec.source) :
@@ -1012,10 +1012,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * This is called in two situations: A) parsing the `model` configuration option for a model component, and B) parsing the
      * `transform` member (perhaps derived from `singleTransform`) of a `modelRelay` block for a model component. It calls itself
      * recursively as it progresses through the model document material with updated `segs`
-     * @param that {Component} The component holding the model document
-     * @param modelRec {Any} The model document specification to be parsed
-     * @param segs {Array of String} The array of path segments from the root of the entire model document to the point of current parsing
-     * @param options {Object} Configuration options (mutable) governing this parse. This is primarily used to hand as the 5th argument to
+     * @param {Component} that - The component holding the model document
+     * @param {Any} modelRec - The model document specification to be parsed
+     * @param {String[]} segs - The array of string path segments from the root of the entire model document to the point of current parsing
+     * @param {Object} options - Configuration options (mutable) governing this parse. This is primarily used to hand as the 5th argument to
      * `fluid.connectModelRelay` for any model references found, and contains members
      *    refCount {Integer} An count incremented for every call to `fluid.connectModelRelay` setting up a synchronizing relay for every
      * reference to model material encountered
@@ -1025,6 +1025,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *    update {Function} [optional] A function to be called on conclusion of a "half-transaction" where all currently pending updates have been applied
      * to this transform document. This function will update/regenerate the relay transform functions used to relay changes between the transform
      * ends based on the updated document.
+     * @return {Any} - The resulting model value.
      */
     fluid.parseImplicitRelay = function (that, modelRec, segs, options) {
         var value;
@@ -1267,7 +1268,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /** CHANGE APPLIER **/
 
-    /** Dispatches a list of changes to the supplied applier */
+    /* Dispatches a list of changes to the supplied applier */
     fluid.fireChanges = function (applier, changes) {
         for (var i = 0; i < changes.length; ++i) {
             applier.fireChangeRequest(changes[i]);
@@ -1413,7 +1414,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * not contain circular links.
      * @param modela The first model to be compared
      * @param modelb The second model to be compared
-     * @param options {Object} If supplied, will receive a map and summary of the change content between the objects. Structure is:
+     * @param {Object} options - If supplied, will receive a map and summary of the change content between the objects. Structure is:
      *     changeMap: {Object/String} An isomorphic map of the object structures to values "ADD" or "DELETE" indicating
      * that values have been added/removed at that location. Note that in the case the object structure differs at the root, <code>changeMap</code> will hold
      * the plain String value "ADD" or "DELETE"
@@ -1678,12 +1679,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             ation.fireChangeRequest(changeRequest);
             ation.commit();
         };
+
         /**
          * Initiate a fresh transaction on this applier, perhaps coordinated with other transactions sharing the same id across the component tree
          * Arguments all optional
-         * localSource {String}: "local", "relay" or null Local source identifiers only good for transaction's representative on this applier
-         *  globalSources: {String|Array of String|Object String->true} Global source identifiers common across this transaction
-         *  transactionId: {String} Global transaction id to enlist with
+         * @param {String} localSource  - "local", "relay" or null Local source identifiers only good for transaction's representative on this applier
+         * @param {String|Array|Object} globalSources - Global source identifiers common across this transaction, expressed as a single string, an array of strings, or an object with a "toString" method.
+         * @param {String} transactionId - Global transaction id to enlist with.
+         * @return {Object} - The component initiating the change.
          */
         that.initiate = function (localSource, globalSources, transactionId) {
             localSource = globalSources === "init" ? null : (localSource || "local"); // supported values for localSource are "local" and "relay" - globalSource of "init" defeats defaulting of localSource to "local"
@@ -1748,10 +1751,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * applied at a non-root path in a model). The returned array of
      * change records may be used with fluid.fireChanges().
      *
-     * @param value {Any} Model value to compare
-     * @param oldValue {Any} Model value to compare
-     * @param changePathPrefix {String|Array of String} [optional] Path prefix to prepend to change record paths
-     * @return {Array of Object} An array of change records
+     * @param {Any} value - Model value to compare.
+     * @param {Any} oldValue - Model value to compare.
+     * @param {String|Array} [changePathPrefix] - [optional] Path prefix to prepend to change record paths, expressed as a string or an array of string segments.
+     * @return {Array} - An array of change record objects.
      */
     fluid.modelPairToChanges = function (value, oldValue, changePathPrefix) {
         changePathPrefix = changePathPrefix || "";
@@ -1779,11 +1782,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * the model, our path from the root of the model is recorded in
      * the 'changeSegs' argument.
      *
-     * @param value {Any} Model value
-     * @param changePathPrefixSegs {Array of String} Path prefix to prepend to change record paths
-     * @param changeMap {String|Object} The changeMap structure from fluid.model.diff()
-     * @param changeSegs {Array of String} Our path relative to the model value root
-     * @param changes {Array of Object} The accumulated change records
+     * @param {Any} value - Model value
+     * @param {String[]} changePathPrefixSegs - Path prefix to prepend to change record paths, expressed as an array of string segments.
+     * @param {String|Object} changeMap - The changeMap structure from fluid.model.diff().
+     * @param {String[]} changeSegs - Our path relative to the model value root, expressed as an array of string segments.
+     * @param {Object[]} changes - The accumulated change record objects.
      */
     fluid.modelPairToChangesImpl = function (value, changePathPrefixSegs, changeMap, changeSegs, changes) {
         if (changeMap === "ADD") {

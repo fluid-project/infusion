@@ -126,7 +126,7 @@ var jqUnit = jqUnit || {};
         return jqUnit.assertCanoniseEqual(message, expected, actual, jqUnit.canonicaliseDom);
     };
 
-    /** Condense a DOM node into a plain Javascript object, to facilitate testing against
+    /* Condense a DOM node into a plain Javascript object, to facilitate testing against
      * a trial, with the use of assertDeepEq or similar
      */
     jqUnit.assertNode = function (message, expected, node) {

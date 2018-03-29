@@ -116,7 +116,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         transaction.commit(); // submit transaction
     };
 
-    /**
+    /*
      * Similar to fluid.promise.makeSequenceStrategy from FluidPromises.js; however, rather than passing along the
      * result from one listener in the sequence to the next, the original payload is always passed to each listener.
      * In this way, the synthetic events are handled like typical events, but a promise can be resolved/rejected at the
@@ -161,7 +161,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * after running fetchImpl (e.g. updating the model, unblocking the queue). If promises returned from onFetch, afterFetch, or
      * fetchImpl are rejected, the onFetchError event will be fired.
      *
-     * @returns {Promise}
+     * @param {Object} that - The component itself.
+     * @return {Promise} - A promise that will be resolved with the fetched value or rejected if there is an error.
      */
     fluid.remoteModelComponent.fetch = function (that) {
         var promise = fluid.promise();
@@ -208,7 +209,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * after running writeImpl (e.g. unblocking the queue, performing a fetch). If promises returned from onWrite, afterWrite, or
      * writeImpl are rejected, the onWriteError event will be fired.
      *
-     * @returns {Promise}
+     * @param {Object} that - The component itself.
+     * @return {Promise} - A promise that will be resolved when the value is written or rejected if there is an error.
      */
     fluid.remoteModelComponent.write = function (that) {
         var promise = fluid.promise();

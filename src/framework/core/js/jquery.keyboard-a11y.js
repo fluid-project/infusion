@@ -34,8 +34,9 @@ var fluid = fluid || fluid_3_0_0;
      *  permitting chaining to occur. However, as a courtesy, the particular "this" returned
      *  will be augmented with a function that() which will allow the original return
      *  value to be retrieved if desired.
-     *  @param name {String} The name under which the "plugin space" is to be injected into JQuery
-     *  @param peer {Object} The root of the namespace corresponding to the peer object.
+     *  @param {String} name - The name under which the "plugin space" is to be injected into JQuery
+     *  @param {Object} peer - The root of the namespace corresponding to the peer object.
+     *  @return {Function} - A JQuery UI plugin function.
      */
 
     fluid.thatistBridge = function (name, peer) {
@@ -111,7 +112,9 @@ var fluid = fluid || fluid_3_0_0;
      * Gets the value of the tabindex attribute for the first item, or sets the tabindex value of all elements
      * if toIndex is specified.
      *
-     * @param toIndex {String|Number}
+     * @param {jQuery} target - The target element.
+     * @param {String|Number} toIndex - (Optional) the tabIndex value to set on the target.
+     * @return {Any} - The result of the underlying "get" or "set" operation.
      */
     fluid.tabindex = function (target, toIndex) {
         target = $(target);
@@ -122,7 +125,7 @@ var fluid = fluid || fluid_3_0_0;
         }
     };
 
-    /**
+    /*
      * Removes the tabindex attribute altogether from each element.
      */
     fluid.tabindex.remove = function (target) {
@@ -132,7 +135,7 @@ var fluid = fluid || fluid_3_0_0;
         });
     };
 
-    /**
+    /*
      * Determines if an element actually has a tabindex attribute present.
      */
     fluid.tabindex.hasAttr = function (target) {
@@ -149,7 +152,7 @@ var fluid = fluid || fluid_3_0_0;
         return togo.length === 1 ? togo[0] : togo;
     };
 
-    /**
+    /*
      * Determines if an element either has a tabindex attribute or is naturally tab-focussable.
      */
     fluid.tabindex.has = function (target) {
@@ -194,7 +197,7 @@ var fluid = fluid || fluid_3_0_0;
     };
 
     // Public API.
-    /**
+    /*
      * Makes all matched elements available in the tab order by setting their tabindices to "0".
      */
     fluid.tabbable = function (target) {
@@ -228,7 +231,7 @@ var fluid = fluid || fluid_3_0_0;
         }
     };
 
-    /**
+    /*
      * Does the work of selecting an element and delegating to the client handler.
      */
     var drawSelection = function (elementToSelect, handler) {
@@ -237,7 +240,7 @@ var fluid = fluid || fluid_3_0_0;
         }
     };
 
-    /**
+    /*
      * Does does the work of unselecting an element and delegating to the client handler.
      */
     var eraseSelection = function (selectedElement, handler) {
@@ -463,7 +466,7 @@ var fluid = fluid || fluid_3_0_0;
         return that;
     };
 
-    /**
+    /*
      * Makes all matched elements selectable with the arrow keys.
      * Supply your own handlers object with onSelect: and onUnselect: properties for custom behaviour.
      * Options provide configurability, including direction: and autoSelectFirstItem:
@@ -476,14 +479,14 @@ var fluid = fluid || fluid_3_0_0;
         return that;
     };
 
-    /**
+    /*
      * Selects the specified element.
      */
     fluid.selectable.select = function (target, toSelect) {
         fluid.focus(toSelect);
     };
 
-    /**
+    /*
      * Selects the next matched element.
      */
     fluid.selectable.selectNext = function (target) {
@@ -491,7 +494,7 @@ var fluid = fluid || fluid_3_0_0;
         focusNextElement(fluid.getScopedData(target, CONTEXT_KEY));
     };
 
-    /**
+    /*
      * Selects the previous matched element.
      */
     fluid.selectable.selectPrevious = function (target) {
@@ -499,7 +502,7 @@ var fluid = fluid || fluid_3_0_0;
         focusPreviousElement(fluid.getScopedData(target, CONTEXT_KEY));
     };
 
-    /**
+    /*
      * Returns the currently selected item wrapped as a jQuery object.
      */
     fluid.selectable.currentSelection = function (target) {
@@ -540,7 +543,7 @@ var fluid = fluid || fluid_3_0_0;
         return isCtrlKeyPresent || isAltKeyPresent || isShiftKeyPresent;
     };
 
-    /** Constructs a raw "keydown"-facing handler, given a binding entry. This
+    /* Constructs a raw "keydown"-facing handler, given a binding entry. This
      *  checks whether the key event genuinely triggers the event and forwards it
      *  to any "activateHandler" registered in the binding.
      */
@@ -596,7 +599,7 @@ var fluid = fluid || fluid_3_0_0;
         });
     };
 
-    /**
+    /*
      * Makes all matched elements activatable with the Space and Enter keys.
      * Provide your own handler function for custom behaviour.
      * Options allow you to provide a list of additionalActivationKeys.
@@ -606,7 +609,7 @@ var fluid = fluid || fluid_3_0_0;
         makeElementsActivatable(target, fn, fluid.activatable.defaults.keys, options);
     };
 
-    /**
+    /*
      * Activates the specified element.
      */
     fluid.activate = function (target) {

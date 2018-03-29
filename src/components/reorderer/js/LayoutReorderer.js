@@ -19,9 +19,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * A convenience function for applying the Reorderer to portlets, content blocks, or other chunks of layout with
      * minimal effort.
      *
-     * @param container {String|Object} A CSS-based selector, single-element jQuery object, or DOM element that identifies the DOM element containing the layout.
-     * @param userOptions {Object} An optional collection of key/value pairs that can be used to further configure the Layout Reorderer. See: https://wiki.fluidproject.org/display/docs/Layout+Reorderer+API
-     * @return {Object} A newly constructed reorderer component.
+     * @param {String|Object} container - A CSS-based selector, single-element jQuery object, or DOM element that identifies the DOM element containing the layout.
+     * @param {Object} [userOptions] - An optional collection of key/value pairs that can be used to further configure the Layout Reorderer. See: https://wiki.fluidproject.org/display/docs/Layout+Reorderer+API
+     * @return {Object} - A newly constructed reorderer component.
      */
     fluid.reorderLayout = function (container, userOptions) {
         var assembleOptions = {

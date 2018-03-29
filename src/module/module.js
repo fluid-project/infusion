@@ -29,7 +29,7 @@ fluid.registerNamespace("fluid.module");
 
 fluid.module.modules = {};
 
-/** A module which has just loaded will call this API to register itself into
+/* A module which has just loaded will call this API to register itself into
  * the Fluid module loader's records. The call will generally take the form:
  * <code>fluid.module.register("my-module", __dirname, require)</code>
  */
@@ -42,8 +42,8 @@ fluid.module.register = function (name, baseDir, moduleRequire) {
 };
 
 /** Given a directory, return an array of slash-terminated parent directories, starting with the parent drive or filesystem
- * @param baseDir {String} A directory name
- * @return {Array of String} An array of nested directory names, starting with the parent drive or filesystem root and ending
+ * @param {String} baseDir - A directory name.
+ * @return {String[]} - An array of nested directory names, starting with the parent drive or filesystem root and ending
  * with `baseDir`
  */
 
@@ -58,10 +58,9 @@ fluid.module.pathsToRoot = function (baseDir) {
 };
 
 /** Returns a decoded version of the package.json file if the supplied directory contains one, or else `null`
- * @param dir {String} A directory name
- * @return {Object|Null} The decoded package.json file found in this directory, or `null` if there is not one
+ * @param {String} dir  - A directory name.
+ * @return {Object|Null} - The decoded package.json file found in this directory, or `null` if there is not one.
  */
-
 fluid.module.hasPackage = function (dir) {
     var packagePath = dir + path.sep + "package.json";
     try {
@@ -73,12 +72,12 @@ fluid.module.hasPackage = function (dir) {
 
 /** Given a directory, return a structure recording at each level of directory containment whether it contains a valid
  * node module, by inspecting it for a package.json file and inspecting any such file for a `name` entry
- * @param root {String} [optional] A directory name - if omitted, will use the directory of this module
- * @return {Object} a structure holding the following aligned arrays
- *    paths: {Array of String} an array of the parent directory names as returned from `fluid.module.pathsToRoot`
+ * @param {String} [root] - [optional] A directory name - if omitted, will use the directory of this module
+ * @return {Object} - A structure holding the following aligned arrays:
+ *    paths: {String[]} an array of the parent directory names as returned from `fluid.module.pathsToRoot`
  *    packages: {Array of Object|Null} an array of decoded package.json files, aligned with the array `paths`
- *    names: {Array of String|Null} an array of package names, aligned with the array `paths`, with entries `undefined` if
- * the respective directory does not contain a valid node packags
+ *    names: {String[]|Null} an array of package names, aligned with the array `paths`, with entries `undefined` if
+ *           the respective directory does not contain a valid node packags
  */
 
 fluid.module.modulesToRoot = function (root) {
@@ -107,7 +106,7 @@ fluid.module.preInspect = function (root) {
     });
 };
 
-/** Canonicalise a path by replacing all backslashes with forward slashes,
+/* Canonicalise a path by replacing all backslashes with forward slashes,
  * (such paths are always valid when supplied to Windows APIs) - except for any initial
  * "\\" beginning a UNC path - since this will defeat the simpleminded "// -> /" normalisation which is done in
  * fluid.module.resolvePath, kettle.dataSource.file.handle and similar locations.
@@ -121,8 +120,7 @@ fluid.module.getDirs = function () {
     return fluid.getMembers(fluid.module.modules, "baseDir");
 };
 
-/** Returns a suitable set of terms for interpolating module root paths into file paths by use of `fluid.stringTemplate`
- */
+/* Returns a suitable set of terms for interpolating module root paths into file paths by use of `fluid.stringTemplate` */
 fluid.module.terms = function () {
     return fluid.module.getDirs();
 };

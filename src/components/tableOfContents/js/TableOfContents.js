@@ -232,8 +232,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Create an object model based on the type and ID.  The object should contain an
      * ID that maps the selectors (ie. level1:), and the object should contain a children
-     * @param   string      Accepted values are: level, items
-     * @param   int         The current level which is used here as the ID.
+     * @param {String} type - Accepted values are: level, items
+     * @param {Integer} ID - The current level which is used here as the ID.
+     * @return {Object} - An object that models the level based on the type and ID.
      */
     fluid.tableOfContents.levels.objModel = function (type, ID) {
         var objModel = {
@@ -243,7 +244,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return objModel;
     };
 
-    /**
+    /*
      * Configure item object when item object has no text, uri, level in it.
      * defaults to add a decorator to hide the bullets.
      */
@@ -255,9 +256,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
-     * @param   Object  that.model, the model with all the headings, it should be in the format of {headings: [...]}
-     * @param   int     the current level we want to generate the tree for.  default to 1 if not defined.
-     * @return  Object  A tree that looks like {children: [{ID: x, subTree:[...]}, ...]}
+     * @param {Object} headingsModel - that.model, the model with all the headings, it should be in the format of {headings: [...]}
+     * @param {Integer} currentLevel - the current level we want to generate the tree for.  default to 1 if not defined.
+     * @return {Object} - A tree that looks like {children: [{ID: x, subTree:[...]}, ...]}
      */
     fluid.tableOfContents.levels.generateTree = function (headingsModel, currentLevel) {
         currentLevel = currentLevel || 0;
@@ -305,7 +306,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
-     * @return  Object  Returned produceTree must be in {headings: [trees]}
+     * @param {Object} that - The component itself.
+     * @return {Object} - Returned produceTree must be in {headings: [trees]}
      */
     fluid.tableOfContents.levels.produceTree = function (that) {
         var tree = fluid.tableOfContents.levels.generateTree(that.model);
