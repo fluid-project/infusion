@@ -179,8 +179,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * return "font-size" in px
-     * @param (Object) container
-     * @param (Object) fontSizeMap: the mapping between the font size string values ("small", "medium" etc) to px values
+     * @param {Object} container - The container to evaluate.
+     * @param {Object} fontSizeMap - The mapping between the font size string values ("small", "medium" etc) to px values.
+     * @return {Number} - The size of the container, in px units.
      */
     fluid.prefs.enactor.getTextSizeInPx = function (container, fontSizeMap) {
         var fontSize = container.css("font-size");

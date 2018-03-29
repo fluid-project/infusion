@@ -250,9 +250,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     /**
-      * Retrieve a jquery that's associated with all the selectorNames
-      * @param  Array   Array of selector names
-      */
+     * Retrieve a jquery that's associated with all the selectorNames
+     * @param {Object} that - The component itself.
+     * @param  {Array} selectorNames - Array of selector names.
+     * @return {Object} - A jQuery object containing objects matching selectorNames.
+     */
     var locateSet = function (that, selectorNames) {
         var set = $();  // Creates an empty jQuery object.
         fluid.each(selectorNames, function (selectorName) {

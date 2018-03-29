@@ -116,6 +116,14 @@ fluid_3_0_0 = fluid_3_0_0 || {};
             parentBundle: "nomerge",
             "changeApplierOptions.resolverSetConfig": "resolverSetConfig"
         },
+        workflows: {
+            local: {
+                initRendererShadow: {
+                    funcName: "fluid.initRendererShadow",
+                    priority: "before:notifyInitModel"
+                }
+            }
+        },
         invokers: {
             refreshView: {
                 funcName: "fluid.rendererComponent.refreshView",
@@ -284,7 +292,7 @@ fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.renderer.NO_COMPONENT = {};
 
-    /** A special "shallow copy" operation suitable for nondestructively
+    /* A special "shallow copy" operation suitable for nondestructively
      * merging trees of components. jQuery.extend in shallow mode will
      * neglect null valued properties.
      * This function is unsupported: It is not really intended for use by implementors.

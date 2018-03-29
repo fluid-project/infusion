@@ -93,7 +93,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     fluid.makeGradeLinkage("fluid.prefs.cookieStore.linkage", ["fluid.dataSource.writable", "fluid.prefs.cookieStore"], "fluid.prefs.cookieStore.writable");
 
-    /**
+    /*
      * Retrieve and return the value of the cookie
      */
     fluid.prefs.cookieStore.getCookie = function (options) {
@@ -119,9 +119,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Assembles the cookie string
-     * @param cookieName {String} name of the cookie
-     * @param data {String} the serialized data to be stored in the cookie
-     * @param options {Object} settings
+     * @param {String} cookieName - name of the cookie
+     * @param {String} data - the serialized data to be stored in the cookie
+     * @param {Object} options - settings
+     * @return {String} - A string representing the assembled cookie.
      */
     fluid.prefs.cookieStore.assembleCookie = function (cookieName, data, options) {
         options = options || {};
@@ -140,8 +141,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Saves the settings into a cookie
-     * @param payload {Object} the serialized data to write to the cookie
-     * @param options {Object} settings
+     * @param {Object} payload - the serialized data to write to the cookie
+     * @param {Object} options - settings
+     * @return {Object} - The original payload.
      */
     fluid.prefs.cookieStore.writeCookie = function (payload, options) {
         var cookieName = fluid.get(options, ["directModel", "cookieName"]) || options.name;

@@ -1433,13 +1433,14 @@ fluid_3_0_0 = fluid_3_0_0 || {};
 
    /**
     * A common utility function to make a simple view of rows, where each row has a selection control and a label
-    * @param optionlist {Object} An array of the values of the options in the select
-    * @param opts {Object} An object with this structure: {
-            selectID: "",
-            rowID: "",
-            inputID: "",
-            labelID: ""
-        }
+    * @param {Object} optionlist - An array of the values of the options in the select
+    * @param {Object} opts - An object with this structure: {
+    *       selectID: "",
+    *       rowID: "",
+    *       inputID: "",
+    *       labelID: ""
+    *   }
+    * @return {Object} - The results of transforming optionlist.
     */
     fluid.explodeSelectionToInputs = function (optionlist, opts) {
         return fluid.transform(optionlist, function (option, index) {
@@ -1531,10 +1532,12 @@ fluid_3_0_0 = fluid_3_0_0 || {};
     };
     /** A slightly generalised version of fluid.selfRender that does not assume that the
      * markup used to source the template is within the target node.
-     * @param source Either a structure {node: node, armouring: armourstyle} or a string
+     * @param {Object | String} source - Either a structure {node: node, armouring: armourstyle} or a string
      * holding a literal template
-     * @param target The node to receive the rendered markup
-     * @param tree, options, return as for fluid.selfRender
+     * @param {Object} target - The node to receive the rendered markup
+     * @param {Object} tree - The component tree to be rendered.
+     * @param {Object} options - An options structure to configure the rendering and binding process.
+     * @return {Object} - A templates structure, suitable for a further call to fluid.reRender or fluid.renderTemplates.
      */
     fluid.render = function (source, target, tree, options) {
         options = options || {};
@@ -1556,12 +1559,11 @@ fluid_3_0_0 = fluid_3_0_0 || {};
      * node with the rendered markup, and finally performs any required data
      * binding. The parsed template is returned for use with a further call to
      * reRender.
-     * @param node The node both holding the template, and whose markup is to be
+     * @param {Object} node - The node both holding the template, and whose markup is to be
      * replaced with the rendered result.
-     * @param tree The component tree to be rendered.
-     * @param options An options structure to configure the rendering and binding process.
-     * @return A templates structure, suitable for a further call to fluid.reRender or
-     * fluid.renderTemplates.
+     * @param {Object} tree - The component tree to be rendered.
+     * @param {Object} options - An options structure to configure the rendering and binding process.
+     * @return {Object} - A templates structure, suitable for a further call to fluid.reRender or fluid.renderTemplates.
      */
     fluid.selfRender = function (node, tree, options) {
         options = options || {};

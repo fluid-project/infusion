@@ -335,7 +335,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         autoSave: false
     });
 
-    /**
+    /*
      * Refresh PrefsEditor
      */
     fluid.prefs.prefsEditor.applyChanges = function (that) {
@@ -382,8 +382,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Sends the prefsEditor.model to the store and fires onSave
-     * @param that: A fluid.prefs.prefsEditor instance
-     * @return the saved model
+     * @param {Object} that: A fluid.prefs.prefsEditor instance
+     * @return {Promise} A promise that will be resolved with the saved model or rejected on error.
      */
     fluid.prefs.prefsEditor.save = function (that) {
         var promise = fluid.promise();
@@ -416,7 +416,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return promise;
     };
 
-    /**
+    /*
      * Resets the selections to the integrator's defaults and fires afterReset
      */
     fluid.prefs.prefsEditor.reset = function (that) {
@@ -429,7 +429,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         that.events.afterReset.fire(that);
     };
 
-    /**
+    /*
      * Resets the selections to the last saved selections and fires onCancel
      */
     fluid.prefs.prefsEditor.cancel = function (that) {

@@ -179,7 +179,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
    /**
     * Pretty prints a file's size, converting from bytes to kilobytes or megabytes.
     *
-    * @param bytes {Number} the files size, specified as in number bytes.
+    * @param {Number} bytes - The file's size, specified as in number bytes.
+    * @return {String} - The file size as a string.
     */
     fluid.uploader.formatFileSize = function (bytes) {
         if (typeof (bytes) === "number") {
