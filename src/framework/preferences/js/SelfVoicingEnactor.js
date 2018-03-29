@@ -191,8 +191,24 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return fluid.isValue(str) && /\S/.test(str);
     };
 
-    // blockindex is the start index in the entire block of text.
-    // charIndex is the start index of the word in the nested block of text
+    /**
+     * Determines if there is rendered text to in an element.
+     * Will return false in the following conditions:
+     * - elm is falsey (undefined, null, etc.)
+     * - elm's offsetHeight is 0 (e.g. display none set on itself or its parent)
+     * - elm has no text or only whitespace
+     * - elm or its parent has `aria-hidden="true"` set.
+     *
+     * @param {Node|jQuery} - either a DOM node or a jQuery element
+     *
+     * @returns {Boolean} - returns true if there is rendered text within the element and false otherwise. (See rules above)
+     */
+    fluid.prefs.enactor.selfVoicing.hasRenderedText = function (elm) {
+        elm = fluid.unwrap(elm);
+
+        return elm && !!elm.offsetHeight && fluid.prefs.enactor.selfVoicing.isWord(elm.innerText) && !$(elm).closest("[aria-hidden=\"true\"]").length;
+    };
+
     /**
      * Recursively parses a DOM element and it's sub elements to construct an array of data points representing the
      * words and space between the words. This data structure provides the means for locating text to highlight as the
@@ -217,51 +233,54 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
     fluid.prefs.enactor.selfVoicing.parse = function (elm, blockIndex) {
         var parsed = [];
+        elm = fluid.unwrap(elm);
         blockIndex = blockIndex || 0;
 
-        var childNodes = elm.childNodes;
+        if (fluid.prefs.enactor.selfVoicing.hasRenderedText(elm)) {
+            var childNodes = elm.childNodes;
 
-        $.each(childNodes, function (childIndex, childNode) {
-            if (childNode.nodeType === fluid.prefs.enactor.selfVoicing.nodeType.TEXT_NODE) {
-                var words = childNode.textContent.split(/(\s+)/); // split on whitespace, and capture whitespace
-                var charIndex = 0;
+            $.each(childNodes, function (childIndex, childNode) {
+                if (childNode.nodeType === fluid.prefs.enactor.selfVoicing.nodeType.TEXT_NODE) {
+                    var words = childNode.textContent.split(/(\s+)/); // split on whitespace, and capture whitespace
+                    // charIndex is the start index of the word in the nested block of text
+                    var charIndex = 0;
 
-                fluid.each(words, function (word) {
-                    if (fluid.prefs.enactor.selfVoicing.isWord(word)) {
-                        parsed.push({
-                            blockIndex: blockIndex,
-                            startOffset: charIndex,
-                            endOffset: charIndex + word.length,
-                            node: childNode,
-                            childIndex: childIndex,
-                            parentNode: childNode.parentNode,
-                            word: word
-                        });
-                        blockIndex += word.length;
-                    // if the current `word` is not an empty string and the last parsed `word` is not whitespace
-                    } else if (word && fluid.prefs.enactor.selfVoicing.isWord(fluid.get(parsed, [(parsed.length - 1), "word"]))) {
-                        parsed.push({
-                            blockIndex: blockIndex,
-                            startOffset: charIndex,
-                            endOffset: charIndex + word.length,
-                            node: childNode,
-                            childIndex: childIndex,
-                            parentNode: childNode.parentNode,
-                            word: word
-                        });
-                        blockIndex += word.length;
+                    fluid.each(words, function (word) {
+                        if (fluid.prefs.enactor.selfVoicing.isWord(word)) {
+                            parsed.push({
+                                blockIndex: blockIndex,
+                                startOffset: charIndex,
+                                endOffset: charIndex + word.length,
+                                node: childNode,
+                                childIndex: childIndex,
+                                parentNode: childNode.parentNode,
+                                word: word
+                            });
+                            blockIndex += word.length;
+                        // if the current `word` is not an empty string and the last parsed `word` is not whitespace
+                        } else if (word && fluid.prefs.enactor.selfVoicing.isWord(fluid.get(parsed, [(parsed.length - 1), "word"]))) {
+                            parsed.push({
+                                blockIndex: blockIndex,
+                                startOffset: charIndex,
+                                endOffset: charIndex + word.length,
+                                node: childNode,
+                                childIndex: childIndex,
+                                parentNode: childNode.parentNode,
+                                word: word
+                            });
+                            blockIndex += word.length;
+                        }
+                        charIndex += word.length;
+                    });
+                } else if (childNode.nodeType === fluid.prefs.enactor.selfVoicing.nodeType.ELEMENT_NODE && fluid.prefs.enactor.selfVoicing.hasRenderedText(childNode)) {
+                    parsed = parsed.concat(fluid.prefs.enactor.selfVoicing.parse(childNode, blockIndex));
+                    if (parsed.length) {
+                        var lastParsed = parsed[parsed.length - 1];
+                        blockIndex = lastParsed.blockIndex + lastParsed.word.length;
                     }
-                    charIndex += word.length;
-                });
-                // TODO: Probably shouldn't read any hidden/invisible text.
-            } else if (childNode.nodeType === fluid.prefs.enactor.selfVoicing.nodeType.ELEMENT_NODE && window.getComputedStyle(childNode).display !== "none" && childNode.tagName !== "SCRIPT") {
-                parsed = parsed.concat(fluid.prefs.enactor.selfVoicing.parse(childNode, blockIndex));
-                if (parsed.length) {
-                    var lastParsed = parsed[parsed.length - 1];
-                    blockIndex = lastParsed.blockIndex + lastParsed.word.length;
                 }
-            }
-        });
+            });
+        }
 
         return parsed;
     };

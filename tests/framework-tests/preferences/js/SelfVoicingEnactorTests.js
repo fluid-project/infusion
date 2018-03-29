@@ -109,12 +109,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     // fluid.prefs.enactor.selfVoicing.unWrap tests
     jqUnit.test("Test fluid.prefs.enactor.selfVoicing.unWrap", function () {
-        jqUnit.assertNodeExists("The wrapper node should exist", ".flc-wrap");
-        fluid.prefs.enactor.selfVoicing.unWrap(".flc-wrap");
+        jqUnit.assertNodeExists("The wrapper node should exist", ".flc-selfVoicing-wrap");
+        fluid.prefs.enactor.selfVoicing.unWrap(".flc-selfVoicing-wrap");
 
-        jqUnit.assertNodeNotExists("The wrapper node should have been removed", ".flc-wrap");
-        fluid.prefs.enactor.selfVoicing.unWrap(".flc-wrap");
-        jqUnit.assertEquals("There should only be one childnode in the wrapper's parent", 1, $(".flc-wrap-parent")[0].childNodes.length);
+        jqUnit.assertNodeNotExists("The wrapper node should have been removed", ".flc-selfVoicing-wrap");
+        fluid.prefs.enactor.selfVoicing.unWrap(".flc-selfVoicing-wrap");
+        jqUnit.assertEquals("There should only be one childnode in the wrapper's parent", 1, $(".flc-selfVoicing-wrap-parent")[0].childNodes.length);
 
         jqUnit.assert("Unwrapping a second time should not cause an error");
     });
@@ -134,6 +134,55 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // test falseCase
         fluid.each(fluid.tests.prefs.enactor.selfVoicingEnactor.isWordTestCases.falseCase, function (str) {
             jqUnit.assertFalse("\"" + str + "\" is not considered a word.", fluid.prefs.enactor.selfVoicing.isWord(str));
+        });
+    });
+    /*
+
+        <span class="flc-selfVoicing-rendering-visible">Visible</span>
+
+        <script class="flc-selfVoicing-rendering-script">
+            // to test if text from script tags are read.
+            $("<div>");
+        </script>
+
+     */
+
+    // fluid.prefs.enactor.selfVoicing.hasRenderedText tests
+    fluid.tests.prefs.enactor.selfVoicingEnactor.hasRenderedTextTestCases = {
+        "trueCase": [
+            ".flc-selfVoicing-rendering",
+            ".flc-selfVoicing-rendering-ariaHiddenFalse",
+            ".flc-selfVoicing-rendering-ariaHiddenFalse-nested",
+            ".flc-selfVoicing-rendering-hiddenA11y",
+            ".flc-selfVoicing-rendering-hiddenA11y-nested",
+            ".flc-selfVoicing-rendering-visible"
+        ],
+        "falseCase": [
+            ".flc-selfVoicing-rendering-noNode",
+            ".flc-selfVoicing-rendering-none",
+            ".flc-selfVoicing-rendering-none-nested",
+            ".flc-selfVoicing-rendering-visHidden",
+            ".flc-selfVoicing-rendering-visHidden-nested",
+            ".flc-selfVoicing-rendering-hidden",
+            ".flc-selfVoicing-rendering-hidden-nested",
+            ".flc-selfVoicing-rendering-ariaHiddenTrue",
+            ".flc-selfVoicing-rendering-ariaHiddenTrue-nested",
+            ".flc-selfVoicing-rendering-nestedNone",
+            ".flc-selfVoicing-rendering-empty",
+            ".flc-selfVoicing-rendering-script",
+            ".flc-selfVoicing-rendering-nestedScript"
+        ]
+    };
+
+    jqUnit.test("Test fluid.prefs.enactor.selfVoicing.hasRenderedText", function () {
+        // test trueCase
+        fluid.each(fluid.tests.prefs.enactor.selfVoicingEnactor.hasRenderedTextTestCases.trueCase, function (selector) {
+            jqUnit.assertTrue("\"" + selector + "\" should have text to read.", fluid.prefs.enactor.selfVoicing.hasRenderedText($(selector)));
+        });
+
+        // test falseCase
+        fluid.each(fluid.tests.prefs.enactor.selfVoicingEnactor.hasRenderedTextTestCases.falseCase, function (selector) {
+            jqUnit.assertFalse("\"" + selector + "\" shouldn't have text to read.", fluid.prefs.enactor.selfVoicing.hasRenderedText($(selector)));
         });
     });
 
@@ -204,7 +253,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     }, {
         // 7
         "blockIndex": 21,
-        "childIndex": 4,
+        "childIndex": 5,
         "endOffset": 9,
         "node": {},
         "parentNode": {},
