@@ -4857,6 +4857,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     /** Test potentia idioms **/
 
+    fluid.tests.fetchPaths = function (that, paths) {
+        return fluid.transform(paths, function (path) {
+            return fluid.get(that, path);
+        });
+    };
+
     fluid.defaults("fluid.tests.FLUID6148root", {
         gradeNames: "fluid.component",
         events: {
@@ -4895,10 +4901,40 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.events.constructEvent.fire();
         var paths = ["child1.options.nextValue", "child2.options.nextValue", "child3.options.nextValue"];
         var expected = ["value3", "value1", "value2"];
-        var values = fluid.transform(paths, function (path) {
-            return fluid.get(that, path);
-        });
+        var values = fluid.tests.fetchPaths(that, paths);
         jqUnit.assertDeepEq("Constructed circularly referring components on event", expected, values);
+    });
+
+    /** Test partial evaluation **/
+
+    fluid.defaults("fluid.tests.FLUID6148partial", {
+        gradeNames: "fluid.component",
+        unnecessaryValue: 42,
+        listeners: {
+            onCreate: {
+                funcName: "fluid.tests.notingListener"
+            }
+        }
+    });
+
+    fluid.tests.oneFluid6148Partial = function (name, options, expected) {
+        var paths = ["options.unnecessaryValue", "noted"];
+        var transactionId = fluid.beginTreeTransaction(options);
+        fluid.construct("FLUID6148partial-instance", {
+            type: "fluid.tests.FLUID6148partial"
+        }, {transactionId: transactionId});
+        var that = fluid.commitPotentiae(transactionId).that;
+        var values = fluid.tests.fetchPaths(that, paths);
+        jqUnit.assertTrue("Partial evaluation test - " + name + ": component constructed", fluid.isComponent(that));
+        jqUnit.assertDeepEq("Partial evaluation test - " + name + ": expected construction state", expected, values);
+        fluid.destroy("FLUID6148partial-instance");
+    };
+
+    jqUnit.test("FLUID-6148: Partial evaluation tests", function () {
+        jqUnit.expect(6);
+        fluid.tests.oneFluid6148Partial("shell construction",       {breakAt: "shells"},       [undefined, undefined]);
+        fluid.tests.oneFluid6148Partial("observation construction", {breakAt: "observation"},  [42, undefined]);
+        fluid.tests.oneFluid6148Partial("full construction",        null,                      [42, true]);
     });
 
     /** FLUID-6126 failure to construct child of root which has been advised **/

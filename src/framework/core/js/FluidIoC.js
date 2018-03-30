@@ -1130,8 +1130,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *  component. The component's own options take <code>{defer: true}</code> as part of
      *  <code>outerExpandOptions</code> which produces an "expandOptions" structure holding the "strategy" and "initter" pattern
      *  common to ginger participants.
-     *  Probably not to be advertised as part of a public API, but is considerably more stable than most of the rest
-     *  of the IoC API structure especially with respect to the first arguments.
+     *  This is pretty well-attested as a public API but only the first two arguments are stable. However, `fluid.expand` should be
+     *  used by preference for standard immediate expansion.
      */
 
 // TODO: Can we move outerExpandOptions to 2nd place? only user of 3 and 4 is fluid.makeExpandBlock
@@ -1262,10 +1262,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             fluid.set(shadow, ["dynamicComponentCount", componentName], 0);
         }
         var constructListener = function () {
-            if (!instantiator.currentTreeTransaction) {
-                instantiator.currentTreeTransaction = fluid.allocateGuid();
-            }
-            var transactionId = instantiator.currentTreeTransaction;
+            var transactionId = instantiator.currentTreeTransaction || fluid.beginTreeTransaction();
             var key = dynamicComponent ?
                 fluid.computeDynamicComponentKey(componentName, shadow.dynamicComponentCount[componentName]++) : componentName;
             var localRecord = {
@@ -1383,25 +1380,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return that;
     };
 
-    /** BEGIN NEXUS METHODS **/
-
-    /**
-     * Given a component reference, returns the path of that component within its component tree.
-     *
-     * @param {Component} component - A reference to a component.
-     * @param {Instantiator} [instantiator] - (optional) An instantiator to use for the lookup.
-     * @return {String[]} An array of {String} path segments of the component within its tree, or `null` if the reference does not hold a live component.
-     */
-
-    fluid.pathForComponent = function (component, instantiator) {
-        instantiator = instantiator || fluid.getInstantiator(component) || fluid.globalInstantiator;
-        var shadow = instantiator.idToShadow[component.id];
-        if (!shadow) {
-            return null;
-        }
-        return instantiator.parseEL(shadow.path);
-    };
-
     /** Amalgamates any further creations with any existing potentia at a path
     * @param {PotentiaList} potentiaList - A `PotentiaList` structure as constructed by `fluid.blankPotentiaList` holding the potentia in
     *     progress for a particular tree transaction
@@ -1429,61 +1407,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         };
     };
 
-    /** Push the supplied potentia onto the transaction record.
-     * @param {TreeTransactionRecord} transRec - The transaction record for the current tree transaction
-     * @param {Instantiator} instantiator - The instantiator operating the transaction
-     * @param {Potentia} potentia - A potentia to be registered
-     */
-    fluid.pushPotentia = function (transRec, instantiator, potentia) {
-        var pendingPotentiae = transRec.pendingPotentiae;
-
-        var segs = potentia.segs = potentia.segs || instantiator.parseToSegments(potentia.path);
-        var path = potentia.path = instantiator.composeSegments.apply(null, segs);
-
-        if (potentia.type === "destroy") {
-            pendingPotentiae.destroys.push(potentia);
-            pendingPotentiae.activeCount++;
-        } else {
-            var newPotentia = potentia;
-            if (potentia.type === "create") {
-                newPotentia = fluid.pushPathedPotentia(pendingPotentiae, path, potentia);
-            }
-            if (newPotentia) {
-                pendingPotentiae.creates.push(potentia);
-                pendingPotentiae.activeCount++;
-            };
-        }
-    };
-
-    /** Signature as for `fluid.construct`. Registers the intention of constructing or destroying a component at a particular path. The action will
-     * occur once the transaction is committed.
-     * @param {Potentia} potentia - A record designating the kind of change to occur. Fields:
-     *    type: {String} Either "create" or "destroy".
-     *    path: {String|Array of String} Path where the component is to be constructed or destroyed, represented as a string or array of segments
-     *    componentDepth: {Number} The depth of nesting of this record from the originally created component - defaults to 0
-     *    records: {Array of Object} A component's construction record, as they would currently appear in a component's "options.components.x" record
-     * @param {String} [transactionId] [optional] A transaction id in which to enlist this registration. If this is omitted, the current transaction
-     *     will be used, if there is one - otherwise, a fresh transaction will be allocated
-     * @return {String} `transactionId` if it was supplied, or else any current transaction, or a freshly allocated one if there was none
-     */
-    fluid.registerPotentia = function (potentia, transactionId) {
-        var instantiator = fluid.globalInstantiator;
-        transactionId = transactionId || instantiator.currentTreeTransaction || fluid.allocateGuid();
-
-        var transRec = instantiator.treeTransactions[transactionId];
-        if (!transRec) {
-            transRec = instantiator.treeTransactions[transactionId] = {
-                transactionId: transactionId,
-                commitDepth: 0, // Depth of nested "commitPotentiae" calls
-                pendingPotentiae: fluid.blankPotentiaList(), // array of potentia which remain to be handled
-                restoreRecords: fluid.blankPotentiaList(), // accumulate a list of records to be executed in case the transaction is backed out
-                deferredDistributions: [] // distributeOptions may decide to defer application of a distribution for FLUID-6193
-            };
-        }
-        fluid.pushPotentia(transRec, instantiator, potentia);
-
-        return transactionId;
-    };
 
     fluid.isInjectedComponentRecord = function (record) {
         return typeof(record) === "string" || record.expander;
@@ -1710,29 +1633,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
-    // The transaction record must previously have been sent to fluid.commitPotentiae TODO why?
-    /* Cancel the transaction represented by the supplied tree transaction record. Any actions journalled in its member
-     * `restoreRecords` will be undone by a further call to `fluid.commitPotentiae`.
-     */
-    fluid.cancelTransaction = function (transRec, instantiator) {
-        var transactionId;
-        instantiator = instantiator || fluid.globalInstantiator;
-        try {
-            transRec.commitDepth = 1;
-            transRec.pendingPotentiae = transRec.restoreRecords;
-            transRec.restoreRecords = fluid.blankPotentiaList();
-            transactionId = instantiator.currentTreeTransaction;
-            transRec.cancelled = true;
-            fluid.commitPotentiae(transactionId, true);
-        } catch (e) {
-            fluid.log(fluid.logLevels.FAIL, "Fatal error cancelling transaction " + transactionId + ": destroying all affected paths");
-            transRec.restoreRecords.forEach(function (potentia) {
-                instantiator.clearComponent(potentia.parentThat, potentia.memberName, potentia.parentThat[potentia.memberName]);
-            });
-            throw e;
-        }
-    };
-
     fluid.preparePathedPotentia = function (potentia, instantiator) {
         var segs = potentia.segs || instantiator.parseToSegments(potentia.path);
         potentia.segs = segs;
@@ -1801,15 +1701,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
 
         var togo = shadows[0]; // We need to track the first created shadow to support constructing free components
-        var workflows = fluid.evaluateWorkflows(shadows, transRec.transactionId);
-        shadows.forEach(fluid.instantiateEvents);
+        transRec.workflows = fluid.evaluateWorkflows(shadows, transRec.transactionId);
+        if (transRec.breakAt !== "shells") {
+            shadows.forEach(fluid.instantiateEvents);
 
-        workflows.global.fire(shadows);
+            transRec.workflows.global.fire(shadows);
 
-        shadows.reverse();
-        (workflows.local.sortedListeners || []).forEach(function (lisrec) {
-            shadows.forEach(lisrec.listener);
-        });
+            shadows.reverse();
+            if (transRec.breakAt === "observation") {
+                shadows.forEach(fluid.concludeComponentObservation);
+            } else {
+                (transRec.workflows.local.sortedListeners || []).forEach(function (lisrec) {
+                    shadows.forEach(lisrec.listener);
+                });
+            }
+        }
         return togo;
     };
 
@@ -1822,7 +1728,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {String} transactionId - The tree transaction to be committed
      * @param {Boolean} [isCancel] - [optional] `true` if this commit action is a result of cancelling a previous transaction. In this case
      *     the `pendingPotentia` element of the transaction will have been derived from the `restoreRecords` of that transaction.
-     * @return {Shadow} The shadow record for the first component to be constructed during the transaction, if any.
+     * @return {Shadow|Undefined} The shadow record for the first component to be constructed during the transaction, if any.
      */
     fluid.commitPotentiae = function (transactionId, isCancel) {
         var instantiator = fluid.globalInstantiator;
@@ -1844,7 +1750,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         }, function (e) {
             if (!isCancel) {
-                fluid.cancelTransaction(transRec, instantiator);
+                fluid.cancelTreeTransaction(transactionId, instantiator);
                 throw e;
             }
         }, function () {
@@ -1854,6 +1760,124 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         });
         return togo;
+    };
+
+    /** Push the supplied potentia onto the transaction record.
+     * @param {TreeTransactionRecord} transRec - The transaction record for the current tree transaction
+     * @param {Instantiator} instantiator - The instantiator operating the transaction
+     * @param {Potentia} potentia - A potentia to be registered
+     */
+    fluid.pushPotentia = function (transRec, instantiator, potentia) {
+        var pendingPotentiae = transRec.pendingPotentiae;
+
+        var segs = potentia.segs = potentia.segs || instantiator.parseToSegments(potentia.path);
+        var path = potentia.path = instantiator.composeSegments.apply(null, segs);
+
+        if (potentia.type === "destroy") {
+            pendingPotentiae.destroys.push(potentia);
+            pendingPotentiae.activeCount++;
+        } else {
+            var newPotentia = potentia;
+            if (potentia.type === "create") {
+                newPotentia = fluid.pushPathedPotentia(pendingPotentiae, path, potentia);
+            }
+            if (newPotentia) {
+                pendingPotentiae.creates.push(potentia);
+                pendingPotentiae.activeCount++;
+            };
+        }
+    };
+
+    /** BEGIN NEXUS/POTENTIA METHODS - THESE ARE PUBLIC API **/
+
+    /**
+     * Given a component reference, returns the path of that component within its component tree.
+     *
+     * @param {Component} component - A reference to a component.
+     * @param {Instantiator} [instantiator] - (optional) An instantiator to use for the lookup.
+     * @return {String[]} An array of {String} path segments of the component within its tree, or `null` if the reference does not hold a live component.
+     */
+
+    fluid.pathForComponent = function (component, instantiator) {
+        instantiator = instantiator || fluid.getInstantiator(component) || fluid.globalInstantiator;
+        var shadow = instantiator.idToShadow[component.id];
+        if (!shadow) {
+            return null;
+        }
+        return instantiator.parseEL(shadow.path);
+    };
+
+    /** Begin a fresh transaction against the global component tree. Any further calls to `fluid.registerPotentia`,
+     * `fluid.construct` or `fluid.destroy` may be contextualised by this transaction, and then committed as a single
+     * unit via `fluid.commitPotentiae` or cancelled via `fluid.cancelTreeTransaction`.
+     * @param {Object} [transactionOptions] - [optional] A set of options configuring this tree transaction. This may include fields
+     *     {String} breakAt - one of the values:
+     *         `shells`: signifying that this transaction should pause as soon as all component shells are constructed (see FLUID-4925)
+     *         `observation`: signifying that this transaction should pause once the observation process of all components is concluded - that is,
+     *               that all component options, members and invokers are evaluated.
+     * @return {String} The id of the freshly allocated tree transaction.
+     */
+    fluid.beginTreeTransaction = function (transactionOptions) {
+        var instantiator = fluid.globalInstantiator;
+        if (instantiator.currentTreeTransaction) {
+            fluid.fail("Infusion does not yet support more than one concurrent tree transaction");
+        }
+        var transactionId = instantiator.currentTreeTransaction = fluid.allocateGuid();
+        instantiator.treeTransactions[transactionId] = $.extend({
+            transactionId: transactionId,
+            commitDepth: 0, // Depth of nested "commitPotentiae" calls
+            pendingPotentiae: fluid.blankPotentiaList(), // array of potentia which remain to be handled
+            restoreRecords: fluid.blankPotentiaList(), // accumulate a list of records to be executed in case the transaction is backed out
+            deferredDistributions: [] // distributeOptions may decide to defer application of a distribution for FLUID-6193
+        }, transactionOptions);
+        return transactionId;
+    };
+
+    /** Signature as for `fluid.construct`. Registers the intention of constructing or destroying a component at a particular path. The action will
+     * occur once the transaction is committed.
+     * @param {Potentia} potentia - A record designating the kind of change to occur. Fields:
+     *    type: {String} Either "create" or "destroy".
+     *    path: {String|Array of String} Path where the component is to be constructed or destroyed, represented as a string or array of segments
+     *    componentDepth: {Number} The depth of nesting of this record from the originally created component - defaults to 0
+     *    records: {Array of Object} A component's construction record, as they would currently appear in a component's "options.components.x" record
+     * @param {String} [transactionId] [optional] A transaction id in which to enlist this registration. If this is omitted, the current transaction
+     *     will be used, if there is one - otherwise, a fresh transaction will be allocated
+     * @return {String} `transactionId` if it was supplied, or else any current transaction, or a freshly allocated one if there was none
+     */
+    fluid.registerPotentia = function (potentia, transactionId) {
+        var instantiator = fluid.globalInstantiator;
+        transactionId = transactionId || instantiator.currentTreeTransaction;
+        if (!transactionId) {
+            transactionId = fluid.beginTreeTransaction();
+        }
+        var transRec = instantiator.treeTransactions[transactionId];
+        fluid.pushPotentia(transRec, instantiator, potentia);
+
+        return transactionId;
+    };
+
+
+    /** Cancel the transaction with the supplied transaction id. This cancellation will undo any actions journalled in
+     * the transaction's `restoreRecords` by a further call to `fluid.commitPotentiae`.
+     * @param {String} transactionId - The id of the transaction to be cancelled
+     */
+    fluid.cancelTreeTransaction = function (transactionId) {
+        var instantiator = fluid.globalInstantiator;
+        var transRec = instantiator.treeTransactions[transactionId];
+        try {
+            transRec.commitDepth = 1;
+            transRec.pendingPotentiae = transRec.restoreRecords;
+            transRec.restoreRecords = fluid.blankPotentiaList();
+            transactionId = instantiator.currentTreeTransaction;
+            transRec.cancelled = true;
+            fluid.commitPotentiae(transactionId, true);
+        } catch (e) {
+            fluid.log(fluid.logLevels.FAIL, "Fatal error cancelling transaction " + transactionId + ": destroying all affected paths");
+            transRec.restoreRecords.forEach(function (potentia) {
+                instantiator.clearComponent(potentia.parentThat, potentia.memberName, potentia.parentThat[potentia.memberName]);
+            });
+            throw e;
+        }
     };
 
     /** Constructs a subcomponent as a child of an existing component, via a call to `fluid.construct`. Note that if
@@ -1875,9 +1899,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Object} componentOptions - Top-level options supplied to the component - must at the very least include a field <code>type</code> holding the component's type
      * @param {Object} [constructOptions] - [optional] A record of options guiding the construction of this component
      *     transactionId {String} [optional] A transaction which this construction action should be enlisted in. If this is supplied, the transaction will not
+     *         be committed after the component's construction - instead, this must be done explicitly by the user by a later call to `fluid.commitPotentiae`.
      *     localRecord {Object} A hash of context keys to context values which should be in scope for resolution of IoC references within this construction
-     *     be committed, and the user must do so themselves via `fluid.commitPotentiae`
-     * @return {Component} The constructed component
+     *         be committed, and the user must do so themselves via `fluid.commitPotentiae`
+     * @return {Component|Undefined} The constructed component, if its construction has begun
      */
     fluid.construct = function (path, componentOptions, constructOptions) {
         constructOptions = constructOptions || {};
@@ -1993,7 +2018,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return fluid.globalInstantiator.pathToComponent[fluid.isArrayable(path) ? path.join(".") : path];
     };
 
-    /** END NEXUS METHODS **/
+    /** END NEXUS/POTENTIA METHODS - END OF PUBLIC API **/
 
     fluid.thisistToApplicable = function (record, recthis, that) {
         return {
