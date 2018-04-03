@@ -154,7 +154,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Unwraps the contents of the element by removing the tag surrounding the content and placing the content
      * as a node within the element's parent. The parent is also normalized to combine any adjacent textnodes.
      *
-     * @param {Selector/jQuery} - element to unwrap
+     * @param {String|jQuery|element} elm - element to unwrap
      */
     fluid.prefs.enactor.selfVoicing.unWrap = function (elm) {
         elm = $(elm);
@@ -185,7 +185,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *
      * @param {String} str - the String to test
      *
-     * @returns {Boolean} - `true` if a word, `false` otherwise.
+     * @return {Boolean} - `true` if a word, `false` otherwise.
      */
     fluid.prefs.enactor.selfVoicing.isWord = function (str) {
         return fluid.isValue(str) && /\S/.test(str);
@@ -199,9 +199,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * - elm has no text or only whitespace
      * - elm or its parent has `aria-hidden="true"` set.
      *
-     * @param {Node|jQuery} - either a DOM node or a jQuery element
+     * @param {jQuery|element} elm - either a DOM node or a jQuery element
      *
-     * @returns {Boolean} - returns true if there is rendered text within the element and false otherwise. (See rules above)
+     * @return {Boolean} - returns true if there is rendered text within the element and false otherwise. (See rules above)
      */
     fluid.prefs.enactor.selfVoicing.hasRenderedText = function (elm) {
         elm = fluid.unwrap(elm);
@@ -216,11 +216,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * NOTE: consecutive whitespace is collapsed to the first whitespace character.
      * NOTE: hidden text is skipped.
      *
-     * @param {node} elm - the DOM node to parse
+     * @param {jQuery|element} elm - the DOM node to parse
      * @param {Number} blockIndex - The `blockIndex` represents the index into the entire block of text being parsed.
      *                              It defaults to 0 and is primarily used internally for recursive calls.
      *
-     * @returns {Array} - An array of data points, objects of the with the following structure.
+     * @return {Array} - An array of data points, objects of the with the following structure.
      *                   {
                              blockIndex: {Number}, // the index into the entire block of text being parsed
                              startOffset: {Number}, // the start offset of the current `word` relative to the closest enclosing DOM element
@@ -290,7 +290,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *
      * @param {Array} parsed - An array of parsed data points
      *
-     * @returns {String} - The parsed text combined into a String.
+     * @return {String} - The parsed text combined into a String.
      */
     fluid.prefs.enactor.selfVoicing.parsedToString = function (parsed) {
         var words = fluid.transform(parsed, function (block) {
@@ -327,7 +327,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *                                constrained to the bounds of the parseQueue.
      * @param {Number} boundary - The boundary value used to compare against the blockIndex of the parsed data points.
      *
-     * @returns {Number|undefined} - Will return the index of the closest data point in the parseQueue. If the boundary
+     * @return {Number|undefined} - Will return the index of the closest data point in the parseQueue. If the boundary
      *                               cannot be located within the parseQueue, `undefined` is returned.
      */
     fluid.prefs.enactor.selfVoicing.getClosestIndex = function (parseQueue, currentIndex, boundary) {
