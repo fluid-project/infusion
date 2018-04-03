@@ -64,7 +64,7 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", inline: <<-SHELL
     sudo dnf -y upgrade firefox google-chrome-stable
     sudo ansible-galaxy install -fr /home/vagrant/sync/provisioning/requirements.yml
-    sudo PYTHONUNBUFFERED=1 ansible-playbook /home/vagrant/sync/provisioning/playbook.yml --tags="install,configure"
+    sudo PYTHONUNBUFFERED=1 ANSIBLE_STDOUT_CALLBACK=debug ansible-playbook /home/vagrant/sync/provisioning/playbook.yml --tags="install,configure"
   SHELL
 
   # Using config.vm.hostname to set the hostname on Fedora VMs seems to remove the string
