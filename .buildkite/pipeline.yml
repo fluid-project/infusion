@@ -19,6 +19,9 @@ steps:
 
   - name: "Run tests"
     command: "npm run test:vagrant"
+    artifact_paths:
+      - "coverage/**/*"
+      - "reports/**/*"
     timeout_in_minutes: 20
 
   - name: "Destroy VM"
