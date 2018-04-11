@@ -2,25 +2,28 @@
 # is configured using the Buildkite web UI and has a "Run this CI job" label. It is not included 
 # in this YAML configuration to prevent it from being accidentally removed as part of a PR change.
 steps:
-  - name: "Create VM"
-    command: "DISPLAY=:0 vagrant up --provider virtualbox && npm install"
+  - name: "Build"
+    command: "DISPLAY=:0 vagrant up --provider virtualbox"
     timeout_in_minutes: 20
 
   # Wait and make sure the VM was successfully created before proceeding. Otherwise the remaining steps will not run.
   - wait
 
-  - name: "Install dependencies"
-    command: "vagrant ssh -c 'cd /home/vagrant/sync; npm install'"
-    timeout_in_minutes: 20
+  - name: "Code Linter"
+    command: "vagrant ssh -c 'cd /home/vagrant/sync/; $(npm bin)/grunt lint'"
+    timeout_in_minutes: 2
 
-  - name: "Build Infusion"
-    command: "vagrant ssh -c 'cd /home/vagrant/sync; grunt clean stylus modulefiles:all pathMap:all copy:all copy:necessities uglify:all concat:all compress:all'"
-    timeout_in_minutes: 20
+  - name: "Browser Tests"
+    command: "npm run test:vagrantBrowser"
+    timeout_in_minutes: 15
 
-  - name: "Run tests"
-    command: "npm run test:vagrant"
-    timeout_in_minutes: 20
+  - name: "Node Tests"
+    command: "npm run test:vagrantNode"
+    timeout_in_minutes: 5
 
-  - name: "Destroy VM"
+  - wait: ~
+    continue_on_failure: true
+
+  - name: "Cleanup"
     command: "vagrant destroy -f"
     timeout_in_minutes: 5
