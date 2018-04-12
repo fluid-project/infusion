@@ -182,7 +182,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
-     * Determines if there is rendered text to in an element.
+     * Determines if there is rendered text in an element.
      * Will return false in the following conditions:
      * - elm is falsey (undefined, null, etc.)
      * - elm's offsetHeight is 0 (e.g. display none set on itself or its parent)
