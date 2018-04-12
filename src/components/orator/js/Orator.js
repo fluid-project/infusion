@@ -200,6 +200,29 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
+     * Adds a data point to an array of parsed DOM elements.
+     * @param {Array} parsed - array of data points for the parsed DOM elements
+     * @param {String} word - The word, parsed from the node, to be added
+     * @param {node} node - the current textnode being operated on
+     * @param {Integer} blockIndex - the index into the entire block of text being parsed from the DOM
+     * @param {Integer} charIndex - the index into the current node being operated on, that is the start index of the
+     *                              word
+     *                              in the string representing the text of the node.
+     * @param {Integer} childIndex - the index of the node in the list of its parent's child nodes.
+     */
+    fluid.orator.addParsedData = function (parsed, word, childNode, blockIndex, charIndex, childIndex) {
+        parsed.push({
+            blockIndex: blockIndex,
+            startOffset: charIndex,
+            endOffset: charIndex + word.length,
+            node: childNode,
+            childIndex: childIndex,
+            parentNode: childNode.parentNode,
+            word: word
+        });
+    };
+
+    /**
      * Recursively parses a DOM element and it's sub elements to construct an array of data points representing the
      * words and space between the words. This data structure provides the means for locating text to highlight as the
      * self voicing engine runs.
@@ -210,9 +233,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Number} blockIndex - The `blockIndex` represents the index into the entire block of text being parsed.
      *                              It defaults to 0 and is primarily used internally for recursive calls.
      *
-     * @return {Array} - An array of data points, objects of the with the following structure.
+     * @return {Array} - An array of data points, objects with the following structure.
      *                   {
-                             blockIndex: {Number}, // the index into the entire block of text being parsed
+                             blockIndex: {Number}, // the index into the entire block of text being parsed from the DOM
                              startOffset: {Number}, // the start offset of the current `word` relative to the closest enclosing DOM element
                              endOffset: {Number}, // the start offset of the current `word` relative to the closest enclosing DOM element
                              node: {node}, // the current child node being parsed
@@ -237,27 +260,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
                     fluid.each(words, function (word) {
                         if (fluid.orator.isWord(word)) {
-                            parsed.push({
-                                blockIndex: blockIndex,
-                                startOffset: charIndex,
-                                endOffset: charIndex + word.length,
-                                node: childNode,
-                                childIndex: childIndex,
-                                parentNode: childNode.parentNode,
-                                word: word
-                            });
+                            fluid.orator.addParsedData(parsed, word, childNode, blockIndex, charIndex, childIndex);
                             blockIndex += word.length;
                         // if the current `word` is not an empty string and the last parsed `word` is not whitespace
                         } else if (word && fluid.orator.isWord(fluid.get(parsed, [(parsed.length - 1), "word"]))) {
-                            parsed.push({
-                                blockIndex: blockIndex,
-                                startOffset: charIndex,
-                                endOffset: charIndex + word.length,
-                                node: childNode,
-                                childIndex: childIndex,
-                                parentNode: childNode.parentNode,
-                                word: word
-                            });
+                            fluid.orator.addParsedData(parsed, word, childNode, blockIndex, charIndex, childIndex);
                             blockIndex += word.length;
                         }
                         charIndex += word.length;
