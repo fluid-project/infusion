@@ -25,13 +25,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.orator", {
         gradeNames: ["fluid.viewComponent"],
         selectors: {
-            mark: ".flc-orator-highlight"
+            highlight: ".flc-orator-highlight"
         },
         strings: {
             welcomeMsg: "text to speech enabled"
         },
         markup: {
-            mark: "<mark class=\"flc-orator-highlight fl-orator-highlight\"></mark>"
+            highlight: "<mark class=\"flc-orator-highlight fl-orator-highlight\"></mark>"
         },
         events: {
             onReadFromDOM: null
@@ -69,6 +69,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             readFromDOM: {
                 funcName: "fluid.orator.readFromDOM",
                 args: ["{that}", "{that}.container"]
+            },
+            removeHighlight: {
+                funcName: "fluid.orator.unWrap",
+                args: ["{that}.dom.highlight"]
+            },
+            highlight: {
+                funcName: "fluid.orator.highlight",
+                args: ["{that}", "{arguments}.0"]
             }
         },
         modelListeners: {
@@ -79,14 +87,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         listeners: {
-            "{tts}.events.utteranceOnEnd": {
-                listener: "fluid.orator.handleUtteranceEndEvent",
+            "{tts}.events.utteranceOnEnd": [{
+                listener: "fluid.orator.removeCurrentParseQueueItem",
                 args: ["{that}"],
-                namespace: "cleanupSelfVoicing"
-            },
+                namespace: "removeCurrentParseQueueItem"
+            }, {
+                listener: "{that}.removeHighlight",
+                namespace: "removeHighlight"
+            }],
             "{tts}.events.utteranceOnBoundary": {
-                listener: "fluid.orator.handleUtteranceBoundaryEvent",
-                args: ["{that}", "{arguments}.0"],
+                listener: "{that}.highlight",
+                args: ["{arguments}.0.charIndex"],
                 namespace: "highlightUtteranceText"
             },
             "onDestroy.detachRange": {
@@ -129,12 +140,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
-    fluid.orator.handleUtteranceBoundaryEvent = function (that, e) {
-        if (that.parseQueue[0]) {
-            fluid.orator.highlight(that, e.charIndex);
-        }
-    };
-
     /**
      * Unwraps the contents of the element by removing the tag surrounding the content and placing the content
      * as a node within the element's parent. The parent is also normalized to combine any adjacent textnodes.
@@ -144,18 +149,18 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.orator.unWrap = function (elm) {
         elm = $(elm);
 
-        // remove previous marks and normalize parent to clean up textnodes
         if (elm.length) {
             var parent = elm.parent();
+            // Remove the element, but place its contents within the parent.
             elm.contents().unwrap();
+            // Normalize the parent to cleanup textnodes
             parent[0].normalize();
         }
     };
 
-    fluid.orator.handleUtteranceEndEvent = function (that) {
+    fluid.orator.removeCurrentParseQueueItem = function (that) {
         that.parseQueue.shift();
         that.parseIndex = 0;
-        fluid.orator.unWrap(that.locate("mark"));
     };
 
     // Constants representing DOM node types.
@@ -345,27 +350,29 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Highlights text from the parseQueue according to the specified boundary. Highlights are performed by wrapping
-     * the appropriate text in the markup specified by `that.options.markup.mark`.
+     * the appropriate text in the markup specified by `that.options.markup.highlight`.
      *
      * @param {Component} that - the component
      * @param {Number} boundary - the boundary point used to find the text to highlight. Typically this is the utterance
      *                            boundary returned from the utteranceOnBoundary event.
      */
     fluid.orator.highlight = function (that, boundary) {
-        fluid.orator.unWrap(that.locate("mark"));
+        that.removeHighlight();
 
-        var closestIndex = fluid.orator.getClosestIndex(that.parseQueue[0], that.parseIndex, boundary);
+        if (that.parseQueue[0]) {
+            var closestIndex = fluid.orator.getClosestIndex(that.parseQueue[0], that.parseIndex, boundary);
 
-        if (fluid.isValue(closestIndex)) {
-            that.parseIndex = closestIndex;
+            if (fluid.isValue(closestIndex)) {
+                that.parseIndex = closestIndex;
 
-            var data = that.parseQueue[0][that.parseIndex];
-            var rangeNode = data.parentNode.childNodes[data.childIndex];
+                var data = that.parseQueue[0][that.parseIndex];
+                var rangeNode = data.parentNode.childNodes[data.childIndex];
 
-            that.range.selectNode(rangeNode);
-            that.range.setStart(rangeNode, data.startOffset);
-            that.range.setEnd(rangeNode, data.endOffset);
-            that.range.surroundContents($(that.options.markup.mark)[0]);
+                that.range.selectNode(rangeNode);
+                that.range.setStart(rangeNode, data.startOffset);
+                that.range.setEnd(rangeNode, data.endOffset);
+                that.range.surroundContents($(that.options.markup.highlight)[0]);
+            }
         }
     };
 

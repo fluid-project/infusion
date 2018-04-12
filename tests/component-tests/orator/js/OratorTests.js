@@ -306,7 +306,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 {text: "{orator}.options.strings.welcomeMsg", interrupt: true},
                 {text: "Reading text from DOM", interrupt: false}
             ],
-            // a mock parseQueue for testing adding and removing the mark
+            // a mock parseQueue for testing adding and removing the highlight
             parseQueue: [[{
                 "blockIndex": 0,
                 "childIndex": 0,
@@ -364,7 +364,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["The parseIndex should be reset to 0.", 0, "{orator}.parseIndex"]
                 }, {
                     funcName: "jqUnit.assertNodeNotExists",
-                    args: ["The self voicing has completed. All marks should be removed.", "{orator}.dom.mark"]
+                    args: ["The self voicing has completed. All highlights should be removed.", "{orator}.dom.highlight"]
                 }, {
                     funcName: "fluid.tests.oratorTester.verifyRecords",
                     args: [
@@ -378,9 +378,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: [{charIndex: 8}]
                 }, {
                     funcName: "jqUnit.assertNodeNotExists",
-                    args: ["The parseQueue is empty, so no mark should be added", "{orator}.dom.mark"]
+                    args: ["The parseQueue is empty, no highlight should be added", "{orator}.dom.highlight"]
                 }, {
-                    // manually add items to parseQueue so that we can more easily test adding and removing the mark
+                    // manually add items to parseQueue so that we can more easily test adding and removing the highlight
                     funcName: "fluid.set",
                     args: ["{orator}", ["parseQueue"], "{that}.options.testOptions.parseQueue"]
                 }, {
@@ -388,13 +388,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: [{charIndex: "{that}.options.testOptions.parseQueue.0.0.blockIndex"}]
                 }, {
                     funcName: "fluid.tests.oratorTester.verifyMark",
-                    args: ["{orator}.dom.mark", "{that}.options.testOptions.parseQueue.0.0.word"]
+                    args: ["{orator}.dom.highlight", "{that}.options.testOptions.parseQueue.0.0.word"]
                 }, {
                     func: "{orator}.tts.events.utteranceOnBoundary.fire",
                     args: [{charIndex: "{that}.options.testOptions.parseQueue.0.1.blockIndex"}]
                 }, {
                     funcName: "fluid.tests.oratorTester.verifyMark",
-                    args: ["{orator}.dom.mark", "{that}.options.testOptions.parseQueue.0.1.word"]
+                    args: ["{orator}.dom.highlight", "{that}.options.testOptions.parseQueue.0.1.word"]
                 }, {
                     // disabled text to speech
                     func: "{orator}.applier.change",
@@ -407,7 +407,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     // test readFromDom if the element to parse isn't available
                     funcName: "fluid.orator.readFromDOM",
-                    args: ["{orator}", "{orator}.dom.mark"]
+                    args: ["{orator}", "{orator}.dom.highlight"]
                 }, {
                     funcName: "jqUnit.assertEquals",
                     args: ["The parseQueue should still be empty after trying to parse an unavailable DOM node.", 0, "{orator}.parseQueue.length"]
@@ -426,9 +426,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.oratorTester.verifyMark = function (elm, expectedText) {
-        jqUnit.assertNodeExists("The mark should have been added", elm);
-        jqUnit.assertEquals("Only one mark should be present", 1, elm.length);
-        jqUnit.assertEquals("The marked textnode should be correct", elm.text(), expectedText);
+        jqUnit.assertNodeExists("The highlight should have been added", elm);
+        jqUnit.assertEquals("Only one highlight should be present", 1, elm.length);
+        jqUnit.assertEquals("The correct textnode should be highlighted", elm.text(), expectedText);
     };
 
     fluid.tests.oratorTester.verifyRecords = function (that, expectedEvents, expectedSpeechRecord, expectedModel) {
