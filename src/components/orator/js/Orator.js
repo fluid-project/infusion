@@ -157,7 +157,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Unwraps the contents of the element by removing the tag surrounding the content and placing the content
      * as a node within the element's parent. The parent is also normalized to combine any adjacent textnodes.
      *
-     * @param {String|jQuery|element} elm - element to unwrap
+     * @param {String|jQuery|DomElement} elm - element to unwrap
      */
     fluid.orator.unWrap = function (elm) {
         elm = $(elm);
@@ -202,7 +202,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * - elm has no text or only whitespace
      * - elm or its parent has `aria-hidden="true"` set.
      *
-     * @param {jQuery|element} elm - either a DOM node or a jQuery element
+     * @param {jQuery|DomElement} elm - either a DOM node or a jQuery element
      *
      * @return {Boolean} - returns true if there is rendered text within the element and false otherwise.
      *                     (See rules above)
@@ -220,7 +220,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Adds a data point to an array of parsed DOM elements.
      * @param {Array} parsed - array of data points for the parsed DOM elements
      * @param {String} word - The word, parsed from the node, to be added
-     * @param {node} node - the current textnode being operated on
+     * @param {DomNode} childNode - the current textnode being operated on
      * @param {Integer} blockIndex - the index into the entire block of text being parsed from the DOM
      * @param {Integer} charIndex - the index into the current node being operated on, that is the start index of the
      *                              word
@@ -246,20 +246,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * NOTE: consecutive whitespace is collapsed to the first whitespace character.
      * NOTE: hidden text is skipped.
      *
-     * @param {jQuery|element} elm - the DOM node to parse
-     * @param {Number} blockIndex - The `blockIndex` represents the index into the entire block of text being parsed.
+     * @param {jQuery|DomElement} elm - the DOM node to parse
+     * @param {Integer} blockIndex - The `blockIndex` represents the index into the entire block of text being parsed.
      *                              It defaults to 0 and is primarily used internally for recursive calls.
      *
      * @return {Array} - An array of data points, objects with the following structure.
      *                   {
-                             blockIndex: {Number}, // the index into the entire block of text being parsed from the DOM
-                             startOffset: {Number}, // the start offset of the current `word` relative to the closest
+                             blockIndex: {Integer}, // the index into the entire block of text being parsed from the DOM
+                             startOffset: {Integer}, // the start offset of the current `word` relative to the closest
                                                     // enclosing DOM element
-                             endOffset: {Number}, // the start offset of the current `word` relative to the closest
+                             endOffset: {Integer}, // the start offset of the current `word` relative to the closest
                                                   // enclosing DOM element
-                             node: {node}, // the current child node being parsed
-                             childIndex: {Number}, // the index of the child node being parsed relative to its parent
-                             parentNode: {node}, // the parent DOM node
+                             node: {DomNode}, // the current child node being parsed
+                             childIndex: {Integer}, // the index of the child node being parsed relative to its parent
+                             parentNode: {DomElement}, // the parent DOM node
                              word: {String} // the text, `word`, parsed from the node. (It may contain only whitespace.)
                          }
      */
@@ -322,7 +322,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * voicing engine. The parsed data points are added as an array to the component's `parseQueue`
      *
      * @param {Component} that - the component
-     * @param {node} elm - The DOM node to read
+     * @param {String|jQuery|DomElement} elm - The DOM node to read
      */
     fluid.orator.readFromDOM = function (that, elm) {
         elm = $(elm);
@@ -340,11 +340,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Returns the index of the closest data point from the parseQueue based on the boundary provided.
      *
      * @param {Array} parseQueue - An array data points generated from parsing a DOM structure
-     * @param {Number} currentIndex - The index into the paraseQueue to start searching from. The currentIndex will be
+     * @param {Integer} currentIndex - The index into the paraseQueue to start searching from. The currentIndex will be
      *                                constrained to the bounds of the parseQueue.
-     * @param {Number} boundary - The boundary value used to compare against the blockIndex of the parsed data points.
+     * @param {Integer} boundary - The boundary value used to compare against the blockIndex of the parsed data points.
      *
-     * @return {Number|undefined} - Will return the index of the closest data point in the parseQueue. If the boundary
+     * @return {Integer|undefined} - Will return the index of the closest data point in the parseQueue. If the boundary
      *                               cannot be located within the parseQueue, `undefined` is returned.
      */
     fluid.orator.getClosestIndex = function (parseQueue, currentIndex, boundary) {
@@ -380,8 +380,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * the appropriate text in the markup specified by `that.options.markup.highlight`.
      *
      * @param {Component} that - the component
-     * @param {Number} boundary - the boundary point used to find the text to highlight. Typically this is the utterance
-     *                            boundary returned from the utteranceOnBoundary event.
+     * @param {Integer} boundary - the boundary point used to find the text to highlight. Typically this is the
+     *                             utterance boundary returned from the utteranceOnBoundary event.
      */
     fluid.orator.highlight = function (that, boundary) {
         that.removeHighlight();
