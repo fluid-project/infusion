@@ -54,7 +54,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     invokers: {
                         queueSpeech: {
                             funcName: "fluid.orator.queueSpeech",
-                            args: ["{that}", "fluid.textToSpeech.queueSpeech", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+                            args: [
+                                "{that}",
+                                "fluid.textToSpeech.queueSpeech",
+                                "{arguments}.0",
+                                "{arguments}.1",
+                                "{arguments}.2"
+                            ]
                         }
                     }
                 }
@@ -64,7 +70,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             handleSelfVoicing: {
                 funcName: "fluid.orator.handleSelfVoicing",
                 // Pass in invokers to force them to be resolved
-                args: ["{that}", "{that}.options.strings.welcomeMsg", "{tts}.queueSpeech", "{that}.readFromDOM", "{tts}.cancel", "{arguments}.0"]
+                args: [
+                    "{that}",
+                    "{that}.options.strings.welcomeMsg",
+                    "{tts}.queueSpeech",
+                    "{that}.readFromDOM",
+                    "{tts}.cancel",
+                    "{arguments}.0"
+                ]
             },
             readFromDOM: {
                 funcName: "fluid.orator.readFromDOM",
@@ -191,12 +204,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *
      * @param {jQuery|element} elm - either a DOM node or a jQuery element
      *
-     * @return {Boolean} - returns true if there is rendered text within the element and false otherwise. (See rules above)
+     * @return {Boolean} - returns true if there is rendered text within the element and false otherwise.
+     *                     (See rules above)
      */
     fluid.orator.hasRenderedText = function (elm) {
         elm = fluid.unwrap(elm);
 
-        return elm && !!elm.offsetHeight && fluid.orator.isWord(elm.innerText) && !$(elm).closest("[aria-hidden=\"true\"]").length;
+        return elm &&
+               !!elm.offsetHeight &&
+               fluid.orator.isWord(elm.innerText) &&
+               !$(elm).closest("[aria-hidden=\"true\"]").length;
     };
 
     /**
@@ -236,8 +253,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @return {Array} - An array of data points, objects with the following structure.
      *                   {
                              blockIndex: {Number}, // the index into the entire block of text being parsed from the DOM
-                             startOffset: {Number}, // the start offset of the current `word` relative to the closest enclosing DOM element
-                             endOffset: {Number}, // the start offset of the current `word` relative to the closest enclosing DOM element
+                             startOffset: {Number}, // the start offset of the current `word` relative to the closest
+                                                    // enclosing DOM element
+                             endOffset: {Number}, // the start offset of the current `word` relative to the closest
+                                                  // enclosing DOM element
                              node: {node}, // the current child node being parsed
                              childIndex: {Number}, // the index of the child node being parsed relative to its parent
                              parentNode: {node}, // the parent DOM node
@@ -269,7 +288,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         }
                         charIndex += word.length;
                     });
-                } else if (childNode.nodeType === fluid.orator.nodeType.ELEMENT_NODE && fluid.orator.hasRenderedText(childNode)) {
+                } else if (childNode.nodeType === fluid.orator.nodeType.ELEMENT_NODE &&
+                    fluid.orator.hasRenderedText(childNode)) {
                     parsed = parsed.concat(fluid.orator.parse(childNode, blockIndex));
                     if (parsed.length) {
                         var lastParsed = parsed[parsed.length - 1];
@@ -328,14 +348,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *                               cannot be located within the parseQueue, `undefined` is returned.
      */
     fluid.orator.getClosestIndex = function (parseQueue, currentIndex, boundary) {
-        var maxIndex  = Math.max(parseQueue.length - 1, 0);
-        currentIndex = Math.max(Math.min(currentIndex, maxIndex), 0);
+        var maxIdx  = Math.max(parseQueue.length - 1, 0);
+        currentIndex = Math.max(Math.min(currentIndex, maxIdx), 0);
 
-        var nextIndex = currentIndex + 1;
-        var prevIndex = currentIndex - 1;
+        var nextIdx = currentIndex + 1;
+        var prevIdx = currentIndex - 1;
 
         var currentBlockIndex = parseQueue[currentIndex].blockIndex;
-        var maxBoundary = parseQueue[maxIndex].blockIndex + parseQueue[maxIndex].word.length;
+        var maxBoundary = parseQueue[maxIdx].blockIndex + parseQueue[maxIdx].word.length;
 
 
         if (!fluid.isValue(boundary) || boundary < 0 || boundary > maxBoundary ) {
@@ -343,16 +363,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
 
         if (currentBlockIndex > boundary) {
-            return fluid.orator.getClosestIndex(parseQueue, prevIndex, boundary);
+            return fluid.orator.getClosestIndex(parseQueue, prevIdx, boundary);
         }
 
-        var isWithinNextBound = parseQueue[nextIndex] ? boundary < parseQueue[nextIndex].blockIndex : boundary <= maxBoundary;
+        var isInNextBound = parseQueue[nextIdx] ? boundary < parseQueue[nextIdx].blockIndex : boundary <= maxBoundary;
 
-        if (currentBlockIndex === boundary || (currentIndex <= maxIndex && isWithinNextBound)) {
+        if (currentBlockIndex === boundary || (currentIndex <= maxIdx && isInNextBound)) {
             return currentIndex;
         }
 
-        return fluid.orator.getClosestIndex(parseQueue, nextIndex, boundary);
+        return fluid.orator.getClosestIndex(parseQueue, nextIdx, boundary);
     };
 
     /**
