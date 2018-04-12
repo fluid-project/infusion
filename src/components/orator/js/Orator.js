@@ -218,14 +218,25 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Adds a data point to an array of parsed DOM elements.
-     * @param {Array} parsed - array of data points for the parsed DOM elements
+     * Structure of each data point is as follows:
+     *  {
+     *      blockIndex: {Integer}, // the index into the entire block of text being parsed from the DOM
+     *      startOffset: {Integer}, // the start offset of the current `word` relative to the closest
+     *                             // enclosing DOM element
+     *      endOffset: {Integer}, // the start offset of the current `word` relative to the closest
+     *                           // enclosing DOM element
+     *      node: {DomNode}, // the current child node being parsed
+     *      childIndex: {Integer}, // the index of the child node being parsed relative to its parent
+     *      parentNode: {DomElement}, // the parent DOM node
+     *      word: {String} // the text, `word`, parsed from the node. (It may contain only whitespace.)
+     *   }
+     * @param {ParseQueueElement[]} parsed - An array of Parse Queue Elements
      * @param {String} word - The word, parsed from the node, to be added
-     * @param {DomNode} childNode - the current textnode being operated on
-     * @param {Integer} blockIndex - the index into the entire block of text being parsed from the DOM
-     * @param {Integer} charIndex - the index into the current node being operated on, that is the start index of the
-     *                              word
-     *                              in the string representing the text of the node.
-     * @param {Integer} childIndex - the index of the node in the list of its parent's child nodes.
+     * @param {DomNode} childNode - The current textnode being operated on
+     * @param {Integer} blockIndex - The index into the entire block of text being parsed from the DOM
+     * @param {Integer} charIndex - The index into the current node being operated on, that is the start index of the
+     *                              word in the string representing the text of the node.
+     * @param {Integer} childIndex - The index of the node in the list of its parent's child nodes.
      */
     fluid.orator.addParsedData = function (parsed, word, childNode, blockIndex, charIndex, childIndex) {
         parsed.push({
@@ -250,18 +261,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Integer} blockIndex - The `blockIndex` represents the index into the entire block of text being parsed.
      *                              It defaults to 0 and is primarily used internally for recursive calls.
      *
-     * @return {Array} - An array of data points, objects with the following structure.
-     *                   {
-                             blockIndex: {Integer}, // the index into the entire block of text being parsed from the DOM
-                             startOffset: {Integer}, // the start offset of the current `word` relative to the closest
-                                                    // enclosing DOM element
-                             endOffset: {Integer}, // the start offset of the current `word` relative to the closest
-                                                  // enclosing DOM element
-                             node: {DomNode}, // the current child node being parsed
-                             childIndex: {Integer}, // the index of the child node being parsed relative to its parent
-                             parentNode: {DomElement}, // the parent DOM node
-                             word: {String} // the text, `word`, parsed from the node. (It may contain only whitespace.)
-                         }
+     * @return {ParseQueueElement[]} - An array of Parse Queue Elements.
+     *                                 See fluid.orator.addParsedData for details on the structure.
      */
     fluid.orator.parse = function (elm, blockIndex) {
         var parsed = [];
