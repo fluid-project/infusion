@@ -66,6 +66,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Do not allow the textEditButton to regain focus upon completion unless
      * the keypress is enter or esc.
+     *
+     * @param {Object} that - The component itself.
      */
     fluid.inlineEdit.bindEditFinish = function (that) {
         if (that.options.submitOnEnter === undefined) {
@@ -251,10 +253,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Set up and style the edit field.  If an edit field is not provided,
      * default markup is created for the edit field
      *
-     * @param {string} editStyle The default styling for the edit field
-     * @param {Object} editField The edit field markup provided by the integrator
+     * @param {String} editStyle - The default styling for the edit field.
+     * @param {Object} editField - The existing edit field.
+     * @param {Object} editFieldMarkup - The edit field markup provided by the integrator.
      *
-     * @return eField The styled edit field
+     * @return {Object} The styled edit field.
      */
     fluid.inlineEdit.setupEditField = function (editStyle, editField, editFieldMarkup) {
         var eField = $(editField);
@@ -267,11 +270,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Set up the edit container and append the edit field to the container.  If an edit container
      * is not provided, default markup is created.
      *
-     * @param {Object} displayContainer The display mode container
-     * @param {Object} editField The edit field that is to be appended to the edit container
-     * @param {Object} editContainer The edit container markup provided by the integrator
+     * @param {Object} displayContainer - The display mode container
+     * @param {Object} editField - The edit field that is to be appended to the edit container
+     * @param {Object} editContainer - The edit container markup provided by the integrator
+     * @param {Object} editContainerMarkup - The edit container markup provided by the integrator.
      *
-     * @return eContainer The edit container containing the edit field
+     * @return {Object} The edit container containing the edit field
      */
     fluid.inlineEdit.setupEditContainer = function (displayContainer, editField, editContainer, editContainerMarkup) {
         var eContainer = $(editContainer);
@@ -285,8 +289,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Default renderer for the edit mode view.
      *
-     * @return {Object} container The edit container containing the edit field
-     *                  field The styled edit field
+     * @param {Object} that - The component itself.
+     * @return {Object} An object containing:
+     *  - container The edit container containing the edit field
+     *  - field The styled edit field
      */
     fluid.inlineEdit.defaultEditModeRenderer = function (that) {
         var editField = fluid.inlineEdit.setupEditField(that.options.styles.edit, that.editField, that.options.markup.editField);
@@ -308,7 +314,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /** Configures the edit container and view, and uses the component's editModeRenderer to render
      * the edit container.
-     * @param {boolean} lazyEditView If true, will delay rendering of the edit container; Default is false
+     *
+     * @param {Object} that - The component itself.
+     * @param {Boolean} lazyEditView - If true, will delay rendering of the edit container; Default is false
      */
     fluid.inlineEdit.renderEditContainer = function (that, lazyEditView) {
         that.editContainer = that.locate("editContainer");
@@ -331,8 +339,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /** Set up the edit mode instruction with aria in edit mode
-     * @param {String} editModeInstructionStyle The default styling for the instruction
-     * @param {String} editModeInstructionText The default instruction text
+     * @param {String} editModeInstructionStyle - The default styling for the instruction
+     * @param {String} editModeInstructionText - The default instruction text
+     * @param {Object} editModeInstructionMarkup - The markup to modify.
      * @return {jQuery} The displayed instruction in edit mode
      */
     fluid.inlineEdit.setupEditModeInstruction = function (editModeInstructionStyle, editModeInstructionText, editModeInstructionMarkup) {
@@ -346,9 +355,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Positions the edit mode instruction directly beneath the edit container
      *
-     * @param {Object} editModeInstruction The displayed instruction in edit mode
-     * @param {Object} editContainer The edit container in edit mode
-     * @param {Object} editField The edit field in edit mode
+     * @param {Object} editModeInstruction - The displayed instruction in edit mode
+     * @param {Object} editContainer - The edit container in edit mode
+     * @param {Object} editField - The edit field in edit mode
      */
     fluid.inlineEdit.positionEditModeInstruction = function (editModeInstruction, editContainer, editField) {
         editContainer.append(editModeInstruction);
@@ -373,8 +382,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Set up and style the display mode container for the viewEl and the textEditButton
      *
-     * @param {Object} styles The default styling for the display mode container
-     * @param {Object} displayModeWrapper The markup used to generate the display mode container
+     * @param {Object} styles - The default styling for the display mode container
+     * @param {Object} displayModeWrapper - The markup used to generate the display mode container
      *
      * @return {jQuery} The styled display mode container
      */
@@ -387,7 +396,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /** Retrieve the display text from the DOM.
-     *  @return {jQuery} The display text
+     * @param {Object} viewEl - The view element.
+     * @param {String} textStyle - The classes to apply to the view element.
+     * @return {jQuery} The view element.
      */
     fluid.inlineEdit.setupDisplayText = function (viewEl, textStyle) {
         /*  Remove the display from the tab order to prevent users to think they
@@ -403,6 +414,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Set up the textEditButton.  Append a background image with appropriate
      * descriptive text to the button.
      *
+     * @param {Object} that - The component itself.
+     * @param {Object} model - The model data.
      * @return {jQuery} The accessible button located after the display text
      */
     fluid.inlineEdit.setupTextEditButton = function (that, model) {
@@ -434,9 +447,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Update the textEditButton text with the current value of the field.
      *
-     * @param {Object} textEditButton the textEditButton
-     * @param {String} model The current value of the inline editable text
-     * @param {Object} strings Text option for the textEditButton
+     * @param {Object} textEditButton - the textEditButton
+     * @param {String} value - The current value of the inline editable text
+     * @param {String} stringTemplate - The string template to use in producing the button text.
      */
     fluid.inlineEdit.updateTextEditButton = function (textEditButton, value, stringTemplate) {
         var buttonText = fluid.stringTemplate(stringTemplate, {
@@ -448,8 +461,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Bind mouse hover event handler to the display mode container.
      *
-     * @param {Object} displayModeRenderer The display mode container
-     * @param {String} invitationStyle The default styling for the display mode container on mouse hover
+     * @param {Object} displayModeRenderer - The display mode container
+     * @param {String} invitationStyle - The default styling for the display mode container on mouse hover
      */
     fluid.inlineEdit.bindHoverHandlers = function (displayModeRenderer, invitationStyle) {
         var over = function () {
@@ -466,9 +479,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *
      * Note: This function is an unsupported, NON-API function
      *
-     * @param {Object} element The element to which the event handlers are bound
-     * @param {Object} displayModeRenderer The display mode container
-     * @param {Ojbect} styles The default styling for the display mode container on mouse hover
+     * @param {Object} element - The element to which the event handlers are bound
+     * @param {Object} displayModeRenderer - The display mode container
+     * @param {Object} styles - The default styling for the display mode container on mouse hover
+     * @param {Object} strings - String messages to use if there is no model value.
+     * @param {Object} model - Model data to display.
      */
     fluid.inlineEdit.bindHighlightHandler = function (element, displayModeRenderer, styles, strings, model) {
         element = $(element);
@@ -489,10 +504,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Bind mouse click handler to an element
      *
-     * @param {Object} element The element to which the event handler is bound
-     * @param {Object} edit Function to invoke the edit mode
+     * @param {Object} element - The element to which the event handler is bound
+     * @param {Object} edit - Function to invoke the edit mode
      *
-     * @return {boolean} Returns false if entering edit mode
      */
     fluid.inlineEdit.bindMouseHandlers = function (element, edit) {
         element = $(element);
@@ -507,10 +521,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Bind keyboard press handler to an element
      *
-     * @param {Object} element The element to which the event handler is bound
-     * @param {Object} edit Function to invoke the edit mode
+     * @param {Object} element - The element to which the event handler is bound
+     * @param {Object} edit - Function to invoke the edit mode
      *
-     * @return {boolean} Returns false if entering edit mode
      */
     fluid.inlineEdit.bindKeyboardHandlers = function (element, edit) {
         element = $(element);
@@ -526,10 +539,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * Creates an event handler that will trigger the edit mode if caused by something other
      * than standard HTML controls. The event handler will return false if entering edit mode.
      *
-     * @param {Object} element The element to trigger the edit mode
-     * @param {Object} edit Function to invoke the edit mode
+     * @param {Object} jElement - The element to trigger the edit mode
+     * @param {Object} edit - Function to invoke the edit mode
      *
-     * @return {function} The event handler function
+     * @return {Function} The event handler function
      */
     fluid.inlineEdit.makeEditTriggerGuard = function (jElement, edit) {
         var element = fluid.unwrap(jElement);
@@ -548,7 +561,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         };
     };
 
-    /** Bind all user-facing event handlers required by the component **/
+    /* Bind all user-facing event handlers required by the component */
     fluid.inlineEdit.bindEventHandlers = function (that, edit, displayModeContainer) {
         var styles = that.options.styles;
 
@@ -561,9 +574,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /** Render the display mode view.
-      * @return {jQuery} The display container containing the display text and
-      * textEditbutton for display mode view
-      */
+     *
+     * @param {Object} that - The component itself.
+     * @param {Object} edit - Function to invoke the edit mode
+     * @param {Object} model - Model data to display.
+     * @return {jQuery} The display container containing the display text and textEditbutton for display mode view.
+     */
     fluid.inlineEdit.defaultDisplayModeRenderer = function (that, edit, model) {
         var styles = that.options.styles;
 
@@ -689,8 +705,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Instantiates a new Inline Edit component
      *
-     * @param {Object} componentContainer a selector, jQuery, or a DOM element representing the component's container
-     * @param {Object} options a collection of options settings
+     * @param {Object} componentContainer - a selector, jQuery, or a DOM element representing the component's container
+     * @param {Object} options - a collection of options settings
      */
 
     fluid.defaults("fluid.inlineEdit", {
@@ -751,7 +767,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             /** Updates the state of the inline editor in the DOM, based on changes that may have
               * happened to the model.
-              * @param {Object} source An optional source object identifying the source of the change (see ChangeApplier documentation)
+              * @param {Object} [source] - An optional source object identifying the source of the change (see ChangeApplier documentation)
               */
             refreshView: {
                 funcName: "fluid.inlineEdit.refreshView",
@@ -759,8 +775,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             /** Pushes external changes to the model into the inline editor, refreshing its
               * rendering in the DOM. The modelChanged event will fire.
-              * @param {String} newValue The bare value of the model, that is, the string being edited
-              * @param {Object} source An optional "source" (perhaps a DOM element) which triggered this event
+              * @param {String} newValue - The bare value of the model, that is, the string being edited
+              * @param {Object} [source] - An optional "source" (perhaps a DOM element) which triggered this event
               */
             updateModelValue: {
                 funcName: "fluid.inlineEdit.updateModelValue",
@@ -768,8 +784,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             /** Pushes external changes to the model into the inline editor, refreshing its
               * rendering in the DOM. The modelChanged event will fire. This honours the "fluid.undoable" contract
-              * @param {Object} newValue The full value of the new model, that is, a model object which contains the editable value as the element named "value"
-              * @param {Object} source An optional "source" (perhaps a DOM element) which triggered this event
+              * @param {Object} newValue - The full value of the new model, that is, a model object which contains the editable value as the element named "value"
+              * @param {Object} [source] - An optional "source" (perhaps a DOM element) which triggered this event
               */
             updateModel: {
                 funcName: "fluid.inlineEdit.updateModelValue",
@@ -913,7 +929,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         selectOnEdit: false
     });
 
-    /**
+    /*
      * Creates a whole list of inline editors as subcomponents of the supplied component
      */
     fluid.setupInlineEdits = function (that, editables) {

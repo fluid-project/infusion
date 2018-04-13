@@ -542,7 +542,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     // These distance algorithms have been taken from
     // http://www.cs.mcgill.ca/~cs644/Godfried/2005/Fall/fzamal/concepts.htm
 
-    /** Returns the minimum squared distance between a point and a rectangle **/
+    /* Returns the minimum squared distance between a point and a rectangle */
     fluid.geom.minPointRectangle = function (x, y, rectangle) {
         var dx = x < rectangle.left ? (rectangle.left - x) :
                   (x > rectangle.right ? (x - rectangle.right) : 0);
@@ -551,7 +551,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return dx * dx + dy * dy;
     };
 
-    /** Returns the minimum squared distance between two rectangles **/
+    /* Returns the minimum squared distance between two rectangles */
     fluid.geom.minRectRect = function (rect1, rect2) {
         var dx = rect1.right < rect2.left ? rect2.left - rect1.right :
                  rect2.right < rect1.left ? rect1.left - rect2.right : 0;
@@ -570,12 +570,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /** Determine the one amongst a set of rectangle targets which is the "best fit"
      * for an axial motion from a "base rectangle" (commonly arising from the case
      * of cursor key navigation).
-     * @param {Rectangle} baserect The base rectangl from which the motion is to be referred
-     * @param {fluid.direction} direction  The direction of motion
-     * @param {Array of Rectangle holders} targets An array of objects "cache elements"
-     * for which the member <code>rect</code> is the holder of the rectangle to be tested.
-     * @param disableWrap which is used to enable or disable wrapping of elements
-     * @return The cache element which is the most appropriate for the requested motion.
+     * @param {Rectangle} baserect - The base rectangle from which the motion is to be referred.
+     * @param {Object} direction  - The direction of motion, which should be an instance of fluid.direction.
+     * @param {Array} targets - An array of objects "cache elements" for which the member <code>rect</code> is the
+     * holder of the rectangle to be tested.
+     * @param {Boolean} forSelection - Set to `true` to indicate that we are dealing with a selection.
+     * @param {Boolean} disableWrap - Set to `true` to disable wrapping of elements.
+     * @return {Object} - The cache element which is the most appropriate for the requested motion.
      */
     fluid.geom.projectFrom = function (baserect, direction, targets, forSelection, disableWrap) {
         var axis = fluid.directionAxis(direction);

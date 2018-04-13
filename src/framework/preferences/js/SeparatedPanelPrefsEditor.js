@@ -143,22 +143,35 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 options: {
                     gradeNames: ["fluid.prefs.uiEnhancerRelay", "fluid.prefs.arrowScrolling"],
                     // ensure that model and applier are available to users at top level
-                    model: "{separatedPanel}.model",
+                    model: {
+                        preferences: "{separatedPanel}.model.preferences",
+                        panelIndex: "{separatedPanel}.model.panelIndex",
+                        panelMaxIndex: "{separatedPanel}.model.panelMaxIndex",
+                        // The `local` model path is used by the `fluid.remoteModelComponent` grade
+                        // for persisting and synchronizing model values with remotely stored data.
+                        // Below, the panelIndex is being tracked for such persistence and synchronization.
+                        local: {
+                            panelIndex: "{that}.model.panelIndex"
+                        }
+                    },
+                    autoSave: true,
                     events: {
                         onSignificantDOMChange: null,
                         updateEnhancerModel: "{that}.events.modelChanged"
                     },
+                    modelListeners: {
+                        "panelIndex": [{
+                            listener: "fluid.prefs.prefsEditor.handleAutoSave",
+                            args: ["{that}"],
+                            namespace: "autoSavePanelIndex"
+                        }]
+                    },
                     listeners: {
-                        "modelChanged.save": "{that}.save",
                         "onCreate.bindReset": {
                             listener: "{separatedPanel}.bindReset",
                             args: ["{that}.reset"]
                         },
                         "afterReset.applyChanges": "{that}.applyChanges",
-                        "onReady.boilOnReady": {
-                            listener: "{separatedPanel}.events.onReady",
-                            args: "{separatedPanel}"
-                        },
                         // Scroll to active panel after opening the separate Panel.
                         // This is when the panels are all rendered and the actual sizes are available.
                         "{separatedPanel}.slidingPanel.events.afterPanelShow": {
@@ -172,26 +185,32 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         outerEnhancerOptions: "{originalEnhancerOptions}.options.originalUserOptions",
-        distributeOptions: [{
-            source: "{that}.options.slidingPanel",
-            removeSource: true,
-            target: "{that > slidingPanel}.options"
-        }, {
-            source: "{that}.options.iframeRenderer",
-            removeSource: true,
-            target: "{that > iframeRenderer}.options"
-        }, {
-            source: "{that}.options.iframe",
-            removeSource: true,
-            target: "{that}.options.selectors.iframe"
-        }, {
-            source: "{that}.options.outerEnhancerOptions",
-            removeSource: true,
-            target: "{that iframeEnhancer}.options"
-        }, {
-            source: "{that}.options.terms",
-            target: "{that > iframeRenderer}.options.terms"
-        }]
+        distributeOptions: {
+            "separatedPanel.slidingPanel": {
+                source: "{that}.options.slidingPanel",
+                removeSource: true,
+                target: "{that > slidingPanel}.options"
+            },
+            "separatedPanel.iframeRenderer": {
+                source: "{that}.options.iframeRenderer",
+                removeSource: true,
+                target: "{that > iframeRenderer}.options"
+            },
+            "separatedPanel.iframeRendered.terms": {
+                source: "{that}.options.terms",
+                target: "{that > iframeRenderer}.options.terms"
+            },
+            "separatedPanel.selectors.iframe": {
+                source: "{that}.options.iframe",
+                removeSource: true,
+                target: "{that}.options.selectors.iframe"
+            },
+            "separatedPanel.iframeEnhancer.outerEnhancerOptions": {
+                source: "{that}.options.outerEnhancerOptions",
+                removeSource: true,
+                target: "{that iframeEnhancer}.options"
+            }
+        }
     });
 
     fluid.prefs.separatedPanel.hideReset = function (separatedPanel) {
@@ -380,7 +399,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         },
                         "{separatedPanel}.events.onLazyLoad": {
                             listener: "fluid.resourceLoader.loadResources",
-                            args: ["{messageLoader}", {expander: {func: "{messageLoader}.resolveResources"}}]
+                            args: ["{messageLoader}", {expander: {func: "{messageLoader}.resolveResources"}}],
+                            namespace: "loadResources"
                         }
                     }
                 }
@@ -417,9 +437,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * for the "fluid.prefs.separatedPanel.lazyLoad".
      *
      * @param {Object} that - the component
-     * @param {Object} resource - all of the resourceSpecs to load, including preload and others.
-     *                            see: fluid.fetchResources
-     * @param {Array/String} toPreload - a String or an Array of Strings corresponding to the names
+     * @param {Object} resources - all of the resourceSpecs to load, including preload and others.
+     *                             see: fluid.fetchResources
+     * @param {Array|String} toPreload - a String or an String[]s corresponding to the names
      *                                   of the resources, supplied in the resource argument, that
      *                                   should be loaded. Only these resources will be loaded.
      */

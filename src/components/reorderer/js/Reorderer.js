@@ -190,8 +190,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             movables:    ".flc-reorderer-movable",
             selectables: ".flc-reorderer-movable",
             dropTargets: ".flc-reorderer-movable",
-            grabHandle: "",
-            stylisticOffset: ""
+            grabHandle: ""
         },
         avatarCreator: fluid.reorderer.defaultAvatarCreator,
         keysets: fluid.reorderer.defaultKeysets,
@@ -558,7 +557,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         jItem.attr("aria-selected", "true");
     };
 
-    /**
+    /*
      * Takes a $ object and adds 'movable' functionality to it
      */
     fluid.reorderer.initMovable = function (thatReorderer, dropManager, item) {
@@ -677,7 +676,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         dom.refresh("movables");
         dom.refresh("selectables");
         dom.refresh("grabHandle", dom.fastLocate("movables"));
-        dom.refresh("stylisticOffset", dom.fastLocate("movables"));
         dom.refresh("dropTargets");
         if (selectableContext) { // if it didn't exist on dispatch, it must be up to date now
             selectableContext.selectables = dom.fastLocate("selectables");

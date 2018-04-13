@@ -22,9 +22,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * resources are loaded, the event `onResourceLoaded` will be fired, which can be used
      * to time the creation of components dependent on the resources.
      *
-     * @param {Object} options
+     * @param {Object} options - The component options.
      */
-
     fluid.defaults("fluid.resourceLoader", {
         gradeNames: ["fluid.component"],
         listeners: {

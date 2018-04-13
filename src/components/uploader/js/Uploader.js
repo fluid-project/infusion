@@ -179,7 +179,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
    /**
     * Pretty prints a file's size, converting from bytes to kilobytes or megabytes.
     *
-    * @param {Number} bytes the files size, specified as in number bytes.
+    * @param {Number} bytes - The file's size, specified as in number bytes.
+    * @return {String} - The file size as a string.
     */
     fluid.uploader.formatFileSize = function (bytes) {
         if (typeof (bytes) === "number") {
@@ -336,8 +337,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Instantiates a new Uploader component.
      *
-     * @param {Object} container the DOM element in which the Uploader lives
-     * @param {Object} options configuration options for the component.
+     * @param container {Object} the DOM element in which the Uploader lives
+     * @param options {Object} configuration options for the component.
      */
 
     fluid.defaults("fluid.uploader", {
@@ -446,7 +447,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             /**
              * Removes the specified file from the upload queue.
              *
-             * @param {File} file the file to remove
+             * @param file {File} the file to remove
              */
             removeFile: {
                 funcName: "fluid.uploader.removeFile",
@@ -781,8 +782,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * enhanceable Uploader, or call this directly if you only want a standard single file uploader.
      * But why would you want that?
      *
-     * @param {jQueryable} container the component's container
-     * @param {Object} options configuration options
+     * @param container {jQueryable} the component's container
+     * @param options {Object} configuration options
      */
 
     fluid.defaults("fluid.uploader.singleFile", {

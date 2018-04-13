@@ -105,7 +105,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return textEditButton;
     };
 
-    /**
+    /*
      * Wrap the display text and the textEditButton with the display mode container
      * for better style control.
      */
@@ -219,8 +219,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Instantiate a rich-text InlineEdit component that uses an instance of TinyMCE.
      *
-     * @param {Object} componentContainer the element containing the inline editors
-     * @param {Object} options configuration options for the components
+     * @param {Object} componentContainer - the element containing the inline editors
+     * @param {Object} options - configuration options for the components
      */
 
     fluid.defaults("fluid.inlineEdit.tinyMCE", {
@@ -398,8 +398,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Instantiate a drop-down InlineEdit component
      *
-     * @param {Object} container
-     * @param {Object} options
+     * @param {Object} container - The container for this component.
+     * @param {Object} options - The component options.
      */
 
     fluid.defaults("fluid.inlineEdit.dropdown", {

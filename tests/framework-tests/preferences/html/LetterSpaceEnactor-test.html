@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" style="font-size: 16px">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Letter Space Enactor Tests</title>
+
+        <!--  This is the jqUnit test css file -->
+        <link rel="stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
+
+        <script type="text/javascript" src="../../../../src/lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDocument.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformation.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/ModelTransformationTransforms.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/FluidRequests.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/core/js/ResourceLoader.js"></script>
+        <script type="text/javascript" src="../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/renderer/js/RendererUtilities.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/enhancement/js/ContextAwareness.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/enhancement/js/ProgressiveEnhancement.js"></script>
+        <script type="text/javascript" src="../../../../src/components/textToSpeech/js/TextToSpeech.js"></script>
+        <script type="text/javascript" src="../../../../src/components/textToSpeech/js/MockTTS.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/UIEnhancer.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/PrefsEditor.js"></script>
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/Enactors.js"></script>
+
+        <script type="text/javascript" src="../../../../src/framework/preferences/js/LetterSpaceEnactor.js"></script>
+
+        <!--  These are the jqUnit test js files -->
+        <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
+        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+        <script type="text/javascript" src="../../../test-core/utils/js/IoCTestUtils.js"></script>
+
+        <!-- Required to send coverage data at the end of the test run on this page -->
+        <script src="/coverage/client/coverageSender.js"></script>
+
+        <!--  These are tests that have been written using this page as data -->
+        <script type="text/javascript" src="../js/EnactorsTestUtils.js"></script>
+        <script type="text/javascript" src="../js/LetterSpaceEnactorTests.js"></script>
+
+    </head>
+
+    <body style="font-size: 1.5rem;">
+        <h1 id="qunit-header">Letter Space Enactor Test Suite</h1>
+        <h2 id="qunit-banner"></h2>
+        <div id="qunit-testrunner-toolbar"></div>
+        <h2 id="qunit-userAgent"></h2>
+        <ol id="qunit-tests"></ol>
+        <p class="flc-letterSpace" style="display: none; font-size: 16px">
+            Sample Text
+        </p>
+        <div style="display: none; font-size: 16px; letter-spacing: 0.5em">
+            <p class="flc-letterSpace-existing" style="letter-spacing: 0.2em">
+                Sample Text
+            </p>
+        </div>
+    </body>
+</html>

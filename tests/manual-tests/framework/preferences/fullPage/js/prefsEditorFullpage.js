@@ -15,35 +15,35 @@ var demo = demo || {};
 (function ($, fluid) {
     "use strict";
 
-    /**
+    /*
      * The Preferences Editor interface is defined by several HTML templates. The component
      * needs to know where those templates are. This variable will be used by all
      * versions of the component.
      */
     var pathToTemplates = "../../../../../src/framework/preferences/html";
 
-    /**
+    /*
      * The strings used on Preferences Editor interface is defined by several JSON files. The component
      * needs to know where those files are. This variable will be used by all versions of the
      * component.
      */
     var pathToMessages = "../../../../../src/framework/preferences/messages";
 
-    /**
+    /*
      * The UI Enhancer's Table of Contents uses a template. This path variable is used by all
      * three versions of the component, as well as by the UI Enhancer present in the Preview
      * itself.
      */
     var pathToTocTemplate = "../../../../../src/components/tableOfContents/html/TableOfContents.html";
 
-    /**
+    /*
      * Initialize PrefsEditor global settings store.
      */
     demo.initSettingsStore = function () {
         fluid.prefs.globalSettingsStore();
     };
 
-    /**
+    /*
      * Initialize UI Enhancer for the page.
      */
     demo.initPageEnhancer = function (customThemeName) {
@@ -60,7 +60,7 @@ var demo = demo || {};
         });
     };
 
-    /**
+    /*
      * Initialize Full Page preferences editor
      */
     demo.initFullWithPreview = function (container, options) {
@@ -78,7 +78,7 @@ var demo = demo || {};
             prefsEditor: {
                 gradeNames: ["fluid.prefs.starterPanels", "fluid.prefs.uiEnhancerRelay"],
                 listeners: {
-                    onCancel: function () {
+                    "onCancel.alert": function () {
                         alert("Cancelled - would normally cancel any unsaved changes and return to the previous page.");
                     }
                 }

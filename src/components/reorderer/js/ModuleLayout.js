@@ -23,6 +23,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Calculate the location of the item and the column in which it resides.
+     * @param {Object} - The item.
+     * @param {Object} - The layout object.
      * @return  An object with column index and item index (within that column) properties.
      *          These indices are -1 if the item does not exist in the grid.
      */
@@ -69,9 +71,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Builds a layout object from a set of columns and modules.
-     * @param {jQuery} container
-     * @param {jQuery} columns
-     * @param {jQuery} portlets
+     * @param {jQuery} container - The container element.
+     * @param {jQuery} columns - One or more jQuery objects representing columns of data.
+     * @param {jQuery} portlets - One or more "portlet" elements to include in the layout.
+     * @return {Object} - A layout object.
      */
     fluid.moduleLayout.layoutFromFlat = function (container, columns, portlets) {
         var layout = {};
@@ -89,7 +92,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return layout;
     };
 
-    /**
+    /*
      * Builds a layout object from a serialisable "layout" object consisting of id lists
      */
     fluid.moduleLayout.layoutFromIds = function (idLayout) {
@@ -104,7 +107,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         };
     };
 
-    /**
+    /*
      * Serializes the current layout into a structure of ids
      */
     fluid.moduleLayout.layoutToIds = function (idLayout) {
@@ -129,7 +132,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
-    /**
+    /*
      * Module Layout Handler for reordering content modules.
      *
      * General movement guidelines:

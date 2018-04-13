@@ -12,16 +12,20 @@
 
         <script src="../../../../src/framework/core/js/jquery.keyboard-a11y.js"></script>
         <script src="../../../../src/framework/core/js/Fluid.js"></script>
+        <script src="../../../../src/framework/core/js/FluidPromises.js"></script>
+        <script src="../../../../src/framework/core/js/DataSource.js"></script>
         <script src="../../../../src/framework/core/js/FluidDocument.js"></script>
         <script src="../../../../src/framework/core/js/FluidRequests.js"></script>
         <script src="../../../../src/framework/core/js/FluidDOMUtilities.js"></script>
         <script src="../../../../src/framework/core/js/FluidIoC.js"></script>
         <script src="../../../../src/framework/core/js/DataBinding.js"></script>
+        <script src="../../../../src/framework/core/js/RemoteModel.js"></script>
         <script src="../../../../src/framework/core/js/ModelTransformation.js"></script>
         <script src="../../../../src/framework/core/js/ModelTransformationTransforms.js"></script>
         <script src="../../../../src/framework/core/js/FluidView.js"></script>
         <script src="../../../../src/framework/core/js/ResourceLoader.js"></script>
         <script src="../../../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script src="../../../../src/framework/core/js/MessageResolver.js"></script>
         <script src="../../../../src/framework/renderer/js/fluidParser.js"></script>
         <script src="../../../../src/framework/renderer/js/fluidRenderer.js"></script>
         <script src="../../../../src/framework/renderer/js/RendererUtilities.js"></script>
@@ -44,7 +48,8 @@
         <script src="../../../lib/qunit/js/qunit.js"></script>
         <script src="../../../test-core/jqUnit/js/jqUnit.js"></script>
 
-        <!-- Required to ensure we sent coverage data at the end of the test run on this page -->
+        <!-- Required to send coverage data at the end of the test run on this page -->
+        <script src="/testem.js"></script>
         <script src="/coverage/client/coverageSender.js"></script>
 
         <!--  These are tests that have been written using this page as data -->

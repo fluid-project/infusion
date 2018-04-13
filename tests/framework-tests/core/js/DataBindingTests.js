@@ -3095,6 +3095,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return togo;
     };
 
-    fluid.test.runTests(["fluid.tests.fluid5659root"]);
+    fluid.test.runTests([
+        "fluid.tests.fluid5659root"
+    ]);
 
 })(jQuery);

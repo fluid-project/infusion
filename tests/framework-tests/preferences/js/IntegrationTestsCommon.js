@@ -158,7 +158,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 },
                 listeners: {
-                    onReady: {
+                    "onReady.runTest": {
                         listener: testComponent,
                         priority: "last"
                     }

@@ -183,7 +183,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
-    /**
+    /*
      * Uploads the file using the HTML5 FormData object.
      */
     fluid.uploader.html5Strategy.sendFormData = function (formCreator, file, queueSettings, xhr) {

@@ -46,7 +46,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         modelListeners: {
             value: {
                 listener: "{that}.handleStyle",
-                args: ["{change}.value"]
+                args: ["{change}.value"],
+                namespace: "handleStyle"
             }
         }
     });
@@ -88,7 +89,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         modelListeners: {
             value: {
                 listener: "{that}.swap",
-                args: ["{change}.value"]
+                args: ["{change}.value"],
+                namespace: "swapClass"
             }
         },
         members: {
@@ -177,8 +179,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * return "font-size" in px
-     * @param (Object) container
-     * @param (Object) fontSizeMap: the mapping between the font size string values ("small", "medium" etc) to px values
+     * @param {Object} container - The container to evaluate.
+     * @param {Object} fontSizeMap - The mapping between the font size string values ("small", "medium" etc) to px values.
+     * @return {Number} - The size of the container, in px units.
      */
     fluid.prefs.enactor.getTextSizeInPx = function (container, fontSizeMap) {
         var fontSize = container.css("font-size");
@@ -192,6 +195,33 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /*******************************************************************************
+     * textRelatedSizer
+     *
+     * Provides an abstraction for enactors that need to adjust sizes based on
+     * a text size value from the DOM. This could include things such as:
+     * font-size, line-height, letter-spacing, and etc.
+     *******************************************************************************/
+
+    fluid.defaults("fluid.prefs.enactor.textRelatedSizer", {
+        gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
+        fontSizeMap: {},  // must be supplied by implementors
+        invokers: {
+            set: "fluid.notImplemented", // must be supplied by a concrete implementation
+            getTextSizeInPx: {
+                funcName: "fluid.prefs.enactor.getTextSizeInPx",
+                args: ["{that}.container", "{that}.options.fontSizeMap"]
+            }
+        },
+        modelListeners: {
+            value: {
+                listener: "{that}.set",
+                args: ["{change}.value"],
+                namespace: "setAdaptation"
+            }
+        }
+    });
+
+    /*******************************************************************************
      * textSize
      *
      * Sets the text size on the root element to the multiple provided.
@@ -199,7 +229,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.prefs.enactor.textSize", {
-        gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
+        gradeNames: ["fluid.prefs.enactor.textRelatedSizer"],
         preferenceMap: {
             "fluid.prefs.textSize": {
                 "model.value": "default"
@@ -214,21 +244,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 }
             }
         },
-        fontSizeMap: {},  // must be supplied by implementors
         invokers: {
             set: {
                 funcName: "fluid.prefs.enactor.textSize.set",
                 args: ["{arguments}.0", "{that}", "{that}.getTextSizeInPx"]
             },
             getTextSizeInPx: {
-                funcName: "fluid.prefs.enactor.getTextSizeInPx",
                 args: ["{that}.root", "{that}.options.fontSizeMap"]
-            }
-        },
-        modelListeners: {
-            value: {
-                listener: "{that}.set",
-                args: ["{change}.value"]
             }
         }
     });
@@ -255,21 +277,16 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     // Note that the implementors need to provide the container for this view component
     fluid.defaults("fluid.prefs.enactor.lineSpace", {
-        gradeNames: ["fluid.prefs.enactor", "fluid.viewComponent"],
+        gradeNames: ["fluid.prefs.enactor.textRelatedSizer"],
         preferenceMap: {
             "fluid.prefs.lineSpace": {
                 "model.value": "default"
             }
         },
-        fontSizeMap: {},  // must be supplied by implementors
         invokers: {
             set: {
                 funcName: "fluid.prefs.enactor.lineSpace.set",
                 args: ["{arguments}.0", "{that}", "{that}.getLineHeightMultiplier"]
-            },
-            getTextSizeInPx: {
-                funcName: "fluid.prefs.enactor.getTextSizeInPx",
-                args: ["{that}.container", "{that}.options.fontSizeMap"]
             },
             getLineHeight: {
                 funcName: "fluid.prefs.enactor.lineSpace.getLineHeight",
@@ -278,12 +295,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             getLineHeightMultiplier: {
                 funcName: "fluid.prefs.enactor.lineSpace.getLineHeightMultiplier",
                 args: [{expander: {func: "{that}.getLineHeight"}}, {expander: {func: "{that}.getTextSizeInPx"}}]
-            }
-        },
-        modelListeners: {
-            value: {
-                listener: "{that}.set",
-                args: ["{change}.value"]
             }
         }
     });
@@ -389,12 +400,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         modelListeners: {
             toc: {
                 listener: "{that}.applyToc",
-                args: ["{change}.value"]
+                args: ["{change}.value"],
+                namespace: "toggleToc"
             }
         },
         distributeOptions: {
-            source: "{that}.options.ignoreForToC",
-            target: "{that tableOfContents}.options.ignoreForToC"
+            "tocEnactor.tableOfContents.ignoreForToC": {
+                source: "{that}.options.ignoreForToC",
+                target: "{that tableOfContents}.options.ignoreForToC"
+            }
         }
     });
 

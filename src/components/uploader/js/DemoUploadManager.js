@@ -106,7 +106,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Invokes a function after a random delay by using setTimeout.
-     * @param {Function} fn the function to invoke
+     * @param {Function} fn - the function to invoke
      */
     fluid.invokeAfterRandomDelay = function (fn) {
         var delay = Math.floor(Math.random() * 200 + 100);

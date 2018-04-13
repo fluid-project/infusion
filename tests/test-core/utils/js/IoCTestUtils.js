@@ -198,7 +198,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var togo;
         if (fixture.args !== undefined) {
             togo = function () {
-                var expandedArgs = testCaseState.expand(fixture.args, {"arguments": arguments}, fixture.contextThat);
+                var expandedArgs = testCaseState.expand(fixture.args, {"arguments": fluid.makeArray(arguments)}, fixture.contextThat);
                 return listener.apply(null, fluid.makeArray(expandedArgs));
             };
         } else {
@@ -325,6 +325,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return that;
     };
 
+    // Queries for the tail section of an IoCSS selector which has previously been sent to fluid.extractSelectorHead.
+    // Note that for this purpose, the selector head needs to be *completely* removed since the head matching has now been
+    // achieved. TODO: We need to integrate this utility with fluid.queryIoCSelector once FLUID-5556 is resolved
+    fluid.test.queryPartialSelector = function (root, selector) {
+        var togo = [];
+        var parsed = fluid.copy(selector);
+        parsed.shift();
+        fluid.visitComponentsForMatching(root, {}, function (that, thatStack, contextHashes, memberNames, i) {
+            if (fluid.matchIoCSelector(parsed, thatStack, contextHashes, memberNames, i)) {
+                togo.push(that);
+            }
+        });
+        return togo;
+    };
+
     // TODO: This will eventually go into the core framework for "Luke Skywalker Event Binding"
     fluid.analyseTarget = function (testCaseState, material, expectedPrefix) {
         if (fluid.isIoCReference(material)) {
@@ -341,10 +356,24 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 if (segs.length < 2 || segs[0] !== expectedPrefix) {
                     fluid.fail("Error in test case selector ", material, " must start with path " + expectedPrefix);
                 }
-                return {selector: selector, head: head, path: segs.slice(1)};
+                var query = function () {
+                    return fluid.test.queryPartialSelector(head, selector);
+                };
+                return {selector: selector, head: head, query: query, path: segs.slice(1)};
             }
         }
         return {resolved: testCaseState.expand(material)};
+    };
+
+    // Because of listener instance removal code driven by fluid.event.resolveListenerRecord, the id assigned
+    // on registration of a listener via IoC may not agree with its raw id - this is so that the same listener
+    // handle can be distributed to the same function via multiple declarative blocks. Therefore here we need to
+    // search for the assigned id since we mean to do something untypical - programmatically remove a listener
+    // which was registered declaratively.
+    fluid.test.findListenerId = function (event, listener) {
+        return fluid.find(event.byId, function (lisRec, key) {
+            return lisRec.listener.$$fluid_guid === listener.$$fluid_guid ? key : undefined;
+        }, fluid.event.identifyListener(listener));
     };
 
     fluid.test.decoders.event = function (testCaseState, fixture) {
@@ -363,21 +392,43 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
         else if (analysed.path) {
             var id;
-
             bind = function (wrapped) {
+                // Push the distribution whether the component exists or not - since a further one may be created at this
+                // path via a createOnEvent annotation
                 var options = {};
+                fluid.event.identifyListener(wrapped);
                 fluid.set(options, ["listeners"].concat(analysed.path), {
                     listener: wrapped,
-                    args: fixture.args,
+                    // Don't supply "args" here because we decode them ourselves in decodeListener
                     namespace: fixture.namespace,
                     priority: fixture.priority
                 });
                 id = fluid.pushDistributions(analysed.head, analysed.selector, fixture.event,
                     [{options: options, recordType: "distribution", priority: fluid.mergeRecordTypes.distribution}]
                 );
+                var existent = analysed.query();
+                if (existent.length === 1) {
+                    // In addition, directly register the listener on any currently existing component
+                    var event = fluid.getForComponent(existent[0], ["events"].concat(analysed.path));
+                    event.addListener(wrapped, fixture.namespace, priority);
+                } else if (existent.length > 1) {
+                    fluid.fail("Error in listening fixture ", fixture, " selector " + fixture.event + " matched more than one component during bind: ", existent);
+                }
             };
-            unbind = function () {
-                fluid.clearDistribution(analysed.head, id);
+            unbind = function (wrapped) {
+                fluid.clearDistribution(analysed.head.id, id);
+                var existent = analysed.query();
+                if (existent.length === 1) {
+                    var event = fluid.getForComponent(existent[0], ["events"].concat(analysed.path));
+                    // TODO: Note that this is overgenerous - will still fail in the (unlikely) case the implementation has manually
+                    // registered a listener whose handle is the same as the declaratively registered one. We need to track
+                    // listeners by attaching their parent distribution id to them. Note that the id allocated by
+                    // fluid.event.resolveListenerRecord is not declaratively recoverable.
+                    var identified = fluid.test.findListenerId(event, wrapped);
+                    event.removeListener(identified);
+                } else if (existent.length > 1) {
+                    fluid.fail("Error in listening fixture ", fixture, " selector " + fixture.event + " matched more than one component during unbind: ", existent);
+                }
             };
         } else {
             fluid.fail("Error decoding event fixture ", fixture, ": must be able to look up member \"event\" to one or more events");

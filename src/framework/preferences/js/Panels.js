@@ -77,8 +77,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             messageLocator: "{msgResolver}.resolve"
         },
         distributeOptions: {
-            source: "{that}.options.messageBase",
-            target: "{that > msgResolver}.options.messageBase"
+            "panel.msgResolver.messageBase": {
+                source: "{that}.options.messageBase",
+                target: "{that > msgResolver}.options.messageBase"
+            }
         }
     });
 
@@ -91,7 +93,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         listeners: {
             "{compositePanel}.events.afterRender": {
                 listener: "{that}.events.afterRender",
-                args: ["{that}"]
+                args: ["{that}"],
+                namespce: "boilAfterRender"
             },
             // Changing the firing of onDomBind from the onCreate.
             // This is due to the fact that the rendering process, controlled by the
@@ -319,14 +322,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
     fluid.prefs.compositePanel.assembleDistributeOptions = function (components) {
         var gradeName = "fluid.prefs.compositePanel.distributeOptions_" + fluid.allocateGuid();
-        var distributeOptions = [];
+        var distributeOptions = {};
         var relayOption = {};
         fluid.each(components, function (componentOptions, componentName) {
             if (fluid.prefs.compositePanel.isPanel(componentOptions.type, componentOptions.options)) {
-                distributeOptions.push({
+                distributeOptions[componentName + ".subPanelOverrides"] = {
                     source: "{that}.options.subPanelOverrides",
                     target: "{that > " + componentName + "}.options"
-                });
+                };
             }
 
             // Construct the model relay btw the composite panel and its subpanels
@@ -341,10 +344,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 });
             });
             relayOption[componentName] = componentRelayRules;
-            distributeOptions.push({
+            distributeOptions[componentName + ".modelRelay"] = {
                 source: "{that}.options.relayOption." + componentName,
                 target: "{that > " + componentName + "}.options.model"
-            });
+            };
         });
         fluid.defaults(gradeName, {
             gradeNames: ["fluid.component"],
@@ -382,7 +385,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var eventName = fluid.prefs.compositePanel.creationEventName(pref);
             return {
                 func: "{that}.handleRenderOnPreference",
-                args: ["{change}.value", "{that}.events." + eventName + ".fire", componentNames]
+                args: ["{change}.value", "{that}.events." + eventName + ".fire", componentNames],
+                namespace: "handleRenderOnPreference_" + pref
             };
         });
     };
@@ -397,7 +401,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      */
     fluid.prefs.compositePanel.subPanelLifecycleBindings = function (components) {
         var gradeName = "fluid.prefs.compositePanel.subPanelCreationTimingDistibution_" + fluid.allocateGuid();
-        var distributeOptions = [];
+        var distributeOptions = {};
         var subPanelCreationOpts = {
             "default": "initSubPanels"
         };
@@ -423,10 +427,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         args: ["{that}.model." + pref, "{that}.events." + creationEventOpt + ".fire"]
                     };
                 }
-                distributeOptions.push({
+                distributeOptions[componentName + ".subPanelCreationOpts"] = {
                     source: "{that}.options.subPanelCreationOpts." + creationEventOpt,
                     target: "{that}.options.components." + componentName + ".createOnEvent"
-                });
+                };
             }
         });
 
@@ -642,6 +646,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.defaults("fluid.prefs.prefsEditorConnections", {
         gradeNames: ["fluid.component"],
         listeners: {
+            // No namespace supplied because this grade is added to every panel. Suppling a
+            // namespace would mean that only one panel's refreshView method was bound to the
+            // onPrefsEditorRefresh event.
             "{fluid.prefs.prefsEditor}.events.onPrefsEditorRefresh": "{fluid.prefs.panel}.refreshView"
         },
         strings: {},
@@ -785,6 +792,76 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
     };
 
+    /******************************************************
+     * A base grade for textfield stepper adjuster panels *
+     ******************************************************/
+
+    fluid.defaults("fluid.prefs.panel.stepperAjuster", {
+        gradeNames: ["fluid.prefs.panel"],
+        // preferences maps should map model values to "model.value"
+        // model: {value: ""}
+        selectors: {
+            header: ".flc-prefsEditor-header",
+            textfieldStepperContainer: ".flc-prefsEditor-textfieldStepper",
+            label: ".flc-prefsEditor-label",
+            descr: ".flc-prefsEditor-descr"
+        },
+        selectorsToIgnore: ["header", "textfieldStepperContainer"],
+        components: {
+            textfieldStepper: {
+                type: "fluid.textfieldStepper",
+                container: "{that}.dom.textfieldStepperContainer",
+                createOnEvent: "afterRender",
+                options: {
+                    model: {
+                        value: "{fluid.prefs.panel.stepperAjuster}.model.value",
+                        range: {
+                            min: "{fluid.prefs.panel.stepperAjuster}.options.range.min",
+                            max: "{fluid.prefs.panel.stepperAjuster}.options.range.max"
+                        },
+                        step: "{fluid.prefs.panel.stepperAjuster}.options.step"
+                    },
+                    scale: 1,
+                    strings: {
+                        increaseLabel: "{fluid.prefs.panel.stepperAjuster}.msgLookup.increaseLabel",
+                        decreaseLabel: "{fluid.prefs.panel.stepperAjuster}.msgLookup.decreaseLabel"
+                    },
+                    attrs: {
+                        "aria-labelledby": "{fluid.prefs.panel.stepperAjuster}.options.panelOptions.labelId"
+                    }
+                }
+            }
+        },
+        protoTree: {
+            label: {
+                messagekey: "label",
+                decorators: {
+                    attrs: {id: "{that}.options.panelOptions.labelId"}
+                }
+            },
+            descr: {messagekey: "description"}
+        },
+        panelOptions: {
+            labelIdTemplate: "%guid",
+            labelId: {
+                expander: {
+                    funcName: "fluid.prefs.panel.stepperAjuster.setLabelID",
+                    args: ["{that}.options.panelOptions.labelIdTemplate"]
+                }
+            }
+        }
+    });
+
+    /**
+     * @param {String} template - take string template with a token "%guid" to be replaced by the a unique ID.
+     * @return {String} - the resolved templated with the injected unique ID.
+     */
+    fluid.prefs.panel.stepperAjuster.setLabelID = function (template) {
+        return fluid.stringTemplate(template, {
+            guid: fluid.allocateGuid()
+        });
+    };
+
     /********************************
      * Preferences Editor Text Size *
      ********************************/
@@ -793,60 +870,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * A sub-component of fluid.prefs that renders the "text size" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.textSize", {
-        gradeNames: ["fluid.prefs.panel"],
+        gradeNames: ["fluid.prefs.panel.stepperAjuster"],
         preferenceMap: {
             "fluid.prefs.textSize": {
-                "model.textSize": "default",
+                "model.value": "default",
                 "range.min": "minimum",
                 "range.max": "maximum",
                 "step": "divisibleBy"
             }
         },
-        selectors: {
-            header: ".flc-prefsEditor-text-size-header",
-            textSize: ".flc-prefsEditor-min-text-size",
-            label: ".flc-prefsEditor-min-text-size-label",
-            multiplier: ".flc-prefsEditor-multiplier",
-            textSizeDescr: ".flc-prefsEditor-text-size-descr"
-        },
-        selectorsToIgnore: ["header", "textSize"],
-        components: {
-            textfieldStepper: {
-                type: "fluid.textfieldStepper",
-                container: "{that}.dom.textSize",
-                createOnEvent: "afterRender",
-                options: {
-                    model: {
-                        value: "{fluid.prefs.panel.textSize}.model.textSize",
-                        range: {
-                            min: "{fluid.prefs.panel.textSize}.options.range.min",
-                            max: "{fluid.prefs.panel.textSize}.options.range.max"
-                        },
-                        step: "{fluid.prefs.panel.textSize}.options.step"
-                    },
-                    scale: 1,
-                    strings: {
-                        increaseLabel: "{fluid.prefs.panel.textSize}.msgLookup.increaseLabel",
-                        decreaseLabel: "{fluid.prefs.panel.textSize}.msgLookup.decreaseLabel"
-                    },
-                    attrs: {
-                        "aria-labelledby": "{fluid.prefs.panel.textSize}.options.panelOptions.labelId"
-                    }
-                }
-            }
-        },
-        protoTree: {
-            label: {
-                messagekey: "textSizeLabel",
-                decorators: {
-                    attrs: {id: "{that}.options.panelOptions.labelId"}
-                }
-            },
-            multiplier: {messagekey: "multiplier"},
-            textSizeDescr: {messagekey: "textSizeDescr"}
-        },
         panelOptions: {
-            labelId: "textSize-label-" + fluid.allocateGuid()
+            labelIdTemplate: "textSize-label-%guid"
         }
     });
 
@@ -909,60 +943,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * A sub-component of fluid.prefs that renders the "line space" panel of the user preferences interface.
      */
     fluid.defaults("fluid.prefs.panel.lineSpace", {
-        gradeNames: ["fluid.prefs.panel"],
+        gradeNames: ["fluid.prefs.panel.stepperAjuster"],
         preferenceMap: {
             "fluid.prefs.lineSpace": {
-                "model.lineSpace": "default",
+                "model.value": "default",
                 "range.min": "minimum",
                 "range.max": "maximum",
                 "step": "divisibleBy"
             }
         },
-        selectors: {
-            header: ".flc-prefsEditor-line-space-header",
-            lineSpace: ".flc-prefsEditor-line-space",
-            label: ".flc-prefsEditor-line-space-label",
-            multiplier: ".flc-prefsEditor-multiplier",
-            lineSpaceDescr: ".flc-prefsEditor-line-space-descr"
-        },
-        selectorsToIgnore: ["header", "lineSpace"],
-        components: {
-            textfieldStepper: {
-                type: "fluid.textfieldStepper",
-                container: "{that}.dom.lineSpace",
-                createOnEvent: "afterRender",
-                options: {
-                    model: {
-                        value: "{fluid.prefs.panel.lineSpace}.model.lineSpace",
-                        range: {
-                            min: "{fluid.prefs.panel.lineSpace}.options.range.min",
-                            max: "{fluid.prefs.panel.lineSpace}.options.range.max"
-                        },
-                        step: "{fluid.prefs.panel.lineSpace}.options.step"
-                    },
-                    scale: 1,
-                    strings: {
-                        increaseLabel: "{fluid.prefs.panel.lineSpace}.msgLookup.increaseLabel",
-                        decreaseLabel: "{fluid.prefs.panel.lineSpace}.msgLookup.decreaseLabel"
-                    },
-                    attrs: {
-                        "aria-labelledby": "{fluid.prefs.panel.lineSpace}.options.panelOptions.labelId"
-                    }
-                }
-            }
-        },
-        protoTree: {
-            label: {
-                messagekey: "lineSpaceLabel",
-                decorators: {
-                    attrs: {id: "{that}.options.panelOptions.labelId"}
-                }
-            },
-            multiplier: {messagekey: "multiplier"},
-            lineSpaceDescr: {messagekey: "lineSpaceDescr"}
-        },
         panelOptions: {
-            labelId: "lineSpace-label-" + fluid.allocateGuid()
+            labelIdTemplate: "lineSpace-label-%guid"
         }
     });
 
