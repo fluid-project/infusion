@@ -15,6 +15,52 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     "use strict";
 
     /**********************************************
+     * fluid.orator
+     *
+     * A component for self voicing a web page
+     **********************************************/
+
+    fluid.defaults("fluid.orator", {
+        gradeNames: ["fluid.viewComponent"],
+        selectors: {
+            controller: ".flc-orator-controller",
+            content: ".flc-orator-content"
+        },
+        model: {
+            enabled: false
+        },
+        components: {
+            controller: {
+                type: "fluid.orator.controller",
+                container: "{that}.dom.controller",
+                options: {
+                    model: {
+                        playing: "{orator}.model.enabled"
+                    }
+                }
+            },
+            domReader: {
+                type: "fluid.orator.domReader",
+                container: "{that}.dom.content",
+                options: {
+                    model: {
+                        enabled: "{orator}.model.enabled"
+                    }
+                }
+            }
+        },
+        distributeOptions: [{
+            source: "{that}.options.controller",
+            target: "{that controller}.options",
+            namespace: "controllerOpts"
+        }, {
+            source: "{that}.options.domReader",
+            target: "{that domReader}.options",
+            namespace: "domReaderOpts"
+        }]
+    });
+
+    /**********************************************
      * fluid.orator.controller
      *
      * Provides a UI Widget to control the Orator
@@ -101,6 +147,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         events: {
             onReadFromDOM: null
+        },
+        model: {
+            enabled: false
         },
         members: {
             parseQueue: [],

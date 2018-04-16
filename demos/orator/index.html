@@ -38,14 +38,14 @@
 <body class="fl-focus">
     <div class="flc-overviewPanel fl-overviewPanel-container"></div>
     <div class="row">
-        <div class="large-centered">
+        <div class="flc-orator large-centered">
             <span class="flc-orator-controller fl-orator-controller">
                 <div class="fl-icon-orator"></div>
                 <button class="flc-orator-controller-playToggle">
                     <span class="fl-orator-controller-playToggle"></span>
                 </button>
             </span>
-            <article>
+            <article class="flc-orator-content">
                 <h1>Diverse Participation and Perspectives</h1>
 
                 <p>
@@ -68,10 +68,10 @@
 
                 <span>Content from <a href="https://guide.inclusivedesign.ca/insights/DiverseParticipationAndPerspectives.html">The Inclusive Design Guide</a>.</span>
             </article>
-            <script>
-                fluid.orator.controller(".flc-orator-controller");
-            </script>
         </div>
+        <script>
+            fluid.orator(".flc-orator");
+        </script>
     </div>
 </body>
 </html>
