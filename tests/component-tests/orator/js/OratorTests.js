@@ -24,12 +24,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     // fluid.orator.domReader.unWrap tests
     jqUnit.test("Test fluid.orator.domReader.unWrap", function () {
-        jqUnit.assertNodeExists("The wrapper node should exist", ".flc-orator-test-wrap");
-        fluid.orator.domReader.unWrap(".flc-orator-test-wrap");
+        jqUnit.assertNodeExists("The wrapper node should exist", ".flc-orator-domReader-test-wrap");
+        fluid.orator.domReader.unWrap(".flc-orator-domReader-test-wrap");
 
-        jqUnit.assertNodeNotExists("The wrapper node should have been removed", ".flc-orator-test-wrap");
-        fluid.orator.domReader.unWrap(".flc-orator-test-wrap");
-        jqUnit.assertEquals("There should only be one childnode in the wrapper's parent", 1, $(".flc-orator-test-wrap-parent")[0].childNodes.length);
+        jqUnit.assertNodeNotExists("The wrapper node should have been removed", ".flc-orator-domReader-test-wrap");
+        fluid.orator.domReader.unWrap(".flc-orator-domReader-test-wrap");
+        jqUnit.assertEquals("There should only be one childnode in the wrapper's parent", 1, $(".flc-orator-domReader-test-wrap-parent")[0].childNodes.length);
 
         jqUnit.assert("Unwrapping a second time should not cause an error");
     });
@@ -55,27 +55,27 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // fluid.orator.domReader.hasRenderedText tests
     fluid.tests.orator.domReader.hasRenderedTextTestCases = {
         "trueCase": [
-            ".flc-orator-test-rendering",
-            ".flc-orator-test-rendering-ariaHiddenFalse",
-            ".flc-orator-test-rendering-ariaHiddenFalse-nested",
-            ".flc-orator-test-rendering-hiddenA11y",
-            ".flc-orator-test-rendering-hiddenA11y-nested",
-            ".flc-orator-test-rendering-visible"
+            ".flc-orator-domReader-test-rendering",
+            ".flc-orator-domReader-test-rendering-ariaHiddenFalse",
+            ".flc-orator-domReader-test-rendering-ariaHiddenFalse-nested",
+            ".flc-orator-domReader-test-rendering-hiddenA11y",
+            ".flc-orator-domReader-test-rendering-hiddenA11y-nested",
+            ".flc-orator-domReader-test-rendering-visible"
         ],
         "falseCase": [
-            ".flc-orator-test-rendering-noNode",
-            ".flc-orator-test-rendering-none",
-            ".flc-orator-test-rendering-none-nested",
-            ".flc-orator-test-rendering-visHidden",
-            ".flc-orator-test-rendering-visHidden-nested",
-            ".flc-orator-test-rendering-hidden",
-            ".flc-orator-test-rendering-hidden-nested",
-            ".flc-orator-test-rendering-ariaHiddenTrue",
-            ".flc-orator-test-rendering-ariaHiddenTrue-nested",
-            ".flc-orator-test-rendering-nestedNone",
-            ".flc-orator-test-rendering-empty",
-            ".flc-orator-test-rendering-script",
-            ".flc-orator-test-rendering-nestedScript"
+            ".flc-orator-domReader-test-rendering-noNode",
+            ".flc-orator-domReader-test-rendering-none",
+            ".flc-orator-domReader-test-rendering-none-nested",
+            ".flc-orator-domReader-test-rendering-visHidden",
+            ".flc-orator-domReader-test-rendering-visHidden-nested",
+            ".flc-orator-domReader-test-rendering-hidden",
+            ".flc-orator-domReader-test-rendering-hidden-nested",
+            ".flc-orator-domReader-test-rendering-ariaHiddenTrue",
+            ".flc-orator-domReader-test-rendering-ariaHiddenTrue-nested",
+            ".flc-orator-domReader-test-rendering-nestedNone",
+            ".flc-orator-domReader-test-rendering-empty",
+            ".flc-orator-domReader-test-rendering-script",
+            ".flc-orator-domReader-test-rendering-nestedScript"
         ]
     };
 
@@ -167,7 +167,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     }];
 
     jqUnit.test("Test fluid.orator.domReader.parse", function () {
-        var elm = $(".flc-orator-test")[0];
+        var elm = $(".flc-orator-domReader-test")[0];
         var parsed = fluid.orator.domReader.parse(elm);
         jqUnit.assertDeepEq("The DOM element should have been parsed correctly", fluid.tests.orator.domReader.parsed, parsed);
     });
@@ -268,11 +268,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.orator.domReaderTests", {
         gradeNames: ["fluid.test.testEnvironment"],
-        markupFixture: ".flc-orator-test",
+        markupFixture: ".flc-orator-domReader-test",
         components: {
             orator: {
                 type: "fluid.tests.orator.domReader",
-                container: ".flc-orator-test"
+                container: ".flc-orator-domReader-test"
             },
             oratorTester: {
                 type: "fluid.tests.orator.domReaderTester"
@@ -339,7 +339,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }]]
         },
         modules: [{
-            name: "fluid.prefs.enactor.orator",
+            name: "fluid.orator.domReader",
             tests: [{
                 expect: 18,
                 name: "Dom Reading",
