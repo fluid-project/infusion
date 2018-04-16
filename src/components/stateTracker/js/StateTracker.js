@@ -48,8 +48,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     /**
      * Initiate polling.  If already polling -- there was a previous call to
      * startTracking() -- this is a no-op.
-     * @param that {Component} An instance of fluid.stateTracker
-     * @param interval {Number} optional delay between calls to check the state's current value (msec).
+     * @param {Component} that - An instance of fluid.stateTracker
+     * @param {Number} interval - optional delay between calls to check the state's current value (msec).
      */
     fluid.stateTracker.startTracking = function (that, interval) {
         if (that.intervalID === -1) {
@@ -62,7 +62,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Stop polling.
-     * @param that {Component} An instance of fluid.stateTracker
+     * @param {Component} that - An instance of fluid.stateTracker
      */
     fluid.stateTracker.stopTracking = function (that) {
         clearInterval(that.intervalID);

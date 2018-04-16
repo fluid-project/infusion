@@ -44,8 +44,8 @@ var example = example || {};
      * Evaluate whether the state being tracked has changed; here, whether
      * the test checkbox has switched from "checked" to "unchecked" or vice
      * versa.
-     * @param that {Component} An instance of example.checkboxTracker
-     * @return {Boolean}
+     * @param {Component} that - An instance of example.checkboxTracker
+     * @return {Boolean} - whether the checked state changed.
      */
     example.checkboxTracker.evaluateChange = function (that) {
         if (that.model.checkboxState !== that.checkbox.checked) {
@@ -58,7 +58,7 @@ var example = example || {};
 
     /**
      * Update the status line, but then wipe the status after 500 msec.
-     * @param {Component} An instance of example.checkboxTracker.
+     * @param {Component} that - An instance of example.checkboxTracker.
      */
     example.checkboxTracker.showDetectedThenWipe = function (that) {
         that.statusEl.innerHTML = "Checkbox status: STATE CHANGE DETECTED!";

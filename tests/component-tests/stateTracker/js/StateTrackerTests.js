@@ -48,7 +48,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         /**
          * Model listener for state changes:  Count the number of times the
          * test checkbox switches from "checked" to "unchecked" and vice versa.
-         * @param that {Component} An instance of fluid.tests.checkboxTracker
+         * @param {Component} that - An instance of fluid.tests.checkboxTracker
          */
         fluid.tests.checkboxTracker.countStateChanges = function (that) {
             that.numStateChanges++;
@@ -58,7 +58,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          * Evaluate whether the state being tracked has changed; here, whether
          * the test checkbox has switched from "checked" to "unchecked" or vice
          * versa.
-         * @param that {Component} An instance of fluid.tests.checkboxTracker
+         * @param {Component} that - An instance of fluid.tests.checkboxTracker
+         * @return {Boolean} - whether the checked state changed.
          */
         fluid.tests.checkboxTracker.evaluateChange = function (that) {
             if (that.model.checkboxState !== that.checkbox.checked) {
@@ -99,8 +100,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         /**
          * Simulate a user clicking on the test checkbox to check/uncheck it.
-         * @param that {Component}  An instance of fluid.tests.checkboxManipulator
-         * @param delay {Number}    Delay in msec before changing the checkbox.
+         * @param {Component} that - An instance of fluid.tests.checkboxManipulator
+         * @param {Number} delay - Delay in msec before changing the checkbox.
          */
         fluid.tests.stateTracker.changeStateWithDelay = function (that, delay) {
             setTimeout (function () {
@@ -218,7 +219,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }
             });
             // Change the state three times, and see if it's detected.  Space
-            // the changes by at least msec.
+            // the changes by at least 200 msec.
             var delay = 200;
             manipulator.changeStateWithDelay(delay);
             delay += interval;
