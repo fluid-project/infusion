@@ -14,9 +14,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
-    /**
+    /**********************************************
      * fluid.orator.controller
-     */
+     *
+     * Provides a UI Widget to control the Orator
+     **********************************************/
 
     fluid.defaults("fluid.orator.controller", {
         gradeNames: ["fluid.viewComponent"],
@@ -27,8 +29,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             play: "fl-orator-controller-play"
         },
         strings: {
-            play: "playing",
-            pause: "paused"
+            play: "play",
+            pause: "pause"
         },
         model: {
             playing: false
@@ -75,7 +77,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var playToggle = that.locate("playToggle");
         playToggle.toggleClass(that.options.styles.play, state);
         playToggle.attr({
-            "aria-label": that.options.strings[state ? "play" : "pause"]
+            "aria-label": that.options.strings[state ? "pause" : "play"]
         });
     };
 

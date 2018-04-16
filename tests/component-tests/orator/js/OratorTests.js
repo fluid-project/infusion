@@ -17,6 +17,103 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests");
 
     /*******************************************************************************
+     * IoC unit tests for fluid.orator.controller
+     *******************************************************************************/
+
+    fluid.defaults("fluid.tests.orator.controller", {
+        gradeNames: ["fluid.orator.controller"],
+        model: {
+            playing: false
+        }
+    });
+
+    fluid.defaults("fluid.tests.orator.controllerTests", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        markupFixture: ".flc-orator-controller-test",
+        components: {
+            oratorController: {
+                type: "fluid.tests.orator.controller",
+                container: ".flc-orator-controller-test",
+                createOnEvent: "{oratorControllerTester}.events.onTestCaseStart"
+            },
+            oratorControllerTester: {
+                type: "fluid.tests.orator.controllerTester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.orator.controllerTester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        modules: [{
+            name: "fluid.orator.controller",
+            tests: [{
+                expect: 21,
+                name: "Controller UI",
+                sequence: [{
+                    listener: "fluid.tests.orator.controllerTester.verifyState",
+                    args: ["{oratorController}", false],
+                    spec: {priority: "last:testing"},
+                    event: "{controllerTests oratorController}.events.onCreate"
+                }, {
+                    func: "{oratorController}.toggle"
+                }, {
+                    listener: "fluid.tests.orator.controllerTester.verifyState",
+                    args: ["{oratorController}", true],
+                    spec: {path: "playing", priority: "last:testing"},
+                    changeEvent: "{oratorController}.applier.modelChanged"
+                }, {
+                    func: "{oratorController}.toggle"
+                }, {
+                    listener: "fluid.tests.orator.controllerTester.verifyState",
+                    args: ["{oratorController}", false],
+                    spec: {path: "playing", priority: "last:testing"},
+                    changeEvent: "{oratorController}.applier.modelChanged"
+                }, {
+                    func: "{oratorController}.play"
+                }, {
+                    listener: "fluid.tests.orator.controllerTester.verifyState",
+                    args: ["{oratorController}", true],
+                    spec: {path: "playing", priority: "last:testing"},
+                    changeEvent: "{oratorController}.applier.modelChanged"
+                }, {
+                    func: "{oratorController}.pause"
+                }, {
+                    listener: "fluid.tests.orator.controllerTester.verifyState",
+                    args: ["{oratorController}", false],
+                    spec: {path: "playing", priority: "last:testing"},
+                    changeEvent: "{oratorController}.applier.modelChanged"
+                }, {
+                    // Test the toggleState function directly so that we can exercise the `state` argument
+                    funcName: "fluid.orator.controller.toggleState",
+                    args: ["{oratorController}", "playing", true]
+                }, {
+                    listener: "fluid.tests.orator.controllerTester.verifyState",
+                    args: ["{oratorController}", true],
+                    spec: {path: "playing", priority: "last:testing"},
+                    changeEvent: "{oratorController}.applier.modelChanged"
+                }, {
+                    funcName: "fluid.orator.controller.toggleState",
+                    args: ["{oratorController}", "playing", false]
+                }, {
+                    listener: "fluid.tests.orator.controllerTester.verifyState",
+                    args: ["{oratorController}", false],
+                    spec: {path: "playing", priority: "last:testing"},
+                    changeEvent: "{oratorController}.applier.modelChanged"
+                }]
+            }]
+        }]
+    });
+
+    fluid.tests.orator.controllerTester.verifyState = function (that, state) {
+        var toggleButton = that.locate("playToggle");
+        jqUnit.assertEquals("The model state should be set correctly", state, that.model.playing);
+        jqUnit.assertEquals("The playing class should only be added if playing is true", state, toggleButton.hasClass(that.options.styles.play));
+
+        var expectedLabel = state ? "pause" : "play";
+        jqUnit.assertEquals("The aria-label should be set correctly", that.options.strings[expectedLabel], toggleButton.attr("aria-label"));
+    };
+
+    /*******************************************************************************
      * Unit tests for fluid.orator.domReader functions
      *******************************************************************************/
 
@@ -439,6 +536,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     $(document).ready(function () {
         fluid.test.runTests([
+            "fluid.tests.orator.controllerTests",
             "fluid.tests.orator.domReaderTests"
         ]);
     });
