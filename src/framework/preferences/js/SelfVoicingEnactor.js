@@ -21,7 +21,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *******************************************************************************/
 
     fluid.defaults("fluid.prefs.enactor.selfVoicing", {
-        gradeNames: ["fluid.prefs.enactor", "fluid.orator"],
+        gradeNames: ["fluid.prefs.enactor", "fluid.orator.domReader"],
         preferenceMap: {
             "fluid.prefs.speak": {
                 "model.enabled": "default"

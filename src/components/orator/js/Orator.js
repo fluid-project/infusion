@@ -14,15 +14,79 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
+    /**
+     * fluid.orator.controller
+     */
+
+    fluid.defaults("fluid.orator.controller", {
+        gradeNames: ["fluid.viewComponent"],
+        selectors: {
+            playToggle: ".flc-orator-controller-playToggle"
+        },
+        styles: {
+            play: "fl-orator-controller-play"
+        },
+        strings: {
+            play: "playing",
+            pause: "paused"
+        },
+        model: {
+            playing: false
+        },
+        invokers: {
+            play: {
+                changePath: "playing",
+                value: true
+            },
+            pause: {
+                changePath: "playing",
+                value: false
+            },
+            toggle: {
+                funcName: "fluid.orator.controller.toggleState",
+                // Not providing an option for the explicit state value because
+                // when called through the jQuery click event the event object
+                // is passed in.
+                args: ["{that}", "playing"]
+            }
+        },
+        listeners: {
+            "onCreate.bindClick": {
+                "this": "{that}.dom.playToggle",
+                method: "click",
+                args: ["{that}.toggle"]
+            }
+        },
+        modelListeners: {
+            "playing": {
+                listener: "fluid.orator.controller.setToggleView",
+                args: ["{that}", "{change}.value"]
+            }
+        }
+    });
+
+    fluid.orator.controller.toggleState = function (that, path, state) {
+        var newState = fluid.isValue(state) ? state : !fluid.get(that.model, path);
+        // the !! ensures that the newState is a boolean value.
+        that.applier.change(path, !!newState);
+    };
+
+    fluid.orator.controller.setToggleView = function (that, state) {
+        var playToggle = that.locate("playToggle");
+        playToggle.toggleClass(that.options.styles.play, state);
+        playToggle.attr({
+            "aria-label": that.options.strings[state ? "play" : "pause"]
+        });
+    };
+
+
     /*******************************************************************************
-     * speak
+     * fluid.orator.domReader
      *
-     * An enactor that is capable of speaking text.
-     * Typically this will be used as a base grade to an enactor that supplies
-     * the text to be spoken.
+     * Reads in text from a DOM element and voices it
      *******************************************************************************/
 
-    fluid.defaults("fluid.orator", {
+    fluid.defaults("fluid.orator.domReader", {
         gradeNames: ["fluid.viewComponent"],
         selectors: {
             highlight: ".flc-orator-highlight"
@@ -50,10 +114,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             tts: {
                 type: "fluid.textToSpeech",
                 options: {
-                    model: "{orator}.model",
+                    model: "{domReader}.model",
                     invokers: {
                         queueSpeech: {
-                            funcName: "fluid.orator.queueSpeech",
+                            funcName: "fluid.orator.domReader.queueSpeech",
                             args: [
                                 "{that}",
                                 "fluid.textToSpeech.queueSpeech",
@@ -68,7 +132,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         invokers: {
             handleSelfVoicing: {
-                funcName: "fluid.orator.handleSelfVoicing",
+                funcName: "fluid.orator.domReader.handleSelfVoicing",
                 // Pass in invokers to force them to be resolved
                 args: [
                     "{that}",
@@ -80,15 +144,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 ]
             },
             readFromDOM: {
-                funcName: "fluid.orator.readFromDOM",
+                funcName: "fluid.orator.domReader.readFromDOM",
                 args: ["{that}", "{that}.container"]
             },
             removeHighlight: {
-                funcName: "fluid.orator.unWrap",
+                funcName: "fluid.orator.domReader.unWrap",
                 args: ["{that}.dom.highlight"]
             },
             highlight: {
-                funcName: "fluid.orator.highlight",
+                funcName: "fluid.orator.domReader.highlight",
                 args: ["{that}", "{arguments}.0"]
             }
         },
@@ -101,7 +165,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         listeners: {
             "{tts}.events.utteranceOnEnd": [{
-                listener: "fluid.orator.removeCurrentParseQueueItem",
+                listener: "fluid.orator.domReader.removeCurrentParseQueueItem",
                 args: ["{that}"],
                 namespace: "removeCurrentParseQueueItem"
             }, {
@@ -122,7 +186,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     // Accepts a speechFn (either a function or function name), which will be used to perform the
     // underlying queuing of the speech. This allows the SpeechSynthesis to be replaced (e.g. for testing)
-    fluid.orator.queueSpeech = function (that, speechFn, text, interrupt, options) {
+    fluid.orator.domReader.queueSpeech = function (that, speechFn, text, interrupt, options) {
         // force a string value
         var str = text.toString();
 
@@ -139,7 +203,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
-    fluid.orator.handleSelfVoicing = function (that, welcomeMsg, queueSpeech, readFromDOM, cancel, enabled) {
+    fluid.orator.domReader.handleSelfVoicing = function (that, welcomeMsg, queueSpeech, readFromDOM, cancel, enabled) {
         that.parseQueue = [];
         if (enabled) {
             //TODO: It seems that we push null so that the parseQueue and queued speech remain in sync, given the
@@ -159,7 +223,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *
      * @param {String|jQuery|DomElement} elm - element to unwrap
      */
-    fluid.orator.unWrap = function (elm) {
+    fluid.orator.domReader.unWrap = function (elm) {
         elm = $(elm);
 
         if (elm.length) {
@@ -171,13 +235,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
-    fluid.orator.removeCurrentParseQueueItem = function (that) {
+    fluid.orator.domReader.removeCurrentParseQueueItem = function (that) {
         that.parseQueue.shift();
         that.parseIndex = 0;
     };
 
     // Constants representing DOM node types.
-    fluid.orator.nodeType = {
+    fluid.orator.domReader.nodeType = {
         ELEMENT_NODE: 1,
         TEXT_NODE: 3
     };
@@ -190,7 +254,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *
      * @return {Boolean} - `true` if a word, `false` otherwise.
      */
-    fluid.orator.isWord = function (str) {
+    fluid.orator.domReader.isWord = function (str) {
         return fluid.isValue(str) && /\S/.test(str);
     };
 
@@ -207,12 +271,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @return {Boolean} - returns true if there is rendered text within the element and false otherwise.
      *                     (See rules above)
      */
-    fluid.orator.hasRenderedText = function (elm) {
+    fluid.orator.domReader.hasRenderedText = function (elm) {
         elm = fluid.unwrap(elm);
 
         return elm &&
                !!elm.offsetHeight &&
-               fluid.orator.isWord(elm.innerText) &&
+               fluid.orator.domReader.isWord(elm.innerText) &&
                !$(elm).closest("[aria-hidden=\"true\"]").length;
     };
 
@@ -238,7 +302,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *                              word in the string representing the text of the node.
      * @param {Integer} childIndex - The index of the node in the list of its parent's child nodes.
      */
-    fluid.orator.addParsedData = function (parsed, word, childNode, blockIndex, charIndex, childIndex) {
+    fluid.orator.domReader.addParsedData = function (parsed, word, childNode, blockIndex, charIndex, childIndex) {
         parsed.push({
             blockIndex: blockIndex,
             startOffset: charIndex,
@@ -262,36 +326,36 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *                              It defaults to 0 and is primarily used internally for recursive calls.
      *
      * @return {ParseQueueElement[]} - An array of Parse Queue Elements.
-     *                                 See fluid.orator.addParsedData for details on the structure.
+     *                                 See fluid.orator.domReader.addParsedData for details on the structure.
      */
-    fluid.orator.parse = function (elm, blockIndex) {
+    fluid.orator.domReader.parse = function (elm, blockIndex) {
         var parsed = [];
         elm = fluid.unwrap(elm);
         blockIndex = blockIndex || 0;
 
-        if (fluid.orator.hasRenderedText(elm)) {
+        if (fluid.orator.domReader.hasRenderedText(elm)) {
             var childNodes = elm.childNodes;
 
             $.each(childNodes, function (childIndex, childNode) {
-                if (childNode.nodeType === fluid.orator.nodeType.TEXT_NODE) {
+                if (childNode.nodeType === fluid.orator.domReader.nodeType.TEXT_NODE) {
                     var words = childNode.textContent.split(/(\s+)/); // split on whitespace, and capture whitespace
                     // charIndex is the start index of the word in the nested block of text
                     var charIndex = 0;
 
                     fluid.each(words, function (word) {
-                        if (fluid.orator.isWord(word)) {
-                            fluid.orator.addParsedData(parsed, word, childNode, blockIndex, charIndex, childIndex);
+                        if (fluid.orator.domReader.isWord(word)) {
+                            fluid.orator.domReader.addParsedData(parsed, word, childNode, blockIndex, charIndex, childIndex);
                             blockIndex += word.length;
                         // if the current `word` is not an empty string and the last parsed `word` is not whitespace
-                        } else if (word && fluid.orator.isWord(fluid.get(parsed, [(parsed.length - 1), "word"]))) {
-                            fluid.orator.addParsedData(parsed, word, childNode, blockIndex, charIndex, childIndex);
+                        } else if (word && fluid.orator.domReader.isWord(fluid.get(parsed, [(parsed.length - 1), "word"]))) {
+                            fluid.orator.domReader.addParsedData(parsed, word, childNode, blockIndex, charIndex, childIndex);
                             blockIndex += word.length;
                         }
                         charIndex += word.length;
                     });
-                } else if (childNode.nodeType === fluid.orator.nodeType.ELEMENT_NODE &&
-                    fluid.orator.hasRenderedText(childNode)) {
-                    parsed = parsed.concat(fluid.orator.parse(childNode, blockIndex));
+                } else if (childNode.nodeType === fluid.orator.domReader.nodeType.ELEMENT_NODE &&
+                    fluid.orator.domReader.hasRenderedText(childNode)) {
+                    parsed = parsed.concat(fluid.orator.domReader.parse(childNode, blockIndex));
                     if (parsed.length) {
                         var lastParsed = parsed[parsed.length - 1];
                         blockIndex = lastParsed.blockIndex + lastParsed.word.length;
@@ -310,7 +374,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *
      * @return {String} - The parsed text combined into a String.
      */
-    fluid.orator.parsedToString = function (parsed) {
+    fluid.orator.domReader.parsedToString = function (parsed) {
         var words = fluid.transform(parsed, function (block) {
             return block.word;
         });
@@ -325,15 +389,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Component} that - the component
      * @param {String|jQuery|DomElement} elm - The DOM node to read
      */
-    fluid.orator.readFromDOM = function (that, elm) {
+    fluid.orator.domReader.readFromDOM = function (that, elm) {
         elm = $(elm);
 
         // only execute if there are nodes to read from
         if (elm.length) {
-            var parsedFromElm = fluid.orator.parse(elm[0]);
+            var parsedFromElm = fluid.orator.domReader.parse(elm[0]);
             that.parseQueue.push(parsedFromElm);
             that.events.onReadFromDOM.fire(parsedFromElm);
-            that.tts.queueSpeech(fluid.orator.parsedToString(parsedFromElm));
+            that.tts.queueSpeech(fluid.orator.domReader.parsedToString(parsedFromElm));
         }
     };
 
@@ -348,7 +412,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @return {Integer|undefined} - Will return the index of the closest data point in the parseQueue. If the boundary
      *                               cannot be located within the parseQueue, `undefined` is returned.
      */
-    fluid.orator.getClosestIndex = function (parseQueue, currentIndex, boundary) {
+    fluid.orator.domReader.getClosestIndex = function (parseQueue, currentIndex, boundary) {
         var maxIdx  = Math.max(parseQueue.length - 1, 0);
         currentIndex = Math.max(Math.min(currentIndex, maxIdx), 0);
 
@@ -364,7 +428,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
 
         if (currentBlockIndex > boundary) {
-            return fluid.orator.getClosestIndex(parseQueue, prevIdx, boundary);
+            return fluid.orator.domReader.getClosestIndex(parseQueue, prevIdx, boundary);
         }
 
         var isInNextBound = parseQueue[nextIdx] ? boundary < parseQueue[nextIdx].blockIndex : boundary <= maxBoundary;
@@ -373,7 +437,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             return currentIndex;
         }
 
-        return fluid.orator.getClosestIndex(parseQueue, nextIdx, boundary);
+        return fluid.orator.domReader.getClosestIndex(parseQueue, nextIdx, boundary);
     };
 
     /**
@@ -384,11 +448,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Integer} boundary - the boundary point used to find the text to highlight. Typically this is the
      *                             utterance boundary returned from the utteranceOnBoundary event.
      */
-    fluid.orator.highlight = function (that, boundary) {
+    fluid.orator.domReader.highlight = function (that, boundary) {
         that.removeHighlight();
 
         if (that.parseQueue[0]) {
-            var closestIndex = fluid.orator.getClosestIndex(that.parseQueue[0], that.parseIndex, boundary);
+            var closestIndex = fluid.orator.domReader.getClosestIndex(that.parseQueue[0], that.parseIndex, boundary);
 
             if (fluid.isValue(closestIndex)) {
                 that.parseIndex = closestIndex;

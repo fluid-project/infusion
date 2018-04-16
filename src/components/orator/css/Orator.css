@@ -1,6 +1,94 @@
+@font-face {
+    font-family:'Orator-Icons';
+    src:url("../fonts/Orator-Icons.ttf"),url("../fonts/Orator-Icons.eot")
+}
+
+/* controller */
+.fl-orator-controller {
+    display: inline-flex;
+    align-items: center;
+}
+
+.fl-orator-controller > * {
+    background-color: #666666;
+    height: 3rem;
+    width: 3rem;
+}
+
+.fl-orator-controller > *:not(:first-child) {
+    border-left: 0.1rem solid #4E4E4E;
+}
+
+.fl-orator-controller > :first-child {
+    border: 0.1rem solid #4E4E4E;
+    border-right: none;
+    border-top-left-radius: 0.3rem;
+    border-bottom-left-radius: 0.3rem;
+}
+
+.fl-orator-controller > *:not(:first-child):hover {
+    background-color: #4E4E4E;
+}
+
+.fl-orator-controller > *:not(:first-child):focus {
+    border-color: #FFFFFF;
+}
+
+.fl-orator-controller > :last-child {
+    border: 0.1rem solid #4E4E4E;
+    border-top-right-radius: 0.3rem;
+    border-bottom-right-radius: 0.3rem;
+}
+
+.fl-orator-controller-playToggle:before {
+    color: #FFFFFF;
+    font-size: 2.25rem;
+    content: "\25B6";
+    text-shadow: 0.1rem 0.2rem 0.2rem #4E4E4E;
+}
+
+.fl-orator-controller-playToggle:hover:before {
+    background-color: #4E4E4E;
+}
+
+.fl-orator-controller-play .fl-orator-controller-playToggle:before {
+    content: "\2016";
+}
+
+/* highlight */
 .fl-orator-highlight {
     color: #000000;
     background-color: #EED400;
     /* Used to make the background appear larger so that it stands out in a block of text */
-    outline: 0.2em solid #EED400;
+    outline: 0.2rem solid #EED400;
+}
+
+
+/* Font Icons */
+.fl-icon-orator {
+    font-family: 'Orator-Icons';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    -webkit-font-smoothing: antialiased;
+    font-size: 2.25rem;
+}
+
+/* control icons */
+
+.fl-icon-orator:before {
+    content: "\e000";
+}
+
+.fl-icon-orator:before {
+    text-shadow: 0.1rem 0.2rem 0.2rem #808080;
+}
+
+.fl-orator-controller .fl-icon-orator {
+    color: #4E4E4E;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }

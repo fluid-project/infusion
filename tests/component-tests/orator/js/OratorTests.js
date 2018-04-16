@@ -17,43 +17,43 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests");
 
     /*******************************************************************************
-     * Unit tests for fluid.orator functions
+     * Unit tests for fluid.orator.domReader functions
      *******************************************************************************/
 
-    fluid.registerNamespace("fluid.tests.orator");
+    fluid.registerNamespace("fluid.tests.orator.domReader");
 
-    // fluid.orator.unWrap tests
-    jqUnit.test("Test fluid.orator.unWrap", function () {
+    // fluid.orator.domReader.unWrap tests
+    jqUnit.test("Test fluid.orator.domReader.unWrap", function () {
         jqUnit.assertNodeExists("The wrapper node should exist", ".flc-orator-test-wrap");
-        fluid.orator.unWrap(".flc-orator-test-wrap");
+        fluid.orator.domReader.unWrap(".flc-orator-test-wrap");
 
         jqUnit.assertNodeNotExists("The wrapper node should have been removed", ".flc-orator-test-wrap");
-        fluid.orator.unWrap(".flc-orator-test-wrap");
+        fluid.orator.domReader.unWrap(".flc-orator-test-wrap");
         jqUnit.assertEquals("There should only be one childnode in the wrapper's parent", 1, $(".flc-orator-test-wrap-parent")[0].childNodes.length);
 
         jqUnit.assert("Unwrapping a second time should not cause an error");
     });
 
-    // fluid.orator.isWord tests
-    fluid.tests.orator.isWordTestCases = {
+    // fluid.orator.domReader.isWord tests
+    fluid.tests.orator.domReader.isWordTestCases = {
         "trueCase": ["a", "hello", "test string"],
         "falseCase": ["", " ", "\t", "\n", undefined, null]
     };
 
-    jqUnit.test("Test fluid.orator.isWord", function () {
+    jqUnit.test("Test fluid.orator.domReader.isWord", function () {
         // test trueCase
-        fluid.each(fluid.tests.orator.isWordTestCases.trueCase, function (str) {
-            jqUnit.assertTrue("\"" + str + "\" is considered a word.", fluid.orator.isWord(str));
+        fluid.each(fluid.tests.orator.domReader.isWordTestCases.trueCase, function (str) {
+            jqUnit.assertTrue("\"" + str + "\" is considered a word.", fluid.orator.domReader.isWord(str));
         });
 
         // test falseCase
-        fluid.each(fluid.tests.orator.isWordTestCases.falseCase, function (str) {
-            jqUnit.assertFalse("\"" + str + "\" is not considered a word.", fluid.orator.isWord(str));
+        fluid.each(fluid.tests.orator.domReader.isWordTestCases.falseCase, function (str) {
+            jqUnit.assertFalse("\"" + str + "\" is not considered a word.", fluid.orator.domReader.isWord(str));
         });
     });
 
-    // fluid.orator.hasRenderedText tests
-    fluid.tests.orator.hasRenderedTextTestCases = {
+    // fluid.orator.domReader.hasRenderedText tests
+    fluid.tests.orator.domReader.hasRenderedTextTestCases = {
         "trueCase": [
             ".flc-orator-test-rendering",
             ".flc-orator-test-rendering-ariaHiddenFalse",
@@ -79,20 +79,20 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         ]
     };
 
-    jqUnit.test("Test fluid.orator.hasRenderedText", function () {
+    jqUnit.test("Test fluid.orator.domReader.hasRenderedText", function () {
         // test trueCase
-        fluid.each(fluid.tests.orator.hasRenderedTextTestCases.trueCase, function (selector) {
-            jqUnit.assertTrue("\"" + selector + "\" should have text to read.", fluid.orator.hasRenderedText($(selector)));
+        fluid.each(fluid.tests.orator.domReader.hasRenderedTextTestCases.trueCase, function (selector) {
+            jqUnit.assertTrue("\"" + selector + "\" should have text to read.", fluid.orator.domReader.hasRenderedText($(selector)));
         });
 
         // test falseCase
-        fluid.each(fluid.tests.orator.hasRenderedTextTestCases.falseCase, function (selector) {
-            jqUnit.assertFalse("\"" + selector + "\" shouldn't have text to read.", fluid.orator.hasRenderedText($(selector)));
+        fluid.each(fluid.tests.orator.domReader.hasRenderedTextTestCases.falseCase, function (selector) {
+            jqUnit.assertFalse("\"" + selector + "\" shouldn't have text to read.", fluid.orator.domReader.hasRenderedText($(selector)));
         });
     });
 
-    // fluid.orator.parse tests
-    fluid.tests.orator.parsed = [{
+    // fluid.orator.domReader.parse tests
+    fluid.tests.orator.domReader.parsed = [{
         // 0
         "blockIndex": 0,
         "childIndex": 0,
@@ -166,22 +166,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         "word": "\n        "
     }];
 
-    jqUnit.test("Test fluid.orator.parse", function () {
+    jqUnit.test("Test fluid.orator.domReader.parse", function () {
         var elm = $(".flc-orator-test")[0];
-        var parsed = fluid.orator.parse(elm);
-        jqUnit.assertDeepEq("The DOM element should have been parsed correctly", fluid.tests.orator.parsed, parsed);
+        var parsed = fluid.orator.domReader.parse(elm);
+        jqUnit.assertDeepEq("The DOM element should have been parsed correctly", fluid.tests.orator.domReader.parsed, parsed);
     });
 
-    // fluid.orator.parsedToString tests
-    fluid.tests.orator.str = "Reading text from DOM\n        ";
+    // fluid.orator.domReader.parsedToString tests
+    fluid.tests.orator.domReader.str = "Reading text from DOM\n        ";
 
-    jqUnit.test("fluid.orator.parsedToString", function () {
-        var str = fluid.orator.parsedToString(fluid.tests.orator.parsed);
-        jqUnit.assertEquals("The parsed text should have been combined to a string", fluid.tests.orator.str, str);
+    jqUnit.test("fluid.orator.domReader.parsedToString", function () {
+        var str = fluid.orator.domReader.parsedToString(fluid.tests.orator.domReader.parsed);
+        jqUnit.assertEquals("The parsed text should have been combined to a string", fluid.tests.orator.domReader.str, str);
     });
 
-    // fluid.orator.getClosestIndex tests
-    fluid.tests.orator.closestIndexTestCases = [{
+    // fluid.orator.domReader.getClosestIndex tests
+    fluid.tests.orator.domReader.closestIndexTestCases = [{
         currentIndex: 0,
         boundary: -1,
         expected: undefined
@@ -223,19 +223,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         expected: undefined
     }];
 
-    jqUnit.test("fluid.orator.getClosestIndex", function () {
-        fluid.each(fluid.tests.orator.closestIndexTestCases, function (testCase) {
-            var closest = fluid.orator.getClosestIndex(fluid.tests.orator.parsed, testCase.currentIndex, testCase.boundary);
+    jqUnit.test("fluid.orator.domReader.getClosestIndex", function () {
+        fluid.each(fluid.tests.orator.domReader.closestIndexTestCases, function (testCase) {
+            var closest = fluid.orator.domReader.getClosestIndex(fluid.tests.orator.domReader.parsed, testCase.currentIndex, testCase.boundary);
             jqUnit.assertEquals("Closest index for boundary \"" + testCase.boundary + "\" should be: " + testCase.expected, testCase.expected, closest);
         });
     });
 
     /*******************************************************************************
-     * IoC unit tests for fluid.orator
+     * IoC unit tests for fluid.orator.domReader
      *******************************************************************************/
 
-    fluid.defaults("fluid.tests.orator", {
-        gradeNames: ["fluid.orator"],
+    fluid.defaults("fluid.tests.orator.domReader", {
+        gradeNames: ["fluid.orator.domReader"],
         model: {
             enabled: false
         },
@@ -247,7 +247,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         // put back the orator's own queueSpeech method, but pass in the
                         // mock queueSpeech function as the speechFn
                         queueSpeech: {
-                            funcName: "fluid.orator.queueSpeech",
+                            funcName: "fluid.orator.domReader.queueSpeech",
                             args: ["{that}", "{that}.mockQueueSpeech", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
                         },
                         mockQueueSpeech: {
@@ -266,21 +266,21 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.defaults("fluid.tests.oratorTests", {
+    fluid.defaults("fluid.tests.orator.domReaderTests", {
         gradeNames: ["fluid.test.testEnvironment"],
         markupFixture: ".flc-orator-test",
         components: {
             orator: {
-                type: "fluid.tests.orator",
+                type: "fluid.tests.orator.domReader",
                 container: ".flc-orator-test"
             },
             oratorTester: {
-                type: "fluid.tests.oratorTester"
+                type: "fluid.tests.orator.domReaderTester"
             }
         }
     });
 
-    fluid.defaults("fluid.tests.oratorTester", {
+    fluid.defaults("fluid.tests.orator.domReaderTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         testOptions: {
             startStopFireRecord: {
@@ -347,12 +347,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "{orator}.toggle",
                     args: [true]
                 }, {
-                    listener: "fluid.tests.oratorTester.verifyParseQueue",
-                    args: ["{orator}", [fluid.tests.orator.parsed], "{arguments}.0"],
+                    listener: "fluid.tests.orator.domReaderTester.verifyParseQueue",
+                    args: ["{orator}", [fluid.tests.orator.domReader.parsed], "{arguments}.0"],
                     spec: {priority: "last:testing"},
                     event: "{orator}.events.onReadFromDOM"
                 }, {
-                    listener: "fluid.tests.oratorTester.verifySpeakQueue",
+                    listener: "fluid.tests.orator.domReaderTester.verifySpeakQueue",
                     args: ["{orator}", "{that}.options.testOptions.expectedText"],
                     spec: {priority: "last:testing"},
                     event: "{orator}.tts.events.onStop"
@@ -366,7 +366,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     funcName: "jqUnit.assertNodeNotExists",
                     args: ["The self voicing has completed. All highlights should be removed.", "{orator}.dom.highlight"]
                 }, {
-                    funcName: "fluid.tests.oratorTester.verifyRecords",
+                    funcName: "fluid.tests.orator.domReaderTester.verifyRecords",
                     args: [
                         "{orator}",
                         "{that}.options.testOptions.startStopFireRecord",
@@ -387,13 +387,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "{orator}.tts.events.utteranceOnBoundary.fire",
                     args: [{charIndex: "{that}.options.testOptions.parseQueue.0.0.blockIndex"}]
                 }, {
-                    funcName: "fluid.tests.oratorTester.verifyMark",
+                    funcName: "fluid.tests.orator.domReaderTester.verifyMark",
                     args: ["{orator}.dom.highlight", "{that}.options.testOptions.parseQueue.0.0.word"]
                 }, {
                     func: "{orator}.tts.events.utteranceOnBoundary.fire",
                     args: [{charIndex: "{that}.options.testOptions.parseQueue.0.1.blockIndex"}]
                 }, {
-                    funcName: "fluid.tests.oratorTester.verifyMark",
+                    funcName: "fluid.tests.orator.domReaderTester.verifyMark",
                     args: ["{orator}.dom.highlight", "{that}.options.testOptions.parseQueue.0.1.word"]
                 }, {
                     // disabled text to speech
@@ -406,7 +406,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     event: "{orator}.tts.events.utteranceOnEnd"
                 }, {
                     // test readFromDom if the element to parse isn't available
-                    funcName: "fluid.orator.readFromDOM",
+                    funcName: "fluid.orator.domReader.readFromDOM",
                     args: ["{orator}", "{orator}.dom.highlight"]
                 }, {
                     funcName: "jqUnit.assertEquals",
@@ -416,22 +416,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }]
     });
 
-    fluid.tests.oratorTester.verifySpeakQueue = function (that, expectedText) {
+    fluid.tests.orator.domReaderTester.verifySpeakQueue = function (that, expectedText) {
         jqUnit.assertDeepEq("The text to be spoken should have been queued correctly", expectedText, that.tts.speechRecord);
     };
 
-    fluid.tests.oratorTester.verifyParseQueue = function (that, expected, parsed) {
+    fluid.tests.orator.domReaderTester.verifyParseQueue = function (that, expected, parsed) {
         jqUnit.assertDeepEq("The DOM should have been parsed correctly", expected[0], parsed);
         jqUnit.assertDeepEq("The parseQueue should have been populated correctly", expected, that.parseQueue);
     };
 
-    fluid.tests.oratorTester.verifyMark = function (elm, expectedText) {
+    fluid.tests.orator.domReaderTester.verifyMark = function (elm, expectedText) {
         jqUnit.assertNodeExists("The highlight should have been added", elm);
         jqUnit.assertEquals("Only one highlight should be present", 1, elm.length);
         jqUnit.assertEquals("The correct textnode should be highlighted", elm.text(), expectedText);
     };
 
-    fluid.tests.oratorTester.verifyRecords = function (that, expectedEvents, expectedSpeechRecord, expectedModel) {
+    fluid.tests.orator.domReaderTester.verifyRecords = function (that, expectedEvents, expectedSpeechRecord, expectedModel) {
         jqUnit.assertDeepEq("TTS: events should have fired correctly", expectedEvents, that.tts.eventRecord);
         jqUnit.assertDeepEq("TTS: text to be spoken should have been queued correctly", expectedSpeechRecord, that.tts.speechRecord);
         jqUnit.assertDeepEq("TTS: model should be reset correctly", expectedModel, that.model);
@@ -439,7 +439,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     $(document).ready(function () {
         fluid.test.runTests([
-            "fluid.tests.oratorTests"
+            "fluid.tests.orator.domReaderTests"
         ]);
     });
 

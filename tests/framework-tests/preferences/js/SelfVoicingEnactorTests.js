@@ -30,10 +30,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 type: "fluid.mock.textToSpeech",
                 options: {
                     invokers: {
-                        // put back the orator's own queueSpeech method, but pass in the
+                        // put back the fluid.orator.domReader's own queueSpeech method, but pass in the
                         // mock queueSpeech function as the speechFn
                         queueSpeech: {
-                            funcName: "fluid.orator.queueSpeech",
+                            funcName: "fluid.orator.domReader.queueSpeech",
                             args: ["{that}", "{that}.mockQueueSpeech", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
                         },
                         mockQueueSpeech: {
