@@ -43,8 +43,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 type: "fluid.orator.domReader",
                 container: "{that}.dom.content",
                 options: {
-                    model: {
-                        enabled: "{orator}.model.enabled"
+                    listeners: {
+                        "{tts}.events.utteranceOnEnd": [{
+                            changePath: "{orator}.model.enabled",
+                            value: false,
+                            priority: "after:removeHighlight",
+                            namespace: "domReader.stop"
+                        }]
+                    },
+                    modelListeners: {
+                        "{orator}.model.enabled": {
+                            funcName: "fluid.orator.handlePlayToggle",
+                            args: ["{that}", "{change}.value"],
+                            namespace: "domReader.handlePlayToggle"
+                        }
                     }
                 }
             }
@@ -59,6 +71,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             namespace: "domReaderOpts"
         }]
     });
+
+    fluid.orator.handlePlayToggle = function (that, state) {
+        if (state) {
+            that.play();
+        } else {
+            that.pause();
+        }
+    };
 
     /**********************************************
      * fluid.orator.controller
@@ -139,18 +159,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         selectors: {
             highlight: ".flc-orator-highlight"
         },
-        strings: {
-            welcomeMsg: "text to speech enabled"
-        },
         markup: {
             highlight: "<mark class=\"flc-orator-highlight fl-orator-highlight\"></mark>"
         },
         events: {
             onReadFromDOM: null
         },
-        model: {
-            enabled: false
-        },
+        model: "{tts}.model",
         members: {
             parseQueue: [],
             parseIndex: 0,
@@ -165,7 +180,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             tts: {
                 type: "fluid.textToSpeech",
                 options: {
-                    model: "{domReader}.model",
                     invokers: {
                         queueSpeech: {
                             funcName: "fluid.orator.domReader.queueSpeech",
@@ -182,18 +196,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         invokers: {
-            handleSelfVoicing: {
-                funcName: "fluid.orator.domReader.handleSelfVoicing",
-                // Pass in invokers to force them to be resolved
-                args: [
-                    "{that}",
-                    "{that}.options.strings.welcomeMsg",
-                    "{tts}.queueSpeech",
-                    "{that}.readFromDOM",
-                    "{tts}.cancel",
-                    "{arguments}.0"
-                ]
-            },
             readFromDOM: {
                 funcName: "fluid.orator.domReader.readFromDOM",
                 args: ["{that}", "{that}.container"]
@@ -202,23 +204,27 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.orator.domReader.unWrap",
                 args: ["{that}.dom.highlight"]
             },
+            resetParseQueue: {
+                funcName: "fluid.orator.domReader.resetParseQueue",
+                args: ["{that}"]
+            },
             highlight: {
                 funcName: "fluid.orator.domReader.highlight",
                 args: ["{that}", "{arguments}.0"]
-            }
-        },
-        modelListeners: {
-            "enabled": {
-                listener: "{that}.handleSelfVoicing",
-                args: ["{change}.value"],
-                namespace: "handleSelfVoicing"
+            },
+            play: {
+                funcName: "fluid.orator.domReader.speak",
+                args: ["{that}"]
+            },
+            pause: {
+                funcName: "fluid.orator.domReader.pause",
+                args: ["{that}"]
             }
         },
         listeners: {
             "{tts}.events.utteranceOnEnd": [{
-                listener: "fluid.orator.domReader.removeCurrentParseQueueItem",
-                args: ["{that}"],
-                namespace: "removeCurrentParseQueueItem"
+                listener: "{that}.resetParseQueue",
+                namespace: "resetParseQueue"
             }, {
                 listener: "{that}.removeHighlight",
                 namespace: "removeHighlight"
@@ -235,6 +241,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     });
 
+    fluid.orator.domReader.speak = function (that) {
+        if (that.model.paused) {
+            that.tts.resume();
+        } else {
+            that.readFromDOM();
+        }
+    };
+
+    fluid.orator.domReader.pause = function (that) {
+        if (that.model.speaking && !that.model.paused) {
+            that.tts.pause();
+        }
+    };
+
     // Accepts a speechFn (either a function or function name), which will be used to perform the
     // underlying queuing of the speech. This allows the SpeechSynthesis to be replaced (e.g. for testing)
     fluid.orator.domReader.queueSpeech = function (that, speechFn, text, interrupt, options) {
@@ -245,26 +265,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         str = str.trim();
         str.replace(/\s{2,}/gi, " ");
 
-        if (that.model.enabled && str) {
+        if (str) {
             if (typeof(speechFn) === "string") {
                 fluid.invokeGlobalFunction(speechFn, [that, str, interrupt, options]);
             } else {
                 speechFn(that, str, interrupt, options);
             }
-        }
-    };
-
-    fluid.orator.domReader.handleSelfVoicing = function (that, welcomeMsg, queueSpeech, readFromDOM, cancel, enabled) {
-        that.parseQueue = [];
-        if (enabled) {
-            //TODO: It seems that we push null so that the parseQueue and queued speech remain in sync, given the
-            //      welcomeMsg pushed into the speech queue.
-            //      We should try to remove the need to push null.
-            that.parseQueue.push(null);
-            queueSpeech(welcomeMsg, true);
-            readFromDOM();
-        } else {
-            cancel();
         }
     };
 
@@ -286,8 +292,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         }
     };
 
-    fluid.orator.domReader.removeCurrentParseQueueItem = function (that) {
-        that.parseQueue.shift();
+    /**
+     * Resets the parseQueue and parseIndex
+     *
+     * @param {Component} that - the component
+     */
+    fluid.orator.domReader.resetParseQueue = function (that) {
+        that.parseQueue = [];
         that.parseIndex = 0;
     };
 
@@ -345,7 +356,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      *      parentNode: {DomElement}, // the parent DOM node
      *      word: {String} // the text, `word`, parsed from the node. (It may contain only whitespace.)
      *   }
-     * @param {ParseQueueElement[]} parsed - An array of Parse Queue Elements
+     * @param {ParseQueue[]} parsed - An array of data points for the Parsed DOM
      * @param {String} word - The word, parsed from the node, to be added
      * @param {DomNode} childNode - The current textnode being operated on
      * @param {Integer} blockIndex - The index into the entire block of text being parsed from the DOM
@@ -376,8 +387,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * @param {Integer} blockIndex - The `blockIndex` represents the index into the entire block of text being parsed.
      *                              It defaults to 0 and is primarily used internally for recursive calls.
      *
-     * @return {ParseQueueElement[]} - An array of Parse Queue Elements.
-     *                                 See fluid.orator.domReader.addParsedData for details on the structure.
+     * @return {ParseQueue[]} - An array of data points for the Parsed DOM
+     *                          See fluid.orator.domReader.addParsedData for details on the structure.
      */
     fluid.orator.domReader.parse = function (elm, blockIndex) {
         var parsed = [];
@@ -435,7 +446,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
     /**
      * Parses the DOM element into data points to use for highlighting the text, and queues the text into the self
-     * voicing engine. The parsed data points are added as an array to the component's `parseQueue`
+     * voicing engine. The parsed data points are added to the component's `parseQueue`
      *
      * @param {Component} that - the component
      * @param {String|jQuery|DomElement} elm - The DOM node to read
@@ -446,7 +457,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // only execute if there are nodes to read from
         if (elm.length) {
             var parsedFromElm = fluid.orator.domReader.parse(elm[0]);
-            that.parseQueue.push(parsedFromElm);
+            that.parseQueue = parsedFromElm;
             that.events.onReadFromDOM.fire(parsedFromElm);
             that.tts.queueSpeech(fluid.orator.domReader.parsedToString(parsedFromElm));
         }
@@ -502,13 +513,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.orator.domReader.highlight = function (that, boundary) {
         that.removeHighlight();
 
-        if (that.parseQueue[0]) {
-            var closestIndex = fluid.orator.domReader.getClosestIndex(that.parseQueue[0], that.parseIndex, boundary);
+        if (that.parseQueue.length) {
+            var closestIndex = fluid.orator.domReader.getClosestIndex(that.parseQueue, that.parseIndex, boundary);
 
             if (fluid.isValue(closestIndex)) {
                 that.parseIndex = closestIndex;
 
-                var data = that.parseQueue[0][that.parseIndex];
+                var data = that.parseQueue[that.parseIndex];
                 var rangeNode = data.parentNode.childNodes[data.childIndex];
 
                 that.range.selectNode(rangeNode);

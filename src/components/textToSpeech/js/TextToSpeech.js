@@ -160,6 +160,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "onCreate.unloadCleanup": {
                 funcName: "fluid.textToSpeech.cleanupOnUnload",
                 args: ["{that}.cancel"]
+            },
+            "onDestroy.cleanup": {
+                this: "speechSynthesis",
+                method: "cancel"
             }
         }
     });

@@ -119,6 +119,36 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests.orator.domReader");
 
+    fluid.tests.orator.domReader.speechFnArgs = ["the component", "text", false, {}];
+
+    fluid.tests.orator.domReader.verifyQueueSpeech = function (/* that, str, interrupt, options */) {
+        var calledWith = [].slice.call(arguments);
+        jqUnit.assertDeepEq("The arguments shuld have been passed to the speechFn correctly", fluid.tests.orator.domReader.speechFnArgs, calledWith);
+    };
+
+    // fluid.orator.domReader.queueSpeech tests
+    jqUnit.test("Test fluid.orator.domReader.queueSpeech - function", function () {
+        jqUnit.expect(1);
+        fluid.orator.domReader.queueSpeech(
+            fluid.tests.orator.domReader.speechFnArgs[0],
+            fluid.tests.orator.domReader.verifyQueueSpeech,
+            fluid.tests.orator.domReader.speechFnArgs[1],
+            fluid.tests.orator.domReader.speechFnArgs[2],
+            fluid.tests.orator.domReader.speechFnArgs[3]
+        );
+    });
+
+    jqUnit.test("Test fluid.orator.domReader.queueSpeech - function name", function () {
+        jqUnit.expect(1);
+        fluid.orator.domReader.queueSpeech(
+            fluid.tests.orator.domReader.speechFnArgs[0],
+            "fluid.tests.orator.domReader.verifyQueueSpeech",
+            fluid.tests.orator.domReader.speechFnArgs[1],
+            fluid.tests.orator.domReader.speechFnArgs[2],
+            fluid.tests.orator.domReader.speechFnArgs[3]
+        );
+    });
+
     // fluid.orator.domReader.unWrap tests
     jqUnit.test("Test fluid.orator.domReader.unWrap", function () {
         jqUnit.assertNodeExists("The wrapper node should exist", ".flc-orator-domReader-test-wrap");
@@ -187,6 +217,55 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             jqUnit.assertFalse("\"" + selector + "\" shouldn't have text to read.", fluid.orator.domReader.hasRenderedText($(selector)));
         });
     });
+
+    // fluid.orator.domReader.addParsedData tests
+
+    fluid.tests.orator.domReader.expectedParsedAdditions = {
+        fromEmpty: [{
+            blockIndex: 1,
+            startOffset: 1,
+            endOffset: 5,
+            node: {
+                parentNode: {}
+            },
+            childIndex: 0,
+            parentNode: {},
+            word: "word"
+        }],
+        additional: [{
+            blockIndex: 1,
+            startOffset: 1,
+            endOffset: 5,
+            node: {
+                parentNode: {}
+            },
+            childIndex: 0,
+            parentNode: {},
+            word: "word"
+        }, {
+            blockIndex: 6,
+            startOffset: 6,
+            endOffset: 9,
+            node: {
+                parentNode: {test: "value"}
+            },
+            childIndex: 2,
+            parentNode: {test: "value"},
+            word: "new"
+        }]
+    };
+
+    jqUnit.test("Test fluid.orator.domReader.addParsedData", function () {
+        var emptyParsed = [];
+        fluid.orator.domReader.addParsedData(emptyParsed, "word", {parentNode: {}}, 1, 1, 0);
+        jqUnit.assertDeepEq("The data point should be added to the previously empty parsed array", fluid.tests.orator.domReader.expectedParsedAdditions.fromEmpty, emptyParsed);
+
+        var parsed = [fluid.copy(fluid.tests.orator.domReader.expectedParsedAdditions.additional[0])];
+        fluid.orator.domReader.addParsedData(parsed, "new", {parentNode: {test: "value"}}, 6, 6, 2);
+        jqUnit.assertDeepEq("The data point should be added to the parsed array", fluid.tests.orator.domReader.expectedParsedAdditions.additional, parsed);
+    });
+
+
 
     // fluid.orator.domReader.parse tests
     fluid.tests.orator.domReader.parsed = [{
@@ -354,12 +433,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 }
             }
-        },
-        invokers: {
-            toggle: {
-                changePath: "enabled",
-                value: "{arguments}.0"
-            }
         }
     });
 
@@ -367,11 +440,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         gradeNames: ["fluid.test.testEnvironment"],
         markupFixture: ".flc-orator-domReader-test",
         components: {
-            orator: {
+            domReader: {
                 type: "fluid.tests.orator.domReader",
                 container: ".flc-orator-domReader-test"
             },
-            oratorTester: {
+            domReaderTester: {
                 type: "fluid.tests.orator.domReaderTester"
             }
         }
@@ -382,36 +455,43 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         testOptions: {
             startStopFireRecord: {
                 onStart: 1,
-                onStop: 2,
-                onSpeechQueued: 2
+                onStop: 1,
+                onSpeechQueued: 1
             },
             stoppedModel: {
-                enabled: true,
+                enabled: false,
                 speaking: false,
                 pending: false,
                 paused: false,
                 utteranceOpts: {}
             },
+            speakingModel: {
+                enabled: true,
+                speaking: true,
+                pending: false,
+                paused: false,
+                utteranceOpts: {}
+            },
+            pausedModel: {
+                enabled: true,
+                speaking: true,
+                pending: false,
+                paused: true,
+                utteranceOpts: {}
+            },
             expectedSpeechRecord: [{
-                "interrupt": true,
-                "text": "text to speech enabled"
-            }, {
                 "interrupt": false,
                 "text": "Reading text from DOM"
             }],
-            expectedText: [
-                {text: "{orator}.options.strings.welcomeMsg", interrupt: true},
-                {text: "Reading text from DOM", interrupt: false}
-            ],
             // a mock parseQueue for testing adding and removing the highlight
-            parseQueue: [[{
+            parseQueue: [{
                 "blockIndex": 0,
                 "childIndex": 0,
                 "endOffset": 20,
                 "node": {},
                 "parentNode": {
                     expander: {
-                        "this": "{orator}.container",
+                        "this": "{domReader}.container",
                         method: "get",
                         args: [0]
                     }
@@ -428,97 +508,124 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         func: function (elm) {
                             return $(elm).children()[0];
                         },
-                        args: ["{orator}.container"]
+                        args: ["{domReader}.container"]
                     }
                 },
                 "startOffset": 0,
                 "word": "text"
-            }]]
+            }]
         },
+        //TODO: Handle test for pause and play in the following states:
+        //      - pause when paused
+        //      - pause when speaking
+        //      - play when playing
+        //      - play when paused
         modules: [{
             name: "fluid.orator.domReader",
             tests: [{
-                expect: 18,
+                expect: 27,
                 name: "Dom Reading",
                 sequence: [{
-                    func: "{orator}.toggle",
-                    args: [true]
+                    func: "{domReader}.play"
                 }, {
                     listener: "fluid.tests.orator.domReaderTester.verifyParseQueue",
-                    args: ["{orator}", [fluid.tests.orator.domReader.parsed], "{arguments}.0"],
+                    args: ["{domReader}", fluid.tests.orator.domReader.parsed, "{arguments}.0"],
                     spec: {priority: "last:testing"},
-                    event: "{orator}.events.onReadFromDOM"
+                    event: "{domReader}.events.onReadFromDOM"
                 }, {
                     listener: "fluid.tests.orator.domReaderTester.verifySpeakQueue",
-                    args: ["{orator}", "{that}.options.testOptions.expectedText"],
+                    args: ["{domReader}", "{that}.options.testOptions.expectedSpeechRecord"],
                     spec: {priority: "last:testing"},
-                    event: "{orator}.tts.events.onStop"
+                    event: "{domReader}.tts.events.utteranceOnEnd"
                 }, {
-                    funcName: "jqUnit.assertEquals",
-                    args: ["The parseQueue should be empty.", 0, "{orator}.parseQueue.length"]
-                }, {
-                    funcName: "jqUnit.assertEquals",
-                    args: ["The parseIndex should be reset to 0.", 0, "{orator}.parseIndex"]
-                }, {
-                    funcName: "jqUnit.assertNodeNotExists",
-                    args: ["The self voicing has completed. All highlights should be removed.", "{orator}.dom.highlight"]
+                    funcName: "fluid.tests.orator.domReaderTester.verifyEnd",
+                    args: ["{domReader}"]
                 }, {
                     funcName: "fluid.tests.orator.domReaderTester.verifyRecords",
                     args: [
-                        "{orator}",
+                        "{domReader}",
                         "{that}.options.testOptions.startStopFireRecord",
                         "{that}.options.testOptions.expectedSpeechRecord",
                         "{that}.options.testOptions.stoppedModel"
                     ]
                 }, {
-                    func: "{orator}.tts.events.utteranceOnBoundary.fire",
+                    func: "{domReader}.tts.events.utteranceOnBoundary.fire",
                     args: [{charIndex: 8}]
                 }, {
                     funcName: "jqUnit.assertNodeNotExists",
-                    args: ["The parseQueue is empty, no highlight should be added", "{orator}.dom.highlight"]
+                    args: ["The parseQueue is empty, no highlight should be added", "{domReader}.dom.highlight"]
                 }, {
                     // manually add items to parseQueue so that we can more easily test adding and removing the highlight
                     funcName: "fluid.set",
-                    args: ["{orator}", ["parseQueue"], "{that}.options.testOptions.parseQueue"]
+                    args: ["{domReader}", ["parseQueue"], "{that}.options.testOptions.parseQueue"]
                 }, {
-                    func: "{orator}.tts.events.utteranceOnBoundary.fire",
-                    args: [{charIndex: "{that}.options.testOptions.parseQueue.0.0.blockIndex"}]
-                }, {
-                    funcName: "fluid.tests.orator.domReaderTester.verifyMark",
-                    args: ["{orator}.dom.highlight", "{that}.options.testOptions.parseQueue.0.0.word"]
-                }, {
-                    func: "{orator}.tts.events.utteranceOnBoundary.fire",
-                    args: [{charIndex: "{that}.options.testOptions.parseQueue.0.1.blockIndex"}]
+                    func: "{domReader}.tts.events.utteranceOnBoundary.fire",
+                    args: [{charIndex: "{that}.options.testOptions.parseQueue.0.blockIndex"}]
                 }, {
                     funcName: "fluid.tests.orator.domReaderTester.verifyMark",
-                    args: ["{orator}.dom.highlight", "{that}.options.testOptions.parseQueue.0.1.word"]
+                    args: ["{domReader}.dom.highlight", "{that}.options.testOptions.parseQueue.0.word"]
                 }, {
-                    // disabled text to speech
-                    func: "{orator}.applier.change",
-                    args: ["enabled", false]
+                    func: "{domReader}.tts.events.utteranceOnBoundary.fire",
+                    args: [{charIndex: "{that}.options.testOptions.parseQueue.1.blockIndex"}]
                 }, {
-                    listener: "jqUnit.assert",
-                    args: ["The utteranceOnEnd event should have fired"],
-                    spec: {priority: "last:testing"},
-                    event: "{orator}.tts.events.utteranceOnEnd"
+                    funcName: "fluid.tests.orator.domReaderTester.verifyMark",
+                    args: ["{domReader}.dom.highlight", "{that}.options.testOptions.parseQueue.1.word"]
+                }, {
+                    // simulate ending reading
+                    func: "{domReader}.tts.events.utteranceOnEnd.fire"
+                }, {
+                    funcName: "fluid.tests.orator.domReaderTester.verifyEnd",
+                    args: ["{domReader}"]
                 }, {
                     // test readFromDom if the element to parse isn't available
                     funcName: "fluid.orator.domReader.readFromDOM",
-                    args: ["{orator}", "{orator}.dom.highlight"]
+                    args: ["{domReader}", "{domReader}.dom.highlight"]
                 }, {
                     funcName: "jqUnit.assertEquals",
-                    args: ["The parseQueue should still be empty after trying to parse an unavailable DOM node.", 0, "{orator}.parseQueue.length"]
+                    args: ["The parseQueue should still be empty after trying to parse an unavailable DOM node.", 0, "{domReader}.parseQueue.length"]
+                }, {
+                    // clear speechRecord
+                    funcName: "fluid.set",
+                    args: ["{domReader}.tts", "speechRecord", []]
+                }, {
+                    // replay after finishing
+                    func: "{domReader}.play"
+                }, {
+                    listener: "fluid.tests.orator.domReaderTester.verifyParseQueue",
+                    args: ["{domReader}", fluid.tests.orator.domReader.parsed, "{arguments}.0"],
+                    spec: {priority: "last:testing"},
+                    event: "{domReader}.events.onReadFromDOM"
+                }, {
+                    listener: "fluid.tests.orator.domReaderTester.verifySpeakQueue",
+                    args: ["{domReader}", "{that}.options.testOptions.expectedSpeechRecord"],
+                    spec: {priority: "last:testing"},
+                    event: "{domReader}.tts.events.utteranceOnEnd"
+                }, {
+                    funcName: "fluid.tests.orator.domReaderTester.verifyEnd",
+                    args: ["{domReader}"]
+                }, {
+                    // pause when stopped
+                    func: "{domReader}.pause"
+                }, {
+                    funcName: "jqUnit.assertDeepEq",
+                    args: ["The domReader should still be stopped", "{that}.options.testOptions.stoppedModel", "{domReader}.model"]
                 }]
             }]
         }]
     });
 
-    fluid.tests.orator.domReaderTester.verifySpeakQueue = function (that, expectedText) {
-        jqUnit.assertDeepEq("The text to be spoken should have been queued correctly", expectedText, that.tts.speechRecord);
+    fluid.tests.orator.domReaderTester.verifyEnd = function (that) {
+        jqUnit.assertEquals("The parseQueue should be empty.", 0, that.parseQueue.length);
+        jqUnit.assertEquals("The parseIndex should be reset to 0.", 0, that.parseIndex);
+        jqUnit.assertNodeNotExists("The self voicing has completed. All highlights should be removed.", that.locate("highlight"));
+    };
+
+    fluid.tests.orator.domReaderTester.verifySpeakQueue = function (that, expectedSpeechRecord) {
+        jqUnit.assertDeepEq("The text to be spoken should have been queued correctly", expectedSpeechRecord, that.tts.speechRecord);
     };
 
     fluid.tests.orator.domReaderTester.verifyParseQueue = function (that, expected, parsed) {
-        jqUnit.assertDeepEq("The DOM should have been parsed correctly", expected[0], parsed);
+        jqUnit.assertDeepEq("The parsed data should have been returned correctly", expected, parsed);
         jqUnit.assertDeepEq("The parseQueue should have been populated correctly", expected, that.parseQueue);
     };
 
