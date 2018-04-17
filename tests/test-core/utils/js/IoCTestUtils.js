@@ -19,6 +19,20 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 (function ($, fluid) {
     "use strict";
 
+    fluid.registerNamespace("fluid.test");
+
+    /** Shared utility for tests making assertions about the complete set of paths which currently hold
+     * components. Useful for tests which are checking whether this space has been corrupted by what
+     * should have been a cancelled operation.
+     * @return {Object} A map of `String` to `true`, suitable for checking with jqUnit.assertDeepEq to provide
+     * a readable summary of any changed paths.
+     */
+    fluid.test.getConstructedPaths = function () {
+        return fluid.transform(fluid.globalInstantiator.pathToComponent, function () {
+            return true;
+        });
+    };
+
     fluid.defaults("fluid.test.testEnvironment", {
         gradeNames: ["fluid.component"],
         components: {

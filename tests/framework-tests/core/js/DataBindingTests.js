@@ -1541,11 +1541,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     jqUnit.test("FLUID-6195: Exploding model relay rule does not corrupt framework state", function () {
-        jqUnit.expect(1);
+        jqUnit.expect(3);
+        var prePaths = fluid.test.getConstructedPaths();
         try {
             fluid.tests.fluid6195root();
         } catch (e) {
             jqUnit.assert("Received bare exception through model relay", "This relay rule has exploded", e.message);
+            var postPaths = fluid.test.getConstructedPaths();
+            jqUnit.assertDeepEq("No disturbance of constructed paths from failed construction", prePaths, postPaths);
+            fluid.tests.assertTransactionsConcluded();
         }
     });
 

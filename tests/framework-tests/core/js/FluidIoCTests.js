@@ -4937,6 +4937,39 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.oneFluid6148Partial("full construction",        null,                      [42, true]);
     });
 
+    /** Test cleanup even of perversely constructed components **/
+
+    fluid.defaults("fluid.tests.FLUID6148cleanup", {
+        gradeNames: "fluid.component",
+        components: {
+            lateChild: {
+                createOnEvent: "onCreate",
+                type: "fluid.component",
+                options: {
+                    listeners: {
+                        "onCreate.explode": {
+                            func: "fluid.builtinFail",
+                            args: [["Explosion during creation"]]
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    jqUnit.test("FLUID-6184: Cleanup test", function () {
+        var prePaths = fluid.test.getConstructedPaths();
+        jqUnit.expect(2);
+        try {
+            fluid.tests.FLUID6148cleanup();
+        } catch (e) {
+            jqUnit.assert("Exception caught during construction");
+        } finally {
+            var postPaths = fluid.test.getConstructedPaths();
+            jqUnit.assertDeepEq("No disturbance of constructed paths from failed construction", prePaths, postPaths);
+        }
+    });
+
     /** FLUID-6126 failure to construct child of root which has been advised **/
 
     fluid.defaults("fluid.tests.FLUID6126root", {

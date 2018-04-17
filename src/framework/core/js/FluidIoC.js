@@ -1613,7 +1613,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 potentia.records, " as designating either an injected or concrete component");
         }
 
-        transRec.restoreRecords.destroys.unshift({
+        fluid.pushPotentia(transRec.restoreRecords, instantiator, {
             type: "destroy",
             segs: potentia.segs
         });
@@ -1628,8 +1628,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var shadow = fluid.shadowForComponent(that);
             instantiator.clearComponent(potentia.parentThat, potentia.memberName, that);
             // Store the record that if this transaction is cancelled, the potentia which constructed this component
-            // should be used to recreate it
-            transRec.restoreRecords.creates.unshift(shadow.potentia);
+            // should be used to recreate it. Pretty esoteric currently since we don't have WHITEHEADIAN OBSERVATION
+            // but at least our intention is good
+            fluid.pushPotentia(transRec.restoreRecords, instantiator, shadow.potentia);
         }
     };
 
@@ -1762,28 +1763,26 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return togo;
     };
 
-    /** Push the supplied potentia onto the transaction record.
-     * @param {TreeTransactionRecord} transRec - The transaction record for the current tree transaction
+    /** Push the supplied potentia onto a potentia list structure (as dispensed from `fluid.blankPotentiaList()`).
+     * @param {PotentiaList} potentiaList - The transaction record for the current tree transaction
      * @param {Instantiator} instantiator - The instantiator operating the transaction
      * @param {Potentia} potentia - A potentia to be registered
      */
-    fluid.pushPotentia = function (transRec, instantiator, potentia) {
-        var pendingPotentiae = transRec.pendingPotentiae;
-
+    fluid.pushPotentia = function (potentiaList, instantiator, potentia) {
         var segs = potentia.segs = potentia.segs || instantiator.parseToSegments(potentia.path);
         var path = potentia.path = instantiator.composeSegments.apply(null, segs);
 
         if (potentia.type === "destroy") {
-            pendingPotentiae.destroys.push(potentia);
-            pendingPotentiae.activeCount++;
+            potentiaList.destroys.push(potentia);
+            potentiaList.activeCount++;
         } else {
             var newPotentia = potentia;
             if (potentia.type === "create") {
-                newPotentia = fluid.pushPathedPotentia(pendingPotentiae, path, potentia);
+                newPotentia = fluid.pushPathedPotentia(potentiaList, path, potentia);
             }
             if (newPotentia) {
-                pendingPotentiae.creates.push(potentia);
-                pendingPotentiae.activeCount++;
+                potentiaList.creates.push(potentia);
+                potentiaList.activeCount++;
             };
         }
     };
@@ -1851,7 +1850,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             transactionId = fluid.beginTreeTransaction();
         }
         var transRec = instantiator.treeTransactions[transactionId];
-        fluid.pushPotentia(transRec, instantiator, potentia);
+        fluid.pushPotentia(transRec.pendingPotentiae, instantiator, potentia);
 
         return transactionId;
     };
