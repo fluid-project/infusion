@@ -1,3 +1,6 @@
+# Infusion #
+
+[![Build status](https://badge.buildkite.com/5c8634255695aaaeda0e48799272f9f0e758e6512829737c94.svg?branch=master)](https://buildkite.com/fluid-project/fluid-infusion)
 
 ## What Is Infusion? ##
 
