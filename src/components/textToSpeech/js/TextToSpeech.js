@@ -156,9 +156,22 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "utteranceOnResume.resume": {
                 changePath: "paused",
                 value: false
+            },
+            "onCreate.unloadCleanup": {
+                funcName: "fluid.textToSpeech.cleanupOnUnload",
+                args: ["{that}.cancel"]
             }
         }
     });
+
+    // Cancel all synthesis when a page is unloaded.
+    // This is necessary so that the speech synthesis stops when navigating to a new page and so that paused
+    // speaking doesn't prevent new self voicing after a page reload.
+    fluid.textToSpeech.cleanupOnUnload = function () {
+        window.onbeforeunload = function () {
+            speechSynthesis.cancel();
+        };
+    };
 
     // Issue commands to the speechSynthesis interface with deferral (1 ms timeout);
     // this makes the wrapper behave better when issuing commands, especially
