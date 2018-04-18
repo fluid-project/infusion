@@ -9,7 +9,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit */
+/* global fluid, jqUnit, sinon */
 
 (function ($) {
     "use strict";
@@ -452,6 +452,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.orator.domReaderTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
+        members: {
+            spies: {}
+        },
         testOptions: {
             startStopFireRecord: {
                 onStart: 1,
@@ -473,10 +476,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 utteranceOpts: {}
             },
             pausedModel: {
-                enabled: true,
-                speaking: true,
+                enabled: false,
+                speaking: false,
                 pending: false,
                 paused: true,
+                pauseRequested: false,
                 utteranceOpts: {}
             },
             expectedSpeechRecord: [{
@@ -523,7 +527,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.orator.domReader",
             tests: [{
-                expect: 27,
+                expect: 31,
                 name: "Dom Reading",
                 sequence: [{
                     func: "{domReader}.play"
@@ -584,11 +588,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     funcName: "jqUnit.assertEquals",
                     args: ["The parseQueue should still be empty after trying to parse an unavailable DOM node.", 0, "{domReader}.parseQueue.length"]
                 }, {
+                    // replay after finishing
                     // clear speechRecord
                     funcName: "fluid.set",
                     args: ["{domReader}.tts", "speechRecord", []]
                 }, {
-                    // replay after finishing
                     func: "{domReader}.play"
                 }, {
                     listener: "fluid.tests.orator.domReaderTester.verifyParseQueue",
@@ -605,10 +609,76 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["{domReader}"]
                 }, {
                     // pause when stopped
+                    funcName: "fluid.tests.orator.domReaderTester.addSpy",
+                    args: ["{that}.spies", "{domReader}.tts", "pause"]
+                }, {
                     func: "{domReader}.pause"
                 }, {
-                    funcName: "jqUnit.assertDeepEq",
-                    args: ["The domReader should still be stopped", "{that}.options.testOptions.stoppedModel", "{domReader}.model"]
+                    funcName: "jqUnit.assertFalse",
+                    args: ["The pause method should not have been called when pausing after speaking has stopped.", "{that}.spies.pause.called"]
+                }, {
+                    funcName: "fluid.tests.orator.domReaderTester.restore",
+                    args: ["{that}.spies", "pause"]
+                }, {
+                    // pause when paused
+                    funcName: "fluid.tests.orator.domReaderTester.addSpy",
+                    args: ["{that}.spies", "{domReader}.tts", "pause"]
+                }, {
+                    funcName: "fluid.set",
+                    args: ["{domReader}", "model", "{that}.options.testOptions.pausedModel"]
+                }, {
+                    func: "{domReader}.pause"
+                }, {
+                    funcName: "jqUnit.assertFalse",
+                    args: ["The pause method should not have been called when pausing while already paused.", "{that}.spies.pause.called"]
+                }, {
+                    funcName: "fluid.tests.orator.domReaderTester.restore",
+                    args: ["{that}.spies", "pause"]
+                }, {
+                    // pause when speaking
+                    funcName: "fluid.tests.orator.domReaderTester.addSpy",
+                    args: ["{that}.spies", "{domReader}.tts", "pause"]
+                }, {
+                    funcName: "fluid.set",
+                    args: ["{domReader}", "model", "{that}.options.testOptions.speakingModel"]
+                }, {
+                    func: "{domReader}.pause"
+                }, {
+                    funcName: "jqUnit.assertTrue",
+                    args: ["The pause method should be called when pausing while speaking.", "{that}.spies.pause.called"]
+                }, {
+                    funcName: "fluid.tests.orator.domReaderTester.restore",
+                    args: ["{that}.spies", "pause"]
+                }, {
+                    // play after pause
+                    funcName: "fluid.set",
+                    args: ["{domReader}", "model", "{that}.options.testOptions.pausedModel"]
+                }, {
+                    funcName: "fluid.tests.orator.domReaderTester.addSpy",
+                    args: ["{that}.spies", "{domReader}.tts", "resume"]
+                }, {
+                    func: "{domReader}.play"
+                }, {
+                    funcName: "jqUnit.assertTrue",
+                    args: ["The resume method should have been called", "{that}.spies.resume.called"]
+                }, {
+                    funcName: "fluid.tests.orator.domReaderTester.restore",
+                    args: ["{that}.spies", "resume"]
+                }, {
+                    // play while speaking
+                    funcName: "fluid.set",
+                    args: ["{domReader}", "model", "{that}.options.testOptions.speakingModel"]
+                }, {
+                    funcName: "fluid.tests.orator.domReaderTester.addSpy",
+                    args: ["{that}.spies", "{domReader}", "readFromDOM"]
+                }, {
+                    func: "{domReader}.play"
+                }, {
+                    funcName: "jqUnit.assertFalse",
+                    args: ["The readFromDOM method should not be called again when currently speaking", "{that}.spies.readFromDOM.called"]
+                }, {
+                    funcName: "fluid.tests.orator.domReaderTester.restore",
+                    args: ["{that}.spies", "readFromDOM"]
                 }]
             }]
         }]
@@ -639,6 +709,17 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("TTS: events should have fired correctly", expectedEvents, that.tts.eventRecord);
         jqUnit.assertDeepEq("TTS: text to be spoken should have been queued correctly", expectedSpeechRecord, that.tts.speechRecord);
         jqUnit.assertDeepEq("TTS: model should be reset correctly", expectedModel, that.model);
+    };
+
+    fluid.tests.orator.domReaderTester.addSpy = function (spies, object, method) {
+        spies[method] = sinon.spy(object, method);
+    };
+
+    fluid.tests.orator.domReaderTester.restore = function (spies, names) {
+        names = fluid.makeArray(names);
+        fluid.each(names, function (name) {
+            spies[name].restore();
+        });
     };
 
     $(document).ready(function () {

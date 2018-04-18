@@ -244,7 +244,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.orator.domReader.speak = function (that) {
         if (that.model.paused) {
             that.tts.resume();
-        } else {
+        } else if (!that.model.speaking) {
             that.readFromDOM();
         }
     };
