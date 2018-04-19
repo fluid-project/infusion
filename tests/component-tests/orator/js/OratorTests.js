@@ -412,9 +412,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.orator.domReader", {
         gradeNames: ["fluid.orator.domReader"],
-        model: {
-            enabled: false
-        },
         components: {
             tts: {
                 type: "fluid.mock.textToSpeech",
@@ -462,21 +459,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 onSpeechQueued: 1
             },
             stoppedModel: {
-                enabled: false,
                 speaking: false,
                 pending: false,
                 paused: false,
                 utteranceOpts: {}
             },
             speakingModel: {
-                enabled: true,
                 speaking: true,
                 pending: false,
                 paused: false,
                 utteranceOpts: {}
             },
             pausedModel: {
-                enabled: false,
                 speaking: false,
                 pending: false,
                 paused: true,
@@ -519,11 +513,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 "word": "text"
             }]
         },
-        //TODO: Handle test for pause and play in the following states:
-        //      - pause when paused
-        //      - pause when speaking
-        //      - play when playing
-        //      - play when paused
         modules: [{
             name: "fluid.orator.domReader",
             tests: [{
@@ -722,10 +711,132 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
+    /*******************************************************************************
+     * IoC unit tests for fluid.orator
+     *******************************************************************************/
+
+    fluid.defaults("fluid.tests.orator", {
+        gradeNames: ["fluid.orator"],
+        model: {
+            enabled: false
+        },
+        domReader: {
+            members: {
+                spies: {}
+            },
+            listeners: {
+                "onCreate.playSpy": {
+                    funcName: "fluid.tests.orator.domReaderTester.addSpy",
+                    args: ["{domReader}.spies", "{domReader}", "play"]
+                },
+                "onCreate.pauseSpy": {
+                    funcName: "fluid.tests.orator.domReaderTester.addSpy",
+                    args: ["{domReader}.spies", "{domReader}", "pause"]
+                },
+                "onDestroy.restore": {
+                    funcName: "fluid.tests.orator.domReaderTester.restore",
+                    args: ["{domReader}.spies", ["play", "pause"]]
+                }
+            },
+            components: {
+                tts: {
+                    type: "fluid.mock.textToSpeech",
+                    options: {
+                        invokers: {
+                            // put back the orator's own queueSpeech method, but pass in the
+                            // mock queueSpeech function as the speechFn
+                            queueSpeech: {
+                                funcName: "fluid.orator.domReader.queueSpeech",
+                                args: ["{that}", "{that}.mockQueueSpeech", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
+                            },
+                            mockQueueSpeech: {
+                                funcName: "fluid.mock.textToSpeech.queueSpeech",
+                                args: ["{arguments}.0", "{that}.speechRecord", "{arguments}.1", "{arguments}.2", "{arguments}.3"]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.oratorTests", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        markupFixture: ".flc-orator-test",
+        components: {
+            orator: {
+                type: "fluid.tests.orator",
+                container: ".flc-orator-test",
+                createOnEvent: "{oratorTester}.events.onTestCaseStart"
+            },
+            oratorTester: {
+                type: "fluid.tests.oratorTester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.oratorTester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        members: {
+            spies: {}
+        },
+        modules: [{
+            name: "fluid.orator",
+            tests: [{
+                expect: 18,
+                name: "Integration",
+                sequence: [{
+                    listener: "fluid.tests.oratorTester.verifyState",
+                    args: ["{orator}", "Init", false],
+                    spec: {priority: "last:testing"},
+                    event: "{oratorTests orator}.events.onCreate"
+                }, {
+                    func: "{orator}.applier.change",
+                    args: ["enabled", true]
+                }, {
+                    listener: "fluid.tests.oratorTester.verifyState",
+                    args: ["{orator}", "Play", true],
+                    spec: {priority: "last:testing", path: "enabled"},
+                    changeEvent: "{orator}.applier.modelChanged"
+                }, {
+                    func: "{orator}.applier.change",
+                    args: ["enabled", false]
+                }, {
+                    listener: "fluid.tests.oratorTester.verifyState",
+                    args: ["{orator}", "Pause", false],
+                    spec: {priority: "last:testing", path: "enabled"},
+                    changeEvent: "{orator}.applier.modelChanged"
+                }]
+            }]
+        }]
+    });
+
+    fluid.tests.oratorTester.verifyState = function (that, testPrefix, state) {
+        jqUnit.assertEquals(testPrefix + ": The orator's \"enabled\" model value should be set correctly", state, that.model.enabled);
+        fluid.tests.orator.controllerTester.verifyState(that.controller, state);
+
+        if (state) {
+            jqUnit.assertTrue(testPrefix + ": The domReaders's \"play\" method should have been called", that.domReader.spies.play.called);
+            jqUnit.assertFalse(testPrefix + ": The domReaders's \"pause\" method should not have been called", that.domReader.spies.pause.called);
+        } else {
+            jqUnit.assertFalse(testPrefix + ": The domReaders's \"play\" method should not have been called", that.domReader.spies.play.called);
+            jqUnit.assertTrue(testPrefix + ": The domReaders's \"pause\" method should have been called", that.domReader.spies.pause.called);
+        }
+
+        fluid.tests.oratorTester.verifyState.resetSpies(that.domReader.spies, ["play", "pause"]);
+    };
+
+    fluid.tests.oratorTester.verifyState.resetSpies = function (spies, names) {
+        fluid.each(names, function (name) {
+            spies[name].resetHistory();
+        });
+    };
+
     $(document).ready(function () {
         fluid.test.runTests([
             "fluid.tests.orator.controllerTests",
-            "fluid.tests.orator.domReaderTests"
+            "fluid.tests.orator.domReaderTests",
+            "fluid.tests.oratorTests"
         ]);
     });
 
