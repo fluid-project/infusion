@@ -180,17 +180,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 // Below this addListener() block are three calls to change
                 // the "checked" state of the test checkbox.
                 if (manipulator.numCallsToChangeState === 3) {
+                    jqUnit.start();
                     jqUnit.assertEquals(
                         "State change detection",
                         manipulator.numCallsToChangeState,
                         checkboxTracker.numStateChanges
                     );
-                    jqUnit.start();
                     checkboxTracker.stopTracking();
                 }
             });
             // Change the state three times, and see if they're detected.  Space
-            // the changes by at least the tracker's polling interval.
+            // the changes by at least the tracker's polling interval -- here
+            // use 200msec between changes.
             var delay = 200;
             manipulator.changeStateWithDelay(delay);
             delay += checkboxTracker.interval;
@@ -209,12 +210,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 // Below this listener are three calls to change the "checked"
                 // state of the test checkbox.
                 if (manipulator.numCallsToChangeState === 3) {
+                    jqUnit.start();
                     jqUnit.assertEquals(
                         "State change detection",
                         manipulator.numCallsToChangeState,
                         checkboxTracker.numStateChanges
                     );
-                    jqUnit.start();
                     checkboxTracker.stopTracking();
                 }
             });
@@ -238,12 +239,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 // Below this addListener() block are three calls to change the
                 // "checked" state of the test checkbox.
                 if (manipulator.numCallsToChangeState === 3) {
+                    jqUnit.start();
                     jqUnit.assertNotEquals(
                         "State change detection failure",
                         manipulator.numCallsToChangeState,
                         checkboxTracker.numStateChanges
                     );
-                    jqUnit.start();
                     checkboxTracker.stopTracking();
                 }
             });
