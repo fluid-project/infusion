@@ -9,7 +9,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/* global fluid, jqUnit, sinon */
+/* global fluid, jqUnit */
 
 (function ($) {
     "use strict";
@@ -411,26 +411,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.orator.domReader", {
-        gradeNames: ["fluid.orator.domReader"],
-        components: {
-            tts: {
-                type: "fluid.mock.textToSpeech",
-                options: {
-                    invokers: {
-                        // put back the orator's own queueSpeech method, but pass in the
-                        // mock queueSpeech function as the speechFn
-                        queueSpeech: {
-                            funcName: "fluid.orator.domReader.queueSpeech",
-                            args: ["{that}", "{that}.mockQueueSpeech", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
-                        },
-                        mockQueueSpeech: {
-                            funcName: "fluid.mock.textToSpeech.queueSpeech",
-                            args: ["{arguments}.0", "{that}.speechRecord", "{arguments}.1", "{arguments}.2", "{arguments}.3"]
-                        }
-                    }
-                }
-            }
-        }
+        gradeNames: ["fluid.orator.domReader", "fluid.tests.orator.domReaderMockTTS"]
     });
 
     fluid.defaults("fluid.tests.orator.domReaderTests", {
@@ -448,10 +429,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.orator.domReaderTester", {
-        gradeNames: ["fluid.test.testCaseHolder"],
-        members: {
-            spies: {}
-        },
+        gradeNames: ["fluid.test.testCaseHolder", "fluid.tests.orator.spies"],
         testOptions: {
             startStopFireRecord: {
                 onStart: 1,
@@ -598,7 +576,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     args: ["{domReader}"]
                 }, {
                     // pause when stopped
-                    funcName: "fluid.tests.orator.domReaderTester.addSpy",
+                    funcName: "fluid.tests.orator.addSpy",
                     args: ["{that}.spies", "{domReader}.tts", "pause"]
                 }, {
                     func: "{domReader}.pause"
@@ -606,11 +584,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     funcName: "jqUnit.assertFalse",
                     args: ["The pause method should not have been called when pausing after speaking has stopped.", "{that}.spies.pause.called"]
                 }, {
-                    funcName: "fluid.tests.orator.domReaderTester.restore",
+                    funcName: "fluid.tests.orator.restoreSpies",
                     args: ["{that}.spies", "pause"]
                 }, {
                     // pause when paused
-                    funcName: "fluid.tests.orator.domReaderTester.addSpy",
+                    funcName: "fluid.tests.orator.addSpy",
                     args: ["{that}.spies", "{domReader}.tts", "pause"]
                 }, {
                     funcName: "fluid.set",
@@ -621,11 +599,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     funcName: "jqUnit.assertFalse",
                     args: ["The pause method should not have been called when pausing while already paused.", "{that}.spies.pause.called"]
                 }, {
-                    funcName: "fluid.tests.orator.domReaderTester.restore",
+                    funcName: "fluid.tests.orator.restoreSpies",
                     args: ["{that}.spies", "pause"]
                 }, {
                     // pause when speaking
-                    funcName: "fluid.tests.orator.domReaderTester.addSpy",
+                    funcName: "fluid.tests.orator.addSpy",
                     args: ["{that}.spies", "{domReader}.tts", "pause"]
                 }, {
                     funcName: "fluid.set",
@@ -636,14 +614,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     funcName: "jqUnit.assertTrue",
                     args: ["The pause method should be called when pausing while speaking.", "{that}.spies.pause.called"]
                 }, {
-                    funcName: "fluid.tests.orator.domReaderTester.restore",
+                    funcName: "fluid.tests.orator.restoreSpies",
                     args: ["{that}.spies", "pause"]
                 }, {
                     // play after pause
                     funcName: "fluid.set",
                     args: ["{domReader}", "model", "{that}.options.testOptions.pausedModel"]
                 }, {
-                    funcName: "fluid.tests.orator.domReaderTester.addSpy",
+                    funcName: "fluid.tests.orator.addSpy",
                     args: ["{that}.spies", "{domReader}.tts", "resume"]
                 }, {
                     func: "{domReader}.play"
@@ -651,14 +629,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     funcName: "jqUnit.assertTrue",
                     args: ["The resume method should have been called", "{that}.spies.resume.called"]
                 }, {
-                    funcName: "fluid.tests.orator.domReaderTester.restore",
+                    funcName: "fluid.tests.orator.restoreSpies",
                     args: ["{that}.spies", "resume"]
                 }, {
                     // play while speaking
                     funcName: "fluid.set",
                     args: ["{domReader}", "model", "{that}.options.testOptions.speakingModel"]
                 }, {
-                    funcName: "fluid.tests.orator.domReaderTester.addSpy",
+                    funcName: "fluid.tests.orator.addSpy",
                     args: ["{that}.spies", "{domReader}", "readFromDOM"]
                 }, {
                     func: "{domReader}.play"
@@ -666,7 +644,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     funcName: "jqUnit.assertFalse",
                     args: ["The readFromDOM method should not be called again when currently speaking", "{that}.spies.readFromDOM.called"]
                 }, {
-                    funcName: "fluid.tests.orator.domReaderTester.restore",
+                    funcName: "fluid.tests.orator.restoreSpies",
                     args: ["{that}.spies", "readFromDOM"]
                 }]
             }]
@@ -700,17 +678,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.assertDeepEq("TTS: model should be reset correctly", expectedModel, that.model);
     };
 
-    fluid.tests.orator.domReaderTester.addSpy = function (spies, object, method) {
-        spies[method] = sinon.spy(object, method);
-    };
-
-    fluid.tests.orator.domReaderTester.restore = function (spies, names) {
-        names = fluid.makeArray(names);
-        fluid.each(names, function (name) {
-            spies[name].restore();
-        });
-    };
-
     /*******************************************************************************
      * IoC unit tests for fluid.orator
      *******************************************************************************/
@@ -721,42 +688,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             enabled: false
         },
         domReader: {
-            members: {
-                spies: {}
-            },
-            listeners: {
-                "onCreate.playSpy": {
-                    funcName: "fluid.tests.orator.domReaderTester.addSpy",
-                    args: ["{domReader}.spies", "{domReader}", "play"]
-                },
-                "onCreate.pauseSpy": {
-                    funcName: "fluid.tests.orator.domReaderTester.addSpy",
-                    args: ["{domReader}.spies", "{domReader}", "pause"]
-                },
-                "onDestroy.restore": {
-                    funcName: "fluid.tests.orator.domReaderTester.restore",
-                    args: ["{domReader}.spies", ["play", "pause"]]
-                }
-            },
-            components: {
-                tts: {
-                    type: "fluid.mock.textToSpeech",
-                    options: {
-                        invokers: {
-                            // put back the orator's own queueSpeech method, but pass in the
-                            // mock queueSpeech function as the speechFn
-                            queueSpeech: {
-                                funcName: "fluid.orator.domReader.queueSpeech",
-                                args: ["{that}", "{that}.mockQueueSpeech", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
-                            },
-                            mockQueueSpeech: {
-                                funcName: "fluid.mock.textToSpeech.queueSpeech",
-                                args: ["{arguments}.0", "{that}.speechRecord", "{arguments}.1", "{arguments}.2", "{arguments}.3"]
-                            }
-                        }
-                    }
-                }
-            }
+            gradeNames: ["fluid.tests.orator.domReaderSpies", "fluid.tests.orator.domReaderMockTTS"]
         }
     });
 
@@ -777,16 +709,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.defaults("fluid.tests.oratorTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
-        members: {
-            spies: {}
-        },
         modules: [{
             name: "fluid.orator",
             tests: [{
-                expect: 18,
+                expect: 30,
                 name: "Integration",
                 sequence: [{
-                    listener: "fluid.tests.oratorTester.verifyState",
+                    listener: "fluid.tests.orator.verifyState",
                     args: ["{orator}", "Init", false],
                     spec: {priority: "last:testing"},
                     event: "{oratorTests orator}.events.onCreate"
@@ -794,7 +723,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "{orator}.applier.change",
                     args: ["enabled", true]
                 }, {
-                    listener: "fluid.tests.oratorTester.verifyState",
+                    listener: "fluid.tests.orator.verifyState",
                     args: ["{orator}", "Play", true],
                     spec: {priority: "last:testing", path: "enabled"},
                     changeEvent: "{orator}.applier.modelChanged"
@@ -802,7 +731,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     func: "{orator}.applier.change",
                     args: ["enabled", false]
                 }, {
-                    listener: "fluid.tests.oratorTester.verifyState",
+                    listener: "fluid.tests.orator.verifyState",
+                    args: ["{orator}", "Pause", false],
+                    spec: {priority: "last:testing", path: "enabled"},
+                    changeEvent: "{orator}.applier.modelChanged"
+                }, {
+                    jQueryTrigger: "click",
+                    element: "{orator}.controller.dom.playToggle"
+                }, {
+                    listener: "fluid.tests.orator.verifyState",
+                    args: ["{orator}", "Play", true],
+                    spec: {priority: "last:testing", path: "enabled"},
+                    changeEvent: "{orator}.applier.modelChanged"
+                }, {
+                    jQueryTrigger: "click",
+                    element: "{orator}.controller.dom.playToggle"
+                }, {
+                    listener: "fluid.tests.orator.verifyState",
                     args: ["{orator}", "Pause", false],
                     spec: {priority: "last:testing", path: "enabled"},
                     changeEvent: "{orator}.applier.modelChanged"
@@ -810,27 +755,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }]
         }]
     });
-
-    fluid.tests.oratorTester.verifyState = function (that, testPrefix, state) {
-        jqUnit.assertEquals(testPrefix + ": The orator's \"enabled\" model value should be set correctly", state, that.model.enabled);
-        fluid.tests.orator.controllerTester.verifyState(that.controller, state);
-
-        if (state) {
-            jqUnit.assertTrue(testPrefix + ": The domReaders's \"play\" method should have been called", that.domReader.spies.play.called);
-            jqUnit.assertFalse(testPrefix + ": The domReaders's \"pause\" method should not have been called", that.domReader.spies.pause.called);
-        } else {
-            jqUnit.assertFalse(testPrefix + ": The domReaders's \"play\" method should not have been called", that.domReader.spies.play.called);
-            jqUnit.assertTrue(testPrefix + ": The domReaders's \"pause\" method should have been called", that.domReader.spies.pause.called);
-        }
-
-        fluid.tests.oratorTester.verifyState.resetSpies(that.domReader.spies, ["play", "pause"]);
-    };
-
-    fluid.tests.oratorTester.verifyState.resetSpies = function (spies, names) {
-        fluid.each(names, function (name) {
-            spies[name].resetHistory();
-        });
-    };
 
     $(document).ready(function () {
         fluid.test.runTests([

@@ -9,7 +9,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/* global fluid */
+/* global fluid, jqUnit */
 
 (function ($) {
     "use strict";
@@ -25,23 +25,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         model: {
             enabled: false
         },
-        components: {
-            tts: {
-                type: "fluid.mock.textToSpeech",
-                options: {
-                    invokers: {
-                        // put back the fluid.orator.domReader's own queueSpeech method, but pass in the
-                        // mock queueSpeech function as the speechFn
-                        queueSpeech: {
-                            funcName: "fluid.orator.domReader.queueSpeech",
-                            args: ["{that}", "{that}.mockQueueSpeech", "{arguments}.0", "{arguments}.1", "{arguments}.2"]
-                        },
-                        mockQueueSpeech: {
-                            funcName: "fluid.mock.textToSpeech.queueSpeech",
-                            args: ["{arguments}.0", "{that}.speechRecord", "{arguments}.1", "{arguments}.2", "{arguments}.3"]
-                        }
-                    }
-                }
+        orator: {
+            domReader: {
+                gradeNames: ["fluid.tests.orator.domReaderSpies", "fluid.tests.orator.domReaderMockTTS"]
             }
         },
         invokers: {
@@ -77,29 +63,58 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modules: [{
             name: "fluid.prefs.enactor.selfVoicing",
             tests: [{
-                expect: 4,
-                name: "Dom Reading",
+                expect: 22,
+                name: "Init",
                 sequence: [{
+                    func: "fluid.tests.selfVoicingTester.verifySubComponnetNotInitted",
+                    args: ["{selfVoicing}", "orator"]
+                }, {
                     func: "{selfVoicing}.toggle",
                     args: [true]
                 }, {
-                    listener: "jqUnit.assertDeepEq",
-                    args: ["The text to be spoken should have been queued correctly", "{that}.options.testOptions.expectedText", "{selfVoicing}.tts.speechRecord"],
+                    listener: "fluid.tests.orator.verifyState",
+                    args: ["{selfVoicing}.orator", "Init", false],
                     spec: {priority: "last:testing"},
-                    event: "{selfVoicing}.tts.events.onStop"
+                    event: "{selfVoicing orator}.events.onCreate"
                 }, {
-                    funcName: "jqUnit.assertEquals",
-                    args: ["The parseQueue should be empty.", 0, "{selfVoicing}.parseQueue.length"]
+                    func: "jqUnit.isVisible",
+                    args: ["The orator controller should be visible.", "{selfVoicing}.orator.controller.container"]
                 }, {
-                    funcName: "jqUnit.assertEquals",
-                    args: ["The parseIndex should be reset to 0.", 0, "{selfVoicing}.parseIndex"]
+                    func: "{selfVoicing}.toggle",
+                    args: [false]
                 }, {
-                    funcName: "jqUnit.assertNodeNotExists",
-                    args: ["The self voicing has completed. All marks should be removed.", "{selfVoicing}.dom.mark"]
+                    func: "jqUnit.notVisible",
+                    args: ["The orator controller should not be visible.", "{selfVoicing}.orator.controller.container"]
+                }, {
+                    func: "{selfVoicing}.toggle",
+                    args: [true]
+                }, {
+                    func: "jqUnit.isVisible",
+                    args: ["The orator controller should be visible again.", "{selfVoicing}.orator.controller.container"]
+                }, {
+                    jQueryTrigger: "click",
+                    element: "{selfVoicing}.orator.controller.dom.playToggle"
+                }, {
+                    listener: "fluid.tests.orator.verifyState",
+                    args: ["{selfVoicing}.orator", "Play", true],
+                    spec: {priority: "last:testing", path: "enabled"},
+                    changeEvent: "{selfVoicing}.orator.applier.modelChanged"
+                }, {
+                    jQueryTrigger: "click",
+                    element: "{selfVoicing}.orator.controller.dom.playToggle"
+                }, {
+                    listener: "fluid.tests.orator.verifyState",
+                    args: ["{selfVoicing}.orator", "Pause", false],
+                    spec: {priority: "last:testing", path: "enabled"},
+                    changeEvent: "{selfVoicing}.orator.applier.modelChanged"
                 }]
             }]
         }]
     });
+
+    fluid.tests.selfVoicingTester.verifySubComponnetNotInitted = function (that, subComponentName) {
+        jqUnit.assertUndefined("The \"" + subComponentName + "\" subcomponent should not have been initialized yet.", that[subComponentName]);
+    };
 
     $(document).ready(function () {
         fluid.test.runTests([

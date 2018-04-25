@@ -32,8 +32,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         components: {
             controller: {
                 type: "fluid.orator.controller",
-                container: "{that}.dom.controller",
                 options: {
+                    container: "{orator}.dom.controller",
+                    scope: "{orator}.container",
                     model: {
                         playing: "{orator}.model.enabled"
                     }
@@ -64,10 +65,12 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         distributeOptions: [{
             source: "{that}.options.controller",
             target: "{that controller}.options",
+            removeSource: true,
             namespace: "controllerOpts"
         }, {
             source: "{that}.options.domReader",
             target: "{that domReader}.options",
+            removeSource: true,
             namespace: "domReaderOpts"
         }]
     });
@@ -87,7 +90,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      **********************************************/
 
     fluid.defaults("fluid.orator.controller", {
-        gradeNames: ["fluid.viewComponent"],
+        gradeNames: ["fluid.newViewComponent"],
         selectors: {
             playToggle: ".flc-orator-controller-playToggle"
         },
@@ -98,8 +101,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             play: "play",
             pause: "pause"
         },
+        container: "",
+        scope: "",
         model: {
             playing: false
+        },
+        members: {
+            container: "@expand:fluid.orator.container({that}.options.container, {that}.options.scope, {that}.options.markup.defaultContainer)"
+        },
+        // TODO: Investigate fetching this from a template
+        markup: {
+            defaultContainer: "<span class=\"flc-orator-controller fl-orator-controller\">" +
+                "<div class=\"fl-icon-orator\"></div>" +
+                "<button class=\"flc-orator-controller-playToggle\">" +
+                    "<span class=\"fl-orator-controller-playToggle\"></span>" +
+                "</button></span>"
         },
         invokers: {
             play: {
@@ -145,6 +161,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         playToggle.attr({
             "aria-label": that.options.strings[state ? "pause" : "play"]
         });
+    };
+
+    fluid.orator.container = function (containerSpec, scope, defaultContainer) {
+        var container = fluid.container(containerSpec, true);
+
+        if (container) {
+            return container;
+        }
+        var newContainer = $(defaultContainer);
+
+        // Unwrap to ensure that any jQuery element passed in actually has an element
+        // and if it does, we only want to use the first one.
+        scope = fluid.unwrap(scope) || "body";
+        $(scope).prepend(newContainer);
+        return fluid.container(newContainer);
     };
 
 

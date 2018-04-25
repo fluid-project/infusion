@@ -7,6 +7,11 @@
 .fl-orator-controller {
     display: inline-flex;
     align-items: center;
+    box-sizing: border-box;
+}
+
+.fl-orator-controller * {
+    box-sizing: inherit;
 }
 
 .fl-orator-controller > * {
@@ -41,9 +46,9 @@
 }
 
 .fl-orator-controller-playToggle:before {
+    content: "\25B6";
     color: #FFFFFF;
     font-size: 2.25rem;
-    content: "\25B6";
     text-shadow: 0.1rem 0.2rem 0.2rem #4E4E4E;
 }
 

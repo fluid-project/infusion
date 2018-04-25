@@ -39,6 +39,7 @@
         <script type="text/javascript" src="../../src/framework/core/js/ModelTransformation.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/ModelTransformationTransforms.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/FluidView.js"></script>
+        <script type="text/javascript" src="../../src/framework/core/js/NewViewSupport.js"></script>
         <script type="text/javascript" src="../../src/framework/core/js/ResourceLoader.js"></script>
         <script type="text/javascript" src="../../src/lib/fastXmlPull/js/fastXmlPull.js"></script>
         <script type="text/javascript" src="../../src/framework/renderer/js/fluidParser.js"></script>
@@ -400,9 +401,15 @@
                     <a href="#">Home</a> &gt;&gt; <a href="#">Climate</a> &gt;&gt; Climate Change Impacts
                 </nav>
 
-                <div id="contentArea" class="home">
-
-                    <article>
+                <div id="contentArea" class="flc-prefs-selfVoicingWidget home">
+                    <!-- TODO: Remove commented out markup. Leaving here as an example of what the injected markup will be. -->
+                    <!-- <span class="flc-orator-controller fl-orator-controller">
+                        <div class="fl-icon-orator"></div>
+                        <button class="flc-orator-controller-playToggle">
+                            <span class="fl-orator-controller-playToggle"></span>
+                        </button>
+                    </span> -->
+                    <article class="flc-orator-content">
                         <h1 class="ocean">Climate Change Impacts</h1>
 
                         <img class="icon" style="padding-right: 5px; float: right;" src="images/theme_climate_90.gif" alt="Oceans and Coasts" height="90" width="90">
