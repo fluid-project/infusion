@@ -27,7 +27,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         orator: {
             domReader: {
-                gradeNames: ["fluid.tests.orator.domReaderSpies", "fluid.tests.orator.domReaderMockTTS"]
+                gradeNames: ["fluid.tests.orator.domReaderStubs", "fluid.tests.orator.domReaderMockTTS"]
             }
         },
         invokers: {

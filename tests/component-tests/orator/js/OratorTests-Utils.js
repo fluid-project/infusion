@@ -17,7 +17,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.registerNamespace("fluid.tests.orator");
 
     /*******************************************************************************
-     * Sinon Spy Utils
+     * DOM Reader MockTTS Grade
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.orator.domReaderMockTTS", {
@@ -43,52 +43,54 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     /*******************************************************************************
-     * Sinon Spy Utils
+     * Sinon Stub Utils
      *******************************************************************************/
 
-    fluid.defaults("fluid.tests.orator.spies", {
+    fluid.defaults("fluid.tests.orator.stubs", {
         members: {
-            spies: {}
+            stubs: {}
         }
     });
 
-    fluid.defaults("fluid.tests.orator.domReaderSpies", {
-        gradeNames: ["fluid.tests.orator.spies"],
+    fluid.defaults("fluid.tests.orator.domReaderStubs", {
+        gradeNames: ["fluid.tests.orator.stubs"],
         methods: ["play", "pause"],
         listeners: {
             "onCreate.addSpies": {
-                funcName: "fluid.tests.orator.addSpies",
-                args: ["{that}.spies", "{that}", "{that}.options.methods"]
+                funcName: "fluid.tests.orator.addStubs",
+                priority: "first",
+                args: ["{that}.stubs", "{that}", "{that}.options.methods"]
             },
             "onDestroy.restore": {
-                funcName: "fluid.tests.orator.restoreSpies",
-                args: ["{that}.spies", "{that}.options.methods"]
+                funcName: "fluid.tests.orator.restoreStubs",
+                priority: "last",
+                args: ["{that}.stubs", "{that}.options.methods"]
             }
         }
     });
 
-    fluid.tests.orator.addSpy = function (spies, object, method) {
-        spies[method] = sinon.spy(object, method);
+    fluid.tests.orator.addStub = function (stubs, object, method) {
+        stubs[method] = sinon.stub(object, method);
     };
 
-    fluid.tests.orator.addSpies = function (spies, object, methods) {
+    fluid.tests.orator.addStubs = function (stubs, object, methods) {
         methods = fluid.makeArray(methods);
         fluid.each(methods, function (method) {
-            fluid.tests.orator.addSpy(spies, object, method);
+            fluid.tests.orator.addStub(stubs, object, method);
         });
     };
 
-    fluid.tests.orator.restoreSpies = function (spies, methods) {
+    fluid.tests.orator.restoreStubs = function (stubs, methods) {
         methods = fluid.makeArray(methods);
         fluid.each(methods, function (method) {
-            spies[method].restore();
+            stubs[method].restore();
         });
     };
 
-    fluid.tests.orator.resetSpies = function (spies, methods) {
+    fluid.tests.orator.resetStubs = function (stubs, methods) {
         methods = fluid.makeArray(methods);
         fluid.each(methods, function (method) {
-            spies[method].resetHistory();
+            stubs[method].resetHistory();
         });
     };
 
@@ -110,13 +112,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.orator.verifyControllerState(orator.controller, state);
 
         if (state) {
-            jqUnit.assertTrue(testPrefix + ": The domReaders's \"play\" method should have been called", orator.domReader.spies.play.called);
-            jqUnit.assertFalse(testPrefix + ": The domReaders's \"pause\" method should not have been called", orator.domReader.spies.pause.called);
+            jqUnit.assertTrue(testPrefix + ": The domReaders's \"play\" method should have been called", orator.domReader.stubs.play.called);
+            jqUnit.assertFalse(testPrefix + ": The domReaders's \"pause\" method should not have been called", orator.domReader.stubs.pause.called);
         } else {
-            jqUnit.assertFalse(testPrefix + ": The domReaders's \"play\" method should not have been called", orator.domReader.spies.play.called);
-            jqUnit.assertTrue(testPrefix + ": The domReaders's \"pause\" method should have been called", orator.domReader.spies.pause.called);
+            jqUnit.assertFalse(testPrefix + ": The domReaders's \"play\" method should not have been called", orator.domReader.stubs.play.called);
+            jqUnit.assertTrue(testPrefix + ": The domReaders's \"pause\" method should have been called", orator.domReader.stubs.pause.called);
         }
 
-        fluid.tests.orator.resetSpies(orator.domReader.spies, ["play", "pause"]);
+        fluid.tests.orator.resetStubs(orator.domReader.stubs, ["play", "pause"]);
     };
 })(jQuery);
