@@ -16,6 +16,37 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.registerNamespace("fluid.tests");
 
+
+    /*******************************************************************************
+     * Unit tests for fluid.orator.controller functions
+     *******************************************************************************/
+
+    // fluid.orator.domReader.queueSpeech tests
+    jqUnit.test("Test fluid.orator.controller.container", function () {
+        var existingContainer = fluid.orator.controller.container(".flc-orator-controller-container-test");
+        fluid.orator.controller.container(".flc-orator-controller-injected",
+            "<div class=\"flc-orator-controller-container-injectedScope\"></div>",
+            ".flc-orator-controller-container-test"
+        );
+        fluid.orator.controller.container(".flc-orator-controller-injected", "<div class=\"flc-orator-controller-container-defaultScope\"></div>");
+        fluid.orator.controller.container(".flc-orator-controller-injected",
+            "<div class=\"flc-orator-controller-container-missingScope\"></div>",
+            ".flc-orator-controller-container-noScope"
+        );
+
+
+        jqUnit.expect(4);
+        jqUnit.assertDomEquals("The existing container should be returned", $(".flc-orator-controller-container-test"), existingContainer);
+        jqUnit.assertNodeExists("The container should have been injected into the specified scope",
+            $(".flc-orator-controller-container-injectedScope", ".flc-orator-controller-container-test")
+        );
+        jqUnit.assertNodeExists("The container should have been injected into default scope", $(".flc-orator-controller-container-defaultScope", "body"));
+        jqUnit.assertNodeExists("The container should have been injected into default scope when scope element isn't found",
+            $(".flc-orator-controller-container-missingScope", "body")
+        );
+    });
+
+
     /*******************************************************************************
      * IoC unit tests for fluid.orator.controller
      *******************************************************************************/

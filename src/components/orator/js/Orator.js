@@ -108,7 +108,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             playing: false
         },
         members: {
-            container: "@expand:fluid.orator.container({that}.options.container, {that}.options.scope, {that}.options.markup.defaultContainer)"
+            container: "@expand:fluid.orator.controller.container({that}.options.container, {that}.options.markup.defaultContainer, {that}.options.scope)"
         },
         // TODO: Investigate fetching this from a template
         markup: {
@@ -166,7 +166,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         });
     };
 
-    fluid.orator.container = function (containerSpec, scope, defaultContainer) {
+    fluid.orator.controller.container = function (containerSpec, defaultContainer, scope) {
         var container = fluid.container(containerSpec, true);
 
         if (container) {
@@ -176,7 +176,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
 
         // Unwrap to ensure that any jQuery element passed in actually has an element
         // and if it does, we only want to use the first one.
-        scope = fluid.unwrap(scope) || "body";
+        scope = $(scope)[0] || "body";
         $(scope).prepend(newContainer);
         return fluid.container(newContainer);
     };
