@@ -108,7 +108,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.orator.verifyState = function (orator, testPrefix, state) {
-        jqUnit.assertEquals(testPrefix + ": The orator's \"enabled\" model value should be set correctly", state, orator.model.enabled);
+        jqUnit.assertEquals(testPrefix + ": The orator's \"play\" model value should be set correctly", state, orator.model.play);
         fluid.tests.orator.verifyControllerState(orator.controller, state);
 
         if (state) {

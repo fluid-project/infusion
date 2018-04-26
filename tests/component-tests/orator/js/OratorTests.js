@@ -716,7 +716,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.defaults("fluid.tests.orator", {
         gradeNames: ["fluid.orator"],
         model: {
-            enabled: false
+            play: false
         },
         domReader: {
             gradeNames: ["fluid.tests.orator.domReaderStubs", "fluid.tests.orator.domReaderMockTTS"]
@@ -752,19 +752,19 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     event: "{oratorTests orator}.events.onCreate"
                 }, {
                     func: "{orator}.applier.change",
-                    args: ["enabled", true, "ADD", "IntegrationTest"]
+                    args: ["play", true, "ADD", "IntegrationTest"]
                 }, {
                     listener: "fluid.tests.orator.verifyState",
                     args: ["{orator}", "Play", true],
-                    spec: {priority: "last:testing", path: "enabled"},
+                    spec: {priority: "last:testing", path: "play"},
                     changeEvent: "{orator}.applier.modelChanged"
                 }, {
                     func: "{orator}.applier.change",
-                    args: ["enabled", false, "ADD", "IntegrationTest"]
+                    args: ["play", false, "ADD", "IntegrationTest"]
                 }, {
                     listener: "fluid.tests.orator.verifyState",
                     args: ["{orator}", "Pause", false],
-                    spec: {priority: "last:testing", path: "enabled"},
+                    spec: {priority: "last:testing", path: "play"},
                     changeEvent: "{orator}.applier.modelChanged"
                 }, {
                     jQueryTrigger: "click",
@@ -772,7 +772,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     listener: "fluid.tests.orator.verifyState",
                     args: ["{orator}", "Play", true],
-                    spec: {priority: "last:testing", path: "enabled"},
+                    spec: {priority: "last:testing", path: "play"},
                     changeEvent: "{orator}.applier.modelChanged"
                 }, {
                     jQueryTrigger: "click",
@@ -780,7 +780,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     listener: "fluid.tests.orator.verifyState",
                     args: ["{orator}", "Pause", false],
-                    spec: {priority: "last:testing", path: "enabled"},
+                    spec: {priority: "last:testing", path: "play"},
                     changeEvent: "{orator}.applier.modelChanged"
                 }]
             }]

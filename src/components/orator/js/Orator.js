@@ -27,7 +27,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             content: ".flc-orator-content"
         },
         model: {
-            enabled: false
+            play: false
         },
         components: {
             controller: {
@@ -36,7 +36,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     container: "{orator}.dom.controller",
                     scope: "{orator}.container",
                     model: {
-                        playing: "{orator}.model.enabled"
+                        playing: "{orator}.model.play"
                     }
                 }
             },
@@ -46,7 +46,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 options: {
                     listeners: {
                         "{tts}.events.utteranceOnEnd": [{
-                            changePath: "{orator}.model.enabled",
+                            changePath: "{orator}.model.play",
                             value: false,
                             source: "domReader.tts.utteranceOnEnd",
                             priority: "after:removeHighlight",
@@ -54,7 +54,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         }]
                     },
                     modelListeners: {
-                        "{orator}.model.enabled": {
+                        "{orator}.model.play": {
                             funcName: "fluid.orator.handlePlayToggle",
                             args: ["{that}", "{change}.value"],
                             namespace: "domReader.handlePlayToggle"

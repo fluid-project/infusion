@@ -255,7 +255,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // If there's a control request (value change to true), clear and
         // execute it
         if (change.value) {
-            that.applier.change(change.path, false, "requestControl");
+            that.applier.change(change.path, false, "ADD", "requestControl");
             fluid.textToSpeech.throttleControl(control);
         }
     };

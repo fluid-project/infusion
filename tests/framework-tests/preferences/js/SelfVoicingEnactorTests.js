@@ -97,7 +97,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     listener: "fluid.tests.orator.verifyState",
                     args: ["{selfVoicing}.orator", "Play", true],
-                    spec: {priority: "last:testing", path: "enabled"},
+                    spec: {priority: "last:testing", path: "play"},
                     changeEvent: "{selfVoicing}.orator.applier.modelChanged"
                 }, {
                     jQueryTrigger: "click",
@@ -105,7 +105,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 }, {
                     listener: "fluid.tests.orator.verifyState",
                     args: ["{selfVoicing}.orator", "Pause", false],
-                    spec: {priority: "last:testing", path: "enabled"},
+                    spec: {priority: "last:testing", path: "play"},
                     changeEvent: "{selfVoicing}.orator.applier.modelChanged"
                 }]
             }]
