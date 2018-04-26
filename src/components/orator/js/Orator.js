@@ -48,6 +48,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         "{tts}.events.utteranceOnEnd": [{
                             changePath: "{orator}.model.enabled",
                             value: false,
+                            source: "domReader.tts.utteranceOnEnd",
                             priority: "after:removeHighlight",
                             namespace: "domReader.stop"
                         }]
@@ -120,11 +121,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         invokers: {
             play: {
                 changePath: "playing",
-                value: true
+                value: true,
+                source: "play"
             },
             pause: {
                 changePath: "playing",
-                value: false
+                value: false,
+                source: "pause"
             },
             toggle: {
                 funcName: "fluid.orator.controller.toggleState",
@@ -152,7 +155,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     fluid.orator.controller.toggleState = function (that, path, state) {
         var newState = fluid.isValue(state) ? state : !fluid.get(that.model, path);
         // the !! ensures that the newState is a boolean value.
-        that.applier.change(path, !!newState);
+        that.applier.change(path, !!newState, "ADD", "toggleState");
     };
 
     fluid.orator.controller.setToggleView = function (that, state) {

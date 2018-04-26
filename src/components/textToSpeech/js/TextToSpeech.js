@@ -128,11 +128,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             },
             pause: {
                 changePath: "pauseRequested",
-                value: true
+                value: true,
+                source: "pause"
             },
             resume: {
                 changePath: "resumeRequested",
-                value: true
+                value: true,
+                source: "resume"
             },
             getVoices: {
                 "this": "speechSynthesis",
@@ -142,7 +144,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         listeners: {
             "utteranceOnStart.speak": {
                 changePath: "speaking",
-                value: true
+                value: true,
+                source: "utteranceOnStart"
             },
             "utteranceOnEnd.stop": {
                 funcName: "fluid.textToSpeech.handleEnd",
@@ -151,11 +154,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             "utteranceOnError.forward": "{that}.events.onError",
             "utteranceOnPause.pause": {
                 changePath: "paused",
-                value: true
+                value: true,
+                source: "utteranceOnPause"
             },
             "utteranceOnResume.resume": {
                 changePath: "paused",
-                value: false
+                value: false,
+                source: "utteranceOnResume"
             },
             "onCreate.unloadCleanup": {
                 funcName: "fluid.textToSpeech.cleanupOnUnload",
@@ -250,7 +255,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         // If there's a control request (value change to true), clear and
         // execute it
         if (change.value) {
-            that.applier.change(change.path, false);
+            that.applier.change(change.path, false, "requestControl");
             fluid.textToSpeech.throttleControl(control);
         }
     };
@@ -266,10 +271,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         };
 
         if (that.queue.length) {
-            that.applier.change("pending", true);
+            that.applier.change("pending", true, "ADD", "handleEnd.pending");
         } else if (!that.queue.length) {
             var newModel = $.extend({}, that.model, resetValues);
-            that.applier.change("", newModel);
+            that.applier.change("", newModel, "ADD", "handleEnd.reset");
         }
     };
 
