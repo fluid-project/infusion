@@ -50,6 +50,8 @@
     color: #FFFFFF;
     font-size: 2.25rem;
     text-shadow: 0.1rem 0.2rem 0.2rem #4E4E4E;
+    /* set normal line-height so that the prefs editor settings won't affect alignment */
+    line-height: normal;
 }
 
 .fl-orator-controller-playToggle:hover:before {
@@ -88,7 +90,13 @@
 }
 
 .fl-icon-orator:before {
-    text-shadow: 0.1rem 0.2rem 0.2rem #808080;
+    /* the following is to style the icon to appear inset */
+    background-color: #565656;
+    color: transparent;
+    text-shadow: 0px 2px 0.5px rgba(255,255,255,0.5);
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    background-clip: text;
 }
 
 .fl-orator-controller .fl-icon-orator {

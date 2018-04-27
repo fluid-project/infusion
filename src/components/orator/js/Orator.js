@@ -112,11 +112,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         // TODO: Investigate fetching this from a template
         markup: {
-            defaultContainer: "<span class=\"flc-orator-controller fl-orator-controller\">" +
-                "<div class=\"fl-icon-orator\"></div>" +
+            defaultContainer: "<div class=\"flc-orator-controller fl-orator-controller\">" +
+                "<div class=\"fl-icon-orator\" aria-hidden=\"true\"></div>" +
                 "<button class=\"flc-orator-controller-playToggle\">" +
-                    "<span class=\"fl-orator-controller-playToggle\"></span>" +
-                "</button></span>"
+                    "<span class=\"fl-orator-controller-playToggle\" aria-hidden=\"true\"></span>" +
+                "</button></div>"
         },
         invokers: {
             play: {
