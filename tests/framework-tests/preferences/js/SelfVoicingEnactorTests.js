@@ -33,7 +33,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         invokers: {
             toggle: {
                 changePath: "enabled",
-                value: "{arguments}.0"
+                value: "{arguments}.0",
+                source: "testToggle"
             }
         }
     });
