@@ -6,13 +6,13 @@
 /* controller */
 .fl-orator-controller {
     display: inline-flex;
-    align-items: center;
     box-sizing: border-box;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
     /* set normal letter-spacing and line-height so that the prefs editor settings won't affect alignment */
     letter-spacing: normal;
     line-height: normal;
+    font-size: 2.25rem;
 }
 
 .fl-orator-controller * {
@@ -21,8 +21,7 @@
 
 .fl-orator-controller > * {
     background-color: #666666;
-    height: 3rem;
-    width: 3rem;
+    min-width: 3.6rem;
 }
 
 .fl-orator-controller > *:not(:first-child) {
@@ -53,7 +52,6 @@
 
 .fl-orator-controller-playToggle {
     color: #FFFFFF;
-    font-size: 2.25rem;
     text-shadow: 0.1rem 0.2rem 0.2rem #4E4E4E;
 }
 
@@ -80,7 +78,6 @@
     font-variant: normal;
     text-transform: none;
     -webkit-font-smoothing: antialiased;
-    font-size: 2.25rem;
 }
 
 /* control icons */
@@ -104,6 +101,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
 }
 
 .fl-icon-orator-playToggle:before {
