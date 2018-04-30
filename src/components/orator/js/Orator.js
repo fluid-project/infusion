@@ -115,7 +115,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             defaultContainer: "<div class=\"flc-orator-controller fl-orator-controller\">" +
                 "<div class=\"fl-icon-orator\" aria-hidden=\"true\"></div>" +
                 "<button class=\"flc-orator-controller-playToggle\">" +
-                    "<span class=\"fl-orator-controller-playToggle\" aria-hidden=\"true\"></span>" +
+                    "<span class=\"fl-orator-controller-playToggle fl-icon-orator-playToggle\" aria-hidden=\"true\"></span>" +
                 "</button></div>"
         },
         invokers: {
