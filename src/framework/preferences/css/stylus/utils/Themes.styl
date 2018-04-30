@@ -218,6 +218,22 @@ build-themes-Enactors(contrastThemes) {
                 outline-color: fColor;
             }
 
+            .fl-orator-controller-playToggle {
+                text-shadow: unset;
+            }
+
+            .fl-icon-orator:before {
+                background-color: bColor;
+                color: fColor;
+                text-shadow: unset;
+            }
+
+            .fl-orator-controller > *:not(:first-child):hover,
+            .fl-orator-controller :hover .fl-orator-controller-playToggle:before {
+                background-color: fColor !important;
+                color: bColor !important;
+            }
+
             // Inverted color
             // General Styling
             &.fl-inverted-color, &.fl-inverted-color *, .fl-preview-theme&.fl-inverted-color {
@@ -229,8 +245,18 @@ build-themes-Enactors(contrastThemes) {
                 border-left-color: bColor !important;
             }
 
+            .fl-focus:focus, .fl-focus :focus, &.fl-focus :focus, .selectable
+
+
             // Focus
-            &.fl-inverted-color.fl-focus :focus {
+            &.fl-inverted-color.fl-focus :focus,
+            &.fl-inverted-color.fl-focus:focus,
+            .fl-inverted-color.fl-focus :focus,
+            .fl-inverted-color.fl-focus:focus,
+            &.fl-focus .fl-inverted-color :focus,
+            &.fl-focus .fl-inverted-color:focus,
+            .fl-focus .fl-inverted-color :focus,
+            .fl-focus .fl-inverted-color:focus {
                 outline-width: 0.2em;
                 outline-style: solid;
                 outline-color: bColor;
@@ -338,6 +364,17 @@ build-themes-Enactors(contrastThemes) {
                     color: fColor !important;
                     background-color: bColor !important;
                     outline-color: bColor;
+                }
+
+                .fl-icon-orator:before {
+                    background-color: fColor;
+                    color: bColor;
+                }
+
+                .fl-orator-controller > *:not(:first-child):hover,
+                .fl-orator-controller :hover .fl-orator-controller-playToggle:before {
+                    background-color: bColor !important;
+                    color: fColor !important;
                 }
             }
         }

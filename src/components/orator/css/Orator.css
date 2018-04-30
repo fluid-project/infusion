@@ -36,7 +36,8 @@
     border-bottom-left-radius: 0.3rem;
 }
 
-.fl-orator-controller > *:not(:first-child):hover {
+.fl-orator-controller > *:not(:first-child):hover,
+.fl-orator-controller-playToggle:hover:before {
     background-color: #4E4E4E;
 }
 
@@ -59,10 +60,6 @@
 
 .flc-orator-controller .fl-orator-controller-playToggle {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-}
-
-.fl-orator-controller-playToggle:hover:before {
-    background-color: #4E4E4E;
 }
 
 /* highlight */
