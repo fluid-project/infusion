@@ -10,6 +10,9 @@
     box-sizing: border-box;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
+    /* set normal letter-spacing and line-height so that the prefs editor settings won't affect alignment */
+    letter-spacing: normal;
+    line-height: normal;
 }
 
 .fl-orator-controller * {
@@ -51,8 +54,6 @@
     color: #FFFFFF;
     font-size: 2.25rem;
     text-shadow: 0.1rem 0.2rem 0.2rem #4E4E4E;
-    /* set normal line-height so that the prefs editor settings won't affect alignment */
-    line-height: normal;
 }
 
 
