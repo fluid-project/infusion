@@ -76,7 +76,14 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             onStart: null,
             onStop: null,
             onError: null,
-            onSpeechQueued: null
+            onSpeechQueued: null,
+            utteranceOnBoundary: null,
+            utteranceOnEnd: null,
+            utteranceOnError: null,
+            utteranceOnMark: null,
+            utteranceOnPause: null,
+            utteranceOnResume: null,
+            utteranceOnStart: null
         },
         members: {
             queue: []
@@ -130,23 +137,23 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             getVoices: {
                 "this": "speechSynthesis",
                 "method": "getVoices"
-            },
-            handleStart: {
+            }
+        },
+        listeners: {
+            "utteranceOnStart.speak": {
                 changePath: "speaking",
                 value: true
             },
-            // The handleEnd method is assumed to be triggered asynchronously
-            // as it is processed/triggered by the mechanism voicing the utterance.
-            handleEnd: {
+            "utteranceOnEnd.stop": {
                 funcName: "fluid.textToSpeech.handleEnd",
                 args: ["{that}"]
             },
-            handleError: "{that}.events.onError.fire",
-            handlePause: {
+            "utteranceOnError.forward": "{that}.events.onError",
+            "utteranceOnPause.pause": {
                 changePath: "paused",
                 value: true
             },
-            handleResume: {
+            "utteranceOnResume.resume": {
                 changePath: "paused",
                 value: false
             }
@@ -254,19 +261,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             that.cancel();
         }
 
-        var errorFn = function () {
-            that.handleError(text);
-        };
-
         var toSpeak = new SpeechSynthesisUtterance(text);
 
 
         var eventBinding = {
-            onstart: that.handleStart,
-            onend: that.handleEnd,
-            onerror: errorFn,
-            onpause: that.handlePause,
-            onresume: that.handleResume
+            onboundary: that.events.utteranceOnBoundary.fire,
+            onend: that.events.utteranceOnEnd.fire,
+            onerror: that.events.utteranceOnError.fire,
+            onmark:that.events.utteranceOnMark.fire,
+            onpause: that.events.utteranceOnPause.fire,
+            onresume: that.events.utteranceOnResume.fire,
+            onstart: that.events.utteranceOnStart.fire
         };
         $.extend(toSpeak, that.model.utteranceOpts, options, eventBinding);
 
