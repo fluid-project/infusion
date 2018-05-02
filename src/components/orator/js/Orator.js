@@ -40,6 +40,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                     }
                 }
             },
+            selectionReader: {
+                type: "fluid.orator.selectionReader",
+                container: "{that}.container"
+            },
             domReader: {
                 type: "fluid.orator.domReader",
                 container: "{that}.dom.content",
@@ -561,6 +565,83 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 that.range.setEnd(rangeNode, data.endOffset);
                 that.range.surroundContents($(that.options.markup.highlight)[0]);
             }
+        }
+    };
+
+
+
+    /*******************************************************************************
+     * fluid.orator.selectionReader
+     *
+     * Reads in text from a selection and voices it
+     *******************************************************************************/
+
+    fluid.defaults("fluid.orator.selectionReader", {
+        gradeNames: ["fluid.viewComponent"],
+        selectors: {
+            play: ".flc-orator-selectionReader-play"
+        },
+        markup: {
+            playButton: "<button class=\"flc-orator-selectionReader-play fl-orator-selectionReader-play\"><span class=\"fl-icon-orator\"></span><span>Play</span></button>"
+        },
+        model: {
+            showUI: false,
+            play: false
+        },
+        events: {
+            onSelectionChanged: null
+        },
+        listeners: {
+            "onCreate.bindEvents": {
+                funcName: "fluid.orator.selectionReader.bindSelectionEvents",
+                args: ["{that}"]
+            },
+            "onSelectionChanged": {
+                func: function (that, event) {
+                    var text = that.getSelectedText();
+                    that.applier.change("showUI", !!text, "ADD", "onSelectionChanged");
+                    console.log("event:", event);
+                    console.log("Selection:", that.getSelectedText());
+                },
+                args: ["{that}", "{arguments}.0"]
+            }
+        },
+        modelListeners: {
+            "showUI": {
+                funcName: "fluid.orator.selectionReader.renderPlayButton",
+                args: ["{that}", "{change}.value"],
+                namespace: "render"
+            }
+        },
+        invokers: {
+            getSelectedText: "fluid.orator.selectionReader.getSelectedText"
+        }
+    });
+
+    fluid.orator.selectionReader.bindSelectionEvents = function (that) {
+        $(document).on("selectionchange", that.events.onSelectionChanged.fire);
+    };
+
+    fluid.orator.selectionReader.getSelectedText = function () {
+        return window.getSelection().toString();
+    };
+
+    fluid.orator.selectionReader.renderPlayButton = function (that, state) {
+        if (state) {
+            var selectionRange = window.getSelection().getRangeAt(0);
+            var rect = selectionRange.getClientRects()[0];
+
+            var playButton = $(that.options.markup.playButton);
+            playButton.css({
+                top:  "calc(" + rect.top + "px - 2.5rem)",
+                left: rect.left
+            });
+            playButton.appendTo(that.container);
+
+            selectionRange.detach();
+
+        } else {
+            that.locate("play").remove();
         }
     };
 
