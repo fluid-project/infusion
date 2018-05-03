@@ -242,7 +242,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.tests.testGetLineHeight = function () {
-        var container = $(".flc-lineSpace");
+        var container = $(".flc-lineSpace-getTests");
         var lineHeight = fluid.prefs.enactor.lineSpace.getLineHeight(container);
 
         // In IE8 and IE9 the lineHeight is returned as a mutliplier
@@ -255,7 +255,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     var testGetLineHeightMultiplier = function (lineHeight, expected) {
-        var container = $(".flc-lineSpace");
+        var container = $(".flc-lineSpace-getTests");
         var fontSize = fluid.prefs.enactor.getTextSizeInPx(container, fluid.tests.enactors.utils.fontSizeMap);
 
         var numerizedLineHeight = fluid.prefs.enactor.lineSpace.getLineHeightMultiplier(lineHeight, Math.round(fontSize));
@@ -296,18 +296,46 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Unit tests for fluid.prefs.enactor.lineSpace
      *******************************************************************************/
 
+    fluid.defaults("fluid.tests.prefs.enactor.lineSpace", {
+        gradeNames: ["fluid.prefs.enactor.lineSpace"],
+        fontSizeMap: fluid.tests.enactors.utils.fontSizeMap,
+        model: {
+            value: 1
+        }
+    });
+
     fluid.defaults("fluid.tests.lineSpaceTests", {
         gradeNames: ["fluid.test.testEnvironment"],
         components: {
             lineSpace: {
-                type: "fluid.prefs.enactor.lineSpace",
+                type: "fluid.tests.prefs.enactor.lineSpace",
                 container: ".flc-lineSpace",
+                // Forcing getLineHeight to return "normal" and getLineHeightMultiplier to return 28.8px
+                // because of the various ways that browsers treat the default/"normal" line-height style.
                 options: {
-                    fontSizeMap: fluid.tests.enactors.utils.fontSizeMap,
-                    model: {
-                        value: 1
+                    invokers: {
+                        getLineHeight: {
+                            funcName: "fluid.identity",
+                            args: ["normal"]
+                        },
+                        getLineHeightMultiplier: {
+                            funcName: "fluid.identity",
+                            args: [1.2]
+                        }
                     }
                 }
+            },
+            lineSpaceLength: {
+                type: "fluid.tests.prefs.enactor.lineSpace",
+                container: ".flc-lineSpace-length"
+            },
+            lineSpaceNumber: {
+                type: "fluid.tests.prefs.enactor.lineSpace",
+                container: ".flc-lineSpace-number"
+            },
+            lineSpacePercentage: {
+                type: "fluid.tests.prefs.enactor.lineSpace",
+                container: ".flc-lineSpace-percentage"
             },
             lineSpaceTester: {
                 type: "fluid.tests.lineSpaceTester"
@@ -315,33 +343,84 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    // This is necessary to work around IE differences in handling line-height unitless factors
-    var convertLineHeightFactor = function (lineHeight, fontSize) {
-        // Continuing the work-around of jQuery + IE bug - http://bugs.jquery.com/ticket/2671
-        if (lineHeight.match(/[0-9]$/)) {
-            return Math.round(lineHeight * parseFloat(fontSize)) + "px";
-        } else {
-            return lineHeight;
-        }
+    fluid.tests.verifyInitValues = function (that, initialSize, multiplier) {
+
+        jqUnit.assertEquals("The initial size is retrieved correctly", initialSize, that.initialSize);
+        jqUnit.assertEquals("The line height multiplier is calculated correctly", multiplier, that.lineHeightMultiplier);
     };
 
-    fluid.tests.testLineSpace = function (that) {
-        jqUnit.assertEquals("Check that the size is pulled from the container correctly", 2, Math.round(that.initialSize));
-        jqUnit.assertEquals("Check the line spacing size in pixels", "12px", convertLineHeightFactor(that.container.css("lineHeight"), that.container.css("fontSize")));
-        that.applier.change("value", 2);
-        jqUnit.assertEquals("The size should be doubled", "24px", convertLineHeightFactor(that.container.css("lineHeight"), that.container.css("fontSize")));
+    fluid.tests.verifyLineSpaceSet = function (that, value, lineHeight) {
+        jqUnit.assertEquals("The new model value should be set correctly.", value, that.model.value);
+        jqUnit.assertEquals("The new line height should be set correctly.", lineHeight, that.container.css("line-height"));
     };
 
     fluid.defaults("fluid.tests.lineSpaceTester", {
         gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
-            name: "Test line space enactor",
+            name: "Line Space - normal line-height",
             tests: [{
-                expect: 3,
-                name: "Apply line space in times",
-                type: "test",
-                func: "fluid.tests.testLineSpace",
-                args: ["{lineSpace}"]
+                expect: 2,
+                name: "Set Line-height",
+                // Not running the model changed tests due to the variances across browsers in what the
+                // default line-height is.
+                sequence: [{
+                    func: "fluid.tests.verifyInitValues",
+                    args: ["{lineSpace}", "normal", 1.2]
+                }]
+            }]
+        }, {
+            name: "Line Space - line-height in length",
+            tests: [{
+                expect: 4,
+                name: "Set Line-height",
+                sequence: [{
+                    func: "fluid.tests.verifyInitValues",
+                    args: ["{lineSpaceLength}", "12px", 0.5]
+                }, {
+                    func: "{lineSpaceLength}.applier.change",
+                    args: ["value", 2]
+                }, {
+                    listener: "fluid.tests.verifyLineSpaceSet",
+                    args: ["{lineSpaceLength}", 2, "24px"],
+                    spec: {path: "value", priority: "last:testing"},
+                    changeEvent: "{lineSpaceLength}.applier.modelChanged"
+                }]
+            }]
+        }, {
+            name: "Line Space - line-height in unitless number",
+            tests: [{
+                expect: 4,
+                name: "Set Line-height",
+                sequence: [{
+                    func: "fluid.tests.verifyInitValues",
+                    args: ["{lineSpaceNumber}", "36px", 1.5]
+                }, {
+                    func: "{lineSpaceNumber}.applier.change",
+                    args: ["value", 2]
+                }, {
+                    listener: "fluid.tests.verifyLineSpaceSet",
+                    args: ["{lineSpaceNumber}", 2, "72px"],
+                    spec: {path: "value", priority: "last:testing"},
+                    changeEvent: "{lineSpaceNumber}.applier.modelChanged"
+                }]
+            }]
+        }, {
+            name: "Line Space - line-height in percentage",
+            tests: [{
+                expect: 4,
+                name: "Set Line-height",
+                sequence: [{
+                    func: "fluid.tests.verifyInitValues",
+                    args: ["{lineSpacePercentage}", "12px", 0.5]
+                }, {
+                    func: "{lineSpacePercentage}.applier.change",
+                    args: ["value", 2]
+                }, {
+                    listener: "fluid.tests.verifyLineSpaceSet",
+                    args: ["{lineSpacePercentage}", 2, "24px"],
+                    spec: {path: "value", priority: "last:testing"},
+                    changeEvent: "{lineSpacePercentage}.applier.modelChanged"
+                }]
             }]
         }]
     });
