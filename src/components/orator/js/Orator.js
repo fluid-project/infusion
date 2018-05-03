@@ -591,6 +591,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             showUI: false,
             play: false
         },
+        edgeOffsetScale: 3, // similar to em values as it will be multiplied by the container's font-size
         events: {
             onSelectionChanged: null
         },
@@ -600,11 +601,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 args: ["{that}"]
             },
             "onSelectionChanged": {
-                func: function (that, event) {
+                // TODO: Refactor into named function
+                func: function (that) {
                     var text = that.getSelectedText();
                     that.applier.change("showUI", !!text, "ADD", "onSelectionChanged");
-                    console.log("event:", event);
-                    console.log("Selection:", that.getSelectedText());
                 },
                 args: ["{that}", "{arguments}.0"]
             }
@@ -633,12 +633,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         if (state) {
             var selectionRange = window.getSelection().getRangeAt(0);
             var rect = selectionRange.getClientRects()[0];
+            var fontSize = parseFloat(that.container.css("font-size"));
+            var offset = fontSize * that.options.edgeOffsetScale;
 
             var playMarkup = fluid.stringTemplate(that.options.markup.playButton, that.options.strings);
             var playButton = $(playMarkup);
+            // TODO: Move the positioning info to a separate function
+            //       Also handle case where element collides with top of page.
+            var top = rect.top + window.pageYOffset;
+            var left = Math.min(
+                Math.max(rect.left + window.pageXOffset, offset + window.pageXOffset),
+                Math.max(document.documentElement.clientWidth + window.pageXOffset - offset)
+            );
             playButton.css({
-                top:  "calc(" + rect.top + "px - 2.5rem)",
-                left: rect.left
+                top:  "calc(" + top + "px - 2.5rem)",
+                left: left
             });
             playButton.appendTo(that.container);
 
