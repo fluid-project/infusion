@@ -71,7 +71,10 @@
     background: #666666;
     border: 0.1rem solid #4E4E4E;
     border-radius: 0.2rem;
+    /* Align down arrow to the beginning of the character that is first selected. */
+    transform: translate(-49%);
 }
+
 .fl-orator-selectionReader-play:after,
 .fl-orator-selectionReader-play:before {
     top: 100%;
