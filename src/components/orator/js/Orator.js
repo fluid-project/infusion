@@ -581,8 +581,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         selectors: {
             play: ".flc-orator-selectionReader-play"
         },
+        strings: {
+            playButton: "play"
+        },
         markup: {
-            playButton: "<button class=\"flc-orator-selectionReader-play fl-orator-selectionReader-play\"><span class=\"fl-icon-orator\"></span><span>Play</span></button>"
+            playButton: "<button class=\"flc-orator-selectionReader-play fl-orator-selectionReader-play\"><span class=\"fl-icon-orator\"></span><span>%playButton</span></button>"
         },
         model: {
             showUI: false,
@@ -631,7 +634,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             var selectionRange = window.getSelection().getRangeAt(0);
             var rect = selectionRange.getClientRects()[0];
 
-            var playButton = $(that.options.markup.playButton);
+            var playMarkup = fluid.stringTemplate(that.options.markup.playButton, that.options.strings);
+            var playButton = $(playMarkup);
             playButton.css({
                 top:  "calc(" + rect.top + "px - 2.5rem)",
                 left: rect.left
