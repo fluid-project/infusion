@@ -584,6 +584,10 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         strings: {
             playButton: "play"
         },
+        styles: {
+            above: "fl-orator-selectionReader-above",
+            below: "fl-orator-selectionReader-below"
+        },
         markup: {
             playButton: "<button class=\"flc-orator-selectionReader-play fl-orator-selectionReader-play\"><span class=\"fl-icon-orator\"></span><span>%playButton</span></button>"
         },
@@ -591,7 +595,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             showUI: false,
             play: false
         },
-        edgeOffsetScale: 3, // similar to em values as it will be multiplied by the container's font-size
+        // similar to em values as it will be multiplied by the container's font-size
+        offsetScale: {
+            edge: 3,
+            pointer: 2.5
+        },
         events: {
             onSelectionChanged: null
         },
@@ -629,28 +637,54 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         return window.getSelection().toString();
     };
 
+    fluid.orator.selectionReader.location = {
+        TOP: 0,
+        RIGHT: 1,
+        BOTTOM: 2,
+        LEFT: 3
+    };
+
+    fluid.orator.selectionReader.calculatePosition = function (rect, fontSize, offsetScale) {
+        var position = {};
+        var edgeOffset = fontSize * (fluid.get(offsetScale, "edge") || 1);
+        var pointerOffset = fontSize * (fluid.get(offsetScale, "pointer") || 1);
+
+        console.log("rect:", rect);
+
+        if (rect.top < edgeOffset) {
+            position.top = rect.bottom + window.pageYOffset;
+            position.location = fluid.orator.selectionReader.location.BOTTOM;
+        } else {
+            position.top = rect.top + window.pageYOffset - pointerOffset;
+            position.location = fluid.orator.selectionReader.location.TOP;
+        }
+
+        position.left = Math.min(
+            Math.max(rect.left + window.pageXOffset, edgeOffset + window.pageXOffset),
+            Math.max(document.documentElement.clientWidth + window.pageXOffset - edgeOffset)
+        );
+
+        return position;
+    };
+
     fluid.orator.selectionReader.renderPlayButton = function (that, state) {
         if (state) {
             var selectionRange = window.getSelection().getRangeAt(0);
             var rect = selectionRange.getClientRects()[0];
             var fontSize = parseFloat(that.container.css("font-size"));
-            var offset = fontSize * that.options.edgeOffsetScale;
-
+            var position = fluid.orator.selectionReader.calculatePosition(rect, fontSize, that.options.offsetScale);
             var playMarkup = fluid.stringTemplate(that.options.markup.playButton, that.options.strings);
             var playButton = $(playMarkup);
-            // TODO: Move the positioning info to a separate function
-            //       Also handle case where element collides with top of page.
-            var top = rect.top + window.pageYOffset;
-            var left = Math.min(
-                Math.max(rect.left + window.pageXOffset, offset + window.pageXOffset),
-                Math.max(document.documentElement.clientWidth + window.pageXOffset - offset)
-            );
+
             playButton.css({
-                top:  "calc(" + top + "px - 2.5rem)",
-                left: left
+                top:  position.top,
+                left: position.left
             });
+            var positionClass = that.options.styles[position.location === fluid.orator.selectionReader.location.TOP ? "above" : "below"];
+            playButton.addClass(positionClass);
             playButton.appendTo(that.container);
 
+            // cleanup range
             selectionRange.detach();
 
         } else {
