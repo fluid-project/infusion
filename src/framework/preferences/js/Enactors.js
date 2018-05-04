@@ -286,7 +286,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         invokers: {
             set: {
                 funcName: "fluid.prefs.enactor.lineSpace.set",
-                args: ["{arguments}.0", "{that}", "{that}.getLineHeightMultiplier"]
+                args: ["{that}", "{arguments}.0"]
             },
             getLineHeight: {
                 funcName: "fluid.prefs.enactor.lineSpace.getLineHeight",
@@ -327,21 +327,22 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             return Number(lineHeight);
         }
 
-        return Math.round(parseFloat(lineHeight) / fontSize * 100) / 100;
+        return fluid.roundToDecimal(parseFloat(lineHeight) / fontSize, 2);
     };
 
-    fluid.prefs.enactor.lineSpace.set = function (times, that, getLineHeightMultiplierFunc) {
+    fluid.prefs.enactor.lineSpace.set = function (that, times) {
         // Calculating the initial size here rather than using a members expand because the "line-height"
-        // cannot be detected on hidden containers such as separated paenl iframe.
+        // cannot be detected on hidden containers such as separated panel iframe.
         if (!that.initialSize) {
-            that.initialSize = getLineHeightMultiplierFunc();
+            that.initialSize = that.getLineHeight();
+            that.lineHeightMultiplier = that.getLineHeightMultiplier();
         }
 
         // that.initialSize === 0 when the browser returned "lineHeight" css value is undefined,
         // which occurs when firefox detects "line-height" value on a hidden container.
         // @ See getLineHeightMultiplier() & http://issues.fluidproject.org/browse/FLUID-4500
-        if (that.initialSize) {
-            var targetLineSpace = times * that.initialSize;
+        if (that.lineHeightMultiplier) {
+            var targetLineSpace = that.initialSize === "normal" && times === 1 ? that.initialSize : times * that.lineHeightMultiplier;
             that.container.css("line-height", targetLineSpace);
         }
     };
