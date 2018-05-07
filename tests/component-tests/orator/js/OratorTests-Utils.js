@@ -94,6 +94,32 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
+    fluid.tests.orator.createSandbox = function (config) {
+        return sinon.createSandbox(config);
+    };
+
+    /*******************************************************************************
+     * Selection Helpers
+     *******************************************************************************/
+
+    fluid.registerNamespace("fluid.tests.orator.selection");
+
+    fluid.tests.orator.selection.selectNode = function (node) {
+        node = fluid.unwrap(node);
+        var range = document.createRange();
+        var selection = window.getSelection();
+
+        range.selectNode(node);
+        selection.empty();
+        selection.addRange(range);
+        range.detach();
+    };
+
+    fluid.tests.orator.selection.collapse = function () {
+        var selection = window.getSelection();
+        selection.empty();
+    };
+
     /*******************************************************************************
      * Assertions
      *******************************************************************************/
@@ -105,6 +131,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         var expectedLabel = state ? "pause" : "play";
         jqUnit.assertEquals("The aria-label should be set correctly", controller.options.strings[expectedLabel], toggleButton.attr("aria-label"));
+    };
+
+    fluid.tests.orator.verifySelectionState = function (that, prefix, expectedModel) {
+        jqUnit.assertDeepEq(prefix + ": The model should be set correctly.", expectedModel, that.model);
+
+        if (expectedModel.showUI) {
+            jqUnit.assertNodeExists(prefix + ": The selection play button should be present", that.options.selectors.play);
+        } else {
+            jqUnit.assertNodeNotExists(prefix + ": The selection play button should not be present", that.options.selectors.play);
+        }
     };
 
     fluid.tests.orator.verifyState = function (orator, testPrefix, state) {

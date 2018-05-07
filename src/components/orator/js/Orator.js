@@ -670,22 +670,49 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         LEFT: 3
     };
 
-    fluid.orator.selectionReader.calculatePosition = function (rect, fontSize, offsetScale) {
+    /**
+     * Returns a position object containing coordinates for absolutely positioning the play button
+     * relative to a passed in rect. By default it will be placed above the rect unless there is a collision with the
+     * top of the window. In which case it will be placed below. This will be captured in the "location" propertied,
+     * and is specified by a constant (See: fluid.orator.selectionReader.location).
+     *
+     * In addition to collision detection wth the top of the window, collision detection for the left and right edges of
+     * the window are also taken into account. However, the position will not be flipped, but will be translated
+     * slightly to ensure that the item being placed is displayed on screen. These calculations are facilitated through
+     * an offsetScale object passed in.
+     *
+     * @param {Object} rect - A DOMRect object, used to calculate placement against. Specifically the "top", "bottom",
+     *                        and "left" properties may be used for positioning.
+     * @param {Float} fontSize - the base font to multiple the offset against
+     * @param {Object} offsetScale - (Optional) an object containing specified offsets: "edge" and "pointer". The "edge"
+     *                               offset refers to the minimum distance between the button and the window edges. The
+     *                               "pointer" offset refers to the distance between the button and the coordinates the
+     *                               DOMRect refers too. This is provides space for an arrow to point from the button.
+     *                               Offsets all default to 1.
+     * @param {Object} wndw - (Optional) Mainly this is provided for testing to allow mocking of the Window's scroll
+     *                        offsets.
+     *
+     * @return {Object} - An object containing the coordinates for positioning the play button.
+     *                    It takes the form {top: Float, left: Float, location: Integer}
+     *                    For location constants see: fluid.orator.selectionReader.location
+     */
+    fluid.orator.selectionReader.calculatePosition = function (rect, fontSize, offsetScale, wndw) {
         var position = {};
         var edgeOffset = fontSize * (fluid.get(offsetScale, "edge") || 1);
         var pointerOffset = fontSize * (fluid.get(offsetScale, "pointer") || 1);
+        wndw = wndw || window;
 
         if (rect.top < edgeOffset) {
-            position.top = rect.bottom + window.pageYOffset;
+            position.top = rect.bottom + wndw.pageYOffset;
             position.location = fluid.orator.selectionReader.location.BOTTOM;
         } else {
-            position.top = rect.top + window.pageYOffset - pointerOffset;
+            position.top = rect.top + wndw.pageYOffset - pointerOffset;
             position.location = fluid.orator.selectionReader.location.TOP;
         }
 
         position.left = Math.min(
-            Math.max(rect.left + window.pageXOffset, edgeOffset + window.pageXOffset),
-            Math.max(document.documentElement.clientWidth + window.pageXOffset - edgeOffset)
+            Math.max(rect.left + wndw.pageXOffset, edgeOffset + wndw.pageXOffset),
+            (document.documentElement.clientWidth + wndw.pageXOffset - edgeOffset)
         );
 
         return position;

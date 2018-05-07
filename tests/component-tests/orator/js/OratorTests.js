@@ -710,6 +710,235 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     /*******************************************************************************
+     * Unit tests for fluid.orator.selectionReader
+     *******************************************************************************/
+
+    fluid.registerNamespace("fluid.tests.orator.selectionReader");
+
+    jqUnit.test("fluid.orator.selectionReader.getSelectedText", function () {
+        var elm = $(".flc-orator-selectionReader-test-selection");
+        fluid.tests.orator.selection.selectNode(elm);
+
+        var selectedText = fluid.orator.selectionReader.getSelectedText();
+        jqUnit.assertEquals("The correct text should be selected", elm.text(), selectedText);
+
+        // selection cleanup
+        fluid.tests.orator.selection.collapse();
+    });
+
+    fluid.tests.orator.selectionReader.positionTests = {
+        fontSize: 16,
+        wndw: {
+            pageYOffset: 5,
+            pageXOffset: 5
+        },
+        rect: {top: 20, left: 20, bottom: 40},
+        clientWidth: 100,
+        testCases: [{
+            name: "default offsetScale",
+            expected: {
+                location: fluid.orator.selectionReader.location.TOP,
+                top: 9,
+                left: 25
+            }
+        }, {
+            name: "collision with top edge",
+            offsetScale: {
+                edge: 2,
+                pointer: 1.5
+            },
+            rect: {left: 40},
+            expected: {
+                location: fluid.orator.selectionReader.location.BOTTOM,
+                top: 45,
+                left: 45
+            }
+        }, {
+            name: "collision with left edge",
+            offsetScale: {
+                edge: 2,
+                pointer: 1.5
+            },
+            rect: {top: 36},
+            expected: {
+                location: fluid.orator.selectionReader.location.TOP,
+                top: 17,
+                left: 37
+            }
+        }, {
+            name: "collision with right edge",
+            offsetScale: {
+                edge: 1,
+                pointer: 1.5
+            },
+            clientWidth: 50,
+            rect: {left: 35},
+            expected: {
+                location: fluid.orator.selectionReader.location.TOP,
+                top: 1,
+                left: 39
+            }
+        }, {
+            name: "no collisions",
+            offsetScale: {
+                edge: 1.5,
+                pointer: 1.5
+            },
+            rect: {top: 30, left: 30},
+            expected: {
+                location: fluid.orator.selectionReader.location.TOP,
+                top: 11,
+                left: 35
+            }
+        }]
+    };
+
+    jqUnit.test("fluid.orator.selectionReader.calculatePosition", function () {
+        var sandbox = fluid.tests.orator.createSandbox({});
+        fluid.each(fluid.tests.orator.selectionReader.positionTests.testCases, function (testCase) {
+            sandbox.stub(document.documentElement, "clientWidth")
+                .value(testCase.clientWidth || fluid.tests.orator.selectionReader.positionTests.clientWidth);
+
+            var rect = $.extend({}, fluid.tests.orator.selectionReader.positionTests.rect, testCase.rect);
+            var actual = fluid.orator.selectionReader.calculatePosition(rect,
+                fluid.tests.orator.selectionReader.positionTests.fontSize,
+                testCase.offsetScale,
+                fluid.tests.orator.selectionReader.positionTests.wndw
+            );
+
+            jqUnit.assertDeepEq("Position object generated for - " + testCase.name, testCase.expected, actual);
+
+        });
+        sandbox.restore();
+    });
+
+    /*******************************************************************************
+     * IoC unit tests for fluid.orator.selectionReader
+     *******************************************************************************/
+
+    fluid.defaults("fluid.tests.orator.selectionReader", {
+        gradeNames: ["fluid.orator.selectionReader"],
+        model: {
+            showUI: false,
+            play: false,
+            text: ""
+        },
+        selectors: {
+            text: ".flc-orator-selectionReader-test-selection",
+            otherText: ".flc-orator-selectionReader-test-selectionTwo"
+        }
+    });
+
+    fluid.defaults("fluid.tests.orator.selectionReaderTests", {
+        gradeNames: ["fluid.test.testEnvironment"],
+        markupFixture: ".flc-orator-selectionReader-test",
+        components: {
+            selectionReader: {
+                type: "fluid.tests.orator.selectionReader",
+                container: ".flc-orator-selectionReader-test",
+                createOnEvent: "{selectionReaderTester}.events.onTestCaseStart"
+            },
+            selectionReaderTester: {
+                type: "fluid.tests.orator.selectionReaderTester"
+            }
+        }
+    });
+
+    fluid.defaults("fluid.tests.orator.selectionReaderTester", {
+        gradeNames: ["fluid.test.testCaseHolder"],
+        testOpts: {
+            expected: {
+                noSelection: {
+                    showUI: false,
+                    play: false,
+                    text: ""
+                },
+                textSelected: {
+                    showUI: true,
+                    play: false,
+                    text: "Selection Test"
+                },
+                textPlay: {
+                    showUI: true,
+                    play: true,
+                    text: "Selection Test"
+                },
+                text2Selected: {
+                    showUI: true,
+                    play: false,
+                    text: "Other Text"
+                }
+            }
+        },
+        modules: [{
+            name: "fluid.orator.selectionReader",
+            tests: [{
+                expect: 14,
+                name: "fluid.orator.selectionReader",
+                sequence: [{
+                    listener: "fluid.tests.orator.verifySelectionState",
+                    args: ["{selectionReader}", "Init", "{that}.options.testOpts.expected.noSelection"],
+                    spec: {priority: "last:testing"},
+                    event: "{selectionReaderTests selectionReader}.events.onCreate"
+                }, {
+                    // Make a selection
+                    func: "fluid.tests.orator.selection.selectNode",
+                    args: ["{selectionReader}.dom.text"]
+                }, {
+                    listener: "fluid.tests.orator.verifySelectionState",
+                    args: ["{selectionReader}", "Selection", "{that}.options.testOpts.expected.textSelected"],
+                    spec: {priority: "last:testing", path: "showUI"},
+                    changeEvent: "{selectionReader}.applier.modelChanged"
+                }, {
+                    // play
+                    func: "{selectionReader}.play",
+                    args: ["play", true]
+                }, {
+                    listener: "fluid.tests.orator.verifySelectionState",
+                    args: ["{selectionReader}", "Play", "{that}.options.testOpts.expected.textPlay"],
+                    spec: {priority: "last:testing", path: "play"},
+                    changeEvent: "{selectionReader}.applier.modelChanged"
+                }, {
+                    // stop
+                    func: "{selectionReader}.stop",
+                    args: ["play", true]
+                }, {
+                    listener: "fluid.tests.orator.verifySelectionState",
+                    args: ["{selectionReader}", "Stop", "{that}.options.testOpts.expected.textSelected"],
+                    spec: {priority: "last:testing", path: "play"},
+                    changeEvent: "{selectionReader}.applier.modelChanged"
+                }, {
+                    // click play
+                    jQueryTrigger: "click",
+                    element: "{selectionReader}.dom.play"
+                }, {
+                    listener: "fluid.tests.orator.verifySelectionState",
+                    args: ["{selectionReader}", "Replay", "{that}.options.testOpts.expected.textPlay"],
+                    spec: {priority: "last:testing", path: "play"},
+                    changeEvent: "{selectionReader}.applier.modelChanged"
+                }, {
+                    // Change selection
+                    func: "fluid.tests.orator.selection.selectNode",
+                    args: ["{selectionReader}.dom.otherText"]
+                }, {
+                    listener: "fluid.tests.orator.verifySelectionState",
+                    args: ["{selectionReader}", "New Selection", "{that}.options.testOpts.expected.text2Selected"],
+                    spec: {priority: "last:testing", path: "text"},
+                    changeEvent: "{selectionReader}.applier.modelChanged"
+                }, {
+                    // Collapse selection
+                    func: "fluid.tests.orator.selection.collapse"
+                }, {
+                    listener: "fluid.tests.orator.verifySelectionState",
+                    args: ["{selectionReader}", "Selection Collapsed", "{that}.options.testOpts.expected.noSelection"],
+                    spec: {priority: "last:testing", path: "showUI"},
+                    changeEvent: "{selectionReader}.applier.modelChanged"
+                }]
+            }]
+        }]
+    });
+
+    /*******************************************************************************
      * IoC unit tests for fluid.orator
      *******************************************************************************/
 
@@ -791,6 +1020,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.test.runTests([
             "fluid.tests.orator.controllerTests",
             "fluid.tests.orator.domReaderTests",
+            "fluid.tests.orator.selectionReaderTests",
             "fluid.tests.oratorTests"
         ]);
     });
