@@ -627,8 +627,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 namespace: "render"
             },
             "text": {
-                changePath: "play",
-                value: false,
+                func: "{that}.stop",
                 namespace: "stopPlayingWhenTextChanges"
             }
         },
@@ -642,7 +641,17 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             }
         },
         invokers: {
-            getSelectedText: "fluid.orator.selectionReader.getSelectedText"
+            getSelectedText: "fluid.orator.selectionReader.getSelectedText",
+            play: {
+                changePath: "play",
+                value: true,
+                source: "playMethod"
+            },
+            stop: {
+                changePath: "play",
+                value: false,
+                source: "stopMethod"
+            }
         }
     });
 
@@ -697,6 +706,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
             });
             var positionClass = that.options.styles[position.location === fluid.orator.selectionReader.location.TOP ? "above" : "below"];
             playButton.addClass(positionClass);
+            playButton.click(that.play);
             playButton.appendTo(that.container);
 
             // cleanup range
