@@ -625,6 +625,11 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.orator.selectionReader.renderPlayButton",
                 args: ["{that}", "{change}.value"],
                 namespace: "render"
+            },
+            "text": {
+                changePath: "play",
+                value: false,
+                namespace: "stopPlayingWhenTextChanges"
             }
         },
         modelRelay: {
