@@ -210,8 +210,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     });
 
-    // fluid.orator.domReader.hasRenderedText tests
-    fluid.tests.orator.domReader.hasRenderedTextTestCases = {
+    // fluid.orator.domReader.hasTextToRead tests
+    fluid.tests.orator.domReader.hasTextToReadTestCases = {
         "trueCase": [
             ".flc-orator-domReader-test-rendering",
             ".flc-orator-domReader-test-rendering-ariaHiddenFalse",
@@ -237,15 +237,15 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         ]
     };
 
-    jqUnit.test("Test fluid.orator.domReader.hasRenderedText", function () {
+    jqUnit.test("Test fluid.orator.domReader.hasTextToRead", function () {
         // test trueCase
-        fluid.each(fluid.tests.orator.domReader.hasRenderedTextTestCases.trueCase, function (selector) {
-            jqUnit.assertTrue("\"" + selector + "\" should have text to read.", fluid.orator.domReader.hasRenderedText($(selector)));
+        fluid.each(fluid.tests.orator.domReader.hasTextToReadTestCases.trueCase, function (selector) {
+            jqUnit.assertTrue("\"" + selector + "\" should have text to read.", fluid.orator.domReader.hasTextToRead($(selector)));
         });
 
         // test falseCase
-        fluid.each(fluid.tests.orator.domReader.hasRenderedTextTestCases.falseCase, function (selector) {
-            jqUnit.assertFalse("\"" + selector + "\" shouldn't have text to read.", fluid.orator.domReader.hasRenderedText($(selector)));
+        fluid.each(fluid.tests.orator.domReader.hasTextToReadTestCases.falseCase, function (selector) {
+            jqUnit.assertFalse("\"" + selector + "\" shouldn't have text to read.", fluid.orator.domReader.hasTextToRead($(selector)));
         });
     });
 
