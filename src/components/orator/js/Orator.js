@@ -595,7 +595,8 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         },
         model: {
             showUI: false,
-            play: false
+            play: false,
+            text: ""
         },
         // similar to em values as it will be multiplied by the container's font-size
         offsetScale: {
@@ -610,13 +611,13 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.orator.selectionReader.bindSelectionEvents",
                 args: ["{that}"]
             },
-            "onSelectionChanged": {
-                // TODO: Refactor into named function
-                func: function (that) {
-                    var text = that.getSelectedText();
-                    that.applier.change("showUI", !!text, "ADD", "onSelectionChanged");
-                },
-                args: ["{that}", "{arguments}.0"]
+            "onSelectionChanged.updateText": {
+                changePath: "text",
+                value: {
+                    expander: {
+                        func: "{that}.getSelectedText"
+                    }
+                }
             }
         },
         modelListeners: {
@@ -624,6 +625,15 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 funcName: "fluid.orator.selectionReader.renderPlayButton",
                 args: ["{that}", "{change}.value"],
                 namespace: "render"
+            }
+        },
+        modelRelay: {
+            source: "text",
+            target: "showUI",
+            backward: "never",
+            namespace: "showUIControl",
+            singleTransform: {
+                type: "fluid.transforms.stringToBoolean"
             }
         },
         invokers: {
@@ -650,8 +660,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         var position = {};
         var edgeOffset = fontSize * (fluid.get(offsetScale, "edge") || 1);
         var pointerOffset = fontSize * (fluid.get(offsetScale, "pointer") || 1);
-
-        console.log("rect:", rect);
 
         if (rect.top < edgeOffset) {
             position.top = rect.bottom + window.pageYOffset;
