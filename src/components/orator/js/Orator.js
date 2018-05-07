@@ -359,19 +359,21 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
     };
 
     /**
-     * Determines if there is rendered text in an element.
+     * Determines if there is text in an element that should be read.
      * Will return false in the following conditions:
      * - elm is falsey (undefined, null, etc.)
      * - elm's offsetHeight is 0 (e.g. display none set on itself or its parent)
      * - elm has no text or only whitespace
      * - elm or its parent has `aria-hidden="true"` set.
      *
+     * NOTE: text added by pseudo elements (e.g. :before, :after) are not considered.
+     *
      * @param {jQuery|DomElement} elm - either a DOM node or a jQuery element
      *
      * @return {Boolean} - returns true if there is rendered text within the element and false otherwise.
      *                     (See rules above)
      */
-    fluid.orator.domReader.hasRenderedText = function (elm) {
+    fluid.orator.domReader.hasTextToRead = function (elm) {
         elm = fluid.unwrap(elm);
 
         return elm &&
@@ -433,7 +435,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         elm = fluid.unwrap(elm);
         blockIndex = blockIndex || 0;
 
-        if (fluid.orator.domReader.hasRenderedText(elm)) {
+        if (fluid.orator.domReader.hasTextToRead(elm)) {
             var childNodes = elm.childNodes;
 
             $.each(childNodes, function (childIndex, childNode) {
@@ -454,7 +456,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                         charIndex += word.length;
                     });
                 } else if (childNode.nodeType === fluid.orator.domReader.nodeType.ELEMENT_NODE &&
-                    fluid.orator.domReader.hasRenderedText(childNode)) {
+                    fluid.orator.domReader.hasTextToRead(childNode)) {
                     parsed = parsed.concat(fluid.orator.domReader.parse(childNode, blockIndex));
                     if (parsed.length) {
                         var lastParsed = parsed[parsed.length - 1];
