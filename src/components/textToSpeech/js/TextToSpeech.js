@@ -158,8 +158,7 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
                 source: "utteranceOnResume"
             },
             "onCreate.unloadCleanup": {
-                funcName: "fluid.textToSpeech.cleanupOnUnload",
-                args: ["{that}.cancel"]
+                funcName: "fluid.textToSpeech.cleanupOnUnload"
             },
             "onDestroy.cleanup": {
                 funcName: "fluid.textToSpeech.invokeSpeechSynthesisFunc",
@@ -177,9 +176,6 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
         };
     };
 
-    // Issue commands to the speechSynthesis interface with deferral (1 ms timeout);
-    // this makes the wrapper behave better when issuing commands, especially
-    // play and pause
     fluid.textToSpeech.invokeSpeechSynthesisFunc = function (control, args) {
         args = fluid.makeArray(args);
         speechSynthesis[control].apply(speechSynthesis, args);

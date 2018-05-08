@@ -213,40 +213,46 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // fluid.orator.domReader.hasTextToRead tests
     fluid.tests.orator.domReader.hasTextToReadTestCases = {
         "trueCase": [
-            ".flc-orator-domReader-test-rendering",
-            ".flc-orator-domReader-test-rendering-ariaHiddenFalse",
-            ".flc-orator-domReader-test-rendering-ariaHiddenFalse-nested",
-            ".flc-orator-domReader-test-rendering-hiddenA11y",
-            ".flc-orator-domReader-test-rendering-hiddenA11y-nested",
-            ".flc-orator-domReader-test-rendering-visible"
+            ".flc-orator-domReader-test-checkDOMText",
+            ".flc-orator-domReader-test-checkDOMText-ariaHiddenFalse",
+            ".flc-orator-domReader-test-checkDOMText-ariaHiddenFalse-nested",
+            ".flc-orator-domReader-test-checkDOMText-hiddenA11y",
+            ".flc-orator-domReader-test-checkDOMText-hiddenA11y-nested",
+            ".flc-orator-domReader-test-checkDOMText-visible"
         ],
         "falseCase": [
-            ".flc-orator-domReader-test-rendering-noNode",
-            ".flc-orator-domReader-test-rendering-none",
-            ".flc-orator-domReader-test-rendering-none-nested",
-            ".flc-orator-domReader-test-rendering-visHidden",
-            ".flc-orator-domReader-test-rendering-visHidden-nested",
-            ".flc-orator-domReader-test-rendering-hidden",
-            ".flc-orator-domReader-test-rendering-hidden-nested",
-            ".flc-orator-domReader-test-rendering-ariaHiddenTrue",
-            ".flc-orator-domReader-test-rendering-ariaHiddenTrue-nested",
-            ".flc-orator-domReader-test-rendering-nestedNone",
-            ".flc-orator-domReader-test-rendering-empty",
-            ".flc-orator-domReader-test-rendering-script",
-            ".flc-orator-domReader-test-rendering-nestedScript"
+            ".flc-orator-domReader-test-checkDOMText-noNode",
+            ".flc-orator-domReader-test-checkDOMText-none",
+            ".flc-orator-domReader-test-checkDOMText-none-nested",
+            ".flc-orator-domReader-test-checkDOMText-visHidden",
+            ".flc-orator-domReader-test-checkDOMText-visHidden-nested",
+            ".flc-orator-domReader-test-checkDOMText-hidden",
+            ".flc-orator-domReader-test-checkDOMText-hidden-nested",
+            ".flc-orator-domReader-test-checkDOMText-ariaHiddenTrue",
+            ".flc-orator-domReader-test-checkDOMText-ariaHiddenTrue-nested",
+            ".flc-orator-domReader-test-checkDOMText-nestedNone",
+            ".flc-orator-domReader-test-checkDOMText-empty",
+            ".flc-orator-domReader-test-checkDOMText-script",
+            ".flc-orator-domReader-test-checkDOMText-nestedScript"
         ]
     };
 
     jqUnit.test("Test fluid.orator.domReader.hasTextToRead", function () {
-        // test trueCase
-        fluid.each(fluid.tests.orator.domReader.hasTextToReadTestCases.trueCase, function (selector) {
-            jqUnit.assertTrue("\"" + selector + "\" should have text to read.", fluid.orator.domReader.hasTextToRead($(selector)));
-        });
+        // The innerText method called in fluid.orator.domReader.hasTextToRead returns text from some hidden elements
+        // that modern browsers do not.
+        if ($.browser.msie) {
+            jqUnit.assert("Tests were not run because innerText works differently on IE 11 and is used for a feature not supported in IE");
+        } else {
+            // test trueCase
+            fluid.each(fluid.tests.orator.domReader.hasTextToReadTestCases.trueCase, function (selector) {
+                jqUnit.assertTrue("\"" + selector + "\" should have text to read.", fluid.orator.domReader.hasTextToRead($(selector)));
+            });
 
-        // test falseCase
-        fluid.each(fluid.tests.orator.domReader.hasTextToReadTestCases.falseCase, function (selector) {
-            jqUnit.assertFalse("\"" + selector + "\" shouldn't have text to read.", fluid.orator.domReader.hasTextToRead($(selector)));
-        });
+            // test falseCase
+            fluid.each(fluid.tests.orator.domReader.hasTextToReadTestCases.falseCase, function (selector) {
+                jqUnit.assertFalse("\"" + selector + "\" shouldn't have text to read.", fluid.orator.domReader.hasTextToRead($(selector)));
+            });
+        }
     });
 
     // fluid.orator.domReader.addParsedData tests
