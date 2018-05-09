@@ -41,6 +41,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             "onSpeechQueued.recordEvent": {
                 listener: "{that}.recordEvent",
                 args: ["onSpeechQueued"]
+            },
+            "onCreate.unloadCleanup": {
+                funcName: "fluid.identity"
+            },
+            "onDestroy.cleanup": {
+                funcName: "fluid.identity"
             }
         },
         invokers: {

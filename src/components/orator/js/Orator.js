@@ -366,7 +366,9 @@ var fluid_3_0_0 = fluid_3_0_0 || {};
      * - elm has no text or only whitespace
      * - elm or its parent has `aria-hidden="true"` set.
      *
-     * NOTE: text added by pseudo elements (e.g. :before, :after) are not considered.
+     * NOTE: Text added by pseudo elements (e.g. :before, :after) are not considered.
+     * NOTE: This method is not supported in IE 11 because innerText returns the text for some hidden elements
+     *       that is inconsistent with modern browsers.
      *
      * @param {jQuery|DomElement} elm - either a DOM node or a jQuery element
      *
